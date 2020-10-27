@@ -1,0 +1,24 @@
+const path = require('path')
+
+// see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
+
+module.exports = function() {
+  return {
+    webpack: {
+      alias: {},
+      plugins: [],
+
+      // https://webpack.js.org/configuration
+      configure: (webpackConfig) => ({
+        ...webpackConfig,
+        resolve: {
+          ...webpackConfig.resolve,
+          modules: [
+            path.resolve(__dirname, 'src/custom'),              
+            ...webpackConfig.resolve.modules,            
+          ]
+        }
+      })
+    }
+  }
+}
