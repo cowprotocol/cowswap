@@ -41,7 +41,7 @@ import { useExpertModeManager, useUserSlippageTolerance } from '../../state/user
 import { LinkStyledButton, TYPE } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import AppBody from '../AppBody'
+import AppBody from 'pages/AppBody'
 import { ClickableText } from '../Pool/styleds'
 import Loader from '../../components/Loader'
 
