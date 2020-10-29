@@ -6,8 +6,8 @@
 
 An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for decentralized exchange of Ethereum tokens.
 
-- Twitter: [@UniswapProtocol](https://twitter.com/gnosisPM)
-- Reddit: [/r/Uniswap](https://www.reddit.com/r/gnosisPM)
+- Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
+- Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
 - Discord: [Gnosis](https://discord.com/invite/M39dTHQ)
 
 ## Development
