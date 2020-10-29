@@ -1,7 +1,7 @@
 # OBA Swap
 
-[![Lint](https://github.com/gnosis/dex-uniswap/workflows/Lint/badge.svg)](https://github.com/gnosis/dex-uniswap/actions?query=workflow%3ALint)
-[![Tests](https://github.com/gnosis/dex-uniswap/workflows/Tests/badge.svg)](https://github.com/gnosis/dex-uniswap/actions?query=workflow%3ATests)
+[![Lint](https://github.com/gnosis/dex-swap/workflows/Lint/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ALint)
+[![Tests](https://github.com/gnosis/dex-swap/workflows/Tests/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ATests)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
 An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for decentralized exchange of Ethereum tokens.
