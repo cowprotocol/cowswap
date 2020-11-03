@@ -7,11 +7,11 @@ import {
   theme as themeUniswap,
   FixedGlobalStyle as FixedGlobalStyleUniswap,
   ThemedGlobalStyle as ThemedGlobalStyleUniswap
-} from '../../theme'
+} from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 
-export { TYPE } from '../../theme'
-export * from '../../theme/components'
+export { TYPE } from '@src/theme'
+export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
   return {
