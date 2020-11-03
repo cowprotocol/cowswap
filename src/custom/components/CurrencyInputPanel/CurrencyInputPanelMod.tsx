@@ -2,25 +2,26 @@ import { Currency, Pair } from '@uniswap/sdk'
 import React, { useState, useContext, useCallback } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { darken } from 'polished'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
-import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import CurrencyLogo from '../CurrencyLogo'
-import DoubleCurrencyLogo from '../DoubleLogo'
-import { RowBetween } from '../Row'
+import { useCurrencyBalance } from 'state/wallet/hooks'
+import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
+import CurrencyLogo from 'components/CurrencyLogo'
+import DoubleCurrencyLogo from 'components/DoubleLogo'
+import { RowBetween } from 'components/Row'
 import { TYPE } from 'theme'
-import { Input as NumericalInput } from '../NumericalInput'
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
+import { Input as NumericalInput } from 'components/NumericalInput'
+import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React } from 'hooks'
 import { useTranslation } from 'react-i18next'
+import { WithClassName } from 'types'
 
-const InputRow = styled.div<{ selected: boolean }>`
+export const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
 `
 
-const CurrencySelect = styled.button<{ selected: boolean }>`
+export const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 2.2rem;
   font-size: 20px;
@@ -41,7 +42,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   }
 `
 
-const LabelRow = styled.div`
+export const LabelRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   color: ${({ theme }) => theme.text1};
@@ -54,13 +55,13 @@ const LabelRow = styled.div`
   }
 `
 
-const Aligner = styled.span`
+export const Aligner = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `
 
-const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
+export const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0.25rem 0 0.5rem;
   height: 35%;
 
@@ -70,7 +71,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 `
 
-const InputPanel = styled.div<{ hideInput?: boolean }>`
+export const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
@@ -78,19 +79,19 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   z-index: 1;
 `
 
-const Container = styled.div<{ hideInput: boolean }>`
+export const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: ${({ theme }) => theme.bg1};
 `
 
-const StyledTokenName = styled.span<{ active?: boolean }>`
+export const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
   font-size:  ${({ active }) => (active ? '20px' : '16px')};
 
 `
 
-const StyledBalanceMax = styled.button`
+export const StyledBalanceMax = styled.button`
   height: 28px;
   background-color: ${({ theme }) => theme.primary5};
   border: 1px solid ${({ theme }) => theme.primary5};
@@ -114,7 +115,7 @@ const StyledBalanceMax = styled.button`
   `};
 `
 
-interface CurrencyInputPanelProps {
+export interface CurrencyInputPanelProps extends WithClassName {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void

@@ -11,7 +11,7 @@ import {
   useUserTransactionTTL,
   useUserSlippageTolerance
 } from '../../state/user/hooks'
-import { TYPE } from '../../theme'
+import { TYPE } from 'theme'
 import { ButtonError } from '../Button'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'

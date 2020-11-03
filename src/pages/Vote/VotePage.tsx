@@ -3,7 +3,7 @@ import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 
 import { RouteComponentProps } from 'react-router-dom'
-import { TYPE, StyledInternalLink, ExternalLink } from '../../theme'
+import { TYPE, StyledInternalLink, ExternalLink } from 'theme'
 import { RowFixed, RowBetween } from '../../components/Row'
 import { CardSection, DataCard } from '../../components/earn/styled'
 import { ArrowLeft } from 'react-feather'

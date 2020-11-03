@@ -6,7 +6,7 @@ import { AutoColumn } from '../../components/Column'
 import { AutoRow } from '../../components/Row'
 import { ONE_BIPS } from '../../constants'
 import { Field } from '../../state/mint/actions'
-import { TYPE } from '../../theme'
+import { TYPE } from 'theme'
 
 export function PoolPriceBar({
   currencies,

@@ -191,7 +191,7 @@ const Title = styled.a`
   }
 `
 
-const UniIcon = styled.div`
+export const UniIcon = styled.div`
   transition: transform 0.3s ease;
   :hover {
     transform: rotate(-5deg);

@@ -1,12 +1,12 @@
 import { transparentize } from 'polished'
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled, {
-  ThemeProvider as StyledComponentsThemeProvider,
-  createGlobalStyle,
+  // ThemeProvider as StyledComponentsThemeProvider,
+  // createGlobalStyle,
   css,
-  DefaultTheme
+  DefaultThemeUniswap
 } from 'styled-components'
-import { useIsDarkMode } from '../state/user/hooks'
+// import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
 
@@ -87,7 +87,7 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function theme(darkMode: boolean): DefaultTheme {
+export function theme(darkMode: boolean): DefaultThemeUniswap {
   return {
     ...colors(darkMode),
 
@@ -115,13 +115,13 @@ export function theme(darkMode: boolean): DefaultTheme {
   }
 }
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useIsDarkMode()
+// export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+//   const darkMode = useIsDarkMode()
 
-  const themeObject = useMemo(() => theme(darkMode), [darkMode])
+//   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
-}
+//   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+// }
 
 const TextWrapper = styled(Text)<{ color: keyof Colors }>`
   color: ${({ color, theme }) => (theme as any)[color]};
@@ -175,60 +175,61 @@ export const TYPE = {
   }
 }
 
-export const FixedGlobalStyle = createGlobalStyle`
-html, input, textarea, button {
-  font-family: 'Inter', sans-serif;
-  font-display: fallback;
-}
-@supports (font-variation-settings: normal) {
-  html, input, textarea, button {
-    font-family: 'Inter var', sans-serif;
+// export const FixedGlobalStyle = createGlobalStyle`
+export const FixedGlobalStyle = css`
+  html,
+  input,
+  textarea,
+  button {
+    font-family: 'Inter', sans-serif;
+    font-display: fallback;
   }
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-
- a {
-   color: ${colors(false).blue1}; 
- }
-
-* {
-  box-sizing: border-box;
-}
-
-button {
-  user-select: none;
-}
-
-html {
-  font-size: 16px;
-  font-variant: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
-  
-}
+  @supports (font-variation-settings: normal) {
+    html,
+    input,
+    textarea,
+    button {
+      font-family: 'Inter var', sans-serif;
+    }
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    color: ${colors(false).blue1};
+  }
+  * {
+    box-sizing: border-box;
+  }
+  button {
+    user-select: none;
+  }
+  html {
+    font-size: 16px;
+    font-variant: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
+  }
 `
 
-export const ThemedGlobalStyle = createGlobalStyle`
-html {
-  color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme }) => theme.bg2};
-}
-
-body {
-  min-height: 100vh;
-  background-position: 0 -30vh;
-  background-repeat: no-repeat;
-  background-image: ${({ theme }) =>
-    `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
-      1,
-      theme.bg1
-    )} 100%)`};
-}
+// export const ThemedGlobalStyle = createGlobalStyle`
+export const ThemedGlobalStyle = css`
+  html {
+    color: ${({ theme }) => theme.text1};
+    background-color: ${({ theme }) => theme.bg2};
+  }
+  body {
+    min-height: 100vh;
+    background-position: 0 -30vh;
+    background-repeat: no-repeat;
+    background-image: ${({ theme }) =>
+      `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
+        1,
+        theme.bg1
+      )} 100%)`};
+  }
 `

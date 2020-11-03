@@ -14,7 +14,7 @@ import {
 } from '../../state/application/hooks'
 
 import { useUserHasAvailableClaim, useUserUnclaimedAmount } from '../../state/claim/hooks'
-import { TYPE } from '../../theme'
+import { TYPE } from 'theme'
 import { AutoColumn } from '../Column'
 import { CardBGImage, CardNoise } from '../earn/styled'
 
