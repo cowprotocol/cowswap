@@ -1,11 +1,16 @@
 name: Tests
 on:
-  push
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
-  unit-tests:
-    name: Unit tests
-    runs-on: ubuntu-latest
+  integration-tests:
+    name: Integration tests
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -26,5 +31,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install --frozen-lockfile
-      - run: yarn test
-
+      - run: yarn cypress install
+      - run: yarn build
+        env:
+          CI: false
+          REACT_APP_NETWORK_URL: "https://mainnet.infura.io/v3/4bf032f2d38a4ed6bb975b80d6340847"
+      - run: yarn integration-test

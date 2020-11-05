@@ -10,7 +10,8 @@ describe('Landing Page', () => {
     cy.url().should('include', '/swap')
   })
 
-  it('allows navigation to pool', () => {
+  // we modified HeaderMod
+  it.skip('allows navigation to pool', () => {
     cy.get('#pool-nav-link').click()
     cy.url().should('include', '/pool')
   })
