@@ -29,7 +29,7 @@ deploy:
     on:
       branch: develop
 
-    # Staging environment
+  # Staging environment
   - provider: s3
     bucket: $STAGING_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
@@ -40,7 +40,7 @@ deploy:
     on:
       branch: master
 
-    # Prepare production deployment
+  # Prepare production deployment
   - provider: s3
     bucket: $STAGING_BUCKET_NAME
     secret_access_key: $AWS_SECRET_ACCESS_KEY
@@ -50,6 +50,7 @@ deploy:
     upload-dir: releases/$TRAVIS_TAG
     on:
       tags: true
+
   - provider: script
     script: ./travis/prepare_production_deployment.sh
     on:
