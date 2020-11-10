@@ -25,7 +25,23 @@ function publish_pull_request_urls_in_github {
   # Done so because every PR is an issue, and the issues api allows to post general comments,
   # while the PR api requires that comments are made to specific files and specific commits
   GITHUB_PR_COMMENTS=https://api.github.com/repos/${TRAVIS_REPO_SLUG}/issues/${TRAVIS_PULL_REQUEST}/comments
-  curl -H "Authorization: token ${GITHUB_API_TOKEN}" --request POST ${GITHUB_PR_COMMENTS} --data '{"body":"Travis automatic deployment:\r\n '${REVIEW_FEATURE_URL}' \r\n"}'
+  PREDICATE='gnosis-info'
+
+  # Check GITHUB_PR_COMMENTS if `gnosis-info` exists
+  # If present, do nothing as we want to reduce noise
+  # Else, comment URL
+  IS_COMMENT_PRESENT=$(curl -s -H "Authorization: token ${GITHUB_GNOSIS_INFO_API_TOKEN}" $GITHUB_PR_COMMENTS | grep -q "\"login\":\s*\"$PREDICATE\"" && echo "true" || echo "false")
+  if [ "$IS_COMMENT_PRESENT" = "true" ]
+  then
+    echo "PRaul already active - skipping"
+  else
+    REVIEW_FEATURE_MESSAGE="\
+{\"body\": \"Travis automatic deployment:\\n \
+  * **🎩 [Dapp]($REVIEW_FEATURE_URL)**: Testing web app\""
+
+    echo "PRaul not detected, commenting URL to repo"
+    curl -H "Authorization: token ${GITHUB_GNOSIS_INFO_API_TOKEN}" --request POST ${GITHUB_PR_COMMENTS} --data "$REVIEW_FEATURE_MESSAGE"
+  fi
 }
 
 # Only:
