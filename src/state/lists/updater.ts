@@ -6,7 +6,7 @@ import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { addPopup } from '../application/actions'
-import { AppDispatch, AppState } from '../index'
+import { AppDispatch, AppState } from 'state'
 import { acceptListUpdate } from './actions'
 
 export default function Updater(): null {

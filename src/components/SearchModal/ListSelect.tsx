@@ -10,7 +10,7 @@ import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 
 import useToggle from '../../hooks/useToggle'
-import { AppDispatch, AppState } from '../../state'
+import { AppDispatch, AppState } from 'state'
 import { acceptListUpdate, removeList, selectList } from '../../state/lists/actions'
 import { useSelectedListUrl } from '../../state/lists/hooks'
 import { CloseIcon, ExternalLink, LinkStyledButton, TYPE } from 'theme'

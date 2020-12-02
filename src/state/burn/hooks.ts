@@ -6,7 +6,7 @@ import { useTotalSupply } from '../../data/TotalSupply'
 
 import { useActiveWeb3React } from '../../hooks'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
-import { AppDispatch, AppState } from '../index'
+import { AppDispatch, AppState } from 'state'
 import { tryParseAmount } from '../swap/hooks'
 import { useTokenBalances } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
