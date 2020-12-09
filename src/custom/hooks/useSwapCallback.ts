@@ -8,10 +8,10 @@ import useENS from '@src/hooks/useENS'
 import { useMemo } from 'react'
 import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
 import { BigNumber } from 'ethers'
-import { useAddPendingOrder } from '../state/operator/hooks'
-import { AddPendingOrderParams, OrderCreation, OrderID, OrderKind, OrderStatus } from '../state/operator/actions'
 import { isAddress, shortenAddress } from '@src/utils'
-import { delay } from '../utils/misc'
+import { AddPendingOrderParams, OrderCreation, OrderID, OrderKind, OrderStatus } from 'state/orders/actions'
+import { useAddPendingOrder } from 'state/orders/hooks'
+import { delay } from 'utils/misc'
 
 interface PostOrderParams {
   account: string
@@ -112,9 +112,9 @@ async function postOrder(params: PostOrderParams): Promise<string> {
       ...unsignedOrder,
       creationTime,
       signature,
-      status: OrderStatus.PENDING
+      status: OrderStatus.PENDING,
+      summary
     }
-    //summary
   })
 
   console.log('[useSwapCallback] TODO: Add summary also to new pendingOrder', summary)
