@@ -26,7 +26,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
-import { useSwapCallback } from '../../hooks/useSwapCallback'
+import { useSwapCallback } from 'hooks/useSwapCallback'
 import useToggledVersion, { DEFAULT_VERSION, Version } from '../../hooks/useToggledVersion'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
@@ -53,7 +53,9 @@ export default function Swap() {
     useCurrency(loadedUrlParams?.inputCurrencyId),
     useCurrency(loadedUrlParams?.outputCurrencyId)
   ]
-  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
+  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(
+    process.env.REACT_APP_DISABLE_TOKEN_WARNING === 'true'
+  )
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c instanceof Token) ?? [],
     [loadedInputCurrency, loadedOutputCurrency]
