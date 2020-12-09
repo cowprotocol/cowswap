@@ -13,6 +13,7 @@ import burn from '@src/state/burn/reducer'
 import multicall from '@src/state/multicall/reducer'
 // CUSTOM REDUCERS
 import operator from './operator/reducer'
+import orders from './orders/reducer'
 
 const UNISWAP_REDUCERS = {
   application,
@@ -25,12 +26,13 @@ const UNISWAP_REDUCERS = {
   lists
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'orders']
 
 const store = configureStore({
   reducer: {
     ...UNISWAP_REDUCERS,
-    operator
+    operator,
+    orders
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS })
