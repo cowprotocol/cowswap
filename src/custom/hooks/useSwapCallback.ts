@@ -7,15 +7,17 @@ import { useActiveWeb3React } from '@src/hooks'
 import useENS from '@src/hooks/useENS'
 import { useMemo } from 'react'
 import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
-import { BigNumber } from 'ethers'
+import { BigNumber, Signer } from 'ethers'
 import { isAddress, shortenAddress } from '@src/utils'
-import { AddPendingOrderParams, OrderCreation, OrderID, OrderKind, OrderStatus } from 'state/orders/actions'
+import { AddPendingOrderParams, OrderCreation, OrderID, OrderStatus } from 'state/orders/actions'
 import { useAddPendingOrder } from 'state/orders/hooks'
 import { delay } from 'utils/misc'
+import { ORDER_KIND_BUY, ORDER_KIND_SELL, signOrder, UnsignedOrder } from 'utils/signatures'
 
 interface PostOrderParams {
   account: string
   chainId: ChainId
+  signer: Signer
   trade: Trade
   validTo: number
   recipient: string
@@ -26,9 +28,7 @@ interface PostOrderParams {
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 const DEFAULT_APP_ID = 0
 
-type UnsignedOrder = Omit<OrderCreation, 'signature'>
-
-function getSummary(params: PostOrderParams): string {
+function _getSummary(params: PostOrderParams): string {
   const { trade, account, recipient, recipientAddressOrName } = params
 
   const inputSymbol = trade.inputAmount.currency.symbol
@@ -50,21 +50,15 @@ function getSummary(params: PostOrderParams): string {
   }
 }
 
-function signOrder(unsignedOrder: UnsignedOrder): string {
-  console.log('TODO: Sign order', unsignedOrder)
-  // TODO: Mocked, next PR
-  return '0xd6741f8031e7a7ea70f1b6c14a71e9d0d7d5aae54c157d8368ad4cabd7279a363955fa169a634469da01010bfefbacc2c1e2e7aaeb0c42049192e6359ed572281b'
-}
-
-async function postOrderApi(params: PostOrderParams, signature: string): Promise<OrderID> {
-  const { inputAmount } = params.trade
+async function _postOrderApi(order: OrderCreation): Promise<OrderID> {
+  const { sellAmount, signature } = order
   // TODO: Pretend we call the API
-  console.log('TODO: call API and include the signature', signature)
+  console.log('TODO: call API and include the signature', signature, order)
 
   // Fake a delay
   await delay(3000)
 
-  if (inputAmount.toExact() === '0.1') {
+  if (sellAmount === '100000000000000000') {
     // Force error for testing
     console.log('[useSwapCallback] Ups, we had a small issue!')
     throw new Error('Mock error: The flux capacitor melted')
@@ -75,8 +69,8 @@ async function postOrderApi(params: PostOrderParams, signature: string): Promise
   }
 }
 
-async function postOrder(params: PostOrderParams): Promise<string> {
-  const { addPendingOrder, chainId, trade, validTo, account } = params
+async function _postOrder(params: PostOrderParams): Promise<string> {
+  const { addPendingOrder, chainId, trade, validTo, account, signer } = params
   const { inputAmount, outputAmount } = trade
 
   const path = trade.route.path
@@ -84,7 +78,7 @@ async function postOrder(params: PostOrderParams): Promise<string> {
   const buyToken = path[path.length - 1]
 
   // Prepare order
-  const summary = getSummary(params)
+  const summary = _getSummary(params)
   const unsignedOrder: UnsignedOrder = {
     sellToken: selToken.address,
     buyToken: buyToken.address,
@@ -93,23 +87,32 @@ async function postOrder(params: PostOrderParams): Promise<string> {
     validTo,
     appData: DEFAULT_APP_ID, // TODO: Add appData by env var
     feeAmount: '0', // TODO: Get fee
-    orderType: trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+    kind: trade.tradeType === TradeType.EXACT_INPUT ? ORDER_KIND_SELL : ORDER_KIND_BUY,
+    // orderType: trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
     partiallyFillable: false // Always fill or kill
   }
-  const signature = signOrder(unsignedOrder)
+
+  const signature = await signOrder({
+    chainId,
+    signer,
+    order: unsignedOrder
+  })
   const creationTime = new Date().toISOString()
 
   // Call API
-  const orderId = await postOrderApi(params, signature)
+  const orderId = await _postOrderApi({
+    ...unsignedOrder,
+    signature
+  })
 
   // Update the state
   addPendingOrder({
     chainId,
     id: orderId,
     order: {
+      ...unsignedOrder,
       id: orderId,
       owner: account,
-      ...unsignedOrder,
       creationTime,
       signature,
       status: OrderStatus.PENDING,
@@ -130,6 +133,7 @@ export function useSwapCallback(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
+
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
@@ -175,14 +179,15 @@ export function useSwapCallback(
             chainId
           }
         )
-        return postOrder({
+        return _postOrder({
           account,
           chainId,
           trade,
           validTo,
           recipient,
           recipientAddressOrName,
-          addPendingOrder
+          addPendingOrder,
+          signer: library.getSigner()
         })
       },
       error: null

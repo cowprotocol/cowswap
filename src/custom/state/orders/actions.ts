@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
+import { UnsignedOrder } from '@src/custom/utils/signatures'
 import { ChainId } from '@uniswap/sdk'
 
 export enum OrderKind {
@@ -9,16 +10,8 @@ export enum OrderKind {
 // posted to /api/v1/orders on Order creation
 // serializable, so no BigNumbers
 //  See https://protocol-rinkeby.dev.gnosisdev.com/api/
-export interface OrderCreation {
-  sellToken: string // address, without '0x' prefix
-  buyToken: string // address, without '0x' prefix
-  sellAmount: string // in atoms
-  buyAmount: string // in atoms
-  validTo: number // uint32. unix timestamp, seconds, use new Date(validTo * 1000)
-  appData: number // arbitrary identifier sent along with the order
-  feeAmount: string // in atoms
-  orderType: OrderKind
-  partiallyFillable: boolean
+export interface OrderCreation extends UnsignedOrder {
+  // TODO: I commented this because I expect the API and contract to follow the same structure for the order data. confirm and delete this comment
   signature: string // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
 }
 
