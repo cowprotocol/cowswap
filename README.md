@@ -1,4 +1,4 @@
-# OBA Swap
+# Gnosis Protocol Webapp
 
 [![Lint](https://github.com/gnosis/dex-swap/workflows/Lint/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ALint)
 [![Tests](https://github.com/gnosis/dex-swap/workflows/Tests/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ATests)
@@ -9,6 +9,10 @@ An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for d
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
 - Discord: [Uniswap](https://chat.gnosis.io)
+
+Please see the:
+* [Gnosis Protocol: Smart contracts](https://github.com/gnosis/gp-v2-contracts)
+* [Gnosis Protocol: Services](https://github.com/gnosis/gp-v2-services)
 
 ## Development
 
