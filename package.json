@@ -1,8 +1,9 @@
 {
-  "name": "@uniswap/interface",
-  "description": "Uniswap Interface",
+  "name": "@gnosis/gp-v2-ui",
+  "description": "Gnosis Protocol v2 Webapp",
   "homepage": ".",
   "private": true,
+  "version": "0.1.0",
   "devDependencies": {
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.0.1",
