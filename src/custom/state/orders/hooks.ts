@@ -3,9 +3,10 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
-import { addPendingOrder, removeOrder, clearOrders, fulfillOrder, Order, OrderID } from './actions'
+import { addPendingOrder, removeOrder, clearOrders, fulfillOrder, Order } from './actions'
 import { OrdersState, PartialOrdersMap } from './reducer'
 import { isTruthy } from 'utils/misc'
+import { OrderID } from 'utils/operator'
 
 interface AddPendingOrderParams extends GetRemoveOrderParams {
   order: Order

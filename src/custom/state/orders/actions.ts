@@ -1,19 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
-import { UnsignedOrder } from '@src/custom/utils/signatures'
+import { OrderID } from 'utils/operator'
+import { OrderCreation } from 'utils/signatures'
 import { ChainId } from '@uniswap/sdk'
-
-export enum OrderKind {
-  SELL = 'sell',
-  BUY = 'buy'
-}
-
-// posted to /api/v1/orders on Order creation
-// serializable, so no BigNumbers
-//  See https://protocol-rinkeby.dev.gnosisdev.com/api/
-export interface OrderCreation extends UnsignedOrder {
-  // TODO: I commented this because I expect the API and contract to follow the same structure for the order data. confirm and delete this comment
-  signature: string // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
-}
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -35,12 +23,6 @@ export interface OrderFromApi extends OrderCreation {
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   owner: string // address, without '0x' prefix
 }
-
-/**
- * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
-   where orderDigest = keccak256(orderStruct). bytes32.
- */
-export type OrderID = string
 
 export interface AddPendingOrderParams {
   id: OrderID

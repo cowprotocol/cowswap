@@ -9,10 +9,10 @@ import { useMemo } from 'react'
 import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
 import { BigNumber, Signer } from 'ethers'
 import { isAddress, shortenAddress } from '@src/utils'
-import { AddPendingOrderParams, OrderCreation, OrderID, OrderStatus } from 'state/orders/actions'
+import { AddPendingOrderParams, OrderStatus } from 'state/orders/actions'
 import { useAddPendingOrder } from 'state/orders/hooks'
-import { delay } from 'utils/misc'
 import { ORDER_KIND_BUY, ORDER_KIND_SELL, signOrder, UnsignedOrder } from 'utils/signatures'
+import { postSignedOrder } from '../utils/operator'
 
 interface PostOrderParams {
   account: string
@@ -50,25 +50,6 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-async function _postOrderApi(order: OrderCreation): Promise<OrderID> {
-  const { sellAmount, signature } = order
-  // TODO: Pretend we call the API
-  console.log('TODO: call API and include the signature', signature, order)
-
-  // Fake a delay
-  await delay(3000)
-
-  if (sellAmount === '100000000000000000') {
-    // Force error for testing
-    console.log('[useSwapCallback] Ups, we had a small issue!')
-    throw new Error('Mock error: The flux capacitor melted')
-  } else {
-    // Pretend all went OK
-    console.log('[useSwapCallback] Traded successfully!')
-    return '123456789'
-  }
-}
-
 async function _postOrder(params: PostOrderParams): Promise<string> {
   const { addPendingOrder, chainId, trade, validTo, account, signer } = params
   const { inputAmount, outputAmount } = trade
@@ -88,7 +69,6 @@ async function _postOrder(params: PostOrderParams): Promise<string> {
     appData: DEFAULT_APP_ID, // TODO: Add appData by env var
     feeAmount: '0', // TODO: Get fee
     kind: trade.tradeType === TradeType.EXACT_INPUT ? ORDER_KIND_SELL : ORDER_KIND_BUY,
-    // orderType: trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
     partiallyFillable: false // Always fill or kill
   }
 
@@ -100,9 +80,12 @@ async function _postOrder(params: PostOrderParams): Promise<string> {
   const creationTime = new Date().toISOString()
 
   // Call API
-  const orderId = await _postOrderApi({
-    ...unsignedOrder,
-    signature
+  const orderId = await postSignedOrder({
+    chainId,
+    order: {
+      ...unsignedOrder,
+      signature
+    }
   })
 
   // Update the state
