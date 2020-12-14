@@ -12,7 +12,8 @@ import { isAddress, shortenAddress } from '@src/utils'
 import { AddPendingOrderParams, OrderStatus } from 'state/orders/actions'
 import { useAddPendingOrder } from 'state/orders/hooks'
 import { ORDER_KIND_BUY, ORDER_KIND_SELL, signOrder, UnsignedOrder } from 'utils/signatures'
-import { postSignedOrder } from '../utils/operator'
+import { getFeeQuote as getFeeInformation, postSignedOrder } from 'utils/operator'
+import { getFeeAmount } from 'utils/fee'
 
 interface PostOrderParams {
   account: string
@@ -55,19 +56,31 @@ async function _postOrder(params: PostOrderParams): Promise<string> {
   const { inputAmount, outputAmount } = trade
 
   const path = trade.route.path
-  const selToken = path[0]
+  const sellToken = path[0]
   const buyToken = path[path.length - 1]
+  const sellAmount = inputAmount.raw.toString(10)
+  const buyAmount = outputAmount.raw.toString(10)
+
+  // TODO: This might disappear, and just take the state from the state after the fees PRs are merged
+  //  we assume, the solvers will try to satisfy the price, and this fee is just a minimal fee.
+  // Get Fee
+  const { feeRatio, minimalFee } = await getFeeInformation(chainId, sellToken.address)
+  const feeAmount = getFeeAmount({
+    amount: sellAmount,
+    feeRatio,
+    minimalFee
+  })
 
   // Prepare order
   const summary = _getSummary(params)
   const unsignedOrder: UnsignedOrder = {
-    sellToken: selToken.address,
+    sellToken: sellToken.address,
     buyToken: buyToken.address,
-    sellAmount: inputAmount.raw.toString(10),
-    buyAmount: outputAmount.raw.toString(10),
+    sellAmount,
+    buyAmount,
     validTo,
     appData: DEFAULT_APP_ID, // TODO: Add appData by env var
-    feeAmount: '0', // TODO: Get fee
+    feeAmount,
     kind: trade.tradeType === TradeType.EXACT_INPUT ? ORDER_KIND_SELL : ORDER_KIND_BUY,
     partiallyFillable: false // Always fill or kill
   }
