@@ -4,7 +4,7 @@ describe('Fee calculation', () => {
   describe('No amount, no variable fee', () => {
     it('No fees neither, feeAmount = 0', () => {
       const given: GetFeeAmount = {
-        amount: '0',
+        sellAmount: '0',
         minimalFee: '0',
         feeRatio: 0
       }
@@ -14,7 +14,7 @@ describe('Fee calculation', () => {
 
     it('With feeRatio, feeAmount still 0', () => {
       const given: GetFeeAmount = {
-        amount: '0',
+        sellAmount: '0',
         minimalFee: '0',
         feeRatio: 10
       }
@@ -24,7 +24,7 @@ describe('Fee calculation', () => {
 
     it('With minimal fee, feeAmount is equal to the minimal fee', () => {
       const given: GetFeeAmount = {
-        amount: '0',
+        sellAmount: '0',
         minimalFee: '1',
         feeRatio: 0
       }
@@ -34,7 +34,7 @@ describe('Fee calculation', () => {
 
     it('With feeRatio and minimal fee, feeAmount is equal to the minimal fee', () => {
       const given: GetFeeAmount = {
-        amount: '0',
+        sellAmount: '0',
         minimalFee: '1',
         feeRatio: 10
       }
@@ -46,7 +46,7 @@ describe('Fee calculation', () => {
   describe('With amount', () => {
     it('No fees neither, feeAmount = 0', () => {
       const given: GetFeeAmount = {
-        amount: '1000000',
+        sellAmount: '1000000',
         minimalFee: '0',
         feeRatio: 0
       }
@@ -56,7 +56,7 @@ describe('Fee calculation', () => {
 
     it('With feeRatio, feeAmount is defined by the volume and fee ratio', () => {
       const given: GetFeeAmount = {
-        amount: '1000000', // 1M
+        sellAmount: '1000000', // 1M
         minimalFee: '0',
         feeRatio: 10 // 0.1%
       }
@@ -66,7 +66,7 @@ describe('Fee calculation', () => {
 
     it('With feeRatio and a small minimalFee, feeAmount is defined by the volume and fee ratio', () => {
       const given: GetFeeAmount = {
-        amount: '1000000', // 1M
+        sellAmount: '1000000', // 1M
         minimalFee: '500', // 0.5K
         feeRatio: 10 // 0.1%
       }
@@ -76,7 +76,7 @@ describe('Fee calculation', () => {
 
     it('With feeRatio and a big minimalFee, feeAmount is defined by the volume and fee ratio', () => {
       const given: GetFeeAmount = {
-        amount: '1000000', // 1M
+        sellAmount: '1000000', // 1M
         minimalFee: '1500', // 1.5K
         feeRatio: 10 // 0.1%
       }

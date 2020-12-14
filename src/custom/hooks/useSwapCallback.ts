@@ -66,7 +66,7 @@ async function _postOrder(params: PostOrderParams): Promise<string> {
   // Get Fee
   const { feeRatio, minimalFee } = await getFeeInformation(chainId, sellToken.address)
   const feeAmount = getFeeAmount({
-    amount: sellAmount,
+    sellAmount: sellAmount,
     feeRatio,
     minimalFee
   })
