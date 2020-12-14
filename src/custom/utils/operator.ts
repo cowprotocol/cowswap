@@ -148,7 +148,7 @@ export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promi
   // TODO: Let see if we can incorporate the PRs from the Fee, where they cache stuff and keep it in sync using redux.
   // if that part is delayed or need more review, we can easily add the cache in this file (we check expiration and cache here)
 
-  const response = await _get(chainId, `/fee/${tokenAddress}`)
+  const response = await _get(chainId, `/tokens/${tokenAddress}/fee`)
 
   if (!response.ok) {
     throw new Error('Error getting the fee')
