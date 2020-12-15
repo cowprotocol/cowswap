@@ -1,5 +1,8 @@
 import { ChainId } from '@uniswap/sdk'
 
+// TODO: Load app Id
+export const APP_ID = 0
+
 // TODO: The addresses will be exported as plain JSON file in the future
 
 // reexport all Uniswap constants everything
