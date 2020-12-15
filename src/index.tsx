@@ -15,6 +15,9 @@ import ListsUpdater from './state/lists/updater'
 import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
+// import { EventUpdater } from 'state/orders/updater'
+import { ExpiredOrdersWatcher } from 'state/orders/updater'
+import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from './utils/getLibrary'
 
@@ -49,6 +52,8 @@ function Updaters() {
       <ApplicationUpdater />
       <TransactionUpdater />
       <MulticallUpdater />
+      <EventUpdater />
+      <ExpiredOrdersWatcher />
     </>
   )
 }

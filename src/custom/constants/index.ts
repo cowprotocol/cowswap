@@ -1,7 +1,6 @@
 import { ChainId } from '@uniswap/sdk'
 
 // TODO: The addresses will be exported as plain JSON file in the future
-import { allowanceManagerAddress } from '@gnosis.pm/gp-v2-contracts'
 
 // reexport all Uniswap constants everything
 export * from '@src/constants/index'
@@ -14,7 +13,7 @@ export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<ChainId, string>> = 
 }
 
 export const GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS: Partial<Record<ChainId, string>> = {
-  [ChainId.MAINNET]: allowanceManagerAddress(GP_SETTLEMENT_CONTRACT_ADDRESS[ChainId.MAINNET] as string),
-  [ChainId.RINKEBY]: allowanceManagerAddress(GP_SETTLEMENT_CONTRACT_ADDRESS[ChainId.RINKEBY] as string)
+  // [ChainId.MAINNET]: ,
+  [ChainId.RINKEBY]: '0x31658E2405Ea55446Ec2271AAD661E706DEeFB33'
   // TODO: extend chainId for adding xDAI
 }

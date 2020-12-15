@@ -1652,11 +1652,9 @@
     "@ethersproject/strings" "^5.0.4"
 
 "@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.1":
-  version "0.0.1-alpha.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.1.tgz#6f18b76c410581fa6465f8f8aa558a68a1aa0e10"
-  integrity sha512-o5URTHAodSalKlHVz5Z+QanMgHzoiZf6t2C0GlTXXY/1KvmrEkimgQTNwWx4X+e7BVea4srXDUmw14r/86JJEg==
-  dependencies:
-    ethers "^5.0.23"
+  version "0.0.1-alpha.7"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.7.tgz#84deaabe8b4136663df26e2dee6ad02d899ab997"
+  integrity sha512-HLOreTcT+fWrcw5zjyPVhRt5xoai6nvfRLLEnPhBWdbRPgEDKpHQLlXmI+29qkD1FAjngWf1ypzIio0gH/FGvg==
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -7086,7 +7084,7 @@ ethereumjs-vm@^2.1.0, ethereumjs-vm@^2.3.4, ethereumjs-vm@^2.6.0:
     rustbn.js "~0.2.0"
     safe-buffer "^5.1.1"
 
-ethers@^5.0.0, ethers@^5.0.23, ethers@^5.0.7:
+ethers@^5.0.0, ethers@^5.0.7:
   version "5.0.24"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.0.24.tgz#fbb8e4d35070d134f2eb846c07500b8c0eaef6d3"
   integrity sha512-77CEtVC88fJGEhxGXRvQqAEH6e2A+ZFiv2FBT6ikXndlty5sw6vMatAhg1v+w3CaaGZOf1CP81jl4Mc8Zrj08A==
