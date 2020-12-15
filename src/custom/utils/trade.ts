@@ -1,4 +1,4 @@
-import { ChainId, Trade, TradeType } from '@uniswap/sdk'
+import { ChainId, CurrencyAmount, Token } from '@uniswap/sdk'
 import { isAddress, shortenAddress } from '@src/utils'
 import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/actions'
 
@@ -12,7 +12,11 @@ export interface PostOrderParams {
   account: string
   chainId: ChainId
   signer: Signer
-  trade: Trade
+  kind: OrderKind
+  inputAmount: CurrencyAmount
+  outputAmount: CurrencyAmount
+  sellToken: Token
+  buyToken: Token
   validTo: number
   recipient: string
   recipientAddressOrName: string | null
@@ -20,14 +24,14 @@ export interface PostOrderParams {
 }
 
 function _getSummary(params: PostOrderParams): string {
-  const { trade, account, recipient, recipientAddressOrName } = params
+  const { inputAmount, outputAmount, account, recipient, recipientAddressOrName } = params
 
-  const inputSymbol = trade.inputAmount.currency.symbol
-  const outputSymbol = trade.outputAmount.currency.symbol
-  const inputAmount = trade.inputAmount.toSignificant(3)
-  const outputAmount = trade.outputAmount.toSignificant(3)
+  const inputSymbol = inputAmount.currency.symbol
+  const outputSymbol = outputAmount.currency.symbol
+  const inputAmountValue = inputAmount.toSignificant(3)
+  const outputAmountValue = outputAmount.toSignificant(3)
 
-  const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+  const base = `Swap ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base
@@ -42,12 +46,19 @@ function _getSummary(params: PostOrderParams): string {
 }
 
 export async function postOrder(params: PostOrderParams): Promise<string> {
-  const { addPendingOrder, chainId, trade, validTo, account, signer } = params
-  const { inputAmount, outputAmount } = trade
+  const {
+    kind,
+    addPendingOrder,
+    chainId,
+    inputAmount,
+    outputAmount,
+    sellToken,
+    buyToken,
+    validTo,
+    account,
+    signer
+  } = params
 
-  const path = trade.route.path
-  const sellToken = path[0]
-  const buyToken = path[path.length - 1]
   const sellAmount = inputAmount.raw.toString(10)
   const buyAmount = outputAmount.raw.toString(10)
 
@@ -71,7 +82,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     validTo,
     appData: APP_ID, // TODO: Add appData by env var
     feeAmount,
-    kind: trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+    kind,
     partiallyFillable: false // Always fill or kill
   }
 
@@ -105,8 +116,6 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       summary
     }
   })
-
-  console.log('[useSwapCallback] TODO: Add summary also to new pendingOrder', summary)
 
   return orderId
 }

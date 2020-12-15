@@ -2,7 +2,7 @@ import { SwapCallbackState } from '@src/hooks/useSwapCallback'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
 
 // import { useSwapCallback as useSwapCallbackUniswap } from '@src/hooks/useSwapCallback'
-import { Percent, Trade } from '@uniswap/sdk'
+import { Percent, Trade, TradeType } from '@uniswap/sdk'
 import { useActiveWeb3React } from '@src/hooks'
 import useENS from '@src/hooks/useENS'
 import { useMemo } from 'react'
@@ -11,6 +11,8 @@ import { BigNumber } from 'ethers'
 
 import { useAddPendingOrder } from 'state/orders/hooks'
 import { postOrder } from '../utils/trade'
+import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
+import { OrderKind } from '../utils/signatures'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -28,9 +30,10 @@ export function useSwapCallback(
 
   const validTo = useTransactionDeadline()?.toNumber() || MAX_VALID_TO_EPOCH
   const addPendingOrder = useAddPendingOrder()
+  const { INPUT: inputAmount, OUTPUT: outputAmount } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
   return useMemo(() => {
-    if (!trade || !library || !account || !chainId) {
+    if (!trade || !library || !account || !chainId || !inputAmount || !outputAmount) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
@@ -44,20 +47,34 @@ export function useSwapCallback(
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
-        const { executionPrice, inputAmount, nextMidPrice, outputAmount, priceImpact, route, tradeType } = trade
+        const {
+          executionPrice,
+          inputAmount: expectedInputAmount,
+          nextMidPrice,
+          outputAmount: expectedOutputAmount,
+          priceImpact,
+          route,
+          tradeType
+        } = trade
+        const path = route.path
+        const sellToken = path[0]
+        const buyToken = path[path.length - 1]
 
         const slippagePercent = new Percent(allowedSlippage.toString(10), '10000')
         const routeDescription = route.path.map(token => token.symbol || token.name || token.address).join(' → ')
+        const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
 
         console.log(
           `[useSwapCallback] Trading ${routeDescription}. Input = ${inputAmount.toExact()}, Output = ${outputAmount.toExact()}, Price = ${executionPrice.toFixed()}, Details: `,
           {
-            inputAmount: inputAmount.toExact(),
-            outputAmount: outputAmount.toExact(),
+            expectedInputAmount: expectedInputAmount.toExact(),
+            expectedOutputAmount: expectedOutputAmount.toExact(),
+            inputAmountEstimated: inputAmount.toExact(),
+            outputAmountEstimated: outputAmount.toExact(),
             executionPrice: executionPrice.toFixed(),
+            sellToken,
+            buyToken,
             validTo,
-            maximumAmountIn: trade.maximumAmountIn(slippagePercent).toExact(),
-            minimumAmountOut: trade.minimumAmountOut(slippagePercent).toExact(),
             nextMidPrice: nextMidPrice.toFixed(),
             priceImpact: priceImpact.toSignificant(),
             tradeType: tradeType.toString(),
@@ -69,9 +86,13 @@ export function useSwapCallback(
           }
         )
         return postOrder({
+          kind,
           account,
           chainId,
-          trade,
+          inputAmount,
+          outputAmount,
+          sellToken,
+          buyToken,
           validTo,
           recipient,
           recipientAddressOrName,
@@ -81,5 +102,17 @@ export function useSwapCallback(
       },
       error: null
     }
-  }, [trade, library, account, chainId, recipient, allowedSlippage, recipientAddressOrName, addPendingOrder, validTo])
+  }, [
+    trade,
+    library,
+    account,
+    chainId,
+    recipient,
+    allowedSlippage,
+    recipientAddressOrName,
+    addPendingOrder,
+    validTo,
+    inputAmount,
+    outputAmount
+  ])
 }
