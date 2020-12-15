@@ -8,7 +8,7 @@ An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for d
 
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
-- Discord: [Uniswap](https://chat.gnosis.io)
+- Discord: [chat.gnosis.io](https://chat.gnosis.io)
 
 Please see the:
 * [Gnosis Protocol: Smart contracts](https://github.com/gnosis/gp-v2-contracts)
@@ -35,3 +35,4 @@ To have the interface default to a different network when a wallet is not connec
 1. Make a copy of `.env` named `.env.local`
 2. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`
 3. Change `REACT_APP_NETWORK_URL` to e.g. `"https://{YOUR_NETWORK_ID}.infura.io/v3/{YOUR_INFURA_KEY}"` 
+3. Change `REACT_APP_ID` Ask for your id in [chat.gnosis.io](https://chat.gnosis.io)

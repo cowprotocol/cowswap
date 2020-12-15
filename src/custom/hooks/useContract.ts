@@ -5,7 +5,7 @@ import { useContract } from '@src/hooks/useContract'
 export * from '@src/hooks/useContract'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
-import { GP_V2_SETTLEMENT_INTERFACE } from '../constants/GPv2Settlement'
+import { GP_V2_SETTLEMENT_INTERFACE } from 'constants/GPv2Settlement'
 
 export function useGP2SettlementContract(): Contract | null {
   const { chainId } = useActiveWeb3React()

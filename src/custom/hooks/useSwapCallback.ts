@@ -10,9 +10,9 @@ import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
 import { BigNumber } from 'ethers'
 
 import { useAddPendingOrder } from 'state/orders/hooks'
-import { postOrder } from '../utils/trade'
+import { postOrder } from 'utils/trade'
 import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
-import { OrderKind } from '../utils/signatures'
+import { OrderKind } from 'utils/signatures'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 

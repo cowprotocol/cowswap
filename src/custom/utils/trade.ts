@@ -80,7 +80,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     sellAmount,
     buyAmount,
     validTo,
-    appData: APP_ID, // TODO: Add appData by env var
+    appData: APP_ID,
     feeAmount,
     kind,
     partiallyFillable: false // Always fill or kill

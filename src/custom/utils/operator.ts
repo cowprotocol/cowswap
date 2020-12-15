@@ -1,6 +1,7 @@
 import { ChainId } from '@uniswap/sdk'
 import { OrderCreation } from 'utils/signatures'
-import { OrderKind } from '../state/orders/actions'
+import { APP_ID } from 'constants/index'
+import { OrderKind } from 'state/orders/actions'
 
 /**
  * See Swagger documentation:
@@ -13,8 +14,8 @@ const API_BASE_URL: Partial<Record<ChainId, string>> = {
 }
 
 const DEFAULT_HEADERS = {
-  'Content-Type': 'application/json'
-  // TODO: Maybe add a custom header for the AppId (same as the signing tx)
+  'Content-Type': 'application/json',
+  'X-AppId': APP_ID.toString()
 }
 
 /**
