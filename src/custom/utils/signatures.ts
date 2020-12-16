@@ -3,6 +3,7 @@ import { ChainId } from '@uniswap/sdk'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from 'ethers'
+import { registerOnWindow } from './misc'
 
 export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 export type UnsignedOrder = Order
@@ -78,3 +79,5 @@ export async function signOrder(params: SignOrderParams): Promise<string> {
   console.log('[utils:signature] signOrder', { domain, order, signer, TYPED_DATA_SIGNING_SCHEME })
   return signOrderGp(domain, order, signer, TYPED_DATA_SIGNING_SCHEME)
 }
+
+registerOnWindow({ signature: { signOrder, getDomain: _getDomain } })

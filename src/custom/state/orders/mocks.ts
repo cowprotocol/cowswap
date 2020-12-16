@@ -7,7 +7,7 @@ import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
 import { useSelectedTokenList } from 'state/lists/hooks'
 import { useAddPopup } from '@src/state/application/hooks'
 import { TokenInfo } from '@uniswap/token-lists'
-import { registerOnWindow } from '@src/custom/utils/misc'
+import { registerOnWindow } from 'utils/misc'
 
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min

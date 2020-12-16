@@ -2,6 +2,7 @@ import { ChainId } from '@uniswap/sdk'
 import { OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { OrderKind } from 'state/orders/actions'
+import { registerOnWindow } from './misc'
 
 /**
  * See Swagger documentation:
@@ -158,3 +159,6 @@ export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promi
 
   return response.json()
 }
+
+// Register some globals for convenience
+registerOnWindow({ operator: { getFeeQuote, postSignedOrder, apiGet: _get, apiPost: _post } })
