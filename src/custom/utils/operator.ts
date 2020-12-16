@@ -144,13 +144,19 @@ export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promi
   // TODO: Let see if we can incorporate the PRs from the Fee, where they cache stuff and keep it in sync using redux.
   // if that part is delayed or need more review, we can easily add the cache in this file (we check expiration and cache here)
 
-  const response = await _get(chainId, `/tokens/${tokenAddress}/fee`)
-
-  if (!response.ok) {
-    throw new Error('Error getting the fee')
+  let response: Response | undefined
+  try {
+    const responseMaybeOk = await _get(chainId, `/tokens/${tokenAddress}/fee`)
+    response = responseMaybeOk.ok ? responseMaybeOk : undefined
+  } catch (error) {
+    // do nothing
   }
 
-  return response.json()
+  if (!response) {
+    throw new Error('Error getting the fee')
+  } else {
+    return response.json()
+  }
 }
 
 // Register some globals for convenience
