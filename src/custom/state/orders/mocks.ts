@@ -7,6 +7,7 @@ import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
 import { useSelectedTokenList } from 'state/lists/hooks'
 import { useAddPopup } from '@src/state/application/hooks'
 import { TokenInfo } from '@uniswap/token-lists'
+import { registerOnWindow } from '@src/custom/utils/misc'
 
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min
@@ -115,7 +116,7 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
         })
       })
     }
-    ;(window as any).addNOrders = addNOrders
+    registerOnWindow({ addNOrders })
 
     // don't just keep adding orders when there's already enough pending
     if (pendingOrdersRef.current.length >= minPendingOrders) return
@@ -160,7 +161,7 @@ const useFulfillOrdersRandomly = (interval = 30000 /* ms */) => {
         )
       })
     }
-    ;(window as any).fulfillRandomOrder = fulfillRandomOrder
+    registerOnWindow({ fulfillRandomOrder })
 
     const intervalId = setInterval(fulfillRandomOrder, interval)
 

@@ -9,6 +9,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { Log, Filter } from '@ethersproject/abstract-provider'
 import { useLastCheckedBlock, usePendingOrders, useExpireOrder } from './hooks'
 import { updateLastCheckedBlock } from './actions'
+import { registerOnWindow } from '@src/custom/utils/misc'
 // import { PartialOrdersMap } from './reducer'
 
 // example of event watching + decoding without contract
@@ -122,14 +123,17 @@ export function EventUpdater(): null {
 
   useEffect(() => {
     if (!chainId || !library || !getLogsRetry || !lastBlockNumber || !eventTopics) return
-    ;(window as any).getLogsRetry = (fromBlock: number, toBlock: number) => {
-      // to play around with in console
-      return getLogsRetry({
-        fromBlock,
-        toBlock,
-        topics: TransferEventTopics
-      })
-    }
+
+    registerOnWindow({
+      getLogsRetry: (fromBlock: number, toBlock: number) => {
+        // to play around with in console
+        return getLogsRetry({
+          fromBlock,
+          toBlock,
+          topics: TransferEventTopics
+        })
+      }
+    })
 
     // don't check for fromBlock > toBlock
     if (lastCheckedBlock + 1 > lastBlockNumber) return
