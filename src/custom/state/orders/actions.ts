@@ -15,8 +15,8 @@ export interface Order extends OrderCreation {
   id: OrderID // it is special :), Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // address, without '0x' prefix
   status: OrderStatus
-  fulfillmentTime?: string
-  creationTime: string
+  fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
+  creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   summary: string // for dapp use only, readable by user
 }
 
@@ -38,6 +38,20 @@ export const removeOrder = createAction<{ id: OrderID; chainId: ChainId }>('orde
 export const fulfillOrder = createAction<{ id: OrderID; chainId: ChainId; fulfillmentTime: string }>(
   'order/fulfillOrder'
 )
+
+export interface OrderFulfillmentData {
+  id: OrderID
+  fulfillmentTime: string
+}
+
+export interface FulfillOrdersBatchParams {
+  ordersData: OrderFulfillmentData[]
+  chainId: ChainId
+  lastCheckedBlock: number
+}
+
+export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
+
 export const expireOrder = createAction<{ id: OrderID; chainId: ChainId }>('order/expireOrder')
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 

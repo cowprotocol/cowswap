@@ -10,7 +10,9 @@ import {
   fulfillOrder,
   expireOrder,
   updateLastCheckedBlock,
-  Order
+  Order,
+  fulfillOrdersBatch,
+  FulfillOrdersBatchParams
 } from './actions'
 import { OrdersState, PartialOrdersMap } from './reducer'
 import { isTruthy } from 'utils/misc'
@@ -41,6 +43,7 @@ interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
 type AddOrderCallback = (addOrderParams: AddPendingOrderParams) => void
 type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
 type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
+type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
 type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
@@ -135,6 +138,14 @@ export const useAddPendingOrder = (): AddOrderCallback => {
 export const useFulfillOrder = (): FulfillOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((fulfillOrderParams: FulfillOrderParams) => dispatch(fulfillOrder(fulfillOrderParams)), [dispatch])
+}
+
+export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => dispatch(fulfillOrdersBatch(fulfillOrdersBatchParams)),
+    [dispatch]
+  )
 }
 
 export const useExpireOrder = (): ExpireOrderCallback => {
