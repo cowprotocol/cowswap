@@ -1,7 +1,6 @@
 import { ChainId } from '@uniswap/sdk'
 import { OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
-import { OrderKind } from 'state/orders/actions'
 import { registerOnWindow } from './misc'
 
 /**
@@ -123,14 +122,8 @@ export async function postSignedOrder(params: { chainId: ChainId; order: OrderCr
   const { chainId, order } = params
   console.log('[utils:operator] Post signed order for network', chainId, order)
 
-  const orderRaw: Omit<OrderCreation, 'kind'> & { kind: string } = {
-    ...order,
-    // TODO: The NPM module will use the same structure as the API soon, this is temporal code too
-    kind: order.kind === OrderKind.SELL ? 'sell' : 'buy'
-  }
-
   // Call API
-  const response = await _post(chainId, `/orders`, orderRaw)
+  const response = await _post(chainId, `/orders`, order)
 
   // Handle respose
   if (!response.ok) {

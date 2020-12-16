@@ -2,13 +2,13 @@ import { SwapCallbackState } from '@src/hooks/useSwapCallback'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
 
 // import { useSwapCallback as useSwapCallbackUniswap } from '@src/hooks/useSwapCallback'
+import { BigNumber } from 'ethers'
 import { Percent, Trade, TradeType } from '@uniswap/sdk'
+
 import { useActiveWeb3React } from '@src/hooks'
 import useENS from '@src/hooks/useENS'
 import { useMemo } from 'react'
 import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
-import { BigNumber } from 'ethers'
-
 import { useAddPendingOrder } from 'state/orders/hooks'
 import { postOrder } from 'utils/trade'
 import { computeSlippageAdjustedAmounts } from '@src/utils/prices'

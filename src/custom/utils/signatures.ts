@@ -42,24 +42,8 @@ export interface OrderCreation extends UnsignedOrder {
 //   MESSAGE = 1
 // }
 
-// /**
-//  * Order kind.
-//  */
-// export declare const enum OrderKind {
-//   /**
-//    * A sell order.
-//    */
-//   SELL = 0,
-//   /**
-//    * A buy order.
-//    */
-//   BUY = 1
-// }
-
 // TODO: For now, instead of using enums (see todo above)
 const TYPED_DATA_SIGNING_SCHEME = 0
-export const ORDER_KIND_SELL = 0
-export const ORDER_KIND_BUY = 0
 
 function _getDomain(chainId: ChainId): TypedDataDomain {
   // Get settlement contract address
