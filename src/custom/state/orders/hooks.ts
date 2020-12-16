@@ -69,6 +69,19 @@ export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
   }, [state])
 }
 
+export const useAllOrders = ({ chainId }: GetOrdersParams) => {
+  const state = useSelector<AppState, OrdersState[ChainId] | undefined>(state => chainId && state.orders?.[chainId])
+
+  return useMemo(() => {
+    if (!state) return {}
+
+    return {
+      ...state.pending,
+      ...state.fulfilled
+    }
+  }, [state])
+}
+
 export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     state => chainId && state.orders?.[chainId]?.pending

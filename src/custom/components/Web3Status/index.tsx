@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useWeb3React } from '@web3-react/core'
 import useENSName from 'hooks/useENSName'
-import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { NetworkContextName } from 'constants/index'
 
-import WalletModal from '@src/components/WalletModal'
-import { Web3StatusInner, newTransactionsFirst } from './Web3StatusMod'
+import WalletModal from 'components/WalletModal'
+import { Web3StatusInner } from './Web3StatusMod'
+import useRecentActivity from 'hooks/useRecentActivity'
 
 export default function Web3Status() {
   const { active, account } = useWeb3React()
@@ -13,15 +13,8 @@ export default function Web3Status() {
 
   const { ENSName } = useENSName(account ?? undefined)
 
-  // ---------- TODO: get tx and meta-tx
-  const allTransactions = useAllTransactions()
-  const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
-  }, [allTransactions])
-  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
-  const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
-  // ----------------------------
+  // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
+  const { pendingActivity, confirmedActivity } = useRecentActivity()
 
   if (!contextNetwork.active && !active) {
     return null
@@ -29,8 +22,12 @@ export default function Web3Status() {
 
   return (
     <>
-      <Web3StatusInner pendingCount={pending.length} />
-      <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <Web3StatusInner pendingCount={pendingActivity.length + confirmedActivity.length} />
+      <WalletModal
+        ENSName={ENSName ?? undefined}
+        pendingTransactions={pendingActivity}
+        confirmedTransactions={confirmedActivity}
+      />
     </>
   )
 }
