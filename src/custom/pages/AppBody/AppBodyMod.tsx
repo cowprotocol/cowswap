@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Version from 'components/Version'
 
 export const BodyWrapper = styled.div`
   position: relative;
@@ -16,5 +17,10 @@ export const BodyWrapper = styled.div`
  * The styled container element that wraps the content of most pages and the tabs.
  */
 export default function AppBody({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <BodyWrapper className={className}>{children}</BodyWrapper>
+  return (
+    <BodyWrapper className={className}>
+      {children}
+      <Version />
+    </BodyWrapper>
+  )
 }
