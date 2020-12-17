@@ -5,7 +5,7 @@ import { useActiveWeb3React } from 'hooks'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { TransactionDetails } from 'state/transactions/reducer'
 
-type TransactionAndOrder =
+export type TransactionAndOrder =
   | (Order & { addedTime: number })
   | (TransactionDetails & {
       id: string
@@ -15,6 +15,12 @@ type TransactionAndOrder =
 export enum ActivityType {
   ORDER = 'order',
   TX = 'tx'
+}
+
+export enum ActivityStatus {
+  PENDING,
+  CONFIRMED,
+  EXPIRED
 }
 
 enum TxReceiptStatus {
@@ -31,14 +37,6 @@ const DAY_MS = 86_400_000
  */
 function isOrderRecent(order: Order): boolean {
   return Date.now() - Date.parse(order.creationTime) < DAY_MS
-}
-
-function isPending(data: TransactionAndOrder) {
-  return data.status === OrderStatus.PENDING
-}
-
-function isFulfilled(data: TransactionAndOrder) {
-  return data.status === OrderStatus.FULFILLED
 }
 
 /**
@@ -87,22 +85,22 @@ export default function useRecentActivity() {
   return useMemo(() => {
     // Concat together the TransactionDetails[] and Orders[]
     // then sort them by newest first
-    const sortedTransactionsAndOrders = recentTransactionsAdjusted.concat(recentOrdersAdjusted).sort((a, b) => {
+    const sortedActivities = recentTransactionsAdjusted.concat(recentOrdersAdjusted).sort((a, b) => {
       return b.addedTime - a.addedTime
     })
 
-    // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)
-    const pendingActivity = sortedTransactionsAndOrders.filter(isPending).map(data => data.id)
-    const confirmedActivity = sortedTransactionsAndOrders.filter(isFulfilled).map(data => data.id)
-
-    return {
-      pendingActivity,
-      confirmedActivity
-    }
+    return sortedActivities
   }, [recentOrdersAdjusted, recentTransactionsAdjusted])
 }
 
-export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: string }) {
+interface ActivityDescriptors {
+  activity: TransactionDetails | Order
+  summary?: string
+  status: ActivityStatus
+  type: ActivityType
+}
+
+export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: string }): ActivityDescriptors | null {
   const allTransactions = useAllTransactions()
   const allOrders = useAllOrders({ chainId })
 
@@ -112,29 +110,37 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
   return useMemo(() => {
     if ((!tx && !order) || !chainId) return null
 
-    let activity: TransactionDetails | Order, summary, pending, success, type: ActivityType
+    let activity: TransactionDetails | Order, type: ActivityType
+
+    let isPending: boolean, isConfirmed: boolean
 
     if (!tx && order) {
+      // We're dealing with an ORDER
+      // setup variables accordingly...
+      isPending = order?.status === OrderStatus.PENDING
+      isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
+
       activity = order
-      summary = activity?.summary
-      pending = activity?.status === OrderStatus.PENDING
-      success = !pending && activity?.status === OrderStatus.FULFILLED
       type = ActivityType.ORDER
     } else {
+      // We're dealing with a TRANSACTION
+      // setup variables accordingly...
       const isReceiptConfirmed =
         tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+      isPending = !!tx?.receipt
+      isConfirmed = !isPending && isReceiptConfirmed
+
       activity = tx
-      summary = tx?.summary
-      pending = !tx?.receipt
-      success = !pending && isReceiptConfirmed
       type = ActivityType.TX
     }
+
+    const status = isPending ? ActivityStatus.PENDING : isConfirmed ? ActivityStatus.CONFIRMED : ActivityStatus.EXPIRED
+    const summary = activity.summary
 
     return {
       activity,
       summary,
-      pending,
-      success,
+      status,
       type
     }
   }, [chainId, order, tx])
