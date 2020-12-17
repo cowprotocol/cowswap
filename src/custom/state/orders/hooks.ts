@@ -1,5 +1,5 @@
 import { ChainId } from '@uniswap/sdk'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
@@ -48,6 +48,8 @@ type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 
+type GetOrderByIdCallback = (id: OrderID) => Order | undefined
+
 export const useOrder = ({ id, chainId }: GetRemoveOrderParams): Order | undefined => {
   return useSelector<AppState, Order | undefined>(state => {
     const orders = state.orders[chainId]
@@ -55,6 +57,31 @@ export const useOrder = ({ id, chainId }: GetRemoveOrderParams): Order | undefin
     if (!orders) return undefined
     return orders?.fulfilled[id]?.order || orders?.pending[id]?.order || orders?.expired[id]?.order
   })
+}
+
+// used to extract Order.summary before showing popup
+// TODO: put the whole logic inside Popup middleware
+export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCallback => {
+  const state = useSelector<AppState, OrdersState[ChainId] | undefined>(state => chainId && state.orders?.[chainId])
+
+  // stable ref, so we don't recreate the function
+  const stateRef = useRef(state)
+  stateRef.current = state
+
+  // stable ref so that we don't refresh useEffect too much
+  // as we need to get an order lazily before creating a popup only
+  return useCallback(
+    (id: OrderID) => {
+      if (!chainId || !stateRef.current) return
+
+      return (
+        stateRef.current.fulfilled[id]?.order ||
+        stateRef.current.pending[id]?.order ||
+        stateRef.current.expired[id]?.order
+      )
+    },
+    [chainId]
+  )
 }
 
 export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
