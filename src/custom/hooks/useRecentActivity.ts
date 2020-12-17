@@ -127,7 +127,7 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
       // setup variables accordingly...
       const isReceiptConfirmed =
         tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
-      isPending = !!tx?.receipt
+      isPending = !tx?.receipt
       isConfirmed = !isPending && isReceiptConfirmed
 
       activity = tx
