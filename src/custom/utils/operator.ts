@@ -8,7 +8,7 @@ import { registerOnWindow } from './misc'
  *    https://protocol-rinkeby.dev.gnosisdev.com/api/
  */
 const API_BASE_URL: Partial<Record<ChainId, string>> = {
-  [ChainId.MAINNET]: 'https://protocol.gnosis.io/api/v1',
+  [ChainId.MAINNET]: 'https://protocol-mainnet.dev.gnosisdev.com/api/v1',
   [ChainId.RINKEBY]: 'https://protocol-rinkeby.dev.gnosisdev.com/api/v1'
   // [ChainId.xDAI]: 'https://protocol-xdai.dev.gnosisdev.com/api/v2'
 }

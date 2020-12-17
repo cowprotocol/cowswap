@@ -1651,10 +1651,10 @@
     "@ethersproject/properties" "^5.0.3"
     "@ethersproject/strings" "^5.0.4"
 
-"@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.8":
-  version "0.0.1-alpha.9"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.9.tgz#afcefcb8f898528189bca52332a8336c2cdb7959"
-  integrity sha512-pQVfp6EB4ucLYKIgedDG+oUsm/YTf+qRereKZdnazVa3DDgpMToMWRT1GowIZOIT5Sgz2jWsBzfI2Nn8DErxYQ==
+"@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.10":
+  version "0.0.1-alpha.10"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.10.tgz#9df263614a52ba06bce1da0e9e7a59f0bbdad6af"
+  integrity sha512-N2GSfn7QgML+uIbnToOMXAaZf3fkq9kN87zM1FpR3HYduH63gzjjLZRPX8M7txmn5/CJ89H8AoVzt0l0rhFm5A==
 
 "@hapi/address@2.x.x":
   version "2.1.4"
