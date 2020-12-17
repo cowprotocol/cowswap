@@ -176,7 +176,7 @@ export function EventUpdater(): null {
         fulfillOrdersBatch({
           ordersData: ordersBatchData,
           chainId,
-          lastCheckedBlock
+          lastCheckedBlock: lastBlockNumber
         })
         ordersBatchData.forEach(({ id, transactionHash }) => {
           try {
