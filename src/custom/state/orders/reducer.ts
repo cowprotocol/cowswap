@@ -33,7 +33,7 @@ export type OrdersState = {
   }
 }
 
-interface PrefillStateRequired {
+export interface PrefillStateRequired {
   chainId: ChainId
 }
 
