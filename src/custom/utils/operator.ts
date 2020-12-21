@@ -45,6 +45,12 @@ function _getApiBaseUrl(chainId: ChainId): string {
   }
 }
 
+export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
+  const baseUrl = _getApiBaseUrl(chainId)
+
+  return baseUrl + `/orders/${orderId}`
+}
+
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
   return fetch(baseUrl + url, {

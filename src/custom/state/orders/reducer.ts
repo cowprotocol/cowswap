@@ -146,11 +146,13 @@ export default createReducer(initialState, builder =>
     .addCase(clearOrders, (state, action) => {
       const { chainId } = action.payload
 
+      const lastCheckedBlock = state[chainId]?.lastCheckedBlock
+
       state[chainId] = {
         pending: {},
         fulfilled: {},
         expired: {},
-        lastCheckedBlock: ContractDeploymentBlocks[chainId] ?? 0
+        lastCheckedBlock: lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0
       }
     })
     .addCase(updateLastCheckedBlock, (state, action) => {
