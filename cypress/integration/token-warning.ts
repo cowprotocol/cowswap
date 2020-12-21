@@ -1,6 +1,9 @@
+// TODO: this token can be added at any time, failing tests...
+const UNLISTED_TOKEN = '0x6c6ee5e31d828de241282b9606c8e98ea48526e2'
+
 describe('Warning', () => {
   beforeEach(() => {
-    cy.visit('/swap?outputCurrency=0x0a40f26d74274b7f22b28556a27b35d97ce08e0a')
+    cy.visit('/swap?outputCurrency=' + UNLISTED_TOKEN)
   })
 
   it('Check that warning is displayed', () => {
