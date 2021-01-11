@@ -1,17 +1,20 @@
-import { SwapCallbackState } from '@src/hooks/useSwapCallback'
-import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
-
-// import { useSwapCallback as useSwapCallbackUniswap } from '@src/hooks/useSwapCallback'
-import { BigNumber } from 'ethers'
-import { Percent, Trade, TradeType } from '@uniswap/sdk'
-
-import { useActiveWeb3React } from '@src/hooks'
-import useENS from '@src/hooks/useENS'
 import { useMemo } from 'react'
-import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
+import { ETHER, Percent, Trade, TradeType } from '@uniswap/sdk'
+import { BigNumber } from 'ethers'
+
+import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
+
 import { useAddPendingOrder } from 'state/orders/hooks'
+
+import { SwapCallbackState } from '@src/hooks/useSwapCallback'
+import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
+import useENS from '@src/hooks/useENS'
+
+import { useActiveWeb3React } from 'hooks'
+import { useWrapEther } from 'hooks/useWrapEther'
+
+import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { postOrder } from 'utils/trade'
-import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
 import { OrderKind } from 'utils/signatures'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
@@ -31,6 +34,7 @@ export function useSwapCallback(
   const validTo = useTransactionDeadline()?.toNumber() || MAX_VALID_TO_EPOCH
   const addPendingOrder = useAddPendingOrder()
   const { INPUT: inputAmount, OUTPUT: outputAmount } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+  const wrapEther = useWrapEther()
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId || !inputAmount || !outputAmount) {
@@ -42,6 +46,13 @@ export function useSwapCallback(
       } else {
         return { state: SwapCallbackState.LOADING, callback: null, error: null }
       }
+    }
+
+    const isBuyEth = trade.outputAmount.currency === ETHER
+    const isSellEth = trade.inputAmount.currency === ETHER
+
+    if (isSellEth && !wrapEther) {
+      return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
 
     return {
@@ -60,7 +71,7 @@ export function useSwapCallback(
         const sellToken = path[0]
         const buyToken = path[path.length - 1]
 
-        const slippagePercent = new Percent(allowedSlippage.toString(10), '10000')
+        const slippagePercent = new Percent(allowedSlippage.toString(10), BIPS_BASE)
         const routeDescription = route.path.map(token => token.symbol || token.name || token.address).join(' → ')
         const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
 
@@ -75,6 +86,8 @@ export function useSwapCallback(
             sellToken,
             buyToken,
             validTo,
+            isSellEth,
+            isBuyEth,
             nextMidPrice: nextMidPrice.toFixed(),
             priceImpact: priceImpact.toSignificant(),
             tradeType: tradeType.toString(),
@@ -85,7 +98,11 @@ export function useSwapCallback(
             chainId
           }
         )
-        return postOrder({
+
+        const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmount) : undefined
+
+        // TODO: indicate somehow in the order when the user was to receive ETH === isBuyEth flag
+        const postOrderPromise = postOrder({
           kind,
           account,
           chainId,
@@ -99,6 +116,13 @@ export function useSwapCallback(
           addPendingOrder,
           signer: library.getSigner()
         })
+
+        if (wrapPromise) {
+          const wrapTx = await wrapPromise
+          console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
+        }
+
+        return postOrderPromise
       },
       error: null
     }
@@ -107,12 +131,13 @@ export function useSwapCallback(
     library,
     account,
     chainId,
-    recipient,
-    allowedSlippage,
-    recipientAddressOrName,
-    addPendingOrder,
-    validTo,
     inputAmount,
-    outputAmount
+    outputAmount,
+    recipient,
+    recipientAddressOrName,
+    allowedSlippage,
+    validTo,
+    wrapEther,
+    addPendingOrder
   ])
 }
