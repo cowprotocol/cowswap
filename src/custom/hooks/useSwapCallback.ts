@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ETHER, Percent, Trade, TradeType } from '@uniswap/sdk'
 import { BigNumber } from 'ethers'
 
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
+import { BIPS_BASE, BUY_ETHER_TOKEN, INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
 
 import { useAddPendingOrder } from 'state/orders/hooks'
 
@@ -69,7 +69,7 @@ export function useSwapCallback(
         } = trade
         const path = route.path
         const sellToken = path[0]
-        const buyToken = path[path.length - 1]
+        const buyToken = isBuyEth ? BUY_ETHER_TOKEN[chainId] : path[path.length - 1]
 
         const slippagePercent = new Percent(allowedSlippage.toString(10), BIPS_BASE)
         const routeDescription = route.path.map(token => token.symbol || token.name || token.address).join(' → ')
