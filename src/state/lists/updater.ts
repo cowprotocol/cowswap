@@ -5,7 +5,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
-import { addPopup } from '../application/actions'
+import { addPopup } from 'state/application/actions'
 import { AppDispatch, AppState } from 'state'
 import { acceptListUpdate } from './actions'
 

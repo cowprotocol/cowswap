@@ -1,5 +1,5 @@
 import React from 'react'
-import { CheckCircle, Triangle } from 'react-feather'
+import { AlertCircle, CheckCircle, Triangle } from 'react-feather'
 
 import { useActiveWeb3React } from 'hooks'
 import { getEtherscanLink } from 'utils'
@@ -14,28 +14,25 @@ import {
 import Pill from '../Pill'
 import styled from 'styled-components'
 
-import { ActivityType, useActivityDescriptors } from 'hooks/useRecentActivity'
+import { ActivityStatus, ActivityType, useActivityDescriptors } from 'hooks/useRecentActivity'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',
   PENDING_ORDER: '#8958FF',
-  PENDING_TX: '#2b68fa'
+  PENDING_TX: '#2b68fa',
+  EXPIRED_ORDER: '#b94d54'
 }
 
-function determinePillColour(success: boolean, type: ActivityType) {
-  if (!success) {
-    switch (type) {
-      // Pending Order
-      case ActivityType.ORDER:
-        return PILL_COLOUR_MAP.PENDING_ORDER
-      // Pending TX
-      case ActivityType.TX:
-        return PILL_COLOUR_MAP.PENDING_TX
-    }
+function determinePillColour(status: ActivityStatus, type: ActivityType) {
+  const isOrder = type === ActivityType.ORDER
+  switch (status) {
+    case ActivityStatus.PENDING:
+      return isOrder ? PILL_COLOUR_MAP.PENDING_ORDER : PILL_COLOUR_MAP.PENDING_TX
+    case ActivityStatus.CONFIRMED:
+      return PILL_COLOUR_MAP.CONFIRMED
+    case ActivityStatus.EXPIRED:
+      return PILL_COLOUR_MAP.EXPIRED_ORDER
   }
-
-  // Else is Confirmed TX/Order
-  return PILL_COLOUR_MAP.CONFIRMED
 }
 
 function getActivitySummary({
@@ -47,9 +44,9 @@ function getActivitySummary({
 }) {
   if (!activityData) return null
 
-  const { summary, pending, type } = activityData
+  const { summary, status, type } = activityData
 
-  const isMeta = type === ActivityType.ORDER && pending
+  const isMeta = type === ActivityType.ORDER && status !== ActivityStatus.CONFIRMED
 
   // add arrow indiciating clickable link if not meta tx
   const suffix = !isMeta ? ' ↗' : ''
@@ -58,41 +55,56 @@ function getActivitySummary({
   return baseSummary + suffix
 }
 
-// override the href prop when we dont want a clickable row
-const TransactionState = styled(OldTransactionState).attrs((props): { href?: string; isMeta?: boolean } => props)`
-  ${(props): string | false => !!props.isMeta && `pointer-events: none; cursor: none;`}
+// override the href, pending and success props
+// override mouse actions via CSS when we dont want a clickable row
+const TransactionState = styled(OldTransactionState).attrs(
+  (props): { href?: string; disableMouseActions?: boolean; pending?: boolean; success?: boolean } => props
+)`
+  ${(props): string | false => !!props.disableMouseActions && `pointer-events: none; cursor: none;`}
 `
 
 export default function Transaction({ hash: id }: { hash: string }) {
   const { chainId } = useActiveWeb3React()
   // Return info necessary for rendering order/transaction info from the incoming id
+  // returns info related to activity: TransactionDetails | Order
   const activityData = useActivityDescriptors({ id, chainId })
 
   if (!activityData || !chainId) return null
 
-  const { activity, pending, success, type } = activityData
+  const { activity, status, type } = activityData
+
   const isOrder = type === ActivityType.ORDER
+
+  const isPending = status === ActivityStatus.PENDING
+  const isConfirmed = status === ActivityStatus.CONFIRMED
+  const isExpired = status === ActivityStatus.EXPIRED
 
   return (
     <TransactionWrapper>
       <TransactionState
         // trnsaction? fulfilled order? render etherscan link. meta-tx? don't do that
         href={!isOrder ? getEtherscanLink(chainId, id, 'transaction') : undefined}
-        pending={pending}
-        success={success}
-        // prevent cursor on meta tx
-        isMeta={isOrder && pending}
+        // prevent pointer-events & cursor render on meta tx
+        disableMouseActions={isOrder && !isConfirmed}
       >
         <RowFixed>
           {activity && (
-            <Pill color="#fff" bgColor={determinePillColour(success, type)} minWidth="3.5rem">
+            <Pill color="#fff" bgColor={determinePillColour(status, type)} minWidth="3.5rem">
               {type}
             </Pill>
           )}
           <TransactionStatusText>{getActivitySummary({ activityData, id })}</TransactionStatusText>
         </RowFixed>
-        <IconWrapper pending={pending} success={success}>
-          {pending ? <Loader /> : success ? <CheckCircle size="16" /> : <Triangle size="16" />}
+        <IconWrapper pending={isPending} success={isConfirmed}>
+          {isPending ? (
+            <Loader />
+          ) : isConfirmed ? (
+            <CheckCircle size="16" />
+          ) : isExpired ? (
+            <AlertCircle size="16" />
+          ) : (
+            <Triangle size="16" />
+          )}
         </IconWrapper>
       </TransactionState>
     </TransactionWrapper>

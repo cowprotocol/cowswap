@@ -8,11 +8,13 @@ import { Percent, Trade, TradeType } from '@uniswap/sdk'
 import { useActiveWeb3React } from '@src/hooks'
 import useENS from '@src/hooks/useENS'
 import { useMemo } from 'react'
+import { batch } from 'react-redux'
 import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
 import { useAddPendingOrder } from 'state/orders/hooks'
 import { postOrder } from 'utils/trade'
 import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
 import { OrderKind } from 'utils/signatures'
+import { useAddPopup } from 'state/application/hooks'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -24,6 +26,8 @@ export function useSwapCallback(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
+
+  const addPopup = useAddPopup()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
@@ -85,6 +89,29 @@ export function useSwapCallback(
             chainId
           }
         )
+
+        const addPendingOrderAndPopup: typeof addPendingOrder = pendingOrderParams => {
+          batch(() => {
+            addPendingOrder(pendingOrderParams)
+
+            const {
+              id,
+              order: { summary }
+            } = pendingOrderParams
+
+            addPopup(
+              {
+                metatxn: {
+                  id: id,
+                  success: true,
+                  summary: summary
+                }
+              },
+              id + '_pending'
+            )
+          })
+        }
+
         return postOrder({
           kind,
           account,
@@ -96,7 +123,7 @@ export function useSwapCallback(
           validTo,
           recipient,
           recipientAddressOrName,
-          addPendingOrder,
+          addPendingOrder: addPendingOrderAndPopup,
           signer: library.getSigner()
         })
       },
@@ -107,12 +134,13 @@ export function useSwapCallback(
     library,
     account,
     chainId,
-    recipient,
-    allowedSlippage,
-    recipientAddressOrName,
-    addPendingOrder,
-    validTo,
     inputAmount,
-    outputAmount
+    outputAmount,
+    recipient,
+    recipientAddressOrName,
+    allowedSlippage,
+    validTo,
+    addPendingOrder,
+    addPopup
   ])
 }

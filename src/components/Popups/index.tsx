@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useActivePopups } from '../../state/application/hooks'
 import { AutoColumn } from '../Column'
-import PopupItem from './PopupItem'
+import PopupItem from 'components/Popups/PopupItem'
 import ClaimPopup from './ClaimPopup'
 import { useURLWarningVisible } from '../../state/user/hooks'
 
@@ -11,7 +11,7 @@ const MobilePopupWrapper = styled.div<{ height: string | number }>`
   max-width: 100%;
   height: ${({ height }) => height};
   margin: ${({ height }) => (height ? '0 auto;' : 0)};
-  margin-bottom: ${({ height }) => (height ? '20px' : 0)}};
+  margin-bottom: ${({ height }) => (height ? '20px' : 0)};
 
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
