@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers'
 
 import { BIPS_BASE, BUY_ETHER_TOKEN, INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
 
+import { batch } from 'react-redux'
 import { useAddPendingOrder } from 'state/orders/hooks'
 
 import { SwapCallbackState } from '@src/hooks/useSwapCallback'
@@ -16,6 +17,7 @@ import { useWrapEther } from 'hooks/useWrapEther'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { postOrder } from 'utils/trade'
 import { OrderKind } from 'utils/signatures'
+import { useAddPopup } from 'state/application/hooks'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -27,6 +29,8 @@ export function useSwapCallback(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
+
+  const addPopup = useAddPopup()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
@@ -101,6 +105,28 @@ export function useSwapCallback(
 
         const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmount) : undefined
 
+        const addPendingOrderAndPopup: typeof addPendingOrder = pendingOrderParams => {
+          batch(() => {
+            addPendingOrder(pendingOrderParams)
+
+            const {
+              id,
+              order: { summary }
+            } = pendingOrderParams
+
+            addPopup(
+              {
+                metatxn: {
+                  id: id,
+                  success: true,
+                  summary: summary
+                }
+              },
+              id + '_pending'
+            )
+          })
+        }
+
         // TODO: indicate somehow in the order when the user was to receive ETH === isBuyEth flag
         const postOrderPromise = postOrder({
           kind,
@@ -113,7 +139,7 @@ export function useSwapCallback(
           validTo,
           recipient,
           recipientAddressOrName,
-          addPendingOrder,
+          addPendingOrder: addPendingOrderAndPopup,
           signer: library.getSigner()
         })
 
@@ -138,6 +164,7 @@ export function useSwapCallback(
     allowedSlippage,
     validTo,
     wrapEther,
-    addPendingOrder
+    addPendingOrder,
+    addPopup
   ])
 }

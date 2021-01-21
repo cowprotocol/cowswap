@@ -3,46 +3,32 @@ import { useDispatch, batch } from 'react-redux'
 import { useActiveWeb3React } from 'hooks'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
 import { AppDispatch } from 'state'
-import { OrderFulfillmentData } from './actions'
-import { utils } from 'ethers'
+import { OrderFulfillmentData, Order } from './actions'
 import { Web3Provider } from '@ethersproject/providers'
 import { Log, Filter } from '@ethersproject/abstract-provider'
-import { useLastCheckedBlock, usePendingOrders, useExpireOrder, useFulfillOrdersBatch } from './hooks'
+import { useLastCheckedBlock, usePendingOrders, useExpireOrder, useFulfillOrdersBatch, useFindOrderById } from './hooks'
 import { buildBlock2DateMap } from 'utils/blocks'
 import { registerOnWindow } from 'utils/misc'
-// import { PartialOrdersMap } from './reducer'
+import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
+import { GP_V2_SETTLEMENT_INTERFACE } from '@src/custom/constants/GPv2Settlement'
 
-// example of event watching + decoding without contract
-const transferEventAbi = 'event Transfer(address indexed from, address indexed to, uint amount)'
-const ERC20Interface = new utils.Interface([transferEventAbi])
+type OrderLogPopupMixData = OrderFulfillmentData & Pick<Log, 'transactionHash'> & Partial<Pick<Order, 'summary'>>
 
-const TransferEvent = ERC20Interface.getEvent('Transfer')
-
-const TransferEventTopics = ERC20Interface.encodeFilterTopics(TransferEvent, [])
-
-// const decodeTransferEvent = (transferEventLog: Log) => {
-//   return ERC20Interface.decodeEventLog(TransferEvent, transferEventLog.data, transferEventLog.topics)
-// }
-
-// TODO sync with contracts
-const tradeEventAbi =
-  'event Trade(address indexed owner, IERC20 sellToken, IERC20 buyToken, uint256 sellAmount, uint256 buyAmount, uint256 feeAmount, bytes orderUid)'
-const TradeSettlementInterface = new utils.Interface([tradeEventAbi])
-
-const TradeEvent = TradeSettlementInterface.getEvent('Trade')
+const TradeEvent = GP_V2_SETTLEMENT_INTERFACE.getEvent('Trade')
 
 interface TradeEventParams {
   owner: string // address
-  id?: string | string[] // to filter by id
+  // maybe enable when orderUid is indexed
+  // id?: string | string[] // to filter by id
 }
 
 const generateTradeEventTopics = ({ owner /*, id */ }: TradeEventParams) => {
-  const TradeEventTopics = TradeSettlementInterface.encodeFilterTopics(TradeEvent, [owner /*, id*/])
+  const TradeEventTopics = GP_V2_SETTLEMENT_INTERFACE.encodeFilterTopics(TradeEvent, [owner /*, id*/])
   return TradeEventTopics
 }
 
 const decodeTradeEvent = (tradeEventLog: Log) => {
-  return TradeSettlementInterface.decodeEventLog(TradeEvent, tradeEventLog.data, tradeEventLog.topics)
+  return GP_V2_SETTLEMENT_INTERFACE.decodeEventLog(TradeEvent, tradeEventLog.data, tradeEventLog.topics)
 }
 
 type RetryFilter = Filter & { fromBlock: number; toBlock: number }
@@ -123,8 +109,12 @@ export function EventUpdater(): null {
     return generateTradeEventTopics({ owner: account })
   }, [account])
 
+  const contractAddress = chainId && GP_SETTLEMENT_CONTRACT_ADDRESS[chainId]
+
+  const findOrderById = useFindOrderById({ chainId })
+
   useEffect(() => {
-    if (!chainId || !library || !getLogsRetry || !lastBlockNumber || !eventTopics) return
+    if (!chainId || !library || !getLogsRetry || !lastBlockNumber || !eventTopics || !contractAddress) return
 
     registerOnWindow({
       getLogsRetry: (fromBlock: number, toBlock: number) => {
@@ -132,7 +122,7 @@ export function EventUpdater(): null {
         return getLogsRetry({
           fromBlock,
           toBlock,
-          topics: TransferEventTopics
+          topics: eventTopics
         })
       }
     })
@@ -144,28 +134,31 @@ export function EventUpdater(): null {
       console.log('EventUpdater::getLogs', {
         fromBlock: lastCheckedBlock + 1,
         toBlock: lastBlockNumber,
-        // address: '0x', // TODO: get address from networks.json or somewhere else
+        address: contractAddress,
         topics: eventTopics
       })
 
       const logs = await getLogsRetry({
         fromBlock: lastCheckedBlock + 1,
         toBlock: lastBlockNumber,
-        // address: '0x', // TODO: get address from networks.json or somewhere else
+        address: contractAddress,
         topics: eventTopics
       })
 
       const block2DateMap = await buildBlock2DateMap(library, logs)
 
-      const ordersBatchData: (OrderFulfillmentData & Pick<Log, 'transactionHash'>)[] = logs.map(log => {
+      const ordersBatchData: OrderLogPopupMixData[] = logs.map(log => {
         const { orderUid: id } = decodeTradeEvent(log)
 
         console.log(`EventUpdater::Detected Trade event for order ${id} of token in block`, log.blockNumber)
 
+        const orderFromStore = findOrderById(id)
+
         return {
           id,
           fulfillmentTime: block2DateMap[log.blockHash].toISOString(),
-          transactionHash: log.transactionHash
+          transactionHash: log.transactionHash,
+          summary: orderFromStore?.summary // only if that order was previously in store
         }
       })
 
@@ -178,17 +171,17 @@ export function EventUpdater(): null {
           chainId,
           lastCheckedBlock: lastBlockNumber
         })
-        ordersBatchData.forEach(({ id, transactionHash }) => {
+        ordersBatchData.forEach(({ id, transactionHash, summary }) => {
           try {
             addPopup(
               {
                 txn: {
                   hash: transactionHash,
                   success: true,
-                  summary: `Order ${id} was traded`
+                  summary: summary || `Order ${id} was traded`
                 }
               },
-              transactionHash
+              id
             )
           } catch (error) {
             console.error('Error decoding Trade event', error)
@@ -228,7 +221,9 @@ export function EventUpdater(): null {
     dispatch,
     addPopup,
     eventTopics,
-    fulfillOrdersBatch
+    fulfillOrdersBatch,
+    contractAddress,
+    findOrderById
   ])
 
   // TODO: maybe implement event watching instead of getPastEvents on every block

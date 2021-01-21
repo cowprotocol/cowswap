@@ -4,9 +4,10 @@ import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components'
 import { animated } from 'react-spring'
 import { PopupContent } from 'state/application/actions'
-import { useRemovePopup } from '../../state/application/hooks'
-import ListUpdatePopup from './ListUpdatePopup'
-import TransactionPopup from './TransactionPopup'
+import { useRemovePopup } from 'state/application/hooks'
+import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
+import TransactionPopup from 'components/Popups/TransactionPopup'
+import MetaTransactionPopup from 'components/Popups/MetaTransactionPopup'
 
 export const StyledClose = styled(X)`
   position: absolute;
@@ -82,6 +83,11 @@ export default function PopupItem({
       listUpdate: { listUrl, oldList, newList, auto }
     } = content
     popupContent = <ListUpdatePopup popKey={popKey} listUrl={listUrl} oldList={oldList} newList={newList} auto={auto} />
+  } else if ('metatxn' in content) {
+    const {
+      metatxn: { id, success, summary }
+    } = content
+    popupContent = <MetaTransactionPopup id={id} success={success} summary={summary} />
   }
 
   const faderStyle = useSpring({

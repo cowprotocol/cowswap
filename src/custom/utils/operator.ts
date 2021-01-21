@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk'
+import { ChainId, ETHER, WETH } from '@uniswap/sdk'
 import { OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
@@ -8,7 +8,7 @@ import { registerOnWindow } from './misc'
  *    https://protocol-rinkeby.dev.gnosisdev.com/api/
  */
 const API_BASE_URL: Partial<Record<ChainId, string>> = {
-  [ChainId.MAINNET]: 'https://protocol.gnosis.io/api/v1',
+  [ChainId.MAINNET]: 'https://protocol-mainnet.dev.gnosisdev.com/api/v1',
   [ChainId.RINKEBY]: 'https://protocol-rinkeby.dev.gnosisdev.com/api/v1'
   // [ChainId.xDAI]: 'https://protocol-xdai.dev.gnosisdev.com/api/v2'
 }
@@ -43,6 +43,12 @@ function _getApiBaseUrl(chainId: ChainId): string {
   } else {
     return baseUrl
   }
+}
+
+export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
+  const baseUrl = _getApiBaseUrl(chainId)
+
+  return baseUrl + `/orders/${orderId}`
 }
 
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
@@ -137,16 +143,26 @@ export async function postSignedOrder(params: { chainId: ChainId; order: OrderCr
   return uid
 }
 
+function checkIfEther(tokenAddress: string, chainId: ChainId) {
+  let checkedAddress = tokenAddress
+  if (tokenAddress === ETHER.symbol) {
+    checkedAddress = WETH[chainId].address
+  }
+
+  return checkedAddress
+}
+
 export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promise<FeeInformation> {
+  const checkedAddress = checkIfEther(tokenAddress, chainId)
   // TODO: I commented out the implementation because the API is not yet implemented. Review the code in the comment below
-  console.log('[util:operator] Get fee for ', chainId, tokenAddress)
+  console.log('[util:operator] Get fee for ', chainId, checkedAddress)
 
   // TODO: Let see if we can incorporate the PRs from the Fee, where they cache stuff and keep it in sync using redux.
   // if that part is delayed or need more review, we can easily add the cache in this file (we check expiration and cache here)
 
   let response: Response | undefined
   try {
-    const responseMaybeOk = await _get(chainId, `/tokens/${tokenAddress}/fee`)
+    const responseMaybeOk = await _get(chainId, `/tokens/${checkedAddress}/fee`)
     response = responseMaybeOk.ok ? responseMaybeOk : undefined
   } catch (error) {
     // do nothing
