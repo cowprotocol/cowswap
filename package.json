@@ -101,7 +101,8 @@
     "test:debug": "craco --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
-    "dedup": "npx yarn-deduplicate"
+    "serve": "serve build -l 3000",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app",
