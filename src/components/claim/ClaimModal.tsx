@@ -11,7 +11,7 @@ import { useModalOpen, useToggleSelfClaimModal } from '../../state/application/h
 import { useClaimCallback, useUserClaimData, useUserUnclaimedAmount } from '../../state/claim/hooks'
 import { useUserHasSubmittedClaim } from '../../state/transactions/hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE, UniTokenAnimated } from 'theme'
-import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink } from 'utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Confetti from '../Confetti'

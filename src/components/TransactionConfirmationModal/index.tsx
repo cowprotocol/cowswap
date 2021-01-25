@@ -11,7 +11,7 @@ import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Circle from '../../assets/images/blue-loader.svg'
 
-import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink } from 'utils'
 import { useActiveWeb3React } from '../../hooks'
 
 const Wrapper = styled.div`

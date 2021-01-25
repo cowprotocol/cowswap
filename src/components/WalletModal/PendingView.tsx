@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Option from './Option'
 import { SUPPORTED_WALLETS } from '../../constants'
-import { injected } from '../../connectors'
+import { injected } from 'connectors'
 import { darken } from 'polished'
 import Loader from '../Loader'
 

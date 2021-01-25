@@ -1651,10 +1651,10 @@
     "@ethersproject/properties" "^5.0.3"
     "@ethersproject/strings" "^5.0.4"
 
-"@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.10":
-  version "0.0.1-alpha.10"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.10.tgz#9df263614a52ba06bce1da0e9e7a59f0bbdad6af"
-  integrity sha512-N2GSfn7QgML+uIbnToOMXAaZf3fkq9kN87zM1FpR3HYduH63gzjjLZRPX8M7txmn5/CJ89H8AoVzt0l0rhFm5A==
+"@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.11":
+  version "0.0.1-alpha.11"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.11.tgz#dfdbc44c37afcfd3690314159caf454578c538e4"
+  integrity sha512-4XFdG3lU8xiOsJLNSCMPGzl+LWNJImJer4Qa8tjMt3l+DW5RltZX2X1ad4foRUshQJAdk5Fwxy5y8B8qViZWNQ==
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -2729,10 +2729,10 @@
   resolved "https://registry.yarnpkg.com/@uniswap/merkle-distributor/-/merkle-distributor-1.0.1.tgz#dc3d911f65a860fc3f0cae074bdcd08ed6a27a4d"
   integrity sha512-5gDiTI5hrXIh5UWTrxKYjw30QQDnpl8ckDSpefldNenDlYO1RKkdUYMYpvrqGi2r7YzLYTlO6+TDlNs6O7hDRw==
 
-"@uniswap/sdk@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@uniswap/sdk/-/sdk-3.0.3.tgz#8201c7c72215d0030cb99acc7e661eff895c18a9"
-  integrity sha512-t4s8bvzaCFSiqD2qfXIm3rWhbdnXp+QjD3/mRaeVDHK7zWevs6RGEb1ohMiNgOCTZANvBayb4j8p+XFdnMBadQ==
+"@uniswap/sdk@npm:@anxolin/uniswap-sdk#3.0.3-rc.3":
+  version "3.0.3-rc.3"
+  resolved "https://registry.yarnpkg.com/@anxolin/uniswap-sdk/-/uniswap-sdk-3.0.3-rc.3.tgz#c8014d61f010a957d621276ceb211406dcc2f435"
+  integrity sha512-/3K2Q+8FEWp6Z4Cjkyoy5HXvsFdwbq8WD2zWs7zILEeRerO57eSErl0Rw6gVcyuaFt64mObed8Qp4pKz64VMCg==
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"

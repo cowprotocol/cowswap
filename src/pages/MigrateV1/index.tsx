@@ -17,7 +17,7 @@ import V1PositionCard from '../../components/PositionCard/V1'
 import QuestionHelper from '../../components/QuestionHelper'
 import { Dots } from '../../components/swap/styleds'
 import { useAddUserToken } from '../../state/user/hooks'
-import { isTokenOnList } from '../../utils'
+import { isTokenOnList } from 'utils'
 
 export default function MigrateV1() {
   const theme = useContext(ThemeContext)

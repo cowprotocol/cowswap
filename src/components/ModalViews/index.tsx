@@ -8,7 +8,7 @@ import { TYPE, CloseIcon, CustomLightSpinner } from 'theme'
 import { ArrowUpCircle } from 'react-feather'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink } from 'utils'
 import { ExternalLink } from 'theme'
 
 const ConfirmOrLoadingWrapper = styled.div`
