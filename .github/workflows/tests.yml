@@ -34,7 +34,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-
       - run: yarn install --frozen-lockfile
 
       # TODO: Re-enable integration tests
@@ -46,4 +45,3 @@ jobs:
       #     REACT_APP_NETWORK_URL: "https://mainnet.infura.io/v3/4bf032f2d38a4ed6bb975b80d6340847"
 
       #- run: yarn integration-test
-
