@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 
 // UNI REDUCERS
@@ -15,6 +15,7 @@ import multicall from '@src/state/multicall/reducer'
 import operator from './operator/reducer'
 import orders from './orders/reducer'
 import fee from './fee/reducer'
+import { popupMiddleware } from './orders/middleware'
 
 const UNISWAP_REDUCERS = {
   application,
@@ -27,16 +28,18 @@ const UNISWAP_REDUCERS = {
   lists
 }
 
+const reducers = {
+  ...UNISWAP_REDUCERS,
+  operator,
+  orders,
+  fee
+}
+
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'orders', 'fee']
 
 const store = configureStore({
-  reducer: {
-    ...UNISWAP_REDUCERS,
-    operator,
-    orders,
-    fee
-  },
-  middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
+  reducer: reducers,
+  middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS }), popupMiddleware],
   preloadedState: load({ states: PERSISTED_KEYS })
 })
 
@@ -44,5 +47,8 @@ store.dispatch(updateVersion())
 
 export default store
 
-export type AppState = ReturnType<typeof store.getState>
+// need to AppState derive from something other than store
+// otherwise get circular reference
+// if we want to use AppState in Middleware<, AppState>
+export type AppState = StateFromReducersMapObject<typeof reducers>
 export type AppDispatch = typeof store.dispatch

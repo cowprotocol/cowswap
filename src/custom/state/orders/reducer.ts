@@ -10,7 +10,8 @@ import {
   OrderStatus,
   updateLastCheckedBlock,
   expireOrder,
-  fulfillOrdersBatch
+  fulfillOrdersBatch,
+  expireOrdersBatch
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from '@src/custom/types'
@@ -91,7 +92,7 @@ export default createReducer(initialState, builder =>
     })
     .addCase(fulfillOrder, (state, action) => {
       prefillState(state, action)
-      const { id, chainId, fulfillmentTime } = action.payload
+      const { id, chainId, fulfillmentTime, transactionHash } = action.payload
 
       const orderObject = state[chainId].pending[id]
 
@@ -100,6 +101,8 @@ export default createReducer(initialState, builder =>
 
         orderObject.order.status = OrderStatus.FULFILLED
         orderObject.order.fulfillmentTime = fulfillmentTime
+
+        orderObject.order.fulfilledTransactionHash = transactionHash
 
         state[chainId].fulfilled[id] = orderObject
       }
@@ -116,7 +119,7 @@ export default createReducer(initialState, builder =>
 
       // if there are any newly fulfilled orders
       // update them
-      ordersData.forEach(({ id, fulfillmentTime }) => {
+      ordersData.forEach(({ id, fulfillmentTime, transactionHash }) => {
         const orderObject = pendingOrders[id]
 
         if (orderObject) {
@@ -124,6 +127,8 @@ export default createReducer(initialState, builder =>
 
           orderObject.order.status = OrderStatus.FULFILLED
           orderObject.order.fulfillmentTime = fulfillmentTime
+
+          orderObject.order.fulfilledTransactionHash = transactionHash
 
           fulfilledOrders[id] = orderObject
         }
@@ -142,6 +147,26 @@ export default createReducer(initialState, builder =>
 
         state[chainId].expired[id] = orderObject
       }
+    })
+    .addCase(expireOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId } = action.payload
+
+      const pendingOrders = state[chainId].pending
+      const fulfilledOrders = state[chainId].expired
+
+      // if there are any newly fulfilled orders
+      // update them
+      ids.forEach(id => {
+        const orderObject = pendingOrders[id]
+
+        if (orderObject) {
+          delete pendingOrders[id]
+
+          orderObject.order.status = OrderStatus.EXPIRED
+          fulfilledOrders[id] = orderObject
+        }
+      })
     })
     .addCase(clearOrders, (state, action) => {
       const { chainId } = action.payload
