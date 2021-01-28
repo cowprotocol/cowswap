@@ -95,7 +95,8 @@
     "@walletconnect/web3-provider": "1.1.1-alpha.0"
   },
   "scripts": {
-    "start": "craco start",
+    "start": "REACT_APP_DISABLE_TOKEN_WARNING=true craco start",
+    "start:default": "craco start",
     "build": "craco build",
     "test": "NODE_PATH=src/custom craco test --env=jsdom",
     "test:debug": "NODE_PATH=src/custom craco --inspect-brk test --runInBand --no-cache",

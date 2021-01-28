@@ -28,6 +28,33 @@ yarn
 yarn start
 ```
 
+### Unit testing
+
+```bash
+yarn test
+```
+
+### Integration test
+
+Normally:
+```bash
+yarn build
+yarn integration-test
+```
+
+If we want to use the Cypress UI:
+```bash
+yarn build
+yarn serve
+yarn cypress
+```
+
+If we want to use the Cypress UI, and live reloading on the web app:
+```bash
+yarn start:default
+yarn cypress
+```
+
 ### Configuring the environment (optional)
 
 To have the interface default to a different network when a wallet is not connected:
