@@ -31,6 +31,7 @@ import Modal from 'components/Modal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
 // import usePrevious from 'hooks/usePrevious'
 import { WithClassName } from 'types'
+import { SHORT_PRECISION } from '@src/custom/constants'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -383,7 +384,7 @@ export default function HeaderMod(props: WithClassName) {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {userEthBalance?.toSignificant(4)} {nativeToken}
+                {userEthBalance?.toSignificant(SHORT_PRECISION)} {nativeToken}
               </BalanceText>
             ) : null}
             <Web3Status />

@@ -14,6 +14,7 @@ import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 import { useActiveWeb3React } from 'hooks'
 import { useTranslation } from 'react-i18next'
 import { WithClassName } from 'types'
+import { DEFAULT_PRECISION } from 'constants/index'
 
 export const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -179,7 +180,7 @@ export default function CurrencyInputPanel({
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? (customBalanceText ?? 'Balance: ') + selectedCurrencyBalance?.toSignificant(6)
+                    ? (customBalanceText ?? 'Balance: ') + selectedCurrencyBalance?.toSignificant(DEFAULT_PRECISION)
                     : ' -'}
                 </TYPE.body>
               )}

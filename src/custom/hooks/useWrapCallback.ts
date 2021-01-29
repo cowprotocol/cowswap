@@ -8,6 +8,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/index'
 import { useWETHContract } from 'hooks/useContract'
+import { RADIX_HEX } from 'constants/index'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -48,10 +49,10 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     let summary: string
 
     if (isWrap) {
-      wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
+      wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.raw.toString(RADIX_HEX)}` })
       summary = `Wrap ${inputAmount.toSignificant(6)} ${native} to ${wrapped}`
     } else {
-      wrapUnwrap = () => wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
+      wrapUnwrap = () => wethContract.withdraw(`0x${inputAmount.raw.toString(RADIX_HEX)}`)
       summary = `Unwrap ${inputAmount.toSignificant(6)} ${wrapped} to ${native}`
     }
 

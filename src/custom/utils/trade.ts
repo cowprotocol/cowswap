@@ -6,7 +6,7 @@ import { signOrder, UnsignedOrder } from 'utils/signatures'
 import { getFeeQuote as getFeeInformation, postSignedOrder } from 'utils/operator'
 import { getFeeAmount } from 'utils/fee'
 import { Signer } from 'ethers'
-import { APP_ID } from 'constants/index'
+import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
 
 export interface PostOrderParams {
   account: string
@@ -28,8 +28,8 @@ function _getSummary(params: PostOrderParams): string {
 
   const inputSymbol = inputAmount.currency.symbol
   const outputSymbol = outputAmount.currency.symbol
-  const inputAmountValue = inputAmount.toSignificant(3)
-  const outputAmountValue = outputAmount.toSignificant(3)
+  const inputAmountValue = inputAmount.toSignificant(SHORTEST_PRECISION)
+  const outputAmountValue = outputAmount.toSignificant(SHORTEST_PRECISION)
 
   const base = `Swap ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
 
@@ -59,8 +59,8 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     signer
   } = params
 
-  const sellAmount = inputAmount.raw.toString(10)
-  const buyAmount = outputAmount.raw.toString(10)
+  const sellAmount = inputAmount.raw.toString(RADIX_DECIMAL)
+  const buyAmount = outputAmount.raw.toString(RADIX_DECIMAL)
 
   // TODO: This might disappear, and just take the state from the state after the fees PRs are merged
   //  we assume, the solvers will try to satisfy the price, and this fee is just a minimal fee.

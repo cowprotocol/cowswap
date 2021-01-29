@@ -1,6 +1,13 @@
 import { ChainId, Token } from '@uniswap/sdk'
 import { GPv2Settlement, GPv2AllowanceManager } from '@gnosis.pm/gp-v2-contracts/networks.json'
 
+export const RADIX_DECIMAL = 10
+export const RADIX_HEX = 16
+
+export const DEFAULT_PRECISION = 6
+export const SHORT_PRECISION = 4
+export const SHORTEST_PRECISION = 3
+
 export const APP_ID = Number(process.env.REACT_APP_ID)
 
 // reexport all Uniswap constants everything
