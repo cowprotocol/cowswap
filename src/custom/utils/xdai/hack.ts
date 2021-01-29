@@ -4,6 +4,10 @@ import { ETHER, ChainId } from '@uniswap/sdk'
 
 let currentChainId: ChainId | undefined
 
+const XDAI_SYMBOL = 'xDai'
+const CURRENCY_SYMBOLS_XDAI = { native: XDAI_SYMBOL, wrapped: 'wxDAI' }
+const CURRENCY_SYMBOLS_ETH = { native: 'Ether', wrapped: 'WETH' }
+
 // Hack to fix the name of the Chain token (hardcoded in uniswap)
 export const switchParamsByNetwork = (chainId?: ChainId) => {
   if (currentChainId === chainId) return
@@ -18,9 +22,9 @@ export const switchParamsByNetwork = (chainId?: ChainId) => {
     // easier to change name+symbol
     // this way you seeXDAI in Token selector when on xDAI
     // @ts-expect-error
-    ETHER.name = 'xDai'
+    ETHER.name = XDAI_SYMBOL
     // @ts-expect-error
-    ETHER.symbol = 'XDAI'
+    ETHER.symbol = XDAI_SYMBOL
 
     return
   } else {
@@ -29,4 +33,8 @@ export const switchParamsByNetwork = (chainId?: ChainId) => {
     // @ts-expect-error
     ETHER.symbol = 'ETH'
   }
+}
+
+export function getChainCurrencySymbols(): { native: string; wrapped: string } {
+  return ETHER.symbol === XDAI_SYMBOL ? CURRENCY_SYMBOLS_XDAI : CURRENCY_SYMBOLS_ETH
 }
