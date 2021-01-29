@@ -27,13 +27,19 @@ jobs:
           node-version: 12
 
       # Install deps only
-      - name: Cypress install deps
+      - name: Cypress install dependencies
+        id: cypress-deps
         uses: cypress-io/github-action@v2
+        # Do not consider failure a failure. Well, sort of.
+        # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
+        continue-on-error: true
         with:
           runTests: false
 
       - name: Install Cypress binary
-        if: failure()
+        id: cypress-bin
+        # Only run if previous step failed
+        if: steps.cypress-deps.outcome == 'failure'
         run: npx cypress install
 
       # Actually run tests, building repo
