@@ -6,6 +6,7 @@ import { useSwapState } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { FeesMap } from './reducer'
 import { getFeeQuote } from 'utils/operator'
+import { registerOnWindow } from '@src/custom/utils/misc'
 
 function isDateLater(dateA: string, dateB: string): boolean {
   const [parsedDateA, parsedDateB] = [Date.parse(dateA), Date.parse(dateB)]
@@ -27,6 +28,7 @@ export default function FeesUpdater(): null {
 
   useEffect(() => {
     if (!stateFeesMap || !chainId || !currencyId || !windowVisible) return
+    registerOnWindow({ addFee })
 
     async function runFeeHook({
       feesMap,

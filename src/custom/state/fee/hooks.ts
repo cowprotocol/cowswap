@@ -27,10 +27,7 @@ export const useAllFees = ({ chainId }: Partial<Pick<ClearFeeParams, 'chainId'>>
   })
 }
 
-export const useFee = ({
-  token,
-  chainId
-}: ClearFeeParams & Partial<Pick<ClearFeeParams, 'chainId'>>): FeeInformation | undefined => {
+export const useFee = ({ token, chainId }: Partial<ClearFeeParams>): FeeInformation | undefined => {
   return useSelector<AppState, FeeInformation | undefined>(state => {
     const fees = chainId && state.fee[chainId]
 
