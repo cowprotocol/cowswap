@@ -3,7 +3,7 @@
   "description": "Gnosis Protocol v2 Webapp",
   "homepage": ".",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.4.1",
   "devDependencies": {
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.0.1",
