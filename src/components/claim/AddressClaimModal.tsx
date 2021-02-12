@@ -18,7 +18,7 @@ import Confetti from '../Confetti'
 import { CardNoise, CardBGImage, CardBGImageSmaller } from '../earn/styled'
 import { useIsTransactionPending } from '../../state/transactions/hooks'
 import { TokenAmount } from '@uniswap/sdk'
-import { getEtherscanLink, shortenAddress } from '../../utils'
+import { getEtherscanLink, shortenAddress } from 'utils'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

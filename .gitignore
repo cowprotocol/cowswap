@@ -32,3 +32,6 @@ package-lock.json
 cypress/videos
 cypress/screenshots
 cypress/fixtures/example.json
+cypress-custom/videos
+cypress-custom/screenshots
+cypress-custom/fixtures/example.json

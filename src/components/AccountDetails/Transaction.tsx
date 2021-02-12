@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { CheckCircle, Triangle } from 'react-feather'
 
 import { useActiveWeb3React } from '../../hooks'
-import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink } from 'utils'
 import { ExternalLink } from 'theme'
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { RowFixed } from '../Row'

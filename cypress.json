@@ -1,8 +1,12 @@
 {
   "baseUrl": "http://localhost:3000",
-  "pluginsFile": false,
-  "fixturesFolder": false,
-  "supportFile": "cypress/support/index.js",
+  "defaultCommandTimeout": 10000,
+  "integrationFolder": "cypress-custom/integration",
+  "screenshotsFolder": "cypress-custom/screenshots",
+  "supportFile": "cypress-custom/support/index.js",
+  "videosFolder": "cypress-custom/videos",
+  "downloadsFolder": "cypress-custom/downloads",
   "video": false,
-  "defaultCommandTimeout": 10000
+  "fixturesFolder": false,
+  "pluginsFile": false
 }

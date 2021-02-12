@@ -1,0 +1,51 @@
+name: Integration Tests
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+env:
+  REACT_APP_NETWORK_URL: 'https://mainnet.infura.io/v3/4bf032f2d38a4ed6bb975b80d6340847'
+  APP_ID: 1
+
+jobs:
+  integration-tests:
+    name: Cypress
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      # Install deps only
+      - name: Cypress install dependencies
+        id: cypress-deps
+        uses: cypress-io/github-action@v2
+        # Do not consider failure a failure. Well, sort of.
+        # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
+        continue-on-error: true
+        with:
+          runTests: false
+
+      - name: Install Cypress binary
+        id: cypress-bin
+        # Only run if previous step failed
+        if: steps.cypress-deps.outcome == 'failure'
+        run: npx cypress install
+
+      # Actually run tests, building repo
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          build: yarn build
+          start: yarn serve
+          wait-on: http://localhost:3000

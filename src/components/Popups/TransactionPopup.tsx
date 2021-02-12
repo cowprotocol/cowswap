@@ -4,7 +4,7 @@ import styled, { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { TYPE } from 'theme'
 import { ExternalLink } from 'theme'
-import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink } from 'utils'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
 

@@ -262,7 +262,12 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GÖRLI]: 'Görli',
-  [ChainId.KOVAN]: 'Kovan'
+  [ChainId.KOVAN]: 'Kovan',
+  [ChainId.XDAI]: 'xDAI'
+}
+
+const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
+  [ChainId.XDAI]: 'xDAI'
 }
 
 export default function HeaderMod(props: WithClassName) {
@@ -285,6 +290,8 @@ export default function HeaderMod(props: WithClassName) {
 
   // const countUpValue = aggregateBalance?.toFixed(0) ?? '0'
   // const countUpValuePrevious = usePrevious(countUpValue) ?? '0'
+
+  const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
 
   return (
     <HeaderFrame className={props.className}>
@@ -376,7 +383,7 @@ export default function HeaderMod(props: WithClassName) {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {userEthBalance?.toSignificant(4)} ETH
+                {userEthBalance?.toSignificant(4)} {nativeToken}
               </BalanceText>
             ) : null}
             <Web3Status />

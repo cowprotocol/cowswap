@@ -16,6 +16,7 @@ export interface Order extends OrderCreation {
   owner: string // address, without '0x' prefix
   status: OrderStatus
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
+  fulfilledTransactionHash?: string // hash of transaction when Order was fulfilled
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   summary: string // for dapp use only, readable by user
 }
@@ -35,13 +36,17 @@ export interface AddPendingOrderParams {
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
 export const removeOrder = createAction<{ id: OrderID; chainId: ChainId }>('order/removeOrder')
 //                                                                        fulfillmentTime from event timestamp
-export const fulfillOrder = createAction<{ id: OrderID; chainId: ChainId; fulfillmentTime: string }>(
-  'order/fulfillOrder'
-)
+export const fulfillOrder = createAction<{
+  id: OrderID
+  chainId: ChainId
+  fulfillmentTime: string
+  transactionHash: string
+}>('order/fulfillOrder')
 
 export interface OrderFulfillmentData {
   id: OrderID
   fulfillmentTime: string
+  transactionHash: string
 }
 
 export interface FulfillOrdersBatchParams {
@@ -53,6 +58,9 @@ export interface FulfillOrdersBatchParams {
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
 export const expireOrder = createAction<{ id: OrderID; chainId: ChainId }>('order/expireOrder')
+
+export const expireOrdersBatch = createAction<{ ids: OrderID[]; chainId: ChainId }>('order/expireOrdersBatch')
+
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 
 export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheckedBlock: number }>(
