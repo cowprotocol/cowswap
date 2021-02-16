@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware, StateFromReducersMapObject } from '@reduxjs/toolkit'
+import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 
 // UNI REDUCERS
@@ -39,7 +39,7 @@ const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'orders', 'fe
 
 const store = configureStore({
   reducer: reducers,
-  middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS }), popupMiddleware],
+  middleware: [save({ states: PERSISTED_KEYS }), popupMiddleware],
   preloadedState: load({ states: PERSISTED_KEYS })
 })
 
