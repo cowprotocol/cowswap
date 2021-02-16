@@ -56,12 +56,12 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   })
 
   const bestTradeExactIn = useTradeExactInWithFee({
-    parsedAmount,
+    parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
     feeInformation
   })
   const bestTradeExactOut = useTradeExactOutWithFee({
-    parsedAmount,
+    parsedAmount: isExactIn ? undefined : parsedAmount,
     inputCurrency,
     feeInformation
   })
