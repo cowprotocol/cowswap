@@ -1,4 +1,7 @@
 import { ChainId } from '@uniswap/sdk'
+import { getExplorerOrderLink } from './explorer'
+
+const GP_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
 
 export {
   basisPointsToPercent,
@@ -73,9 +76,15 @@ function getBlockscoutUrl(chainId: ChainId, data: string, type: BlockExplorerLin
 }
 
 export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  if (chainId === ChainId.XDAI) {
+  if (type === 'transaction' && data.length === GP_ORDER_ID_LENGTH) {
+    // Explorer for GP orders:
+    //    If a transaction has the size of the GP orderId, then it's a meta-tx
+    return getExplorerOrderLink(chainId, data)
+  } else if (chainId === ChainId.XDAI) {
+    // Blockscout in xDAI
     return getBlockscoutUrl(chainId, data, type)
   } else {
+    // Etherscan in xDAI
     return getEtherscanUrl(chainId, data, type)
   }
 }
