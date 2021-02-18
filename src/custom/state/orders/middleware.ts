@@ -1,30 +1,21 @@
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
 
-import * as OrderActions from './actions'
-import { OrderID } from 'utils/operator'
 import { addPopup } from 'state/application/actions'
 import { AppState } from 'state'
+import * as OrderActions from './actions'
 
+import { OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
+
+// action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
   OrderActions.addPendingOrder,
   OrderActions.expireOrder,
   OrderActions.fulfillOrder
 )
-
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
-
 const isFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
-
 const isBatchOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch, OrderActions.expireOrdersBatch)
-
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
-
-// what is passed to addPopup action
-type PopupPayload = Parameters<typeof addPopup>[0]
-interface OrderIDWithPopup {
-  id: OrderID
-  popup: PopupPayload
-}
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponsing Popup action is dispatched
@@ -49,43 +40,28 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
     const summary = orderObject?.order.summary
 
     let popup: PopupPayload
-
     if (isPendingOrderAction(action)) {
-      const key = id + '_pending'
-      const content = {
-        metatxn: {
-          id,
-          success: true,
-          summary: summary + ' submitted' || `Order ${id} submitted`
-        }
-      }
       // Pending Order Popup
-      popup = { key, content }
+      popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
     } else if (isFulfillOrderAction(action)) {
-      const { transactionHash } = action.payload
+      const { transactionHash: hash } = action.payload
 
-      const key = id + '_fulfilled'
-      const content = {
-        txn: {
-          hash: transactionHash,
-          success: true,
-          summary: summary + ' fulfilled' || `Order ${id} was traded`
-        }
-      }
-      // Fulfilled Order Popup
-      popup = { key, content }
+      popup = setPopupData(OrderTxTypes.TXN, {
+        hash,
+        summary,
+        id,
+        status: OrderActions.OrderStatus.FULFILLED,
+        descriptor: 'was traded'
+      })
     } else {
       // action is order/expireOrder
-      const key = id + '_expired'
-      const content = {
-        metatxn: {
-          id: id,
-          success: false,
-          summary: summary + ' expired' || `Order ${id} expired`
-        }
-      }
       // Expired Order Popup
-      popup = { key, content }
+      popup = setPopupData(OrderTxTypes.METATXN, {
+        success: false,
+        summary,
+        id,
+        status: OrderActions.OrderStatus.EXPIRED
+      })
     }
 
     idsAndPopups.push({
@@ -106,18 +82,15 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
       // construct Fulfilled Order Popups for each Order
       idsAndPopups = action.payload.ordersData.map(({ id, transactionHash }) => {
         const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
-
         const summary = orderObject?.order.summary
-        const key = id + '_fulfilled'
-        const content = {
-          txn: {
-            hash: transactionHash,
-            success: true,
-            summary: summary + ' fulfilled' || `Order ${id} was traded`
-          }
-        }
 
-        const popup = { key, content }
+        const popup = setPopupData(OrderTxTypes.TXN, {
+          hash: transactionHash,
+          summary,
+          id,
+          status: OrderActions.OrderStatus.FULFILLED,
+          descriptor: 'was traded'
+        })
 
         return { id, popup }
       })
@@ -127,16 +100,13 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
         const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
 
         const summary = orderObject?.order.summary
-        const key = id + '_expired'
-        const content = {
-          metatxn: {
-            id: id,
-            success: false,
-            summary: summary + ' expired' || `Order ${id} expired`
-          }
-        }
 
-        const popup = { key, content }
+        const popup = setPopupData(OrderTxTypes.METATXN, {
+          success: false,
+          summary,
+          id,
+          status: OrderActions.OrderStatus.EXPIRED
+        })
 
         return { id, popup }
       })

@@ -8,5 +8,6 @@
   "downloadsFolder": "cypress-custom/downloads",
   "video": false,
   "fixturesFolder": false,
-  "pluginsFile": false
+  "pluginsFile": false,
+  "experimentalNetworkStubbing": true
 }

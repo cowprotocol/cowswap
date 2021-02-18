@@ -10,7 +10,7 @@ export interface FeeInformation {
   feeRatio: number
 }
 
-interface FeeInformationObject {
+export interface FeeInformationObject {
   token: string // token address
   fee: FeeInformation
 }
