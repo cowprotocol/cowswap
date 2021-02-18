@@ -36,3 +36,5 @@ export const BUY_ETHER_TOKEN: { [chainId in ChainId]: Token } = {
   [ChainId.KOVAN]: new Token(ChainId.KOVAN, BUY_ETHER_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.XDAI]: new Token(ChainId.XDAI, BUY_ETHER_ADDRESS, 18, 'xDAI', 'xDAI')
 }
+
+export const ORDER_ID_SHORT_LENGTH = 8

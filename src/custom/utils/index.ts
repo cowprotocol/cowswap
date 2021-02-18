@@ -1,4 +1,5 @@
 import { ChainId } from '@uniswap/sdk'
+import { ORDER_ID_SHORT_LENGTH } from '../constants'
 import { getExplorerOrderLink } from './explorer'
 
 const GP_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
@@ -87,4 +88,17 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExpl
     // Etherscan in xDAI
     return getEtherscanUrl(chainId, data, type)
   }
+}
+
+// Shortens OrderID (or any string really) removing initial 2 characters e.g 0x
+// and cutting string at 'chars' length, default = 8
+export function shortenOrderId(orderId: string, start = 0, chars = ORDER_ID_SHORT_LENGTH): string {
+  return orderId.substring(start, chars + start)
+}
+
+export function formatOrderId(orderId: string): string {
+  const has0x = orderId.match('0x')
+
+  // 0x is at index 0 of orderId, shorten. Else return id as is
+  return has0x?.index === 0 ? shortenOrderId(orderId, 2, orderId.length) : orderId
 }
