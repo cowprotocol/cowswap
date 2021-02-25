@@ -4,7 +4,7 @@ import { batch } from 'react-redux'
 import { Order, OrderStatus, OrderKind } from './actions'
 import { useActiveWeb3React } from 'hooks'
 import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
-import { useSelectedTokenList } from 'state/lists/hooks'
+import { useCombinedActiveList } from 'state/lists/hooks'
 import { TokenInfo } from '@uniswap/token-lists'
 import { registerOnWindow } from 'utils/misc'
 import { RADIX_DECIMAL } from '@src/custom/constants'
@@ -90,7 +90,7 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
 
   const addOrder = useAddPendingOrder()
 
-  const lists = useSelectedTokenList()
+  const lists = useCombinedActiveList()
 
   useEffect(() => {
     const addNOrders = (ordersNum: number) => {
@@ -105,8 +105,8 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
 
         return generateOrder({
           owner: account,
-          sellToken: sellToken.tokenInfo,
-          buyToken: buyToken.tokenInfo
+          sellToken: sellToken.token.tokenInfo,
+          buyToken: buyToken.token.tokenInfo
         })
       })
 
