@@ -9,5 +9,5 @@
   "video": false,
   "fixturesFolder": false,
   "pluginsFile": false,
-  "experimentalNetworkStubbing": true
+  "chromeWebSecurity": false
 }
