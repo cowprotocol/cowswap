@@ -1,45 +1,52 @@
-import { CurrencyAmount, JSBI, Token, Trade } from '@uniswap/sdk'
+import { CurrencyAmount, ETHER, JSBI, Token, Trade } from '@uniswap/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import AddressInputPanel from '../../components/AddressInputPanel'
+import AddressInputPanel from 'components/AddressInputPanel'
 import { ButtonError, ButtonLight, ButtonPrimary, ButtonConfirmed } from 'components/Button'
-import Card, { GreyCard } from '../../components/Card'
-import Column, { AutoColumn } from '../../components/Column'
-import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
+import Card, { GreyCard } from 'components/Card'
+import Column, { AutoColumn } from 'components/Column'
+import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { AutoRow, RowBetween } from '../../components/Row'
-import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
-import BetterTradeLink, { DefaultVersionLink } from '../../components/swap/BetterTradeLink'
-import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
-import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from '../../components/swap/styleds'
-import TradePrice from '../../components/swap/TradePrice'
-import TokenWarningModal from '../../components/TokenWarningModal'
-import ProgressSteps from '../../components/ProgressSteps'
-import SwapHeader from '../../components/swap/SwapHeader'
+import { SwapPoolTabs } from 'components/NavigationTabs'
+import { AutoRow, RowBetween } from 'components/Row'
+import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
+import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
+import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
+import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
+import TradePrice from 'components/swap/TradePrice'
+import TokenWarningModal from 'components/TokenWarningModal'
+import ProgressSteps from 'components/ProgressSteps'
+import SwapHeader from 'components/swap/SwapHeader'
 
-import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import { getTradeVersion } from '../../data/V1'
-import { useActiveWeb3React } from '../../hooks'
-import { useCurrency, useAllTokens } from '../../hooks/Tokens'
+import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
+import { getTradeVersion } from 'data/V1'
+import { useActiveWeb3React } from 'hooks'
+import { useCurrency, useAllTokens } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
-import useENSAddress from '../../hooks/useENSAddress'
+import useENSAddress from 'hooks/useENSAddress'
 import { useSwapCallback } from 'hooks/useSwapCallback'
-import useToggledVersion, { DEFAULT_VERSION, Version } from '../../hooks/useToggledVersion'
-import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
-import { Field } from '../../state/swap/actions'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import useToggledVersion, { DEFAULT_VERSION, Version } from 'hooks/useToggledVersion'
+import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
+import { useToggleSettingsMenu, useWalletModalToggle } from 'state/application/hooks'
+import { Field } from 'state/swap/actions'
+import {
+  useShouldDisableEth,
+  useDefaultsFromURLSearch,
+  useDerivedSwapInfo,
+  useReplaceSwapState,
+  useSwapActionHandlers,
+  useSwapState
+} from 'state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance, useUserSingleHopOnly } from 'state/user/hooks'
 import { LinkStyledButton, TYPE } from 'theme'
-import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
+import { maxAmountSpend } from 'utils/maxAmountSpend'
+import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import AppBody from 'pages/AppBody'
-import { ClickableText } from '../Pool/styleds'
-import Loader from '../../components/Loader'
+import { ClickableText } from 'pages/Pool/styleds'
+import Loader from 'components/Loader'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { isTradeBetter } from 'utils/trades'
@@ -85,7 +92,8 @@ export default function Swap() {
   const [allowedSlippage] = useUserSlippageTolerance()
 
   // swap state
-  const { independentField, typedValue, recipient } = useSwapState()
+  // MOD: adds INPUT/OUTPUT
+  const { independentField, typedValue, recipient, INPUT, OUTPUT } = useSwapState()
   const {
     v1Trade,
     v2Trade,
@@ -94,6 +102,17 @@ export default function Swap() {
     currencies,
     inputError: swapInputError
   } = useDerivedSwapInfo()
+
+  // MOD: adds this fn
+  const replaceSwapState = useReplaceSwapState()
+
+  // Checks if either currency is native ETH
+  // MOD: adds this hook
+  const { showEthDisabled, weth } = useShouldDisableEth(
+    { currency: currencies.INPUT, address: INPUT.currencyId },
+    { currency: currencies.OUTPUT, address: OUTPUT.currencyId }
+  )
+
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
@@ -410,6 +429,11 @@ export default function Swap() {
                 {wrapInputError ??
                   (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
               </ButtonPrimary>
+            ) : // MOD: disable ETH trading
+            showEthDisabled ? (
+              <ButtonPrimary id="swap-button" disabled={true}>
+                <TYPE.main mb="4px">ETH cannot be traded. Use WETH</TYPE.main>
+              </ButtonPrimary>
             ) : noRoute && userHasSpecifiedInputOutput ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
@@ -504,7 +528,62 @@ export default function Swap() {
           </BottomGrouping>
         </Wrapper>
       </AppBody>
-      {!swapIsUnsupported ? (
+      {/* MOD */}
+      {showEthDisabled ? (
+        <UnsupportedCurrencyFooter
+          detailsText={
+            <>
+              <div>
+                Ether (ETH) is not tradable as a native token. Please use Wrapped Ether (WETH) instead. ETH can still be
+                wrapped/unwrapped into WETH by selecting one as the input and the other as the output.
+              </div>
+
+              {/* Offer option to trade using WETH and same user set amounts */}
+              {weth && (
+                <ButtonConfirmed
+                  onClick={() =>
+                    replaceSwapState({
+                      inputCurrencyId: currencies.INPUT === ETHER ? weth.address : INPUT.currencyId,
+                      outputCurrencyId: currencies.OUTPUT === ETHER ? weth.address : OUTPUT.currencyId,
+                      typedValue,
+                      recipient: null,
+                      field: independentField
+                    })
+                  }
+                  disabled={!weth?.address}
+                  marginTop="1.5rem"
+                  padding="0.65rem"
+                  altDisabledStyle
+                >
+                  Trade with WETH
+                </ButtonConfirmed>
+              )}
+
+              <ButtonConfirmed
+                onClick={() =>
+                  replaceSwapState({
+                    inputCurrencyId: 'ETH',
+                    outputCurrencyId: weth?.address,
+                    typedValue: '0.1',
+                    recipient: null,
+                    field: Field.INPUT
+                  })
+                }
+                disabled={!weth?.address}
+                marginTop="1.5rem"
+                padding="0.65rem"
+                altDisabledStyle
+              >
+                Wrap ETH
+              </ButtonConfirmed>
+            </>
+          }
+          detailsTitle="Ether and GP Swap"
+          showDetailsText="Learn more about using ETH on GP Swap"
+          show={showEthDisabled}
+          currencies={[currencies.INPUT, currencies.OUTPUT]}
+        />
+      ) : !swapIsUnsupported ? (
         <AdvancedSwapDetailsDropdown trade={trade} />
       ) : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />

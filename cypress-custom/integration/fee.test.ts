@@ -6,6 +6,7 @@ const RINKEBY = ChainId.RINKEBY.toString()
 const FEE_QUERY = `https://protocol-rinkeby.dev.gnosisdev.com/api/v1/tokens/${WETH[4].address}/fee`
 const FEE_QUOTES_LOCAL_STORAGE_KEY = 'redux_localstorage_simple_fee'
 const FOUR_HOURS = 3600 * 4 * 1000
+const DEFAULT_SELL_TOKEN = WETH[ChainId.RINKEBY].address
 
 function _assertFeeData(fee: FeeInformation): void {
   expect(fee).to.have.property('minimalFee')
@@ -104,7 +105,7 @@ describe('Fee: simple checks it exists', () => {
     // GIVEN: A user loads the swap page
     // WHEN: He does nothing
     // THEN: The fee for ETH is fetched
-    _assertFeeFetched('ETH')
+    _assertFeeFetched(DEFAULT_SELL_TOKEN)
   })
 
   it('Fetch fee when selecting token', () => {
