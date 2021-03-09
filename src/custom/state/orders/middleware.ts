@@ -80,10 +80,7 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
-      idsAndPopups = action.payload.ordersData.map(({ id, transactionHash }) => {
-        const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
-        const summary = orderObject?.order.summary
-
+      idsAndPopups = action.payload.ordersData.map(({ id, transactionHash, summary }) => {
         const popup = setPopupData(OrderTxTypes.TXN, {
           hash: transactionHash,
           summary,

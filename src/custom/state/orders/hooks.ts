@@ -170,6 +170,7 @@ export const useAddPendingOrder = (): AddOrderCallback => {
   return useCallback((addOrderParams: AddPendingOrderParams) => dispatch(addPendingOrder(addOrderParams)), [dispatch])
 }
 
+// unused except in mock
 export const useFulfillOrder = (): FulfillOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((fulfillOrderParams: FulfillOrderParams) => dispatch(fulfillOrder(fulfillOrderParams)), [dispatch])

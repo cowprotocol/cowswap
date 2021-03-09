@@ -3,9 +3,8 @@ import { isAddress, shortenAddress } from '@src/utils'
 import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/actions'
 
 import { signOrder, UnsignedOrder } from 'utils/signatures'
-import { getFeeQuote as getFeeInformation, postSignedOrder } from 'utils/operator'
-import { getFeeAmount } from 'utils/fee'
-import { Signer } from 'ethers'
+import { postSignedOrder } from 'utils/operator'
+import { BigNumberish, Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
 
 export interface PostOrderParams {
@@ -14,7 +13,10 @@ export interface PostOrderParams {
   signer: Signer
   kind: OrderKind
   inputAmount: CurrencyAmount
+  adjustedInputAmount: CurrencyAmount
   outputAmount: CurrencyAmount
+  adjustedOutputAmount: CurrencyAmount
+  feeAmount: BigNumberish
   sellToken: Token
   buyToken: Token
   validTo: number
@@ -24,14 +26,15 @@ export interface PostOrderParams {
 }
 
 function _getSummary(params: PostOrderParams): string {
-  const { inputAmount, outputAmount, account, recipient, recipientAddressOrName } = params
+  const { kind, inputAmount, adjustedOutputAmount, account, recipient, recipientAddressOrName } = params
 
+  const [inputQuantifier, outputQuantifier] = [kind === 'buy' ? 'at most' : '', kind === 'sell' ? 'at least' : '']
   const inputSymbol = inputAmount.currency.symbol
-  const outputSymbol = outputAmount.currency.symbol
+  const outputSymbol = adjustedOutputAmount.currency.symbol
   const inputAmountValue = inputAmount.toSignificant(SHORTEST_PRECISION)
-  const outputAmountValue = outputAmount.toSignificant(SHORTEST_PRECISION)
+  const outputAmountValue = adjustedOutputAmount.toSignificant(SHORTEST_PRECISION)
 
-  const base = `Swap ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
+  const base = `Swap ${inputQuantifier} ${inputAmountValue} ${inputSymbol} for ${outputQuantifier} ${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base
@@ -50,27 +53,22 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     kind,
     addPendingOrder,
     chainId,
-    inputAmount,
-    outputAmount,
+    // fee adjusted input
+    adjustedInputAmount,
+    // slippage output
+    adjustedOutputAmount,
     sellToken,
     buyToken,
+    feeAmount,
     validTo,
     account,
     signer
   } = params
 
-  const sellAmount = inputAmount.raw.toString(RADIX_DECIMAL)
-  const buyAmount = outputAmount.raw.toString(RADIX_DECIMAL)
-
-  // TODO: This might disappear, and just take the state from the state after the fees PRs are merged
-  //  we assume, the solvers will try to satisfy the price, and this fee is just a minimal fee.
-  // Get Fee
-  const { feeRatio, minimalFee } = await getFeeInformation(chainId, sellToken.address)
-  const feeAmount = getFeeAmount({
-    sellAmount: sellAmount,
-    feeRatio,
-    minimalFee
-  })
+  // fee adjusted input amount
+  const sellAmount = adjustedInputAmount.raw.toString(RADIX_DECIMAL)
+  // slippage adjusted output amount
+  const buyAmount = adjustedOutputAmount.raw.toString(RADIX_DECIMAL)
 
   // Prepare order
   const summary = _getSummary(params)
@@ -113,7 +111,9 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       creationTime,
       signature,
       status: OrderStatus.PENDING,
-      summary
+      summary,
+      inputToken: sellToken,
+      outputToken: buyToken
     }
   })
 

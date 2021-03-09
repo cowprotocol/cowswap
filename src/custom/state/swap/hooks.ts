@@ -1,5 +1,5 @@
 import useENS from 'hooks/useENS'
-import { Currency, CurrencyAmount, ETHER, Trade, WETH } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, ETHER, WETH } from '@uniswap/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { isAddress } from 'utils'
@@ -16,7 +16,7 @@ import {
 } from 'state/swap/hooks'
 import { useFee } from '../fee/hooks'
 import { registerOnWindow } from 'utils/misc'
-import { useTradeExactInWithFee, useTradeExactOutWithFee } from './extension'
+import { TradeWithFee, useTradeExactInWithFee, useTradeExactOutWithFee } from './extension'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
@@ -30,7 +30,7 @@ interface DerivedSwapInfo {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  v2Trade: Trade | undefined
+  v2Trade: TradeWithFee | undefined
   // TODO: review this - we don't use a v1 trade but changing all code
   // or extending whole swap comp for only removing v1trade is a lot
   v1Trade: undefined
