@@ -44,10 +44,9 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
       // Pending Order Popup
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
     } else if (isFulfillOrderAction(action)) {
-      const { transactionHash: hash } = action.payload
-
-      popup = setPopupData(OrderTxTypes.TXN, {
-        hash,
+      // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
+      // because it's nicer there
+      popup = setPopupData(OrderTxTypes.METATXN, {
         summary,
         id,
         status: OrderActions.OrderStatus.FULFILLED,
@@ -80,9 +79,11 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
-      idsAndPopups = action.payload.ordersData.map(({ id, transactionHash, summary }) => {
-        const popup = setPopupData(OrderTxTypes.TXN, {
-          hash: transactionHash,
+
+      idsAndPopups = action.payload.ordersData.map(({ id, summary }) => {
+        // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
+        // because it's nicer there
+        const popup = setPopupData(OrderTxTypes.METATXN, {
           summary,
           id,
           status: OrderActions.OrderStatus.FULFILLED,
