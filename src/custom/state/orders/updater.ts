@@ -180,15 +180,27 @@ export function EventUpdater(): null {
 
       const block2DateMap = await buildBlock2DateMap(library, logs)
 
+      // Filter out orders that should not trigger a pop-up
+      const pendingLogsAndOrders = logs.reduce<[Log, Order][]>((acc, log) => {
+        const { orderUid: id } = decodeTradeEvent(log)
+
+        console.log(`EventUpdater::Detected Trade event for order ${id} of token in block`, log.blockNumber)
+
+        const orderFromStore = findOrderById(id)
+        if (!orderFromStore || orderFromStore.status !== 'pending') {
+          console.log(`EventUpdater::Order ${id} not pending or not on local storage, ignoring it`)
+          return acc
+        }
+
+        acc.push([log, orderFromStore])
+
+        return acc
+      }, [])
+
       const ordersBatchData: OrderLogPopupMixData[] = await Promise.all(
-        logs.map(async log => {
-          const { orderUid: id } = decodeTradeEvent(log)
+        pendingLogsAndOrders.map(async ([log, orderFromStore]) => {
+          const id = orderFromStore.id
 
-          console.log(`EventUpdater::Detected Trade event for order ${id} of token in block`, log.blockNumber)
-
-          // Get order from our store
-          // and from the backened API
-          const orderFromStore = findOrderById(id)
           // We've found the orderId in the Trade event
           // But the backend may not be completely updated yet, e.g
           // the frontend is ahead of the backend in regards to data freshness
@@ -207,6 +219,7 @@ export function EventUpdater(): null {
           }
         })
       )
+
       // SET lastCheckedBlock = lastBlockNumber
       // AND fulfill orders
       // ordersBatchData can be empty
