@@ -128,7 +128,7 @@ export default function AccountDetails({
           <YourAccount>
             <InfoCard>
               <AccountGroupingRow>
-                {formatConnectorName()}
+                {formatConnectorName(connector)}
                 <div>
                   {connector !== injected && connector !== walletlink && (
                     <WalletAction
