@@ -3,8 +3,8 @@
   "compilerOptions": {
     "target": "es5",
     "lib": [
-      "dom",
-      "dom.iterable",
+      "dom", 
+      "dom.iterable", 
       "esnext"
     ],
     "allowJs": true,
@@ -28,13 +28,13 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "types": [
-      "react-spring",
+      "react-spring", 
       "jest"
     ],
     "baseUrl": "src"
   },
   "exclude": [
-    "node_modules",
+    "node_modules", 
     "cypress"
   ],
   "include": [
