@@ -6,6 +6,7 @@ import { signOrder, UnsignedOrder } from 'utils/signatures'
 import { postSignedOrder } from 'utils/operator'
 import { BigNumberish, Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
+import { EcdsaSignature } from '@gnosis.pm/gp-v2-contracts'
 
 export interface PostOrderParams {
   account: string
@@ -84,11 +85,13 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     partiallyFillable: false // Always fill or kill
   }
 
-  const signature = await signOrder({
+  const signature = (await signOrder({
     chainId,
     signer,
     order: unsignedOrder
-  })
+  })) as EcdsaSignature // Only ECDSA signing supported for now
+
+  const signatureData = signature.data.toString()
   const creationTime = new Date().toISOString()
 
   // Call API
@@ -96,7 +99,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     chainId,
     order: {
       ...unsignedOrder,
-      signature
+      signature: signatureData
     }
   })
 
@@ -109,7 +112,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       id: orderId,
       owner: account,
       creationTime,
-      signature,
+      signature: signatureData,
       status: OrderStatus.PENDING,
       summary,
       inputToken: sellToken,

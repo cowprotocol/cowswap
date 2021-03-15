@@ -153,7 +153,7 @@ export async function postSignedOrder(params: { chainId: ChainId; order: OrderCr
   // Call API
   const response = await _post(chainId, `/orders`, order)
 
-  // Handle respose
+  // Handle response
   if (!response.ok) {
     // Raise an exception
     const errorMessage = await _getErrorForUnsuccessfulPostOrder(response)
