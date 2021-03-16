@@ -19,7 +19,7 @@ export interface SignOrderParams {
 //  See https://protocol-rinkeby.dev.gnosisdev.com/api/
 export interface OrderCreation extends UnsignedOrder {
   // TODO: I commented this because I expect the API and contract to follow the same structure for the order data. confirm and delete this comment
-  signature: Signature // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
+  signature: string // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
 }
 
 // TODO: We cannot make use of the NPM exported enum, see https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats
