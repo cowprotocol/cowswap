@@ -1,4 +1,4 @@
-import { domain as domainGp, signOrder as signOrderGp, Order, Signature } from '@gnosis.pm/gp-v2-contracts'
+import { domain as domainGp, signOrder as signOrderGp, Order } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from '@uniswap/sdk'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
@@ -19,7 +19,7 @@ export interface SignOrderParams {
 //  See https://protocol-rinkeby.dev.gnosisdev.com/api/
 export interface OrderCreation extends UnsignedOrder {
   // TODO: I commented this because I expect the API and contract to follow the same structure for the order data. confirm and delete this comment
-  signature: string // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
+  signature: Signature // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
 }
 
 // TODO: We cannot make use of the NPM exported enum, see https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats
@@ -30,7 +30,7 @@ export interface OrderCreation extends UnsignedOrder {
 // export declare const enum SigningScheme {
 //   /**
 //    * The EIP-712 typed data signing scheme. This is the preferred scheme as it
-//    * provides more information to wallets performing the signature on the data
+//    * provides more infomation to wallets performing the signature on the data
 //    * being signed.
 //    *
 //    * <https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-domainseparator>
@@ -56,7 +56,7 @@ function _getDomain(chainId: ChainId): TypedDataDomain {
   return domainGp(chainId, settlementContract) // TODO: Fix types in NPM package
 }
 
-export async function signOrder(params: SignOrderParams): Promise<Signature> {
+export async function signOrder(params: SignOrderParams): Promise<string> {
   const { chainId, signer, order } = params
 
   const domain = _getDomain(chainId)
