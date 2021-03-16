@@ -1,8 +1,7 @@
 import React from 'react'
 import { ExternalLink } from 'theme'
-import { getExplorerOrderLink } from 'utils/explorer'
 import { useActiveWeb3React } from '@src/hooks'
-import { BlockExplorerLinkType, getExplorerLabel } from 'utils'
+import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'utils'
 
 interface Props {
   id: string
@@ -22,5 +21,5 @@ export function ExplorerLink(props: Props) {
   }
 
   const linkLabel = label || getExplorerLabel(chainId, id, type)
-  return <ExternalLink href={getExplorerOrderLink(chainId, id)}>{linkLabel}</ExternalLink>
+  return <ExternalLink href={getEtherscanLink(chainId, id, type)}>{linkLabel}</ExternalLink>
 }
