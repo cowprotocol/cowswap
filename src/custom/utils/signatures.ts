@@ -1,4 +1,4 @@
-import { domain as domainGp, signOrder as signOrderGp, Order, Signature } from '@gnosis.pm/gp-v2-contracts'
+import { domain as domainGp, signOrder as signOrderGp, Order } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from '@uniswap/sdk'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
@@ -56,7 +56,7 @@ function _getDomain(chainId: ChainId): TypedDataDomain {
   return domainGp(chainId, settlementContract) // TODO: Fix types in NPM package
 }
 
-export async function signOrder(params: SignOrderParams): Promise<Signature> {
+export async function signOrder(params: SignOrderParams): Promise<string> {
   const { chainId, signer, order } = params
 
   const domain = _getDomain(chainId)
