@@ -12,14 +12,15 @@ import { ButtonPrimary } from 'components/Button'
 import { SectionBreak } from 'components/swap/styleds'
 import { ExternalLink } from 'theme'
 import ListLogo from 'components/ListLogo'
-import { PaddedColumn, Checkbox, TextDot } from './styleds'
-import { TokenList } from '@uniswap/token-lists'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'state'
+import { PaddedColumn, Checkbox, TextDot } from 'components/SearchModal/styleds'
+// import { TokenList } from '@uniswap/token-lists'
+// import { useDispatch } from 'react-redux'
+// import { AppDispatch } from 'state'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
-import { removeList, enableList } from '@src/state/lists/actions'
-import { CurrencyModalView } from './CurrencySearchModal'
+// import { removeList, enableList } from 'state/lists/actions'
+import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { useAllLists } from 'state/lists/hooks'
+import { ImportProps } from '.'
 
 const Wrapper = styled.div`
   position: relative;
@@ -27,16 +28,10 @@ const Wrapper = styled.div`
   overflow: auto;
 `
 
-interface ImportProps {
-  listURL: string
-  list: TokenList
-  onDismiss: () => void
-  setModalView: (view: CurrencyModalView) => void
-}
-
-export function ImportList({ listURL, list, setModalView, onDismiss }: ImportProps) {
+// export function ImportList({ listURL, list, setModalView, onDismiss }: ImportProps) {
+export function ImportList({ listURL, list, setModalView, onDismiss, enableList, removeList }: Required<ImportProps>) {
   const theme = useTheme()
-  const dispatch = useDispatch<AppDispatch>()
+  // const dispatch = useDispatch<AppDispatch>()
 
   // user must accept
   const [confirmed, setConfirmed] = useState(false)
@@ -60,7 +55,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss }: ImportPro
         })
 
         // turn list on
-        dispatch(enableList(listURL))
+        enableList(listURL)
         // go back to lists
         setModalView(CurrencyModalView.manage)
       })
@@ -71,9 +66,9 @@ export function ImportList({ listURL, list, setModalView, onDismiss }: ImportPro
           label: listURL
         })
         setAddError(error.message)
-        dispatch(removeList(listURL))
+        removeList(listURL)
       })
-  }, [adding, dispatch, fetchList, listURL, setModalView])
+  }, [adding, enableList, fetchList, listURL, removeList, setModalView])
 
   return (
     <Wrapper>
