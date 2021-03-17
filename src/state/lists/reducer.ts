@@ -2,7 +2,7 @@ import { DEFAULT_ACTIVE_LIST_URLS } from './../../constants/lists'
 import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
 import { TokenList } from '@uniswap/token-lists/dist/types'
-import { DEFAULT_LIST_OF_LISTS } from 'constants/lists'
+import { DEFAULT_LIST_OF_LISTS } from '@src/constants/lists'
 import { updateVersion } from '../global/actions'
 import { acceptListUpdate, addList, fetchTokenList, removeList, enableList, disableList } from './actions'
 
@@ -22,16 +22,16 @@ export interface ListsState {
   readonly activeListUrls: string[] | undefined
 }
 
-type ListState = ListsState['byUrl'][string]
+export type ListState = ListsState['byUrl'][string]
 
-const NEW_LIST_STATE: ListState = {
+export const NEW_LIST_STATE: ListState = {
   error: null,
   current: null,
   loadingRequestId: null,
   pendingUpdate: null
 }
 
-type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U> ? U[] : T[P] }
+export type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U> ? U[] : T[P] }
 
 const initialState: ListsState = {
   lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,

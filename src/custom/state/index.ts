@@ -8,13 +8,14 @@ import user from '@src/state/user/reducer'
 import transactions from '@src/state/transactions/reducer'
 import swap from '@src/state/swap/reducer'
 import mint from '@src/state/mint/reducer'
-import lists from '@src/state/lists/reducer'
 import burn from '@src/state/burn/reducer'
 import multicall from '@src/state/multicall/reducer'
 // CUSTOM REDUCERS
+import lists from './lists/reducer'
 import operator from './operator/reducer'
 import orders from './orders/reducer'
 import fee from './fee/reducer'
+
 import { popupMiddleware } from './orders/middleware'
 
 const UNISWAP_REDUCERS = {
@@ -24,18 +25,18 @@ const UNISWAP_REDUCERS = {
   swap,
   mint,
   burn,
-  multicall,
-  lists
+  multicall
 }
 
 const reducers = {
   ...UNISWAP_REDUCERS,
+  lists,
   operator,
   orders,
   fee
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'orders', 'fee']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'fee', 'lists']
 
 const store = configureStore({
   reducer: reducers,

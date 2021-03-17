@@ -1,13 +1,11 @@
 import { useMemo } from 'react'
 import { ETHER, Percent, TradeType } from '@uniswap/sdk'
-import { BigNumber } from 'ethers'
 
 import { BIPS_BASE, BUY_ETHER_TOKEN, INITIAL_ALLOWED_SLIPPAGE, RADIX_DECIMAL } from 'constants/index'
 
 import { useAddPendingOrder } from 'state/orders/hooks'
 
 import { SwapCallbackState } from '@src/hooks/useSwapCallback'
-import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
 import useENS from '@src/hooks/useENS'
 
 import { useActiveWeb3React } from 'hooks'
@@ -17,8 +15,19 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { postOrder } from 'utils/trade'
 import { OrderKind } from 'utils/signatures'
 import { TradeWithFee } from 'state/swap/extension'
+import { useUserTransactionTTL } from '@src/state/user/hooks'
+import { BigNumber } from 'ethers'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
+
+function calculateValidTo(deadline: number): number {
+  // Need the timestamp in seconds
+  const now = Date.now() / 1000
+  // Must be an integer
+  const validTo = Math.floor(deadline + now)
+  // Should not be greater than what the contract supports
+  return Math.min(validTo, MAX_VALID_TO_EPOCH)
+}
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
@@ -32,7 +41,7 @@ export function useSwapCallback(
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
-  const validTo = useTransactionDeadline()?.toNumber() || MAX_VALID_TO_EPOCH
+  const [deadline] = useUserTransactionTTL()
   const addPendingOrder = useAddPendingOrder()
   const { INPUT: inputAmount, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -80,6 +89,7 @@ export function useSwapCallback(
         const slippagePercent = new Percent(allowedSlippage.toString(RADIX_DECIMAL), BIPS_BASE)
         const routeDescription = route.path.map(token => token.symbol || token.name || token.address).join(' → ')
         const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
+        const validTo = calculateValidTo(deadline)
 
         console.log(
           `[useSwapCallback] >> Trading ${routeDescription}. 
@@ -157,7 +167,7 @@ export function useSwapCallback(
     recipient,
     recipientAddressOrName,
     allowedSlippage,
-    validTo,
+    deadline,
     wrapEther,
     addPendingOrder
   ])

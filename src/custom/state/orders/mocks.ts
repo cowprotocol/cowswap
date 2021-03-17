@@ -74,6 +74,7 @@ const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Ord
     feeAmount: (1e18).toString(), // in atoms
     kind,
     partiallyFillable: false,
+    // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2) // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
   }
 }
