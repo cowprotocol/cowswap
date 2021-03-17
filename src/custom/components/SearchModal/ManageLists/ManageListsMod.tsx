@@ -10,7 +10,7 @@ import { TokenList } from '@uniswap/token-lists'
 
 import useToggle from 'hooks/useToggle'
 import { AppDispatch, AppState } from 'state'
-import { acceptListUpdate, removeList, disableList, enableList } from 'state/lists/actions'
+// import { acceptListUpdate, removeList, disableList, enableList } from 'state/lists/actions'
 import { useIsListActive, useAllLists, useActiveListUrls } from 'state/lists/hooks'
 import { ExternalLink, LinkStyledButton, TYPE, IconWrapper } from 'theme'
 import listVersionLabel from 'utils/listVersionLabel'
@@ -27,6 +27,11 @@ import useTheme from 'hooks/useTheme'
 import ListToggle from 'components/Toggle/ListToggle'
 import Card from 'components/Card'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
+// Mod:
+import { ListRowProps } from '.'
+import { ChainId } from '@uniswap/sdk'
+import { useActiveWeb3React } from '@src/hooks'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -91,8 +96,18 @@ function listUrlRowHTMLId(listUrl: string) {
   return `list-row-${listUrl.replace(/\./g, '-')}`
 }
 
-const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
-  const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+const ListRow = memo(function ListRow({
+  listUrl,
+  acceptListUpdate,
+  removeList,
+  enableList,
+  disableList
+}: // }: { listUrl: string }) {
+ListRowProps & { listUrl: string }) {
+  // We default to a chainId if none is available
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
+  // const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+  const listsByUrl = useSelector<AppState, AppState['lists'][ChainId]['byUrl']>(state => state.lists[chainId].byUrl)
   const dispatch = useDispatch<AppDispatch>()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
 
@@ -121,7 +136,8 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
       label: listUrl
     })
     dispatch(acceptListUpdate(listUrl))
-  }, [dispatch, listUrl, pending])
+    // }, [dispatch, listUrl, pending])
+  }, [acceptListUpdate, dispatch, listUrl, pending])
 
   const handleRemoveList = useCallback(() => {
     ReactGA.event({
@@ -137,7 +153,8 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
       })
       dispatch(removeList(listUrl))
     }
-  }, [dispatch, listUrl])
+    // }, [dispatch, listUrl])
+  }, [dispatch, listUrl, removeList])
 
   const handleEnableList = useCallback(() => {
     ReactGA.event({
@@ -146,7 +163,8 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
       label: listUrl
     })
     dispatch(enableList(listUrl))
-  }, [dispatch, listUrl])
+    // }, [dispatch, listUrl])
+  }, [dispatch, enableList, listUrl])
 
   const handleDisableList = useCallback(() => {
     ReactGA.event({
@@ -155,7 +173,8 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
       label: listUrl
     })
     dispatch(disableList(listUrl))
-  }, [dispatch, listUrl])
+    // }, [dispatch, listUrl])
+  }, [disableList, dispatch, listUrl])
 
   if (!list) return null
 
@@ -216,12 +235,14 @@ export function ManageLists({
   setModalView,
   setImportList,
   setListUrl,
-  unsupportedListUrls
+  unsupportedListUrls,
+  listRowProps
 }: {
   setModalView: (view: CurrencyModalView) => void
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
   unsupportedListUrls: string[]
+  listRowProps: ListRowProps
 }) {
   const theme = useTheme()
 
@@ -374,7 +395,8 @@ export function ManageLists({
       <ListContainer>
         <AutoColumn gap="md">
           {sortedLists.map(listUrl => (
-            <ListRow key={listUrl} listUrl={listUrl} />
+            // <ListRow key={listUrl} listUrl={listUrl} />
+            <ListRow key={listUrl} listUrl={listUrl} {...listRowProps} />
           ))}
         </AutoColumn>
       </ListContainer>

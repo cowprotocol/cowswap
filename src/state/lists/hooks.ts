@@ -4,7 +4,7 @@ import { ChainId, Token } from '@uniswap/sdk'
 import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { AppState } from 'state'
+import { AppState } from '@src/state'
 import sortByListPriority from 'utils/listSort'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
 
@@ -36,7 +36,7 @@ export type TokenAddressMap = Readonly<
 /**
  * An empty result, useful as a default.
  */
-const EMPTY_LIST: TokenAddressMap = {
+export const EMPTY_LIST: TokenAddressMap = {
   [ChainId.KOVAN]: {},
   [ChainId.RINKEBY]: {},
   [ChainId.ROPSTEN]: {},
@@ -91,7 +91,7 @@ export function useAllLists(): {
   return useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
 }
 
-function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
+export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
   return {
     1: { ...map1[1], ...map2[1] },
     3: { ...map1[3], ...map2[3] },
@@ -103,7 +103,7 @@ function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddress
 }
 
 // merge tokens contained within lists from urls
-function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {
+export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {
   const lists = useAllLists()
 
   return useMemo(() => {

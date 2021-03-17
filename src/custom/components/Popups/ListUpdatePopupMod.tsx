@@ -1,17 +1,18 @@
-import { diffTokenLists, TokenList } from '@uniswap/token-lists'
+import { diffTokenLists /* , TokenList */ } from '@uniswap/token-lists'
 import React, { useCallback, useMemo } from 'react'
 import ReactGA from 'react-ga'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import { AppDispatch } from '../../state'
-import { useRemovePopup } from '../../state/application/hooks'
-import { acceptListUpdate } from '@src/state/lists/actions'
+import { AppDispatch } from 'state'
+import { useRemovePopup } from 'state/application/hooks'
+// import { acceptListUpdate } from 'state/lists/actions'
 import { TYPE } from 'theme'
-import listVersionLabel from '../../utils/listVersionLabel'
-import { ButtonSecondary } from '../Button'
-import { AutoColumn } from '../Column'
-import { AutoRow } from '../Row'
+import listVersionLabel from 'utils/listVersionLabel'
+import { ButtonSecondary } from 'components/Button'
+import { AutoColumn } from 'components/Column'
+import { AutoRow } from 'components/Row'
+import { ListUpdatePopupProps } from './ListUpdatePopup'
 
 export const ChangesList = styled.ul`
   max-height: 400px;
@@ -23,14 +24,10 @@ export default function ListUpdatePopup({
   listUrl,
   oldList,
   newList,
-  auto
-}: {
-  popKey: string
-  listUrl: string
-  oldList: TokenList
-  newList: TokenList
-  auto: boolean
-}) {
+  auto,
+  // MOD:
+  acceptListUpdate
+}: ListUpdatePopupProps) {
   const removePopup = useRemovePopup()
   const removeThisPopup = useCallback(() => removePopup(popKey), [popKey, removePopup])
   const dispatch = useDispatch<AppDispatch>()
@@ -44,7 +41,9 @@ export default function ListUpdatePopup({
     })
     dispatch(acceptListUpdate(listUrl))
     removeThisPopup()
-  }, [auto, dispatch, listUrl, removeThisPopup])
+    // MOD: deps
+    //   }, [acceptListUpdate, auto, dispatch, listUrl, removeThisPopup])
+  }, [acceptListUpdate, auto, dispatch, listUrl, removeThisPopup])
 
   const { added: tokensAdded, changed: tokensChanged, removed: tokensRemoved } = useMemo(() => {
     return diffTokenLists(oldList.tokens, newList.tokens)
