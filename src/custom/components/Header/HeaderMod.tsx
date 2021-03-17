@@ -7,15 +7,15 @@ import { useTranslation } from 'react-i18next'
 
 import styled from 'styled-components'
 
-import Logo from 'assets/svg/logo.svg'
-import LogoDark from 'assets/svg/logo_white.svg'
+// import Logo from 'assets/svg/logo.svg'
+// import LogoDark from 'assets/svg/logo_white.svg'
+
 import { useActiveWeb3React } from 'hooks'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useETHBalances /*, useAggregateUniBalance*/ } from 'state/wallet/hooks'
 // import { CardNoise } from 'components/earn/styled'
 // import { CountUp } from 'use-count-up'
 import { /*TYPE,*/ ExternalLink } from 'theme'
-
 import { YellowCard } from 'components/Card'
 import { Moon, Sun } from 'react-feather'
 import Menu from 'components/Menu'
@@ -28,6 +28,7 @@ import Web3Status from 'components/Web3Status'
 // import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 // import { Dots } from 'components/swap/styleds'
 import Modal from 'components/Modal'
+import { LogoImage } from 'components/Header'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
 // import usePrevious from 'hooks/usePrevious'
 import { WithClassName } from 'types'
@@ -333,15 +334,15 @@ export default function HeaderMod(props: WithClassName) {
       <HeaderRow>
         <Title href=".">
           <UniIcon>
-            <img width={'24px'} src={darkMode ? LogoDark : Logo} alt="logo" />
+            {/* <img width={'24px'} src={darkMode ? LogoDark : Logo} alt="logo" /> */}
+            <LogoImage />
           </UniIcon>
         </Title>
         <HeaderLinks>
           <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
             {t('swap')}
           </StyledNavLink>
-          {/*
-          <StyledNavLink
+          {/* <StyledNavLink
             id={`pool-nav-link`}
             to={'/pool'}
             isActive={(match, { pathname }) =>
@@ -373,8 +374,7 @@ export default function HeaderMod(props: WithClassName) {
               <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
             )}
           </HideSmall>
-          {/*
-          {availableClaim && !showClaimPopup && (
+          {/* {availableClaim && !showClaimPopup && (
             <UNIWrapper onClick={toggleClaimModal}>
               <UNIAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
                 <TYPE.white padding="0 2px">

@@ -42,6 +42,36 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
 
 export const ButtonLight = styled(ButtonLightMod)`
   // CSS override
+  background-color: ${({ theme }) => theme.primary5};
+  color: ${({ theme }) => theme.primaryText1};
+  font-size: ${({ theme }) => theme.buttonLight.fontSize};
+  font-weight: ${({ theme }) => theme.buttonLight.fontWeight};
+  border: ${({ theme }) => theme.buttonLight.border};
+  box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
+  border-radius: ${({ theme }) => theme.buttonLight.borderRadius};
+  ${({ theme }) => theme.cursor};
+
+  &:focus {
+    box-shadow: inherit;
+    background-color: inherit;
+  }
+  &:hover {
+    background-color: inherit;
+  }
+  &:active {
+    box-shadow: inherit;
+    background-color: inherit;
+  }
+  :disabled {
+    opacity: 0.4;
+    :hover {
+      cursor: auto;
+      background-color: ${({ theme }) => theme.primary5};
+      box-shadow: none;
+      border: 1px solid transparent;
+      outline: none;
+    }
+  }
 `
 
 export const ButtonGray = styled(ButtonGrayMod)`
