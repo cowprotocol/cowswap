@@ -16,7 +16,7 @@ const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
 const isBatchOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch, OrderActions.expireOrdersBatch)
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
-const isFullfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
+const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
 
 // on each Pending, Expired, Fulfilled order action
@@ -122,6 +122,33 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
   return result
 }
 
+let moooooSend: HTMLAudioElement
+function getMoooooSend(): HTMLAudioElement {
+  if (!moooooSend) {
+    moooooSend = new Audio('/audio/mooooo_send.mp3')
+  }
+
+  return moooooSend
+}
+
+let moooooSuccess: HTMLAudioElement
+function getMoooooSuccess(): HTMLAudioElement {
+  if (!moooooSuccess) {
+    moooooSuccess = new Audio('/audio/mooooo_success.mp3')
+  }
+
+  return moooooSuccess
+}
+
+let moooooError: HTMLAudioElement
+function getMoooooError(): HTMLAudioElement {
+  if (!moooooError) {
+    moooooError = new Audio('/audio/mooooo_error.mp3')
+  }
+
+  return moooooError
+}
+
 // on each Pending, Expired, Fulfilled order action
 // a corresponsing sound is dispatched
 export const soundMiddleware: Middleware<{}, AppState> = store => next => action => {
@@ -136,15 +163,15 @@ export const soundMiddleware: Middleware<{}, AppState> = store => next => action
 
     const updatedElements = isBatchFulfillOrderAction(action) ? action.payload.ordersData : action.payload.ids
     // no orders were executed/expired
-    if (updatedElements.length == 0) return result
+    if (updatedElements.length === 0) return result
   }
 
   if (isPendingOrderAction(action)) {
-    console.log('[soundMiddleware] Moooooooo', action)
-  } else if (isFullfillOrderAction(action)) {
-    console.log('[soundMiddleware] Happy Moooooooo', action)
+    getMoooooSend().play()
+  } else if (isFulfillOrderAction(action)) {
+    getMoooooSuccess().play()
   } else if (isExpireOrdersAction(action)) {
-    console.log('[soundMiddleware] Sad Moooooooo', action)
+    getMoooooError().play()
   }
 
   return result
