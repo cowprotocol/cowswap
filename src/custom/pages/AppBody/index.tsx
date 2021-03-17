@@ -1,5 +1,5 @@
 import React from 'react'
-import { BodyWrapper as BodyWrapperMod } from './AppBodyMod'
+import { BodyWrapper as BodyWrapperMod } from '@src/pages/AppBody'
 import styled from 'styled-components'
 import Version from 'components/Version'
 
