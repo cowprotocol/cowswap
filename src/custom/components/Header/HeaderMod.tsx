@@ -11,15 +11,15 @@ import styled from 'styled-components'
 // import LogoDark from 'assets/svg/logo_white.svg'
 
 import { useActiveWeb3React } from 'hooks'
-import { useDarkModeManager } from 'state/user/hooks'
+// import { useDarkModeManager } from 'state/user/hooks'
 import { useETHBalances /*, useAggregateUniBalance*/ } from 'state/wallet/hooks'
 // import { CardNoise } from 'components/earn/styled'
 // import { CountUp } from 'use-count-up'
 // import { TYPE, ExternalLink } from 'theme'
 
 import { YellowCard } from 'components/Card'
-import { Moon, Sun } from 'react-feather'
-import Menu from 'components/Menu'
+// import { Moon, Sun } from 'react-feather'
+// import Menu from 'components/Menu'
 
 import Row, { RowFixed } from 'components/Row'
 import Web3Status from 'components/Web3Status'
@@ -99,10 +99,12 @@ const HeaderElement = styled.div`
   `};
 `
 
+/*
 const HeaderElementWrap = styled.div`
   display: flex;
   align-items: center;
 `
+*/
 
 const HeaderRow = styled(RowFixed)`
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -310,7 +312,7 @@ export default function HeaderMod(props: WithClassName) {
   const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
+  // const [darkMode, toggleDarkMode] = useDarkModeManager()
 
   // const toggleClaimModal = useToggleSelfClaimModal()
 
