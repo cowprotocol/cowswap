@@ -14,7 +14,13 @@ import {
 import { buildBlock2DateMap } from 'utils/blocks'
 import { delay, registerOnWindow } from 'utils/misc'
 import { getOrder, OrderMetaData } from 'utils/operator'
-import { DEFAULT_ORDER_DELAY, GP_SETTLEMENT_CONTRACT_ADDRESS, SHORT_PRECISION } from 'constants/index'
+import {
+  DEFAULT_ORDER_DELAY,
+  GP_SETTLEMENT_CONTRACT_ADDRESS,
+  SHORT_PRECISION,
+  EXPIRED_ORDERS_BUFFER,
+  CHECK_EXPIRED_ORDERS_INTERVAL
+} from 'constants/index'
 import { GP_V2_SETTLEMENT_INTERFACE } from 'constants/GPv2Settlement'
 import { stringToCurrency } from '../swap/extension'
 
@@ -286,8 +292,6 @@ export function EventUpdater(): null {
   return null
 }
 
-const CHECK_EXPIRED_ORDERS_INTERVAL = 10000 // 10 sec
-
 export function ExpiredOrdersWatcher(): null {
   const { chainId } = useActiveWeb3React()
 
@@ -307,12 +311,12 @@ export function ExpiredOrdersWatcher(): null {
       // but don't clearInterval so we can restart when there are new orders
       if (pendingOrdersRef.current.length === 0) return
 
-      const now = new Date()
       const expiredOrders = pendingOrdersRef.current.filter(order => {
         // validTo is either a Date or unix timestamp in seconds
         const validTo = typeof order.validTo === 'number' ? new Date(order.validTo * 1000) : order.validTo
 
-        return validTo < now
+        // let's get the current date, with our expired order validTo given a buffer time
+        return Date.now() - validTo.valueOf() > EXPIRED_ORDERS_BUFFER
       })
 
       const expiredIds = expiredOrders.map(({ id }) => id)

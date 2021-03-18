@@ -17,7 +17,7 @@ import QuestionHelper from '../../components/QuestionHelper'
 import { Dots } from '../../components/swap/styleds'
 import { useAddUserToken } from '../../state/user/hooks'
 import { isTokenOnList } from 'utils'
-import { useCombinedActiveList } from '../../state/lists/hooks'
+import { useCombinedActiveList } from 'state/lists/hooks'
 
 export default function MigrateV1() {
   const theme = useContext(ThemeContext)

@@ -2,18 +2,22 @@ import { useAllLists } from 'state/lists/hooks'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React } from 'hooks'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
-import useInterval from '../../hooks/useInterval'
-import useIsWindowVisible from '../../hooks/useIsWindowVisible'
+import useInterval from 'hooks/useInterval'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { AppDispatch } from 'state'
-import { acceptListUpdate } from './actions'
+import { acceptListUpdate } from 'state/lists/actions'
 import { useActiveListUrls } from 'state/lists/hooks'
 import { useAllInactiveTokens } from 'hooks/Tokens'
-import { UNSUPPORTED_LIST_URLS } from 'constants/lists'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+// MOD: add updateVersion for chainId change init
+import { updateVersion } from 'state/global/actions'
 
 export default function Updater(): null {
-  const { library } = useActiveWeb3React()
+  // MOD: chainId
+  // const { library } = useActiveWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS, library } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   const isWindowVisible = useIsWindowVisible()
 
@@ -45,16 +49,6 @@ export default function Updater(): null {
     })
   }, [dispatch, fetchList, library, lists])
 
-  // if any lists from unsupported lists are loaded, check them too (in case new updates since last visit)
-  useEffect(() => {
-    Object.keys(UNSUPPORTED_LIST_URLS).forEach(listUrl => {
-      const list = lists[listUrl]
-      if (!list || (!list.current && !list.loadingRequestId && !list.error)) {
-        fetchList(listUrl).catch(error => console.debug('list added fetching error', error))
-      }
-    })
-  }, [dispatch, fetchList, library, lists])
-
   // automatically update lists if versions are minor/patch
   useEffect(() => {
     Object.keys(lists).forEach(listUrl => {
@@ -69,7 +63,9 @@ export default function Updater(): null {
             const min = minVersionBump(list.current.tokens, list.pendingUpdate.tokens)
             // automatically update minor/patch as long as bump matches the min update
             if (bump >= min) {
-              dispatch(acceptListUpdate(listUrl))
+              // MOD: need to update the acceptListUpdate params
+              // dispatch(acceptListUpdate(listUrl))
+              dispatch(acceptListUpdate({ chainId, url: listUrl }))
             } else {
               console.error(
                 `List at url ${listUrl} could not automatically update because the version bump was only PATCH/MINOR while the update had breaking changes and should have been MAJOR`
@@ -79,11 +75,22 @@ export default function Updater(): null {
 
           // update any active or inactive lists
           case VersionUpgrade.MAJOR:
-            dispatch(acceptListUpdate(listUrl))
+            // MOD: need to update the acceptListUpdate params
+            // dispatch(acceptListUpdate(listUrl))
+            dispatch(acceptListUpdate({ chainId, url: listUrl }))
         }
       }
     })
-  }, [dispatch, lists, activeListUrls])
+    // MOD: deps
+    // }, [dispatch, lists, activeListUrls])
+  }, [dispatch, lists, activeListUrls, chainId])
+
+  // automatically initialise lists if chainId changes
+  useEffect(() => {
+    if (chainId) {
+      dispatch(updateVersion({ chainId }))
+    }
+  }, [chainId, dispatch])
 
   return null
 }

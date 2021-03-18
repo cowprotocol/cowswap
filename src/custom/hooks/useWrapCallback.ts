@@ -41,6 +41,9 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
   // Check if user has enough balance for wrap/unwrap
   const sufficientBalance = !!(inputAmount && balance && !balance.lessThan(inputAmount))
+  const isZero = balance && !inputAmount
+
+  const inputError = isZero ? `Enter an amount` : !sufficientBalance ? `Insufficient ${symbol} balance` : undefined
 
   // Create wrap/unwrap callback if sufficient balance
   let wrapUnwrapCallback: (() => Promise<void>) | undefined
@@ -70,7 +73,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   return {
     wrapType: isWrap ? WrapType.WRAP : WrapType.UNWRAP,
     execute: wrapUnwrapCallback,
-    inputError: sufficientBalance ? undefined : `Insufficient ${symbol} balance`
+    inputError
   }
 }
 
