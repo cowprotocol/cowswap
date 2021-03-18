@@ -9,9 +9,8 @@ export const BodyWrapper = styled(BodyWrapperMod)`
   border: ${({ theme }) => theme.appBody.border};
   padding: ${({ theme }) => theme.appBody.padding};
 `
-/**
- * The styled container element that wraps the content of most pages and the tabs.
- */
+
+// The styled container element that wraps the content of most pages and the tabs.
 export default function AppBody({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <BodyWrapper className={className}>

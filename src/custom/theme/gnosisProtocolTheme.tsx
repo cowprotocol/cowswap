@@ -71,10 +71,17 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     header: {
       border: `1px solid ${colorsTheme.border}`
     },
+    buttonPrimary: {
+      background: css`
+        background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
+        background-color: transparent;
+      `
+    },
     buttonLight: {
       fontSize: '16px',
       fontWeight: '500',
       border: 'none',
+      borderHover: '1px solid transparent',
       borderRadius: 'inherit',
       boxShadow: 'none'
     },
