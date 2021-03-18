@@ -1,5 +1,3 @@
-import './swapMod'
-
 // MOD of original Uni Swap test
 // Main differences summarised:
 // GP doesn't use ETH, so we need to test for this

@@ -1,4 +1,4 @@
-describe('Swap', () => {
+describe('Swap (mod)', () => {
   beforeEach(() => {
     cy.visit('/swap')
   })
@@ -57,16 +57,16 @@ describe('Swap', () => {
       cy.get('#confirm-expert-mode').click()
     })
 
-    it('add a recipient is visible', () => {
+    it.skip('add a recipient is visible', () => {
       cy.get('#add-recipient-button').should('be.visible')
     })
 
-    it('add a recipient', () => {
+    it.skip('add a recipient', () => {
       cy.get('#add-recipient-button').click()
       cy.get('#recipient').should('exist')
     })
 
-    it('remove recipient', () => {
+    it.skip('remove recipient', () => {
       cy.get('#add-recipient-button').click()
       cy.get('#remove-recipient-button').click()
       cy.get('#recipient').should('not.exist')
