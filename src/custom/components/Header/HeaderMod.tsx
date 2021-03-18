@@ -14,7 +14,7 @@ import { useDarkModeManager } from 'state/user/hooks'
 import { useETHBalances /*, useAggregateUniBalance*/ } from 'state/wallet/hooks'
 // import { CardNoise } from 'components/earn/styled'
 // import { CountUp } from 'use-count-up'
-import { /*TYPE,*/ ExternalLink } from 'theme'
+// import { TYPE, ExternalLink } from 'theme'
 
 import { YellowCard } from 'components/Card'
 import { Moon, Sun } from 'react-feather'
@@ -229,6 +229,7 @@ const StyledNavLink = styled(NavLink).attrs({
   }
 `
 
+/*
 const StyledExternalLink = styled(ExternalLink).attrs({
   activeClassName
 })<{ isActive?: boolean }>`
@@ -259,6 +260,7 @@ const StyledExternalLink = styled(ExternalLink).attrs({
       display: none;
 `}
 `
+*/
 
 export const StyledMenuButton = styled.button`
   position: relative;
@@ -359,11 +361,11 @@ export default function HeaderMod(props: WithClassName) {
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
             Vote
-          </StyledNavLink>
-          */}
+          </StyledNavLink>          
           <StyledExternalLink id={`stake-nav-link`} href={'https://uniswap.info'}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
+          */}
         </HeaderLinks>
       </HeaderRow>
       <HeaderControls>
