@@ -1,16 +1,28 @@
-import useENS from '@src/hooks/useENS'
-import { Currency, CurrencyAmount, Trade } from '@uniswap/sdk'
-import { useActiveWeb3React } from '@src/hooks'
-import { useCurrency } from '@src/hooks/Tokens'
-import { isAddress } from '@src/utils'
-import { useCurrencyBalances } from '@src/state/wallet/hooks'
-import { Field } from '@src/state/swap/actions'
-import { useUserSlippageTolerance } from '@src/state/user/hooks'
-import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
-import { tryParseAmount, useSwapState } from '@src/state/swap/hooks'
+import useENS from 'hooks/useENS'
+import { Currency, CurrencyAmount, ETHER, WETH } from '@uniswap/sdk'
+import { useActiveWeb3React } from 'hooks'
+import { useCurrency } from 'hooks/Tokens'
+import { isAddress } from 'utils'
+import { useCurrencyBalances } from 'state/wallet/hooks'
+import { Field, replaceSwapState } from 'state/swap/actions'
+import { useUserSlippageTolerance } from 'state/user/hooks'
+import { computeSlippageAdjustedAmounts } from 'utils/prices'
+import {
+  parseIndependentFieldURLParameter,
+  parseTokenAmountURLParameter,
+  tryParseAmount,
+  useSwapState,
+  validatedRecipient
+} from 'state/swap/hooks'
 import { useFee } from '../fee/hooks'
 import { registerOnWindow } from 'utils/misc'
-import { useTradeExactInWithFee, useTradeExactOutWithFee } from './extension'
+import { TradeWithFee, useTradeExactInWithFee, useTradeExactOutWithFee } from './extension'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
+import { SwapState } from 'state/swap/reducer'
+import { ParsedQs } from 'qs'
+import { useWETHContract } from 'hooks/useContract'
 
 export * from '@src/state/swap/hooks'
 
@@ -18,7 +30,7 @@ interface DerivedSwapInfo {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  v2Trade: Trade | undefined
+  v2Trade: TradeWithFee | undefined
   // TODO: review this - we don't use a v1 trade but changing all code
   // or extending whole swap comp for only removing v1trade is a lot
   v1Trade: undefined
@@ -120,4 +132,107 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     inputError,
     v1Trade: undefined
   }
+}
+
+// export function parseCurrencyFromURLParameter(urlParam: any): string {
+export function parseCurrencyFromURLParameter(urlParam?: string | string[] | ParsedQs | ParsedQs[]): string {
+  if (typeof urlParam === 'string' && urlParam?.toUpperCase() === 'ETH') return 'ETH'
+
+  const validTokenAddress = isAddress(urlParam)
+
+  if (typeof urlParam === 'string' && validTokenAddress) {
+    return validTokenAddress
+  } else {
+    // return empty token
+    return ''
+  }
+}
+
+export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
+  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
+  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
+  if (inputCurrency === outputCurrency) {
+    if (typeof parsedQs.outputCurrency === 'string') {
+      inputCurrency = ''
+    } else {
+      outputCurrency = ''
+    }
+  }
+
+  const recipient = validatedRecipient(parsedQs.recipient)
+
+  return {
+    [Field.INPUT]: {
+      currencyId: inputCurrency
+    },
+    [Field.OUTPUT]: {
+      currencyId: outputCurrency
+    },
+    typedValue: parseTokenAmountURLParameter(parsedQs.exactAmount),
+    independentField: parseIndependentFieldURLParameter(parsedQs.exactField),
+    recipient
+  }
+}
+
+export function useReplaceSwapState() {
+  const dispatch = useDispatch()
+  return useCallback(
+    (newState: {
+      field: Field
+      typedValue: string
+      inputCurrencyId?: string | undefined
+      outputCurrencyId?: string | undefined
+      recipient: string | null
+    }) => dispatch(replaceSwapState(newState)),
+    [dispatch]
+  )
+}
+
+type DefaultFromUrlSearch = { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
+// updates the swap state to use the defaults for a given network
+export function useDefaultsFromURLSearch(): DefaultFromUrlSearch {
+  const { chainId } = useActiveWeb3React()
+  const replaceSwapState = useReplaceSwapState()
+  const parsedQs = useParsedQueryString()
+  const [result, setResult] = useState<DefaultFromUrlSearch>()
+
+  useEffect(() => {
+    if (!chainId) return
+    // This is not a great fix for setting a default token
+    // but it is better and easiest considering updating default files
+    const defaultInputToken = WETH[chainId].address
+    const parsed = queryParametersToSwapState(parsedQs)
+
+    replaceSwapState({
+      typedValue: parsed.typedValue,
+      field: parsed.independentField,
+      // inputCurrencyId: parsed[Field.INPUT].currencyId,
+      // outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+
+      // Default to WETH
+      inputCurrencyId: parsed[Field.INPUT].currencyId || defaultInputToken,
+      outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+      recipient: parsed.recipient
+    })
+
+    setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId])
+
+  return result
+}
+
+interface CurrencyWithAddress {
+  currency?: Currency
+  address?: string
+}
+
+export function useShouldDisableEth(input?: CurrencyWithAddress, output?: CurrencyWithAddress) {
+  const weth = useWETHContract()
+  return useMemo(() => {
+    const [isEthIn, isEthOut] = [input?.currency === ETHER, output?.currency === ETHER]
+    const [isWethIn, isWethOut] = [input?.address === weth?.address, output?.address === weth?.address]
+
+    return { showEthDisabled: (isEthIn && !isWethOut) || (isEthOut && !isWethIn), weth }
+  }, [input, output, weth])
 }

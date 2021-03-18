@@ -38,3 +38,7 @@ export const BUY_ETHER_TOKEN: { [chainId in ChainId]: Token } = {
 }
 
 export const ORDER_ID_SHORT_LENGTH = 8
+export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
+export const DEFAULT_ORDER_DELAY = 20000 // 20s
+export const EXPIRED_ORDERS_BUFFER = 45 * 1000 // 45s
+export const CHECK_EXPIRED_ORDERS_INTERVAL = 10000 // 10 sec

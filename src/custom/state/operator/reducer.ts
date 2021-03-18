@@ -13,6 +13,12 @@ export interface OperatorState {
   readonly tipsMap: Partial<TipsMap>
 }
 
+export const EMPTY_FEE = {
+  feeAsCurrency: undefined,
+  minimalFee: '0',
+  feeRatio: 0
+}
+
 const initialState: OperatorState = {
   tipsMap: {}
 }

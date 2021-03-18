@@ -12,9 +12,17 @@ import {
   useExpireOrdersBatch
 } from './hooks'
 import { buildBlock2DateMap } from 'utils/blocks'
-import { registerOnWindow } from 'utils/misc'
-import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
-import { GP_V2_SETTLEMENT_INTERFACE } from '@src/custom/constants/GPv2Settlement'
+import { delay, registerOnWindow } from 'utils/misc'
+import { getOrder, OrderMetaData } from 'utils/operator'
+import {
+  DEFAULT_ORDER_DELAY,
+  GP_SETTLEMENT_CONTRACT_ADDRESS,
+  SHORT_PRECISION,
+  EXPIRED_ORDERS_BUFFER,
+  CHECK_EXPIRED_ORDERS_INTERVAL
+} from 'constants/index'
+import { GP_V2_SETTLEMENT_INTERFACE } from 'constants/GPv2Settlement'
+import { stringToCurrency } from '../swap/extension'
 
 type OrderLogPopupMixData = OrderFulfillmentData & Pick<Log, 'transactionHash'> & Partial<Pick<Order, 'summary'>>
 
@@ -24,6 +32,39 @@ interface TradeEventParams {
   owner: string // address
   // maybe enable when orderUid is indexed
   // id?: string | string[] // to filter by id
+}
+
+function _computeFulfilledSummary({
+  orderFromStore,
+  orderFromApi
+}: {
+  orderFromStore?: Order
+  orderFromApi: OrderMetaData | null
+}) {
+  // Default to store's current order summary
+  let summary: string | undefined = orderFromStore?.summary
+
+  // if we can find the order from the API
+  // and our specific order exists in our state, let's use that
+  if (orderFromApi) {
+    const { buyToken, sellToken, executedBuyAmount, executedSellAmount } = orderFromApi
+
+    if (orderFromStore) {
+      const { inputToken, outputToken } = orderFromStore
+      // don't show amounts in atoms
+      const inputAmount = stringToCurrency(executedSellAmount, inputToken)
+      const outputAmount = stringToCurrency(executedBuyAmount, outputToken)
+
+      summary = `Swap ${inputAmount.toSignificant(SHORT_PRECISION)} ${
+        inputAmount.currency.symbol
+      } for ${outputAmount.toSignificant(SHORT_PRECISION)} ${outputAmount.currency.symbol}`
+    } else {
+      // We only have the API order info, let's at least use that
+      summary = `Swap ${sellToken} for ${buyToken}`
+    }
+  }
+
+  return summary
 }
 
 const generateTradeEventTopics = ({ owner /*, id */ }: TradeEventParams) => {
@@ -145,20 +186,45 @@ export function EventUpdater(): null {
 
       const block2DateMap = await buildBlock2DateMap(library, logs)
 
-      const ordersBatchData: OrderLogPopupMixData[] = logs.map(log => {
+      // Filter out orders that should not trigger a pop-up
+      const pendingLogsAndOrders = logs.reduce<[Log, Order][]>((acc, log) => {
         const { orderUid: id } = decodeTradeEvent(log)
 
         console.log(`EventUpdater::Detected Trade event for order ${id} of token in block`, log.blockNumber)
 
         const orderFromStore = findOrderById(id)
-
-        return {
-          id,
-          fulfillmentTime: block2DateMap[log.blockHash].toISOString(),
-          transactionHash: log.transactionHash,
-          summary: orderFromStore?.summary // only if that order was previously in store
+        if (!orderFromStore || orderFromStore.status !== 'pending') {
+          console.log(`EventUpdater::Order ${id} not pending or not on local storage, ignoring it`)
+          return acc
         }
-      })
+
+        acc.push([log, orderFromStore])
+
+        return acc
+      }, [])
+
+      const ordersBatchData: OrderLogPopupMixData[] = await Promise.all(
+        pendingLogsAndOrders.map(async ([log, orderFromStore]) => {
+          const id = orderFromStore.id
+
+          // We've found the orderId in the Trade event
+          // But the backend may not be completely updated yet, e.g
+          // the frontend is ahead of the backend in regards to data freshness
+          // TODO: temporary! change to a better solution
+          // https://github.com/gnosis/gp-swap-ui/issues/213
+          const orderFromApi = await delay(DEFAULT_ORDER_DELAY, getOrder(chainId, id))
+
+          // using order from store and api compute summary
+          const summary = _computeFulfilledSummary({ orderFromApi, orderFromStore })
+
+          return {
+            id,
+            fulfillmentTime: block2DateMap[log.blockHash].toISOString(),
+            transactionHash: log.transactionHash,
+            summary
+          }
+        })
+      )
 
       // SET lastCheckedBlock = lastBlockNumber
       // AND fulfill orders
@@ -226,8 +292,6 @@ export function EventUpdater(): null {
   return null
 }
 
-const CHECK_EXPIRED_ORDERS_INTERVAL = 10000 // 10 sec
-
 export function ExpiredOrdersWatcher(): null {
   const { chainId } = useActiveWeb3React()
 
@@ -247,12 +311,12 @@ export function ExpiredOrdersWatcher(): null {
       // but don't clearInterval so we can restart when there are new orders
       if (pendingOrdersRef.current.length === 0) return
 
-      const now = new Date()
       const expiredOrders = pendingOrdersRef.current.filter(order => {
         // validTo is either a Date or unix timestamp in seconds
         const validTo = typeof order.validTo === 'number' ? new Date(order.validTo * 1000) : order.validTo
 
-        return validTo < now
+        // let's get the current date, with our expired order validTo given a buffer time
+        return Date.now() - validTo.valueOf() > EXPIRED_ORDERS_BUFFER
       })
 
       const expiredIds = expiredOrders.map(({ id }) => id)

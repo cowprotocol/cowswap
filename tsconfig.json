@@ -1,5 +1,5 @@
 {
-  "extends": "./src/custom/tsconfig-paths.json",
+  "extends": "./src/custom/tsconfig-paths-custom.json",
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

@@ -46,7 +46,7 @@ type MetaPopupContent = GPPopupContent<OrderTxTypes.METATXN>
 type TxnPopupContent = GPPopupContent<OrderTxTypes.TXN>
 
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
-  return summary ? `${summary} ${status}` : `Order ${formatOrderId(id)} ${descriptor || status}`
+  return summary ? `${summary} ${descriptor || status}` : `Order ${formatOrderId(id)} ${descriptor || status}`
 }
 
 // Metatxn popup

@@ -1,0 +1,93 @@
+{
+  "name": "GP Rinkeby",
+  "version": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0
+  },
+  "keywords": ["GP", "Rinkeby", "tokens", "trusted"],
+  "logoURI": "https://avatars.githubusercontent.com/u/24954468?s=200&v=4",
+  "timestamp": "2021-02-22T13:09:54.363Z",
+  "tokens": [
+    {
+      "name": "Gnosis",
+      "chainId": 4,
+      "symbol": "GNO",
+      "decimals": 18,
+      "address": "0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png"
+    },
+    {
+      "name": "USDT",
+      "chainId": 4,
+      "symbol": "USDT",
+      "decimals": 6,
+      "address": "0xa9881E6459CA05d7D7C95374463928369cD7a90C",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png"
+    },
+    {
+      "name": "USD Coin",
+      "chainId": 4,
+      "symbol": "USDC",
+      "decimals": 6,
+      "address": "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+    },
+    {
+      "name": "DAI",
+      "chainId": 4,
+      "symbol": "DAI",
+      "decimals": 18,
+      "address": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
+    },
+    {
+      "name": "TUSD",
+      "chainId": 4,
+      "symbol": "TUSD",
+      "decimals": 18,
+      "address": "0x0000000000085d4780B73119b644AE5ecd22b376",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0000000000085d4780B73119b644AE5ecd22b376/logo.png"
+    },
+    {
+      "name": "PAX",
+      "chainId": 4,
+      "symbol": "PAX",
+      "decimals": 18,
+      "address": "0xBD6A9921504fae42EaD2024F43305A8ED3890F6f",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x8E870D67F660D95d5be530380D0eC0bd388289E1/logo.png"
+    },
+    {
+      "name": "sUSD",
+      "chainId": 4,
+      "symbol": "sUSD",
+      "decimals": 18,
+      "address": "0x1b642a124CDFa1E5835276A6ddAA6CFC4B35d52c",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x57Ab1ec28D129707052df4dF418D58a2D46d5f51/logo.png"
+    },
+    {
+      "name": "GUSD",
+      "chainId": 4,
+      "symbol": "GUSD",
+      "decimals": 2,
+      "address": "0x784B46A4331f5c7C495F296AE700652265ab2fC6",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd/logo.png"
+    },
+    {
+      "name": "OWL",
+      "chainId": 4,
+      "symbol": "OWL",
+      "decimals": 18,
+      "address": "0xa7D1C04fAF998F9161fC9F800a99A809b84cfc9D",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1A5F9352Af8aF974bFC03399e3767DF6370d82e4/logo.png"
+    },
+    {
+      "name": "Wrapped Ether",
+      "chainId": 4,
+      "symbol": "WETH",
+      "decimals": 18,
+      "address": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+    }
+  ]
+}

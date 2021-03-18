@@ -35,6 +35,28 @@ export interface FeeInformation {
   feeRatio: number
 }
 
+export interface OrderMetaData {
+  creationDate: string
+  owner: string
+  uid: OrderID
+  availableBalance: string
+  executedBuyAmount: string
+  executedSellAmount: string
+  executedSellAmountBeforeFees: string
+  executedFeeAmount: string
+  invalidated: false
+  sellToken: string
+  buyToken: string
+  sellAmount: string
+  buyAmount: string
+  validTo: number
+  appData: number
+  feeAmount: string
+  kind: string
+  partiallyFillable: false
+  signature: string
+}
+
 function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL[chainId]
 
@@ -154,11 +176,7 @@ function checkIfEther(tokenAddress: string, chainId: ChainId) {
 
 export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promise<FeeInformation> {
   const checkedAddress = checkIfEther(tokenAddress, chainId)
-  // TODO: I commented out the implementation because the API is not yet implemented. Review the code in the comment below
   console.log('[util:operator] Get fee for ', chainId, checkedAddress)
-
-  // TODO: Let see if we can incorporate the PRs from the Fee, where they cache stuff and keep it in sync using redux.
-  // if that part is delayed or need more review, we can easily add the cache in this file (we check expiration and cache here)
 
   let response: Response | undefined
   try {
@@ -175,5 +193,25 @@ export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promi
   }
 }
 
+export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
+  console.log('[util:operator] Get order for ', chainId, orderId)
+
+  let response: Response | undefined
+  try {
+    const responseMaybeOk = await _get(chainId, `/orders/${orderId}`)
+    response = responseMaybeOk.ok ? responseMaybeOk : undefined
+  } catch (error) {
+    // do nothing
+    console.error('[util:operator] Error: Error fetching order with ID', orderId)
+  }
+
+  if (!response) {
+    // return null on error or non-ok status
+    return null
+  } else {
+    return response.json()
+  }
+}
+
 // Register some globals for convenience
-registerOnWindow({ operator: { getFeeQuote, postSignedOrder, apiGet: _get, apiPost: _post } })
+registerOnWindow({ operator: { getFeeQuote, getOrder, postSignedOrder, apiGet: _get, apiPost: _post } })

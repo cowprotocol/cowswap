@@ -1,33 +1,44 @@
 import { CurrencyAmount, Trade, Currency, JSBI, Token, TokenAmount } from '@uniswap/sdk'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
-import { FeeInformation } from 'custom/utils/operator'
-import { getFeeAmount } from '@src/custom/utils/fee'
+import { FeeInformation } from 'utils/operator'
+import { getFeeAmount } from 'utils/fee'
+import { EMPTY_FEE } from '../operator/reducer'
 
-interface ExtendedTradeParams {
+export type FeeForTrade = { feeAsCurrency: CurrencyAmount | undefined } & Pick<
+  FeeInformation,
+  'minimalFee' | 'feeRatio'
+>
+
+export type TradeWithFee = Trade & { inputAmountWithFee: CurrencyAmount; fee?: FeeForTrade }
+
+type ExtendedTradeParams = {
   exactInTrade?: Trade | null
   exactOutTrade?: Trade | null
   typedAmountAsCurrency?: CurrencyAmount
-  feeAsCurrency?: CurrencyAmount
+  fee: FeeForTrade
 }
 
 /**
  * extendExactInTrade
  * @description takes a Uni ExactIn Trade object and returns a custom one with fee adjusted inputAmount
  */
-export function extendExactInTrade(params: Pick<ExtendedTradeParams, 'exactInTrade' | 'typedAmountAsCurrency'>) {
-  const { exactInTrade, typedAmountAsCurrency } = params
+export function extendExactInTrade(params: Omit<ExtendedTradeParams, 'exactOutTrade'>): TradeWithFee | null {
+  const { exactInTrade, typedAmountAsCurrency, fee } = params
 
   if (!exactInTrade || !typedAmountAsCurrency) return null
 
-  // We need to iverride the Trade object to use different values as we are intercepting initial inputs
+  // We need to override the Trade object to use different values as we are intercepting initial inputs
   // and applying fee. For ExactIn orders, we leave outputAmount as is
   // and only change inputAmount to show the original entry before fee calculation
   return {
     ...exactInTrade,
+    // overriding inputAmount is a hack
+    // to allow us to not have to change Uni's pages/swap/index and use different method names
     inputAmount: typedAmountAsCurrency,
-    inputAmountWithFees: exactInTrade.inputAmount,
+    inputAmountWithFee: exactInTrade.inputAmount,
     minimumAmountOut: exactInTrade.minimumAmountOut,
-    maximumAmountIn: exactInTrade.maximumAmountIn
+    maximumAmountIn: exactInTrade.maximumAmountIn,
+    fee
   }
 }
 
@@ -35,20 +46,24 @@ export function extendExactInTrade(params: Pick<ExtendedTradeParams, 'exactInTra
  * extendExactOutTrade
  * @description takes a Uni ExactOut Trade object and returns a custom one with fee adjusted inputAmount
  */
-export function extendExactOutTrade(params: Pick<ExtendedTradeParams, 'exactOutTrade' | 'feeAsCurrency'>) {
-  const { exactOutTrade, feeAsCurrency } = params
+export function extendExactOutTrade(params: Omit<ExtendedTradeParams, 'exactInTrade'>): TradeWithFee | null {
+  const { exactOutTrade, fee } = params
 
-  if (!exactOutTrade || !feeAsCurrency) return null
+  if (!exactOutTrade || !fee.feeAsCurrency) return null
 
-  const inputAmountWithFee = exactOutTrade.inputAmount.add(feeAsCurrency)
+  const inputAmountWithFee = exactOutTrade.inputAmount.add(fee.feeAsCurrency)
   // We need to override the Trade object to use different values as we are intercepting initial inputs
   // and applying fee. For ExactOut orders, we leave inputAmount as is
   // and only change outputAm to show the original entry before fee calculation
   return {
     ...exactOutTrade,
+    // overriding inputAmount is a hack
+    // to allow us to not have to change Uni's pages/swap/index and use different method names
     inputAmount: inputAmountWithFee,
+    inputAmountWithFee,
     minimumAmountOut: exactOutTrade.minimumAmountOut,
-    maximumAmountIn: exactOutTrade.maximumAmountIn
+    maximumAmountIn: exactOutTrade.maximumAmountIn,
+    fee
   }
 }
 
@@ -59,7 +74,7 @@ interface TradeParams {
   feeInformation?: Omit<FeeInformation, 'expirationDate'>
 }
 
-const stringToCurrency = (amount: string, currency: Currency) =>
+export const stringToCurrency = (amount: string, currency: Currency) =>
   currency instanceof Token ? new TokenAmount(currency, JSBI.BigInt(amount)) : CurrencyAmount.ether(JSBI.BigInt(amount))
 
 /**
@@ -72,22 +87,29 @@ export function useTradeExactInWithFee({
   feeInformation
 }: Omit<TradeParams, 'inputCurrency'>) {
   let feeAdjustedAmount: CurrencyAmount | undefined
+  let fee: FeeForTrade = { ...EMPTY_FEE, ...feeInformation }
   // make sure we have a typed in amount
   // else we can assume the trade will be null
   // and we call `useTradeExacIn` with an `undefined` which returns null trade
   if (parsedAmount && feeInformation) {
     // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
-    const unformattedFee = getFeeAmount({
+    const feeAsString = getFeeAmount({
       sellAmount: parsedAmount.raw.toString(),
       ...feeInformation
     })
 
-    const fee = stringToCurrency(unformattedFee, parsedAmount.currency)
+    const feeAsCurrency = stringToCurrency(feeAsString, parsedAmount.currency)
     // Check that fee amount is not greater than the user's input amt
-    const validFee = fee.lessThan(parsedAmount)
-    // If the fee value is higher than we are inputting, return undefined
+    const isValidFee = feeAsCurrency.lessThan(parsedAmount)
+    // If the feeAsCurrency value is higher than we are inputting, return undefined
     // this makes sure `useTradeExactIn` returns null === no trade
-    feeAdjustedAmount = validFee ? parsedAmount.subtract(fee) : undefined
+    feeAdjustedAmount = isValidFee ? parsedAmount.subtract(feeAsCurrency) : undefined
+
+    // set final fee object
+    fee = {
+      ...feeInformation,
+      feeAsCurrency
+    }
   }
 
   // Original Uni trade hook
@@ -95,7 +117,8 @@ export function useTradeExactInWithFee({
 
   return extendExactInTrade({
     exactInTrade: inTrade,
-    typedAmountAsCurrency: parsedAmount
+    typedAmountAsCurrency: parsedAmount,
+    fee
   })
 }
 
@@ -113,18 +136,24 @@ export function useTradeExactOutWithFee({
 
   // We need to determine the fee after, as the parsedAmount isn't known beforehand
   // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
-  let fee: CurrencyAmount | undefined
+  let fee: FeeForTrade = { ...EMPTY_FEE, ...feeInformation }
   if (outTrade?.inputAmount && feeInformation) {
-    const unformattedFee = getFeeAmount({
+    const feeAsString = getFeeAmount({
       sellAmount: outTrade.inputAmount.raw.toString(),
       ...feeInformation
     })
 
-    fee = stringToCurrency(unformattedFee, outTrade.inputAmount.currency)
+    const feeAsCurrency = stringToCurrency(feeAsString, outTrade.inputAmount.currency)
+
+    // set final fee object
+    fee = {
+      ...feeInformation,
+      feeAsCurrency
+    }
   }
 
   return extendExactOutTrade({
     exactOutTrade: outTrade,
-    feeAsCurrency: fee
+    fee
   })
 }

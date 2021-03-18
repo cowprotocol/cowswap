@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { batch } from 'react-redux'
+import { Token } from '@uniswap/sdk'
 
 import { Order, OrderStatus, OrderKind } from './actions'
 import { useActiveWeb3React } from 'hooks'
 import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
-import { useSelectedTokenList } from 'state/lists/hooks'
-import { TokenInfo } from '@uniswap/token-lists'
+import { useCombinedActiveList } from 'state/lists/hooks'
 import { registerOnWindow } from 'utils/misc'
-import { RADIX_DECIMAL } from '@src/custom/constants'
+import { RADIX_DECIMAL } from 'constants/index'
 
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min
@@ -33,13 +33,11 @@ const getTwoRandomElementsFromArray = <T>(array: T[]): [T, T] => {
   return [array[ind1], array[ind2]]
 }
 
-type MinTokenData = Pick<TokenInfo, 'symbol' | 'decimals' | 'address'>
-
 interface GenerateOrderParams extends Pick<Order, 'owner'> {
   sellSymbol?: string
   buySymbol?: string
-  buyToken: MinTokenData
-  sellToken: MinTokenData
+  buyToken: Token
+  sellToken: Token
 }
 
 // increment for OrderId
@@ -64,6 +62,8 @@ const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Ord
     status: OrderStatus.PENDING,
     creationTime: new Date().toISOString(),
     summary, // for dapp use only, readable by user
+    inputToken: sellToken,
+    outputToken: buyToken,
     sellToken: sellToken.address.replace('0x', ''), // address, without '0x' prefix
     buyToken: buyToken.address.replace('0x', ''), // address, without '0x' prefix
     sellAmount: sellAmount.toString(RADIX_DECIMAL), // in atoms
@@ -74,6 +74,7 @@ const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Ord
     feeAmount: (1e18).toString(), // in atoms
     kind,
     partiallyFillable: false,
+    // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2) // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
   }
 }
@@ -90,7 +91,7 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
 
   const addOrder = useAddPendingOrder()
 
-  const lists = useSelectedTokenList()
+  const lists = useCombinedActiveList()
 
   useEffect(() => {
     const addNOrders = (ordersNum: number) => {
@@ -105,8 +106,8 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
 
         return generateOrder({
           owner: account,
-          sellToken: sellToken.tokenInfo,
-          buyToken: buyToken.tokenInfo
+          sellToken: sellToken.token,
+          buyToken: buyToken.token
         })
       })
 

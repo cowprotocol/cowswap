@@ -10,7 +10,7 @@ on:
       - develop
 
 env:
-  REACT_APP_NETWORK_URL: 'https://mainnet.infura.io/v3/4bf032f2d38a4ed6bb975b80d6340847'
+  REACT_APP_NETWORK_URL: 'https://mainnet.infura.io/v3/1221fd11e90849509afafd330ec7acc6'
   APP_ID: 1
 
 jobs:
@@ -44,8 +44,13 @@ jobs:
 
       # Actually run tests, building repo
       - name: Cypress run
+        id: cypress-run
         uses: cypress-io/github-action@v2
         with:
-          build: yarn build
-          start: yarn serve
+          start: yarn start
           wait-on: http://localhost:3000
+      # Open tmate ssh connection on failure for debugging
+      # Uncomment when needed and push upstream
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   if: ${{ failure() }}

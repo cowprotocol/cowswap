@@ -6,8 +6,7 @@ import { animated } from 'react-spring'
 import { PopupContent } from 'state/application/actions'
 import { useRemovePopup } from 'state/application/hooks'
 import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
-import TransactionPopup from 'components/Popups/TransactionPopup'
-import MetaTransactionPopup from 'components/Popups/MetaTransactionPopup'
+import TransactionPopup from './TransactionPopupMod'
 
 export const StyledClose = styled(X)`
   position: absolute;
@@ -87,7 +86,7 @@ export default function PopupItem({
     const {
       metatxn: { id, success, summary }
     } = content
-    popupContent = <MetaTransactionPopup id={id} success={success} summary={summary} />
+    popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
   }
 
   const faderStyle = useSpring({

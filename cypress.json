@@ -1,6 +1,7 @@
 {
   "baseUrl": "http://localhost:3000",
   "defaultCommandTimeout": 10000,
+  "pageLoadTimeout": 120000,
   "integrationFolder": "cypress-custom/integration",
   "screenshotsFolder": "cypress-custom/screenshots",
   "supportFile": "cypress-custom/support/index.js",
@@ -9,5 +10,5 @@
   "video": false,
   "fixturesFolder": false,
   "pluginsFile": false,
-  "experimentalNetworkStubbing": true
+  "chromeWebSecurity": false
 }

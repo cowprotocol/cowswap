@@ -2,10 +2,10 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   integration-tests:
@@ -35,7 +35,7 @@ jobs:
       - run: yarn build
         env:
           CI: false
-          REACT_APP_NETWORK_URL: "https://mainnet.infura.io/v3/4bf032f2d38a4ed6bb975b80d6340847"
+          REACT_APP_NETWORK_URL: 'https://mainnet.infura.io/v3/1221fd11e90849509afafd330ec7acc6'
       - run: yarn integration-test
 
   unit-tests:
@@ -62,4 +62,3 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: yarn install --frozen-lockfile
       - run: yarn test
-

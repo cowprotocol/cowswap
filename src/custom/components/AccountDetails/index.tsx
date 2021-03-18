@@ -4,7 +4,7 @@ import { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from 'hooks'
 import { AppDispatch } from 'state'
 import { clearAllTransactions } from 'state/transactions/actions'
-import { shortenAddress } from 'utils'
+import { getExplorerLabel, shortenAddress } from 'utils'
 import { AutoRow } from 'components/Row'
 import Copy from 'components/AccountDetails/Copy'
 
@@ -115,6 +115,7 @@ export default function AccountDetails({
       })
     }
   }, [dispatch, chainId])
+  const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
 
   return (
     <>
@@ -127,7 +128,7 @@ export default function AccountDetails({
           <YourAccount>
             <InfoCard>
               <AccountGroupingRow>
-                {formatConnectorName()}
+                {formatConnectorName(connector)}
                 <div>
                   {connector !== injected && connector !== walletlink && (
                     <WalletAction
@@ -185,7 +186,7 @@ export default function AccountDetails({
                             href={chainId && getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on Etherscan</span>
+                            <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -207,7 +208,7 @@ export default function AccountDetails({
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on Etherscan</span>
+                            <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
                           </AddressLink>
                         )}
                       </div>

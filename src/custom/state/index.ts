@@ -3,19 +3,21 @@ import { save, load } from 'redux-localstorage-simple'
 
 // UNI REDUCERS
 import application from '@src/state/application/reducer'
-import { updateVersion } from '@src/state/global/actions'
 import user from '@src/state/user/reducer'
 import transactions from '@src/state/transactions/reducer'
 import swap from '@src/state/swap/reducer'
 import mint from '@src/state/mint/reducer'
-import lists from '@src/state/lists/reducer'
 import burn from '@src/state/burn/reducer'
 import multicall from '@src/state/multicall/reducer'
 // CUSTOM REDUCERS
+import lists from './lists/reducer'
 import operator from './operator/reducer'
 import orders from './orders/reducer'
 import fee from './fee/reducer'
+import { updateVersion } from 'state/global/actions'
+
 import { popupMiddleware } from './orders/middleware'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 
 const UNISWAP_REDUCERS = {
   application,
@@ -24,18 +26,18 @@ const UNISWAP_REDUCERS = {
   swap,
   mint,
   burn,
-  multicall,
-  lists
+  multicall
 }
 
 const reducers = {
   ...UNISWAP_REDUCERS,
+  lists,
   operator,
   orders,
   fee
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'orders', 'fee']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'fee', 'lists']
 
 const store = configureStore({
   reducer: reducers,
@@ -43,7 +45,8 @@ const store = configureStore({
   preloadedState: load({ states: PERSISTED_KEYS })
 })
 
-store.dispatch(updateVersion())
+// this instantiate the app / reducers in several places using the default chainId
+store.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
 
 export default store
 

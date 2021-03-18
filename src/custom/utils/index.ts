@@ -27,7 +27,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   100: 'xdai.'
 }
 
-type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block'
+export type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
   const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
@@ -76,8 +76,12 @@ function getBlockscoutUrl(chainId: ChainId, data: string, type: BlockExplorerLin
   return `https://blockscout.com/${getBlockscoutUrlPrefix(chainId)}/${getBlockscoutUrlSuffix(type, data)}`
 }
 
+export function isGpOrder(data: string, type: BlockExplorerLinkType) {
+  return type === 'transaction' && data.length === GP_ORDER_ID_LENGTH
+}
+
 export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  if (type === 'transaction' && data.length === GP_ORDER_ID_LENGTH) {
+  if (isGpOrder(data, type)) {
     // Explorer for GP orders:
     //    If a transaction has the size of the GP orderId, then it's a meta-tx
     return getExplorerOrderLink(chainId, data)
@@ -87,6 +91,16 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExpl
   } else {
     // Etherscan in xDAI
     return getEtherscanUrl(chainId, data, type)
+  }
+}
+
+export function getExplorerLabel(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
+  if (isGpOrder(data, type)) {
+    return 'View on Explorer'
+  } else if (chainId === ChainId.XDAI) {
+    return 'View on Blockscout'
+  } else {
+    return 'View on Etherscan'
   }
 }
 

@@ -73,20 +73,13 @@ export default function Transaction({ hash: id }: { hash: string }) {
 
   const { activity, status, type } = activityData
 
-  const isOrder = type === ActivityType.ORDER
-
   const isPending = status === ActivityStatus.PENDING
   const isConfirmed = status === ActivityStatus.CONFIRMED
   const isExpired = status === ActivityStatus.EXPIRED
 
   return (
     <TransactionWrapper>
-      <TransactionState
-        // trnsaction? fulfilled order? render etherscan link. meta-tx? don't do that
-        href={!isOrder ? getEtherscanLink(chainId, id, 'transaction') : undefined}
-        // prevent pointer-events & cursor render on meta tx
-        disableMouseActions={isOrder && !isConfirmed}
-      >
+      <TransactionState href={getEtherscanLink(chainId, id, 'transaction')}>
         <RowFixed>
           {activity && (
             <Pill color="#fff" bgColor={determinePillColour(status, type)} minWidth="3.5rem">
