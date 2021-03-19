@@ -1,24 +1,24 @@
 {
   "background_color": "#fff",
   "display": "standalone",
-  "homepage_url": "https://app.uniswap.org",
+  "homepage_url": "https://cow.trade",
   "icons": [
     {
-      "src": "./images/192x192_App_Icon.png",
+      "src": "./images/logo-square-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./images/512x512_App_Icon.png",
+      "src": "./images/logo-square-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
   "orientation": "portrait",
-  "name": "Uniswap",
-  "short_name": "Uniswap",
+  "name": "Cow Swap",
+  "short_name": "Cow Swap",
   "start_url": ".",
-  "theme_color": "#ff007a"
+  "theme_color": "#ff784a"
 }
