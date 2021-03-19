@@ -97,7 +97,8 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
-    `
+    `,
+    version: colorsTheme.green1
   }
 }
 

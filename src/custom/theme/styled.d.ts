@@ -85,5 +85,6 @@ declare module 'styled-components' {
       boxShadow?: string
     }
     bgLinearGradient: FlattenSimpleInterpolation
+    version: string
   }
 }
