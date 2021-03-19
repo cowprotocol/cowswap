@@ -1,5 +1,5 @@
 import React from 'react'
-import { Code, MessageCircle, PieChart } from 'react-feather'
+import { Code, MessageCircle } from 'react-feather'
 
 import MenuMod, { MenuItem } from './MenuMod'
 import styled from 'styled-components'
@@ -19,10 +19,6 @@ export function Menu() {
       <MenuItem id="link" href={DISCORD_LINK}>
         <MessageCircle size={14} />
         Discord
-      </MenuItem>
-      <MenuItem id="link" href="https://uniswap.info/">
-        <PieChart size={14} />
-        Analytics
       </MenuItem>
     </StyledMenu>
   )

@@ -32,6 +32,59 @@ declare module 'styled-components' {
   // Override theme
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
     // css snippets
+    logo: {
+      src: string
+      alt: string
+      width: string
+      height: string
+    }
+    cursor?: FlattenSimpleInterpolation
+    body: {
+      background: FlattenSimpleInterpolation
+    }
+    appBody: {
+      boxShadow: string
+      borderRadius: string
+      border: string
+      padding: string
+    }
+    header?: {
+      border?: string
+    }
+    swap?: {
+      headerSize?: string
+    }
+    currencyInput?: {
+      background?: string
+      border?: string
+      color?: string
+    }
+    buttonCurrencySelect: {
+      background: string
+      boxShadow?: string
+      border?: string
+      color?: string
+      colorSelected?: string
+    }
+    buttonPrimary: {
+      background?: FlattenSimpleInterpolation
+      fontSize?: string
+      fontWeight?: string
+      border?: string
+      borderRadius?: string
+      boxShadow?: string
+    }
+    buttonLight: {
+      background?: FlattenSimpleInterpolation
+      backgroundHover?: string
+      fontSize?: string
+      fontWeight?: string
+      border?: string
+      borderHover?: string
+      borderRadius?: string
+      boxShadow?: string
+    }
     bgLinearGradient: FlattenSimpleInterpolation
+    version: string
   }
 }

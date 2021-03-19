@@ -13,6 +13,8 @@ export const APP_ID = Number(process.env.REACT_APP_ID)
 // reexport all Uniswap constants everything
 export * from '@src/constants/index'
 
+export const PRODUCTION_URL = 'cow.trade'
+
 // TODO: When contracts are deployed, we can load this from the NPM package
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<ChainId, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,

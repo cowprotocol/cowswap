@@ -16,7 +16,7 @@ import orders from './orders/reducer'
 import fee from './fee/reducer'
 import { updateVersion } from 'state/global/actions'
 
-import { popupMiddleware } from './orders/middleware'
+import { popupMiddleware, soundMiddleware } from './orders/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 
 const UNISWAP_REDUCERS = {
@@ -41,7 +41,7 @@ const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'fee', 'list
 
 const store = configureStore({
   reducer: reducers,
-  middleware: [save({ states: PERSISTED_KEYS }), popupMiddleware],
+  middleware: [save({ states: PERSISTED_KEYS }), popupMiddleware, soundMiddleware],
   preloadedState: load({ states: PERSISTED_KEYS })
 })
 

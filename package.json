@@ -1,9 +1,10 @@
 {
   "name": "@gnosis/gp-v2-ui",
-  "description": "Gnosis Protocol v2 Webapp",
+  "description": "Cow Swap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
   "version": "0.6.0",
+  "status": "Alpha",
   "devDependencies": {
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.0.1",
