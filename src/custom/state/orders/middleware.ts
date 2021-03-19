@@ -125,7 +125,7 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
 let moooooSend: HTMLAudioElement
 function getMoooooSend(): HTMLAudioElement {
   if (!moooooSend) {
-    moooooSend = new Audio('/audio/mooooo_send.mp3')
+    moooooSend = new Audio('/audio/mooooo-send__lower-90.mp3')
   }
 
   return moooooSend
@@ -134,7 +134,7 @@ function getMoooooSend(): HTMLAudioElement {
 let moooooSuccess: HTMLAudioElement
 function getMoooooSuccess(): HTMLAudioElement {
   if (!moooooSuccess) {
-    moooooSuccess = new Audio('/audio/mooooo_success.mp3')
+    moooooSuccess = new Audio('/audio/mooooo-success__ben__lower-90.mp3')
   }
 
   return moooooSuccess
@@ -143,7 +143,7 @@ function getMoooooSuccess(): HTMLAudioElement {
 let moooooError: HTMLAudioElement
 function getMoooooError(): HTMLAudioElement {
   if (!moooooError) {
-    moooooError = new Audio('/audio/mooooo_error.mp3')
+    moooooError = new Audio('/audio/mooooo-error__lower-90.mp3')
   }
 
   return moooooError
