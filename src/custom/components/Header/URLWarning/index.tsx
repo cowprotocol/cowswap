@@ -1,4 +1,4 @@
-import { PRODUCTION_URL } from 'constants/'
+import { PRODUCTION_URL } from 'constants/index'
 import React from 'react'
 import URLWarningUni from './URLWarningMod'
 
