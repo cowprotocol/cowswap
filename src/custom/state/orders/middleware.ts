@@ -13,9 +13,11 @@ const isSingleOrderChangeAction = isAnyOf(
   OrderActions.fulfillOrder
 )
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
-const isFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
+const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
 const isBatchOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch, OrderActions.expireOrdersBatch)
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
+const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
+const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponsing Popup action is dispatched
@@ -43,7 +45,7 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
     if (isPendingOrderAction(action)) {
       // Pending Order Popup
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
-    } else if (isFulfillOrderAction(action)) {
+    } else if (isSingleFulfillOrderAction(action)) {
       // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
       // because it's nicer there
       popup = setPopupData(OrderTxTypes.METATXN, {
@@ -116,6 +118,61 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
   idsAndPopups.forEach(({ popup }) => {
     store.dispatch(addPopup(popup))
   })
+
+  return result
+}
+
+let moooooSend: HTMLAudioElement
+function getMoooooSend(): HTMLAudioElement {
+  if (!moooooSend) {
+    moooooSend = new Audio('/audio/mooooo-send__lower-90.mp3')
+  }
+
+  return moooooSend
+}
+
+let moooooSuccess: HTMLAudioElement
+function getMoooooSuccess(): HTMLAudioElement {
+  if (!moooooSuccess) {
+    moooooSuccess = new Audio('/audio/mooooo-success__ben__lower-90.mp3')
+  }
+
+  return moooooSuccess
+}
+
+let moooooError: HTMLAudioElement
+function getMoooooError(): HTMLAudioElement {
+  if (!moooooError) {
+    moooooError = new Audio('/audio/mooooo-error__lower-90.mp3')
+  }
+
+  return moooooError
+}
+
+// on each Pending, Expired, Fulfilled order action
+// a corresponsing sound is dispatched
+export const soundMiddleware: Middleware<{}, AppState> = store => next => action => {
+  const result = next(action)
+
+  if (isBatchOrderAction(action)) {
+    const { chainId } = action.payload
+    const orders = store.getState().orders[chainId]
+
+    // no orders were executed/expired
+    if (!orders) return result
+
+    const updatedElements = isBatchFulfillOrderAction(action) ? action.payload.ordersData : action.payload.ids
+    // no orders were executed/expired
+    if (updatedElements.length === 0) return result
+  }
+
+  if (isPendingOrderAction(action)) {
+    getMoooooSend().play()
+  } else if (isFulfillOrderAction(action)) {
+    getMoooooSuccess().play()
+  } else if (isExpireOrdersAction(action)) {
+    getMoooooError().play()
+  }
 
   return result
 }

@@ -22,26 +22,82 @@ import {
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  ${({ theme }) => theme.bgLinearGradient}
-  background-color: transparent;
-  border: 0;
+  ${({ theme }) => (theme.buttonPrimary?.background ? theme.buttonPrimary?.background : theme.bgLinearGradient)}
+  font-size: ${({ theme }) => (theme.buttonPrimary?.fontSize ? theme.buttonPrimary.fontSize : '16px')};
+  font-weight: ${({ theme }) => (theme.buttonPrimary?.fontWeight ? theme.buttonPrimary.fontWeight : 500)};
+  border: ${({ theme }) => (theme.buttonPrimary?.border ? theme.buttonPrimary.border : 0)};
+  box-shadow: ${({ theme }) => (theme.buttonPrimary?.boxShadow ? theme.buttonPrimary.boxShadow : 'none')};
+  border-radius: ${({ theme }) => (theme.buttonPrimary?.borderRadius ? theme.buttonPrimary.borderRadius : '9px')};
+  ${({ theme }) => theme.cursor};
+  overflow: hidden;
+  position: relative;
+
+  > div {
+    font-size: inherit;
+    font-weight: inherit;
+  }
 
   &:focus,
   &:hover,
   &:active {
-    ${({ theme }) => theme.bgLinearGradient}
-    background-color: transparent;
-    border: 0;
+    ${({ theme }) => (theme.buttonPrimary?.background ? theme.buttonPrimary?.background : theme.bgLinearGradient)}
+    border: ${({ theme }) => (theme.buttonPrimary?.border ? theme.buttonPrimary.border : 0)};
   }
   &:disabled {
     background-color: ${({ theme }) => theme.disabled};
     background-image: none;
     border: 0;
+    cursor: auto;
+    animation: none;
   }
 `
 
 export const ButtonLight = styled(ButtonLightMod)`
   // CSS override
+  ${({ theme }) => (theme.buttonLight?.background ? theme.buttonLight?.background : theme.primary5)}
+  color: ${({ theme }) => theme.primaryText1};
+  font-size: ${({ theme }) => (theme.buttonLight?.fontSize ? theme.buttonLight.fontSize : '16px')};
+  font-weight: ${({ theme }) => (theme.buttonLight?.fontWeight ? theme.buttonLight.fontWeight : 500)};
+  border: ${({ theme }) => (theme.buttonLight?.border ? theme.buttonLight.border : 0)};
+  box-shadow: ${({ theme }) => (theme.buttonLight?.boxShadow ? theme.buttonLight.boxShadow : 'none')};
+  border-radius: ${({ theme }) => (theme.buttonLight?.borderRadius ? theme.buttonLight.borderRadius : 0)};
+  ${({ theme }) => theme.cursor};
+  overflow: hidden;
+  position: relative;
+
+  > div {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  &:focus {
+    box-shadow: ${({ theme }) => (theme.buttonLight?.boxShadow ? theme.buttonLight.boxShadow : 'none')};
+    background-color: ${({ theme }) =>
+      theme.buttonLight?.backgroundHover ? theme.buttonLight.backgroundHover : 'inherit'};
+  }
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme.buttonLight?.backgroundHover ? theme.buttonLight.backgroundHover : 'inherit'};
+  }
+  &:active {
+    box-shadow: ${({ theme }) => (theme.buttonLight?.boxShadow ? theme.buttonLight.boxShadow : 'none')};
+    background-color: ${({ theme }) =>
+      theme.buttonLight?.backgroundHover ? theme.buttonLight.backgroundHover : 'inherit'};
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: auto;
+    animation: none;
+    :hover {
+      cursor: auto;
+      background-color: ${({ theme }) => theme.primary5};
+      box-shadow: none;
+      border: ${({ theme }) =>
+        theme.buttonLight?.borderHover ? theme.buttonLight.borderHover : '1px solid transparent'};
+      outline: none;
+    }
+  }
+
 `
 
 export const ButtonGray = styled(ButtonGrayMod)`
