@@ -22,12 +22,12 @@ import {
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  ${({ theme }) => (theme.buttonPrimary?.background ? theme.buttonPrimary?.background : theme.bgLinearGradient)}
-  font-size: ${({ theme }) => (theme.buttonPrimary?.fontSize ? theme.buttonPrimary.fontSize : '16px')};
-  font-weight: ${({ theme }) => (theme.buttonPrimary?.fontWeight ? theme.buttonPrimary.fontWeight : 500)};
-  border: ${({ theme }) => (theme.buttonPrimary?.border ? theme.buttonPrimary.border : 0)};
-  box-shadow: ${({ theme }) => (theme.buttonPrimary?.boxShadow ? theme.buttonPrimary.boxShadow : 'none')};
-  border-radius: ${({ theme }) => (theme.buttonPrimary?.borderRadius ? theme.buttonPrimary.borderRadius : '9px')};
+  ${({ theme }) => theme.buttonPrimary.background}
+  font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
+  font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
+  border: ${({ theme }) => theme.buttonPrimary.border};
+  box-shadow: ${({ theme }) => theme.buttonPrimary.boxShadow};
+  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
@@ -40,8 +40,8 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   &:focus,
   &:hover,
   &:active {
-    ${({ theme }) => (theme.buttonPrimary?.background ? theme.buttonPrimary?.background : theme.bgLinearGradient)}
-    border: ${({ theme }) => (theme.buttonPrimary?.border ? theme.buttonPrimary.border : 0)};
+    ${({ theme }) => theme.buttonPrimary.background}
+    border: ${({ theme }) => theme.buttonPrimary.border};
   }
   &:disabled {
     background-color: ${({ theme }) => theme.disabled};
@@ -54,13 +54,13 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
 
 export const ButtonLight = styled(ButtonLightMod)`
   // CSS override
-  ${({ theme }) => (theme.buttonLight?.background ? theme.buttonLight?.background : theme.primary5)}
+  ${({ theme }) => theme.buttonLight.background}
   color: ${({ theme }) => theme.primaryText1};
-  font-size: ${({ theme }) => (theme.buttonLight?.fontSize ? theme.buttonLight.fontSize : '16px')};
-  font-weight: ${({ theme }) => (theme.buttonLight?.fontWeight ? theme.buttonLight.fontWeight : 500)};
-  border: ${({ theme }) => (theme.buttonLight?.border ? theme.buttonLight.border : 0)};
-  box-shadow: ${({ theme }) => (theme.buttonLight?.boxShadow ? theme.buttonLight.boxShadow : 'none')};
-  border-radius: ${({ theme }) => (theme.buttonLight?.borderRadius ? theme.buttonLight.borderRadius : 0)};
+  font-size: ${({ theme }) => theme.buttonLight.fontSize};
+  font-weight: ${({ theme }) => theme.buttonLight.fontWeight};
+  border: ${({ theme }) => theme.buttonLight.border};
+  box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
+  border-radius: ${({ theme }) => theme.buttonLight.borderRadius};
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
@@ -71,18 +71,15 @@ export const ButtonLight = styled(ButtonLightMod)`
   }
 
   &:focus {
-    box-shadow: ${({ theme }) => (theme.buttonLight?.boxShadow ? theme.buttonLight.boxShadow : 'none')};
-    background-color: ${({ theme }) =>
-      theme.buttonLight?.backgroundHover ? theme.buttonLight.backgroundHover : 'inherit'};
+    box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
+    background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
   }
   &:hover {
-    background-color: ${({ theme }) =>
-      theme.buttonLight?.backgroundHover ? theme.buttonLight.backgroundHover : 'inherit'};
+    background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
   }
   &:active {
-    box-shadow: ${({ theme }) => (theme.buttonLight?.boxShadow ? theme.buttonLight.boxShadow : 'none')};
-    background-color: ${({ theme }) =>
-      theme.buttonLight?.backgroundHover ? theme.buttonLight.backgroundHover : 'inherit'};
+    box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
+    background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
   }
   &:disabled {
     opacity: 0.4;
@@ -92,8 +89,7 @@ export const ButtonLight = styled(ButtonLightMod)`
       cursor: auto;
       background-color: ${({ theme }) => theme.primary5};
       box-shadow: none;
-      border: ${({ theme }) =>
-        theme.buttonLight?.borderHover ? theme.buttonLight.borderHover : '1px solid transparent'};
+      border: ${({ theme }) => theme.buttonLight.borderHover};
       outline: none;
     }
   }

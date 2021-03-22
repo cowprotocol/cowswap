@@ -8,9 +8,9 @@ import Cursor3 from 'assets/cow-swap/cursor3.gif'
 import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 import { Colors } from 'theme/styled'
+import { colors as colorsBaseTheme, themeVariables as baseThemeVariables } from 'theme/baseTheme'
 
 import {
-  colors as colorsUniswap,
   theme as themeUniswap,
   FixedGlobalStyle as FixedGlobalStyleUniswap,
   ThemedGlobalStyle as ThemedGlobalStyleUniswap
@@ -22,7 +22,7 @@ export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
   return {
-    ...colorsUniswap(darkMode),
+    ...colorsBaseTheme(darkMode),
 
     // ****** base ******
     white: '#FFFFFF',
@@ -117,8 +117,6 @@ function themeVariables(colorsTheme: Colors) {
       fontSize: '26px',
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      borderHover: 'inherit',
-      borderRadius: '9px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
     currencyInput: {
@@ -147,6 +145,7 @@ export function theme(darkmode: boolean): DefaultTheme {
     ...colorsTheme,
 
     // Overide Theme
+    ...baseThemeVariables(darkmode, colorsTheme),
     ...themeVariables(colorsTheme)
   }
 }

@@ -33,14 +33,14 @@ declare module 'styled-components' {
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
     // css snippets
     logo: {
-      src: string
-      alt: string
-      width: string
-      height: string
+      src?: string
+      alt?: string
+      width?: string
+      height?: string
     }
     cursor?: FlattenSimpleInterpolation
     body: {
-      background: FlattenSimpleInterpolation
+      background?: FlattenSimpleInterpolation
     }
     appBody: {
       boxShadow: string
@@ -48,8 +48,8 @@ declare module 'styled-components' {
       border: string
       padding: string
     }
-    header?: {
-      border?: string
+    header: {
+      border: string
     }
     swap?: {
       headerSize?: string
