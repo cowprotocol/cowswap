@@ -166,7 +166,7 @@ const HideSmall = styled.span`
   `};
 `
 
-const NetworkCard = styled(YellowCard)`
+export const NetworkCard = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
   ${({ theme }) => theme.mediaWidth.upToSmall`

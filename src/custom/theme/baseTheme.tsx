@@ -104,7 +104,11 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    version: colorsTheme.green1
+    version: colorsTheme.green1,
+    networkCard: {
+      background: 'rgba(243, 132, 30, 0.05)',
+      text: colorsTheme.yellow2
+    }
   }
 }
 

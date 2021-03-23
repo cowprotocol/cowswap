@@ -1,4 +1,4 @@
-import HeaderMod, { UniIcon } from './HeaderMod'
+import HeaderMod, { UniIcon, NetworkCard } from './HeaderMod'
 import styled from 'styled-components'
 export { NETWORK_LABELS } from './HeaderMod'
 
@@ -7,6 +7,11 @@ export const Header = styled(HeaderMod)`
 
   ${UniIcon} {
     display: flex;
+  }
+
+  ${NetworkCard} {
+    background: ${({ theme }) => theme.networkCard.background};
+    color: ${({ theme }) => theme.networkCard.text};
   }
 `
 

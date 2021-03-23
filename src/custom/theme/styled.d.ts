@@ -86,5 +86,9 @@ declare module 'styled-components' {
     }
     bgLinearGradient: FlattenSimpleInterpolation
     version: string
+    networkCard: {
+      background: string
+      text: string
+    }
   }
 }

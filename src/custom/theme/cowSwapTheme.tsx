@@ -134,7 +134,11 @@ function themeVariables(colorsTheme: Colors) {
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    version: colorsTheme.text1
+    version: colorsTheme.primary1,
+    networkCard: {
+      background: colorsTheme.primary1,
+      text: colorsTheme.text1
+    }
   }
 }
 
