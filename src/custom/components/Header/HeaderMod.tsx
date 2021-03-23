@@ -7,8 +7,6 @@ import { Text } from 'rebass'
 
 import styled from 'styled-components'
 
-import { status as appStatus } from '@src/../package.json'
-
 // import Logo from 'assets/svg/logo.svg'
 // import LogoDark from 'assets/svg/logo_white.svg'
 
@@ -309,23 +307,7 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.XDAI]: 'xDAI'
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 10px;
-
-  background: ${({ theme }) => theme.primary1};
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-
-  /* negative margin matches logo margin right */
-  margin: auto 0 0 -10px;
-  padding: 2px 6px;
-`
-const AppStatus = ({ appStatus }: { appStatus?: string }) => <Wrapper>{appStatus}</Wrapper>
-
-export default function HeaderMod(props: WithClassName) {
+export default function HeaderMod(props: { statusLabel: React.ReactNode } & WithClassName) {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
 
@@ -361,7 +343,7 @@ export default function HeaderMod(props: WithClassName) {
             <LogoImage />
           </UniIcon>
         </Title>
-        {appStatus && <AppStatus appStatus={appStatus} />}
+        {props.statusLabel}
         <HeaderLinks>
           {/* <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
             {t('swap')}
