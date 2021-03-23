@@ -45,7 +45,7 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
     isUnclickable &&
     `
       pointer-events: none;
-      curose: none;
+      cursor: none;
   `}
 `
 
