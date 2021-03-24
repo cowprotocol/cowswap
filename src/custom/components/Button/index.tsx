@@ -19,6 +19,7 @@ import {
   ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
+import { ButtonSize } from '@src/custom/theme'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
@@ -128,11 +129,15 @@ export const ButtonEmpty = styled(ButtonEmptyMod)`
   // CSS overrides
 `
 
+type ButtonCustomProps = ButtonProps & {
+  buttonSize?: ButtonSize
+}
+
 export function ButtonConfirmed({
   confirmed,
   altDisabledStyle,
   ...rest
-}: { confirmed?: boolean; altDisabledStyle?: boolean } & ButtonProps) {
+}: { confirmed?: boolean; altDisabledStyle?: boolean } & ButtonCustomProps) {
   if (confirmed) {
     return <ButtonConfirmedStyle {...rest} />
   } else {
@@ -140,7 +145,7 @@ export function ButtonConfirmed({
   }
 }
 
-export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProps) {
+export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {
   if (error) {
     return <ButtonErrorStyle {...rest} />
   } else {
@@ -148,7 +153,7 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
   }
 }
 
-export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
+export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonCustomProps) {
   return (
     <ButtonPrimary {...rest} disabled={disabled}>
       <RowBetween>
@@ -159,7 +164,11 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
   )
 }
 
-export function ButtonDropdownLight({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
+export function ButtonDropdownLight({
+  disabled = false,
+  children,
+  ...rest
+}: { disabled?: boolean } & ButtonCustomProps) {
   return (
     <ButtonOutlined {...rest} disabled={disabled}>
       <RowBetween>
@@ -170,7 +179,7 @@ export function ButtonDropdownLight({ disabled = false, children, ...rest }: { d
   )
 }
 
-export function ButtonRadio({ active, ...rest }: { active?: boolean } & ButtonProps) {
+export function ButtonRadio({ active, ...rest }: { active?: boolean } & ButtonCustomProps) {
   if (!active) {
     return <ButtonWhite {...rest} />
   } else {

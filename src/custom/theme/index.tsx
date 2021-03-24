@@ -1,3 +1,9 @@
+export enum ButtonSize {
+  SMALL,
+  DEFAULT,
+  BIG
+}
+
 // Cow theme
 export { default } from './cowSwapTheme'
 export * from './cowSwapTheme'

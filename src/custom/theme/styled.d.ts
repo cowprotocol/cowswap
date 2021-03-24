@@ -1,4 +1,5 @@
 import { Colors as ColorsUniswap } from '@src/theme/styled'
+import { ButtonSize } from 'theme'
 export { Color, Grids } from '@src/theme/styled'
 
 // Override colors
@@ -66,6 +67,7 @@ declare module 'styled-components' {
       color?: string
       colorSelected?: string
     }
+    buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
     buttonPrimary: {
       background?: FlattenSimpleInterpolation
       fontSize?: string

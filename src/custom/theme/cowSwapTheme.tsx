@@ -106,7 +106,6 @@ function themeVariables(colorsTheme: Colors) {
         background: ${colorsTheme.primary1};
         color: ${colorsTheme.text1};
       `,
-      fontSize: '26px',
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
       borderRadius: '9px',
@@ -114,7 +113,6 @@ function themeVariables(colorsTheme: Colors) {
     },
     buttonLight: {
       backgroundHover: `${colorsTheme.primary4}`,
-      fontSize: '26px',
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
       boxShadow: `4px 4px 0px ${colorsTheme.black}`

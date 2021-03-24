@@ -3,6 +3,7 @@ import LogoDark from 'assets/svg/logo_white.svg'
 
 import { Colors } from 'theme/styled'
 import { colors as colorsUniswap } from '@src/theme'
+import { ButtonSize } from 'theme'
 
 import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
 import React, { useMemo } from 'react'
@@ -72,18 +73,27 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     header: {
       border: `1px solid ${colorsTheme.border}`
     },
+    buttonSizes: {
+      [ButtonSize.BIG]: css`
+        font-size: 26px;
+      `,
+      [ButtonSize.DEFAULT]: css`
+        font-size: 16px;
+      `,
+      [ButtonSize.SMALL]: css`
+        font-size: 12px;
+      `
+    },
     buttonPrimary: {
       background: css`
         background: transparent linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
       `,
-      fontSize: '16px',
       fontWeight: '500',
       border: `0`,
       borderRadius: '9px',
       boxShadow: `none`
     },
     buttonLight: {
-      fontSize: '16px',
       fontWeight: '500',
       border: 'none',
       borderHover: '1px solid transparent',
