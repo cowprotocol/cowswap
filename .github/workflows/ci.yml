@@ -109,7 +109,6 @@ jobs:
           name: website
           path: build
 
-  
   deploy:
     name: Deploy
     needs: build
@@ -154,3 +153,58 @@ jobs:
       - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/master'
         run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
+
+  integration-tests:
+    name: Cypress
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Increase watchers
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      # - name: Download website
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: website
+
+      # Install deps only
+      - name: Cypress install dependencies
+        id: cypress-deps
+        uses: cypress-io/github-action@v2
+        # Do not consider failure a failure. Well, sort of.
+        # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
+        continue-on-error: true
+        with:
+          runTests: false
+
+      - name: Install Cypress binary
+        id: cypress-bin
+        # Only run if previous step failed
+        if: steps.cypress-deps.outcome == 'failure'
+        run: npx cypress install
+
+      # Actually run tests, building repo
+      - name: Cypress run
+        id: cypress-run
+        uses: cypress-io/github-action@v2
+        with:
+          # Uncomment to test the production release. Right now, it doens't work the automatic "connection"
+          #   very likely it's related to Web3StatusMod!
+          #   when un-commenting this, we need to uncomment also the "Download website" I added in this PR and prevent cypres from buildig the project again
+          # start: yarn serve:ci
+          start: yarn start:default
+          wait-on: http://localhost:3000
+          wait-on-timeout: 200
+      # Open tmate ssh connection on failure for debugging
+      # Uncomment when needed and push upstream
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}

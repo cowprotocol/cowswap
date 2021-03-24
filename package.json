@@ -110,6 +110,7 @@
     "eject": "react-scripts eject",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
     "serve": "serve build -l 3000",
+    "serve:ci": "serve website -l 3000",
     "cypress": "cypress open"
   },
   "jest": {

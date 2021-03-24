@@ -1,6 +1,6 @@
 {
   "baseUrl": "http://localhost:3000",
-  "defaultCommandTimeout": 10000,
+  "defaultCommandTimeout": 20000,
   "pageLoadTimeout": 120000,
   "integrationFolder": "cypress-custom/integration",
   "screenshotsFolder": "cypress-custom/screenshots",
