@@ -156,7 +156,7 @@ jobs:
 
       - name: 'Production deployment: Upload release build files to be deployed'
         if: startsWith(github.ref, 'refs/tags/v')
-        run: aws s3 sync website s3://${{ env.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }} --delete
 
       - name: 'Production deployment: Enable production deployment'
         if: success() && startsWith(github.ref, 'refs/tags/v')
