@@ -24,7 +24,7 @@ const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 
 // Rinkeby Default
 const RINKEBY_LIST =
-  'https://raw.githubusercontent.com/gnosis/gp-swap-ui/89cf4c7f167559d430a3d13dd5caf03255377140/src/custom/tokens/rinkeby-token-list.json'
+  'https://raw.githubusercontent.com/gnosis/gp-swap-ui/master/src/custom/tokens/rinkeby-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
