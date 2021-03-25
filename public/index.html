@@ -26,7 +26,9 @@
     -->
 
   <title>Cow Swap</title>
-  <script async src="https://w.appzi.io/w.js?token=5ju0G"></script>
+  <% if (process.env.NODE_ENV==='production' ) { %>
+    <script async src="https://w.appzi.io/w.js?token=5ju0G"></script>
+    <% } %>
 </head>
 
 <body>
