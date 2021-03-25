@@ -48,6 +48,10 @@ declare module 'styled-components' {
       borderRadius: string
       border: string
       padding: string
+      maxWidth: {
+        normal: string
+        content: string
+      }
     }
     header: {
       border: string

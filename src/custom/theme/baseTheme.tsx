@@ -68,7 +68,11 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   0px 24px 32px rgba(0, 0, 0, 0.01)`,
       borderRadius: '30px',
       border: 'none',
-      padding: '1rem'
+      padding: '1rem',
+      maxWidth: {
+        normal: '420px',
+        content: '620px'
+      }
     },
     header: {
       border: `1px solid ${colorsTheme.border}`
