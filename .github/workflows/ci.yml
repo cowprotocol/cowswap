@@ -1,7 +1,13 @@
 name: CI
 
-# Run on every commit
-on: push
+on:
+  # build on PR creation/updates, also when pushing to master, or create a release
+  pull_request:
+    types: [opened, synchronize] 
+  push:
+    branches: master
+  release:
+    types: [published]
 
 env:
   APP_ID: 1
