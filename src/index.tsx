@@ -23,6 +23,7 @@ import { ExpiredOrdersWatcher, EventUpdater } from 'state/orders/updater'
 // import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from './utils/getLibrary'
+import { getAnalyticsId } from './custom/utils/analytics'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -30,7 +31,7 @@ if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
+const GOOGLE_ANALYTICS_ID: string | undefined = getAnalyticsId()
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   ReactGA.initialize(GOOGLE_ANALYTICS_ID)
   ReactGA.set({
