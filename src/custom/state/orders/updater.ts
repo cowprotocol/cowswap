@@ -46,7 +46,7 @@ function _computeFulfilledSummary({
 
   // if we can find the order from the API
   // and our specific order exists in our state, let's use that
-  if (orderFromApi) {
+  if (orderFromApi && Number(orderFromApi.executedBuyAmount) > 0 && Number(orderFromApi.executedSellAmount) > 0) {
     const { buyToken, sellToken, executedBuyAmount, executedSellAmount } = orderFromApi
 
     if (orderFromStore) {
@@ -62,6 +62,8 @@ function _computeFulfilledSummary({
       // We only have the API order info, let's at least use that
       summary = `Swap ${sellToken} for ${buyToken}`
     }
+  } else {
+    console.log(`[state:orders:updater] computeFulfilledSummary::API data not yet in sync with blockchain`)
   }
 
   return summary
