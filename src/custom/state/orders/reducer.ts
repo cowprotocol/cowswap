@@ -109,10 +109,7 @@ export default createReducer(initialState, builder =>
     })
     .addCase(fulfillOrdersBatch, (state, action) => {
       prefillState(state, action)
-      const { ordersData, chainId, lastCheckedBlock } = action.payload
-
-      // update lastCheckedBlock
-      state[chainId].lastCheckedBlock = lastCheckedBlock
+      const { ordersData, chainId } = action.payload
 
       const pendingOrders = state[chainId].pending
       const fulfilledOrders = state[chainId].fulfilled

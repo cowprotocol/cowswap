@@ -55,7 +55,6 @@ export interface OrderFulfillmentData {
 export interface FulfillOrdersBatchParams {
   ordersData: OrderFulfillmentData[]
   chainId: ChainId
-  lastCheckedBlock: number
 }
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
