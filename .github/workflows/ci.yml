@@ -1,11 +1,11 @@
 name: CI
 
 on:
-  # build on PR creation/updates, also when pushing to master, or create a release
+  # build on PR creation/updates, also when pushing to master/develop, or create a release
   pull_request:
     types: [opened, synchronize] 
   push:
-    branches: master
+    branches: [master, develop]
   release:
     types: [published]
 
