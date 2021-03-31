@@ -11,7 +11,7 @@ export enum OrderStatus {
 }
 
 // used internally by dapp
-export interface Order extends OrderCreation {
+export interface Order extends Omit<OrderCreation, 'signingScheme'> {
   id: OrderID // it is special :), Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // address, without '0x' prefix
   status: OrderStatus

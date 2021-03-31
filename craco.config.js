@@ -5,6 +5,9 @@ const path = require('path')
 
 module.exports = function() {
   return {
+    babel: {
+      plugins: ['@babel/plugin-proposal-nullish-coalescing-operator']
+    },
     webpack: {
       alias: {
         '@src': path.resolve(__dirname, 'src')
