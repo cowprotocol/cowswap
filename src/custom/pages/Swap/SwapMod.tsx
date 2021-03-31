@@ -21,7 +21,7 @@ import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
 import SwapHeader from 'components/swap/SwapHeader'
 
-import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE, DEFAULT_PRECISION } from 'constants/index'
 import { getTradeVersion } from 'data/V1'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency, useAllTokens } from 'hooks/Tokens'
@@ -50,6 +50,7 @@ import Loader from 'components/Loader'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { isTradeBetter } from 'utils/trades'
+import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -177,7 +178,7 @@ export default function Swap() {
     [independentField]: typedValue,
     [dependentField]: showWrap
       ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(DEFAULT_PRECISION) ?? ''
   }
 
   const route = trade?.route
@@ -307,6 +308,14 @@ export default function Swap() {
 
   const swapIsUnsupported = useIsTransactionUnsupported(currencies?.INPUT, currencies?.OUTPUT)
 
+  const [exactInLabel, exactOutLabel] = useMemo(
+    () => [
+      independentField === Field.OUTPUT && !showWrap && trade ? 'From (incl. fee)' : 'From',
+      independentField === Field.INPUT && !showWrap && trade ? 'To (incl. fee)' : 'To'
+    ],
+    [independentField, showWrap, trade]
+  )
+
   return (
     <>
       <TokenWarningModal
@@ -334,7 +343,20 @@ export default function Swap() {
 
           <AutoColumn gap={'md'}>
             <CurrencyInputPanel
-              label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
+              label={
+                <FeeInformationTooltip
+                  label={exactInLabel}
+                  trade={trade}
+                  showHelper={independentField === Field.OUTPUT}
+                  amountBeforeFees={
+                    trade?.fee?.feeAsCurrency &&
+                    trade?.inputAmount.subtract(trade.fee?.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
+                  }
+                  amountAfterFees={trade?.inputAmountWithFee.toSignificant(DEFAULT_PRECISION)}
+                  type="From"
+                  feeAmount={trade?.fee?.feeAsCurrency?.toSignificant(DEFAULT_PRECISION)}
+                />
+              }
               value={formattedAmounts[Field.INPUT]}
               showMaxButton={!atMaxAmountInput}
               currency={currencies[Field.INPUT]}
@@ -366,7 +388,19 @@ export default function Swap() {
             <CurrencyInputPanel
               value={formattedAmounts[Field.OUTPUT]}
               onUserInput={handleTypeOutput}
-              label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
+              label={
+                <FeeInformationTooltip
+                  label={exactOutLabel}
+                  trade={trade}
+                  showHelper={independentField === Field.INPUT}
+                  amountBeforeFees={trade?.outputAmountWithoutFee?.toSignificant(DEFAULT_PRECISION)}
+                  amountAfterFees={trade?.outputAmount.toSignificant(DEFAULT_PRECISION)}
+                  type="To"
+                  feeAmount={trade?.outputAmountWithoutFee
+                    ?.subtract(trade?.outputAmount)
+                    .toSignificant(DEFAULT_PRECISION)}
+                />
+              }
               showMaxButton={false}
               currency={currencies[Field.OUTPUT]}
               onCurrencySelect={handleOutputSelect}
