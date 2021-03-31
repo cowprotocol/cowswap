@@ -8,9 +8,9 @@ import Cursor3 from 'assets/cow-swap/cursor3.gif'
 import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 import { Colors } from 'theme/styled'
+import { colors as colorsBaseTheme, themeVariables as baseThemeVariables } from 'theme/baseTheme'
 
 import {
-  colors as colorsUniswap,
   theme as themeUniswap,
   FixedGlobalStyle as FixedGlobalStyleUniswap,
   ThemedGlobalStyle as ThemedGlobalStyleUniswap
@@ -22,7 +22,7 @@ export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
   return {
-    ...colorsUniswap(darkMode),
+    ...colorsBaseTheme(darkMode),
 
     // ****** base ******
     white: '#FFFFFF',
@@ -86,14 +86,18 @@ function themeVariables(colorsTheme: Colors) {
     `,
     body: {
       background: css`
-        background: url(${cowBg}) no-repeat 100% / cover;
+        background: url(${cowBg}) no-repeat 100% / cover fixed;
       `
     },
     appBody: {
       boxShadow: `6px 6px 0px ${colorsTheme.black}`,
       borderRadius: '8px',
       border: `4px solid ${colorsTheme.black}`,
-      padding: '12px 6px 24px'
+      padding: '12px 6px 24px',
+      maxWidth: {
+        normal: '420px',
+        content: '620px'
+      }
     },
     header: {
       border: 'none'
@@ -106,7 +110,6 @@ function themeVariables(colorsTheme: Colors) {
         background: ${colorsTheme.primary1};
         color: ${colorsTheme.text1};
       `,
-      fontSize: '26px',
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
       borderRadius: '9px',
@@ -114,11 +117,8 @@ function themeVariables(colorsTheme: Colors) {
     },
     buttonLight: {
       backgroundHover: `${colorsTheme.primary4}`,
-      fontSize: '26px',
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      borderHover: 'inherit',
-      borderRadius: '9px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
     currencyInput: {
@@ -136,7 +136,11 @@ function themeVariables(colorsTheme: Colors) {
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    version: colorsTheme.primary1
+    version: colorsTheme.primary1,
+    networkCard: {
+      background: colorsTheme.primary1,
+      text: colorsTheme.text1
+    }
   }
 }
 
@@ -147,6 +151,7 @@ export function theme(darkmode: boolean): DefaultTheme {
     ...colorsTheme,
 
     // Overide Theme
+    ...baseThemeVariables(darkmode, colorsTheme),
     ...themeVariables(colorsTheme)
   }
 }

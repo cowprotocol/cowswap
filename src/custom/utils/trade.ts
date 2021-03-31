@@ -2,10 +2,13 @@ import { ChainId, CurrencyAmount, Token } from '@uniswap/sdk'
 import { isAddress, shortenAddress } from '@src/utils'
 import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/actions'
 
-import { signOrder, UnsignedOrder } from 'utils/signatures'
+import { SigningScheme, signOrder, UnsignedOrder } from 'utils/signatures'
 import { postSignedOrder } from 'utils/operator'
-import { BigNumberish, Signer } from 'ethers'
+import { ethers, BigNumberish, Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
+import { EcdsaSignature } from '@gnosis.pm/gp-v2-contracts'
+
+const SIGNING_SCHEME = SigningScheme.EIP712
 
 export interface PostOrderParams {
   account: string
@@ -62,7 +65,8 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     feeAmount,
     validTo,
     account,
-    signer
+    signer,
+    recipient
   } = params
 
   // fee adjusted input amount
@@ -72,23 +76,30 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
 
   // Prepare order
   const summary = _getSummary(params)
+  const appData = '0x' + APP_ID.toString(16).padStart(64, '0')
+  const receiver = recipient === account ? ethers.constants.AddressZero : recipient
+
   const unsignedOrder: UnsignedOrder = {
     sellToken: sellToken.address,
     buyToken: buyToken.address,
     sellAmount,
     buyAmount,
     validTo,
-    appData: APP_ID,
+    appData,
     feeAmount,
     kind,
+    receiver,
     partiallyFillable: false // Always fill or kill
   }
 
-  const signature = await signOrder({
+  const signature = (await signOrder({
     chainId,
     signer,
-    order: unsignedOrder
-  })
+    order: unsignedOrder,
+    signingScheme: SIGNING_SCHEME
+  })) as EcdsaSignature // Only ECDSA signing supported for now
+
+  const signatureData = signature.data.toString()
   const creationTime = new Date().toISOString()
 
   // Call API
@@ -96,7 +107,9 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     chainId,
     order: {
       ...unsignedOrder,
-      signature
+      signature: signatureData,
+      receiver,
+      signingScheme: SIGNING_SCHEME
     }
   })
 
@@ -109,7 +122,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       id: orderId,
       owner: account,
       creationTime,
-      signature,
+      signature: signatureData,
       status: OrderStatus.PENDING,
       summary,
       inputToken: sellToken,

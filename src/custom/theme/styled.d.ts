@@ -1,4 +1,5 @@
 import { Colors as ColorsUniswap } from '@src/theme/styled'
+import { ButtonSize } from 'theme'
 export { Color, Grids } from '@src/theme/styled'
 
 // Override colors
@@ -33,23 +34,27 @@ declare module 'styled-components' {
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
     // css snippets
     logo: {
-      src: string
-      alt: string
-      width: string
-      height: string
+      src?: string
+      alt?: string
+      width?: string
+      height?: string
     }
     cursor?: FlattenSimpleInterpolation
     body: {
-      background: FlattenSimpleInterpolation
+      background?: FlattenSimpleInterpolation
     }
     appBody: {
       boxShadow: string
       borderRadius: string
       border: string
       padding: string
+      maxWidth: {
+        normal: string
+        content: string
+      }
     }
-    header?: {
-      border?: string
+    header: {
+      border: string
     }
     swap?: {
       headerSize?: string
@@ -66,6 +71,7 @@ declare module 'styled-components' {
       color?: string
       colorSelected?: string
     }
+    buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
     buttonPrimary: {
       background?: FlattenSimpleInterpolation
       fontSize?: string
@@ -86,5 +92,9 @@ declare module 'styled-components' {
     }
     bgLinearGradient: FlattenSimpleInterpolation
     version: string
+    networkCard: {
+      background: string
+      text: string
+    }
   }
 }

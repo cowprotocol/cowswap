@@ -9,11 +9,16 @@ export type FeeForTrade = { feeAsCurrency: CurrencyAmount | undefined } & Pick<
   'minimalFee' | 'feeRatio'
 >
 
-export type TradeWithFee = Trade & { inputAmountWithFee: CurrencyAmount; fee?: FeeForTrade }
+export type TradeWithFee = Trade & {
+  inputAmountWithFee: CurrencyAmount
+  outputAmountWithoutFee?: CurrencyAmount
+  fee?: FeeForTrade
+}
 
 type ExtendedTradeParams = {
   exactInTrade?: Trade | null
   exactOutTrade?: Trade | null
+  originalTrade?: Trade | null
   typedAmountAsCurrency?: CurrencyAmount
   fee: FeeForTrade
 }
@@ -23,7 +28,7 @@ type ExtendedTradeParams = {
  * @description takes a Uni ExactIn Trade object and returns a custom one with fee adjusted inputAmount
  */
 export function extendExactInTrade(params: Omit<ExtendedTradeParams, 'exactOutTrade'>): TradeWithFee | null {
-  const { exactInTrade, typedAmountAsCurrency, fee } = params
+  const { exactInTrade, typedAmountAsCurrency, fee, originalTrade } = params
 
   if (!exactInTrade || !typedAmountAsCurrency) return null
 
@@ -36,6 +41,7 @@ export function extendExactInTrade(params: Omit<ExtendedTradeParams, 'exactOutTr
     // to allow us to not have to change Uni's pages/swap/index and use different method names
     inputAmount: typedAmountAsCurrency,
     inputAmountWithFee: exactInTrade.inputAmount,
+    outputAmountWithoutFee: originalTrade?.outputAmount,
     minimumAmountOut: exactInTrade.minimumAmountOut,
     maximumAmountIn: exactInTrade.maximumAmountIn,
     fee
@@ -114,9 +120,11 @@ export function useTradeExactInWithFee({
 
   // Original Uni trade hook
   const inTrade = useTradeExactIn(feeAdjustedAmount, outputCurrency ?? undefined)
+  const originalTrade = useTradeExactIn(parsedAmount, outputCurrency ?? undefined)
 
   return extendExactInTrade({
     exactInTrade: inTrade,
+    originalTrade,
     typedAmountAsCurrency: parsedAmount,
     fee
   })

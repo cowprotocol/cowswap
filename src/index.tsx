@@ -9,9 +9,8 @@ import { HashRouter } from 'react-router-dom'
 import Blocklist from './components/Blocklist'
 import { NetworkContextName } from './constants'
 import './i18n'
-import App from './pages/App'
+import App from 'pages/App'
 import store from 'state'
-
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import ApplicationUpdater from './state/application/updater'
 import ListsUpdater from 'state/lists/updater'
@@ -87,4 +86,4 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-serviceWorkerRegistration.register()
+serviceWorkerRegistration.unregister()

@@ -5,15 +5,6 @@ export type NetworkLists = {
   [chain in ChainId]: string[]
 }
 
-export const UNSUPPORTED_LIST_URLS: NetworkLists = {
-  [ChainId.MAINNET]: [],
-  [ChainId.KOVAN]: [],
-  [ChainId.RINKEBY]: [],
-  [ChainId.ROPSTEN]: [],
-  [ChainId.GÖRLI]: [],
-  [ChainId.XDAI]: []
-}
-
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
@@ -26,17 +17,26 @@ const COINGECKO_LIST = 'https://tokens.coingecko.com/uniswap/all.json'
 const CMC_ALL_LIST = 'defi.cmc.eth'
 const CMC_STABLECOIN = 'stablecoin.cmc.eth'
 const KLEROS_LIST = 't2crtokens.eth'
+const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Mainnet Default
 const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 
 // Rinkeby Default
-// TODO: this will change when PR: https://github.com/gnosis/gp-swap-ui/pull/170 is merged
 const RINKEBY_LIST =
-  'https://raw.githubusercontent.com/gnosis/gp-swap-ui/89cf4c7f167559d430a3d13dd5caf03255377140/src/custom/tokens/rinkeby-token-list.json'
+  'https://raw.githubusercontent.com/gnosis/gp-swap-ui/master/src/custom/tokens/rinkeby-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
+
+export const UNSUPPORTED_LIST_URLS: NetworkLists = {
+  [ChainId.MAINNET]: [BA_LIST],
+  [ChainId.KOVAN]: [BA_LIST],
+  [ChainId.RINKEBY]: [BA_LIST],
+  [ChainId.ROPSTEN]: [BA_LIST],
+  [ChainId.GÖRLI]: [BA_LIST],
+  [ChainId.XDAI]: [BA_LIST]
+}
 
 function buildNetworkDefaultLists({ networkLists, chainId }: { chainId: ChainId; networkLists: string[] }) {
   // need to add unsupported lists as well

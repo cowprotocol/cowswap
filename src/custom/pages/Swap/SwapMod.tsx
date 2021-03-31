@@ -21,7 +21,7 @@ import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
 import SwapHeader from 'components/swap/SwapHeader'
 
-import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE, DEFAULT_PRECISION } from 'constants/index'
 import { getTradeVersion } from 'data/V1'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency, useAllTokens } from 'hooks/Tokens'
@@ -41,7 +41,7 @@ import {
   useSwapState
 } from 'state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance, useUserSingleHopOnly } from 'state/user/hooks'
-import { /*LinkStyledButton,*/ TYPE } from 'theme'
+import { /*LinkStyledButton,*/ ButtonSize, TYPE } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import AppBody from 'pages/AppBody'
@@ -50,6 +50,7 @@ import Loader from 'components/Loader'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { isTradeBetter } from 'utils/trades'
+import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -177,7 +178,7 @@ export default function Swap() {
     [independentField]: typedValue,
     [dependentField]: showWrap
       ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(DEFAULT_PRECISION) ?? ''
   }
 
   const route = trade?.route
@@ -307,6 +308,14 @@ export default function Swap() {
 
   const swapIsUnsupported = useIsTransactionUnsupported(currencies?.INPUT, currencies?.OUTPUT)
 
+  const [exactInLabel, exactOutLabel] = useMemo(
+    () => [
+      independentField === Field.OUTPUT && !showWrap && trade ? 'From (incl. fee)' : 'From',
+      independentField === Field.INPUT && !showWrap && trade ? 'To (incl. fee)' : 'To'
+    ],
+    [independentField, showWrap, trade]
+  )
+
   return (
     <>
       <TokenWarningModal
@@ -334,7 +343,20 @@ export default function Swap() {
 
           <AutoColumn gap={'md'}>
             <CurrencyInputPanel
-              label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
+              label={
+                <FeeInformationTooltip
+                  label={exactInLabel}
+                  trade={trade}
+                  showHelper={independentField === Field.OUTPUT}
+                  amountBeforeFees={
+                    trade?.fee?.feeAsCurrency &&
+                    trade?.inputAmount.subtract(trade.fee?.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
+                  }
+                  amountAfterFees={trade?.inputAmountWithFee.toSignificant(DEFAULT_PRECISION)}
+                  type="From"
+                  feeAmount={trade?.fee?.feeAsCurrency?.toSignificant(DEFAULT_PRECISION)}
+                />
+              }
               value={formattedAmounts[Field.INPUT]}
               showMaxButton={!atMaxAmountInput}
               currency={currencies[Field.INPUT]}
@@ -366,7 +388,19 @@ export default function Swap() {
             <CurrencyInputPanel
               value={formattedAmounts[Field.OUTPUT]}
               onUserInput={handleTypeOutput}
-              label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
+              label={
+                <FeeInformationTooltip
+                  label={exactOutLabel}
+                  trade={trade}
+                  showHelper={independentField === Field.INPUT}
+                  amountBeforeFees={trade?.outputAmountWithoutFee?.toSignificant(DEFAULT_PRECISION)}
+                  amountAfterFees={trade?.outputAmount.toSignificant(DEFAULT_PRECISION)}
+                  type="To"
+                  feeAmount={trade?.outputAmountWithoutFee
+                    ?.subtract(trade?.outputAmount)
+                    .toSignificant(DEFAULT_PRECISION)}
+                />
+              }
               showMaxButton={false}
               currency={currencies[Field.OUTPUT]}
               onCurrencySelect={handleOutputSelect}
@@ -419,19 +453,21 @@ export default function Swap() {
           </AutoColumn>
           <BottomGrouping>
             {swapIsUnsupported ? (
-              <ButtonPrimary disabled={true}>
+              <ButtonPrimary buttonSize={ButtonSize.BIG} disabled={true}>
                 <TYPE.main mb="4px">Unsupported Asset</TYPE.main>
               </ButtonPrimary>
             ) : !account ? (
-              <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
+              <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                Connect Wallet
+              </ButtonLight>
             ) : showWrap ? (
-              <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
+              <ButtonPrimary buttonSize={ButtonSize.BIG} disabled={Boolean(wrapInputError)} onClick={onWrap}>
                 {wrapInputError ??
                   (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
               </ButtonPrimary>
             ) : // MOD: disable ETH trading
             showEthDisabled ? (
-              <ButtonPrimary id="swap-button" disabled={true}>
+              <ButtonPrimary buttonSize={ButtonSize.BIG} id="swap-button" disabled={true}>
                 <TYPE.main mb="4px">ETH cannot be traded. Use WETH</TYPE.main>
               </ButtonPrimary>
             ) : noRoute && userHasSpecifiedInputOutput ? (
@@ -442,6 +478,7 @@ export default function Swap() {
             ) : showApproveFlow ? (
               <RowBetween>
                 <ButtonConfirmed
+                  buttonSize={ButtonSize.BIG}
                   onClick={approveCallback}
                   disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                   width="48%"
@@ -459,6 +496,7 @@ export default function Swap() {
                   )}
                 </ButtonConfirmed>
                 <ButtonError
+                  buttonSize={ButtonSize.BIG}
                   onClick={() => {
                     if (isExpertMode) {
                       handleSwap()
@@ -488,6 +526,7 @@ export default function Swap() {
               </RowBetween>
             ) : (
               <ButtonError
+                buttonSize={ButtonSize.BIG}
                 onClick={() => {
                   if (isExpertMode) {
                     handleSwap()

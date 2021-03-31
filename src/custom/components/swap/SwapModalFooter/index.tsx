@@ -11,9 +11,9 @@ export default function SwapModalFooter(props: Omit<SwapModalFooterProps, 'fee' 
     <SwapModalFooterMod
       {...props}
       fee={{
-        feeTitle: 'GP/Gas Fee',
+        feeTitle: 'Fee',
         feeAmount: realizedFee,
-        feeTooltip: 'GP Swap has 0 gas fees. A portion of the sell amount in each trade goes to the GP Protocol.'
+        feeTooltip: 'Cow Swap has 0 gas costs. A portion of the sell amount in each trade goes to the Protocol.'
       }}
       priceImpactWithoutFee={priceImpactWithoutFee}
     />

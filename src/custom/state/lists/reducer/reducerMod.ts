@@ -2,7 +2,8 @@ import {
   // DEFAULT_ACTIVE_LIST_URLS,
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
   DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK,
-  DEFAULT_NETWORK_FOR_LISTS
+  DEFAULT_NETWORK_FOR_LISTS,
+  UNSUPPORTED_LIST_URLS
 } from 'constants/lists'
 import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
@@ -49,10 +50,12 @@ export type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<
 const setInitialListState = (chainId: ChainId): ListsState => ({
   lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId],
   byUrl: {
-    ...DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId].reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
-      memo[listUrl] = NEW_LIST_STATE
-      return memo
-    }, {})
+    ...DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId]
+      .concat(...UNSUPPORTED_LIST_URLS[chainId])
+      .reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
+        memo[listUrl] = NEW_LIST_STATE
+        return memo
+      }, {})
   },
   activeListUrls: DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId]
 })

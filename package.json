@@ -6,6 +6,7 @@
   "version": "0.7.3",
   "status": "Alpha",
   "devDependencies": {
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.0.1",
     "@popperjs/core": "^2.4.4",
@@ -138,7 +139,7 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@gnosis.pm/gp-v2-contracts": "0.0.1-alpha.11",
+    "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.15",
     "@uniswap/default-token-list": "^2.0.0"
   }
 }

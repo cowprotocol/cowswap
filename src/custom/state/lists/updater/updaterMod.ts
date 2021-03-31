@@ -10,7 +10,7 @@ import { AppDispatch } from 'state'
 import { acceptListUpdate } from 'state/lists/actions'
 import { useActiveListUrls } from 'state/lists/hooks'
 import { useAllInactiveTokens } from 'hooks/Tokens'
-import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 // MOD: add updateVersion for chainId change init
 import { updateVersion } from 'state/global/actions'
 
@@ -48,6 +48,16 @@ export default function Updater(): null {
       }
     })
   }, [dispatch, fetchList, library, lists])
+
+  // if any lists from unsupported lists are loaded, check them too (in case new updates since last visit)
+  useEffect(() => {
+    Object.keys(UNSUPPORTED_LIST_URLS[chainId]).forEach(listUrl => {
+      const list = lists[listUrl]
+      if (!list || (!list.current && !list.loadingRequestId && !list.error)) {
+        fetchList(listUrl).catch(error => console.debug('list added fetching error', error))
+      }
+    })
+  }, [chainId, dispatch, fetchList, library, lists])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {

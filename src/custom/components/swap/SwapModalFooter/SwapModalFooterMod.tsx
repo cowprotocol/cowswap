@@ -18,6 +18,7 @@ import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from 'components/swap/styleds'
 import { TradeWithFee } from 'state/swap/extension'
+import { DEFAULT_PRECISION, SHORT_PRECISION } from '@src/custom/constants'
 
 export interface SwapModalFooterProps {
   trade: TradeWithFee
@@ -85,8 +86,8 @@ export default function SwapModalFooter({
           <RowFixed>
             <TYPE.black fontSize={14}>
               {trade.tradeType === TradeType.EXACT_INPUT
-                ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
-                : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
+                ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(SHORT_PRECISION) ?? '-'
+                : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(SHORT_PRECISION) ?? '-'}
             </TYPE.black>
             <TYPE.black fontSize={14} marginLeft={'4px'}>
               {trade.tradeType === TradeType.EXACT_INPUT
@@ -121,7 +122,7 @@ export default function SwapModalFooter({
             <QuestionHelper text={feeTooltip} />
           </RowFixed>
           <TYPE.black fontSize={14}>
-            {feeAmount ? feeAmount.toSignificant(6) + ' ' + trade.inputAmount.currency.symbol : '-'}
+            {feeAmount ? feeAmount.toSignificant(DEFAULT_PRECISION) + ' ' + feeAmount.currency.symbol : '-'}
           </TYPE.black>
         </RowBetween>
       </AutoColumn>

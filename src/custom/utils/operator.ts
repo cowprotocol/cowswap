@@ -1,5 +1,5 @@
 import { ChainId, ETHER, WETH } from '@uniswap/sdk'
-import { OrderCreation } from 'utils/signatures'
+import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
 
@@ -8,10 +8,11 @@ import { registerOnWindow } from './misc'
  *    https://protocol-rinkeby.dev.gnosisdev.com/api/
  */
 const API_BASE_URL: Partial<Record<ChainId, string>> = {
-  [ChainId.MAINNET]: 'https://protocol-mainnet.dev.gnosisdev.com/api/v1',
-  [ChainId.RINKEBY]: 'https://protocol-rinkeby.dev.gnosisdev.com/api/v1',
-  [ChainId.XDAI]: 'https://protocol-xdai.dev.gnosisdev.com/api/v1'
+  [ChainId.MAINNET]: process.env.REACT_APP_API_BASE_URL_MAINNET || 'https://protocol-mainnet.dev.gnosisdev.com/api/v1',
+  [ChainId.RINKEBY]: process.env.REACT_APP_API_BASE_URL_RINKEBY || 'https://protocol-rinkeby.dev.gnosisdev.com/api/v1',
+  [ChainId.XDAI]: process.env.REACT_APP_API_BASE_URL_XDAI || 'https://protocol-xdai.dev.gnosisdev.com/api/v1'
 }
+console.log('[util:operator] API_BASE_URL', API_BASE_URL)
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -151,9 +152,12 @@ export async function postSignedOrder(params: { chainId: ChainId; order: OrderCr
   console.log('[utils:operator] Post signed order for network', chainId, order)
 
   // Call API
-  const response = await _post(chainId, `/orders`, order)
+  const response = await _post(chainId, `/orders`, {
+    ...order,
+    signingScheme: getSigningSchemeApiValue(order.signingScheme)
+  })
 
-  // Handle respose
+  // Handle response
   if (!response.ok) {
     // Raise an exception
     const errorMessage = await _getErrorForUnsuccessfulPostOrder(response)

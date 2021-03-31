@@ -5,15 +5,18 @@ import { darken, lighten } from 'polished'
 import { RowBetween } from 'components/Row'
 import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
+import { ButtonSize } from 'theme'
 
 const Base = styled(RebassButton)<{
   padding?: string
   width?: string
   borderRadius?: string
   altDisabledStyle?: boolean
+  buttonSize?: ButtonSize
 }>`
   padding: ${({ padding }) => (padding ? padding : '18px')};
   width: ${({ width }) => (width ? width : '100%')};
+  ${({ theme, buttonSize = ButtonSize.DEFAULT }) => theme.buttonSizes[buttonSize]};
   font-weight: 500;
   text-align: center;
   border-radius: 12px;
@@ -66,7 +69,6 @@ export const ButtonPrimary = styled(Base)`
 export const ButtonLight = styled(Base)`
   background-color: ${({ theme }) => theme.primary5};
   color: ${({ theme }) => theme.primaryText1};
-  font-size: 16px;
   font-weight: 500;
   &:focus {
     box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(0.03, theme.primary5)};
