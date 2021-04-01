@@ -8,7 +8,7 @@ import HeaderMod, {
   Title,
   HeaderLinks,
   HeaderRow,
-  StyledNavLink,
+  // StyledNavLink,
   HeaderControls,
   HeaderElement,
   HideSmall,
@@ -109,10 +109,10 @@ export default function Header() {
           </UniIcon>
         </Title>
         <AppStatusWrapper>{appStatus}</AppStatusWrapper>
-        <HeaderLinks>
+        {/* <HeaderLinks>
           <StyledNavLink to="/swap">Swap</StyledNavLink>
-          {/* <StyledNavLink to="/about">About</StyledNavLink> */}
-        </HeaderLinks>
+          <StyledNavLink to="/about">About</StyledNavLink>
+        </HeaderLinks> */}
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
