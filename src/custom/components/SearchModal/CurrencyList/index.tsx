@@ -1,7 +1,7 @@
 import React from 'react'
 import { CurrencyAmount } from '@uniswap/sdk'
 
-import { LONG_PRECISION } from 'custom/constants'
+import { LONG_PRECISION } from 'constants/index'
 
 import CurrencyListMod, { StyledBalanceText } from './CurrencyListMod'
 
