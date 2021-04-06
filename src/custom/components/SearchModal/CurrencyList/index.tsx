@@ -9,6 +9,9 @@ export function Balance({ balance }: { balance: CurrencyAmount }) {
   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(LONG_PRECISION)}</StyledBalanceText>
 }
 
-export default function CurrencyList([params]: Parameters<typeof CurrencyListMod>): ReturnType<typeof CurrencyListMod> {
+export default function CurrencyList(
+  ...paramsList: Parameters<typeof CurrencyListMod>
+): ReturnType<typeof CurrencyListMod> {
+  const [params] = paramsList
   return <CurrencyListMod {...params} BalanceComponent={Balance} />
 }
