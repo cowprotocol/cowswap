@@ -23,7 +23,6 @@ import { useDispatch } from 'react-redux'
 import { SwapState } from 'state/swap/reducer'
 import { ParsedQs } from 'qs'
 import { useWETHContract } from 'hooks/useContract'
-import { getFeeAmount } from 'utils/fee'
 import { BigNumber } from 'ethers'
 
 export * from '@src/state/swap/hooks'
@@ -252,10 +251,10 @@ export function useIsFeeGreaterThanInput({
 
   if (!fee || !parsedAmount) return { isFeeGreater: false, fee: null }
 
-  const calculatedFee = BigNumber.from(getFeeAmount({ ...fee, sellAmount: parsedAmount.raw.toString() }))
+  const feeBigNumber = BigNumber.from(fee.amount)
 
   return {
-    isFeeGreater: calculatedFee.gte(parsedAmount.raw.toString()),
-    fee: stringToCurrency(calculatedFee.toString(), parsedAmount.currency)
+    isFeeGreater: feeBigNumber.gte(parsedAmount.raw.toString()),
+    fee: stringToCurrency(feeBigNumber.toString(), parsedAmount.currency)
   }
 }

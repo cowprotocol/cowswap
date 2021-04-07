@@ -17,6 +17,20 @@ declare namespace Cypress {
     swapSelectInput(tokenAddress: string): Chainable<Subject>
 
     /**
+     * Select token input in the swap page & input amount
+     *
+     * @example cy.swapEnterInputAmount(tokenAddress, amount)
+     */
+    swapEnterInputAmount(tokenAddress: string, amount: string | number, selectToken?: boolean): Chainable<Subject>
+
+    /**
+     * Select token output in the swap page & input amount
+     *
+     * @example cy.swapEnterOutputAmount(tokenAddress, amount)
+     */
+    swapEnterOutputAmount(tokenAddress: string, amount: string | number, selectToken?: boolean): Chainable<Subject>
+
+    /**
      * Click on the input token
      *
      * @example cy.swapClickInputToken()

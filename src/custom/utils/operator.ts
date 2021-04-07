@@ -2,6 +2,7 @@ import { ChainId, ETHER, WETH } from '@uniswap/sdk'
 import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
+import { FeeInformation } from 'state/fee/reducer'
 
 /**
  * See Swagger documentation:
@@ -28,12 +29,6 @@ export type OrderID = string
 export interface OrderPostError {
   errorType: 'MissingOrderData' | 'InvalidSignature' | 'DuplicateOrder' | 'InsufficientFunds'
   description: string
-}
-
-export interface FeeInformation {
-  expirationDate: string
-  minimalFee: string
-  feeRatio: number
 }
 
 export interface OrderMetaData {
@@ -178,13 +173,28 @@ function checkIfEther(tokenAddress: string, chainId: ChainId) {
   return checkedAddress
 }
 
-export async function getFeeQuote(chainId: ChainId, tokenAddress: string): Promise<FeeInformation> {
-  const checkedAddress = checkIfEther(tokenAddress, chainId)
-  console.log('[util:operator] Get fee for ', chainId, checkedAddress)
+export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
+  amount: string
+  chainId: ChainId
+}
+
+export async function getFeeQuote({
+  sellToken,
+  buyToken,
+  amount,
+  kind,
+  chainId
+}: FeeQuoteParams): Promise<FeeInformation> {
+  const independentToken = kind === 'buy' ? buyToken : sellToken
+  const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
+  console.log('[util:operator] Get fee for ', chainId, independentToken)
 
   let response: Response | undefined
   try {
-    const responseMaybeOk = await _get(chainId, `/tokens/${checkedAddress}/fee`)
+    const responseMaybeOk = await _get(
+      chainId,
+      `/fee?sellToken=${checkedSellAddress}&buyToken=${checkedBuyAddress}&amount=${amount}&kind=${kind}`
+    )
     response = responseMaybeOk.ok ? responseMaybeOk : undefined
   } catch (error) {
     // do nothing
