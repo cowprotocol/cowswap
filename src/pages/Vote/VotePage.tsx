@@ -289,7 +289,7 @@ export default function VotePage({
         <AutoColumn gap="md">
           <TYPE.mediumHeader fontWeight={600}>Description</TYPE.mediumHeader>
           <MarkDownWrapper>
-            <ReactMarkdown source={proposalData?.description} />
+            <ReactMarkdown source={proposalData?.description || ''} />
           </MarkDownWrapper>
         </AutoColumn>
         <AutoColumn gap="md">
@@ -297,7 +297,7 @@ export default function VotePage({
           <ProposerAddressLink
             href={proposalData?.proposer && chainId ? getEtherscanLink(chainId, proposalData?.proposer, 'address') : ''}
           >
-            <ReactMarkdown source={proposalData?.proposer} />
+            <ReactMarkdown source={proposalData?.proposer || ''} />
           </ProposerAddressLink>
         </AutoColumn>
       </ProposalInfo>

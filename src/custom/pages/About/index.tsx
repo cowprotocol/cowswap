@@ -10,9 +10,7 @@ export default function About() {
   return (
     <AppBodyMod>
       <Title>About</Title>
-      <Content>
-        <ReactMarkdown>{error ? error : file}</ReactMarkdown>
-      </Content>
+      <Content>{file && <ReactMarkdown>{error ? error : file}</ReactMarkdown>}</Content>
     </AppBodyMod>
   )
 }
