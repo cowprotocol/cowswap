@@ -232,7 +232,7 @@ export default function SlippageTabs({
             {slippageError === SlippageError.InvalidInput
               ? 'Enter a valid slippage percentage'
               : slippageError === SlippageError.RiskyLow
-              ? 'Your transaction may fail'
+              ? 'Your transaction may expire'
               : 'Your transaction may be frontrun'}
           </RowBetween>
         )}
