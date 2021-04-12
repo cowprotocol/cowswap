@@ -8,7 +8,6 @@ import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
 import { useCombinedActiveList } from 'state/lists/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { RADIX_DECIMAL } from 'constants/index'
-import { ethers } from 'ethers'
 
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min
@@ -77,7 +76,7 @@ const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Ord
     partiallyFillable: false,
     // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2), // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
-    receiver: ethers.constants.AddressZero
+    receiver: owner.replace('0x', '')
   }
 }
 

@@ -4,7 +4,7 @@ import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/acti
 
 import { SigningScheme, signOrder, UnsignedOrder } from 'utils/signatures'
 import { postSignedOrder } from 'utils/operator'
-import { ethers, Signer } from 'ethers'
+import { Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
 import { EcdsaSignature } from '@gnosis.pm/gp-v2-contracts'
 
@@ -73,7 +73,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
   // Prepare order
   const summary = _getSummary(params)
   const appData = '0x' + APP_ID.toString(16).padStart(64, '0')
-  const receiver = recipient === account ? ethers.constants.AddressZero : recipient
+  const receiver = recipient
 
   const unsignedOrder: UnsignedOrder = {
     sellToken: sellToken.address,
