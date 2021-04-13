@@ -42,7 +42,7 @@ import {
   useIsFeeGreaterThanInput
 } from 'state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance, useUserSingleHopOnly } from 'state/user/hooks'
-import { /*LinkStyledButton,*/ ButtonSize, TYPE } from 'theme'
+import { LinkStyledButton, ButtonSize, TYPE } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import AppBody from 'pages/AppBody'
@@ -384,11 +384,11 @@ export default function Swap() {
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
                   />
                 </ArrowWrapper>
-                {/* {recipient === null && !showWrap && isExpertMode ? (
+                {recipient === null && !showWrap && isExpertMode ? (
                   <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                     + Add a send (optional)
                   </LinkStyledButton>
-                ) : null} */}
+                ) : null}
               </AutoRow>
             </AutoColumn>
             <CurrencyInputPanel
@@ -420,9 +420,9 @@ export default function Swap() {
                   <ArrowWrapper clickable={false}>
                     <ArrowDown size="16" color={theme.text2} />
                   </ArrowWrapper>
-                  {/* <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
+                  <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                     - Remove send
-                  </LinkStyledButton> */}
+                  </LinkStyledButton>
                 </AutoRow>
                 <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
               </>
