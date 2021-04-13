@@ -67,4 +67,5 @@ To have the interface default to a different network when a wallet is not connec
 1. Make a copy of `.env` named `.env.local`
 2. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`
 3. Change `REACT_APP_NETWORK_URL` to e.g. `"https://{YOUR_NETWORK_ID}.infura.io/v3/{YOUR_INFURA_KEY}"` 
-3. Change `REACT_APP_ID` Ask for your id in [chat.gnosis.io](https://chat.gnosis.io)
+4. Change `REACT_APP_ID` Ask for your id in [chat.gnosis.io](https://chat.gnosis.io)
+5. Change `REACT_APP_API_BASE_URL_{XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api/v1"` when running the services locally.
