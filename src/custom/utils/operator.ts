@@ -114,7 +114,7 @@ async function _getErrorForBadPostOrderRequest(response: Response): Promise<stri
     }
   } catch (error) {
     console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
-    errorMessage = 'The order was not accepted by the operator'
+    errorMessage = 'The order was not accepted by the network'
   }
 
   return errorMessage
