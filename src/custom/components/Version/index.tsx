@@ -57,14 +57,10 @@ const VERSIONS: Record<
 const versionsList = Object.keys(VERSIONS)
 
 const StyledPolling = styled.div`
-  position: fixed;
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  // gap: 0.5rem;
-
-  left: 0;
-  bottom: 0;
 
   padding: 1rem;
 
@@ -102,10 +98,10 @@ const LogoWrapper = styled.img`
   margin-left: 0.5rem;
 `
 
-const Version = () => {
+const Version = ({ className }: { className?: string }) => {
   const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
   return (
-    <StyledPolling>
+    <StyledPolling className={className}>
       {/* it's hardcoded anyways */}
       {versionsList.map(key => {
         const { href, version } = VERSIONS[key]
