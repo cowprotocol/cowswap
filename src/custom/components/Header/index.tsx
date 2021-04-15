@@ -13,8 +13,10 @@ import HeaderMod, {
   HeaderElement,
   HideSmall,
   BalanceText,
-  AccountElement
+  AccountElement,
+  HeaderElementWrap
 } from './HeaderMod'
+import Menu from '../Menu'
 import styled from 'styled-components'
 import { status as appStatus } from '@src/../package.json'
 import { useActiveWeb3React } from 'hooks'
@@ -130,12 +132,9 @@ export default function Header() {
             <Web3Status />
           </AccountElement>
         </HeaderElement>
-        {/* <HeaderElementWrap>
-          <StyledMenuButton onClick={() => toggleDarkMode()}>
-            {darkMode ? <Moon size={20} /> : <Sun size={20} />}
-          </StyledMenuButton>
+        <HeaderElementWrap>
           <Menu />
-        </HeaderElementWrap> */}
+        </HeaderElementWrap>
       </HeaderControls>
     </HeaderModWrapper>
   )
