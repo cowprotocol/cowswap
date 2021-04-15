@@ -53,8 +53,9 @@ import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter
 import { isTradeBetter } from 'utils/trades'
 import QuestionHelper from 'components/QuestionHelper'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
+import { RouteComponentProps } from 'react-router-dom'
 
-export default function Swap() {
+export default function Swap({ history }: RouteComponentProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
   // token warning stuff
@@ -164,6 +165,12 @@ export default function Swap() {
     },
     [onUserInput]
   )
+
+  // reset if they close warning without tokens in params
+  const handleDismissTokenWarning = useCallback(() => {
+    setDismissTokenWarning(true)
+    history.push('/swap/')
+  }, [history])
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -328,6 +335,7 @@ export default function Swap() {
         isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
         tokens={importTokensNotInDefault}
         onConfirm={handleConfirmTokenWarning}
+        onDismiss={handleDismissTokenWarning}
       />
       <SwapPoolTabs active={'swap'} />
       <AppBody>
