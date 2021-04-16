@@ -9,7 +9,7 @@ import { AutoRow } from '../Row'
 import Copy from './Copy'
 import Transaction from 'components/AccountDetails/Transaction'
 
-import { SUPPORTED_WALLETS } from '../../constants'
+import { SUPPORTED_WALLETS } from 'constants/index'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { getEtherscanLink } from 'utils'
 import { injected, walletconnect, walletlink, fortmatic, portis } from 'connectors'

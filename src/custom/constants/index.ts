@@ -1,5 +1,6 @@
 import { ChainId, Token } from '@uniswap/sdk'
 import { GPv2Settlement, GPv2AllowanceManager } from '@gnosis.pm/gp-v2-contracts/networks.json'
+import { SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP, WalletInfo } from '@src/constants/index'
 
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
@@ -15,6 +16,16 @@ export const APP_ID = Number(process.env.REACT_APP_ID)
 export * from '@src/constants/index'
 
 export const PRODUCTION_URL = 'cow.trade'
+
+const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|WALLET_CONNECT|FORTMATIC|Portis)$/i
+
+// Re-export only the supported wallets
+export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
+  if (!DISABLED_WALLETS.test(key)) {
+    acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
+  }
+  return acc
+}, {} as { [key: string]: WalletInfo })
 
 // TODO: When contracts are deployed, we can load this from the NPM package
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<ChainId, string>> = {
