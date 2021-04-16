@@ -11,7 +11,7 @@ import Column, { AutoColumn } from 'components/Column'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { SwapPoolTabs } from 'components/NavigationTabs'
-import { AutoRow, RowBetween } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
@@ -38,7 +38,8 @@ import {
   useDerivedSwapInfo,
   useReplaceSwapState,
   useSwapActionHandlers,
-  useSwapState
+  useSwapState,
+  useIsFeeGreaterThanInput
 } from 'state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance, useUserSingleHopOnly } from 'state/user/hooks'
 import { /*LinkStyledButton,*/ ButtonSize, TYPE } from 'theme'
@@ -50,6 +51,7 @@ import Loader from 'components/Loader'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { isTradeBetter } from 'utils/trades'
+import QuestionHelper from 'components/QuestionHelper'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 
 export default function Swap() {
@@ -79,7 +81,7 @@ export default function Swap() {
       return !Boolean(token.address in defaultTokens)
     })
 
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
@@ -114,6 +116,9 @@ export default function Swap() {
     { currency: currencies.OUTPUT, address: OUTPUT.currencyId }
   )
 
+  // Is fee greater than input?
+  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({ chainId, address: INPUT.currencyId, parsedAmount })
+
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
@@ -138,7 +143,8 @@ export default function Swap() {
         [Field.OUTPUT]: parsedAmount
       }
     : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        // [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmountWithFee,
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
       }
 
@@ -447,6 +453,19 @@ export default function Swap() {
                       </ClickableText>
                     </RowBetween>
                   )}
+                  {isFeeGreater && fee && (
+                    <RowBetween>
+                      <RowFixed>
+                        <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
+                          GP/Gas Fee
+                        </TYPE.black>
+                        <QuestionHelper text="GP Swap has 0 gas fees. A portion of the sell amount in each trade goes to the GP Protocol." />
+                      </RowFixed>
+                      <TYPE.black fontSize={14} color={theme.text1}>
+                        {fee.toSignificant(4)} {fee.currency.symbol}
+                      </TYPE.black>
+                    </RowBetween>
+                  )}
                 </AutoColumn>
               </Card>
             )}
@@ -471,10 +490,20 @@ export default function Swap() {
                 <TYPE.main mb="4px">ETH cannot be traded. Use WETH</TYPE.main>
               </ButtonPrimary>
             ) : noRoute && userHasSpecifiedInputOutput ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
-                {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
-              </GreyCard>
+              isFeeGreater ? (
+                <RowBetween>
+                  <ButtonError buttonSize={ButtonSize.BIG} error id="swap-button" disabled>
+                    <Text fontSize={20} fontWeight={500}>
+                      Fees exceed from amount
+                    </Text>
+                  </ButtonError>
+                </RowBetween>
+              ) : (
+                <GreyCard style={{ textAlign: 'center' }}>
+                  <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
+                  {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
+                </GreyCard>
+              )
             ) : showApproveFlow ? (
               <RowBetween>
                 <ButtonConfirmed

@@ -232,8 +232,8 @@ export default function SlippageTabs({
             {slippageError === SlippageError.InvalidInput
               ? 'Enter a valid slippage percentage'
               : slippageError === SlippageError.RiskyLow
-              ? 'Your transaction may fail'
-              : 'Your transaction may be frontrun'}
+              ? 'Your transaction may expire'
+              : 'High slippage amount selected'}
           </RowBetween>
         )}
       </AutoColumn>

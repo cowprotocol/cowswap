@@ -1,33 +1,71 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useActiveWeb3React } from 'hooks'
 import { ExternalLink, TYPE } from 'theme'
-import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'custom/constants'
-import { getEtherscanLink } from 'utils'
 
 import { version as WEB } from '@src/../package.json'
 import { version as CONTRACTS } from '@gnosis.pm/gp-v2-contracts/package.json'
+import { ChainId } from '@uniswap/sdk'
+import { getEtherscanLink } from 'utils'
+import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { useActiveWeb3React } from 'hooks'
 
-const VERSIONS = {
-  WEB,
-  CONTRACTS
+import github from 'assets/external/github-logo.png'
+import etherscan from 'assets/external/etherscan-logo.svg'
+
+function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
+  const contractAddress = contractAddressMap[chainId]
+  if (!contractAddress) return '-'
+  return getEtherscanLink(chainId, contractAddress, 'address')
 }
 
-const versionsList = Object.entries(VERSIONS)
+const LOGO_MAP = {
+  github,
+  etherscan
+}
+
+const VERSIONS: Record<
+  string,
+  { version: string; href: (chainId: ChainId) => string | { github: string; etherscan: string } }
+> = {
+  Web: {
+    version: 'v' + WEB,
+    href() {
+      return 'https://github.com/gnosis/gp-swap-ui'
+    }
+  },
+  'Allowance manager contract': {
+    version: 'v' + CONTRACTS,
+    href(chainId: ChainId) {
+      return {
+        etherscan: _getContractsUrls(chainId, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS),
+        github: 'https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2AllowanceManager.sol'
+      }
+    }
+  },
+  'Settlement contract': {
+    version: 'v' + CONTRACTS,
+    href(chainId: ChainId) {
+      return {
+        etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),
+        github: 'https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2Settlement.sol'
+      }
+    }
+  }
+}
+
+const versionsList = Object.keys(VERSIONS)
 
 const StyledPolling = styled.div`
-  position: fixed;
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
 
-  left: 0;
-  bottom: 0;
-
   padding: 1rem;
 
   color: ${({ theme }) => theme.version};
-  opacity: 0.4;
+  opacity: 0.5;
 
   &:hover {
     opacity: 1;
@@ -49,27 +87,45 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   `}
 `
 
-const VersionData = ({ versions }: { versions: typeof versionsList }) => (
-  <StyledPolling>
-    {versions.map(([key, val]) => (
-      <TYPE.small key={key}>
-        {key}: <strong>{val}</strong>
-      </TYPE.small>
-    ))}
-  </StyledPolling>
-)
+const VersionsLinkWrapper = styled(TYPE.small)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
-const Version = () => {
-  const { chainId } = useActiveWeb3React()
-  const swapAddress = chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : null
+const LogoWrapper = styled.img`
+  max-width: 1rem;
+  margin-left: 0.5rem;
+`
 
+const Version = ({ className }: { className?: string }) => {
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
   return (
-    <VersionsExternalLink
-      isUnclickable={!chainId || !swapAddress}
-      href={chainId && swapAddress ? getEtherscanLink(chainId, swapAddress, 'address') : ''}
-    >
-      <VersionData versions={versionsList} />
-    </VersionsExternalLink>
+    <StyledPolling className={className}>
+      {/* it's hardcoded anyways */}
+      {versionsList.map(key => {
+        const { href, version } = VERSIONS[key]
+
+        const chainHref = href(chainId)
+
+        return (
+          <VersionsLinkWrapper key={key}>
+            <strong>{key}</strong>: {version}
+            {typeof chainHref === 'string' ? (
+              <VersionsExternalLink href={chainHref}>
+                <LogoWrapper src={github} />
+              </VersionsExternalLink>
+            ) : (
+              Object.keys(chainHref).map((item, index) => (
+                <VersionsExternalLink key={item + '_' + index} href={chainHref[item as 'github' | 'etherscan']}>
+                  <LogoWrapper src={LOGO_MAP[item as 'github' | 'etherscan']} />
+                </VersionsExternalLink>
+              ))
+            )}
+          </VersionsLinkWrapper>
+        )
+      })}
+    </StyledPolling>
   )
 }
 

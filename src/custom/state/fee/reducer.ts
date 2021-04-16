@@ -4,10 +4,14 @@ import { updateFee, clearFee } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 
+export const EMPTY_FEE = {
+  feeAsCurrency: undefined,
+  amount: '0'
+}
+
 export interface FeeInformation {
   expirationDate: string
-  minimalFee: string
-  feeRatio: number
+  amount: string
 }
 
 export interface FeeInformationObject {

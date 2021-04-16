@@ -1,13 +1,8 @@
 import { CurrencyAmount, Trade, Currency, JSBI, Token, TokenAmount } from '@uniswap/sdk'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
-import { FeeInformation } from 'utils/operator'
-import { getFeeAmount } from 'utils/fee'
-import { EMPTY_FEE } from '../operator/reducer'
+import { EMPTY_FEE, FeeInformation } from 'state/fee/reducer'
 
-export type FeeForTrade = { feeAsCurrency: CurrencyAmount | undefined } & Pick<
-  FeeInformation,
-  'minimalFee' | 'feeRatio'
->
+export type FeeForTrade = { feeAsCurrency: CurrencyAmount | undefined } & Pick<FeeInformation, 'amount'>
 
 export type TradeWithFee = Trade & {
   inputAmountWithFee: CurrencyAmount
@@ -99,10 +94,7 @@ export function useTradeExactInWithFee({
   // and we call `useTradeExacIn` with an `undefined` which returns null trade
   if (parsedAmount && feeInformation) {
     // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
-    const feeAsString = getFeeAmount({
-      sellAmount: parsedAmount.raw.toString(),
-      ...feeInformation
-    })
+    const { amount: feeAsString } = feeInformation
 
     const feeAsCurrency = stringToCurrency(feeAsString, parsedAmount.currency)
     // Check that fee amount is not greater than the user's input amt
@@ -146,10 +138,7 @@ export function useTradeExactOutWithFee({
   // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
   let fee: FeeForTrade = { ...EMPTY_FEE, ...feeInformation }
   if (outTrade?.inputAmount && feeInformation) {
-    const feeAsString = getFeeAmount({
-      sellAmount: outTrade.inputAmount.raw.toString(),
-      ...feeInformation
-    })
+    const { amount: feeAsString } = feeInformation
 
     const feeAsCurrency = stringToCurrency(feeAsString, outTrade.inputAmount.currency)
 

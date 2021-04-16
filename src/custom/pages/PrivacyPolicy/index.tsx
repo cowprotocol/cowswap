@@ -1,7 +1,7 @@
 import React from 'react'
-import content from 'pages/About/About.md'
+import content from './PrivacyPolicy.md'
 import Markdown from 'components/Markdown'
 
-export default function About() {
+export default function PrivacyPolicy() {
   return <Markdown content={content} />
 }

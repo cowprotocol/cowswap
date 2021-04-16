@@ -2,13 +2,14 @@ import { ChainId, CurrencyAmount, Token } from '@uniswap/sdk'
 import { isAddress, shortenAddress } from '@src/utils'
 import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/actions'
 
-import { SigningScheme, signOrder, UnsignedOrder } from 'utils/signatures'
+import { SigningScheme, signOrder, SignOrderParams, UnsignedOrder } from 'utils/signatures'
 import { postSignedOrder } from 'utils/operator'
-import { ethers, BigNumberish, Signer } from 'ethers'
+import { Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
-import { EcdsaSignature } from '@gnosis.pm/gp-v2-contracts'
+import { EcdsaSignature, Signature } from '@gnosis.pm/gp-v2-contracts'
 
-const SIGNING_SCHEME = SigningScheme.EIP712
+const DEFAULT_SIGNING_SCHEME = SigningScheme.EIP712
+const METAMASK_SIGNATURE_ERROR_CODE = -32603
 
 export interface PostOrderParams {
   account: string
@@ -16,10 +17,8 @@ export interface PostOrderParams {
   signer: Signer
   kind: OrderKind
   inputAmount: CurrencyAmount
-  adjustedInputAmount: CurrencyAmount
   outputAmount: CurrencyAmount
-  adjustedOutputAmount: CurrencyAmount
-  feeAmount: BigNumberish
+  feeAmount: CurrencyAmount | undefined
   sellToken: Token
   buyToken: Token
   validTo: number
@@ -29,13 +28,13 @@ export interface PostOrderParams {
 }
 
 function _getSummary(params: PostOrderParams): string {
-  const { kind, inputAmount, adjustedOutputAmount, account, recipient, recipientAddressOrName } = params
+  const { kind, account, inputAmount, outputAmount, recipient, recipientAddressOrName, feeAmount } = params
 
   const [inputQuantifier, outputQuantifier] = [kind === 'buy' ? 'at most' : '', kind === 'sell' ? 'at least' : '']
   const inputSymbol = inputAmount.currency.symbol
-  const outputSymbol = adjustedOutputAmount.currency.symbol
-  const inputAmountValue = inputAmount.toSignificant(SHORTEST_PRECISION)
-  const outputAmountValue = adjustedOutputAmount.toSignificant(SHORTEST_PRECISION)
+  const outputSymbol = outputAmount.currency.symbol
+  const inputAmountValue = (feeAmount ? inputAmount.add(feeAmount) : inputAmount).toSignificant(SHORTEST_PRECISION)
+  const outputAmountValue = outputAmount.toSignificant(SHORTEST_PRECISION)
 
   const base = `Swap ${inputQuantifier} ${inputAmountValue} ${inputSymbol} for ${outputQuantifier} ${outputAmountValue} ${outputSymbol}`
 
@@ -56,10 +55,8 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     kind,
     addPendingOrder,
     chainId,
-    // fee adjusted input
-    adjustedInputAmount,
-    // slippage output
-    adjustedOutputAmount,
+    inputAmount,
+    outputAmount,
     sellToken,
     buyToken,
     feeAmount,
@@ -70,14 +67,14 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
   } = params
 
   // fee adjusted input amount
-  const sellAmount = adjustedInputAmount.raw.toString(RADIX_DECIMAL)
+  const sellAmount = inputAmount.raw.toString(RADIX_DECIMAL)
   // slippage adjusted output amount
-  const buyAmount = adjustedOutputAmount.raw.toString(RADIX_DECIMAL)
+  const buyAmount = outputAmount.raw.toString(RADIX_DECIMAL)
 
   // Prepare order
   const summary = _getSummary(params)
   const appData = '0x' + APP_ID.toString(16).padStart(64, '0')
-  const receiver = recipient === account ? ethers.constants.AddressZero : recipient
+  const receiver = recipient
 
   const unsignedOrder: UnsignedOrder = {
     sellToken: sellToken.address,
@@ -86,18 +83,39 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     buyAmount,
     validTo,
     appData,
-    feeAmount,
+    feeAmount: feeAmount?.raw.toString() || '0',
     kind,
     receiver,
     partiallyFillable: false // Always fill or kill
   }
 
-  const signature = (await signOrder({
+  let signature: Signature | null = null
+  let signingScheme = DEFAULT_SIGNING_SCHEME
+
+  const signatureParams: SignOrderParams = {
     chainId,
     signer,
     order: unsignedOrder,
-    signingScheme: SIGNING_SCHEME
-  })) as EcdsaSignature // Only ECDSA signing supported for now
+    signingScheme
+  }
+
+  try {
+    signature = (await signOrder(signatureParams)) as EcdsaSignature // Only ECDSA signing supported for now
+  } catch (e) {
+    if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
+      // We tried to sign order the nice way.
+      // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
+      // See https://github.com/MetaMask/metamask-extension/issues/10240#issuecomment-810552020
+      // So, when that specific error occurs, we know this is a problem with MM + HW.
+      // Then, we fallback to ETHSIGN.
+      signingScheme = SigningScheme.ETHSIGN
+      signature = (await signOrder({ ...signatureParams, signingScheme })) as EcdsaSignature // Only ECDSA signing supported for now
+    } else {
+      // Some other error signing. Let it bubble up.
+      console.error(e)
+      throw e
+    }
+  }
 
   const signatureData = signature.data.toString()
   const creationTime = new Date().toISOString()
@@ -109,7 +127,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       ...unsignedOrder,
       signature: signatureData,
       receiver,
-      signingScheme: SIGNING_SCHEME
+      signingScheme
     }
   })
 
