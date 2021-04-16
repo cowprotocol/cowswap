@@ -68,9 +68,15 @@ yarn cypress
 To have the interface default to a different network when a wallet is not connected:
 
 1. Make a copy of `.env` named `.env.local`
-2. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`
-3. Change `REACT_APP_NETWORK_URL` to e.g. `"https://{YOUR_NETWORK_ID}.infura.io/v3/{YOUR_INFURA_KEY}"`
-4. Change `REACT_APP_ID` Ask for your id in [chat.gnosis.io](https://chat.gnosis.io)
+2. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`. This will be your default network id
+3. Define your own list of supported networks:
+```ini
+REACT_APP_SUPPORTED_CHAIN_IDS="1,4,100"
+REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
+REACT_APP_NETWORK_URL_4=https://rinkeby.infura.io/v3/{YOUR_INFURA_KEY}
+REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
+``` 
+4. Change `REACT_APP_ID` Ask for your id at [chat.gnosis.io](https://chat.gnosis.io)
 5. Change `REACT_APP_API_BASE_URL_{XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api/v1"` when running the services locally.
 
 For production:
