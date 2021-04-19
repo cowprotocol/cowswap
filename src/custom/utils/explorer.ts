@@ -1,12 +1,26 @@
 import { ChainId } from '@uniswap/sdk'
 import { OrderID } from 'utils/operator'
+import { isDev, isStaging } from './environments'
 
-// TODO: using dev endpoint for now. Update to staging/prod when available
-const EXPLORER_BASE_URL: Partial<Record<ChainId, string>> = {
-  [ChainId.MAINNET]: 'https://protocol-explorer.dev.gnosisdev.com',
-  [ChainId.RINKEBY]: 'https://protocol-explorer.dev.gnosisdev.com/rinkeby',
-  [ChainId.XDAI]: 'https://protocol-explorer.dev.gnosisdev.com/xdai'
+function _getExplorerUrlByEnvironment() {
+  let baseUrl: string | undefined
+  if (isDev) {
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://protocol-explorer.dev.gnosisdev.com'
+  } else if (isStaging) {
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://protocol-explorer.staging.gnosisdev.com'
+  } else {
+    // Production by default
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_PROD || 'https://gnosis-protocol.io'
+  }
+
+  return {
+    [ChainId.MAINNET]: baseUrl,
+    [ChainId.RINKEBY]: `${baseUrl}/rinkeby`,
+    [ChainId.XDAI]: `${baseUrl}/xdai`
+  }
 }
+
+const EXPLORER_BASE_URL: Partial<Record<ChainId, string>> = _getExplorerUrlByEnvironment()
 
 function _getExplorerBaseUrl(chainId: ChainId): string {
   const baseUrl = EXPLORER_BASE_URL[chainId]
