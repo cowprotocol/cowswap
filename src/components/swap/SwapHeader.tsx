@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Settings from '../Settings'
+import Settings from 'custom/components/Settings'
 import { RowBetween } from '../Row'
 import { TYPE } from '../../theme'
 
