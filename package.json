@@ -139,6 +139,7 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@anxolin/walletconnect-connector": "6.1.9",
     "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.17",
     "@uniswap/default-token-list": "^2.0.0"
   }

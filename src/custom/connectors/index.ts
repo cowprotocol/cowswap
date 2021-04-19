@@ -1,6 +1,9 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+// TODO: Use any network when this PR is merged https://github.com/NoahZinsmeister/web3-react/pull/185
+// import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { WalletConnectConnector } from '@anxolin/walletconnect-connector'
+// End of TODO ----
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 
@@ -73,9 +76,7 @@ export const injected = new InjectedConnector({ supportedChainIds })
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-  // TODO: Use any network when this PR is merged https://github.com/NoahZinsmeister/web3-react/pull/185
-  // rpc: rpcNetworks,
-  rpc: { 1: rpcNetworks[NETWORK_CHAIN_ID] },
+  rpc: rpcNetworks,
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
   pollingInterval: 15000
