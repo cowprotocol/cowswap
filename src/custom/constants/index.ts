@@ -15,7 +15,7 @@ export const APP_ID = Number(process.env.REACT_APP_ID)
 // reexport all Uniswap constants everything
 export * from '@src/constants/index'
 
-export const PRODUCTION_URL = 'cow.trade'
+export const PRODUCTION_URL = 'cowswap.exchange'
 
 const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|WALLET_CONNECT|FORTMATIC|Portis)$/i
 
