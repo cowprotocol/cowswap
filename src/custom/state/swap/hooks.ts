@@ -231,10 +231,10 @@ interface CurrencyWithAddress {
 export function useShouldDisableEth(input?: CurrencyWithAddress, output?: CurrencyWithAddress) {
   const weth = useWETHContract()
   return useMemo(() => {
-    const [isEthIn, isEthOut] = [input?.currency === ETHER, output?.currency === ETHER]
-    const [isWethIn, isWethOut] = [input?.address === weth?.address, output?.address === weth?.address]
+    const isEthIn = input?.currency === ETHER
+    const isWethOut = output?.address === weth?.address
 
-    return { showEthDisabled: (isEthIn && !isWethOut) || (isEthOut && !isWethIn), weth }
+    return { showEthDisabled: isEthIn && !isWethOut, weth }
   }, [input, output, weth])
 }
 
