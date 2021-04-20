@@ -4,7 +4,10 @@ import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk'
 
 import { Field } from '@src/state/swap/actions'
 import { TYPE } from '@src/theme'
-import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
+import {
+  computeSlippageAdjustedAmounts,
+  computeTradePriceBreakdown as computeTradePriceBreakdownUni
+} from '@src/utils/prices'
 
 import { AutoColumn } from '@src/components/Column'
 import QuestionHelper from '@src/components/QuestionHelper'
@@ -17,8 +20,12 @@ import { DEFAULT_PRECISION } from '@src/custom/constants'
 export function computeTradePriceBreakdown(
   trade?: TradeWithFee | null
 ): { priceImpactWithoutFee: Percent | undefined; realizedFee: CurrencyAmount | undefined | null } {
+  // This is needed because we are using Uniswap pools for the price calculation,
+  // thus, we need to account for the LP fees the same way as Uniswap does.
+  const { priceImpactWithoutFee } = computeTradePriceBreakdownUni(trade)
+
   return {
-    priceImpactWithoutFee: trade?.priceImpact,
+    priceImpactWithoutFee,
     realizedFee:
       trade?.tradeType === TradeType.EXACT_INPUT
         ? trade?.outputAmountWithoutFee?.subtract(trade.outputAmount)
