@@ -2,18 +2,28 @@ import { ChainId, ETHER, WETH } from '@uniswap/sdk'
 import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
+import { isProd, isStaging } from './environments'
 import { FeeInformation } from 'state/fee/reducer'
 
-/**
- * See Swagger documentation:
- *    https://protocol-rinkeby.dev.gnosisdev.com/api/
- */
-const API_BASE_URL: Partial<Record<ChainId, string>> = {
-  [ChainId.MAINNET]: process.env.REACT_APP_API_BASE_URL_MAINNET || 'https://protocol-mainnet.dev.gnosisdev.com/api/v1',
-  [ChainId.RINKEBY]: process.env.REACT_APP_API_BASE_URL_RINKEBY || 'https://protocol-rinkeby.dev.gnosisdev.com/api/v1',
-  [ChainId.XDAI]: process.env.REACT_APP_API_BASE_URL_XDAI || 'https://protocol-xdai.dev.gnosisdev.com/api/v1'
+function getOperatorUrl(): Partial<Record<ChainId, string>> {
+  if (isProd || isStaging) {
+    return {
+      [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://protocol-mainnet.gnosis.io/api',
+      [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://protocol-rinkeby.gnosis.io/api',
+      [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://protocol-xdai.gnosis.io/api'
+    }
+  } else {
+    return {
+      [ChainId.MAINNET]:
+        process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://protocol-mainnet.dev.gnosisdev.com/api',
+      [ChainId.RINKEBY]:
+        process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://protocol-rinkeby.dev.gnosisdev.com/api',
+      [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://protocol-xdai.dev.gnosisdev.com/api'
+    }
+  }
 }
-console.log('[util:operator] API_BASE_URL', API_BASE_URL)
+
+const API_BASE_URL = getOperatorUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -59,7 +69,7 @@ function _getApiBaseUrl(chainId: ChainId): string {
   if (!baseUrl) {
     throw new Error('Unsupported Network. The operator API is not deployed in the Network ' + chainId)
   } else {
-    return baseUrl
+    return baseUrl + '/v1'
   }
 }
 
