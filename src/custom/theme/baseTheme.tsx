@@ -93,9 +93,18 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         background: transparent linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
       `,
       fontWeight: '500',
-      border: `0`,
+      border: '0',
       borderRadius: '9px',
-      boxShadow: `none`
+      boxShadow: 'none'
+    },
+    buttonOutlined: {
+      background: css`
+        background: transparent linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
+      `,
+      fontWeight: '500',
+      border: '0',
+      borderRadius: '9px',
+      boxShadow: 'none'
     },
     buttonLight: {
       fontWeight: '500',
@@ -157,4 +166,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   html {
     background-image: ${({ theme }) => `linear-gradient(0deg, ${theme.bg1} 0%, ${theme.bg2} 100%)`};
   }
+
+  *, *:after, *:before { box-sizing:border-box; }
 `

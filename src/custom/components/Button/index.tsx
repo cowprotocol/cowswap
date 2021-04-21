@@ -32,6 +32,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
 
   > div {
     font-size: inherit;
@@ -43,6 +44,8 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   &:active {
     ${({ theme }) => theme.buttonPrimary.background}
     border: ${({ theme }) => theme.buttonPrimary.border};
+    box-shadow: none;
+    transform: translateY(3px);
   }
   &:disabled {
     background-color: ${({ theme }) => theme.disabled};
@@ -103,6 +106,11 @@ export const ButtonGray = styled(ButtonGrayMod)`
 
 export const ButtonSecondary = styled(ButtonSecondaryMod)`
   // CSS overrides
+  transition: box-shadow 0.1s ease-in-out;
+
+  &:hover {
+    box-shadow: none;
+  }
 `
 
 export const ButtonPink = styled(ButtonPinkMod)`
@@ -111,6 +119,37 @@ export const ButtonPink = styled(ButtonPinkMod)`
 
 export const ButtonOutlined = styled(ButtonOutlinedMod)`
   // CSS overrides
+  ${({ theme }) => theme.buttonOutlined.background}
+  font-size: ${({ theme }) => theme.buttonOutlined.fontSize};
+  font-weight: ${({ theme }) => theme.buttonOutlined.fontWeight};
+  border: ${({ theme }) => theme.buttonOutlined.border};
+  box-shadow: ${({ theme }) => theme.buttonOutlined.boxShadow};
+  border-radius: ${({ theme }) => theme.buttonOutlined.borderRadius};
+  ${({ theme }) => theme.cursor};
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+
+  > div {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  &:focus,
+  &:hover,
+  &:active {
+    ${({ theme }) => theme.buttonPrimary.background}
+    border: ${({ theme }) => theme.buttonPrimary.border};
+    box-shadow: none;
+    transform: translateY(3px);
+  }
+  &:disabled {
+    background-color: ${({ theme }) => theme.disabled};
+    background-image: none;
+    border: 0;
+    cursor: auto;
+    animation: none;
+  }
 `
 
 export const ButtonWhite = styled(ButtonWhiteMod)`

@@ -80,6 +80,14 @@ declare module 'styled-components' {
       borderRadius?: string
       boxShadow?: string
     }
+    buttonOutlined: {
+      background?: FlattenSimpleInterpolation
+      fontSize?: string
+      fontWeight?: string
+      border?: string
+      borderRadius?: string
+      boxShadow?: string
+    }
     buttonLight: {
       background?: FlattenSimpleInterpolation
       backgroundHover?: string

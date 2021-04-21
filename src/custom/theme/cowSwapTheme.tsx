@@ -115,6 +115,16 @@ function themeVariables(colorsTheme: Colors) {
       borderRadius: '9px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
+    buttonOutlined: {
+      background: css`
+        background: ${colorsTheme.bg1};
+        color: ${colorsTheme.text1};
+      `,
+      fontWeight: '800',
+      border: `4px solid ${colorsTheme.black}`,
+      borderRadius: '9px',
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`
+    },
     buttonLight: {
       backgroundHover: `${colorsTheme.primary4}`,
       fontWeight: '800',

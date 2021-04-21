@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import Version from '../Version'
+// import ClickWrap from '../ClickWrap'
 
 const FooterVersion = styled(Version)`
   margin-right: auto;
@@ -12,10 +13,11 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   justify-content: space-evenly;
-  margin: auto 6rem 0 2rem;
-
+  margin: auto 96px 0 32px;
   width: 100%;
+`
 
+const FooterWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: none;
   `}
@@ -24,8 +26,11 @@ const Wrapper = styled.div`
 export default function Footer({ children }: { children?: React.ReactChildren }) {
   return (
     <Wrapper>
-      <FooterVersion />
-      {children}
+      {/* <ClickWrap /> */}
+      <FooterWrapper>
+        <FooterVersion />
+        {children}
+      </FooterWrapper>
     </Wrapper>
   )
 }
