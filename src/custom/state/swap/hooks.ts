@@ -22,8 +22,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { SwapState } from 'state/swap/reducer'
 import { ParsedQs } from 'qs'
-import { useWETHContract } from 'hooks/useContract'
 import { BigNumber } from 'ethers'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
+import { WrappedTokenInfo } from '../lists/hooks'
 
 export * from '@src/state/swap/hooks'
 
@@ -228,14 +230,31 @@ interface CurrencyWithAddress {
   address?: string
 }
 
-export function useShouldDisableEth(input?: CurrencyWithAddress, output?: CurrencyWithAddress) {
-  const weth = useWETHContract()
+export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
   return useMemo(() => {
-    const isEthIn = input?.currency === ETHER
-    const isWethOut = output?.address === weth?.address
+    const wrappedToken = new WrappedTokenInfo(
+      Object.assign(WETH[chainId || DEFAULT_NETWORK_FOR_LISTS], {
+        logoURI: chainId === ChainId.XDAI ? XDAI_LOGO_URI : WETH_LOGO_URI
+      } as WrappedTokenInfo['tokenInfo']),
+      []
+    )
+    const native = ETHER
 
-    return { showEthDisabled: isEthIn && !isWethOut, weth }
-  }, [input, output, weth])
+    const [isNativeIn, isNativeOut] = [input?.currency === native, output?.currency === native]
+    const [isWrappedIn, isWrappedOut] = [
+      input?.address === wrappedToken.address,
+      output?.address === wrappedToken.address
+    ]
+
+    return {
+      isNativeIn: isNativeIn && !isWrappedOut,
+      isNativeOut: isNativeOut && !isWrappedIn,
+      isWrappedIn,
+      isWrappedOut,
+      wrappedToken,
+      native
+    }
+  }, [input, output, chainId])
 }
 
 export function useIsFeeGreaterThanInput({

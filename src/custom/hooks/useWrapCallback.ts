@@ -18,7 +18,7 @@ export enum WrapType {
 
 interface WrapUnwrapCallback {
   wrapType: WrapType
-  execute?: () => Promise<void>
+  execute?: () => Promise<TransactionResponse>
   inputError?: string
 }
 
@@ -46,7 +46,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   const inputError = isZero ? `Enter an amount` : !sufficientBalance ? `Insufficient ${symbol} balance` : undefined
 
   // Create wrap/unwrap callback if sufficient balance
-  let wrapUnwrapCallback: (() => Promise<void>) | undefined
+  let wrapUnwrapCallback: (() => Promise<TransactionResponse>) | undefined
   if (sufficientBalance && inputAmount) {
     let wrapUnwrap: () => TransactionResponse
     let summary: string
@@ -63,9 +63,13 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       try {
         const txReceipt = await wrapUnwrap()
         addTransaction(txReceipt, { summary })
+
+        return txReceipt
       } catch (error) {
         const actionName = WrapType.WRAP ? 'wrapping' : 'unwrapping'
         console.error(`Error ${actionName} ${symbol}`, error)
+
+        throw error.message ? error : new Error(error)
       }
     }
   }
@@ -86,7 +90,8 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
-  typedValue: string | undefined
+  typedValue: string | undefined,
+  isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
   const { chainId, account } = useActiveWeb3React()
   const wethContract = useWETHContract()
@@ -98,7 +103,8 @@ export default function useWrapCallback(
   return useMemo(() => {
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
 
-    const isWrappingEther = inputCurrency === ETHER && currencyEquals(WETH[chainId], outputCurrency)
+    const isWrappingEther =
+      inputCurrency === ETHER && (isEthTradeOverride || currencyEquals(WETH[chainId], outputCurrency))
     const isUnwrappingWeth = currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER
 
     if (!isWrappingEther && !isUnwrappingWeth) {
@@ -112,5 +118,5 @@ export default function useWrapCallback(
         wethContract
       })
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
+  }, [wethContract, chainId, inputCurrency, outputCurrency, isEthTradeOverride, balance, inputAmount, addTransaction])
 }

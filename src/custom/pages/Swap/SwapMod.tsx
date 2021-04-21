@@ -1,4 +1,4 @@
-import { CurrencyAmount, ETHER, JSBI, Token, Trade } from '@uniswap/sdk'
+import { CurrencyAmount, JSBI, Token, Trade } from '@uniswap/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -11,7 +11,7 @@ import Column, { AutoColumn } from 'components/Column'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { SwapPoolTabs } from 'components/NavigationTabs'
-import { AutoRow, RowBetween, RowFixed } from 'components/Row'
+import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
@@ -33,10 +33,9 @@ import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
-  useShouldDisableEth,
+  useDetectNativeToken,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useReplaceSwapState,
   useSwapActionHandlers,
   useSwapState,
   useIsFeeGreaterThanInput
@@ -51,11 +50,16 @@ import Loader from 'components/Loader'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { isTradeBetter } from 'utils/trades'
-import QuestionHelper from 'components/QuestionHelper'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
-import { RouteComponentProps } from 'react-router-dom'
+import { SwapProps } from '.'
 
-export default function Swap({ history }: RouteComponentProps) {
+export default function Swap({
+  history,
+  FeeGreaterMessage,
+  EthWethWrapMessage,
+  SwitchToWethBtn,
+  FeesExceedFromAmountMessage
+}: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
   // token warning stuff
@@ -107,15 +111,16 @@ export default function Swap({ history }: RouteComponentProps) {
     inputError: swapInputError
   } = useDerivedSwapInfo()
 
-  // MOD: adds this fn
-  const replaceSwapState = useReplaceSwapState()
-
   // Checks if either currency is native ETH
   // MOD: adds this hook
-  const { showEthDisabled, weth } = useShouldDisableEth(
+  const { isNativeIn, isWrappedOut, native, wrappedToken } = useDetectNativeToken(
     { currency: currencies.INPUT, address: INPUT.currencyId },
-    { currency: currencies.OUTPUT, address: OUTPUT.currencyId }
+    { currency: currencies.OUTPUT, address: OUTPUT.currencyId },
+    chainId
   )
+
+  // Is user swapping Eth as From token and not wrapping to WETH?
+  const isNativeInSwap = isNativeIn && !isWrappedOut
 
   // Is fee greater than input?
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({ chainId, address: INPUT.currencyId, parsedAmount })
@@ -123,9 +128,12 @@ export default function Swap({ history }: RouteComponentProps) {
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
-    typedValue
+    typedValue,
+    // should override and get wrapCallback?
+    isNativeInSwap
   )
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+
+  const showWrap: boolean = !isNativeInSwap && wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
   const toggledVersion = useToggledVersion()
   const tradesByVersion = {
@@ -461,18 +469,15 @@ export default function Swap({ history }: RouteComponentProps) {
                       </ClickableText>
                     </RowBetween>
                   )}
-                  {isFeeGreater && fee && (
-                    <RowBetween>
-                      <RowFixed>
-                        <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-                          GP/Gas Fee
-                        </TYPE.black>
-                        <QuestionHelper text="GP Swap has 0 gas fees. A portion of the sell amount in each trade goes to the GP Protocol." />
-                      </RowFixed>
-                      <TYPE.black fontSize={14} color={theme.text1}>
-                        {fee.toSignificant(4)} {fee.currency.symbol}
-                      </TYPE.black>
-                    </RowBetween>
+                  {isFeeGreater && fee && <FeeGreaterMessage fee={fee} />}
+                  {isNativeIn && onWrap && (
+                    <EthWethWrapMessage
+                      account={account ?? undefined}
+                      native={native}
+                      userInput={parsedAmount}
+                      wrapped={wrappedToken}
+                      wrapCallback={onWrap}
+                    />
                   )}
                 </AutoColumn>
               </Card>
@@ -492,20 +497,11 @@ export default function Swap({ history }: RouteComponentProps) {
                 {wrapInputError ??
                   (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
               </ButtonPrimary>
-            ) : // MOD: disable ETH trading
-            showEthDisabled ? (
-              <ButtonPrimary buttonSize={ButtonSize.BIG} id="swap-button" disabled={true}>
-                <TYPE.main mb="4px">ETH cannot be traded. Use WETH</TYPE.main>
-              </ButtonPrimary>
+            ) : !swapInputError && isNativeIn ? (
+              <SwitchToWethBtn wrappedToken={wrappedToken} />
             ) : noRoute && userHasSpecifiedInputOutput ? (
               isFeeGreater ? (
-                <RowBetween>
-                  <ButtonError buttonSize={ButtonSize.BIG} error id="swap-button" disabled>
-                    <Text fontSize={20} fontWeight={500}>
-                      Fees exceed from amount
-                    </Text>
-                  </ButtonError>
-                </RowBetween>
+                <FeesExceedFromAmountMessage />
               ) : (
                 <GreyCard style={{ textAlign: 'center' }}>
                   <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
@@ -604,62 +600,7 @@ export default function Swap({ history }: RouteComponentProps) {
           </BottomGrouping>
         </Wrapper>
       </AppBody>
-      {/* MOD */}
-      {showEthDisabled ? (
-        <UnsupportedCurrencyFooter
-          detailsText={
-            <>
-              <div>
-                Ether (ETH) is not tradable as a native token. Please use Wrapped Ether (WETH) instead. ETH can still be
-                wrapped/unwrapped into WETH by selecting one as the input and the other as the output.
-              </div>
-
-              {/* Offer option to trade using WETH and same user set amounts */}
-              {weth && (
-                <ButtonConfirmed
-                  onClick={() =>
-                    replaceSwapState({
-                      inputCurrencyId: currencies.INPUT === ETHER ? weth.address : INPUT.currencyId,
-                      outputCurrencyId: currencies.OUTPUT === ETHER ? weth.address : OUTPUT.currencyId,
-                      typedValue,
-                      recipient: null,
-                      field: independentField
-                    })
-                  }
-                  disabled={!weth?.address}
-                  marginTop="1.5rem"
-                  padding="0.65rem"
-                  altDisabledStyle
-                >
-                  Trade with WETH
-                </ButtonConfirmed>
-              )}
-
-              <ButtonConfirmed
-                onClick={() =>
-                  replaceSwapState({
-                    inputCurrencyId: 'ETH',
-                    outputCurrencyId: weth?.address,
-                    typedValue: '0.1',
-                    recipient: null,
-                    field: Field.INPUT
-                  })
-                }
-                disabled={!weth?.address}
-                marginTop="1.5rem"
-                padding="0.65rem"
-                altDisabledStyle
-              >
-                Wrap ETH
-              </ButtonConfirmed>
-            </>
-          }
-          detailsTitle="Ether and GP Swap"
-          showDetailsText="Learn more about using ETH on GP Swap"
-          show={showEthDisabled}
-          currencies={[currencies.INPUT, currencies.OUTPUT]}
-        />
-      ) : !swapIsUnsupported ? (
+      {!swapIsUnsupported ? (
         <AdvancedSwapDetailsDropdown trade={trade} />
       ) : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
