@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import AppBody from 'pages/AppBody'
+import { WithClassName } from 'types'
 
 export const PageWrapper = styled(AppBody)`
   padding: 0 24px 24px;
@@ -57,10 +58,12 @@ export const Content = styled.div`
     height: auto;
     margin: 24px auto;
   }
+`
 
-
+export const GdocsListStyle = css`
   /* List styles */
-  > ul, ol {
+  > ul,
+  ol {
     margin: 24px 0;
     padding: 12px 24px 12px 38px;
     background: #eefaff;
@@ -86,32 +89,10 @@ export const Content = styled.div`
       }
     }
   }
-
-  #table-container {
-    overflow-x: scroll;
-
-    > table {
-      min-width: 800px;
-
-      thead, tr:nth-child(even) {
-          background: lightgrey;
-        }
-      }
-
-      th,
-      td {
-        min-width: 8.5rem;
-        text-align: left;
-        padding: 0.5rem 0.4rem;
-      }
-    }
-  }
 `
 
-interface PageProps {
-  children?: React.ReactNode
-}
+export type PageProps = PropsWithChildren<WithClassName>
 
-export default function Page(props?: PageProps) {
-  return <PageWrapper>{props?.children}</PageWrapper>
+export default function Page(props: PageProps) {
+  return <PageWrapper className={props?.className}>{props?.children}</PageWrapper>
 }

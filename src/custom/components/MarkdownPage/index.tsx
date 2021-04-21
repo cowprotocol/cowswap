@@ -4,21 +4,25 @@ import { ReactMarkdownPropsBase } from 'react-markdown'
 import useFetchFile from 'hooks/useFetchFile'
 import { HeadingRenderer, LinkRenderer } from './renderers'
 import Page, { Title, Content } from 'components/Page'
+import styled from 'styled-components'
+import { WithClassName } from '@src/custom/types'
 // import ScrollToTop from '../ScrollToTop'
 
-interface MarkdownParams {
+interface MarkdownParams extends WithClassName {
   content: string
   title?: ReactNode
 }
+
+export const Wrapper = styled(Page)``
 
 const CustomReactMarkdown = (props: ReactMarkdownPropsBase & { children: string }) => (
   <ReactMarkdown {...props} renderers={{ heading: HeadingRenderer, link: LinkRenderer }} allowDangerousHtml />
 )
 
-export default function Markdown({ content, title }: MarkdownParams) {
+export default function Markdown({ content, title, className }: MarkdownParams) {
   const { error, file } = useFetchFile(content)
   return (
-    <Page>
+    <Wrapper className={className}>
       {title && <Title>{title}</Title>}
       <Content>
         {file && <CustomReactMarkdown>{file}</CustomReactMarkdown>}
@@ -31,6 +35,6 @@ export default function Markdown({ content, title }: MarkdownParams) {
           background: '#9bd7c2'
         }}
       /> */}
-    </Page>
+    </Wrapper>
   )
 }

@@ -1,14 +1,19 @@
 import React from 'react'
-import Page, { Title, Content } from 'components/Page'
+import Page, { Title, Content, GdocsListStyle } from 'components/Page'
+import styled from 'styled-components'
 
 // Assets
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
 
+const Wrapper = styled(Page)`
+  ${GdocsListStyle}
+`
+
 export default function About() {
   return (
-    <Page>
+    <Wrapper>
       <Title>About</Title>
 
       <Content>
@@ -78,6 +83,6 @@ export default function About() {
           even avoid settlement on AMMs altogether.
         </p>
       </Content>
-    </Page>
+    </Wrapper>
   )
 }
