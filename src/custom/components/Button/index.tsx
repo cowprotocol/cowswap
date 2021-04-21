@@ -19,7 +19,7 @@ import {
   ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
-import { ButtonSize } from '@src/custom/theme'
+import { ButtonSize } from 'theme'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides

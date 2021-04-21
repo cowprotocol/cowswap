@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
-import { getChainCurrencySymbols } from '@src/custom/utils/xdai/hack'
+import { getChainCurrencySymbols } from 'utils/xdai/hack'
 import { Currency, CurrencyAmount, currencyEquals, ETHER, WETH } from '@uniswap/sdk'
 import { Contract } from 'ethers'
 import { useMemo } from 'react'

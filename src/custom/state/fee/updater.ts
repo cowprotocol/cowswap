@@ -7,7 +7,7 @@ import { useCurrency } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
 import { useAllFees } from './hooks'
 import { useRefetchFeeCallback } from 'hooks/useRefetchFee'
-import { FeeQuoteParams } from '@src/custom/utils/operator'
+import { FeeQuoteParams } from 'utils/operator'
 import { FeeInformationObject } from './reducer'
 
 const DEBOUNCE_TIME = 350

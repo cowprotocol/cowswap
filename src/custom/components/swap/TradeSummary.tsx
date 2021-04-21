@@ -14,7 +14,7 @@ import QuestionHelper from '@src/components/QuestionHelper'
 import { RowBetween, RowFixed } from '@src/components/Row'
 import FormattedPriceImpact from '@src/components/swap/FormattedPriceImpact'
 import { TradeWithFee } from 'state/swap/extension'
-import { DEFAULT_PRECISION } from '@src/custom/constants'
+import { DEFAULT_PRECISION } from 'constants/index'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(

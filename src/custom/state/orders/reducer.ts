@@ -14,7 +14,7 @@ import {
   expireOrdersBatch
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
-import { Writable } from '@src/custom/types'
+import { Writable } from 'types'
 
 export interface OrderObject {
   id: OrderID

@@ -3,7 +3,7 @@ import { ChainId } from '@uniswap/sdk'
 import { updateFee, clearFee } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
-import { FeeQuoteParams } from '@src/custom/utils/operator'
+import { FeeQuoteParams } from 'utils/operator'
 
 export const EMPTY_FEE = {
   feeAsCurrency: undefined,

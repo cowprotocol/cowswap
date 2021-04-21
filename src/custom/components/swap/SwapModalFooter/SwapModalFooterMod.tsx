@@ -18,7 +18,7 @@ import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from 'components/swap/styleds'
 import { TradeWithFee } from 'state/swap/extension'
-import { DEFAULT_PRECISION, SHORT_PRECISION } from '@src/custom/constants'
+import { DEFAULT_PRECISION, SHORT_PRECISION } from 'constants/index'
 
 export interface SwapModalFooterProps {
   trade: TradeWithFee

@@ -11,7 +11,7 @@ import { RowBetween /* , RowFixed */ } from 'components/Row'
 // import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import SwapRoute from 'components/swap/SwapRoute'
 
-import { TradeWithFee } from '@src/custom/state/swap/extension'
+import { TradeWithFee } from 'state/swap/extension'
 import TradeSummary from '../TradeSummary'
 
 export const InfoLink = styled(ExternalLink)`

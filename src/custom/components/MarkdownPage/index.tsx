@@ -5,7 +5,7 @@ import useFetchFile from 'hooks/useFetchFile'
 import { HeadingRenderer, LinkRenderer } from './renderers'
 import Page, { Title, Content } from 'components/Page'
 import styled from 'styled-components'
-import { WithClassName } from '@src/custom/types'
+import { WithClassName } from 'types'
 // import ScrollToTop from '../ScrollToTop'
 
 interface MarkdownParams extends WithClassName {
