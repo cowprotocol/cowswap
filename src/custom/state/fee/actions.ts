@@ -1,6 +1,13 @@
 import { createAction } from '@reduxjs/toolkit'
 import { ChainId } from '@uniswap/sdk'
-import { FeeInformation } from './reducer'
+import { FeeInformationObject } from './reducer'
 
-export const updateFee = createAction<{ token: string; fee: FeeInformation; chainId: ChainId }>('fee/updateFee')
+export type AddFeeParams = FeeInformationObject
+
+export interface ClearFeeParams {
+  token: string // token address,
+  chainId: ChainId
+}
+
+export const updateFee = createAction<AddFeeParams>('fee/updateFee')
 export const clearFee = createAction<{ token: string; chainId: ChainId }>('fee/clearFee')

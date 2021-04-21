@@ -178,16 +178,10 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
   chainId: ChainId
 }
 
-export async function getFeeQuote({
-  sellToken,
-  buyToken,
-  amount,
-  kind,
-  chainId
-}: FeeQuoteParams): Promise<FeeInformation> {
-  const independentToken = kind === 'buy' ? buyToken : sellToken
+export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
+  const { sellToken, buyToken, amount, kind, chainId } = params
   const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
-  console.log('[util:operator] Get fee for ', chainId, independentToken)
+  console.log('[util:operator] Get fee from API', params)
 
   let response: Response | undefined
   try {

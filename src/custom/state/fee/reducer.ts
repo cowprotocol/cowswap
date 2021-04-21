@@ -3,6 +3,7 @@ import { ChainId } from '@uniswap/sdk'
 import { updateFee, clearFee } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
+import { FeeQuoteParams } from '@src/custom/utils/operator'
 
 export const EMPTY_FEE = {
   feeAsCurrency: undefined,
@@ -14,8 +15,7 @@ export interface FeeInformation {
   amount: string
 }
 
-export interface FeeInformationObject {
-  token: string // token address
+export interface FeeInformationObject extends Omit<FeeQuoteParams, 'kind'> {
   fee: FeeInformation
 }
 
@@ -46,8 +46,9 @@ export default createReducer(initialState, builder =>
   builder
     .addCase(updateFee, (state, action) => {
       prefillState(state, action)
-      const { token, fee, chainId } = action.payload
-      state[chainId][token] = { fee, token }
+
+      const { sellToken, chainId } = action.payload
+      state[chainId][sellToken] = action.payload
     })
     .addCase(clearFee, (state, action) => {
       prefillState(state, action)
