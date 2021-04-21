@@ -15,7 +15,7 @@ export function useRefetchFeeCallback() {
     async ({ sellToken, buyToken, amount, kind, chainId }: FeeQuoteParams) => {
       // Get a new quote
       const fee = await getFeeQuote({ chainId, sellToken, buyToken, amount, kind }).catch(err => {
-        console.error(new Error(err))
+        console.error('Error fetching the fee', err)
         return null
       })
 
