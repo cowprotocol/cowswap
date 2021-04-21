@@ -53,8 +53,10 @@ export function Menu() {
         <Separator />
 
         <Policy to="/terms-and-conditions">Terms and conditions</Policy>
+        {/* 
         <Policy to="/privacy-policy">Privacy policy</Policy>
-        <Policy to="/cookie-policy">Cookie policy</Policy>
+        <Policy to="/cookie-policy">Cookie policy</Policy> 
+        */}
       </MenuFlyout>
     </StyledMenu>
   )
