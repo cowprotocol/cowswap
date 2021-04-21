@@ -1,0 +1,63 @@
+name: ipfs
+
+on:
+  push:
+    tags: [v*]
+    # Delete PR deployment. Just for testing this PR!
+    pull_request:
+      types: [opened, synchronize] 
+
+env:
+  APP_ID: 1
+  REPO_NAME_SLUG: gpswapui
+
+jobs:
+  ipfs:
+    name: IPFS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Set output of cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn cache
+        uses: actions/cache@v2
+        id: cache-yarn-cache
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Web Apps
+        run: yarn ipfs:build
+        env:
+          REACT_APP_CHAIN_ID: 1
+          REACT_APP_NETWORK_URL_XDAI: https://rpc.xdaichain.com/
+          REACT_APP_ADDITIONAL_SERVICES_API_URL_XDAI: https://ido-api-xdai.gnosis.io/
+          REACT_APP_NETWORK_URL_MAINNET: https://mainnet.infura.io/v3/${{ secrets.INFURA_PROJECT_KEY }}
+          REACT_APP_ADDITIONAL_SERVICES_API_URL_MAINNET: https://ido-api-mainnet.gnosis.io/
+
+      - name: "Deploy to IPFS with infura"
+        run: yarn ipfs-publish
