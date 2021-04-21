@@ -3,18 +3,17 @@ import { ChainId } from '@uniswap/sdk'
 import Web3Status from 'components/Web3Status'
 
 import HeaderMod, {
-  // UniIcon,
   NetworkCard,
   Title,
   HeaderLinks,
   HeaderRow,
-  // StyledNavLink,
   HeaderControls,
   HeaderElement,
   HideSmall,
   BalanceText,
   AccountElement,
-  HeaderElementWrap
+  HeaderElementWrap,
+  StyledNavLink
 } from './HeaderMod'
 import Menu from '../Menu'
 import styled from 'styled-components'
@@ -106,10 +105,10 @@ export default function Header() {
             <LogoImage />
           </UniIcon>
         </Title>
-        {/* <HeaderLinks>
+        <HeaderLinks>
           <StyledNavLink to="/swap">Swap</StyledNavLink>
           <StyledNavLink to="/about">About</StyledNavLink>
-        </HeaderLinks> */}
+        </HeaderLinks>
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>

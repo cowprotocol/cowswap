@@ -1,7 +1,7 @@
 import React from 'react'
 import content from './CookiePolicy.md'
-import Markdown from 'components/Markdown'
+import MarkdownPage from '@src/custom/components/MarkdownPage'
 
 export default function CookiePolicy() {
-  return <Markdown content={content} />
+  return <MarkdownPage content={content} />
 }
