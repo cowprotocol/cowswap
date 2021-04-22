@@ -1,6 +1,6 @@
 # Disclaimer
 
-### (updated: April 3021)
+### (updated: April 2021)
 
 This graphical user interface (GUI) and the underlying smart contracts of the Gnosis Protocol are a proof of concept Alpha version. 
 
