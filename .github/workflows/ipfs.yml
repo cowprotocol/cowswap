@@ -3,9 +3,6 @@ name: ipfs
 on:
   push:
     tags: [v*]
-    # Delete PR deployment. Just for testing this PR!
-    pull_request:
-      types: [opened, synchronize] 
 
 env:
   APP_ID: 1
@@ -60,4 +57,4 @@ jobs:
           REACT_APP_ADDITIONAL_SERVICES_API_URL_MAINNET: https://ido-api-mainnet.gnosis.io/
 
       - name: "Deploy to IPFS with infura"
-        run: yarn ipfs-publish
+        run: yarn ipfs:publish
