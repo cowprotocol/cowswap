@@ -6,7 +6,7 @@ import { version as WEB } from '@src/../package.json'
 import { version as CONTRACTS } from '@gnosis.pm/gp-v2-contracts/package.json'
 import { ChainId } from '@uniswap/sdk'
 import { getEtherscanLink } from 'utils'
-import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
+import { CODE_LINK, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { useActiveWeb3React } from 'hooks'
 
@@ -31,7 +31,7 @@ const VERSIONS: Record<
   Web: {
     version: 'v' + WEB,
     href() {
-      return 'https://github.com/gnosis/gp-swap-ui'
+      return CODE_LINK
     }
   },
   'Allowance manager contract': {
