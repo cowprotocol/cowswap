@@ -72,7 +72,7 @@ export default function About() {
         </p>
         <p>
           Heard about Maximal Extractable Value yet? It’s scary. To date more than{' '}
-          <a href="#mev" target="_blank" rel="noopener">
+          <a href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
             USD 390M
           </a>{' '}
           in value has been extracted from users by bots frontrunning transactions, exploiting the slippage users allow
