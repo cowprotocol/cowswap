@@ -1,10 +1,10 @@
 import React from 'react'
-import { Code, MessageCircle } from 'react-feather'
+import { Code, MessageCircle, PieChart } from 'react-feather'
 
 import MenuMod, { MenuItem, InternalMenuItem, MenuFlyout as MenuFlyoutUni } from './MenuMod'
 import styled from 'styled-components'
 import { Separator as SeparatorBase } from 'components/swap/styleds'
-import { CODE_LINK, DISCORD_LINK } from 'constants/index'
+import { CODE_LINK, DISCORD_LINK, DUNE_DASHBOARD_LINK } from 'constants/index'
 
 export const StyledMenu = styled(MenuMod)`
   hr {
@@ -38,6 +38,11 @@ export function Menu() {
           <Code size={14} />
           FAQ
         </InternalMenuItem>
+
+        <MenuItem id="link" href={DUNE_DASHBOARD_LINK}>
+          <PieChart size={14} />
+          Stats
+        </MenuItem>
 
         <MenuItem id="link" href={CODE_LINK}>
           <Code size={14} />
