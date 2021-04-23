@@ -62,5 +62,5 @@ export const WETH_LOGO_URI =
 export const XDAI_LOGO_URI =
   'https://raw.githubusercontent.com/1Hive/default-token-list/master/src/assets/xdai/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d/logo.png'
 
-export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
+export const CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
 export const DISCORD_LINK = 'https://discord.gg/egGzDDctuC'

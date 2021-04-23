@@ -4,6 +4,7 @@ import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
 import { isProd, isStaging } from './environments'
 import { FeeInformation } from 'state/fee/reducer'
+import { network } from '../connectors'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
   if (isProd || isStaging) {
@@ -188,6 +189,15 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
   chainId: ChainId
 }
 
+function toApiAddress(address: string, chainId: ChainId): string {
+  if (address === 'ETH') {
+    // TODO: Return magical address
+    return WETH[chainId].address
+  }
+
+  return address
+}
+
 export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
   const { sellToken, buyToken, amount, kind, chainId } = params
   const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
@@ -197,7 +207,10 @@ export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformatio
   try {
     const responseMaybeOk = await _get(
       chainId,
-      `/fee?sellToken=${checkedSellAddress}&buyToken=${checkedBuyAddress}&amount=${amount}&kind=${kind}`
+      `/fee?sellToken=${toApiAddress(checkedSellAddress, chainId)}&buyToken=${toApiAddress(
+        checkedBuyAddress,
+        chainId
+      )}&amount=${amount}&kind=${kind}`
     )
     response = responseMaybeOk.ok ? responseMaybeOk : undefined
   } catch (error) {

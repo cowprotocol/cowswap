@@ -10,9 +10,13 @@
 
 An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for decentralized exchange of Ethereum tokens.
 
+- 🐮**Official Website**🐮: <https://cowswap.exchange/>
+    * ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
+    * The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/gnosis/gp-swap-ui/releases) section.
+
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
-- Discord: [chat.gnosis.io](https://chat.gnosis.io)
+- Discord: [Gnosis Protocol Channel](https://discord.gg/egGzDDctuC)
 
 Please see the:
 
