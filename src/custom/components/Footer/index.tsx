@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 `
 
 const FooterWrapper = styled.div`
+  width: 100%;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: none;
   `}

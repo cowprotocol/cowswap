@@ -3,7 +3,7 @@
   "description": "Cow Swap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "0.9.0",
+  "version": "0.10.0-rc.2",
   "status": "Alpha",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
@@ -23,6 +23,7 @@
     "@types/react-dom": "^16.9.7",
     "@types/react-redux": "^7.1.8",
     "@types/react-router-dom": "^5.0.0",
+    "@types/react-router-hash-link": "^1.2.1",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
     "@types/react-window": "^1.8.2",
     "@types/rebass": "^4.0.5",
@@ -144,6 +145,7 @@
   "dependencies": {
     "@anxolin/walletconnect-connector": "6.1.9",
     "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.17",
-    "@uniswap/default-token-list": "^2.0.0"
+    "@uniswap/default-token-list": "^2.0.0",
+    "react-router-hash-link": "^2.4.0"
   }
 }

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import Page, { Content, Title } from 'components/Page'
 import styled from 'styled-components'
+import { ContentLink } from 'components/ContentLink'
 import { DISCORD_LINK } from 'constants/index'
 
 const Wrapper = styled.div`
@@ -23,21 +24,95 @@ const Wrapper = styled.div`
   }
 `
 
+interface TocSection {
+  section: TocItem
+  items: TocItem[]
+}
+
+interface TocItem {
+  label: string
+  id: string
+}
+
+function getToc(node: HTMLDivElement) {
+  const headingNodes = node.querySelectorAll('h2,h3')
+
+  const tocSections: TocSection[] = []
+  let items: TocItem[] = []
+  let lastH2: TocItem | undefined = undefined
+
+  const addNewSection = () => {
+    if (lastH2 !== undefined) {
+      tocSections.push({
+        section: lastH2,
+        items
+      })
+      items = []
+    }
+  }
+
+  headingNodes.forEach(entry => {
+    if (entry.tagName === 'H2') {
+      // If H2
+      addNewSection()
+      lastH2 = {
+        id: entry.id,
+        label: entry.innerHTML
+      }
+    } else {
+      // If H3
+      items.push({
+        id: entry.id,
+        label: entry.innerHTML
+      })
+    }
+  })
+
+  addNewSection()
+
+  return tocSections
+}
+
 export default function Faq() {
+  const [toc, setToc] = useState<TocSection[]>([])
+
+  const faqRef = useCallback((node: HTMLDivElement) => {
+    if (node !== null) {
+      const tocSections = getToc(node)
+      setToc(tocSections)
+    }
+  }, [])
+
   return (
-    <Wrapper>
+    <Wrapper ref={faqRef}>
       <Page>
         <Title id="cowswap-faq">CowSwap FAQ</Title>
         <Content>
+          {toc.map(({ section, items }) => (
+            <div key={section.id}>
+              <ContentLink href={'#' + section.id}>{section.label}</ContentLink>
+              <ul>
+                {items.map(tocItem => (
+                  <li key={tocItem.id}>
+                    <ContentLink href={'#' + tocItem.id}>{tocItem.label}</ContentLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </Content>
+      </Page>
+      <Page>
+        <Content>
           <h2 id="general">General</h2>
-          <h3 id="what-is-cowswap-">What is CowSwap?</h3>
+          <h3 id="what-is-cowswap">What is CowSwap?</h3>
           <p>
             CowSwap is a proof-of-concept dapp (decentralized application) built on Gnosis Protocol v2 (GPv2). CowSwap
             offers the decentralized finance community a teaser of the capabilities of GPv2 through testing upcoming
             features while placing gas free trades. Milk it!{' '}
           </p>
 
-          <h3 id="what-is-mev-and-how-much-mev-has-been-extracted-from-users-to-date-">
+          <h3 id="what-is-mev-and-how-much-mev-has-been-extracted-from-users-to-date">
             What is MEV and how much MEV has been extracted from users to date?
           </h3>
 
@@ -53,7 +128,7 @@ export default function Faq() {
             <a href="https://explore.flashbots.net/">$ 382.4 Million, including successful and failed transactions.</a>
           </p>
 
-          <h3 id="to-what-does-the-term-coincidence-of-wants-cows-refer-">
+          <h3 id="to-what-does-the-term-coincidence-of-wants-cows-refer">
             To what does the term Coincidence of Wants (CoWs) refer?
           </h3>
 
@@ -77,7 +152,7 @@ export default function Faq() {
             AMMs (automated market makers).{' '}
           </p>
 
-          <h3 id="how-am-i-protected-from-mev-arbitrage-front-running-sandwiching-with-cowswap-">
+          <h3 id="how-am-i-protected-from-mev-arbitrage-front-running-sandwiching-with-cowswap">
             How am I protected from MEV (Arbitrage, Front running, Sandwiching) with CowSwap?
           </h3>
 
@@ -102,7 +177,7 @@ export default function Faq() {
             protocols, such as Uniswap.
           </p>
 
-          <h3 id="how-does-cowswap-determine-prices-">How does CowSwap determine prices?</h3>
+          <h3 id="how-does-cowswap-determine-prices">How does CowSwap determine prices?</h3>
 
           <p>
             CowSwap settles batch auctions in discrete time intervals. In the absence of other traders, CowSwap matches
@@ -123,7 +198,7 @@ export default function Faq() {
             soon.{' '}
           </p>
 
-          <h3 id="is-cowswap-secure-to-use-">Is CowSwap secure to use?</h3>
+          <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
 
           <p>
             CowSwap is in ongoing development, and that is why this is not a beta product but rather a proo-of-concept
@@ -141,7 +216,7 @@ export default function Faq() {
         <Content>
           <h2 id="protocol">Protocol</h2>
 
-          <h3 id="what-is-cowswap-s-fee-model-">What is CowSwap’s fee model?</h3>
+          <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
 
           <p>
             Each executed order has a fee which is captured by the protocol. Part of the fee is paid to solvers
@@ -161,7 +236,7 @@ export default function Faq() {
             transactions!
           </p>
 
-          <h3 id="how-does-cowswap-connect-to-all-on-chain-liquidity-">
+          <h3 id="how-does-cowswap-connect-to-all-on-chain-liquidity">
             How does CowSwap connect to all on-chain liquidity?
           </h3>
 
@@ -174,7 +249,7 @@ export default function Faq() {
             liquidity across decentralized finance.
           </p>
 
-          <h3 id="how-is-cowswap-able-to-offer-better-prices-than-aggregators-themselves-">
+          <h3 id="how-is-cowswap-able-to-offer-better-prices-than-aggregators-themselves">
             How is CowSwap able to offer better prices?
           </h3>
 
@@ -186,7 +261,7 @@ export default function Faq() {
             existing DEX aggregators.{' '}
           </p>
 
-          <h3 id="how-can-i-become-a-liquidity-provider-">How can I become a liquidity provider?</h3>
+          <h3 id="how-can-i-become-a-liquidity-provider">How can I become a liquidity provider?</h3>
 
           <p>
             CowSwap does not have liquidity providers. Instead, it connects to all on-chain liquidity that is provided
@@ -200,15 +275,15 @@ export default function Faq() {
         <Content>
           <h2 id="trading">Trading</h2>
 
-          <h3 id="what-types-of-orders-does-cowswap-support-">What types of orders does CowSwap support?</h3>
+          <h3 id="what-types-of-orders-does-cowswap-support">What types of orders does CowSwap support?</h3>
 
           <p>At the moment, only limit sell and buy orders (fill-or-kill) are enabled. </p>
 
-          <h3 id="what-token-pairs-does-cowswap-allow-to-trade-">What token pairs does CowSwap allow to trade?</h3>
+          <h3 id="what-token-pairs-does-cowswap-allow-to-trade">What token pairs does CowSwap allow to trade?</h3>
 
           <p>Any valid ERC20 token pair for which there is some basic liquidity on a DEX (like Uniswap or Balancer).</p>
 
-          <h3 id="why-is-cowswap-able-to-offer-gas-free-trades-">Why is CowSwap able to offer gas-free trades?</h3>
+          <h3 id="why-is-cowswap-able-to-offer-gas-free-trades">Why is CowSwap able to offer gas-free trades?</h3>
 
           <p>
             CowSwap is able to offer gas-free trades because the orders are submitted off-chain via signed messages.
@@ -216,7 +291,7 @@ export default function Faq() {
             the trade’s details, such as limit price, amount, timestamp, and so on.{' '}
           </p>
 
-          <h3 id="do-i-need-eth-to-trade-">Do I need ETH to trade?</h3>
+          <h3 id="do-i-need-eth-to-trade">Do I need ETH to trade?</h3>
 
           <p>
             For the trade itself you do not need to hold ETH. Although, in order to be able to trade on CowSwap, you
@@ -234,7 +309,7 @@ export default function Faq() {
             </small>
           </p>
 
-          <h3 id="how-does-a-trader-submit-a-valid-order-in-cowswap-">
+          <h3 id="how-does-a-trader-submit-a-valid-order-in-cowswap">
             How does a trader submit a valid order in CowSwap?
           </h3>
 
@@ -256,7 +331,7 @@ export default function Faq() {
             </li>
           </ol>
 
-          <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount-">
+          <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
             Why does the UI dapp have a warning ”Fees exceed From amount”?
           </h3>
 
@@ -267,9 +342,7 @@ export default function Faq() {
             DEXs). The fee is directly taken from the sell amount, which therefore has to have a certain minimum size.
           </p>
 
-          <h3 id="why-do-i-need-to-approve-a-token-before-trading-">
-            Why do I need to approve a token before trading?
-          </h3>
+          <h3 id="why-do-i-need-to-approve-a-token-before-trading">Why do I need to approve a token before trading?</h3>
 
           <p>
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
@@ -279,7 +352,7 @@ export default function Faq() {
             The smart contract logic ensures that no token can be spent without deliberately signing an order for it.
           </p>
 
-          <h3 id="why-do-i-sign-a-message-instead-of-sending-a-transaction-to-place-an-order-">
+          <h3 id="why-do-i-sign-a-message-instead-of-sending-a-transaction-to-place-an-order">
             Why do I sign a message instead of sending a transaction to place an order?
           </h3>
 
@@ -296,7 +369,7 @@ export default function Faq() {
             route an order is matched against without requiring the user to submit a new order.
           </p>
 
-          <h3 id="can-i-buy-and-sell-eth-in-cowswap-">Can I buy and sell ETH in CowSwap?</h3>
+          <h3 id="can-i-buy-and-sell-eth-in-cowswap">Can I buy and sell ETH in CowSwap?</h3>
 
           <p>
             Yes, you can directly place buy and sell orders for ETH. Before the actual order is placed, the UI will
