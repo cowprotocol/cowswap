@@ -2,17 +2,11 @@ import { ChainId, ETHER, WETH } from '@uniswap/sdk'
 import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
-import { isProd, isStaging } from './environments'
+import { isDev } from './environments'
 import { FeeInformation } from 'state/fee/reducer'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
-  if (isProd || isStaging) {
-    return {
-      [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://protocol-mainnet.gnosis.io/api',
-      [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://protocol-rinkeby.gnosis.io/api',
-      [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://protocol-xdai.gnosis.io/api'
-    }
-  } else {
+  if (isDev) {
     return {
       [ChainId.MAINNET]:
         process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://protocol-mainnet.dev.gnosisdev.com/api',
@@ -20,6 +14,13 @@ function getOperatorUrl(): Partial<Record<ChainId, string>> {
         process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://protocol-rinkeby.dev.gnosisdev.com/api',
       [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://protocol-xdai.dev.gnosisdev.com/api'
     }
+  }
+
+  // Production, staging, ens, ...
+  return {
+    [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://protocol-mainnet.gnosis.io/api',
+    [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://protocol-rinkeby.gnosis.io/api',
+    [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://protocol-xdai.gnosis.io/api'
   }
 }
 
