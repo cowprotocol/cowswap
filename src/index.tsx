@@ -24,6 +24,7 @@ import { ExpiredOrdersWatcher, EventUpdater } from 'state/orders/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from './utils/getLibrary'
 import { analyticsId } from './custom/utils/analytics'
+import AppziButton from 'components/AppziButton'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -79,6 +80,7 @@ ReactDOM.render(
             <Updaters />
             <ThemeProvider>
               <ThemedGlobalStyle />
+              <AppziButton />
               <HashRouter>
                 <App />
               </HashRouter>
