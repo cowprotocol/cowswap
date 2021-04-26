@@ -6,8 +6,8 @@ on:
     types: [opened, synchronize] 
   push:
     branches: [master, develop]
-  release:
-    types: [published]
+    tags: [v*]
+    
 
 env:
   APP_ID: 1
