@@ -7,18 +7,9 @@ import { DEFAULT_PRECISION } from 'constants/index'
 const BalanceLabel = styled.p<{ background?: string }>`
   display: flex;
   justify-content: center;
-  margin: 8px 0;
+  margin: 0 0 4px;
+  font-size: 13px;
   width: 100%;
-
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-
-  background: ${({ background = 'initial' }) => background};
-
-  > span {
-    &:first-child {
-      margin-right: 3.2px;
-    }
-  }
 `
 
 const WrapCardWrapper = styled.div`
@@ -27,36 +18,49 @@ const WrapCardWrapper = styled.div`
   justify-content: center;
   flex: 1;
   padding: 8px;
+  border-radius: 0 6px 6px 0;
+
+  > img {
+    width: 32px;
+    height: 32px;
+    margin: 0 0 14px;
+    box-shadow: none;
+  }
 `
 
 export const WrapCardContainer = styled.div`
   position: relative;
   ${({ theme }) => theme.flexRowNoWrap}
-  border: 2.4px solid ${({ theme }) => theme.bg1};
+  border: 2px solid ${({ theme }) => theme.bg1};
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-  margin: 11.2px 0;
+  margin: 12px 0;
   width: 100%;
+  min-height: 140px;
 
   > ${WrapCardWrapper} {
     &:nth-of-type(even) {
       background-color: ${({ theme }) => theme.bg1};
     }
 
-    > ${BalanceLabel}:last-child {
+    > ${BalanceLabel}:last-of-type{
       margin: 0;
+      font-size: 12px;
     }
   }
 
   // arrow
   > svg {
     position: absolute;
-    left: calc(50% - 15px);
-    top: calc(50% - 15px);
-    border-radius: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
     background: ${({ theme }) => theme.white};
-    width: 30px;
-    height: 30px;
-    padding: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    padding: 3px;
   }
 `
 
@@ -80,10 +84,7 @@ export function WrapCard(props: WrapCardProps) {
         </strong>
       </BalanceLabel>
       {/* user balance */}
-      <BalanceLabel>
-        <span>Balance: </span>
-        <span>{balance?.toSignificant(DEFAULT_PRECISION) || '-'}</span>
-      </BalanceLabel>
+      <BalanceLabel>Balance: {balance?.toSignificant(DEFAULT_PRECISION) || '-'}</BalanceLabel>
     </WrapCardWrapper>
   )
 }

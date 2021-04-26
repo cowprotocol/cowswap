@@ -470,16 +470,16 @@ export default function Swap({
                     </RowBetween>
                   )}
                   {isFeeGreater && fee && <FeeGreaterMessage fee={fee} />}
-                  {isNativeIn && onWrap && (
-                    <EthWethWrapMessage
-                      account={account ?? undefined}
-                      native={native}
-                      userInput={parsedAmount}
-                      wrapped={wrappedToken}
-                      wrapCallback={onWrap}
-                    />
-                  )}
                 </AutoColumn>
+                {isNativeIn && onWrap && (
+                  <EthWethWrapMessage
+                    account={account ?? undefined}
+                    native={native}
+                    userInput={parsedAmount}
+                    wrapped={wrappedToken}
+                    wrapCallback={onWrap}
+                  />
+                )}
               </Card>
             )}
           </AutoColumn>

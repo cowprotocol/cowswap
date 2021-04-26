@@ -20,18 +20,17 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg2};
   align-items: center;
   justify-content: center;
-  margin: 4.8px auto 0;
-  padding: 16px;
+  margin: 24px auto 0;
+  padding: 14px 14px 22px;
   width: 100%;
-
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
   font-size: smaller;
 
   > ${ButtonPrimary} {
       background: #62d9ff;
-      width: 75%;
-      padding: 6.4px;
-      margin-top: 4.8px;
+      width: 100%;
+      padding: 6px;
+      margin: 6px auto 0;
 
       &:disabled {
         background-color: ${({ theme }) => theme.disabled}
@@ -41,14 +40,14 @@ const Wrapper = styled.div`
 const WarningWrapper = styled(Wrapper)`
   ${({ theme }) => theme.flexRowNoWrap}
   padding: 0;
-
-  color: ${({ theme }) => theme.red1};
-  font-weight: 600;
+  margin: 0;
+  color: ${({ theme }) => theme.redShade};
+  font-weight: bold;
   font-size: small;
 
   // warning logo
   > svg {
-    margin-right: 8px;
+    margin: 0 8px 0 0;
   }
 
   // warning text
@@ -56,39 +55,38 @@ const WarningWrapper = styled(Wrapper)`
     ${({ theme }) => theme.flexColumnNoWrap}
     align-items: flex-start;
     justify-content: center;
-    font-size: 90%;
+    font-size: 14px;
   }
 `
 
 const BalanceLabel = styled.p<{ background?: string }>`
   display: flex;
   justify-content: space-between;
-  width: 90%;
-  padding: 8px 11.2px;
+  text-align: center;
+  width: 100%;
+  padding: 12px;
   margin: 8px 0;
-
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-
   background: ${({ background = 'initial' }) => background};
 
   > span {
-    &:first-child {
+    &:first-of-type {
       margin-right: auto;
     }
   }
 `
 
 const ErrorWrapper = styled(BalanceLabel)`
-  font-size: x-small;
-  background-color: #ff000040;
-  color: ${({ theme }) => theme.red1};
+  width: 100%;
+  margin: 12px auto 0;
+  font-size: 12px;
+  background-color: #ffefea;
+  color: ${({ theme }) => theme.redShade};
 `
 
 const ErrorMessage = ({ error }: { error: Error }) => (
   <ErrorWrapper>
-    <i>
-      <strong>{error.message}</strong>
-    </i>
+    <strong>{error.message}</strong>
   </ErrorWrapper>
 )
 
@@ -137,9 +135,7 @@ export default function EthWethWrap({ account, native, userInput, wrapped, wrapC
       <WarningWrapper>
         <AlertTriangle size={25} />
         <div>
-          <span>
-            To sell {nativeSymbol}, first wrap or switch to {wrappedSymbol}
-          </span>
+          Wrap your {nativeSymbol} first or switch to {wrappedSymbol}!
         </div>
       </WarningWrapper>
       {error && <ErrorMessage error={error} />}

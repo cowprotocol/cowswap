@@ -5,6 +5,7 @@ export { Color, Grids } from '@src/theme/styled'
 // Override colors
 export interface Colors extends ColorsUniswap {
   purple: Color
+  redShade: Color
   border: Color
   disabled: Color
 }

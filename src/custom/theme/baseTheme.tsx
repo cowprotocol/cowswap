@@ -51,7 +51,8 @@ export function colors(darkMode: boolean): Colors {
     blue1: '#3F77FF',
     purple: '#8958FF',
     border: darkMode ? '#3a3b5a' : 'rgb(58 59 90 / 10%)',
-    disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)'
+    disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)',
+    redShade: darkMode ? '#AE2C00' : '#AE2C00'
   }
 }
 
