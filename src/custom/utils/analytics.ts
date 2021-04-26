@@ -1,14 +1,18 @@
-import { isDev, isStaging, isProd } from './environments'
+import { isDev, isStaging, isProd, isEns } from './environments'
 
-export function getAnalyticsId(): string | undefined {
+function getAnalyticsId(): string | undefined {
   if (isDev) {
-    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_DEV
+    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_DEV || 'UA-190948266-3'
   } else if (isStaging) {
-    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_STAGING
+    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_STAGING || 'UA-190948266-4'
+  } else if (isEns) {
+    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_ENS || 'UA-190948266-5'
   } else if (isProd) {
-    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_PROD
+    return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_PROD || 'UA-190948266-1'
   }
 
   // Undefined by default
   return undefined
 }
+
+export const analyticsId = getAnalyticsId()
