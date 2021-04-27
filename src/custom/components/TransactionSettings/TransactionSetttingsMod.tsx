@@ -159,12 +159,17 @@ export default function SlippageTabs({
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-            Slippage tolerance
+            MEV protected slippage
           </TYPE.black>
           <QuestionHelper
             text={
-              'Your swap expires and will not execute if the price changes unfavourably by more than the selected percentage. ' +
-              INPUT_OUTPUT_EXPLANATION
+              <>
+                <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
+                <p>
+                  The slippage you pick here enables a resubmission of your order in case of unfavourable price
+                  movements.
+                </p>
+              </>
             }
           />
         </RowFixed>
