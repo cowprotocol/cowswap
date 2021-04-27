@@ -19,6 +19,7 @@ import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from 'components/swap/styleds'
 import { TradeWithFee } from 'state/swap/extension'
 import { DEFAULT_PRECISION, SHORT_PRECISION } from 'constants/index'
+import { getMinimumReceivedTooltip } from 'utils/tooltips'
 
 export interface SwapModalFooterProps {
   trade: TradeWithFee
@@ -50,6 +51,8 @@ export default function SwapModalFooter({
   //   const { priceImpactWithoutFee , realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
   const severity = warningSeverity(priceImpactWithoutFee)
 
+  const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
+
   return (
     <>
       <AutoColumn gap="0px">
@@ -79,9 +82,9 @@ export default function SwapModalFooter({
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-              {trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
+              {isExactIn ? 'Minimum received' : 'Maximum sold'}
             </TYPE.black>
-            <QuestionHelper text="Your transaction will expire if there is a large, unfavorable price movement before it is confirmed." />
+            <QuestionHelper text={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} />
           </RowFixed>
           <RowFixed>
             <TYPE.black fontSize={14}>
