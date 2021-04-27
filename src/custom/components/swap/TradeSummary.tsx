@@ -34,6 +34,9 @@ export function computeTradePriceBreakdown(
   }
 }
 
+export const FEE_TOOLTIP_MSG =
+  'Cow Swap has 0 gas fees. A portion of the sell amount in each trade goes to the Protocol.'
+
 export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeWithFee; allowedSlippage: number }) {
   const theme = useContext(ThemeContext)
   // const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
@@ -78,7 +81,7 @@ export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeW
               Fee
             </TYPE.black>
             {/* <QuestionHelper text="A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive." /> */}
-            <QuestionHelper text="Cow Swap has 0 gas fees. A portion of the sell amount in each trade goes to the Protocol." />
+            <QuestionHelper text={FEE_TOOLTIP_MSG} />
           </RowFixed>
           <TYPE.black fontSize={14} color={theme.text1}>
             {realizedFee ? `${realizedFee.toSignificant(DEFAULT_PRECISION)} ${realizedFee.currency.symbol}` : '-'}
