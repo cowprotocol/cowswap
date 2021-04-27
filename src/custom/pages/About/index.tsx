@@ -1,6 +1,7 @@
 import React from 'react'
 import Page, { Title, Content, GdocsListStyle } from 'components/Page'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 // Assets
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
@@ -9,6 +10,10 @@ import mevIMG from 'assets/cow-swap/mev.png'
 
 const Wrapper = styled(Page)`
   ${GdocsListStyle}
+
+  span[role="img"] {
+    font-size: 1.8em;
+  }
 `
 
 export default function About() {
@@ -18,18 +23,18 @@ export default function About() {
 
       <Content>
         <h2>
-          <b>C</b>oincidence <b>O</b>f <b>W</b>ants
+          <b>C</b>oincidence <b>o</b>f <b>W</b>ants
         </h2>
         <p>
           <img src={diagramIMG} alt="CowSwap vs. AMM's" />
         </p>
         <p>
-          Everytime you and another trader each hold an asset the other wants, your trade is settled directly without
-          using an AMM and therefore without incurring any slippage + fees. Only amounts that can’t be settled with
-          other CowSwap traders are sent to the underlying AMMs.
+          Every time you and another trader each hold an asset the other wants, your trade is settled directly without
+          using an AMM (Automated Market Maker) and therefore without incurring any slippage + fees. Only amounts that
+          can’t be settled with other CowSwap traders are sent to the underlying AMMs.
           <br />
           <br />
-          This economic phenomenon is known as <b>Coincidence Of Wants (COW)</b>.
+          This economic phenomenon is known as <b>Coincidence Of Wants (CoW)</b>.
         </p>
 
         <h3 id="gas-free">Gas Free Transactions</h3>
@@ -47,7 +52,6 @@ export default function About() {
           <li>
             <p>CowSwap’s off-chain service optimizes your trade’s execution by considering:</p>
             <ul>
-              {' '}
               <li>
                 <p>Coincidence Of Wants</p>
               </li>
@@ -63,12 +67,15 @@ export default function About() {
         </ol>
         <p>
           Why? This helps you to save on gas, slippage &amp; protocol fees. You might receive a larger amount than
-          anticipated :)
+          anticipated{' '}
+          <span role="img" aria-label="happy cow face">
+            🐮
+          </span>
         </p>
 
-        <h3 id="mev">Miner-Extractable Value (MEV)</h3>
+        <h3 id="mev">Maximal Extractable Value (MEV)</h3>
         <p>
-          <img src={mevIMG} alt="CowSwap - Miner-Extractable Value" />
+          <img src={mevIMG} alt="CowSwap - Maximal Extractable Value" />
         </p>
         <p>
           Heard about Maximal Extractable Value yet? It’s scary. To date more than{' '}
@@ -81,6 +88,11 @@ export default function About() {
           <br />
           CowSwap is the first DEX Aggregator offering some protection against it: COWs enable tight slippages and can
           even avoid settlement on AMMs altogether.
+        </p>
+
+        <h3>Do you want to know more?</h3>
+        <p>
+          Head over to the <Link to="/faq">FAQ</Link>
         </p>
       </Content>
     </Wrapper>
