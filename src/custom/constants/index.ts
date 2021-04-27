@@ -1,4 +1,4 @@
-import { ChainId, Token } from '@uniswap/sdk'
+import { ChainId, Token, Fraction } from '@uniswap/sdk'
 import { GPv2Settlement, GPv2AllowanceManager } from '@gnosis.pm/gp-v2-contracts/networks.json'
 import { SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP, WalletInfo } from '@src/constants/index'
 
@@ -62,6 +62,23 @@ export const WETH_LOGO_URI =
 export const XDAI_LOGO_URI =
   'https://raw.githubusercontent.com/1Hive/default-token-list/master/src/assets/xdai/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d/logo.png'
 
-export const CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
+// 0.1 balance threshold
+export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
+export const CONTRACTS_CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
+export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
 export const DISCORD_LINK = 'https://discord.gg/egGzDDctuC'
 export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
+
+// 30 minutes
+export const GAS_PRICE_UPDATE_THRESHOLD = 30 * 60 * 1000
+export const GAS_FEE_ENDPOINTS = {
+  [ChainId.MAINNET]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  // No ropsten = main
+  [ChainId.ROPSTEN]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  [ChainId.RINKEBY]: 'https://safe-relay.rinkeby.gnosis.io/api/v1/gas-station/',
+  [ChainId.GÖRLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
+  // no kovan = main
+  [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
+  // TODO: xdai? = main
+  [ChainId.XDAI]: 'https://safe-relay.gnosis.io/api/v1/gas-station/'
+}

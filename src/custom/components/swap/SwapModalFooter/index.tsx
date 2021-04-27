@@ -1,5 +1,5 @@
 import React from 'react'
-import { computeTradePriceBreakdown } from '../TradeSummary'
+import { computeTradePriceBreakdown, FEE_TOOLTIP_MSG } from '../TradeSummary'
 import SwapModalFooterMod, { SwapModalFooterProps } from './SwapModalFooterMod'
 
 export default function SwapModalFooter(props: Omit<SwapModalFooterProps, 'fee' | 'priceImpactWithoutFee'>) {
@@ -13,7 +13,7 @@ export default function SwapModalFooter(props: Omit<SwapModalFooterProps, 'fee' 
       fee={{
         feeTitle: 'Fee',
         feeAmount: realizedFee,
-        feeTooltip: 'Cow Swap has 0 gas costs. A portion of the sell amount in each trade goes to the Protocol.'
+        feeTooltip: FEE_TOOLTIP_MSG
       }}
       priceImpactWithoutFee={priceImpactWithoutFee}
     />

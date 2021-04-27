@@ -4,7 +4,7 @@ import { Code, MessageCircle /*PieChart*/ } from 'react-feather'
 import MenuMod, { MenuItem, InternalMenuItem, MenuFlyout as MenuFlyoutUni } from './MenuMod'
 import styled from 'styled-components'
 import { Separator as SeparatorBase } from 'components/swap/styleds'
-import { CODE_LINK, DISCORD_LINK } from 'constants/index'
+import { CONTRACTS_CODE_LINK, DISCORD_LINK } from 'constants/index'
 
 export const StyledMenu = styled(MenuMod)`
   hr {
@@ -44,7 +44,7 @@ export function Menu() {
           Stats
         </MenuItem> */}
 
-        <MenuItem id="link" href={CODE_LINK}>
+        <MenuItem id="link" href={CONTRACTS_CODE_LINK}>
           <Code size={14} />
           Code
         </MenuItem>

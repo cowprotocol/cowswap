@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ArrowRight, AlertTriangle } from 'react-feather'
@@ -12,6 +12,7 @@ import { useCurrencyBalances } from 'state/wallet/hooks'
 import { useIsTransactionPending } from 'state/transactions/hooks'
 
 import { colors } from 'theme'
+import { LOW_NATIVE_BALANCE_THRESHOLD, DEFAULT_PRECISION } from 'constants/index'
 
 const COLOUR_SHEET = colors(false)
 
@@ -98,6 +99,19 @@ export interface Props {
   wrapCallback: () => Promise<TransactionResponse>
 }
 
+const setNativeLowBalanceError = (nativeSymbol: string) =>
+  new Error(
+    `WARNING! After wrapping your ${nativeSymbol}, your balance will fall below < ${LOW_NATIVE_BALANCE_THRESHOLD.toSignificant(
+      DEFAULT_PRECISION
+    )} ${nativeSymbol}. As a result you may not have sufficient ${nativeSymbol} left to cover future on-chain transaction costs.`
+  )
+
+function checkUserBalance(userInput?: CurrencyAmount, balance?: CurrencyAmount) {
+  if (!userInput || !balance || userInput.greaterThan(balance)) return true
+
+  return balance.subtract(userInput).lessThan(LOW_NATIVE_BALANCE_THRESHOLD)
+}
+
 export default function EthWethWrap({ account, native, userInput, wrapped, wrapCallback }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
@@ -105,6 +119,9 @@ export default function EthWethWrap({ account, native, userInput, wrapped, wrapC
 
   const isWrapPending = useIsTransactionPending(pendingHash)
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
+
+  // does the user have a lower than set threshold balance? show error
+  const isLowBalance = useMemo(() => checkUserBalance(userInput, nativeBalance), [nativeBalance, userInput])
 
   const wrappedSymbol = wrapped.symbol || 'wrapped native token'
   const nativeSymbol = native.symbol || 'native token'
@@ -138,6 +155,7 @@ export default function EthWethWrap({ account, native, userInput, wrapped, wrapC
           Wrap your {nativeSymbol} first or switch to {wrappedSymbol}!
         </div>
       </WarningWrapper>
+      {isLowBalance && <ErrorMessage error={setNativeLowBalanceError(nativeSymbol)} />}
       {error && <ErrorMessage error={error} />}
       <WrapCardContainer>
         {/* To Wrap */}

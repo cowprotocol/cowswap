@@ -2,17 +2,18 @@ import React, { useContext } from 'react'
 import { ThemeContext } from 'styled-components'
 import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk'
 
-import { Field } from '@src/state/swap/actions'
-import { TYPE } from '@src/theme'
+import { Field } from 'state/swap/actions'
+import { TYPE } from 'theme'
 import {
   computeSlippageAdjustedAmounts,
   computeTradePriceBreakdown as computeTradePriceBreakdownUni
-} from '@src/utils/prices'
+} from 'utils/prices'
+import { getMinimumReceivedTooltip } from 'utils/tooltips'
 
-import { AutoColumn } from '@src/components/Column'
-import QuestionHelper from '@src/components/QuestionHelper'
-import { RowBetween, RowFixed } from '@src/components/Row'
-import FormattedPriceImpact from '@src/components/swap/FormattedPriceImpact'
+import { AutoColumn } from 'components/Column'
+import QuestionHelper from 'components/QuestionHelper'
+import { RowBetween, RowFixed } from 'components/Row'
+import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { TradeWithFee } from 'state/swap/extension'
 import { DEFAULT_PRECISION } from 'constants/index'
 
@@ -33,6 +34,9 @@ export function computeTradePriceBreakdown(
   }
 }
 
+export const FEE_TOOLTIP_MSG =
+  'Cow Swap has 0 gas fees. A portion of the sell amount in each trade goes to the Protocol.'
+
 export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeWithFee; allowedSlippage: number }) {
   const theme = useContext(ThemeContext)
   // const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
@@ -48,7 +52,7 @@ export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeW
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
               {isExactIn ? 'Minimum received' : 'Maximum sold'}
             </TYPE.black>
-            <QuestionHelper text="Your transaction will expire if there is a large, unfavorable price movement before it is confirmed." />
+            <QuestionHelper text={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} />
           </RowFixed>
           <RowFixed>
             <TYPE.black color={theme.text1} fontSize={14}>
@@ -77,7 +81,7 @@ export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeW
               Fee
             </TYPE.black>
             {/* <QuestionHelper text="A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive." /> */}
-            <QuestionHelper text="Cow Swap has 0 gas fees. A portion of the sell amount in each trade goes to the Protocol." />
+            <QuestionHelper text={FEE_TOOLTIP_MSG} />
           </RowFixed>
           <TYPE.black fontSize={14} color={theme.text1}>
             {realizedFee ? `${realizedFee.toSignificant(DEFAULT_PRECISION)} ${realizedFee.currency.symbol}` : '-'}

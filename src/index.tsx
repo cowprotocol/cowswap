@@ -19,11 +19,13 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import FeesUpdater from 'state/fee/updater'
 import XdaiUpdater from 'state/network/updater'
+import GasUpdater from 'state/gas/updater'
 import { ExpiredOrdersWatcher, EventUpdater } from 'state/orders/updater'
 // import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from './utils/getLibrary'
 import { analyticsId } from './custom/utils/analytics'
+import AppziButton from 'components/AppziButton'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -65,6 +67,7 @@ function Updaters() {
       <EventUpdater />
       <ExpiredOrdersWatcher />
       <FeesUpdater />
+      <GasUpdater />
     </>
   )
 }
@@ -79,6 +82,7 @@ ReactDOM.render(
             <Updaters />
             <ThemeProvider>
               <ThemedGlobalStyle />
+              <AppziButton />
               <HashRouter>
                 <App />
               </HashRouter>
