@@ -64,7 +64,8 @@ export const XDAI_LOGO_URI =
 
 // 0.1 balance threshold
 export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
-export const CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
+export const CONTRACTS_CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
+export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
 export const DISCORD_LINK = 'https://discord.gg/egGzDDctuC'
 export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
 
