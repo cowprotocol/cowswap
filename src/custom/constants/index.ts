@@ -67,3 +67,17 @@ export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
 export const CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
 export const DISCORD_LINK = 'https://discord.gg/egGzDDctuC'
 export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
+
+// 30 minutes
+export const GAS_PRICE_UPDATE_THRESHOLD = 30 * 60 * 1000
+export const GAS_FEE_ENDPOINTS = {
+  [ChainId.MAINNET]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  // No ropsten = main
+  [ChainId.ROPSTEN]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  [ChainId.RINKEBY]: 'https://safe-relay.rinkeby.gnosis.io/api/v1/gas-station/',
+  [ChainId.GÖRLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
+  // no kovan = main
+  [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
+  // TODO: xdai? = main
+  [ChainId.XDAI]: 'https://safe-relay.gnosis.io/api/v1/gas-station/'
+}

@@ -13,6 +13,7 @@ import multicall from '@src/state/multicall/reducer'
 import lists from './lists/reducer'
 import orders from './orders/reducer'
 import fee from './fee/reducer'
+import gas from 'state/gas/reducer'
 import { updateVersion } from 'state/global/actions'
 
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
@@ -32,10 +33,11 @@ const reducers = {
   ...UNISWAP_REDUCERS,
   lists,
   orders,
-  fee
+  fee,
+  gas
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas']
 
 const store = configureStore({
   reducer: reducers,
