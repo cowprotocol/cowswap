@@ -77,7 +77,7 @@ export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeW
               Fee
             </TYPE.black>
             {/* <QuestionHelper text="A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive." /> */}
-            <QuestionHelper text="Cow Swap has 0 gas fees. A portion of the sell amount in each trade goes to the Protocol." />
+            <QuestionHelper text="On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already" />
           </RowFixed>
           <TYPE.black fontSize={14} color={theme.text1}>
             {realizedFee ? `${realizedFee.toSignificant(DEFAULT_PRECISION)} ${realizedFee.currency.symbol}` : '-'}
