@@ -10,10 +10,10 @@ import mevIMG from 'assets/cow-swap/mev.png'
 
 const Wrapper = styled(Page)`
   ${GdocsListStyle}
-`
 
-const Emoji = styled.span`
-  font-size: 1.8em;
+  span[role="img"] {
+    font-size: 1.8em;
+  }
 `
 
 export default function About() {
@@ -68,9 +68,9 @@ export default function About() {
         <p>
           Why? This helps you to save on gas, slippage &amp; protocol fees. You might receive a larger amount than
           anticipated{' '}
-          <Emoji role="img" aria-label="happy cow face">
+          <span role="img" aria-label="happy cow face">
             🐮
-          </Emoji>
+          </span>
         </p>
 
         <h3 id="mev">Maximal Extractable Value (MEV)</h3>
