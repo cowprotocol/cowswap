@@ -126,7 +126,7 @@ export default function Faq() {
           </h3>
 
           <p>
-            <a href="https://research.paradigm.xyz/MEV">Defined</a> by the Paradigm research team, Maximal Extractable
+            <a href="https://research.paradigm.xyz/MEV">Defined</a> by the Paradigm research team, Maximum Extractable
             Value (MEV) is “a measure of the profit a miner (or validator, sequencer, etc.) can make through their
             ability to arbitrarily include, exclude, or re-order transactions within the blocks they produce.”
           </p>

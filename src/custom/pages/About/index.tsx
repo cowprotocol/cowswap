@@ -73,12 +73,12 @@ export default function About() {
           </span>
         </p>
 
-        <h3 id="mev">Maximal Extractable Value (MEV)</h3>
+        <h3 id="mev">Maximum Extractable Value (MEV)</h3>
         <p>
-          <img src={mevIMG} alt="CowSwap - Maximal Extractable Value" />
+          <img src={mevIMG} alt="CowSwap - Maximum Extractable Value" />
         </p>
         <p>
-          Heard about Maximal Extractable Value yet? It’s scary. To date more than{' '}
+          Heard about Maximum Extractable Value yet? It’s scary. To date more than{' '}
           <a href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
             USD 390M
           </a>{' '}
