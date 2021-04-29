@@ -1,3 +1,4 @@
+import { WithClassName } from '@src/custom/types'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -34,19 +35,19 @@ const StyledToggle = styled.button<{ isActive?: boolean; activeElement?: boolean
   padding: 0;
 `
 
-export interface ToggleProps {
+export interface ToggleProps extends WithClassName {
   id?: string
   isActive: boolean
   toggle: () => void
 }
 
-export default function Toggle({ id, isActive, toggle }: ToggleProps) {
+export default function Toggle({ id, isActive, toggle, className }: ToggleProps) {
   return (
-    <StyledToggle id={id} isActive={isActive} onClick={toggle}>
+    <StyledToggle id={id} isActive={isActive} onClick={toggle} className={className}>
       <ToggleElement isActive={isActive} isOnSwitch={true}>
         On
       </ToggleElement>
-      <ToggleElement isActive={!isActive} isOnSwitch={false}>
+      <ToggleElement isActive={!isActive} isOnSwitch={false} className={isActive ? '' : 'disabled'}>
         Off
       </ToggleElement>
     </StyledToggle>
