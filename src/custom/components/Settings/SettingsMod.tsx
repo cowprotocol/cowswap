@@ -8,8 +8,8 @@ import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
 import {
   useExpertModeManager,
   useUserTransactionTTL,
-  useUserSlippageTolerance,
-  useUserSingleHopOnly
+  useUserSlippageTolerance
+  // useUserSingleHopOnly
 } from 'state/user/hooks'
 import { TYPE } from 'theme'
 import { ButtonError } from 'components/Button'
@@ -132,7 +132,7 @@ export default function SettingsTab({ className, SettingsButton }: SettingsTabPr
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
 
-  const [singleHopOnly, setSingleHopOnly] = useUserSingleHopOnly()
+  // const [singleHopOnly, setSingleHopOnly] = useUserSingleHopOnly()
 
   // show confirmation view before turning on
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -230,7 +230,7 @@ export default function SettingsTab({ className, SettingsButton }: SettingsTabPr
                 }
               />
             </RowBetween>
-            <RowBetween>
+            {/* <RowBetween>
               <RowFixed>
                 <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
                   Disable Multihops
@@ -242,7 +242,7 @@ export default function SettingsTab({ className, SettingsButton }: SettingsTabPr
                 isActive={singleHopOnly}
                 toggle={() => (singleHopOnly ? setSingleHopOnly(false) : setSingleHopOnly(true))}
               />
-            </RowBetween>
+            </RowBetween> */}
           </AutoColumn>
         </MenuFlyout>
       )}

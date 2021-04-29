@@ -169,6 +169,7 @@ export default function SlippageTabs({
                   The slippage you pick here enables a resubmission of your order in case of unfavourable price
                   movements.
                 </p>
+                <p>{INPUT_OUTPUT_EXPLANATION}</p>
               </>
             }
           />
