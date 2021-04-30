@@ -17,6 +17,7 @@ export interface FeeInformation {
 
 export interface FeeInformationObject extends Omit<FeeQuoteParams, 'kind'> {
   fee: FeeInformation
+  lastCheck: number
 }
 
 // {token address => FeeInformationObject} mapping

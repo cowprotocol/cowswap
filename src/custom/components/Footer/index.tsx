@@ -7,6 +7,13 @@ import Version from '../Version'
 const FooterVersion = styled(Version)`
   margin-right: auto;
   min-width: max-content;
+  color: ${({ theme }) => theme.greenShade};
+
+  > div {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 8px;
+    `}
+  }
 `
 
 const Wrapper = styled.div`
@@ -15,13 +22,14 @@ const Wrapper = styled.div`
   justify-content: space-evenly;
   margin: auto 96px 0 32px;
   width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 auto 150px;
+  `}
 `
 
 const FooterWrapper = styled.div`
   width: 100%;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
 `
 
 export default function Footer({ children }: { children?: React.ReactChildren }) {

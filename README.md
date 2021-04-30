@@ -16,7 +16,7 @@ An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for d
 
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
-- Discord: [Gnosis Protocol Channel](https://discord.gg/egGzDDctuC)
+- Discord: <https://chat.cowswap.exchange>
 
 Please see the:
 
@@ -87,4 +87,4 @@ REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
 
 For production:
 
-6. Get your own `App Id` in <https://discord.gg/egGzDDctuC>, and set it in `REACT_APP_ID`.
+6. Get your own `App Id` in <chat.cowswap.exchange>, and set it in `REACT_APP_ID`.

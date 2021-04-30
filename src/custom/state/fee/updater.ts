@@ -13,6 +13,13 @@ import { FeeInformationObject } from './reducer'
 const DEBOUNCE_TIME = 350
 const REFETCH_FEE_CHECK_INTERVAL = 15000 // Every 15s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
+const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 10000 // Prevents from sending the same request to often (max, every 10s)
+/**
+ * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
+ */
+function wasCheckedRecently(lastFeeCheck: number): boolean {
+  return lastFeeCheck + WAITING_TIME_BETWEEN_EQUAL_REQUESTS > Date.now()
+}
 
 /**
  * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
@@ -45,13 +52,22 @@ function feeMatchesCurrentParameters(currentParams: FeeQuoteParams, feeInfo: Fee
  */
 function isRefetchQuoteRequired(currentParams: FeeQuoteParams, feeInfo?: FeeInformationObject): boolean {
   if (feeInfo) {
-    // If the current parameters don't match the fee, the fee information is invalid and needs to be re-fetched
     if (!feeMatchesCurrentParameters(currentParams, feeInfo)) {
+      // If the current parameters don't match the fee, the fee information is invalid and needs to be re-fetched
       return true
     }
 
-    // Re-fetch if the quote is expiring soon
-    return isExpiringSoon(feeInfo.fee.expirationDate)
+    // The query params are the same, so we only ask for a new quote if:
+    //  - If the quote was not queried recently
+    //  - The quote will expire soon
+
+    if (wasCheckedRecently(feeInfo.lastCheck)) {
+      // Don't Re-fetch if it was queried recently
+      return false
+    } else {
+      // Re-fetch if the quote is expiring soon
+      return isExpiringSoon(feeInfo.fee.expirationDate)
+    }
   } else {
     // If there's no fee information, we always re-fetch
     return true

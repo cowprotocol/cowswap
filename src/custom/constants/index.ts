@@ -66,7 +66,7 @@ export const XDAI_LOGO_URI =
 export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
 export const CONTRACTS_CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
 export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
-export const DISCORD_LINK = 'https://discord.gg/egGzDDctuC'
+export const DISCORD_LINK = 'https://chat.cowswap.exchange'
 export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
 
 // 30 minutes

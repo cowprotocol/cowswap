@@ -61,21 +61,18 @@ const StyledPolling = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-
-  padding: 1rem;
-
+  padding: 16px;
+  transition: opacity 0.25s ease;
   color: ${({ theme }) => theme.version};
   opacity: 0.5;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    opacity: 1;
+  `}
 
   &:hover {
     opacity: 1;
   }
-
-  transition: opacity 0.25s ease;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
 `
 
 const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`

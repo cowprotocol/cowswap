@@ -56,8 +56,6 @@ export function colors(darkMode: boolean): Colors {
     secondary3: darkMode ? '#17000b26' : 'rgba(137,88,255,0.6)',
 
     // ****** other ******
-    blue1: '#3F77FF',
-    purple: '#8958FF',
     border: darkMode ? '#000000' : '#000000',
     disabled: darkMode ? '#afcbda' : '#afcbda'
   }
@@ -192,5 +190,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
     background-position: initial;
     background-repeat: no-repeat;
     background-image: initial;
+  }
+
+  ::selection { 
+    background: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
   }
 `
