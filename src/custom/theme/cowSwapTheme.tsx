@@ -191,4 +191,9 @@ export const ThemedGlobalStyle = createGlobalStyle`
     background-repeat: no-repeat;
     background-image: initial;
   }
+
+  ::selection { 
+    background: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
+  }
 `

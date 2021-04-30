@@ -15,6 +15,35 @@ const Wrapper = styled.div`
   }
 
   ${Content} {
+    > div a {
+      color: ${({ theme }) => theme.text1};
+      transition: color 0.2s ease-in-out;
+
+      &:hover {
+        color: ${({ theme }) => theme.redShade};
+      }
+    }
+
+    > div > a {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    > div > ul {
+      margin: 12px 0 24px;
+      padding: 0 0 0 20px;
+      color: ${({ theme }) => theme.primary1};
+      line-height: 1.2;
+    }
+
+    > div > ul > li {
+      margin: 0 0 12px;
+    }
+
+    > p a {
+      color: ${({ theme }) => theme.redShade};
+    }
+
     > h3 {
       margin: 0;
 
@@ -202,9 +231,8 @@ export default function Faq() {
           </p>
 
           <p>
-            Finding the orders best settlement is a challenging task, which may have its own{' '}
-            <a href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245">decentralized competition</a> very
-            soon
+            Finding the best settlement for orders is a challenging task, which very soon may have its own{' '}
+            <a href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245">decentralized competition</a>.
           </p>
 
           <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
@@ -290,7 +318,7 @@ export default function Faq() {
 
           <p>At the moment, only limit sell and buy orders (fill-or-kill) are enabled. </p>
 
-          <h3 id="what-token-pairs-does-cowswap-allow-to-trade">What token pairs does CowSwap allow to trade?</h3>
+          <h3 id="what-token-pairs-does-cowswap-allow-to-trade">What token pairs does CowSwap allow you to trade?</h3>
 
           <p>Any valid ERC20 token pair for which there is some basic liquidity on a DEX (like Uniswap or Balancer).</p>
 
@@ -357,7 +385,7 @@ export default function Faq() {
 
           <p>
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
-            via the Allowance Manager (for more information cf
+            via the Allowance Manager (for more information read{' '}
             <a href="https://github.com/gnosis/gp-v2-contracts">Smart Contract Architecture</a>). In order to allow that
             to happen, the trader has to first approve the Allowance Manager contract to spend tokens on their behalf.
             The smart contract logic ensures that no token can be spent without deliberately signing an order for it.
