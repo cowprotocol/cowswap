@@ -35,7 +35,7 @@ export function computeTradePriceBreakdown(
 }
 
 export const FEE_TOOLTIP_MSG =
-  'Cow Swap has 0 gas fees. A portion of the sell amount in each trade goes to the Protocol.'
+  'On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
 
 export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeWithFee; allowedSlippage: number }) {
   const theme = useContext(ThemeContext)
