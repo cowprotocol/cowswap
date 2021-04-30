@@ -13,31 +13,31 @@ export const _setNativeLowBalanceError = (nativeSymbol: string) =>
 export function _isLowBalanceCheck({
   threshold,
   txCost,
-  userInput,
+  nativeInput,
   balance
 }: {
   threshold: CurrencyAmount
   txCost: CurrencyAmount
-  userInput?: CurrencyAmount
+  nativeInput?: CurrencyAmount
   balance?: CurrencyAmount
 }) {
-  if (!userInput || !balance || userInput.add(txCost).greaterThan(balance)) return true
+  if (!nativeInput || !balance || nativeInput.add(txCost).greaterThan(balance)) return true
   // OK if: users_balance - (amt_input + 1_tx_cost) > low_balance_threshold
-  return balance.subtract(userInput.add(txCost)).lessThan(threshold)
+  return balance.subtract(nativeInput.add(txCost)).lessThan(threshold)
 }
 
 export const _getAvailableTransactions = ({
   nativeBalance,
-  userInput,
+  nativeInput,
   singleTxCost
 }: {
   nativeBalance?: CurrencyAmount
-  userInput?: CurrencyAmount
+  nativeInput?: CurrencyAmount
   singleTxCost: CurrencyAmount
 }) => {
-  if (!nativeBalance || !userInput || nativeBalance.lessThan(userInput.add(singleTxCost))) return null
+  if (!nativeBalance || !nativeInput || nativeBalance.lessThan(nativeInput.add(singleTxCost))) return null
 
   // USER_BALANCE - (USER_WRAP_AMT + 1_TX_CST) / 1_TX_COST = AVAILABLE_TXS
-  const txsAvailable = nativeBalance.subtract(userInput.add(singleTxCost)).divide(singleTxCost)
+  const txsAvailable = nativeBalance.subtract(nativeInput.add(singleTxCost)).divide(singleTxCost)
   return txsAvailable.lessThan('1') ? null : txsAvailable.toSignificant(1)
 }

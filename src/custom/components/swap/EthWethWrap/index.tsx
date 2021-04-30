@@ -130,12 +130,12 @@ const WarningLabel = ({ children }: { children?: ReactNode }) => (
 export interface Props {
   account?: string
   native: Currency
-  userInput?: CurrencyAmount
+  nativeInput?: CurrencyAmount
   wrapped: Token
   wrapCallback: () => Promise<TransactionResponse>
 }
 
-export default function EthWethWrap({ account, native, userInput, wrapped, wrapCallback }: Props) {
+export default function EthWethWrap({ account, native, nativeInput, wrapped, wrapCallback }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const [modalOpen, setModalOpen] = useState<boolean>(false)
@@ -168,13 +168,13 @@ export default function EthWethWrap({ account, native, userInput, wrapped, wrapC
     () => ({
       isLowBalance: _isLowBalanceCheck({
         threshold: multiTxCost,
-        userInput,
+        nativeInput,
         balance: nativeBalance,
         txCost: singleTxCost
       }),
-      txsRemaining: _getAvailableTransactions({ nativeBalance, userInput, singleTxCost })
+      txsRemaining: _getAvailableTransactions({ nativeBalance, nativeInput, singleTxCost })
     }),
-    [multiTxCost, nativeBalance, singleTxCost, userInput]
+    [multiTxCost, nativeBalance, singleTxCost, nativeInput]
   )
 
   const wrappedSymbol = wrapped.symbol || 'wrapped native token'
@@ -241,7 +241,7 @@ export default function EthWethWrap({ account, native, userInput, wrapped, wrapC
             wrapped={wrapped}
             wrappedBalance={wrappedBalance}
             wrappedSymbol={wrappedSymbol}
-            userInput={userInput}
+            nativeInput={nativeInput}
           />
           <ButtonWrapper>
             <ButtonSecondary padding="0.5rem" maxWidth="30%" onClick={(): void => setModalOpen(false)}>
@@ -269,7 +269,7 @@ export default function EthWethWrap({ account, native, userInput, wrapped, wrapC
         wrapped={wrapped}
         wrappedBalance={wrappedBalance}
         wrappedSymbol={wrappedSymbol}
-        userInput={userInput}
+        nativeInput={nativeInput}
       />
       {/* Wrap CTA */}
       <ButtonPrimary disabled={loading} padding="0.5rem" onClick={handlePrimaryAction}>

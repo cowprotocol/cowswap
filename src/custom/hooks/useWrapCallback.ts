@@ -3,7 +3,6 @@ import { getChainCurrencySymbols } from 'utils/xdai/hack'
 import { Currency, CurrencyAmount, currencyEquals, ETHER, WETH } from '@uniswap/sdk'
 import { Contract } from 'ethers'
 import { useMemo } from 'react'
-import { tryParseAmount } from 'state/swap/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/index'
@@ -90,14 +89,13 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
-  typedValue: string | undefined,
+  inputAmount: CurrencyAmount | undefined,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
   const { chainId, account } = useActiveWeb3React()
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
-  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
 
   return useMemo(() => {
