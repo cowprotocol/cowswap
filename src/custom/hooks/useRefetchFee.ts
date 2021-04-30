@@ -21,7 +21,7 @@ export function useRefetchFeeCallback() {
 
       if (fee) {
         // Update quote
-        addFee({ sellToken, buyToken, amount, fee, chainId })
+        addFee({ sellToken, buyToken, amount, fee, chainId, lastCheck: Date.now() })
       } else {
         // Clear the fee
         clearFee({ chainId, token: sellToken })
