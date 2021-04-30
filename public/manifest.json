@@ -17,8 +17,8 @@
     }
   ],
   "orientation": "portrait",
-  "name": "Cow Swap",
-  "short_name": "Cow Swap",
+  "name": "CowSwap",
+  "short_name": "CowSwap",
   "start_url": ".",
   "theme_color": "#ff784a"
 }
