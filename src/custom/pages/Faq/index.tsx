@@ -394,7 +394,7 @@ export default function Faq() {
           </p>
           <p>
             We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
-            <span role="img" aria-label="happy cow face">
+            <span role="img" aria-label="glass of milk">
               🥛
             </span>
           </p>
