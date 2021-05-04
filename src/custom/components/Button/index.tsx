@@ -15,8 +15,8 @@ import {
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonWhite as ButtonWhiteMod,
-  ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  ButtonErrorStyle as ButtonErrorStyleMod
+  ButtonConfirmedStyle as ButtonConfirmedStyleMod
+  // ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
 import { ButtonSize } from 'theme'
@@ -160,8 +160,15 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
 `
 
-export const ButtonErrorStyle = styled(ButtonErrorStyleMod)`
+export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
+  background: ${({ theme }) => theme.red1};
+
+  &:focus,
+  &:hover,
+  &:active {
+    background: ${({ theme }) => theme.red1};
+  }
 `
 
 export const ButtonEmpty = styled(ButtonEmptyMod)`
