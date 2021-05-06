@@ -15,7 +15,12 @@ import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
-import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
+import {
+  ArrowWrapper,
+  // BottomGrouping,
+  SwapCallbackError,
+  Wrapper
+} from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
@@ -58,7 +63,8 @@ export default function Swap({
   FeeGreaterMessage,
   EthWethWrapMessage,
   SwitchToWethBtn,
-  FeesExceedFromAmountMessage
+  FeesExceedFromAmountMessage,
+  BottomGrouping
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 

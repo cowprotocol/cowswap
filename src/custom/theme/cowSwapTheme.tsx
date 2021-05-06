@@ -91,7 +91,7 @@ function themeVariables(colorsTheme: Colors) {
       boxShadow: `6px 6px 0px ${colorsTheme.black}`,
       borderRadius: '8px',
       border: `4px solid ${colorsTheme.black}`,
-      padding: '12px 6px 24px',
+      padding: '12px 6px',
       maxWidth: {
         normal: '420px',
         content: '620px'
@@ -146,7 +146,7 @@ function themeVariables(colorsTheme: Colors) {
     `,
     version: colorsTheme.primary1,
     networkCard: {
-      background: colorsTheme.primary1,
+      background: 'rgb(255 120 74 / 60%)',
       text: colorsTheme.text1
     }
   }

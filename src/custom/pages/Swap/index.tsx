@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { CurrencyAmount, Token } from '@uniswap/sdk'
 import { Text } from 'rebass'
 
@@ -8,6 +8,7 @@ import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { RowBetween, RowFixed } from 'components/Row'
+import { BottomGrouping as BottomGroupingUni } from 'components/swap/styleds'
 import QuestionHelper from 'components/QuestionHelper'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
@@ -17,11 +18,18 @@ interface FeeGreaterMessageProp {
   fee: CurrencyAmount
 }
 
+const BottomGrouping = styled(BottomGroupingUni)`
+  > div > button {
+    align-self: stretch;
+  }
+`
+
 export interface SwapProps extends RouteComponentProps {
   FeeGreaterMessage: React.FC<FeeGreaterMessageProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
   SwitchToWethBtn: React.FC<SwitchToWethBtnProps>
   FeesExceedFromAmountMessage: React.FC
+  BottomGrouping: React.FC
 }
 
 function FeeGreaterMessage({ fee }: FeeGreaterMessageProp) {
@@ -96,6 +104,7 @@ export default function Swap(props: RouteComponentProps) {
       EthWethWrapMessage={EthWethWrapMessage}
       SwitchToWethBtn={SwitchToWethBtn}
       FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
+      BottomGrouping={BottomGrouping}
       {...props}
     />
   )

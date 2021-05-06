@@ -24,6 +24,7 @@ import { ButtonSize } from 'theme'
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
   ${({ theme }) => theme.buttonPrimary.background}
+  color: ${({ theme }) => theme.primaryText1};
   font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
   font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
   border: ${({ theme }) => theme.buttonPrimary.border};
@@ -35,8 +36,8 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
 
   > div {
-    font-size: inherit;
-    font-weight: inherit;
+    font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
+    font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
   }
 
   &:focus,
@@ -49,6 +50,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
   &:disabled {
     background-color: ${({ theme }) => theme.disabled};
+    color: ${({ theme }) => theme.primaryText1};
     background-image: none;
     border: 0;
     cursor: auto;
@@ -89,6 +91,8 @@ export const ButtonLight = styled(ButtonLightMod)`
     opacity: 0.4;
     cursor: auto;
     animation: none;
+    color: ${({ theme }) => theme.primaryText1};
+
     :hover {
       cursor: auto;
       background-color: ${({ theme }) => theme.primary5};
@@ -158,6 +162,17 @@ export const ButtonWhite = styled(ButtonWhiteMod)`
 
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
+  background-color: ${({ theme }) => theme.disabled};
+  color: ${({ theme }) => theme.primaryText1};
+  background-image: none;
+  border: 0;
+  cursor: auto;
+  animation: none;
+  font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
+  font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
+  border: none;
+  box-shadow: none;
+  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
 `
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`

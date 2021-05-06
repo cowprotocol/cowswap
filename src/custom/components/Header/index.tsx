@@ -3,7 +3,7 @@ import { ChainId } from '@uniswap/sdk'
 import Web3Status from 'components/Web3Status'
 
 import HeaderMod, {
-  NetworkCard,
+  NetworkCard as NetworkCardUni,
   Title,
   HeaderLinks,
   HeaderRow,
@@ -50,11 +50,11 @@ export const HeaderModWrapper = styled(HeaderMod)`
   ${HeaderLinks} {
     margin: 5px 0 0 0;
   }
+`
 
-  ${NetworkCard} {
-    background: ${({ theme }) => theme.networkCard.background};
-    color: ${({ theme }) => theme.networkCard.text};
-  }
+const NetworkCard = styled(NetworkCardUni)`
+  background-color: ${({ theme }) => theme.networkCard.background};
+  color: ${({ theme }) => theme.networkCard.text};
 `
 
 export const LogoImage = styled.img.attrs(props => ({
