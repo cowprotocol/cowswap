@@ -144,7 +144,7 @@ export default function Swap({
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     // if native input !== NATIVE_TOKEN, validation fails
-    nativeInput,
+    nativeInput || parsedAmount,
     // should override and get wrapCallback?
     isNativeInSwap
   )
