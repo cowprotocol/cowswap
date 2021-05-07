@@ -3,7 +3,7 @@ import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from './misc'
 import { isDev } from './environments'
-import { FeeInformation } from 'state/fee/reducer'
+import { FeeInformation, PriceInformation } from 'state/price/reducer'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
   if (isDev) {
@@ -89,7 +89,7 @@ function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
   })
 }
 
-function _get(chainId: ChainId, url: string) {
+function _fetchGet(chainId: ChainId, url: string) {
   const baseUrl = _getApiBaseUrl(chainId)
   return fetch(baseUrl + url, {
     headers: DEFAULT_HEADERS
@@ -189,6 +189,11 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
   chainId: ChainId
 }
 
+export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
+  baseToken: string
+  quoteToken: string
+}
+
 function toApiAddress(address: string, chainId: ChainId): string {
   if (address === 'ETH') {
     // TODO: Return magical address
@@ -198,20 +203,10 @@ function toApiAddress(address: string, chainId: ChainId): string {
   return address
 }
 
-export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
-  const { sellToken, buyToken, amount, kind, chainId } = params
-  const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
-  console.log('[util:operator] Get fee from API', params)
-
+async function _getJson(chainId: ChainId, url: string): Promise<any> {
   let response: Response | undefined
   try {
-    const responseMaybeOk = await _get(
-      chainId,
-      `/fee?sellToken=${toApiAddress(checkedSellAddress, chainId)}&buyToken=${toApiAddress(
-        checkedBuyAddress,
-        chainId
-      )}&amount=${amount}&kind=${kind}`
-    )
+    const responseMaybeOk = await _fetchGet(chainId, url)
     response = responseMaybeOk.ok ? responseMaybeOk : undefined
   } catch (error) {
     // do nothing
@@ -224,25 +219,35 @@ export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformatio
   }
 }
 
+export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
+  const { baseToken, quoteToken, amount, kind, chainId } = params
+  const [checkedBaseToken, checkedQuoteToken] = [checkIfEther(baseToken, chainId), checkIfEther(quoteToken, chainId)]
+  console.log('[util:operator] Get Price from API', params)
+
+  return _getJson(
+    chainId,
+    `/markets/${toApiAddress(checkedBaseToken, chainId)}-${toApiAddress(checkedQuoteToken, chainId)}/${kind}/${amount}`
+  )
+}
+
+export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
+  const { sellToken, buyToken, amount, kind, chainId } = params
+  const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
+  console.log('[util:operator] Get fee from API', params)
+
+  return _getJson(
+    chainId,
+    `/fee?sellToken=${toApiAddress(checkedSellAddress, chainId)}&buyToken=${toApiAddress(
+      checkedBuyAddress,
+      chainId
+    )}&amount=${amount}&kind=${kind}`
+  )
+}
+
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
   console.log('[util:operator] Get order for ', chainId, orderId)
-
-  let response: Response | undefined
-  try {
-    const responseMaybeOk = await _get(chainId, `/orders/${orderId}`)
-    response = responseMaybeOk.ok ? responseMaybeOk : undefined
-  } catch (error) {
-    // do nothing
-    console.error('[util:operator] Error: Error fetching order with ID', orderId)
-  }
-
-  if (!response) {
-    // return null on error or non-ok status
-    return null
-  } else {
-    return response.json()
-  }
+  return _getJson(chainId, `/orders/${orderId}`)
 }
 
 // Register some globals for convenience
-registerOnWindow({ operator: { getFeeQuote, getOrder, postSignedOrder, apiGet: _get, apiPost: _post } })
+registerOnWindow({ operator: { getFeeQuote, getOrder, postSignedOrder, apiGet: _fetchGet, apiPost: _post } })

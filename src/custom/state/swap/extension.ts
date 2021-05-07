@@ -1,6 +1,6 @@
 import { CurrencyAmount, Trade, Currency, JSBI, Token, TokenAmount } from '@uniswap/sdk'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
-import { EMPTY_FEE, FeeInformation } from 'state/fee/reducer'
+import { EMPTY_FEE, FeeInformation } from 'state/price/reducer'
 
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount | undefined } & Pick<FeeInformation, 'amount'>
 

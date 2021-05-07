@@ -14,7 +14,7 @@ import {
   useSwapState,
   validatedRecipient
 } from 'state/swap/hooks'
-import { useFee } from '../fee/hooks'
+import { useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { TradeWithFee, useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -65,20 +65,25 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
-  const feeInformation = useFee({
+  const quote = useQuote({
     token: inputCurrencyId,
     chainId
   })
 
+  useEffect(() => {
+    console.log('[useDerivedSwapInfo] Price quote: ', quote?.price.amount)
+    console.log('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
+  }, [quote])
+
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
-    feeInformation
+    feeInformation: quote?.fee
   })
   const bestTradeExactOut = useTradeExactOutWithFee({
     parsedAmount: isExactIn ? undefined : parsedAmount,
     inputCurrency,
-    feeInformation
+    feeInformation: quote?.fee
   })
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
@@ -266,11 +271,11 @@ export function useIsFeeGreaterThanInput({
   parsedAmount?: CurrencyAmount
   chainId?: ChainId
 }): { isFeeGreater: boolean; fee: CurrencyAmount | null } {
-  const fee = useFee({ chainId, token: address })
+  const quote = useQuote({ chainId, token: address })
 
-  if (!fee || !parsedAmount) return { isFeeGreater: false, fee: null }
+  if (!quote || !quote.fee || !parsedAmount) return { isFeeGreater: false, fee: null }
 
-  const feeBigNumber = BigNumber.from(fee.amount)
+  const feeBigNumber = BigNumber.from(quote.fee.amount)
 
   return {
     isFeeGreater: feeBigNumber.gte(parsedAmount.raw.toString()),
