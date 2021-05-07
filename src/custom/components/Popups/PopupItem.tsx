@@ -1,52 +1,26 @@
-import React, { useCallback, useContext, useEffect } from 'react'
-import { X } from 'react-feather'
-import { useSpring } from 'react-spring/web'
-import styled, { ThemeContext } from 'styled-components'
-import { animated } from 'react-spring'
+import React from 'react'
+import styled from 'styled-components'
 import { PopupContent } from 'state/application/actions'
-import { useRemovePopup } from 'state/application/hooks'
-import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
-import TransactionPopup from './TransactionPopupMod'
+import { default as PopupItemUni, Fader } from './PopupItemMod'
 
-export const StyledClose = styled(X)`
-  position: absolute;
-  right: 10px;
-  top: 10px;
+export const Wrapper = styled(PopupItemUni)`
+  ${props => props.className} {
+    border: 2px solid ${({ theme }) => theme.black};
+    box-shadow: 2px 2px 0 ${({ theme }) => theme.black};
 
-  :hover {
-    cursor: pointer;
+    ${Fader} {
+      background-color: ${({ theme }) => theme.disabled};
+      height: 4px;
+    }
+
+    a {
+      text-decoration: underline;
+      color: ${({ theme }) => theme.redShade};
+    }
   }
 `
-export const Popup = styled.div`
-  display: inline-block;
-  width: 100%;
-  padding: 1em;
-  background-color: ${({ theme }) => theme.bg1};
-  position: relative;
-  border-radius: 10px;
-  padding: 20px;
-  padding-right: 35px;
-  overflow: hidden;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    min-width: 290px;
-    &:not(:last-of-type) {
-      margin-right: 20px;
-    }
-  `}
-`
-const Fader = styled.div`
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  height: 2px;
-  background-color: ${({ theme }) => theme.bg3};
-`
-
-const AnimatedFader = animated(Fader)
-
-export default function PopupItem({
+export function PopupItem({
   removeAfterMs,
   content,
   popKey
@@ -55,51 +29,7 @@ export default function PopupItem({
   content: PopupContent
   popKey: string
 }) {
-  const removePopup = useRemovePopup()
-  const removeThisPopup = useCallback(() => removePopup(popKey), [popKey, removePopup])
-  useEffect(() => {
-    if (removeAfterMs === null) return undefined
-
-    const timeout = setTimeout(() => {
-      removeThisPopup()
-    }, removeAfterMs)
-
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [removeAfterMs, removeThisPopup])
-
-  const theme = useContext(ThemeContext)
-
-  let popupContent
-  if ('txn' in content) {
-    const {
-      txn: { hash, success, summary }
-    } = content
-    popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
-  } else if ('listUpdate' in content) {
-    const {
-      listUpdate: { listUrl, oldList, newList, auto }
-    } = content
-    popupContent = <ListUpdatePopup popKey={popKey} listUrl={listUrl} oldList={oldList} newList={newList} auto={auto} />
-  } else if ('metatxn' in content) {
-    const {
-      metatxn: { id, success, summary }
-    } = content
-    popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
-  }
-
-  const faderStyle = useSpring({
-    from: { width: '100%' },
-    to: { width: '0%' },
-    config: { duration: removeAfterMs ?? undefined }
-  })
-
-  return (
-    <Popup>
-      <StyledClose color={theme.text2} onClick={removeThisPopup} />
-      {popupContent}
-      {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
-    </Popup>
-  )
+  return <Wrapper removeAfterMs={removeAfterMs} content={content} popKey={popKey} />
 }
+
+export default PopupItem
