@@ -1,6 +1,6 @@
 import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
 import React, { useMemo } from 'react'
-import cowBg from 'assets/cow-swap/cow-bg.png'
+import cowBg from 'assets/cow-swap/cow-bg.svg'
 import Logo from 'assets/cow-swap/cowswap-logo.svg'
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -84,7 +84,9 @@ function themeVariables(colorsTheme: Colors) {
     `,
     body: {
       background: css`
-        background: url(${cowBg}) no-repeat 100% / cover fixed;
+        background: url(${cowBg}) no-repeat 100% / cover fixed,
+          linear-gradient(180deg, rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%);
+        background-attachment: fixed;
       `
     },
     appBody: {
