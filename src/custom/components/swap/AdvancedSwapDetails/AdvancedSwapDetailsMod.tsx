@@ -1,15 +1,15 @@
 // import { Trade , TradeType } from '@uniswap/sdk'
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React /*useContext*/ from 'react'
+import styled /*ThemeContext*/ from 'styled-components'
 // import { Field } from '@src/state/swap/actions'
 import { useUserSlippageTolerance } from '@src/state/user/hooks'
-import { TYPE, ExternalLink } from 'theme'
+import { /*TYPE*/ ExternalLink } from 'theme'
 // import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '@src/utils/prices'
 import { AutoColumn } from 'components/Column'
-import QuestionHelper from 'components/QuestionHelper'
-import { RowBetween /* , RowFixed */ } from 'components/Row'
+// import QuestionHelper from 'components/QuestionHelper'
+// import { RowBetween, RowFixed } from 'components/Row'
 // import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
-import SwapRoute from 'components/swap/SwapRoute'
+// import SwapRoute from 'components/swap/SwapRoute'
 
 import { TradeWithFee } from 'state/swap/extension'
 import TradeSummary from '../TradeSummary'
@@ -82,11 +82,11 @@ export interface AdvancedSwapDetailsProps {
 }
 
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
-  const theme = useContext(ThemeContext)
+  // const theme = useContext(ThemeContext)
 
   const [allowedSlippage] = useUserSlippageTolerance()
 
-  const showRoute = Boolean(trade && trade.route.path.length > 2)
+  // const showRoute = Boolean(trade && trade.route.path.length > 2)
 
   return (
     <AutoColumn gap="0px">
@@ -94,7 +94,7 @@ export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
         <>
           {/* Use imported TradeSummary */}
           <TradeSummary trade={trade} allowedSlippage={allowedSlippage} />
-          {showRoute && (
+          {/* {showRoute && (
             <>
               <RowBetween style={{ padding: '0 16px' }}>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -106,7 +106,7 @@ export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
                 <SwapRoute trade={trade} />
               </RowBetween>
             </>
-          )}
+          )} */}
           {/* {!showRoute && (
             <AutoColumn style={{ padding: '12px 16px 0 16px' }}>
               <InfoLink
