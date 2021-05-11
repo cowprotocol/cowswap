@@ -1,4 +1,4 @@
-import { CurrencyAmount, Percent, /* Trade, */ TradeType } from '@uniswap/sdk'
+import { CurrencyAmount, /* Percent,  Trade, */ TradeType } from '@uniswap/sdk'
 import React, { useContext, useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
@@ -8,14 +8,14 @@ import { TYPE } from 'theme'
 import {
   computeSlippageAdjustedAmounts,
   //   computeTradePriceBreakdown,
-  formatExecutionPrice,
-  warningSeverity
+  formatExecutionPrice
+  // warningSeverity
 } from 'utils/prices'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from 'components/QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
-import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
+// import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from 'components/swap/styleds'
 import { TradeWithFee } from 'state/swap/extension'
 import { DEFAULT_PRECISION, SHORT_PRECISION } from 'constants/index'
@@ -28,7 +28,7 @@ export interface SwapModalFooterProps {
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
   fee: { feeTitle: string; feeTooltip: string; feeAmount?: CurrencyAmount | null }
-  priceImpactWithoutFee?: Percent
+  // priceImpactWithoutFee?: Percent
 }
 
 export default function SwapModalFooter({
@@ -37,8 +37,7 @@ export default function SwapModalFooter({
   allowedSlippage,
   swapErrorMessage,
   disabledConfirm,
-  fee,
-  priceImpactWithoutFee
+  fee
 }: SwapModalFooterProps) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
@@ -48,8 +47,8 @@ export default function SwapModalFooter({
   ])
   const { feeTitle, feeTooltip, feeAmount } = fee
 
-  //   const { priceImpactWithoutFee , realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
-  const severity = warningSeverity(priceImpactWithoutFee)
+  // const { priceImpactWithoutFee , realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  // const severity = warningSeverity(priceImpactWithoutFee)
 
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
 
@@ -99,7 +98,7 @@ export default function SwapModalFooter({
             </TYPE.black>
           </RowFixed>
         </RowBetween>
-        <RowBetween>
+        {/* <RowBetween>
           <RowFixed>
             <TYPE.black color={theme.text2} fontSize={14} fontWeight={400}>
               Price Impact
@@ -107,7 +106,7 @@ export default function SwapModalFooter({
             <QuestionHelper text="The difference between the market price and your price due to trade size." />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
-        </RowBetween>
+        </RowBetween> */}
         <RowBetween>
           {/* <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
@@ -134,12 +133,12 @@ export default function SwapModalFooter({
         <ButtonError
           onClick={onConfirm}
           disabled={disabledConfirm}
-          error={severity > 2}
+          // error={severity > 2}
           style={{ margin: '10px 0 0 0' }}
           id="confirm-swap-or-send"
         >
           <Text fontSize={20} fontWeight={500}>
-            {severity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
+            {/*severity > 2 ? 'Swap Anyway' :*/ 'Confirm Swap'}
           </Text>
         </ButtonError>
 
