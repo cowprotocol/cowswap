@@ -90,13 +90,13 @@ function themeVariables(colorsTheme: Colors) {
       `
     },
     appBody: {
-      boxShadow: `6px 6px 0px ${colorsTheme.black}`,
-      borderRadius: '8px',
-      border: `4px solid ${colorsTheme.black}`,
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      borderRadius: '16px',
+      border: `3px solid ${colorsTheme.black}`,
       padding: '12px 6px',
       maxWidth: {
-        normal: '420px',
-        content: '620px'
+        normal: '460px',
+        content: '680px'
       }
     },
     header: {
@@ -112,7 +112,7 @@ function themeVariables(colorsTheme: Colors) {
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '9px',
+      borderRadius: '16px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
     buttonOutlined: {
@@ -122,7 +122,7 @@ function themeVariables(colorsTheme: Colors) {
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '9px',
+      borderRadius: '16px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
     buttonLight: {
@@ -134,7 +134,7 @@ function themeVariables(colorsTheme: Colors) {
     currencyInput: {
       background: `${colorsTheme.white}`,
       color: `${colorsTheme.text1}`,
-      border: `4px solid ${colorsTheme.black}`
+      border: `2px solid ${colorsTheme.disabled}`
     },
     buttonCurrencySelect: {
       background: `${colorsTheme.bg1}`,

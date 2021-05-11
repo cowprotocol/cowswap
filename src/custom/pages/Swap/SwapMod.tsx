@@ -64,7 +64,8 @@ export default function Swap({
   EthWethWrapMessage,
   SwitchToWethBtn,
   FeesExceedFromAmountMessage,
-  BottomGrouping
+  BottomGrouping,
+  className
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -362,7 +363,7 @@ export default function Swap({
         onDismiss={handleDismissTokenWarning}
       />
       <SwapPoolTabs active={'swap'} />
-      <AppBody>
+      <AppBody className={className}>
         <SwapHeader />
         <Wrapper id="swap-page">
           <ConfirmSwapModal
@@ -379,7 +380,9 @@ export default function Swap({
             onDismiss={handleConfirmDismiss}
           />
 
-          <AutoColumn gap={'md'}>
+          <AutoColumn
+          // gap={'sm'}
+          >
             <CurrencyInputPanel
               label={
                 <FeeInformationTooltip
@@ -405,7 +408,10 @@ export default function Swap({
               id="swap-currency-input"
             />
             <AutoColumn justify="space-between">
-              <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
+              <AutoRow
+                justify={isExpertMode ? 'space-between' : 'center'}
+                // style={{ padding: '0 1rem' }}
+              >
                 <ArrowWrapper clickable>
                   <ArrowDown
                     size="16"
