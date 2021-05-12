@@ -129,7 +129,8 @@ export default function FeesUpdater(): null {
       if (refetchAll || refetchPrice) {
         refetchQuote({
           quoteParams,
-          fetchFee: refetchAll
+          fetchFee: refetchAll,
+          previousFee: quoteInfo?.fee
         }).catch(error => console.error('Error re-fetching the quote', error))
       }
     }
