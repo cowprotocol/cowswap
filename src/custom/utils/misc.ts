@@ -20,15 +20,13 @@ export function getChainIdValues(): ChainId[] {
   return ChainIdList.slice(ChainIdList.length / 2) as ChainId[]
 }
 
-export function getCanonicalMarket({
-  sellToken,
-  buyToken,
-  kind
-}: {
-  sellToken: string
-  buyToken: string
+export interface CanonicalMarketParams<T> {
+  sellToken: T
+  buyToken: T
   kind: string
-}): Market {
+}
+
+export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMarketParams<T>): Market<T> {
   // TODO: Implement smarter logic https://github.com/gnosis/gp-ui/issues/331
 
   // Not big reasoning on my selection of what is base and what is quote (important thing in this PR is just to do a consistent selection)

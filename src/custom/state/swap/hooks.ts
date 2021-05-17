@@ -71,19 +71,19 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   })
 
   useEffect(() => {
-    console.log('[useDerivedSwapInfo] Price quote: ', quote?.price.amount)
-    console.log('[useDerivedSwapInfo] Fee quote: ', quote?.fee.amount)
+    console.debug('[useDerivedSwapInfo] Price quote: ', quote?.price.amount)
+    console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
   }, [quote])
 
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
-    feeInformation: quote?.fee
+    quote
   })
   const bestTradeExactOut = useTradeExactOutWithFee({
     parsedAmount: isExactIn ? undefined : parsedAmount,
     inputCurrency,
-    feeInformation: quote?.fee
+    quote
   })
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut

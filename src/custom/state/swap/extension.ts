@@ -1,78 +1,100 @@
-import { CurrencyAmount, Trade, Currency, JSBI, Token, TokenAmount } from '@uniswap/sdk'
+import { CanonicalMarketParams, getCanonicalMarket } from 'utils/misc'
+import {
+  CurrencyAmount,
+  Trade,
+  Currency,
+  JSBI,
+  Token,
+  TokenAmount,
+  Price,
+  Percent,
+  TradeType,
+  Fraction
+} from '@uniswap/sdk'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
-import { EMPTY_FEE, FeeInformation } from 'state/price/reducer'
+import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/price/reducer'
 
-export type FeeForTrade = { feeAsCurrency: CurrencyAmount | undefined } & Pick<FeeInformation, 'amount'>
+export type FeeForTrade = { feeAsCurrency: CurrencyAmount } & Pick<FeeInformation, 'amount'>
 
 export type TradeWithFee = Trade & {
   inputAmountWithFee: CurrencyAmount
   outputAmountWithoutFee?: CurrencyAmount
-  fee?: FeeForTrade
-}
-
-type ExtendedTradeParams = {
-  exactInTrade?: Trade | null
-  exactOutTrade?: Trade | null
-  originalTrade?: Trade | null
-  typedAmountAsCurrency?: CurrencyAmount
   fee: FeeForTrade
 }
 
-/**
- * extendExactInTrade
- * @description takes a Uni ExactIn Trade object and returns a custom one with fee adjusted inputAmount
- */
-export function extendExactInTrade(params: Omit<ExtendedTradeParams, 'exactOutTrade'>): TradeWithFee | null {
-  const { exactInTrade, typedAmountAsCurrency, fee, originalTrade } = params
+type TradeExecutionPrice = CanonicalMarketParams<CurrencyAmount | undefined> & { price?: PriceInformation }
 
-  if (!exactInTrade || !typedAmountAsCurrency) return null
+export function _constructTradePrice({ sellToken, buyToken, kind, price }: TradeExecutionPrice): Price | undefined {
+  if (!sellToken || !buyToken || !price) return
 
-  // We need to override the Trade object to use different values as we are intercepting initial inputs
-  // and applying fee. For ExactIn orders, we leave outputAmount as is
-  // and only change inputAmount to show the original entry before fee calculation
-  return {
-    ...exactInTrade,
-    // overriding inputAmount is a hack
-    // to allow us to not have to change Uni's pages/swap/index and use different method names
-    inputAmount: typedAmountAsCurrency,
-    inputAmountWithFee: exactInTrade.inputAmount,
-    outputAmountWithoutFee: originalTrade?.outputAmount,
-    minimumAmountOut: exactInTrade.minimumAmountOut,
-    maximumAmountIn: exactInTrade.maximumAmountIn,
-    fee
+  let executionPrice: Price | undefined
+  // get canonical market tokens
+  // to accurately create our Price
+  const { baseToken, quoteToken } = getCanonicalMarket({
+    sellToken,
+    buyToken,
+    kind
+  })
+
+  if (baseToken && quoteToken && price) {
+    executionPrice = new Price(baseToken.currency, quoteToken.currency, baseToken.raw.toString(), price.amount)
   }
+  return executionPrice
 }
 
-/**
- * extendExactOutTrade
- * @description takes a Uni ExactOut Trade object and returns a custom one with fee adjusted inputAmount
- */
-export function extendExactOutTrade(params: Omit<ExtendedTradeParams, 'exactInTrade'>): TradeWithFee | null {
-  const { exactOutTrade, fee } = params
-
-  if (!exactOutTrade || !fee.feeAsCurrency) return null
-
-  const inputAmountWithFee = exactOutTrade.inputAmount.add(fee.feeAsCurrency)
-  // We need to override the Trade object to use different values as we are intercepting initial inputs
-  // and applying fee. For ExactOut orders, we leave inputAmount as is
-  // and only change outputAm to show the original entry before fee calculation
-  return {
-    ...exactOutTrade,
-    // overriding inputAmount is a hack
-    // to allow us to not have to change Uni's pages/swap/index and use different method names
-    inputAmount: inputAmountWithFee,
-    inputAmountWithFee,
-    minimumAmountOut: exactOutTrade.minimumAmountOut,
-    maximumAmountIn: exactOutTrade.maximumAmountIn,
-    fee
+export function _minimumAmountOutExtension(pct: Percent, trade: TradeWithFee) {
+  if (trade.tradeType === TradeType.EXACT_OUTPUT) {
+    return trade.outputAmount
   }
+
+  const priceDisplayed = trade.executionPrice.invert().raw
+  const slippage = new Fraction('1').add(pct)
+  // slippage is applied to PRICE
+  const slippagePrice = priceDisplayed.multiply(slippage)
+  // newly constructed price with slippage applied
+  const minPrice = new Price(
+    trade.executionPrice.quoteCurrency,
+    trade.executionPrice.baseCurrency,
+    slippagePrice.denominator,
+    slippagePrice.numerator
+  )
+
+  const minimumAmountOut = minPrice.invert().quote(trade.inputAmountWithFee)
+
+  return minimumAmountOut
+}
+
+export function _maximumAmountInExtension(pct: Percent, trade: TradeWithFee) {
+  if (trade.tradeType === TradeType.EXACT_INPUT) {
+    return trade.inputAmount
+  }
+  const priceDisplayed = trade.executionPrice.invert().raw
+  const slippage = new Fraction('1').subtract(pct)
+  // slippage is applied to the price
+  const slippagePrice = priceDisplayed.multiply(slippage)
+  // construct new price using slippage price
+  const maxPrice = new Price(
+    trade.executionPrice.quoteCurrency,
+    trade.executionPrice.baseCurrency,
+    slippagePrice.denominator,
+    slippagePrice.numerator
+  )
+
+  // fee is in sell token so we
+  // add fee to the calculated input
+  const maximumAmountIn = maxPrice
+    .invert()
+    .quote(trade.outputAmount)
+    .add(trade.fee.feeAsCurrency)
+
+  return maximumAmountIn
 }
 
 interface TradeParams {
   parsedAmount?: CurrencyAmount
   inputCurrency?: Currency | null
   outputCurrency?: Currency | null
-  feeInformation?: Omit<FeeInformation, 'expirationDate'>
+  quote?: QuoteInformationObject
 }
 
 export const stringToCurrency = (amount: string, currency: Currency) =>
@@ -83,43 +105,66 @@ export const stringToCurrency = (amount: string, currency: Currency) =>
  * @description wraps useTradeExactIn and returns an extended trade object with the fee adjusted values
  */
 export function useTradeExactInWithFee({
-  parsedAmount,
+  parsedAmount: parsedInputAmount,
   outputCurrency,
-  feeInformation
+  quote
 }: Omit<TradeParams, 'inputCurrency'>) {
-  let feeAdjustedAmount: CurrencyAmount | undefined
-  let fee: FeeForTrade = { ...EMPTY_FEE, ...feeInformation }
-  // make sure we have a typed in amount
+  // Original Uni trade hook
+  const originalTrade = useTradeExactIn(parsedInputAmount, outputCurrency ?? undefined)
+
+  // make sure we have a typed in amount, a fee, and a price
   // else we can assume the trade will be null
-  // and we call `useTradeExacIn` with an `undefined` which returns null trade
-  if (parsedAmount && feeInformation) {
-    // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
-    const { amount: feeAsString } = feeInformation
+  if (!parsedInputAmount || !originalTrade || !outputCurrency || !quote?.fee || !quote?.price) return null
 
-    const feeAsCurrency = stringToCurrency(feeAsString, parsedAmount.currency)
-    // Check that fee amount is not greater than the user's input amt
-    const isValidFee = feeAsCurrency.lessThan(parsedAmount)
-    // If the feeAsCurrency value is higher than we are inputting, return undefined
-    // this makes sure `useTradeExactIn` returns null === no trade
-    feeAdjustedAmount = isValidFee ? parsedAmount.subtract(feeAsCurrency) : undefined
-
-    // set final fee object
-    fee = {
-      ...feeInformation,
-      feeAsCurrency
-    }
+  const feeAsCurrency = stringToCurrency(quote.fee.amount, parsedInputAmount.currency)
+  // Check that fee amount is not greater than the user's input amt
+  const isValidFee = feeAsCurrency.lessThan(parsedInputAmount)
+  // If the feeAsCurrency value is higher than we are inputting, return undefined
+  // this makes sure `useTradeExactIn` returns null === no trade
+  const feeAdjustedAmount = isValidFee ? parsedInputAmount.subtract(feeAsCurrency) : undefined
+  // set final fee object
+  const fee = {
+    ...quote.fee,
+    feeAsCurrency
   }
 
-  // Original Uni trade hook
-  const inTrade = useTradeExactIn(feeAdjustedAmount, outputCurrency ?? undefined)
-  const originalTrade = useTradeExactIn(parsedAmount, outputCurrency ?? undefined)
+  // external price output as Currency
+  const outputAmount = stringToCurrency(quote.price.amount, outputCurrency)
 
-  return extendExactInTrade({
-    exactInTrade: inTrade,
-    originalTrade,
-    typedAmountAsCurrency: parsedAmount,
-    fee
+  // set the Price object to attach to final Trade object
+  // Price = (quote.price.amount) / inputAmountAdjustedForFee
+  const executionPrice = _constructTradePrice({
+    // pass in our parsed sell amount (CurrencyAmount)
+    sellToken: feeAdjustedAmount,
+    // pass in our feeless outputAmount (CurrencyAmount)
+    buyToken: outputAmount,
+    kind: 'sell',
+    price: quote?.price
   })
+
+  // no price object or feeAdjusted amount? no trade
+  if (!executionPrice || !feeAdjustedAmount) return null
+
+  // calculate our output without any fee, consuming price
+  // useful for calculating fees in buy token
+  const outputAmountWithoutFee = executionPrice.quote(parsedInputAmount)
+
+  return {
+    ...originalTrade,
+    inputAmountWithFee: feeAdjustedAmount,
+    outputAmount,
+    outputAmountWithoutFee,
+    minimumAmountOut(pct: Percent) {
+      // this refers to trade object being constructed
+      return _minimumAmountOutExtension(pct, this)
+    },
+    maximumAmountIn(pct: Percent) {
+      // this refers to this trade object being constructed
+      return _maximumAmountInExtension(pct, this)
+    },
+    fee,
+    executionPrice
+  }
 }
 
 /**
@@ -127,30 +172,58 @@ export function useTradeExactInWithFee({
  * @description wraps useTradeExactIn and returns an extended trade object with the fee adjusted values
  */
 export function useTradeExactOutWithFee({
-  parsedAmount,
+  parsedAmount: parsedOutputAmount,
   inputCurrency,
-  feeInformation
+  quote
 }: Omit<TradeParams, 'outputCurrency'>) {
   // Original Uni trade hook
-  const outTrade = useTradeExactOut(inputCurrency ?? undefined, parsedAmount)
+  const outTrade = useTradeExactOut(inputCurrency ?? undefined, parsedOutputAmount)
 
-  // We need to determine the fee after, as the parsedAmount isn't known beforehand
-  // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
-  let fee: FeeForTrade = { ...EMPTY_FEE, ...feeInformation }
-  if (outTrade?.inputAmount && feeInformation) {
-    const { amount: feeAsString } = feeInformation
+  if (!outTrade || !parsedOutputAmount || !inputCurrency || !quote?.fee || !quote?.price) return null
 
-    const feeAsCurrency = stringToCurrency(feeAsString, outTrade.inputAmount.currency)
-
-    // set final fee object
-    fee = {
-      ...feeInformation,
-      feeAsCurrency
-    }
+  const feeAsCurrency = stringToCurrency(quote.fee.amount, inputCurrency)
+  // set final fee object
+  const fee = {
+    ...quote.fee,
+    feeAsCurrency
   }
 
-  return extendExactOutTrade({
-    exactOutTrade: outTrade,
-    fee
+  // inputAmount without fee applied
+  // this is required for the Trade sdk to calculate slippage adjusted amounts
+  const inputAmountWithoutFee = stringToCurrency(quote.price.amount, inputCurrency)
+  // We need to determine the fee after, as the parsedOutputAmount isn't known beforehand
+  // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
+  const inputAmountWithFee = inputAmountWithoutFee.add(feeAsCurrency)
+
+  // per unit price
+  const executionPrice = _constructTradePrice({
+    // pass in our calculated inputAmount (CurrencyAmount)
+    sellToken: inputAmountWithoutFee,
+    // pass in our parsed buy amount (CurrencyAmount)
+    buyToken: parsedOutputAmount,
+    kind: 'buy',
+    price: quote.price
   })
+
+  // no price object? no trade
+  if (!executionPrice) return null
+
+  // We need to override the Trade object to use different values as we are intercepting initial inputs
+  return {
+    ...outTrade,
+    // overriding inputAmount is a hack
+    // to allow us to not have to change Uni's pages/swap/index and use different method names
+    inputAmount: inputAmountWithoutFee,
+    inputAmountWithFee,
+    minimumAmountOut(pct: Percent) {
+      // this refers to trade object being constructed
+      return _minimumAmountOutExtension(pct, this)
+    },
+    maximumAmountIn(pct: Percent) {
+      // this refers to trade object being constructed
+      return _maximumAmountInExtension(pct, this)
+    },
+    fee,
+    executionPrice
+  }
 }
