@@ -21,6 +21,7 @@ import { LightGreyCard } from 'components/Card'
 import TokenListLogo from 'assets/svg/tokenlist.svg'
 import QuestionHelper from 'components/QuestionHelper'
 import useTheme from 'hooks/useTheme'
+import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 
 function currencyKey(currency: Currency): string {
   return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
@@ -33,7 +34,7 @@ export const StyledBalanceText = styled(Text)`
   text-overflow: ellipsis;
 `
 
-const Tag = styled.div`
+export const Tag = styled.div`
   background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text2};
   font-size: 14px;
@@ -59,12 +60,12 @@ function Balance({ balance }: { balance: CurrencyAmount }) {
   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
 }
 
-const TagContainer = styled.div`
+export const TagContainer = styled.div`
   display: flex;
   justify-content: flex-end;
 `
 
-const TokenListLogoWrapper = styled.img`
+export const TokenListLogoWrapper = styled.img`
   height: 20px;
 `
 
@@ -103,6 +104,8 @@ function CurrencyRow({
   isSelected,
   otherSelected,
   style,
+  isUnsupported,
+  TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance // gp-swap added
 }: {
   currency: Currency
@@ -111,6 +114,8 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
   BalanceComponent?: (params: { balance: CurrencyAmount }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
+  isUnsupported: boolean // gp-added
 }) {
   const { account } = useActiveWeb3React()
   const key = currencyKey(currency)
@@ -137,7 +142,8 @@ function CurrencyRow({
           {currency.name} {!isOnSelectedList && customAdded && '• Added by user'}
         </TYPE.darkGray>
       </Column>
-      <TokenTags currency={currency} />
+      {/* <TokenTags currency={currency} /> */}
+      <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {/* {balance ? <Balance balance={balance} /> : account ? <Loader /> : null} */}
         {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
@@ -157,7 +163,8 @@ export default function CurrencyList({
   showImportView,
   setImportToken,
   breakIndex,
-  BalanceComponent = Balance // gp-swap added
+  BalanceComponent = Balance, // gp-swap added
+  TokenTagsComponent = TokenTags // gp-swap added
 }: {
   height: number
   currencies: Currency[]
@@ -170,6 +177,7 @@ export default function CurrencyList({
   setImportToken: (token: Token) => void
   breakIndex: number | undefined
   BalanceComponent?: (params: { balance: CurrencyAmount }) => JSX.Element // gp-swap added
+  TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
   const itemData: (Currency | undefined)[] = useMemo(() => {
     let formatted: (Currency | undefined)[] = showETH ? [Currency.ETHER, ...currencies] : currencies
@@ -185,6 +193,7 @@ export default function CurrencyList({
   const inactiveTokens: {
     [address: string]: Token
   } = useAllInactiveTokens()
+  const checkIsUnsupported = useIsUnsupportedToken() // gp-added
 
   const Row = useCallback(
     ({ data, index, style }) => {
@@ -196,6 +205,8 @@ export default function CurrencyList({
       const token = wrappedCurrency(currency, chainId)
 
       const showImport = inactiveTokens && token && Object.keys(inactiveTokens).includes(token.address)
+
+      const isUnsupported = checkIsUnsupported(token?.address) // gp-added
 
       if (index === breakIndex || !data) {
         return (
@@ -234,6 +245,8 @@ export default function CurrencyList({
             onSelect={handleSelect}
             otherSelected={otherSelected}
             BalanceComponent={BalanceComponent} // gp-swap added
+            TokenTagsComponent={TokenTagsComponent} // gp-swap added
+            isUnsupported={isUnsupported}
           />
         )
       }
@@ -248,6 +261,8 @@ export default function CurrencyList({
       showImportView,
       breakIndex,
       theme.text1,
+      TokenTagsComponent, // gp-swap added
+      checkIsUnsupported, // gp-swap added
       BalanceComponent // gp-swap added
     ]
   )
