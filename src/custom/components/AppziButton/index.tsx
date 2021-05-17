@@ -2,6 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { ButtonPrimary } from '../Button'
 import FeedbackIcon from './../../assets/cow-swap/feedback.svg'
+import ReactAppzi from 'react-appzi'
+
+const FEEDBACK_ENABLED = process.env.NODE_ENV === 'production'
+if (FEEDBACK_ENABLED) {
+  ReactAppzi.initialize('5ju0G')
+}
 
 const Wrapper = styled(ButtonPrimary)`
   border-radius: 46px;
@@ -72,6 +78,10 @@ function openWidget() {
 }
 
 export default function Appzi() {
+  if (!FEEDBACK_ENABLED) {
+    return null
+  }
+
   return (
     <Wrapper onClick={openWidget}>
       <img src={FeedbackIcon} alt="Provide Feedback" />

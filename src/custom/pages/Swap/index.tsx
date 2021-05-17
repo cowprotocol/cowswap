@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { CurrencyAmount, Token } from '@uniswap/sdk'
 import { Text } from 'rebass'
 
@@ -8,6 +8,13 @@ import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { RowBetween, RowFixed } from 'components/Row'
+import {
+  BottomGrouping as BottomGroupingUni,
+  Wrapper as WrapperUni,
+  ArrowWrapper as ArrowWrapperUni
+} from 'components/swap/styleds'
+import { AutoColumn } from 'components/Column'
+import Card from 'components/Card'
 import QuestionHelper from 'components/QuestionHelper'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
@@ -17,11 +24,67 @@ interface FeeGreaterMessageProp {
   fee: CurrencyAmount
 }
 
+const BottomGrouping = styled(BottomGroupingUni)`
+  > div > button {
+    align-self: stretch;
+  }
+`
+
+const SwapModWrapper = styled(SwapMod)`
+  ${props => props.className} {
+    // For now to target <SwapHeader /> without copying files...
+    > div:first-child {
+      padding: 0 12px 4px;
+      max-width: 100%;
+      margin: 0;
+    }
+
+    ${WrapperUni} {
+      padding: 4px 4px 0;
+    }
+
+    ${AutoColumn} {
+      grid-row-gap: 3px;
+    }
+
+    ${Card} > ${AutoColumn} {
+      margin: 6px auto 0;
+    }
+
+    ${ArrowWrapperUni} {
+      position: absolute;
+      z-index: 2;
+      background: ${({ theme }) => theme.white};
+      border-radius: 9px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid ${({ theme }) => theme.disabled};
+
+      &:hover {
+        opacity: 1;
+
+        > svg {
+          stroke: ${({ theme }) => theme.black};
+        }
+      }
+
+      > svg {
+        stroke: #000000b8;
+      }
+    }
+  }
+`
+
 export interface SwapProps extends RouteComponentProps {
   FeeGreaterMessage: React.FC<FeeGreaterMessageProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
   SwitchToWethBtn: React.FC<SwitchToWethBtnProps>
   FeesExceedFromAmountMessage: React.FC
+  BottomGrouping: React.FC
+  className?: string
 }
 
 function FeeGreaterMessage({ fee }: FeeGreaterMessageProp) {
@@ -91,11 +154,12 @@ function FeesExceedFromAmountMessage() {
 
 export default function Swap(props: RouteComponentProps) {
   return (
-    <SwapMod
+    <SwapModWrapper
       FeeGreaterMessage={FeeGreaterMessage}
       EthWethWrapMessage={EthWethWrapMessage}
       SwitchToWethBtn={SwitchToWethBtn}
       FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
+      BottomGrouping={BottomGrouping}
       {...props}
     />
   )

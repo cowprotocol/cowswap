@@ -2,9 +2,14 @@ import { WithClassName } from 'types'
 import React from 'react'
 import styled from 'styled-components'
 
-import SettingsMod, { StyledMenuButton, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
+import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 
 const Wrapper = styled(SettingsMod)`
+  ${MenuFlyout} {
+    box-shadow: 0px 0px 0px rgb(0 0 0 / 1%), 0px 4px 8px rgb(0 0 0 / 0%), 0px 16px 24px rgb(0 0 0 / 60%),
+      0px 24px 32px rgb(0 0 0 / 20%);
+  }
+
   ${StyledMenuButton} {
     display: flex;
     align-items: center;
@@ -16,20 +21,17 @@ const Wrapper = styled(SettingsMod)`
     margin: 0;
     padding: 0;
     height: 35px;
-    padding: 0.15rem 0.5rem;
-    border-radius: 0.5rem;
-    transition: opacity 0.2s ease-in-out;
-    opacity: 0.85;
+    padding: 0;
+    border-radius: 35px;
 
     &:hover,
     &:focus {
       cursor: pointer;
       outline: none;
-      opacity: 1;
     }
 
     > b {
-      margin: 0 3px 0 0;
+      margin: 0 4px 0 0;
     }
 
     svg {
@@ -52,10 +54,8 @@ const Wrapper = styled(SettingsMod)`
   }
 
   ${EmojiWrapper} {
-    position: absolute;
-    flex-direction: row;
-    top: 9px;
-    right: -16px;
+    position: relative;
+    margin: 0 0 0 6px;
     animation: expertModeOn 3s normal forwards ease-in-out;
 
     span {

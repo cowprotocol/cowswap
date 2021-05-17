@@ -1,32 +1,31 @@
 import React, { useContext } from 'react'
 import { ThemeContext } from 'styled-components'
-import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk'
+import { CurrencyAmount, TradeType } from '@uniswap/sdk'
 
 import { Field } from 'state/swap/actions'
 import { TYPE } from 'theme'
 import {
-  computeSlippageAdjustedAmounts,
-  computeTradePriceBreakdown as computeTradePriceBreakdownUni
+  computeSlippageAdjustedAmounts
+  // computeTradePriceBreakdown as computeTradePriceBreakdownUni
 } from 'utils/prices'
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
 
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { TradeWithFee } from 'state/swap/extension'
 import { DEFAULT_PRECISION } from 'constants/index'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(
   trade?: TradeWithFee | null
-): { priceImpactWithoutFee: Percent | undefined; realizedFee: CurrencyAmount | undefined | null } {
+): { /*priceImpactWithoutFee: Percent | undefined;*/ realizedFee: CurrencyAmount | undefined | null } {
   // This is needed because we are using Uniswap pools for the price calculation,
   // thus, we need to account for the LP fees the same way as Uniswap does.
-  const { priceImpactWithoutFee } = computeTradePriceBreakdownUni(trade)
+  // const { priceImpactWithoutFee } = computeTradePriceBreakdownUni(trade)
 
   return {
-    priceImpactWithoutFee,
+    // priceImpactWithoutFee,
     realizedFee:
       trade?.tradeType === TradeType.EXACT_INPUT
         ? trade?.outputAmountWithoutFee?.subtract(trade.outputAmount)
@@ -40,7 +39,7 @@ export const FEE_TOOLTIP_MSG =
 export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeWithFee; allowedSlippage: number }) {
   const theme = useContext(ThemeContext)
   // const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
-  const { priceImpactWithoutFee, realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { /*priceImpactWithoutFee,*/ realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
@@ -57,13 +56,16 @@ export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeW
           <RowFixed>
             <TYPE.black color={theme.text1} fontSize={14}>
               {isExactIn
-                ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${trade.outputAmount.currency.symbol}` ??
-                  '-'
-                : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${trade.inputAmount.currency.symbol}` ??
-                  '-'}
+                ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(DEFAULT_PRECISION)} ${
+                    trade.outputAmount.currency.symbol
+                  }` ?? '-'
+                : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(DEFAULT_PRECISION)} ${
+                    trade.inputAmount.currency.symbol
+                  }` ?? '-'}
             </TYPE.black>
           </RowFixed>
         </RowBetween>
+        {/* 
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
@@ -72,7 +74,8 @@ export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeW
             <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
-        </RowBetween>
+        </RowBetween> 
+        */}
 
         <RowBetween>
           <RowFixed>

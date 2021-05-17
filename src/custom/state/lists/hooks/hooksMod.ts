@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useCallback, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../..'
 import { ChainId } from '@uniswap/sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -9,6 +9,14 @@ import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { TokenAddressMap, listToTokenMap, combineMaps, EMPTY_LIST } from '@src/state/lists/hooks'
 import sortByListPriority from 'utils/listSort'
 import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
+import {
+  addGpUnsupportedToken,
+  AddGpUnsupportedTokenParams,
+  RemoveGpUnsupportedTokenParams,
+  removeGpUnsupportedToken
+} from '../actions'
+import { UnsupportedToken } from 'utils/operator'
+import { isAddress } from 'utils'
 
 // type TagDetails = Tags[keyof Tags]
 // export interface TagInfo extends TagDetails {
@@ -193,4 +201,68 @@ export function useIsListActive(url: string): boolean {
   // MOD: added here to use the scoped functions
   const activeListUrls = useActiveListUrls()
   return Boolean(activeListUrls?.includes(url))
+}
+
+export function useGpUnsupportedTokens(): UnsupportedToken | null {
+  const { chainId } = useActiveWeb3React()
+  return useSelector<AppState, AppState['lists'][ChainId]['gpUnsupportedTokens'] | null>(state =>
+    chainId ? state.lists[chainId].gpUnsupportedTokens : null
+  )
+}
+
+export function useAddGpUnsupportedToken() {
+  const dispatch = useDispatch()
+
+  return useCallback((params: AddGpUnsupportedTokenParams) => dispatch(addGpUnsupportedToken(params)), [dispatch])
+}
+
+export function useRemoveGpUnsupportedToken() {
+  const dispatch = useDispatch()
+
+  return useCallback((params: RemoveGpUnsupportedTokenParams) => dispatch(removeGpUnsupportedToken(params)), [dispatch])
+}
+
+export function useIsUnsupportedTokenFromLists() {
+  const { chainId } = useActiveWeb3React()
+  const allUnsupportedTokens = useUnsupportedTokenList()
+
+  return useCallback(
+    (addressToCheck?: string) => {
+      const checkSummedAddress = isAddress(addressToCheck)
+
+      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId][checkSummedAddress]) return false
+
+      const { address } = allUnsupportedTokens[chainId][checkSummedAddress].token
+
+      return Boolean(address)
+    },
+    [allUnsupportedTokens, chainId]
+  )
+}
+
+export function useIsUnsupportedTokenGp() {
+  const { chainId } = useActiveWeb3React()
+  const gpUnsupportedTokens = useGpUnsupportedTokens()
+
+  return useCallback(
+    (address?: string) => {
+      if (!address || !chainId || !gpUnsupportedTokens) return false
+
+      return gpUnsupportedTokens[address.toLowerCase()]
+    },
+    [chainId, gpUnsupportedTokens]
+  )
+}
+
+export function useIsUnsupportedToken() {
+  const isUnsupportedTokenFromList = useIsUnsupportedTokenFromLists()
+  const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
+
+  return useCallback(
+    (address?: string) => {
+      // Returns a predicate function determining a token's support by address against our Set
+      return Boolean(isUnsupportedTokenFromList(address) || isUnsupportedTokenGp(address))
+    },
+    [isUnsupportedTokenFromList, isUnsupportedTokenGp]
+  )
 }

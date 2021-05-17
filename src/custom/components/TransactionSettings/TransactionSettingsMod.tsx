@@ -20,7 +20,7 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput'
 }
 
-const FancyButton = styled.button`
+export const FancyButton = styled.button`
   color: ${({ theme }) => theme.text1};
   align-items: center;
   height: 2rem;
@@ -39,14 +39,14 @@ const FancyButton = styled.button`
   }
 `
 
-const Option = styled(FancyButton)<{ active: boolean }>`
-  margin-right: 8px;
-  :hover {
-    cursor: pointer;
-  }
-  background-color: ${({ active, theme }) => active && theme.primary1};
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
-`
+// const Option = styled(FancyButton)<{ active: boolean }>`
+//   margin-right: 8px;
+//   :hover {
+//     cursor: pointer;
+//   }
+//   background-color: ${({ active, theme }) => active && theme.primary1};
+//   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
+// `
 
 const Input = styled.input`
   background: ${({ theme }) => theme.bg1};
@@ -93,6 +93,7 @@ export interface SlippageTabsProps {
   deadline: number
   setDeadline: (deadline: number) => void
   parseCustomSlippageFn: ParseCustomSlippageFn
+  Option: React.ElementType
 }
 
 export default function SlippageTabs({
@@ -100,7 +101,8 @@ export default function SlippageTabs({
   setRawSlippage,
   deadline,
   setDeadline,
-  parseCustomSlippageFn
+  parseCustomSlippageFn,
+  Option
 }: SlippageTabsProps) {
   const theme = useContext(ThemeContext)
 

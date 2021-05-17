@@ -14152,6 +14152,11 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
+react-appzi@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-appzi/-/react-appzi-1.0.4.tgz#57958e5899ead870d80f6743196e33b5ca9f3124"
+  integrity sha512-l5lLFWdi1phuv84IWQu/YkBa0tWiyZTMhNc4fDt8RVMxVEv96FReXRlxWtrIO8ReMkT/CEFJ7pZCO9tAClnkIQ==
+
 react-clientside-effect@^1.2.2:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.5.tgz#e2c4dc3c9ee109f642fac4f5b6e9bf5bcd2219a3"

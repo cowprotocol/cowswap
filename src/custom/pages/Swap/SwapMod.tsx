@@ -14,8 +14,13 @@ import { SwapPoolTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
-import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
+// import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
+import {
+  ArrowWrapper,
+  // BottomGrouping,
+  SwapCallbackError,
+  Wrapper
+} from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
@@ -43,7 +48,7 @@ import {
 import { useExpertModeManager, useUserSlippageTolerance, useUserSingleHopOnly } from 'state/user/hooks'
 import { LinkStyledButton, ButtonSize, TYPE } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity, computeSlippageAdjustedAmounts } from 'utils/prices'
+import { /*computeTradePriceBreakdown, warningSeverity,*/ computeSlippageAdjustedAmounts } from 'utils/prices'
 import AppBody from 'pages/AppBody'
 import { ClickableText } from 'pages/Pool/styleds'
 import Loader from 'components/Loader'
@@ -52,13 +57,16 @@ import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter
 import { isTradeBetter } from 'utils/trades'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { SwapProps } from '.'
+import { logTradeDetails } from 'state/swap/utils'
 
 export default function Swap({
   history,
   FeeGreaterMessage,
   EthWethWrapMessage,
   SwitchToWethBtn,
-  FeesExceedFromAmountMessage
+  FeesExceedFromAmountMessage,
+  BottomGrouping,
+  className
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -110,6 +118,9 @@ export default function Swap({
     currencies,
     inputError: swapInputError
   } = useDerivedSwapInfo()
+
+  // Log all trade information
+  logTradeDetails(v2Trade, allowedSlippage)
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
@@ -237,14 +248,14 @@ export default function Swap({
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  // const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const [singleHopOnly] = useUserSingleHopOnly()
 
   const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
+    // if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
+    //   return
+    // }
     if (!swapCallback) {
       return
     }
@@ -283,7 +294,7 @@ export default function Swap({
         })
       })
   }, [
-    priceImpactWithoutFee,
+    // priceImpactWithoutFee,
     swapCallback,
     tradeToConfirm,
     showConfirm,
@@ -298,7 +309,7 @@ export default function Swap({
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // warnings on slippage
-  const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
+  // const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
@@ -306,8 +317,8 @@ export default function Swap({
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+      (approvalSubmitted && approval === ApprovalState.APPROVED))
+  // && !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
@@ -356,7 +367,7 @@ export default function Swap({
         onDismiss={handleDismissTokenWarning}
       />
       <SwapPoolTabs active={'swap'} />
-      <AppBody>
+      <AppBody className={className}>
         <SwapHeader />
         <Wrapper id="swap-page">
           <ConfirmSwapModal
@@ -373,17 +384,16 @@ export default function Swap({
             onDismiss={handleConfirmDismiss}
           />
 
-          <AutoColumn gap={'md'}>
+          <AutoColumn
+          // gap={'sm'}
+          >
             <CurrencyInputPanel
               label={
                 <FeeInformationTooltip
                   label={exactInLabel}
                   trade={trade}
                   showHelper={independentField === Field.OUTPUT}
-                  amountBeforeFees={
-                    trade?.fee?.feeAsCurrency &&
-                    trade?.inputAmount.subtract(trade.fee?.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
-                  }
+                  amountBeforeFees={trade?.inputAmount.toSignificant(DEFAULT_PRECISION)}
                   amountAfterFees={trade?.inputAmountWithFee.toSignificant(DEFAULT_PRECISION)}
                   type="From"
                   feeAmount={trade?.fee?.feeAsCurrency?.toSignificant(DEFAULT_PRECISION)}
@@ -399,7 +409,10 @@ export default function Swap({
               id="swap-currency-input"
             />
             <AutoColumn justify="space-between">
-              <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
+              <AutoRow
+                justify={isExpertMode ? 'space-between' : 'center'}
+                // style={{ padding: '0 1rem' }}
+              >
                 <ArrowWrapper clickable>
                   <ArrowDown
                     size="16"
@@ -539,7 +552,7 @@ export default function Swap({
                     'Approve ' + currencies[Field.INPUT]?.symbol
                   )}
                 </ButtonConfirmed>
-                <ButtonError
+                {/* <ButtonError
                   buttonSize={ButtonSize.BIG}
                   onClick={() => {
                     if (isExpertMode) {
@@ -566,7 +579,7 @@ export default function Swap({
                       ? `Price Impact High`
                       : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
                   </Text>
-                </ButtonError>
+                </ButtonError> */}
               </RowBetween>
             ) : (
               <ButtonError
@@ -585,15 +598,15 @@ export default function Swap({
                   }
                 }}
                 id="swap-button"
-                disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-                error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
+                disabled={!isValid /*|| (priceImpactSeverity > 3 && !isExpertMode) */ || !!swapCallbackError}
+                // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
                 <Text fontSize={20} fontWeight={500}>
-                  {swapInputError
-                    ? swapInputError
-                    : priceImpactSeverity > 3 && !isExpertMode
-                    ? `Price Impact Too High`
-                    : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                  {swapInputError ? swapInputError : 'Swap'
+                  // : priceImpactSeverity > 3 && !isExpertMode
+                  // ? `Price Impact Too High`
+                  // : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`
+                  }
                 </Text>
               </ButtonError>
             )}

@@ -1,6 +1,6 @@
 import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
 import React, { useMemo } from 'react'
-import cowBg from 'assets/cow-swap/cow-bg.png'
+import cowBg from 'assets/cow-swap/cow-bg.svg'
 import Logo from 'assets/cow-swap/cowswap-logo.svg'
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -84,17 +84,19 @@ function themeVariables(colorsTheme: Colors) {
     `,
     body: {
       background: css`
-        background: url(${cowBg}) no-repeat 100% / cover fixed;
+        background: url(${cowBg}) no-repeat 100% / cover fixed,
+          linear-gradient(180deg, rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%);
+        background-attachment: fixed;
       `
     },
     appBody: {
-      boxShadow: `6px 6px 0px ${colorsTheme.black}`,
-      borderRadius: '8px',
-      border: `4px solid ${colorsTheme.black}`,
-      padding: '12px 6px 24px',
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      borderRadius: '16px',
+      border: `3px solid ${colorsTheme.black}`,
+      padding: '12px 6px',
       maxWidth: {
-        normal: '420px',
-        content: '620px'
+        normal: '460px',
+        content: '680px'
       }
     },
     header: {
@@ -110,7 +112,7 @@ function themeVariables(colorsTheme: Colors) {
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '9px',
+      borderRadius: '16px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
     buttonOutlined: {
@@ -120,7 +122,7 @@ function themeVariables(colorsTheme: Colors) {
       `,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '9px',
+      borderRadius: '16px',
       boxShadow: `4px 4px 0px ${colorsTheme.black}`
     },
     buttonLight: {
@@ -132,7 +134,7 @@ function themeVariables(colorsTheme: Colors) {
     currencyInput: {
       background: `${colorsTheme.white}`,
       color: `${colorsTheme.text1}`,
-      border: `4px solid ${colorsTheme.black}`
+      border: `2px solid ${colorsTheme.disabled}`
     },
     buttonCurrencySelect: {
       background: `${colorsTheme.bg1}`,
@@ -146,7 +148,7 @@ function themeVariables(colorsTheme: Colors) {
     `,
     version: colorsTheme.primary1,
     networkCard: {
-      background: colorsTheme.primary1,
+      background: 'rgb(255 120 74 / 60%)',
       text: colorsTheme.text1
     }
   }

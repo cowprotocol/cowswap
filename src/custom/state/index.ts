@@ -12,7 +12,7 @@ import multicall from '@src/state/multicall/reducer'
 // CUSTOM REDUCERS
 import lists from './lists/reducer'
 import orders from './orders/reducer'
-import fee from './fee/reducer'
+import price from './price/reducer'
 import gas from 'state/gas/reducer'
 import { updateVersion } from 'state/global/actions'
 
@@ -33,7 +33,7 @@ const reducers = {
   ...UNISWAP_REDUCERS,
   lists,
   orders,
-  fee,
+  price,
   gas
 }
 

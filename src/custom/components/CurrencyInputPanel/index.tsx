@@ -25,19 +25,22 @@ export const Wrapper = styled.div<{ selected: boolean }>`
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
   }
-`
 
-export const CurrencySelect = styled(CurrencySelectMod)<{ selected: boolean }>`
-  background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.buttonCurrencySelect.background)};
-  color: ${({ selected, theme }) =>
-    selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
-  box-shadow: ${({ selected, theme }) => (selected ? 'none' : theme.buttonCurrencySelect.boxShadow)};
-  border: ${({ theme }) => theme.buttonCurrencySelect.border};
+  ${CurrencySelectMod} {
+    color: ${({ theme }) => theme.black};
+    transition: background-color 0.2s ease-in-out;
 
-  :focus,
-  :hover {
-    background-color: ${({ selected, theme }) =>
-      selected ? theme.bg2 : darken(0.05, theme.buttonCurrencySelect.background)};
+    &:focus {
+      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
+    }
+    &:hover {
+      background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+    }
+
+    path {
+      stroke: ${({ selected, theme }) => (selected ? theme.black : theme.black)};
+      stroke-width: 1.5px;
+    }
   }
 `
 

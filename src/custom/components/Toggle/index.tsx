@@ -1,12 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import ToggleUni, { ToggleProps as TogglePropsUni } from '@src/components/Toggle'
+import ToggleUni, { ToggleProps as TogglePropsUni, ToggleElement } from '@src/components/Toggle'
 
 export type ToggleProps = TogglePropsUni
 
 const Wrapper = styled(ToggleUni)`
+  ${ToggleElement} {
+    color: ${({ theme }) => theme.black};
+    border: 2px solid transparent;
+    transition: border 0.2s ease-in-out;
+
+    &:hover {
+      color: ${({ theme }) => theme.black};
+      border: 2px solid ${({ theme }) => theme.black};
+    }
+  }
   .disabled {
-    color: ${({ theme }) => theme.white};
+    background: ${({ theme }) => theme.primary1};
   }
 `
 
