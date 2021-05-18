@@ -552,7 +552,7 @@ export default function Swap({
                     'Approve ' + currencies[Field.INPUT]?.symbol
                   )}
                 </ButtonConfirmed>
-                {/* <ButtonError
+                <ButtonError
                   buttonSize={ButtonSize.BIG}
                   onClick={() => {
                     if (isExpertMode) {
@@ -570,16 +570,17 @@ export default function Swap({
                   width="48%"
                   id="swap-button"
                   disabled={
-                    !isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)
+                    !isValid || approval !== ApprovalState.APPROVED // || (priceImpactSeverity > 3 && !isExpertMode)
                   }
-                  error={isValid && priceImpactSeverity > 2}
+                  // error={isValid && priceImpactSeverity > 2}
                 >
                   <Text fontSize={16} fontWeight={500}>
-                    {priceImpactSeverity > 3 && !isExpertMode
+                    {/* {priceImpactSeverity > 3 && !isExpertMode
                       ? `Price Impact High`
-                      : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                      : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`} */}
+                    Swap
                   </Text>
-                </ButtonError> */}
+                </ButtonError>
               </RowBetween>
             ) : (
               <ButtonError
