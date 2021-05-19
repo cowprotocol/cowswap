@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { ExternalLink, TYPE } from 'theme'
 
-import { version as WEB } from '@src/../package.json'
-import { version as CONTRACTS } from '@gnosis.pm/gp-v2-contracts/package.json'
+import { version as WEB_VERSION } from '@src/../package.json'
+import { version as CONTRACTS_VERSION } from '@gnosis.pm/gp-v2-contracts/package.json'
 import { ChainId } from '@uniswap/sdk'
 import { getEtherscanLink } from 'utils'
 import { CODE_LINK, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
@@ -29,26 +29,26 @@ const VERSIONS: Record<
   { version: string; href: (chainId: ChainId) => string | { github: string; etherscan: string } }
 > = {
   Web: {
-    version: 'v' + WEB,
+    version: 'v' + WEB_VERSION,
     href() {
       return CODE_LINK
     }
   },
   'Allowance manager contract': {
-    version: 'v' + CONTRACTS,
+    version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
       return {
         etherscan: _getContractsUrls(chainId, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS),
-        github: 'https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2AllowListAuthentication.sol'
+        github: `https://github.com/gnosis/gp-v2-contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2AllowListAuthentication.sol`
       }
     }
   },
   'Settlement contract': {
-    version: 'v' + CONTRACTS,
+    version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
       return {
         etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),
-        github: 'https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2Settlement.sol'
+        github: `https://github.com/gnosis/gp-v2-contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2Settlement.sol`
       }
     }
   }
