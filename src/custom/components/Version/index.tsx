@@ -39,7 +39,7 @@ const VERSIONS: Record<
     href(chainId: ChainId) {
       return {
         etherscan: _getContractsUrls(chainId, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS),
-        github: 'https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2AllowanceManager.sol'
+        github: 'https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2AllowListAuthentication.sol'
       }
     }
   },
