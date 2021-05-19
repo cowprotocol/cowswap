@@ -259,6 +259,10 @@ export default createReducer(initialState, builder =>
             return true
           })
         }
+
+        if (!state.gpUnsupportedTokens) {
+          state.gpUnsupportedTokens = {}
+        }
       }
     )
 )
