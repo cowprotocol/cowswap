@@ -19,11 +19,17 @@ export interface RefetchQuoteCallbackParmams {
   previousFee?: FeeInformation
 }
 
+type WithFeeExceedsPrice = {
+  feeExceedsPrice: boolean
+}
+
+type PriceInformationWithFee = PriceInformation & WithFeeExceedsPrice
+
 async function getQuote({
   quoteParams,
   fetchFee,
   previousFee
-}: RefetchQuoteCallbackParmams): Promise<[PriceInformation, FeeInformation]> {
+}: RefetchQuoteCallbackParmams): Promise<[PriceInformationWithFee, FeeInformation]> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
 
@@ -33,18 +39,34 @@ async function getQuote({
 
   // Get a new price quote
   let exchangeAmount
+  let feeExceedsPrice = false
   if (kind === 'sell') {
     // Sell orders need to deduct the fee from the swapped amount
-    exchangeAmount = BigNumber.from(amount)
-      .sub((await feePromise).amount)
-      .toString()
+    // we need to check for 0/negative exchangeAmount should fee >= amount
+    const { amount: fee } = await feePromise
+    const result = BigNumber.from(amount).sub(fee)
+
+    feeExceedsPrice = result.lte('0')
+
+    exchangeAmount = !feeExceedsPrice ? result.toString() : null
   } else {
     // For buy orders, we swap the whole amount, then we add the fee on top
     exchangeAmount = amount
   }
 
   // Get price for price estimation
-  const pricePromise = getPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
+  const pricePromise =
+    !feeExceedsPrice && exchangeAmount
+      ? getPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind }).then(priceInfo => ({
+          ...priceInfo,
+          feeExceedsPrice
+        }))
+      : // fee exceeds our price, is invalid
+        Promise.resolve({
+          feeExceedsPrice,
+          token: sellToken,
+          amount: null
+        })
 
   return Promise.all([pricePromise, feePromise])
 }
@@ -103,6 +125,7 @@ export function useRefetchQuoteCallback() {
       const { sellToken, buyToken, amount, chainId } = params.quoteParams
       try {
         // Get the quote
+        // price can be null if fee > price
         const [price, fee] = await getQuote(params)
 
         const previouslyUnsupportedToken = isUnsupportedTokenGp(sellToken) || isUnsupportedTokenGp(buyToken)
@@ -117,6 +140,8 @@ export function useRefetchQuoteCallback() {
           })
         }
 
+        const { feeExceedsPrice } = price
+
         // Update quote
         updateQuote({
           sellToken,
@@ -125,7 +150,8 @@ export function useRefetchQuoteCallback() {
           price,
           chainId,
           lastCheck: Date.now(),
-          fee
+          fee,
+          feeExceedsPrice
         })
       } catch (error) {
         _handleUnsupportedToken({ error, chainId, addUnsupportedToken })

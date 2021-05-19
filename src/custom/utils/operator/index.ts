@@ -151,17 +151,19 @@ function toApiAddress(address: string, chainId: ChainId): string {
 
 async function _getJson(chainId: ChainId, url: string): Promise<any> {
   let response: Response | undefined
+  let json
   try {
     response = await _fetchGet(chainId, url)
+    json = await response.json()
   } finally {
-    if (!response) {
+    if (!response || !json) {
       throw new Error(`Error getting query @ ${url}`)
     } else if (!response.ok) {
       // is backend error handled at this point
-      const errorResponse: ApiError = await response.json()
+      const errorResponse: ApiError = json
       throw new OperatorError(errorResponse)
     } else {
-      return response.json()
+      return json
     }
   }
 }

@@ -19,13 +19,14 @@ export interface FeeInformation {
 
 export interface PriceInformation {
   token: string
-  amount: string
+  amount: string | null
 }
 
 export interface QuoteInformationObject extends Omit<FeeQuoteParams, 'kind'> {
   fee: FeeInformation
   price: PriceInformation
   lastCheck: number
+  feeExceedsPrice: boolean
 }
 
 // Map token addresses to their last quote information

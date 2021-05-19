@@ -22,7 +22,6 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { SwapState } from 'state/swap/reducer'
 import { ParsedQs } from 'qs'
-import { BigNumber } from 'ethers'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import { WrappedTokenInfo } from '../lists/hooks'
@@ -71,7 +70,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   })
 
   useEffect(() => {
-    console.debug('[useDerivedSwapInfo] Price quote: ', quote?.price.amount)
+    console.debug('[useDerivedSwapInfo] Price quote: ', quote?.price?.amount)
     console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
   }, [quote])
 
@@ -264,21 +263,18 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
 
 export function useIsFeeGreaterThanInput({
   address,
-  parsedAmount,
   chainId
 }: {
   address?: string
-  parsedAmount?: CurrencyAmount
   chainId?: ChainId
 }): { isFeeGreater: boolean; fee: CurrencyAmount | null } {
   const quote = useQuote({ chainId, token: address })
+  const feeToken = useCurrency(address)
 
-  if (!quote || !quote.fee || !parsedAmount) return { isFeeGreater: false, fee: null }
-
-  const feeBigNumber = BigNumber.from(quote.fee.amount)
+  if (!quote?.fee || !feeToken) return { isFeeGreater: false, fee: null }
 
   return {
-    isFeeGreater: feeBigNumber.gte(parsedAmount.raw.toString()),
-    fee: stringToCurrency(feeBigNumber.toString(), parsedAmount.currency)
+    isFeeGreater: quote.feeExceedsPrice,
+    fee: stringToCurrency(quote.fee.amount, feeToken)
   }
 }

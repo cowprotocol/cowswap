@@ -134,7 +134,10 @@ export default function Swap({
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   // Is fee greater than input?
-  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({ chainId, address: INPUT.currencyId, parsedAmount })
+  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
+    chainId,
+    address: INPUT.currencyId
+  })
 
   const toggledVersion = useToggledVersion()
   const tradesByVersion = {
