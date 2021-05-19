@@ -369,7 +369,7 @@ export default function Swap({
       <SwapPoolTabs active={'swap'} />
       <AppBody className={className}>
         <SwapHeader />
-        <Wrapper id="swap-page">
+        <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>
           <ConfirmSwapModal
             isOpen={showConfirm}
             trade={trade}

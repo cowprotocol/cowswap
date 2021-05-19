@@ -7,7 +7,7 @@ import { Text } from 'rebass'
 import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
-import { RowBetween, RowFixed } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import {
   BottomGrouping as BottomGroupingUni,
   Wrapper as WrapperUni,
@@ -47,6 +47,10 @@ const SwapModWrapper = styled(SwapMod)`
       grid-row-gap: 3px;
     }
 
+    .expertMode ${AutoColumn} {
+      grid-row-gap: 12px;
+    }
+
     ${Card} > ${AutoColumn} {
       margin: 6px auto 0;
     }
@@ -74,6 +78,13 @@ const SwapModWrapper = styled(SwapMod)`
       > svg {
         stroke: #000000b8;
       }
+    }
+
+    .expertMode ${ArrowWrapperUni} {
+      position: relative;
+    }
+    .expertMode ${AutoRow} {
+      padding: 0 1rem;
     }
   }
 `
