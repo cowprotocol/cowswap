@@ -9,9 +9,10 @@ import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { useActiveWeb3React } from 'hooks'
 import { getEtherscanLink } from 'utils'
-import { Currency, Token } from '@uniswap/sdk'
+import { Currency /* , Token */ } from '@uniswap/sdk'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
-import { useUnsupportedTokens } from 'hooks/Tokens'
+// import { useUnsupportedTokens } from 'hooks/Tokens'
+import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -67,7 +68,9 @@ UnsupportedCurrencyFooterParams) {
         })
       : []
 
-  const unsupportedTokens: { [address: string]: Token } = useUnsupportedTokens()
+  // const unsupportedTokens: { [address: string]: Token } = useUnsupportedTokens()
+
+  const isUnsupportedToken = useIsUnsupportedToken()
 
   return (
     <DetailsFooter show={show}>
@@ -83,9 +86,10 @@ UnsupportedCurrencyFooterParams) {
             {tokens.map(token => {
               return (
                 token &&
-                unsupportedTokens &&
-                Object.keys(unsupportedTokens).includes(token.address) && (
-                  <OutlineCard key={token.address?.concat('not-supported')}>
+                // unsupportedToken &&
+                // combinedUnsupportedList.includes(token.address) && (
+                isUnsupportedToken(token.address) && (
+                  <OutlineCard key={token.address.concat('not-supported')} padding="0 1.25rem">
                     <AutoColumn gap="10px">
                       <AutoRow gap="5px" align="center">
                         <CurrencyLogo currency={token} size={'24px'} />
@@ -113,7 +117,7 @@ UnsupportedCurrencyFooterParams) {
       </Modal>
       <ButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
         {/* <TYPE.blue>Read more about unsupported assets</TYPE.blue> */}
-        <TYPE.blue>{showDetailsText}</TYPE.blue>
+        <TYPE.error error={!!showDetailsText}>{showDetailsText}</TYPE.error>
       </ButtonEmpty>
     </DetailsFooter>
   )

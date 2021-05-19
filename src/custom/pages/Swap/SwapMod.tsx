@@ -513,7 +513,7 @@ export default function Swap({
           <BottomGrouping>
             {swapIsUnsupported ? (
               <ButtonPrimary buttonSize={ButtonSize.BIG} disabled={true}>
-                <TYPE.main mb="4px">Unsupported Asset</TYPE.main>
+                <TYPE.main mb="4px">Unsupported Token</TYPE.main>
               </ButtonPrimary>
             ) : !account ? (
               <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>

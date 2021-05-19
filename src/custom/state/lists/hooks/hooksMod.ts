@@ -260,7 +260,7 @@ export function useIsUnsupportedToken() {
 
   return useCallback(
     (address?: string) => {
-      // Returns a predicate function determining a token's support by address against our Set
+      // Returns a predicate function determining a token's support by address against our hooks
       return Boolean(isUnsupportedTokenFromList(address) || isUnsupportedTokenGp(address))
     },
     [isUnsupportedTokenFromList, isUnsupportedTokenGp]

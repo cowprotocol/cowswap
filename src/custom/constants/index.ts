@@ -82,3 +82,5 @@ export const GAS_FEE_ENDPOINTS = {
   // TODO: xdai? = main
   [ChainId.XDAI]: 'https://safe-relay.gnosis.io/api/v1/gas-station/'
 }
+
+export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq#what-token-pairs-does-cowswap-allow-to-trade'

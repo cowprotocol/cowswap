@@ -1,22 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Currency, CurrencyAmount } from '@uniswap/sdk'
-import { LONG_PRECISION } from 'constants/index'
+import { LONG_PRECISION, UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TagInfo, WrappedTokenInfo } from 'state/lists/hooks'
-import { Link } from 'react-router-dom'
+import { HashLink } from 'react-router-hash-link'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {
     name: 'Unsupported',
     description:
-      'This token is unsupported as it does not operate efficiently with Gnosis Protocol. Please refer to the FAQ for more information.',
+      'This token is unsupported as it does not operate optimally with Gnosis Protocol. Please refer to the FAQ for more information.',
     id: '0'
   }
 ]
-
-const FAQ_URL = '/faq#what-are-unsupported-tokens'
 
 const Tag = styled(TagMod)<{ bg?: string }>`
   background-color: ${({ bg, theme }) => bg || theme.bg3};
@@ -63,9 +61,9 @@ function TokenTags({ currency, isUnsupported }: { currency: Currency; isUnsuppor
     return (
       <TagDescriptor bg="#f3a1a1" tags={UNSUPPORTED_TOKEN_TAG}>
         <TagLink>
-          <Link to={FAQ_URL} target="_blank" onClick={e => e.stopPropagation()}>
+          <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank" onClick={e => e.stopPropagation()}>
             FAQ
-          </Link>
+          </HashLink>
         </TagLink>
       </TagDescriptor>
     )
