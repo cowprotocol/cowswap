@@ -155,9 +155,9 @@ export default function Faq() {
           </h3>
 
           <p>
-            <a href="https://research.paradigm.xyz/MEV">Defined</a> by the Paradigm research team, Maximum Extractable
-            Value (MEV) is “a measure of the profit a miner (or validator, sequencer, etc.) can make through their
-            ability to arbitrarily include, exclude, or re-order transactions within the blocks they produce.”
+            Defined by Phil Daian in the <a href="https://arxiv.org/abs/1904.05234"> paper Flash Boys 2.0 </a>, MEV is a measure of the profit a miner
+            (or validator, sequencer, etc.) can make through their ability to arbitrarily include, exclude, or re-order
+            transactions within the blocks they produce.
           </p>
 
           <p>
@@ -253,6 +253,19 @@ export default function Faq() {
         <Content>
           <h2 id="protocol">Protocol</h2>
 
+          <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
+
+          <p>
+            There is currently no plan for a CowSwap specific token. At the moment the value is already captured by the
+            GNO token, as CowSwap is built on top of Gnosis Protocol. If you are curious about how the value is
+            captured, you can <a href="https://forum.gnosis.io/t/gpv2-fee-model/1266"> read this forum post</a>.
+          </p>
+
+          <p>
+            Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note 
+            that any token listed in any AMM is  <strong>NOT</strong> associated with this project in any way, shape or form.
+          </p>
+
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
 
           <p>
@@ -307,6 +320,26 @@ export default function Faq() {
             across different protocols. Since orders only incur a cost if traded, active market makers can observe the
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
+
+          <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
+
+          <p>
+            In GPv2, instead of using a central operator or a constant function market maker to determine trade
+            settlements, solvers compete against each other to submit the most optimal batch settlement solution. Each
+            time a solver submits a successful batch settlement solution, the protocol rewards them with GNO. 
+            Anyone can become a solver, although, in order to become one, there are certain requirements:
+          </p>
+          <ol>
+            <li>To become a solver, an Ethereum address needs to deposit a bond of GNO tokens to GnosisDAO.</li>
+            <li>
+              Once the GNO tokens have been staked (locked up), GnosisDAO has to vote to approve or reject the
+              Ethereum address that will identify the solver.
+            </li>
+            <li>
+              Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
+              solutions, or take the risk of being slashed by the GnosisDAO for wrongdoing.
+            </li>
+          </ol>
         </Content>
       </Page>
 
@@ -320,7 +353,21 @@ export default function Faq() {
 
           <h3 id="what-token-pairs-does-cowswap-allow-to-trade">What token pairs does CowSwap allow you to trade?</h3>
 
-          <p>Any valid ERC20 token pair for which there is some basic liquidity on a DEX (like Uniswap or Balancer).</p>
+          <p>
+            Any valid ERC20 token pair that does not apply transfer fees, and for which there is some basic liquidity on
+            a DEX (like Uniswap or Balancer).
+          </p>
+
+          <h3 id="what-token-pairs-does-cowswap-not-allow-to-trade">
+            What token pairs does CowSwap NOT allow you to trade?
+          </h3>
+
+          <p>
+            Unfortunately, CowSwap does not support some tokens. While these tokens implement the typical ERC20
+            interface, when calling the transfer and transferFrom methods, the actual amount the receiver will get will
+            be smaller than the specified sent amount. This causes problems with CowSwap&apos;s settlement logic which
+            expects the received amount (e.g. from a Uniswap interaction) to be fully transferable to the trader.
+          </p>
 
           <h3 id="why-is-cowswap-able-to-offer-gas-free-trades">Why is CowSwap able to offer gas-free trades?</h3>
 
@@ -415,6 +462,39 @@ export default function Faq() {
             allow you to wrap and unwrap ETH into WETH without needing to leave the dapp’s UI
           </p>
 
+          <h3 id="why-is-selling-eth-more-troublesome">
+            Why is selling ETH more troublesome?
+          </h3>
+
+          <p>
+            CowSwap only operates with ERC20 tokens. ETH is the native Ethereum currency, which is not an ERC20 token.
+          </p>
+          
+          <p>
+            In order to sell ETH, you need to wrap it first to make it ERC20 compatible. Wrapping is done by making an 
+            ETH deposit into the WETH contract. After doing so, you will get a balance of WETH in the amount of ETH 
+            previously deposited.
+          </p>
+          
+          <p>
+            You can withdraw your ETH from the WETH contract at any time, and this is called unwrapping WETH.
+          </p>
+          
+          <p>
+            Wrapping and unwrapping ETH are simple Ethereum transactions not related to CowSwap, meaning gas costs 
+            for executing the transactions are involved.
+          </p>
+
+          <p>
+            Although CowSwap doesn't allow you to sell ETH directly, it will assist you with the wrapping/unwrapping, 
+            so you can easily handle ETH/WETH, as needed.
+          </p>
+          
+          <p>
+            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CowSwap allows 
+            you to buy WETH and will directly unwrap it for you.
+          </p>
+          
           <hr />
 
           <p>
