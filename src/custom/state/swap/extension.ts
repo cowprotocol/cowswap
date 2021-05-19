@@ -213,7 +213,9 @@ export function useTradeExactOutWithFee({
     ...outTrade,
     // overriding inputAmount is a hack
     // to allow us to not have to change Uni's pages/swap/index and use different method names
-    inputAmount: inputAmountWithoutFee,
+    // in this case we need to show users the default inputAmount as the inputAmount adjusted for fee
+    // this is purely for display reasons and to keep it working with Uni's code.
+    inputAmount: inputAmountWithFee,
     inputAmountWithFee,
     minimumAmountOut(pct: Percent) {
       // this refers to trade object being constructed

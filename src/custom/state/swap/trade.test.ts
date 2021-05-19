@@ -57,15 +57,14 @@ describe('Swap PRICE Quote test', () => {
           price: { amount: MOCKED_PRICE_OUT.long, token: DAI_MAINNET.name || 'token' }
         })
 
-        console.debug('EXECUTION PRICE', executionPrice?.toSignificant(18))
-
         trade = {
           ...tradeSdk,
           executionPrice,
-          inputAmount: tradeSdk.inputAmount.subtract(feeAsCurrency),
+          // sell orders: we show user on UI inputAmount with no fee calculation
+          inputAmount: tradeSdk.inputAmount,
           inputAmountWithFee: tradeSdk.inputAmount.subtract(feeAsCurrency),
           inputAmountWithoutFee: tradeSdk.inputAmount,
-          outputAmount: new TokenAmount(DAI_MAINNET, MOCKED_PRICE_OUT.long),
+          outputAmount: currencyOut,
           maximumAmountIn(pct: Percent) {
             return _maximumAmountInExtension(pct, this)
           },
@@ -129,13 +128,13 @@ describe('Swap PRICE Quote test', () => {
           price: { amount: MOCKED_PRICE_IN.long, token: WETH_MAINNET.name || 'token' }
         })
 
-        console.debug('EXECUTION PRICE', executionPrice?.toSignificant(18))
-
         trade = {
           ...tradeSdk,
           executionPrice,
-          inputAmount: apiBuyPriceAsCurrency,
+          // fee is in selltoken so for buy orders we set inputAmount as inputAmountWithFee
+          inputAmount: apiBuyPriceAsCurrencyWithFee,
           inputAmountWithFee: apiBuyPriceAsCurrencyWithFee,
+          inputAmountWithoutFee: apiBuyPriceAsCurrency,
           maximumAmountIn(pct: Percent) {
             return _maximumAmountInExtension(pct, this)
           },
