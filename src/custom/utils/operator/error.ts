@@ -17,13 +17,17 @@ export interface ApiError {
 }
 
 const API_ERROR_CODE_DESCRIPTIONS = {
-  [ApiErrorCodes.DuplicateOrder]: 'There was another identical order already submitted',
-  [ApiErrorCodes.InsufficientFee]: "The account doesn't have enough funds",
-  [ApiErrorCodes.InvalidSignature]: 'The order signature is invalid',
+  [ApiErrorCodes.DuplicateOrder]: 'There was another identical order already submitted. Please try again.',
+  [ApiErrorCodes.InsufficientFee]:
+    "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
+  [ApiErrorCodes.InvalidSignature]:
+    'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
   [ApiErrorCodes.MissingOrderData]: 'The order has missing information',
-  [ApiErrorCodes.InsufficientValidTo]: "The account doesn't have enough funds",
+  [ApiErrorCodes.InsufficientValidTo]:
+    'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
   [ApiErrorCodes.InsufficientFunds]: "The account doesn't have enough funds",
-  [ApiErrorCodes.UnsupportedToken]: 'An unsupported token was detected',
+  [ApiErrorCodes.UnsupportedToken]:
+    'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   [ApiErrorCodes.WrongOwner]: 'An invalid owner address was given',
   UNHANDLED_ERROR: 'The order was not accepted by the network'
 }
