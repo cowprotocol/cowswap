@@ -155,9 +155,9 @@ export default function Faq() {
           </h3>
 
           <p>
-            Defined by Phil Daian in the <a href="https://arxiv.org/abs/1904.05234"> paper Flash Boys 2.0 </a>, MEV is a measure of the profit a miner
-            (or validator, sequencer, etc.) can make through their ability to arbitrarily include, exclude, or re-order
-            transactions within the blocks they produce.
+            Defined by Phil Daian in the <a href="https://arxiv.org/abs/1904.05234"> paper Flash Boys 2.0 </a>, MEV is a
+            measure of the profit a miner (or validator, sequencer, etc.) can make through their ability to arbitrarily
+            include, exclude, or re-order transactions within the blocks they produce.
           </p>
 
           <p>
@@ -262,8 +262,9 @@ export default function Faq() {
           </p>
 
           <p>
-            Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note 
-            that any token listed in any AMM is  <strong>NOT</strong> associated with this project in any way, shape or form.
+            Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
+            that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape or
+            form.
           </p>
 
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
@@ -321,19 +322,33 @@ export default function Faq() {
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
 
+          <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
+
+          <p>CowSwap uses offline signatures to offer gasless orders.</p>
+          <p>
+            Currently, Smart Contract (SC) wallets such as Gnosis Safe, Argent or Pillar are not supported because it
+            would require signing an on-chain transaction to place the order, making it no longer gasless. We are
+            working to make this a possibility and support will be added soon.
+          </p>
+
+          <p>
+            Nevertheless, even if your wallet is not an SC wallet, it might be unsupported in some cases. Not all
+            wallets implement the necessary signing methods from EIP712 standard. If that is the case for you, reach out
+            to your wallet developers and ask for it.
+          </p>
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
 
           <p>
             In GPv2, instead of using a central operator or a constant function market maker to determine trade
             settlements, solvers compete against each other to submit the most optimal batch settlement solution. Each
-            time a solver submits a successful batch settlement solution, the protocol rewards them with GNO. 
-            Anyone can become a solver, although, in order to become one, there are certain requirements:
+            time a solver submits a successful batch settlement solution, the protocol rewards them with GNO. Anyone can
+            become a solver, although, in order to become one, there are certain requirements:
           </p>
           <ol>
             <li>To become a solver, an Ethereum address needs to deposit a bond of GNO tokens to GnosisDAO.</li>
             <li>
-              Once the GNO tokens have been staked (locked up), GnosisDAO has to vote to approve or reject the
-              Ethereum address that will identify the solver.
+              Once the GNO tokens have been staked (locked up), GnosisDAO has to vote to approve or reject the Ethereum
+              address that will identify the solver.
             </li>
             <li>
               Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
@@ -462,39 +477,35 @@ export default function Faq() {
             allow you to wrap and unwrap ETH into WETH without needing to leave the dapp’s UI
           </p>
 
-          <h3 id="why-is-selling-eth-more-troublesome">
-            Why is selling ETH more troublesome?
-          </h3>
+          <h3 id="why-is-selling-eth-more-troublesome">Why is selling ETH more troublesome?</h3>
 
           <p>
             CowSwap only operates with ERC20 tokens. ETH is the native Ethereum currency, which is not an ERC20 token.
           </p>
-          
+
           <p>
-            In order to sell ETH, you need to wrap it first to make it ERC20 compatible. Wrapping is done by making an 
-            ETH deposit into the WETH contract. After doing so, you will get a balance of WETH in the amount of ETH 
+            In order to sell ETH, you need to wrap it first to make it ERC20 compatible. Wrapping is done by making an
+            ETH deposit into the WETH contract. After doing so, you will get a balance of WETH in the amount of ETH
             previously deposited.
           </p>
-          
+
+          <p>You can withdraw your ETH from the WETH contract at any time, and this is called unwrapping WETH.</p>
+
           <p>
-            You can withdraw your ETH from the WETH contract at any time, and this is called unwrapping WETH.
-          </p>
-          
-          <p>
-            Wrapping and unwrapping ETH are simple Ethereum transactions not related to CowSwap, meaning gas costs 
-            for executing the transactions are involved.
+            Wrapping and unwrapping ETH are simple Ethereum transactions not related to CowSwap, meaning gas costs for
+            executing the transactions are involved.
           </p>
 
           <p>
-            Although CowSwap doesn't allow you to sell ETH directly, it will assist you with the wrapping/unwrapping, 
-            so you can easily handle ETH/WETH, as needed.
+            Although CowSwap doesn't allow you to sell ETH directly, it will assist you with the wrapping/unwrapping, so
+            you can easily handle ETH/WETH, as needed.
           </p>
-          
+
           <p>
-            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CowSwap allows 
-            you to buy WETH and will directly unwrap it for you.
+            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CowSwap allows you to
+            buy WETH and will directly unwrap it for you.
           </p>
-          
+
           <hr />
 
           <p>

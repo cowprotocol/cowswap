@@ -67,13 +67,29 @@ yarn start:default
 yarn cypress
 ```
 
-### Configuring the environment (optional)
+## Configuring the environment (optional)
+The app has some default configuration, but it's highly encouraged to define your own.
+
+### Local configuration
+Make a copy of `.env` named `.env.local`, this will allow you to set your own configuration only in your local environment.
+
+### Production configuration
+Modify the environment variables in `.env.production`, or override them in build time.
+
+### App Id
+The app id is included in all signed transaction, although the Gnosis Protocol is not using this information for now, it
+could be used for implementing incentive programs.
+
+To set your own, change `REACT_APP_ID` environment variable. Ask for your id at [chat.gnosis.io](https://chat.gnosis.io)
+
+
+### Supported networks
+You can change the supported networks and their RPC endpoint.
 
 To have the interface default to a different network when a wallet is not connected:
 
-1. Make a copy of `.env` named `.env.local`
-2. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`. This will be your default network id
-3. Define your own list of supported networks:
+1. Change `REACT_APP_NETWORK_ID` to `"{YOUR_NETWORK_ID}"`. This will be your default network id
+2. Define your own list of supported networks:
 
 ```ini
 REACT_APP_SUPPORTED_CHAIN_IDS="1,4,100"
@@ -82,9 +98,17 @@ REACT_APP_NETWORK_URL_4=https://rinkeby.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
 ```
 
-4. Change `REACT_APP_ID` Ask for your id at [chat.gnosis.io](https://chat.gnosis.io)
-5. Change `REACT_APP_API_STAGING_URL_{XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
 
-For production:
+### API endpoints
+Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and 
+handing them to the solvers. 
 
-6. Get your own `App Id` in <chat.cowswap.exchange>, and set it in `REACT_APP_ID`.
+The reference implementation of th API is [gp-v2-services](https://github.com/gnosis/gp-v2-services). 
+
+The API endpoint is configured using the environment variable `REACT_APP_API_STAGING_URL_{XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
+
+
+### Wallet Connect bridge
+Wallet Connect allows to connect the app to any [Wallet Connect supported wallet](https://walletconnect.org/wallets).
+
+In order to do so, it uses a Websocket, that can be configured using: the env var `WALLET_CONNECT_BRIDGE`.

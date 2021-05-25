@@ -1,14 +1,14 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
-// TODO: Use any network when this PR is merged https://github.com/NoahZinsmeister/web3-react/pull/185
-// import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import { WalletConnectConnector } from '@anxolin/walletconnect-connector'
-// End of TODO ----
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 
 import { FortmaticConnector } from 'connectors/Fortmatic'
 import { NetworkConnector } from 'connectors/NetworkConnector'
+import { AbstractConnector } from '@web3-react/abstract-connector'
+
+export const WALLET_CONNECT_BRIDGE = process.env.WALLET_CONNECT_BRIDGE || 'wss://safe-walletconnect.gnosis.io'
 
 type RpcNetworks = { [chainId: number]: string }
 
@@ -77,7 +77,7 @@ export const injected = new InjectedConnector({ supportedChainIds })
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
   rpc: rpcNetworks,
-  bridge: 'https://bridge.walletconnect.org',
+  bridge: WALLET_CONNECT_BRIDGE,
   qrcode: true,
   pollingInterval: 15000
 })
@@ -102,3 +102,37 @@ export const walletlink = new WalletLinkConnector({
   appName: 'CowSwap',
   appLogoUrl: 'https://raw.githubusercontent.com/gnosis/gp-swap-ui/develop/public/images/logo-square-512.png'
 })
+
+export enum WalletProvider {
+  INJECTED = 'INJECTED',
+  WALLET_CONNECT = 'WALLET_CONNECT',
+  FORMATIC = 'FORMATIC',
+  PORTIS = 'PORTIS',
+  WALLET_LINK = 'WALLET_LINK'
+}
+
+export function getProviderType(connector: AbstractConnector | undefined): WalletProvider | undefined {
+  if (!connector) {
+    return undefined
+  }
+
+  switch (connector) {
+    case injected:
+      return WalletProvider.INJECTED
+
+    case walletconnect:
+      return WalletProvider.WALLET_CONNECT
+
+    case fortmatic:
+      return WalletProvider.FORMATIC
+
+    case portis:
+      return WalletProvider.PORTIS
+
+    case walletlink:
+      return WalletProvider.WALLET_LINK
+
+    default:
+      return undefined
+  }
+}

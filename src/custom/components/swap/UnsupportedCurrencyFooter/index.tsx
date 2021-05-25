@@ -15,18 +15,24 @@ const DEFAULT_DETAILS_TEXT = (
 const DEFAULT_DETAILS_TITLE = 'Unsupported Token'
 const DEFAULT_SHOW_DETAILS_TEXT = 'Read more about unsupported tokens'
 
+type Props = Omit<UnsupportedCurrencyFooterParams, 'currencies'> & {
+  currencies?: UnsupportedCurrencyFooterParams['currencies']
+}
+
 export default function UnsupportedCurrencyFooter({
   detailsText = DEFAULT_DETAILS_TEXT,
   detailsTitle = DEFAULT_DETAILS_TITLE,
   showDetailsText = DEFAULT_SHOW_DETAILS_TEXT,
+  currencies = [],
   ...props
-}: UnsupportedCurrencyFooterParams) {
+}: Props) {
   return (
     <UnsupportedCurrencyFooterMod
       {...props}
       detailsText={detailsText}
       detailsTitle={detailsTitle}
       showDetailsText={showDetailsText}
+      currencies={currencies}
     />
   )
 }

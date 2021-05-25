@@ -10,7 +10,7 @@ import Copy from 'components/AccountDetails/Copy'
 
 import { SUPPORTED_WALLETS } from 'constants/index'
 import { getEtherscanLink } from 'utils'
-import { injected, walletconnect, walletlink, fortmatic, portis } from 'connectors'
+import { injected, walletconnect, walletlink, fortmatic, portis, WalletProvider } from 'connectors'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
@@ -38,22 +38,56 @@ import {
   IconWrapper,
   renderTransactions
 } from './AccountDetailsMod'
+import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
+import { MouseoverTooltip } from 'components/Tooltip/TooltipMod'
 
 type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
 
-export function formatConnectorName(connector?: AbstractConnector) {
+function getWalletName(connector?: AbstractConnector): string {
   const { ethereum } = window
   const isMetaMask = !!(ethereum && ethereum.isMetaMask)
-  const name = Object.keys(SUPPORTED_WALLETS)
-    .filter(
-      k => SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK'))
-    )
-    .map(k => SUPPORTED_WALLETS[k].name)[0]
-  return <WalletName>Connected with {name}</WalletName>
+
+  const walletTuple = Object.entries(SUPPORTED_WALLETS).filter(
+    ([walletType, { connector: walletConnector }]) =>
+      walletConnector === connector && (connector !== injected || isMetaMask === (walletType === 'METAMASK'))
+  )
+  return walletTuple[0]?.[1]?.name || 'Unknown wallet'
 }
 
-export function getStatusIcon(connector?: AbstractConnector) {
-  if (connector === injected) {
+export function formatConnectorName(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo) {
+  const name = walletInfo?.walletName || getWalletName(connector)
+  // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
+  // This to avoid confusion for instance when using Metamask mobile
+  // When name is not set, it defaults to WalletConnect already
+  const walletConnectSuffix =
+    walletInfo?.provider === WalletProvider.WALLET_CONNECT && walletInfo?.walletName ? ' (via WalletConnect)' : ''
+
+  return (
+    <WalletName>
+      Connected with {name}
+      {walletConnectSuffix}
+    </WalletName>
+  )
+}
+
+export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo) {
+  if (walletInfo && !walletInfo.isSupportedWallet) {
+    /* eslint-disable jsx-a11y/accessible-emoji */
+    return (
+      <MouseoverTooltip text="This wallet is not yet supported">
+        <IconWrapper role="img" aria-label="Warning sign. Wallet not supported">
+          ⚠️
+        </IconWrapper>
+      </MouseoverTooltip>
+    )
+    /* eslint-enable jsx-a11y/accessible-emoji */
+  } else if (walletInfo?.icon) {
+    return (
+      <IconWrapper size={16}>
+        <img src={walletInfo.icon} alt={`${walletInfo?.walletName || 'wallet'} logo`} />
+      </IconWrapper>
+    )
+  } else if (connector === injected) {
     return (
       <IconWrapper size={16}>
         <Identicon />
@@ -104,6 +138,7 @@ export default function AccountDetails({
   openOptions
 }: AccountDetailsProps) {
   const { chainId, account, connector } = useActiveWeb3React()
+  const walletInfo = useWalletInfo()
   const theme = useContext(ThemeContext)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -128,7 +163,7 @@ export default function AccountDetails({
           <YourAccount>
             <InfoCard>
               <AccountGroupingRow>
-                {formatConnectorName(connector)}
+                {formatConnectorName(connector, walletInfo)}
                 <div>
                   {connector !== injected && connector !== walletlink && (
                     <WalletAction
@@ -155,14 +190,14 @@ export default function AccountDetails({
                   {ENSName ? (
                     <>
                       <div>
-                        {getStatusIcon()}
+                        {getStatusIcon(connector, walletInfo)}
                         <p> {ENSName}</p>
                       </div>
                     </>
                   ) : (
                     <>
                       <div>
-                        {getStatusIcon()}
+                        {getStatusIcon(connector, walletInfo)}
                         <p> {account && shortenAddress(account)}</p>
                       </div>
                     </>

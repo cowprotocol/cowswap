@@ -17,7 +17,7 @@ export * from '@src/constants/index'
 
 export const PRODUCTION_URL = 'cowswap.exchange'
 
-const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|WALLET_CONNECT|FORTMATIC|Portis)$/i
+const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|FORTMATIC|Portis)$/i
 
 // Re-export only the supported wallets
 export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
@@ -26,6 +26,9 @@ export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((
   }
   return acc
 }, {} as { [key: string]: WalletInfo })
+
+// Smart contract wallets are filtered out by default, no need to add them to this list
+export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'TokenPocket'])
 
 // TODO: When contracts are deployed, we can load this from the NPM package
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<ChainId, string>> = {
