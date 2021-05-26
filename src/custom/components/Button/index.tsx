@@ -55,6 +55,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
     border: 0;
     cursor: auto;
     animation: none;
+    transform: none;
   }
 `
 

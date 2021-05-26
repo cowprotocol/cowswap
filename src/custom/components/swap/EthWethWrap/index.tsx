@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   background: ${({ theme }) => theme.bg2};
   align-items: center;
+  color: ${({ theme }) => theme.text1};
   justify-content: center;
   margin: 24px auto 0;
   padding: 14px 14px 22px;
@@ -52,10 +53,15 @@ const ModalMessage = styled.p`
   flex-flow: row wrap;
   padding: 0 8px;
   width: 100%;
+  color: ${({ theme }) => theme.wallet.color};
 `
 
 const ModalWrapper = styled(Wrapper)`
   margin: 0 auto;
+
+  > h2 {
+    color: ${({ theme }) => theme.wallet.color};
+  }
 `
 
 const WarningWrapper = styled(Wrapper)`

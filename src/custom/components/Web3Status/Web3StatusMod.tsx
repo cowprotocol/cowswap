@@ -85,7 +85,7 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
     `}
 `
 
-const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
+export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
   background-color: ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg2)};
   border: 1px solid ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg3)};
   color: ${({ pending, theme }) => (pending ? theme.white : theme.text1)};
@@ -100,7 +100,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
   }
 `
 
-const Text = styled.p`
+export const Text = styled.p`
   flex: 1 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;

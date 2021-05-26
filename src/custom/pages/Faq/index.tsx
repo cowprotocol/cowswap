@@ -20,7 +20,7 @@ const Wrapper = styled.div`
       transition: color 0.2s ease-in-out;
 
       &:hover {
-        color: ${({ theme }) => theme.redShade};
+        color: ${({ theme }) => theme.textLink};
       }
     }
 
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
     }
 
     > p a {
-      color: ${({ theme }) => theme.redShade};
+      color: ${({ theme }) => theme.textLink};
     }
 
     > h3 {

@@ -51,9 +51,12 @@ export function colors(darkMode: boolean): Colors {
     blue1: '#3F77FF',
     purple: '#8958FF',
     greenShade: '#376c57',
+    blueShade: '#0f2644',
+    blueShade2: '#011e34',
     border: darkMode ? '#3a3b5a' : 'rgb(58 59 90 / 10%)',
     disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)',
-    redShade: darkMode ? '#AE2C00' : '#AE2C00'
+    redShade: darkMode ? '#AE2C00' : '#AE2C00',
+    textLink: darkMode ? '#ffffff' : '#AE2C00'
   }
 }
 
@@ -77,7 +80,16 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
     },
     header: {
-      border: `1px solid ${colorsTheme.border}`
+      border: `1px solid ${colorsTheme.border}`,
+      menuFlyout: {
+        background: colorsTheme.bg3,
+        color: colorsTheme.text2,
+        colorHover: colorsTheme.text2,
+        colorHoverBg: colorsTheme.bg3,
+        closeButtonBg: colorsTheme.bg3,
+        closeButtonColor: colorsTheme.black,
+        seperatorColor: colorsTheme.disabled
+      }
     },
     buttonSizes: {
       [ButtonSize.BIG]: css`
@@ -89,6 +101,19 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       [ButtonSize.SMALL]: css`
         font-size: 12px;
       `
+    },
+    swap: {
+      headerSize: '28px',
+      arrowDown: {
+        background: darkMode ? colorsTheme.blueShade : colorsTheme.white,
+        color: darkMode ? colorsTheme.white : colorsTheme.black,
+        colorHover: darkMode ? colorsTheme.white : colorsTheme.black,
+        borderRadius: '9px',
+        width: '28px',
+        height: '28px',
+        borderColor: darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled,
+        borderSize: `2px`
+      }
     },
     buttonPrimary: {
       background: css`
@@ -129,10 +154,14 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    version: colorsTheme.green1,
+    footerColor: colorsTheme.text1,
     networkCard: {
       background: 'rgba(243, 132, 30, 0.05)',
       text: colorsTheme.yellow2
+    },
+    wallet: {
+      color: colorsTheme.text1,
+      background: colorsTheme.bg1
     }
   }
 }

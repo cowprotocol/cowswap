@@ -15,7 +15,7 @@ export const Wrapper = styled(PopupItemUni)`
 
     a {
       text-decoration: underline;
-      color: ${({ theme }) => theme.redShade};
+      color: ${({ theme }) => theme.textLink};
     }
   }
 `

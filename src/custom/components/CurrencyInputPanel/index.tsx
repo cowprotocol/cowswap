@@ -7,16 +7,47 @@ import CurrencyInputPanelMod, {
   CurrencyInputPanelProps,
   CurrencySelect as CurrencySelectMod,
   InputRow,
+  InputPanel,
+  LabelRow,
   Container
 } from './CurrencyInputPanelMod'
+import { RowBetween } from 'components/Row'
+
+import { StyledLogo } from 'components/CurrencyLogo'
 
 export const Wrapper = styled.div<{ selected: boolean }>`
   // CSS Override
 
+  ${InputPanel} {
+    background: transparent;
+    color: ${({ theme }) => theme.currencyInput?.color};
+
+    &:hover {
+      color: ${({ theme }) => theme.currencyInput?.color};
+    }
+  }
+
+  ${LabelRow} {
+    color: ${({ theme }) => theme.currencyInput?.color};
+    span:hover {
+      color: ${({ theme }) => theme.currencyInput?.color};
+    }
+  }
+
   ${InputRow} {
     background: transparent;
-    > input {
+    > input,
+    > input::placeholder {
       background: transparent;
+      color: inherit;
+    }
+
+    > input::placeholder {
+      opacity: 0.5;
+    }
+
+    > input:focus::placeholder {
+      color: transparent;
     }
   }
 
@@ -27,7 +58,8 @@ export const Wrapper = styled.div<{ selected: boolean }>`
   }
 
   ${CurrencySelectMod} {
-    color: ${({ theme }) => theme.black};
+    color: ${({ selected, theme }) =>
+      selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
     transition: background-color 0.2s ease-in-out;
 
     &:focus {
@@ -38,9 +70,23 @@ export const Wrapper = styled.div<{ selected: boolean }>`
     }
 
     path {
-      stroke: ${({ selected, theme }) => (selected ? theme.black : theme.black)};
+      stroke: ${({ selected, theme }) =>
+        selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
       stroke-width: 1.5px;
     }
+  }
+
+  ${RowBetween} {
+    color: ${({ theme }) => theme.currencyInput?.color};
+
+    > div > div > span,
+    > div {
+      color: ${({ theme }) => theme.currencyInput?.color};
+    }
+  }
+
+  ${StyledLogo} {
+    background: ${({ theme }) => theme.bg1};
   }
 `
 

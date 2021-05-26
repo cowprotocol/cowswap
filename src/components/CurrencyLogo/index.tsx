@@ -17,7 +17,7 @@ const StyledEthereumLogo = styled.img<{ size: string }>`
   border-radius: 24px;
 `
 
-const StyledLogo = styled(Logo)<{ size: string }>`
+export const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
   border-radius: ${({ size }) => size};

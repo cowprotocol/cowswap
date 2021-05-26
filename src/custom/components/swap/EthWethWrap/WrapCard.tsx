@@ -38,7 +38,12 @@ export const WrapCardContainer = styled.div`
   min-height: 140px;
 
   > ${WrapCardWrapper} {
-    &:nth-of-type(even) {
+    &:nth-of-type(1) {
+      background-color: transparent;
+      color: ${({ theme }) => theme.wallet.color};
+    }
+
+    &:nth-of-type(2) {
       background-color: ${({ theme }) => theme.bg1};
     }
 

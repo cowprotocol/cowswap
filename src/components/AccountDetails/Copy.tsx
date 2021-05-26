@@ -5,7 +5,7 @@ import useCopyClipboard from '../../hooks/useCopyClipboard'
 import { LinkStyledButton } from 'theme'
 import { CheckCircle, Copy } from 'react-feather'
 
-const CopyIcon = styled(LinkStyledButton)`
+export const CopyIcon = styled(LinkStyledButton)`
   color: ${({ theme }) => theme.text3};
   flex-shrink: 0;
   display: flex;

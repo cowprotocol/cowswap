@@ -27,7 +27,7 @@ const ContainerRow = styled.div<{ error: boolean }>`
   background-color: ${({ theme }) => theme.bg1};
 `
 
-const InputContainer = styled.div`
+export const InputContainer = styled.div`
   flex: 1;
   padding: 1rem;
 `

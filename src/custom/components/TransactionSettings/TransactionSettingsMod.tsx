@@ -61,7 +61,7 @@ const Input = styled.input`
   text-align: right;
 `
 
-const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
+export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
   height: 2rem;
   position: relative;
   padding: 0 0.75rem;

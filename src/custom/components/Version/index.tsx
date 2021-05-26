@@ -63,7 +63,7 @@ const StyledPolling = styled.div`
   align-items: flex-start;
   padding: 16px;
   transition: opacity 0.25s ease;
-  color: ${({ theme }) => theme.version};
+  color: ${({ theme }) => theme.footerColor};
   opacity: 0.5;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

@@ -6,7 +6,10 @@ export { Color, Grids } from '@src/theme/styled'
 export interface Colors extends ColorsUniswap {
   purple: Color
   redShade: Color
+  textLink: Color
   greenShade: Color
+  blueShade: Color
+  blueShade2: Color
   border: Color
   disabled: Color
 }
@@ -57,9 +60,28 @@ declare module 'styled-components' {
     }
     header: {
       border: string
+      menuFlyout: {
+        background?: string
+        color?: string
+        colorHover?: string
+        colorHoverBg?: string
+        closeButtonBg?: string
+        closeButtonColor?: string
+        seperatorColor?: string
+      }
     }
-    swap?: {
-      headerSize?: string
+    swap: {
+      headerSize: string
+      arrowDown: {
+        background: string
+        color: string
+        colorHover: string
+        borderRadius: string
+        width: string
+        height: string
+        borderColor: string
+        borderSize: string
+      }
     }
     currencyInput?: {
       background?: string
@@ -101,10 +123,14 @@ declare module 'styled-components' {
       boxShadow?: string
     }
     bgLinearGradient: FlattenSimpleInterpolation
-    version: string
+    footerColor: string
     networkCard: {
       background: string
       text: string
+    }
+    wallet: {
+      background?: string
+      color?: string
     }
   }
 }

@@ -111,7 +111,7 @@ const Break = styled.div`
   background-color: ${({ theme }) => theme.bg3};
 `
 
-const ModalContentWrapper = styled.div`
+export const ModalContentWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

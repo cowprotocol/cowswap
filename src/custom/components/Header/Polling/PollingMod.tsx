@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { TYPE, ExternalLink } from 'theme'
 
-import { useBlockNumber } from '../../state/application/hooks'
+import { useBlockNumber } from 'state/application/hooks'
 import { getEtherscanLink } from 'utils'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React } from 'hooks'
 
 export const StyledPolling = styled.div`
   position: fixed;
@@ -44,7 +44,7 @@ const rotate360 = keyframes`
   }
 `
 
-const Spinner = styled.div`
+export const Spinner = styled.div`
   animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
   transform: translateZ(0);
 
@@ -86,7 +86,11 @@ export default function Polling() {
   return (
     <ExternalLink href={chainId && blockNumber ? getEtherscanLink(chainId, blockNumber.toString(), 'block') : ''}>
       <StyledPolling>
-        <TYPE.small style={{ opacity: isMounted ? '0.2' : '0.6' }}>{blockNumber}</TYPE.small>
+        <TYPE.small
+        // style={{ opacity: isMounted ? '0.2' : '0.6' }}
+        >
+          {blockNumber}
+        </TYPE.small>
         <StyledPollingDot>{!isMounted && <Spinner />}</StyledPollingDot>
       </StyledPolling>
     </ExternalLink>

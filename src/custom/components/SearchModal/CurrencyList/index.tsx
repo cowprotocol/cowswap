@@ -3,8 +3,12 @@ import styled from 'styled-components'
 import { Currency, CurrencyAmount } from '@uniswap/sdk'
 import { LONG_PRECISION, UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
+import { StyledLogo } from 'components/CurrencyLogo'
+import { MenuItem } from 'components/SearchModal/styleds'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TagInfo, WrappedTokenInfo } from 'state/lists/hooks'
+import { RowFixed } from 'components/Row'
+import { LightGreyCard } from 'components/Card'
 import { HashLink } from 'react-router-hash-link'
 
 const UNSUPPORTED_TOKEN_TAG = [
@@ -17,18 +21,41 @@ const UNSUPPORTED_TOKEN_TAG = [
 ]
 
 const Tag = styled(TagMod)<{ bg?: string }>`
-  background-color: ${({ bg, theme }) => bg || theme.bg3};
+  background: ${({ bg, theme }) => bg || theme.bg1};
   max-width: 6.1rem;
 `
 
 const TagLink = styled(Tag)`
   display: flex;
   align-items: center;
-  background-color: #3f77ff;
   font-size: x-small;
   a {
-    color: white;
+    color: inherit;
     font-weight: bold;
+  }
+`
+
+const Wrapper = styled.div`
+  ${MenuItem} {
+    &:hover {
+      background-color: ${({ theme }) => theme.bg4};
+    }
+  }
+
+  ${StyledLogo} {
+    background: ${({ theme }) => theme.bg1};
+  }
+
+  ${TagMod} {
+    color: ${({ theme }) => theme.text2};
+  }
+
+  ${TagLink} {
+    color: ${({ theme }) => theme.text1};
+  }
+
+  ${LightGreyCard} ${RowFixed} > div {
+    color: ${({ theme }) => theme.text2};
   }
 `
 
@@ -87,5 +114,9 @@ export default function CurrencyList(
   ...paramsList: Parameters<typeof CurrencyListMod>
 ): ReturnType<typeof CurrencyListMod> {
   const [params] = paramsList
-  return <CurrencyListMod {...params} BalanceComponent={Balance} TokenTagsComponent={TokenTags} />
+  return (
+    <Wrapper>
+      <CurrencyListMod {...params} BalanceComponent={Balance} TokenTagsComponent={TokenTags} />
+    </Wrapper>
+  )
 }

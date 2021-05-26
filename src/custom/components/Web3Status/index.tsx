@@ -1,15 +1,25 @@
 import React, { useMemo } from 'react'
-import { AbstractConnector } from '@web3-react/abstract-connector'
-
+import styled from 'styled-components'
 import WalletModal from 'components/WalletModal'
+import { Web3StatusInner, Web3StatusConnected } from './Web3StatusMod'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 import { getStatusIcon } from 'components/AccountDetails'
-
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-
 import { OrderStatus } from 'state/orders/actions'
 
-import { Web3StatusInner } from './Web3StatusMod'
+const Wrapper = styled.div`
+  color: ${({ theme }) => theme.wallet?.color};
+
+  ${Web3StatusConnected} {
+    color: ${({ theme }) => theme.wallet?.color};
+    background: ${({ theme }) => theme.wallet?.background};
+
+    > div > svg > path {
+      stroke: ${({ theme }) => theme.black};
+    }
+  }
+`
 
 const isPending = (data: TransactionAndOrder) => data.status === OrderStatus.PENDING
 const isConfirmedOrExpired = (data: TransactionAndOrder) =>
@@ -44,13 +54,13 @@ export default function Web3Status() {
   }
 
   return (
-    <>
+    <Wrapper>
       <Web3StatusInner pendingCount={pendingActivity.length} StatusIconComponent={StatusIcon} />
       <WalletModal
         ENSName={ensName}
         pendingTransactions={pendingActivity}
         confirmedTransactions={confirmedAndExpiredActivity}
       />
-    </>
+    </Wrapper>
   )
 }

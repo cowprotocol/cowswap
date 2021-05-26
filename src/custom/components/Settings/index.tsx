@@ -1,13 +1,22 @@
 import { WithClassName } from 'types'
 import React from 'react'
 import styled from 'styled-components'
-
+import { RowFixed } from 'components/Row'
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 
 const Wrapper = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: 0px 0px 0px rgb(0 0 0 / 1%), 0px 4px 8px rgb(0 0 0 / 0%), 0px 16px 24px rgb(0 0 0 / 60%),
       0px 24px 32px rgb(0 0 0 / 20%);
+    background-color: ${({ theme }) => theme.bg5};
+    color: ${({ theme }) => theme.text1};
+  }
+
+  ${RowFixed} {
+    > div {
+      color: ${({ theme }) => theme.text1};
+      opacity: 0.85;
+    }
   }
 
   ${StyledMenuButton} {
@@ -23,6 +32,7 @@ const Wrapper = styled(SettingsMod)`
     height: 35px;
     padding: 0;
     border-radius: 35px;
+    color: ${({ theme }) => theme.text1};
 
     &:hover,
     &:focus {
@@ -49,7 +59,7 @@ const Wrapper = styled(SettingsMod)`
     height: 20px;
     width: 20px;
     > * {
-      stroke: ${({ theme }) => theme.text2};
+      stroke: ${({ theme }) => theme.text1};
     }
   }
 

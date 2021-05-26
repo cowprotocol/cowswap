@@ -7,7 +7,6 @@ import Version from '../Version'
 const FooterVersion = styled(Version)`
   margin-right: auto;
   min-width: max-content;
-  color: ${({ theme }) => theme.greenShade};
 
   > div {
     ${({ theme }) => theme.mediaWidth.upToSmall`
