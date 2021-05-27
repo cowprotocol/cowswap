@@ -1,13 +1,12 @@
-# Privacy Policy
-### (updated March 2021)
+#  Privacy Policy
+### (updated May 2021)
 
  
 We are delighted that you have chosen to use our App and/or visit our website. We take our data protection responsibilities with the utmost seriousness and we have designed our website so that you may navigate and use it without having to provide Personal Data.
 
 This Policy sets out what Personal Data we collect, how we process it and how long we retain it. This Policy applies to all of our processing activities where we act as a data controller.
 
-In this policy, "we", "us" and "our" refers to Gnosis Limited, a company incorporated in Gibraltar with its registered address at World Trade Center, 6 Bayside Rd, Gibraltar.
-For more information about us, see the Contact Us section of this policy.
+In this policy, "we", "us" and "our" refers to GnosisDAO. We are en Ethereum based organisation managed by community members. To contact us , please write to us at the GnosisDAO category of forum.gnosis.io.
 
 In this Policy, “personal data” means any information relating to you as an identified or identifiable natural person (“Data Subject”); an identifiable natural person is one who can be identified, directly or indirectly, in particular by reference to an identifier such as a name, an online identifier or to one or more factors specific to your physical, physiological, genetic, mental, economic, cultural or social identity.
 In this Policy, “processing” means any operation or set of operations which is performed on personal data (as defined in this Privacy Policy) or on sets of personal data, whether or not by automated means, such as collection, recording, organisation, structuring, storage, adaptation or alteration, retrieval, consultation, use, disclosure by transmission, dissemination or otherwise making available, alignment or combination, restriction, erasure or destruction.
@@ -67,12 +66,12 @@ In certain circumstances, in order to comply with our contractual obligations to
 
 ### 3. Use of Third Party Applications
 
-* #### Ethereum Blockchain
+ * #### Ethereum Blockchain
 
 	1. When using the GP Swap with your wallet address, the transactions made with the account will be stored on the Ethereum blockchain. Please see section 2 of this Policy.
 	2. <span style="color: red;">The information will be displayed permanently and publicly; this is part of the nature of the blockchain. If you are new to this field, we highly recommend informing yourself about blockchain technology before using our services.</span>
 
-* #### The Graph
+ * #### The Graph
 
 	1. We use The Graph to index data uploaded by registered users from underlying blockchains and storage networks, making the data available via their Services.
 	2. We use the Graph to index the following data 
@@ -80,16 +79,16 @@ In certain circumstances, in order to comply with our contractual obligations to
 		2. a record of your interactions
 		3. For further information and the applicable data protection provisions of the Graph please visit [https://thegraph.com/privacy/](https://thegraph.com/privacy/)
 
-* #### MetaMask
+ * #### MetaMask
 
-	In order to interact with GP Swap, you will have to connect your wallet through the web3 wallet provider MetaMask. When connecting with MetaMask, they may collect Personal Data. This may include:
+	In order to interact with GP Swap, you will have to connect your wallet through the web3 wallet provider MetaMask or WalletConnect (see below). When connecting with MetaMask, they may collect Personal Data. This may include:
 	* Network information regarding transactions; 
 	* first wallet address created through the MetaMask plugin;
 	* highest browser permissions could lead to procurements of more personal information
 	* interaction with the site is also documented via a MetaMask Google Analytics account, and that information is processed by Google.
 	* For further information and the applicable data protection provisions of MetaMask please visit [https://metamask.io/privacy.html](https://metamask.io/privacy.html).
 	
-* #### Google Analytics
+ * #### Google Analytics
 
 	In order to measure the traffic of the GP Swap, we use Google Analytics. Through this tool we will be collecting the following data:
 	1. IP address
@@ -100,7 +99,18 @@ In certain circumstances, in order to comply with our contractual obligations to
 	
 	For further information and the applicable data protection provisions of Google Analytics, please visit [https://policies.google.com/privacy?hl=en_GB](https://policies.google.com/privacy?hl=en_GB)
 
+ * **Appzi**
 
+   We use Appzi to collect feedback from users that wish to do it. Through this tool we will be collecting the following data:
+		   a. Operating System
+		   b. Browser Details
+		   c. Screen Size
+		   d. Localisation
+		   e. Part of your wallet address
+		   f. ENS address
+For further information and the applicable data protection provisions of Appzi, please visit https://www.appzi.com/privacy/
+		  
+   
 ### 4. Sharing Your Personal Data
 We may pass your information to our Business Partners, administration centres, third party service providers, agents, subcontractors and other associated organisations for the purposes of completing tasks and providing our services to you.
 
@@ -191,16 +201,17 @@ If you wish to raise a complaint on how we have handled your personal data, you 
 
 #### Right to lodge a complaint with a relevant supervisory authority
 
-* If we have not responded to you within a reasonable time or if you feel that your complaint has not been resolved to your satisfaction, you are entitled to make a complaint to the Data Protection Commissioner under the Data Protection Act, which is presently the Gibraltar Regulatory Authority (GRA). You may contact the GRA on the below details:
- 
-		Gibraltar Data Protection Commissioner
-		Gibraltar Regulatory Authority
-		2nd Floor, Eurotowers 4
-		1 Europort Road
-		Gibraltar
-		Email: info@gra.gi
-		Phone: (+350) 200 74636
-		Fax: (+350) 200 72166
+* If we have not responded to you within a reasonable time or if you feel that your complaint has not been resolved to your satisfaction, you are entitled to make a complaint to the Information Commissioner's Office (ICO). YOu may contact the ICO on the below details:
+	
+	Information Commissioner's Office
+	Wycliffe House
+	Water Lane
+	Wislow
+	Cheshire
+	SK9 5AF
+	Telephone: 0303 123 1113
+	Fax: 01625524510
+	https://ico.org.uk/
 
 * You also have the right to lodge a complaint with the supervisory authority in the country of your habitual residence, place of work, or the place where you allege an infringement of one or more of our rights has taken place, if that is based in the EEA.
 
@@ -212,14 +223,13 @@ However, we may retain your Personal Data for a longer period of time where such
 We may make changes to this Policy from time to time. Where we do so, we will notify those who have a business relationship with us or who are subscribed to our emailing lists directly of the changes, and change the ‘Last updated’ date above. We encourage you to review the Policy whenever you access or use our website to stay informed about our information practices and the choices available to you. If you do not agree to the revised Policy, you should discontinue your use of this website.
 
 ### 11. Our details
-This website is owned and operated by Gnosis Limited.
-We are registered in Gibraltar under registration number 115571, and our registered office is located at:
-        	
-You can contact us via:
+This website is owned and operated by GnosisDAO.
+You can contact us via the GnosisDAO category at: 
+
+https://forum.gnosis.io/
+
+If you have any queries concerning your rights under this Privacy Policy, please contact us at the GnosisDAO category of https://forum.gnosis.io/.
+
+
  
-        	Gnosis Limited
-        	World Trade Center
-        	6 Bayside Rd,
-        	GX111AA Gibraltar
-        	
-If you have any queries concerning your rights under this Privacy Policy, please contact us at dataprotection@gnosis.pm .
+
