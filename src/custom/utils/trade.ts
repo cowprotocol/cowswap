@@ -2,14 +2,10 @@ import { ChainId, CurrencyAmount, Token } from '@uniswap/sdk'
 import { isAddress, shortenAddress } from '@src/utils'
 import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/actions'
 
-import { SigningScheme, signOrder, SignOrderParams, UnsignedOrder } from 'utils/signatures'
+import { signOrder, UnsignedOrder } from 'utils/signatures'
 import { postSignedOrder } from 'utils/operator'
 import { Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
-import { EcdsaSignature, Signature } from '@gnosis.pm/gp-v2-contracts'
-
-const DEFAULT_SIGNING_SCHEME = SigningScheme.EIP712
-const METAMASK_SIGNATURE_ERROR_CODE = -32603
 
 export interface PostOrderParams {
   account: string
@@ -89,35 +85,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     partiallyFillable: false // Always fill or kill
   }
 
-  let signature: Signature | null = null
-  let signingScheme = DEFAULT_SIGNING_SCHEME
-
-  const signatureParams: SignOrderParams = {
-    chainId,
-    signer,
-    order: unsignedOrder,
-    signingScheme
-  }
-
-  try {
-    signature = (await signOrder(signatureParams)) as EcdsaSignature // Only ECDSA signing supported for now
-  } catch (e) {
-    if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
-      // We tried to sign order the nice way.
-      // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
-      // See https://github.com/MetaMask/metamask-extension/issues/10240#issuecomment-810552020
-      // So, when that specific error occurs, we know this is a problem with MM + HW.
-      // Then, we fallback to ETHSIGN.
-      signingScheme = SigningScheme.ETHSIGN
-      signature = (await signOrder({ ...signatureParams, signingScheme })) as EcdsaSignature // Only ECDSA signing supported for now
-    } else {
-      // Some other error signing. Let it bubble up.
-      console.error(e)
-      throw e
-    }
-  }
-
-  const signatureData = signature.data.toString()
+  const { signature, signingScheme } = await signOrder(unsignedOrder, chainId, signer)
   const creationTime = new Date().toISOString()
 
   // Call API
@@ -125,7 +93,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
     chainId,
     order: {
       ...unsignedOrder,
-      signature: signatureData,
+      signature,
       receiver,
       signingScheme
     }
@@ -140,7 +108,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       id: orderId,
       owner: account,
       creationTime,
-      signature: signatureData,
+      signature,
       status: OrderStatus.PENDING,
       summary,
       inputToken: sellToken,

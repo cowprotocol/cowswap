@@ -35,3 +35,6 @@ cypress/fixtures/example.json
 cypress-custom/videos
 cypress-custom/screenshots
 cypress-custom/fixtures/example.json
+
+.yalc*
+yalc.lock
