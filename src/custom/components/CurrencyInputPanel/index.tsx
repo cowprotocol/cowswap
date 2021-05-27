@@ -45,10 +45,6 @@ export const Wrapper = styled.div<{ selected: boolean }>`
     > input::placeholder {
       opacity: 0.5;
     }
-
-    > input:focus::placeholder {
-      color: transparent;
-    }
   }
 
   ${Container} {

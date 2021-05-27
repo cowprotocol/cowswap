@@ -223,8 +223,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ::selection { 
-    background: ${({ theme }) => theme.bg4};
-    color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text2};
   }
 
   // START - Modal overrides
