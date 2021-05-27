@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "0.12.1",
+  "version": "0.13.0-rc.0",
   "status": "Alpha",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
@@ -99,8 +99,7 @@
     "workbox-routing": "^6.1.0",
     "workbox-strategies": "^6.1.0"
   },
-  "resolutions": {
-  },
+  "resolutions": {},
   "scripts": {
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true craco start",
     "start:service-worker": "yarn build && yarn serve -s build",
