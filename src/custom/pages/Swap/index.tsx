@@ -23,6 +23,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
+
 interface FeeGreaterMessageProp {
   fee: CurrencyAmount
 }
@@ -114,6 +115,10 @@ const SwapModWrapper = styled(SwapMod)`
 
     .expertMode ${AutoRow} {
       padding: 0 1rem;
+    }
+
+    ${AutoRow} svg > path {
+      stroke: ${({ theme }) => theme.text1};
     }
   }
 `

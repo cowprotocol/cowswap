@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { RowBetween } from '../Row'
-import { AutoColumn } from '../Column'
+import { RowBetween } from 'components/Row'
+import { AutoColumn } from 'components/Column'
 import { transparentize } from 'polished'
 
 const Wrapper = styled(AutoColumn)``
@@ -44,9 +44,10 @@ const Connector = styled.div<{ prevConfirmed?: boolean; disabled?: boolean }>`
   opacity: 0.6;
 `
 
-interface ProgressCirclesProps {
+export interface ProgressCirclesProps {
   steps: boolean[]
   disabled?: boolean
+  CircleComponent: typeof Circle
 }
 
 /**
@@ -59,21 +60,21 @@ interface ProgressCirclesProps {
  *
  * @param steps  array of booleans where true means step is complete
  */
-export default function ProgressCircles({ steps, disabled = false, ...rest }: ProgressCirclesProps) {
+export default function ProgressCircles({ steps, disabled = false, CircleComponent, ...rest }: ProgressCirclesProps) {
   return (
     <Wrapper justify={'center'} {...rest}>
       <Grouping>
         {steps.map((step, i) => {
           return (
             <CircleRow key={i}>
-              <Circle confirmed={step} disabled={disabled || (!steps[i - 1] && i !== 0)}>
+              <CircleComponent confirmed={step} disabled={disabled || (!steps[i - 1] && i !== 0)}>
                 {step ? '✓' : i + 1}
-              </Circle>
+              </CircleComponent>
               <Connector prevConfirmed={step} disabled={disabled} />
             </CircleRow>
           )
         })}
-        <Circle disabled={disabled || !steps[steps.length - 1]}>{steps.length + 1}</Circle>
+        <CircleComponent disabled={disabled || !steps[steps.length - 1]}>{steps.length + 1}</CircleComponent>
       </Grouping>
     </Wrapper>
   )
