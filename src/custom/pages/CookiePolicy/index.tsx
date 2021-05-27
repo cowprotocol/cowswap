@@ -14,7 +14,8 @@ const Wrapper = styled(MarkdownPage)`
       min-width: 800px;
 
       thead, tr:nth-child(even) {
-          background: lightgrey;
+        background: ${({ theme }) => theme.bg2};
+        color: ${({ theme }) => theme.text2};
         }
       }
 

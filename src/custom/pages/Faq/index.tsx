@@ -15,7 +15,8 @@ const Wrapper = styled.div`
       min-width: 800px;
 
       thead, tr:nth-child(even) {
-          background: lightgrey;
+        background: ${({ theme }) => theme.bg2};
+        color: ${({ theme }) => theme.text2};
         }
       }
 
@@ -401,8 +402,8 @@ export default function Faq() {
                 <tr>
                   <td>Approve token for trading</td>
                   <td>
-                    Required step for being able to sell a token. Only needs to be done once. Afterward, you will be able
-                    to trade the token using gasless transactions!
+                    Required step for being able to sell a token. Only needs to be done once. Afterward, you will be
+                    able to trade the token using gasless transactions!
                   </td>
                   <td>Regular Ethereum Tx.</td>
                   <td>Set the token allowance for the Allowance Manager</td>
@@ -464,7 +465,9 @@ export default function Faq() {
                 </tr>
                 <tr>
                   <td>Unwrap ETH</td>
-                  <td>Converts ERC20 compatible token WETH back to ETH. Only when you want to manually convert it to ETH.</td>
+                  <td>
+                    Converts ERC20 compatible token WETH back to ETH. Only when you want to manually convert it to ETH.
+                  </td>
                   <td>Regulat Ethereum tx</td>
                   <td>Send a withdrawal transaction to WETH contract.</td>
                   <td>Yes</td>
