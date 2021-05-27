@@ -38,7 +38,6 @@ function checkIsSupportedWallet(name: string | undefined, isSmartContractWallet:
 
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
   const provider = (await connector.getProvider()) as WalletConnectProvider
-  console.log('Meta: ', provider.walletMeta)
 
   const meta = provider.walletMeta
   if (meta) {

@@ -32,7 +32,6 @@ function StatusIcon({ connector }: { connector: AbstractConnector }): JSX.Elemen
 
 export default function Web3Status() {
   const walletInfo = useWalletInfo()
-  console.log('[Web3Status] Wallet info', walletInfo)
 
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()
