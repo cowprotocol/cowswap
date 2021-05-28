@@ -96,7 +96,8 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
       signature,
       receiver,
       signingScheme
-    }
+    },
+    owner: account
   })
 
   // Update the state
