@@ -59,6 +59,36 @@ export const Content = styled.div`
     margin: 24px auto;
   }
 
+  > p em {
+    color: ${({ theme }) => theme.white};
+    position: relative;
+    width: 100%;
+    display: flex;
+    z-index: 0;
+    padding: 12px;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 1.8;
+    text-transform: uppercase;
+
+    &::before {
+      content: '';
+      background: ${({ theme }) => theme.redShade};
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      border-radius: 3px;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  li > em {
+    background: ${({ theme }) => theme.redShade};
+    color: ${({ theme }) => theme.white};
+  }
+
   a {
     color: ${({ theme }) => theme.text1};
     transition: color 0.2s ease-in-out;
@@ -83,6 +113,14 @@ export const GdocsListStyle = css`
       /* Match 1st level list styles from G Docs */
       margin: 0 0 10px;
       list-style: decimal;
+
+      a {
+        color: ${({ theme }) => theme.text2};
+
+        &:hover {
+          color: ${({ theme }) => theme.primary1};
+        }
+      }
 
       > ul,
       > ol {

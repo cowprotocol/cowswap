@@ -220,7 +220,7 @@ export default function Faq() {
           <p>
             CowSwap leverages batch auctions with uniform clearing prices for all trades in the same batch. Because of
             the uniform clearing price, there is no need for ordering the transactions within a single batch. Because
-            everyone receives the same price across assets it’s not possible for <em>any</em> value to be extracted by
+            everyone receives the same price across assets it’s not possible for <b>any</b> value to be extracted by
             placing transactions in a certain order. This prevents the primary strategy used in MEV.
           </p>
 
