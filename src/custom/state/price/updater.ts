@@ -57,10 +57,17 @@ function isFeeExpiringSoon(quoteExpirationIsoDate: string): boolean {
  * Quotes are only valid for a given token-pair and amount. If any of these parameter change, the fee needs to be re-fetched
  */
 function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: QuoteInformationObject): boolean {
-  const { amount: currentAmount, sellToken: currentSellToken, buyToken: currentBuyToken } = currentParams
-  const { amount, buyToken, sellToken } = quoteInfo
+  const {
+    amount: currentAmount,
+    sellToken: currentSellToken,
+    buyToken: currentBuyToken,
+    kind: currentKind
+  } = currentParams
+  const { amount, buyToken, sellToken, kind } = quoteInfo
 
-  return sellToken === currentSellToken && buyToken === currentBuyToken && amount === currentAmount
+  return (
+    sellToken === currentSellToken && buyToken === currentBuyToken && amount === currentAmount && kind === currentKind
+  )
 }
 
 /**

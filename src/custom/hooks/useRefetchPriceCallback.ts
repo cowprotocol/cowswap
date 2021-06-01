@@ -122,7 +122,7 @@ export function useRefetchQuoteCallback() {
 
   return useCallback(
     async (params: RefetchQuoteCallbackParmams) => {
-      const { sellToken, buyToken, amount, chainId } = params.quoteParams
+      const { sellToken, buyToken, amount, chainId, kind } = params.quoteParams
       try {
         // Get the quote
         // price can be null if fee > price
@@ -151,7 +151,8 @@ export function useRefetchQuoteCallback() {
           chainId,
           lastCheck: Date.now(),
           fee,
-          feeExceedsPrice
+          feeExceedsPrice,
+          kind
         })
       } catch (error) {
         _handleUnsupportedToken({ error, chainId, addUnsupportedToken })
