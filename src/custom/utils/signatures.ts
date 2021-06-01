@@ -21,6 +21,7 @@ const METAMASK_SIGNATURE_ERROR_CODE = -32603
 const METHOD_NOT_FOUND_ERROR_CODE = -32601
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i
+const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i
 
 export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string }
 
@@ -146,8 +147,10 @@ export async function signOrder(
   try {
     signature = (await _signOrder(signatureParams)) as EcdsaSignature // Only ECDSA signing supported for now
   } catch (e) {
-    if (e.code === METHOD_NOT_FOUND_ERROR_CODE) {
+    if (e.code === METHOD_NOT_FOUND_ERROR_CODE || RPC_REQUEST_FAILED_REGEX.test(e.message)) {
       // Maybe the wallet returns the proper error code? We can only hope 🤞
+      // OR it failed with a generic message, there's no error code set, and we also hope it'll work
+      // with other methods...
       switch (signingMethod) {
         case 'v4':
           return signOrder(unsignedOrder, chainId, signer, 'v3')
