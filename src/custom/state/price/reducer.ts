@@ -22,7 +22,7 @@ export interface PriceInformation {
   amount: string | null
 }
 
-export interface QuoteInformationObject extends Omit<FeeQuoteParams, 'kind'> {
+export interface QuoteInformationObject extends FeeQuoteParams {
   fee: FeeInformation
   price: PriceInformation
   lastCheck: number
