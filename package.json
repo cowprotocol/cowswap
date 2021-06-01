@@ -140,9 +140,9 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@web3-react/walletconnect-connector": "^6.2.0",
     "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.18",
     "@uniswap/default-token-list": "^2.0.0",
+    "@web3-react/walletconnect-connector": "^6.2.0",
     "react-appzi": "^1.0.4",
     "react-router-hash-link": "^2.4.0"
   }

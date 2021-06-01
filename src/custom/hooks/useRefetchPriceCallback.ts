@@ -12,6 +12,7 @@ import { FeeInformation, PriceInformation } from 'state/price/reducer'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { ChainId } from '@uniswap/sdk'
 import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
+import { onlyResolvesLast } from 'utils/async'
 
 export interface RefetchQuoteCallbackParmams {
   quoteParams: FeeQuoteParams
@@ -25,11 +26,9 @@ type WithFeeExceedsPrice = {
 
 type PriceInformationWithFee = PriceInformation & WithFeeExceedsPrice
 
-async function getQuote({
-  quoteParams,
-  fetchFee,
-  previousFee
-}: RefetchQuoteCallbackParmams): Promise<[PriceInformationWithFee, FeeInformation]> {
+type QuoteResult = [PriceInformationWithFee, FeeInformation]
+
+async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParmams): Promise<QuoteResult> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
 
@@ -70,6 +69,9 @@ async function getQuote({
 
   return Promise.all([pricePromise, feePromise])
 }
+
+// wrap _getQuote and only resolve once on several calls
+const getQuote = onlyResolvesLast<QuoteResult>(_getQuote)
 
 function _isValidOperatorError(error: any): error is OperatorError {
   return error instanceof OperatorError
@@ -126,7 +128,12 @@ export function useRefetchQuoteCallback() {
       try {
         // Get the quote
         // price can be null if fee > price
-        const [price, fee] = await getQuote(params)
+        const { cancelled, data } = await getQuote(params)
+        if (cancelled) {
+          console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
+          return
+        }
+        const [price, fee] = data as QuoteResult
 
         const previouslyUnsupportedToken = isUnsupportedTokenGp(sellToken) || isUnsupportedTokenGp(buyToken)
         // can be a previously unsupported token which is now valid
