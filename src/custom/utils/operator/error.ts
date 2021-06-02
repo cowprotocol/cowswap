@@ -28,7 +28,8 @@ const API_ERROR_CODE_DESCRIPTIONS = {
   [ApiErrorCodes.InsufficientFunds]: "The account doesn't have enough funds",
   [ApiErrorCodes.UnsupportedToken]:
     'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  [ApiErrorCodes.WrongOwner]: 'An invalid owner address was given',
+  [ApiErrorCodes.WrongOwner]:
+    "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
   UNHANDLED_ERROR: 'The order was not accepted by the network'
 }
 
