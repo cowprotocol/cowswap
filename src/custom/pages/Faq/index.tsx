@@ -270,7 +270,7 @@ export default function Faq() {
             <a
               href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               audited
             </a>
