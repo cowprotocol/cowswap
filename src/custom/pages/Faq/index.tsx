@@ -266,8 +266,16 @@ export default function Faq() {
           </p>
 
           <p>
-            The code has been carefully tested and peer-reviewed. Although this can be seen as a step forward in terms
-            of security, it&#39;s recommended to use the protocol at <strong>your own risk</strong>
+            The code has been carefully tested, peer-reviewed and fully{' '}
+            <a
+              href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              audited
+            </a>
+            . Although this can be seen as a step forward in terms of security, it&#39;s recommended to use the protocol
+            at <strong>your own risk</strong>.
           </p>
         </Content>
       </Page>
@@ -302,8 +310,8 @@ export default function Faq() {
             (although it is only exposed to the user as one fee). As a user, you are only signing a message to submit
             your trade and the underlying solver will end up submitting the transaction for you. Essentially you are
             paying this &quot;base cost to execute the trade&quot; aka &quot;gas costs&quot; with your sell token and
-            the cost is already included in your price estimation. The protocol is currently subsidizing 90% of the gas
-            cost, while the protocol fee is currently switched off.
+            the cost is already included in your price estimation. The protocol is currently subsidizing a portion of
+            the gas costs, while the protocol fee is currently switched off.
           </p>
           <p>
             <strong>
