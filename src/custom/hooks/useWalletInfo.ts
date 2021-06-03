@@ -64,6 +64,12 @@ export function useWalletInfo(): ConnectedWalletInfo {
     // Set the current provider
     setProvider(getProviderType(connector))
 
+    // Reset name and icon when provider changes
+    // These values are only set for WC wallets
+    // When connect is not WC, leave them empty
+    setWalletName('')
+    setIcon('')
+
     // If the connector is wallet connect, try to get the wallet name and icon
     if (connector instanceof WalletConnectConnector) {
       getWcPeerMetadata(connector).then(({ walletName, icon }) => {
