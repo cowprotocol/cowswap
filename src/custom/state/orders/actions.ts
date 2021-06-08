@@ -61,15 +61,24 @@ export interface FulfillOrdersBatchParams {
   chainId: ChainId
 }
 
+export interface BatchOrdersUpdateParams {
+  ids: OrderID[]
+  chainId: ChainId
+}
+export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
+export type CancelOrdersBatchParams = BatchOrdersUpdateParams
+
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
 export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
 
-export const expireOrdersBatch = createAction<{ ids: OrderID[]; chainId: ChainId }>('order/expireOrdersBatch')
+export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 
 export const requestOrderCancellation = createAction<ChangeOrderStatusParams>('order/requestOrderCancellation')
 
 export const cancelOrder = createAction<ChangeOrderStatusParams>('order/cancelOrder')
+
+export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/cancelOrdersBatch')
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 

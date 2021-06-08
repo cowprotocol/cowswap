@@ -12,7 +12,9 @@ import {
   expireOrder,
   fulfillOrdersBatch,
   expireOrdersBatch,
-  cancelOrder
+  cancelOrder,
+  cancelOrdersBatch,
+  requestOrderCancellation
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -201,6 +203,25 @@ export default createReducer(initialState, builder =>
 
         state[chainId].cancelled[id] = orderObject
       }
+    })
+    .addCase(cancelOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId } = action.payload
+
+      const pendingOrders = state[chainId].pending
+      const cancelledOrders = state[chainId].cancelled
+
+      ids.forEach(id => {
+        const orderObject = pendingOrders[id]
+
+        if (orderObject) {
+          delete pendingOrders[id]
+
+          orderObject.order.status = OrderStatus.CANCELLED
+          orderObject.order.isCancelling = false
+          cancelledOrders[id] = orderObject
+        }
+      })
     })
     .addCase(clearOrders, (state, action) => {
       const { chainId } = action.payload

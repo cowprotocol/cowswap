@@ -15,7 +15,8 @@ import {
   Order,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
-  expireOrdersBatch
+  expireOrdersBatch,
+  cancelOrdersBatch
 } from './actions'
 import { OrdersState, PartialOrdersMap } from './reducer'
 import { isTruthy } from 'utils/misc'
@@ -40,10 +41,13 @@ type ClearOrdersParams = Pick<GetRemoveOrderParams, 'chainId'>
 type GetLastCheckedBlockParams = GetOrdersParams
 type ExpireOrderParams = GetRemoveOrderParams
 type CancelOrderParams = GetRemoveOrderParams
-interface ExpireOrdersBatchParams {
+interface UpdateOrdersBatchParams {
   ids: OrderID[]
   chainId: ChainId
 }
+
+type ExpireOrdersBatchParams = UpdateOrdersBatchParams
+type CancelOrdersBatchParams = UpdateOrdersBatchParams
 
 interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
@@ -56,6 +60,7 @@ type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchP
 type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
+type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 
@@ -216,6 +221,13 @@ export const useCancelPendingOrder = (): CancelOrderCallback => {
   return useCallback((cancelOrderParams: CancelOrderParams) => dispatch(cancelOrder(cancelOrderParams)), [dispatch])
 }
 
+export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (cancelOrdersBatchParams: CancelOrdersBatchParams) => dispatch(cancelOrdersBatch(cancelOrdersBatchParams)),
+    [dispatch]
+  )
+}
 
 export const useRequestOrderCancellation = (): CancelOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
