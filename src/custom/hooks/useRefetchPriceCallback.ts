@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { useCallback } from 'react'
-import { useClearQuote, useUpdateQuote } from 'state/price/hooks'
+import { useQuoteDispatchers } from 'state/price/hooks'
 import { getCanonicalMarket, registerOnWindow } from 'utils/misc'
 import { FeeQuoteParams, getFeeQuote, getPriceQuote } from 'utils/operator'
 import {
@@ -115,8 +115,7 @@ function _handleUnsupportedToken({
 export function useRefetchQuoteCallback() {
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
   // dispatchers
-  const updateQuote = useUpdateQuote()
-  const clearQuote = useClearQuote()
+  const { updateQuote, clearQuote } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
 
@@ -168,6 +167,6 @@ export function useRefetchQuoteCallback() {
         clearQuote({ chainId, token: sellToken })
       }
     },
-    [isUnsupportedTokenGp, updateQuote, removeGpUnsupportedToken, clearQuote, addUnsupportedToken]
+    [isUnsupportedTokenGp, updateQuote, removeGpUnsupportedToken, addUnsupportedToken, clearQuote]
   )
 }

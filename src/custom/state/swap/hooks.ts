@@ -14,7 +14,7 @@ import {
   useSwapState,
   validatedRecipient
 } from 'state/swap/hooks'
-import { useQuote } from '../price/hooks'
+import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { TradeWithFee, useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -64,7 +64,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
-  const quote = useQuote({
+  const [quote, quoteLoading] = useGetQuoteAndStatus({
     token: inputCurrencyId,
     chainId
   })
@@ -85,7 +85,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     quote
   })
 
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+  const v2Trade = quoteLoading ? null : isExactIn ? bestTradeExactIn : bestTradeExactOut
 
   registerOnWindow({ trade: v2Trade })
 

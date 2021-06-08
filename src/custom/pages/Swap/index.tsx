@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import { CurrencyAmount, Token } from '@uniswap/sdk'
@@ -11,7 +11,8 @@ import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import {
   BottomGrouping as BottomGroupingUni,
   Wrapper as WrapperUni,
-  ArrowWrapper as ArrowWrapperUni
+  ArrowWrapper as ArrowWrapperUni,
+  Dots
 } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
@@ -129,6 +130,8 @@ export interface SwapProps extends RouteComponentProps {
   SwitchToWethBtn: React.FC<SwitchToWethBtnProps>
   FeesExceedFromAmountMessage: React.FC
   BottomGrouping: React.FC
+  TradeLoading: React.FC<TradeLoadingProps>
+  SwapButton: React.FC<SwapButtonProps>
   className?: string
 }
 
@@ -197,6 +200,78 @@ function FeesExceedFromAmountMessage() {
   )
 }
 
+const fadeIn = `
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+`
+
+const CenteredDots = styled(Dots)<{ smaller?: boolean }>`
+  vertical-align: ${({ smaller = false }) => (smaller ? 'normal' : 'super')};
+`
+
+const LongLoadText = styled.span`
+  animation: fadeIn 0.42s ease-in;
+
+  ${fadeIn}
+`
+
+const LONG_LOAD_THRESHOLD = 4000
+
+type TradeLoadingProps = {
+  showButton?: boolean
+}
+
+const TradeLoading = ({ showButton = false }: TradeLoadingProps) => {
+  const [isLongLoad, setIsLongLoad] = useState<boolean>(false)
+
+  // change message if user waiting too long
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsLongLoad(true), LONG_LOAD_THRESHOLD)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
+  const InsideContent = useCallback(
+    () => (
+      <TYPE.main display="flex" alignItems="center" maxHeight={20}>
+        <Text fontSize={isLongLoad ? 14 : 40} fontWeight={500}>
+          {isLongLoad && <LongLoadText>Hang in there. Calculating best price </LongLoadText>}
+          <CenteredDots smaller={isLongLoad} />
+        </Text>
+      </TYPE.main>
+    ),
+    [isLongLoad]
+  )
+
+  return showButton ? (
+    <ButtonError id="swap-button" buttonSize={ButtonSize.BIG} disabled={true} maxHeight={60}>
+      {InsideContent()}
+    </ButtonError>
+  ) : (
+    InsideContent()
+  )
+}
+
+interface SwapButtonProps extends TradeLoadingProps {
+  isLoading: boolean
+  children: React.ReactNode
+}
+
+const SwapButton = ({ children, isLoading, showButton = false }: SwapButtonProps) =>
+  isLoading ? (
+    <TradeLoading showButton={showButton} />
+  ) : (
+    <Text fontSize={16} fontWeight={500}>
+      {children}
+    </Text>
+  )
+
 export default function Swap(props: RouteComponentProps) {
   return (
     <SwapModWrapper
@@ -205,6 +280,8 @@ export default function Swap(props: RouteComponentProps) {
       SwitchToWethBtn={SwitchToWethBtn}
       FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
       BottomGrouping={BottomGrouping}
+      SwapButton={SwapButton}
+      TradeLoading={TradeLoading}
       {...props}
     />
   )

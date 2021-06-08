@@ -4,12 +4,12 @@ import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
 import { useCurrency } from 'hooks/Tokens'
-import useDebounce from 'hooks/useDebounce'
-import { useAllQuotes } from './hooks'
+import { useAllQuotes, useSetLoadingQuote } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
 import { QuoteInformationObject } from './reducer'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
+import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -112,9 +112,15 @@ export default function FeesUpdater(): null {
     typedValue: rawTypedValue
   } = useSwapState()
 
+  // pass independent field as a reference to use against
+  // any changes to determine if user has switched input fields
+  // useful to force debounce value to refresh
+  const forceUpdateRef = independentField
+
+  const setLoadingQuote = useSetLoadingQuote()
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
-  const typedValue = useDebounce(rawTypedValue, DEBOUNCE_TIME)
+  const typedValue = useDebounceWithForceUpdate(rawTypedValue, DEBOUNCE_TIME, forceUpdateRef)
 
   const sellCurrency = useCurrency(sellToken)
   const buyCurrency = useCurrency(buyToken)
@@ -152,11 +158,15 @@ export default function FeesUpdater(): null {
       const refetchPrice = !unsupportedToken && priceIsOld(quoteInfo)
 
       if (unsupportedNeedsCheck || refetchAll || refetchPrice) {
+        setLoadingQuote(true)
+
         refetchQuote({
           quoteParams,
           fetchFee: refetchAll,
           previousFee: quoteInfo?.fee
-        }).catch(error => console.error('Error re-fetching the quote', error))
+        })
+          .catch(error => console.error('Error re-fetching the quote', error))
+          .finally(() => setLoadingQuote(false))
       }
     }
 
@@ -181,7 +191,8 @@ export default function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
-    isUnsupportedTokenGp
+    isUnsupportedTokenGp,
+    setLoadingQuote
   ])
 
   return null
