@@ -20,7 +20,7 @@ import UserUpdater from './state/user/updater'
 import FeesUpdater from 'state/price/updater'
 import XdaiUpdater from 'state/network/updater'
 import GasUpdater from 'state/gas/updater'
-import { ExpiredOrdersWatcher, EventUpdater } from 'state/orders/updater'
+import { EventUpdater } from 'state/orders/updater'
 // import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from './utils/getLibrary'
@@ -65,7 +65,6 @@ function Updaters() {
       <TransactionUpdater />
       <MulticallUpdater />
       <EventUpdater />
-      <ExpiredOrdersWatcher />
       <FeesUpdater />
       <GasUpdater />
     </>

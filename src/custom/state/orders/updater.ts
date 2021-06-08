@@ -161,46 +161,6 @@ export function EventUpdater(): null {
     const interval = setInterval(() => updateOrders(chainId), OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
-
-export function ExpiredOrdersWatcher(): null {
-  const { chainId } = useActiveWeb3React()
-
-  const expireOrdersBatch = useExpireOrdersBatch()
-
-  const pendingOrders = usePendingOrders({ chainId })
-
-  // ref, so we don't rerun useEffect
-  const pendingOrdersRef = useRef(pendingOrders)
-  pendingOrdersRef.current = pendingOrders
-
-  useEffect(() => {
-    if (!chainId) return
-
-    const checkForExpiredOrders = () => {
-      // no more pending orders
-      // but don't clearInterval so we can restart when there are new orders
-      if (pendingOrdersRef.current.length === 0) return
-
-      const expiredOrders = pendingOrdersRef.current.filter(order => {
-        // validTo is either a Date or unix timestamp in seconds
-        const validTo = typeof order.validTo === 'number' ? new Date(order.validTo * 1000) : order.validTo
-
-        // let's get the current date, with our expired order validTo given a buffer time
-        return Date.now() - validTo.valueOf() > EXPIRED_ORDERS_BUFFER
-      })
-
-      const expiredIds = expiredOrders.map(({ id }) => id)
-
-      expireOrdersBatch({
-        chainId,
-        ids: expiredIds
-      })
-    }
-
-    const intervalId = setInterval(checkForExpiredOrders, CHECK_EXPIRED_ORDERS_INTERVAL)
-
-    return () => clearInterval(intervalId)
-  }, [chainId, expireOrdersBatch])
   }, [chainId, updateOrders])
 
   return null
