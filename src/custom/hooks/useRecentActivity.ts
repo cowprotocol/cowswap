@@ -21,6 +21,7 @@ export enum ActivityStatus {
   PENDING,
   CONFIRMED,
   EXPIRED,
+  CANCELLING,
   CANCELLED
 }
 
