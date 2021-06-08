@@ -22,7 +22,7 @@ function isOrderFulfilled(order: OrderMetaData): boolean {
  */
 function isOrderCancelled(order: OrderMetaData): boolean {
   const creationTime = new Date(order.creationDate).getTime()
-  return order.invalidated && creationTime + PENDING_ORDERS_BUFFER < Date.now()
+  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
 
 /**
@@ -32,7 +32,7 @@ function isOrderCancelled(order: OrderMetaData): boolean {
  */
 function isOrderExpired(order: OrderMetaData): boolean {
   const validToTime = order.validTo * 1000 // validTo is in seconds
-  return validToTime + PENDING_ORDERS_BUFFER < Date.now()
+  return Date.now() - validToTime > PENDING_ORDERS_BUFFER
 }
 
 export function classifyOrder(order: OrderMetaData | null): ApiOrderStatus {
@@ -52,8 +52,7 @@ export function classifyOrder(order: OrderMetaData | null): ApiOrderStatus {
   } else if (isOrderExpired(order)) {
     console.debug(
       `[state::orders::classifyOrder] expired order ${order.uid.slice(0, 10)}`,
-      order.validTo,
-      Math.floor(Date.now() / 1000)
+      new Date(order.validTo * 1000)
     )
     return 'expired'
   }
