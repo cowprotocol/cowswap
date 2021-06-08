@@ -22,6 +22,7 @@ export interface Order extends Omit<OrderCreation, 'signingScheme'> {
   summary: string // for dapp use only, readable by user
   inputToken: Token // for dapp use only, readable by user
   outputToken: Token // for dapp use only, readable by user
+  isCancelling?: boolean // intermediate state while the order has been cancelled but order is still pending
 }
 
 // gotten from querying /api/v1/orders
