@@ -3,10 +3,11 @@ import { useActiveWeb3React } from 'hooks'
 import { OrderFulfillmentData, Order } from './actions'
 import { usePendingOrders, useFulfillOrdersBatch, useExpireOrdersBatch, useCancelOrdersBatch } from './hooks'
 import { getOrder, OrderID, OrderMetaData } from 'utils/operator'
-import { SHORT_PRECISION, EXPIRED_ORDERS_BUFFER } from 'constants/index'
+import { SHORT_PRECISION } from 'constants/index'
 import { stringToCurrency } from '../swap/extension'
 import { OPERATOR_API_POLL_INTERVAL } from './consts'
 import { ChainId } from '@uniswap/sdk'
+import { ApiOrderStatus, classifyOrder } from './utils'
 
 type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -43,23 +44,6 @@ function _computeFulfilledSummary({
   }
 
   return summary
-}
-
-type ApiOrderStatus = 'unknown' | 'fulfilled' | 'expired' | 'cancelled' | 'pending'
-
-function classifyOrder(order: OrderMetaData | null): ApiOrderStatus {
-  if (!order) {
-    return 'unknown'
-  } else if (Number(order.executedBuyAmount) > 0 && Number(order.executedSellAmount) > 0) {
-    // TODO: Assume orders are fillOrKill
-    // TODO: calculation changes for partial fill orders
-    return 'fulfilled'
-  } else if (order.invalidated && new Date(order.creationDate).getTime() + EXPIRED_ORDERS_BUFFER < Date.now()) {
-    return 'cancelled'
-  } else if (order.validTo * 1000 + EXPIRED_ORDERS_BUFFER < Date.now()) {
-    return 'expired'
-  }
-  return 'pending'
 }
 
 type PopupData = {
