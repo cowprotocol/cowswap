@@ -59,7 +59,7 @@ export const BUY_ETHER_TOKEN: { [chainId in ChainId]: Token } = {
 export const ORDER_ID_SHORT_LENGTH = 8
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const DEFAULT_ORDER_DELAY = 20000 // 20s
-export const PENDING_ORDERS_BUFFER = 45 * 1000 // 45s
+export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
