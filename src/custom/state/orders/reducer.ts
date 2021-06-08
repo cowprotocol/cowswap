@@ -111,6 +111,7 @@ export default createReducer(initialState, builder =>
         orderObject.order.fulfillmentTime = fulfillmentTime
 
         orderObject.order.fulfilledTransactionHash = transactionHash
+        orderObject.order.isCancelling = false
 
         state[chainId].fulfilled[id] = orderObject
       }
@@ -134,6 +135,7 @@ export default createReducer(initialState, builder =>
           orderObject.order.fulfillmentTime = fulfillmentTime
 
           orderObject.order.fulfilledTransactionHash = transactionHash
+          orderObject.order.isCancelling = false
 
           fulfilledOrders[id] = orderObject
         }
@@ -149,6 +151,7 @@ export default createReducer(initialState, builder =>
         delete state[chainId].pending[id]
 
         orderObject.order.status = OrderStatus.EXPIRED
+        orderObject.order.isCancelling = false
 
         state[chainId].expired[id] = orderObject
       }
@@ -169,6 +172,7 @@ export default createReducer(initialState, builder =>
           delete pendingOrders[id]
 
           orderObject.order.status = OrderStatus.EXPIRED
+          orderObject.order.isCancelling = false
           fulfilledOrders[id] = orderObject
         }
       })
@@ -193,6 +197,7 @@ export default createReducer(initialState, builder =>
         delete state[chainId].pending[id]
 
         orderObject.order.status = OrderStatus.CANCELLED
+        orderObject.order.isCancelling = false
 
         state[chainId].cancelled[id] = orderObject
       }
