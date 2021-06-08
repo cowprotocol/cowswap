@@ -30,7 +30,8 @@ const PILL_COLOUR_MAP = {
   PENDING_ORDER: '#8958FF',
   PENDING_TX: '#2b68fa',
   EXPIRED_ORDER: '#b94d54',
-  CANCELLED_ORDER: '#808080'
+  CANCELLED_ORDER: '#808080',
+  CANCELLING_ORDER: '#8998FF'
 }
 
 function determinePillColour(status: ActivityStatus, type: ActivityType) {
@@ -42,6 +43,8 @@ function determinePillColour(status: ActivityStatus, type: ActivityType) {
       return PILL_COLOUR_MAP.CONFIRMED
     case ActivityStatus.EXPIRED:
       return PILL_COLOUR_MAP.EXPIRED_ORDER
+    case ActivityStatus.CANCELLING:
+      return PILL_COLOUR_MAP.CANCELLING_ORDER
     case ActivityStatus.CANCELLED:
       return PILL_COLOUR_MAP.CANCELLED_ORDER
   }
