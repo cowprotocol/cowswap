@@ -114,13 +114,14 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
 
     let activity: TransactionDetails | Order, type: ActivityType
 
-    let isPending: boolean, isConfirmed: boolean, isCancelled: boolean
+    let isPending: boolean, isConfirmed: boolean, isCancelling: boolean, isCancelled: boolean
 
     if (!tx && order) {
       // We're dealing with an ORDER
       // setup variables accordingly...
       isPending = order?.status === OrderStatus.PENDING
       isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
+      isCancelling = (order.isCancelling || false) && isPending
       isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
 
       activity = order
@@ -133,13 +134,16 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
       isPending = !tx?.receipt
       isConfirmed = !isPending && isReceiptConfirmed
       // TODO: can't tell when it's cancelled from the network yet
+      isCancelling = false
       isCancelled = false
 
       activity = tx
       type = ActivityType.TX
     }
 
-    const status = isPending
+    const status = isCancelling
+      ? ActivityStatus.CANCELLING
+      : isPending
       ? ActivityStatus.PENDING
       : isConfirmed
       ? ActivityStatus.CONFIRMED
