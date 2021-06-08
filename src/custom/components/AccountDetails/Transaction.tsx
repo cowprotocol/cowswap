@@ -203,6 +203,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const isPending = status === ActivityStatus.PENDING
   const isConfirmed = status === ActivityStatus.CONFIRMED
   const isExpired = status === ActivityStatus.EXPIRED
+  const isCancelling = status === ActivityStatus.CANCELLING
   const isCancelled = status === ActivityStatus.CANCELLED
   const isCancellable = isPending && type === ActivityType.ORDER
 
@@ -220,8 +221,8 @@ export default function Transaction({ hash: id }: { hash: string }) {
           )}
           <TransactionStatusText>{getActivitySummary({ activityData, id })}</TransactionStatusText>
         </RowFixed>
-        <IconWrapper pending={isPending} success={isConfirmed || isCancelled}>
-          {isPending ? (
+        <IconWrapper pending={isPending || isCancelling} success={isConfirmed || isCancelled}>
+          {isPending || isCancelling ? (
             <Loader />
           ) : isConfirmed ? (
             <CheckCircle size="16" />
