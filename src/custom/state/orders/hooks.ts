@@ -60,8 +60,10 @@ type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastC
 
 type GetOrderByIdCallback = (id: OrderID) => Order | undefined
 
-export const useOrder = ({ id, chainId }: GetRemoveOrderParams): Order | undefined => {
+export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order | undefined => {
   return useSelector<AppState, Order | undefined>(state => {
+    if (!id || !chainId) return undefined
+
     const orders = state.orders[chainId]
 
     if (!orders) return undefined

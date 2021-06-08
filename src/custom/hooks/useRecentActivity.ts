@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
-import { useAllOrders, useOrders } from 'state/orders/hooks'
+import { useOrder, useOrders } from 'state/orders/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { TransactionDetails } from 'state/transactions/reducer'
@@ -104,10 +104,9 @@ interface ActivityDescriptors {
 
 export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: string }): ActivityDescriptors | null {
   const allTransactions = useAllTransactions()
-  const allOrders = useAllOrders({ chainId })
+  const order = useOrder({ id, chainId })
 
   const tx = allTransactions?.[id]
-  const order = allOrders?.[id]?.order
 
   return useMemo(() => {
     if ((!tx && !order) || !chainId) return null
