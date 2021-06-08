@@ -173,6 +173,16 @@ export default createReducer(initialState, builder =>
         }
       })
     })
+    .addCase(requestOrderCancellation, (state, action) => {
+      prefillState(state, action)
+      const { id, chainId } = action.payload
+
+      const orderObject = state[chainId].pending[id]
+
+      if (orderObject) {
+        orderObject.order.isCancelling = true
+      }
+    })
     .addCase(cancelOrder, (state, action) => {
       prefillState(state, action)
       const { id, chainId } = action.payload

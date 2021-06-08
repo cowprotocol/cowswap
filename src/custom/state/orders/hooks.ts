@@ -10,6 +10,7 @@ import {
   fulfillOrder,
   expireOrder,
   cancelOrder,
+  requestOrderCancellation,
   updateLastCheckedBlock,
   Order,
   fulfillOrdersBatch,
@@ -213,6 +214,14 @@ export const useExpireOrdersBatch = (): ExpireOrdersBatchCallback => {
 export const useCancelPendingOrder = (): CancelOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((cancelOrderParams: CancelOrderParams) => dispatch(cancelOrder(cancelOrderParams)), [dispatch])
+}
+
+
+export const useRequestOrderCancellation = (): CancelOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((cancelOrderParams: CancelOrderParams) => dispatch(requestOrderCancellation(cancelOrderParams)), [
+    dispatch
+  ])
 }
 
 export const useRemoveOrder = (): RemoveOrderCallback => {

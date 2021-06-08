@@ -67,6 +67,8 @@ export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOr
 
 export const expireOrdersBatch = createAction<{ ids: OrderID[]; chainId: ChainId }>('order/expireOrdersBatch')
 
+export const requestOrderCancellation = createAction<ChangeOrderStatusParams>('order/requestOrderCancellation')
+
 export const cancelOrder = createAction<ChangeOrderStatusParams>('order/cancelOrder')
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
