@@ -15,14 +15,19 @@ const isSingleOrderChangeAction = isAnyOf(
 )
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
-const isBatchOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch, OrderActions.expireOrdersBatch)
+const isBatchOrderAction = isAnyOf(
+  OrderActions.fulfillOrdersBatch,
+  OrderActions.expireOrdersBatch,
+  OrderActions.cancelOrdersBatch
+)
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
+// const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch) // disabled because doesn't work on `if`
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
-const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder)
+const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
-// on each Pending, Expired, Fulfilled order action
-// a corresponsing Popup action is dispatched
+// On each Pending, Expired, Fulfilled, Cancelled order action
+// a corresponding Popup action is dispatched
 export const popupMiddleware: Middleware<{}, AppState> = store => next => action => {
   const result = next(action)
 
@@ -87,7 +92,7 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
 
     if (!orders) return
 
-    const { pending, fulfilled, expired } = orders
+    const { pending, fulfilled, expired, cancelled } = orders
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
@@ -100,6 +105,26 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
           id,
           status: OrderActions.OrderStatus.FULFILLED,
           descriptor: 'was traded'
+        })
+
+        return { id, popup }
+      })
+    } else if (action.type === 'order/cancelOrdersBatch') {
+      // Why is this condition not using a `isAnyOf` like the others?
+      // For a reason that I'm not aware, if I do that the following `else`
+      // complains that it'll never be reached.
+      // If you know how to fix it, let me know.
+
+      // construct Cancelled Order Popups for each Order
+      idsAndPopups = action.payload.ids.map(id => {
+        const orderObject = cancelled?.[id]
+
+        const summary = orderObject?.order.summary
+
+        const popup = setPopupData(OrderTxTypes.METATXN, {
+          success: true,
+          summary: buildCancellationPopupSummary(id, summary),
+          id
         })
 
         return { id, popup }
