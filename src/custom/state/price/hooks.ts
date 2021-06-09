@@ -2,12 +2,21 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
-import { updateQuote, clearQuote, UpdateQuoteParams, ClearQuoteParams, setLoadingQuote } from './actions'
+import {
+  updateQuote,
+  clearQuote,
+  UpdateQuoteParams,
+  ClearQuoteParams,
+  SetQuoteErrorParams,
+  setQuoteError,
+  setLoadingQuote
+} from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
 type SetLoadPriceCallback = (isLoading: boolean) => void
 type AddPriceCallback = (addFeeParams: UpdateQuoteParams) => void
 type ClearPriceCallback = (clearFeeParams: ClearQuoteParams) => void
+type SetQuoteErrorCallback = (setQuoteErrorParams: SetQuoteErrorParams) => void
 
 export const useAllQuotes = ({
   chainId
@@ -59,12 +68,25 @@ export const useClearQuote = (): ClearPriceCallback => {
   return useCallback((clearQuoteParams: ClearQuoteParams) => dispatch(clearQuote(clearQuoteParams)), [dispatch])
 }
 
+export const useSetQuoteError = (): SetQuoteErrorCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((setQuoteErrorParams: SetQuoteErrorParams) => dispatch(setQuoteError(setQuoteErrorParams)), [
+    dispatch
+  ])
+}
+
 interface QuoteDispatchers {
   setLoadingQuote: SetLoadPriceCallback
   updateQuote: AddPriceCallback
   clearQuote: ClearPriceCallback
+  setQuoteError: SetQuoteErrorCallback
 }
 
 export const useQuoteDispatchers = (): QuoteDispatchers => {
-  return { setLoadingQuote: useSetLoadingQuote(), updateQuote: useUpdateQuote(), clearQuote: useClearQuote() }
+  return {
+    setLoadingQuote: useSetLoadingQuote(),
+    updateQuote: useUpdateQuote(),
+    clearQuote: useClearQuote(),
+    setQuoteError: useSetQuoteError()
+  }
 }

@@ -114,7 +114,7 @@ export function useTradeExactInWithFee({
 
   // make sure we have a typed in amount, a fee, and a price
   // else we can assume the trade will be null
-  if (!parsedInputAmount || !originalTrade || !outputCurrency || !quote?.fee || !quote?.price.amount) return null
+  if (!parsedInputAmount || !originalTrade || !outputCurrency || !quote?.fee || !quote?.price?.amount) return null
 
   const feeAsCurrency = stringToCurrency(quote.fee.amount, parsedInputAmount.currency)
   // Check that fee amount is not greater than the user's input amt
@@ -179,7 +179,7 @@ export function useTradeExactOutWithFee({
   // Original Uni trade hook
   const outTrade = useTradeExactOut(inputCurrency ?? undefined, parsedOutputAmount)
 
-  if (!outTrade || !parsedOutputAmount || !inputCurrency || !quote?.fee || !quote?.price.amount) return null
+  if (!outTrade || !parsedOutputAmount || !inputCurrency || !quote?.fee || !quote?.price?.amount) return null
 
   const feeAsCurrency = stringToCurrency(quote.fee.amount, inputCurrency)
   // set final fee object

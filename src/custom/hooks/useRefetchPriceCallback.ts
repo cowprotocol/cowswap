@@ -8,11 +8,12 @@ import {
   useIsUnsupportedTokenGp,
   useRemoveGpUnsupportedToken
 } from 'state/lists/hooks/hooksMod'
-import { FeeInformation, PriceInformation } from 'state/price/reducer'
+import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/price/reducer'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
-import { ChainId } from '@uniswap/sdk'
 import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
 import { onlyResolvesLast } from 'utils/async'
+import { ClearQuoteParams, SetQuoteErrorParams } from 'state/price/actions'
+import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 
 export interface RefetchQuoteCallbackParmams {
   quoteParams: FeeQuoteParams
@@ -20,13 +21,7 @@ export interface RefetchQuoteCallbackParmams {
   previousFee?: FeeInformation
 }
 
-type WithFeeExceedsPrice = {
-  feeExceedsPrice: boolean
-}
-
-type PriceInformationWithFee = PriceInformation & WithFeeExceedsPrice
-
-type QuoteResult = [PriceInformationWithFee, FeeInformation]
+type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
 async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParmams): Promise<QuoteResult> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
@@ -34,7 +29,9 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
 
   // Get a new fee quote (if required)
   const feePromise =
-    fetchFee || !previousFee ? getFeeQuote({ chainId, sellToken, buyToken, amount, kind }) : previousFee
+    fetchFee || !previousFee
+      ? getFeeQuote({ chainId, sellToken, buyToken, amount, kind })
+      : Promise.resolve(previousFee)
 
   // Get a new price quote
   let exchangeAmount
@@ -56,18 +53,19 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
   // Get price for price estimation
   const pricePromise =
     !feeExceedsPrice && exchangeAmount
-      ? getPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind }).then(priceInfo => ({
-          ...priceInfo,
-          feeExceedsPrice
-        }))
+      ? getPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
       : // fee exceeds our price, is invalid
-        Promise.resolve({
-          feeExceedsPrice,
-          token: sellToken,
-          amount: null
-        })
+        Promise.reject(
+          new OperatorError({
+            errorType: ApiErrorCodes.FeeExceedsFrom,
+            description: OperatorError.apiErrorDetails.FeeExceedsFrom
+          })
+        )
 
-  return Promise.all([pricePromise, feePromise])
+  // Promise.allSettled does NOT throw on 1 promise rejection
+  // instead it returns PromiseSettledResult - which we can decide to consume later
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
+  return Promise.allSettled([pricePromise, feePromise])
 }
 
 // wrap _getQuote and only resolve once on several calls
@@ -77,31 +75,51 @@ function _isValidOperatorError(error: any): error is OperatorError {
   return error instanceof OperatorError
 }
 
-function _handleUnsupportedToken({
-  chainId,
-  error,
-  addUnsupportedToken
-}: {
-  chainId: ChainId
+interface HandleQuoteErrorParams {
+  quoteData: QuoteInformationObject | FeeQuoteParams
   error: unknown
   addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
-}) {
+  clearQuote: (params: ClearQuoteParams) => void
+  setQuoteError: (params: SetQuoteErrorParams) => void
+}
+
+function _handleQuoteError({
+  quoteData,
+  error,
+  addUnsupportedToken,
+  clearQuote,
+  setQuoteError
+}: HandleQuoteErrorParams) {
   if (_isValidOperatorError(error)) {
-    // Unsupported token
-    if (error.type === ApiErrorCodes.UnsupportedToken) {
-      // TODO: will change with introduction of data prop in error responses
-      const unsupportedTokenAddress = error.description.split(' ')[2]
+    switch (error.type) {
+      case ApiErrorCodes.UnsupportedToken: {
+        // TODO: will change with introduction of data prop in error responses
+        const unsupportedTokenAddress = error.description.split(' ')[2]
+        console.error(`${error.message}: ${error.description} - disabling.`)
 
-      console.error(`${error.message}: ${error.description} - disabling.`)
-
-      addUnsupportedToken({
-        chainId,
-        address: unsupportedTokenAddress,
-        dateAdded: Date.now()
-      })
-    } else {
-      // some other operator error occurred, log it
-      console.error(error)
+        return addUnsupportedToken({
+          chainId: quoteData.chainId,
+          address: unsupportedTokenAddress,
+          dateAdded: Date.now()
+        })
+      }
+      // Fee/Price query returns error
+      // e.g Insufficient Liquidity or Fee exceeds Price
+      case ApiErrorCodes.FeeExceedsFrom:
+      case ApiErrorCodes.NotFound: {
+        console.error(`${error.message}: ${error.description}!`)
+        return setQuoteError({
+          ...quoteData,
+          lastCheck: Date.now(),
+          error: error.type
+        })
+      }
+      default: {
+        // some other operator error occurred, log it
+        console.error(error)
+        // Clear the quote
+        return clearQuote({ chainId: quoteData.chainId, token: quoteData.sellToken })
+      }
     }
   } else {
     // non-operator error log it
@@ -115,7 +133,7 @@ function _handleUnsupportedToken({
 export function useRefetchQuoteCallback() {
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
   // dispatchers
-  const { updateQuote, clearQuote } = useQuoteDispatchers()
+  const { updateQuote, clearQuote, setQuoteError } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
 
@@ -123,7 +141,9 @@ export function useRefetchQuoteCallback() {
 
   return useCallback(
     async (params: RefetchQuoteCallbackParmams) => {
-      const { sellToken, buyToken, amount, chainId, kind } = params.quoteParams
+      let quoteData: FeeQuoteParams | QuoteInformationObject = params.quoteParams
+
+      const { sellToken, buyToken, chainId } = quoteData
       try {
         // Get the quote
         // price can be null if fee > price
@@ -132,7 +152,28 @@ export function useRefetchQuoteCallback() {
           console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
           return
         }
+
         const [price, fee] = data as QuoteResult
+
+        // Promise.allSettled (L68) does NOT throw whole promise on first reject
+        // we don't want it to, we are waiting for FEE and PRICE, if only one fails, why throw both away?
+        // e.g FEE comes in OK, but Fee > Price, we throw an FEE_EXCEEDS_PRICE error but keep fee promise resolved value
+        // to save into state and use
+        quoteData = {
+          ...params.quoteParams,
+          fee: getPromiseFulfilledValue(fee, undefined),
+          price: getPromiseFulfilledValue(price, undefined),
+          lastCheck: Date.now()
+        }
+
+        // check the PromiseSettledValue/PromiseRejectedResult
+        // returned by Promise.allSettled
+        if (!isPromiseFulfilled(fee)) {
+          // fee error takes precedence
+          throw fee.reason
+        } else if (!isPromiseFulfilled(price)) {
+          throw price.reason
+        }
 
         const previouslyUnsupportedToken = isUnsupportedTokenGp(sellToken) || isUnsupportedTokenGp(buyToken)
         // can be a previously unsupported token which is now valid
@@ -146,27 +187,20 @@ export function useRefetchQuoteCallback() {
           })
         }
 
-        const { feeExceedsPrice } = price
-
         // Update quote
-        updateQuote({
-          sellToken,
-          buyToken,
-          amount,
-          price,
-          chainId,
-          lastCheck: Date.now(),
-          fee,
-          feeExceedsPrice,
-          kind
-        })
+        updateQuote(quoteData)
       } catch (error) {
-        _handleUnsupportedToken({ error, chainId, addUnsupportedToken })
-
-        // Clear the quote
-        clearQuote({ chainId, token: sellToken })
+        // handle any errors in quote fetch
+        // we re-use the quoteData object in scope to save values into state
+        _handleQuoteError({
+          error,
+          quoteData,
+          setQuoteError,
+          clearQuote,
+          addUnsupportedToken
+        })
       }
     },
-    [isUnsupportedTokenGp, updateQuote, removeGpUnsupportedToken, addUnsupportedToken, clearQuote]
+    [isUnsupportedTokenGp, updateQuote, removeGpUnsupportedToken, setQuoteError, clearQuote, addUnsupportedToken]
   )
 }

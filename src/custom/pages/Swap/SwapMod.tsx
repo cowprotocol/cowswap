@@ -60,7 +60,8 @@ import { SwapProps } from '.'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
-import { useIsQuoteLoading } from 'state/price/hooks'
+import { isInsufficientLiquidityError } from 'state/price/utils'
+import { useGetQuoteAndStatus } from 'state/price/hooks'
 
 export default function Swap({
   history,
@@ -125,8 +126,10 @@ export default function Swap({
     inputError: swapInputError
   } = useDerivedSwapInfo()
 
-  // detects trade load
-  const quoteLoading = useIsQuoteLoading()
+  const [quote, quoteLoading] = useGetQuoteAndStatus({
+    token: INPUT.currencyId,
+    chainId
+  })
 
   // Log all trade information
   logTradeDetails(v2Trade, allowedSlippage)
@@ -541,6 +544,14 @@ export default function Swap({
               </ButtonPrimary>
             ) : !swapInputError && isNativeIn ? (
               <SwitchToWethBtn wrappedToken={wrappedToken} />
+            ) : isFeeGreater ? (
+              <FeesExceedFromAmountMessage />
+            ) : isInsufficientLiquidityError(quote?.error) ? (
+              // ) : noRoute && userHasSpecifiedInputOutput ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
+                {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
+              </GreyCard>
             ) : showApproveFlow ? (
               <RowBetween>
                 <ButtonConfirmed

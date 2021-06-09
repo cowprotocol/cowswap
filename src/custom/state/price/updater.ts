@@ -74,8 +74,9 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
  *  Decides if we need to refetch the fee information given the current parameters (selected by the user), and the current feeInfo (in the state)
  */
 function isRefetchQuoteRequired(currentParams: FeeQuoteParams, quoteInformation?: QuoteInformationObject): boolean {
-  if (!quoteInformation || !quoteInformation.fee) {
-    // If there's no quote/fee information, we always re-fetch
+  // If there's no quote/fee information, we always re-fetch
+  // we need to check that there is also no error otherwise this will loop
+  if (!quoteInformation || (!quoteInformation.fee && !quoteInformation.error)) {
     return true
   }
 
@@ -91,10 +92,12 @@ function isRefetchQuoteRequired(currentParams: FeeQuoteParams, quoteInformation?
   if (wasQuoteCheckedRecently(quoteInformation.lastCheck)) {
     // Don't Re-fetch if it was queried recently
     return false
-  } else {
+  } else if (quoteInformation.fee) {
     // Re-fetch if the fee is expiring soon
     return isFeeExpiringSoon(quoteInformation.fee.expirationDate)
   }
+
+  return false
 }
 
 function unsupportedTokenNeedsRecheck(unsupportedToken: UnsupportedToken[string] | false) {

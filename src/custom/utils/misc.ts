@@ -6,6 +6,20 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise(resolve => setTimeout(resolve, ms, result))
 
+export function isPromiseFulfilled<T>(
+  promiseResult: PromiseSettledResult<T>
+): promiseResult is PromiseFulfilledResult<T> {
+  return promiseResult.status === 'fulfilled'
+}
+
+// To properly handle PromiseSettleResult which returns and object
+export function getPromiseFulfilledValue<T, E = undefined>(
+  promiseResult: PromiseSettledResult<T>,
+  nonFulfilledReturn: E
+) {
+  return isPromiseFulfilled(promiseResult) ? promiseResult.value : nonFulfilledReturn
+}
+
 export const registerOnWindow = (registerMapping: Record<string, any>) => {
   Object.entries(registerMapping).forEach(([key, value]) => {
     ;(window as any)[key] = value
