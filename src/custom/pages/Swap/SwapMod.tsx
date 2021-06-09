@@ -410,7 +410,9 @@ export default function Swap({
                   label={exactInLabel}
                   trade={trade}
                   showHelper={independentField === Field.OUTPUT}
-                  amountBeforeFees={trade?.inputAmount.toSignificant(DEFAULT_PRECISION)}
+                  amountBeforeFees={trade?.inputAmountWithFee
+                    .subtract(trade.fee.feeAsCurrency)
+                    .toSignificant(DEFAULT_PRECISION)}
                   amountAfterFees={trade?.inputAmountWithFee.toSignificant(DEFAULT_PRECISION)}
                   type="From"
                   feeAmount={trade?.fee?.feeAsCurrency?.toSignificant(DEFAULT_PRECISION)}
