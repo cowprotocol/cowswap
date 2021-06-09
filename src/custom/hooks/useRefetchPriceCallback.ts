@@ -19,6 +19,10 @@ export interface RefetchQuoteCallbackParmams {
   quoteParams: FeeQuoteParams
   fetchFee: boolean
   previousFee?: FeeInformation
+  handlers: {
+    setLoadingCallback: () => void
+    hideLoadingCallback: () => void
+  }
 }
 
 type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
@@ -142,9 +146,13 @@ export function useRefetchQuoteCallback() {
   return useCallback(
     async (params: RefetchQuoteCallbackParmams) => {
       let quoteData: FeeQuoteParams | QuoteInformationObject = params.quoteParams
+      const { setLoadingCallback, hideLoadingCallback } = params.handlers
 
       const { sellToken, buyToken, chainId } = quoteData
       try {
+        // set loading status
+        setLoadingCallback()
+
         // Get the quote
         // price can be null if fee > price
         const { cancelled, data } = await getQuote(params)
@@ -199,6 +207,9 @@ export function useRefetchQuoteCallback() {
           clearQuote,
           addUnsupportedToken
         })
+      } finally {
+        // end loading status regardless of error or resolve
+        hideLoadingCallback()
       }
     },
     [isUnsupportedTokenGp, updateQuote, removeGpUnsupportedToken, setQuoteError, clearQuote, addUnsupportedToken]

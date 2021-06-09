@@ -65,7 +65,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
-  const [quote, quoteLoading] = useGetQuoteAndStatus({
+  const { quote } = useGetQuoteAndStatus({
     token: inputCurrencyId,
     chainId
   })
@@ -86,7 +86,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     quote
   })
 
-  const v2Trade = quoteLoading ? null : isExactIn ? bestTradeExactIn : bestTradeExactOut
+  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
   registerOnWindow({ trade: v2Trade })
 

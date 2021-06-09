@@ -124,6 +124,22 @@ const SwapModWrapper = styled(SwapMod)`
   }
 `
 
+interface LoadingCowImgProps {
+  maxWidth?: string
+  padding?: string
+  showLoader: boolean
+}
+
+export const AnimatedImg = styled.img<LoadingCowImgProps>`
+  position: absolute;
+  width: ${({ width = '30px' }) => width};
+  max-width: ${({ maxWidth = '60px' }) => maxWidth};
+  padding: ${({ padding = 0 }) => padding};
+  right: ${({ showLoader }) => (showLoader ? '30px' : '0px')};
+
+  transition: right 0.3s ease-in-out;
+`
+
 export interface SwapProps extends RouteComponentProps {
   FeeGreaterMessage: React.FC<FeeGreaterMessageProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
@@ -259,12 +275,12 @@ const TradeLoading = ({ showButton = false }: TradeLoadingProps) => {
 }
 
 interface SwapButtonProps extends TradeLoadingProps {
-  isLoading: boolean
+  isHardLoading: boolean
   children: React.ReactNode
 }
 
-const SwapButton = ({ children, isLoading, showButton = false }: SwapButtonProps) =>
-  isLoading ? (
+const SwapButton = ({ children, isHardLoading, showButton = false }: SwapButtonProps) =>
+  isHardLoading ? (
     <TradeLoading showButton={showButton} />
   ) : (
     <Text fontSize={16} fontWeight={500}>

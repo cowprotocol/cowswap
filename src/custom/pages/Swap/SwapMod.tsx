@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Token, Trade, TradeType } from '@uniswap/sdk'
+import { CurrencyAmount, /* JSBI, */ Token, Trade, TradeType } from '@uniswap/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -70,7 +70,6 @@ export default function Swap({
   SwitchToWethBtn,
   FeesExceedFromAmountMessage,
   BottomGrouping,
-  // TradeLoading,
   SwapButton,
   className
 }: SwapProps) {
@@ -126,10 +125,8 @@ export default function Swap({
     inputError: swapInputError
   } = useDerivedSwapInfo()
 
-  const [quote, quoteLoading] = useGetQuoteAndStatus({
-    token: INPUT.currencyId,
-    chainId
-  })
+  // detects trade load
+  const { quote, isGettingNewQuote } = useGetQuoteAndStatus({ token: INPUT.currencyId, chainId })
 
   // Log all trade information
   logTradeDetails(v2Trade, allowedSlippage)
@@ -239,9 +236,9 @@ export default function Swap({
   }
 
   // const route = trade?.route
-  const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
-  )
+  // const userHasSpecifiedInputOutput = Boolean(
+  //   currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+  // )
   // const noRoute = !route
 
   // check whether the user has approved the router on the input token
@@ -597,7 +594,7 @@ export default function Swap({
                   }
                   // error={isValid && priceImpactSeverity > 2}
                 >
-                  <SwapButton isLoading={quoteLoading}>Swap</SwapButton>
+                  <SwapButton isHardLoading={isGettingNewQuote}>Swap</SwapButton>
                   {/* <Text fontSize={16} fontWeight={500}>
                     {priceImpactSeverity > 3 && !isExpertMode
                       ? `Price Impact High`
@@ -606,15 +603,6 @@ export default function Swap({
                   </Text> */}
                 </ButtonError>
               </RowBetween>
-            ) : /* noRoute &&  */ !trade && !quoteLoading && userHasSpecifiedInputOutput ? (
-              isFeeGreater ? (
-                <FeesExceedFromAmountMessage />
-              ) : (
-                <GreyCard style={{ textAlign: 'center' }}>
-                  <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
-                  {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
-                </GreyCard>
-              )
             ) : (
               <ButtonError
                 buttonSize={ButtonSize.BIG}
@@ -635,7 +623,7 @@ export default function Swap({
                 disabled={!isValid /*|| (priceImpactSeverity > 3 && !isExpertMode) */ || !!swapCallbackError}
                 // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
-                <SwapButton isLoading={quoteLoading}>{swapInputError ? swapInputError : 'Swap'}</SwapButton>
+                <SwapButton isHardLoading={isGettingNewQuote}>{swapInputError ? swapInputError : 'Swap'}</SwapButton>
                 {/* <Text fontSize={20} fontWeight={500}>
                   {swapInputError ? swapInputError : 'Swap'
                   // : priceImpactSeverity > 3 && !isExpertMode

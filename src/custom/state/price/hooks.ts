@@ -1,3 +1,5 @@
+import { useActiveWeb3React } from '@src/hooks'
+import { useSwapState } from '@src/state/swap/hooks'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -7,13 +9,16 @@ import {
   clearQuote,
   UpdateQuoteParams,
   ClearQuoteParams,
+  setNewQuoteLoading,
+  SetLoadingQuoteParams,
+  setRefreshQuoteLoading,
   SetQuoteErrorParams,
-  setQuoteError,
-  setLoadingQuote
+  setQuoteError
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
-type SetLoadPriceCallback = (isLoading: boolean) => void
+type GetNewQuoteCallback = (quoteLoadingParams: SetLoadingQuoteParams) => void
+type RefreshCurrentQuoteCallback = (quoteLoadingParams: Pick<SetLoadingQuoteParams, 'loading'>) => void
 type AddPriceCallback = (addFeeParams: UpdateQuoteParams) => void
 type ClearPriceCallback = (clearFeeParams: ClearQuoteParams) => void
 type SetQuoteErrorCallback = (setQuoteErrorParams: SetQuoteErrorParams) => void
@@ -45,17 +50,46 @@ export const useIsQuoteLoading = () =>
     return state.price.loading
   })
 
-export const useGetQuoteAndStatus = (
-  params: Partial<ClearQuoteParams>
-): [QuoteInformationObject | undefined, boolean] => {
-  const quote = useQuote(params)
-  const isLoading = useIsQuoteLoading()
-  return [quote, isLoading]
+interface UseGetQuoteAndStatus {
+  quote?: QuoteInformationObject
+  isGettingNewQuote: boolean
+  isRefreshingQuote: boolean
 }
 
-export const useSetLoadingQuote = (): SetLoadPriceCallback => {
+export const useGetQuoteAndStatus = (params: Partial<ClearQuoteParams>): UseGetQuoteAndStatus => {
+  const quote = useQuote(params)
+  const isLoading = useIsQuoteLoading()
+
+  const isGettingNewQuote = Boolean(isLoading && !quote?.price?.amount)
+  const isRefreshingQuote = Boolean(isLoading && quote?.price?.amount)
+
+  return { quote, isGettingNewQuote, isRefreshingQuote }
+}
+
+// syntactic sugar for not needing to pass swapstate
+export function useIsQuoteRefreshing() {
+  const { chainId } = useActiveWeb3React()
+  const {
+    INPUT: { currencyId }
+  } = useSwapState()
+  const { isRefreshingQuote } = useGetQuoteAndStatus({ token: currencyId, chainId })
+  return isRefreshingQuote
+}
+
+export const useSetNewQuoteLoading = (): GetNewQuoteCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((isLoading: boolean) => dispatch(setLoadingQuote(isLoading)), [dispatch])
+  return useCallback((quoteLoadingParams: SetLoadingQuoteParams) => dispatch(setNewQuoteLoading(quoteLoadingParams)), [
+    dispatch
+  ])
+}
+
+export const useSetRefreshQuoteLoading = (): RefreshCurrentQuoteCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (quoteLoadingParams: Pick<SetLoadingQuoteParams, 'loading'>) =>
+      dispatch(setRefreshQuoteLoading(quoteLoadingParams)),
+    [dispatch]
+  )
 }
 
 export const useUpdateQuote = (): AddPriceCallback => {
@@ -76,7 +110,8 @@ export const useSetQuoteError = (): SetQuoteErrorCallback => {
 }
 
 interface QuoteDispatchers {
-  setLoadingQuote: SetLoadPriceCallback
+  setNewQuoteLoading: GetNewQuoteCallback
+  setRefreshQuoteLoading: RefreshCurrentQuoteCallback
   updateQuote: AddPriceCallback
   clearQuote: ClearPriceCallback
   setQuoteError: SetQuoteErrorCallback
@@ -84,7 +119,8 @@ interface QuoteDispatchers {
 
 export const useQuoteDispatchers = (): QuoteDispatchers => {
   return {
-    setLoadingQuote: useSetLoadingQuote(),
+    setNewQuoteLoading: useSetNewQuoteLoading(),
+    setRefreshQuoteLoading: useSetRefreshQuoteLoading(),
     updateQuote: useUpdateQuote(),
     clearQuote: useClearQuote(),
     setQuoteError: useSetQuoteError()
