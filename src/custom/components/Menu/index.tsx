@@ -6,6 +6,7 @@ import { useCloseModals } from 'state/application/hooks'
 import styled from 'styled-components'
 import { Separator as SeparatorBase } from 'components/swap/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK } from 'constants/index'
+import GameIcon from 'assets/cow-swap/game.gif'
 
 export const StyledMenu = styled(MenuMod)`
   hr {
@@ -20,6 +21,13 @@ export const StyledMenu = styled(MenuMod)`
       color: ${({ theme }) => theme.header.menuFlyout.colorHover};
       background: ${({ theme }) => theme.header.menuFlyout.colorHoverBg};
     }
+  }
+
+  span[aria-label='Play CowGame'] > img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    padding: 0 4px 0 0;
   }
 `
 
@@ -160,6 +168,13 @@ export function Menu() {
             Discord
           </span>
         </MenuItem>
+
+        <InternalMenuItem to="/play" onClick={close}>
+          <span role="img" aria-label="Play CowGame">
+            <img src={GameIcon} alt="Play CowGame" />
+          </span>{' '}
+          CowGame
+        </InternalMenuItem>
 
         <Separator />
 
