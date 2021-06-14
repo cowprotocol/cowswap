@@ -14,7 +14,7 @@ import {
   useSwapState,
   validatedRecipient
 } from 'state/swap/hooks'
-import { useQuote } from '../price/hooks'
+import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { TradeWithFee, useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -25,6 +25,7 @@ import { ParsedQs } from 'qs'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import { WrappedTokenInfo } from '../lists/hooks'
+import { isFeeGreaterThanPriceError } from '../price/utils'
 
 export * from '@src/state/swap/hooks'
 
@@ -64,7 +65,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
-  const quote = useQuote({
+  const { quote } = useGetQuoteAndStatus({
     token: inputCurrencyId,
     chainId
   })
@@ -271,10 +272,10 @@ export function useIsFeeGreaterThanInput({
   const quote = useQuote({ chainId, token: address })
   const feeToken = useCurrency(address)
 
-  if (!quote?.fee || !feeToken) return { isFeeGreater: false, fee: null }
+  if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
 
   return {
-    isFeeGreater: quote.feeExceedsPrice,
-    fee: stringToCurrency(quote.fee.amount, feeToken)
+    isFeeGreater: isFeeGreaterThanPriceError(quote.error),
+    fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null
   }
 }

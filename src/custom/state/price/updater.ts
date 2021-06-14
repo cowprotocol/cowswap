@@ -4,12 +4,12 @@ import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
 import { useCurrency } from 'hooks/Tokens'
-import useDebounce from 'hooks/useDebounce'
-import { useAllQuotes } from './hooks'
+import { useAllQuotes, useQuoteDispatchers } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
 import { QuoteInformationObject } from './reducer'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
+import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -74,8 +74,9 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
  *  Decides if we need to refetch the fee information given the current parameters (selected by the user), and the current feeInfo (in the state)
  */
 function isRefetchQuoteRequired(currentParams: FeeQuoteParams, quoteInformation?: QuoteInformationObject): boolean {
-  if (!quoteInformation || !quoteInformation.fee) {
-    // If there's no quote/fee information, we always re-fetch
+  // If there's no quote/fee information, we always re-fetch
+  // we need to check that there is also no error otherwise this will loop
+  if (!quoteInformation || (!quoteInformation.fee && !quoteInformation.error)) {
     return true
   }
 
@@ -91,10 +92,12 @@ function isRefetchQuoteRequired(currentParams: FeeQuoteParams, quoteInformation?
   if (wasQuoteCheckedRecently(quoteInformation.lastCheck)) {
     // Don't Re-fetch if it was queried recently
     return false
-  } else {
+  } else if (quoteInformation.fee) {
     // Re-fetch if the fee is expiring soon
     return isFeeExpiringSoon(quoteInformation.fee.expirationDate)
   }
+
+  return false
 }
 
 function unsupportedTokenNeedsRecheck(unsupportedToken: UnsupportedToken[string] | false) {
@@ -112,9 +115,15 @@ export default function FeesUpdater(): null {
     typedValue: rawTypedValue
   } = useSwapState()
 
+  // pass independent field as a reference to use against
+  // any changes to determine if user has switched input fields
+  // useful to force debounce value to refresh
+  const forceUpdateRef = independentField
+
+  const { setNewQuoteLoading, setRefreshQuoteLoading } = useQuoteDispatchers()
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
-  const typedValue = useDebounce(rawTypedValue, DEBOUNCE_TIME)
+  const typedValue = useDebounceWithForceUpdate(rawTypedValue, DEBOUNCE_TIME, forceUpdateRef)
 
   const sellCurrency = useCurrency(sellToken)
   const buyCurrency = useCurrency(buyToken)
@@ -152,10 +161,19 @@ export default function FeesUpdater(): null {
       const refetchPrice = !unsupportedToken && priceIsOld(quoteInfo)
 
       if (unsupportedNeedsCheck || refetchAll || refetchPrice) {
+        const shouldFetchNewQuote = quoteInfo && !quoteUsingSameParameters(quoteParams, quoteInfo)
+
         refetchQuote({
           quoteParams,
           fetchFee: refetchAll,
-          previousFee: quoteInfo?.fee
+          previousFee: quoteInfo?.fee,
+          handlers: {
+            setLoadingCallback: () =>
+              shouldFetchNewQuote
+                ? setNewQuoteLoading({ loading: true, quoteData: { sellToken, chainId } })
+                : setRefreshQuoteLoading({ loading: true }),
+            hideLoadingCallback: () => setRefreshQuoteLoading({ loading: false })
+          }
         }).catch(error => console.error('Error re-fetching the quote', error))
       }
     }
@@ -181,7 +199,9 @@ export default function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
-    isUnsupportedTokenGp
+    isUnsupportedTokenGp,
+    setNewQuoteLoading,
+    setRefreshQuoteLoading
   ])
 
   return null

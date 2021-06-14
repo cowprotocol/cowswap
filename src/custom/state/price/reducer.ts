@@ -1,9 +1,10 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@uniswap/sdk'
-import { updateQuote, clearQuote } from './actions'
+import { updateQuote, clearQuote, setQuoteError, setNewQuoteLoading, setRefreshQuoteLoading } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
+import { ApiErrorCodes } from 'utils/operator/error'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -23,10 +24,10 @@ export interface PriceInformation {
 }
 
 export interface QuoteInformationObject extends FeeQuoteParams {
-  fee: FeeInformation
-  price: PriceInformation
+  fee?: FeeInformation
+  price?: PriceInformation
+  error?: ApiErrorCodes
   lastCheck: number
-  feeExceedsPrice: boolean
 }
 
 // Map token addresses to their last quote information
@@ -36,7 +37,9 @@ export type QuoteInformationState = {
   readonly [chainId in ChainId]?: Partial<QuotesMap>
 }
 
-const initialState: QuoteInformationState = {}
+type InitialState = { loading: boolean; quotes: QuoteInformationState }
+
+const initialState: InitialState = { loading: false, quotes: {} }
 
 // Makes sure there stat is initialized
 function initializeState(
@@ -53,12 +56,35 @@ function initializeState(
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(updateQuote, (state, action) => {
+    .addCase(setNewQuoteLoading, (state, action) => {
+      const { loading, quoteData } = action.payload
+      state.loading = loading
+      // we have quoteInfo - signals a hard load, set price to null
+      const pseudoAction = { type: action.type, payload: quoteData }
+      // initialise state, if necessary
+      initializeState(state.quotes, pseudoAction)
+      // does our token exist in state?
+      const quotesState = state.quotes[quoteData.chainId][quoteData.sellToken]
+      if (quotesState?.price) {
+        quotesState.price.amount = null
+      }
+    })
+    .addCase(setRefreshQuoteLoading, (state, action) => {
+      const { loading } = action.payload
+      state.loading = loading
+    })
+    .addCase(setQuoteError, ({ quotes: state }, action) => {
       initializeState(state, action)
       const { sellToken, chainId } = action.payload
       state[chainId][sellToken] = action.payload
     })
-    .addCase(clearQuote, (state, action) => {
+
+    .addCase(updateQuote, ({ quotes: state }, action) => {
+      initializeState(state, action)
+      const { sellToken, chainId } = action.payload
+      state[chainId][sellToken] = action.payload
+    })
+    .addCase(clearQuote, ({ quotes: state }, action) => {
       initializeState(state, action)
       const { token, chainId } = action.payload
       delete state[chainId][token]

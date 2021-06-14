@@ -1,3 +1,8 @@
+export interface ApiError {
+  errorType: ApiErrorCodes
+  description: string
+}
+
 // Conforms to backend API
 // https://github.com/gnosis/gp-v2-services/blob/0bd5f7743bebaa5acd3be13e35ede2326a096f14/orderbook/openapi.yml#L562
 export enum ApiErrorCodes {
@@ -8,29 +13,23 @@ export enum ApiErrorCodes {
   InsufficientFunds = 'InsufficientFunds',
   InsufficientFee = 'InsufficientFee',
   UnsupportedToken = 'UnsupportedToken',
-  WrongOwner = 'WrongOwner'
+  WrongOwner = 'WrongOwner',
+  NotFound = 'NotFound',
+  FeeExceedsFrom = 'FeeExceedsFrom'
 }
 
-export interface ApiError {
-  errorType: ApiErrorCodes
-  description: string
-}
-
-const API_ERROR_CODE_DESCRIPTIONS = {
-  [ApiErrorCodes.DuplicateOrder]: 'There was another identical order already submitted. Please try again.',
-  [ApiErrorCodes.InsufficientFee]:
-    "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
-  [ApiErrorCodes.InvalidSignature]:
-    'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
-  [ApiErrorCodes.MissingOrderData]: 'The order has missing information',
-  [ApiErrorCodes.InsufficientValidTo]:
-    'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
-  [ApiErrorCodes.InsufficientFunds]: "The account doesn't have enough funds",
-  [ApiErrorCodes.UnsupportedToken]:
-    'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  [ApiErrorCodes.WrongOwner]:
-    "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
-  UNHANDLED_ERROR: 'The order was not accepted by the network'
+export enum ApiErrorCodeDetails {
+  DuplicateOrder = 'There was another identical order already submitted. Please try again.',
+  InsufficientFee = "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
+  InvalidSignature = 'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
+  MissingOrderData = 'The order has missing information',
+  InsufficientValidTo = 'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
+  InsufficientFunds = "The account doesn't have enough funds",
+  UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
+  WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
+  NotFound = 'Token pair selected has insufficient liquidity',
+  FeeExceedsFrom = 'Fee amount for selected pair exceeds "from" amount',
+  UNHANDLED_ERROR = 'The order was not accepted by the network'
 }
 
 export default class OperatorError extends Error {
@@ -40,7 +39,7 @@ export default class OperatorError extends Error {
 
   // Status 400 errors
   // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static apiErrorDetails = API_ERROR_CODE_DESCRIPTIONS
+  static apiErrorDetails = ApiErrorCodeDetails
 
   static async getErrorMessage(response: Response) {
     try {
@@ -57,9 +56,11 @@ export default class OperatorError extends Error {
       return OperatorError.apiErrorDetails.UNHANDLED_ERROR
     }
   }
-  static async getErrorForUnsuccessfulPostOrder(response: Response) {
+
+  static async getErrorFromStatusCode(response: Response) {
     switch (response.status) {
       case 400:
+      case 404:
         return this.getErrorMessage(response)
 
       case 403:

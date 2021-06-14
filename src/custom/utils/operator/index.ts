@@ -117,7 +117,7 @@ export async function postSignedOrder(params: {
   // Handle response
   if (!response.ok) {
     // Raise an exception
-    const errorMessage = await OperatorError.getErrorForUnsuccessfulPostOrder(response)
+    const errorMessage = await OperatorError.getErrorFromStatusCode(response)
     throw new Error(errorMessage)
   }
 

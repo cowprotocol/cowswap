@@ -24,8 +24,7 @@ export const StyledMenu = styled(MenuMod)`
 `
 
 const Policy = styled(InternalMenuItem).attrs(attrs => ({
-  ...attrs,
-  target: '_blank'
+  ...attrs
 }))`
   font-size: 0.8em;
   text-decoration: underline;
@@ -150,13 +149,13 @@ export function Menu() {
         </MenuItem> */}
 
         <MenuItem id="link" href={CONTRACTS_CODE_LINK}>
-          <span onClick={close}>
+          <span aria-hidden="true" onClick={close} onKeyDown={close}>
             <Code size={14} />
             Code
           </span>
         </MenuItem>
         <MenuItem id="link" href={DISCORD_LINK}>
-          <span onClick={close}>
+          <span aria-hidden="true" onClick={close} onKeyDown={close}>
             <MessageCircle size={14} />
             Discord
           </span>
@@ -164,7 +163,7 @@ export function Menu() {
 
         <Separator />
 
-        <Policy to="/terms-and-conditions" onClick={close}>
+        <Policy to="/terms-and-conditions" onClick={close} onKeyDown={close}>
           Terms and conditions
         </Policy>
         {/* 
