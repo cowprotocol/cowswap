@@ -17,12 +17,12 @@ import QuestionHelper from 'components/QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 // import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from 'components/swap/styleds'
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 import { DEFAULT_PRECISION, SHORT_PRECISION } from 'constants/index'
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
 
 export interface SwapModalFooterProps {
-  trade: TradeWithFee
+  trade: TradeGp
   allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined

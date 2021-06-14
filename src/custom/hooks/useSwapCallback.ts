@@ -14,9 +14,10 @@ import { useWrapEther } from 'hooks/useWrapEther'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { postOrder } from 'utils/trade'
 import { OrderKind } from 'utils/signatures'
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
+import { wrappedCurrency } from '@src/utils/wrappedCurrency'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -52,7 +53,7 @@ const _computeInputAmountForSignature = (params: {
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
-  trade: TradeWithFee | undefined, // trade to execute, required
+  trade: TradeGp | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
@@ -84,7 +85,10 @@ export function useSwapCallback(
     const isBuyEth = trade.outputAmount.currency === ETHER
     const isSellEth = trade.inputAmount.currency === ETHER
 
-    if (isSellEth && !wrapEther) {
+    const sellToken = wrappedCurrency(trade.inputAmount.currency, chainId)
+    const buyToken = isBuyEth ? BUY_ETHER_TOKEN[chainId] : wrappedCurrency(trade.outputAmount.currency, chainId)
+
+    if (!sellToken || !buyToken || (isSellEth && !wrapEther)) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
 
@@ -96,23 +100,16 @@ export function useSwapCallback(
           inputAmount: expectedInputAmount,
           inputAmountWithFee,
           fee,
-          nextMidPrice,
           outputAmount: expectedOutputAmount,
-          priceImpact,
-          route,
           tradeType
         } = trade
-        const path = route.path
-        const sellToken = path[0]
-        const buyToken = isBuyEth ? BUY_ETHER_TOKEN[chainId] : path[path.length - 1]
 
         const slippagePercent = new Percent(allowedSlippage.toString(RADIX_DECIMAL), BIPS_BASE)
-        const routeDescription = route.path.map(token => token.symbol || token.name || token.address).join(' → ')
         const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
         const validTo = calculateValidTo(deadline)
 
         console.log(
-          `[useSwapCallback] >> Trading ${routeDescription}. 
+          `[useSwapCallback] >> Trading ${tradeType} 
             1. Original Input = ${inputAmountWithSlippage.toExact()}
             2. Fee = ${fee?.feeAsCurrency?.toExact() || '0'}
             3. Input Adjusted for Fee = ${inputAmountWithFee.toExact()}
@@ -131,8 +128,6 @@ export function useSwapCallback(
             validTo,
             isSellEth,
             isBuyEth,
-            nextMidPrice: nextMidPrice.toFixed(),
-            priceImpact: priceImpact.toSignificant(),
             tradeType: tradeType.toString(),
             allowedSlippage,
             slippagePercent: slippagePercent.toFixed() + '%',
