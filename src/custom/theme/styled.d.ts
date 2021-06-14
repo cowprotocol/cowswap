@@ -12,6 +12,8 @@ export interface Colors extends ColorsUniswap {
   blueShade2: Color
   border: Color
   disabled: Color
+  shimmer1: Color
+  shimmer2: color
 }
 
 declare module 'styled-components' {

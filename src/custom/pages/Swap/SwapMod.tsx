@@ -72,6 +72,7 @@ export default function Swap({
   FeesExceedFromAmountMessage,
   BottomGrouping,
   SwapButton,
+  ArrowWrapperLoader,
   className
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -372,6 +373,8 @@ export default function Swap({
     [independentField, showWrap, trade]
   )
 
+  const swapBlankState = !swapInputError && !trade
+
   return (
     <>
       <TokenWarningModal
@@ -427,7 +430,8 @@ export default function Swap({
                 justify={isExpertMode ? 'space-between' : 'center'}
                 // style={{ padding: '0 1rem' }}
               >
-                <ArrowWrapper clickable>
+                {/* <ArrowWrapper clickable> */}
+                <ArrowWrapperLoader>
                   <ArrowDown
                     size="16"
                     onClick={() => {
@@ -436,7 +440,8 @@ export default function Swap({
                     }}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
                   />
-                </ArrowWrapper>
+                  {/* </ArrowWrapper> */}
+                </ArrowWrapperLoader>
                 {recipient === null && !showWrap && isExpertMode ? (
                   <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                     + Add a send (optional)
@@ -596,7 +601,7 @@ export default function Swap({
                   }
                   // error={isValid && priceImpactSeverity > 2}
                 >
-                  <SwapButton isHardLoading={isGettingNewQuote}>Swap</SwapButton>
+                  <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Swap</SwapButton>
                   {/* <Text fontSize={16} fontWeight={500}>
                     {priceImpactSeverity > 3 && !isExpertMode
                       ? `Price Impact High`
@@ -625,7 +630,7 @@ export default function Swap({
                 disabled={!isValid /*|| (priceImpactSeverity > 3 && !isExpertMode) */ || !!swapCallbackError}
                 // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
-                <SwapButton isHardLoading={isGettingNewQuote}>{swapInputError ? swapInputError : 'Swap'}</SwapButton>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>{swapInputError || 'Swap'}</SwapButton>
                 {/* <Text fontSize={20} fontWeight={500}>
                   {swapInputError ? swapInputError : 'Swap'
                   // : priceImpactSeverity > 3 && !isExpertMode
