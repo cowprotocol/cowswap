@@ -1,4 +1,4 @@
-import { CurrencyAmount, /* JSBI, */ Token, Trade, TradeType } from '@uniswap/sdk'
+import { CurrencyAmount, /* JSBI, */ Token, /* Trade, */ TradeType } from '@uniswap/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -13,7 +13,7 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { SwapPoolTabs } from 'components/NavigationTabs'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
+// import BetterTradeLink, { DefaultVersionLink } from 'components/swap/BetterTradeLink'
 // import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import {
   ArrowWrapper,
@@ -27,13 +27,13 @@ import ProgressSteps from 'components/ProgressSteps'
 import SwapHeader from 'components/swap/SwapHeader'
 
 import { INITIAL_ALLOWED_SLIPPAGE, DEFAULT_PRECISION } from 'constants/index'
-import { getTradeVersion } from 'data/V1'
+// import { getTradeVersion } from 'data/V1'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency, useAllTokens } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
 import { useSwapCallback } from 'hooks/useSwapCallback'
-import useToggledVersion, { DEFAULT_VERSION, Version } from 'hooks/useToggledVersion'
+import useToggledVersion, { /* DEFAULT_VERSION, */ Version } from 'hooks/useToggledVersion'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
@@ -54,7 +54,7 @@ import { ClickableText } from 'pages/Pool/styleds'
 import Loader from 'components/Loader'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
-import { isTradeBetter } from 'utils/trades'
+// import { isTradeBetter } from 'utils/trades'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { SwapProps } from '.'
 import { useWalletInfo } from 'hooks/useWalletInfo'
@@ -62,6 +62,7 @@ import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { isInsufficientLiquidityError } from 'state/price/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
+import TradeGp from '@src/custom/state/swap/TradeGp'
 
 export default function Swap({
   history,
@@ -71,6 +72,7 @@ export default function Swap({
   FeesExceedFromAmountMessage,
   BottomGrouping,
   SwapButton,
+  ArrowWrapperLoader,
   className
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -174,10 +176,10 @@ export default function Swap({
   const showWrap: boolean = !isNativeInSwap && wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
   const trade = showWrap ? undefined : tradeCurrentVersion
-  const defaultTrade = showWrap ? undefined : tradesByVersion[DEFAULT_VERSION]
+  // const defaultTrade = showWrap ? undefined : tradesByVersion[DEFAULT_VERSION]
 
-  const betterTradeLinkV2: Version | undefined =
-    toggledVersion === Version.v1 && isTradeBetter(v1Trade, v2Trade) ? Version.v2 : undefined
+  // const betterTradeLinkV2: Version | undefined =
+  //   toggledVersion === Version.v1 && isTradeBetter(v1Trade, v2Trade) ? Version.v2 : undefined
 
   const parsedAmounts = showWrap
     ? {
@@ -216,7 +218,8 @@ export default function Swap({
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
-    tradeToConfirm: Trade | undefined
+    // tradeToConfirm: Trade | undefined
+    tradeToConfirm: TradeGp | undefined
     attemptingTxn: boolean
     swapErrorMessage: string | undefined
     txHash: string | undefined
@@ -286,8 +289,8 @@ export default function Swap({
               : 'Swap w/ Send',
           label: [
             trade?.inputAmount?.currency?.symbol,
-            trade?.outputAmount?.currency?.symbol,
-            getTradeVersion(trade)
+            trade?.outputAmount?.currency?.symbol
+            // getTradeVersion(trade)
           ].join('/')
         })
 
@@ -370,6 +373,8 @@ export default function Swap({
     [independentField, showWrap, trade]
   )
 
+  const swapBlankState = !swapInputError && !trade
+
   return (
     <>
       <TokenWarningModal
@@ -425,7 +430,8 @@ export default function Swap({
                 justify={isExpertMode ? 'space-between' : 'center'}
                 // style={{ padding: '0 1rem' }}
               >
-                <ArrowWrapper clickable>
+                {/* <ArrowWrapper clickable> */}
+                <ArrowWrapperLoader>
                   <ArrowDown
                     size="16"
                     onClick={() => {
@@ -434,7 +440,8 @@ export default function Swap({
                     }}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
                   />
-                </ArrowWrapper>
+                  {/* </ArrowWrapper> */}
+                </ArrowWrapperLoader>
                 {recipient === null && !showWrap && isExpertMode ? (
                   <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                     + Add a send (optional)
@@ -594,7 +601,7 @@ export default function Swap({
                   }
                   // error={isValid && priceImpactSeverity > 2}
                 >
-                  <SwapButton isHardLoading={isGettingNewQuote}>Swap</SwapButton>
+                  <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Swap</SwapButton>
                   {/* <Text fontSize={16} fontWeight={500}>
                     {priceImpactSeverity > 3 && !isExpertMode
                       ? `Price Impact High`
@@ -623,7 +630,7 @@ export default function Swap({
                 disabled={!isValid /*|| (priceImpactSeverity > 3 && !isExpertMode) */ || !!swapCallbackError}
                 // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
-                <SwapButton isHardLoading={isGettingNewQuote}>{swapInputError ? swapInputError : 'Swap'}</SwapButton>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>{swapInputError || 'Swap'}</SwapButton>
                 {/* <Text fontSize={20} fontWeight={500}>
                   {swapInputError ? swapInputError : 'Swap'
                   // : priceImpactSeverity > 3 && !isExpertMode
@@ -639,11 +646,11 @@ export default function Swap({
               </Column>
             )}
             {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
-            {betterTradeLinkV2 && !swapIsUnsupported && toggledVersion === Version.v1 ? (
+            {/* betterTradeLinkV2 && !swapIsUnsupported && toggledVersion === Version.v1 ? (
               <BetterTradeLink version={betterTradeLinkV2} />
             ) : toggledVersion !== DEFAULT_VERSION && defaultTrade ? (
               <DefaultVersionLink />
-            ) : null}
+            ) : null */}
           </BottomGrouping>
         </Wrapper>
       </AppBody>

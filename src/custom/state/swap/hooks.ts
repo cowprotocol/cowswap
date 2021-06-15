@@ -16,7 +16,7 @@ import {
 } from 'state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
-import { TradeWithFee, useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
+import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
@@ -26,6 +26,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import { WrappedTokenInfo } from '../lists/hooks'
 import { isFeeGreaterThanPriceError } from '../price/utils'
+import TradeGp from './TradeGp'
 
 export * from '@src/state/swap/hooks'
 
@@ -33,7 +34,7 @@ interface DerivedSwapInfo {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  v2Trade: TradeWithFee | undefined
+  v2Trade: TradeGp | undefined
   // TODO: review this - we don't use a v1 trade but changing all code
   // or extending whole swap comp for only removing v1trade is a lot
   v1Trade: undefined

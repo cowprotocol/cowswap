@@ -1,4 +1,4 @@
-import { currencyEquals, Trade } from '@uniswap/sdk'
+import { currencyEquals /* Trade */ } from '@uniswap/sdk'
 import React, { useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -6,7 +6,7 @@ import TransactionConfirmationModal, {
 } from 'components/TransactionConfirmationModal'
 import SwapModalFooter from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -14,7 +14,7 @@ import { TradeWithFee } from 'state/swap/extension'
  * @param tradeB trade B
  */
 // function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
-function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+function tradeMeaningfullyDiffers(tradeA: TradeGp, tradeB: TradeGp): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
@@ -39,9 +39,9 @@ export default function ConfirmSwapModal({
 }: {
   isOpen: boolean
   //   trade: Trade | undefined
-  trade: TradeWithFee | undefined
-  originalTrade: Trade | undefined
-  //   originalTrade: TradeWithFee | undefined
+  trade: TradeGp | undefined
+  // originalTrade: Trade | undefined
+  originalTrade: TradeGp | undefined
   attemptingTxn: boolean
   txHash: string | undefined
   recipient: string | null

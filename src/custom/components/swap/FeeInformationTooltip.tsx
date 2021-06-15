@@ -1,10 +1,10 @@
 import React from 'react'
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components'
 
 interface FeeInformationTooltipProps {
-  trade?: TradeWithFee
+  trade?: TradeGp
   label: React.ReactNode
   showHelper: boolean
   amountBeforeFees?: string

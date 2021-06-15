@@ -10,6 +10,8 @@ export const SHORT_PRECISION = 4
 export const SHORTEST_PRECISION = 3
 export const LONG_PRECISION = 10
 
+export const LONG_LOAD_THRESHOLD = 4000
+
 export const APP_ID = Number(process.env.REACT_APP_ID)
 
 // reexport all Uniswap constants everything

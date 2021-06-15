@@ -1,8 +1,8 @@
 import { TradeType } from '@uniswap/sdk'
 import { basisPointsToPercent } from 'utils/index'
-import { TradeWithFee } from './extension'
+import TradeGp from './TradeGp'
 
-export function logTradeDetails(trade: TradeWithFee | undefined, allowedSlippage: number) {
+export function logTradeDetails(trade: TradeGp | undefined, allowedSlippage: number) {
   // don't do anything outside of dev env
   if (!trade || process.env.NODE_ENV !== 'development') return
 

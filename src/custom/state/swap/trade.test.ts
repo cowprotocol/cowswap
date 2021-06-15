@@ -2,12 +2,9 @@ import { parseUnits } from '@ethersproject/units'
 import { DEFAULT_PRECISION, LONG_PRECISION } from '@src/custom/constants'
 import { basisPointsToPercent } from '@src/utils'
 import { ChainId, Fraction, Pair, Percent, Token, TokenAmount, Trade, WETH } from '@uniswap/sdk'
-import {
-  stringToCurrency,
-  _constructTradePrice,
-  _maximumAmountInExtension,
-  _minimumAmountOutExtension
-} from './extension'
+import { stringToCurrency } from './extension'
+
+import { _constructTradePrice, _maximumAmountIn, _minimumAmountOut } from './TradeGp'
 
 const WETH_MAINNET = new Token(ChainId.MAINNET, WETH[1].address, 18)
 const DAI_MAINNET = new Token(ChainId.MAINNET, '0x6b175474e89094c44da98b954eedeac495271d0f', 18)
@@ -66,10 +63,10 @@ describe('Swap PRICE Quote test', () => {
           inputAmountWithoutFee: tradeSdk.inputAmount,
           outputAmount: currencyOut,
           maximumAmountIn(pct: Percent) {
-            return _maximumAmountInExtension(pct, this)
+            return _maximumAmountIn(pct, this)
           },
           minimumAmountOut(pct: Percent) {
-            return _minimumAmountOutExtension(pct, this)
+            return _minimumAmountOut(pct, this)
           },
           fee: {
             amount: MOCKED_FEE_AMOUNT.long,
@@ -136,10 +133,10 @@ describe('Swap PRICE Quote test', () => {
           inputAmountWithFee: apiBuyPriceAsCurrencyWithFee,
           inputAmountWithoutFee: apiBuyPriceAsCurrency,
           maximumAmountIn(pct: Percent) {
-            return _maximumAmountInExtension(pct, this)
+            return _maximumAmountIn(pct, this)
           },
           minimumAmountOut(pct: Percent) {
-            return _minimumAmountOutExtension(pct, this)
+            return _minimumAmountOut(pct, this)
           },
           fee: {
             amount: MOCKED_FEE_AMOUNT.long,
