@@ -56,7 +56,9 @@ export function colors(darkMode: boolean): Colors {
     border: darkMode ? '#3a3b5a' : 'rgb(58 59 90 / 10%)',
     disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)',
     redShade: darkMode ? '#842100' : '#AE2C00',
-    textLink: darkMode ? '#ffffff' : '#AE2C00'
+    textLink: darkMode ? '#ffffff' : '#AE2C00',
+    shimmer1: darkMode ? 'rgb(22 56 97 / 20%)' : 'rgb(175 203 218 / 20%)',
+    shimmer2: darkMode ? 'rgb(22 56 97 / 50%)' : 'rgb(175 203 218 / 40%)'
   }
 }
 
@@ -109,8 +111,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         color: darkMode ? colorsTheme.white : colorsTheme.black,
         colorHover: darkMode ? colorsTheme.white : colorsTheme.black,
         borderRadius: '9px',
-        width: '28px',
-        height: '28px',
+        width: '30px',
+        height: '30px',
         borderColor: darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled,
         borderSize: `2px`
       }

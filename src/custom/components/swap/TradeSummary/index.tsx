@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import TradeSummaryMod from './TradeSummaryMod'
 import { RowFixed } from 'components/Row'
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 
 const Wrapper = styled.div`
   ${RowFixed} {
@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   }
 `
 
-export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeWithFee; allowedSlippage: number }) {
+export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeGp; allowedSlippage: number }) {
   return (
     <Wrapper>
       <TradeSummaryMod trade={trade} allowedSlippage={allowedSlippage} />

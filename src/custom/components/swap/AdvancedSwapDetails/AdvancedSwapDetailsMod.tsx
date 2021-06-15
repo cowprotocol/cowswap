@@ -11,7 +11,7 @@ import { AutoColumn } from 'components/Column'
 // import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
 // import SwapRoute from 'components/swap/SwapRoute'
 
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 import TradeSummary from '../TradeSummary'
 
 export const InfoLink = styled(ExternalLink)`
@@ -78,7 +78,7 @@ export const InfoLink = styled(ExternalLink)`
 
 export interface AdvancedSwapDetailsProps {
   // trade?: Trade
-  trade?: TradeWithFee
+  trade?: TradeGp
 }
 
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {

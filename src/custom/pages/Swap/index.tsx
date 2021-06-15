@@ -8,12 +8,7 @@ import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
-import {
-  BottomGrouping as BottomGroupingUni,
-  Wrapper as WrapperUni,
-  ArrowWrapper as ArrowWrapperUni,
-  Dots
-} from 'components/swap/styleds'
+import { BottomGrouping as BottomGroupingUni, Wrapper as WrapperUni, Dots } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
@@ -24,6 +19,8 @@ import QuestionHelper from 'components/QuestionHelper'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
+import { ArrowWrapperLoader, ArrowWrapperProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
+import { LONG_LOAD_THRESHOLD } from 'constants/index'
 
 interface FeeGreaterMessageProp {
   fee: CurrencyAmount
@@ -78,39 +75,12 @@ const SwapModWrapper = styled(SwapMod)`
       color: ${({ theme }) => theme.text1};
     }
 
-    ${ArrowWrapperUni} {
-      position: absolute;
-      z-index: 2;
-      background: ${({ theme }) => theme.swap.arrowDown.background};
-      border-radius: ${({ theme }) => theme.swap.arrowDown.borderRadius};
-      width: ${({ theme }) => theme.swap.arrowDown.width};
-      height: ${({ theme }) => theme.swap.arrowDown.height};
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: ${({ theme }) => `${theme.swap.arrowDown.borderSize} solid ${theme.swap.arrowDown.borderColor}`};
-      transition: transform 0.1s ease-in-out;
-
-      &:hover {
-        opacity: 1;
-        transform: translateY(1px);
-
-        > svg {
-          stroke: ${({ theme }) => theme.swap.arrowDown.colorHover};
-        }
-      }
-
-      > svg {
-        stroke: ${({ theme }) => theme.swap.arrowDown.color}
-      }
-    }
-
     ${StyledBalanceMaxMini} {
       background: ${({ theme }) => theme.bg2};
       color: ${({ theme }) => theme.text2};
     }
 
-    .expertMode ${ArrowWrapperUni} {
+    .expertMode ${ArrowWrapper} {
       position: relative;
     }
 
@@ -118,28 +88,15 @@ const SwapModWrapper = styled(SwapMod)`
       padding: 0 1rem;
     }
 
+    ${AutoRow} {
+      z-index: 2;
+    }
+
     ${AutoRow} svg > path {
       stroke: ${({ theme }) => theme.text1};
     }
   }
 `
-
-interface LoadingCowImgProps {
-  maxWidth?: string
-  padding?: string
-  showLoader: boolean
-}
-
-export const AnimatedImg = styled.img<LoadingCowImgProps>`
-  position: absolute;
-  width: ${({ width = '30px' }) => width};
-  max-width: ${({ maxWidth = '60px' }) => maxWidth};
-  padding: ${({ padding = 0 }) => padding};
-  right: ${({ showLoader }) => (showLoader ? '30px' : '0px')};
-
-  transition: right 0.3s ease-in-out;
-`
-
 export interface SwapProps extends RouteComponentProps {
   FeeGreaterMessage: React.FC<FeeGreaterMessageProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
@@ -148,6 +105,7 @@ export interface SwapProps extends RouteComponentProps {
   BottomGrouping: React.FC
   TradeLoading: React.FC<TradeLoadingProps>
   SwapButton: React.FC<SwapButtonProps>
+  ArrowWrapperLoader: React.FC<ArrowWrapperProps>
   className?: string
 }
 
@@ -237,8 +195,6 @@ const LongLoadText = styled.span`
   ${fadeIn}
 `
 
-const LONG_LOAD_THRESHOLD = 4000
-
 type TradeLoadingProps = {
   showButton?: boolean
 }
@@ -275,12 +231,12 @@ const TradeLoading = ({ showButton = false }: TradeLoadingProps) => {
 }
 
 interface SwapButtonProps extends TradeLoadingProps {
-  isHardLoading: boolean
+  showLoading: boolean
   children: React.ReactNode
 }
 
-const SwapButton = ({ children, isHardLoading, showButton = false }: SwapButtonProps) =>
-  isHardLoading ? (
+const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonProps) =>
+  showLoading ? (
     <TradeLoading showButton={showButton} />
   ) : (
     <Text fontSize={16} fontWeight={500}>
@@ -298,6 +254,7 @@ export default function Swap(props: RouteComponentProps) {
       BottomGrouping={BottomGrouping}
       SwapButton={SwapButton}
       TradeLoading={TradeLoading}
+      ArrowWrapperLoader={ArrowWrapperLoader}
       {...props}
     />
   )

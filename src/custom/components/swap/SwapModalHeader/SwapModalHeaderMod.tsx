@@ -12,11 +12,11 @@ import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RowBetween, RowFixed } from 'components/Row'
 import { TruncatedText, SwapShowAcceptChanges } from 'components/swap/styleds'
-import { TradeWithFee } from 'state/swap/extension'
+import TradeGp from 'state/swap/TradeGp'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 
 export interface SwapModalHeaderProps {
-  trade: TradeWithFee
+  trade: TradeGp
   allowedSlippage: number
   recipient: string | null
   showAcceptChanges: boolean

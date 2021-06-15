@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useLastTruthy } from '../../hooks/useLast'
-import { AdvancedSwapDetails, AdvancedSwapDetailsProps } from '@src/components/swap/AdvancedSwapDetails'
+import { useLastTruthy } from 'hooks/useLast'
+import { AdvancedSwapDetails /* , AdvancedSwapDetailsProps */ } from 'components/swap/AdvancedSwapDetails'
+import TradeGp from 'state/swap/TradeGp'
 
 const AdvancedDetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -18,6 +19,10 @@ const AdvancedDetailsFooter = styled.div<{ show: boolean }>`
   transform: ${({ show }) => (show ? 'translateY(0%)' : 'translateY(-100%)')};
   transition: transform 300ms ease-in-out;
 `
+
+interface AdvancedSwapDetailsProps {
+  trade?: TradeGp
+}
 
 export default function AdvancedSwapDetailsDropdown({ trade, ...rest }: AdvancedSwapDetailsProps) {
   const lastTrade = useLastTruthy(trade)
