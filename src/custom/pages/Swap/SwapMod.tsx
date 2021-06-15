@@ -432,8 +432,7 @@ export default function Swap({
                 justify={isExpertMode ? 'space-between' : 'center'}
                 // style={{ padding: '0 1rem' }}
               >
-                {/* <ArrowWrapper clickable> */}
-                <ArrowWrapperLoader>
+                {/* <ArrowWrapper clickable>
                   <ArrowDown
                     size="16"
                     onClick={() => {
@@ -442,8 +441,9 @@ export default function Swap({
                     }}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
                   />
-                  {/* </ArrowWrapper> */}
-                </ArrowWrapperLoader>
+                  </ArrowWrapper> */}
+
+                <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} setApprovalSubmitted={setApprovalSubmitted} />
                 {recipient === null && !showWrap && isExpertMode ? (
                   <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                     + Add a send (optional)
