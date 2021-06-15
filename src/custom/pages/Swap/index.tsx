@@ -19,7 +19,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
-import { ArrowWrapperLoader, ArrowWrapperProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
+import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
 
 interface FeeGreaterMessageProp {
@@ -105,7 +105,7 @@ export interface SwapProps extends RouteComponentProps {
   BottomGrouping: React.FC
   TradeLoading: React.FC<TradeLoadingProps>
   SwapButton: React.FC<SwapButtonProps>
-  ArrowWrapperLoader: React.FC<ArrowWrapperProps>
+  ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   className?: string
 }
 
