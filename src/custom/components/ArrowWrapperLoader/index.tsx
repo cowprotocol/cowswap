@@ -1,29 +1,29 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
+import { ArrowDown } from 'react-feather'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
 import { useIsQuoteRefreshing } from 'state/price/hooks'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
 
-export interface ArrowWrapperProps {
-  children: React.ReactNode
-}
+const ArrowDownIcon = styled(ArrowDown)<{ showLoader: boolean }>`
+  stroke: ${({ theme }) => theme.swap.arrowDown.color};
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+  margin: 0;
+  position: absolute;
 
-export function ArrowWrapperLoader({ children }: ArrowWrapperProps) {
-  const isRefreshingQuote = useIsQuoteRefreshing()
-  const showLoader = useLoadingWithTimeout(isRefreshingQuote, LONG_LOAD_THRESHOLD)
-
-  return (
-    <Wrapper showLoader={showLoader}>
-      {children}
-      {showLoader && (
-        <div>
-          <img src={loadingCowGif} alt="Loading prices..." />
-        </div>
-      )}
-    </Wrapper>
-  )
-}
+  ${({ showLoader }) =>
+    showLoader
+      ? css`
+          height: 0;
+          width: 0;
+        `
+      : null}
+`
 
 export const Wrapper = styled.div<{ showLoader: boolean }>`
   position: absolute;
@@ -42,28 +42,9 @@ export const Wrapper = styled.div<{ showLoader: boolean }>`
   transition: transform 0.25s;
 
   &:hover {
-    > svg {
+    ${ArrowDownIcon} {
       stroke: ${({ theme }) => theme.swap.arrowDown.colorHover};
     }
-  }
-
-  > svg {
-    stroke: ${({ theme }) => theme.swap.arrowDown.color};
-    backface-visibility: hidden;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 4px;
-    margin: 0;
-    position: absolute;
-
-    ${({ showLoader }) =>
-      showLoader
-        ? css`
-            height: 0;
-            width: 0;
-          `
-        : null}
   }
 
   > div {
@@ -93,7 +74,6 @@ export const Wrapper = styled.div<{ showLoader: boolean }>`
           overflow: visible;
           padding: 0;
           border: transparent;
-          cursor: initial;
           transform: translateX(-100%) rotateY(-180deg);
 
           &::before,
@@ -137,3 +117,28 @@ export const Wrapper = styled.div<{ showLoader: boolean }>`
         `
       : null}
 `
+
+export interface ArrowWrapperLoaderProps {
+  onSwitchTokens: () => void
+  setApprovalSubmitted: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export function ArrowWrapperLoader({ onSwitchTokens, setApprovalSubmitted }: ArrowWrapperLoaderProps) {
+  const isRefreshingQuote = useIsQuoteRefreshing()
+  const showLoader = useLoadingWithTimeout(isRefreshingQuote, LONG_LOAD_THRESHOLD)
+  const handleClick = () => {
+    setApprovalSubmitted(false) // reset 2 step UI for approvals
+    onSwitchTokens()
+  }
+
+  return (
+    <Wrapper showLoader={showLoader} onClick={handleClick}>
+      <ArrowDownIcon showLoader={showLoader} />
+      {showLoader && (
+        <div>
+          <img src={loadingCowGif} alt="Loading prices..." />
+        </div>
+      )}
+    </Wrapper>
+  )
+}
