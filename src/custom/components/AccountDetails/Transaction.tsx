@@ -24,6 +24,7 @@ import { useCancelOrder } from 'hooks/useCancelOrder'
 import { LinkStyledButton } from 'theme'
 import Modal from 'components/Modal'
 import { ButtonPrimary } from 'components/Button'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',
@@ -226,7 +227,15 @@ export default function Transaction({ hash: id }: { hash: string }) {
               {type}
             </Pill>
           )}
-          <TransactionStatusText>{getActivitySummary({ activityData, id })}</TransactionStatusText>
+          <TransactionStatusText>
+            {isCancelling ? (
+              <MouseoverTooltip text={activity.summary || id}>
+                {getActivitySummary({ activityData, id, suffix: '(Cancellation requested)' })}
+              </MouseoverTooltip>
+            ) : (
+              getActivitySummary({ activityData, id })
+            )}
+          </TransactionStatusText>
         </RowFixed>
         <IconWrapper pending={isPending || isCancelling} success={isConfirmed || isCancelled}>
           {isPending || isCancelling ? (
