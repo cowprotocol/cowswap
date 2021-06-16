@@ -1679,10 +1679,10 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/cow-runner-game/-/cow-runner-game-0.2.7.tgz#b4646e3dc6c890f2cf662b24533ec6e1ef111521"
   integrity sha512-tw84gdlRCzmdb/c9tEmqHZ7rvrMR9/+N4sMAz6BsArbA8Kve6adUN9UKkhdN2htlKnOqlTRqJZW9VPrCx9ZSNA==
 
-"@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.18":
-  version "0.0.1-alpha.18"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.18.tgz#317ec588724713d067158293748cb1057a9d02a3"
-  integrity sha512-jOh0UHYA6W5q2840CKR6FWNxc0ARGs6ijSjPXbX6ytPU5c7uH5yrXM0Qvkogp4KWrnxtZQ9ptdA+nsVAgyDmRQ==
+"@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.20":
+  version "0.0.1-alpha.20"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.20.tgz#8a53a1495c9dc356080b3ec3ec4f29808726952b"
+  integrity sha512-+R+JKMbzC4SDEdbg86yRbWEBom5ZW0eRGfvNCJ3qUg5KSNKJvA/2bCYHpfWBiQ7fETKHyYH2mlO3XziWplwa2A==
 
 "@hapi/address@2.x.x":
   version "2.1.4"
