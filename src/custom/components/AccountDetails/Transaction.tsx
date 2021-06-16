@@ -59,15 +59,11 @@ function getActivitySummary({
 }) {
   if (!activityData) return null
 
-  const { summary, status, type } = activityData
+  const { summary } = activityData
 
-  const isMeta = type === ActivityType.ORDER && status !== ActivityStatus.CONFIRMED
-
-  // add arrow indicating clickable link if not meta tx
-  const suffix = !isMeta ? ' ↗' : ''
   const baseSummary = summary ?? id
 
-  return baseSummary + suffix
+  return baseSummary + ' ↗'
 }
 
 const RowWrapper = styled(TransactionWrapper)`
