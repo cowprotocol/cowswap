@@ -147,10 +147,9 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = Object.values(state)
+    return Object.values(state)
       .map(orderObject => orderObject?.order)
       .filter(isTruthy)
-    return allOrders
   }, [state])
 }
 
@@ -162,10 +161,9 @@ export const useFulfilledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = Object.values(state)
+    return Object.values(state)
       .map(orderObject => orderObject?.order)
       .filter(isTruthy)
-    return allOrders
   }, [state])
 }
 
@@ -177,10 +175,23 @@ export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = Object.values(state)
+    return Object.values(state)
       .map(orderObject => orderObject?.order)
       .filter(isTruthy)
-    return allOrders
+  }, [state])
+}
+
+export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
+  const state = useSelector<AppState, PartialOrdersMap | undefined>(
+    state => chainId && state.orders?.[chainId]?.cancelled
+  )
+
+  return useMemo(() => {
+    if (!state) return []
+
+    return Object.values(state)
+      .map(orderObject => orderObject?.order)
+      .filter(isTruthy)
   }, [state])
 }
 
