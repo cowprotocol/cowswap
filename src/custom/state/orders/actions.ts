@@ -7,7 +7,8 @@ export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 export enum OrderStatus {
   PENDING = 'pending',
   FULFILLED = 'fulfilled',
-  EXPIRED = 'expired'
+  EXPIRED = 'expired',
+  CANCELLED = 'cancelled'
 }
 
 // used internally by dapp
@@ -35,8 +36,10 @@ export interface AddPendingOrderParams {
   order: Order
 }
 
+export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
+
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
-export const removeOrder = createAction<{ id: OrderID; chainId: ChainId }>('order/removeOrder')
+export const removeOrder = createAction<ChangeOrderStatusParams>('order/removeOrder')
 //                                                                        fulfillmentTime from event timestamp
 export const fulfillOrder = createAction<{
   id: OrderID
@@ -59,9 +62,11 @@ export interface FulfillOrdersBatchParams {
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
-export const expireOrder = createAction<{ id: OrderID; chainId: ChainId }>('order/expireOrder')
+export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
 
 export const expireOrdersBatch = createAction<{ ids: OrderID[]; chainId: ChainId }>('order/expireOrdersBatch')
+
+export const cancelOrder = createAction<ChangeOrderStatusParams>('order/cancelOrder')
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 

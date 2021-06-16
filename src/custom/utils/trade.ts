@@ -1,9 +1,9 @@
 import { ChainId, CurrencyAmount, Token } from '@uniswap/sdk'
 import { isAddress, shortenAddress } from '@src/utils'
-import { AddPendingOrderParams, OrderStatus, OrderKind } from 'state/orders/actions'
+import { AddPendingOrderParams, OrderStatus, OrderKind, ChangeOrderStatusParams } from 'state/orders/actions'
 
-import { signOrder, UnsignedOrder } from 'utils/signatures'
-import { postSignedOrder } from 'utils/operator'
+import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
+import { sendSignedOrderCancellation, sendSignedOrder, OrderID } from 'utils/operator'
 import { Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
 
@@ -46,7 +46,7 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function postOrder(params: PostOrderParams): Promise<string> {
+export async function sendOrder(params: PostOrderParams): Promise<string> {
   const {
     kind,
     addPendingOrder,
@@ -89,7 +89,7 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
   const creationTime = new Date().toISOString()
 
   // Call API
-  const orderId = await postSignedOrder({
+  const orderId = await sendSignedOrder({
     chainId,
     order: {
       ...unsignedOrder,
@@ -118,4 +118,26 @@ export async function postOrder(params: PostOrderParams): Promise<string> {
   })
 
   return orderId
+}
+
+type OrderCancellationParams = {
+  orderId: OrderID
+  account: string
+  chainId: ChainId
+  signer: Signer
+  cancelPendingOrder: (params: ChangeOrderStatusParams) => void
+}
+
+export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
+  const { orderId, account, chainId, signer, cancelPendingOrder } = params
+
+  const { signature, signingScheme } = await signOrderCancellation(orderId, chainId, signer)
+
+  await sendSignedOrderCancellation({
+    chainId,
+    owner: account,
+    cancellation: { orderUid: orderId, signature, signingScheme }
+  })
+
+  cancelPendingOrder({ chainId, id: orderId })
 }

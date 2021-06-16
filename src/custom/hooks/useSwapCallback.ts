@@ -12,7 +12,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useWrapEther } from 'hooks/useWrapEther'
 
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { postOrder } from 'utils/trade'
+import { sendOrder } from 'utils/trade'
 import { OrderKind } from 'utils/signatures'
 import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
@@ -140,7 +140,7 @@ export function useSwapCallback(
         const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmountWithSlippage) : undefined
 
         // TODO: indicate somehow in the order when the user was to receive ETH === isBuyEth flag
-        const postOrderPromise = postOrder({
+        const postOrderPromise = sendOrder({
           kind,
           account,
           chainId,

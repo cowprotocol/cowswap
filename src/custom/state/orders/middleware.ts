@@ -4,13 +4,14 @@ import { addPopup } from 'state/application/actions'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
 
-import { OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
+import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
   OrderActions.addPendingOrder,
   OrderActions.expireOrder,
-  OrderActions.fulfillOrder
+  OrderActions.fulfillOrder,
+  OrderActions.cancelOrder
 )
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
@@ -18,6 +19,7 @@ const isBatchOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch, OrderActions
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
+const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder)
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponsing Popup action is dispatched
@@ -34,9 +36,9 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
 
     if (!orders) return
 
-    const { pending, fulfilled, expired } = orders
+    const { pending, fulfilled, expired, cancelled } = orders
 
-    const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
+    const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
 
     // look up Order.summary for Popup
     const summary = orderObject?.order.summary
@@ -53,6 +55,14 @@ export const popupMiddleware: Middleware<{}, AppState> = store => next => action
         id,
         status: OrderActions.OrderStatus.FULFILLED,
         descriptor: 'was traded'
+      })
+    } else if (isCancelOrderAction(action)) {
+      // action is order/cancelOrder
+      // Cancelled Order Popup
+      popup = setPopupData(OrderTxTypes.METATXN, {
+        success: true,
+        summary: buildCancellationPopupSummary(id, summary),
+        id
       })
     } else {
       // action is order/expireOrder
@@ -171,6 +181,9 @@ export const soundMiddleware: Middleware<{}, AppState> = store => next => action
   } else if (isFulfillOrderAction(action)) {
     getMoooooSuccess().play()
   } else if (isExpireOrdersAction(action)) {
+    getMoooooError().play()
+  } else if (isCancelOrderAction(action)) {
+    // TODO: find a unique sound for order cancellation
     getMoooooError().play()
   }
 

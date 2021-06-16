@@ -446,6 +446,17 @@ export default function Faq() {
                   <td>Free</td>
                 </tr>
                 <tr>
+                  <td>Signing a Cancellation</td>
+                  <td>
+                    Signature of a gasless off-chain order cancellation. See{' '}
+                    <ContentLink href={'#can-i-cancel-an-order'}>this FAQ entry</ContentLink> for more info.
+                  </td>
+                  <td>Free</td>
+                  <td>None</td>
+                  <td>No</td>
+                  <td>Free</td>
+                </tr>
+                <tr>
                   <td>Trade</td>
                   <td>
                     The trade will happen automatically if a CoW (Coincidence of Wants) is found, or if the order can be
@@ -576,8 +587,18 @@ export default function Faq() {
             </li>
           </ol>
 
+          <h3 id="can-i-cancel-an-order">Can I cancel an order?</h3>
+
+          <p>Yes! You can request to cancel any order while it is still pending.</p>
+          <p>Cancellations, like orders, are free and require no gas to be paid.</p>
+          <p>Keep in mind even though the request to cancel an order succeeds, the order might still be executed.</p>
+          <p>
+            That is because when the offline order cancellation is received, a settlement solution may have already been
+            prepared by one of the solvers and sent to the Ethereum network.
+          </p>
+
           <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
-            Why does the UI dapp have a warning ”Fees exceed From amount”?
+            Why does the UI dapp have a warning &ldquo;Fees exceed From amount&rdquo;?
           </h3>
 
           <p>

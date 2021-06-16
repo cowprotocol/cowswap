@@ -1,5 +1,5 @@
 import { ChainId, ETHER, WETH } from '@uniswap/sdk'
-import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
+import { getSigningSchemeApiValue, OrderCancellation, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
 import { isDev } from '../environments'
@@ -83,23 +83,28 @@ export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
   return baseUrl + `/orders/${orderId}`
 }
 
-function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
+function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
   return fetch(baseUrl + url, {
     headers: DEFAULT_HEADERS,
-    method: 'POST',
-    body: JSON.stringify(data)
+    method,
+    body: data !== undefined ? JSON.stringify(data) : data
   })
 }
 
-function _fetchGet(chainId: ChainId, url: string) {
-  const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
-    headers: DEFAULT_HEADERS
-  })
+function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
+  return _fetch(chainId, url, 'POST', data)
 }
 
-export async function postSignedOrder(params: {
+function _get(chainId: ChainId, url: string): Promise<Response> {
+  return _fetch(chainId, url, 'GET')
+}
+
+function _delete(chainId: ChainId, url: string, data: any): Promise<Response> {
+  return _fetch(chainId, url, 'DELETE', data)
+}
+
+export async function sendSignedOrder(params: {
   chainId: ChainId
   order: OrderCreation
   owner: string
@@ -117,13 +122,39 @@ export async function postSignedOrder(params: {
   // Handle response
   if (!response.ok) {
     // Raise an exception
-    const errorMessage = await OperatorError.getErrorFromStatusCode(response)
+    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'create')
     throw new Error(errorMessage)
   }
 
   const uid = (await response.json()) as string
   console.log('[util:operator] Success posting the signed order', uid)
   return uid
+}
+
+type OrderCancellationParams = {
+  chainId: ChainId
+  cancellation: OrderCancellation
+  owner: string
+}
+
+export async function sendSignedOrderCancellation(params: OrderCancellationParams): Promise<void> {
+  const { chainId, cancellation, owner: from } = params
+
+  console.log('[utils:operator] Delete signed order for network', chainId, cancellation)
+
+  const response = await _delete(chainId, `/orders/${cancellation.orderUid}`, {
+    signature: cancellation.signature,
+    signingScheme: getSigningSchemeApiValue(cancellation.signingScheme),
+    from
+  })
+
+  if (!response.ok) {
+    // Raise an exception
+    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'delete')
+    throw new Error(errorMessage)
+  }
+
+  console.log('[utils:operator] Cancelled order', cancellation.orderUid, chainId)
 }
 
 function checkIfEther(tokenAddress: string, chainId: ChainId) {
@@ -158,7 +189,7 @@ async function _getJson(chainId: ChainId, url: string): Promise<any> {
   let response: Response | undefined
   let json
   try {
-    response = await _fetchGet(chainId, url)
+    response = await _get(chainId, url)
     json = await response.json()
   } finally {
     if (!response || !json) {
@@ -204,4 +235,4 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
 }
 
 // Register some globals for convenience
-registerOnWindow({ operator: { getFeeQuote, getOrder, postSignedOrder, apiGet: _fetchGet, apiPost: _post } })
+registerOnWindow({ operator: { getFeeQuote, getOrder, sendSignedOrder, apiGet: _get, apiPost: _post } })

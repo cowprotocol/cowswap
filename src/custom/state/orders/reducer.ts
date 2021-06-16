@@ -11,7 +11,8 @@ import {
   updateLastCheckedBlock,
   expireOrder,
   fulfillOrdersBatch,
-  expireOrdersBatch
+  expireOrdersBatch,
+  cancelOrder
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -30,6 +31,7 @@ export type OrdersState = {
     pending: PartialOrdersMap
     fulfilled: PartialOrdersMap
     expired: PartialOrdersMap
+    cancelled: PartialOrdersMap
     lastCheckedBlock: number
   }
 }
@@ -51,6 +53,7 @@ function prefillState(
       pending: {},
       fulfilled: {},
       expired: {},
+      cancelled: {},
       lastCheckedBlock: ContractDeploymentBlocks[chainId] ?? 0
     }
     return
@@ -66,6 +69,10 @@ function prefillState(
 
   if (!stateAtChainId.expired) {
     stateAtChainId.expired = {}
+  }
+
+  if (!stateAtChainId.cancelled) {
+    stateAtChainId.cancelled = {}
   }
 
   if (stateAtChainId.lastCheckedBlock === undefined) {
@@ -89,6 +96,7 @@ export default createReducer(initialState, builder =>
       delete state[chainId].pending[id]
       delete state[chainId].fulfilled[id]
       delete state[chainId].expired[id]
+      delete state[chainId].cancelled[id]
     })
     .addCase(fulfillOrder, (state, action) => {
       prefillState(state, action)
@@ -165,6 +173,20 @@ export default createReducer(initialState, builder =>
         }
       })
     })
+    .addCase(cancelOrder, (state, action) => {
+      prefillState(state, action)
+      const { id, chainId } = action.payload
+
+      const orderObject = state[chainId].pending[id]
+
+      if (orderObject) {
+        delete state[chainId].pending[id]
+
+        orderObject.order.status = OrderStatus.CANCELLED
+
+        state[chainId].cancelled[id] = orderObject
+      }
+    })
     .addCase(clearOrders, (state, action) => {
       const { chainId } = action.payload
 
@@ -174,6 +196,7 @@ export default createReducer(initialState, builder =>
         pending: {},
         fulfilled: {},
         expired: {},
+        cancelled: {},
         lastCheckedBlock: lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0
       }
     })

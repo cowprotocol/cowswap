@@ -20,7 +20,8 @@ export enum ActivityType {
 export enum ActivityStatus {
   PENDING,
   CONFIRMED,
-  EXPIRED
+  EXPIRED,
+  CANCELLED
 }
 
 enum TxReceiptStatus {
@@ -112,13 +113,14 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
 
     let activity: TransactionDetails | Order, type: ActivityType
 
-    let isPending: boolean, isConfirmed: boolean
+    let isPending: boolean, isConfirmed: boolean, isCancelled: boolean
 
     if (!tx && order) {
       // We're dealing with an ORDER
       // setup variables accordingly...
       isPending = order?.status === OrderStatus.PENDING
       isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
+      isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
 
       activity = order
       type = ActivityType.ORDER
@@ -129,12 +131,20 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
         tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
       isPending = !tx?.receipt
       isConfirmed = !isPending && isReceiptConfirmed
+      // TODO: can't tell when it's cancelled from the network yet
+      isCancelled = false
 
       activity = tx
       type = ActivityType.TX
     }
 
-    const status = isPending ? ActivityStatus.PENDING : isConfirmed ? ActivityStatus.CONFIRMED : ActivityStatus.EXPIRED
+    const status = isPending
+      ? ActivityStatus.PENDING
+      : isConfirmed
+      ? ActivityStatus.CONFIRMED
+      : isCancelled
+      ? ActivityStatus.CANCELLED
+      : ActivityStatus.EXPIRED
     const summary = activity.summary
 
     return {

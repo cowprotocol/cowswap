@@ -20,7 +20,7 @@ export default function TransactionPopup({
 }: {
   hash: string
   success?: boolean
-  summary?: string
+  summary?: string | JSX.Element
 }) {
   const { chainId } = useActiveWeb3React()
 
@@ -32,7 +32,13 @@ export default function TransactionPopup({
         {success ? <CheckCircle color={theme.green1} size={24} /> : <AlertCircle color={theme.red1} size={24} />}
       </div>
       <AutoColumn gap="8px">
-        <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
+        {!summary || typeof summary === 'string' ? (
+          <TYPE.body fontWeight={500} style={{ whiteSpace: 'pre-wrap' }}>
+            {summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}
+          </TYPE.body>
+        ) : (
+          summary
+        )}
         {chainId && (
           // <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>View on Etherscan</ExternalLink>
           <ExplorerLink id={hash} />

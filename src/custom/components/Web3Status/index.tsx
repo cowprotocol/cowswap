@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 `
 
 const isPending = (data: TransactionAndOrder) => data.status === OrderStatus.PENDING
-const isConfirmedOrExpired = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED
+const isConfirmed = (data: TransactionAndOrder) =>
+  data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
 
 function StatusIcon({ connector }: { connector: AbstractConnector }): JSX.Element | null {
   const walletInfo = useWalletInfo()
@@ -36,14 +36,14 @@ export default function Web3Status() {
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()
 
-  const { pendingActivity, confirmedAndExpiredActivity } = useMemo(() => {
+  const { pendingActivity, confirmedActivity } = useMemo(() => {
     // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)+EXPIRED
     const pendingActivity = allRecentActivity.filter(isPending).map(data => data.id)
-    const confirmedAndExpiredActivity = allRecentActivity.filter(isConfirmedOrExpired).map(data => data.id)
+    const confirmedActivity = allRecentActivity.filter(isConfirmed).map(data => data.id)
 
     return {
       pendingActivity,
-      confirmedAndExpiredActivity
+      confirmedActivity
     }
   }, [allRecentActivity])
 
@@ -55,11 +55,7 @@ export default function Web3Status() {
   return (
     <Wrapper>
       <Web3StatusInner pendingCount={pendingActivity.length} StatusIconComponent={StatusIcon} />
-      <WalletModal
-        ENSName={ensName}
-        pendingTransactions={pendingActivity}
-        confirmedTransactions={confirmedAndExpiredActivity}
-      />
+      <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />
     </Wrapper>
   )
 }

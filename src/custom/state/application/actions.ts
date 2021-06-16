@@ -7,7 +7,7 @@ export interface MetaTxPopupContent {
   metatxn: {
     id: string
     success: boolean
-    summary?: string
+    summary?: string | JSX.Element
   }
 }
 

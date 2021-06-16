@@ -10,12 +10,12 @@ import {
 } from 'state/lists/hooks/hooksMod'
 import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/price/reducer'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
-import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
+import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes } from 'utils/operator/error'
 import { onlyResolvesLast } from 'utils/async'
 import { ClearQuoteParams, SetQuoteErrorParams } from 'state/price/actions'
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 
-export interface RefetchQuoteCallbackParmams {
+export interface RefetchQuoteCallbackParams {
   quoteParams: FeeQuoteParams
   fetchFee: boolean
   previousFee?: FeeInformation
@@ -27,7 +27,7 @@ export interface RefetchQuoteCallbackParmams {
 
 type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
-async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParmams): Promise<QuoteResult> {
+async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParams): Promise<QuoteResult> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
 
@@ -62,7 +62,7 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
         Promise.reject(
           new OperatorError({
             errorType: ApiErrorCodes.FeeExceedsFrom,
-            description: OperatorError.apiErrorDetails.FeeExceedsFrom
+            description: ApiErrorCodeDetails.FeeExceedsFrom
           })
         )
 
@@ -144,7 +144,7 @@ export function useRefetchQuoteCallback() {
   registerOnWindow({ updateQuote, addUnsupportedToken, removeGpUnsupportedToken })
 
   return useCallback(
-    async (params: RefetchQuoteCallbackParmams) => {
+    async (params: RefetchQuoteCallbackParams) => {
       let quoteData: FeeQuoteParams | QuoteInformationObject = params.quoteParams
       const { setLoadingCallback, hideLoadingCallback } = params.handlers
 
