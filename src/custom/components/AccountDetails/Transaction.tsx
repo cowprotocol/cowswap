@@ -52,16 +52,27 @@ function determinePillColour(status: ActivityStatus, type: ActivityType) {
 
 function getActivitySummary({
   id,
-  activityData
+  activityData,
+  suffix
 }: {
   id: string
   activityData: ReturnType<typeof useActivityDescriptors>
+  suffix?: string
 }) {
   if (!activityData) return null
 
   const { summary } = activityData
 
-  const baseSummary = summary ?? id
+  let baseSummary = summary
+
+  if (suffix && baseSummary) {
+    // Shorten summary when `suffix` is set and it matches the regex.
+    // It should always match the regex
+    const m = baseSummary.match(/(Swap\s+[\d.]+)/)
+    baseSummary = (m && m.length > 1 ? m[1] + ' … ' : baseSummary + ' ') + suffix
+  }
+
+  baseSummary = baseSummary ?? id
 
   return baseSummary + ' ↗'
 }
