@@ -123,15 +123,17 @@ export default createReducer(initialState, builder =>
       const { ordersData, chainId } = action.payload
 
       const pendingOrders = state[chainId].pending
+      const cancelledOrders = state[chainId].cancelled
       const fulfilledOrders = state[chainId].fulfilled
 
       // if there are any newly fulfilled orders
       // update them
       ordersData.forEach(({ id, fulfillmentTime, transactionHash }) => {
-        const orderObject = pendingOrders[id]
+        const orderObject = pendingOrders[id] || cancelledOrders[id]
 
         if (orderObject) {
           delete pendingOrders[id]
+          delete cancelledOrders[id]
 
           orderObject.order.status = OrderStatus.FULFILLED
           orderObject.order.fulfillmentTime = fulfillmentTime
