@@ -4,7 +4,8 @@ import {
   EcdsaSignature,
   Order,
   Signature,
-  TypedDataV3Signer
+  TypedDataV3Signer,
+  IntChainIdTypedDataV4Signer
 } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from '@uniswap/sdk'
 
@@ -22,6 +23,7 @@ const METHOD_NOT_FOUND_ERROR_CODE = -32601
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i
+const METAMASK_STRING_CHAINID_REGEX = /provided chainid .* must match the active chainid/i
 
 export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string }
 
@@ -124,14 +126,23 @@ export async function signOrder(
   unsignedOrder: UnsignedOrder,
   chainId: ChainId,
   signer: Signer,
-  signingMethod: 'v4' | 'v3' | 'eth_sign' = 'v4'
+  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
 ): Promise<{ signature: string; signingScheme: EcdsaSigningScheme }> {
   const signingScheme = signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712
   let signature: Signature | null = null
 
-  let _signer = signer
+  let _signer
   try {
-    _signer = signingMethod === 'v3' ? new TypedDataV3Signer(signer) : signer
+    switch (signingMethod) {
+      case 'v3':
+        _signer = new TypedDataV3Signer(signer)
+        break
+      case 'int_v4':
+        _signer = new IntChainIdTypedDataV4Signer(signer)
+        break
+      default:
+        _signer = signer
+    }
   } catch (e) {
     console.error('Wallet not supported:', e)
     throw new Error('Wallet not supported')
@@ -159,6 +170,9 @@ export async function signOrder(
         default:
           throw e
       }
+    } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
+      // Metamask now enforces chainId to be an integer
+      return signOrder(unsignedOrder, chainId, signer, 'int_v4')
     } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
       // We tried to sign order the nice way.
       // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
