@@ -51,15 +51,13 @@ function determinePillColour(status: ActivityStatus, type: ActivityType) {
   }
 }
 
-function getActivitySummary({
-  id,
-  activityData,
-  suffix
-}: {
+function getActivitySummary(params: {
   id: string
   activityData: ReturnType<typeof useActivityDescriptors>
   suffix?: string
-}) {
+}): string | null {
+  const { id, activityData, suffix } = params
+
   if (!activityData) return null
 
   const { summary } = activityData
