@@ -140,15 +140,19 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
       type = ActivityType.TX
     }
 
-    const status = isCancelling
-      ? ActivityStatus.CANCELLING
-      : isPending
-      ? ActivityStatus.PENDING
-      : isConfirmed
-      ? ActivityStatus.CONFIRMED
-      : isCancelled
-      ? ActivityStatus.CANCELLED
-      : ActivityStatus.EXPIRED
+    let status
+
+    if (isCancelling) {
+      status = ActivityStatus.CANCELLING
+    } else if (isPending) {
+      status = ActivityStatus.PENDING
+    } else if (isConfirmed) {
+      status = ActivityStatus.CONFIRMED
+    } else if (isCancelled) {
+      status = ActivityStatus.CANCELLED
+    } else {
+      status = ActivityStatus.EXPIRED
+    }
     const summary = activity.summary
 
     return {
