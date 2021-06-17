@@ -4,7 +4,7 @@ import { updateQuote, clearQuote, setQuoteError, setNewQuoteLoading, setRefreshQ
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
-import { ApiErrorCodes } from 'utils/operator/error'
+import { QuoteErrorCodes } from 'utils/operator/errors/QuoteError'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -26,7 +26,7 @@ export interface PriceInformation {
 export interface QuoteInformationObject extends FeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
-  error?: ApiErrorCodes
+  error?: QuoteErrorCodes
   lastCheck: number
 }
 

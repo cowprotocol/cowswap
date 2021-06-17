@@ -60,7 +60,7 @@ import { SwapProps } from '.'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
-import { isInsufficientLiquidityError } from 'state/price/utils'
+import { isFeeGreaterThanPriceError, isInsufficientLiquidityError, isUnhandledQuoteError } from 'state/price/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import TradeGp from '@src/custom/state/swap/TradeGp'
 
@@ -550,13 +550,17 @@ export default function Swap({
               </ButtonPrimary>
             ) : !swapInputError && isNativeIn ? (
               <SwitchToWethBtn wrappedToken={wrappedToken} />
-            ) : isFeeGreater ? (
+            ) : isFeeGreaterThanPriceError(quote?.error) ? (
               <FeesExceedFromAmountMessage />
             ) : isInsufficientLiquidityError(quote?.error) ? (
               // ) : noRoute && userHasSpecifiedInputOutput ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
                 {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
+              </GreyCard>
+            ) : isUnhandledQuoteError(quote?.error) ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">Error loading quote. Try again later.</TYPE.main>
               </GreyCard>
             ) : showApproveFlow ? (
               <RowBetween>

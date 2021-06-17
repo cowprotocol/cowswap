@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ApiErrorCodes } from 'utils/operator/error'
+import { QuoteErrorCodes } from 'utils/operator/errors/QuoteError'
 import { ChainId } from '@uniswap/sdk'
 import { QuoteInformationObject } from './reducer'
 
@@ -18,7 +18,7 @@ export interface SetLoadingQuoteParams {
   quoteData: Pick<QuoteInformationObject, 'sellToken' | 'chainId'>
 }
 
-export type SetQuoteErrorParams = UpdateQuoteParams & { error: ApiErrorCodes }
+export type SetQuoteErrorParams = UpdateQuoteParams & { error: QuoteErrorCodes }
 
 export const setNewQuoteLoading = createAction<SetLoadingQuoteParams>('price/setNewQuoteLoading')
 export const setRefreshQuoteLoading = createAction<Pick<SetLoadingQuoteParams, 'loading'>>(

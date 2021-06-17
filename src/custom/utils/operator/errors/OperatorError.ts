@@ -1,4 +1,6 @@
-export interface ApiError {
+type ApiActionType = 'get' | 'create' | 'delete'
+
+export interface ApiErrorObject {
   errorType: ApiErrorCodes
   description: string
 }
@@ -15,8 +17,10 @@ export enum ApiErrorCodes {
   UnsupportedToken = 'UnsupportedToken',
   WrongOwner = 'WrongOwner',
   NotFound = 'NotFound',
-  FeeExceedsFrom = 'FeeExceedsFrom',
-  OrderNotFound = 'OrderNotFound'
+  OrderNotFound = 'OrderNotFound',
+  UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
+  UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
+  UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'
 }
 
 export enum ApiErrorCodeDetails {
@@ -29,32 +33,53 @@ export enum ApiErrorCodeDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
   NotFound = 'Token pair selected has insufficient liquidity',
-  FeeExceedsFrom = 'Fee amount for selected pair exceeds "from" amount',
   OrderNotFound = 'The order you are trying to cancel does not exist',
+  UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network'
+}
+
+function _mapActionToErrorDetail(action?: ApiActionType) {
+  switch (action) {
+    case 'get':
+      return ApiErrorCodeDetails.UNHANDLED_GET_ERROR
+    case 'create':
+      return ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
+    // default and last case..
+    case 'delete':
+      return ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
+    default:
+      console.error(
+        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
+      )
+      return 'Something failed. Please try again later.'
+  }
 }
 
 export default class OperatorError extends Error {
   name = 'OperatorError'
   type: ApiErrorCodes
-  description: ApiError['description']
+  description: ApiErrorObject['description']
 
-  static async getErrorMessage(response: Response, action: 'create' | 'delete') {
+  // Status 400 errors
+  // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
+  static apiErrorDetails = ApiErrorCodeDetails
+
+  public static async getErrorMessage(response: Response, action: ApiActionType) {
     try {
-      const orderPostError: ApiError = await response.json()
+      const orderPostError: ApiErrorObject = await response.json()
 
       if (orderPostError.errorType) {
-        return ApiErrorCodeDetails[orderPostError.errorType]
+        const errorMessage = OperatorError.apiErrorDetails[orderPostError.errorType]
+        // shouldn't fall through as this error constructor expects the error code to exist but just in case
+        return errorMessage || orderPostError.errorType
       } else {
         console.error('Unknown reason for bad order submission', orderPostError)
         return orderPostError.description
       }
     } catch (error) {
       console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
-      return action === 'create'
-        ? ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
-        : ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
+      return _mapActionToErrorDetail(action)
     }
   }
   static async getErrorFromStatusCode(response: Response, action: 'create' | 'delete') {
@@ -73,14 +98,24 @@ export default class OperatorError extends Error {
 
       case 500:
       default:
+        console.error(
+          `[OperatorError::getErrorFromStatusCode] Error ${
+            action === 'create' ? 'creating' : 'cancelling'
+          } the order, status code:`,
+          response.status || 'unknown'
+        )
         return `Error ${action === 'create' ? 'creating' : 'cancelling'} the order`
     }
   }
-  constructor(apiError: ApiError) {
+  constructor(apiError: ApiErrorObject) {
     super(apiError.description)
 
     this.type = apiError.errorType
     this.description = apiError.description
     this.message = ApiErrorCodeDetails[apiError.errorType]
   }
+}
+
+export function isValidOperatorError(error: any): error is OperatorError {
+  return error instanceof OperatorError
 }
