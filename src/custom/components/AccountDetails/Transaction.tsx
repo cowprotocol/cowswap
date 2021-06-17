@@ -67,8 +67,8 @@ function getActivitySummary(params: {
   if (suffix && baseSummary) {
     // Shorten summary when `suffix` is set and it matches the regex.
     // It should always match the regex
-    const m = baseSummary.match(/(Swap\s+[\d.]+)/)
-    baseSummary = (m && m.length > 1 ? m[1] + ' … ' : baseSummary + ' ') + suffix
+    const match = baseSummary.match(/(Swap\s+[\d.]+)/)
+    baseSummary = (match && match.length > 1 ? match[1] + ' … ' : baseSummary + ' ') + suffix
   }
 
   baseSummary = baseSummary ?? id
