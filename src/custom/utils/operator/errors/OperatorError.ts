@@ -18,6 +18,9 @@ export enum ApiErrorCodes {
   WrongOwner = 'WrongOwner',
   NotFound = 'NotFound',
   OrderNotFound = 'OrderNotFound',
+  AlreadyCancelled = 'AlreadyCancelled',
+  OrderFullyExecuted = 'OrderFullyExecuted',
+  OrderExpired = 'OrderExpired',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'
@@ -34,6 +37,9 @@ export enum ApiErrorCodeDetails {
   WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
   NotFound = 'Token pair selected has insufficient liquidity',
   OrderNotFound = 'The order you are trying to cancel does not exist',
+  AlreadyCancelled = 'Order is already cancelled',
+  OrderFullyExecuted = 'Order is already filled',
+  OrderExpired = 'Order is expired',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network'
@@ -45,7 +51,6 @@ function _mapActionToErrorDetail(action?: ApiActionType) {
       return ApiErrorCodeDetails.UNHANDLED_GET_ERROR
     case 'create':
       return ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
-    // default and last case..
     case 'delete':
       return ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
     default:
