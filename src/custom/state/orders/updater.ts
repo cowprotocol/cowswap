@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useActiveWeb3React } from 'hooks'
 import { OrderFulfillmentData, Order } from './actions'
-import { Log } from '@ethersproject/abstract-provider'
-import { usePendingOrders, useFulfillOrdersBatch, useExpireOrdersBatch } from './hooks'
-import { getOrder, OrderMetaData } from 'utils/operator'
-import { SHORT_PRECISION, EXPIRED_ORDERS_BUFFER, CHECK_EXPIRED_ORDERS_INTERVAL } from 'constants/index'
+import {
+  usePendingOrders,
+  useFulfillOrdersBatch,
+  useExpireOrdersBatch,
+  useCancelOrdersBatch,
+  useCancelledOrders
+} from './hooks'
+import { getOrder, OrderID, OrderMetaData } from 'utils/operator'
+import { CANCELLED_ORDERS_PENDING_TIME, SHORT_PRECISION } from 'constants/index'
 import { stringToCurrency } from '../swap/extension'
 import { OPERATOR_API_POLL_INTERVAL } from './consts'
 import { ChainId } from '@uniswap/sdk'
+import { ApiOrderStatus, classifyOrder } from './utils'
 
-type OrderLogPopupMixData = OrderFulfillmentData & Pick<Log, 'transactionHash'> & Partial<Pick<Order, 'summary'>>
-
-function isOrderFinalized(orderFromApi: OrderMetaData | null): boolean {
-  return (
-    orderFromApi !== null && Number(orderFromApi.executedBuyAmount) > 0 && Number(orderFromApi.executedSellAmount) > 0
-  )
-}
+type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
 function _computeFulfilledSummary({
   orderFromStore,
@@ -29,7 +29,7 @@ function _computeFulfilledSummary({
 
   // if we can find the order from the API
   // and our specific order exists in our state, let's use that
-  if (orderFromApi && isOrderFinalized(orderFromApi)) {
+  if (orderFromApi) {
     const { buyToken, sellToken, executedBuyAmount, executedSellAmount } = orderFromApi
 
     if (orderFromStore) {
@@ -52,101 +52,180 @@ function _computeFulfilledSummary({
   return summary
 }
 
-async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<OrderLogPopupMixData | null> {
+type PopupData = {
+  status: ApiOrderStatus
+  popupData?: OrderLogPopupMixData
+}
+
+async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData> {
   const orderFromApi = await getOrder(chainId, orderFromStore.id)
 
-  if (!isOrderFinalized(orderFromApi)) {
-    return null
+  const status = classifyOrder(orderFromApi)
+
+  let popupData = undefined
+
+  switch (status) {
+    case 'fulfilled':
+      popupData = {
+        id: orderFromStore.id,
+        fulfillmentTime: new Date().toISOString(),
+        transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
+        summary: _computeFulfilledSummary({ orderFromStore, orderFromApi })
+      }
+      break
+    case 'expired':
+    case 'cancelled':
+      popupData = orderFromStore.id
+      break
+    default:
+      // No popup for other states
+      break
   }
 
-  const summary = _computeFulfilledSummary({ orderFromStore, orderFromApi })
-
-  return {
-    id: orderFromStore.id,
-    fulfillmentTime: new Date().toISOString(),
-    transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
-    summary
-  }
+  return { status, popupData }
 }
 
 export function EventUpdater(): null {
   const { chainId } = useActiveWeb3React()
 
   const pending = usePendingOrders({ chainId })
+
+  // Ref, so we don't rerun useEffect
+  const pendingRef = useRef(pending)
+  pendingRef.current = pending
+
+  const fulfillOrdersBatch = useFulfillOrdersBatch()
+  const expireOrdersBatch = useExpireOrdersBatch()
+  const cancelOrdersBatch = useCancelOrdersBatch()
+
+  const updateOrders = useCallback(
+    async (chainId: ChainId) => {
+      // Exit early when there are no pending orders
+      if (pendingRef.current.length === 0) {
+        return
+      }
+
+      // Iterate over pending orders fetching operator order data, async
+      const unfilteredOrdersData = await Promise.all(
+        pendingRef.current.map(async orderFromStore => fetchOrderPopupData(orderFromStore, chainId))
+      )
+
+      // Group resolved promises by status
+      // Only pick the status that are final
+      const { fulfilled, expired, cancelled } = unfilteredOrdersData.reduce<
+        Record<ApiOrderStatus, OrderLogPopupMixData[]>
+      >(
+        (acc, { status, popupData }) => {
+          popupData && acc[status].push(popupData)
+          return acc
+        },
+        { fulfilled: [], expired: [], cancelled: [], unknown: [], pending: [] }
+      )
+
+      // Bach state update per group, if any
+
+      fulfilled.length > 0 &&
+        fulfillOrdersBatch({
+          ordersData: fulfilled as OrderFulfillmentData[],
+          chainId
+        })
+      expired.length > 0 &&
+        expireOrdersBatch({
+          ids: expired as OrderID[],
+          chainId
+        })
+      cancelled.length > 0 &&
+        cancelOrdersBatch({
+          ids: cancelled as OrderID[],
+          chainId
+        })
+    },
+    [cancelOrdersBatch, expireOrdersBatch, fulfillOrdersBatch]
+  )
+
+  useEffect(() => {
+    if (!chainId) {
+      return
+    }
+
+    const interval = setInterval(() => updateOrders(chainId), OPERATOR_API_POLL_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [chainId, updateOrders])
+
+  return null
+}
+
+/**
+ * Updater for cancelled orders.
+ *
+ * Similar to Event updater, but instead of watching pending orders, it watches orders that have been cancelled
+ * in the last 5 min.
+ *
+ * Whenever an order that was cancelled but has since been fulfilled, trigger a state update
+ * and a popup notification, changing the status from cancelled to fulfilled.
+ *
+ * It's supposed to fix race conditions between the api accepting a cancellation while a solution was already
+ * submitted to the network by a solver.
+ * Due to the network's nature, we can't tell whether an order has been really cancelled, so we prefer to wait a short
+ * period and say it's cancelled even though in some cases it might actually be filled.
+ */
+export function CancelledOrdersUpdater(): null {
+  const { chainId } = useActiveWeb3React()
+
+  const cancelled = useCancelledOrders({ chainId })
+
+  // Ref, so we don't rerun useEffect
+  const cancelledRef = useRef(cancelled)
+  cancelledRef.current = cancelled
+
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
   const updateOrders = useCallback(
-    async (pending: Order[], chainId: ChainId) => {
+    async (chainId: ChainId) => {
+      // Filter orders created in the last 5 min, no further
+      const pending = cancelledRef.current.filter(
+        order => Date.now() - new Date(order.creationTime).getTime() < CANCELLED_ORDERS_PENDING_TIME
+      )
+
+      if (pending.length === 0) {
+        return
+      }
+
       // Iterate over pending orders fetching operator order data, async
-      // Returns a null when the order isn't finalized/not found
-      const unfilteredOrdersData: (OrderLogPopupMixData | null)[] = await Promise.all(
+      const unfilteredOrdersData = await Promise.all(
         pending.map(async orderFromStore => fetchOrderPopupData(orderFromStore, chainId))
       )
 
-      // Additional step filtering out `null` entries, due to lack of async reduce
-      // Type guard is required to tell TS what's the final type
-      const ordersData = unfilteredOrdersData.filter((data): data is OrderLogPopupMixData => data !== null)
+      // Group resolved promises by status
+      // Only pick fulfilled
+      const { fulfilled } = unfilteredOrdersData.reduce<Record<ApiOrderStatus, OrderLogPopupMixData[]>>(
+        (acc, { status, popupData }) => {
+          popupData && acc[status].push(popupData)
+          return acc
+        },
+        { fulfilled: [], expired: [], cancelled: [], unknown: [], pending: [] }
+      )
 
-      fulfillOrdersBatch({
-        ordersData,
-        chainId
-      })
+      // Bach state update fulfilled orders, if any
+      fulfilled.length > 0 &&
+        fulfillOrdersBatch({
+          ordersData: fulfilled as OrderFulfillmentData[],
+          chainId
+        })
     },
     [fulfillOrdersBatch]
   )
 
   useEffect(() => {
-    if (!chainId || pending.length <= 0) {
+    if (!chainId) {
       return
     }
 
-    const interval = setInterval(() => updateOrders(pending, chainId), OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId), OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [pending, chainId, updateOrders])
-
-  return null
-}
-
-export function ExpiredOrdersWatcher(): null {
-  const { chainId } = useActiveWeb3React()
-
-  const expireOrdersBatch = useExpireOrdersBatch()
-
-  const pendingOrders = usePendingOrders({ chainId })
-
-  // ref, so we don't rerun useEffect
-  const pendingOrdersRef = useRef(pendingOrders)
-  pendingOrdersRef.current = pendingOrders
-
-  useEffect(() => {
-    if (!chainId) return
-
-    const checkForExpiredOrders = () => {
-      // no more pending orders
-      // but don't clearInterval so we can restart when there are new orders
-      if (pendingOrdersRef.current.length === 0) return
-
-      const expiredOrders = pendingOrdersRef.current.filter(order => {
-        // validTo is either a Date or unix timestamp in seconds
-        const validTo = typeof order.validTo === 'number' ? new Date(order.validTo * 1000) : order.validTo
-
-        // let's get the current date, with our expired order validTo given a buffer time
-        return Date.now() - validTo.valueOf() > EXPIRED_ORDERS_BUFFER
-      })
-
-      const expiredIds = expiredOrders.map(({ id }) => id)
-
-      expireOrdersBatch({
-        chainId,
-        ids: expiredIds
-      })
-    }
-
-    const intervalId = setInterval(checkForExpiredOrders, CHECK_EXPIRED_ORDERS_INTERVAL)
-
-    return () => clearInterval(intervalId)
-  }, [chainId, expireOrdersBatch])
+  }, [chainId, updateOrders])
 
   return null
 }

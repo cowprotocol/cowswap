@@ -24,13 +24,15 @@ import { useCancelOrder } from 'hooks/useCancelOrder'
 import { LinkStyledButton } from 'theme'
 import Modal from 'components/Modal'
 import { ButtonPrimary } from 'components/Button'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',
   PENDING_ORDER: '#8958FF',
   PENDING_TX: '#2b68fa',
   EXPIRED_ORDER: '#b94d54',
-  CANCELLED_ORDER: '#808080'
+  CANCELLED_ORDER: '#808080',
+  CANCELLING_ORDER: '#8998FF'
 }
 
 function determinePillColour(status: ActivityStatus, type: ActivityType) {
@@ -42,29 +44,36 @@ function determinePillColour(status: ActivityStatus, type: ActivityType) {
       return PILL_COLOUR_MAP.CONFIRMED
     case ActivityStatus.EXPIRED:
       return PILL_COLOUR_MAP.EXPIRED_ORDER
+    case ActivityStatus.CANCELLING:
+      return PILL_COLOUR_MAP.CANCELLING_ORDER
     case ActivityStatus.CANCELLED:
       return PILL_COLOUR_MAP.CANCELLED_ORDER
   }
 }
 
-function getActivitySummary({
-  id,
-  activityData
-}: {
+function getActivitySummary(params: {
   id: string
   activityData: ReturnType<typeof useActivityDescriptors>
-}) {
+  suffix?: string
+}): string | null {
+  const { id, activityData, suffix } = params
+
   if (!activityData) return null
 
-  const { summary, status, type } = activityData
+  const { summary } = activityData
 
-  const isMeta = type === ActivityType.ORDER && status !== ActivityStatus.CONFIRMED
+  let baseSummary = summary
 
-  // add arrow indicating clickable link if not meta tx
-  const suffix = !isMeta ? ' ↗' : ''
-  const baseSummary = summary ?? id
+  if (suffix && baseSummary) {
+    // Shorten summary when `suffix` is set and it matches the regex.
+    // It should always match the regex
+    const match = baseSummary.match(/(Swap\s+[\d.]+)/)
+    baseSummary = (match && match.length > 1 ? match[1] + ' … ' : baseSummary + ' ') + suffix
+  }
 
-  return baseSummary + suffix
+  baseSummary = baseSummary ?? id
+
+  return baseSummary + ' ↗'
 }
 
 const RowWrapper = styled(TransactionWrapper)`
@@ -200,6 +209,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const isPending = status === ActivityStatus.PENDING
   const isConfirmed = status === ActivityStatus.CONFIRMED
   const isExpired = status === ActivityStatus.EXPIRED
+  const isCancelling = status === ActivityStatus.CANCELLING
   const isCancelled = status === ActivityStatus.CANCELLED
   const isCancellable = isPending && type === ActivityType.ORDER
 
@@ -215,10 +225,18 @@ export default function Transaction({ hash: id }: { hash: string }) {
               {type}
             </Pill>
           )}
-          <TransactionStatusText>{getActivitySummary({ activityData, id })}</TransactionStatusText>
+          <TransactionStatusText>
+            {isCancelling ? (
+              <MouseoverTooltip text={activity.summary || id}>
+                {getActivitySummary({ activityData, id, suffix: '(Cancellation requested)' })}
+              </MouseoverTooltip>
+            ) : (
+              getActivitySummary({ activityData, id })
+            )}
+          </TransactionStatusText>
         </RowFixed>
-        <IconWrapper pending={isPending} success={isConfirmed || isCancelled}>
-          {isPending ? (
+        <IconWrapper pending={isPending || isCancelling} success={isConfirmed || isCancelled}>
+          {isPending || isCancelling ? (
             <Loader />
           ) : isConfirmed ? (
             <CheckCircle size="16" />

@@ -12,7 +12,9 @@ import {
   expireOrder,
   fulfillOrdersBatch,
   expireOrdersBatch,
-  cancelOrder
+  cancelOrder,
+  cancelOrdersBatch,
+  requestOrderCancellation
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -111,6 +113,7 @@ export default createReducer(initialState, builder =>
         orderObject.order.fulfillmentTime = fulfillmentTime
 
         orderObject.order.fulfilledTransactionHash = transactionHash
+        orderObject.order.isCancelling = false
 
         state[chainId].fulfilled[id] = orderObject
       }
@@ -120,20 +123,23 @@ export default createReducer(initialState, builder =>
       const { ordersData, chainId } = action.payload
 
       const pendingOrders = state[chainId].pending
+      const cancelledOrders = state[chainId].cancelled
       const fulfilledOrders = state[chainId].fulfilled
 
       // if there are any newly fulfilled orders
       // update them
       ordersData.forEach(({ id, fulfillmentTime, transactionHash }) => {
-        const orderObject = pendingOrders[id]
+        const orderObject = pendingOrders[id] || cancelledOrders[id]
 
         if (orderObject) {
           delete pendingOrders[id]
+          delete cancelledOrders[id]
 
           orderObject.order.status = OrderStatus.FULFILLED
           orderObject.order.fulfillmentTime = fulfillmentTime
 
           orderObject.order.fulfilledTransactionHash = transactionHash
+          orderObject.order.isCancelling = false
 
           fulfilledOrders[id] = orderObject
         }
@@ -149,6 +155,7 @@ export default createReducer(initialState, builder =>
         delete state[chainId].pending[id]
 
         orderObject.order.status = OrderStatus.EXPIRED
+        orderObject.order.isCancelling = false
 
         state[chainId].expired[id] = orderObject
       }
@@ -169,9 +176,20 @@ export default createReducer(initialState, builder =>
           delete pendingOrders[id]
 
           orderObject.order.status = OrderStatus.EXPIRED
+          orderObject.order.isCancelling = false
           fulfilledOrders[id] = orderObject
         }
       })
+    })
+    .addCase(requestOrderCancellation, (state, action) => {
+      prefillState(state, action)
+      const { id, chainId } = action.payload
+
+      const orderObject = state[chainId].pending[id]
+
+      if (orderObject) {
+        orderObject.order.isCancelling = true
+      }
     })
     .addCase(cancelOrder, (state, action) => {
       prefillState(state, action)
@@ -183,9 +201,29 @@ export default createReducer(initialState, builder =>
         delete state[chainId].pending[id]
 
         orderObject.order.status = OrderStatus.CANCELLED
+        orderObject.order.isCancelling = false
 
         state[chainId].cancelled[id] = orderObject
       }
+    })
+    .addCase(cancelOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId } = action.payload
+
+      const pendingOrders = state[chainId].pending
+      const cancelledOrders = state[chainId].cancelled
+
+      ids.forEach(id => {
+        const orderObject = pendingOrders[id]
+
+        if (orderObject) {
+          delete pendingOrders[id]
+
+          orderObject.order.status = OrderStatus.CANCELLED
+          orderObject.order.isCancelling = false
+          cancelledOrders[id] = orderObject
+        }
+      })
     })
     .addCase(clearOrders, (state, action) => {
       const { chainId } = action.payload

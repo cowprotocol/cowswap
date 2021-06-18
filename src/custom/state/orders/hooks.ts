@@ -10,11 +10,13 @@ import {
   fulfillOrder,
   expireOrder,
   cancelOrder,
+  requestOrderCancellation,
   updateLastCheckedBlock,
   Order,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
-  expireOrdersBatch
+  expireOrdersBatch,
+  cancelOrdersBatch
 } from './actions'
 import { OrdersState, PartialOrdersMap } from './reducer'
 import { isTruthy } from 'utils/misc'
@@ -39,10 +41,13 @@ type ClearOrdersParams = Pick<GetRemoveOrderParams, 'chainId'>
 type GetLastCheckedBlockParams = GetOrdersParams
 type ExpireOrderParams = GetRemoveOrderParams
 type CancelOrderParams = GetRemoveOrderParams
-interface ExpireOrdersBatchParams {
+interface UpdateOrdersBatchParams {
   ids: OrderID[]
   chainId: ChainId
 }
+
+type ExpireOrdersBatchParams = UpdateOrdersBatchParams
+type CancelOrdersBatchParams = UpdateOrdersBatchParams
 
 interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
@@ -55,13 +60,16 @@ type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchP
 type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
+type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 
 type GetOrderByIdCallback = (id: OrderID) => Order | undefined
 
-export const useOrder = ({ id, chainId }: GetRemoveOrderParams): Order | undefined => {
+export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order | undefined => {
   return useSelector<AppState, Order | undefined>(state => {
+    if (!id || !chainId) return undefined
+
     const orders = state.orders[chainId]
 
     if (!orders) return undefined
@@ -139,10 +147,9 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = Object.values(state)
+    return Object.values(state)
       .map(orderObject => orderObject?.order)
       .filter(isTruthy)
-    return allOrders
   }, [state])
 }
 
@@ -154,10 +161,9 @@ export const useFulfilledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = Object.values(state)
+    return Object.values(state)
       .map(orderObject => orderObject?.order)
       .filter(isTruthy)
-    return allOrders
   }, [state])
 }
 
@@ -169,10 +175,23 @@ export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = Object.values(state)
+    return Object.values(state)
       .map(orderObject => orderObject?.order)
       .filter(isTruthy)
-    return allOrders
+  }, [state])
+}
+
+export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
+  const state = useSelector<AppState, PartialOrdersMap | undefined>(
+    state => chainId && state.orders?.[chainId]?.cancelled
+  )
+
+  return useMemo(() => {
+    if (!state) return []
+
+    return Object.values(state)
+      .map(orderObject => orderObject?.order)
+      .filter(isTruthy)
   }, [state])
 }
 
@@ -211,6 +230,21 @@ export const useExpireOrdersBatch = (): ExpireOrdersBatchCallback => {
 export const useCancelPendingOrder = (): CancelOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((cancelOrderParams: CancelOrderParams) => dispatch(cancelOrder(cancelOrderParams)), [dispatch])
+}
+
+export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (cancelOrdersBatchParams: CancelOrdersBatchParams) => dispatch(cancelOrdersBatch(cancelOrdersBatchParams)),
+    [dispatch]
+  )
+}
+
+export const useRequestOrderCancellation = (): CancelOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((cancelOrderParams: CancelOrderParams) => dispatch(requestOrderCancellation(cancelOrderParams)), [
+    dispatch
+  ])
 }
 
 export const useRemoveOrder = (): RemoveOrderCallback => {

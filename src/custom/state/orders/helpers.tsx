@@ -70,7 +70,7 @@ const Wrapper = styled.div`
 export function buildCancellationPopupSummary(id: string, summary: string | undefined): JSX.Element {
   return (
     <Wrapper>
-      <p>The order has been cancelled</p>
+      <p>Order successfully cancelled</p>
       <p>
         Order <strong>{shortenOrderId(id)}</strong>:
       </p>
