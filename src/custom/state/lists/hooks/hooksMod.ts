@@ -6,7 +6,7 @@ import { useActiveWeb3React } from 'hooks'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { TokenList } from '@uniswap/token-lists'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
-import { TokenAddressMap, listToTokenMap, combineMaps, EMPTY_LIST } from '@src/state/lists/hooks'
+import { TokenAddressMap, combineMaps, EMPTY_LIST, WrappedTokenInfo, TagInfo } from '@src/state/lists/hooks'
 import sortByListPriority from 'utils/listSort'
 import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
 import {
@@ -55,40 +55,41 @@ import { isAddress } from 'utils'
 //   [ChainId.XDAI]: {}
 // }
 
-// const listCache: WeakMap<TokenList, TokenAddressMap> | null =
-//   typeof WeakMap !== 'undefined' ? new WeakMap<TokenList, TokenAddressMap>() : null
+const listCache: WeakMap<TokenList, TokenAddressMap> | null =
+  typeof WeakMap !== 'undefined' ? new WeakMap<TokenList, TokenAddressMap>() : null
 
-// export function listToTokenMap(list: TokenList): TokenAddressMap {
-//   const result = listCache?.get(list)
-//   if (result) return result
+export function listToTokenMap(list: TokenList): TokenAddressMap {
+  const result = listCache?.get(list)
+  if (result) return result
 
-//   const map = list.tokens.reduce<TokenAddressMap>(
-//     (tokenMap, tokenInfo) => {
-//       const tags: TagInfo[] =
-//         tokenInfo.tags
-//           ?.map(tagId => {
-//             if (!list.tags?.[tagId]) return undefined
-//             return { ...list.tags[tagId], id: tagId }
-//           })
-//           ?.filter((x): x is TagInfo => Boolean(x)) ?? []
-//       const token = new WrappedTokenInfo(tokenInfo, tags)
-//       if (tokenMap[token.chainId][token.address] !== undefined) throw Error('Duplicate tokens.')
-//       return {
-//         ...tokenMap,
-//         [token.chainId]: {
-//           ...tokenMap[token.chainId],
-//           [token.address]: {
-//             token,
-//             list: list
-//           }
-//         }
-//       }
-//     },
-//     { ...EMPTY_LIST }
-//   )
-//   listCache?.set(list, map)
-//   return map
-// }
+  const map = list.tokens.reduce<TokenAddressMap>(
+    (tokenMap, tokenInfo) => {
+      const tags: TagInfo[] =
+        tokenInfo.tags
+          ?.map(tagId => {
+            if (!list.tags?.[tagId]) return undefined
+            return { ...list.tags[tagId], id: tagId }
+          })
+          ?.filter((x): x is TagInfo => Boolean(x)) ?? []
+      const token = new WrappedTokenInfo(tokenInfo, tags)
+      const tokensByNetwork = tokenMap[token.chainId] || {}
+      if (tokensByNetwork[token.address] !== undefined) throw Error('Duplicate tokens.')
+      return {
+        ...tokenMap,
+        [token.chainId]: {
+          ...tokensByNetwork,
+          [token.address]: {
+            token,
+            list: list
+          }
+        }
+      }
+    },
+    { ...EMPTY_LIST }
+  )
+  listCache?.set(list, map)
+  return map
+}
 
 export function useAllLists(): {
   readonly [url: string]: {
