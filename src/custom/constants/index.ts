@@ -61,6 +61,7 @@ export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const DEFAULT_ORDER_DELAY = 20000 // 20s
 export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
+export const PRICE_API_TIMEOUT_MS = 10000 // 10s
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
