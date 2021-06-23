@@ -6,6 +6,15 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise(resolve => setTimeout(resolve, ms, result))
 
+export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
+  const failOnTimeout = delay(ms).then(() => {
+    const errorMessage = 'Timeout after ' + ms + ' ms'
+    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
+  })
+
+  return Promise.race([promise, failOnTimeout])
+}
+
 export function isPromiseFulfilled<T>(
   promiseResult: PromiseSettledResult<T>
 ): promiseResult is PromiseFulfilledResult<T> {
