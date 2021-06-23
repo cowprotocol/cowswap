@@ -1,4 +1,4 @@
-import { ChainId, ETHER, WETH } from '@uniswap/sdk'
+import { ChainId } from '@uniswap/sdk'
 import { getSigningSchemeApiValue, OrderCancellation, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
@@ -11,6 +11,7 @@ import QuoteError, {
   QuoteErrorDetails,
   QuoteErrorObject
 } from 'utils/operator/errors/QuoteError'
+import { toErc20Address } from 'utils/tokens'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
   if (isDev) {
@@ -163,15 +164,6 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
   console.log('[utils:operator] Cancelled order', cancellation.orderUid, chainId)
 }
 
-function checkIfEther(tokenAddress: string, chainId: ChainId) {
-  let checkedAddress = tokenAddress
-  if (tokenAddress === ETHER.symbol) {
-    checkedAddress = WETH[chainId].address
-  }
-
-  return checkedAddress
-}
-
 export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string
   chainId: ChainId
@@ -180,15 +172,6 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
 export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
   baseToken: string
   quoteToken: string
-}
-
-function toApiAddress(address: string, chainId: ChainId): string {
-  if (address === 'ETH') {
-    // TODO: Return magical address
-    return WETH[chainId].address
-  }
-
-  return address
 }
 
 const UNHANDLED_QUOTE_ERROR: QuoteErrorObject = {
@@ -216,12 +199,11 @@ async function _handleQuoteResponse(response: Response) {
 
 export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
   const { baseToken, quoteToken, amount, kind, chainId } = params
-  const [checkedBaseToken, checkedQuoteToken] = [checkIfEther(baseToken, chainId), checkIfEther(quoteToken, chainId)]
   console.log('[util:operator] Get price from API', params)
 
   const response = await _get(
     chainId,
-    `/markets/${toApiAddress(checkedBaseToken, chainId)}-${toApiAddress(checkedQuoteToken, chainId)}/${kind}/${amount}`
+    `/markets/${toErc20Address(baseToken, chainId)}-${toErc20Address(quoteToken, chainId)}/${kind}/${amount}`
   ).catch(error => {
     console.error('Error getting price quote:', error)
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
@@ -232,13 +214,12 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInfo
 
 export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
   const { sellToken, buyToken, amount, kind, chainId } = params
-  const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
   console.log('[util:operator] Get fee from API', params)
 
   const response = await _get(
     chainId,
-    `/fee?sellToken=${toApiAddress(checkedSellAddress, chainId)}&buyToken=${toApiAddress(
-      checkedBuyAddress,
+    `/fee?sellToken=${toErc20Address(sellToken, chainId)}&buyToken=${toErc20Address(
+      buyToken,
       chainId
     )}&amount=${amount}&kind=${kind}`
   ).catch(error => {
