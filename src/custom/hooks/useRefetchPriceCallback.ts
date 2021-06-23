@@ -2,7 +2,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useCallback } from 'react'
 import { useQuoteDispatchers } from 'state/price/hooks'
 import { getCanonicalMarket, registerOnWindow } from 'utils/misc'
-import { FeeQuoteParams, getFeeQuote, getPriceQuote } from 'utils/operator'
+import { FeeQuoteParams, getFeeQuote, getPriceQuote, PriceQuoteParams } from 'utils/operator'
+import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation } from 'utils/paraswap'
 import {
   useAddGpUnsupportedToken,
   useIsUnsupportedTokenGp,
@@ -14,6 +15,10 @@ import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
 import { onlyResolvesLast } from 'utils/async'
 import { ClearQuoteParams, SetQuoteErrorParams } from 'state/price/actions'
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
+// import QuoteError, { QuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
+// import { ApiErrorCodes, isValidOperatorError } from 'utils/operator/errors/OperatorError'
+import BigNumberJs from 'bignumber.js'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export interface RefetchQuoteCallbackParmams {
   quoteParams: FeeQuoteParams
@@ -26,6 +31,70 @@ export interface RefetchQuoteCallbackParmams {
 }
 
 type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
+
+// const FEE_EXCEEDS_FROM_ERROR = new QuoteError({
+//   errorType: QuoteErrorCodes.FeeExceedsFrom,
+//   description: QuoteError.quoteErrorDetails.FeeExceedsFrom
+// })
+
+class PriceQuoteError extends Error {
+  params: PriceQuoteParams
+  results: PromiseSettledResult<any>[]
+
+  constructor(message: string, params: PriceQuoteParams, results: PromiseSettledResult<any>[]) {
+    super(message)
+    this.params = params
+    this.results = results
+  }
+}
+
+type PriceSource = 'gnosis-protocol' | 'paraswap'
+type PriceInformationWithSource = PriceInformation & { source: PriceSource; data?: any }
+
+/**
+ *
+ * @returns The best price among GPv2 API or Paraswap one
+ */
+async function _getBestPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
+  // Get price from all API: Gpv2 and Paraswap
+  const pricePromise = getPriceQuote(params) // TODO: Add timeout (another PR)
+  const paraSwapPricePromise = getPriceQuoteParaswap(params) // TODO: Add timeout (another PR)
+
+  // Get results from API queries
+  const [priceResult, paraSwapPriceResult] = await Promise.allSettled([pricePromise, paraSwapPricePromise])
+  const price = getPromiseFulfilledValue(priceResult, null)
+  const paraswapPriceRaw = getPromiseFulfilledValue(paraSwapPriceResult, null)
+
+  // Prepare an array with all successful estimations
+  const priceQuotes: Array<PriceInformationWithSource> = []
+  if (price) {
+    priceQuotes.push({ ...price, source: 'gnosis-protocol' })
+  }
+  if (paraswapPriceRaw) {
+    const paraswapPrice = toPriceInformation(paraswapPriceRaw)
+    paraswapPrice && priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraswapPriceRaw })
+  }
+
+  console.log('[hooks::useRefetchPriceCallback] _getBestPriceQuote', priceQuotes)
+
+  if (priceQuotes.length > 0) {
+    const amounts = priceQuotes.map(quote => quote.amount).filter(Boolean) as string[]
+
+    // Take the best price: Aggregate all the amounts into a single one.
+    //  - Use maximum of all the result for "Sell orders":
+    //        You want to get the maximum number of buy tokens
+    //  - Use minimum "Buy orders":
+    //        You want to spend the min number of sell tokens
+    const aggregationFunction = params.kind === OrderKind.SELL ? 'max' : 'min'
+    const amount = BigNumberJs[aggregationFunction](...amounts).toString(10)
+    const token = priceQuotes[0].token
+    // console.log('Aggregated amounts', aggregationFunction, amounts, amount)
+
+    return { token, amount }
+  } else {
+    throw new PriceQuoteError('Error querying price from APIs', params, [priceResult, paraSwapPriceResult])
+  }
+}
 
 async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParmams): Promise<QuoteResult> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
@@ -57,7 +126,7 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
   // Get price for price estimation
   const pricePromise =
     !feeExceedsPrice && exchangeAmount
-      ? getPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
+      ? _getBestPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
       : // fee exceeds our price, is invalid
         Promise.reject(
           new OperatorError({

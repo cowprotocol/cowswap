@@ -1,10 +1,11 @@
-import { ChainId, ETHER, WETH } from '@uniswap/sdk'
+import { ChainId } from '@uniswap/sdk'
 import { getSigningSchemeApiValue, OrderCreation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
 import { isDev } from '../environments'
 import { FeeInformation, PriceInformation } from 'state/price/reducer'
 import OperatorError, { ApiError } from './error'
+import { toErc20Address } from 'utils/tokens'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
   if (isDev) {
@@ -126,15 +127,6 @@ export async function postSignedOrder(params: {
   return uid
 }
 
-function checkIfEther(tokenAddress: string, chainId: ChainId) {
-  let checkedAddress = tokenAddress
-  if (tokenAddress === ETHER.symbol) {
-    checkedAddress = WETH[chainId].address
-  }
-
-  return checkedAddress
-}
-
 export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string
   chainId: ChainId
@@ -143,15 +135,6 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
 export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
   baseToken: string
   quoteToken: string
-}
-
-function toApiAddress(address: string, chainId: ChainId): string {
-  if (address === 'ETH') {
-    // TODO: Return magical address
-    return WETH[chainId].address
-  }
-
-  return address
 }
 
 async function _getJson(chainId: ChainId, url: string): Promise<any> {
@@ -175,24 +158,22 @@ async function _getJson(chainId: ChainId, url: string): Promise<any> {
 
 export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
   const { baseToken, quoteToken, amount, kind, chainId } = params
-  const [checkedBaseToken, checkedQuoteToken] = [checkIfEther(baseToken, chainId), checkIfEther(quoteToken, chainId)]
   console.log('[util:operator] Get Price from API', params)
 
   return _getJson(
     chainId,
-    `/markets/${toApiAddress(checkedBaseToken, chainId)}-${toApiAddress(checkedQuoteToken, chainId)}/${kind}/${amount}`
+    `/markets/${toErc20Address(baseToken, chainId)}-${toErc20Address(quoteToken, chainId)}/${kind}/${amount}`
   )
 }
 
 export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
   const { sellToken, buyToken, amount, kind, chainId } = params
-  const [checkedSellAddress, checkedBuyAddress] = [checkIfEther(sellToken, chainId), checkIfEther(buyToken, chainId)]
   console.log('[util:operator] Get fee from API', params)
 
   return _getJson(
     chainId,
-    `/fee?sellToken=${toApiAddress(checkedSellAddress, chainId)}&buyToken=${toApiAddress(
-      checkedBuyAddress,
+    `/fee?sellToken=${toErc20Address(sellToken, chainId)}&buyToken=${toErc20Address(
+      buyToken,
       chainId
     )}&amount=${amount}&kind=${kind}`
   )
