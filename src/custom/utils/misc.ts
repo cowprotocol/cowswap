@@ -6,6 +6,15 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise(resolve => setTimeout(resolve, ms, result))
 
+export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
+  const failOnTimeout = delay(ms).then(() => {
+    const errorMessage = 'Timeout after ' + ms + ' ms'
+    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
+  })
+
+  return Promise.race([promise, failOnTimeout])
+}
+
 export function isPromiseFulfilled<T>(
   promiseResult: PromiseSettledResult<T>
 ): promiseResult is PromiseFulfilledResult<T> {
@@ -40,6 +49,10 @@ export interface CanonicalMarketParams<T> {
   kind: string
 }
 
+export interface TokensFromMarketParams<T> extends Market<T> {
+  kind: string
+}
+
 export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMarketParams<T>): Market<T> {
   // TODO: Implement smarter logic https://github.com/gnosis/gp-ui/issues/331
 
@@ -56,6 +69,24 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
     return {
       baseToken: buyToken,
       quoteToken: sellToken
+    }
+  }
+}
+
+export function getTokensFromMarket<T>({
+  quoteToken,
+  baseToken,
+  kind
+}: TokensFromMarketParams<T>): Omit<CanonicalMarketParams<T>, 'kind'> {
+  if (kind === 'sell') {
+    return {
+      sellToken: baseToken,
+      buyToken: quoteToken
+    }
+  } else {
+    return {
+      buyToken: baseToken,
+      sellToken: quoteToken
     }
   }
 }

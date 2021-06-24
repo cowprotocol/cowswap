@@ -1,8 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { useCallback } from 'react'
 import { useQuoteDispatchers } from 'state/price/hooks'
-import { getCanonicalMarket, registerOnWindow } from 'utils/misc'
-import { FeeQuoteParams, getFeeQuote, getPriceQuote } from 'utils/operator'
+import {
+  getCanonicalMarket,
+  registerOnWindow,
+  withTimeout,
+  getPromiseFulfilledValue,
+  isPromiseFulfilled
+} from 'utils/misc'
+import { FeeQuoteParams, getFeeQuote, getPriceQuote, PriceQuoteParams } from 'utils/operator'
+import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation } from 'utils/paraswap'
 import {
   useAddGpUnsupportedToken,
   useIsUnsupportedTokenGp,
@@ -13,7 +20,11 @@ import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
 import { onlyResolvesLast } from 'utils/async'
 import { ClearQuoteParams, SetQuoteErrorParams } from 'state/price/actions'
-import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
+// import QuoteError, { QuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
+// import { ApiErrorCodes, isValidOperatorError } from 'utils/operator/errors/OperatorError'
+import BigNumberJs from 'bignumber.js'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { PRICE_API_TIMEOUT_MS } from 'constants/index'
 
 export interface RefetchQuoteCallbackParmams {
   quoteParams: FeeQuoteParams
@@ -26,6 +37,91 @@ export interface RefetchQuoteCallbackParmams {
 }
 
 type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
+
+// const FEE_EXCEEDS_FROM_ERROR = new QuoteError({
+//   errorType: QuoteErrorCodes.FeeExceedsFrom,
+//   description: QuoteError.quoteErrorDetails.FeeExceedsFrom
+// })
+
+class PriceQuoteError extends Error {
+  params: PriceQuoteParams
+  results: PromiseSettledResult<any>[]
+
+  constructor(message: string, params: PriceQuoteParams, results: PromiseSettledResult<any>[]) {
+    super(message)
+    this.params = params
+    this.results = results
+  }
+}
+
+type PriceSource = 'gnosis-protocol' | 'paraswap'
+type PriceInformationWithSource = PriceInformation & { source: PriceSource; data?: any }
+type PromiseRejectedResultWithSource = PromiseRejectedResult & { source: PriceSource }
+
+/**
+ *
+ * @returns The best price among GPv2 API or Paraswap one
+ */
+async function _getBestPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
+  // Get price from all API: Gpv2 and Paraswap
+  const pricePromise = withTimeout(getPriceQuote(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
+  const paraSwapPricePromise = withTimeout(
+    getPriceQuoteParaswap(params),
+    PRICE_API_TIMEOUT_MS,
+    'Paraswap: Get Price API'
+  )
+
+  // Get results from API queries
+  const [priceResult, paraSwapPriceResult] = await Promise.allSettled([pricePromise, paraSwapPricePromise])
+
+  // Prepare an array with all successful estimations
+  const priceQuotes: Array<PriceInformationWithSource> = []
+  const errorsGetPrice: Array<PromiseRejectedResultWithSource> = []
+
+  if (isPromiseFulfilled(priceResult)) {
+    priceQuotes.push({ ...priceResult.value, source: 'gnosis-protocol' })
+  } else {
+    errorsGetPrice.push({ ...priceResult, source: 'gnosis-protocol' })
+  }
+
+  if (isPromiseFulfilled(paraSwapPriceResult)) {
+    const paraswapPrice = toPriceInformation(paraSwapPriceResult.value)
+    paraswapPrice && priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
+  } else {
+    errorsGetPrice.push({ ...paraSwapPriceResult, source: 'paraswap' })
+  }
+
+  if (errorsGetPrice.length > 0) {
+    const sourceNames = errorsGetPrice.map(e => e.source).join(', ')
+    console.error('[hooks::useRefetchPriceCallback] Some API failed or timed out: ' + sourceNames, errorsGetPrice)
+  }
+
+  if (priceQuotes.length > 0) {
+    const sourceNames = priceQuotes.map(p => p.source).join(', ')
+    console.log('[hooks::useRefetchPriceCallback] Get best price succeeded for ' + sourceNames, priceQuotes)
+    const amounts = priceQuotes.map(quote => quote.amount).filter(Boolean) as string[]
+
+    // Take the best price: Aggregate all the amounts into a single one.
+    //  - Use maximum of all the result for "Sell orders":
+    //        You want to get the maximum number of buy tokens
+    //  - Use minimum "Buy orders":
+    //        You want to spend the min number of sell tokens
+    const aggregationFunction = params.kind === OrderKind.SELL ? 'max' : 'min'
+    const amount = BigNumberJs[aggregationFunction](...amounts).toString(10)
+    const token = priceQuotes[0].token
+    // console.log('Aggregated amounts', aggregationFunction, amounts, amount)
+
+    const winningPrices = priceQuotes
+      .filter(quote => quote.amount === amount)
+      .map(p => p.source)
+      .join(', ')
+    console.log('[hooks::useRefetchPriceCallback] Winning price: ' + winningPrices)
+
+    return { token, amount }
+  } else {
+    throw new PriceQuoteError('Error querying price from APIs', params, [priceResult, paraSwapPriceResult])
+  }
+}
 
 async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParmams): Promise<QuoteResult> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
@@ -57,7 +153,7 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
   // Get price for price estimation
   const pricePromise =
     !feeExceedsPrice && exchangeAmount
-      ? getPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
+      ? _getBestPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
       : // fee exceeds our price, is invalid
         Promise.reject(
           new OperatorError({
