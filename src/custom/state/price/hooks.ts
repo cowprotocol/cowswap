@@ -6,21 +6,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from 'state'
 import {
   updateQuote,
-  clearQuote,
   UpdateQuoteParams,
   ClearQuoteParams,
-  setNewQuoteLoading,
-  SetLoadingQuoteParams,
-  setRefreshQuoteLoading,
+  getNewQuoteStart,
+  GetQuoteParams as GetQuoteStartParams,
+  refreshQuoteStart,
   SetQuoteErrorParams,
   setQuoteError
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
-type GetNewQuoteCallback = (quoteLoadingParams: SetLoadingQuoteParams) => void
-type RefreshCurrentQuoteCallback = (quoteLoadingParams: Pick<SetLoadingQuoteParams, 'loading'>) => void
+type GetNewQuoteStartCallback = (quoteLoadingParams: GetQuoteStartParams) => void
+type RefreshQuoteStartCallback = () => void
 type AddPriceCallback = (addFeeParams: UpdateQuoteParams) => void
-type ClearPriceCallback = (clearFeeParams: ClearQuoteParams) => void
 type SetQuoteErrorCallback = (setQuoteErrorParams: SetQuoteErrorParams) => void
 
 export const useAllQuotes = ({
@@ -76,30 +74,21 @@ export function useIsQuoteRefreshing() {
   return isRefreshingQuote
 }
 
-export const useSetNewQuoteLoading = (): GetNewQuoteCallback => {
+export const useGetNewQuoteStart = (): GetNewQuoteStartCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((quoteLoadingParams: SetLoadingQuoteParams) => dispatch(setNewQuoteLoading(quoteLoadingParams)), [
+  return useCallback((quoteLoadingParams: GetQuoteStartParams) => dispatch(getNewQuoteStart(quoteLoadingParams)), [
     dispatch
   ])
 }
 
-export const useSetRefreshQuoteLoading = (): RefreshCurrentQuoteCallback => {
+export const useRefreshQuoteStart = (): RefreshQuoteStartCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (quoteLoadingParams: Pick<SetLoadingQuoteParams, 'loading'>) =>
-      dispatch(setRefreshQuoteLoading(quoteLoadingParams)),
-    [dispatch]
-  )
+  return useCallback(() => dispatch(refreshQuoteStart()), [dispatch])
 }
 
 export const useUpdateQuote = (): AddPriceCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((updateQuoteParams: UpdateQuoteParams) => dispatch(updateQuote(updateQuoteParams)), [dispatch])
-}
-
-export const useClearQuote = (): ClearPriceCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((clearQuoteParams: ClearQuoteParams) => dispatch(clearQuote(clearQuoteParams)), [dispatch])
 }
 
 export const useSetQuoteError = (): SetQuoteErrorCallback => {
@@ -110,19 +99,17 @@ export const useSetQuoteError = (): SetQuoteErrorCallback => {
 }
 
 interface QuoteDispatchers {
-  setNewQuoteLoading: GetNewQuoteCallback
-  setRefreshQuoteLoading: RefreshCurrentQuoteCallback
+  getNewQuoteStart: GetNewQuoteStartCallback
+  refreshQuoteStart: RefreshQuoteStartCallback
   updateQuote: AddPriceCallback
-  clearQuote: ClearPriceCallback
   setQuoteError: SetQuoteErrorCallback
 }
 
 export const useQuoteDispatchers = (): QuoteDispatchers => {
   return {
-    setNewQuoteLoading: useSetNewQuoteLoading(),
-    setRefreshQuoteLoading: useSetRefreshQuoteLoading(),
+    getNewQuoteStart: useGetNewQuoteStart(),
+    refreshQuoteStart: useRefreshQuoteStart(),
     updateQuote: useUpdateQuote(),
-    clearQuote: useClearQuote(),
     setQuoteError: useSetQuoteError()
   }
 }

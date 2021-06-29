@@ -1,6 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { useCallback } from 'react'
 import { useQuoteDispatchers } from 'state/price/hooks'
+import { QuoteError } from 'state/price/actions'
+
 import {
   getCanonicalMarket,
   registerOnWindow,
@@ -19,21 +21,18 @@ import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
 import { onlyResolvesLast } from 'utils/async'
-import { ClearQuoteParams, SetQuoteErrorParams } from 'state/price/actions'
 // import QuoteError, { QuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
 // import { ApiErrorCodes, isValidOperatorError } from 'utils/operator/errors/OperatorError'
 import BigNumberJs from 'bignumber.js'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { isOnline } from 'hooks/useIsOnline'
 
-export interface RefetchQuoteCallbackParmams {
+export interface RefetchQuoteCallbackParams {
   quoteParams: FeeQuoteParams
   fetchFee: boolean
   previousFee?: FeeInformation
-  handlers: {
-    setLoadingCallback: () => void
-    hideLoadingCallback: () => void
-  }
+  isPriceRefresh: boolean
 }
 
 type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
@@ -123,7 +122,7 @@ async function _getBestPriceQuote(params: PriceQuoteParams): Promise<PriceInform
   }
 }
 
-async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParmams): Promise<QuoteResult> {
+async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParams): Promise<QuoteResult> {
   const { sellToken, buyToken, amount, kind, chainId } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
 
@@ -179,17 +178,9 @@ interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | FeeQuoteParams
   error: unknown
   addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
-  clearQuote: (params: ClearQuoteParams) => void
-  setQuoteError: (params: SetQuoteErrorParams) => void
 }
 
-function _handleQuoteError({
-  quoteData,
-  error,
-  addUnsupportedToken,
-  clearQuote,
-  setQuoteError
-}: HandleQuoteErrorParams) {
+function _handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (_isValidOperatorError(error)) {
     switch (error.type) {
       case ApiErrorCodes.UnsupportedToken: {
@@ -197,33 +188,41 @@ function _handleQuoteError({
         const unsupportedTokenAddress = error.description.split(' ')[2]
         console.error(`${error.message}: ${error.description} - disabling.`)
 
-        return addUnsupportedToken({
+        // Add token to unsupported token list
+        addUnsupportedToken({
           chainId: quoteData.chainId,
           address: unsupportedTokenAddress,
           dateAdded: Date.now()
         })
+
+        return 'unsupported-token'
       }
-      // Fee/Price query returns error
-      // e.g Insufficient Liquidity or Fee exceeds Price
-      case ApiErrorCodes.FeeExceedsFrom:
+
+      case ApiErrorCodes.FeeExceedsFrom: {
+        return 'fee-exceeds-sell-amount'
+      }
+
       case ApiErrorCodes.NotFound: {
-        console.error(`${error.message}: ${error.description}!`)
-        return setQuoteError({
-          ...quoteData,
-          lastCheck: Date.now(),
-          error: error.type
-        })
+        console.error(`Insufficient liquidity ${error.message}: ${error.description}`)
+        return 'insufficient-liquidity'
       }
+
       default: {
         // some other operator error occurred, log it
-        console.error(error)
-        // Clear the quote
-        return clearQuote({ chainId: quoteData.chainId, token: quoteData.sellToken })
+        console.error('Error quoting price/fee. Unhandled operator error: ' + error.type, error)
+
+        return 'fetch-quote-error'
       }
     }
   } else {
-    // non-operator error log it
-    console.error('An unknown error occurred:', error)
+    // Detect if the error was because we are now offline
+    if (!isOnline()) {
+      return 'offline-browser'
+    }
+
+    // Some other error getting the quote ocurred
+    console.error('Error quoting price/fee: ' + error)
+    return 'fetch-quote-error'
   }
 }
 
@@ -233,26 +232,40 @@ function _handleQuoteError({
 export function useRefetchQuoteCallback() {
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
   // dispatchers
-  const { updateQuote, clearQuote, setQuoteError } = useQuoteDispatchers()
+  const { getNewQuoteStart, refreshQuoteStart, updateQuote, setQuoteError } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
 
-  registerOnWindow({ updateQuote, addUnsupportedToken, removeGpUnsupportedToken })
+  registerOnWindow({
+    getNewQuoteStart,
+    refreshQuoteStart,
+    updateQuote,
+    setQuoteError,
+    addUnsupportedToken,
+    removeGpUnsupportedToken
+  })
 
   return useCallback(
-    async (params: RefetchQuoteCallbackParmams) => {
-      let quoteData: FeeQuoteParams | QuoteInformationObject = params.quoteParams
-      const { setLoadingCallback, hideLoadingCallback } = params.handlers
+    async (params: RefetchQuoteCallbackParams) => {
+      const { quoteParams, isPriceRefresh } = params
+      let quoteData: FeeQuoteParams | QuoteInformationObject = quoteParams
 
       const { sellToken, buyToken, chainId } = quoteData
       try {
-        // set loading status
-        setLoadingCallback()
+        // Start action: Either new quote or refreshing quote
+        if (isPriceRefresh) {
+          // Refresh the quote
+          refreshQuoteStart()
+        } else {
+          // Get new quote
+          getNewQuoteStart({ sellToken, chainId })
+        }
 
         // Get the quote
         // price can be null if fee > price
         const { cancelled, data } = await getQuote(params)
         if (cancelled) {
+          // Cancellation can happen if a new request is made, then any ongoing query is canceled
           console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
           return
         }
@@ -266,8 +279,7 @@ export function useRefetchQuoteCallback() {
         quoteData = {
           ...params.quoteParams,
           fee: getPromiseFulfilledValue(fee, undefined),
-          price: getPromiseFulfilledValue(price, undefined),
-          lastCheck: Date.now()
+          price: getPromiseFulfilledValue(price, undefined)
         }
 
         // check the PromiseSettledValue/PromiseRejectedResult
@@ -296,18 +308,27 @@ export function useRefetchQuoteCallback() {
       } catch (error) {
         // handle any errors in quote fetch
         // we re-use the quoteData object in scope to save values into state
-        _handleQuoteError({
+        const quoteError = _handleQuoteError({
           error,
           quoteData,
-          setQuoteError,
-          clearQuote,
           addUnsupportedToken
         })
-      } finally {
-        // end loading status regardless of error or resolve
-        hideLoadingCallback()
+
+        // Set quote error
+        setQuoteError({
+          ...quoteData,
+          error: quoteError
+        })
       }
     },
-    [isUnsupportedTokenGp, updateQuote, removeGpUnsupportedToken, setQuoteError, clearQuote, addUnsupportedToken]
+    [
+      isUnsupportedTokenGp,
+      updateQuote,
+      removeGpUnsupportedToken,
+      setQuoteError,
+      addUnsupportedToken,
+      getNewQuoteStart,
+      refreshQuoteStart
+    ]
   )
 }
