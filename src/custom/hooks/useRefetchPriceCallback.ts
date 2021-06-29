@@ -19,13 +19,14 @@ import {
 import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/price/reducer'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { onlyResolvesLast } from 'utils/async'
-import GpQuoteError, { GpQuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
+import { isValidQuoteError, GpQuoteErrorCodes } from 'utils/operator/errors/QuoteError'
 import { ApiErrorCodes, isValidOperatorError } from 'utils/operator/errors/OperatorError'
 import BigNumberJs from 'bignumber.js'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
 import { isOnline } from 'hooks/useIsOnline'
-import { QuoteError } from '../state/price/actions'
+import GpQuoteError from 'utils/operator/errors/QuoteError'
+import { QuoteError } from 'state/price/actions'
 
 export interface RefetchQuoteCallbackParams {
   quoteParams: FeeQuoteParams
