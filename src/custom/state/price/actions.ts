@@ -1,31 +1,28 @@
 import { createAction } from '@reduxjs/toolkit'
-import { QuoteErrorCodes } from 'utils/operator/errors/QuoteError'
+import { FeeQuoteParams } from 'utils/operator'
 import { ChainId } from '@uniswap/sdk'
 import { QuoteInformationObject } from './reducer'
 
-export type UpdateQuoteParams = QuoteInformationObject
+export type UpdateQuoteParams = Omit<QuoteInformationObject, 'lastCheck'>
 
 export interface ClearQuoteParams {
   token: string // token address,
   chainId: ChainId
 }
 
-export interface SetLoadingQuoteParams {
-  // is it loading
-  loading: boolean
-  // indicator of a necessary hard load
-  // e.g param changes: user changes token, input amt, etc
-  quoteData: Pick<QuoteInformationObject, 'sellToken' | 'chainId'>
-}
+export type GetQuoteStartParams = FeeQuoteParams
+export type RefreshQuoteParams = Pick<GetQuoteStartParams, 'sellToken' | 'chainId'>
 
-export type SetQuoteErrorParams = UpdateQuoteParams & { error: QuoteErrorCodes }
+export type QuoteError =
+  | 'fetch-quote-error'
+  | 'insufficient-liquidity'
+  | 'fee-exceeds-sell-amount'
+  | 'unsupported-token'
+  | 'offline-browser'
 
-export const setNewQuoteLoading = createAction<SetLoadingQuoteParams>('price/setNewQuoteLoading')
-export const setRefreshQuoteLoading = createAction<Pick<SetLoadingQuoteParams, 'loading'>>(
-  'price/setRefreshQuoteLoading'
-)
+export type SetQuoteErrorParams = UpdateQuoteParams & { error?: QuoteError }
+
+export const getNewQuoteStart = createAction<GetQuoteStartParams>('price/getNewQuoteStart')
+export const refreshQuoteStart = createAction<RefreshQuoteParams>('price/refreshQuoteStart')
 export const updateQuote = createAction<UpdateQuoteParams>('price/updateQuote')
-export const clearQuote = createAction<ClearQuoteParams>('price/clearQuote')
 export const setQuoteError = createAction<SetQuoteErrorParams>('price/setQuoteError')
-
-// TODO: Add actions to update only the price

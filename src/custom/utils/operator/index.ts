@@ -1,15 +1,15 @@
 import { ChainId } from '@uniswap/sdk'
-import { getSigningSchemeApiValue, OrderCancellation, OrderCreation } from 'utils/signatures'
+import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
 import { isDev } from '../environments'
 import { FeeInformation, PriceInformation } from 'state/price/reducer'
 import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'utils/operator/errors/OperatorError'
 import QuoteError, {
+  GpQuoteErrorCodes,
+  GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
-  QuoteErrorCodes,
-  QuoteErrorDetails,
-  QuoteErrorObject
+  GpQuoteErrorDetails
 } from 'utils/operator/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
 
@@ -174,9 +174,9 @@ export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & 
   quoteToken: string
 }
 
-const UNHANDLED_QUOTE_ERROR: QuoteErrorObject = {
-  errorType: QuoteErrorCodes.UNHANDLED_ERROR,
-  description: QuoteErrorDetails.UNHANDLED_ERROR
+const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
+  errorType: GpQuoteErrorCodes.UNHANDLED_ERROR,
+  description: GpQuoteErrorDetails.UNHANDLED_ERROR
 }
 
 const UNHANDLED_ORDER_ERROR: ApiErrorObject = {

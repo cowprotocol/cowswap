@@ -25,7 +25,6 @@ import { ParsedQs } from 'qs'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import { WrappedTokenInfo } from '../lists/hooks'
-import { isFeeGreaterThanPriceError } from '../price/utils'
 import TradeGp from './TradeGp'
 
 export * from '@src/state/swap/hooks'
@@ -276,7 +275,7 @@ export function useIsFeeGreaterThanInput({
   if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
 
   return {
-    isFeeGreater: isFeeGreaterThanPriceError(quote.error),
+    isFeeGreater: quote.error === 'fee-exceeds-sell-amount',
     fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null
   }
 }

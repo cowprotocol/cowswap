@@ -1,10 +1,9 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@uniswap/sdk'
-import { updateQuote, clearQuote, setQuoteError, setNewQuoteLoading, setRefreshQuoteLoading } from './actions'
+import { updateQuote, setQuoteError, getNewQuoteStart, refreshQuoteStart, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
-import { QuoteErrorCodes } from 'utils/operator/errors/QuoteError'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -26,7 +25,7 @@ export interface PriceInformation {
 export interface QuoteInformationObject extends FeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
-  error?: QuoteErrorCodes
+  error?: QuoteError
   lastCheck: number
 }
 
@@ -54,39 +53,103 @@ function initializeState(
   }
 }
 
+function getResetPrice(sellToken: string, buyToken: string, kind: string) {
+  return {
+    amount: null,
+    token: kind ? sellToken : buyToken
+  }
+}
+
 export default createReducer(initialState, builder =>
   builder
-    .addCase(setNewQuoteLoading, (state, action) => {
-      const { loading, quoteData } = action.payload
-      state.loading = loading
-      // we have quoteInfo - signals a hard load, set price to null
-      const pseudoAction = { type: action.type, payload: quoteData }
-      // initialise state, if necessary
-      initializeState(state.quotes, pseudoAction)
-      // does our token exist in state?
-      const quotesState = state.quotes[quoteData.chainId][quoteData.sellToken]
-      if (quotesState?.price) {
-        quotesState.price.amount = null
+    /**
+     * Gets a new quote
+     */
+    .addCase(getNewQuoteStart, (state, action) => {
+      const quoteData = action.payload
+      const { sellToken, buyToken, amount, chainId, kind } = quoteData
+      initializeState(state.quotes, action)
+
+      // Reset quote params
+      const quotes = state.quotes[quoteData.chainId]
+      quotes[sellToken] = {
+        sellToken,
+        buyToken,
+        amount,
+        chainId,
+        kind,
+        // Update last checked price
+        lastCheck: Date.now(),
+        // Reset price
+        price: getResetPrice(sellToken, buyToken, kind)
       }
-    })
-    .addCase(setRefreshQuoteLoading, (state, action) => {
-      const { loading } = action.payload
-      state.loading = loading
-    })
-    .addCase(setQuoteError, ({ quotes: state }, action) => {
-      initializeState(state, action)
-      const { sellToken, chainId } = action.payload
-      state[chainId][sellToken] = action.payload
+
+      // Activate loader
+      state.loading = true
     })
 
-    .addCase(updateQuote, ({ quotes: state }, action) => {
-      initializeState(state, action)
-      const { sellToken, chainId } = action.payload
-      state[chainId][sellToken] = action.payload
+    /**
+     * Refresh quote
+     */
+    .addCase(refreshQuoteStart, (state, action) => {
+      const quoteData = action.payload
+      const { sellToken, chainId } = quoteData
+      initializeState(state.quotes, action)
+
+      // Update Quote info
+      const quotes = state.quotes[chainId]
+      const quoteInfo = quotes[sellToken]
+      if (quoteInfo) {
+        quotes[sellToken] = {
+          ...quoteInfo,
+          // Update last checked price
+          lastCheck: Date.now()
+        }
+      }
+
+      // Activates loader
+      state.loading = true
     })
-    .addCase(clearQuote, ({ quotes: state }, action) => {
-      initializeState(state, action)
-      const { token, chainId } = action.payload
-      delete state[chainId][token]
+
+    /**
+     * Update the price setting a new one
+     */
+    .addCase(updateQuote, (state, action) => {
+      const quotes = state.quotes
+      const payload = action.payload
+      const { sellToken, chainId } = payload
+      initializeState(quotes, action)
+
+      // Updates the new price
+      const quoteInformation = quotes[chainId][sellToken]
+      if (quoteInformation) {
+        quotes[chainId][sellToken] = { ...quoteInformation, ...payload }
+      }
+
+      // Stop the loader
+      state.loading = false
+    })
+
+    /**
+     * Signal there was an error getting a quote
+     */
+    .addCase(setQuoteError, (state, action) => {
+      const quotes = state.quotes
+      const payload = action.payload
+      const { sellToken, buyToken, kind, chainId } = payload
+      initializeState(quotes, action)
+
+      // Sets the error information
+      const quoteInformation = quotes[chainId][sellToken]
+      if (quoteInformation) {
+        quotes[chainId][sellToken] = {
+          ...quoteInformation,
+          ...payload,
+          price: getResetPrice(sellToken, buyToken, kind)
+        }
+      }
+
+      // Stop the loader
+      state.loading = false
     })
 )
