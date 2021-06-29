@@ -60,7 +60,6 @@ import { SwapProps } from '.'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
-import { isFeeGreaterThanPriceError, isInsufficientLiquidityError, isUnhandledQuoteError } from 'state/price/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import TradeGp from '@src/custom/state/swap/TradeGp'
 
@@ -374,6 +373,9 @@ export default function Swap({
   )
 
   const swapBlankState = !swapInputError && !trade
+  const amountBeforeFees = trade?.inputAmountWithFee.greaterThan(trade.fee.amount)
+    ? trade?.inputAmountWithFee.subtract(trade.fee.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
+    : '0'
 
   return (
     <>
@@ -410,9 +412,7 @@ export default function Swap({
                   label={exactInLabel}
                   trade={trade}
                   showHelper={independentField === Field.OUTPUT}
-                  amountBeforeFees={trade?.inputAmountWithFee
-                    .subtract(trade.fee.feeAsCurrency)
-                    .toSignificant(DEFAULT_PRECISION)}
+                  amountBeforeFees={amountBeforeFees}
                   amountAfterFees={trade?.inputAmountWithFee.toSignificant(DEFAULT_PRECISION)}
                   type="From"
                   feeAmount={trade?.fee?.feeAsCurrency?.toSignificant(DEFAULT_PRECISION)}
@@ -550,17 +550,21 @@ export default function Swap({
               </ButtonPrimary>
             ) : !swapInputError && isNativeIn ? (
               <SwitchToWethBtn wrappedToken={wrappedToken} />
-            ) : isFeeGreaterThanPriceError(quote?.error) ? (
+            ) : quote?.error === 'fee-exceeds-sell-amount' ? (
               <FeesExceedFromAmountMessage />
-            ) : isInsufficientLiquidityError(quote?.error) ? (
+            ) : quote?.error === 'insufficient-liquidity' ? (
               // ) : noRoute && userHasSpecifiedInputOutput ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
                 {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
               </GreyCard>
-            ) : isUnhandledQuoteError(quote?.error) ? (
+            ) : quote?.error === 'fetch-quote-error' ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Error loading quote. Try again later.</TYPE.main>
+              </GreyCard>
+            ) : quote?.error === 'offline-browser' ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">Error loading quote. You are currently offline.</TYPE.main>
               </GreyCard>
             ) : showApproveFlow ? (
               <RowBetween>
