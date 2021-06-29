@@ -9,17 +9,18 @@ import {
   UpdateQuoteParams,
   ClearQuoteParams,
   getNewQuoteStart,
-  GetQuoteParams as GetQuoteStartParams,
+  GetQuoteStartParams,
   refreshQuoteStart,
   SetQuoteErrorParams,
-  setQuoteError
+  setQuoteError,
+  RefreshQuoteParams
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
-type GetNewQuoteStartCallback = (quoteLoadingParams: GetQuoteStartParams) => void
-type RefreshQuoteStartCallback = () => void
-type AddPriceCallback = (addFeeParams: UpdateQuoteParams) => void
-type SetQuoteErrorCallback = (setQuoteErrorParams: SetQuoteErrorParams) => void
+type GetNewQuoteStartCallback = (params: GetQuoteStartParams) => void
+type RefreshQuoteStartCallback = (params: RefreshQuoteParams) => void
+type AddPriceCallback = (params: UpdateQuoteParams) => void
+type SetQuoteErrorCallback = (params: SetQuoteErrorParams) => void
 
 export const useAllQuotes = ({
   chainId
@@ -76,26 +77,22 @@ export function useIsQuoteRefreshing() {
 
 export const useGetNewQuoteStart = (): GetNewQuoteStartCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((quoteLoadingParams: GetQuoteStartParams) => dispatch(getNewQuoteStart(quoteLoadingParams)), [
-    dispatch
-  ])
+  return useCallback((params: GetQuoteStartParams) => dispatch(getNewQuoteStart(params)), [dispatch])
 }
 
 export const useRefreshQuoteStart = (): RefreshQuoteStartCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback(() => dispatch(refreshQuoteStart()), [dispatch])
+  return useCallback((params: RefreshQuoteParams) => dispatch(refreshQuoteStart(params)), [dispatch])
 }
 
 export const useUpdateQuote = (): AddPriceCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((updateQuoteParams: UpdateQuoteParams) => dispatch(updateQuote(updateQuoteParams)), [dispatch])
+  return useCallback((params: UpdateQuoteParams) => dispatch(updateQuote(params)), [dispatch])
 }
 
 export const useSetQuoteError = (): SetQuoteErrorCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((setQuoteErrorParams: SetQuoteErrorParams) => dispatch(setQuoteError(setQuoteErrorParams)), [
-    dispatch
-  ])
+  return useCallback((params: SetQuoteErrorParams) => dispatch(setQuoteError(params)), [dispatch])
 }
 
 interface QuoteDispatchers {

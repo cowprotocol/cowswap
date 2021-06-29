@@ -4,7 +4,7 @@ import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
 import { useCurrency } from 'hooks/Tokens'
-import { useAllQuotes, useSetQuoteError } from './hooks'
+import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
 import { QuoteInformationObject } from './reducer'
@@ -16,29 +16,14 @@ const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
-const PRICE_UPDATE_TIME = 10000 // If the price is older than 10s, refresh
 const UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL = 10 * 60 * 1000 // if unsupported token was added > 10min ago, re-try
 
 /**
- * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
+ * Returns if the quote has been recently checked
  */
 function wasQuoteCheckedRecently(lastQuoteCheck: number): boolean {
   return lastQuoteCheck + WAITING_TIME_BETWEEN_EQUAL_REQUESTS > Date.now()
 }
-
-/**
- * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
- */
-function priceIsOld(quoteInfo?: QuoteInformationObject): boolean {
-  const lastPriceCheck = quoteInfo?.lastCheck
-  if (!lastPriceCheck) {
-    return true
-  }
-  const isPriceOld = lastPriceCheck + PRICE_UPDATE_TIME < Date.now()
-  // console.log(`[state:price:updater] Price is old? `, isPriceOld)
-  return isPriceOld
-}
-
 /**
  * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
  */
@@ -74,10 +59,13 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
 /**
  *  Decides if we need to refetch the fee information given the current parameters (selected by the user), and the current feeInfo (in the state)
  */
-function isRefetchQuoteRequired(currentParams: FeeQuoteParams, quoteInformation?: QuoteInformationObject): boolean {
+function isRefetchQuoteRequired(
+  isLoading: boolean,
+  currentParams: FeeQuoteParams,
+  quoteInformation?: QuoteInformationObject
+): boolean {
   // If there's no quote/fee information, we always re-fetch
-  // we need to check that there is also no error otherwise this will loop
-  if (!quoteInformation || (!quoteInformation.fee && !quoteInformation.error)) {
+  if (!quoteInformation) {
     return true
   }
 
@@ -88,10 +76,14 @@ function isRefetchQuoteRequired(currentParams: FeeQuoteParams, quoteInformation?
 
   // The query params are the same, so we only ask for a new quote if:
   //  - If the quote was not queried recently
+  //  - There's not another price query going on right now
   //  - The quote will expire soon
-
   if (wasQuoteCheckedRecently(quoteInformation.lastCheck)) {
     // Don't Re-fetch if it was queried recently
+    return false
+  } else if (isLoading) {
+    // Don't Re-fetch if there's another quote going on with the same params
+    // It's better to wait for the timeout or resolution. Also prevents an issue of refreshing too fast with slow APIs
     return false
   } else if (quoteInformation.fee) {
     // Re-fetch if the fee is expiring soon
@@ -129,6 +121,7 @@ export default function FeesUpdater(): null {
   const buyCurrency = useCurrency(buyToken)
   const quotesMap = useAllQuotes({ chainId })
   const quoteInfo = quotesMap && sellToken ? quotesMap[sellToken] : undefined
+  const isLoading = useIsQuoteLoading()
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
@@ -140,7 +133,10 @@ export default function FeesUpdater(): null {
 
   // Update if any parameter is changing
   useEffect(() => {
-    // Don't refetch if window is not visible, or some parameter is missing
+    // Don't refetch if:
+    //  - window is not visible
+    //  - browser is offline
+    //  - some parameter is missing
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
 
     // Don't refetch if the amount is missing
@@ -173,17 +169,20 @@ export default function FeesUpdater(): null {
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
       // if no token is unsupported and needs refetching
-      const refetchAll = !unsupportedToken && isRefetchQuoteRequired(quoteParams, quoteInfo)
-      const refetchPrice = !unsupportedToken && priceIsOld(quoteInfo)
+      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
-      if (unsupportedNeedsCheck || refetchAll || refetchPrice) {
-        const shouldFetchNewQuote = (quoteInfo && !quoteUsingSameParameters(quoteParams, quoteInfo)) || true
+      if (unsupportedNeedsCheck || hasToRefetch) {
+        // Decide if this is a new quote, or just a refresh
+        const thereIsPreviousPrice = !!quoteInfo?.price?.amount
+        const isPriceRefresh = quoteInfo
+          ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
+          : false
 
         refetchQuote({
           quoteParams,
-          fetchFee: refetchAll,
+          fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
           previousFee: quoteInfo?.fee,
-          isPriceRefresh: shouldFetchNewQuote
+          isPriceRefresh
         }).catch(error => console.error('Error re-fetching the quote', error))
       }
     }
@@ -210,8 +209,9 @@ export default function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
-    setQuoteError,
-    isUnsupportedTokenGp
+    isUnsupportedTokenGp,
+    isLoading,
+    setQuoteError
   ])
 
   return null
