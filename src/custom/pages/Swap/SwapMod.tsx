@@ -373,6 +373,9 @@ export default function Swap({
   )
 
   const swapBlankState = !swapInputError && !trade
+  const amountBeforeFees = trade?.inputAmountWithFee.greaterThan(trade.fee.amount)
+    ? trade?.inputAmountWithFee.subtract(trade.fee.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
+    : '0'
 
   return (
     <>
@@ -409,9 +412,7 @@ export default function Swap({
                   label={exactInLabel}
                   trade={trade}
                   showHelper={independentField === Field.OUTPUT}
-                  amountBeforeFees={trade?.inputAmountWithFee
-                    .subtract(trade.fee.feeAsCurrency)
-                    .toSignificant(DEFAULT_PRECISION)}
+                  amountBeforeFees={amountBeforeFees}
                   amountAfterFees={trade?.inputAmountWithFee.toSignificant(DEFAULT_PRECISION)}
                   type="From"
                   feeAmount={trade?.fee?.feeAsCurrency?.toSignificant(DEFAULT_PRECISION)}
