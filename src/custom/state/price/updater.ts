@@ -4,12 +4,13 @@ import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
 import { useCurrency } from 'hooks/Tokens'
-import { useAllQuotes } from './hooks'
+import { useAllQuotes, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
 import { QuoteInformationObject } from './reducer'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
+import useIsOnline from 'hooks/useIsOnline'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -132,18 +133,36 @@ export default function FeesUpdater(): null {
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
   const refetchQuote = useRefetchQuoteCallback()
+  const setQuoteError = useSetQuoteError()
+
   const windowVisible = useIsWindowVisible()
+  const isOnline = useIsOnline()
 
   // Update if any parameter is changing
   useEffect(() => {
     // Don't refetch if window is not visible, or some parameter is missing
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
 
+    // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? 'sell' : 'buy'
     const amount = tryParseAmount(typedValue, (kind === 'sell' ? sellCurrency : buyCurrency) ?? undefined)
-
-    // Don't refetch if the amount is missing
     if (!amount) return
+
+    const quoteParams = { buyToken, chainId, sellToken, kind, amount: amount.raw.toString() }
+
+    // Don't refetch if offline.
+    //  Also, make sure we update the error state
+    if (!isOnline) {
+      if (quoteInfo?.error !== 'offline-browser') {
+        setQuoteError({ ...quoteParams, error: 'offline-browser' })
+      }
+      return
+    } else {
+      // If we are online, we make sure we reset the offline-error
+      if (quoteInfo?.error === 'offline-browser') {
+        setQuoteError({ ...quoteParams, error: undefined })
+      }
+    }
 
     const unsupportedToken =
       isUnsupportedTokenGp(sellToken.toLowerCase()) || isUnsupportedTokenGp(buyToken.toLowerCase())
@@ -153,8 +172,6 @@ export default function FeesUpdater(): null {
 
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
-      const quoteParams = { buyToken, chainId, sellToken, kind, amount: amount.raw.toString() }
-
       // if no token is unsupported and needs refetching
       const refetchAll = !unsupportedToken && isRefetchQuoteRequired(quoteParams, quoteInfo)
       const refetchPrice = !unsupportedToken && priceIsOld(quoteInfo)
@@ -183,6 +200,7 @@ export default function FeesUpdater(): null {
     return () => clearInterval(intervalId)
   }, [
     windowVisible,
+    isOnline,
     chainId,
     sellToken,
     buyToken,
@@ -192,6 +210,7 @@ export default function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
+    setQuoteError,
     isUnsupportedTokenGp
   ])
 

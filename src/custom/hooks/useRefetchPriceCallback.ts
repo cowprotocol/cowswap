@@ -26,6 +26,7 @@ import { onlyResolvesLast } from 'utils/async'
 import BigNumberJs from 'bignumber.js'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { isOnline } from 'hooks/useIsOnline'
 
 export interface RefetchQuoteCallbackParams {
   quoteParams: FeeQuoteParams
@@ -214,7 +215,12 @@ function _handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuot
       }
     }
   } else {
-    // non-operator error log it
+    // Detect if the error was because we are now offline
+    if (!isOnline()) {
+      return 'offline-browser'
+    }
+
+    // Some other error getting the quote ocurred
     console.error('Error quoting price/fee: ' + error)
     return 'fetch-quote-error'
   }

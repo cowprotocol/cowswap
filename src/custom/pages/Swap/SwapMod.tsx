@@ -561,6 +561,10 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Error loading quote. Try again later.</TYPE.main>
               </GreyCard>
+            ) : quote?.error === 'offline-browser' ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">Error loading quote. You are currently offline.</TYPE.main>
+              </GreyCard>
             ) : showApproveFlow ? (
               <RowBetween>
                 <ButtonConfirmed
