@@ -557,6 +557,10 @@ export default function Swap({
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
                 {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>}
               </GreyCard>
+            ) : quote?.error === 'fetch-quote-error' ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">Error loading quote. Try again later.</TYPE.main>
+              </GreyCard>
             ) : showApproveFlow ? (
               <RowBetween>
                 <ButtonConfirmed

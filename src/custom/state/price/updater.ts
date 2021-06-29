@@ -4,7 +4,7 @@ import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
 import { useCurrency } from 'hooks/Tokens'
-import { useAllQuotes, useQuoteDispatchers } from './hooks'
+import { useAllQuotes } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
 import { QuoteInformationObject } from './reducer'
@@ -120,7 +120,6 @@ export default function FeesUpdater(): null {
   // useful to force debounce value to refresh
   const forceUpdateRef = independentField
 
-  const { setNewQuoteLoading, setRefreshQuoteLoading } = useQuoteDispatchers()
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
   const typedValue = useDebounceWithForceUpdate(rawTypedValue, DEBOUNCE_TIME, forceUpdateRef)
@@ -161,19 +160,13 @@ export default function FeesUpdater(): null {
       const refetchPrice = !unsupportedToken && priceIsOld(quoteInfo)
 
       if (unsupportedNeedsCheck || refetchAll || refetchPrice) {
-        const shouldFetchNewQuote = quoteInfo && !quoteUsingSameParameters(quoteParams, quoteInfo)
+        const shouldFetchNewQuote = (quoteInfo && !quoteUsingSameParameters(quoteParams, quoteInfo)) || true
 
         refetchQuote({
           quoteParams,
           fetchFee: refetchAll,
           previousFee: quoteInfo?.fee,
-          handlers: {
-            setLoadingCallback: () =>
-              shouldFetchNewQuote
-                ? setNewQuoteLoading({ loading: true, quoteData: { sellToken, chainId } })
-                : setRefreshQuoteLoading({ loading: true }),
-            hideLoadingCallback: () => setRefreshQuoteLoading({ loading: false })
-          }
+          isPriceRefresh: shouldFetchNewQuote
         }).catch(error => console.error('Error re-fetching the quote', error))
       }
     }
@@ -199,9 +192,7 @@ export default function FeesUpdater(): null {
     buyCurrency,
     quoteInfo,
     refetchQuote,
-    isUnsupportedTokenGp,
-    setNewQuoteLoading,
-    setRefreshQuoteLoading
+    isUnsupportedTokenGp
   ])
 
   return null
