@@ -1,10 +1,16 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@uniswap/sdk'
-import { updateQuote, clearQuote, setQuoteError, setNewQuoteLoading, setRefreshQuoteLoading } from './actions'
+import {
+  updateQuote,
+  clearQuote,
+  setQuoteError,
+  setNewQuoteLoading,
+  setRefreshQuoteLoading,
+  QuoteError
+} from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
-import { ApiErrorCodes } from 'utils/operator/error'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -26,7 +32,7 @@ export interface PriceInformation {
 export interface QuoteInformationObject extends FeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
-  error?: ApiErrorCodes
+  error?: QuoteError
   lastCheck: number
 }
 

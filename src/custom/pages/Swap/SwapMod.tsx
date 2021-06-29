@@ -60,7 +60,6 @@ import { SwapProps } from '.'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
-import { isInsufficientLiquidityError } from 'state/price/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import TradeGp from '@src/custom/state/swap/TradeGp'
 
@@ -552,7 +551,7 @@ export default function Swap({
               <SwitchToWethBtn wrappedToken={wrappedToken} />
             ) : isFeeGreater ? (
               <FeesExceedFromAmountMessage />
-            ) : isInsufficientLiquidityError(quote?.error) ? (
+            ) : quote?.error === 'insufficient-liquidity' ? (
               // ) : noRoute && userHasSpecifiedInputOutput ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>

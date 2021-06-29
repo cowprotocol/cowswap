@@ -19,7 +19,7 @@ import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import OperatorError, { ApiErrorCodes } from 'utils/operator/error'
 import { onlyResolvesLast } from 'utils/async'
-import { ClearQuoteParams, SetQuoteErrorParams } from 'state/price/actions'
+import { ClearQuoteParams, SetQuoteErrorParams, QuoteError } from 'state/price/actions'
 // import QuoteError, { QuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
 // import { ApiErrorCodes, isValidOperatorError } from 'utils/operator/errors/OperatorError'
 import BigNumberJs from 'bignumber.js'
@@ -190,41 +190,56 @@ function _handleQuoteError({
   clearQuote,
   setQuoteError
 }: HandleQuoteErrorParams) {
+  console.log('Handle error')
+  let quoteError: QuoteError
   if (_isValidOperatorError(error)) {
     switch (error.type) {
       case ApiErrorCodes.UnsupportedToken: {
+        quoteError = 'unsupported-token'
+
         // TODO: will change with introduction of data prop in error responses
         const unsupportedTokenAddress = error.description.split(' ')[2]
         console.error(`${error.message}: ${error.description} - disabling.`)
 
-        return addUnsupportedToken({
+        // Add token to unsupported token list
+        addUnsupportedToken({
           chainId: quoteData.chainId,
           address: unsupportedTokenAddress,
           dateAdded: Date.now()
         })
+        break
       }
-      // Fee/Price query returns error
-      // e.g Insufficient Liquidity or Fee exceeds Price
-      case ApiErrorCodes.FeeExceedsFrom:
+
+      case ApiErrorCodes.FeeExceedsFrom: {
+        quoteError = 'fee-exceeds-sell-amount'
+        break
+      }
+
       case ApiErrorCodes.NotFound: {
+        quoteError = 'insufficient-liquidity'
         console.error(`${error.message}: ${error.description}!`)
-        return setQuoteError({
-          ...quoteData,
-          lastCheck: Date.now(),
-          error: error.type
-        })
+        break
       }
+
       default: {
+        quoteError = 'fetch-quote-error'
         // some other operator error occurred, log it
-        console.error(error)
-        // Clear the quote
-        return clearQuote({ chainId: quoteData.chainId, token: quoteData.sellToken })
+        console.error('Error quoting price/fee. Unhandled operator error: ' + error.type, error)
       }
     }
   } else {
+    quoteError = 'fetch-quote-error'
     // non-operator error log it
-    console.error('An unknown error occurred:', error)
+    console.error('Error quoting price/fee: ' + error)
   }
+
+  // Clear the quote, set UI error
+  clearQuote({ chainId: quoteData.chainId, token: quoteData.sellToken })
+  setQuoteError({
+    ...quoteData,
+    lastCheck: Date.now(),
+    error: quoteError
+  })
 }
 
 /**
@@ -253,6 +268,7 @@ export function useRefetchQuoteCallback() {
         // price can be null if fee > price
         const { cancelled, data } = await getQuote(params)
         if (cancelled) {
+          // Cancellation can happen if a new request is made, then any ongoing query is canceled
           console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
           return
         }
