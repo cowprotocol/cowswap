@@ -375,7 +375,7 @@ export default function Swap({
   const swapBlankState = !swapInputError && !trade
   let amountBeforeFees: string | undefined
   if (trade) {
-    if (trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.greaterThan(trade.fee.amount)) {
+    if (trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)) {
       amountBeforeFees = '0'
     } else {
       amountBeforeFees = trade.inputAmountWithFee.subtract(trade.fee.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
@@ -540,9 +540,7 @@ export default function Swap({
               </ButtonPrimary>
             ) : !account ? (
               <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                  Connect Wallet
-                </SwapButton>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
               </ButtonLight>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
