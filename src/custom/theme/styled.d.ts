@@ -14,6 +14,8 @@ export interface Colors extends ColorsUniswap {
   disabled: Color
   shimmer1: Color
   shimmer2: color
+  tableHeadBG: Color
+  tableRowBG: Color
 }
 
 declare module 'styled-components' {
