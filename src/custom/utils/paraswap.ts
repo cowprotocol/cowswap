@@ -54,7 +54,7 @@ function isGetRateSuccess(
 }
 
 export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
-  const { baseToken: baseTokenAux, quoteToken: quoteTokenAux, amount, kind, chainId } = params
+  const { baseToken: baseTokenAux, quoteToken: quoteTokenAux, fromDecimals, toDecimals, amount, kind, chainId } = params
   const baseToken = toErc20Address(baseTokenAux, chainId)
   const quoteToken = toErc20Address(quoteTokenAux, chainId)
 
@@ -79,7 +79,7 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapP
   const options: RateOptions | undefined = undefined
 
   // Get price
-  const rateResult = await paraSwap.getRate(sellToken, buyToken, amount, swapSide, options)
+  const rateResult = await paraSwap.getRate(sellToken, buyToken, amount, swapSide, options, fromDecimals, toDecimals)
 
   if (isGetRateSuccess(rateResult)) {
     // Success getting the price

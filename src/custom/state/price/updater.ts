@@ -11,6 +11,7 @@ import { QuoteInformationObject } from './reducer'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 import useIsOnline from 'hooks/useIsOnline'
+import { DEFAULT_DECIMALS } from 'custom/constants'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -144,7 +145,9 @@ export default function FeesUpdater(): null {
     const amount = tryParseAmount(typedValue, (kind === 'sell' ? sellCurrency : buyCurrency) ?? undefined)
     if (!amount) return
 
-    const quoteParams = { buyToken, chainId, sellToken, kind, amount: amount.raw.toString() }
+    const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS
+    const toDecimals = buyCurrency?.decimals ?? DEFAULT_DECIMALS
+    const quoteParams = { chainId, sellToken, buyToken, fromDecimals, toDecimals, kind, amount: amount.raw.toString() }
 
     // Don't refetch if offline.
     //  Also, make sure we update the error state
