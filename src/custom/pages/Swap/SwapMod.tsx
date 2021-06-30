@@ -535,7 +535,9 @@ export default function Swap({
               </ButtonPrimary>
             ) : !account ? (
               <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                Connect Wallet
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
+                  Connect Wallet
+                </SwapButton>
               </ButtonLight>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
