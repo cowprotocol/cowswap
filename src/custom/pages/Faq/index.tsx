@@ -7,24 +7,38 @@ import { Link } from 'react-router-dom'
 
 const Wrapper = styled.div`
   #table-container {
-    overflow-x: scroll;
     margin: auto;
-    max-width: 80vw;
+    max-width: 100%;
 
     > table {
-      min-width: 800px;
+      width: 100%;
+      border-spacing: 1px;
+      color: ${({ theme }) => theme.text1};
 
-      thead, tr:nth-child(even) {
-        background: ${({ theme }) => theme.bg2};
-        color: ${({ theme }) => theme.text2};
-        }
+      > thead {
+        background: ${({ theme }) => theme.tableHeadBG};
+      }
+
+      > tbody > tr {
+        background: ${({ theme }) => theme.tableRowBG};
+      }
+
+      > tbody > tr > td > span[role='img'] {
+        font-size: 18px;
       }
 
       th,
       td {
-        min-width: 8.5rem;
         text-align: left;
-        padding: 0.5rem 0.4rem;
+        padding: 6px 12px;
+
+        &:not(:first-child) {
+          text-align: center;
+        }
+      }
+
+      th {
+        padding: 16px 12px;
       }
     }
   }
@@ -78,10 +92,6 @@ const Wrapper = styled.div`
 
   ol > li {
     margin-bottom: 0.5rem;
-  }
-
-  span[role='img'] {
-    font-size: 1.8em;
   }
 `
 
@@ -298,28 +308,22 @@ export default function Faq() {
       <Page>
         <Content>
           <h2 id="protocol">Protocol</h2>
-
           <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
-
           <p>
             There is currently no plan for a CowSwap specific token. At the moment the value is already captured by the
             GNO token, as CowSwap is built on top of Gnosis Protocol. If you are curious about how the value is
             captured, you can <a href="https://forum.gnosis.io/t/gpv2-fee-model/1266"> read this forum post</a>.
           </p>
-
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
             that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape or
             form.
           </p>
-
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
-
           <p>
             Each executed order has a fee which is captured by the protocol. Part of the fee is paid to solvers
             (entities which provide order settlement solutions) to incentivize their participation.
           </p>
-
           <p>
             The fee consists of the &quot;base cost to execute the trade&quot; and the &quot;protocol fee&quot;
             (although it is only exposed to the user as one fee). As a user, you are only signing a message to submit
@@ -334,24 +338,19 @@ export default function Faq() {
               transactions!
             </strong>
           </p>
-
           <h3 id="how-does-cowswap-connect-to-all-on-chain-liquidity">
             How does CowSwap connect to all on-chain liquidity?
           </h3>
-
           <p>CowSwap can connect to all on-chain liquidity:</p>
-
           <p>
             When CowSwap does not have enough CoWs (Coincidence of Wants) among the orders available for a batch, it
             taps other AMMs’ liquidity to be able to settle the traders’ orders. Gnosis Protocol v2 can be connected to
             any on-chain liquidity sources and can therefore enjoy the benefits of concentrating the fragmented
             liquidity across decentralized finance.
           </p>
-
           <h3 id="how-is-cowswap-able-to-offer-better-prices-than-aggregators-themselves">
             How is CowSwap able to offer better prices?
           </h3>
-
           <p>
             Before using on-chain liquidity, CowSwap tries to find CoWs (Coincidences of Wants) within the set of
             currently valid orders and match them directly with one another. CoWs result in better prices because no fee
@@ -359,31 +358,25 @@ export default function Faq() {
             it taps into the DEX that gives the next best price. This results in the same or better performance than
             existing DEX aggregators
           </p>
-
           <h3 id="how-can-i-become-a-liquidity-provider">How can I become a liquidity provider?</h3>
-
           <p>
             CowSwap does not have liquidity providers. Instead, it connects to all on-chain liquidity that is provided
             across different protocols. Since orders only incur a cost if traded, active market makers can observe the
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
-
           <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
-
           <p>CowSwap uses offline signatures to offer gasless orders.</p>
           <p>
             Currently, Smart Contract (SC) wallets such as Gnosis Safe, Argent or Pillar are not supported because it
             would require signing an on-chain transaction to place the order, making it no longer gasless. We are
             working to make this a possibility and support will be added soon.
           </p>
-
           <p>
             Nevertheless, even if your wallet is not an SC wallet, it might be unsupported in some cases. Not all
             wallets implement the necessary signing methods from EIP712 standard. If that is the case for you, reach out
             to your wallet developers and ask for it.
           </p>
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
-
           <p>
             In GPv2, instead of using a central operator or a constant function market maker to determine trade
             settlements, solvers compete against each other to submit the most optimal batch settlement solution. Each
@@ -401,11 +394,9 @@ export default function Faq() {
               solutions, or take the risk of being slashed by the GnosisDAO for wrongdoing.
             </li>
           </ol>
-
           <h3 id="what-interactions-can-i-encounter-when-using-Cowswap">
             What interactions can I encounter when using CowSwap?
           </h3>
-
           <p>
             <strong>Internal CowSwap Operations</strong>
           </p>
@@ -414,102 +405,88 @@ export default function Faq() {
               <thead>
                 <tr>
                   <th>Action</th>
-                  <th>Description</th>
-                  <th>Costs</th>
-                  <th>Action Performed</th>
-                  <th>Pay for gas?</th>
-                  <th>What do I need to pay the gas costs with?</th>
+                  <th>Signed tx (free / gasless)</th>
+                  <th>Ethereum tx (costs gas)</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Approve token for trading</td>
+                  <td>Approve token</td>
+                  <td />
                   <td>
-                    Required step for being able to sell a token. Only needs to be done once. Afterward, you will be
-                    able to trade the token using gasless transactions!
+                    <span role="img" aria-label="approve token in an ethereum tx and costs gas">
+                      ✅
+                    </span>
                   </td>
-                  <td>Regular Ethereum Tx.</td>
-                  <td>Set the token allowance for the Allowance Manager</td>
-                  <td>Yes</td>
-                  <td>ETH</td>
                 </tr>
                 <tr>
-                  <td>Signing an Order</td>
+                  <td>Wrap/Unwrap ETH</td>
+                  <td />
                   <td>
-                    Signature of a gasless off-chain order. You define your limit price and expiration date. The order
-                    will try to be executed using MEV protection against different on-chain liquidity sources or other
-                    CowSwap users trading in the same block.
+                    <span role="img" aria-label="wrap/unwrap ETH in an ethereum tx and costs gas">
+                      ✅
+                    </span>
                   </td>
-                  <td>Free</td>
-                  <td>None</td>
-                  <td>No</td>
-                  <td>Free</td>
                 </tr>
                 <tr>
-                  <td>Signing a Cancellation</td>
+                  <td>Submit order</td>
                   <td>
-                    Signature of a gasless off-chain order cancellation. See{' '}
-                    <ContentLink href={'#can-i-cancel-an-order'}>this FAQ entry</ContentLink> for more info.
+                    <span role="img" aria-label="submit order is a signed tx and costs no gas">
+                      ✅
+                    </span>
                   </td>
-                  <td>Free</td>
-                  <td>None</td>
-                  <td>No</td>
-                  <td>Free</td>
+                  <td />
                 </tr>
                 <tr>
-                  <td>Trade</td>
+                  <td>Cancel order</td>
                   <td>
-                    The trade will happen automatically if a CoW (Coincidence of Wants) is found, or if the order can be
-                    executed at the specified price in any on-chain liquidity source. You only pay fees if the trade is
-                    successful!
+                    <span role="img" aria-label="cancel order is a signed tx and costs no gas">
+                      ✅
+                    </span>
                   </td>
-                  <td>Gnosis Protocol Fee which is paid either in your sell or buy token.</td>
-                  <td>Accept the trade details by executing your limit order</td>
-                  <td>No</td>
-                  <td>Paid in either Sell or Buy token</td>
+                  <td />
                 </tr>
               </tbody>
             </table>
           </div>
-          <p>
-            <strong>External CowSwap Operations</strong>
-          </p>
-          <div id="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Action</th>
-                  <th>Description</th>
-                  <th>Costs</th>
-                  <th>Action Performed</th>
-                  <th>Pay for gas?</th>
-                  <th>What do I need to pay the gas costs with?</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Wrap ETH</td>
-                  <td>
-                    Converts native ETH into an ERC20 compatible token: WETH. Only required if you need to sell ETH.
-                  </td>
-                  <td>Regular Ethereum tx</td>
-                  <td>Send a deposit transaction to WETH contract.</td>
-                  <td>Yes</td>
-                  <td>ETH</td>
-                </tr>
-                <tr>
-                  <td>Unwrap ETH</td>
-                  <td>
-                    Converts ERC20 compatible token WETH back to ETH. Only when you want to manually convert it to ETH.
-                  </td>
-                  <td>Regulat Ethereum tx</td>
-                  <td>Send a withdrawal transaction to WETH contract.</td>
-                  <td>Yes</td>
-                  <td>ETH</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <ul>
+            <li>
+              <p>
+                <strong>Approve token</strong> <br />
+                One-time-only, required step for being able to sell a token. Afterwards, you will be able
+                to trade the token using gasless transactions.
+              </p>
+            </li>
+            <li>
+              <p>
+                <strong>Wrap ETH</strong> <br />
+                Convert native ETH into its ERC20 compatible token form: WETH. Only required if you need to sell ETH.
+              </p>
+            </li>
+
+            <li>
+              <p>
+                <strong>Unwrap ETH</strong> <br />
+                Convert ERC20 compatible token WETH back into native ETH. Only when you want to manually convert it to ETH.
+              </p>
+            </li>
+            <li>
+              <p>
+                <strong>Submit order (Sign order)</strong> <br />
+                Signature of a gasless off-chain order. You define your limit price and expiration date. The order will
+                try to be executed using MEV protection against different on-chain liquidity sources or other CowSwap
+                users trading in the same block.
+              </p>
+            </li>
+            <li>
+              <p>
+                <strong>Cancel an order (Sign cancellation)</strong> <br />
+                Signature of a gasless off-chain cancellation request. This cancellation is considered
+                &ldquo;soft&rdquo; as it might not be placed with enough time for the solvers to take into
+                consideration. See more via <ContentLink href={'#can-i-cancel-an-order'}>this FAQ entry</ContentLink>.
+              </p>
+            </li>
+          </ul>
         </Content>
       </Page>
 
