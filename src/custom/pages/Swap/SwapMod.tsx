@@ -373,9 +373,14 @@ export default function Swap({
   )
 
   const swapBlankState = !swapInputError && !trade
-  const amountBeforeFees = trade?.inputAmountWithFee.greaterThan(trade.fee.amount)
-    ? trade?.inputAmountWithFee.subtract(trade.fee.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
-    : '0'
+  let amountBeforeFees: string | undefined
+  if (trade) {
+    if (trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.greaterThan(trade.fee.amount)) {
+      amountBeforeFees = '0'
+    } else {
+      amountBeforeFees = trade.inputAmountWithFee.subtract(trade.fee.feeAsCurrency).toSignificant(DEFAULT_PRECISION)
+    }
+  }
 
   return (
     <>
