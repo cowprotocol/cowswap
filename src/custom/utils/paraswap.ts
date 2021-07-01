@@ -86,7 +86,7 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapP
 
   // https://developers.paraswap.network/api/get-rate-for-a-token-pair
   const options: RateOptions | undefined = {
-    // maxImpact
+    maxImpact: 100
   }
 
   // Get price
