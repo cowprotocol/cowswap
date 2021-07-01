@@ -5,6 +5,7 @@ import { SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP, WalletInfo } from '@src
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
+export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
 export const SHORT_PRECISION = 4
 export const SHORTEST_PRECISION = 3

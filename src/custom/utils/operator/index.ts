@@ -167,11 +167,15 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
 export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string
   chainId: ChainId
+  fromDecimals: number
+  toDecimals: number
 }
 
 export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
   baseToken: string
   quoteToken: string
+  fromDecimals: number
+  toDecimals: number
 }
 
 const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
