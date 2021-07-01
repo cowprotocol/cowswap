@@ -13240,10 +13240,10 @@ param-case@^3.0.3:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-paraswap@^4.15.0:
-  version "4.15.0"
-  resolved "https://registry.yarnpkg.com/paraswap/-/paraswap-4.15.0.tgz#b7110a91a1489ca9ec0ec2c393de8cf7a3b6797d"
-  integrity sha512-2T3iiwQgoX6E+m32X8RaGlXeeK9OvITmi0tllNuvkZRbWB556F7RSc5tvBMf+nJYg97aw9Q7Pq4s+OaKG/uPhA==
+paraswap@^4.18.0:
+  version "4.18.0"
+  resolved "https://registry.yarnpkg.com/paraswap/-/paraswap-4.18.0.tgz#d032d1a6ad7869f192a69283126d10c48d78b1e8"
+  integrity sha512-509oTtd1B1/RO49dW6U5t/9UvhAGNp4Vq7xXEFR4t1mCYDgahbtSbvJNWllqy34jGT0eKFrqLMyXnr2hPi4B7Q==
   dependencies:
     "@0x/utils" "^4.5.2"
     async "^3.1.0"

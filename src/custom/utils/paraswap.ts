@@ -53,6 +53,15 @@ function isGetRateSuccess(
   return !!(rateResult as OptimalRatesWithPartnerFees).destAmount
 }
 
+function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
+  if (error.message === 'ESTIMATED_LOSS_GREATER_THAN_MAX_IMPACT' && error.data && error.data.priceRoute) {
+    // If the price impact is too big, it still give you the estimation
+    return error.data.priceRoute
+  } else {
+    throw error
+  }
+}
+
 export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
   const { baseToken: baseTokenAux, quoteToken: quoteTokenAux, fromDecimals, toDecimals, amount, kind, chainId } = params
   const baseToken = toErc20Address(baseTokenAux, chainId)
@@ -76,7 +85,9 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapP
   const swapSide = kind === OrderKind.BUY ? SwapSide.BUY : SwapSide.SELL
 
   // https://developers.paraswap.network/api/get-rate-for-a-token-pair
-  const options: RateOptions | undefined = undefined
+  const options: RateOptions | undefined = {
+    // maxImpact
+  }
 
   // Get price
   const rateResult = await paraSwap.getRate(sellToken, buyToken, amount, swapSide, options, fromDecimals, toDecimals)
@@ -86,6 +97,11 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapP
     return rateResult
   } else {
     // Error getting the price
-    throw rateResult
+    const priceQuote = getPriceQuoteFromError(rateResult)
+    if (priceQuote) {
+      return priceQuote
+    } else {
+      throw rateResult
+    }
   }
 }
