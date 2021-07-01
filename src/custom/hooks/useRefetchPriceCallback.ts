@@ -27,6 +27,7 @@ import { PRICE_API_TIMEOUT_MS } from 'constants/index'
 import { isOnline } from 'hooks/useIsOnline'
 import GpQuoteError from 'utils/operator/errors/QuoteError'
 import { QuoteError } from 'state/price/actions'
+import { formatAtoms } from 'utils/format'
 
 export interface RefetchQuoteCallbackParams {
   quoteParams: FeeQuoteParams
@@ -123,14 +124,20 @@ async function _getBestPriceQuote(params: PriceQuoteParams): Promise<PriceInform
 }
 
 async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCallbackParams): Promise<QuoteResult> {
-  const { sellToken, buyToken, amount, kind, chainId } = quoteParams
+  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
 
   // Get a new fee quote (if required)
   const feePromise =
     fetchFee || !previousFee
-      ? getFeeQuote({ chainId, sellToken, buyToken, amount, kind })
+      ? getFeeQuote({ chainId, sellToken, buyToken, fromDecimals, toDecimals, amount, kind })
       : Promise.resolve(previousFee)
+
+  // Log fee for debugging
+  feePromise.then(fee => {
+    console.log(`Fee: ${formatAtoms(fee.amount, fromDecimals)} (in atoms ${fee.amount})`)
+    return fee
+  })
 
   // Get a new price quote
   let exchangeAmount
@@ -140,6 +147,8 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
     // we need to check for 0/negative exchangeAmount should fee >= amount
     const { amount: fee } = await feePromise
     const result = BigNumber.from(amount).sub(fee)
+    console.log(`Sell amount before fee: ${formatAtoms(amount, fromDecimals)}  (in atoms ${amount})`)
+    console.log(`Sell amount after fee: ${formatAtoms(result.toString(), fromDecimals)}  (in atoms ${result})`)
 
     feeExceedsPrice = result.lte('0')
 
@@ -152,7 +161,7 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
   // Get price for price estimation
   const pricePromise =
     !feeExceedsPrice && exchangeAmount
-      ? _getBestPriceQuote({ chainId, baseToken, quoteToken, amount: exchangeAmount, kind })
+      ? _getBestPriceQuote({ chainId, baseToken, quoteToken, fromDecimals, toDecimals, amount: exchangeAmount, kind })
       : // fee exceeds our price, is invalid
         Promise.reject(FEE_EXCEEDS_FROM_ERROR)
 

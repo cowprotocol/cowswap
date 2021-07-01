@@ -57,39 +57,38 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   }
 
   ${({ showLoader, theme }) =>
-    showLoader
-      ? css`
-          #swap-currency-output ${Container} {
-            position: relative;
-            display: inline-block;
+    showLoader &&
+    css`
+      #swap-currency-output ${Container} {
+        position: relative;
+        display: inline-block;
 
-            overflow: hidden;
-            &::after {
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              transform: translateX(-100%);
-              background-image: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0) 0,
-                ${theme.shimmer1} 20%,
-                ${theme.shimmer2} 60%,
-                rgba(255, 255, 255, 0)
-              );
-              animation: shimmer 2s infinite;
-              content: '';
-            }
+        overflow: hidden;
+        &::after {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          transform: translateX(-100%);
+          background-image: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0,
+            ${theme.shimmer1} 20%,
+            ${theme.shimmer2} 60%,
+            rgba(255, 255, 255, 0)
+          );
+          animation: shimmer 2s infinite;
+          content: '';
+        }
 
-            @keyframes shimmer {
-              100% {
-                transform: translateX(100%);
-              }
-            }
+        @keyframes shimmer {
+          100% {
+            transform: translateX(100%);
           }
-        `
-      : null}
+        }
+      }
+    `}
 
   ${CurrencySelectMod} {
     z-index: 2;
