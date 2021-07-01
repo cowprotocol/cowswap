@@ -58,7 +58,7 @@ function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
     // If the price impact is too big, it still give you the estimation
     return error.data.priceRoute
   } else {
-    throw error
+    return null
   }
 }
 
