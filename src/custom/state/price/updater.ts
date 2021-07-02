@@ -136,7 +136,6 @@ export default function FeesUpdater(): null {
   useEffect(() => {
     // Don't refetch if:
     //  - window is not visible
-    //  - browser is offline
     //  - some parameter is missing
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
 
