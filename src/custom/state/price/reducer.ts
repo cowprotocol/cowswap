@@ -4,6 +4,7 @@ import { updateQuote, setQuoteError, getNewQuoteStart, refreshQuoteStart, QuoteE
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
+import { OrderKind } from 'utils/signatures'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -56,7 +57,8 @@ function initializeState(
 function getResetPrice(sellToken: string, buyToken: string, kind: string) {
   return {
     amount: null,
-    token: kind ? sellToken : buyToken
+    // When we buy, the price estimation is given in sell tokens (if we sell, we give it in sell tokens)
+    token: kind === OrderKind.BUY ? sellToken : buyToken
   }
 }
 
