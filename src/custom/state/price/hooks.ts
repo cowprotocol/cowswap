@@ -8,17 +8,17 @@ import {
   updateQuote,
   UpdateQuoteParams,
   ClearQuoteParams,
-  getNewQuoteStart,
-  GetQuoteStartParams,
-  refreshQuoteStart,
+  getNewQuote,
+  GetQuoteParams,
+  refreshQuote,
   SetQuoteErrorParams,
   setQuoteError,
   RefreshQuoteParams
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
-type GetNewQuoteStartCallback = (params: GetQuoteStartParams) => void
-type RefreshQuoteStartCallback = (params: RefreshQuoteParams) => void
+type GetNewQuoteCallback = (params: GetQuoteParams) => void
+type RefreshQuoteCallback = (params: RefreshQuoteParams) => void
 type AddPriceCallback = (params: UpdateQuoteParams) => void
 type SetQuoteErrorCallback = (params: SetQuoteErrorParams) => void
 
@@ -75,14 +75,14 @@ export function useIsQuoteRefreshing() {
   return isRefreshingQuote
 }
 
-export const useGetNewQuoteStart = (): GetNewQuoteStartCallback => {
+export const useGetNewQuote = (): GetNewQuoteCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((params: GetQuoteStartParams) => dispatch(getNewQuoteStart(params)), [dispatch])
+  return useCallback((params: GetQuoteParams) => dispatch(getNewQuote(params)), [dispatch])
 }
 
-export const useRefreshQuoteStart = (): RefreshQuoteStartCallback => {
+export const useRefreshQuote = (): RefreshQuoteCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((params: RefreshQuoteParams) => dispatch(refreshQuoteStart(params)), [dispatch])
+  return useCallback((params: RefreshQuoteParams) => dispatch(refreshQuote(params)), [dispatch])
 }
 
 export const useUpdateQuote = (): AddPriceCallback => {
@@ -96,16 +96,16 @@ export const useSetQuoteError = (): SetQuoteErrorCallback => {
 }
 
 interface QuoteDispatchers {
-  getNewQuoteStart: GetNewQuoteStartCallback
-  refreshQuoteStart: RefreshQuoteStartCallback
+  getNewQuote: GetNewQuoteCallback
+  refreshQuote: RefreshQuoteCallback
   updateQuote: AddPriceCallback
   setQuoteError: SetQuoteErrorCallback
 }
 
 export const useQuoteDispatchers = (): QuoteDispatchers => {
   return {
-    getNewQuoteStart: useGetNewQuoteStart(),
-    refreshQuoteStart: useRefreshQuoteStart(),
+    getNewQuote: useGetNewQuote(),
+    refreshQuote: useRefreshQuote(),
     updateQuote: useUpdateQuote(),
     setQuoteError: useSetQuoteError()
   }

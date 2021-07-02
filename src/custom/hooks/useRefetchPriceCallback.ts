@@ -240,13 +240,13 @@ function _handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuot
 export function useRefetchQuoteCallback() {
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
   // dispatchers
-  const { getNewQuoteStart, refreshQuoteStart, updateQuote, setQuoteError } = useQuoteDispatchers()
+  const { getNewQuote, refreshQuote, updateQuote, setQuoteError } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
 
   registerOnWindow({
-    getNewQuoteStart,
-    refreshQuoteStart,
+    getNewQuote,
+    refreshQuote,
     updateQuote,
     setQuoteError,
     addUnsupportedToken,
@@ -263,10 +263,10 @@ export function useRefetchQuoteCallback() {
         // Start action: Either new quote or refreshing quote
         if (isPriceRefresh) {
           // Refresh the quote
-          refreshQuoteStart({ sellToken, chainId })
+          refreshQuote({ sellToken, chainId })
         } else {
           // Get new quote
-          getNewQuoteStart(quoteParams)
+          getNewQuote(quoteParams)
         }
 
         // Get the quote
@@ -330,8 +330,8 @@ export function useRefetchQuoteCallback() {
       removeGpUnsupportedToken,
       setQuoteError,
       addUnsupportedToken,
-      getNewQuoteStart,
-      refreshQuoteStart
+      getNewQuote,
+      refreshQuote
     ]
   )
 }

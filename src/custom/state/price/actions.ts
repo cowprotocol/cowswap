@@ -10,8 +10,8 @@ export interface ClearQuoteParams {
   chainId: ChainId
 }
 
-export type GetQuoteStartParams = FeeQuoteParams
-export type RefreshQuoteParams = Pick<GetQuoteStartParams, 'sellToken' | 'chainId'>
+export type GetQuoteParams = FeeQuoteParams
+export type RefreshQuoteParams = Pick<GetQuoteParams, 'sellToken' | 'chainId'>
 
 export type QuoteError =
   | 'fetch-quote-error'
@@ -22,7 +22,7 @@ export type QuoteError =
 
 export type SetQuoteErrorParams = UpdateQuoteParams & { error?: QuoteError }
 
-export const getNewQuoteStart = createAction<GetQuoteStartParams>('price/getNewQuoteStart')
-export const refreshQuoteStart = createAction<RefreshQuoteParams>('price/refreshQuoteStart')
+export const getNewQuote = createAction<GetQuoteParams>('price/getNewQuote')
+export const refreshQuote = createAction<RefreshQuoteParams>('price/refreshQuote')
 export const updateQuote = createAction<UpdateQuoteParams>('price/updateQuote')
 export const setQuoteError = createAction<SetQuoteErrorParams>('price/setQuoteError')

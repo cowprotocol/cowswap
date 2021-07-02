@@ -1,6 +1,6 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@uniswap/sdk'
-import { updateQuote, setQuoteError, getNewQuoteStart, refreshQuoteStart, QuoteError } from './actions'
+import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
@@ -65,7 +65,7 @@ export default createReducer(initialState, builder =>
     /**
      * Gets a new quote
      */
-    .addCase(getNewQuoteStart, (state, action) => {
+    .addCase(getNewQuote, (state, action) => {
       const quoteData = action.payload
       const { sellToken, buyToken, fromDecimals, toDecimals, amount, chainId, kind } = quoteData
       initializeState(state.quotes, action)
@@ -93,7 +93,7 @@ export default createReducer(initialState, builder =>
     /**
      * Refresh quote
      */
-    .addCase(refreshQuoteStart, (state, action) => {
+    .addCase(refreshQuote, (state, action) => {
       const quoteData = action.payload
       const { sellToken, chainId } = quoteData
       initializeState(state.quotes, action)
