@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
+const IS_SUPPORTED = navigator.onLine !== undefined
+
 export function isOnline() {
-  return window.navigator.onLine
+  return window.navigator.onLine || !IS_SUPPORTED
 }
 
 /**
