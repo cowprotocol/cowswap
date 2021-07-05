@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { DEFAULT_PRECISION, LONG_PRECISION } from '@src/custom/constants'
+import { DEFAULT_PRECISION, LONG_PRECISION } from 'constants/index'
 import { basisPointsToPercent } from '@src/utils'
 import { ChainId, Fraction, Pair, Percent, Token, TokenAmount, Trade, WETH } from '@uniswap/sdk'
 import { stringToCurrency } from './extension'

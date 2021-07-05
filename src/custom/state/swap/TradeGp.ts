@@ -1,4 +1,4 @@
-import { CanonicalMarketParams, getCanonicalMarket } from '@src/custom/utils/misc'
+import { CanonicalMarketParams, getCanonicalMarket } from 'utils/misc'
 import { CurrencyAmount, TradeType, Price, Percent, Fraction, Trade } from '@uniswap/sdk'
 import { FeeInformation, PriceInformation } from '../price/reducer'
 

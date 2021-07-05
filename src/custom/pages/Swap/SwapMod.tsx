@@ -61,7 +61,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import TradeGp from '@src/custom/state/swap/TradeGp'
+import TradeGp from 'state/swap/TradeGp'
 
 export default function Swap({
   history,
