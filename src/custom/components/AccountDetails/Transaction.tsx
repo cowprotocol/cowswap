@@ -22,9 +22,9 @@ import {
 import { ActivityStatus, ActivityType, useActivityDescriptors } from 'hooks/useRecentActivity'
 import { useCancelOrder } from 'hooks/useCancelOrder'
 import { LinkStyledButton } from 'theme'
-import Modal from 'components/Modal'
 import { ButtonPrimary } from 'components/Button'
 import { MouseoverTooltip } from 'components/Tooltip'
+import { GpModal as Modal } from 'components/WalletModal'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',
