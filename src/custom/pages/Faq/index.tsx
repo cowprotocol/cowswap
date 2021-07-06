@@ -177,10 +177,10 @@ export default function Faq() {
         <Content>
           <h2 id="general">General</h2>
           <h3 id="what-is-cowswap">What is CowSwap?</h3>
+          <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
           <p>
-            CowSwap is a proof-of-concept dapp (decentralized application) built on Gnosis Protocol v2 (GPv2). CowSwap
-            offers the decentralized finance community a teaser of the capabilities of GPv2 through testing upcoming
-            features while placing gas free trades.
+            It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
+            into any on-chain liquidity source while providing MEV protection.
           </p>
 
           <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CowSwap a &quot;Meta&quot; DEX aggregator?</h3>
@@ -453,8 +453,8 @@ export default function Faq() {
             <li>
               <p>
                 <strong>Approve token</strong> <br />
-                One-time-only, required step for being able to sell a token. Afterwards, you will be able
-                to trade the token using gasless transactions.
+                One-time-only, required step for being able to sell a token. Afterwards, you will be able to trade the
+                token using gasless transactions.
               </p>
             </li>
             <li>
@@ -467,7 +467,8 @@ export default function Faq() {
             <li>
               <p>
                 <strong>Unwrap ETH</strong> <br />
-                Convert ERC20 compatible token WETH back into native ETH. Only when you want to manually convert it to ETH.
+                Convert ERC20 compatible token WETH back into native ETH. Only when you want to manually convert it to
+                ETH.
               </p>
             </li>
             <li>

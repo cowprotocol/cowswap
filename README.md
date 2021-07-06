@@ -8,7 +8,9 @@
 [![Tests](https://github.com/gnosis/dex-swap/workflows/Tests/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ATests)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
-An open source fork of Uniswap to Swap in Gnosis Protocol v2 -- a protocol for decentralized exchange of Ethereum tokens.
+CowSwap is the first trading interface built on top of Gnosis Protocol v2. 
+
+It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
 - 🐮**Official Website**🐮: <https://cowswap.exchange/>
     * ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
@@ -105,7 +107,8 @@ handing them to the solvers.
 
 The reference implementation of th API is [gp-v2-services](https://github.com/gnosis/gp-v2-services). 
 
-The API endpoint is configured using the environment variable `REACT_APP_API_STAGING_URL_{XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
+The API endpoint is configured using the environment variable `
+{XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
 
 
 ### Wallet Connect bridge
