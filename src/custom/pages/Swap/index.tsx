@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
-import { CurrencyAmount, Token } from '@uniswap/sdk'
+import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 import { Text } from 'rebass'
 
 import { ButtonSize, TYPE } from 'theme/index'
@@ -23,17 +23,18 @@ import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } 
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
 
 interface FeeGreaterMessageProp {
-  fee: CurrencyAmount
+  fee: CurrencyAmount<Currency>
 }
 
 const BottomGrouping = styled(BottomGroupingUni)`
+  margin-top: 10px;
   > div > button {
     align-self: stretch;
   }
 `
 
 const SwapModWrapper = styled(SwapMod)`
-  ${props => props.className} {
+  ${(props) => props.className} {
     // For now to target <SwapHeader /> without copying files...
     > div:first-child {
       padding: 0 12px 4px;
@@ -46,7 +47,7 @@ const SwapModWrapper = styled(SwapMod)`
     }
 
     ${AutoColumn} {
-      grid-row-gap: 3px;
+      grid-row-gap: 10px;
     }
 
     .expertMode ${AutoColumn} {
@@ -60,9 +61,9 @@ const SwapModWrapper = styled(SwapMod)`
     ${Card} > ${AutoColumn} {
       margin: 6px auto 0;
 
-        > div > div {
-          color: ${({ theme }) => theme.text1};
-        }
+      > div > div {
+        color: ${({ theme }) => theme.text1};
+      }
     }
 
     ${GreyCard} {
@@ -153,7 +154,7 @@ function SwitchToWethBtn({ wrappedToken }: SwitchToWethBtnProps) {
           outputCurrencyId: OUTPUT.currencyId,
           typedValue,
           recipient: null,
-          field: independentField
+          field: independentField,
         })
       }
     >

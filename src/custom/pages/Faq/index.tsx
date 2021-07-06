@@ -116,25 +116,25 @@ function getToc(node: HTMLDivElement) {
     if (lastH2 !== undefined) {
       tocSections.push({
         section: lastH2,
-        items
+        items,
       })
       items = []
     }
   }
 
-  headingNodes.forEach(entry => {
+  headingNodes.forEach((entry) => {
     if (entry.tagName === 'H2') {
       // If H2
       addNewSection()
       lastH2 = {
         id: entry.id,
-        label: entry.innerHTML
+        label: entry.innerHTML,
       }
     } else {
       // If H3
       items.push({
         id: entry.id,
-        label: entry.innerHTML
+        label: entry.innerHTML,
       })
     }
   })
@@ -163,7 +163,7 @@ export default function Faq() {
             <div key={section.id}>
               <ContentLink href={'#' + section.id}>{section.label}</ContentLink>
               <ul>
-                {items.map(tocItem => (
+                {items.map((tocItem) => (
                   <li key={tocItem.id}>
                     <ContentLink href={'#' + tocItem.id}>{tocItem.label}</ContentLink>
                   </li>

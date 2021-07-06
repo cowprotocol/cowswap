@@ -38,14 +38,14 @@ export function createImperativePromise<T>(promiseArg?: Promise<T> | null | unde
 
   promiseArg &&
     promiseArg.then(
-      data => {
+      (data) => {
         resolve &&
           resolve({
             cancelled: false,
-            data
+            data,
           })
       },
-      error => {
+      (error) => {
         reject && reject(error)
       }
     )
@@ -66,7 +66,7 @@ export function createImperativePromise<T>(promiseArg?: Promise<T> | null | unde
     },
     cancel: () => {
       resolve && resolve({ cancelled: true, data: undefined })
-    }
+    },
   }
 }
 

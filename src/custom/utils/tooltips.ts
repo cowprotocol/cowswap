@@ -1,9 +1,7 @@
-import { Percent } from '@uniswap/sdk'
+import { Percent } from '@uniswap/sdk-core'
 
-import { BIPS_BASE, RADIX_DECIMAL } from 'constants/index'
-
-export function getMinimumReceivedTooltip(allowedSlippage: number, isExactIn: boolean): string {
-  const slippagePercent = new Percent(allowedSlippage.toString(RADIX_DECIMAL), BIPS_BASE)
+export function getMinimumReceivedTooltip(allowedSlippage: Percent, isExactIn: boolean): string {
+  const slippagePercent = allowedSlippage
 
   return `${
     isExactIn ? "Minimum tokens you'll receive." : "Maximum tokens you'll sell."

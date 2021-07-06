@@ -7,10 +7,9 @@ import {
   OrderCancellation as OrderCancellationGp,
   Signature,
   TypedDataV3Signer,
-  IntChainIdTypedDataV4Signer
+  IntChainIdTypedDataV4Signer,
 } from '@gnosis.pm/gp-v2-contracts'
-import { ChainId } from '@uniswap/sdk'
-
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from 'ethers'
 import { registerOnWindow } from './misc'
@@ -81,7 +80,7 @@ export enum SigningScheme {
   /**
    * Pre-signed order.
    */
-  PRESIGN
+  PRESIGN,
 }
 export type EcdsaSigningScheme = SigningScheme.EIP712 | SigningScheme.ETHSIGN
 
@@ -91,7 +90,7 @@ interface SchemaInfo {
 }
 const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.EIP712, { libraryValue: 0, apiValue: 'eip712' }],
-  [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }]
+  [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }],
 ])
 
 function _getSigningSchemeInfo(ecdaSigningScheme: EcdsaSigningScheme): SchemaInfo {
@@ -130,7 +129,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   console.log('[utils:signature] signOrder', {
     domain,
     order,
-    signer
+    signer,
   })
 
   return signOrderGp(domain, order, signer, getSigningSchemeLibValue(signingScheme))
@@ -144,7 +143,7 @@ async function _signOrderCancellation(params: SingOrderCancellationParams): Prom
   console.log('[utils:signature] signOrderCancellation', {
     domain,
     orderId,
-    signer
+    signer,
   })
 
   return signOrderCancellationGp(domain, orderId, signer, getSigningSchemeLibValue(signingScheme))

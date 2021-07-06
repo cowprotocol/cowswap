@@ -1,4 +1,4 @@
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { switchParamsByNetwork } from '../../utils/xdai/hack'
 
 export default function Updater(): null {

@@ -1,4 +1,3 @@
-// import { ChainId, TokenAmount } from '@uniswap/sdk'
 import React, { PropsWithChildren /*, { useState }*/ } from 'react'
 import { Text } from 'rebass'
 import { NavLink } from 'react-router-dom'
@@ -202,7 +201,7 @@ export const Title = styled.a`
 const activeClassName = 'ACTIVE'
 
 export const StyledNavLink = styled(NavLink).attrs({
-  activeClassName
+  activeClassName,
 })`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: left;
@@ -229,7 +228,7 @@ export const StyledNavLink = styled(NavLink).attrs({
 `
 
 export const StyledExternalLink = styled(ExternalLink).attrs({
-  activeClassName
+  activeClassName,
 })<{ isActive?: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: left;
@@ -292,7 +291,7 @@ export const StyledMenuButton = styled.button`
 const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ROPSTEN]: 'Ropsten',
-  [ChainId.GÖRLI]: 'Görli',
+  [ChainId.GOERLI]: 'Görli',
   [ChainId.KOVAN]: 'Kovan'
 }
 */

@@ -1,20 +1,21 @@
-import { ChainId, CurrencyAmount, Token } from '@uniswap/sdk'
-import { isAddress, shortenAddress } from '@src/utils'
+import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
+import { isAddress, shortenAddress } from 'utils'
 import { AddPendingOrderParams, OrderStatus, OrderKind, ChangeOrderStatusParams } from 'state/orders/actions'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
 import { sendSignedOrderCancellation, sendSignedOrder, OrderID } from 'utils/operator'
 import { Signer } from 'ethers'
 import { APP_ID, RADIX_DECIMAL, SHORTEST_PRECISION } from 'constants/index'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 export interface PostOrderParams {
   account: string
   chainId: ChainId
   signer: Signer
   kind: OrderKind
-  inputAmount: CurrencyAmount
-  outputAmount: CurrencyAmount
-  feeAmount: CurrencyAmount | undefined
+  inputAmount: CurrencyAmount<Currency>
+  outputAmount: CurrencyAmount<Currency>
+  feeAmount: CurrencyAmount<Currency> | undefined
   sellToken: Token
   buyToken: Token
   validTo: number
@@ -59,13 +60,13 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     validTo,
     account,
     signer,
-    recipient
+    recipient,
   } = params
 
   // fee adjusted input amount
-  const sellAmount = inputAmount.raw.toString(RADIX_DECIMAL)
+  const sellAmount = inputAmount.quotient.toString(RADIX_DECIMAL)
   // slippage adjusted output amount
-  const buyAmount = outputAmount.raw.toString(RADIX_DECIMAL)
+  const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
   // Prepare order
   const summary = _getSummary(params)
@@ -79,10 +80,10 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     buyAmount,
     validTo,
     appData,
-    feeAmount: feeAmount?.raw.toString() || '0',
+    feeAmount: feeAmount?.quotient.toString() || '0',
     kind,
     receiver,
-    partiallyFillable: false // Always fill or kill
+    partiallyFillable: false, // Always fill or kill
   }
 
   const { signature, signingScheme } = await signOrder(unsignedOrder, chainId, signer)
@@ -95,9 +96,9 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
       ...unsignedOrder,
       signature,
       receiver,
-      signingScheme
+      signingScheme,
     },
-    owner: account
+    owner: account,
   })
 
   // Update the state
@@ -113,8 +114,8 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
       status: OrderStatus.PENDING,
       summary,
       inputToken: sellToken,
-      outputToken: buyToken
-    }
+      outputToken: buyToken,
+    },
   })
 
   return orderId
@@ -136,7 +137,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
   await sendSignedOrderCancellation({
     chainId,
     owner: account,
-    cancellation: { orderUid: orderId, signature, signingScheme }
+    cancellation: { orderUid: orderId, signature, signingScheme },
   })
 
   cancelPendingOrder({ chainId, id: orderId })

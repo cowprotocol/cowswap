@@ -1,5 +1,6 @@
-import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import 'inter-ui'
+import '@reach/dialog/styles.css'
+import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import React, { StrictMode } from 'react'
 import { isMobile } from 'react-device-detect'
 import ReactDOM from 'react-dom'
@@ -7,8 +8,8 @@ import ReactGA from 'react-ga'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import Blocklist from './components/Blocklist'
-import { NetworkContextName } from './constants'
-import './i18n'
+import { NetworkContextName } from 'constants/misc'
+import { LanguageProvider } from './i18n'
 import App from 'pages/App'
 import store from 'state'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
@@ -37,23 +38,20 @@ if (typeof analyticsId === 'string') {
   ReactGA.initialize(analyticsId, {
     gaOptions: {
       storage: 'none',
-      storeGac: false
-    }
+      storeGac: false,
+    },
   })
   ReactGA.set({
     anonymizeIp: true,
-    customBrowserType: !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
+    customBrowserType: !isMobile
+      ? 'desktop'
+      : 'web3' in window || 'ethereum' in window
+      ? 'mobileWeb3'
+      : 'mobileRegular',
   })
 } else {
   ReactGA.initialize('test', { testMode: true, debug: true })
 }
-
-window.addEventListener('error', error => {
-  ReactGA.exception({
-    description: `${error.message} @ ${error.filename}:${error.lineno}:${error.colno}`,
-    fatal: true
-  })
-})
 
 function Updaters() {
   return (
@@ -84,7 +82,9 @@ ReactDOM.render(
               <ThemedGlobalStyle />
               <AppziButton />
               <HashRouter>
-                <App />
+                <LanguageProvider>
+                  <App />
+                </LanguageProvider>
               </HashRouter>
             </ThemeProvider>
           </Provider>

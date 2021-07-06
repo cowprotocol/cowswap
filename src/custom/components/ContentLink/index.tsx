@@ -22,7 +22,7 @@ export function ContentLink(props: Props): JSX.Element {
       {props.children}
     </a>
   ) : (
-    <HashLink smooth={smooth} to={href} scroll={el => scrollWithOffset(el)}>
+    <HashLink smooth={smooth} to={href} scroll={(el) => scrollWithOffset(el)}>
       {children}
     </HashLink>
   )

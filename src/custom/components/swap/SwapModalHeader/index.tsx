@@ -3,6 +3,14 @@ import React from 'react'
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 import { AutoColumn } from 'components/Column'
 import styled from 'styled-components'
+import { LightCard as LightCardUni } from 'components/Card'
+import { darken, transparentize } from 'polished'
+
+// MOD
+const LightCard = styled(LightCardUni)`
+  background-color: ${({ theme }) => darken(0.06, theme.bg1)};
+  border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
+`
 
 const Wrapper = styled.div`
   svg {
@@ -14,11 +22,11 @@ const Wrapper = styled.div`
   }
 `
 
-export default function SwapModalHeader(props: SwapModalHeaderProps) {
+export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'LightCard'>) {
   // const { priceImpactWithoutFee } = React.useMemo(() => computeTradePriceBreakdown(props.trade), [props.trade])
   return (
     <Wrapper>
-      <SwapModalHeaderMod {...props} /*priceImpactWithoutFee={priceImpactWithoutFee}*/ />
+      <SwapModalHeaderMod {...props} LightCard={LightCard} /*priceImpactWithoutFee={priceImpactWithoutFee}*/ />
     </Wrapper>
   )
 }

@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 import { FeeQuoteParams } from 'utils/operator'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { QuoteInformationObject } from './reducer'
 
 export type UpdateQuoteParams = Omit<QuoteInformationObject, 'lastCheck'>

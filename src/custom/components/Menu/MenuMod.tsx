@@ -1,15 +1,23 @@
-import React, { PropsWithChildren, useRef } from 'react'
+import React, { useRef } from 'react'
 // import { BookOpen, Code, Info, MessageCircle, PieChart } from 'react-feather'
-import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+import styled, { css } from 'styled-components'
 import { ReactComponent as MenuIcon } from 'assets/images/menu.svg'
-// import { useActiveWeb3React } from 'hooks'
+// import { useActiveWeb3React } from 'hooks/web3'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleModal } from 'state/application/hooks'
+// import { Trans } from '@lingui/macro'
 
-import { ExternalLink, StyledInternalLink } from 'theme'
+import { ExternalLink } from 'theme'
+// import { ButtonPrimary } from 'components/Button'
+
 import { WithClassName } from 'types'
-// import { ButtonPrimary } from 'Button'
+
+export enum FlyoutAlignment {
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+}
 
 const StyledMenuIcon = styled(MenuIcon)`
   path {
@@ -42,6 +50,12 @@ export const StyledMenuButton = styled.button`
   }
 `
 
+/* const UNIbutton = styled(ButtonPrimary)`
+  background-color: ${({ theme }) => theme.bg3};
+  background: radial-gradient(174.47% 188.91% at 1.84% 0%, #ff007a 0%, #2172e5 100%), #edeef2;
+  border: none;
+` */
+
 export const StyledMenu = styled.div`
   margin-left: 0.5rem;
   display: flex;
@@ -52,7 +66,7 @@ export const StyledMenu = styled.div`
   text-align: left;
 `
 
-export const MenuFlyout = styled.span`
+export const MenuFlyout = styled.span<{ flyoutAlignment?: FlyoutAlignment }>`
   min-width: 8.125rem;
   background-color: ${({ theme }) => theme.bg3};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
@@ -63,17 +77,27 @@ export const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 4rem;
+  top: 3rem;
   right: 0rem;
   z-index: 100;
-
+  ${({ flyoutAlignment = FlyoutAlignment.RIGHT }) =>
+    flyoutAlignment === FlyoutAlignment.RIGHT
+      ? css`
+          right: 0rem;
+        `
+      : css`
+          left: 0rem;
+        `};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: -17.25rem;
   `};
 `
 
 export const MenuItem = styled(ExternalLink)`
+  display: flex;
   flex: 1;
+  flex-direction: row;
+  align-items: center;
   padding: 0.5rem 0.5rem;
   color: ${({ theme }) => theme.text2};
   :hover {
@@ -86,7 +110,7 @@ export const MenuItem = styled(ExternalLink)`
   }
 `
 
-export const InternalMenuItem = styled(StyledInternalLink)`
+export const InternalMenuItem = styled(Link)`
   flex: 1;
   padding: 0.5rem 0.5rem;
   color: ${({ theme }) => theme.text2};
@@ -102,7 +126,7 @@ export const InternalMenuItem = styled(StyledInternalLink)`
 
 // const CODE_LINK = 'https://github.com/Uniswap/uniswap-interface'
 
-export default function Menu(props?: PropsWithChildren<void> & WithClassName) {
+export default function Menu(props: { children?: React.ReactNode } & WithClassName) {
   // const { account } = useActiveWeb3React()
 
   const node = useRef<HTMLDivElement>()
@@ -120,35 +144,97 @@ export default function Menu(props?: PropsWithChildren<void> & WithClassName) {
 
       {open &&
         /*
-        <MenuFlyout>          
-          <MenuItem id="link" href="https://uniswap.org/">
+        <MenuFlyout>
+          <MenuItem href="https://uniswap.org/">
             <Info size={14} />
-            About
+            <div>
+              <Trans>About</Trans>
+            </div>
           </MenuItem>
-          <MenuItem id="link" href="https://uniswap.org/docs/v2">
+          <MenuItem href="https://docs.uniswap.org/">
             <BookOpen size={14} />
-            Docs
+            <div>
+              <Trans>Docs</Trans>
+            </div>
           </MenuItem>
-          <MenuItem id="link" href={CODE_LINK}>
+          <MenuItem href={CODE_LINK}>
             <Code size={14} />
-            Code
+            <div>
+              <Trans>Code</Trans>
+            </div>
           </MenuItem>
-          <MenuItem id="link" href="https://discord.gg/EwFs3Pp">
+          <MenuItem href="https://discord.gg/FCfyBSbCU5">
             <MessageCircle size={14} />
-            Discord
+            <div>
+              <Trans>Discord</Trans>
+            </div>
           </MenuItem>
-          <MenuItem id="link" href="https://uniswap.info/">
+          <MenuItem href="https://info.uniswap.org/">
             <PieChart size={14} />
-            Analytics
+            <div>
+              <Trans>Analytics</Trans>
+            </div>
           </MenuItem>
           {account && (
-            <ButtonPrimary onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
-              Claim UNI
-            </ButtonPrimary>
+            <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
+              <Trans>Claim UNI</Trans>
+            </UNIbutton>
           )}
         </MenuFlyout>
+        
         */
         props?.children}
+    </StyledMenu>
+  )
+}
+
+interface NewMenuProps {
+  flyoutAlignment?: FlyoutAlignment
+  ToggleUI?: React.FunctionComponent
+  menuItems: {
+    content: any
+    link: string
+    external: boolean
+  }[]
+}
+
+const NewMenuFlyout = styled(MenuFlyout)`
+  top: 3rem !important;
+`
+const NewMenuItem = styled(InternalMenuItem)`
+  width: max-content;
+  text-decoration: none;
+`
+
+const ExternalMenuItem = styled(MenuItem)`
+  width: max-content;
+  text-decoration: none;
+`
+
+export const NewMenu = ({ flyoutAlignment = FlyoutAlignment.RIGHT, ToggleUI, menuItems, ...rest }: NewMenuProps) => {
+  const node = useRef<HTMLDivElement>()
+  const open = useModalOpen(ApplicationModal.POOL_OVERVIEW_OPTIONS)
+  const toggle = useToggleModal(ApplicationModal.POOL_OVERVIEW_OPTIONS)
+  useOnClickOutside(node, open ? toggle : undefined)
+  const ToggleElement = ToggleUI || StyledMenuIcon
+  return (
+    <StyledMenu ref={node as any} {...rest}>
+      <ToggleElement onClick={toggle} />
+      {open && (
+        <NewMenuFlyout flyoutAlignment={flyoutAlignment}>
+          {menuItems.map(({ content, link, external }, i) =>
+            external ? (
+              <ExternalMenuItem id="link" href={link} key={link + i}>
+                {content}
+              </ExternalMenuItem>
+            ) : (
+              <NewMenuItem id="link" to={link} key={link + i}>
+                {content}
+              </NewMenuItem>
+            )
+          )}
+        </NewMenuFlyout>
+      )}
     </StyledMenu>
   )
 }

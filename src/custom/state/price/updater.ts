@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
@@ -48,7 +48,7 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     amount: currentAmount,
     sellToken: currentSellToken,
     buyToken: currentBuyToken,
-    kind: currentKind
+    kind: currentKind,
   } = currentParams
   const { amount, buyToken, sellToken, kind } = quoteInfo
 
@@ -106,7 +106,7 @@ export default function FeesUpdater(): null {
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
     independentField,
-    typedValue: rawTypedValue
+    typedValue: rawTypedValue,
   } = useSwapState()
 
   // pass independent field as a reference to use against
@@ -146,7 +146,15 @@ export default function FeesUpdater(): null {
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS
     const toDecimals = buyCurrency?.decimals ?? DEFAULT_DECIMALS
-    const quoteParams = { chainId, sellToken, buyToken, fromDecimals, toDecimals, kind, amount: amount.raw.toString() }
+    const quoteParams = {
+      chainId,
+      sellToken,
+      buyToken,
+      fromDecimals,
+      toDecimals,
+      kind,
+      amount: amount.quotient.toString(),
+    }
 
     // Don't refetch if offline.
     //  Also, make sure we update the error state
@@ -184,8 +192,8 @@ export default function FeesUpdater(): null {
           quoteParams,
           fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
           previousFee: quoteInfo?.fee,
-          isPriceRefresh
-        }).catch(error => console.error('Error re-fetching the quote', error))
+          isPriceRefresh,
+        }).catch((error) => console.error('Error re-fetching the quote', error))
       }
     }
 
@@ -213,7 +221,7 @@ export default function FeesUpdater(): null {
     refetchQuote,
     isUnsupportedTokenGp,
     isLoading,
-    setQuoteError
+    setQuoteError,
   ])
 
   return null

@@ -1,7 +1,9 @@
 import { createAction } from '@reduxjs/toolkit'
-
 import { PopupContent as PopupContentUniswap } from '@src/state/application/actions'
+
 export * from '@src/state/application/actions'
+
+export type PopupContent = PopupContentUniswap | MetaTxPopupContent
 
 export interface MetaTxPopupContent {
   metatxn: {
@@ -11,8 +13,5 @@ export interface MetaTxPopupContent {
   }
 }
 
-export type PopupContent = PopupContentUniswap | MetaTxPopupContent
-
-export const addPopup = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(
-  'application/addPopup'
-)
+export const addPopup =
+  createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>('application/addPopup')

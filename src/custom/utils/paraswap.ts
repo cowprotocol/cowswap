@@ -3,7 +3,7 @@ import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
 import { toErc20Address } from 'utils/tokens'
 import { PriceQuoteParams } from 'utils/operator'
 import { OptimalRatesWithPartnerFees, APIError, RateOptions } from 'paraswap/build/types'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { PriceInformation } from 'state/price/reducer'
 import { getTokensFromMarket } from './misc'
 
@@ -37,12 +37,12 @@ export function toPriceInformation(priceRaw: ParaSwapPriceQuote | null): PriceIn
   if (side === SwapSide.SELL) {
     return {
       amount: destAmount,
-      token: details.tokenTo
+      token: details.tokenTo,
     }
   } else {
     return {
       amount: srcAmount,
-      token: details.tokenFrom
+      token: details.tokenFrom,
     }
   }
 }
@@ -86,7 +86,7 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapP
 
   // https://developers.paraswap.network/api/get-rate-for-a-token-pair
   const options: RateOptions | undefined = {
-    maxImpact: 100
+    maxImpact: 100,
   }
 
   // Get price

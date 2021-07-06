@@ -1,14 +1,15 @@
 import { createAction } from '@reduxjs/toolkit'
 import { OrderID } from 'utils/operator'
 import { OrderCreation } from 'utils/signatures'
-import { ChainId, Token } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { Token } from '@uniswap/sdk-core'
 export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export enum OrderStatus {
   PENDING = 'pending',
   FULFILLED = 'fulfilled',
   EXPIRED = 'expired',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 // used internally by dapp
@@ -82,6 +83,5 @@ export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/ca
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 
-export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheckedBlock: number }>(
-  'order/updateLastCheckedBlock'
-)
+export const updateLastCheckedBlock =
+  createAction<{ chainId: ChainId; lastCheckedBlock: number }>('order/updateLastCheckedBlock')

@@ -1,15 +1,14 @@
 import React from 'react'
 import SlippageTabsMod, {
-  SlippageTabsProps as SlippageTabsPropsMod,
+  TransactionSettingsProps as TransactionSettingsPropsMod,
   FancyButton as FancyButtonUni,
-  OptionCustom
+  OptionCustom,
 } from './TransactionSettingsMod'
 import { RowFixed } from 'components/Row'
 import styled from 'styled-components'
 
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
-
-const Option = styled(FancyButtonUni)<{ active: boolean }>`
+// TODO: option was restyled in v3, review if this change is necessary
+export const Option = styled(FancyButtonUni)<{ active: boolean }>`
   margin-right: 8px;
   border: 0;
   background-color: ${({ theme }) => theme.bg4};
@@ -56,10 +55,10 @@ const Wrapper = styled.div`
   }
 `
 
-type SetRawSlippage = (rawSlippage: number) => void
-type SetSlippageInput = (value: React.SetStateAction<string>) => void
+// type SetRawSlippage = (rawSlippage: number) => void
+// type SetSlippageInput = (value: React.SetStateAction<string>) => void
 
-function parseCustomSlippage(value: string, setRawSlippage: SetRawSlippage, setSlippageInput: SetSlippageInput): void {
+/* function parseCustomSlippage(value: string, setRawSlippage: SetRawSlippage, setSlippageInput: SetSlippageInput): void {
   // we don't allow negative slippage to be input
   if (isNaN(Number(value)) || Number(value) < 0) {
     return batchedUpdates(() => {
@@ -76,15 +75,15 @@ function parseCustomSlippage(value: string, setRawSlippage: SetRawSlippage, setS
       setRawSlippage(valueAsIntFromRoundedFloat)
     }
   } catch {}
-}
+} */
 
-export type ParseCustomSlippageFn = typeof parseCustomSlippage
-export type SlippageTabsProps = Omit<SlippageTabsPropsMod, 'parseCustomSlippageFn' | 'Option'>
+export type TransactionSettingsProps = Omit<TransactionSettingsPropsMod, 'Option'>
 
-export default function SlippageTabs(params: SlippageTabsProps) {
+export default function SlippageTabs(params: TransactionSettingsProps) {
   return (
     <Wrapper>
-      <SlippageTabsMod {...params} parseCustomSlippageFn={parseCustomSlippage} Option={Option} />
+      {/* TODO: v3 option prop merge issue, review */}
+      <SlippageTabsMod {...params} /* Option={Option} */ />
     </Wrapper>
   )
 }

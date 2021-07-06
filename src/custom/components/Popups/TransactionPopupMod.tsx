@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { TYPE } from 'theme'
 // import { ExternalLink } from 'theme'
 // import { getEtherscanLink } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
-import { ExplorerLink } from '../ExplorerLink'
+import { ExplorerLink } from 'components/ExplorerLink'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -16,7 +16,7 @@ const RowNoFlex = styled(AutoRow)`
 export default function TransactionPopup({
   hash,
   success,
-  summary
+  summary,
 }: {
   hash: string
   success?: boolean

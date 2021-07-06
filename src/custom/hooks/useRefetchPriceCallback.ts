@@ -7,14 +7,14 @@ import {
   registerOnWindow,
   withTimeout,
   getPromiseFulfilledValue,
-  isPromiseFulfilled
+  isPromiseFulfilled,
 } from 'utils/misc'
 import { FeeQuoteParams, getFeeQuote, getPriceQuote, PriceQuoteParams } from 'utils/operator'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation } from 'utils/paraswap'
 import {
   useAddGpUnsupportedToken,
   useIsUnsupportedTokenGp,
-  useRemoveGpUnsupportedToken
+  useRemoveGpUnsupportedToken,
 } from 'state/lists/hooks/hooksMod'
 import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/price/reducer'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
@@ -40,7 +40,7 @@ type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
-  description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom
+  description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom,
 })
 
 class PriceQuoteError extends Error {
@@ -92,14 +92,14 @@ async function _getBestPriceQuote(params: PriceQuoteParams): Promise<PriceInform
   }
 
   if (errorsGetPrice.length > 0) {
-    const sourceNames = errorsGetPrice.map(e => e.source).join(', ')
+    const sourceNames = errorsGetPrice.map((e) => e.source).join(', ')
     console.error('[hooks::useRefetchPriceCallback] Some API failed or timed out: ' + sourceNames, errorsGetPrice)
   }
 
   if (priceQuotes.length > 0) {
-    const sourceNames = priceQuotes.map(p => p.source).join(', ')
+    const sourceNames = priceQuotes.map((p) => p.source).join(', ')
     console.log('[hooks::useRefetchPriceCallback] Get best price succeeded for ' + sourceNames, priceQuotes)
-    const amounts = priceQuotes.map(quote => quote.amount).filter(Boolean) as string[]
+    const amounts = priceQuotes.map((quote) => quote.amount).filter(Boolean) as string[]
 
     // Take the best price: Aggregate all the amounts into a single one.
     //  - Use maximum of all the result for "Sell orders":
@@ -112,8 +112,8 @@ async function _getBestPriceQuote(params: PriceQuoteParams): Promise<PriceInform
     // console.log('Aggregated amounts', aggregationFunction, amounts, amount)
 
     const winningPrices = priceQuotes
-      .filter(quote => quote.amount === amount)
-      .map(p => p.source)
+      .filter((quote) => quote.amount === amount)
+      .map((p) => p.source)
       .join(', ')
     console.log('[hooks::useRefetchPriceCallback] Winning price: ' + winningPrices)
 
@@ -134,7 +134,7 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
       : Promise.resolve(previousFee)
 
   // Log fee for debugging
-  feePromise.then(fee => {
+  feePromise.then((fee) => {
     console.log(`Fee: ${formatAtoms(fee.amount, fromDecimals)} (in atoms ${fee.amount})`)
     return fee
   })
@@ -189,7 +189,7 @@ function _handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuot
         addUnsupportedToken({
           chainId: quoteData.chainId,
           address: unsupportedTokenAddress,
-          dateAdded: Date.now()
+          dateAdded: Date.now(),
         })
 
         return 'unsupported-token'
@@ -250,7 +250,7 @@ export function useRefetchQuoteCallback() {
     updateQuote,
     setQuoteError,
     addUnsupportedToken,
-    removeGpUnsupportedToken
+    removeGpUnsupportedToken,
   })
 
   return useCallback(
@@ -283,7 +283,7 @@ export function useRefetchQuoteCallback() {
         quoteData = {
           ...quoteParams,
           fee: getPromiseFulfilledValue(fee, undefined),
-          price: getPromiseFulfilledValue(price, undefined)
+          price: getPromiseFulfilledValue(price, undefined),
         }
         // check the promise fulfilled values
         // handle if rejected
@@ -302,7 +302,7 @@ export function useRefetchQuoteCallback() {
 
           removeGpUnsupportedToken({
             chainId,
-            address: previouslyUnsupportedToken.address.toLowerCase()
+            address: previouslyUnsupportedToken.address.toLowerCase(),
           })
         }
 
@@ -314,13 +314,13 @@ export function useRefetchQuoteCallback() {
         const quoteError = _handleQuoteError({
           error,
           quoteData,
-          addUnsupportedToken
+          addUnsupportedToken,
         })
 
         // Set quote error
         setQuoteError({
           ...quoteData,
-          error: quoteError
+          error: quoteError,
         })
       }
     },
@@ -331,7 +331,7 @@ export function useRefetchQuoteCallback() {
       setQuoteError,
       addUnsupportedToken,
       getNewQuote,
-      refreshQuote
+      refreshQuote,
     ]
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import Web3Status from 'components/Web3Status'
 
 import HeaderMod, {
@@ -14,29 +14,31 @@ import HeaderMod, {
   AccountElement,
   HeaderElementWrap,
   StyledNavLink as StyledNavLinkUni,
-  StyledMenuButton
+  StyledMenuButton,
 } from './HeaderMod'
 import Menu from '../Menu'
 import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
 import { status as appStatus } from '@src/../package.json'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
 import { SHORT_PRECISION } from 'constants/index'
 import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 
+import { supportedChainId } from 'utils/supportedChainId'
+
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ROPSTEN]: 'Ropsten',
-  [ChainId.GÖRLI]: 'Görli',
+  [ChainId.GOERLI]: 'Görli',
   [ChainId.KOVAN]: 'Kovan',
-  [ChainId.XDAI]: 'xDAI'
+  [ChainId.XDAI]: 'xDAI',
 }
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
-  [ChainId.XDAI]: 'xDAI'
+  [ChainId.XDAI]: 'xDAI',
 }
 
 export interface LinkType {
@@ -96,11 +98,11 @@ const TwitterLink = styled(StyledMenuButton)`
   }
 `
 
-export const LogoImage = styled.img.attrs(props => ({
+export const LogoImage = styled.img.attrs((props) => ({
   src: props.theme.logo.src,
   alt: props.theme.logo.alt,
   width: props.theme.logo.width,
-  height: props.theme.logo.height
+  height: props.theme.logo.height,
 }))`
   object-fit: contain;
 
@@ -132,7 +134,9 @@ const UniIcon = styled.div`
 `
 
 export default function Header() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId: connectedChainId } = useActiveWeb3React()
+  const chainId = supportedChainId(connectedChainId)
+
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()

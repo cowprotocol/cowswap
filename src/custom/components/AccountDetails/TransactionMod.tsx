@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { CheckCircle, Triangle } from 'react-feather'
 
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink } from 'utils'
 import { ExternalLink } from 'theme'
 import { useAllTransactions } from 'state/transactions/hooks'
@@ -49,7 +49,12 @@ export default function Transaction({ hash }: { hash: string }) {
 
   return (
     <TransactionWrapper>
-      <TransactionState href={getEtherscanLink(chainId, hash, 'transaction')} pending={pending} success={success}>
+      <TransactionState
+        // href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}
+        href={getEtherscanLink(chainId, hash, 'transaction')}
+        pending={pending}
+        success={success}
+      >
         <RowFixed>
           <TransactionStatusText>{summary ?? hash} ↗</TransactionStatusText>
         </RowFixed>

@@ -10,13 +10,13 @@ export interface GpQuoteErrorObject {
 export enum GpQuoteErrorCodes {
   InsufficientLiquidity = 'InsufficientLiquidity',
   FeeExceedsFrom = 'FeeExceedsFrom',
-  UNHANDLED_ERROR = 'UNHANDLED_ERROR'
+  UNHANDLED_ERROR = 'UNHANDLED_ERROR',
 }
 
 export enum GpQuoteErrorDetails {
   InsufficientLiquidity = 'Token pair selected has insufficient liquidity',
   FeeExceedsFrom = 'Current fee exceeds entered "from" amount',
-  UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.'
+  UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
 export function mapOperatorErrorToQuoteError(errorType?: ApiErrorCodes): GpQuoteErrorObject {
@@ -24,7 +24,7 @@ export function mapOperatorErrorToQuoteError(errorType?: ApiErrorCodes): GpQuote
     case ApiErrorCodes.NotFound:
       return {
         errorType: GpQuoteErrorCodes.InsufficientLiquidity,
-        description: GpQuoteErrorDetails.InsufficientLiquidity
+        description: GpQuoteErrorDetails.InsufficientLiquidity,
       }
     default:
       return { errorType: GpQuoteErrorCodes.UNHANDLED_ERROR, description: GpQuoteErrorDetails.UNHANDLED_ERROR }

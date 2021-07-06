@@ -1,24 +1,22 @@
+import { t, Trans } from '@lingui/macro'
 import React, { useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
+// import ReactGA from 'react-ga'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
-import {
-  useExpertModeManager,
-  useUserTransactionTTL,
-  useUserSlippageTolerance
-  // useUserSingleHopOnly
-} from 'state/user/hooks'
+import { useExpertModeManager /* , useUserSingleHopOnly */ } from 'state/user/hooks'
 import { TYPE } from 'theme'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import Modal from 'components/Modal'
 import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-import Toggle from '@src/custom/components/Toggle'
+import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
+// import { Percent } from '@uniswap/sdk-core'
 import { SettingsTabProp } from '.'
 
 export const StyledMenuIcon = styled(Settings)`
@@ -54,19 +52,13 @@ export const StyledMenuButton = styled.button`
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;
-
-  padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
+  height: 20px;
 
   :hover,
   :focus {
     cursor: pointer;
     outline: none;
-  }
-
-  svg {
-    margin-top: 2px;
   }
 `
 export const EmojiWrapper = styled.div`
@@ -96,13 +88,15 @@ export const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 3rem;
+  top: 2rem;
   right: 0rem;
   z-index: 100;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     min-width: 18.125rem;
   `};
+
+  user-select: none;
 `
 
 const Break = styled.div`
@@ -120,15 +114,12 @@ export const ModalContentWrapper = styled.div`
   border-radius: 20px;
 `
 
-export default function SettingsTab({ className, SettingsButton }: SettingsTabProp) {
+export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
 
   const theme = useContext(ThemeContext)
-  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
-
-  const [ttl, setTtl] = useUserTransactionTTL()
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
 
@@ -148,31 +139,34 @@ export default function SettingsTab({ className, SettingsButton }: SettingsTabPr
             <RowBetween style={{ padding: '0 2rem' }}>
               <div />
               <Text fontWeight={500} fontSize={20}>
-                Are you sure?
+                <Trans>Are you sure?</Trans>
               </Text>
               <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
             </RowBetween>
             <Break />
             <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
               <Text fontWeight={500} fontSize={20}>
-                Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result
-                in bad rates and lost funds.
+                <Trans>
+                  Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result
+                  in bad rates and lost funds.
+                </Trans>
               </Text>
               <Text fontWeight={600} fontSize={20}>
-                ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.
+                <Trans>ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.</Trans>
               </Text>
               <ButtonError
                 error={true}
                 padding={'12px'}
                 onClick={() => {
-                  if (window.prompt(`Please type the word "confirm" to enable expert mode.`) === 'confirm') {
+                  const confirmWord = t`confirm`
+                  if (window.prompt(t`Please type the word "${confirmWord}" to enable expert mode.`) === confirmWord) {
                     toggleExpertMode()
                     setShowConfirmation(false)
                   }
                 }}
               >
                 <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
-                  Turn On Expert Mode
+                  <Trans>Turn On Expert Mode</Trans>
                 </Text>
               </ButtonError>
             </AutoColumn>
@@ -180,39 +174,36 @@ export default function SettingsTab({ className, SettingsButton }: SettingsTabPr
         </ModalContentWrapper>
       </Modal>
       <SettingsButton expertMode={expertMode} toggleSettings={toggle} />
-      {/* 
-      <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
+      {/* <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
         <StyledMenuIcon />
         {expertMode ? (
           <EmojiWrapper>
             <span role="img" aria-label="wizard-icon">
-              🐮
+              🧙
             </span>
           </EmojiWrapper>
         ) : null}
-      </StyledMenuButton> 
-      */}
+      </StyledMenuButton> */}
       {open && (
         <MenuFlyout>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
             <Text fontWeight={600} fontSize={14}>
-              Transaction Settings
+              <Trans>Transaction Settings</Trans>
             </Text>
-            <TransactionSettings
-              rawSlippage={userSlippageTolerance}
-              setRawSlippage={setUserslippageTolerance}
-              deadline={ttl}
-              setDeadline={setTtl}
-            />
+            <TransactionSettings placeholderSlippage={placeholderSlippage} />
             <Text fontWeight={600} fontSize={14}>
-              Interface Settings
+              <Trans>Interface Settings</Trans>
             </Text>
             <RowBetween>
               <RowFixed>
                 <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-                  Toggle Expert Mode
+                  <Trans>Toggle Expert Mode</Trans>
                 </TYPE.black>
-                <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />
+                <QuestionHelper
+                  text={
+                    <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
+                  }
+                />
               </RowFixed>
               <Toggle
                 id="toggle-expert-mode-button"

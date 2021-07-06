@@ -1,38 +1,42 @@
 import { useAllLists } from 'state/lists/hooks'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useCallback, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { useActiveWeb3React } from 'hooks'
+
+import { useActiveWeb3React } from 'hooks/web3'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import useInterval from 'hooks/useInterval'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { AppDispatch } from 'state'
 import { acceptListUpdate } from 'state/lists/actions'
 import { useActiveListUrls } from 'state/lists/hooks'
-import { useAllInactiveTokens } from 'hooks/Tokens'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
+import { useAppDispatch } from 'state/hooks'
 // MOD: add updateVersion for chainId change init
 import { updateVersion } from 'state/global/actions'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export default function Updater(): null {
   // MOD: chainId
   // const { library } = useActiveWeb3React()
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS, library } = useActiveWeb3React()
-  const dispatch = useDispatch<AppDispatch>()
+  const { chainId: connectedChainId, library } = useActiveWeb3React()
+  // chainId returns number or undefined we need to map against supported chains
+  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+
+  const dispatch = useAppDispatch()
   const isWindowVisible = useIsWindowVisible()
 
   // get all loaded lists, and the active urls
   const lists = useAllLists()
   const activeListUrls = useActiveListUrls()
 
+  // TODO: removed in V3, review if this is ok
   // initiate loading
-  useAllInactiveTokens()
+  // useAllInactiveTokens()
 
   const fetchList = useFetchListCallback()
   const fetchAllListsCallback = useCallback(() => {
     if (!isWindowVisible) return
-    Object.keys(lists).forEach(url =>
-      fetchList(url).catch(error => console.debug('interval list fetching error', error))
+    Object.keys(lists).forEach((url) =>
+      fetchList(url).catch((error) => console.debug('interval list fetching error', error))
     )
   }, [fetchList, isWindowVisible, lists])
 
@@ -41,27 +45,27 @@ export default function Updater(): null {
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
-    Object.keys(lists).forEach(listUrl => {
+    Object.keys(lists).forEach((listUrl) => {
       const list = lists[listUrl]
       if (!list.current && !list.loadingRequestId && !list.error) {
-        fetchList(listUrl).catch(error => console.debug('list added fetching error', error))
+        fetchList(listUrl).catch((error) => console.debug('list added fetching error', error))
       }
     })
   }, [dispatch, fetchList, library, lists])
 
   // if any lists from unsupported lists are loaded, check them too (in case new updates since last visit)
   useEffect(() => {
-    Object.keys(UNSUPPORTED_LIST_URLS[chainId]).forEach(listUrl => {
+    Object.keys(UNSUPPORTED_LIST_URLS[chainId]).forEach((listUrl) => {
       const list = lists[listUrl]
       if (!list || (!list.current && !list.loadingRequestId && !list.error)) {
-        fetchList(listUrl).catch(error => console.debug('list added fetching error', error))
+        fetchList(listUrl).catch((error) => console.debug('list added fetching error', error))
       }
     })
   }, [chainId, dispatch, fetchList, library, lists])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {
-    Object.keys(lists).forEach(listUrl => {
+    Object.keys(lists).forEach((listUrl) => {
       const list = lists[listUrl]
       if (list.current && list.pendingUpdate) {
         const bump = getVersionUpgrade(list.current.version, list.pendingUpdate.version)

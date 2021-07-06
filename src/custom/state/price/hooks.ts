@@ -1,4 +1,4 @@
-import { useActiveWeb3React } from '@src/hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useSwapState } from '@src/state/swap/hooks'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,7 +13,7 @@ import {
   refreshQuote,
   SetQuoteErrorParams,
   setQuoteError,
-  RefreshQuoteParams
+  RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
@@ -23,9 +23,9 @@ type AddPriceCallback = (params: UpdateQuoteParams) => void
 type SetQuoteErrorCallback = (params: SetQuoteErrorParams) => void
 
 export const useAllQuotes = ({
-  chainId
+  chainId,
 }: Partial<Pick<ClearQuoteParams, 'chainId'>>): Partial<QuotesMap> | undefined => {
-  return useSelector<AppState, Partial<QuotesMap> | undefined>(state => {
+  return useSelector<AppState, Partial<QuotesMap> | undefined>((state) => {
     const quotes = chainId && state.price.quotes[chainId]
 
     if (!quotes) return {}
@@ -35,7 +35,7 @@ export const useAllQuotes = ({
 }
 
 export const useQuote = ({ token, chainId }: Partial<ClearQuoteParams>): QuoteInformationObject | undefined => {
-  return useSelector<AppState, QuoteInformationObject | undefined>(state => {
+  return useSelector<AppState, QuoteInformationObject | undefined>((state) => {
     const fees = chainId && state.price.quotes[chainId]
 
     if (!fees) return undefined
@@ -45,7 +45,7 @@ export const useQuote = ({ token, chainId }: Partial<ClearQuoteParams>): QuoteIn
 }
 
 export const useIsQuoteLoading = () =>
-  useSelector<AppState, boolean>(state => {
+  useSelector<AppState, boolean>((state) => {
     return state.price.loading
   })
 
@@ -69,7 +69,7 @@ export const useGetQuoteAndStatus = (params: Partial<ClearQuoteParams>): UseGetQ
 export function useIsQuoteRefreshing() {
   const { chainId } = useActiveWeb3React()
   const {
-    INPUT: { currencyId }
+    INPUT: { currencyId },
   } = useSwapState()
   const { isRefreshingQuote } = useGetQuoteAndStatus({ token: currencyId, chainId })
   return isRefreshingQuote
@@ -107,6 +107,6 @@ export const useQuoteDispatchers = (): QuoteDispatchers => {
     getNewQuote: useGetNewQuote(),
     refreshQuote: useRefreshQuote(),
     updateQuote: useUpdateQuote(),
-    setQuoteError: useSetQuoteError()
+    setQuoteError: useSetQuoteError(),
   }
 }

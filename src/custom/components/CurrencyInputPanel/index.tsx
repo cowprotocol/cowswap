@@ -11,7 +11,7 @@ import CurrencyInputPanelMod, {
   InputRow,
   InputPanel,
   LabelRow,
-  Container
+  Container,
 } from './CurrencyInputPanelMod'
 import { RowBetween } from 'components/Row'
 

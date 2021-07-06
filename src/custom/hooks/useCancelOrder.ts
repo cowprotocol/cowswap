@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { sendOrderCancellation } from 'utils/trade'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useRequestOrderCancellation } from 'state/orders/hooks'
 
 export const useCancelOrder = () => {

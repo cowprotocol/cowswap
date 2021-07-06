@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { batch } from 'react-redux'
-import { Token } from '@uniswap/sdk'
+import { Token } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus, OrderKind } from './actions'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
 import { useCombinedActiveList } from 'state/lists/hooks'
 import { registerOnWindow } from 'utils/misc'
@@ -76,7 +76,7 @@ const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Ord
     partiallyFillable: false,
     // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2), // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
-    receiver: owner.replace('0x', '')
+    receiver: owner.replace('0x', ''),
   }
 }
 
@@ -108,12 +108,12 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
         return generateOrder({
           owner: account,
           sellToken: sellToken.token,
-          buyToken: buyToken.token
+          buyToken: buyToken.token,
         })
       })
 
       batch(() => {
-        newTempOrders.forEach(order => {
+        newTempOrders.forEach((order) => {
           addOrder({ order, id: order.id, chainId })
         })
       })

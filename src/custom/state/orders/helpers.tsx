@@ -25,12 +25,12 @@ export interface OrderIDWithPopup {
 
 export enum OrderTxTypes {
   METATXN = 'metatxn',
-  TXN = 'txn'
+  TXN = 'txn',
 }
 
 enum OrderIdType {
   ID = 'id',
-  HASH = 'hash'
+  HASH = 'hash',
 }
 
 interface BasePopupContent {
@@ -100,23 +100,23 @@ export function setPopupData(
       summary,
       id,
       status,
-      descriptor
-    })
+      descriptor,
+    }),
   }
   let content: TxnPopupContent | MetaPopupContent
   if (type === OrderTxTypes.TXN) {
     content = {
       txn: {
         hash,
-        ...baseContent
-      }
+        ...baseContent,
+      },
     }
   } else {
     content = {
       metatxn: {
         id,
-        ...baseContent
-      }
+        ...baseContent,
+      },
     }
   }
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices, getGasPrices } from './hooks'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
@@ -20,10 +20,10 @@ export default function GasUpdater(): null {
     // since last update, then:
     if (!updated || needsGasUpdate(now, updated, GAS_PRICE_UPDATE_THRESHOLD)) {
       getGasPrices(chainId)
-        .then(gas => {
+        .then((gas) => {
           updateGasPrices({
             ...gas,
-            chainId
+            chainId,
           })
         })
         // on error we log and keep state as it was

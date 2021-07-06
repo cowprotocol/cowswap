@@ -1,4 +1,5 @@
-import { ChainId, WETH } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from '../../src/custom/constants/chains'
+import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { FeeInformation } from '../../src/custom/state/fee/reducer'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { FeeQuoteParams } from '../../src/custom/utils/operator'
@@ -59,7 +60,7 @@ describe('Fee endpoint', () => {
       sellToken: DEFAULT_SELL_TOKEN.address,
       buyToken: DAI,
       amount: parseUnits('0.1', DEFAULT_SELL_TOKEN.decimals).toString(),
-      kind: OrderKind.SELL
+      kind: OrderKind.SELL,
     })
 
     // GIVEN: -
@@ -77,7 +78,7 @@ describe('Fee: Complex fetch and persist fee', () => {
     sellToken: DEFAULT_SELL_TOKEN.address,
     buyToken: DAI,
     amount: parseUnits(INPUT_AMOUNT, DEFAULT_SELL_TOKEN.decimals).toString(),
-    kind: OrderKind.SELL
+    kind: OrderKind.SELL,
   })
 
   // Needs to run first to pass because of Cypress async issues between tests
@@ -87,7 +88,7 @@ describe('Fee: Complex fetch and persist fee', () => {
     const LATER_TIME = new Date(Date.now() + SIX_HOURS).toISOString()
     const LATER_FEE = {
       expirationDate: LATER_TIME,
-      amount: '0'
+      amount: '0',
     }
 
     // only override Date functions (default is to override all time based functions)
@@ -103,11 +104,11 @@ describe('Fee: Complex fetch and persist fee', () => {
     cy.clock(Date.now(), ['Date'])
 
     // WHEN: The user comes back 4h later (so the fee quote is expired) (after a long sandwich eating sesh, dude was hungry)
-    cy.tick(FOUR_HOURS).then($clock => {
+    cy.tick(FOUR_HOURS).then(($clock) => {
       // THEN: a new fee request is made AHEAD of current (advanced) time
       cy.wait('@feeRequest')
         .its('response.body')
-        .then($body => {
+        .then(($body) => {
           const body = JSON.parse($body)
           // @ts-expect-error - cypress untyped method
           const mockedTime = new Date($clock.details().now)
@@ -127,12 +128,12 @@ describe('Fee: simple checks it exists', () => {
     sellToken: DEFAULT_SELL_TOKEN.address,
     buyToken: DAI,
     amount: parseUnits(INPUT_AMOUNT, DEFAULT_SELL_TOKEN.decimals).toString(),
-    kind: OrderKind.SELL
+    kind: OrderKind.SELL,
   })
   const FEE_RESP = {
     // 1 min in future
     expirationDate: new Date(Date.now() + 60000).toISOString(),
-    amount: parseUnits('0.05', DEFAULT_SELL_TOKEN.decimals).toString()
+    amount: parseUnits('0.05', DEFAULT_SELL_TOKEN.decimals).toString(),
   }
 
   it('Fetch fee when selecting both tokens', () => {
@@ -140,7 +141,7 @@ describe('Fee: simple checks it exists', () => {
     cy.stubResponse({
       url: FEE_QUERY,
       alias: 'feeRequest',
-      body: FEE_RESP
+      body: FEE_RESP,
     })
     // GIVEN: A user loads the swap page
     // WHEN: Select DAI token as output and sells 0.1 WETH
@@ -149,9 +150,7 @@ describe('Fee: simple checks it exists', () => {
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
     // THEN: The fee for selling WETH for DAI is fetched from api endpoint
-    cy.wait('@feeRequest')
-      .its('response.body')
-      .should(_assertFeeData)
+    cy.wait('@feeRequest').its('response.body').should(_assertFeeData)
   })
 })
 

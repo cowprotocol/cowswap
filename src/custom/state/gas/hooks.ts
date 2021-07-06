@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { GasState } from './reducer'
@@ -23,7 +23,7 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
 }
 
 export function useGasPrices(chainId?: ChainId) {
-  return useSelector<AppState, GasState[ChainId] | null>(state => {
+  return useSelector<AppState, GasState[ChainId] | null>((state) => {
     return chainId ? state.gas[chainId] : null
   })
 }

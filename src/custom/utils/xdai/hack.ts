@@ -1,6 +1,7 @@
 // this file essentially provides all the overrides employed in uniswap-xdai-sdk fork
 // + logic for chainId switch to/from xDAI
-import { ETHER, ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { ExtendedEther as ETHER } from 'constants/tokens'
 
 let currentChainId: ChainId | undefined
 
@@ -22,19 +23,20 @@ export const switchParamsByNetwork = (chainId?: ChainId) => {
     // easier to change name+symbol
     // this way you seeXDAI in Token selector when on xDAI
     // @ts-expect-error
-    ETHER.name = XDAI_SYMBOL
+    ETHER.onChain(chainId).name = XDAI_SYMBOL
     // @ts-expect-error
-    ETHER.symbol = XDAI_SYMBOL
+    ETHER.onChain(chainId).symbol = XDAI_SYMBOL
 
     return
   } else {
     // @ts-expect-error
-    ETHER.name = 'Ether'
+    ETHER.onChain(chainId).name = 'Ether'
     // @ts-expect-error
-    ETHER.symbol = 'ETH'
+    ETHER.onChain(chainId).symbol = 'ETH'
   }
 }
 
-export function getChainCurrencySymbols(): { native: string; wrapped: string } {
-  return ETHER.symbol === XDAI_SYMBOL ? CURRENCY_SYMBOLS_XDAI : CURRENCY_SYMBOLS_ETH
+export function getChainCurrencySymbols(chainId?: ChainId): { native: string; wrapped: string } {
+  if (!chainId) return CURRENCY_SYMBOLS_ETH
+  return ETHER.onChain(chainId).symbol === XDAI_SYMBOL ? CURRENCY_SYMBOLS_XDAI : CURRENCY_SYMBOLS_ETH
 }

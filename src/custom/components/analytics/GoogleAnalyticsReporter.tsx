@@ -1,14 +1,14 @@
-import { useActiveWeb3React } from '@src/hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useEffect } from 'react'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { NETWORK_LABELS as NETWORK_LABELS_HEADER } from 'components/Header'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 const NETWORK_DIMENSION = 'dimension1'
-export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
+export const NETWORK_LABELS: { [chainId in ChainId | number]?: string } = {
   ...NETWORK_LABELS_HEADER,
-  [ChainId.MAINNET]: 'Mainnet' // The header doesn't have Mainnet
+  [ChainId.MAINNET]: 'Mainnet', // The header doesn't have Mainnet
 }
 
 export default function GoogleAnalyticsReporter({ location: { pathname, search } }: RouteComponentProps): null {
@@ -18,7 +18,7 @@ export default function GoogleAnalyticsReporter({ location: { pathname, search }
   useEffect(() => {
     const networkInfo = (chainId && NETWORK_LABELS[chainId]) || 'Not connected'
     ReactGA.set({
-      [NETWORK_DIMENSION]: networkInfo
+      [NETWORK_DIMENSION]: networkInfo,
     })
   }, [chainId])
 

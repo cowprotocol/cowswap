@@ -1,5 +1,5 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
@@ -9,7 +9,7 @@ import { FeeQuoteParams } from 'utils/operator'
 
 export const EMPTY_FEE = {
   feeAsCurrency: undefined,
-  amount: '0'
+  amount: '0',
 }
 
 export interface FeeInformation {
@@ -56,11 +56,11 @@ function initializeState(
 function getResetPrice(sellToken: string, buyToken: string, kind: string) {
   return {
     amount: null,
-    token: kind ? sellToken : buyToken
+    token: kind ? sellToken : buyToken,
   }
 }
 
-export default createReducer(initialState, builder =>
+export default createReducer(initialState, (builder) =>
   builder
     /**
      * Gets a new quote
@@ -83,7 +83,7 @@ export default createReducer(initialState, builder =>
         // Update last checked price
         lastCheck: Date.now(),
         // Reset price
-        price: getResetPrice(sellToken, buyToken, kind)
+        price: getResetPrice(sellToken, buyToken, kind),
       }
 
       // Activate loader
@@ -105,7 +105,7 @@ export default createReducer(initialState, builder =>
         quotes[sellToken] = {
           ...quoteInfo,
           // Update last checked price
-          lastCheck: Date.now()
+          lastCheck: Date.now(),
         }
       }
 
@@ -147,7 +147,7 @@ export default createReducer(initialState, builder =>
         quotes[chainId][sellToken] = {
           ...quoteInformation,
           ...payload,
-          price: getResetPrice(sellToken, buyToken, kind)
+          price: getResetPrice(sellToken, buyToken, kind),
         }
       }
 

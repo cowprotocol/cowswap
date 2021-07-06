@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react'
 import { batch, useDispatch } from 'react-redux'
 import { ThemeContext } from 'styled-components'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { AppDispatch } from 'state'
 import { clearAllTransactions } from 'state/transactions/actions'
 import { getExplorerLabel, shortenAddress } from 'utils'
@@ -37,10 +37,10 @@ import {
   AddressLink,
   LowerSection,
   IconWrapper,
-  renderTransactions
+  renderTransactions,
 } from './AccountDetailsMod'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
-import { MouseoverTooltip } from 'components/Tooltip/TooltipMod'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 const Wrapper = styled.div`
   color: ${({ theme }) => theme.text1};
@@ -146,7 +146,7 @@ export default function AccountDetails({
   pendingTransactions,
   confirmedTransactions,
   ENSName,
-  openOptions
+  openOptions,
 }: AccountDetailsProps) {
   const { chainId, account, connector } = useActiveWeb3React()
   const walletInfo = useWalletInfo()
@@ -176,7 +176,7 @@ export default function AccountDetails({
               <AccountGroupingRow>
                 {formatConnectorName(connector, walletInfo)}
                 <div>
-                  {connector !== injected && connector !== walletlink && (
+                  {/* connector !== injected && connector !== walletlink && (
                     <WalletAction
                       style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
                       onClick={() => {
@@ -185,7 +185,7 @@ export default function AccountDetails({
                     >
                       Disconnect
                     </WalletAction>
-                  )}
+                  ) */}
                   <WalletAction
                     style={{ fontSize: '.825rem', fontWeight: 400 }}
                     onClick={() => {
@@ -229,7 +229,7 @@ export default function AccountDetails({
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={true}
-                            href={chainId && getEtherscanLink(chainId, ENSName, 'address')}
+                            href={getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
                             <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>

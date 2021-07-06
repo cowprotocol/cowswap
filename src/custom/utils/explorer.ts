@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderID } from 'utils/operator'
 import { isDev, isStaging } from './environments'
 
@@ -16,7 +16,7 @@ function _getExplorerUrlByEnvironment() {
   return {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.RINKEBY]: `${baseUrl}/rinkeby`,
-    [ChainId.XDAI]: `${baseUrl}/xdai`
+    [ChainId.XDAI]: `${baseUrl}/xdai`,
   }
 }
 

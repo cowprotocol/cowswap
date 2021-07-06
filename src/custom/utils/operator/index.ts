@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
@@ -9,7 +9,7 @@ import QuoteError, {
   GpQuoteErrorCodes,
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
-  GpQuoteErrorDetails
+  GpQuoteErrorDetails,
 } from 'utils/operator/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
 
@@ -20,7 +20,7 @@ function getOperatorUrl(): Partial<Record<ChainId, string>> {
         process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://protocol-mainnet.dev.gnosisdev.com/api',
       [ChainId.RINKEBY]:
         process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://protocol-rinkeby.dev.gnosisdev.com/api',
-      [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://protocol-xdai.dev.gnosisdev.com/api'
+      [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://protocol-xdai.dev.gnosisdev.com/api',
     }
   }
 
@@ -28,7 +28,7 @@ function getOperatorUrl(): Partial<Record<ChainId, string>> {
   return {
     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://protocol-mainnet.gnosis.io/api',
     [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://protocol-rinkeby.gnosis.io/api',
-    [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://protocol-xdai.gnosis.io/api'
+    [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://protocol-xdai.gnosis.io/api',
   }
 }
 
@@ -36,7 +36,7 @@ const API_BASE_URL = getOperatorUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
-  'X-AppId': APP_ID.toString()
+  'X-AppId': APP_ID.toString(),
 }
 
 /**
@@ -95,7 +95,7 @@ function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE'
   return fetch(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
-    body: data !== undefined ? JSON.stringify(data) : data
+    body: data !== undefined ? JSON.stringify(data) : data,
   })
 }
 
@@ -123,7 +123,7 @@ export async function sendSignedOrder(params: {
   const response = await _post(chainId, `/orders`, {
     ...order,
     signingScheme: getSigningSchemeApiValue(order.signingScheme),
-    from: owner
+    from: owner,
   })
 
   // Handle response
@@ -152,7 +152,7 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
   const response = await _delete(chainId, `/orders/${cancellation.orderUid}`, {
     signature: cancellation.signature,
     signingScheme: getSigningSchemeApiValue(cancellation.signingScheme),
-    from
+    from,
   })
 
   if (!response.ok) {
@@ -180,12 +180,12 @@ export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & 
 
 const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
   errorType: GpQuoteErrorCodes.UNHANDLED_ERROR,
-  description: GpQuoteErrorDetails.UNHANDLED_ERROR
+  description: GpQuoteErrorDetails.UNHANDLED_ERROR,
 }
 
 const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
   errorType: ApiErrorCodes.UNHANDLED_CREATE_ERROR,
-  description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
+  description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
 }
 
 async function _handleQuoteResponse(response: Response) {
@@ -208,7 +208,7 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInfo
   const response = await _get(
     chainId,
     `/markets/${toErc20Address(baseToken, chainId)}-${toErc20Address(quoteToken, chainId)}/${kind}/${amount}`
-  ).catch(error => {
+  ).catch((error) => {
     console.error('Error getting price quote:', error)
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
   })
@@ -226,7 +226,7 @@ export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformatio
       buyToken,
       chainId
     )}&amount=${amount}&kind=${kind}`
-  ).catch(error => {
+  ).catch((error) => {
     console.error('Error getting fee quote:', error)
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
   })

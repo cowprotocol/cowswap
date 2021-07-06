@@ -1,11 +1,11 @@
 import React, { useContext, useCallback } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import useENS from '../../hooks/useENS'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React } from '../../hooks/web3'
 import { ExternalLink, TYPE } from 'theme'
+import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
-import { getEtherscanLink } from 'utils'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -68,7 +68,7 @@ const Input = styled.input<{ error?: boolean }>`
 export default function AddressInputPanel({
   id,
   value,
-  onChange
+  onChange,
 }: {
   id?: string
   // the typed string value
@@ -82,7 +82,7 @@ export default function AddressInputPanel({
   const { address, loading, name } = useENS(value)
 
   const handleInput = useCallback(
-    event => {
+    (event) => {
       const input = event.target.value
       const withoutSpaces = input.replace(/\s+/g, '')
       onChange(withoutSpaces)
@@ -102,8 +102,11 @@ export default function AddressInputPanel({
                 Recipient
               </TYPE.black>
               {address && chainId && (
-                <ExternalLink href={getEtherscanLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  (View on Etherscan)
+                <ExternalLink
+                  href={getExplorerLink(chainId, name ?? address, ExplorerDataType.ADDRESS)}
+                  style={{ fontSize: '14px' }}
+                >
+                  (View on Explorer)
                 </ExternalLink>
               )}
             </RowBetween>

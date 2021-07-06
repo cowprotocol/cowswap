@@ -3,7 +3,7 @@ import {
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
   DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK,
   DEFAULT_NETWORK_FOR_LISTS,
-  UNSUPPORTED_LIST_URLS
+  UNSUPPORTED_LIST_URLS,
 } from 'constants/lists'
 import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
@@ -18,9 +18,9 @@ import {
   enableList,
   disableList,
   addGpUnsupportedToken,
-  removeGpUnsupportedToken
+  removeGpUnsupportedToken,
 } from 'state/lists/actions'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { getChainIdValues } from 'utils/misc'
 import { UnsupportedToken } from 'utils/operator'
 
@@ -54,7 +54,7 @@ export const NEW_LIST_STATE: ListState = {
   error: null,
   current: null,
   loadingRequestId: null,
-  pendingUpdate: null
+  pendingUpdate: null,
 }
 
 export type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U> ? U[] : T[P] }
@@ -68,10 +68,10 @@ const setInitialListState = (chainId: ChainId): ListsState => ({
       .reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
         memo[listUrl] = NEW_LIST_STATE
         return memo
-      }, {})
+      }, {}),
   },
   activeListUrls: DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId],
-  gpUnsupportedTokens: {}
+  gpUnsupportedTokens: {},
 })
 
 // MOD: change the intiialState shape
@@ -83,10 +83,10 @@ const initialState: ListsStateByNetwork = {
       memo[chainId] = setInitialListState(chainId)
     }
     return memo
-  }, {} as ListsStateByNetwork)
+  }, {} as ListsStateByNetwork),
 }
 
-export default createReducer(initialState, builder =>
+export default createReducer(initialState, (builder) =>
   builder
     .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
       const state = baseState[chainId]
@@ -105,7 +105,7 @@ export default createReducer(initialState, builder =>
           pendingUpdate: null,
           ...state.byUrl[url],
           loadingRequestId: requestId,
-          error: null
+          error: null,
         }
       }
     )
@@ -127,7 +127,7 @@ export default createReducer(initialState, builder =>
               loadingRequestId: null,
               error: null,
               current: current,
-              pendingUpdate: tokenList
+              pendingUpdate: tokenList,
             }
           }
         } else {
@@ -141,7 +141,7 @@ export default createReducer(initialState, builder =>
             loadingRequestId: null,
             error: null,
             current: tokenList,
-            pendingUpdate: null
+            pendingUpdate: null,
           }
         }
       }
@@ -160,7 +160,7 @@ export default createReducer(initialState, builder =>
           loadingRequestId: null,
           error: errorMessage,
           current: null,
-          pendingUpdate: null
+          pendingUpdate: null,
         }
       }
     )
@@ -177,7 +177,7 @@ export default createReducer(initialState, builder =>
       }
       // remove list from active urls if needed
       if (state.activeListUrls && state.activeListUrls.includes(url)) {
-        state.activeListUrls = state.activeListUrls.filter(u => u !== url)
+        state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
       }
     })
     .addCase(enableList, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
@@ -197,7 +197,7 @@ export default createReducer(initialState, builder =>
     .addCase(disableList, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
       const state = baseState[chainId]
       if (state.activeListUrls && state.activeListUrls.includes(url)) {
-        state.activeListUrls = state.activeListUrls.filter(u => u !== url)
+        state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
       }
     })
     .addCase(acceptListUpdate, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
@@ -208,7 +208,7 @@ export default createReducer(initialState, builder =>
       state.byUrl[url] = {
         ...state.byUrl[url],
         pendingUpdate: null,
-        current: state.byUrl[url].pendingUpdate
+        current: state.byUrl[url].pendingUpdate,
       }
     })
     .addCase(
@@ -232,13 +232,13 @@ export default createReducer(initialState, builder =>
             new Set()
           )
 
-          DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId].forEach(listUrl => {
+          DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId].forEach((listUrl) => {
             if (!lastInitializedSet.has(listUrl)) {
               state.byUrl[listUrl] = NEW_LIST_STATE
             }
           })
 
-          state.lastInitializedDefaultListOfLists.forEach(listUrl => {
+          state.lastInitializedDefaultListOfLists.forEach((listUrl) => {
             if (!newListOfListsSet.has(listUrl)) {
               delete state.byUrl[listUrl]
             }

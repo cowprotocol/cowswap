@@ -1,4 +1,4 @@
-import React, { HTMLProps, useCallback } from 'react'
+import React, { HTMLProps } from 'react'
 import ReactGA from 'react-ga'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
@@ -24,7 +24,7 @@ export const ButtonText = styled.button`
 `
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
-  backgroundColor: warning ? theme.red1 : theme.primary1
+  backgroundColor: warning ? theme.red1 : theme.primary1,
 }))`
   padding: 1rem 2rem 1rem 2rem;
   border-radius: 3rem;
@@ -197,6 +197,50 @@ export const UniTokenAnimated = styled.img`
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
 `
 
+const ETHERSCAN_HOSTNAMES: { [hostname: string]: true } = {
+  'etherscan.io': true,
+  'ropsten.etherscan.io': true,
+  'rinkeby.etherscan.io': true,
+  'kovan.etherscan.io': true,
+  'goerli.etherscan.io': true,
+}
+
+/**
+ * Returns the anonymized version of the given href, i.e. one that does not leak user information
+ * @param href the anonymized version of the given href
+ */
+function anonymizeLink(href: string): string {
+  try {
+    const url = new URL(href)
+    if (ETHERSCAN_HOSTNAMES[url.hostname]) {
+      return `${url.hostname}/${url.pathname.split('/')[1]}/***`
+    }
+    return href
+  } catch (error) {
+    console.error('Failed to anonymize outbound link', error)
+    return href
+  }
+}
+
+function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>) {
+  const { target, href } = event.currentTarget
+
+  const anonymizedHref = anonymizeLink(href)
+
+  // don't prevent default, don't redirect if it's a new tab
+  if (target === '_blank' || event.ctrlKey || event.metaKey) {
+    ReactGA.outboundLink({ label: anonymizedHref }, () => {
+      console.debug('Fired outbound link event', anonymizedHref)
+    })
+  } else {
+    event.preventDefault()
+    // send a ReactGA event and then trigger a location change
+    ReactGA.outboundLink({ label: anonymizedHref }, () => {
+      window.location.href = anonymizedHref
+    })
+  }
+}
+
 /**
  * Outbound link that handles firing google analytics events
  */
@@ -206,24 +250,7 @@ export function ExternalLink({
   rel = 'noopener noreferrer',
   ...rest
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      // don't prevent default, don't redirect if it's a new tab
-      if (target === '_blank' || event.ctrlKey || event.metaKey) {
-        ReactGA.outboundLink({ label: href }, () => {
-          console.debug('Fired outbound link event', href)
-        })
-      } else {
-        event.preventDefault()
-        // send a ReactGA event and then trigger a location change
-        ReactGA.outboundLink({ label: href }, () => {
-          window.location.href = href
-        })
-      }
-    },
-    [href, target]
-  )
-  return <StyledLink target={target} rel={rel} href={href} onClick={handleClick} {...rest} />
+  return <StyledLink target={target} rel={rel} href={href} onClick={handleClickExternalLink} {...rest} />
 }
 
 export function ExternalLinkIcon({
@@ -232,25 +259,8 @@ export function ExternalLinkIcon({
   rel = 'noopener noreferrer',
   ...rest
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      // don't prevent default, don't redirect if it's a new tab
-      if (target === '_blank' || event.ctrlKey || event.metaKey) {
-        ReactGA.outboundLink({ label: href }, () => {
-          console.debug('Fired outbound link event', href)
-        })
-      } else {
-        event.preventDefault()
-        // send a ReactGA event and then trigger a location change
-        ReactGA.outboundLink({ label: href }, () => {
-          window.location.href = href
-        })
-      }
-    },
-    [href, target]
-  )
   return (
-    <LinkIconWrapper target={target} rel={rel} href={href} onClick={handleClick} {...rest}>
+    <LinkIconWrapper target={target} rel={rel} href={href} onClick={handleClickExternalLink} {...rest}>
       <LinkIcon />
     </LinkIconWrapper>
   )
@@ -296,6 +306,13 @@ export const HideSmall = styled.span`
 export const HideExtraSmall = styled.span`
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     display: none;
+  `};
+`
+
+export const SmallOnly = styled.span`
+  display: none;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: block;
   `};
 `
 

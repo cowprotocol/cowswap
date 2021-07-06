@@ -1,4 +1,5 @@
-import { ChainId, Token } from '@uniswap/sdk'
+import { Token } from '@uniswap/sdk-core'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 // xDAI tokens
 export const WXDAI = new Token(ChainId.XDAI, '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', 18, 'WXDAI', 'Wrapped XDAI')

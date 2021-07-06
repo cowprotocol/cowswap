@@ -15,9 +15,7 @@ describe('Swap (mod)', () => {
   })
 
   it('invalid swap amount', () => {
-    cy.get('#swap-currency-input .token-amount-input')
-      .type('\\', { delay: 400, force: true })
-      .should('have.value', '')
+    cy.get('#swap-currency-input .token-amount-input').type('\\', { delay: 400, force: true }).should('have.value', '')
   })
 
   it.skip('can enter an amount into output', () => {
@@ -49,7 +47,7 @@ describe('Swap (mod)', () => {
 
   describe('expert mode', () => {
     beforeEach(() => {
-      cy.window().then(win => {
+      cy.window().then((win) => {
         cy.stub(win, 'prompt').returns('confirm')
       })
       cy.get('#open-settings-dialog-button').click()

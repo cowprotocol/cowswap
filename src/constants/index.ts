@@ -1,14 +1,18 @@
 import { WXDAI, OWL_XDAI, USDC_XDAI, USDT_XDAI, WBTC_XDAI, GNO_XDAI, HONEY_XDAI } from 'utils/xdai/constants'
-import { ChainId, JSBI, Percent, Token, WETH } from '@uniswap/sdk'
+import { Percent, Token } from '@uniswap/sdk-core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from 'connectors'
+
+import JSBI from 'jsbi'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { WETH9_EXTENDED as WETH } from 'constants/tokens'
 
 export const ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-export { PRELOADED_PROPOSALS } from './proposals'
+// export { PRELOADED_PROPOSALS } from './proposals'
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -35,36 +39,36 @@ export const UNI: { [chainId in ChainId]: Token } = {
   [ChainId.MAINNET]: new Token(ChainId.MAINNET, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.RINKEBY]: new Token(ChainId.RINKEBY, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.ROPSTEN]: new Token(ChainId.ROPSTEN, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
-  [ChainId.GÖRLI]: new Token(ChainId.GÖRLI, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
+  [ChainId.GOERLI]: new Token(ChainId.GOERLI, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.KOVAN]: new Token(ChainId.KOVAN, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
-  [ChainId.XDAI]: HONEY_XDAI
+  [ChainId.XDAI]: HONEY_XDAI,
 }
 
 export const COMMON_CONTRACT_NAMES: { [address: string]: string } = {
   [UNI_ADDRESS]: 'UNI',
   [GOVERNANCE_ADDRESS]: 'Governance',
-  [TIMELOCK_ADDRESS]: 'Timelock'
+  [TIMELOCK_ADDRESS]: 'Timelock',
 }
 
 // TODO: specify merkle distributor for mainnet
 export const MERKLE_DISTRIBUTOR_ADDRESS: { [chainId in ChainId]?: string } = {
-  [ChainId.MAINNET]: '0x090D4613473dEE047c3f2706764f49E0821D256e'
+  [ChainId.MAINNET]: '0x090D4613473dEE047c3f2706764f49E0821D256e',
 }
 
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
   [ChainId.ROPSTEN]: [WETH[ChainId.ROPSTEN]],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
-  [ChainId.GÖRLI]: [WETH[ChainId.GÖRLI]],
+  [ChainId.GOERLI]: [WETH[ChainId.GOERLI]],
   [ChainId.KOVAN]: [WETH[ChainId.KOVAN]],
-  [ChainId.XDAI]: [WETH[ChainId.XDAI]]
+  [ChainId.XDAI]: [WETH[ChainId.XDAI]],
 }
 
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
   [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT, WBTC],
-  [ChainId.XDAI]: [WXDAI, OWL_XDAI, USDC_XDAI, USDT_XDAI, WBTC_XDAI, GNO_XDAI, HONEY_XDAI]
+  [ChainId.XDAI]: [WXDAI, OWL_XDAI, USDC_XDAI, USDT_XDAI, WBTC_XDAI, GNO_XDAI, HONEY_XDAI],
 }
 
 /**
@@ -73,32 +77,32 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
  */
 export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: Token[] } } = {
   [ChainId.MAINNET]: {
-    [AMPL.address]: [DAI, WETH[ChainId.MAINNET]]
-  }
+    [AMPL.address]: [DAI, WETH[ChainId.MAINNET]],
+  },
 }
 
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: ChainTokenList = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT, WBTC]
+  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT, WBTC],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   ...WETH_ONLY,
   [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT, WBTC],
-  [ChainId.XDAI]: [WXDAI, OWL_XDAI, USDC_XDAI, USDT_XDAI, WBTC_XDAI, GNO_XDAI]
+  [ChainId.XDAI]: [WXDAI, OWL_XDAI, USDC_XDAI, USDT_XDAI, WBTC_XDAI, GNO_XDAI],
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
     [
       new Token(ChainId.MAINNET, '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643', 8, 'cDAI', 'Compound Dai'),
-      new Token(ChainId.MAINNET, '0x39AA39c021dfbaE8faC545936693aC917d5E7563', 8, 'cUSDC', 'Compound USD Coin')
+      new Token(ChainId.MAINNET, '0x39AA39c021dfbaE8faC545936693aC917d5E7563', 8, 'cUSDC', 'Compound USD Coin'),
     ],
     [USDC, USDT],
-    [DAI, USDT]
-  ]
+    [DAI, USDT],
+  ],
 }
 
 export interface WalletInfo {
@@ -121,7 +125,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
-    primary: true
+    primary: true,
   },
   METAMASK: {
     connector: injected,
@@ -129,7 +133,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     iconName: 'metamask.png',
     description: 'Easy-to-use browser extension.',
     href: null,
-    color: '#E8831D'
+    color: '#E8831D',
   },
   WALLET_CONNECT: {
     connector: walletconnect,
@@ -138,7 +142,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
     href: null,
     color: '#4196FC',
-    mobile: true
+    mobile: true,
   },
   WALLET_LINK: {
     connector: walletlink,
@@ -146,7 +150,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     iconName: 'coinbaseWalletIcon.svg',
     description: 'Use Coinbase Wallet app on mobile device',
     href: null,
-    color: '#315CF5'
+    color: '#315CF5',
   },
   COINBASE_LINK: {
     name: 'Open in Coinbase Wallet',
@@ -155,7 +159,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: 'https://go.cb-w.com/mtUDhEZPy1',
     color: '#315CF5',
     mobile: true,
-    mobileOnly: true
+    mobileOnly: true,
   },
   FORTMATIC: {
     connector: fortmatic,
@@ -164,7 +168,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Login using Fortmatic hosted wallet',
     href: null,
     color: '#6748FF',
-    mobile: true
+    mobile: true,
   },
   Portis: {
     connector: portis,
@@ -173,8 +177,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Login using Portis hosted wallet',
     href: null,
     color: '#4A6C9B',
-    mobile: true
-  }
+    mobile: true,
+  },
 }
 
 export const NetworkContextName = 'NETWORK'
@@ -214,5 +218,5 @@ export const BLOCKED_ADDRESSES: string[] = [
   '0xd882cFc20F52f2599D84b8e8D58C7FB62cfE344b',
   '0x901bb9583b24D97e995513C6778dc6888AB6870e',
   '0xA7e5d5A720f06526557c513402f2e6B5fA20b008',
-  '0x8576aCC5C05D6Ce88f4e49bf65BdF0C62F91353C'
+  '0x8576aCC5C05D6Ce88f4e49bf65BdF0C62F91353C',
 ]
