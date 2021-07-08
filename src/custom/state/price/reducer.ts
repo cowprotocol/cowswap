@@ -3,23 +3,13 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
-import { FeeQuoteParams } from 'utils/operator'
+import { FeeInformation, FeeQuoteParams, PriceInformation } from 'utils/price'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
 export const EMPTY_FEE = {
   feeAsCurrency: undefined,
   amount: '0',
-}
-
-export interface FeeInformation {
-  expirationDate: string
-  amount: string
-}
-
-export interface PriceInformation {
-  token: string
-  amount: string | null
 }
 
 export interface QuoteInformationObject extends FeeQuoteParams {

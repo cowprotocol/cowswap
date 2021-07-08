@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { FeeQuoteParams } from 'utils/operator'
+import { FeeQuoteParams } from 'utils/price'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { QuoteInformationObject } from './reducer'
 

@@ -1,6 +1,6 @@
 import JSBI from 'jsbi'
 import { parseUnits } from '@ethersproject/units'
-import { DEFAULT_PRECISION, INITIAL_ALLOWED_SLIPPAGE, LONG_PRECISION } from '@src/custom/constants'
+import { DEFAULT_PRECISION, INITIAL_ALLOWED_SLIPPAGE, LONG_PRECISION } from 'constants/index'
 import { CurrencyAmount, Fraction, Percent, Token, Price, Currency, TradeType } from '@uniswap/sdk-core'
 import { stringToCurrency } from './extension'
 import { SupportedChainId as ChainId } from 'constants/chains'

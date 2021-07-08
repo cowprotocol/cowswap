@@ -3,7 +3,6 @@ import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'util
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
 import { isDev } from '../environments'
-import { FeeInformation, PriceInformation } from 'state/price/reducer'
 import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'utils/operator/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
@@ -12,6 +11,7 @@ import QuoteError, {
   GpQuoteErrorDetails,
 } from 'utils/operator/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
+import { FeeInformation, FeeQuoteParams, PriceInformation, PriceQuoteParams } from '../price'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
   if (isDev) {
@@ -164,20 +164,6 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
   console.log('[utils:operator] Cancelled order', cancellation.orderUid, chainId)
 }
 
-export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
-  amount: string
-  chainId: ChainId
-  fromDecimals: number
-  toDecimals: number
-}
-
-export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
-  baseToken: string
-  quoteToken: string
-  fromDecimals: number
-  toDecimals: number
-}
-
 const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
   errorType: GpQuoteErrorCodes.UNHANDLED_ERROR,
   description: GpQuoteErrorDetails.UNHANDLED_ERROR,
@@ -250,6 +236,5 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
     throw new OperatorError(UNHANDLED_ORDER_ERROR)
   }
 }
-
 // Register some globals for convenience
 registerOnWindow({ operator: { getFeeQuote, getOrder, sendSignedOrder, apiGet: _get, apiPost: _post } })

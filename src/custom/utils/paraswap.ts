@@ -1,11 +1,10 @@
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
 import { toErc20Address } from 'utils/tokens'
-import { PriceQuoteParams } from 'utils/operator'
 import { OptimalRatesWithPartnerFees, APIError, RateOptions } from 'paraswap/build/types'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { PriceInformation } from 'state/price/reducer'
-import { getTokensFromMarket } from './misc'
+import { getTokensFromMarket } from 'utils/misc'
+import { PriceInformation, PriceQuoteParams } from 'utils/price'
 
 type ParaSwapPriceQuote = OptimalRatesWithPartnerFees
 

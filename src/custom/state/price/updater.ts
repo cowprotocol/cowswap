@@ -1,17 +1,22 @@
 import { useEffect } from 'react'
-import { useActiveWeb3React } from 'hooks/web3'
+
+import { DEFAULT_DECIMALS } from 'custom/constants'
+
+import { UnsupportedToken } from 'utils/operator'
+import { FeeQuoteParams } from 'utils/price'
+
 import { useSwapState, tryParseAmount } from 'state/swap/hooks'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
+
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
-import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
-import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
-import { QuoteInformationObject } from './reducer'
-import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
+import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
+import { useActiveWeb3React } from 'hooks/web3'
 import useIsOnline from 'hooks/useIsOnline'
-import { DEFAULT_DECIMALS } from 'custom/constants'
+import { QuoteInformationObject } from './reducer'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
