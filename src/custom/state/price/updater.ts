@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+
 import { useActiveWeb3React } from 'hooks'
 import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
@@ -140,8 +142,8 @@ export default function FeesUpdater(): null {
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
 
     // Don't refetch if the amount is missing
-    const kind = independentField === Field.INPUT ? 'sell' : 'buy'
-    const amount = tryParseAmount(typedValue, (kind === 'sell' ? sellCurrency : buyCurrency) ?? undefined)
+    const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
+    const amount = tryParseAmount(typedValue, (kind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined)
     if (!amount) return
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS

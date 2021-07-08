@@ -1,4 +1,6 @@
 import { ChainId } from '@uniswap/sdk'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_ID } from 'constants/index'
 import { registerOnWindow } from '../misc'
@@ -62,7 +64,7 @@ export interface OrderMetaData {
   validTo: number
   appData: number
   feeAmount: string
-  kind: string
+  kind: OrderKind
   partiallyFillable: false
   signature: string
 }

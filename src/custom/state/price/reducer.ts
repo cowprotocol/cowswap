@@ -1,10 +1,10 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@uniswap/sdk'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { FeeQuoteParams } from 'utils/operator'
-import { OrderKind } from 'utils/signatures'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -54,7 +54,7 @@ function initializeState(
   }
 }
 
-function getResetPrice(sellToken: string, buyToken: string, kind: string) {
+function getResetPrice(sellToken: string, buyToken: string, kind: OrderKind) {
   return {
     amount: null,
     // When we buy, the price estimation is given in sell tokens (if we sell, we give it in sell tokens)

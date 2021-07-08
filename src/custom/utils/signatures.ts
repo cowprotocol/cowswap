@@ -13,9 +13,7 @@ import { ChainId } from '@uniswap/sdk'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from 'ethers'
-import { registerOnWindow } from './misc'
-
-export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { registerOnWindow } from 'utils/misc'
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal

@@ -1,8 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
 import { OrderID } from 'utils/operator'
-import { OrderCreation } from 'utils/signatures'
 import { ChainId, Token } from '@uniswap/sdk'
-export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderCreation } from 'utils/signatures'
 
 export enum OrderStatus {
   PENDING = 'pending',

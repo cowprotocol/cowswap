@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { ETHER, Percent, TradeType, CurrencyAmount } from '@uniswap/sdk'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import { BIPS_BASE, BUY_ETHER_TOKEN, INITIAL_ALLOWED_SLIPPAGE, RADIX_DECIMAL } from 'constants/index'
 
@@ -13,7 +14,6 @@ import { useWrapEther } from 'hooks/useWrapEther'
 
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { sendOrder } from 'utils/trade'
-import { OrderKind } from 'utils/signatures'
 import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'

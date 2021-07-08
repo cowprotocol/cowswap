@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { useCallback } from 'react'
-import { useQuoteDispatchers } from 'state/price/hooks'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import {
   getCanonicalMarket,
@@ -16,13 +16,13 @@ import {
   useIsUnsupportedTokenGp,
   useRemoveGpUnsupportedToken
 } from 'state/lists/hooks/hooksMod'
+import { useQuoteDispatchers } from 'state/price/hooks'
 import { FeeInformation, PriceInformation, QuoteInformationObject } from 'state/price/reducer'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { onlyResolvesLast } from 'utils/async'
 import { isValidQuoteError, GpQuoteErrorCodes } from 'utils/operator/errors/QuoteError'
 import { ApiErrorCodes, isValidOperatorError } from 'utils/operator/errors/OperatorError'
 import BigNumberJs from 'bignumber.js'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
 import { isOnline } from 'hooks/useIsOnline'
 import GpQuoteError from 'utils/operator/errors/QuoteError'
@@ -142,7 +142,7 @@ async function _getQuote({ quoteParams, fetchFee, previousFee }: RefetchQuoteCal
   // Get a new price quote
   let exchangeAmount
   let feeExceedsPrice = false
-  if (kind === 'sell') {
+  if (kind === OrderKind.SELL) {
     // Sell orders need to deduct the fee from the swapped amount
     // we need to check for 0/negative exchangeAmount should fee >= amount
     const { amount: fee } = await feePromise

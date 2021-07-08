@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { batch } from 'react-redux'
 import { Token } from '@uniswap/sdk'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
-import { Order, OrderStatus, OrderKind } from './actions'
+import { Order, OrderStatus } from './actions'
 import { useActiveWeb3React } from 'hooks'
 import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
 import { useCombinedActiveList } from 'state/lists/hooks'

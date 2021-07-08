@@ -1,6 +1,7 @@
 import { Token, TokenAmount, JSBI, Currency, CurrencyAmount, TradeType } from '@uniswap/sdk'
 import { QuoteInformationObject } from 'state/price/reducer'
 import TradeGp, { _constructTradePrice } from './TradeGp'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 interface TradeParams {
   parsedAmount?: CurrencyAmount
@@ -47,7 +48,7 @@ export function useTradeExactInWithFee({
     sellToken: feeAdjustedAmount,
     // pass in our feeless outputAmount (CurrencyAmount)
     buyToken: outputAmount,
-    kind: 'sell',
+    kind: OrderKind.SELL,
     price: quote?.price
   })
 
@@ -100,7 +101,7 @@ export function useTradeExactOutWithFee({
     sellToken: inputAmountWithoutFee,
     // pass in our parsed buy amount (CurrencyAmount)
     buyToken: parsedOutputAmount,
-    kind: 'buy',
+    kind: OrderKind.BUY,
     price: quote.price
   })
 
