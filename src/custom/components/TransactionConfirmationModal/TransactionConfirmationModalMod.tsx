@@ -1,19 +1,33 @@
-import { ChainId, Currency } from '@uniswap/sdk'
+import {
+  // ChainId,
+  Currency
+} from '@uniswap/sdk'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import Modal from 'components/Modal'
-import { ExternalLink } from 'theme'
+// import { ExternalLink } from 'theme'
 import { Text } from 'rebass'
 import { CloseIcon, CustomLightSpinner } from 'theme'
-import { RowBetween, RowFixed } from 'components/Row'
-import { AlertTriangle, ArrowUpCircle, CheckCircle } from 'react-feather'
-import { ButtonPrimary, ButtonLight } from '../Button'
+import {
+  RowBetween
+  // RowFixed
+} from 'components/Row'
+import {
+  AlertTriangle
+  // ArrowUpCircle,
+  // CheckCircle
+} from 'react-feather'
+import {
+  ButtonPrimary
+  // ButtonLight
+} from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import Circle from 'assets/images/blue-loader.svg'
-import MetaMaskLogo from 'assets/images/metamask.png'
-import { getEtherscanLink, getExplorerLabel } from 'utils'
+// import MetaMaskLogo from 'assets/images/metamask.png'
+// import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { useActiveWeb3React } from 'hooks'
-import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
+// import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
+import { TransactionSubmittedContent } from './index'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -32,11 +46,11 @@ const ConfirmedIcon = styled(ColumnCenter)`
   padding: 60px 0;
 `
 
-const StyledLogo = styled.img`
-  height: 16px;
-  width: 16px;
-  margin-left: 6px;
-`
+// const StyledLogo = styled.img`
+//   height: 16px;
+//   width: 16px;
+//   margin-left: 6px;
+// `
 
 export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismiss: () => void; pendingText: string }) {
   return (
@@ -67,69 +81,69 @@ export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismi
   )
 }
 
-function TransactionSubmittedContent({
-  onDismiss,
-  chainId,
-  hash,
-  currencyToAdd
-}: {
-  onDismiss: () => void
-  hash: string | undefined
-  chainId: ChainId
-  currencyToAdd?: Currency | undefined
-}) {
-  const theme = useContext(ThemeContext)
+// function TransactionSubmittedContent({
+//   onDismiss,
+//   chainId,
+//   hash,
+//   currencyToAdd
+// }: {
+//   onDismiss: () => void
+//   hash: string | undefined
+//   chainId: ChainId
+//   currencyToAdd?: Currency | undefined
+// }) {
+//   const theme = useContext(ThemeContext)
 
-  const { library } = useActiveWeb3React()
+//   const { library } = useActiveWeb3React()
 
-  const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
+//   const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
 
-  return (
-    <Wrapper>
-      <Section>
-        <RowBetween>
-          <div />
-          <CloseIcon onClick={onDismiss} />
-        </RowBetween>
-        <ConfirmedIcon>
-          <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary1} />
-        </ConfirmedIcon>
-        <AutoColumn gap="12px" justify={'center'}>
-          <Text fontWeight={500} fontSize={20}>
-            Transaction Submitted
-          </Text>
-          {chainId && hash && (
-            <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
-              <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-                {/* View on Etherscan */}
-                {getExplorerLabel(chainId, hash, 'transaction')}
-              </Text>
-            </ExternalLink>
-          )}
-          {currencyToAdd && library?.provider?.isMetaMask && (
-            <ButtonLight mt="12px" padding="6px 12px" width="fit-content" onClick={addToken}>
-              {!success ? (
-                <RowFixed>
-                  Add {currencyToAdd.symbol} to Metamask <StyledLogo src={MetaMaskLogo} />
-                </RowFixed>
-              ) : (
-                <RowFixed>
-                  Added {currencyToAdd.symbol}{' '}
-                  <CheckCircle size={'16px'} stroke={theme.green1} style={{ marginLeft: '6px' }} />
-                </RowFixed>
-              )}
-            </ButtonLight>
-          )}
-          <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
-            <Text fontWeight={500} fontSize={20}>
-              Close
-            </Text>
-          </ButtonPrimary>
-        </AutoColumn>
-      </Section>
-    </Wrapper>
-  )
-}
+//   return (
+//     <Wrapper>
+//       <Section>
+//         <RowBetween>
+//           <div />
+//           <CloseIcon onClick={onDismiss} />
+//         </RowBetween>
+//         <ConfirmedIcon>
+//           <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary1} />
+//         </ConfirmedIcon>
+//         <AutoColumn gap="12px" justify={'center'}>
+//           <Text fontWeight={500} fontSize={20}>
+//             Transaction Submitted
+//           </Text>
+//           {chainId && hash && (
+//             <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
+//               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
+//                 {/* View on Etherscan */}
+//                 {getExplorerLabel(chainId, hash, 'transaction')}
+//               </Text>
+//             </ExternalLink>
+//           )}
+//           {currencyToAdd && library?.provider?.isMetaMask && (
+//             <ButtonLight mt="12px" padding="6px 12px" width="fit-content" onClick={addToken}>
+//               {!success ? (
+//                 <RowFixed>
+//                   Add {currencyToAdd.symbol} to Metamask <StyledLogo src={MetaMaskLogo} />
+//                 </RowFixed>
+//               ) : (
+//                 <RowFixed>
+//                   Added {currencyToAdd.symbol}{' '}
+//                   <CheckCircle size={'16px'} stroke={theme.green1} style={{ marginLeft: '6px' }} />
+//                 </RowFixed>
+//               )}
+//             </ButtonLight>
+//           )}
+//           <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
+//             <Text fontWeight={500} fontSize={20}>
+//               Close
+//             </Text>
+//           </ButtonPrimary>
+//         </AutoColumn>
+//       </Section>
+//     </Wrapper>
+//   )
+// }
 
 export function ConfirmationModalContent({
   title,
