@@ -101,7 +101,6 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     body: {
       background: css`
         background: rgba(164, 211, 227, 1);
-        transition: background-color 2s ease-in-out, background-image 2s ease-in-out;
         background: url(data:image/svg+xml;base64,${cowSwapBackground(darkMode)}) no-repeat 100% / cover fixed,
           ${
             darkMode
