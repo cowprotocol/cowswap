@@ -18,9 +18,11 @@ import useTheme from 'hooks/useTheme'
 import { Lock } from 'react-feather'
 import { AutoColumn } from 'components/Column'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
-import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
+// import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { WithClassName } from 'types'
+import { formatSmart } from 'utils/format'
+import { SHORT_PRECISION } from 'constants/index'
 
 export const CurrencySearchModal = styled(CurrencySearchModalUni)`
   > [data-reach-dialog-content] {
@@ -276,7 +278,7 @@ export default function CurrencyInputPanel({
                         renderBalance(selectedCurrencyBalance)
                       ) : (
                         <Trans>
-                          Balance: {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
+                          Balance: {formatSmart(selectedCurrencyBalance, SHORT_PRECISION)} {currency.symbol}
                         </Trans>
                       )
                     ) : null}

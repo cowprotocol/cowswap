@@ -14,6 +14,7 @@ import { stringToCurrency } from '../swap/extension'
 import { OPERATOR_API_POLL_INTERVAL } from './consts'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { ApiOrderStatus, classifyOrder } from './utils'
+import { formatSmart } from 'utils/format'
 
 type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -38,9 +39,10 @@ function _computeFulfilledSummary({
       const inputAmount = stringToCurrency(executedSellAmount, inputToken)
       const outputAmount = stringToCurrency(executedBuyAmount, outputToken)
 
-      summary = `Swap ${inputAmount.toSignificant(SHORT_PRECISION)} ${
-        inputAmount.currency.symbol
-      } for ${outputAmount.toSignificant(SHORT_PRECISION)} ${outputAmount.currency.symbol}`
+      summary = `Swap ${formatSmart(inputAmount, SHORT_PRECISION)} ${inputAmount.currency.symbol} for ${formatSmart(
+        outputAmount,
+        SHORT_PRECISION
+      )} ${outputAmount.currency.symbol}`
     } else {
       // We only have the API order info, let's at least use that
       summary = `Swap ${sellToken} for ${buyToken}`

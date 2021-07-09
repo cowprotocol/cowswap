@@ -4,8 +4,8 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { useTransactionAdder } from '@src/state/transactions/hooks'
 
 import { useWETHContract } from 'hooks/useContract'
-import { DEFAULT_PRECISION } from '../constants'
 import { ContractTransaction } from 'ethers'
+import { formatSmart } from '../utils/format'
 
 export function useWrapEther() {
   const addTransaction = useTransactionAdder()
@@ -23,7 +23,7 @@ export function useWrapEther() {
 
       try {
         const txReceipt = await weth.deposit({ value: `0x${amount.quotient.toString(16)}` })
-        addTransaction(txReceipt, { summary: `Wrap ${amount.toSignificant(DEFAULT_PRECISION)} ETH to WETH` })
+        addTransaction(txReceipt, { summary: `Wrap ${formatSmart(amount)} ETH to WETH` })
         console.log('Wrapped!', amount)
         return txReceipt
       } catch (error) {

@@ -27,6 +27,7 @@ import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
 import { LightCard } from 'components/Card'
+import { formatSmart } from 'utils/format'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -86,6 +87,11 @@ SwapModalHeaderProps) {
   const fiatValueInput = useUSDCValue(trade.inputAmount)
   const fiatValueOutput = useUSDCValue(trade.outputAmount)
 
+  const [slippageIn, slippageOut] = useMemo(
+    () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],
+    [slippageAdjustedAmounts]
+  )
+
   return (
     <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
       <LightCard padding="0.75rem 1rem">
@@ -109,7 +115,7 @@ SwapModalHeaderProps) {
                 fontWeight={500}
                 color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
               >
-                {trade.inputAmount.toSignificant(6)}
+                {formatSmart(trade.inputAmount)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
@@ -140,7 +146,7 @@ SwapModalHeaderProps) {
             </RowFixed>
             <RowFixed gap={'0px'}>
               <TruncatedText fontSize={24} fontWeight={500}>
-                {trade.outputAmount.toSignificant(6)}
+                {formatSmart(trade.outputAmount)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
@@ -183,7 +189,7 @@ SwapModalHeaderProps) {
               Output is estimated. You will receive at least{' '}
               <b>
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
-                {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
+                {formatSmart(slippageOut) || '-'} {trade.outputAmount.currency.symbol}
               </b>{' '}
               or the transaction will expire.
             </Trans>
@@ -194,7 +200,7 @@ SwapModalHeaderProps) {
               Input is estimated. You will sell at most{' '}
               <b>
                 {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
-                {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
+                {formatSmart(slippageIn) || '-'} {trade.inputAmount.currency.symbol}
               </b>{' '}
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}

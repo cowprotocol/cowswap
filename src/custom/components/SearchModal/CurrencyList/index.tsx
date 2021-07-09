@@ -11,6 +11,7 @@ import { LightGreyCard } from 'components/Card'
 import { HashLink } from 'react-router-hash-link'
 import { t } from '@lingui/macro'
 import { TagInfo, WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { formatSmart } from 'utils/format'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {
@@ -107,7 +108,7 @@ function TokenTags({ currency, isUnsupported }: { currency: Currency; isUnsuppor
 }
 
 export function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
-  return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(LONG_PRECISION)}</StyledBalanceText>
+  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, LONG_PRECISION)}</StyledBalanceText>
 }
 
 export default function CurrencyList(

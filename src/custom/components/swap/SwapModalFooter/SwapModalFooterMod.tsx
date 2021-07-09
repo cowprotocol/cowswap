@@ -7,7 +7,7 @@ import { Text } from 'rebass'
 import { ButtonError } from 'components/Button'
 import { AutoRow } from 'components/Row'
 import { SwapCallbackError } from 'components/swap/styleds'
-import { ButtonSize } from '@src/custom/theme'
+import { ButtonSize } from 'theme'
 
 export interface SwapModalFooterProps {
   onConfirm: () => void

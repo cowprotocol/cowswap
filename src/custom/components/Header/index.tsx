@@ -28,6 +28,7 @@ import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 
 import { supportedChainId } from 'utils/supportedChainId'
+import { formatSmart } from 'utils/format'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -164,7 +165,7 @@ export default function Header() {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {userEthBalance?.toSignificant(SHORT_PRECISION)} {nativeToken}
+                {formatSmart(userEthBalance, SHORT_PRECISION)} {nativeToken}
               </BalanceText>
             ) : null}
             <Web3Status />

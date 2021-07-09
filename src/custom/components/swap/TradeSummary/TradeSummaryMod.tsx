@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { CurrencyAmount, Currency, Percent, TradeType } from '@uniswap/sdk-core'
 
@@ -11,9 +11,9 @@ import { getMinimumReceivedTooltip } from 'utils/tooltips'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
 import TradeGp from 'state/swap/TradeGp'
-import { DEFAULT_PRECISION } from 'constants/index'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
+import { formatSmart } from 'utils/format'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -50,6 +50,11 @@ export default function TradeSummary({
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
+  const [slippageOut, slippageIn] = useMemo(
+    () => [slippageAdjustedAmounts[Field.OUTPUT], slippageAdjustedAmounts[Field.INPUT]],
+    [slippageAdjustedAmounts]
+  )
+
   return (
     <AutoColumn gap="2px">
       <RowBetween>
@@ -65,7 +70,7 @@ export default function TradeSummary({
           )}
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          {realizedFee ? `${realizedFee.toSignificant(DEFAULT_PRECISION)} ${realizedFee.currency.symbol}` : '-'}
+          {`${formatSmart(realizedFee) || '-'} ${realizedFee?.currency.symbol}`}
         </TYPE.black>
       </RowBetween>
 
@@ -116,12 +121,8 @@ export default function TradeSummary({
                 ? `${trade.minimumAmountOut(allowedSlippage).toSignificant(6)} ${trade.outputAmount.currency.symbol}`
                 : `${trade.maximumAmountIn(allowedSlippage).toSignificant(6)} ${trade.inputAmount.currency.symbol}`} */}
           {isExactIn
-            ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(DEFAULT_PRECISION)} ${
-                trade.outputAmount.currency.symbol
-              }` ?? '-'
-            : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(DEFAULT_PRECISION)} ${
-                trade.inputAmount.currency.symbol
-              }` ?? '-'}
+            ? `${formatSmart(slippageOut) || '-'} ${trade.outputAmount.currency.symbol}`
+            : `${formatSmart(slippageIn) || '-'} ${trade.inputAmount.currency.symbol}`}
         </TYPE.black>
       </RowBetween>
 

@@ -20,7 +20,8 @@ import { ButtonError, ButtonPrimary } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { LONG_LOAD_THRESHOLD } from 'constants/index'
+import { LONG_LOAD_THRESHOLD, SHORT_PRECISION } from 'constants/index'
+import { formatSmart } from 'utils/format'
 
 interface FeeGreaterMessageProp {
   fee: CurrencyAmount<Currency>
@@ -122,7 +123,7 @@ function FeeGreaterMessage({ fee }: FeeGreaterMessageProp) {
         <QuestionHelper text="GP Swap has 0 gas fees. A portion of the sell amount in each trade goes to the GP Protocol." />
       </RowFixed>
       <TYPE.black fontSize={14} color={theme.text1}>
-        {fee.toSignificant(4)} {fee.currency.symbol}
+        {formatSmart(fee, SHORT_PRECISION)} {fee.currency.symbol}
       </TYPE.black>
     </RowBetween>
   )
