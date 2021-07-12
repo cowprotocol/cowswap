@@ -229,7 +229,7 @@ export default function Faq() {
             This means, on CowSwap, when two traders each hold an asset the other wants, a trade can be settled directly
             between them without an external market maker or liquidity provider. This leads to better prices for the
             individual traders (because traditionally market makers add a fee — referred to as spread — for their
-            surface)
+            service)
           </p>
 
           <p>
