@@ -72,19 +72,18 @@ export function createImperativePromise<T>(promiseArg?: Promise<T> | null | unde
 
 type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 type AsyncFunction<T> = (...args: any[]) => Promise<T>
-type AnyFunctionCancelable<T> = (...args: any[]) => Promise<CancelableResult<T>>
 
 // see https://stackoverflow.com/a/54825370/82609
-export function onlyResolvesLast<R>(asyncFunction: AsyncFunction<R>): AnyFunctionCancelable<R> {
+export function onlyResolvesLast<R>(
+  asyncFunction: AsyncFunction<R>
+): (...args: ArgumentsType<AsyncFunction<R>>) => Promise<CancelableResult<R>> {
   let cancelPrevious: CancelCallback | null = null
 
-  const wrappedFunction = (...args: ArgumentsType<AsyncFunction<R>>) => {
+  return (...args: ArgumentsType<AsyncFunction<R>>) => {
     cancelPrevious && cancelPrevious()
     const initialPromise = asyncFunction(...args)
     const { promise, cancel } = createImperativePromise(initialPromise)
     cancelPrevious = cancel
     return promise
   }
-
-  return wrappedFunction as any // TODO fix TS
 }
