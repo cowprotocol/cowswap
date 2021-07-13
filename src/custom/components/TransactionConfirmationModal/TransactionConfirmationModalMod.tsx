@@ -4,11 +4,23 @@ import styled, { ThemeContext } from 'styled-components'
 // import { getExplorerLink, ExplorerDataType } from '../../utils/getExplorerLink'
 // import Modal from 'components/Modal'
 import { ExternalLink } from 'theme'
+import Modal from 'components/Modal'
+// import { ExternalLink } from 'theme'
 import { Text } from 'rebass'
 import { CloseIcon, CustomLightSpinner } from 'theme'
-import { RowBetween, RowFixed } from 'components/Row'
-import { AlertTriangle, ArrowUpCircle, CheckCircle } from 'react-feather'
-import { ButtonPrimary, ButtonLight } from '../Button'
+import {
+  RowBetween
+  // RowFixed
+} from 'components/Row'
+import {
+  AlertTriangle
+  // ArrowUpCircle,
+  // CheckCircle
+} from 'react-feather'
+import {
+  ButtonPrimary
+  // ButtonLight
+} from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import Circle from 'assets/images/blue-loader.svg'
 import MetaMaskLogo from 'assets/images/metamask.png'
@@ -19,6 +31,7 @@ import { Trans } from '@lingui/macro'
 import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { GpModal } from 'components/WalletModal'
 import { lighten } from 'polished'
+import { TransactionSubmittedContent } from './index'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -37,11 +50,11 @@ const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '20px 0' : '60px 0;')};
 `
 
-const StyledLogo = styled.img`
-  height: 16px;
-  width: 16px;
-  margin-left: 6px;
-`
+// const StyledLogo = styled.img`
+//   height: 16px;
+//   width: 16px;
+//   margin-left: 6px;
+// `
 
 export function ConfirmationPendingContent({
   onDismiss,
@@ -82,7 +95,7 @@ export function ConfirmationPendingContent({
   )
 }
 
-export function TransactionSubmittedContent({
+/* export function TransactionSubmittedContent({
   onDismiss,
   chainId,
   hash,
@@ -120,11 +133,11 @@ export function TransactionSubmittedContent({
           {chainId && hash && (
             // <ExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}>
             <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
-              <Text fontWeight={500} fontSize={14} color={theme.primary1}>
+              <Text fontWeight={500} fontSize={14} color={theme.primary1}> */
                 {/* View on Etherscan */}
                 {/* <Trans>View on Explorer</Trans> */}
                 {/* TODO: add transaltions for this */}
-                <Trans>{getExplorerLabel(chainId, hash, 'transaction')}</Trans>
+                {/* <Trans>{getExplorerLabel(chainId, hash, 'transaction')}</Trans>
               </Text>
             </ExternalLink>
           )}
@@ -153,7 +166,7 @@ export function TransactionSubmittedContent({
       </Section>
     </Wrapper>
   )
-}
+} */}
 
 export function ConfirmationModalContent({
   title,

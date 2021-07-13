@@ -1,5 +1,6 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
@@ -43,10 +44,14 @@ function initializeState(
   }
 }
 
-function getResetPrice(sellToken: string, buyToken: string, kind: string) {
+function getResetPrice(sellToken: string, buyToken: string, kind: OrderKind) {
   return {
     amount: null,
-    token: kind ? sellToken : buyToken,
+    // When we buy, the price estimation is given in sell tokens (if we sell, we give it in sell tokens)
+    // The price estimation is given in:
+    //    - sell tokens (for buy orders)
+    //    - buy tokens (for sell orders)
+    token: kind === OrderKind.BUY ? sellToken : buyToken
   }
 }
 

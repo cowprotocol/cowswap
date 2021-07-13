@@ -4,6 +4,7 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from 'utils/operator'
 import { FeeQuoteParams } from 'utils/price'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import { useSwapState, tryParseAmount } from 'state/swap/hooks'
 import { Field } from 'state/swap/actions'
@@ -12,9 +13,9 @@ import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
-import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { useActiveWeb3React } from 'hooks/web3'
+import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
 
@@ -114,14 +115,9 @@ export default function FeesUpdater(): null {
     typedValue: rawTypedValue,
   } = useSwapState()
 
-  // pass independent field as a reference to use against
-  // any changes to determine if user has switched input fields
-  // useful to force debounce value to refresh
-  const forceUpdateRef = independentField
-
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
-  const typedValue = useDebounceWithForceUpdate(rawTypedValue, DEBOUNCE_TIME, forceUpdateRef)
+  const typedValue = useDebounce(rawTypedValue, DEBOUNCE_TIME)
 
   const sellCurrency = useCurrency(sellToken)
   const buyCurrency = useCurrency(buyToken)
@@ -145,8 +141,8 @@ export default function FeesUpdater(): null {
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
 
     // Don't refetch if the amount is missing
-    const kind = independentField === Field.INPUT ? 'sell' : 'buy'
-    const amount = tryParseAmount(typedValue, (kind === 'sell' ? sellCurrency : buyCurrency) ?? undefined)
+    const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
+    const amount = tryParseAmount(typedValue, (kind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined)
     if (!amount) return
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS

@@ -721,13 +721,11 @@ export default function Swap({
               </GreyCard>
             ) : quote?.error === 'fetch-quote-error' ? (
               <GreyCard style={{ textAlign: 'center' }}>
-                <TYPE.main mb="4px">
-                  <Trans>Error loading quote. Try again later.</Trans>
-                </TYPE.main>
+                <TYPE.main mb="4px"><Trans>Error loading price. Try again later.</Trans></TYPE.main>
               </GreyCard>
             ) : quote?.error === 'offline-browser' ? (
               <GreyCard style={{ textAlign: 'center' }}>
-                <TYPE.main mb="4px">Error loading quote. You are currently offline.</TYPE.main>
+                <TYPE.main mb="4px">Error loading price. You are currently offline.</TYPE.main>
               </GreyCard>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>

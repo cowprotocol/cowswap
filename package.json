@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "0.16.0-rc.0",
+  "version": "0.16.0-rc.3",
   "status": "Alpha",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
@@ -165,8 +165,8 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@gnosis.pm/cow-runner-game": "^0.2.2",
     "@gnosis.pm/dex-js": "^0.11.0",
+    "@gnosis.pm/cow-runner-game": "^0.2.8",
     "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.20",
     "@uniswap/default-token-list": "^2.0.0",
     "@web3-react/walletconnect-connector": "^6.2.0",

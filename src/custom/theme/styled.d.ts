@@ -11,6 +11,7 @@ export interface Colors extends ColorsUniswap {
   blueShade: Color
   blueShade2: Color
   border: Color
+  border2: Color
   disabled: Color
   shimmer1: Color
   shimmer2: color

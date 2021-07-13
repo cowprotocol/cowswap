@@ -1,4 +1,5 @@
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+
 import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
 import { toErc20Address } from 'utils/tokens'
 import { OptimalRatesWithPartnerFees, APIError, RateOptions } from 'paraswap/build/types'

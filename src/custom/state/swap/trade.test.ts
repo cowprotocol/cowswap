@@ -1,7 +1,8 @@
 import JSBI from 'jsbi'
 import { parseUnits } from '@ethersproject/units'
 import { DEFAULT_PRECISION, INITIAL_ALLOWED_SLIPPAGE, LONG_PRECISION } from 'constants/index'
-import { CurrencyAmount, Fraction, Percent, Token, Price, Currency, TradeType } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Percent, Token, TradeType } from '@uniswap/sdk-core'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { stringToCurrency } from './extension'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { WETH9_EXTENDED as WETH } from 'constants/tokens'
@@ -43,9 +44,9 @@ describe('Swap PRICE Quote test', () => {
         const executionPrice = _constructTradePrice({
           sellToken: currencyIn.subtract(feeAsCurrency),
           buyToken: currencyOut,
-          kind: 'sell',
-          price: { amount: MOCKED_PRICE_OUT.long, token: DAI_MAINNET.name || 'token' },
-        }) as Price<Currency, Currency>
+          kind: OrderKind.SELL,
+          price: { amount: MOCKED_PRICE_OUT.long, token: DAI_MAINNET.name || 'token' }
+        })
 
         trade = new Trade({
           executionPrice,
@@ -105,9 +106,9 @@ describe('Swap PRICE Quote test', () => {
         const executionPrice = _constructTradePrice({
           sellToken: currencyIn,
           buyToken: currencyOut,
-          kind: 'buy',
-          price: { amount: MOCKED_PRICE_IN.long, token: WETH_MAINNET.name || 'token' },
-        }) as Price<Currency, Currency>
+          kind: OrderKind.BUY,
+          price: { amount: MOCKED_PRICE_IN.long, token: WETH_MAINNET.name || 'token' }
+        })
 
         trade = new Trade({
           executionPrice,
