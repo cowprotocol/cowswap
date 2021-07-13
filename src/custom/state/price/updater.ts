@@ -7,11 +7,11 @@ import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
 import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
+import useDebounce from 'hooks/useDebounce'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
 import { QuoteInformationObject } from './reducer'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
-import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 import useIsOnline from 'hooks/useIsOnline'
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
@@ -50,7 +50,7 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     amount: currentAmount,
     sellToken: currentSellToken,
     buyToken: currentBuyToken,
-    kind: currentKind
+    kind: currentKind,
   } = currentParams
   const { amount, buyToken, sellToken, kind } = quoteInfo
 
@@ -108,17 +108,12 @@ export default function FeesUpdater(): null {
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
     independentField,
-    typedValue: rawTypedValue
+    typedValue: rawTypedValue,
   } = useSwapState()
-
-  // pass independent field as a reference to use against
-  // any changes to determine if user has switched input fields
-  // useful to force debounce value to refresh
-  const forceUpdateRef = independentField
 
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
-  const typedValue = useDebounceWithForceUpdate(rawTypedValue, DEBOUNCE_TIME, forceUpdateRef)
+  const typedValue = useDebounce(rawTypedValue, DEBOUNCE_TIME)
 
   const sellCurrency = useCurrency(sellToken)
   const buyCurrency = useCurrency(buyToken)
@@ -186,8 +181,8 @@ export default function FeesUpdater(): null {
           quoteParams,
           fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
           previousFee: quoteInfo?.fee,
-          isPriceRefresh
-        }).catch(error => console.error('Error re-fetching the quote', error))
+          isPriceRefresh,
+        }).catch((error) => console.error('Error re-fetching the quote', error))
       }
     }
 
@@ -215,7 +210,7 @@ export default function FeesUpdater(): null {
     refetchQuote,
     isUnsupportedTokenGp,
     isLoading,
-    setQuoteError
+    setQuoteError,
   ])
 
   return null
