@@ -177,12 +177,6 @@ export async function getBestQuote({ quoteParams, fetchFee, previousFee }: Quote
       ? getFeeQuote({ chainId, sellToken, buyToken, fromDecimals, toDecimals, amount, kind })
       : Promise.resolve(previousFee)
 
-  // Log fee for debugging
-  feePromise.then((fee) => {
-    console.log(`Fee: ${formatAtoms(fee.amount, fromDecimals)} (in atoms ${fee.amount})`)
-    return fee
-  })
-
   // Get a new price quote
   let exchangeAmount
   let feeExceedsPrice = false
