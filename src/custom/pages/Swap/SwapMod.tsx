@@ -61,7 +61,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import TradeGp from '@src/custom/state/swap/TradeGp'
+import TradeGp from 'state/swap/TradeGp'
 
 export default function Swap({
   history,
@@ -565,11 +565,11 @@ export default function Swap({
               </GreyCard>
             ) : quote?.error === 'fetch-quote-error' ? (
               <GreyCard style={{ textAlign: 'center' }}>
-                <TYPE.main mb="4px">Error loading quote. Try again later.</TYPE.main>
+                <TYPE.main mb="4px">Error loading price. Try again later.</TYPE.main>
               </GreyCard>
             ) : quote?.error === 'offline-browser' ? (
               <GreyCard style={{ textAlign: 'center' }}>
-                <TYPE.main mb="4px">Error loading quote. You are currently offline.</TYPE.main>
+                <TYPE.main mb="4px">Error loading price. You are currently offline.</TYPE.main>
               </GreyCard>
             ) : showApproveFlow ? (
               <RowBetween>

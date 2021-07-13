@@ -1,9 +1,16 @@
 import React from 'react'
-import Page, { Title, Content } from 'components/Page'
+import Page, { Content } from 'components/Page'
 import styled from 'styled-components'
 import { CowGame } from '@gnosis.pm/cow-runner-game'
 
 const Wrapper = styled(Page)`
+  min-height: initial;
+
+  // Override. Should be addressed in the CowGame package instead.
+  .icon-offline {
+    display: none;
+  }
+
   h1,
   p {
     text-align: center;
@@ -25,19 +32,12 @@ const Wrapper = styled(Page)`
 export default function CowGamePage() {
   return (
     <Wrapper>
-      <Title>
-        Run{' '}
-        <span role="img" aria-label="cow-icon">
-          🐮
-        </span>{' '}
-        Run!
-      </Title>
       <p>
-        ...and try not getting sandwiched{' '}
+        Run! ...and try not getting sandwiched{' '}
         <span role="img" aria-label="sandwich-icon">
           🥪
         </span>
-        . MEV, it&apos;s lethal these days.
+        . MEV is lethal these days!
       </p>
 
       <Content>

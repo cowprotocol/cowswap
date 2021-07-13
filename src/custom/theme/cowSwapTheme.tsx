@@ -50,10 +50,10 @@ export function colors(darkMode: boolean): Colors {
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
 
     // ****** primary colors ******
-    primary1: darkMode ? '#e47651' : '#FF784A',
-    primary3: darkMode ? '#e47651' : '#FF784A',
+    primary1: darkMode ? '#D67B5A' : '#FF784A',
+    primary3: darkMode ? '#D67B5A' : '#FF784A',
     primary4: darkMode ? '#ff5d25' : '#ff5d25',
-    primary5: darkMode ? '#e47651' : '#FF784A',
+    primary5: darkMode ? '#D67B5A' : '#FF784A',
 
     // ****** color text ******
     primaryText1: darkMode ? '#021E34' : '#000000',
@@ -64,6 +64,7 @@ export function colors(darkMode: boolean): Colors {
 
     // ****** other ******
     border: darkMode ? '#021E34' : '#000000',
+    border2: darkMode ? '#254F83' : '#afcbda',
     disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
 
     // table styles
@@ -101,7 +102,6 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     body: {
       background: css`
         background: rgba(164, 211, 227, 1);
-        transition: background-color 2s ease-in-out, background-image 2s ease-in-out;
         background: url(data:image/svg+xml;base64,${cowSwapBackground(darkMode)}) no-repeat 100% / cover fixed,
           ${
             darkMode

@@ -1,5 +1,6 @@
 import { ChainId } from '@uniswap/sdk'
 import { Market } from 'types/index'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -46,11 +47,11 @@ export function getChainIdValues(): ChainId[] {
 export interface CanonicalMarketParams<T> {
   sellToken: T
   buyToken: T
-  kind: string
+  kind: OrderKind
 }
 
 export interface TokensFromMarketParams<T> extends Market<T> {
-  kind: string
+  kind: OrderKind
 }
 
 export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMarketParams<T>): Market<T> {
@@ -60,7 +61,7 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
   // The used reasoning is:
   //    - If I sell apples, the quote is EUR (buy token)
   //    - If I buy apples, the quote is EUR (sell token)
-  if (kind === 'sell') {
+  if (kind === OrderKind.SELL) {
     return {
       baseToken: sellToken,
       quoteToken: buyToken
@@ -78,7 +79,7 @@ export function getTokensFromMarket<T>({
   baseToken,
   kind
 }: TokensFromMarketParams<T>): Omit<CanonicalMarketParams<T>, 'kind'> {
-  if (kind === 'sell') {
+  if (kind === OrderKind.SELL) {
     return {
       sellToken: baseToken,
       buyToken: quoteToken

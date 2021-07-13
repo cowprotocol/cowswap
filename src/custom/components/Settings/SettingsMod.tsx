@@ -17,7 +17,7 @@ import { AutoColumn } from 'components/Column'
 import Modal from 'components/Modal'
 import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-import Toggle from '@src/custom/components/Toggle'
+import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
 import { SettingsTabProp } from '.'
 

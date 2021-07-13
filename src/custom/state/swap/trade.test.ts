@@ -1,5 +1,6 @@
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { parseUnits } from '@ethersproject/units'
-import { DEFAULT_PRECISION, LONG_PRECISION } from '@src/custom/constants'
+import { DEFAULT_PRECISION, LONG_PRECISION } from 'constants/index'
 import { basisPointsToPercent } from '@src/utils'
 import { ChainId, Fraction, Pair, Percent, Token, TokenAmount, Trade, WETH } from '@uniswap/sdk'
 import { stringToCurrency } from './extension'
@@ -50,7 +51,7 @@ describe('Swap PRICE Quote test', () => {
         const executionPrice = _constructTradePrice({
           sellToken: currencyIn.subtract(feeAsCurrency),
           buyToken: currencyOut,
-          kind: 'sell',
+          kind: OrderKind.SELL,
           price: { amount: MOCKED_PRICE_OUT.long, token: DAI_MAINNET.name || 'token' }
         })
 
@@ -121,7 +122,7 @@ describe('Swap PRICE Quote test', () => {
         const executionPrice = _constructTradePrice({
           sellToken: currencyIn,
           buyToken: currencyOut,
-          kind: 'buy',
+          kind: OrderKind.BUY,
           price: { amount: MOCKED_PRICE_IN.long, token: WETH_MAINNET.name || 'token' }
         })
 
