@@ -12,19 +12,25 @@ import {
   cancelOrder,
   requestOrderCancellation,
   updateLastCheckedBlock,
-  Order,
+  SerializedOrder,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   expireOrdersBatch,
   cancelOrdersBatch,
+  Order,
 } from './actions'
-import { OrdersState, PartialOrdersMap } from './reducer'
+import { OrderObject, OrdersState, PartialOrdersMap } from './reducer'
 import { isTruthy } from 'utils/misc'
 import { OrderID } from 'utils/operator'
 import { ContractDeploymentBlocks } from './consts'
+import { deserializeToken, serializeToken } from '@src/state/user/hooks'
+
+export interface AddUnserialisedPendingOrderParams extends GetRemoveOrderParams {
+  order: Order
+}
 
 interface AddPendingOrderParams extends GetRemoveOrderParams {
-  order: Order
+  order: SerializedOrder
 }
 
 interface FulfillOrderParams extends GetRemoveOrderParams {
@@ -53,7 +59,7 @@ interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
 }
 
-type AddOrderCallback = (addOrderParams: AddPendingOrderParams) => void
+type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
 type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
 type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
 type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
@@ -64,21 +70,33 @@ type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchPara
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 
-type GetOrderByIdCallback = (id: OrderID) => Order | undefined
+type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
+
+function _deserializeOrder(orderObject: OrderObject | undefined) {
+  const serialisedOrder = orderObject?.order
+
+  let order: Order | undefined
+  if (serialisedOrder) {
+    const deserialisedInputToken = deserializeToken(serialisedOrder.inputToken)
+    const deserialisedOutputToken = deserializeToken(serialisedOrder.outputToken)
+    order = {
+      ...serialisedOrder,
+      inputToken: deserialisedInputToken,
+      outputToken: deserialisedOutputToken,
+    }
+  }
+
+  return order
+}
 
 export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order | undefined => {
   return useSelector<AppState, Order | undefined>((state) => {
     if (!id || !chainId) return undefined
 
     const orders = state.orders[chainId]
+    const serialisedOrder = orders?.fulfilled[id] || orders?.pending[id] || orders?.expired[id] || orders?.cancelled[id]
 
-    if (!orders) return undefined
-    return (
-      orders?.fulfilled[id]?.order ||
-      orders?.pending[id]?.order ||
-      orders?.expired[id]?.order ||
-      orders?.cancelled[id]?.order
-    )
+    return _deserializeOrder(serialisedOrder)
   })
 }
 
@@ -97,12 +115,13 @@ export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCall
     (id: OrderID) => {
       if (!chainId || !stateRef.current) return
 
-      return (
-        stateRef.current.fulfilled[id]?.order ||
-        stateRef.current.pending[id]?.order ||
-        stateRef.current.expired[id]?.order ||
-        stateRef.current.cancelled[id]?.order
-      )
+      const serialisedOrderObject =
+        stateRef.current.fulfilled[id] ||
+        stateRef.current.pending[id] ||
+        stateRef.current.expired[id] ||
+        stateRef.current.cancelled[id]
+
+      return _deserializeOrder(serialisedOrderObject)
     },
     [chainId]
   )
@@ -118,7 +137,7 @@ export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
       .concat(Object.values(state.pending))
       .concat(Object.values(state.expired))
       .concat(Object.values(state.cancelled || {}))
-      .map((orderObject) => orderObject?.order)
+      .map(_deserializeOrder)
       .filter(isTruthy)
     return allOrders
   }, [state])
@@ -147,9 +166,7 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state)
-      .map((orderObject) => orderObject?.order)
-      .filter(isTruthy)
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -161,9 +178,7 @@ export const useFulfilledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state)
-      .map((orderObject) => orderObject?.order)
-      .filter(isTruthy)
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -175,9 +190,7 @@ export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state)
-      .map((orderObject) => orderObject?.order)
-      .filter(isTruthy)
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -189,15 +202,29 @@ export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state)
-      .map((orderObject) => orderObject?.order)
-      .filter(isTruthy)
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
 export const useAddPendingOrder = (): AddOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((addOrderParams: AddPendingOrderParams) => dispatch(addPendingOrder(addOrderParams)), [dispatch])
+  return useCallback(
+    (addOrderParams: AddUnserialisedPendingOrderParams) => {
+      const serialisedSellToken = serializeToken(addOrderParams.order.inputToken)
+      const serialisedBuyToken = serializeToken(addOrderParams.order.outputToken)
+      const order: SerializedOrder = {
+        ...addOrderParams.order,
+        inputToken: serialisedSellToken,
+        outputToken: serialisedBuyToken,
+      }
+      const params: AddPendingOrderParams = {
+        ...addOrderParams,
+        order,
+      }
+      return dispatch(addPendingOrder(params))
+    },
+    [dispatch]
+  )
 }
 
 // unused except in mock

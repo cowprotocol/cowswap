@@ -4,7 +4,6 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addPendingOrder,
   removeOrder,
-  Order,
   clearOrders,
   fulfillOrder,
   OrderStatus,
@@ -15,13 +14,14 @@ import {
   cancelOrder,
   cancelOrdersBatch,
   requestOrderCancellation,
+  SerializedOrder,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
 
 export interface OrderObject {
   id: OrderID
-  order: Order
+  order: SerializedOrder
 }
 
 // {order uuid => OrderObject} mapping

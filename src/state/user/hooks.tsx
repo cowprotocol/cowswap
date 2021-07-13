@@ -28,7 +28,7 @@ import {
 import { SupportedLocale } from 'constants/locales'
 import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 
-function serializeToken(token: Token): SerializedToken {
+export function serializeToken(token: Token): SerializedToken {
   return {
     chainId: token.chainId,
     address: token.address,
@@ -38,7 +38,7 @@ function serializeToken(token: Token): SerializedToken {
   }
 }
 
-function deserializeToken(serializedToken: SerializedToken): Token {
+export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(
     serializedToken.chainId,
     serializedToken.address,
