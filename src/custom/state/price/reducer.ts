@@ -51,7 +51,7 @@ function getResetPrice(sellToken: string, buyToken: string, kind: OrderKind) {
     // The price estimation is given in:
     //    - sell tokens (for buy orders)
     //    - buy tokens (for sell orders)
-    token: kind === OrderKind.BUY ? sellToken : buyToken
+    token: kind === OrderKind.BUY ? sellToken : buyToken,
   }
 }
 

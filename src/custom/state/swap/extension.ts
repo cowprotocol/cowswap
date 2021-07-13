@@ -50,7 +50,7 @@ export function useTradeExactInWithFee({
     // pass in our feeless outputAmount (CurrencyAmount)
     buyToken: outputAmount,
     kind: OrderKind.SELL,
-    price: quote?.price
+    price: quote?.price,
   })
 
   // no price object or feeAdjusted amount? no trade
@@ -103,7 +103,7 @@ export function useTradeExactOutWithFee({
     // pass in our parsed buy amount (CurrencyAmount)
     buyToken: parsedOutputAmount,
     kind: OrderKind.BUY,
-    price: quote.price
+    price: quote.price,
   })
 
   // no price object? no trade

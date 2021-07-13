@@ -3,32 +3,30 @@ import React, { ReactNode, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 // import { getExplorerLink, ExplorerDataType } from '../../utils/getExplorerLink'
 // import Modal from 'components/Modal'
-import { ExternalLink } from 'theme'
-import Modal from 'components/Modal'
 // import { ExternalLink } from 'theme'
 import { Text } from 'rebass'
 import { CloseIcon, CustomLightSpinner } from 'theme'
 import {
-  RowBetween
+  RowBetween,
   // RowFixed
 } from 'components/Row'
 import {
-  AlertTriangle
+  AlertTriangle,
   // ArrowUpCircle,
   // CheckCircle
 } from 'react-feather'
 import {
-  ButtonPrimary
+  ButtonPrimary,
   // ButtonLight
 } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import Circle from 'assets/images/blue-loader.svg'
-import MetaMaskLogo from 'assets/images/metamask.png'
+// import MetaMaskLogo from 'assets/images/metamask.png'
 import { useActiveWeb3React } from 'hooks/web3'
-import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
+// import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import { Trans } from '@lingui/macro'
 // MOD
-import { getEtherscanLink, getExplorerLabel } from 'utils'
+// import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { GpModal } from 'components/WalletModal'
 import { lighten } from 'polished'
 import { TransactionSubmittedContent } from './index'
@@ -134,10 +132,17 @@ export function ConfirmationPendingContent({
             // <ExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}>
             <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}> */
-                {/* View on Etherscan */}
-                {/* <Trans>View on Explorer</Trans> */}
-                {/* TODO: add transaltions for this */}
-                {/* <Trans>{getExplorerLabel(chainId, hash, 'transaction')}</Trans>
+{
+  /* View on Etherscan */
+}
+{
+  /* <Trans>View on Explorer</Trans> */
+}
+{
+  /* TODO: add transaltions for this */
+}
+{
+  /* <Trans>{getExplorerLabel(chainId, hash, 'transaction')}</Trans>
               </Text>
             </ExternalLink>
           )}
@@ -166,7 +171,8 @@ export function ConfirmationPendingContent({
       </Section>
     </Wrapper>
   )
-} */}
+} */
+}
 
 export function ConfirmationModalContent({
   title,

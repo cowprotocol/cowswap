@@ -31,7 +31,7 @@ function _getSummary(params: PostOrderParams): string {
 
   const [inputQuantifier, outputQuantifier] = [
     kind === OrderKind.BUY ? 'at most ' : '',
-    kind === OrderKind.SELL ? 'at least ' : ''
+    kind === OrderKind.SELL ? 'at least ' : '',
   ]
   const inputSymbol = inputAmount.currency.symbol
   const outputSymbol = outputAmount.currency.symbol
