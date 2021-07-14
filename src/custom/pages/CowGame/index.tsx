@@ -37,7 +37,7 @@ export default function CowGamePage() {
         <span role="img" aria-label="sandwich-icon">
           🥪
         </span>
-        . MEV is lethal these days!
+        - MEV is lethal these days!
       </p>
 
       <Content>
