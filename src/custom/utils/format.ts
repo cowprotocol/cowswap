@@ -32,5 +32,6 @@ export function formatSmart(
     decimals: decimalsToShow,
     thousandSeparator: false,
     smallLimit: SMALL_LIMIT,
+    isLocaleAware: false,
   })
 }
