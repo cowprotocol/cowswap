@@ -1,5 +1,5 @@
 import { computePoolAddress } from '@uniswap/v3-sdk'
-import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
+import { V3_CORE_FACTORY_ADDRESSES } from 'constants/addresses'
 import { IUniswapV3PoolStateInterface } from '../types/v3/IUniswapV3PoolState'
 import { Token, Currency } from '@uniswap/sdk-core'
 import { useMemo } from 'react'

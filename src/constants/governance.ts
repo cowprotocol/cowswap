@@ -1,4 +1,4 @@
-import { GOVERNANCE_ADDRESSES, TIMELOCK_ADDRESS, UNI_ADDRESS } from './addresses'
+import { GOVERNANCE_ADDRESSES, TIMELOCK_ADDRESS, UNI_ADDRESS } from 'constants/addresses'
 import { SupportedChainId } from './chains'
 
 // returns { [address]: `Governance (V${n})`} for each address in GOVERNANCE_ADDRESSES except the current, which gets no version indicator

@@ -1,5 +1,5 @@
 import { WETH9, Token, Ether } from '@uniswap/sdk-core'
-import { UNI_ADDRESS } from './addresses'
+import { UNI_ADDRESS } from 'constants/addresses'
 import { SupportedChainId } from './chains'
 
 export const AMPL = new Token(1, '0xD46bA6D942050d489DBd938a2C909A5d5039A161', 9, 'AMPL', 'Ampleforth')
