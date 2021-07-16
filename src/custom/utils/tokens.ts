@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { ExtendedEther as ETHER, WETH9_EXTENDED as WETH } from 'constants/tokens'
+import { GpEther as ETHER, WETH9_EXTENDED as WETH } from 'constants/tokens'
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {
   let checkedAddress = tokenAddress

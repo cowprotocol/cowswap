@@ -41,7 +41,7 @@ import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import TradeGp from './TradeGp'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { WETH9_EXTENDED as WETH, ExtendedEther as ETHER } from 'constants/tokens'
+import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
 
 import { BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
 import { useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'

@@ -15,7 +15,7 @@ import { unwrappedToken } from 'utils/unwrappedToken'
 import RangeBadge from 'components/Badge/RangeBadge'
 import { RowFixed } from 'components/Row'
 import HoverInlineText from 'components/HoverInlineText'
-import { DAI, USDC, USDT, WBTC, WETH9_EXTENDED } from '../../constants/tokens'
+import { DAI, USDC, USDT, WBTC, WETH9_EXTENDED } from 'constants/tokens'
 import { Trans } from '@lingui/macro'
 
 const LinkRow = styled(Link)`
