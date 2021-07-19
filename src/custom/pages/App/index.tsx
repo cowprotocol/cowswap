@@ -8,6 +8,7 @@ import PrivacyPolicy from 'pages/PrivacyPolicy'
 import CookiePolicy from 'pages/CookiePolicy'
 import TermsAndConditions from 'pages/TermsAndConditions'
 import About from 'pages/About'
+import Rewards from 'pages/Rewards'
 import Faq from 'pages/Faq'
 import CowGame from 'pages/CowGame'
 
@@ -21,6 +22,7 @@ export default function App() {
         <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
         <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
         <Route exact strict path="/about" component={About} />
+        <Route exact strict path="/rewards" component={Rewards} />
         <Route exact strict path="/faq" component={Faq} />
         <Route exact strict path="/play" component={CowGame} />
         <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
