@@ -38,7 +38,7 @@ import RateToggle from '../../components/RateToggle'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import RangeBadge from '../../components/Badge/RangeBadge'
 import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
-import useUSDCPrice from 'hooks/useUSDCPrice'
+import useUSDCPrice from '@src/hooks/useUSDCPrice'
 import Loader from 'components/Loader'
 import Toggle from 'components/Toggle'
 
