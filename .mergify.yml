@@ -1,10 +1,10 @@
 pull_request_rules:
-  - name: Merge approved and green PRs without merge blocking PR labels
+  - name: Merge approved and green PRs when tagged with 'merge when green'
     conditions:
       - "#approved-reviews-by>=2"
-      - label!=["WIP", "Don't merge", "On hold"]
+      - label="merge when green"
       - check-success=Deploy
-      - base=develop
+      - check-success=Cypress
     actions:
       merge:
         method: squash
