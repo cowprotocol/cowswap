@@ -46,7 +46,6 @@ export const Content = styled.div`
   > h4 {
     text-decoration: underline;
     font-weight: normal;
-    // margin: 0;
   }
 
   > p {
@@ -87,6 +86,10 @@ export const Content = styled.div`
   li > em {
     background: ${({ theme }) => theme.redShade};
     color: ${({ theme }) => theme.white};
+    width: 100%;
+    display: block;
+    padding: 6px 12px;
+    line-height: 1.6;
   }
 
   a {
@@ -96,6 +99,19 @@ export const Content = styled.div`
     &:hover {
       color: ${({ theme }) => theme.textLink};
     }
+  }
+
+  ol > ol {
+    margin: 0 0 24px;
+  }
+
+  ol > ol > li {
+    margin: 0 0 12px;
+  }
+
+  ol > li {
+    margin: 0 0 12px;
+    display: list-item;
   }
 `
 
