@@ -35,6 +35,7 @@ export const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
 
 export const AddressText = styled(TYPE.blue)`
   font-size: 12px;
+  word-break: break-all;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
