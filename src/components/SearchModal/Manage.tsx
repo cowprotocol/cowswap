@@ -8,7 +8,7 @@ import { CloseIcon } from 'theme'
 import styled from 'styled-components/macro'
 import { Token } from '@uniswap/sdk-core'
 import { ManageLists } from 'components/SearchModal/ManageLists'
-import ManageTokens from './ManageTokens'
+import ManageTokens from 'components/SearchModal/ManageTokens'
 import { TokenList } from '@uniswap/token-lists'
 import { CurrencyModalView } from './CurrencySearchModal'
 

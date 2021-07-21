@@ -1,7 +1,7 @@
 import React, { useRef, RefObject, useCallback, useState, useMemo } from 'react'
 import Column from 'components/Column'
-import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { PaddedColumn, Separator, SearchInput } from './styleds'
+import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { PaddedColumn, Separator, SearchInput } from 'components/SearchModal/styleds'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { TYPE, ExternalLinkIcon, TrashIcon, ButtonText, ExternalLink } from 'theme'
 import { useToken } from 'hooks/Tokens'
@@ -11,12 +11,13 @@ import { Token } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { isAddress } from 'utils'
 import { useActiveWeb3React } from 'hooks/web3'
-import Card from 'components/Card'
-import ImportRow from 'components/SearchModal/ImportRow'
-import useTheme from '../../hooks/useTheme'
+// import Card from 'components/Card'
+// import ImportRow from 'components/SearchModal/ImportRow'
+import useTheme from 'hooks/useTheme'
 import { Trans } from '@lingui/macro'
 
-import { CurrencyModalView } from './CurrencySearchModal'
+import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
+import { ImportTokensRowProps } from '.'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -37,13 +38,13 @@ const Footer = styled.div`
   text-align: center;
 `
 
-export default function ManageTokens({
-  setModalView,
-  setImportToken,
-}: {
+export interface ManageTokensProps {
   setModalView: (view: CurrencyModalView) => void
   setImportToken: (token: Token) => void
-}) {
+  ImportTokensRow: ({ theme, searchToken, setModalView, setImportToken }: ImportTokensRowProps) => JSX.Element
+}
+
+export default function ManageTokens({ setModalView, setImportToken, ImportTokensRow }: ManageTokensProps) {
   const { chainId } = useActiveWeb3React()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -115,15 +116,13 @@ export default function ManageTokens({
               <Trans>Enter valid token address</Trans>
             </TYPE.error>
           )}
-          {searchToken && (
-            <Card backgroundColor={theme.bg2} padding="10px 0">
-              <ImportRow
-                token={searchToken}
-                showImportView={() => setModalView(CurrencyModalView.importToken)}
-                setImportToken={setImportToken}
-                style={{ height: 'fit-content' }}
-              />
-            </Card>
+          {searchToken && ( // MOD
+            <ImportTokensRow
+              searchToken={searchToken}
+              setModalView={setModalView}
+              setImportToken={setImportToken}
+              theme={theme}
+            />
           )}
         </PaddedColumn>
         <Separator />
