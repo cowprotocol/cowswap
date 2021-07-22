@@ -177,11 +177,10 @@ const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
 
 async function _handleQuoteResponse(response: Response) {
   if (!response.ok) {
-    const responseNotOkJson: ApiErrorObject = await response.json()
-    const errorType = responseNotOkJson.errorType
+    const errorObj: ApiErrorObject = await response.json()
 
     // we need to map the backend error codes to match our own for quotes
-    const mappedError = mapOperatorErrorToQuoteError(errorType)
+    const mappedError = mapOperatorErrorToQuoteError(errorObj)
     throw new QuoteError(mappedError)
   } else {
     return response.json()

@@ -4,7 +4,7 @@ import { TYPE, CloseIcon, ExternalLink } from 'theme'
 import { ButtonEmpty } from 'components/Button'
 import Modal from 'components/Modal'
 import Card, { OutlineCard } from 'components/Card'
-import { RowBetween, AutoRow } from 'components/Row'
+import Row, { RowBetween, AutoRow } from 'components/Row'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -34,10 +34,18 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
 
 export const AddressText = styled(TYPE.blue)`
   font-size: 12px;
+  word-break: break-all;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
 `}
+`
+
+const FlexRow = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  gap: 5px;
 `
 
 // MOD
@@ -93,18 +101,20 @@ UnsupportedCurrencyFooterParams) {
                 // unsupportedToken &&
                 // Object.keys(unsupportedTokens).includes(token.address) && (
                 isUnsupportedToken(token.address) && (
-                  <OutlineCard key={token.address.concat('not-supported')} padding="0 1.25rem">
-                    <AutoColumn gap="10px">
-                      <AutoRow gap="5px" align="center">
+                  <OutlineCard key={token.address.concat('not-supported')} padding="10px 16px">
+                    <FlexRow>
+                      <AutoRow flex="1 1 30%" align="center" gap="5px">
                         <CurrencyLogo currency={token} size={'24px'} />
                         <TYPE.body fontWeight={500}>{token.symbol}</TYPE.body>
                       </AutoRow>
                       {chainId && (
-                        <ExternalLink href={getEtherscanLink(chainId, token.address, 'address')}>
-                          <AddressText>{token.address}</AddressText>
-                        </ExternalLink>
+                        <Row flex="1 1 228px">
+                          <ExternalLink href={getEtherscanLink(chainId, token.address, 'address')}>
+                            <AddressText>{token.address}</AddressText>
+                          </ExternalLink>
+                        </Row>
                       )}
-                    </AutoColumn>
+                    </FlexRow>
                   </OutlineCard>
                 )
               )

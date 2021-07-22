@@ -63,6 +63,21 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
         return 'insufficient-liquidity'
       }
 
+      case GpQuoteErrorCodes.UnsupportedToken: {
+        // TODO: will change with introduction of data prop in error responses
+        const unsupportedTokenAddress = error.description.split(' ')[2]
+        console.error(`${error.message}: ${error.description} - disabling.`)
+
+        // Add token to unsupported token list
+        addUnsupportedToken({
+          chainId: quoteData.chainId,
+          address: unsupportedTokenAddress,
+          dateAdded: Date.now(),
+        })
+
+        return 'unsupported-token'
+      }
+
       default: {
         // Some other operator error occurred, log it
         console.error('Error quoting price/fee. Unhandled operator error: ' + error.type, error)
