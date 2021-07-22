@@ -1,5 +1,5 @@
-// the Uniswap Default token list lives here
-import { ChainId } from '@uniswap/sdk'
+// used to mark unsupported tokens, these are hosted lists of unsupported tokens
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 export type NetworkLists = {
   [chain in ChainId]: string[]
@@ -17,10 +17,8 @@ const ROLL_LIST = 'https://app.tryroll.com/tokens.json'
 const CMC_ALL_LIST = 'defi.cmc.eth'
 const CMC_STABLECOIN = 'stablecoin.cmc.eth'
 const KLEROS_LIST = 't2crtokens.eth'
-const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
-
-// Mainnet Default
 const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
+const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Rinkeby Default
 const RINKEBY_LIST =
@@ -34,8 +32,8 @@ export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   [ChainId.KOVAN]: [BA_LIST],
   [ChainId.RINKEBY]: [BA_LIST],
   [ChainId.ROPSTEN]: [BA_LIST],
-  [ChainId.GÖRLI]: [BA_LIST],
-  [ChainId.XDAI]: [BA_LIST]
+  [ChainId.GOERLI]: [BA_LIST],
+  [ChainId.XDAI]: [BA_LIST],
 }
 
 function buildNetworkDefaultLists({ networkLists, chainId }: { chainId: ChainId; networkLists: string[] }) {
@@ -60,29 +58,29 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       CMC_ALL_LIST,
       CMC_STABLECOIN,
       KLEROS_LIST,
-      GEMINI_LIST
-    ]
+      GEMINI_LIST,
+    ],
   }),
   [ChainId.KOVAN]: buildNetworkDefaultLists({
     chainId: ChainId.KOVAN,
-    networkLists: [COMPOUND_LIST]
+    networkLists: [COMPOUND_LIST],
   }),
   [ChainId.RINKEBY]: buildNetworkDefaultLists({
     chainId: ChainId.RINKEBY,
-    networkLists: [RINKEBY_LIST, COMPOUND_LIST]
+    networkLists: [RINKEBY_LIST, COMPOUND_LIST],
   }),
   [ChainId.ROPSTEN]: buildNetworkDefaultLists({
     chainId: ChainId.ROPSTEN,
-    networkLists: [COMPOUND_LIST]
+    networkLists: [COMPOUND_LIST],
   }),
-  [ChainId.GÖRLI]: buildNetworkDefaultLists({
-    chainId: ChainId.GÖRLI,
-    networkLists: [COMPOUND_LIST]
+  [ChainId.GOERLI]: buildNetworkDefaultLists({
+    chainId: ChainId.GOERLI,
+    networkLists: [COMPOUND_LIST],
   }),
   [ChainId.XDAI]: buildNetworkDefaultLists({
     chainId: ChainId.XDAI,
-    networkLists: [HONEY_SWAP_XDAI]
-  })
+    networkLists: [HONEY_SWAP_XDAI],
+  }),
 }
 
 // default lists to be 'active' aka searched across
@@ -92,7 +90,7 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
   [ChainId.RINKEBY]: [RINKEBY_LIST],
   [ChainId.ROPSTEN]: [GEMINI_LIST],
   [ChainId.XDAI]: [HONEY_SWAP_XDAI],
-  [ChainId.GÖRLI]: [GEMINI_LIST]
+  [ChainId.GOERLI]: [GEMINI_LIST],
 }
 
 // Set what we want as the default list when no chain id available: default = MAINNET

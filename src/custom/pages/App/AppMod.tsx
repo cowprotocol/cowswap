@@ -1,6 +1,6 @@
-import React, { Suspense, PropsWithChildren } from 'react'
+import React, { Suspense, /* PropsWithChildren, */ ReactNode } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 // import AddressClaimModal from '../components/claim/AddressClaimModal'
 import Header from 'components/Header'
@@ -8,28 +8,30 @@ import Polling from 'components/Header/Polling'
 import URLWarning from 'components/Header/URLWarning'
 import Popups from 'components/Popups'
 import Web3ReactManager from 'components/Web3ReactManager'
+import ErrorBoundary from 'components/ErrorBoundary'
 // import { ApplicationModal } from '../../state/application/actions'
 // import { useModalOpen, useToggleModal } from '../state/application/hooks'
 import DarkModeQueryParamReader from 'theme'
-// import AddLiquidity from './AddLiquidity'
 // import {
 //   RedirectDuplicateTokenIds,
-//   RedirectOldAddLiquidityPathStructure,
-//   RedirectToAddLiquidity
 // } from './AddLiquidity/redirects'
 // import Earn from './Earn'
 // import Manage from './Earn/Manage'
-// import MigrateV1 from './MigrateV1'
-// import MigrateV1Exchange from './MigrateV1/MigrateV1Exchange'
-// import RemoveV1Exchange from './MigrateV1/RemoveV1Exchange'
+// import MigrateV2 from './MigrateV2'
+// import MigrateV2Pair from './MigrateV2/MigrateV2Pair'
 // import Pool from './Pool'
+// import PoolV2 from './Pool/v2'
 // import PoolFinder from './PoolFinder'
 // import RemoveLiquidity from './RemoveLiquidity'
-// import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
+// import RemoveLiquidityV3 from 'pages/RemoveLiquidity/V3'
 // import Swap from 'pages/Swap'
 // import { OpenClaimAddressModalAndRedirectToSwap, RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 // import Vote from './Vote'
 // import VotePage from './Vote/VotePage'
+// import { RedirectDuplicateTokenIdsV2 } from './AddLiquidityV2/redirects'
+// import { PositionPage } from './Pool/PositionPage'
+// import AddLiquidity from './AddLiquidity'
+import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 
 import Footer from 'components/Footer'
 
@@ -51,7 +53,7 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 100px;
+  padding-top: 120px;
   align-items: center;
   flex: 1;
   overflow-y: auto;
@@ -59,7 +61,7 @@ const BodyWrapper = styled.div`
   z-index: 10;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 4px 16px 0;
+    padding: 6rem 16px 0;
   `};
 
   z-index: 1;
@@ -77,24 +79,26 @@ const Marginer = styled.div`
 //   return <AddressClaimModal isOpen={open} onDismiss={toggle} />
 // }
 
-export default function App(props?: PropsWithChildren<void>) {
+export default function App(props?: { children?: ReactNode }) {
   return (
-    <Suspense fallback={null}>
-      <Route component={GoogleAnalyticsReporter} />
-      <Route component={DarkModeQueryParamReader} />
-      <AppWrapper>
-        <URLWarning />
-        <HeaderWrapper>
-          <Header />
-        </HeaderWrapper>
-        <BodyWrapper>
-          <Popups />
-          <Polling />
-          {/* <TopLevelModals /> */}
-          <Web3ReactManager>
-            <Switch>
-              {props && props.children}
-              {/* <Route exact strict path="/swap" component={Swap} />
+    <ErrorBoundary>
+      <Suspense fallback={null}>
+        <Route component={GoogleAnalyticsReporter} />
+        <Route component={DarkModeQueryParamReader} />
+        <Route component={ApeModeQueryParamReader} />
+        <AppWrapper>
+          <URLWarning />
+          <HeaderWrapper>
+            <Header />
+          </HeaderWrapper>
+          <BodyWrapper>
+            <Popups />
+            <Polling />
+            {/* <TopLevelModals /> */}
+            <Web3ReactManager>
+              <Switch>
+                {props && props.children}
+                {/* <Route exact strict path="/swap" component={Swap} />
               <Route exact strict path="/claim" component={OpenClaimAddressModalAndRedirectToSwap} />
               <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
               <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
@@ -117,14 +121,15 @@ export default function App(props?: PropsWithChildren<void>) {
               <Route exact strict path="/uni/:currencyIdA/:currencyIdB" component={Manage} />
               <Route exact strict path="/vote/:id" component={VotePage} />
               <Route component={RedirectPathToSwapOnly} /> */}
-            </Switch>
-          </Web3ReactManager>
-          <Marginer />
-        </BodyWrapper>
-        <FooterWrapper>
-          <Footer />
-        </FooterWrapper>
-      </AppWrapper>
-    </Suspense>
+              </Switch>
+            </Web3ReactManager>
+            <Marginer />
+          </BodyWrapper>
+          <FooterWrapper>
+            <Footer />
+          </FooterWrapper>
+        </AppWrapper>
+      </Suspense>
+    </ErrorBoundary>
   )
 }

@@ -1,17 +1,20 @@
 import { createAction } from '@reduxjs/toolkit'
 import { OrderID } from 'utils/operator'
-import { ChainId, Token } from '@uniswap/sdk'
 import { OrderCreation } from 'utils/signatures'
+import { Token } from '@uniswap/sdk-core'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { SerializedToken } from '@src/state/user/actions'
+export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export enum OrderStatus {
   PENDING = 'pending',
   FULFILLED = 'fulfilled',
   EXPIRED = 'expired',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 // used internally by dapp
-export interface Order extends Omit<OrderCreation, 'signingScheme'> {
+export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   id: OrderID // it is special :), Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // address, without '0x' prefix
   status: OrderStatus
@@ -19,9 +22,17 @@ export interface Order extends Omit<OrderCreation, 'signingScheme'> {
   fulfilledTransactionHash?: string // hash of transaction when Order was fulfilled
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   summary: string // for dapp use only, readable by user
+  isCancelling?: boolean // intermediate state while the order has been cancelled but order is still pending
+}
+
+export interface Order extends BaseOrder {
   inputToken: Token // for dapp use only, readable by user
   outputToken: Token // for dapp use only, readable by user
-  isCancelling?: boolean // intermediate state while the order has been cancelled but order is still pending
+}
+
+export interface SerializedOrder extends BaseOrder {
+  inputToken: SerializedToken // for dapp use only, readable by user
+  outputToken: SerializedToken // for dapp use only, readable by user
 }
 
 // gotten from querying /api/v1/orders
@@ -33,7 +44,7 @@ export interface OrderFromApi extends OrderCreation {
 export interface AddPendingOrderParams {
   id: OrderID
   chainId: ChainId
-  order: Order
+  order: SerializedOrder
 }
 
 export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
@@ -81,6 +92,5 @@ export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/ca
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 
-export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheckedBlock: number }>(
-  'order/updateLastCheckedBlock'
-)
+export const updateLastCheckedBlock =
+  createAction<{ chainId: ChainId; lastCheckedBlock: number }>('order/updateLastCheckedBlock')

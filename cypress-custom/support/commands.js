@@ -9,8 +9,8 @@ function _selectTokenFromSelector(tokenAddress, inputOrOutput) {
 }
 
 function _responseHandlerFactory(body) {
-  return req =>
-    req.reply(res => {
+  return (req) =>
+    req.reply((res) => {
       const newBody = JSON.stringify(body || res.body)
       res.body = newBody
     })

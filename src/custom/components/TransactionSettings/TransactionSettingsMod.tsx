@@ -1,23 +1,23 @@
-import React, { useState, useRef, useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import { t, Trans } from '@lingui/macro'
+import React, { useState, useContext } from 'react'
+import { Percent } from '@uniswap/sdk-core'
+import styled, { ThemeContext } from 'styled-components/macro'
 
-import QuestionHelper from 'components/QuestionHelper'
+import QuestionHelper from '../QuestionHelper'
 import { TYPE } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
-import { ParseCustomSlippageFn } from './index'
-
+import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
 import { darken } from 'polished'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
-  RiskyLow = 'RiskyLow',
-  RiskyHigh = 'RiskyHigh'
 }
 
 enum DeadlineError {
-  InvalidInput = 'InvalidInput'
+  InvalidInput = 'InvalidInput',
 }
 
 export const FancyButton = styled.button`
@@ -39,14 +39,14 @@ export const FancyButton = styled.button`
   }
 `
 
-// const Option = styled(FancyButton)<{ active: boolean }>`
-//   margin-right: 8px;
-//   :hover {
-//     cursor: pointer;
-//   }
-//   background-color: ${({ active, theme }) => active && theme.primary1};
-//   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
-// `
+const Option = styled(FancyButton)<{ active: boolean }>`
+  margin-right: 8px;
+  :hover {
+    cursor: pointer;
+  }
+  background-color: ${({ active, theme }) => active && theme.primary1};
+  color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
+`
 
 const Input = styled.input`
   background: ${({ theme }) => theme.bg1};
@@ -87,73 +87,68 @@ const SlippageEmojiContainer = styled.span`
   `}
 `
 
-export interface SlippageTabsProps {
-  rawSlippage: number
-  setRawSlippage: (rawSlippage: number) => void
-  deadline: number
-  setDeadline: (deadline: number) => void
-  parseCustomSlippageFn: ParseCustomSlippageFn
-  Option: React.ElementType
+export interface TransactionSettingsProps {
+  placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
 
-export default function SlippageTabs({
-  rawSlippage,
-  setRawSlippage,
-  deadline,
-  setDeadline,
-  parseCustomSlippageFn,
-  Option
-}: SlippageTabsProps) {
+export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
   const theme = useContext(ThemeContext)
 
-  const inputRef = useRef<HTMLInputElement>()
+  const userSlippageTolerance = useUserSlippageTolerance()
+  const setUserSlippageTolerance = useSetUserSlippageTolerance()
+
+  const [deadline, setDeadline] = useUserTransactionTTL()
 
   const [slippageInput, setSlippageInput] = useState('')
+  const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
+
   const [deadlineInput, setDeadlineInput] = useState('')
+  const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
-  const slippageInputIsValid =
-    slippageInput === '' || (rawSlippage / 100).toFixed(2) === Number.parseFloat(slippageInput).toFixed(2)
-  const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
+  function parseSlippageInput(value: string) {
+    // populate what the user typed and clear the error
+    setSlippageInput(value)
+    setSlippageError(false)
 
-  let slippageError: SlippageError | undefined
-  if (slippageInput !== '' && !slippageInputIsValid) {
-    slippageError = SlippageError.InvalidInput
-  } else if (slippageInputIsValid && rawSlippage < 50) {
-    slippageError = SlippageError.RiskyLow
-  } else if (slippageInputIsValid && rawSlippage > 500) {
-    slippageError = SlippageError.RiskyHigh
-  } else {
-    slippageError = undefined
+    if (value.length === 0) {
+      setUserSlippageTolerance('auto')
+    } else {
+      const parsed = Math.floor(Number.parseFloat(value) * 100)
+
+      if (!Number.isInteger(parsed) || parsed < 0 || parsed > 5000) {
+        setUserSlippageTolerance('auto')
+        if (value !== '.') {
+          setSlippageError(SlippageError.InvalidInput)
+        }
+      } else {
+        setUserSlippageTolerance(new Percent(parsed, 10_000))
+      }
+    }
   }
 
-  let deadlineError: DeadlineError | undefined
-  if (deadlineInput !== '' && !deadlineInputIsValid) {
-    deadlineError = DeadlineError.InvalidInput
-  } else {
-    deadlineError = undefined
-  }
-
-  // function parseCustomSlippage(value: string) {
-  //   setSlippageInput(value)
-
-  //   try {
-  //     const valueAsIntFromRoundedFloat = Number.parseInt((Number.parseFloat(value) * 100).toString())
-  //     if (!Number.isNaN(valueAsIntFromRoundedFloat) && valueAsIntFromRoundedFloat < 5000) {
-  //       setRawSlippage(valueAsIntFromRoundedFloat)
-  //     }
-  //   } catch {}
-  // }
-  const parseCustomSlippage = (value: string) => parseCustomSlippageFn(value, setRawSlippage, setSlippageInput)
+  const tooLow = userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(5, 10_000))
+  const tooHigh = userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(1, 100))
 
   function parseCustomDeadline(value: string) {
+    // populate what the user typed and clear the error
     setDeadlineInput(value)
+    setDeadlineError(false)
 
-    try {
-      const valueAsInt: number = Number.parseInt(value) * 60
-      if (!Number.isNaN(valueAsInt) && valueAsInt > 0) {
-        setDeadline(valueAsInt)
+    if (value.length === 0) {
+      setDeadline(DEFAULT_DEADLINE_FROM_NOW)
+    } else {
+      try {
+        const parsed: number = Math.floor(Number.parseFloat(value) * 60)
+        if (!Number.isInteger(parsed) || parsed < 60 || parsed > 180 * 60) {
+          setDeadlineError(DeadlineError.InvalidInput)
+        } else {
+          setDeadline(parsed)
+        }
+      } catch (error) {
+        console.error(error)
+        setDeadlineError(DeadlineError.InvalidInput)
       }
-    } catch {}
+    }
   }
 
   return (
@@ -161,117 +156,108 @@ export default function SlippageTabs({
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-            MEV protected slippage
+            <Trans>MEV protected slippage</Trans>
           </TYPE.black>
           <QuestionHelper
             text={
-              <>
+              <Trans>
                 <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
                 <p>
                   The slippage you pick here enables a resubmission of your order in case of unfavourable price
                   movements.
                 </p>
                 <p>{INPUT_OUTPUT_EXPLANATION}</p>
-              </>
+              </Trans>
             }
           />
         </RowFixed>
         <RowBetween>
           <Option
             onClick={() => {
-              setSlippageInput('')
-              setRawSlippage(10)
+              parseSlippageInput('')
             }}
-            active={rawSlippage === 10}
+            active={userSlippageTolerance === 'auto'}
           >
-            0.1%
+            <Trans>Auto</Trans>
           </Option>
-          <Option
-            onClick={() => {
-              setSlippageInput('')
-              setRawSlippage(50)
-            }}
-            active={rawSlippage === 50}
-          >
-            0.5%
-          </Option>
-          <Option
-            onClick={() => {
-              setSlippageInput('')
-              setRawSlippage(100)
-            }}
-            active={rawSlippage === 100}
-          >
-            1%
-          </Option>
-          <OptionCustom active={![10, 50, 100].includes(rawSlippage)} warning={!slippageInputIsValid} tabIndex={-1}>
+          <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
             <RowBetween>
-              {!!slippageInput &&
-              (slippageError === SlippageError.RiskyLow || slippageError === SlippageError.RiskyHigh) ? (
+              {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
                   <span role="img" aria-label="warning">
                     ⚠️
                   </span>
                 </SlippageEmojiContainer>
               ) : null}
-              {/* https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
               <Input
-                ref={inputRef as any}
-                placeholder={(rawSlippage / 100).toFixed(2)}
-                value={slippageInput}
+                placeholder={placeholderSlippage.toFixed(2)}
+                value={
+                  slippageInput.length > 0
+                    ? slippageInput
+                    : userSlippageTolerance === 'auto'
+                    ? ''
+                    : userSlippageTolerance.toFixed(2)
+                }
+                onChange={(e) => parseSlippageInput(e.target.value)}
                 onBlur={() => {
-                  parseCustomSlippage((rawSlippage / 100).toFixed(2))
+                  setSlippageInput('')
+                  setSlippageError(false)
                 }}
-                onChange={e => parseCustomSlippage(e.target.value)}
-                color={!slippageInputIsValid ? 'red' : ''}
+                color={slippageError ? 'red' : ''}
               />
               %
             </RowBetween>
           </OptionCustom>
         </RowBetween>
-        {!!slippageError && (
+        {slippageError || tooLow || tooHigh ? (
           <RowBetween
             style={{
               fontSize: '14px',
               paddingTop: '7px',
-              color: slippageError === SlippageError.InvalidInput ? 'red' : '#F3841E'
+              color: slippageError ? 'red' : '#F3841E',
             }}
           >
-            {slippageError === SlippageError.InvalidInput
-              ? 'Enter a valid slippage percentage'
-              : slippageError === SlippageError.RiskyLow
-              ? 'Your transaction may expire'
-              : 'High slippage amount selected'}
+            {slippageError ? (
+              <Trans>Enter a valid slippage percentage</Trans>
+            ) : tooLow ? (
+              <Trans>Your transaction may expire</Trans>
+            ) : (
+              <Trans>High slippage amount selected</Trans>
+            )}
           </RowBetween>
-        )}
+        ) : null}
       </AutoColumn>
 
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-            Transaction deadline
+            <Trans>Transaction deadline</Trans>
           </TYPE.black>
           <QuestionHelper
-            text={
-              'Your swap expires and will not execute if it is pending for longer than the selected duration. ' +
-              INPUT_OUTPUT_EXPLANATION
-            }
+            text={t`Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
           />
         </RowFixed>
         <RowFixed>
-          <OptionCustom style={{ width: '80px' }} tabIndex={-1}>
+          <OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
             <Input
-              color={!!deadlineError ? 'red' : undefined}
+              placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
+              value={
+                deadlineInput.length > 0
+                  ? deadlineInput
+                  : deadline === DEFAULT_DEADLINE_FROM_NOW
+                  ? ''
+                  : (deadline / 60).toString()
+              }
+              onChange={(e) => parseCustomDeadline(e.target.value)}
               onBlur={() => {
-                parseCustomDeadline((deadline / 60).toString())
+                setDeadlineInput('')
+                setDeadlineError(false)
               }}
-              placeholder={(deadline / 60).toString()}
-              value={deadlineInput}
-              onChange={e => parseCustomDeadline(e.target.value)}
+              color={deadlineError ? 'red' : ''}
             />
           </OptionCustom>
           <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>
-            minutes
+            <Trans>minutes</Trans>
           </TYPE.body>
         </RowFixed>
       </AutoColumn>

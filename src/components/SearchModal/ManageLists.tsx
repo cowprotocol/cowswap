@@ -1,15 +1,15 @@
 import React, { memo, useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { Settings, CheckCircle } from 'react-feather'
 import ReactGA from 'react-ga'
+import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 import { usePopper } from 'react-popper'
-import { useDispatch, useSelector } from 'react-redux'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { TokenList } from '@uniswap/token-lists'
+import { t, Trans } from '@lingui/macro'
 
 import useToggle from '../../hooks/useToggle'
-import { AppDispatch, AppState } from '../../state'
 import { acceptListUpdate, removeList, disableList, enableList } from '@src/state/lists/actions'
 import { useIsListActive, useAllLists, useActiveListUrls } from 'state/lists/hooks'
 import { ExternalLink, LinkStyledButton, TYPE, IconWrapper } from '../../theme'
@@ -42,8 +42,8 @@ const UnpaddedLinkStyledButton = styled(LinkStyledButton)`
 
 const PopoverContainer = styled.div<{ show: boolean }>`
   z-index: 100;
-  visibility: ${props => (props.show ? 'visible' : 'hidden')};
-  opacity: ${props => (props.show ? 1 : 0)};
+  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
@@ -93,8 +93,8 @@ function listUrlRowHTMLId(listUrl: string) {
 }
 
 const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
-  const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  const dispatch = useDispatch<AppDispatch>()
+  const listsByUrl = useAppSelector((state) => state.lists.byUrl)
+  const dispatch = useAppDispatch()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
 
   const theme = useTheme()
@@ -109,7 +109,7 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'auto',
     strategy: 'fixed',
-    modifiers: [{ name: 'offset', options: { offset: [8, 8] } }]
+    modifiers: [{ name: 'offset', options: { offset: [8, 8] } }],
   })
 
   useOnClickOutside(node, open ? toggle : undefined)
@@ -119,7 +119,7 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
     ReactGA.event({
       category: 'Lists',
       action: 'Update List from List Select',
-      label: listUrl
+      label: listUrl,
     })
     dispatch(acceptListUpdate(listUrl))
   }, [dispatch, listUrl, pending])
@@ -128,13 +128,13 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
     ReactGA.event({
       category: 'Lists',
       action: 'Start Remove List',
-      label: listUrl
+      label: listUrl,
     })
     if (window.prompt(`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
       ReactGA.event({
         category: 'Lists',
         action: 'Confirm Remove List',
-        label: listUrl
+        label: listUrl,
       })
       dispatch(removeList(listUrl))
     }
@@ -144,7 +144,7 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
     ReactGA.event({
       category: 'Lists',
       action: 'Enable List',
-      label: listUrl
+      label: listUrl,
     })
     dispatch(enableList(listUrl))
   }, [dispatch, listUrl])
@@ -153,7 +153,7 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
     ReactGA.event({
       category: 'Lists',
       action: 'Disable List',
-      label: listUrl
+      label: listUrl,
     })
     dispatch(disableList(listUrl))
   }, [dispatch, listUrl])
@@ -173,7 +173,7 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
         </Row>
         <RowFixed mt="4px">
           <StyledListUrlText active={isActive} mr="6px">
-            {list.tokens.length} tokens
+            <Trans>{list.tokens.length} tokens</Trans>
           </StyledListUrlText>
           <StyledMenu ref={node as any}>
             <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
@@ -183,12 +183,16 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
               <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
                 <div>{list && listVersionLabel(list.version)}</div>
                 <SeparatorDark />
-                <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
+                <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>
+                  <Trans>View list</Trans>
+                </ExternalLink>
                 <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
-                  Remove list
+                  <Trans>Remove list</Trans>
                 </UnpaddedLinkStyledButton>
                 {pending && (
-                  <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>Update list</UnpaddedLinkStyledButton>
+                  <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>
+                    <Trans>Update list</Trans>
+                  </UnpaddedLinkStyledButton>
                 )}
               </PopoverContainer>
             )}
@@ -216,7 +220,7 @@ const ListContainer = styled.div`
 export function ManageLists({
   setModalView,
   setImportList,
-  setListUrl
+  setListUrl,
 }: {
   setModalView: (view: CurrencyModalView) => void
   setImportList: (list: TokenList) => void
@@ -237,7 +241,7 @@ export function ManageLists({
     }
   }, [activeCopy, activeListUrls])
 
-  const handleInput = useCallback(e => {
+  const handleInput = useCallback((e) => {
     setListUrlInput(e.target.value)
   }, [])
 
@@ -250,7 +254,7 @@ export function ManageLists({
   const sortedLists = useMemo(() => {
     const listUrls = Object.keys(lists)
     return listUrls
-      .filter(listUrl => {
+      .filter((listUrl) => {
         // only show loaded lists, hide unsupported lists
         return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
       })
@@ -286,15 +290,15 @@ export function ManageLists({
   useEffect(() => {
     async function fetchTempList() {
       fetchList(listUrlInput, false)
-        .then(list => setTempList(list))
-        .catch(() => setAddError('Error importing list'))
+        .then((list) => setTempList(list))
+        .catch(() => setAddError(t`Error importing list`))
     }
     // if valid url, fetch details for card
     if (validUrl) {
       fetchTempList()
     } else {
       setTempList(undefined)
-      listUrlInput !== '' && setAddError('Enter valid list location')
+      listUrlInput !== '' && setAddError(t`Enter valid list location`)
     }
 
     // reset error
@@ -321,7 +325,7 @@ export function ManageLists({
           <SearchInput
             type="text"
             id="list-add-input"
-            placeholder="https:// or ipfs:// or ENS name"
+            placeholder={t`https:// or ipfs:// or ENS name`}
             value={listUrlInput}
             onChange={handleInput}
           />
@@ -340,7 +344,9 @@ export function ManageLists({
                 {tempList.logoURI && <ListLogo logoURI={tempList.logoURI} size="40px" />}
                 <AutoColumn gap="4px" style={{ marginLeft: '20px' }}>
                   <TYPE.body fontWeight={600}>{tempList.name}</TYPE.body>
-                  <TYPE.main fontSize={'12px'}>{tempList.tokens.length} tokens</TYPE.main>
+                  <TYPE.main fontSize={'12px'}>
+                    <Trans>{tempList.tokens.length} tokens</Trans>
+                  </TYPE.main>
                 </AutoColumn>
               </RowFixed>
               {isImported ? (
@@ -348,7 +354,9 @@ export function ManageLists({
                   <IconWrapper stroke={theme.text2} size="16px" marginRight={'10px'}>
                     <CheckCircle />
                   </IconWrapper>
-                  <TYPE.body color={theme.text2}>Loaded</TYPE.body>
+                  <TYPE.body color={theme.text2}>
+                    <Trans>Loaded</Trans>
+                  </TYPE.body>
                 </RowFixed>
               ) : (
                 <ButtonPrimary
@@ -357,7 +365,7 @@ export function ManageLists({
                   width="fit-content"
                   onClick={handleImport}
                 >
-                  Import
+                  <Trans>Import</Trans>
                 </ButtonPrimary>
               )}
             </RowBetween>
@@ -367,7 +375,7 @@ export function ManageLists({
       <Separator />
       <ListContainer>
         <AutoColumn gap="md">
-          {sortedLists.map(listUrl => (
+          {sortedLists.map((listUrl) => (
             <ListRow key={listUrl} listUrl={listUrl} />
           ))}
         </AutoColumn>

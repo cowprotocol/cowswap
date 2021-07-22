@@ -116,25 +116,25 @@ function getToc(node: HTMLDivElement) {
     if (lastH2 !== undefined) {
       tocSections.push({
         section: lastH2,
-        items
+        items,
       })
       items = []
     }
   }
 
-  headingNodes.forEach(entry => {
+  headingNodes.forEach((entry) => {
     if (entry.tagName === 'H2') {
       // If H2
       addNewSection()
       lastH2 = {
         id: entry.id,
-        label: entry.innerHTML
+        label: entry.innerHTML,
       }
     } else {
       // If H3
       items.push({
         id: entry.id,
-        label: entry.innerHTML
+        label: entry.innerHTML,
       })
     }
   })
@@ -163,7 +163,7 @@ export default function Faq() {
             <div key={section.id}>
               <ContentLink href={'#' + section.id}>{section.label}</ContentLink>
               <ul>
-                {items.map(tocItem => (
+                {items.map((tocItem) => (
                   <li key={tocItem.id}>
                     <ContentLink href={'#' + tocItem.id}>{tocItem.label}</ContentLink>
                   </li>
@@ -177,10 +177,10 @@ export default function Faq() {
         <Content>
           <h2 id="general">General</h2>
           <h3 id="what-is-cowswap">What is CowSwap?</h3>
+          <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
           <p>
-            CowSwap is a proof-of-concept dapp (decentralized application) built on Gnosis Protocol v2 (GPv2). CowSwap
-            offers the decentralized finance community a teaser of the capabilities of GPv2 through testing upcoming
-            features while placing gas free trades.
+            It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
+            into any on-chain liquidity source while providing MEV protection.
           </p>
 
           <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CowSwap a &quot;Meta&quot; DEX aggregator?</h3>
@@ -229,7 +229,7 @@ export default function Faq() {
             This means, on CowSwap, when two traders each hold an asset the other wants, a trade can be settled directly
             between them without an external market maker or liquidity provider. This leads to better prices for the
             individual traders (because traditionally market makers add a fee — referred to as spread — for their
-            surface)
+            service)
           </p>
 
           <p>
@@ -453,8 +453,8 @@ export default function Faq() {
             <li>
               <p>
                 <strong>Approve token</strong> <br />
-                One-time-only, required step for being able to sell a token. Afterwards, you will be able
-                to trade the token using gasless transactions.
+                One-time-only, required step for being able to sell a token. Afterwards, you will be able to trade the
+                token using gasless transactions.
               </p>
             </li>
             <li>
@@ -467,7 +467,8 @@ export default function Faq() {
             <li>
               <p>
                 <strong>Unwrap ETH</strong> <br />
-                Convert ERC20 compatible token WETH back into native ETH. Only when you want to manually convert it to ETH.
+                Convert ERC20 compatible token WETH back into native ETH. Only when you want to manually convert it to
+                ETH.
               </p>
             </li>
             <li>

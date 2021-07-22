@@ -1,18 +1,19 @@
 import React, { ReactNode, useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { TYPE, CloseIcon, ExternalLink } from 'theme'
 import { ButtonEmpty } from 'components/Button'
 import Modal from 'components/Modal'
 import Card, { OutlineCard } from 'components/Card'
-import { RowBetween, AutoRow } from 'components/Row'
+import Row, { RowBetween, AutoRow } from 'components/Row'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
+import { Currency /* , Token */ } from '@uniswap/sdk-core'
+// import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
+import { Trans } from '@lingui/macro'
+// MOD
 import { getEtherscanLink } from 'utils'
-import { Currency /* , Token */ } from '@uniswap/sdk'
-import { wrappedCurrency } from 'utils/wrappedCurrency'
-// import { useUnsupportedTokens } from 'hooks/Tokens'
-import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
+import { useIsUnsupportedToken } from 'state/lists/hooks'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -33,12 +34,21 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
 
 export const AddressText = styled(TYPE.blue)`
   font-size: 12px;
+  word-break: break-all;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
 `}
 `
 
+const FlexRow = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  gap: 5px;
+`
+
+// MOD
 export interface UnsupportedCurrencyFooterParams {
   show: boolean
   currencies: (Currency | undefined)[]
@@ -52,7 +62,7 @@ export default function UnsupportedCurrencyFooter({
   currencies,
   detailsTitle,
   detailsText,
-  showDetailsText
+  showDetailsText,
 }: /* {
   show: boolean
   currencies: (Currency | undefined)[]
@@ -63,8 +73,8 @@ UnsupportedCurrencyFooterParams) {
 
   const tokens =
     chainId && currencies
-      ? currencies.map(currency => {
-          return wrappedCurrency(currency, chainId)
+      ? currencies.map((currency) => {
+          return currency?.wrapped
         })
       : []
 
@@ -78,29 +88,33 @@ UnsupportedCurrencyFooterParams) {
         <Card padding="2rem">
           <AutoColumn gap="lg">
             <RowBetween>
-              {/* <TYPE.mediumHeader>Unsupported Assets</TYPE.mediumHeader> */}
-              <TYPE.mediumHeader>{detailsTitle}</TYPE.mediumHeader>
+              {/* <TYPE.mediumHeader><Trans>Unsupported Assets</Trans> Assets</TYPE.mediumHeader> */}
+              <TYPE.mediumHeader>
+                <Trans>{detailsTitle}</Trans>
+              </TYPE.mediumHeader>
 
               <CloseIcon onClick={() => setShowDetails(false)} />
             </RowBetween>
-            {tokens.map(token => {
+            {tokens.map((token) => {
               return (
                 token &&
                 // unsupportedToken &&
-                // combinedUnsupportedList.includes(token.address) && (
+                // Object.keys(unsupportedTokens).includes(token.address) && (
                 isUnsupportedToken(token.address) && (
-                  <OutlineCard key={token.address.concat('not-supported')} padding="0 1.25rem">
-                    <AutoColumn gap="10px">
-                      <AutoRow gap="5px" align="center">
+                  <OutlineCard key={token.address.concat('not-supported')} padding="10px 16px">
+                    <FlexRow>
+                      <AutoRow flex="1 1 30%" align="center" gap="5px">
                         <CurrencyLogo currency={token} size={'24px'} />
                         <TYPE.body fontWeight={500}>{token.symbol}</TYPE.body>
                       </AutoRow>
                       {chainId && (
-                        <ExternalLink href={getEtherscanLink(chainId, token.address, 'address')}>
-                          <AddressText>{token.address}</AddressText>
-                        </ExternalLink>
+                        <Row flex="1 1 228px">
+                          <ExternalLink href={getEtherscanLink(chainId, token.address, 'address')}>
+                            <AddressText>{token.address}</AddressText>
+                          </ExternalLink>
+                        </Row>
                       )}
-                    </AutoColumn>
+                    </FlexRow>
                   </OutlineCard>
                 )
               )
@@ -109,7 +123,7 @@ UnsupportedCurrencyFooterParams) {
               <TYPE.body fontWeight={500}>
                 {/* Some assets are not available through this interface because they may not work well with our smart
                 contract or we are unable to allow trading for legal reasons. */}
-                {detailsText}
+                <Trans>{detailsText}</Trans>
               </TYPE.body>
             </AutoColumn>
           </AutoColumn>
@@ -117,7 +131,9 @@ UnsupportedCurrencyFooterParams) {
       </Modal>
       <ButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
         {/* <TYPE.blue>Read more about unsupported assets</TYPE.blue> */}
-        <TYPE.error error={!!showDetailsText}>{showDetailsText}</TYPE.error>
+        <TYPE.error error={!!showDetailsText}>
+          <Trans>{showDetailsText}</Trans>
+        </TYPE.error>
       </ButtonEmpty>
     </DetailsFooter>
   )

@@ -1,25 +1,26 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { OrderFulfillmentData, Order } from './actions'
 import {
   usePendingOrders,
   useFulfillOrdersBatch,
   useExpireOrdersBatch,
   useCancelOrdersBatch,
-  useCancelledOrders
+  useCancelledOrders,
 } from './hooks'
 import { getOrder, OrderID, OrderMetaData } from 'utils/operator'
 import { CANCELLED_ORDERS_PENDING_TIME, SHORT_PRECISION } from 'constants/index'
 import { stringToCurrency } from '../swap/extension'
 import { OPERATOR_API_POLL_INTERVAL } from './consts'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { ApiOrderStatus, classifyOrder } from './utils'
+import { formatSmart } from 'utils/format'
 
 type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
 function _computeFulfilledSummary({
   orderFromStore,
-  orderFromApi
+  orderFromApi,
 }: {
   orderFromStore?: Order
   orderFromApi: OrderMetaData | null
@@ -38,9 +39,10 @@ function _computeFulfilledSummary({
       const inputAmount = stringToCurrency(executedSellAmount, inputToken)
       const outputAmount = stringToCurrency(executedBuyAmount, outputToken)
 
-      summary = `Swap ${inputAmount.toSignificant(SHORT_PRECISION)} ${
-        inputAmount.currency.symbol
-      } for ${outputAmount.toSignificant(SHORT_PRECISION)} ${outputAmount.currency.symbol}`
+      summary = `Swap ${formatSmart(inputAmount, SHORT_PRECISION)} ${inputAmount.currency.symbol} for ${formatSmart(
+        outputAmount,
+        SHORT_PRECISION
+      )} ${outputAmount.currency.symbol}`
     } else {
       // We only have the API order info, let's at least use that
       summary = `Swap ${sellToken} for ${buyToken}`
@@ -70,7 +72,7 @@ async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Pro
         id: orderFromStore.id,
         fulfillmentTime: new Date().toISOString(),
         transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
-        summary: _computeFulfilledSummary({ orderFromStore, orderFromApi })
+        summary: _computeFulfilledSummary({ orderFromStore, orderFromApi }),
       }
       break
     case 'expired':
@@ -107,7 +109,7 @@ export function EventUpdater(): null {
 
       // Iterate over pending orders fetching operator order data, async
       const unfilteredOrdersData = await Promise.all(
-        pendingRef.current.map(async orderFromStore => fetchOrderPopupData(orderFromStore, chainId))
+        pendingRef.current.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
       )
 
       // Group resolved promises by status
@@ -127,17 +129,17 @@ export function EventUpdater(): null {
       fulfilled.length > 0 &&
         fulfillOrdersBatch({
           ordersData: fulfilled as OrderFulfillmentData[],
-          chainId
+          chainId,
         })
       expired.length > 0 &&
         expireOrdersBatch({
           ids: expired as OrderID[],
-          chainId
+          chainId,
         })
       cancelled.length > 0 &&
         cancelOrdersBatch({
           ids: cancelled as OrderID[],
-          chainId
+          chainId,
         })
     },
     [cancelOrdersBatch, expireOrdersBatch, fulfillOrdersBatch]
@@ -185,7 +187,7 @@ export function CancelledOrdersUpdater(): null {
     async (chainId: ChainId) => {
       // Filter orders created in the last 5 min, no further
       const pending = cancelledRef.current.filter(
-        order => Date.now() - new Date(order.creationTime).getTime() < CANCELLED_ORDERS_PENDING_TIME
+        (order) => Date.now() - new Date(order.creationTime).getTime() < CANCELLED_ORDERS_PENDING_TIME
       )
 
       if (pending.length === 0) {
@@ -194,7 +196,7 @@ export function CancelledOrdersUpdater(): null {
 
       // Iterate over pending orders fetching operator order data, async
       const unfilteredOrdersData = await Promise.all(
-        pending.map(async orderFromStore => fetchOrderPopupData(orderFromStore, chainId))
+        pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
       )
 
       // Group resolved promises by status
@@ -211,7 +213,7 @@ export function CancelledOrdersUpdater(): null {
       fulfilled.length > 0 &&
         fulfillOrdersBatch({
           ordersData: fulfilled as OrderFulfillmentData[],
-          chainId
+          chainId,
         })
     },
     [fulfillOrdersBatch]

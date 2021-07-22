@@ -1,13 +1,17 @@
-import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 
 // UNI REDUCERS
 import application from '@src/state/application/reducer'
+// import { updateVersion } from '@src/state/global/actions'
 import user from '@src/state/user/reducer'
 import transactions from '@src/state/transactions/reducer'
 import swap from '@src/state/swap/reducer'
 import mint from '@src/state/mint/reducer'
+import mintV3 from '@src/state/mint/v3/reducer'
+// import lists from './lists/reducer'
 import burn from '@src/state/burn/reducer'
+import burnV3 from '@src/state/burn/v3/reducer'
 import multicall from '@src/state/multicall/reducer'
 // CUSTOM REDUCERS
 import lists from './lists/reducer'
@@ -25,8 +29,10 @@ const UNISWAP_REDUCERS = {
   transactions,
   swap,
   mint,
+  mintV3,
   burn,
-  multicall
+  burnV3,
+  multicall,
 }
 
 const reducers = {
@@ -34,15 +40,20 @@ const reducers = {
   lists,
   orders,
   price,
-  gas
+  gas,
 }
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas']
 
 const store = configureStore({
   reducer: reducers,
-  middleware: [save({ states: PERSISTED_KEYS }), popupMiddleware, soundMiddleware],
-  preloadedState: load({ states: PERSISTED_KEYS })
+  middleware: [
+    ...getDefaultMiddleware({ thunk: false }),
+    save({ states: PERSISTED_KEYS, debounce: 1000 }),
+    popupMiddleware,
+    soundMiddleware,
+  ],
+  preloadedState: load({ states: PERSISTED_KEYS }),
 })
 
 // this instantiate the app / reducers in several places using the default chainId

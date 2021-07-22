@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { useOrder, useOrders } from 'state/orders/hooks'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { TransactionDetails } from 'state/transactions/reducer'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 export type TransactionAndOrder =
   | (Order & { addedTime: number })
@@ -14,7 +15,7 @@ export type TransactionAndOrder =
 
 export enum ActivityType {
   ORDER = 'order',
-  TX = 'tx'
+  TX = 'tx',
 }
 
 export enum ActivityStatus {
@@ -22,12 +23,12 @@ export enum ActivityStatus {
   CONFIRMED,
   EXPIRED,
   CANCELLING,
-  CANCELLED
+  CANCELLED,
 }
 
 enum TxReceiptStatus {
   PENDING,
-  CONFIRMED
+  CONFIRMED,
 }
 
 // One FULL day in MS (milliseconds not Microsoft)
@@ -54,12 +55,12 @@ export default function useRecentActivity() {
     // Filter out any pending/fulfilled orders OLDER than 1 day
     // and adjust order object to match TransactionDetail addedTime format
     // which is used later in app to render list of activity
-    const adjustedOrders = allNonEmptyOrders.filter(isOrderRecent).map(order => {
+    const adjustedOrders = allNonEmptyOrders.filter(isOrderRecent).map((order) => {
       // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
       // and time in MS vs ISO string as Orders uses
       return {
         ...order,
-        addedTime: Date.parse(order.creationTime)
+        addedTime: Date.parse(order.creationTime),
       }
     })
 
@@ -72,12 +73,12 @@ export default function useRecentActivity() {
     // which is used later in app to render list of activity
     const adjustedTransactions = Object.values(allTransactions)
       .filter(isTransactionRecent)
-      .map(tx => {
+      .map((tx) => {
         return {
           ...tx,
           // we need to adjust Transaction object and add "id" + "status" to match Orders type
           id: tx.hash,
-          status: tx.receipt ? OrderStatus.FULFILLED : OrderStatus.PENDING
+          status: tx.receipt ? OrderStatus.FULFILLED : OrderStatus.PENDING,
         }
       })
 
@@ -102,7 +103,7 @@ interface ActivityDescriptors {
   type: ActivityType
 }
 
-export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: string }): ActivityDescriptors | null {
+export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id: string }): ActivityDescriptors | null {
   const allTransactions = useAllTransactions()
   const order = useOrder({ id, chainId })
 
@@ -159,7 +160,7 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: number; id: 
       activity,
       summary,
       status,
-      type
+      type,
     }
   }, [chainId, order, tx])
 }

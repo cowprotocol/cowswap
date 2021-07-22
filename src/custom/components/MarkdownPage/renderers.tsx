@@ -10,7 +10,7 @@ const getTextFromMarkdownNode = (node: MarkdownNode): string => {
   // for heading, most of the time there will be only one child text node
   // but can be `## heading text <span>span text</span> **bold text**`
   // =4 nodes (space is a text node)
-  visit(node, 'text', textNode => {
+  visit(node, 'text', (textNode) => {
     text += textNode.value || ''
   })
 
@@ -21,7 +21,7 @@ interface HeadingProps {
   children: ReactNode
   node: MarkdownNode & { type: 'heading' }
 }
-export function HeadingRenderer ({ level, children, node }: HeadingProps): JSX.Element {
+export function HeadingRenderer({ level, children, node }: HeadingProps): JSX.Element {
   // traverse markdown syntax tree node
   // and get text
   const nodeText = getTextFromMarkdownNode(node)

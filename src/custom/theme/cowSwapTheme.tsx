@@ -6,13 +6,14 @@ import Cursor3 from 'assets/cow-swap/cursor3.gif'
 import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 import { Colors } from 'theme/styled'
-import { colors as colorsBaseTheme, themeVariables as baseThemeVariables } from 'theme/baseTheme'
-
 import {
-  theme as themeUniswap,
-  FixedGlobalStyle as FixedGlobalStyleUniswap,
-  ThemedGlobalStyle as ThemedGlobalStyleUniswap
-} from '@src/theme'
+  colors as colorsBaseTheme,
+  themeVariables as baseThemeVariables,
+  UniFixedGlobalStyle,
+  UniThemedGlobalStyle,
+} from 'theme/baseTheme'
+
+import { theme as themeUniswap } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 import { cowSwapBackground, cowSwapLogo } from './cowSwapAssets'
 
@@ -37,7 +38,7 @@ export function colors(darkMode: boolean): Colors {
     text1: darkMode ? '#c5daef' : '#000000',
     text2: darkMode ? '#021E34' : '#000000',
     text3: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#000000',
-    text4: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#000000b8',
+    text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds / greys ******
     bg1: darkMode ? '#163861' : '#D5E9F0',
@@ -69,7 +70,7 @@ export function colors(darkMode: boolean): Colors {
 
     // table styles
     tableHeadBG: darkMode ? '#021E34' : 'rgb(2 30 52 / 15%)',
-    tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff'
+    tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
   }
 }
 
@@ -79,7 +80,7 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
       alt: 'CowSwap Logo',
       width: '208px',
-      height: '50px'
+      height: '50px',
     },
     cursor: css`
       cursor: url(${Cursor1}), auto;
@@ -103,13 +104,11 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       background: css`
         background: rgba(164, 211, 227, 1);
         background: url(data:image/svg+xml;base64,${cowSwapBackground(darkMode)}) no-repeat 100% / cover fixed,
-          ${
-            darkMode
-              ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
-              : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'
-          };
+          ${darkMode
+            ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
+            : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
         background-attachment: fixed;
-      `
+      `,
     },
     appBody: {
       boxShadow: `4px 4px 0px ${colorsTheme.black}`,
@@ -118,8 +117,8 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       padding: '12px 6px',
       maxWidth: {
         normal: '460px',
-        content: '680px'
-      }
+        content: '680px',
+      },
     },
     header: {
       border: 'none',
@@ -130,8 +129,8 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         colorHoverBg: darkMode ? colorsTheme.black : colorsTheme.disabled,
         closeButtonBg: darkMode ? colorsTheme.white : colorsTheme.disabled,
         closeButtonColor: colorsTheme.black,
-        seperatorColor: colorsTheme.disabled
-      }
+        seperatorColor: colorsTheme.disabled,
+      },
     },
     buttonPrimary: {
       background: css`
@@ -141,7 +140,7 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
       borderRadius: '16px',
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     buttonOutlined: {
       background: css`
@@ -151,25 +150,25 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
       borderRadius: '16px',
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     buttonLight: {
       backgroundHover: colorsTheme.primary4,
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     currencyInput: {
       background: `${darkMode ? colorsTheme.blueShade : colorsTheme.white}`,
       color: colorsTheme.text1,
-      border: `2px solid ${darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled}`
+      border: `2px solid ${darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled}`,
     },
     buttonCurrencySelect: {
       background: colorsTheme.bg1,
       border: `2px solid ${colorsTheme.black}`,
       boxShadow: `2px 2px 0px ${colorsTheme.black}`,
       color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
-      colorSelected: darkMode ? colorsTheme.white : colorsTheme.text1
+      colorSelected: darkMode ? colorsTheme.white : colorsTheme.text1,
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
@@ -177,12 +176,12 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     footerColor: darkMode ? colorsTheme.text1 : colorsTheme.greenShade,
     networkCard: {
       background: 'rgb(255 120 74 / 60%)',
-      text: colorsTheme.text1
+      text: colorsTheme.text1,
     },
     wallet: {
       color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
-      background: darkMode ? colorsTheme.white : colorsTheme.bg2
-    }
+      background: darkMode ? colorsTheme.white : colorsTheme.bg2,
+    },
   }
 }
 
@@ -194,7 +193,7 @@ export function theme(darkmode: boolean): DefaultTheme {
 
     // Overide Theme
     ...baseThemeVariables(darkmode, colorsTheme),
-    ...themeVariables(darkmode, colorsTheme)
+    ...themeVariables(darkmode, colorsTheme),
   }
 }
 
@@ -207,15 +206,14 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
-  // Uniswap default
-  ${FixedGlobalStyleUniswap}
+  // Uni V2 theme mixin
+  ${UniFixedGlobalStyle}
 `
 
 export const ThemedGlobalStyle = createGlobalStyle`
-  // Uniswap default
-  ${ThemedGlobalStyleUniswap}
+  // Uni V2 theme mixin
+  ${UniThemedGlobalStyle}
 
-  // Custom
   html {
     color: ${({ theme }) => theme.text1};
     ${({ theme }) => theme.body.background}
@@ -233,7 +231,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
   // START - Modal overrides
   ${HeaderText} {
-    color: ${({ theme }) => theme.text2};
+    color: ${({ theme }) => theme.text1};
   }
 
   ${ModalContentWrapper} {

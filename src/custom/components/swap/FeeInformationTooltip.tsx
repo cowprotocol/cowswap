@@ -2,6 +2,9 @@ import React from 'react'
 import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components'
+import { useUSDCValue } from 'hooks/useUSDCPrice'
+import { formatSmart } from 'utils/format'
+import useTheme from 'hooks/useTheme'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -13,11 +16,15 @@ interface FeeInformationTooltipProps {
   type: 'From' | 'To'
 }
 
-const Wrapper = styled.div`
+const WrappedQuestionHelper = styled(QuestionHelper)`
+  display: inline-flex;
+`
+
+export const FeeInformationTooltipWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 22.39px;
+  height: 60px;
 `
 
 const FeeTooltipLine = styled.p`
@@ -36,21 +43,50 @@ const FeeTooltipLine = styled.p`
 
 const Breakline = styled.p`
   height: 0;
-  border: 0.1px solid #00000052;
-  margin: 0.3rem 0;
   width: 100%;
+  margin: 6px 0;
+
+  border-bottom-color: #9191912e;
+  border-bottom: 1px;
+  border-bottom-style: inset;
+`
+
+const FeeAmountAndFiat = styled.span`
+  ${({ theme }) => theme.flexColumnNoWrap};
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+
+  font-weight: 600;
+
+  > small {
+    font-size: 75%;
+    font-weight: normal;
+  }
+`
+
+const FeeInnerWrapper = styled.div`
+  ${({ theme }) => theme.flexColumnNoWrap};
+  gap: 2px;
 `
 
 export default function FeeInformationTooltip(props: FeeInformationTooltipProps) {
   const { trade, label, amountBeforeFees, amountAfterFees, feeAmount, type, showHelper } = props
 
+  const theme = useTheme()
+  const fiatValue = useUSDCValue(type === 'From' ? trade?.inputAmount : trade?.outputAmount)
+
+  if (!trade || !showHelper) return null
+
   return (
-    <Wrapper>
-      <span>{label}</span>{' '}
-      {trade && showHelper && (
-        <QuestionHelper
+    <FeeInformationTooltipWrapper>
+      <span>
+        {label}{' '}
+        <WrappedQuestionHelper
+          bgColor={theme.bg4}
+          color={theme.text1}
           text={
-            <div>
+            <FeeInnerWrapper>
               <FeeTooltipLine>
                 <span>Before fee</span>
                 <span>{amountBeforeFees}</span>{' '}
@@ -71,10 +107,13 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
                 <strong>{type}</strong>
                 <strong>{amountAfterFees}</strong>{' '}
               </FeeTooltipLine>
-            </div>
+            </FeeInnerWrapper>
           }
         />
-      )}
-    </Wrapper>
+      </span>
+      <FeeAmountAndFiat>
+        {amountAfterFees} {fiatValue && <small>≈ ${formatSmart(fiatValue)}</small>}
+      </FeeAmountAndFiat>
+    </FeeInformationTooltipWrapper>
   )
 }

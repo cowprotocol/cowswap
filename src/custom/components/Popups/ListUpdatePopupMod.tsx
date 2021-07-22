@@ -26,7 +26,7 @@ export default function ListUpdatePopup({
   newList,
   auto,
   // MOD:
-  acceptListUpdate
+  acceptListUpdate,
 }: ListUpdatePopupProps) {
   const removePopup = useRemovePopup()
   const removeThisPopup = useCallback(() => removePopup(popKey), [popKey, removePopup])
@@ -37,7 +37,7 @@ export default function ListUpdatePopup({
     ReactGA.event({
       category: 'Lists',
       action: 'Update List from Popup',
-      label: listUrl
+      label: listUrl,
     })
     dispatch(acceptListUpdate(listUrl))
     removeThisPopup()
@@ -45,7 +45,11 @@ export default function ListUpdatePopup({
     //   }, [acceptListUpdate, auto, dispatch, listUrl, removeThisPopup])
   }, [acceptListUpdate, auto, dispatch, listUrl, removeThisPopup])
 
-  const { added: tokensAdded, changed: tokensChanged, removed: tokensRemoved } = useMemo(() => {
+  const {
+    added: tokensAdded,
+    changed: tokensChanged,
+    removed: tokensRemoved,
+  } = useMemo(() => {
     return diffTokenLists(oldList.tokens, newList.tokens)
   }, [newList.tokens, oldList.tokens])
   const numTokensChanged = useMemo(

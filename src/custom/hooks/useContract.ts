@@ -1,18 +1,18 @@
 import { Contract } from '@ethersproject/contracts'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 
 import { useContract } from '@src/hooks/useContract'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { GP_V2_SETTLEMENT_INTERFACE } from 'constants/GPv2Settlement'
-import { ChainId } from '@uniswap/sdk'
-import ENS_ABI from 'constants/abis/ens-registrar.json'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import ENS_ABI from 'abis/ens-registrar.json'
 
 export * from '@src/hooks/useContract'
 
 export function useGP2SettlementContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && GP_SETTLEMENT_CONTRACT_ADDRESS[chainId], GP_V2_SETTLEMENT_INTERFACE, false)
+  return useContract(chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined, GP_V2_SETTLEMENT_INTERFACE, false)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -21,7 +21,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
   if (chainId) {
     switch (chainId) {
       case ChainId.MAINNET:
-      case ChainId.GÖRLI:
+      case ChainId.GOERLI:
       case ChainId.ROPSTEN:
       case ChainId.RINKEBY:
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'

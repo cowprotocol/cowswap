@@ -1,16 +1,19 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { darken } from 'polished'
-import { useTranslation } from 'react-i18next'
-import { NavLink, Link as HistoryLink } from 'react-router-dom'
+import { Trans } from '@lingui/macro'
+import { NavLink, Link as HistoryLink, useLocation } from 'react-router-dom'
+import { Percent } from '@uniswap/sdk-core'
 
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
-// import QuestionHelper from '../QuestionHelper'
-import Settings from '../Settings'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'state'
+import SettingsTab from '../Settings'
+
+import { useAppDispatch } from 'state/hooks'
 import { resetMintState } from 'state/mint/actions'
+import { resetMintState as resetMintV3State } from 'state/mint/v3/actions'
+import { TYPE } from 'theme'
+import useTheme from 'hooks/useTheme'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -22,7 +25,7 @@ const Tabs = styled.div`
 const activeClassName = 'ACTIVE'
 
 const StyledNavLink = styled(NavLink).attrs({
-  activeClassName
+  activeClassName,
 })`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
@@ -57,50 +60,79 @@ const StyledArrowLeft = styled(ArrowLeft)`
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
-  const { t } = useTranslation()
   return (
-    <Tabs style={{ marginBottom: '20px', display: 'none' }}>
+    <Tabs style={{ marginBottom: '20px', display: 'none', padding: '1rem 1rem 0 1rem' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
-        {t('swap')}
+        <Trans>Swap</Trans>
       </StyledNavLink>
       <StyledNavLink id={`pool-nav-link`} to={'/pool'} isActive={() => active === 'pool'}>
-        {t('pool')}
+        <Trans>Pool</Trans>
       </StyledNavLink>
     </Tabs>
   )
 }
 
-export function FindPoolTabs() {
+export function FindPoolTabs({ origin }: { origin: string }) {
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem 1rem 0 1rem' }}>
-        <HistoryLink to="/pool">
+        <HistoryLink to={origin}>
           <StyledArrowLeft />
         </HistoryLink>
-        <ActiveText>Import Pool</ActiveText>
-        <Settings />
+        <ActiveText>
+          <Trans>Import V2 Pool</Trans>
+        </ActiveText>
       </RowBetween>
     </Tabs>
   )
 }
 
-export function AddRemoveTabs({ adding, creating }: { adding: boolean; creating: boolean }) {
+export function AddRemoveTabs({
+  adding,
+  creating,
+  defaultSlippage,
+  positionID,
+}: {
+  adding: boolean
+  creating: boolean
+  defaultSlippage: Percent
+  positionID?: string | undefined
+}) {
+  const theme = useTheme()
   // reset states on back
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useAppDispatch()
+  const location = useLocation()
+
+  // detect if back should redirect to v3 or v2 pool page
+  const poolLink = location.pathname.includes('add/v2')
+    ? '/pool/v2'
+    : '/pool' + (!!positionID ? `/${positionID.toString()}` : '')
 
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem 1rem 0 1rem' }}>
         <HistoryLink
-          to="/pool"
+          to={poolLink}
           onClick={() => {
-            adding && dispatch(resetMintState())
+            if (adding) {
+              // not 100% sure both of these are needed
+              dispatch(resetMintState())
+              dispatch(resetMintV3State())
+            }
           }}
         >
-          <StyledArrowLeft />
+          <StyledArrowLeft stroke={theme.text2} />
         </HistoryLink>
-        <ActiveText>{creating ? 'Create a pair' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>
-        <Settings />
+        <TYPE.mediumHeader fontWeight={500} fontSize={20}>
+          {creating ? (
+            <Trans>Create a pair</Trans>
+          ) : adding ? (
+            <Trans>Add Liquidity</Trans>
+          ) : (
+            <Trans>Remove Liquidity</Trans>
+          )}
+        </TYPE.mediumHeader>
+        <SettingsTab placeholderSlippage={defaultSlippage} />
       </RowBetween>
     </Tabs>
   )

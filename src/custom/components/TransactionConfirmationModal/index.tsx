@@ -1,5 +1,6 @@
-import { ChainId, Currency } from '@uniswap/sdk'
-import { useActiveWeb3React } from 'hooks'
+import { Currency } from '@uniswap/sdk-core'
+import { useActiveWeb3React } from 'hooks/web3'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { CloseIcon } from 'theme'
@@ -12,7 +13,6 @@ import { ArrowUpCircle, CheckCircle } from 'react-feather'
 import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
-
 
 const Wrapper = styled.div`
   width: 100%;
@@ -107,7 +107,7 @@ export function TransactionSubmittedContent({
   onDismiss,
   chainId,
   hash,
-  currencyToAdd
+  currencyToAdd,
 }: {
   onDismiss: () => void
   hash: string | undefined

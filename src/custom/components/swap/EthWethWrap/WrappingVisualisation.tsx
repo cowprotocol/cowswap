@@ -1,6 +1,6 @@
 import React from 'react'
 import { ArrowRight } from 'react-feather'
-import { CurrencyAmount, Currency } from '@uniswap/sdk'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { WrapCardContainer, WrapCard } from './WrapCard'
 
 import { colors } from 'theme'
@@ -14,13 +14,13 @@ const WrappingVisualisation = ({
   wrapped,
   wrappedBalance,
   wrappedSymbol,
-  nativeInput
+  nativeInput,
 }: {
   nativeSymbol: string
-  nativeBalance: CurrencyAmount | undefined
+  nativeBalance: CurrencyAmount<Currency> | undefined
   native: Currency
-  nativeInput: CurrencyAmount | undefined
-  wrappedBalance: CurrencyAmount | undefined
+  nativeInput: CurrencyAmount<Currency> | undefined
+  wrappedBalance: CurrencyAmount<Currency> | undefined
   wrappedSymbol: string
   wrapped: Currency
 }) => (

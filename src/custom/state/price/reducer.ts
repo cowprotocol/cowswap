@@ -1,26 +1,16 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
-import { FeeQuoteParams } from 'utils/operator'
+import { FeeInformation, FeeQuoteParams, PriceInformation } from 'utils/price'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
 export const EMPTY_FEE = {
   feeAsCurrency: undefined,
-  amount: '0'
-}
-
-export interface FeeInformation {
-  expirationDate: string
-  amount: string
-}
-
-export interface PriceInformation {
-  token: string
-  amount: string | null
+  amount: '0',
 }
 
 export interface QuoteInformationObject extends FeeQuoteParams {
@@ -61,11 +51,11 @@ function getResetPrice(sellToken: string, buyToken: string, kind: OrderKind) {
     // The price estimation is given in:
     //    - sell tokens (for buy orders)
     //    - buy tokens (for sell orders)
-    token: kind === OrderKind.BUY ? sellToken : buyToken
+    token: kind === OrderKind.BUY ? sellToken : buyToken,
   }
 }
 
-export default createReducer(initialState, builder =>
+export default createReducer(initialState, (builder) =>
   builder
     /**
      * Gets a new quote
@@ -88,7 +78,7 @@ export default createReducer(initialState, builder =>
         // Update last checked price
         lastCheck: Date.now(),
         // Reset price
-        price: getResetPrice(sellToken, buyToken, kind)
+        price: getResetPrice(sellToken, buyToken, kind),
       }
 
       // Activate loader
@@ -110,7 +100,7 @@ export default createReducer(initialState, builder =>
         quotes[sellToken] = {
           ...quoteInfo,
           // Update last checked price
-          lastCheck: Date.now()
+          lastCheck: Date.now(),
         }
       }
 
@@ -152,7 +142,7 @@ export default createReducer(initialState, builder =>
         quotes[chainId][sellToken] = {
           ...quoteInformation,
           ...payload,
-          price: getResetPrice(sellToken, buyToken, kind)
+          price: getResetPrice(sellToken, buyToken, kind),
         }
       }
 

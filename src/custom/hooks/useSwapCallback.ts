@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
-import { ETHER, Percent, TradeType, CurrencyAmount } from '@uniswap/sdk'
+import { Currency, /* Ether as ETHER, */ Percent, TradeType, CurrencyAmount } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
-import { BIPS_BASE, BUY_ETHER_TOKEN, INITIAL_ALLOWED_SLIPPAGE, RADIX_DECIMAL } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 
 import { useAddPendingOrder } from 'state/orders/hooks'
 
 import { SwapCallbackState } from '@src/hooks/useSwapCallback'
 import useENS from '@src/hooks/useENS'
 
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useWrapEther } from 'hooks/useWrapEther'
 
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -17,7 +17,7 @@ import { sendOrder } from 'utils/trade'
 import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
-import { wrappedCurrency } from '@src/utils/wrappedCurrency'
+import { GpEther as ETHER } from 'constants/tokens'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -31,9 +31,9 @@ function calculateValidTo(deadline: number): number {
 }
 
 const _computeInputAmountForSignature = (params: {
-  input: CurrencyAmount
-  inputWithSlippage: CurrencyAmount
-  fee?: CurrencyAmount
+  input: CurrencyAmount<Currency>
+  inputWithSlippage: CurrencyAmount<Currency>
+  fee?: CurrencyAmount<Currency>
   kind: OrderKind
 }) => {
   const { input, inputWithSlippage, fee, kind } = params
@@ -54,7 +54,7 @@ const _computeInputAmountForSignature = (params: {
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
   trade: TradeGp | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
+  allowedSlippage: Percent = INITIAL_ALLOWED_SLIPPAGE_PERCENT, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
@@ -82,11 +82,12 @@ export function useSwapCallback(
       }
     }
 
-    const isBuyEth = trade.outputAmount.currency === ETHER
-    const isSellEth = trade.inputAmount.currency === ETHER
+    const isBuyEth = ETHER.onChain(chainId).equals(trade.outputAmount.currency)
+    const isSellEth = ETHER.onChain(chainId).equals(trade.inputAmount.currency)
 
-    const sellToken = wrappedCurrency(trade.inputAmount.currency, chainId)
-    const buyToken = isBuyEth ? BUY_ETHER_TOKEN[chainId] : wrappedCurrency(trade.outputAmount.currency, chainId)
+    const sellToken = trade.inputAmount.currency.wrapped
+    // TODO: check this ETHER.onChain AND .wrapped
+    const buyToken = isBuyEth ? ETHER.onChain(chainId).wrapped : trade.outputAmount.currency.wrapped
 
     if (!sellToken || !buyToken || (isSellEth && !wrapEther)) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
@@ -101,10 +102,10 @@ export function useSwapCallback(
           inputAmountWithFee,
           fee,
           outputAmount: expectedOutputAmount,
-          tradeType
+          tradeType,
         } = trade
 
-        const slippagePercent = new Percent(allowedSlippage.toString(RADIX_DECIMAL), BIPS_BASE)
+        const slippagePercent = allowedSlippage
         const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
         const validTo = calculateValidTo(deadline)
 
@@ -133,7 +134,7 @@ export function useSwapCallback(
             slippagePercent: slippagePercent.toFixed() + '%',
             recipient,
             recipientAddressOrName,
-            chainId
+            chainId,
           }
         )
 
@@ -149,7 +150,7 @@ export function useSwapCallback(
             input: trade.inputAmountWithFee,
             inputWithSlippage: inputAmountWithSlippage,
             fee: trade.fee?.feeAsCurrency,
-            kind
+            kind,
           }),
           // unadjusted outputAmount
           outputAmount: outputAmountWithSlippage,
@@ -161,7 +162,7 @@ export function useSwapCallback(
           recipient,
           recipientAddressOrName,
           addPendingOrder,
-          signer: library.getSigner()
+          signer: library.getSigner(),
         })
 
         if (wrapPromise) {
@@ -171,7 +172,7 @@ export function useSwapCallback(
 
         return postOrderPromise
       },
-      error: null
+      error: null,
     }
   }, [
     trade,
@@ -185,6 +186,6 @@ export function useSwapCallback(
     allowedSlippage,
     deadline,
     wrapEther,
-    addPendingOrder
+    addPendingOrder,
   ])
 }

@@ -31,8 +31,8 @@ export const StyledMenu = styled(MenuMod)`
   }
 `
 
-const Policy = styled(InternalMenuItem).attrs(attrs => ({
-  ...attrs
+const Policy = styled(InternalMenuItem).attrs((attrs) => ({
+  ...attrs,
 }))`
   font-size: 0.8em;
   text-decoration: underline;

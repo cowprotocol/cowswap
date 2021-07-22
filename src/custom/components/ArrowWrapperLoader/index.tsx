@@ -43,9 +43,9 @@ export const Wrapper = styled.div<ShowLoaderProp>`
     }
   }
 
-  
-  ${({ showloader }) => showloader &&
-  `
+  ${({ showloader }) =>
+    showloader &&
+    `
     > ${ArrowDownIcon} {
       height: 0;
       width: 0;

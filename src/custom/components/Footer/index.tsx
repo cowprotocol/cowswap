@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   width: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: 0 auto 150px;
+    margin: 0 auto 65px;
   `}
 `
 

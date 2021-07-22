@@ -22,7 +22,7 @@ function getRpcNetworks(): [RpcNetworks, number[]] {
   }
 
   // Get list of supported chains
-  const chainIds = supportedChainIdsEnv.split(',').map(chainId => Number(chainId.trim()))
+  const chainIds = supportedChainIdsEnv.split(',').map((chainId) => Number(chainId.trim()))
   if (chainIds.length === 0) {
     throw new Error(`At least one network should be supported. REACT_APP_CHAIN_ID`)
   }
@@ -53,7 +53,7 @@ function getRpcNetworks(): [RpcNetworks, number[]] {
   // Reason: By convention we will return NETWORK_CHAIN_ID as the first element in the supported networks
   const otherChainIds = Object.keys(rpcNetworks)
     .map(Number)
-    .filter(networkId => networkId !== defaultChainId)
+    .filter((networkId) => networkId !== defaultChainId)
   const supportedChainIds = [defaultChainId, ...otherChainIds]
 
   return [rpcNetworks, supportedChainIds]
@@ -64,7 +64,7 @@ export const NETWORK_CHAIN_ID = supportedChainIds[0]
 
 export const network = new NetworkConnector({
   urls: rpcNetworks,
-  defaultChainId: NETWORK_CHAIN_ID
+  defaultChainId: NETWORK_CHAIN_ID,
 })
 
 let networkLibrary: Web3Provider | undefined
@@ -79,13 +79,13 @@ export const walletconnect = new WalletConnectConnector({
   rpc: rpcNetworks,
   bridge: WALLET_CONNECT_BRIDGE,
   qrcode: true,
-  pollingInterval: 15000
+  pollingInterval: 15000,
 })
 
 // mainnet only
 export const fortmatic = new FortmaticConnector({
   apiKey: process.env.REACT_APP_FORTMATIC_KEY ?? '',
-  chainId: NETWORK_CHAIN_ID
+  chainId: NETWORK_CHAIN_ID,
 })
 
 // mainnet only
@@ -93,14 +93,14 @@ export const portis = new PortisConnector({
   dAppId: process.env.REACT_APP_PORTIS_ID ?? '',
   // TODO: Allow to configure multiple networks in portis
   // networks: supportedChainIds
-  networks: [NETWORK_CHAIN_ID]
+  networks: [NETWORK_CHAIN_ID],
 })
 
 // mainnet only
 export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
   appName: 'CowSwap',
-  appLogoUrl: 'https://raw.githubusercontent.com/gnosis/gp-swap-ui/develop/public/images/logo-square-512.png'
+  appLogoUrl: 'https://raw.githubusercontent.com/gnosis/gp-swap-ui/develop/public/images/logo-square-512.png',
 })
 
 export enum WalletProvider {
@@ -108,7 +108,7 @@ export enum WalletProvider {
   WALLET_CONNECT = 'WALLET_CONNECT',
   FORMATIC = 'FORMATIC',
   PORTIS = 'PORTIS',
-  WALLET_LINK = 'WALLET_LINK'
+  WALLET_LINK = 'WALLET_LINK',
 }
 
 export function getProviderType(connector: AbstractConnector | undefined): WalletProvider | undefined {

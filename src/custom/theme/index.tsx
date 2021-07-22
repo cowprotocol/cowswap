@@ -1,7 +1,7 @@
 export enum ButtonSize {
   SMALL,
   DEFAULT,
-  BIG
+  BIG,
 }
 
 // Cow theme

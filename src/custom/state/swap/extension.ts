@@ -1,17 +1,18 @@
-import { Token, TokenAmount, JSBI, Currency, CurrencyAmount, TradeType } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import JSBI from 'jsbi'
 import { QuoteInformationObject } from 'state/price/reducer'
 import TradeGp, { _constructTradePrice } from './TradeGp'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 interface TradeParams {
-  parsedAmount?: CurrencyAmount
+  parsedAmount?: CurrencyAmount<Currency>
   inputCurrency?: Currency | null
   outputCurrency?: Currency | null
   quote?: QuoteInformationObject
 }
 
 export const stringToCurrency = (amount: string, currency: Currency) =>
-  currency instanceof Token ? new TokenAmount(currency, JSBI.BigInt(amount)) : CurrencyAmount.ether(JSBI.BigInt(amount))
+  CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(amount))
 
 /**
  * useTradeExactInWithFee
@@ -20,7 +21,7 @@ export const stringToCurrency = (amount: string, currency: Currency) =>
 export function useTradeExactInWithFee({
   parsedAmount: parsedInputAmount,
   outputCurrency,
-  quote
+  quote,
 }: Omit<TradeParams, 'inputCurrency'>) {
   // make sure we have a typed in amount, a fee, and a price
   // else we can assume the trade will be null
@@ -35,7 +36,7 @@ export function useTradeExactInWithFee({
   // set final fee object
   const fee = {
     ...quote.fee,
-    feeAsCurrency
+    feeAsCurrency,
   }
 
   // external price output as Currency
@@ -49,7 +50,7 @@ export function useTradeExactInWithFee({
     // pass in our feeless outputAmount (CurrencyAmount)
     buyToken: outputAmount,
     kind: OrderKind.SELL,
-    price: quote?.price
+    price: quote?.price,
   })
 
   // no price object or feeAdjusted amount? no trade
@@ -62,11 +63,12 @@ export function useTradeExactInWithFee({
   return new TradeGp({
     inputAmount: parsedInputAmount,
     inputAmountWithFee: feeAdjustedAmount,
+    inputAmountWithoutFee: parsedInputAmount,
     outputAmount,
     outputAmountWithoutFee,
     fee,
     executionPrice,
-    tradeType: TradeType.EXACT_INPUT
+    tradeType: TradeType.EXACT_INPUT,
   })
 }
 
@@ -77,7 +79,7 @@ export function useTradeExactInWithFee({
 export function useTradeExactOutWithFee({
   parsedAmount: parsedOutputAmount,
   inputCurrency,
-  quote
+  quote,
 }: Omit<TradeParams, 'outputCurrency'>) {
   if (!parsedOutputAmount || !inputCurrency || !quote?.fee || !quote?.price?.amount) return null
 
@@ -85,7 +87,7 @@ export function useTradeExactOutWithFee({
   // set final fee object
   const fee = {
     ...quote.fee,
-    feeAsCurrency
+    feeAsCurrency,
   }
 
   // inputAmount without fee applied
@@ -102,7 +104,7 @@ export function useTradeExactOutWithFee({
     // pass in our parsed buy amount (CurrencyAmount)
     buyToken: parsedOutputAmount,
     kind: OrderKind.BUY,
-    price: quote.price
+    price: quote.price,
   })
 
   // no price object? no trade
@@ -112,10 +114,11 @@ export function useTradeExactOutWithFee({
   return new TradeGp({
     inputAmount: inputAmountWithFee,
     inputAmountWithFee,
+    inputAmountWithoutFee,
     outputAmount: parsedOutputAmount,
     outputAmountWithoutFee: parsedOutputAmount,
     fee,
     executionPrice,
-    tradeType: TradeType.EXACT_OUTPUT
+    tradeType: TradeType.EXACT_OUTPUT,
   })
 }

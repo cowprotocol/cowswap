@@ -10,7 +10,7 @@ export function checkEnvironment(host: string) {
     isDev: domainDevRegex?.test(host) || false,
     isStaging: domainStagingRegex?.test(host) || false,
     isProd: domainProdRegex?.test(host) || false,
-    isEns: domainEnsRegex?.test(host) || false
+    isEns: domainEnsRegex?.test(host) || false,
   }
 }
 

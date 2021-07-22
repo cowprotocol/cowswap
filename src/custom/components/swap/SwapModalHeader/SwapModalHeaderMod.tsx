@@ -1,27 +1,64 @@
-import { /* Trade, */ Percent, TradeType } from '@uniswap/sdk'
-import React, { useContext, useMemo } from 'react'
+import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
+// import { Trade as V2Trade } from '@uniswap/v2-sdk'
+// import { Trade as V3Trade } from '@uniswap/v3-sdk'
+import React, { useState, useContext, useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
-import { Field } from 'state/swap/actions'
+import styled, { ThemeContext } from 'styled-components'
+import { useUSDCValue } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { isAddress, shortenAddress } from 'utils'
-import { computeSlippageAdjustedAmounts /* computeTradePriceBreakdown, warningSeverity */ } from 'utils/prices'
+import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 import { AutoColumn } from 'components/Column'
+import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RowBetween, RowFixed } from 'components/Row'
 import { TruncatedText, SwapShowAcceptChanges } from 'components/swap/styleds'
+import { Trans } from '@lingui/macro'
+
+import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
+
+import TradePrice from 'components/swap/TradePrice'
+
+// MOD
 import TradeGp from 'state/swap/TradeGp'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { computeSlippageAdjustedAmounts } from 'utils/prices'
+import { Field } from 'state/swap/actions'
+import { formatSmart } from 'utils/format'
+import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
+import FeeInformationTooltip from '../FeeInformationTooltip'
+import { LightCardType } from '.'
+import { transparentize } from 'polished'
 
+export const ArrowWrapper = styled.div`
+  padding: 4px;
+  border-radius: 12px;
+  height: 32px;
+  width: 32px;
+  position: relative;
+  margin-top: -18px;
+  margin-bottom: -18px;
+  left: calc(50% - 16px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.bg1};
+  border: 2px solid;
+  border-color: ${({ theme }) => theme.bg0};
+  z-index: 2;
+`
+
+// MOD
 export interface SwapModalHeaderProps {
   trade: TradeGp
-  allowedSlippage: number
+  allowedSlippage: Percent
   recipient: string | null
   showAcceptChanges: boolean
   priceImpactWithoutFee?: Percent
   onAcceptChanges: () => void
+  LightCard: LightCardType
 }
 
 export default function SwapModalHeader({
@@ -29,105 +66,197 @@ export default function SwapModalHeader({
   allowedSlippage,
   recipient,
   showAcceptChanges,
-  //priceImpactWithoutFee,
-  onAcceptChanges
-}: SwapModalHeaderProps) {
-  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
-    trade,
-    allowedSlippage
-  ])
-  //   const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
-  const priceImpactSeverity = 0 // warningSeverity(priceImpactWithoutFee)
+  onAcceptChanges,
+  LightCard,
+}: /* 
+{
+  trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
+  allowedSlippage: Percent
+  recipient: string | null
+  showAcceptChanges: boolean
+  onAcceptChanges: () => void
+} */
+
+SwapModalHeaderProps) {
+  const slippageAdjustedAmounts = useMemo(
+    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
+    [trade, allowedSlippage]
+  )
 
   const theme = useContext(ThemeContext)
 
+  const [showInverted, setShowInverted] = useState<boolean>(false)
+
+  // show fiatValue for unadjusted trade amounts!
+  const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
+  const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+
+  const [slippageIn, slippageOut] = useMemo(
+    () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],
+    [slippageAdjustedAmounts]
+  )
+
+  const [exactInLabel, exactOutLabel] = useMemo(
+    () => [
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
+    ],
+    [trade]
+  )
+
   return (
-    <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
-      <RowBetween align="flex-end">
-        <RowFixed gap={'0px'}>
-          <CurrencyLogo currency={trade.inputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} />
-          <TruncatedText
-            fontSize={24}
-            fontWeight={500}
-            color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
-          >
-            {trade.inputAmount.toSignificant(6)}
-          </TruncatedText>
-        </RowFixed>
-        <RowFixed gap={'0px'}>
-          <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-            {trade.inputAmount.currency.symbol}
-          </Text>
-        </RowFixed>
+    <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
+      <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
+        <AutoColumn gap={'8px'}>
+          <RowBetween>
+            <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
+              <Trans>From</Trans>
+            </TYPE.body>
+            <FiatValue fiatValue={fiatValueInput} />
+          </RowBetween>
+          <RowBetween align="center">
+            <RowFixed gap={'0px'}>
+              <CurrencyLogo currency={trade.inputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+              <Text fontSize={20} fontWeight={500}>
+                {trade.inputAmount.currency.symbol}
+              </Text>
+            </RowFixed>
+            <RowFixed gap={'0px'}>
+              <TruncatedText
+                fontSize={24}
+                fontWeight={500}
+                color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
+              >
+                {formatSmart(trade.inputAmountWithoutFee)}
+              </TruncatedText>
+            </RowFixed>
+          </RowBetween>
+        </AutoColumn>
+      </LightCard>
+      {!!exactInLabel && (
+        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+          <FeeInformationTooltip
+            amountAfterFees={formatSmart(trade.inputAmountWithFee)}
+            amountBeforeFees={formatSmart(trade.inputAmountWithoutFee)}
+            feeAmount={formatSmart(trade.fee.feeAsCurrency)}
+            label={exactInLabel}
+            showHelper
+            trade={trade}
+            type="From"
+          />
+        </AuxInformationContainer>
+      )}
+      <ArrowWrapper>
+        <ArrowDown size="16" color={theme.text2} />
+      </ArrowWrapper>
+      <LightCard
+        flatBorder={!!exactOutLabel}
+        padding="0.75rem 1rem"
+        style={{ marginBottom: !!exactOutLabel ? '0' : '0.25rem' }}
+      >
+        <AutoColumn gap={'8px'}>
+          <RowBetween>
+            <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
+              <Trans>To</Trans>
+            </TYPE.body>
+            <TYPE.body fontSize={14} color={theme.text3}>
+              <FiatValue
+                fiatValue={fiatValueOutput}
+                priceImpact={computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)}
+              />
+            </TYPE.body>
+          </RowBetween>
+          <RowBetween align="flex-end">
+            <RowFixed gap={'0px'}>
+              <CurrencyLogo currency={trade.outputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+              <Text fontSize={20} fontWeight={500}>
+                {trade.outputAmount.currency.symbol}
+              </Text>
+            </RowFixed>
+            <RowFixed gap={'0px'}>
+              <TruncatedText fontSize={24} fontWeight={500}>
+                {formatSmart(trade.outputAmountWithoutFee)}
+              </TruncatedText>
+            </RowFixed>
+          </RowBetween>
+        </AutoColumn>
+      </LightCard>
+      {!!exactOutLabel && (
+        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+          <FeeInformationTooltip
+            amountAfterFees={formatSmart(trade.outputAmount)}
+            amountBeforeFees={formatSmart(trade.outputAmountWithoutFee)}
+            feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount))}
+            label={exactOutLabel}
+            showHelper
+            trade={trade}
+            type="To"
+          />
+        </AuxInformationContainer>
+      )}
+      <RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
+        <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
+          <Trans>Price</Trans>
+        </TYPE.body>
+        <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween>
-      <RowFixed>
-        <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
-      </RowFixed>
-      <RowBetween align="flex-end">
-        <RowFixed gap={'0px'}>
-          <CurrencyLogo currency={trade.outputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} />
-          <TruncatedText
-            fontSize={24}
-            fontWeight={500}
-            color={
-              priceImpactSeverity > 2
-                ? theme.red1
-                : showAcceptChanges && trade.tradeType === TradeType.EXACT_INPUT
-                ? theme.primary1
-                : ''
-            }
-          >
-            {trade.outputAmount.toSignificant(6)}
-          </TruncatedText>
-        </RowFixed>
-        <RowFixed gap={'0px'}>
-          <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-            {trade.outputAmount.currency.symbol}
-          </Text>
-        </RowFixed>
-      </RowBetween>
+
+      <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}>
+        <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
+      </LightCard>
+
       {showAcceptChanges ? (
         <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
           <RowBetween>
             <RowFixed>
               <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <TYPE.main color={theme.primary1}> Price Updated</TYPE.main>
+              <TYPE.main color={theme.primary1}>
+                <Trans>Price Updated</Trans>
+              </TYPE.main>
             </RowFixed>
             <ButtonPrimary
               style={{ padding: '.5rem', width: 'fit-content', fontSize: '0.825rem', borderRadius: '12px' }}
               onClick={onAcceptChanges}
             >
-              Accept
+              <Trans>Accept</Trans>
             </ButtonPrimary>
           </RowBetween>
         </SwapShowAcceptChanges>
       ) : null}
-      <AutoColumn justify="flex-start" gap="sm" style={{ padding: '12px 0 0 0px' }}>
+
+      <AutoColumn justify="flex-start" gap="sm" style={{ padding: '.75rem 1rem' }}>
         {trade.tradeType === TradeType.EXACT_INPUT ? (
-          <TYPE.italic textAlign="left" style={{ width: '100%' }}>
-            {`Output is estimated. You will receive at least `}
-            <b>
-              {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
-            </b>
-            {/* {' or the transaction will revert.'} */}
-            {' or the swap will not execute. ' + INPUT_OUTPUT_EXPLANATION}
+          <TYPE.italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
+            <Trans>
+              Output is estimated. You will receive at least{' '}
+              <b>
+                {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
+                {formatSmart(slippageOut) || '-'} {trade.outputAmount.currency.symbol}
+              </b>{' '}
+              or the transaction will expire.
+            </Trans>
           </TYPE.italic>
         ) : (
-          <TYPE.italic textAlign="left" style={{ width: '100%' }}>
-            {`Input is estimated. You will sell at most `}
-            <b>
-              {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
-            </b>
-            {/* {' or the transaction will revert.'} */}
-            {' or the swap will not execute. ' + INPUT_OUTPUT_EXPLANATION}
+          <TYPE.italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
+            <Trans>
+              Input is estimated. You will sell at most{' '}
+              <b>
+                {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
+                {formatSmart(slippageIn) || '-'} {trade.inputAmount.currency.symbol}
+              </b>{' '}
+              {/* or the transaction will revert. */}
+              or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
+            </Trans>
           </TYPE.italic>
         )}
       </AutoColumn>
       {recipient !== null ? (
         <AutoColumn justify="flex-start" gap="sm" style={{ padding: '12px 0 0 0px' }}>
           <TYPE.main>
-            Output will be sent to{' '}
-            <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>
+            <Trans>
+              Output will be sent to{' '}
+              <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>
+            </Trans>
           </TYPE.main>
         </AutoColumn>
       ) : null}

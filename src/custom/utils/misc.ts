@@ -1,11 +1,11 @@
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
-  new Promise(resolve => setTimeout(resolve, ms, result))
+  new Promise((resolve) => setTimeout(resolve, ms, result))
 
 export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
   const failOnTimeout = delay(ms).then(() => {
@@ -64,12 +64,12 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
   if (kind === OrderKind.SELL) {
     return {
       baseToken: sellToken,
-      quoteToken: buyToken
+      quoteToken: buyToken,
     }
   } else {
     return {
       baseToken: buyToken,
-      quoteToken: sellToken
+      quoteToken: sellToken,
     }
   }
 }
@@ -77,17 +77,17 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
 export function getTokensFromMarket<T>({
   quoteToken,
   baseToken,
-  kind
+  kind,
 }: TokensFromMarketParams<T>): Omit<CanonicalMarketParams<T>, 'kind'> {
   if (kind === OrderKind.SELL) {
     return {
       sellToken: baseToken,
-      buyToken: quoteToken
+      buyToken: quoteToken,
     }
   } else {
     return {
       buyToken: baseToken,
-      sellToken: quoteToken
+      sellToken: quoteToken,
     }
   }
 }

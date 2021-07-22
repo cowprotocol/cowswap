@@ -1,6 +1,7 @@
 import { ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit'
-import { ChainId } from '@uniswap/sdk'
 import { TokenList, Version } from '@uniswap/token-lists'
+import { SupportedChainId as ChainId } from 'constants/chains'
+export { SupportedChainId as ChainId } from 'constants/chains'
 
 export interface WithChainId {
   chainId?: ChainId
@@ -33,7 +34,7 @@ export const fetchTokenList: Readonly<{
 }> = {
   pending: createAction<PendingFetchTokenList>('lists/fetchTokenList/pending'),
   fulfilled: createAction<FulfilledFetchTokenList>('lists/fetchTokenList/fulfilled'),
-  rejected: createAction<RejectedFetchTokenList>('lists/fetchTokenList/rejected')
+  rejected: createAction<RejectedFetchTokenList>('lists/fetchTokenList/rejected'),
 }
 // add and remove from list options
 export const addList = createAction<WithChainIdAndUrl>('lists/addList')

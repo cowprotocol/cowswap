@@ -1,13 +1,14 @@
 import React, { useCallback, useContext } from 'react'
 import { batch, useDispatch } from 'react-redux'
 import { ThemeContext } from 'styled-components'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { AppDispatch } from 'state'
 import { clearAllTransactions } from 'state/transactions/actions'
 import { getExplorerLabel, shortenAddress } from 'utils'
 import { AutoRow } from 'components/Row'
 import Copy, { CopyIcon } from 'components/AccountDetails/Copy'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { SUPPORTED_WALLETS } from 'constants/index'
 import { getEtherscanLink } from 'utils'
@@ -37,10 +38,10 @@ import {
   AddressLink,
   LowerSection,
   IconWrapper,
-  renderTransactions
+  renderTransactions,
 } from './AccountDetailsMod'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
-import { MouseoverTooltip } from 'components/Tooltip/TooltipMod'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 const Wrapper = styled.div`
   color: ${({ theme }) => theme.text1};
@@ -146,7 +147,7 @@ export default function AccountDetails({
   pendingTransactions,
   confirmedTransactions,
   ENSName,
-  openOptions
+  openOptions,
 }: AccountDetailsProps) {
   const { chainId, account, connector } = useActiveWeb3React()
   const walletInfo = useWalletInfo()
@@ -183,7 +184,7 @@ export default function AccountDetails({
                         ;(connector as any).close()
                       }}
                     >
-                      Disconnect
+                      <Trans>Disconnect</Trans>
                     </WalletAction>
                   )}
                   <WalletAction
@@ -192,7 +193,7 @@ export default function AccountDetails({
                       openOptions()
                     }}
                   >
-                    Change
+                    <Trans>Change</Trans>
                   </WalletAction>
                 </div>
               </AccountGroupingRow>
@@ -229,7 +230,7 @@ export default function AccountDetails({
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={true}
-                            href={chainId && getEtherscanLink(chainId, ENSName, 'address')}
+                            href={getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
                             <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>

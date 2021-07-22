@@ -11,9 +11,11 @@ import CurrencyInputPanelMod, {
   InputRow,
   InputPanel,
   LabelRow,
-  Container
+  Container,
+  StyledBalanceMax,
 } from './CurrencyInputPanelMod'
 import { RowBetween } from 'components/Row'
+import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
 
 import { StyledLogo } from 'components/CurrencyLogo'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
@@ -47,6 +49,32 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
     > input::placeholder {
       opacity: 0.5;
+    }
+  }
+
+  ${StyledBalanceMax} {
+    color: ${({ theme }) => theme.primary4};
+  }
+
+  ${FeeInformationTooltipWrapper} {
+    font-weight: 600;
+    font-size: 14px;
+
+    > span {
+      font-size: 18px;
+      gap: 2px;
+    }
+
+    > span:first-child {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    > span > small {
+      opacity: 0.75;
+      font-size: 13px;
+      font-weight: 500;
     }
   }
 

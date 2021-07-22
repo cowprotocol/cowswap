@@ -4,7 +4,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { ListRowProps } from '../SearchModal/ManageLists'
 import { acceptListUpdate } from 'state/lists/actions'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 
 export interface ListUpdatePopupProps {
   popKey: string

@@ -7,11 +7,11 @@ export default function useFetchFile(filePath: string) {
   useEffect(() => {
     const fetchFile = async () => {
       await fetch(filePath)
-        .then(res => res.text())
-        .then(text => {
+        .then((res) => res.text())
+        .then((text) => {
           setFile(text)
         })
-        .catch(res => {
+        .catch((res) => {
           setError(`Error fetching file ${filePath} - status: ${res.statusText}`)
         })
     }

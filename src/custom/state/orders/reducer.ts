@@ -1,10 +1,9 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { OrderID } from 'utils/operator'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addPendingOrder,
   removeOrder,
-  Order,
   clearOrders,
   fulfillOrder,
   OrderStatus,
@@ -14,14 +13,15 @@ import {
   expireOrdersBatch,
   cancelOrder,
   cancelOrdersBatch,
-  requestOrderCancellation
+  requestOrderCancellation,
+  SerializedOrder,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
 
 export interface OrderObject {
   id: OrderID
-  order: Order
+  order: SerializedOrder
 }
 
 // {order uuid => OrderObject} mapping
@@ -56,7 +56,7 @@ function prefillState(
       fulfilled: {},
       expired: {},
       cancelled: {},
-      lastCheckedBlock: ContractDeploymentBlocks[chainId] ?? 0
+      lastCheckedBlock: ContractDeploymentBlocks[chainId] ?? 0,
     }
     return
   }
@@ -84,7 +84,7 @@ function prefillState(
 
 const initialState: OrdersState = {}
 
-export default createReducer(initialState, builder =>
+export default createReducer(initialState, (builder) =>
   builder
     .addCase(addPendingOrder, (state, action) => {
       prefillState(state, action)
@@ -169,7 +169,7 @@ export default createReducer(initialState, builder =>
 
       // if there are any newly fulfilled orders
       // update them
-      ids.forEach(id => {
+      ids.forEach((id) => {
         const orderObject = pendingOrders[id]
 
         if (orderObject) {
@@ -213,7 +213,7 @@ export default createReducer(initialState, builder =>
       const pendingOrders = state[chainId].pending
       const cancelledOrders = state[chainId].cancelled
 
-      ids.forEach(id => {
+      ids.forEach((id) => {
         const orderObject = pendingOrders[id]
 
         if (orderObject) {
@@ -235,7 +235,7 @@ export default createReducer(initialState, builder =>
         fulfilled: {},
         expired: {},
         cancelled: {},
-        lastCheckedBlock: lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0
+        lastCheckedBlock: lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0,
       }
     })
     .addCase(updateLastCheckedBlock, (state, action) => {

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { Web3Provider } from '@ethersproject/providers'
-import { useActiveWeb3React } from '@src/hooks/index'
+import { useActiveWeb3React } from '@src/hooks/web3'
 
-export * from '@src/hooks/index'
+export * from '@src/hooks/web3'
 
 /**
  * Provides a Web3Provider instance for active web3 connection, if any

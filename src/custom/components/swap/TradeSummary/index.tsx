@@ -2,20 +2,23 @@ import React from 'react'
 import styled from 'styled-components'
 import TradeSummaryMod from './TradeSummaryMod'
 import { RowFixed } from 'components/Row'
-import TradeGp from 'state/swap/TradeGp'
+import { WithClassName } from 'types'
+import { AdvancedSwapDetailsProps } from '../AdvancedSwapDetails'
 
 const Wrapper = styled.div`
   ${RowFixed} {
     > div {
-      color: ${({ theme }) => theme.text1};
+      color: ${({ theme }) => theme.text4};
     }
   }
 `
 
-export default function TradeSummary({ trade, allowedSlippage }: { trade: TradeGp; allowedSlippage: number }) {
+export type TradeSummaryProps = Required<AdvancedSwapDetailsProps> & WithClassName
+
+export default function TradeSummary({ className, trade, allowedSlippage, showHelpers, showFee }: TradeSummaryProps) {
   return (
-    <Wrapper>
-      <TradeSummaryMod trade={trade} allowedSlippage={allowedSlippage} />
+    <Wrapper className={className}>
+      <TradeSummaryMod trade={trade} allowedSlippage={allowedSlippage} showHelpers={showHelpers} showFee={showFee} />
     </Wrapper>
   )
 }

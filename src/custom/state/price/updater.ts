@@ -1,19 +1,23 @@
 import { useEffect } from 'react'
+
+import { DEFAULT_DECIMALS } from 'custom/constants'
+
+import { UnsupportedToken } from 'utils/operator'
+import { FeeQuoteParams } from 'utils/price'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
-import { useActiveWeb3React } from 'hooks'
 import { useSwapState, tryParseAmount } from 'state/swap/hooks'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { Field } from 'state/swap/actions'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
+
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
-import useDebounce from 'hooks/useDebounce'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
-import { FeeQuoteParams, UnsupportedToken } from 'utils/operator'
-import { QuoteInformationObject } from './reducer'
-import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
+import { useActiveWeb3React } from 'hooks/web3'
+import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
-import { DEFAULT_DECIMALS } from 'custom/constants'
+import { QuoteInformationObject } from './reducer'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -143,7 +147,15 @@ export default function FeesUpdater(): null {
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS
     const toDecimals = buyCurrency?.decimals ?? DEFAULT_DECIMALS
-    const quoteParams = { chainId, sellToken, buyToken, fromDecimals, toDecimals, kind, amount: amount.raw.toString() }
+    const quoteParams = {
+      chainId,
+      sellToken,
+      buyToken,
+      fromDecimals,
+      toDecimals,
+      kind,
+      amount: amount.quotient.toString(),
+    }
 
     // Don't refetch if offline.
     //  Also, make sure we update the error state

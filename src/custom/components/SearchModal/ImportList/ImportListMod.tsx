@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import ReactGA from 'react-ga'
 import { TYPE, CloseIcon } from 'theme'
 import Card from 'components/Card'
@@ -20,6 +20,7 @@ import { useFetchListCallback } from 'hooks/useFetchListCallback'
 // import { removeList, enableList } from 'state/lists/actions'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { useAllLists } from 'state/lists/hooks'
+import { Trans } from '@lingui/macro'
 import { ImportProps } from '.'
 
 const Wrapper = styled.div`
@@ -27,6 +28,13 @@ const Wrapper = styled.div`
   width: 100%;
   overflow: auto;
 `
+
+/* interface ImportProps {
+  listURL: string
+  list: TokenList
+  onDismiss: () => void
+  setModalView: (view: CurrencyModalView) => void
+} */
 
 // export function ImportList({ listURL, list, setModalView, onDismiss }: ImportProps) {
 export function ImportList({ listURL, list, setModalView, onDismiss, enableList, removeList }: Required<ImportProps>) {
@@ -51,7 +59,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
         ReactGA.event({
           category: 'Lists',
           action: 'Add List',
-          label: listURL
+          label: listURL,
         })
 
         // turn list on
@@ -59,11 +67,11 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
         // go back to lists
         setModalView(CurrencyModalView.manage)
       })
-      .catch(error => {
+      .catch((error) => {
         ReactGA.event({
           category: 'Lists',
           action: 'Add List Failed',
-          label: listURL
+          label: listURL,
         })
         setAddError(error.message)
         removeList(listURL)
@@ -75,7 +83,9 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
       <PaddedColumn gap="14px" style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
           <ArrowLeft style={{ cursor: 'pointer' }} onClick={() => setModalView(CurrencyModalView.manage)} />
-          <TYPE.mediumHeader>Import List</TYPE.mediumHeader>
+          <TYPE.mediumHeader>
+            <Trans>Import List</Trans>
+          </TYPE.mediumHeader>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
       </PaddedColumn>
@@ -109,18 +119,20 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
             <AutoColumn justify="center" style={{ textAlign: 'center', gap: '16px', marginBottom: '12px' }}>
               <AlertTriangle stroke={theme.red1} size={32} />
               <TYPE.body fontWeight={500} fontSize={20} color={theme.red1}>
-                Import at your own risk{' '}
+                <Trans>Import at your own risk</Trans>
               </TYPE.body>
             </AutoColumn>
 
             <AutoColumn style={{ textAlign: 'center', gap: '16px', marginBottom: '12px' }}>
               <TYPE.body fontWeight={500} color={theme.red1}>
-                By adding this list you are implicitly trusting that the data is correct. Anyone can create a list,
-                including creating fake versions of existing lists and lists that claim to represent projects that do
-                not have one.
+                <Trans>
+                  By adding this list you are implicitly trusting that the data is correct. Anyone can create a list,
+                  including creating fake versions of existing lists and lists that claim to represent projects that do
+                  not have one.
+                </Trans>
               </TYPE.body>
               <TYPE.body fontWeight={600} color={theme.red1}>
-                If you purchase a token from this list, you may not be able to sell it back.
+                <Trans>If you purchase a token from this list, you may not be able to sell it back.</Trans>
               </TYPE.body>
             </AutoColumn>
             <AutoRow justify="center" style={{ cursor: 'pointer' }} onClick={() => setConfirmed(!confirmed)}>
@@ -131,7 +143,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
                 onChange={() => setConfirmed(!confirmed)}
               />
               <TYPE.body ml="10px" fontSize="16px" color={theme.red1} fontWeight={500}>
-                I understand
+                <Trans>I understand</Trans>
               </TYPE.body>
             </AutoRow>
           </Card>
@@ -143,7 +155,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
             padding="10px 1rem"
             onClick={handleAddList}
           >
-            Import
+            <Trans>Import</Trans>
           </ButtonPrimary>
           {addError ? (
             <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>

@@ -6,11 +6,11 @@ export default function useMarkdown(file: string) {
   useEffect(() => {
     const fetchContent = async () => {
       await fetch(file)
-        .then(res => res.text())
-        .then(text => {
+        .then((res) => res.text())
+        .then((text) => {
           setContent(text)
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(`Error fetching markdown content file ${file}: `, error)
           return null
         })

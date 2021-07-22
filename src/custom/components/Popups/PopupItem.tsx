@@ -4,7 +4,7 @@ import { PopupContent } from 'state/application/actions'
 import { default as PopupItemUni, Fader } from './PopupItemMod'
 
 export const Wrapper = styled(PopupItemUni)`
-  ${props => props.className} {
+  ${(props) => props.className} {
     border: 2px solid ${({ theme }) => theme.black};
     box-shadow: 2px 2px 0 ${({ theme }) => theme.black};
 
@@ -23,7 +23,7 @@ export const Wrapper = styled(PopupItemUni)`
 export function PopupItem({
   removeAfterMs,
   content,
-  popKey
+  popKey,
 }: {
   removeAfterMs: number | null
   content: PopupContent

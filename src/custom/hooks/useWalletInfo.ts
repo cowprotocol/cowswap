@@ -4,7 +4,8 @@ import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import useENSName from '@src/hooks/useENSName'
 import { useEffect, useState } from 'react'
-import { NetworkContextName, UNSUPPORTED_WC_WALLETS } from 'constants/index'
+import { NetworkContextName } from 'constants/misc'
+import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
 import { getProviderType, WalletProvider } from 'connectors'
 import { useActiveWeb3Instance } from 'hooks/index'
 
@@ -43,7 +44,7 @@ async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ w
   if (meta) {
     return {
       walletName: meta.name,
-      icon: meta.icons?.length > 0 ? meta.icons[0] : undefined
+      icon: meta.icons?.length > 0 ? meta.icons[0] : undefined,
     }
   } else {
     return { walletName: undefined, icon: undefined }
@@ -94,6 +95,6 @@ export function useWalletInfo(): ConnectedWalletInfo {
     walletName,
     icon,
     ensName: ENSName || undefined,
-    isSupportedWallet: checkIsSupportedWallet(walletName, isSmartContractWallet)
+    isSupportedWallet: checkIsSupportedWallet(walletName, isSmartContractWallet),
   }
 }

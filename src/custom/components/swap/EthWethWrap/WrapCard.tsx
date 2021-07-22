@@ -1,8 +1,8 @@
 import React from 'react'
-import { CurrencyAmount, Currency } from '@uniswap/sdk'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { DEFAULT_PRECISION } from 'constants/index'
+import { formatSmart } from 'utils/format'
 
 const BalanceLabel = styled.p<{ background?: string }>`
   display: flex;
@@ -47,7 +47,7 @@ export const WrapCardContainer = styled.div`
       background-color: ${({ theme }) => theme.bg1};
     }
 
-    > ${BalanceLabel}:last-of-type{
+    > ${BalanceLabel}:last-of-type {
       margin: 0;
       font-size: 12px;
     }
@@ -71,8 +71,8 @@ export const WrapCardContainer = styled.div`
 
 interface WrapCardProps {
   symbol: string
-  balance?: CurrencyAmount
-  amountToWrap?: CurrencyAmount
+  balance?: CurrencyAmount<Currency>
+  amountToWrap?: CurrencyAmount<Currency>
   currency: Currency
 }
 
@@ -85,11 +85,11 @@ export function WrapCard(props: WrapCardProps) {
       {/* amount to wrap/unwrap */}
       <BalanceLabel>
         <strong>
-          {amountToWrap?.toSignificant(DEFAULT_PRECISION) || '-'} {symbol}
+          {formatSmart(amountToWrap) || '-'} {symbol}
         </strong>
       </BalanceLabel>
       {/* user balance */}
-      <BalanceLabel>Balance: {balance?.toSignificant(DEFAULT_PRECISION) || '-'}</BalanceLabel>
+      <BalanceLabel>Balance: {formatSmart(balance) || '-'}</BalanceLabel>
     </WrapCardWrapper>
   )
 }

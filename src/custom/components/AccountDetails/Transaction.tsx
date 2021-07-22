@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle, XCircle, Triangle } from 'react-feather'
 
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink, shortenOrderId } from 'utils'
 import { RowFixed } from 'components/Row'
 import Loader from 'components/Loader'
@@ -9,22 +9,22 @@ import {
   TransactionWrapper,
   TransactionState as OldTransactionState,
   TransactionStatusText,
-  IconWrapper
+  IconWrapper,
 } from './TransactionMod'
 import Pill from '../Pill'
 import styled from 'styled-components'
 import {
   ConfirmationModalContent,
   ConfirmationPendingContent,
-  TransactionErrorContent
+  TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 
 import { ActivityStatus, ActivityType, useActivityDescriptors } from 'hooks/useRecentActivity'
 import { useCancelOrder } from 'hooks/useCancelOrder'
 import { LinkStyledButton } from 'theme'
-import Modal from 'components/Modal'
 import { ButtonPrimary } from 'components/Button'
 import { MouseoverTooltip } from 'components/Tooltip'
+import { GpModal as Modal } from 'components/WalletModal'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',
@@ -32,7 +32,7 @@ const PILL_COLOUR_MAP = {
   PENDING_TX: '#2b68fa',
   EXPIRED_ORDER: '#b94d54',
   CANCELLED_ORDER: '#808080',
-  CANCELLING_ORDER: '#8998FF'
+  CANCELLING_ORDER: '#8998FF',
 }
 
 function determinePillColour(status: ActivityStatus, type: ActivityType) {
@@ -111,7 +111,7 @@ function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Ele
 
   const [showMore, setShowMore] = useState(false)
 
-  const toggleShowMore = () => setShowMore(showMore => !showMore)
+  const toggleShowMore = () => setShowMore((showMore) => !showMore)
 
   return (
     <ConfirmationModalContent
@@ -173,7 +173,7 @@ function CancellationModal(props: CancellationModalProps): JSX.Element | null {
 
     cancelOrder(orderId)
       .then(onDismiss)
-      .catch(e => {
+      .catch((e) => {
         setError(e.message)
       })
   }, [cancelOrder, onDismiss, orderId])

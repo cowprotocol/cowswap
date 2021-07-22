@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { createReducer } from '@reduxjs/toolkit'
 import { updateGasPrices, UpdateGasPrices } from './actions'
 
@@ -8,7 +8,7 @@ export type GasState = {
 
 const initialState: GasState = {}
 
-export default createReducer(initialState, builder =>
+export default createReducer(initialState, (builder) =>
   builder.addCase(updateGasPrices, (state, action) => {
     const { chainId, ...rest } = action.payload
 

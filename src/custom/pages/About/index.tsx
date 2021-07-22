@@ -22,9 +22,15 @@ export default function About() {
       <Title>About</Title>
 
       <Content>
+        <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
+        <p>
+          It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
+          into any on-chain liquidity source while providing MEV protection.
+        </p>
         <h2>
           <b>C</b>oincidence <b>o</b>f <b>W</b>ants
         </h2>
+
         <p>
           <img src={diagramIMG} alt="CowSwap vs. AMM's" />
         </p>

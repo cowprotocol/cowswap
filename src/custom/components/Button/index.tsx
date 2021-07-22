@@ -15,7 +15,7 @@ import {
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonWhite as ButtonWhiteMod,
-  ButtonConfirmedStyle as ButtonConfirmedStyleMod
+  ButtonConfirmedStyle as ButtonConfirmedStyleMod,
   // ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
@@ -102,7 +102,6 @@ export const ButtonLight = styled(ButtonLightMod)`
       outline: none;
     }
   }
-
 `
 
 export const ButtonGray = styled(ButtonGrayMod)`

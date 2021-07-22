@@ -23,7 +23,7 @@ export enum ApiErrorCodes {
   OrderExpired = 'OrderExpired',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
-  UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'
+  UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
 }
 
 export enum ApiErrorCodeDetails {
@@ -42,7 +42,7 @@ export enum ApiErrorCodeDetails {
   OrderExpired = 'Order is expired',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
-  UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network'
+  UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network',
 }
 
 function _mapActionToErrorDetail(action?: ApiActionType) {

@@ -38,12 +38,12 @@ export default function Web3Status() {
 
   const { pendingActivity, confirmedActivity } = useMemo(() => {
     // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)+EXPIRED
-    const pendingActivity = allRecentActivity.filter(isPending).map(data => data.id)
-    const confirmedActivity = allRecentActivity.filter(isConfirmed).map(data => data.id)
+    const pendingActivity = allRecentActivity.filter(isPending).map((data) => data.id)
+    const confirmedActivity = allRecentActivity.filter(isConfirmed).map((data) => data.id)
 
     return {
       pendingActivity,
-      confirmedActivity
+      confirmedActivity,
     }
   }, [allRecentActivity])
 

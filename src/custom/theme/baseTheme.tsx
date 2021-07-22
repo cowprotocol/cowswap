@@ -8,12 +8,9 @@ import { ButtonSize } from 'theme'
 import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
 import React, { useMemo } from 'react'
 
-import {
-  theme as themeUniswap,
-  FixedGlobalStyle as FixedGlobalStyleUniswap,
-  ThemedGlobalStyle as ThemedGlobalStyleUniswap
-} from '@src/theme'
+import { theme as themeUniswap } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
+import { transparentize } from 'polished'
 
 export { TYPE } from '@src/theme'
 export * from '@src/theme/components'
@@ -63,7 +60,7 @@ export function colors(darkMode: boolean): Colors {
 
     // table styles
     tableHeadBG: darkMode ? '#021E34' : 'rgb(2 30 52 / 15%)',
-    tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff'
+    tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
   }
 }
 
@@ -72,7 +69,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     body: {
       background: css`
         background: radial-gradient(50% 50%, ${colorsTheme.primary1} 0%, ${colorsTheme.bg1} 100%) 0 -30vh no-repeat;
-      `
+      `,
     },
     logo: { src: `${darkMode ? LogoDark : Logo}`, alt: 'GP Logo', width: '24px', height: 'auto' },
     appBody: {
@@ -83,8 +80,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       padding: '1rem',
       maxWidth: {
         normal: '420px',
-        content: '620px'
-      }
+        content: '620px',
+      },
     },
     header: {
       border: `1px solid ${colorsTheme.border}`,
@@ -95,19 +92,20 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         colorHoverBg: colorsTheme.bg3,
         closeButtonBg: colorsTheme.bg3,
         closeButtonColor: colorsTheme.black,
-        seperatorColor: colorsTheme.disabled
-      }
+        seperatorColor: colorsTheme.disabled,
+      },
     },
     buttonSizes: {
       [ButtonSize.BIG]: css`
         font-size: 26px;
+        min-height: 60px;
       `,
       [ButtonSize.DEFAULT]: css`
         font-size: 16px;
       `,
       [ButtonSize.SMALL]: css`
         font-size: 12px;
-      `
+      `,
     },
     swap: {
       headerSize: '28px',
@@ -119,8 +117,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         width: '30px',
         height: '30px',
         borderColor: darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled,
-        borderSize: `2px`
-      }
+        borderSize: `2px`,
+      },
     },
     buttonPrimary: {
       background: css`
@@ -129,7 +127,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       fontWeight: '500',
       border: '0',
       borderRadius: '9px',
-      boxShadow: 'none'
+      boxShadow: 'none',
     },
     buttonOutlined: {
       background: css`
@@ -138,7 +136,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       fontWeight: '500',
       border: '0',
       borderRadius: '9px',
-      boxShadow: 'none'
+      boxShadow: 'none',
     },
     buttonLight: {
       fontWeight: '500',
@@ -146,17 +144,17 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       borderHover: '1px solid transparent',
       boxShadow: 'none',
       backgroundHover: `${colorsTheme.primary4}`,
-      borderRadius: '9px'
+      borderRadius: '9px',
     },
     currencyInput: {
       background: `${colorsTheme.bg1}`,
-      border: `1px solid ${colorsTheme.bg2}`
+      border: `1px solid ${colorsTheme.bg2}`,
     },
     buttonCurrencySelect: {
       background: `linear-gradient(270deg, ${colorsTheme.purple} 0%, ${colorsTheme.blue1} 100%)`,
       color: `${colorsTheme.white}`,
       colorSelected: `${colorsTheme.text1}`,
-      boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.075)'
+      boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.075)',
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
@@ -164,12 +162,12 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     footerColor: colorsTheme.text1,
     networkCard: {
       background: 'rgba(243, 132, 30, 0.05)',
-      text: colorsTheme.yellow2
+      text: colorsTheme.yellow2,
     },
     wallet: {
       color: colorsTheme.text1,
-      background: colorsTheme.bg1
-    }
+      background: colorsTheme.bg1,
+    },
   }
 }
 
@@ -180,7 +178,7 @@ export function theme(darkmode: boolean): DefaultTheme {
     ...colorsTheme,
 
     // Overide Theme
-    ...themeVariables(darkmode, colorsTheme)
+    ...themeVariables(darkmode, colorsTheme),
   }
 }
 
@@ -192,16 +190,76 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
+export const UniFixedGlobalStyle = css`
+  html,
+  input,
+  textarea,
+  button {
+    font-family: 'Inter', sans-serif;
+    font-display: fallback;
+  }
+  @supports (font-variation-settings: normal) {
+    html,
+    input,
+    textarea,
+    button {
+      font-family: 'Inter var', sans-serif;
+    }
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    color: ${colors(false).blue1};
+  }
+  * {
+    box-sizing: border-box;
+  }
+  button {
+    user-select: none;
+  }
+  html {
+    font-size: 16px;
+    font-variant: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
+  }
+`
+
+// export const ThemedGlobalStyle = createGlobalStyle`
+export const UniThemedGlobalStyle = css`
+  html {
+    color: ${({ theme }) => theme.text1};
+    background-color: ${({ theme }) => theme.bg2};
+  }
+  body {
+    min-height: 100vh;
+    background-position: 0 -30vh;
+    background-repeat: no-repeat;
+    background-image: ${({ theme }) =>
+      `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
+        1,
+        theme.bg1
+      )} 100%)`};
+  }
+`
+
 export const FixedGlobalStyle = createGlobalStyle`
-  // Uniswap default
-  ${FixedGlobalStyleUniswap}
+  // Uni V2 theme mixin
+  ${UniFixedGlobalStyle}
 `
 
 export const ThemedGlobalStyle = createGlobalStyle`
-  // Uniswap default
-  ${ThemedGlobalStyleUniswap}
+  // Uni V2 theme mixin
+  ${UniThemedGlobalStyle}
 
   html {
+    // Uniswap default
+    color: ${({ theme }) => theme.text1};
     background-image: ${({ theme }) => `linear-gradient(0deg, ${theme.bg1} 0%, ${theme.bg2} 100%)`};
   }
 

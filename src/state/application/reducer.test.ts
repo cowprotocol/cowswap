@@ -1,4 +1,3 @@
-import { ChainId } from '@uniswap/sdk'
 import { createStore, Store } from 'redux'
 import { addPopup, ApplicationModal, removePopup, setOpenModal, updateBlockNumber } from 'state/application/actions'
 import reducer, { ApplicationState } from './reducer'
@@ -10,9 +9,9 @@ describe('application reducer', () => {
     store = createStore(reducer, {
       popupList: [],
       blockNumber: {
-        [ChainId.MAINNET]: 3
+        [1]: 3,
       },
-      openModal: null
+      openModal: null,
     })
   })
 
@@ -24,7 +23,7 @@ describe('application reducer', () => {
       expect(typeof list[0].key).toEqual('string')
       expect(list[0].show).toEqual(true)
       expect(list[0].content).toEqual({ txn: { hash: 'abc', summary: 'test', success: true } })
-      expect(list[0].removeAfterMs).toEqual(15000)
+      expect(list[0].removeAfterMs).toEqual(25000)
     })
 
     it('replaces any existing popups with the same key', () => {
@@ -35,7 +34,7 @@ describe('application reducer', () => {
       expect(list[0].key).toEqual('abc')
       expect(list[0].show).toEqual(true)
       expect(list[0].content).toEqual({ txn: { hash: 'def', summary: 'test2', success: false } })
-      expect(list[0].removeAfterMs).toEqual(15000)
+      expect(list[0].removeAfterMs).toEqual(25000)
     })
   })
 
@@ -54,18 +53,18 @@ describe('application reducer', () => {
 
   describe('updateBlockNumber', () => {
     it('updates block number', () => {
-      store.dispatch(updateBlockNumber({ chainId: ChainId.MAINNET, blockNumber: 4 }))
-      expect(store.getState().blockNumber[ChainId.MAINNET]).toEqual(4)
+      store.dispatch(updateBlockNumber({ chainId: 1, blockNumber: 4 }))
+      expect(store.getState().blockNumber[1]).toEqual(4)
     })
     it('no op if late', () => {
-      store.dispatch(updateBlockNumber({ chainId: ChainId.MAINNET, blockNumber: 2 }))
-      expect(store.getState().blockNumber[ChainId.MAINNET]).toEqual(3)
+      store.dispatch(updateBlockNumber({ chainId: 1, blockNumber: 2 }))
+      expect(store.getState().blockNumber[1]).toEqual(3)
     })
     it('works with non-set chains', () => {
-      store.dispatch(updateBlockNumber({ chainId: ChainId.ROPSTEN, blockNumber: 2 }))
+      store.dispatch(updateBlockNumber({ chainId: 3, blockNumber: 2 }))
       expect(store.getState().blockNumber).toEqual({
-        [ChainId.MAINNET]: 3,
-        [ChainId.ROPSTEN]: 2
+        [1]: 3,
+        [3]: 2,
       })
     })
   })
