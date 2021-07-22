@@ -214,8 +214,8 @@ export default function Swap({
           }
         : {
             // [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmountWithFee,
-            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmountWithoutFee,
+            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmountWithoutFee,
           },
     [independentField, parsedAmount, showWrap, trade]
   )
@@ -425,8 +425,8 @@ export default function Swap({
 
   const [exactInLabel, exactOutLabel] = useMemo(
     () => [
-      independentField === Field.OUTPUT && !showWrap && trade ? <Trans>From (incl. fee)</Trans> : <Trans>From</Trans>,
-      independentField === Field.INPUT && !showWrap && trade ? <Trans>To (incl. fee)</Trans> : <Trans>To</Trans>,
+      independentField === Field.OUTPUT && !showWrap && trade ? <Trans>From (incl. fee)</Trans> : null,
+      independentField === Field.INPUT && !showWrap && trade ? <Trans>Receive (incl. fee)</Trans> : null,
     ],
     [independentField, showWrap, trade]
   )
@@ -437,7 +437,7 @@ export default function Swap({
     if (trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)) {
       amountBeforeFees = '0'
     } else {
-      amountBeforeFees = formatSmart(trade.inputAmountWithFee.subtract(trade.fee.feeAsCurrency))
+      amountBeforeFees = formatSmart(trade.inputAmountWithoutFee)
     }
   }
 
@@ -473,15 +473,17 @@ export default function Swap({
                 //   independentField === Field.OUTPUT && !showWrap ? <Trans>From (at most)</Trans> : <Trans>From</Trans>
                 // }
                 label={
-                  <FeeInformationTooltip
-                    label={exactInLabel}
-                    trade={trade}
-                    showHelper={independentField === Field.OUTPUT}
-                    amountBeforeFees={amountBeforeFees}
-                    amountAfterFees={formatSmart(trade?.inputAmountWithFee)}
-                    type="From"
-                    feeAmount={formatSmart(trade?.fee?.feeAsCurrency)}
-                  />
+                  exactInLabel && (
+                    <FeeInformationTooltip
+                      label={exactInLabel}
+                      trade={trade}
+                      showHelper={independentField === Field.OUTPUT}
+                      amountBeforeFees={amountBeforeFees}
+                      amountAfterFees={formatSmart(trade?.inputAmountWithFee)}
+                      type="From"
+                      feeAmount={formatSmart(trade?.fee?.feeAsCurrency)}
+                    />
+                  )
                 }
                 value={formattedAmounts[Field.INPUT]}
                 showMaxButton={showMaxButton}
@@ -526,15 +528,17 @@ export default function Swap({
                 onUserInput={handleTypeOutput}
                 // label={independentField === Field.INPUT && !showWrap ? <Trans>To (at least)</Trans> : <Trans>To</Trans>}
                 label={
-                  <FeeInformationTooltip
-                    label={exactOutLabel}
-                    trade={trade}
-                    showHelper={independentField === Field.INPUT}
-                    amountBeforeFees={formatSmart(trade?.outputAmountWithoutFee)}
-                    amountAfterFees={formatSmart(trade?.outputAmount)}
-                    type="To"
-                    feeAmount={formatSmart(trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount))}
-                  />
+                  exactOutLabel && (
+                    <FeeInformationTooltip
+                      label={exactOutLabel}
+                      trade={trade}
+                      showHelper={independentField === Field.INPUT}
+                      amountBeforeFees={formatSmart(trade?.outputAmountWithoutFee)}
+                      amountAfterFees={formatSmart(trade?.outputAmount)}
+                      type="To"
+                      feeAmount={formatSmart(trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount))}
+                    />
+                  )
                 }
                 showMaxButton={false}
                 hideBalance={false}
@@ -634,7 +638,7 @@ export default function Swap({
               <Card padding={showWrap ? '.25rem 1rem 0 1rem' : '0px'} borderRadius={'20px'}>
                 <AutoColumn gap="8px" style={{ padding: '0 8px' }}>
                   {trade && (
-                    <RowBetween align="center">
+                    <RowBetween height={24} align="center">
                       <Text fontWeight={500} fontSize={14} color={theme.text2}>
                         <Trans>Price</Trans>
                       </Text>
@@ -646,7 +650,12 @@ export default function Swap({
                         />
                         <MouseoverTooltipContent
                           content={
-                            <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} showHelpers={false} />
+                            <AdvancedSwapDetails
+                              trade={trade}
+                              allowedSlippage={allowedSlippage}
+                              showHelpers={false}
+                              showFee={false}
+                            />
                           }
                           bgColor={theme.bg1}
                           color={theme.text4}
@@ -657,7 +666,7 @@ export default function Swap({
                     </RowBetween>
                   )}
                   {!allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                    <RowBetween align="center">
+                    <RowBetween height={24} align="center">
                       <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
                         <Trans>Slippage Tolerance</Trans>
                       </ClickableText>
@@ -740,9 +749,8 @@ export default function Swap({
                       approvalSubmitted ||
                       signatureState === UseERC20PermitState.SIGNED
                     }
-                    // TODO: check width with new v3 design
-                    // width="48%" // GP-WIDTH
                     width="100%"
+                    marginBottom={10}
                     altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
                     confirmed={
                       approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED

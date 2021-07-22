@@ -63,6 +63,7 @@ export function useTradeExactInWithFee({
   return new TradeGp({
     inputAmount: parsedInputAmount,
     inputAmountWithFee: feeAdjustedAmount,
+    inputAmountWithoutFee: parsedInputAmount,
     outputAmount,
     outputAmountWithoutFee,
     fee,
@@ -113,6 +114,7 @@ export function useTradeExactOutWithFee({
   return new TradeGp({
     inputAmount: inputAmountWithFee,
     inputAmountWithFee,
+    inputAmountWithoutFee,
     outputAmount: parsedOutputAmount,
     outputAmountWithoutFee: parsedOutputAmount,
     fee,

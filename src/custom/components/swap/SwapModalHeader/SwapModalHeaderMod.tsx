@@ -26,8 +26,11 @@ import TradeGp from 'state/swap/TradeGp'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { LightCard } from 'components/Card'
 import { formatSmart } from 'utils/format'
+import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
+import FeeInformationTooltip from '../FeeInformationTooltip'
+import { LightCardType } from '.'
+import { transparentize } from 'polished'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -55,7 +58,7 @@ export interface SwapModalHeaderProps {
   showAcceptChanges: boolean
   priceImpactWithoutFee?: Percent
   onAcceptChanges: () => void
-  LightCard: typeof LightCard
+  LightCard: LightCardType
 }
 
 export default function SwapModalHeader({
@@ -84,17 +87,26 @@ SwapModalHeaderProps) {
 
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
-  const fiatValueInput = useUSDCValue(trade.inputAmount)
-  const fiatValueOutput = useUSDCValue(trade.outputAmount)
+  // show fiatValue for unadjusted trade amounts!
+  const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
+  const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
 
   const [slippageIn, slippageOut] = useMemo(
     () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],
     [slippageAdjustedAmounts]
   )
 
+  const [exactInLabel, exactOutLabel] = useMemo(
+    () => [
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
+    ],
+    [trade]
+  )
+
   return (
     <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
-      <LightCard padding="0.75rem 1rem">
+      <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
         <AutoColumn gap={'8px'}>
           <RowBetween>
             <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
@@ -115,16 +127,33 @@ SwapModalHeaderProps) {
                 fontWeight={500}
                 color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
               >
-                {formatSmart(trade.inputAmount)}
+                {formatSmart(trade.inputAmountWithoutFee)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
         </AutoColumn>
       </LightCard>
+      {!!exactInLabel && (
+        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+          <FeeInformationTooltip
+            amountAfterFees={formatSmart(trade.inputAmountWithFee)}
+            amountBeforeFees={formatSmart(trade.inputAmountWithoutFee)}
+            feeAmount={formatSmart(trade.fee.feeAsCurrency)}
+            label={exactInLabel}
+            showHelper
+            trade={trade}
+            type="From"
+          />
+        </AuxInformationContainer>
+      )}
       <ArrowWrapper>
         <ArrowDown size="16" color={theme.text2} />
       </ArrowWrapper>
-      <LightCard padding="0.75rem 1rem" style={{ marginBottom: '0.25rem' }}>
+      <LightCard
+        flatBorder={!!exactOutLabel}
+        padding="0.75rem 1rem"
+        style={{ marginBottom: !!exactOutLabel ? '0' : '0.25rem' }}
+      >
         <AutoColumn gap={'8px'}>
           <RowBetween>
             <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
@@ -146,12 +175,25 @@ SwapModalHeaderProps) {
             </RowFixed>
             <RowFixed gap={'0px'}>
               <TruncatedText fontSize={24} fontWeight={500}>
-                {formatSmart(trade.outputAmount)}
+                {formatSmart(trade.outputAmountWithoutFee)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
         </AutoColumn>
       </LightCard>
+      {!!exactOutLabel && (
+        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+          <FeeInformationTooltip
+            amountAfterFees={formatSmart(trade.outputAmount)}
+            amountBeforeFees={formatSmart(trade.outputAmountWithoutFee)}
+            feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount))}
+            label={exactOutLabel}
+            showHelper
+            trade={trade}
+            type="To"
+          />
+        </AuxInformationContainer>
+      )}
       <RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
           <Trans>Price</Trans>

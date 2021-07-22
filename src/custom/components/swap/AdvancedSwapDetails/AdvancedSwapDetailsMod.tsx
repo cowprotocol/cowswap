@@ -19,9 +19,15 @@ export interface AdvancedSwapDetailsProps {
   trade?: TradeGp
   allowedSlippage: Percent
   showHelpers?: boolean
+  showFee?: boolean
 }
 
-export function AdvancedSwapDetails({ trade, allowedSlippage, showHelpers = true }: AdvancedSwapDetailsProps) {
+export function AdvancedSwapDetails({
+  trade,
+  allowedSlippage,
+  showHelpers = true,
+  showFee = true,
+}: AdvancedSwapDetailsProps) {
   // const theme = useContext(ThemeContext)
 
   /* 
@@ -37,7 +43,7 @@ export function AdvancedSwapDetails({ trade, allowedSlippage, showHelpers = true
 
   if (!trade) return null
 
-  return <TradeSummary trade={trade} allowedSlippage={allowedSlippage} showHelpers={showHelpers} />
+  return <TradeSummary trade={trade} allowedSlippage={allowedSlippage} showHelpers={showHelpers} showFee={showFee} />
   /* 
     <AutoColumn gap="8px">
       <RowBetween>

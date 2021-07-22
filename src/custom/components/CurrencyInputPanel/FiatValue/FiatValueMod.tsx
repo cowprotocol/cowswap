@@ -32,7 +32,7 @@ export function FiatValue({
     <TYPE.body className={className} fontSize={14} color={fiatValue ? theme.text1 /* theme.text2 */ : theme.text4}>
       {fiatValue ? (
         <Trans>
-          ~${' '}
+          ≈ $
           <HoverInlineText
             text={formatSmart(fiatValue, FIAT_PRECISION) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */}
           />

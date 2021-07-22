@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import React, { useContext, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
-import { CurrencyAmount, Currency, Percent, TradeType } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
 
 import { Field } from 'state/swap/actions'
 import { TYPE } from 'theme'
@@ -14,6 +14,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
 import { formatSmart } from 'utils/format'
+import { TradeSummaryProps } from '.'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -38,15 +39,12 @@ export const FEE_TOOLTIP_MSG =
 export default function TradeSummary({
   trade,
   allowedSlippage,
-  showHelpers = true,
-}: {
-  trade: TradeGp
-  allowedSlippage: Percent
-  showHelpers?: boolean
-}) {
+  showHelpers,
+  showFee,
+}: Omit<TradeSummaryProps, 'className'>) {
   const theme = useContext(ThemeContext)
   // const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
-  const { /*priceImpactWithoutFee,*/ realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { /* priceImpactWithoutFee, */ realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
@@ -57,20 +55,34 @@ export default function TradeSummary({
 
   return (
     <AutoColumn gap="2px">
-      <RowBetween>
+      {showFee && (
+        <RowBetween height={24}>
+          <RowFixed>
+            <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+              {/* Liquidity Provider Fee */}
+              Fee
+            </TYPE.black>
+            {showHelpers && (
+              <MouseoverTooltipContent content={FEE_TOOLTIP_MSG} bgColor={theme.bg1} color={theme.text1}>
+                <StyledInfo />
+              </MouseoverTooltipContent>
+            )}
+          </RowFixed>
+          <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+            {`${formatSmart(realizedFee) || '-'} ${realizedFee?.currency.symbol}`}
+          </TYPE.black>
+        </RowBetween>
+      )}
+
+      <RowBetween height={24}>
         <RowFixed>
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-            {/* Liquidity Provider Fee */}
-            Fee
+            <Trans>{trade.tradeType === TradeType.EXACT_INPUT ? 'Receive' : 'From'} (incl. fee)</Trans>
           </TYPE.black>
-          {showHelpers && (
-            <MouseoverTooltipContent content={FEE_TOOLTIP_MSG} bgColor={theme.bg1} color={theme.text1}>
-              <StyledInfo />
-            </MouseoverTooltipContent>
-          )}
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          {`${formatSmart(realizedFee) || '-'} ${realizedFee?.currency.symbol}`}
+          {formatSmart(isExactIn ? trade.outputAmount : trade.inputAmountWithFee)}{' '}
+          {(isExactIn ? trade.outputAmount : trade.inputAmount).currency.symbol}
         </TYPE.black>
       </RowBetween>
 
@@ -100,7 +112,18 @@ export default function TradeSummary({
         </RowBetween> 
         */}
 
-      <RowBetween>
+      <RowBetween height={24}>
+        <RowFixed>
+          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+            <Trans>Slippage tolerance</Trans>
+          </TYPE.black>
+        </RowFixed>
+        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          {allowedSlippage.toFixed(2)}%
+        </TYPE.black>
+      </RowBetween>
+
+      <RowBetween height={24}>
         <RowFixed>
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
             {trade.tradeType === TradeType.EXACT_INPUT ? <Trans>Minimum received</Trans> : <Trans>Maximum sent</Trans>}
@@ -126,7 +149,7 @@ export default function TradeSummary({
         </TYPE.black>
       </RowBetween>
 
-      <RowBetween>
+      {/* <RowBetween>
         <RowFixed>
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
             <Trans>Slippage tolerance</Trans>
@@ -135,7 +158,7 @@ export default function TradeSummary({
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {allowedSlippage.toFixed(2)}%
         </TYPE.black>
-      </RowBetween>
+      </RowBetween> */}
     </AutoColumn>
   )
 }

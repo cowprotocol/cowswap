@@ -7,10 +7,13 @@ import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
 
 // MOD
-const LightCard = styled(LightCardUni)`
+const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
   background-color: ${({ theme }) => darken(0.06, theme.bg1)};
   border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
+  ${({ flatBorder = false }) => flatBorder && `border-radius: 20px 20px 0 0;`}
 `
+
+export type LightCardType = typeof LightCard
 
 const Wrapper = styled.div`
   svg {
