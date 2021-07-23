@@ -14,11 +14,19 @@ import CurrencyInputPanelMod, {
   Container,
   StyledBalanceMax,
 } from './CurrencyInputPanelMod'
+import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
 import { RowBetween } from 'components/Row'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
 
 import { StyledLogo } from 'components/CurrencyLogo'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
+
+export const CurrencySearchModal = styled(CurrencySearchModalUni)`
+  > [data-reach-dialog-content] {
+    max-width: 520px;
+    background-color: ${({ theme }) => theme.bg1};
+  }
+`
 
 export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   // CSS Override

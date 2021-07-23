@@ -4,7 +4,8 @@ import React, { useState, useCallback, ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { darken } from 'polished'
 import { useCurrencyBalance } from 'state/wallet/hooks'
-import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
+// import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
+import { CurrencySearchModal } from '.' // mod
 import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 // import { ButtonGray } from '../Button'
@@ -24,12 +25,6 @@ import { WithClassName } from 'types'
 import { formatSmart } from 'utils/format'
 import { SHORT_PRECISION } from 'constants/index'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
-
-export const CurrencySearchModal = styled(CurrencySearchModalUni)`
-  > [data-reach-dialog-content] {
-    background-color: ${({ theme }) => theme.bg1};
-  }
-`
 
 export const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}

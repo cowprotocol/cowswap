@@ -14,7 +14,8 @@ import Column from 'components/Column'
 import { RowFixed, RowBetween } from 'components/Row'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { MenuItem } from 'components/SearchModal/styleds'
+// import { MenuItem } from 'components/SearchModal/styleds'
+import { MenuItem } from '.' // mod
 import Loader from 'components/Loader'
 import { isTokenOnList } from 'utils'
 import ImportRow from 'components/SearchModal/ImportRow'
@@ -51,7 +52,7 @@ export const Tag = styled.div`
   margin-right: 4px;
 `
 
-const FixedContentRow = styled.div`
+export const FixedContentRow = styled.div`
   padding: 4px 20px;
   height: 56px;
   display: grid;
