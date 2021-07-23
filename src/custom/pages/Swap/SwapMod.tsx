@@ -13,7 +13,13 @@ import ReactGA from 'react-ga'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
 import AddressInputPanel from 'components/AddressInputPanel'
-import { ButtonConfirmed, ButtonError, /* ButtonGray, */ ButtonLight, ButtonPrimary } from 'components/Button'
+import {
+  ButtonConfirmed,
+  /* ButtonError,
+  ButtonGray, 
+  ButtonLight, 
+  ButtonPrimary */
+} from 'components/Button'
 import Card, { GreyCard } from 'components/Card'
 import { /* Column, */ AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
@@ -68,7 +74,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { SwapProps } from '.'
+import { SwapProps, ButtonError, ButtonPrimary, ButtonLight } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
