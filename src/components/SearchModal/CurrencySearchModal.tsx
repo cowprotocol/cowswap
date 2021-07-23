@@ -6,7 +6,7 @@ import Modal from '../Modal'
 import { CurrencySearch } from 'components/SearchModal/CurrencySearch'
 import { ImportToken } from 'components/SearchModal/ImportToken'
 import usePrevious from 'hooks/usePrevious'
-import Manage from './Manage'
+import Manage from 'components/SearchModal/Manage'
 import { TokenList } from '@uniswap/token-lists'
 import { ImportList } from 'components/SearchModal/ImportList'
 
