@@ -20,7 +20,7 @@ enum PermitType {
 // 20 minutes to submit after signing
 const PERMIT_VALIDITY_BUFFER = 20 * 60
 
-interface PermitInfo {
+export interface PermitInfo {
   type: PermitType
   name: string
   // version is optional, and if omitted, will not be included in the domain
