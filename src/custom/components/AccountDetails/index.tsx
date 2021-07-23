@@ -8,6 +8,7 @@ import { getExplorerLabel, shortenAddress } from 'utils'
 import { AutoRow } from 'components/Row'
 import Copy, { CopyIcon } from 'components/AccountDetails/Copy'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { SUPPORTED_WALLETS } from 'constants/index'
 import { getEtherscanLink } from 'utils'
@@ -176,23 +177,23 @@ export default function AccountDetails({
               <AccountGroupingRow>
                 {formatConnectorName(connector, walletInfo)}
                 <div>
-                  {/* connector !== injected && connector !== walletlink && (
+                  {connector !== injected && connector !== walletlink && (
                     <WalletAction
                       style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
                       onClick={() => {
                         ;(connector as any).close()
                       }}
                     >
-                      Disconnect
+                      <Trans>Disconnect</Trans>
                     </WalletAction>
-                  ) */}
+                  )}
                   <WalletAction
                     style={{ fontSize: '.825rem', fontWeight: 400 }}
                     onClick={() => {
                       openOptions()
                     }}
                   >
-                    Change
+                    <Trans>Change</Trans>
                   </WalletAction>
                 </div>
               </AccountGroupingRow>

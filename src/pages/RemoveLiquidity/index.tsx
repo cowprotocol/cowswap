@@ -19,7 +19,7 @@ import Row, { RowBetween, RowFixed } from '../../components/Row'
 
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
-import { WETH9_EXTENDED } from '../../constants/tokens'
+import { WETH9_EXTENDED } from 'constants/tokens'
 import { useActiveWeb3React } from '../../hooks/web3'
 import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract, useV2RouterContract } from 'hooks/useContract'

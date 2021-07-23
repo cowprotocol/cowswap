@@ -12,7 +12,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import { isAddress } from 'utils'
 import { useActiveWeb3React } from 'hooks/web3'
 import Card from 'components/Card'
-import ImportRow from './ImportRow'
+import ImportRow from 'components/SearchModal/ImportRow'
 import useTheme from '../../hooks/useTheme'
 import { Trans } from '@lingui/macro'
 

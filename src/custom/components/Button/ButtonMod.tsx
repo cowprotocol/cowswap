@@ -19,7 +19,7 @@ const Base = styled(RebassButton)<
     buttonSize?: ButtonSize
   } & ButtonProps
 >`
-  padding: ${({ padding }) => (padding ? padding : '16x')};
+  padding: ${({ padding }) => (padding ? padding : '16px')};
   width: ${({ width }) => (width ? width : '100%')};
   ${({ theme, buttonSize = ButtonSize.DEFAULT }) => theme.buttonSizes[buttonSize]};
   font-weight: 500;

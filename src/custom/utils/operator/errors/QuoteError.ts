@@ -1,4 +1,4 @@
-import { ApiErrorCodes } from './OperatorError'
+import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
 
 export interface GpQuoteErrorObject {
   errorType: GpQuoteErrorCodes
@@ -8,23 +8,30 @@ export interface GpQuoteErrorObject {
 // Conforms to backend API
 // https://github.com/gnosis/gp-v2-services/blob/0bd5f7743bebaa5acd3be13e35ede2326a096f14/orderbook/openapi.yml#L562
 export enum GpQuoteErrorCodes {
+  UnsupportedToken = 'UnsupportedToken',
   InsufficientLiquidity = 'InsufficientLiquidity',
   FeeExceedsFrom = 'FeeExceedsFrom',
   UNHANDLED_ERROR = 'UNHANDLED_ERROR',
 }
 
 export enum GpQuoteErrorDetails {
+  UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   InsufficientLiquidity = 'Token pair selected has insufficient liquidity',
   FeeExceedsFrom = 'Current fee exceeds entered "from" amount',
   UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
-export function mapOperatorErrorToQuoteError(errorType?: ApiErrorCodes): GpQuoteErrorObject {
-  switch (errorType) {
+export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErrorObject {
+  switch (error?.errorType) {
     case ApiErrorCodes.NotFound:
       return {
         errorType: GpQuoteErrorCodes.InsufficientLiquidity,
         description: GpQuoteErrorDetails.InsufficientLiquidity,
+      }
+    case ApiErrorCodes.UnsupportedToken:
+      return {
+        errorType: GpQuoteErrorCodes.UnsupportedToken,
+        description: error.description,
       }
     default:
       return { errorType: GpQuoteErrorCodes.UNHANDLED_ERROR, description: GpQuoteErrorDetails.UNHANDLED_ERROR }

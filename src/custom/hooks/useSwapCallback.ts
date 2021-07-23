@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Currency, Ether as ETHER, Percent, TradeType, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, /* Ether as ETHER, */ Percent, TradeType, CurrencyAmount } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
@@ -17,6 +17,7 @@ import { sendOrder } from 'utils/trade'
 import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
+import { GpEther as ETHER } from 'constants/tokens'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 

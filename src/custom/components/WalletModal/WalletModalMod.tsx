@@ -1,7 +1,7 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-// import { AutoRow } from 'components/Row'
+import { AutoRow } from 'components/Row'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import ReactGA from 'react-ga'
@@ -10,17 +10,21 @@ import MetamaskIcon from 'assets/images/metamask.png'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { fortmatic, injected, portis } from 'connectors'
 import { OVERLAY_READY } from 'connectors/Fortmatic'
-import { SUPPORTED_WALLETS } from 'constants/wallet'
+import { SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
-// import { ExternalLink, TYPE } from 'theme'
+import {
+  // ExternalLink,
+  TYPE,
+} from 'theme'
 import AccountDetails from 'components/AccountDetails'
 import { Trans } from '@lingui/macro'
 
 import ModalMod from 'components/Modal'
 import Option from 'components/WalletModal/Option'
 import PendingView from 'components/WalletModal/PendingView'
+import { LightCard } from 'components/Card'
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -118,9 +122,18 @@ export interface WalletModalProps {
   confirmedTransactions: string[] // hashes of confirmed
   ENSName?: string
   Modal: typeof ModalMod
+  NewToEthereum: () => JSX.Element
+  CustomTerms: () => JSX.Element
 }
 
-export default function WalletModal({ pendingTransactions, confirmedTransactions, ENSName, Modal }: WalletModalProps) {
+export default function WalletModal({
+  pendingTransactions,
+  confirmedTransactions,
+  ENSName,
+  Modal,
+  NewToEthereum,
+  CustomTerms,
+}: WalletModalProps) {
   /* {
     pendingTransactions: string[] // hashes of pending
     confirmedTransactions: string[] // hashes of confirmed
@@ -347,20 +360,20 @@ export default function WalletModal({ pendingTransactions, confirmedTransactions
         )}
 
         <ContentWrapper>
-          {/* MOD
           <LightCard style={{ marginBottom: '16px' }}>
             <AutoRow style={{ flexWrap: 'nowrap' }}>
               <TYPE.main fontSize={14}>
-                <Trans>
+                {/* <Trans>
                   By connecting a wallet, you agree to Uniswap Labs’{' '}
                   <ExternalLink href="https://uniswap.org/terms-of-service/">Terms of Service</ExternalLink> and
                   acknowledge that you have read and understand the{' '}
                   <ExternalLink href="https://uniswap.org/disclaimer/">Uniswap protocol disclaimer</ExternalLink>.
-                </Trans>
+                </Trans> */}
+                <CustomTerms />
               </TYPE.main>
-            </AutoRow> 
+            </AutoRow>
           </LightCard>
-          */}
+
           {walletView === WALLET_VIEWS.PENDING ? (
             <PendingView
               connector={pendingWallet}
@@ -371,6 +384,7 @@ export default function WalletModal({ pendingTransactions, confirmedTransactions
           ) : (
             <OptionGrid>{getOptions()}</OptionGrid>
           )}
+          {walletView !== WALLET_VIEWS.PENDING && <NewToEthereum />}
         </ContentWrapper>
       </UpperSection>
     )

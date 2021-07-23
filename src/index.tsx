@@ -9,7 +9,7 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import Blocklist from './components/Blocklist'
 import { NetworkContextName } from 'constants/misc'
-import { LanguageProvider } from './i18n'
+import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
 import store from 'state'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
@@ -19,7 +19,6 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import FeesUpdater from 'state/price/updater'
-import XdaiUpdater from 'state/network/updater'
 import GasUpdater from 'state/gas/updater'
 import { CancelledOrdersUpdater, EventUpdater } from 'state/orders/updater'
 // import { EventUpdater } from 'state/orders/mocks'
@@ -56,7 +55,6 @@ if (typeof analyticsId === 'string') {
 function Updaters() {
   return (
     <>
-      <XdaiUpdater />
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />

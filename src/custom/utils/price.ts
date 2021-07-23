@@ -63,11 +63,15 @@ export type PriceSource = 'gnosis-protocol' | 'paraswap'
 export type PriceInformationWithSource = PriceInformation & { source: PriceSource; data?: any }
 export type PromiseRejectedResultWithSource = PromiseRejectedResult & { source: PriceSource }
 
+interface GetBestPriceOptions {
+  aggrOverride?: 'max' | 'min'
+}
+
 type FilterWinningPriceParams = {
   kind: string
   amounts: string[]
   priceQuotes: PriceInformationWithSource[]
-}
+} & GetBestPriceOptions
 
 function _filterWinningPrice(params: FilterWinningPriceParams) {
   // Take the best price: Aggregate all the amounts into a single one.
@@ -75,16 +79,15 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
   //        You want to get the maximum number of buy tokens
   //  - Use minimum "Buy orders":
   //        You want to spend the min number of sell tokens
-  const aggregationFunction = params.kind === OrderKind.SELL ? 'max' : 'min'
+  const aggregationFunction = params.aggrOverride || params.kind === OrderKind.SELL ? 'max' : 'min'
   const amount = BigNumberJs[aggregationFunction](...params.amounts).toString(10)
   const token = params.priceQuotes[0].token
-  // console.log('Aggregated amounts', aggregationFunction, amounts, amount)
 
   const winningPrices = params.priceQuotes
     .filter((quote) => quote.amount === amount)
     .map((p) => p.source)
     .join(', ')
-  console.log('[util::filterWinningPrice] Winning price: ' + winningPrices)
+  console.debug('[util::filterWinningPrice] Winning price: ' + winningPrices + ' for token ' + token + ' @', amount)
 
   return { token, amount }
 }
@@ -138,7 +141,7 @@ function _extractPriceAndErrorPromiseValues(
 /**
  *  Return the best price considering all price feeds
  */
-export async function getBestPrice(params: PriceQuoteParams): Promise<PriceInformation> {
+export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPriceOptions): Promise<PriceInformation> {
   // Get all prices
   const [priceResult, paraSwapPriceResult] = await getAllPrices(params)
 
@@ -157,7 +160,7 @@ export async function getBestPrice(params: PriceQuoteParams): Promise<PriceInfor
     console.log('[utils::useRefetchPriceCallback] Get best price succeeded for ' + sourceNames, priceQuotes)
     const amounts = priceQuotes.map((quote) => quote.amount).filter(Boolean) as string[]
 
-    return _filterWinningPrice({ kind: params.kind, amounts, priceQuotes })
+    return _filterWinningPrice({ ...options, kind: params.kind, amounts, priceQuotes })
   } else {
     // It was not possible to get a price estimation
     throw new PriceQuoteError('Error querying price from APIs', params, [priceResult, paraSwapPriceResult])

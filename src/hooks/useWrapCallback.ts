@@ -1,6 +1,6 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
-import { WETH9_EXTENDED } from '../constants/tokens'
+import { WETH9_EXTENDED } from 'constants/tokens'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'

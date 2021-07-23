@@ -91,6 +91,7 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
 interface TradeGpConstructor {
   inputAmount: CurrencyAmount<Currency>
   inputAmountWithFee: CurrencyAmount<Currency>
+  inputAmountWithoutFee: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   outputAmountWithoutFee: CurrencyAmount<Currency>
   fee: FeeForTrade
@@ -112,6 +113,7 @@ export default class TradeGp {
    */
   readonly inputAmount: CurrencyAmount<Currency>
   readonly inputAmountWithFee: CurrencyAmount<Currency>
+  readonly inputAmountWithoutFee: CurrencyAmount<Currency>
   /**
    * The output amount for the trade assuming no slippage.
    */
@@ -129,6 +131,7 @@ export default class TradeGp {
   public constructor({
     inputAmount,
     inputAmountWithFee,
+    inputAmountWithoutFee,
     outputAmount,
     outputAmountWithoutFee,
     fee,
@@ -138,6 +141,7 @@ export default class TradeGp {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
     this.inputAmountWithFee = inputAmountWithFee
+    this.inputAmountWithoutFee = inputAmountWithoutFee
     this.outputAmountWithoutFee = outputAmountWithoutFee
     this.outputAmount = outputAmount
     this.fee = fee

@@ -1,8 +1,10 @@
-import React, { ReactNode, useCallback, useState } from 'react'
+import React, { /* ReactNode, */ useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
 import Tooltip from 'components/Tooltip'
+import { TooltipProps } from '../Tooltip/TooltipMod'
+import { QuestionWrapper } from './index'
 
-const QuestionWrapper = styled.div`
+/* const QuestionWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,25 +24,38 @@ const QuestionWrapper = styled.div`
   :focus {
     opacity: 0.7;
   }
-`
+` */
 
-const QuestionMark = styled.span`
+/* const QuestionMark = styled.span`
   font-size: 14px;
+` */
+
+const QuestionHelperContainer = styled.span`
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
 `
 
-export default function QuestionHelper({ text }: { text: ReactNode; size?: number }) {
+export interface QuestionHelperProps extends Omit<TooltipProps, 'children' | 'show'> {
+  className?: string
+  QuestionMark: () => JSX.Element // mod
+}
+
+// export default function QuestionHelper({ text }: { text: ReactNode; size?: number }) {
+export default function QuestionHelper({ text, className, QuestionMark, ...tooltipProps }: QuestionHelperProps) {
   const [show, setShow] = useState<boolean>(false)
 
   const open = useCallback(() => setShow(true), [setShow])
   const close = useCallback(() => setShow(false), [setShow])
 
   return (
-    <span style={{ marginLeft: 4, display: 'flex', alignItems: 'center' }}>
-      <Tooltip text={text} show={show}>
+    <QuestionHelperContainer className={className}>
+      <Tooltip {...tooltipProps} show={show} text={text}>
         <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
-          <QuestionMark>?</QuestionMark>
+          {/* <QuestionMark>?</QuestionMark> */}
+          <QuestionMark />
         </QuestionWrapper>
       </Tooltip>
-    </span>
+    </QuestionHelperContainer>
   )
 }

@@ -11,7 +11,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { UNISWAP_GRANTS_START_BLOCK } from '../../constants/proposals'
-import { UNI } from '../../constants/tokens'
+import { UNI } from 'constants/tokens'
 import { useMultipleContractMultipleData, useSingleCallResult } from '../multicall/hooks'
 import { useTransactionAdder } from '../transactions/hooks'
 
