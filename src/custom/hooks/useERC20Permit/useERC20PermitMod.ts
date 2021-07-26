@@ -1,5 +1,5 @@
 // import JSBI from 'jsbi'
-import { Percent /* CurrencyAmount, Currency, TradeType, Token */ } from '@uniswap/sdk-core'
+import { Percent, CurrencyAmount, Currency /*, TradeType, Token */ } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
 // import { splitSignature } from 'ethers/lib/utils'
@@ -12,7 +12,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 // import useIsArgentWallet from 'hooks/useIsArgentWallet'
 // import useTransactionDeadline from 'hooks/useTransactionDeadline'
 
-import { useERC20Permit } from '@src/hooks/useERC20Permit'
+import { PermitInfo, SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from 'custom/constants'
 
@@ -120,15 +120,24 @@ export * from '@src/hooks/useERC20Permit'
 //   { name: 'allowed', type: 'bool' },
 // ]
 
-// export function useERC20Permit(
-//   currencyAmount: CurrencyAmount<Currency> | null | undefined,
-//   spender: string | null | undefined,
-//   overridePermitInfo: PermitInfo | undefined | null
-// ): {
-//   signatureData: SignatureData | null
-//   state: UseERC20PermitState
-//   gatherPermitSignature: null | (() => Promise<void>)
-// } {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export function useERC20Permit(
+  currencyAmount: CurrencyAmount<Currency> | null | undefined,
+  spender: string | null | undefined,
+  overridePermitInfo: PermitInfo | undefined | null
+): {
+  signatureData: SignatureData | null
+  state: UseERC20PermitState
+  gatherPermitSignature: null | (() => Promise<void>)
+} {
+  // Mod: make useERC20Permit a noop. Permissable ERC20 currently not supported by our contracts
+  return {
+    signatureData: null,
+    state: UseERC20PermitState.NOT_APPLICABLE,
+    gatherPermitSignature: null,
+  }
+}
+/* eslint-enable @typescript-eslint/no-unused-vars */
 //   const { account, chainId, library } = useActiveWeb3React()
 //   const transactionDeadline = useTransactionDeadline()
 //   const tokenAddress = currencyAmount?.currency?.isToken ? currencyAmount.currency.address : undefined

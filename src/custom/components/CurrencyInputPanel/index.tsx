@@ -14,11 +14,19 @@ import CurrencyInputPanelMod, {
   Container,
   StyledBalanceMax,
 } from './CurrencyInputPanelMod'
+import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
 import { RowBetween } from 'components/Row'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
 
 import { StyledLogo } from 'components/CurrencyLogo'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
+
+export const CurrencySearchModal = styled(CurrencySearchModalUni)`
+  > [data-reach-dialog-content] {
+    max-width: 520px;
+    background-color: ${({ theme }) => theme.bg1};
+  }
+`
 
 export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   // CSS Override
@@ -27,6 +35,18 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
     background: transparent;
     color: ${({ theme }) => theme.currencyInput?.color};
 
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: column wrap;
+
+      > div > div > input {
+        width: 100%;
+        text-align: left;
+        padding: 0;
+        margin: 20px 0 8px;
+        word-break: break-all;
+      }
+    `};
+
     &:hover {
       color: ${({ theme }) => theme.currencyInput?.color};
     }
@@ -34,6 +54,7 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${LabelRow} {
     color: ${({ theme }) => theme.currencyInput?.color};
+
     span:hover {
       color: ${({ theme }) => theme.currencyInput?.color};
     }
@@ -41,6 +62,12 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${InputRow} {
     background: transparent;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: column wrap;
+      padding: 1rem 1rem 0 1rem;
+    `};
+
     > input,
     > input::placeholder {
       background: transparent;
@@ -54,28 +81,10 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${StyledBalanceMax} {
     color: ${({ theme }) => theme.primary4};
-  }
 
-  ${FeeInformationTooltipWrapper} {
-    font-weight: 600;
-    font-size: 14px;
-
-    > span {
-      font-size: 18px;
-      gap: 2px;
-    }
-
-    > span:first-child {
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-    }
-
-    > span > small {
-      opacity: 0.75;
-      font-size: 13px;
-      font-weight: 500;
-    }
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 auto 0;
+    `};
   }
 
   ${Container} {
@@ -124,6 +133,10 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
       selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
     transition: background-color 0.2s ease-in-out;
 
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 100%;
+    `};
+
     &:focus {
       background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
     }
@@ -141,14 +154,119 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   ${RowBetween} {
     color: ${({ theme }) => theme.currencyInput?.color};
 
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: column wrap;
+    `}
+
     > div > div > span,
     > div {
       color: ${({ theme }) => theme.currencyInput?.color};
     }
+
+    // Balance Wrapper
+    > div:first-of-type {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        margin: 10px 0 0;
+        width: 100%;
+        opacity: 0.75;
+      `}
+    }
+
+    // USD estimation
+    > div:last-of-type {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        order: -1;
+        width: 100%;
+        text-align: left;
+        justify-content: flex-start;
+        display: flex;
+      `}
+    }
+
+    // Balance text
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      > div > div {
+        word-break: break-all;
+      }
+    `}
   }
 
   ${StyledLogo} {
     background: ${({ theme }) => theme.bg1};
+  }
+`
+
+export const AuxInformationContainer = styled(Container)<{
+  margin?: string
+  borderColor?: string
+  borderWidth?: string
+}>`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: auto;
+    flex-flow: column wrap;
+    justify-content: flex-end;
+    align-items: flex-end;
+  `}
+
+  &&&& {
+    background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+    margin: ${({ margin = '0 auto' }) => margin};
+    border-radius: 0 0 15px 15px;
+    border-top: none;
+    ${({ borderColor }) => `border-color: ${borderColor};`}
+    border-width: ${({ borderWidth = '2px' }) => borderWidth};
+
+    &:hover {
+      border-color: ${({ theme }) => theme.bg4};
+    }
+  }
+
+  > ${FeeInformationTooltipWrapper} {
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 16px;
+    padding: 9px 0;
+    font-weight: 600;
+    font-size: 14px;
+    height: auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: column wrap;
+      width: 100%;
+      align-items: flex-start;
+      margin: 0;
+      padding: 16px;
+    `}
+
+    > span {
+      font-size: 18px;
+      gap: 2px;
+      word-break: break-all;
+      text-align: right;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`  
+        text-align: left;
+        align-items: flex-start;
+        width: 100%;
+      `};
+    }
+
+    > span:first-child {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        margin: 0 0 10px;
+      `}
+    }
+
+    > span > small {
+      opacity: 0.75;
+      font-size: 13px;
+      font-weight: 500;
+    }
   }
 `
 

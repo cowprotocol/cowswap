@@ -4,7 +4,8 @@ import React, { useState, useCallback, ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { darken } from 'polished'
 import { useCurrencyBalance } from 'state/wallet/hooks'
-import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
+// import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
+import { CurrencySearchModal } from '.' // mod
 import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 // import { ButtonGray } from '../Button'
@@ -23,13 +24,7 @@ import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { WithClassName } from 'types'
 import { formatSmart } from 'utils/format'
 import { SHORT_PRECISION } from 'constants/index'
-import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
-
-export const CurrencySearchModal = styled(CurrencySearchModalUni)`
-  > [data-reach-dialog-content] {
-    background-color: ${({ theme }) => theme.bg1};
-  }
-`
+import { AuxInformationContainer } from '.' // mod
 
 export const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -148,32 +143,6 @@ export const StyledBalanceMax = styled.button`
     margin-right: 0.5rem;
   `};
 `
-export const AuxInformationContainer = styled(Container)<{
-  margin?: string
-  borderColor?: string
-  borderWidth?: string
-}>`
-  &&&&& {
-    background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
-    margin: ${({ margin = '0 auto' }) => margin};
-    border-radius: 0 0 15px 15px;
-    border-top: none;
-    ${({ borderColor }) => `border-color: ${borderColor};`}
-    border-width: ${({ borderWidth = '2px' }) => borderWidth};
-  }
-
-  > ${FeeInformationTooltipWrapper} {
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 16px;
-    padding: 9px 0;
-
-    > span {
-      font-size: smaller;
-    }
-  }
-`
-
 export interface CurrencyInputPanelProps extends WithClassName {
   value: string
   onUserInput: (value: string) => void
@@ -292,7 +261,9 @@ export default function CurrencyInputPanel({
             <FiatRow>
               <RowBetween>
                 {account ? (
-                  <RowFixed style={{ height: '17px' }}>
+                  <RowFixed
+                  // style={{ height: '17px' }}
+                  >
                     <TYPE.body
                       onClick={onMax}
                       // color={theme.text2}

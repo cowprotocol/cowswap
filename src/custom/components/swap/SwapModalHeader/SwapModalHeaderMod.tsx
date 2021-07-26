@@ -27,7 +27,7 @@ import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
 import { formatSmart } from 'utils/format'
-import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
+import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
@@ -233,7 +233,7 @@ SwapModalHeaderProps) {
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
                 {formatSmart(slippageOut) || '-'} {trade.outputAmount.currency.symbol}
               </b>{' '}
-              or the transaction will expire.
+              or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
           </TYPE.italic>
         ) : (

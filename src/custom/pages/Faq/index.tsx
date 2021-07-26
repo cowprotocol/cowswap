@@ -267,8 +267,9 @@ export default function Faq() {
 
           <p>
             CowSwap settles batch auctions in discrete time intervals. In the absence of other traders, CowSwap matches
-            traders against the best available Uniswap liquidity (note: other base-liquidity sources such as Balancer
-            will be added soon).
+            traders against the best available on-chain liquidity (note: currently the solvers have integrated liquidity
+            from Uni v2, Uni v3, Balancer, Balancer v2, Sushiswap and the liquidity that Aggregators such as Paraswap,
+            Matcha and 1inch leverage).
           </p>
 
           <p>
