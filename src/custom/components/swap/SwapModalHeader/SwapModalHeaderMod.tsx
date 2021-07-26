@@ -233,7 +233,7 @@ SwapModalHeaderProps) {
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
                 {formatSmart(slippageOut) || '-'} {trade.outputAmount.currency.symbol}
               </b>{' '}
-              or the transaction will expire.
+              or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
           </TYPE.italic>
         ) : (
