@@ -15,7 +15,11 @@ import { InputContainer } from 'components/AddressInputPanel'
 import { GreyCard } from 'components/Card'
 import { StyledBalanceMaxMini } from 'components/swap/styleds'
 import Card from 'components/Card'
-import { ButtonError, ButtonPrimary } from 'components/Button'
+import {
+  ButtonError as ButtonErrorMod,
+  ButtonPrimary as ButtonPrimaryMod,
+  ButtonLight as ButtonLightMod,
+} from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
@@ -31,6 +35,36 @@ interface FeeGreaterMessageProp {
 const BottomGrouping = styled(BottomGroupingUni)`
   > div > button {
     align-self: stretch;
+  }
+`
+
+export const ButtonError = styled(ButtonErrorMod)`
+  > div,
+  > div > div {
+    width: 100%;
+    word-break: break-all;
+    text-align: center;
+    align-items: center;
+  }
+`
+
+export const ButtonPrimary = styled(ButtonPrimaryMod)`
+  > div,
+  > div > div {
+    width: 100%;
+    word-break: break-all;
+    text-align: center;
+    align-items: center;
+  }
+`
+
+export const ButtonLight = styled(ButtonLightMod)`
+  > div,
+  > div > div {
+    width: 100%;
+    word-break: break-all;
+    text-align: center;
+    align-items: center;
   }
 `
 

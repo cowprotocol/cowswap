@@ -4,7 +4,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { LONG_PRECISION, UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
 import { StyledLogo } from 'components/CurrencyLogo'
-import { MenuItem } from 'components/SearchModal/styleds'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { RowFixed } from 'components/Row'
 import { LightGreyCard } from 'components/Card'
@@ -12,6 +11,8 @@ import { HashLink } from 'react-router-hash-link'
 import { t } from '@lingui/macro'
 import { TagInfo, WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { formatSmart } from 'utils/format'
+import Column from 'components/Column'
+import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {
@@ -37,9 +38,17 @@ const TagLink = styled(Tag)`
 `
 
 const Wrapper = styled.div`
-  ${MenuItem} {
-    &:hover {
-      background-color: ${({ theme }) => theme.bg4};
+  ${Column} {
+    > div {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 220px;
+      width: 100%;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        max-width: 140px;
+      `};
     }
   }
 
@@ -55,8 +64,18 @@ const Wrapper = styled.div`
     color: ${({ theme }) => theme.text1};
   }
 
+  ${LightGreyCard} {
+    background: ${({ theme }) => theme.bg4};
+  }
+
   ${LightGreyCard} ${RowFixed} > div {
-    color: ${({ theme }) => theme.text2};
+    color: ${({ theme }) => theme.text1};
+  }
+`
+
+export const MenuItem = styled(MenuItemMod)`
+  &:hover {
+    background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
   }
 `
 

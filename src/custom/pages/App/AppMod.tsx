@@ -34,6 +34,7 @@ import DarkModeQueryParamReader from 'theme'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 
 import Footer from 'components/Footer'
+import { BodyWrapper } from '.' // mod
 
 const AppWrapper = styled.div`
   display: flex;
@@ -49,7 +50,7 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
 `
 
-const BodyWrapper = styled.div`
+/* const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -65,7 +66,7 @@ const BodyWrapper = styled.div`
   `};
 
   z-index: 1;
-`
+` */
 
 const FooterWrapper = styled(HeaderWrapper)``
 

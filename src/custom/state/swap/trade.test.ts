@@ -52,6 +52,7 @@ describe('Swap PRICE Quote test', () => {
           executionPrice,
           // sell orders: we show user on UI inputAmount with no fee calculation
           inputAmount: currencyIn,
+          inputAmountWithoutFee: currencyIn,
           inputAmountWithFee: currencyIn.subtract(feeAsCurrency),
           outputAmountWithoutFee: currencyIn,
           outputAmount: currencyOut,
@@ -115,6 +116,7 @@ describe('Swap PRICE Quote test', () => {
           // fee is in selltoken so for buy orders we set inputAmount as inputAmountWithFee
           inputAmount: apiBuyPriceAsCurrencyWithFee,
           inputAmountWithFee: apiBuyPriceAsCurrencyWithFee,
+          inputAmountWithoutFee: apiBuyPriceAsCurrency,
           outputAmount: currencyOut,
           outputAmountWithoutFee: currencyOut,
           fee: {
