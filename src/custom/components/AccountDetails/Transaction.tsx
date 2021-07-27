@@ -24,7 +24,7 @@ import { useCancelOrder } from 'hooks/useCancelOrder'
 import { LinkStyledButton } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { GpModal as Modal } from 'components/WalletModal'
+import { GpModal as Modal } from 'components/Modal'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',

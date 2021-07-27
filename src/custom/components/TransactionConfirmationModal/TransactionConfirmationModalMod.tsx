@@ -27,13 +27,16 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { Trans } from '@lingui/macro'
 // MOD
 // import { getEtherscanLink, getExplorerLabel } from 'utils'
-import { GpModal } from 'components/WalletModal'
+import { GpModal } from 'components/Modal'
 import { lighten } from 'polished'
-import { TransactionSubmittedContent } from './index'
+import { ConfirmationModalContentProps, TransactionSubmittedContent, GPModalHeader } from '.' // mod
 
 const Wrapper = styled.div`
   width: 100%;
   padding: 1rem;
+  display: flex; /* MOD */
+  flex-flow: column nowrap; /* MOD */
+  overflow-y: auto; /* MOD */
 `
 const Section = styled(AutoColumn)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '0' : '0')};
@@ -42,6 +45,9 @@ const Section = styled(AutoColumn)<{ inline?: boolean }>`
 const BottomSection = styled(Section)`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    margin-bottom: 16px;
+  `}
 `
 
 const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`
@@ -179,21 +185,23 @@ export function ConfirmationModalContent({
   bottomContent,
   onDismiss,
   topContent,
-}: {
+}: ConfirmationModalContentProps) {
+  /* {
   title: ReactNode
   onDismiss: () => void
   topContent: () => ReactNode
   bottomContent?: () => ReactNode | undefined
-}) {
-  return (
+} */ return (
     <Wrapper>
       <Section>
-        <RowBetween>
+        {/* <RowBetween> */}
+        <GPModalHeader>
           <Text fontWeight={500} fontSize={16}>
             {title}
           </Text>
           <CloseIcon onClick={onDismiss} />
-        </RowBetween>
+        </GPModalHeader>
+        {/* </RowBetween> */}
         {topContent()}
       </Section>
       {bottomContent && <BottomSection gap="12px">{bottomContent()}</BottomSection>}
