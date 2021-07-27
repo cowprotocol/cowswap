@@ -17,6 +17,12 @@ export interface Colors extends ColorsUniswap {
   shimmer2: color
   tableHeadBG: Color
   tableRowBG: Color
+  info: Color
+  warning: Color
+  error: Color
+  infoText: Color
+  warningText: Color
+  errorText: Color
 }
 
 declare module 'styled-components' {

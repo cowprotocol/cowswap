@@ -61,6 +61,14 @@ export function colors(darkMode: boolean): Colors {
     // table styles
     tableHeadBG: darkMode ? '#021E34' : 'rgb(2 30 52 / 15%)',
     tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
+
+    // banner styles
+    info: '#FFEDAF',
+    infoText: '#564D00',
+    warning: '#FFEDAF',
+    warningText: '#564D00',
+    error: '#FFC7AF',
+    errorText: '#560000',
   }
 }
 
