@@ -159,6 +159,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <Trans>MEV protected slippage</Trans>
           </TYPE.black>
           <QuestionHelper
+            bgColor={theme.bg3}
+            color={theme.text1}
             text={
               <Trans>
                 <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
@@ -234,6 +236,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <Trans>Transaction deadline</Trans>
           </TYPE.black>
           <QuestionHelper
+            bgColor={theme.bg3}
+            color={theme.text1}
             text={t`Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
           />
         </RowFixed>
