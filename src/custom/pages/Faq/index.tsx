@@ -211,7 +211,7 @@ export default function Faq() {
           <p>
             Since January 2020 until now (April&#39;21), the total amount of value extracted by miners (etc.) on
             Ethereum transactions has reached{' '}
-            <a href="https://explore.flashbots.net/">$ 382.4 Million, including successful and failed transactions.</a>
+            <a href="https://explore.flashbots.net/">$ 796.8 Million, including successful and failed transactions.</a>
           </p>
 
           <h3 id="to-what-does-the-term-coincidence-of-wants-cows-refer">
