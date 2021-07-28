@@ -19,7 +19,7 @@ import {
   cancelOrdersBatch,
   Order,
 } from './actions'
-import { OrderObject, OrdersState, PartialOrdersMap } from './reducer'
+import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
 import { isTruthy } from 'utils/misc'
 import { OrderID } from 'utils/operator'
 import { ContractDeploymentBlocks } from './consts'
@@ -72,11 +72,17 @@ type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastC
 
 type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
-function _deserializeOrder(orderObject: OrderObject | undefined) {
-  const serialisedOrder = orderObject?.order
+function _isV3Order(orderObject: any): orderObject is OrderObject {
+  return orderObject?.order?.inputToken !== undefined || orderObject?.order?.outputToken !== undefined
+}
 
+function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined) {
   let order: Order | undefined
-  if (serialisedOrder) {
+  // we need to make sure the incoming order is a valid
+  // V3 typed order as users can have stale data from V2
+  if (_isV3Order(orderObject)) {
+    const { order: serialisedOrder } = orderObject
+
     const deserialisedInputToken = deserializeToken(serialisedOrder.inputToken)
     const deserialisedOutputToken = deserializeToken(serialisedOrder.outputToken)
     order = {
@@ -84,6 +90,9 @@ function _deserializeOrder(orderObject: OrderObject | undefined) {
       inputToken: deserialisedInputToken,
       outputToken: deserialisedOutputToken,
     }
+  } else {
+    orderObject?.order &&
+      console.debug('[Order::hooks] - V2 Order detected, skipping serialisation.', orderObject.order)
   }
 
   return order
