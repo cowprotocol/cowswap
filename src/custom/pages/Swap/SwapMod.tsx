@@ -499,7 +499,7 @@ export default function Swap({
                 fiatValue={fiatValueInput ?? undefined}
                 onCurrencySelect={handleInputSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
-                // showCommonBases={true}
+                showCommonBases
                 id="swap-currency-input"
               />
               {/* UNI ARROW SWITCHER */}
@@ -553,7 +553,7 @@ export default function Swap({
                 currency={currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
-                // showCommonBases={true}
+                showCommonBases
                 id="swap-currency-output"
               />
             </div>
