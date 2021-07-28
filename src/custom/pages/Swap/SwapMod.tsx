@@ -2,9 +2,9 @@ import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
+// import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
-import { MouseoverTooltip, MouseoverTooltipContent } from 'components/Tooltip'
+import { MouseoverTooltip /* , MouseoverTooltipContent */ } from 'components/Tooltip'
 // import JSBI from 'jsbi'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, /*, ArrowLeft */ CheckCircle, HelpCircle, Info } from 'react-feather'
@@ -32,7 +32,7 @@ import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 
 import { /* ArrowWrapper, BottomGrouping, Dots, */ SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
-import TradePrice from 'components/swap/TradePrice'
+// import TradePrice from 'components/swap/TradePrice'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
@@ -98,6 +98,7 @@ export default function Swap({
   BottomGrouping,
   SwapButton,
   ArrowWrapperLoader,
+  Price,
   className,
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -642,34 +643,9 @@ export default function Swap({
               </Row>
               */
               <Card padding={showWrap ? '.25rem 1rem 0 1rem' : '0px'} borderRadius={'20px'}>
-                <AutoColumn gap="8px" style={{ padding: '0 8px' }}>
+                <AutoColumn style={{ padding: '0 8px', gap: 8 }}>
                   {trade && (
-                    <RowBetween height={24} align="center">
-                      <Text fontWeight={500} fontSize={14} color={theme.text2}>
-                        <Trans>Price</Trans>
-                      </Text>
-                      <div style={{ display: 'flex', gap: 5 }}>
-                        <TradePrice
-                          price={trade.executionPrice}
-                          showInverted={showInverted}
-                          setShowInverted={setShowInverted}
-                        />
-                        <MouseoverTooltipContent
-                          content={
-                            <AdvancedSwapDetails
-                              trade={trade}
-                              allowedSlippage={allowedSlippage}
-                              showHelpers={false}
-                              showFee={false}
-                            />
-                          }
-                          bgColor={theme.bg1}
-                          color={theme.text4}
-                        >
-                          <StyledInfo />
-                        </MouseoverTooltipContent>
-                      </div>
-                    </RowBetween>
+                    <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
                   {!allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                     <RowBetween height={24} align="center">
@@ -681,7 +657,7 @@ export default function Swap({
                       </ClickableText>
                     </RowBetween>
                   )}
-                  {isFeeGreater && fee && <FeeGreaterMessage fee={fee} />}
+                  {(isFeeGreater || trade) && fee && <FeeGreaterMessage fee={fee} trade={trade} />}
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
                 {isNativeIn && onWrap && (

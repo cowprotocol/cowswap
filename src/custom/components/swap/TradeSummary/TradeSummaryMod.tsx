@@ -61,7 +61,7 @@ export default function TradeSummary({
           <RowFixed>
             <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
               {/* Liquidity Provider Fee */}
-              Fee
+              Fees (incl. gas costs)
             </TYPE.black>
             {showHelpers && (
               <MouseoverTooltipContent content={FEE_TOOLTIP_MSG} bgColor={theme.bg1} color={theme.text1}>

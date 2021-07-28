@@ -11,6 +11,12 @@ export function formatAtoms(amount: string, decimals: number): string {
   return new BigNumber(amount).div(TEN.pow(decimals)).toString(10)
 }
 
+export interface FormatSmartOptions {
+  thousandSeparator?: boolean
+  smallLimit?: string
+  isLocaleAware?: boolean
+}
+
 /**
  * formatSmart
  * @param amount
@@ -19,7 +25,8 @@ export function formatAtoms(amount: string, decimals: number): string {
  */
 export function formatSmart(
   value: CurrencyAmount<Currency> | Percent | Fraction | null | undefined,
-  decimalsToShow: number = DEFAULT_PRECISION
+  decimalsToShow: number = DEFAULT_PRECISION,
+  options?: FormatSmartOptions
 ) {
   if (!value) return
 
@@ -30,8 +37,8 @@ export function formatSmart(
     amount,
     precision,
     decimals: decimalsToShow,
-    thousandSeparator: false,
-    smallLimit: SMALL_LIMIT,
-    isLocaleAware: false,
+    thousandSeparator: !!options?.thousandSeparator,
+    smallLimit: options?.smallLimit || SMALL_LIMIT,
+    isLocaleAware: !!options?.isLocaleAware,
   })
 }
