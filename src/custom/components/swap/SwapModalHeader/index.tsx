@@ -16,6 +16,10 @@ const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
 export type LightCardType = typeof LightCard
 
 const Wrapper = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 32px auto 0;
+  `};
+
   svg {
     stroke: ${({ theme }) => theme.text1};
   }

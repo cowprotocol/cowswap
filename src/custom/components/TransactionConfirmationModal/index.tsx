@@ -1,11 +1,11 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import React, { useContext } from 'react'
+import React, { ReactNode, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { CloseIcon } from 'theme'
 import { ExternalLink } from 'theme'
-import { RowFixed } from 'components/Row'
+import { RowBetween, RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
 import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
@@ -13,6 +13,7 @@ import { ArrowUpCircle, CheckCircle } from 'react-feather'
 import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
+import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -36,6 +37,18 @@ const CloseLink = styled.span`
   color: ${({ theme }) => theme.primary1};
   cursor: pointer;
   margin: 8px auto;
+`
+
+export const GPModalHeader = styled(RowBetween)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 16px;
+    background: ${({ theme }) => theme.bg1};
+    z-index: 20;
+  `}
 `
 
 const InternalLink = styled(Link)``
@@ -103,6 +116,9 @@ const CheckCircleCustom = styled(CheckCircle)`
   margin: 0 10px 0 0;
 `
 
+export * from './TransactionConfirmationModalMod'
+export { default } from './TransactionConfirmationModalMod'
+
 export function TransactionSubmittedContent({
   onDismiss,
   chainId,
@@ -169,5 +185,13 @@ export function TransactionSubmittedContent({
   )
 }
 
-export * from './TransactionConfirmationModalMod'
-export { default } from './TransactionConfirmationModalMod'
+export interface ConfirmationModalContentProps {
+  title: ReactNode
+  onDismiss: () => void
+  topContent: () => ReactNode
+  bottomContent?: () => ReactNode | undefined
+}
+
+export function ConfirmationModalContent(props: ConfirmationModalContentProps) {
+  return <ConfirmationModalContentMod {...props} />
+}

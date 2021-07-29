@@ -15,6 +15,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
 import { formatSmart } from 'utils/format'
 import { TradeSummaryProps } from '.'
+import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -60,7 +61,7 @@ export default function TradeSummary({
           <RowFixed>
             <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
               {/* Liquidity Provider Fee */}
-              Fee
+              Fees (incl. gas costs)
             </TYPE.black>
             {showHelpers && (
               <MouseoverTooltipContent content={FEE_TOOLTIP_MSG} bgColor={theme.bg1} color={theme.text1}>
@@ -74,7 +75,7 @@ export default function TradeSummary({
         </RowBetween>
       )}
 
-      <RowBetween height={24}>
+      {/* <RowBetween height={24}>
         <RowFixed>
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
             <Trans>{trade.tradeType === TradeType.EXACT_INPUT ? 'Receive' : 'From'} (incl. fee)</Trans>
@@ -84,7 +85,7 @@ export default function TradeSummary({
           {formatSmart(isExactIn ? trade.outputAmount : trade.inputAmountWithFee)}{' '}
           {(isExactIn ? trade.outputAmount : trade.inputAmount).currency.symbol}
         </TYPE.black>
-      </RowBetween>
+      </RowBetween> */}
 
       {/* 
       <RowBetween>
@@ -117,6 +118,22 @@ export default function TradeSummary({
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
             <Trans>Slippage tolerance</Trans>
           </TYPE.black>
+          <MouseoverTooltipContent
+            bgColor={theme.bg3}
+            color={theme.text1}
+            content={
+              <Trans>
+                <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
+                <p>
+                  The slippage you pick here enables a resubmission of your order in case of unfavourable price
+                  movements.
+                </p>
+                <p>{INPUT_OUTPUT_EXPLANATION}</p>
+              </Trans>
+            }
+          >
+            <StyledInfo />
+          </MouseoverTooltipContent>
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {allowedSlippage.toFixed(2)}%
@@ -126,7 +143,11 @@ export default function TradeSummary({
       <RowBetween height={24}>
         <RowFixed>
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-            {trade.tradeType === TradeType.EXACT_INPUT ? <Trans>Minimum received</Trans> : <Trans>Maximum sent</Trans>}
+            {trade.tradeType === TradeType.EXACT_INPUT ? (
+              <Trans>Minimum received (incl. fee)</Trans>
+            ) : (
+              <Trans>Maximum sent (incl. fee)</Trans>
+            )}
           </TYPE.black>
           {showHelpers && (
             <MouseoverTooltipContent

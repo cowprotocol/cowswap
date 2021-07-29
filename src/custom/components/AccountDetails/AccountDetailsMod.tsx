@@ -103,6 +103,11 @@ export const LowerSection = styled.div`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    border-radius: 0;
+    margin-bottom: 16px;
+  `}
+
   h5 {
     margin: 0;
     font-weight: 400;

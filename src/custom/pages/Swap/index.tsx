@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import styled, { ThemeContext } from 'styled-components'
-import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
-import { Text } from 'rebass'
+import styled, { DefaultTheme, ThemeContext } from 'styled-components'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { BoxProps, Text } from 'rebass'
 
 import { ButtonSize, TYPE } from 'theme/index'
 
@@ -23,12 +23,19 @@ import {
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { LONG_LOAD_THRESHOLD, SHORT_PRECISION } from 'constants/index'
+import { FIAT_PRECISION, LONG_LOAD_THRESHOLD, SHORT_PRECISION } from 'constants/index'
 import { formatSmart } from 'utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
+import { Repeat } from 'react-feather'
+import { Trans } from '@lingui/macro'
+import TradePrice from 'components/swap/TradePrice'
+import TradeGp from 'state/swap/TradeGp'
+import { useUSDCValue } from 'hooks/useUSDCPrice'
+import { computeTradePriceBreakdown } from 'components/swap/TradeSummary/TradeSummaryMod'
 
-interface FeeGreaterMessageProp {
+interface FeeGreaterMessageProp extends BoxProps {
+  trade?: TradeGp
   fee: CurrencyAmount<Currency>
 }
 
@@ -82,7 +89,7 @@ const SwapModWrapper = styled(SwapMod)`
     }
 
     ${AutoColumn} {
-      grid-row-gap: 0px;
+      grid-row-gap: 8px;
     }
 
     .expertMode ${AutoColumn} {
@@ -142,17 +149,84 @@ export interface SwapProps extends RouteComponentProps {
   TradeLoading: React.FC<TradeLoadingProps>
   SwapButton: React.FC<SwapButtonProps>
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
+  Price: React.FC<PriceProps>
   className?: string
 }
 
-function FeeGreaterMessage({ fee }: FeeGreaterMessageProp) {
+const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
+  ...props,
+  align: 'center',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  minHeight: 24,
+}))`
+  > .price-container {
+    display: flex;
+    gap: 5px;
+  }
+`
+
+const PriceSwitcher = styled(AutoRow)`
+  flex-flow: row nowrap;
+  gap: 4px;
+  min-width: 55px;
+  > svg {
+    cursor: pointer;
+    border-radius: 20px;
+    background: ${({ theme }) => theme.bg4};
+    padding: 4px;
+  }
+`
+
+interface PriceProps extends BoxProps {
+  trade: TradeGp
+  theme: DefaultTheme
+  showInverted: boolean
+  setShowInverted: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const Price: React.FC<PriceProps> = ({
+  trade,
+  theme,
+  showInverted,
+  setShowInverted,
+  ...boxProps
+}: PriceProps) => {
+  return (
+    <LowerSectionWrapper {...boxProps}>
+      <Text fontWeight={500} fontSize={14} color={theme.text2}>
+        <PriceSwitcher>
+          <Trans>Price</Trans>
+          <Repeat size={20} onClick={() => setShowInverted((prev) => !prev)} />
+        </PriceSwitcher>
+      </Text>
+      <div className="price-container">
+        <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
+      </div>
+    </LowerSectionWrapper>
+  )
+}
+
+export const LightGreyText = styled.span`
+  font-weight: 400;
+  color: ${({ theme }) => theme.text4};
+`
+
+function FeeGreaterMessage({ trade, fee, ...boxProps }: FeeGreaterMessageProp) {
   const theme = useContext(ThemeContext)
+  // trades are null when there is a fee quote error e.g
+  // so we can take both
+  const feeAmount = trade?.fee.feeAsCurrency || fee
+  const feeFiatValue = useUSDCValue(feeAmount)
+
+  const { realizedFee } = computeTradePriceBreakdown(trade)
+  const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
 
   return (
-    <RowBetween height={24}>
+    <LowerSectionWrapper {...boxProps}>
       <RowFixed>
-        <TYPE.black fontSize={14} fontWeight={500} color={theme.text2}>
-          Fee
+        <TYPE.black fontSize={14} fontWeight={500} color={theme.text1}>
+          Fees (incl. gas costs)
         </TYPE.black>
         <MouseoverTooltipContent
           bgColor={theme.bg1}
@@ -163,9 +237,10 @@ function FeeGreaterMessage({ fee }: FeeGreaterMessageProp) {
         </MouseoverTooltipContent>
       </RowFixed>
       <TYPE.black fontSize={14} color={theme.text1}>
-        {formatSmart(fee, SHORT_PRECISION)} {fee.currency.symbol}
+        {formatSmart(realizedFee || fee, SHORT_PRECISION)} {(realizedFee || fee)?.currency.symbol}{' '}
+        {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
       </TYPE.black>
-    </RowBetween>
+    </LowerSectionWrapper>
   )
 }
 
@@ -297,6 +372,7 @@ export default function Swap(props: RouteComponentProps) {
       SwapButton={SwapButton}
       TradeLoading={TradeLoading}
       ArrowWrapperLoader={ArrowWrapperLoader}
+      Price={Price}
       {...props}
     />
   )

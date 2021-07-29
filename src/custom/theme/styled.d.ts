@@ -17,6 +17,7 @@ export interface Colors extends ColorsUniswap {
   shimmer2: color
   tableHeadBG: Color
   tableRowBG: Color
+  bg3Transparent: Color
 }
 
 declare module 'styled-components' {

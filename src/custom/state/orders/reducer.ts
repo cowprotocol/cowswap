@@ -19,6 +19,13 @@ import {
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
 
+// previous order state, to use in checks
+// in case users have older, stale state and we need to handle
+export interface V2OrderObject {
+  id: OrderObject['id']
+  order: Omit<OrderObject['order'], 'inputToken' | 'outputToken'>
+}
+
 export interface OrderObject {
   id: OrderID
   order: SerializedOrder
