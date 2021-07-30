@@ -1,5 +1,6 @@
 // a list of tokens by chain
 import { USDC_XDAI, USDT_XDAI, WBTC_XDAI } from 'utils/xdai/constants'
+import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY } from 'utils/rinkeby/constants'
 import { Currency /* , Token */ } from '@uniswap/sdk-core'
 // import { SupportedChainId } from 'constants/chains'
 import {
@@ -97,7 +98,7 @@ type ChainCurrencyList = {
 export const COMMON_BASES: ChainCurrencyList = {
   [1]: [/* ExtendedEther.onChain(1),  */ DAI, USDC, USDT, WBTC, WETH9_EXTENDED[1]],
   [3]: [/* ExtendedEther.onChain(3),  */ WETH9_EXTENDED[3]],
-  [4]: [/* ExtendedEther.onChain(4),  */ DAI, USDC, USDT, WETH9_EXTENDED[4]],
+  [4]: [/* ExtendedEther.onChain(4),  */ DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WETH9_EXTENDED[4]],
   [5]: [/* ExtendedEther.onChain(5),  */ WETH9_EXTENDED[5]],
   [42]: [/* ExtendedEther.onChain(42), */ WETH9_EXTENDED[42]],
   [100]: [/* ExtendedEther.onChain(42), */ USDC_XDAI, USDT_XDAI, WBTC_XDAI, WETH9_EXTENDED[100]], // mod

@@ -2,6 +2,8 @@ import { Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import { AutoRow } from 'components/Row'
 import { AutoColumn as AutoColumnUni } from 'components/Column'
+import { BaseWrapperMod } from './CommonBasesMod'
+import { transparentize } from 'polished'
 
 export { default } from './CommonBasesMod'
 
@@ -12,7 +14,8 @@ export const AutoColumn = styled(AutoColumnUni)`
     &::after {
       content: "";
       display: block;
-      background: linear-gradient(to left, ${({ theme }) => theme.bg3} 0%, ${({ theme }) => theme.bg3Transparent} 100%);
+      background: linear-gradient(to left, ${({ theme }) => theme.bg3} 0%, ${({ theme }) =>
+    transparentize(1, theme.bg3)} 100%);
       pointer-events: none;
       height: 100%;
       width: 70px;
@@ -23,6 +26,11 @@ export const AutoColumn = styled(AutoColumnUni)`
       margin: auto;
     }
   `}
+`
+
+export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`
+  color: ${({ theme, disable }) => disable && transparentize(0.7, theme.text1)};
+  filter: ${({ disable }) => disable && 'contrast(0.85)'};
 `
 
 export const CommonBasesRow = styled(AutoRow)`

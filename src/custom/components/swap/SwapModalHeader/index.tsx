@@ -5,6 +5,7 @@ import { AutoColumn } from 'components/Column'
 import styled from 'styled-components'
 import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
+import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 
 // MOD
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
@@ -26,6 +27,17 @@ const Wrapper = styled.div`
 
   ${AutoColumn} > div > div {
     color: ${({ theme }) => theme.text1};
+  }
+
+  ${AuxInformationContainer} {
+    background-color: ${({ theme }) => theme.bg3};
+    border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
+    border-top: 0;
+
+    &:hover {
+      border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
+      border-top: 0;
+    }
   }
 `
 

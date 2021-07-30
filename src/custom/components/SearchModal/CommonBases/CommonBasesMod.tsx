@@ -10,10 +10,10 @@ import { currencyId } from 'utils/currencyId'
 import QuestionHelper from 'components/QuestionHelper'
 import { AutoRow } from 'components/Row'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { CommonBasesRow, CommonBasesProps, AutoColumn } from '.' // mod
-import { transparentize } from 'polished'
+import { BaseWrapper, CommonBasesRow, CommonBasesProps, AutoColumn } from '.' // mod
 
-export const BaseWrapper = styled.div<{ disable?: boolean }>`
+export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
+  // mod
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
   border-radius: 10px;
   display: flex;
@@ -25,11 +25,9 @@ export const BaseWrapper = styled.div<{ disable?: boolean }>`
     background-color: ${({ theme, disable }) => !disable && theme.bg4};
   }
 
-  /* color: ${({ theme, disable }) => disable && theme.text3}; */
-  color: ${({ theme, disable }) => disable && transparentize(0.7, theme.text1)};
+  color: ${({ theme, disable }) => disable && theme.text3};
   background-color: ${({ theme, disable }) => disable && theme.bg3};
-  /* filter: ${({ disable }) => disable && 'grayscale(1)'}; */
-  filter: ${({ disable }) => disable && 'grayscale(0.5)'};
+  filter: ${({ disable }) => disable && 'grayscale(1)'};
 `
 
 export default function CommonBases({ chainId, onSelect, selectedCurrency }: CommonBasesProps) {

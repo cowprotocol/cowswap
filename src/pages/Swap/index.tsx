@@ -17,7 +17,7 @@ import { ButtonConfirmed, ButtonError, ButtonGray, ButtonLight, ButtonPrimary } 
 import { GreyCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from '../../components/Loader'
 import Row, { AutoRow, RowFixed } from '../../components/Row'
 import BetterTradeLink from '../../components/swap/BetterTradeLink'

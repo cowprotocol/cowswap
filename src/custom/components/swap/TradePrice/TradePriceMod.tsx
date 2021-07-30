@@ -23,7 +23,7 @@ export const StyledPriceContainer = styled.button`
   font-weight: 400;
   background-color: transparent;
   border: none;
-  height: 24px;
+  /* height: 24px; */
   cursor: pointer;
 
   > div {
@@ -64,7 +64,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
         <Text fontWeight={500} fontSize={14} color={theme.text1}>
           {/* {text} */}
           <LightGreyText>{baseText}</LightGreyText>
-          <strong>{quoteText}</strong>
+          <span>{quoteText}</span>
           {fiatValue && <LightGreyText>{fiatText}</LightGreyText>}
         </Text>
       </div>

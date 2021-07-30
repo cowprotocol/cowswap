@@ -25,11 +25,11 @@ import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/
 import { useListColor } from 'hooks/useColor'
 import useTheme from 'hooks/useTheme'
 import ListToggle from 'components/Toggle/ListToggle'
-import Card from 'components/Card'
+// import Card from 'components/Card'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 // import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
 // Mod:
-import { ListRowProps, RowWrapper } from '.' // mod
+import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { useActiveWeb3React } from 'hooks/web3'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'

@@ -11,6 +11,7 @@ export const GpModal = styled(Modal)`
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;
+      max-width: 100%;
       height: 100%;
       width: 100vw;
       border-radius: 0;

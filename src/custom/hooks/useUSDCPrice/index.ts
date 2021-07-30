@@ -85,7 +85,7 @@ export default function useUSDCPrice(currency?: Currency) {
 
 /**
  * Returns the price in USDC of the input currency from price APIs
- * @param currency currency to compute the USDC price of
+ * @param currencyAmount currency to compute the USDC price of
  */
 export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
   const { price, error } = useUSDCPrice(currencyAmount?.currency)
