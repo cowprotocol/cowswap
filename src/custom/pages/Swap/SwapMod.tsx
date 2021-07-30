@@ -643,10 +643,16 @@ export default function Swap({
               </Row>
               */
               <Card padding={showWrap ? '.25rem 1rem 0 1rem' : '0px'} borderRadius={'20px'}>
-                <AutoColumn style={{ padding: '0 8px', gap: 8 }}>
+                <AutoColumn
+                  style={{
+                    padding: '0 8px',
+                    // gap: 8 // mod
+                  }}
+                >
                   {trade && (
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
+
                   {!allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                     <RowBetween height={24} align="center">
                       <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>

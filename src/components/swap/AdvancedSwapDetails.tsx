@@ -29,7 +29,7 @@ export function AdvancedSwapDetails({ trade, allowedSlippage }: AdvancedSwapDeta
   }, [trade])
 
   return !trade ? null : (
-    <AutoColumn gap="8px">
+    <AutoColumn>
       <RowBetween>
         <RowFixed>
           <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>

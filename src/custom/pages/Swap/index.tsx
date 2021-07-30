@@ -90,10 +90,7 @@ const SwapModWrapper = styled(SwapMod)`
 
     ${AutoColumn} {
       grid-row-gap: 8px;
-    }
-
-    .expertMode ${AutoColumn} {
-      grid-row-gap: 12px;
+      margin: 0 0 12px;
     }
 
     ${ClickableText} {
@@ -101,10 +98,14 @@ const SwapModWrapper = styled(SwapMod)`
     }
 
     ${Card} > ${AutoColumn} {
-      margin: 10px auto;
+      margin: 4px auto 0;
+      font-size: 13px;
+      grid-row-gap: 0;
 
-      > div > div {
+      > div > div,
+      > div > div div {
         color: ${({ theme }) => theme.text1};
+        font-size: 13px;
       }
     }
 
@@ -166,6 +167,7 @@ const PriceSwitcher = styled(AutoRow)`
   flex-flow: row nowrap;
   gap: 4px;
   min-width: 55px;
+
   > svg {
     cursor: pointer;
     border-radius: 20px;

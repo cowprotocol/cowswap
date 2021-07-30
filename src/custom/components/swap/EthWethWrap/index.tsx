@@ -31,7 +31,7 @@ const Wrapper = styled.div`
   align-items: center;
   color: ${({ theme }) => theme.text1};
   justify-content: center;
-  margin: 24px auto 8px;
+  margin: 16px auto 8px;
   padding: 14px 14px 22px;
   width: 100%;
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
