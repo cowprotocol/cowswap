@@ -21,12 +21,12 @@ import {
 import AccountDetails from 'components/AccountDetails'
 import { Trans } from '@lingui/macro'
 
-import ModalMod from 'components/Modal'
+import ModalMod from '@src/components/Modal'
 import Option from 'components/WalletModal/Option'
 import PendingView from 'components/WalletModal/PendingView'
 import { LightCard } from 'components/Card'
 
-const CloseIcon = styled.div`
+export const CloseIcon = styled.div`
   position: absolute;
   right: 1rem;
   top: 14px;
@@ -47,9 +47,10 @@ const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
+  overflow-y: auto; /* MOD */
 `
 
-const HeaderRow = styled.div`
+export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1rem 1rem;
   font-weight: 500;
@@ -59,7 +60,7 @@ const HeaderRow = styled.div`
   `};
 `
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   /* background-color: ${({ theme }) => theme.bg0}; */
   background-color: ${({ theme }) => theme.bg1};
   padding: 0 1rem 1rem 1rem;
@@ -98,7 +99,7 @@ const OptionGrid = styled.div`
   `};
 `
 
-const HoverText = styled.div`
+export const HoverText = styled.div`
   text-decoration: none;
   color: ${({ theme }) => theme.text1};
   display: flex;

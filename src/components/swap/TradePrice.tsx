@@ -19,7 +19,7 @@ const StyledPriceContainer = styled.button`
   font-weight: 400;
   background-color: transparent;
   border: none;
-  height: 24px;
+  /* height: 24px; */
   cursor: pointer;
 `
 

@@ -28,6 +28,70 @@ export const CurrencySearchModal = styled(CurrencySearchModalUni)`
   }
 `
 
+export const AuxInformationContainer = styled(Container)<{
+  margin?: string
+  borderColor?: string
+  borderWidth?: string
+}>`
+  margin: ${({ margin = '0 auto' }) => margin};
+  border-radius: 0 0 15px 15px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: auto;
+    flex-flow: column wrap;
+    justify-content: flex-end;
+    align-items: flex-end;
+  `}
+
+  > ${FeeInformationTooltipWrapper} {
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 16px;
+    padding: 16px 0;
+    font-weight: 600;
+    font-size: 14px;
+    height: auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: column wrap;
+      width: 100%;
+      align-items: flex-start;
+      margin: 0;
+      padding: 16px;
+    `}
+
+    > span {
+      font-size: 18px;
+      gap: 2px;
+      word-break: break-all;
+      text-align: right;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`  
+        text-align: left;
+        align-items: flex-start;
+        width: 100%;
+      `};
+    }
+
+    > span:first-child {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        margin: 0 0 10px;
+      `}
+    }
+
+    > span > small {
+      opacity: 0.75;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+`
+
 export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   // CSS Override
 
@@ -91,6 +155,21 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
     background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+
+    &:hover {
+      border: ${({ theme }) =>
+        theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+    }
+  }
+
+  ${AuxInformationContainer} {
+    background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+    border-top: none;
+
+    &:hover {
+      background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+      border-top: none;
+    }
   }
 
   ${({ showLoader, theme }) =>
@@ -193,80 +272,6 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${StyledLogo} {
     background: ${({ theme }) => theme.bg1};
-  }
-`
-
-export const AuxInformationContainer = styled(Container)<{
-  margin?: string
-  borderColor?: string
-  borderWidth?: string
-}>`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: auto;
-    flex-flow: column wrap;
-    justify-content: flex-end;
-    align-items: flex-end;
-  `}
-
-  &&&& {
-    background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
-    margin: ${({ margin = '0 auto' }) => margin};
-    border-radius: 0 0 15px 15px;
-    border-top: none;
-    ${({ borderColor }) => `border-color: ${borderColor};`}
-    border-width: ${({ borderWidth = '2px' }) => borderWidth};
-
-    &:hover {
-      border-color: ${({ theme }) => theme.bg4};
-    }
-  }
-
-  > ${FeeInformationTooltipWrapper} {
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 16px;
-    padding: 9px 0;
-    font-weight: 600;
-    font-size: 14px;
-    height: auto;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      flex-flow: column wrap;
-      width: 100%;
-      align-items: flex-start;
-      margin: 0;
-      padding: 16px;
-    `}
-
-    > span {
-      font-size: 18px;
-      gap: 2px;
-      word-break: break-all;
-      text-align: right;
-
-      ${({ theme }) => theme.mediaWidth.upToSmall`  
-        text-align: left;
-        align-items: flex-start;
-        width: 100%;
-      `};
-    }
-
-    > span:first-child {
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-
-      ${({ theme }) => theme.mediaWidth.upToSmall`
-        margin: 0 0 10px;
-      `}
-    }
-
-    > span > small {
-      opacity: 0.75;
-      font-size: 13px;
-      font-weight: 500;
-    }
   }
 `
 

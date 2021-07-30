@@ -186,7 +186,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
       </StyledMenuButton> */}
       {open && (
         <MenuFlyout>
-          <AutoColumn gap="md" style={{ padding: '1rem' }}>
+          <AutoColumn style={{ padding: '1rem' }}>
             <Text fontWeight={600} fontSize={14}>
               <Trans>Transaction Settings</Trans>
             </Text>
@@ -200,6 +200,8 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                   <Trans>Toggle Expert Mode</Trans>
                 </TYPE.black>
                 <QuestionHelper
+                  bgColor={theme.bg3}
+                  color={theme.text1}
                   text={
                     <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
                   }

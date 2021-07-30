@@ -19,7 +19,7 @@ import { Trans } from '@lingui/macro'
 
 import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
 
-import TradePrice from 'components/swap/TradePrice'
+// import TradePrice from 'components/swap/TradePrice'
 
 // MOD
 import TradeGp from 'state/swap/TradeGp'
@@ -31,6 +31,7 @@ import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
+import { Price } from 'pages/Swap'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -194,12 +195,20 @@ SwapModalHeaderProps) {
           />
         </AuxInformationContainer>
       )}
-      <RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
+      <Price
+        trade={trade}
+        theme={theme}
+        showInverted={showInverted}
+        setShowInverted={setShowInverted}
+        width="90%"
+        margin="auto"
+      />
+      {/* <RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
           <Trans>Price</Trans>
         </TYPE.body>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
-      </RowBetween>
+      </RowBetween> */}
 
       <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}>
         <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
