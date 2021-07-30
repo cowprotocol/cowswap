@@ -7,7 +7,9 @@ import { TokenList } from '@uniswap/token-lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'state/lists/actions'
 import { supportedChainId } from 'utils/supportedChainId'
 import Row, { RowFixed, RowBetween } from 'components/Row'
+import CardUni from 'components/Card'
 import styled from 'styled-components/macro'
+import { TextDot } from '@src/components/SearchModal/styleds'
 
 export interface ListRowProps {
   acceptListUpdate: (url: string) => ReturnType<typeof acceptListUpdate>
@@ -27,6 +29,31 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean }>`
     > div {
       color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
     }
+  }
+`
+
+export const Card = styled(CardUni)`
+  background: ${({ theme }) => theme.bg4};
+
+  ${Row},
+  ${Row} > div > div,
+  ${Row} > div > div > div {
+    color: ${({ theme }) => theme.text1};
+  }
+
+  svg > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+
+  ${Row} > img {
+    background: ${({ theme }) => theme.bg2};
+    border-radius: 40px;
+    padding: 3px;
+    object-fit: contain;
+  }
+
+  ${TextDot} {
+    background: ${({ theme }) => theme.text1};
   }
 `
 
