@@ -3,7 +3,7 @@ import TradePriceMod, { TradePriceProps } from './TradePriceMod'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
 import { formatSmart } from 'utils/format'
 import { tryParseAmount } from 'state/swap/hooks'
-import { FIAT_FORMAT_SMART_OPTIONS, MAX_PRECISION } from 'constants/index'
+import { FIAT_FORMAT_SMART_OPTIONS } from 'constants/index'
 
 export * from './TradePriceMod'
 
@@ -13,8 +13,8 @@ export default function TradePrice(props: Omit<TradePriceProps, 'fiatValue'>) {
   const priceSide = useMemo(
     () =>
       !showInverted
-        ? tryParseAmount(price.invert().toFixed(MAX_PRECISION), price.baseCurrency)
-        : tryParseAmount(price.toFixed(MAX_PRECISION), price.quoteCurrency),
+        ? tryParseAmount(price.invert().toFixed(price.baseCurrency.decimals), price.baseCurrency)
+        : tryParseAmount(price.toFixed(price.quoteCurrency.decimals), price.quoteCurrency),
     [price, showInverted]
   )
   const amount = useUSDCValue(priceSide)

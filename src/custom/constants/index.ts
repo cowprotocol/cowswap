@@ -17,7 +17,6 @@ export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
 export const SHORT_PRECISION = 4
 export const SHORTEST_PRECISION = 3
-export const MAX_PRECISION = 18
 export const LONG_PRECISION = 10
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2
