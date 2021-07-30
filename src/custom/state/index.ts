@@ -19,6 +19,7 @@ import orders from './orders/reducer'
 import price from './price/reducer'
 import gas from 'state/gas/reducer'
 import { updateVersion } from 'state/global/actions'
+import affiliate from 'state/affiliate/reducer'
 
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
@@ -41,9 +42,10 @@ const reducers = {
   orders,
   price,
   gas,
+  affiliate,
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate']
 
 const store = configureStore({
   reducer: reducers,

@@ -12,6 +12,7 @@ import ErrorBoundary from 'components/ErrorBoundary'
 // import { ApplicationModal } from '../../state/application/actions'
 // import { useModalOpen, useToggleModal } from '../state/application/hooks'
 import DarkModeQueryParamReader from 'theme'
+import ReferralLinkUpdater from 'state/affiliate/updater'
 // import {
 //   RedirectDuplicateTokenIds,
 // } from './AddLiquidity/redirects'
@@ -96,6 +97,7 @@ export default function App(props?: { children?: ReactNode }) {
             <Popups />
             <Polling />
             {/* <TopLevelModals /> */}
+            <ReferralLinkUpdater />
             <Web3ReactManager>
               <Switch>
                 {props && props.children}
