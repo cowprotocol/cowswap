@@ -23,7 +23,7 @@ import {
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { FIAT_PRECISION, LONG_LOAD_THRESHOLD, SHORT_PRECISION } from 'constants/index'
+import { FIAT_FORMAT_SMART_OPTIONS, LONG_LOAD_THRESHOLD, SHORT_PRECISION } from 'constants/index'
 import { formatSmart } from 'utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
@@ -220,7 +220,7 @@ function FeeGreaterMessage({ trade, fee, ...boxProps }: FeeGreaterMessageProp) {
   const feeFiatValue = useUSDCValue(feeAmount)
 
   const { realizedFee } = computeTradePriceBreakdown(trade)
-  const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
+  const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, ...FIAT_FORMAT_SMART_OPTIONS)})`
 
   return (
     <LowerSectionWrapper {...boxProps}>
@@ -237,8 +237,8 @@ function FeeGreaterMessage({ trade, fee, ...boxProps }: FeeGreaterMessageProp) {
         </MouseoverTooltipContent>
       </RowFixed>
       <TYPE.black fontSize={14} color={theme.text1}>
-        {formatSmart(realizedFee || fee, SHORT_PRECISION)} {(realizedFee || fee)?.currency.symbol}{' '}
-        {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
+        {formatSmart(realizedFee || fee, SHORT_PRECISION, { smallLimit: '0.00001' })}{' '}
+        {(realizedFee || fee)?.currency.symbol} {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
       </TYPE.black>
     </LowerSectionWrapper>
   )

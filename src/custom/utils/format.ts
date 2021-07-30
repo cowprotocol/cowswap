@@ -19,8 +19,9 @@ export interface FormatSmartOptions {
 
 /**
  * formatSmart
- * @param amount
+ * @param value
  * @param decimalsToShow
+ * @param options
  * @returns string or undefined
  */
 export function formatSmart(

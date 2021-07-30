@@ -5,6 +5,7 @@ import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'cons
 
 import JSBI from 'jsbi'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { FormatSmartOptions } from 'utils/format'
 
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50
@@ -20,6 +21,10 @@ export const MAX_PRECISION = 18
 export const LONG_PRECISION = 10
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2
+
+export const FIAT_FORMAT_SMART_OPTIONS: [number, FormatSmartOptions] = [FIAT_PRECISION, { smallLimit: '0.01' }]
+
+export const PRICE_FORMAT_OPTIONS: [number, FormatSmartOptions] = [DEFAULT_PRECISION, { smallLimit: '0.00001' }]
 
 export const LONG_LOAD_THRESHOLD = 2000
 
