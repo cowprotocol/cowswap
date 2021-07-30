@@ -2,7 +2,7 @@ export type { UnsupportedToken, OrderID, OrderMetaData } from './operatorApi'
 import * as realApi from './operatorApi'
 import * as mockApi from './operatorMock'
 
-const useMock = process.env.MOCK_OPERATOR === 'true'
+const useMock = process.env.REACT_APP_MOCK === 'true'
 
 // Re-exporting the result, mocked or not.
 // Unfortunately, did not find a way to export
@@ -10,6 +10,7 @@ const useMock = process.env.MOCK_OPERATOR === 'true'
 // without manually naming the exports
 export const {
   // functions that have a mock
+  getAppDataDoc,
   uploadAppDataDoc,
   // functions that do not have a mock
   getOrderLink = realApi.getOrderLink,

@@ -122,6 +122,7 @@
     "start:default": "yarn i18n:extract && yarn compile-all-types && craco start",
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
     "start:service-worker": "yarn build && yarn serve -s build",
+    "mock": "REACT_APP_MOCK=true yarn start",
     "build": "yarn i18n:extract && yarn compile-all-types && craco build",
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "ipfs-deploy build -p infura -O",

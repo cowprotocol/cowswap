@@ -1,23 +1,27 @@
 type ApiActionType = 'update'
 
-export interface ApiErrorObject {
-  errorType: ApiErrorCodes
+export interface MetadataApiErrorObject {
+  errorType: MetadataApiErrorCodes
   description: string
 }
 
 // TODO: Validate/Update error code when the API is updated
-export enum ApiErrorCodes {
+export enum MetadataApiErrorCodes {
+  AddressNotFound = 'AddressNotFound',
+  UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_UPLOAD_ERROR = 'UNHANDLED_UPLOAD_ERROR',
 }
 
-export enum ApiErrorCodeDetails {
+export enum MetadataApiErrorCodeDetails {
+  AddressNotFound = "The referral address doesn't exist",
+  UNHANDLED_GET_ERROR = 'Metadata AppDoc fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_UPLOAD_ERROR = 'The metadata object could not be saved',
 }
 
 function _mapActionToErrorDetail(action?: ApiActionType) {
   switch (action) {
     case 'update':
-      return ApiErrorCodeDetails.UNHANDLED_UPLOAD_ERROR
+      return MetadataApiErrorCodeDetails.UNHANDLED_UPLOAD_ERROR
     default:
       console.error(
         '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
@@ -28,15 +32,15 @@ function _mapActionToErrorDetail(action?: ApiActionType) {
 
 export default class MetadataError extends Error {
   name = 'MetadataError'
-  type: ApiErrorCodes
-  description: ApiErrorObject['description']
+  type: MetadataApiErrorCodes
+  description: MetadataApiErrorObject['description']
 
   // Status 400 errors
-  static apiErrorDetails = ApiErrorCodeDetails
+  static apiErrorDetails = MetadataApiErrorCodeDetails
 
   public static async getErrorMessage(response: Response, action: ApiActionType) {
     try {
-      const orderPostError: ApiErrorObject = await response.json()
+      const orderPostError: MetadataApiErrorObject = await response.json()
 
       if (orderPostError.errorType) {
         const errorMessage = MetadataError.apiErrorDetails[orderPostError.errorType]
@@ -65,12 +69,12 @@ export default class MetadataError extends Error {
         return `Error updating the metadata object`
     }
   }
-  constructor(apiError: ApiErrorObject) {
+  constructor(apiError: MetadataApiErrorObject) {
     super(apiError.description)
 
     this.type = apiError.errorType
     this.description = apiError.description
-    this.message = ApiErrorCodeDetails[apiError.errorType]
+    this.message = MetadataApiErrorCodeDetails[apiError.errorType]
   }
 }
 
