@@ -9,7 +9,7 @@ import { currencyId } from '../../utils/currencyId'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
 import { AutoRow } from '../Row'
-import CurrencyLogo from '../CurrencyLogo'
+import CurrencyLogo from 'components/CurrencyLogo'
 
 const BaseWrapper = styled.div<{ disable?: boolean }>`
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
