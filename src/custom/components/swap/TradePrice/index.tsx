@@ -3,7 +3,7 @@ import TradePriceMod, { TradePriceProps } from './TradePriceMod'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
 import { formatSmart } from 'utils/format'
 import { tryParseAmount } from 'state/swap/hooks'
-import { FIAT_FORMAT_SMART_OPTIONS } from 'constants/index'
+import { FIAT_PRECISION } from 'constants/index'
 
 export * from './TradePriceMod'
 
@@ -18,7 +18,7 @@ export default function TradePrice(props: Omit<TradePriceProps, 'fiatValue'>) {
     [price, showInverted]
   )
   const amount = useUSDCValue(priceSide)
-  const fiatValueFormatted = formatSmart(amount, ...FIAT_FORMAT_SMART_OPTIONS)
+  const fiatValueFormatted = formatSmart(amount, FIAT_PRECISION, { smallLimit: '0.01' })
 
   return <TradePriceMod {...props} fiatValue={fiatValueFormatted} />
 }

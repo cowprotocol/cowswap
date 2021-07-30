@@ -3,8 +3,8 @@ import { Price, Currency } from '@uniswap/sdk-core'
 import { useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
-import { formatSmart } from 'utils/format' // mod
-import { PRICE_FORMAT_OPTIONS } from 'constants/index' // mod
+import { formatSmart, FormatSmartOptions } from 'utils/format' // mod
+import { DEFAULT_PRECISION } from 'constants/index' // mod
 import { LightGreyText } from 'pages/Swap'
 
 export interface TradePriceProps {
@@ -32,6 +32,8 @@ export const StyledPriceContainer = styled.button`
     width: fit-content;
   }
 `
+
+const PRICE_FORMAT_OPTIONS: [number, FormatSmartOptions] = [DEFAULT_PRECISION, { smallLimit: '0.00001' }]
 
 export default function TradePrice({ price, showInverted, fiatValue, setShowInverted }: TradePriceProps) {
   const theme = useContext(ThemeContext)

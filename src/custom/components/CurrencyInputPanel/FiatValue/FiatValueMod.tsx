@@ -6,7 +6,7 @@ import { warningSeverity } from 'utils/prices'
 import HoverInlineText from 'components/HoverInlineText'
 import { Trans } from '@lingui/macro'
 
-import { FIAT_FORMAT_SMART_OPTIONS } from 'constants/index' // mod
+import { FIAT_PRECISION } from 'constants/index' // mod
 import { formatSmart } from 'utils/format'
 
 export function FiatValue({
@@ -34,12 +34,7 @@ export function FiatValue({
         <Trans>
           ≈ $
           <HoverInlineText
-            text={
-              formatSmart(
-                fiatValue,
-                ...FIAT_FORMAT_SMART_OPTIONS
-              ) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */
-            }
+            text={formatSmart(fiatValue, FIAT_PRECISION) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */}
           />
         </Trans>
       ) : (
