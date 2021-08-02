@@ -40,7 +40,6 @@ export default function CurrencyLogo({
   const srcs: string[] = useMemo(() => {
     if (!currency || currency.isNative) return []
     const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
-    console.log('imageOverride', imageOverride)
 
     if (currency.isToken) {
       const defaultUrls = imageOverride ? [imageOverride] : [getTokenLogoURL(currency.address)]
