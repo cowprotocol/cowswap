@@ -64,7 +64,13 @@ export default function TradeSummary({
       )}
 
       {/* Slippage */}
-      <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
+      <RowSlippage
+        allowedSlippage={allowedSlippage}
+        fontSize={12}
+        fontWeight={400}
+        rowHeight={24}
+        showSettingOnClick={false}
+      />
 
       {/* Min/Max received */}
       <RowReceivedAfterSlippage

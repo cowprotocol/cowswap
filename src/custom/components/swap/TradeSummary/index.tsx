@@ -16,21 +16,37 @@ import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
 import { formatSmart } from 'utils/format'
+import { ClickableText } from 'pages/Pool/styleds'
+import { useToggleSettingsMenu } from 'state/application/hooks'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
   fontWeight?: number
   fontSize?: number
   rowHeight?: number
+  showSettingOnClick?: boolean
 }
-export function RowSlippage({ allowedSlippage, fontSize = 14, fontWeight = 500, rowHeight }: RowSlippageProps) {
+export function RowSlippage({
+  allowedSlippage,
+  fontSize = 14,
+  fontWeight = 500,
+  rowHeight,
+  showSettingOnClick = true,
+}: RowSlippageProps) {
   const theme = useContext(ThemeContext)
+  const toggleSettings = useToggleSettingsMenu()
 
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
         <TYPE.black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
-          <Trans>Slippage tolerance</Trans>
+          {showSettingOnClick ? (
+            <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+              <Trans>Slippage tolerance</Trans>
+            </ClickableText>
+          ) : (
+            <Trans>Slippage tolerance</Trans>
+          )}
         </TYPE.black>
         <MouseoverTooltipContent
           bgColor={theme.bg3}
@@ -49,7 +65,11 @@ export function RowSlippage({ allowedSlippage, fontSize = 14, fontWeight = 500, 
         </MouseoverTooltipContent>
       </RowFixed>
       <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1}>
-        {allowedSlippage.toFixed(2)}%
+        {showSettingOnClick ? (
+          <ClickableText onClick={toggleSettings}>{allowedSlippage.toFixed(2)}%</ClickableText>
+        ) : (
+          <span>{allowedSlippage.toFixed(2)}%</span>
+        )}
       </TYPE.black>
     </RowBetween>
   )
