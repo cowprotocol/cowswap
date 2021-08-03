@@ -25,7 +25,7 @@ import { /* Column, */ AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
-import { /* Row, */ AutoRow, RowBetween /* RowFixed */ } from 'components/Row'
+import { /* Row, */ AutoRow /*RowBetween, RowFixed */ } from 'components/Row'
 // import BetterTradeLink from 'components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
@@ -47,7 +47,7 @@ import { /* useToggledVersion, */ Version } from 'hooks/useToggledVersion'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useWalletModalToggle, useToggleSettingsMenu } from 'state/application/hooks'
+import { useWalletModalToggle /*, useToggleSettingsMenu */ } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -66,9 +66,9 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 // import { warningSeverity } from 'utils/prices'
 import AppBody from 'pages/AppBody'
 
-import { PERCENTAGE_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { /*PERCENTAGE_PRECISION,*/ INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { ClickableText } from 'pages/Pool/styleds'
+// import { ClickableText } from 'pages/Pool/styleds'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
@@ -78,6 +78,7 @@ import { SwapProps, ButtonError, ButtonPrimary, ButtonLight } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
+import { RowSlippage } from '@src/custom/components/swap/TradeSummary'
 
 export const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -91,7 +92,7 @@ export const StyledInfo = styled(Info)`
 
 export default function Swap({
   history,
-  FeeGreaterMessage,
+  TradeBasicDetails,
   EthWethWrapMessage,
   SwitchToWethBtn,
   FeesExceedFromAmountMessage,
@@ -135,7 +136,7 @@ export default function Swap({
   const toggleWalletModal = useWalletModalToggle()
 
   // for expert mode
-  const toggleSettings = useToggleSettingsMenu()
+  // const toggleSettings = useToggleSettingsMenu()
   const [isExpertMode] = useExpertModeManager()
 
   // get version from the url
@@ -653,17 +654,18 @@ export default function Swap({
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
 
-                  {!allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                    <RowBetween height={24} align="center">
-                      <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
-                        <Trans>Slippage Tolerance</Trans>
-                      </ClickableText>
-                      <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
-                        {formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%
-                      </ClickableText>
-                    </RowBetween>
+                  {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
+                    // <RowBetween height={24} align="center">
+                    //   <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+                    //     <Trans>Slippage Tolerance</Trans>
+                    //   </ClickableText>
+                    //   <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+                    //     {formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%
+                    //   </ClickableText>
+                    // </RowBetween>
+                    <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
                   )}
-                  {(isFeeGreater || trade) && fee && <FeeGreaterMessage fee={fee} trade={trade} />}
+                  {(isFeeGreater || trade) && fee && <TradeBasicDetails fee={fee} trade={trade} />}
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
                 {isNativeIn && onWrap && (
