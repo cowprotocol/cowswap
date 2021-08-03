@@ -308,14 +308,19 @@ export default function Faq() {
           <h2 id="protocol">Protocol</h2>
           <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
           <p>
-            There is currently no plan for a CowSwap specific token. At the moment the value is already captured by the
-            GNO token, as CowSwap is built on top of Gnosis Protocol. If you are curious about how the value is
-            captured, you can <a href="https://forum.gnosis.io/t/gpv2-fee-model/1266"> read this forum post</a>.
+            There is currently no CowSwap specific token, however, the community has expressed their desire to
+            participate in this exciting project. That is why there is an ongoing discussion in the{' '}
+            <a href="https://forum.gnosis.io/c/gnosis-protocol">Forum</a> and{' '}
+            <a href="https://chat.cowswap.exchange">Discord</a> about possibility of creating one, so make sure your
+            voice is heard!
           </p>
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
             that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape or
             form.
+          </p>
+          <p>
+            Follow <a href="https://twitter.com/mevprotection">@MEVProtection</a> on Twitter to be up to date!
           </p>
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
           <p>
