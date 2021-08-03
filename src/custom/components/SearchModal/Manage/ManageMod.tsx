@@ -5,19 +5,19 @@ import { RowBetween } from 'components/Row'
 import { ArrowLeft } from 'react-feather'
 import { Text } from 'rebass'
 import { CloseIcon } from 'theme'
-import styled from 'styled-components/macro'
+// import styled from 'styled-components/macro'
 // import { Token } from '@uniswap/sdk-core'
 import { ManageLists } from 'components/SearchModal/ManageLists'
 import ManageTokens from 'components/SearchModal/ManageTokens'
 // import { TokenList } from '@uniswap/token-lists'
 import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
-import { ManageProps } from './index' // mod
+import { ManageProps, Wrapper } from './index' // mod
 
-const Wrapper = styled.div`
+/* const Wrapper = styled.div`
   width: 100%;
   position: relative;
   padding-bottom: 80px;
-`
+` */
 
 /* const ToggleWrapper = styled(RowBetween)`
   background-color: ${({ theme }) => theme.bg3};

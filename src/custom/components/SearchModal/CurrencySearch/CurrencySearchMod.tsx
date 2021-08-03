@@ -24,12 +24,13 @@ import useTheme from 'hooks/useTheme'
 import ImportRow from 'components/SearchModal/ImportRow'
 // import { Edit } from 'react-feather'
 import useDebounce from 'hooks/useDebounce'
+import { ContentWrapper } from '.' //mod
 
-const ContentWrapper = styled(Column)`
-  width: 100%;
-  flex: 1 1;
-  position: relative;
-`
+// const ContentWrapper = styled(Column)`
+//   width: 100%;
+//   flex: 1 1;
+//   position: relative;
+// `
 
 export const Footer = styled.div`
   width: 100%;
@@ -38,7 +39,7 @@ export const Footer = styled.div`
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background-color: ${({ theme }) => theme.bg1};
-  border-top: 1px solid ${({ theme }) => theme.bg2};
+  /* border-top: 1px solid ${({ theme }) => theme.bg2}; */
 `
 
 export interface CurrencySearchProps {
