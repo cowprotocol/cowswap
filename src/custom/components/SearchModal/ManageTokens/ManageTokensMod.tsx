@@ -17,7 +17,7 @@ import useTheme from 'hooks/useTheme'
 import { Trans } from '@lingui/macro'
 
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
-import { ImportTokensRowProps } from '.'
+import { ImportTokensRowProps } from '.' // mod
 
 const Wrapper = styled.div`
   width: 100%;

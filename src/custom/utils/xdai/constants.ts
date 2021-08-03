@@ -12,6 +12,13 @@ export const USDT_XDAI = new Token(ChainId.XDAI, '0x4ECaBa5870353805a9F068101A40
 export const USDC_XDAI = new Token(ChainId.XDAI, '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', 6, 'USDC', 'USD Coin')
 export const SUSD_XDAI = new Token(ChainId.XDAI, '0xB1950Fb2C9C0CbC8553578c67dB52Aa110A93393', 18, 'sUSD', 'Synth sUSD')
 export const WBTC_XDAI = new Token(ChainId.XDAI, '0x8e5bbbb09ed1ebde8674cda39a0c169401db4252', 8, 'WBTC', 'Wrapped BTC')
+export const WETH_XDAI = new Token(
+  ChainId.XDAI,
+  '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
+  8,
+  'WETH',
+  'Wrapped Ether on xDAI'
+)
 
 export const GNO_XDAI = new Token(ChainId.XDAI, '0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb', 18, 'GNO', 'Gnosis Token')
 export const STAKE_XDAI = new Token(ChainId.XDAI, '0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e', 18, 'STAKE', 'STAKE')

@@ -33,8 +33,11 @@ import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
 import { computeTradePriceBreakdown } from 'components/swap/TradeSummary/TradeSummaryMod'
+import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+import { V2_SWAP_DEFAULT_SLIPPAGE } from 'hooks/useSwapSlippageTolerance'
+import { RowReceivedAfterSlippage, RowSlippage } from '@src/custom/components/swap/TradeSummary'
 
-interface FeeGreaterMessageProp extends BoxProps {
+interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
 }
@@ -138,7 +141,7 @@ const SwapModWrapper = styled(SwapMod)`
   }
 `
 export interface SwapProps extends RouteComponentProps {
-  FeeGreaterMessage: React.FC<FeeGreaterMessageProp>
+  TradeBasicDetails: React.FC<TradeBasicDetailsProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
   SwitchToWethBtn: React.FC<SwitchToWethBtnProps>
   FeesExceedFromAmountMessage: React.FC
@@ -210,7 +213,7 @@ export const LightGreyText = styled.span`
   color: ${({ theme }) => theme.text4};
 `
 
-function FeeGreaterMessage({ trade, fee, ...boxProps }: FeeGreaterMessageProp) {
+function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
   const theme = useContext(ThemeContext)
   // trades are null when there is a fee quote error e.g
   // so we can take both
@@ -220,8 +223,12 @@ function FeeGreaterMessage({ trade, fee, ...boxProps }: FeeGreaterMessageProp) {
   const { realizedFee } = computeTradePriceBreakdown(trade)
   const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
 
+  const allowedSlippage = useUserSlippageToleranceWithDefault(V2_SWAP_DEFAULT_SLIPPAGE)
+  const [isExpertMode] = useExpertModeManager()
+
   return (
     <LowerSectionWrapper {...boxProps}>
+      {/* Fees */}
       <RowFixed>
         <TYPE.black fontSize={14} fontWeight={500} color={theme.text1}>
           Fees (incl. gas costs)
@@ -238,6 +245,16 @@ function FeeGreaterMessage({ trade, fee, ...boxProps }: FeeGreaterMessageProp) {
         {formatSmart(realizedFee || fee, SHORT_PRECISION)} {(realizedFee || fee)?.currency.symbol}{' '}
         {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
       </TYPE.black>
+
+      {isExpertMode && trade && (
+        <>
+          {/* Slippage */}
+          <RowSlippage allowedSlippage={allowedSlippage} />
+
+          {/* Min/Max received */}
+          <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippage} showHelpers={true} />
+        </>
+      )}
     </LowerSectionWrapper>
   )
 }
@@ -362,7 +379,7 @@ const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonPro
 export default function Swap(props: RouteComponentProps) {
   return (
     <SwapModWrapper
-      FeeGreaterMessage={FeeGreaterMessage}
+      TradeBasicDetails={TradeBasicDetails}
       EthWethWrapMessage={EthWethWrapMessage}
       SwitchToWethBtn={SwitchToWethBtn}
       FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}

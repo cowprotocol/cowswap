@@ -5,6 +5,30 @@ import { Token } from '@uniswap/sdk-core'
 import { RowBetween } from 'components/Row'
 import { TokenList } from '@uniswap/token-lists'
 import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
+import { SearchInput, Separator } from '@src/components/SearchModal/styleds'
+import { transparentize } from 'polished'
+
+export const Wrapper = styled.div`
+  width: 100%;
+  position: relative;
+  padding-bottom: 80px;
+
+  ${SearchInput} {
+    border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)}};
+  }
+  
+  ${SearchInput}:focus {
+    border-color: ${({ theme }) => theme.primary1}};
+  }
+
+  ${SearchInput}::placeholder {
+    color: ${({ theme }) => transparentize(0.5, theme.text1)};
+  }
+
+  ${Separator} {
+    background: ${({ theme }) => transparentize(0.7, theme.text1)};
+  }
+`
 
 const ToggleWrapper = styled(RowBetween)`
   background-color: ${({ theme }) => theme.bg4};
