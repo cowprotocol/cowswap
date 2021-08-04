@@ -168,7 +168,7 @@
   "dependencies": {
     "@gnosis.pm/cow-runner-game": "^0.2.9",
     "@gnosis.pm/dex-js": "^0.11.0",
-    "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.20",
+    "@gnosis.pm/gp-v2-contracts": "^1.0.2",
     "@uniswap/default-token-list": "^2.0.0",
     "@web3-react/walletconnect-connector": "^6.2.0",
     "fast-safe-stringify": "^2.0.8",

@@ -14,7 +14,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 
 import { PermitInfo, SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
-import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from 'custom/constants'
+import { GP_VAULT_RELAYER } from 'custom/constants'
 
 export * from '@src/hooks/useERC20Permit'
 
@@ -291,7 +291,7 @@ export function useERC20PermitFromTrade(
   allowedSlippage: Percent
 ) {
   const { chainId } = useActiveWeb3React()
-  const gpAllowanceManagerAddress = chainId ? GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS[chainId] : undefined
+  const vaultRelayerAddress = chainId ? GP_VAULT_RELAYER[chainId] : undefined
   const amountToApprove = useMemo(
     () => (trade ? trade.maximumAmountIn(allowedSlippage) : undefined),
     [trade, allowedSlippage]
@@ -301,7 +301,7 @@ export function useERC20PermitFromTrade(
     amountToApprove,
     // v2 router does not support
     // trade instanceof V2Trade ? undefined : trade instanceof V3Trade ? swapRouterAddress : undefined,
-    gpAllowanceManagerAddress,
+    vaultRelayerAddress,
     null
   )
 }

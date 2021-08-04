@@ -3,7 +3,7 @@ import { useApproveCallback } from '@src/hooks/useApproveCallback'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'
-import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from 'constants/index'
+import { GP_VAULT_RELAYER } from 'constants/index'
 import TradeGp from 'state/swap/TradeGp'
 import { ZERO_PERCENT } from 'constants/misc'
 
@@ -21,7 +21,7 @@ export function useApproveCallbackFromTrade(trade?: TradeGp, allowedSlippage = Z
     return undefined
   }, [trade, allowedSlippage])
 
-  const allowanceManager = chainId ? GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS[chainId] : undefined
+  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
 
-  return useApproveCallback(amountToApprove, allowanceManager)
+  return useApproveCallback(amountToApprove, vaultRelayer)
 }

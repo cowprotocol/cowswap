@@ -47,18 +47,5 @@
     ],
     "name": "Trade",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "allowanceManager",
-    "outputs": [
-      {
-        "internalType": "contract GPv2AllowanceManager",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   }
 ]
