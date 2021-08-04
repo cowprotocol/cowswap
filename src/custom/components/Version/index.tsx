@@ -6,7 +6,7 @@ import { version as WEB_VERSION } from '@src/../package.json'
 import { version as CONTRACTS_VERSION } from '@gnosis.pm/gp-v2-contracts/package.json'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getEtherscanLink } from 'utils'
-import { CODE_LINK, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
+import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { useActiveWeb3React } from 'hooks/web3'
 
@@ -34,12 +34,12 @@ const VERSIONS: Record<
       return CODE_LINK
     },
   },
-  'Allowance manager contract': {
+  'Vault Relayer': {
     version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
       return {
-        etherscan: _getContractsUrls(chainId, GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS),
-        github: `https://github.com/gnosis/gp-v2-contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2AllowListAuthentication.sol`,
+        etherscan: _getContractsUrls(chainId, GP_VAULT_RELAYER),
+        github: `https://github.com/gnosis/gp-v2-contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
       }
     },
   },

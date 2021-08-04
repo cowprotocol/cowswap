@@ -1,6 +1,6 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 
-import { GPv2Settlement, GPv2AllowanceManager } from '@gnosis.pm/gp-v2-contracts/networks.json'
+import { GPv2Settlement, GPv2VaultRelayer } from '@gnosis.pm/gp-v2-contracts/networks.json'
 import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
 import JSBI from 'jsbi'
@@ -46,10 +46,10 @@ export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.XDAI]: GPv2Settlement[ChainId.XDAI].address,
 }
 
-export const GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
-  [ChainId.MAINNET]: GPv2AllowanceManager[ChainId.MAINNET].address,
-  [ChainId.RINKEBY]: GPv2AllowanceManager[ChainId.RINKEBY].address,
-  [ChainId.XDAI]: GPv2AllowanceManager[ChainId.XDAI].address,
+export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
+  [ChainId.MAINNET]: GPv2VaultRelayer[ChainId.MAINNET].address,
+  [ChainId.RINKEBY]: GPv2VaultRelayer[ChainId.RINKEBY].address,
+  [ChainId.XDAI]: GPv2VaultRelayer[ChainId.XDAI].address,
 }
 
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
