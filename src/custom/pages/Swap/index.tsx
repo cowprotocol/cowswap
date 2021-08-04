@@ -32,7 +32,7 @@ import { Trans } from '@lingui/macro'
 import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
-import { computeTradePriceBreakdown } from 'components/swap/TradeSummary/TradeSummaryMod'
+import { computeTradePriceBreakdown, FEE_TOOLTIP_MSG } from 'components/swap/TradeSummary/TradeSummaryMod'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 import { V2_SWAP_DEFAULT_SLIPPAGE } from 'hooks/useSwapSlippageTolerance'
 import { RowReceivedAfterSlippage, RowSlippage } from '@src/custom/components/swap/TradeSummary'
@@ -233,11 +233,7 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
         <TYPE.black fontSize={14} fontWeight={500} color={theme.text1}>
           Fees (incl. gas costs)
         </TYPE.black>
-        <MouseoverTooltipContent
-          bgColor={theme.bg1}
-          color={theme.text1}
-          content="GP Swap has 0 gas fees. A portion of the sell amount in each trade goes to the GP Protocol."
-        >
+        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={FEE_TOOLTIP_MSG}>
           <StyledInfo />
         </MouseoverTooltipContent>
       </RowFixed>
