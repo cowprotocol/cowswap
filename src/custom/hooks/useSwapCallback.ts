@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Currency, /* Ether as ETHER, */ Percent, TradeType, CurrencyAmount } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 
 import { useAddPendingOrder } from 'state/orders/hooks'
 
@@ -86,8 +86,7 @@ export function useSwapCallback(
     const isSellEth = ETHER.onChain(chainId).equals(trade.inputAmount.currency)
 
     const sellToken = trade.inputAmount.currency.wrapped
-    // TODO: check this ETHER.onChain AND .wrapped
-    const buyToken = isBuyEth ? ETHER.onChain(chainId).wrapped : trade.outputAmount.currency.wrapped
+    const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
 
     if (!sellToken || !buyToken || (isSellEth && !wrapEther)) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
