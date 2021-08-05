@@ -1,7 +1,7 @@
-import { isDev, isStaging, isProd, isEns } from './environments'
+import { isDev, isStaging, isProd, isEns, isPreStaging } from './environments'
 
 function getAnalyticsId(): string | undefined {
-  if (isDev) {
+  if (isDev || isPreStaging) {
     return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_DEV || 'UA-190948266-3'
   } else if (isStaging) {
     return process.env.REACT_APP_GOOGLE_ANALYTICS_ID_STAGING || 'UA-190948266-4'
