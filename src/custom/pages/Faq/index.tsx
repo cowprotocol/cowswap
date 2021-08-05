@@ -4,7 +4,9 @@ import styled from 'styled-components'
 import { ContentLink } from 'components/ContentLink'
 import { DISCORD_LINK } from 'constants/index'
 import { Link } from 'react-router-dom'
-import { ExternalLink } from 'theme'
+import { ExternalLink as ExternalLinkTheme } from 'theme'
+
+const ExternalLink = styled(ExternalLinkTheme)``
 
 const Wrapper = styled.div`
   #table-container {
@@ -53,9 +55,10 @@ const Wrapper = styled.div`
   }
 
   ${Content} {
-    > div a,
-    > p a {
+    > div ${ExternalLink}, > p ${ExternalLink} {
       color: ${({ theme }) => theme.text1};
+      text-decoration: underline;
+      font-weight: 400;
       transition: color 0.2s ease-in-out;
 
       &:hover {
@@ -63,7 +66,7 @@ const Wrapper = styled.div`
       }
     }
 
-    > div > a {
+    > div > ${ExternalLink} {
       font-size: 16px;
       font-weight: bold;
     }
@@ -291,13 +294,13 @@ export default function Faq() {
 
           <p>
             Finding the best settlement for orders is a challenging task, which very soon may have its own{' '}
-            <a
+            <ExternalLink
               href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245"
               target="_blank"
               rel="noopener noreferrer"
             >
               decentralized competition
-            </a>
+            </ExternalLink>
             .
           </p>
 
@@ -310,13 +313,13 @@ export default function Faq() {
 
           <p>
             The code has been carefully tested, peer-reviewed and fully{' '}
-            <a
+            <ExternalLink
               href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf"
               target="_blank"
               rel="noopener noreferrer"
             >
               audited
-            </a>
+            </ExternalLink>
             . Although this can be seen as a step forward in terms of security, it&#39;s recommended to use the protocol
             at <strong>your own risk</strong>.
           </p>

@@ -2,18 +2,25 @@ import React from 'react'
 import Page, { Title, Content, GdocsListStyle } from 'components/Page'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { ExternalLink as ExternalLinkTheme } from 'theme'
 
 // Assets
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
-import { ExternalLink } from 'theme'
+
+const ExternalLink = styled(ExternalLinkTheme)``
 
 const Wrapper = styled(Page)`
   ${GdocsListStyle}
 
   span[role="img"] {
     font-size: 1.8em;
+  }
+
+  ${ExternalLink} {
+    text-decoration: underline;
+    font-weight: 400;
   }
 `
 
