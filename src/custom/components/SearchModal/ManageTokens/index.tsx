@@ -15,9 +15,8 @@ export type ImportTokensRowProps = Omit<ManageTokensProps, 'ImportTokensRow'> & 
 
 export const Wrapper = styled.div`
   width: 100%;
-  height: calc(100% - 60px);
+  height: 100%;
   position: relative;
-  padding-bottom: 80px;
 
   ${Row} > div {
     margin: 0;
@@ -69,5 +68,9 @@ const ImportTokensRow = ({ theme, searchToken, setModalView, setImportToken }: I
 )
 
 export default function ManageTokens(props: Omit<ManageTokensProps, 'ImportTokensRow'>) {
-  return <ManageTokensMod {...props} ImportTokensRow={ImportTokensRow} />
+  return (
+    <Wrapper>
+      <ManageTokensMod {...props} ImportTokensRow={ImportTokensRow} />
+    </Wrapper>
+  )
 }

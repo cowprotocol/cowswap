@@ -1,6 +1,7 @@
 import React from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import Web3Status from 'components/Web3Status'
+import { ExternalLink } from 'theme'
 
 import HeaderMod, {
   NetworkCard as NetworkCardUni,
@@ -174,9 +175,9 @@ export default function Header() {
         </HeaderElement>
         <HeaderElementWrap>
           <TwitterLink>
-            <a href="https://twitter.com/mevprotection" target="_blank" rel="noopener noreferrer">
+            <ExternalLink href="https://twitter.com/mevprotection" target="_blank" rel="noopener noreferrer">
               <img src={TwitterImage} alt="Follow CowSwap on Twitter!" />
-            </a>
+            </ExternalLink>
           </TwitterLink>
           <StyledMenuButton onClick={() => toggleDarkMode()}>
             {darkMode ? <Moon size={20} /> : <Sun size={20} />}

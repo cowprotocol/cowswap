@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
+import { ExternalLink } from 'theme'
 
 const Wrapper = styled(Page)`
   ${GdocsListStyle}
@@ -85,9 +86,9 @@ export default function About() {
         </p>
         <p>
           Heard about Maximum Extractable Value yet? It’s scary. To date more than{' '}
-          <a href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
+          <ExternalLink href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
             USD 797M
-          </a>{' '}
+          </ExternalLink>{' '}
           in value has been extracted from users by bots frontrunning transactions, exploiting the slippage users allow
           in a trade.
           <br />
