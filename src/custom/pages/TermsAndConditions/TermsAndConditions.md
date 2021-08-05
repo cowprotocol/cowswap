@@ -2,12 +2,12 @@
 
 ### Last updated: July 2021
 
-<p><span>Please read these Terms carefully before using our Platform. </span>By using our Platform, you confirm that you accept these <span>Terms </span>and agree to comply with them. If you do not agree, you must not use our Platform. <span>If you think that there is an error in these Terms, please contact us via the GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</a> to discuss.</span></p>
+<p><span>Please read these Terms carefully before using our Platform. </span>By using our Platform, you confirm that you accept these <span>Terms </span>and agree to comply with them. If you do not agree, you must not use our Platform. <span>If you think that there is an error in these Terms, please contact us via the GnosisDAO subcategory of <ExternalLink href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</ExternalLink> to discuss.</span></p>
 <p><strong>TERMS AND CONDITIONS (&ldquo;TERMS&rdquo;)</strong></p>
 <ol>
 <li><strong>WHO WE ARE AND HOW TO CONTACT US</strong></li>
 <ol>
-<li>CowSwap&nbsp; is operated by GnosisDAO (&rdquo;<strong>we</strong>&rdquo; or &ldquo;u<strong>s</strong>&rdquo;). We are an Ethereum based organisation managed by community members. To contact us, please write to us <span>via the GnosisDAO subcategory of </span><a href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</a></li>
+<li>CowSwap&nbsp; is operated by GnosisDAO (&rdquo;<strong>we</strong>&rdquo; or &ldquo;u<strong>s</strong>&rdquo;). We are an Ethereum based organisation managed by community members. To contact us, please write to us <span>via the GnosisDAO subcategory of </span><ExternalLink href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</ExternalLink></li>
 <li>We use open source products and developer materials from Gnosis Limited and affiliated persons and entities (&ldquo;<strong>Affiliates</strong>&rdquo;) as well as other third parties to provide a Platform to Gnosis Protocol version 2 (the &ldquo;<strong>Protocol</strong>&rdquo;). The provision of the Platform and the Protocol is based solely on our independent actions.&nbsp;</li>
 </ol>
 <li><strong>WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS AUCTION PROTOCOL</strong></li>
@@ -27,7 +27,7 @@
 <li><strong>WHAT YOU REQUIRE TO USE OUR PLATFORM</strong></li>
 <ol>
 <li>Users may use our Platform to interact with the Protocol and buy or sell ERC 20 tokens by submitting orders into a batch auction running on the Protocol.&nbsp;</li>
-<li>A detailed step-by-step guide on how to use the Platform may be found <a href="https://cowswap.exchange/#/faq#what-is-cowswap" target="_blank" rel="noopener">in the &ldquo;FAQ&rdquo; section on the Platform</a>.&nbsp;</li>
+<li>A detailed step-by-step guide on how to use the Platform may be found <ExternalLink href="https://cowswap.exchange/#/faq#what-is-cowswap" target="_blank" rel="noopener">in the &ldquo;FAQ&rdquo; section on the Platform</ExternalLink>.&nbsp;</li>
 <li>To use the Platform you require:&nbsp;</li>
 <ol>
 <li>A wallet compatible with the Ethereum Blockchain or an Ethereum Virtual Machine compatible validation mechanism, depending on which network you interact with the Protocol. We currently only support MetaMask and WalletConnect compatible wallets, and do not yet support any smart contract wallet. We have not tested compatibility with any other wallet.&nbsp;</li>
@@ -83,7 +83,7 @@
 <li><strong>RULES ABOUT YOU LINKING TO OUR PLATFORM</strong></li>
 <ol>
 <li>You may link to our Platform, provided you do so in a way that is fair and legal and does not damage our reputation or take advantage of it. You must not establish a link in such a way as to suggest any form of association, approval or endorsement on our part where none exists. You must not establish a link to our Platform in any website without the website&rsquo;s authorisation.</li>
-<li>The website in which you are linking must comply in all respects with the content standards set out in these <span>Terms</span>. If you wish to link to or make any use of content on our interface other than that set out above, please contact us at t<span>he GnosisDAO subcategory of</span> <a href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</a>.</li>
+<li>The website in which you are linking must comply in all respects with the content standards set out in these <span>Terms</span>. If you wish to link to or make any use of content on our interface other than that set out above, please contact us at t<span>he GnosisDAO subcategory of</span> <ExternalLink href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</ExternalLink>.</li>
 </ol>
 <li><strong>YOUR WARRANTIES AND REPRESENTATIONS TO US</strong></li>
 <ol>
@@ -118,7 +118,7 @@
 </ol>
 <li><strong>HOW TO RESOLVE COMPLAINTS AND DISPUTES</strong></li>
 <ol>
-<li>If an alleged breach, controversy, claim, dispute or difference <span>arises out of or in connection with the present </span><span>Terms </span><span>between you and us </span>(a &ldquo;<strong>Dispute</strong>&rdquo;), you agree to seek to resolve the matter with us amicably by referring the matter to GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</a> with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.&nbsp;</li>
+<li>If an alleged breach, controversy, claim, dispute or difference <span>arises out of or in connection with the present </span><span>Terms </span><span>between you and us </span>(a &ldquo;<strong>Dispute</strong>&rdquo;), you agree to seek to resolve the matter with us amicably by referring the matter to GnosisDAO subcategory of <ExternalLink href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</ExternalLink> with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.&nbsp;</li>
 <li>Your right to take legal action remains unaffected by the existence or use of this complaints procedure.</li>
 </ol>
 <li><strong>DISPUTE RESOLUTION</strong></li>

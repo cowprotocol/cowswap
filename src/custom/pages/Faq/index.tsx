@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { ContentLink } from 'components/ContentLink'
 import { DISCORD_LINK } from 'constants/index'
 import { Link } from 'react-router-dom'
+import { ExternalLink } from 'theme'
 
 const Wrapper = styled.div`
   #table-container {
@@ -200,15 +201,21 @@ export default function Faq() {
           </h3>
 
           <p>
-            Defined by Phil Daian in the <a href="https://arxiv.org/abs/1904.05234"> paper Flash Boys 2.0 </a>, MEV is a
-            measure of the profit a miner (or validator, sequencer, etc.) can make through their ability to arbitrarily
-            include, exclude, or re-order transactions within the blocks they produce.
+            Defined by Phil Daian in the{' '}
+            <ExternalLink href="https://arxiv.org/abs/1904.05234" target="_blank" rel="noopener noreferrer">
+              {' '}
+              paper Flash Boys 2.0{' '}
+            </ExternalLink>
+            , MEV is a measure of the profit a miner (or validator, sequencer, etc.) can make through their ability to
+            arbitrarily include, exclude, or re-order transactions within the blocks they produce.
           </p>
 
           <p>
             Since January 2020 until now (July&#39;21), the total amount of value extracted by miners (etc.) on Ethereum
             transactions has reached{' '}
-            <a href="https://explore.flashbots.net/">$ 796.8 Million, including successful and failed transactions.</a>
+            <ExternalLink href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
+              $ 796.8 Million, including successful and failed transactions.
+            </ExternalLink>
           </p>
 
           <h3 id="to-what-does-the-term-coincidence-of-wants-cows-refer">
@@ -216,10 +223,16 @@ export default function Faq() {
           </h3>
 
           <p>
-            <a href="https://en.wikipedia.org/wiki/Coincidence_of_wants"> Coincidence of Wants (CoWs)</a> can be
-            explained as “an economic phenomenon where two parties each hold an item the other wants, so they exchange
-            these items directly.” CowSwap facilitates CoWs among traders and their orders through using batch auctions
-            as a core mechanism.
+            <ExternalLink
+              href="https://en.wikipedia.org/wiki/Coincidence_of_wants"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Coincidence of Wants (CoWs)
+            </ExternalLink>{' '}
+            can be explained as “an economic phenomenon where two parties each hold an item the other wants, so they
+            exchange these items directly.” CowSwap facilitates CoWs among traders and their orders through using batch
+            auctions as a core mechanism.
           </p>
 
           <p>
@@ -278,7 +291,14 @@ export default function Faq() {
 
           <p>
             Finding the best settlement for orders is a challenging task, which very soon may have its own{' '}
-            <a href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245">decentralized competition</a>.
+            <a
+              href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              decentralized competition
+            </a>
+            .
           </p>
 
           <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
@@ -310,9 +330,14 @@ export default function Faq() {
           <p>
             There is currently no CowSwap specific token, however, the community has expressed their desire to
             participate in this exciting project. That is why there is an ongoing discussion in the{' '}
-            <a href="https://forum.gnosis.io/c/gnosis-protocol">Forum</a> and{' '}
-            <a href="https://chat.cowswap.exchange">Discord</a> about possibility of creating one, so make sure your
-            voice is heard!
+            <ExternalLink href="https://forum.gnosis.io/c/gnosis-protocol" target="_blank" rel="noopener noreferrer">
+              Forum
+            </ExternalLink>{' '}
+            and{' '}
+            <ExternalLink href="https://chat.cowswap.exchange" target="_blank" rel="noopener noreferrer">
+              Discord
+            </ExternalLink>{' '}
+            about possibility of creating one, so make sure your voice is heard!
           </p>
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
@@ -320,7 +345,11 @@ export default function Faq() {
             form.
           </p>
           <p>
-            Follow <a href="https://twitter.com/mevprotection">@MEVProtection</a> on Twitter to be up to date!
+            Follow{' '}
+            <ExternalLink href="https://twitter.com/mevprotection" target="_blank" rel="noopener noreferrer">
+              @MEVProtection
+            </ExternalLink>{' '}
+            on Twitter to be up to date!
           </p>
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
           <p>
@@ -594,9 +623,12 @@ export default function Faq() {
           <p>
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
             via the Allowance Manager (for more information read{' '}
-            <a href="https://github.com/gnosis/gp-v2-contracts">Smart Contract Architecture</a>). In order to allow that
-            to happen, the trader has to first approve the Allowance Manager contract to spend tokens on their behalf.
-            The smart contract logic ensures that no token can be spent without deliberately signing an order for it.
+            <ExternalLink href="https://github.com/gnosis/gp-v2-contracts" target="_blank" rel="noopener noreferrer">
+              Smart Contract Architecture
+            </ExternalLink>
+            ). In order to allow that to happen, the trader has to first approve the Allowance Manager contract to spend
+            tokens on their behalf. The smart contract logic ensures that no token can be spent without deliberately
+            signing an order for it.
           </p>
 
           <h3 id="why-do-i-sign-a-message-instead-of-sending-a-transaction-to-place-an-order">
@@ -655,7 +687,10 @@ export default function Faq() {
           <hr />
 
           <p>
-            Didn&#39;t find an answer? Join the <a href={DISCORD_LINK}>community on Discord</a>
+            Didn&#39;t find an answer? Join the{' '}
+            <ExternalLink href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
+              community on Discord
+            </ExternalLink>
           </p>
           <p>
             We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
