@@ -1,10 +1,10 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderID } from 'utils/operator'
-import { isDev, isStaging } from './environments'
+import { isDev, isStaging, isPreStaging } from './environments'
 
 function _getExplorerUrlByEnvironment() {
   let baseUrl: string | undefined
-  if (isDev) {
+  if (isDev || isPreStaging) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://protocol-explorer.dev.gnosisdev.com'
   } else if (isStaging) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://protocol-explorer.staging.gnosisdev.com'
