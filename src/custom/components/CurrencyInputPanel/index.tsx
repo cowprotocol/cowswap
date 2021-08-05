@@ -25,6 +25,13 @@ export const CurrencySearchModal = styled(CurrencySearchModalUni)`
   > [data-reach-dialog-content] {
     max-width: 520px;
     background-color: ${({ theme }) => theme.bg1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      border-radius: 0;
+    `}
   }
 `
 

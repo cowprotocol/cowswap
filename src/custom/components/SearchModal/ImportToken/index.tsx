@@ -13,6 +13,7 @@ import { ExternalLink } from 'theme/components'
 import ListLogo from 'components/ListLogo'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { PaddedColumn } from '@src/components/SearchModal/styleds'
 
 export interface CardComponentProps extends Pick<ImportProps, 'list'> {
   chainId?: number
@@ -22,12 +23,28 @@ export interface CardComponentProps extends Pick<ImportProps, 'list'> {
 }
 
 const Wrapper = styled.div`
+  > div {
+    height: 100%;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    overflow-y: scroll;
+  `}
+
   ${AutoColumn} > ${AutoColumn} > svg {
     stroke: ${({ theme }) => theme.red1};
   }
 
   ${RowFixed} > svg {
     stroke: ${({ theme }) => theme.red1};
+  }
+
+  ${PaddedColumn} {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      position: sticky;
+      top: 0;
+      background: ${({ theme }) => theme.bg1};
+    `}
   }
 `
 
