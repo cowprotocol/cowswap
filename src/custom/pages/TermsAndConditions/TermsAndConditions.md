@@ -10,7 +10,7 @@
 <li>CowSwap&nbsp; is operated by GnosisDAO (&rdquo;<strong>we</strong>&rdquo; or &ldquo;u<strong>s</strong>&rdquo;). We are an Ethereum based organisation managed by community members. To contact us, please write to us <span>via the GnosisDAO subcategory of </span><a href="https://forum.gnosis.io/" target="_blank" rel="noopener noreferrer">forum.gnosis.io</a></li>
 <li>We use open source products and developer materials from Gnosis Limited and affiliated persons and entities (&ldquo;<strong>Affiliates</strong>&rdquo;) as well as other third parties to provide a Platform to Gnosis Protocol version 2 (the &ldquo;<strong>Protocol</strong>&rdquo;). The provision of the Platform and the Protocol is based solely on our independent actions.&nbsp;</li>
 </ol>
-<li><strong>WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS AUCTION PROTOCOL</strong></li>
+<li><strong>WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS PROTOCOL</strong></li>
 <ol>
 <li>We provide a graphical user interface (the &ldquo;<strong>Platform</strong>&rdquo;) to facilitate you interacting with the Protocol.&nbsp;</li>
 <li>The Protocol was developed by Gnosis Limited and is governed by smart contracts that allow permissionless peer-to-peer trades between users applying a batch auction mechanism and without the need for intermediaries on Ethereum Mainnet, and Ethereum Virtual Machine compatible validation mechanisms. We are not a custodian or a counterparty to any transactions executed by you on the Protocol. We do not support any other service, particularly we do not provide any order matching, guaranteed prices, or similar exchange or trading platform services.</li>
