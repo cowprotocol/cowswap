@@ -340,7 +340,7 @@ export default function Faq() {
             <ExternalLink href="https://chat.cowswap.exchange" target="_blank" rel="noopener noreferrer">
               Discord
             </ExternalLink>{' '}
-            about possibility of creating one, so make sure your voice is heard!
+            about the possibility of creating one, so make sure your voice is heard!
           </p>
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
