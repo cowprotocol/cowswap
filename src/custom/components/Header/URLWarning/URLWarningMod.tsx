@@ -14,6 +14,15 @@ const PhishAlert = styled.div<{ isActive: any }>`
   justify-content: space-between;
   align-items: center;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
+
+  p {
+    padding: 0;
+    margin: 0;
+  }
+  a {
+    color: white;
+    font-weight: 800;
+  }
 `
 
 export const StyledClose = styled(X)`
@@ -22,9 +31,14 @@ export const StyledClose = styled(X)`
   }
 `
 
-export default function URLWarning({ url }: { url: string }) {
+export default function URLWarning({ url, announcement }: { url: string; announcement?: React.ReactNode }) {
   const toggleURLWarning = useURLWarningToggle()
   const showURLWarning = useURLWarningVisible()
+  const showAnnouncement = !!announcement
+
+  if (showAnnouncement) {
+    return <PhishAlert isActive={showAnnouncement}>{announcement}</PhishAlert>
+  }
 
   return isMobile ? (
     <PhishAlert isActive={showURLWarning}>
