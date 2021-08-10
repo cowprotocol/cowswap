@@ -3,10 +3,10 @@ import React from 'react'
 import { PRODUCTION_URL } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { StyledClose } from './URLWarningMod'
-import ReactMarkdown from 'react-markdown'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
+import { Markdown } from 'components/Markdown'
 
 export * from './URLWarningMod'
 
@@ -32,7 +32,7 @@ export default function URLWarning() {
   const announcement = announcementVisible && announcementText && (
     <>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> <ReactMarkdown>{announcementText}</ReactMarkdown>
+        <AlertTriangle style={{ marginRight: 6 }} size={12} /> <Markdown>{announcementText}</Markdown>
       </div>
       <StyledClose size={12} onClick={() => closeAnnouncement(contentHash)} />
     </>
