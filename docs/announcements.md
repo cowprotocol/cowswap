@@ -1,1 +1,1 @@
-**IMPORTANT**: Contracts have been recently updated. Read more [here](https://docs.gnosis.io/protocol/)!
+**IMPORTANT**: CowSwap has migrated from Alpha to a final version, which means you must reapprove your tokens. Read more [here](https://medium.com/@gnosisPM/cowswap-upgrades-to-final-version-by-fully-integrating-with-balancer-v2-21f4d635da1)!
