@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react'
 import Page, { Content, Title } from 'components/Page'
 import styled from 'styled-components'
-import { ContentLink } from 'components/ContentLink'
 import { DISCORD_LINK } from 'constants/index'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
+import { LinkScrollable } from 'components/Link'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 
@@ -162,11 +162,11 @@ export default function Faq() {
         <Content>
           {toc.map(({ section, items }) => (
             <div key={section.id}>
-              <ContentLink href={'#' + section.id}>{section.label}</ContentLink>
+              <LinkScrollable href={'#' + section.id}>{section.label}</LinkScrollable>
               <ul>
                 {items.map((tocItem) => (
                   <li key={tocItem.id}>
-                    <ContentLink href={'#' + tocItem.id}>{tocItem.label}</ContentLink>
+                    <LinkScrollable href={'#' + tocItem.id}>{tocItem.label}</LinkScrollable>
                   </li>
                 ))}
               </ul>
@@ -340,7 +340,7 @@ export default function Faq() {
             <ExternalLink href="https://chat.cowswap.exchange" target="_blank" rel="noopener noreferrer">
               Discord
             </ExternalLink>{' '}
-            about possibility of creating one, so make sure your voice is heard!
+            about the possibility of creating one, so make sure your voice is heard!
           </p>
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
@@ -519,7 +519,8 @@ export default function Faq() {
                 <strong>Cancel an order (Sign cancellation)</strong> <br />
                 Signature of a gasless off-chain cancellation request. This cancellation is considered
                 &ldquo;soft&rdquo; as it might not be placed with enough time for the solvers to take into
-                consideration. See more via <ContentLink href={'#can-i-cancel-an-order'}>this FAQ entry</ContentLink>.
+                consideration. See more via{' '}
+                <LinkScrollable href={'#can-i-cancel-an-order'}>this FAQ entry</LinkScrollable>.
               </p>
             </li>
           </ul>
