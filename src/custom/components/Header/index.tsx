@@ -20,7 +20,6 @@ import HeaderMod, {
 import Menu from '../Menu'
 import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
-import { status as appStatus } from '@src/../package.json'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
 import { SHORT_PRECISION } from 'constants/index'
@@ -121,17 +120,6 @@ const UniIcon = styled.div`
 
   &:hover {
     transform: rotate(-5deg);
-  }
-
-  &::after {
-    content: '${appStatus}';
-    display: block;
-    font-size: 10px;
-    font-weight: bold;
-    position: absolute;
-    right: 12px;
-    top: 2px;
-    color: ${({ theme }) => theme.text1};
   }
 `
 

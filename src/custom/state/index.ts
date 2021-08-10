@@ -18,6 +18,7 @@ import lists from './lists/reducer'
 import orders from './orders/reducer'
 import price from './price/reducer'
 import gas from 'state/gas/reducer'
+import profile from 'state/profile/reducer'
 import { updateVersion } from 'state/global/actions'
 import affiliate from 'state/affiliate/reducer'
 
@@ -43,9 +44,10 @@ const reducers = {
   price,
   gas,
   affiliate,
+  profile,
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile']
 
 const store = configureStore({
   reducer: reducers,

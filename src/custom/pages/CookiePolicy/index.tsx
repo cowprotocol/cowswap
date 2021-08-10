@@ -1,6 +1,6 @@
 import React from 'react'
-import content from './CookiePolicy.md'
-import MarkdownPage from 'components/MarkdownPage'
+import contentFile from './CookiePolicy.md'
+import { MarkdownPage } from 'components/Markdown'
 import { GdocsListStyle } from 'components/Page'
 import styled from 'styled-components'
 
@@ -30,5 +30,5 @@ const Wrapper = styled(MarkdownPage)`
 `
 
 export default function CookiePolicy() {
-  return <Wrapper content={content} />
+  return <Wrapper contentFile={contentFile} />
 }

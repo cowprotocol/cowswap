@@ -21,6 +21,7 @@ interface HeadingProps {
   children: ReactNode
   node: MarkdownNode & { type: 'heading' }
 }
+
 export function HeadingRenderer({ level, children, node }: HeadingProps): JSX.Element {
   // traverse markdown syntax tree node
   // and get text
