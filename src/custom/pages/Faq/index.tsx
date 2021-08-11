@@ -180,8 +180,8 @@ export default function Faq() {
           <h3 id="what-is-cowswap">What is CowSwap?</h3>
           <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
           <p>
-            It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
-            into any on-chain liquidity source while providing MEV protection.
+            CowSwap is a Meta DEX aggregator that allows you to buy and sell tokens using gas-less orders that are
+            settled peer-to-peer among its users, or into any on-chain liquidity source while providing MEV protection.
           </p>
 
           <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CowSwap a &quot;Meta&quot; DEX aggregator?</h3>
@@ -307,12 +307,13 @@ export default function Faq() {
           <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
 
           <p>
-            CowSwap is in ongoing development, and that is why this is not a beta product but rather a proof-of-concept
-            dapp for the community to test and leverage before the final version is released.
+            As of August 11th, 2021, CowSwap is no longer in alpha and moves to a final, stable version. The underlying
+            Gnosis Protocol Smart contracts have been upgraded to integrate tightly with Balancer v2.
           </p>
 
           <p>
-            The code has been carefully tested, peer-reviewed and fully{' '}
+            With this upgrade, CowSwap evolves into its most stable, performant form: the code has been thoroughly and
+            carefully tested, peer-reviewed and fully{' '}
             <ExternalLink
               href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf"
               target="_blank"
@@ -320,8 +321,8 @@ export default function Faq() {
             >
               audited
             </ExternalLink>
-            . Although this can be seen as a step forward in terms of security, it&#39;s recommended to use the protocol
-            at <strong>your own risk</strong>.
+            . Whilst CowSwap has taken a major step forward in terms of security and stability, as with other crypto
+            protocols or dapps, it&#39;s recommended to use it at <strong>your own risk</strong>.
           </p>
         </Content>
       </Page>
@@ -331,7 +332,7 @@ export default function Faq() {
           <h2 id="protocol">Protocol</h2>
           <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
           <p>
-            There is currently no CowSwap specific token, however, the community has expressed their desire to
+            There is currently no CowSwap specific token, however, the community has expressed it&#39;s desire to
             participate in this exciting project. That is why there is an ongoing discussion in the{' '}
             <ExternalLink href="https://forum.gnosis.io/c/gnosis-protocol" target="_blank" rel="noopener noreferrer">
               Forum
@@ -344,7 +345,7 @@ export default function Faq() {
           </p>
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
-            that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape or
+            that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape, or
             form.
           </p>
           <p>
@@ -414,19 +415,25 @@ export default function Faq() {
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
           <p>
             In GPv2, instead of using a central operator or a constant function market maker to determine trade
-            settlements, solvers compete against each other to submit the most optimal batch settlement solution. Each
-            time a solver submits a successful batch settlement solution, the protocol rewards them with GNO. Anyone can
-            become a solver, although, in order to become one, there are certain requirements:
+            settlements, the protocol uses a party called a &quot;solver&quot;, whom is the party in charge of providing
+            the settlement solution to the batch auctions. Solvers compete against each other to submit the most optimal
+            batch settlement solution. Each time a solver submits a successful batch settlement solution, the protocol
+            rewards them with tokens, meaning that the protocol rewards solvers for solving the batch auction
+            optimization problem. By meeting certain requirements, anyone can become a solver:
           </p>
           <ol>
-            <li>To become a solver, an Ethereum address needs to deposit a bond of GNO tokens to GnosisDAO.</li>
             <li>
-              Once the GNO tokens have been staked (locked up), GnosisDAO has to vote to approve or reject the Ethereum
-              address that will identify the solver.
+              To become a solver, an Ethereum address needs to deposit a bond in the form of tokens. Asset type and
+              amounts are pending to be defined by the GnosisDAO or GnosisProtocolDAO.
+            </li>
+            <li>
+              Once the tokens have been staked (locked up), GnosisDAO/GnosisProtocolDAO must vote to approve or reject
+              the Ethereum address that will identify the solver. If the vote is successful, the solver Ethereum address
+              will be included in the allowlist (verification) solvers contract.
             </li>
             <li>
               Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
-              solutions, or take the risk of being slashed by the GnosisDAO for wrongdoing.
+              solutions, or take the risk of being slashed by the GnosisDAO/GnosisProtocolDAO for wrongdoing.
             </li>
           </ol>
           <h3 id="what-interactions-can-i-encounter-when-using-Cowswap">
@@ -626,11 +633,15 @@ export default function Faq() {
 
           <p>
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
-            via the Allowance Manager (for more information read{' '}
-            <ExternalLink href="https://github.com/gnosis/gp-v2-contracts" target="_blank" rel="noopener noreferrer">
+            via the GPv2 Vault Relayer (for more information read{' '}
+            <ExternalLink
+              href="https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2VaultRelayer.sol"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Smart Contract Architecture
             </ExternalLink>
-            ). In order to allow that to happen, the trader has to first approve the Allowance Manager contract to spend
+            ). In order to allow that to happen, the trader must first approve the GPv2 Vault Relayer contract to spend
             tokens on their behalf. The smart contract logic ensures that no token can be spent without deliberately
             signing an order for it.
           </p>
@@ -640,10 +651,10 @@ export default function Faq() {
           </h3>
 
           <p>
-            Signing a message incurs no gas cost and is therefore free to the user. When placing an order, the protocol
-            cannot guarantee that the order will be executed (e.g. the price could change to no longer satisfy the
-            specified limit). By only signing the intent to trade, we can ensure that users only incur a cost when their
-            trade is successfully executed.
+            Signing a message incurs no gas cost and is therefore free. When placing an order, the protocol cannot
+            guarantee that the order will be executed (e.g. the price could change to no longer satisfy the specified
+            limit). By only signing the intent to trade, we can ensure that users only incur a cost when their trade is
+            successfully executed.
           </p>
 
           <p>
