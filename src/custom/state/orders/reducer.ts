@@ -15,6 +15,7 @@ import {
   cancelOrdersBatch,
   requestOrderCancellation,
   SerializedOrder,
+  setIsOrderUnfillable,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -250,5 +251,15 @@ export default createReducer(initialState, (builder) =>
       const { chainId, lastCheckedBlock } = action.payload
 
       state[chainId].lastCheckedBlock = lastCheckedBlock
+    })
+    .addCase(setIsOrderUnfillable, (state, action) => {
+      prefillState(state, action)
+      const { chainId, id, isUnfillable } = action.payload
+
+      const orderObject = state[chainId].pending[id]
+
+      if (orderObject?.order) {
+        orderObject.order.isUnfillable = isUnfillable
+      }
     })
 )

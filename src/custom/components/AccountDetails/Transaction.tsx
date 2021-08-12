@@ -25,6 +25,7 @@ import { LinkStyledButton } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { GpModal as Modal } from 'components/Modal'
+import { Order } from 'state/orders/actions'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#1b7b43',
@@ -212,6 +213,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const isCancelling = status === ActivityStatus.CANCELLING
   const isCancelled = status === ActivityStatus.CANCELLED
   const isCancellable = isPending && type === ActivityType.ORDER
+  const isUnfillable = isCancellable && (activity as Order).isUnfillable
 
   const onCancelClick = () => setShowCancelModal(true)
   const onDismiss = () => setShowCancelModal(false)
@@ -229,6 +231,10 @@ export default function Transaction({ hash: id }: { hash: string }) {
             {isCancelling ? (
               <MouseoverTooltip text={activity.summary || id}>
                 {getActivitySummary({ activityData, id, suffix: '(Cancellation requested)' })}
+              </MouseoverTooltip>
+            ) : isUnfillable ? (
+              <MouseoverTooltip text={activity.summary || id}>
+                {getActivitySummary({ activityData, id, suffix: '(Price out of range)' })}
               </MouseoverTooltip>
             ) : (
               getActivitySummary({ activityData, id })

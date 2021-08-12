@@ -23,6 +23,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   summary: string // for dapp use only, readable by user
   isCancelling?: boolean // intermediate state while the order has been cancelled but order is still pending
+  isUnfillable?: boolean // whether the order is out of the market, due to price movements since placement
 }
 
 export interface Order extends BaseOrder {
@@ -94,3 +95,11 @@ export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders
 
 export const updateLastCheckedBlock =
   createAction<{ chainId: ChainId; lastCheckedBlock: number }>('order/updateLastCheckedBlock')
+
+export type SetIsOrderUnfillableParams = {
+  id: OrderID
+  chainId: ChainId
+  isUnfillable: boolean
+}
+
+export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')

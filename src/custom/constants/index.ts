@@ -12,6 +12,8 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent(JSBI.BigInt(INITIAL_
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
+export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
+
 export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
 export const SHORT_PRECISION = 4

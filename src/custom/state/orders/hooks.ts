@@ -18,6 +18,8 @@ import {
   expireOrdersBatch,
   cancelOrdersBatch,
   Order,
+  setIsOrderUnfillable,
+  SetIsOrderUnfillableParams,
 } from './actions'
 import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
 import { isTruthy } from 'utils/misc'
@@ -69,6 +71,7 @@ type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
+type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 
 type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
@@ -320,4 +323,9 @@ export const useUpdateLastCheckedBlock = (): UpdateLastCheckedBlockCallback => {
       dispatch(updateLastCheckedBlock(updateLastCheckedBlockParams)),
     [dispatch]
   )
+}
+
+export const useSetIsOrderUnfillable = (): SetIsOrderUnfillable => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: SetIsOrderUnfillableParams) => dispatch(setIsOrderUnfillable(params)), [dispatch])
 }

@@ -1,3 +1,4 @@
+import { Percent } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {
@@ -7,3 +8,6 @@ export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {
 }
 
 export const OPERATOR_API_POLL_INTERVAL = 10000 // in ms
+export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = 30000 // in ms
+
+export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100 => 0.01 => 1%
