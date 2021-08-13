@@ -1,8 +1,8 @@
 pull_request_rules:
-  - name: Merge approved and green PRs when tagged with 'merge when green'
+  - name: Merge approved and green PRs when tagged with 'Auto-merge'
     conditions:
       - "#approved-reviews-by>=2"
-      - label="merge when green"
+      - label="Auto-merge"
       - check-success=Deploy
       - check-success=Cypress
     actions:
