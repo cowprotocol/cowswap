@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
     "@craco/craco": "^5.7.0",
@@ -168,6 +168,8 @@
     "@gnosis.pm/cow-runner-game": "^0.2.9",
     "@gnosis.pm/dex-js": "^0.11.0",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
+    "@sentry/react": "^6.11.0",
+    "@sentry/tracing": "^6.11.0",
     "@uniswap/default-token-list": "^2.0.0",
     "@web3-react/walletconnect-connector": "^6.2.0",
     "fast-safe-stringify": "^2.0.8",
