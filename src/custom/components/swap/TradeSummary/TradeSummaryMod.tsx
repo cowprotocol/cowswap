@@ -43,6 +43,8 @@ export default function TradeSummary({
   const theme = useContext(ThemeContext)
   const { realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
+  const fullRealizedFee = realizedFee?.toFixed(realizedFee?.currency.decimals) || '-'
+
   return (
     <AutoColumn gap="2px">
       {showFee && (
@@ -57,7 +59,12 @@ export default function TradeSummary({
               </MouseoverTooltipContent>
             )}
           </RowFixed>
-          <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          <TYPE.black
+            textAlign="right"
+            fontSize={12}
+            color={theme.text1}
+            title={`${fullRealizedFee} ${realizedFee?.currency.symbol}`}
+          >
             {`${formatSmart(realizedFee) || '-'} ${realizedFee?.currency.symbol}`}
           </TYPE.black>
         </RowBetween>

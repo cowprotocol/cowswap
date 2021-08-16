@@ -271,6 +271,7 @@ export default function CurrencyInputPanel({
                       fontWeight={400}
                       fontSize={14}
                       style={{ display: 'inline', cursor: 'pointer' }}
+                      title={`${selectedCurrencyBalance?.toFixed(currency?.decimals) || '-'} ${currency?.symbol || ''}`}
                     >
                       {!hideBalance && currency && selectedCurrencyBalance ? (
                         renderBalance ? (

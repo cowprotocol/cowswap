@@ -226,6 +226,10 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
   const allowedSlippage = useUserSlippageToleranceWithDefault(V2_SWAP_DEFAULT_SLIPPAGE)
   const [isExpertMode] = useExpertModeManager()
 
+  const displayFee = realizedFee || fee
+  const feeCurrencySymbol = displayFee?.currency.symbol || '-'
+  const fullDisplayFee = displayFee?.toFixed(displayFee?.currency.decimals) || '-'
+
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
@@ -237,8 +241,8 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
           <StyledInfo />
         </MouseoverTooltipContent>
       </RowFixed>
-      <TYPE.black fontSize={14} color={theme.text1}>
-        {formatSmart(realizedFee || fee, SHORT_PRECISION)} {(realizedFee || fee)?.currency.symbol}{' '}
+      <TYPE.black fontSize={14} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+        {formatSmart(displayFee, SHORT_PRECISION)} {feeCurrencySymbol}{' '}
         {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
       </TYPE.black>
 

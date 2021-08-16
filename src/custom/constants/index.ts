@@ -16,8 +16,8 @@ export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
 
 export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
+export const DEFAULT_SMALL_LIMIT = '0.000001'
 export const SHORT_PRECISION = 4
-export const SHORTEST_PRECISION = 3
 export const LONG_PRECISION = 10
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2

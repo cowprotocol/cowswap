@@ -18,7 +18,7 @@ export default function TradePrice(props: Omit<TradePriceProps, 'fiatValue'>) {
     [price, showInverted]
   )
   const amount = useUSDCValue(priceSide)
-  const fiatValueFormatted = formatSmart(amount, FIAT_PRECISION, { smallLimit: '0.01' })
+  const fiatValueFormatted = formatSmart(amount, FIAT_PRECISION)
 
   return <TradePriceMod {...props} fiatValue={fiatValueFormatted} />
 }

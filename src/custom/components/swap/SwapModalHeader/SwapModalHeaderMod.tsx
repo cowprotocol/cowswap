@@ -105,6 +105,9 @@ SwapModalHeaderProps) {
     [trade]
   )
 
+  const fullInputWithoutFee = trade?.inputAmountWithoutFee?.toFixed(trade?.inputAmount.currency.decimals) || '-'
+  const fullOutputWithoutFee = trade?.outputAmountWithoutFee?.toFixed(trade?.outputAmount.currency.decimals) || '-'
+
   return (
     <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
       <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
@@ -127,6 +130,7 @@ SwapModalHeaderProps) {
                 fontSize={24}
                 fontWeight={500}
                 color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
+                title={`${fullInputWithoutFee} ${trade.inputAmount.currency.symbol || ''}`}
               >
                 {formatSmart(trade.inputAmountWithoutFee)}
               </TruncatedText>
@@ -175,7 +179,11 @@ SwapModalHeaderProps) {
               </Text>
             </RowFixed>
             <RowFixed gap={'0px'}>
-              <TruncatedText fontSize={24} fontWeight={500}>
+              <TruncatedText
+                fontSize={24}
+                fontWeight={500}
+                title={`${fullOutputWithoutFee} ${trade.outputAmount.currency.symbol || ''}`}
+              >
                 {formatSmart(trade.outputAmountWithoutFee)}
               </TruncatedText>
             </RowFixed>
