@@ -167,6 +167,8 @@
     "@gnosis.pm/cow-runner-game": "^0.2.9",
     "@gnosis.pm/dex-js": "^0.11.0",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
+    "@sentry/react": "^6.11.0",
+    "@sentry/tracing": "^6.11.0",
     "@uniswap/default-token-list": "^2.0.0",
     "@web3-react/walletconnect-connector": "^6.2.0",
     "paraswap": "^4.18.0",

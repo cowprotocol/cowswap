@@ -13,6 +13,7 @@ env:
   APP_ID: 1
   REPO_NAME_SLUG: gpswapui
   PR_NUMBER: ${{ github.event.number }}
+  REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
 jobs:
   setup:
