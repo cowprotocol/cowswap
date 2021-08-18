@@ -59,10 +59,20 @@ export function formatSmart(
 ) {
   if (!value) return
 
-  const precision = value instanceof CurrencyAmount ? value.currency.decimals : 0
-  const amount = value instanceof CurrencyAmount ? value.quotient.toString() : value.toFixed(decimalsToShow)
-  // Take the min(decimalsToShow, token decimals) because a token can have less decimals than the what we want to show
-  const smallLimitPrecision = Math.min(decimalsToShow, precision ?? DEFAULT_DECIMALS)
+  let precision
+  let amount
+  let smallLimitPrecision
+  if (value instanceof CurrencyAmount) {
+    // Amount is in atoms, need to convert it to units by setting precision = token.decimals
+    precision = value.currency.decimals
+    amount = value.quotient.toString()
+    smallLimitPrecision = Math.min(decimalsToShow, precision ?? DEFAULT_DECIMALS)
+  } else {
+    // Amount is already at desired precision (e.g.: a price), just need to format it nicely
+    precision = 0
+    amount = value.toFixed(decimalsToShow)
+    smallLimitPrecision = Math.min(decimalsToShow, DEFAULT_DECIMALS)
+  }
 
   return _formatSmart({
     amount,
