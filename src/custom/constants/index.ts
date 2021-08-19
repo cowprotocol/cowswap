@@ -5,6 +5,7 @@ import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'cons
 
 import JSBI from 'jsbi'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { getAppDataHash } from './appDataHash'
 
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50
@@ -24,9 +25,7 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
-export const APP_DATA_HASH =
-  process.env.REACT_APP_DATA_HASH || '0x816BBB5787AA2B72E2DE870A4E935A49A97305DE32E637B8126D07BEE10D03AB'
-
+export const APP_DATA_HASH = getAppDataHash()
 export const PRODUCTION_URL = 'cowswap.exchange'
 
 const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|FORTMATIC|Portis)$/i

@@ -3,7 +3,7 @@ import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
 import { registerOnWindow } from '../misc'
-import { isDev, isPreStaging } from '../environments'
+import { isLocal, isDev, isPr, isBarn } from '../environments'
 import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'utils/operator/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
@@ -21,7 +21,7 @@ import MetadataError, {
 } from './errors/MetadataError'
 
 function getOperatorUrl(): Partial<Record<ChainId, string>> {
-  if (isDev || isPreStaging) {
+  if (isLocal || isDev || isPr || isBarn) {
     return {
       [ChainId.MAINNET]:
         process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://protocol-mainnet.dev.gnosisdev.com/api',

@@ -78,26 +78,29 @@ Make a copy of `.env` named `.env.local`, this will allow you to set your own co
 ### Production configuration
 Modify the environment variables in `.env.production`, or override them in build time.
 
-### Metadata attached to orders
+### Metadata attached to orders (AppData)
 The app will attach some metadata to all orders.
 
-This metadata will be sent to the smart contract as an hexadecimal value. This value comes from hashing the content of
-a metadata JSON containing some information about the trade.
+This metadata will be sent to the smart contract as an hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade.
 
 Any web app or client using Gnosis Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that 
 information to the order.
 
-For example, CowSwap uploaded the file https://cloudflare-ipfs.com/ipfs/QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954 
-which has the hexadecimal digest `0x816BBB5787AA2B72E2DE870A4E935A49A97305DE32E637B8126D07BEE10D03AB` (See 
-[CID Explorer](https://cid.ipfs.io/#QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954) for more details).
+For example, CowSwap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ 
+which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37` (See 
+[CID Explorer](https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ) for more details).
 
 The format of the JSON follows this typescript format: <src/custom/utils/metadata.ts>
- 
 
-id is included in all signed transaction, although the Gnosis Protocol is not using this information for now, it
-could be used for implementing incentive programs.
+To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [chat.cowswap.exchange/](https://chat.cowswap.exchange/). For more details, check out the environment file (<.env>)
 
-To set your own, change `REACT_APP_DATA_HASH` environment variable. Ask for yours at [chat.cowswap.exchange/](https://chat.cowswap.exchange/)
+REACT_APP_DOMAIN_REGEX_LOCAL="^(:?localhost:\d{2,5}|(?:127|192)(?:\.[0-9]{1,3}){3})"
+REACT_APP_DOMAIN_REGEX_PR="^pr\d+--gpswapui\.review"
+REACT_APP_DOMAIN_REGEX_DEV="^cowswap\.dev"
+REACT_APP_DOMAIN_REGEX_STAGING="^cowswap\.staging"
+REACT_APP_DOMAIN_REGEX_PROD="^cowswap\.exchange$"
+REACT_APP_DOMAIN_REGEX_ENS="^cowswap\.eth"
+REACT_APP_DOMAIN_REGEX_BARN="^barn\.cowswap\.exchange"
 
 
 ### Supported networks

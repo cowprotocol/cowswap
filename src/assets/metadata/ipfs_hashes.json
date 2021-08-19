@@ -1,8 +1,44 @@
 {
-  "CowSwap": {
-    "cid": "QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954",
-    "digestHex": "0x816BBB5787AA2B72E2DE870A4E935A49A97305DE32E637B8126D07BEE10D03AB",
-    "cidInspector": "https://cid.ipfs.io/#QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954",
-    "file": "https://cloudflare-ipfs.com/ipfs/QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954"
+  "CowSwap: Production": {
+    "cid": "QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ",
+    "digestHex": "0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37",
+    "cidInspector": "https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ",
+    "file": "https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ"
+  },
+  "CowSwap: ENS": {
+    "cid": "QmauXhxhGwgTeATMStK6vfB71Yb2tDaX5bFvYxPr5vCKQL",
+    "digestHex": "0xBAB87DF726E41C0941786CA710194982D753FBC140C6DC9951AC3450D8917699",
+    "cidInspector": "https://cid.ipfs.io/#QmauXhxhGwgTeATMStK6vfB71Yb2tDaX5bFvYxPr5vCKQL",
+    "file": "https://cloudflare-ipfs.com/ipfs/QmauXhxhGwgTeATMStK6vfB71Yb2tDaX5bFvYxPr5vCKQL"
+  },
+  "CowSwap: Barn": {
+    "cid": "Qmdjs6Y7BvTKxwyPpJK7J34xESjZXiqMht2D2wUcbWvZcX",
+    "digestHex": "0xE4D1AB10F2C9FFE7BDD23C315B03F18CFF90888D6B2BB5022BACD46AB9CDDF24",
+    "cidInspector": "https://cid.ipfs.io/#Qmdjs6Y7BvTKxwyPpJK7J34xESjZXiqMht2D2wUcbWvZcX",
+    "file": "https://cloudflare-ipfs.com/ipfs/Qmdjs6Y7BvTKxwyPpJK7J34xESjZXiqMht2D2wUcbWvZcX"
+  },
+  "CowSwap: Staging": {
+    "cid": "QmZ92rfrrt1Ya8PxLjznKN58BWNTEsMPe6Gj25cLuwGJs1",
+    "digestHex": "0xA076A100C2535DC6047C4C9940AE647D7DEAAC1729745117D19D4A63BC2F4D30",
+    "cidInspector": "https://cid.ipfs.io/#QmZ92rfrrt1Ya8PxLjznKN58BWNTEsMPe6Gj25cLuwGJs1",
+    "file": "https://cloudflare-ipfs.com/ipfs/QmZ92rfrrt1Ya8PxLjznKN58BWNTEsMPe6Gj25cLuwGJs1"
+  },
+  "CowSwap: PR": {
+    "cid": "QmP8gfNGbkqJHyPCGaBfvH9aogU8hJKqg3r1SU5qVTH2Te",
+    "digestHex": "0x0BCAECDB9A1FDB3B207A7593EBF703836AD591D4E5E75DFDBF65E7B328F209CD",
+    "cidInspector": "https://cid.ipfs.io/#QmP8gfNGbkqJHyPCGaBfvH9aogU8hJKqg3r1SU5qVTH2Te",
+    "file": "https://cloudflare-ipfs.com/ipfs/QmP8gfNGbkqJHyPCGaBfvH9aogU8hJKqg3r1SU5qVTH2Te"
+  },
+  "CowSwap: Development": {
+    "cid": "QmX89hgVfoCuuPDq5Yc74pG8RNg6LLYPbMWBwfRzzUwvKY",
+    "digestHex": "0x828569F802B7F8957F76996BDD875674821E41A688541A9E9EC97D5E897D44A7",
+    "cidInspector": "https://cid.ipfs.io/#QmX89hgVfoCuuPDq5Yc74pG8RNg6LLYPbMWBwfRzzUwvKY",
+    "file": "https://cloudflare-ipfs.com/ipfs/QmX89hgVfoCuuPDq5Yc74pG8RNg6LLYPbMWBwfRzzUwvKY"
+  },
+  "CowSwap: Local": {
+    "cid": "QmZW5abzempvhyPvSMbLhnmZ6d6SEGgGQd3paaHRK7CSfm",
+    "digestHex": "0xA5DAE7A114F1BD6BB9B3FF976150380A95CB18856212DB555C25EF9D7801E9A4",
+    "cidInspector": "https://cid.ipfs.io/#QmZW5abzempvhyPvSMbLhnmZ6d6SEGgGQd3paaHRK7CSfm",
+    "file": "https://cloudflare-ipfs.com/ipfs/QmZW5abzempvhyPvSMbLhnmZ6d6SEGgGQd3paaHRK7CSfm"
   }
 }
