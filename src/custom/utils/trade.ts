@@ -6,7 +6,7 @@ import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
 import { sendSignedOrderCancellation, sendSignedOrder, OrderID } from 'utils/operator'
 import { Signer } from 'ethers'
-import { APP_ID, RADIX_DECIMAL, SHORT_PRECISION } from 'constants/index'
+import { APP_DATA_HASH, RADIX_DECIMAL, SHORT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 
@@ -75,7 +75,6 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
 
   // Prepare order
   const summary = _getSummary(params)
-  const appData = '0x' + APP_ID.toString(16).padStart(64, '0')
   const receiver = recipient
 
   const unsignedOrder: UnsignedOrder = {
@@ -84,7 +83,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     sellAmount,
     buyAmount,
     validTo,
-    appData,
+    appData: APP_DATA_HASH,
     feeAmount: feeAmount?.quotient.toString() || '0',
     kind,
     receiver,

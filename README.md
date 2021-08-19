@@ -78,11 +78,26 @@ Make a copy of `.env` named `.env.local`, this will allow you to set your own co
 ### Production configuration
 Modify the environment variables in `.env.production`, or override them in build time.
 
-### App Id
-The app id is included in all signed transaction, although the Gnosis Protocol is not using this information for now, it
+### Metadata attached to orders
+The app will attach some metadata to all orders.
+
+This metadata will be sent to the smart contract as an hexadecimal value. This value comes from hashing the content of
+a metadata JSON containing some information about the trade.
+
+Any web app or client using Gnosis Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that 
+information to the order.
+
+For example, CowSwap uploaded the file https://cloudflare-ipfs.com/ipfs/QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954 
+which has the hexadecimal digest `0x816BBB5787AA2B72E2DE870A4E935A49A97305DE32E637B8126D07BEE10D03AB` (See 
+[CID Explorer](https://cid.ipfs.io/#QmX3raf5oWVB3VK8RE6VTMrUGWzCY8Fykpf9AVLXvxT954) for more details).
+
+The format of the JSON follows this typescript format: <src/custom/utils/metadata.ts>
+ 
+
+id is included in all signed transaction, although the Gnosis Protocol is not using this information for now, it
 could be used for implementing incentive programs.
 
-To set your own, change `REACT_APP_ID` environment variable. Ask for your id at [chat.gnosis.io](https://chat.gnosis.io)
+To set your own, change `REACT_APP_DATA_HASH` environment variable. Ask for yours at [chat.cowswap.exchange/](https://chat.cowswap.exchange/)
 
 
 ### Supported networks

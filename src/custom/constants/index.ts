@@ -24,7 +24,8 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
-export const APP_ID = Number(process.env.REACT_APP_ID)
+export const APP_DATA_HASH =
+  process.env.REACT_APP_DATA_HASH || '0x816BBB5787AA2B72E2DE870A4E935A49A97305DE32E637B8126D07BEE10D03AB'
 
 export const PRODUCTION_URL = 'cowswap.exchange'
 

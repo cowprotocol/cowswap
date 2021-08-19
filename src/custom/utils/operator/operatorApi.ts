@@ -1,7 +1,7 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
-import { APP_ID } from 'constants/index'
+import { APP_DATA_HASH } from 'constants/index'
 import { registerOnWindow } from '../misc'
 import { isDev, isPreStaging } from '../environments'
 import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'utils/operator/errors/OperatorError'
@@ -43,7 +43,7 @@ const API_BASE_URL = getOperatorUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
-  'X-AppId': APP_ID.toString(),
+  'X-AppId': APP_DATA_HASH.toString(),
 }
 
 /**
