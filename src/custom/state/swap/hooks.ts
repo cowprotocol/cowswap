@@ -10,7 +10,7 @@ import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useCurrency } from 'hooks/Tokens'
-import { V2_SWAP_DEFAULT_SLIPPAGE } from 'hooks/useSwapSlippageTolerance'
+// import { V2_SWAP_DEFAULT_SLIPPAGE } from 'hooks/useSwapSlippageTolerance'
 // import { Version } from 'hooks/useToggledVersion'
 // import { useV2TradeExactIn, useV2TradeExactOut } from 'hooks/useV2Trade'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -37,7 +37,7 @@ import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import { /* DEFAULT_LIST_OF_LISTS, */ DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import TradeGp from './TradeGp'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -262,8 +262,7 @@ export function useDerivedSwapInfo(): /* {
   const toggledTrade = v2Trade /* (toggledVersion === Version.v2 ? v2Trade : v3Trade.trade) ?? undefined */
   // const allowedSlippage = useSwapSlippageTolerance(toggledTrade)
 
-  // MOD: hook requires a default, use V2 UNI's for now but review
-  const allowedSlippage = useUserSlippageToleranceWithDefault(V2_SWAP_DEFAULT_SLIPPAGE) // 0.5%
+  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
 
   // compare input balance to max input based on version
   const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)]

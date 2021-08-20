@@ -1,6 +1,5 @@
-import JSBI from 'jsbi'
 import { parseUnits } from '@ethersproject/units'
-import { DEFAULT_PRECISION, INITIAL_ALLOWED_SLIPPAGE, LONG_PRECISION } from 'constants/index'
+import { DEFAULT_PRECISION, LONG_PRECISION } from 'constants/index'
 import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { stringToCurrency } from './extension'
@@ -12,6 +11,8 @@ import TradeGp from './TradeGp'
 
 const WETH_MAINNET = new Token(ChainId.MAINNET, WETH[1].address, 18)
 const DAI_MAINNET = new Token(ChainId.MAINNET, '0x6b175474e89094c44da98b954eedeac495271d0f', 18)
+
+const SLIPPAGE_HALF_PERCENT = new Percent('5', '1000') // => 0.5%
 
 describe('Swap PRICE Quote test', () => {
   // mocked price response for in trade
@@ -79,7 +80,7 @@ describe('Swap PRICE Quote test', () => {
       })
       it('Shows the proper minimumAmountOut', () => {
         // GIVEN --> slippage is set @ 0.5%
-        const slippage = new Percent(JSBI.BigInt(INITIAL_ALLOWED_SLIPPAGE), JSBI.BigInt(10000))
+        const slippage = SLIPPAGE_HALF_PERCENT
         // Min_price => Price_displayed * (1+slippage)
         // Min_price_displayed = 0.000225 * (1.005) = 0.000226125
 
@@ -147,7 +148,7 @@ describe('Swap PRICE Quote test', () => {
       })
       it('Price with 0.5% slippage correct', () => {
         const displayPrice = trade.executionPrice.invert()
-        const userSlippage = new Percent(JSBI.BigInt(INITIAL_ALLOWED_SLIPPAGE), JSBI.BigInt(10000))
+        const userSlippage = SLIPPAGE_HALF_PERCENT
         // 0.995
         const slippage = new Fraction('1').subtract(userSlippage)
 
@@ -164,7 +165,7 @@ describe('Swap PRICE Quote test', () => {
         // THEN
         // 4000000000000000000000 / 3980 + 100000000000000000 = 1,105025125e18
         // 1,105025125e18 * 1e-18 = 1,105025125
-        const userSlippage = new Percent(JSBI.BigInt(INITIAL_ALLOWED_SLIPPAGE), JSBI.BigInt(10000))
+        const userSlippage = SLIPPAGE_HALF_PERCENT
         const expectedMaximumSold = '1.105025125'
         const actualMaximumSold = trade.maximumAmountIn(userSlippage).toSignificant(LONG_PRECISION)
         expect(expectedMaximumSold).toEqual(actualMaximumSold)

@@ -3,13 +3,10 @@ import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 import { GPv2Settlement, GPv2VaultRelayer } from '@gnosis.pm/gp-v2-contracts/networks.json'
 import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
-import JSBI from 'jsbi'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 
-// default allowed slippage, in bips
-export const INITIAL_ALLOWED_SLIPPAGE = 50
-export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent(JSBI.BigInt(INITIAL_ALLOWED_SLIPPAGE), JSBI.BigInt(10000))
+export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('1', '100') // 1%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
