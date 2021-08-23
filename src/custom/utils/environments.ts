@@ -2,7 +2,8 @@ import { registerOnWindow } from './misc'
 
 const getRegex = (regex: string | undefined) => (regex ? new RegExp(regex) : undefined)
 
-export function checkEnvironment(host: string) {
+export function checkEnvironment(host: string, path: string) {
+  // Domain regex
   const domainLocalRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_LOCAL)
   const domainPrRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_PR)
   const domainDevRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_DEV)
@@ -11,6 +12,9 @@ export function checkEnvironment(host: string) {
   const domainEnsRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_ENS)
   const domainBarnRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_BARN)
 
+  // Path regex
+  const pathEnsRegex = getRegex(process.env.REACT_APP_PATH_REGEX_ENS)
+
   return {
     // Project environments
     isLocal: domainLocalRegex?.test(host) || false,
@@ -18,7 +22,7 @@ export function checkEnvironment(host: string) {
     isPr: domainPrRegex?.test(host) || false,
     isStaging: domainStagingRegex?.test(host) || false,
     isProd: domainProdRegex?.test(host) || false,
-    isEns: domainEnsRegex?.test(host) || false,
+    isEns: domainEnsRegex?.test(host) || pathEnsRegex?.test(path) || false,
 
     // Environment used for Backend workflow
     //  Latest stable version pointing to the DEV api
@@ -26,7 +30,10 @@ export function checkEnvironment(host: string) {
   }
 }
 
-const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } = checkEnvironment(window.location.host)
+const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } = checkEnvironment(
+  window.location.host,
+  window.location.pathname
+)
 
 export const environmentName = (function () {
   if (isProd) {

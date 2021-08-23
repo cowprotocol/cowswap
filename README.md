@@ -94,14 +94,6 @@ The format of the JSON follows this typescript format: <src/custom/utils/metadat
 
 To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [chat.cowswap.exchange/](https://chat.cowswap.exchange/). For more details, check out the environment file (<.env>)
 
-REACT_APP_DOMAIN_REGEX_LOCAL="^(:?localhost:\d{2,5}|(?:127|192)(?:\.[0-9]{1,3}){3})"
-REACT_APP_DOMAIN_REGEX_PR="^pr\d+--gpswapui\.review"
-REACT_APP_DOMAIN_REGEX_DEV="^cowswap\.dev"
-REACT_APP_DOMAIN_REGEX_STAGING="^cowswap\.staging"
-REACT_APP_DOMAIN_REGEX_PROD="^cowswap\.exchange$"
-REACT_APP_DOMAIN_REGEX_ENS="^cowswap\.eth"
-REACT_APP_DOMAIN_REGEX_BARN="^barn\.cowswap\.exchange"
-
 
 ### Supported networks
 You can change the supported networks and their RPC endpoint.
