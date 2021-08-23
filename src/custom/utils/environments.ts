@@ -1,8 +1,18 @@
 import { registerOnWindow } from './misc'
 
-const getRegex = (regex: string | undefined) => (regex ? new RegExp(regex) : undefined)
+const getRegex = (regex: string | undefined) => (regex ? new RegExp(regex, 'i') : undefined)
 
-export function checkEnvironment(host: string, path: string) {
+export interface EnvironmentChecks {
+  isProd: boolean
+  isEns: boolean
+  isBarn: boolean
+  isStaging: boolean
+  isPr: boolean
+  isDev: boolean
+  isLocal: boolean
+}
+
+export function checkEnvironment(host: string, path: string): EnvironmentChecks {
   // Domain regex
   const domainLocalRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_LOCAL)
   const domainPrRegex = getRegex(process.env.REACT_APP_DOMAIN_REGEX_PR)
