@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AdvancedSwapDetailsProps } from '../AdvancedSwapDetails'
-import { useWalletInfo } from 'hooks/useWalletInfo'
 
 import { AutoColumn } from 'components/Column'
 import { RowFixed } from 'components/Row'

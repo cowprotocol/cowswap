@@ -12,8 +12,11 @@ import { SHORT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { LightGreyText } from 'pages/Swap'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
 
-export const FEE_TOOLTIP_MSG =
+export const GASLESS_FEE_TOOLTIP_MSG =
   'On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
+
+export const PRESIGN_FEE_TOOLTIP_MSG =
+  'The fees are covering your gas costs already for executing an order, however since you are using a smart contract wallet, you will need to pay the gas for creating the order.'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -66,6 +69,8 @@ export function RowFee({
   const fullDisplayFee = displayFee?.toFixed(displayFee?.currency.decimals) || '-'
 
   const includeGasMessage = allowsOffchainSigning ? ' (incl. gas costs)' : ''
+  const tooltip = allowsOffchainSigning ? GASLESS_FEE_TOOLTIP_MSG : PRESIGN_FEE_TOOLTIP_MSG
+
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
@@ -73,7 +78,7 @@ export function RowFee({
           Fees {includeGasMessage}
         </TYPE.black>
         {showHelpers && (
-          <MouseoverTooltipContent content={FEE_TOOLTIP_MSG} bgColor={theme.bg1} color={theme.text1}>
+          <MouseoverTooltipContent content={tooltip} bgColor={theme.bg1} color={theme.text1}>
             <StyledInfo />
           </MouseoverTooltipContent>
         )}
