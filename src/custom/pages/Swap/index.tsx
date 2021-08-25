@@ -212,7 +212,7 @@ export const LightGreyText = styled.span`
 function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
   const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
   const [isExpertMode] = useExpertModeManager()
-  const allowsOffchainSigning = false // TODO: Deal with this in next PR
+  const { allowsOffchainSigning } = useWalletInfo()
 
   return (
     <LowerSectionWrapper {...boxProps}>
