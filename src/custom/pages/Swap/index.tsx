@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import styled, { DefaultTheme, ThemeContext } from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
 
@@ -32,9 +32,10 @@ import { Trans } from '@lingui/macro'
 import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
-import { computeTradePriceBreakdown, FEE_TOOLTIP_MSG } from 'components/swap/TradeSummary/TradeSummaryMod'
+import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
+import { computeTradePriceBreakdown, FEE_TOOLTIP_MSG, RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
-import { RowReceivedAfterSlippage, RowSlippage } from 'components/swap/TradeSummary'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
@@ -213,37 +214,16 @@ export const LightGreyText = styled.span`
 `
 
 function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
-  const theme = useContext(ThemeContext)
-  // trades are null when there is a fee quote error e.g
-  // so we can take both
-  const feeAmount = trade?.fee.feeAsCurrency || fee
-  const feeFiatValue = useUSDCValue(feeAmount)
-
-  const { realizedFee } = computeTradePriceBreakdown(trade)
-  const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
-
   const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
   const [isExpertMode] = useExpertModeManager()
-
-  const displayFee = realizedFee || fee
-  const feeCurrencySymbol = displayFee?.currency.symbol || '-'
-  const fullDisplayFee = displayFee?.toFixed(displayFee?.currency.decimals) || '-'
+  const allowsOffchainSigning = true // TODO: Deal with this in next PR
 
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
-      <RowFixed>
-        <TYPE.black fontSize={14} fontWeight={500} color={theme.text1}>
-          Fees (incl. gas costs)
-        </TYPE.black>
-        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={FEE_TOOLTIP_MSG}>
-          <StyledInfo />
-        </MouseoverTooltipContent>
-      </RowFixed>
-      <TYPE.black fontSize={14} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        {formatSmart(displayFee, SHORT_PRECISION)} {feeCurrencySymbol}{' '}
-        {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
-      </TYPE.black>
+      {(trade || fee) && (
+        <RowFee trade={trade} showHelpers={true} allowsOffchainSigning={allowsOffchainSigning} fee={fee} />
+      )}
 
       {isExpertMode && trade && (
         <>
@@ -251,7 +231,12 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
           <RowSlippage allowedSlippage={allowedSlippage} />
 
           {/* Min/Max received */}
-          <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippage} showHelpers={true} />
+          <RowReceivedAfterSlippage
+            trade={trade}
+            allowedSlippage={allowedSlippage}
+            showHelpers={true}
+            allowsOffchainSigning={allowsOffchainSigning}
+          />
         </>
       )}
     </LowerSectionWrapper>
