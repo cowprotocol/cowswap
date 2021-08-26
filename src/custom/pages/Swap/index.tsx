@@ -32,6 +32,7 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
 import { RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
