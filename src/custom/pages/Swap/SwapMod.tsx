@@ -78,7 +78,7 @@ import { SwapProps, ButtonError, ButtonPrimary, ButtonLight } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
-import { RowSlippage } from '@src/custom/components/swap/TradeSummary'
+import { RowSlippage } from '@src/custom/components/swap/TradeSummary/RowSlippage'
 
 export const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -665,7 +665,7 @@ export default function Swap({
                     // </RowBetween>
                     <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
                   )}
-                  {(isFeeGreater || trade) && fee && <TradeBasicDetails fee={fee} trade={trade} />}
+                  {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
                 {isNativeIn && onWrap && (
