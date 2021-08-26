@@ -79,6 +79,7 @@ import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from '@src/custom/components/swap/TradeSummary/RowSlippage'
+import { getIncludeFeeLabelSuffix } from 'components/swap/TradeSummary'
 
 export const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -101,6 +102,7 @@ export default function Swap({
   ArrowWrapperLoader,
   Price,
   className,
+  allowsOffchainSigning,
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -431,13 +433,13 @@ export default function Swap({
 
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
-  const [exactInLabel, exactOutLabel] = useMemo(
-    () => [
-      independentField === Field.OUTPUT && !showWrap && trade ? <Trans>From (incl. fee)</Trans> : null,
-      independentField === Field.INPUT && !showWrap && trade ? <Trans>Receive (incl. fee)</Trans> : null,
-    ],
-    [independentField, showWrap, trade]
-  )
+  const [exactInLabel, exactOutLabel] = useMemo(() => {
+    const includeFeeLabelSuffix = getIncludeFeeLabelSuffix(allowsOffchainSigning)
+    return [
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From{includeFeeLabelSuffix}</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive{includeFeeLabelSuffix}</Trans> : null,
+    ]
+  }, [trade, allowsOffchainSigning])
 
   const swapBlankState = !swapInputError && !trade
   let amountBeforeFees: string | undefined
@@ -490,6 +492,7 @@ export default function Swap({
                       amountAfterFees={formatSmart(trade?.inputAmountWithFee)}
                       type="From"
                       feeAmount={formatSmart(trade?.fee?.feeAsCurrency)}
+                      allowsOffchainSigning={allowsOffchainSigning}
                     />
                   )
                 }
@@ -545,6 +548,7 @@ export default function Swap({
                       amountAfterFees={formatSmart(trade?.outputAmount)}
                       type="To"
                       feeAmount={formatSmart(trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount))}
+                      allowsOffchainSigning={allowsOffchainSigning}
                     />
                   )
                 }

@@ -12,6 +12,7 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
+import { getIncludeFeeLabelSuffix } from '.'
 
 export interface RowReceivedAfterSlippageProps {
   trade: TradeGp
@@ -46,7 +47,7 @@ export function RowReceivedAfterSlippage({
     : [slippageIn, trade.inputAmount.currency.symbol]
 
   const fullOutAmount = swapAmount?.toFixed(swapAmount?.currency.decimals) || '-'
-  const includeFeeMessage = allowsOffchainSigning ? ' (incl. fee)' : ''
+  const includeFeeMessage = getIncludeFeeLabelSuffix(allowsOffchainSigning)
 
   return (
     <RowBetween height={rowHeight}>

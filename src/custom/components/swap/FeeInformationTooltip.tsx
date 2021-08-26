@@ -16,6 +16,7 @@ interface FeeInformationTooltipProps {
   feeAmount?: string
   type: 'From' | 'To'
   showFiat?: boolean
+  allowsOffchainSigning: boolean
 }
 
 const WrappedQuestionHelper = styled(QuestionHelper)`
@@ -73,7 +74,17 @@ const FeeInnerWrapper = styled.div`
 `
 
 export default function FeeInformationTooltip(props: FeeInformationTooltipProps) {
-  const { trade, label, amountBeforeFees, amountAfterFees, feeAmount, type, showHelper, showFiat = false } = props
+  const {
+    trade,
+    label,
+    amountBeforeFees,
+    amountAfterFees,
+    feeAmount,
+    type,
+    showHelper,
+    showFiat = false,
+    allowsOffchainSigning,
+  } = props
 
   const theme = useTheme()
   const fiatValue = useUSDCValue(type === 'From' ? trade?.inputAmount : trade?.outputAmount)
@@ -107,10 +118,12 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
                   {feeAmount} {symbol}
                 </span>{' '}
               </FeeTooltipLine>
-              <FeeTooltipLine>
-                <span>Gas costs</span>
-                <strong className="green">Free</strong>{' '}
-              </FeeTooltipLine>
+              {allowsOffchainSigning && (
+                <FeeTooltipLine>
+                  <span>Gas costs</span>
+                  <strong className="green">Free</strong>
+                </FeeTooltipLine>
+              )}
               <Breakline />
               <FeeTooltipLine>
                 <strong>{type}</strong>

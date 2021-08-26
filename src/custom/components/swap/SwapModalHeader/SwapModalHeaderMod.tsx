@@ -32,6 +32,7 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { Price } from 'pages/Swap'
+import { getIncludeFeeLabelSuffix } from 'components/swap/TradeSummary'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -60,6 +61,7 @@ export interface SwapModalHeaderProps {
   priceImpactWithoutFee?: Percent
   onAcceptChanges: () => void
   LightCard: LightCardType
+  allowsOffchainSigning: boolean
 }
 
 export default function SwapModalHeader({
@@ -69,6 +71,7 @@ export default function SwapModalHeader({
   showAcceptChanges,
   onAcceptChanges,
   LightCard,
+  allowsOffchainSigning,
 }: /* 
 {
   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
@@ -97,13 +100,13 @@ SwapModalHeaderProps) {
     [slippageAdjustedAmounts]
   )
 
-  const [exactInLabel, exactOutLabel] = useMemo(
-    () => [
-      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
-      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
-    ],
-    [trade]
-  )
+  const [exactInLabel, exactOutLabel] = useMemo(() => {
+    const includeFeeLabelSuffix = getIncludeFeeLabelSuffix(allowsOffchainSigning)
+    return [
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From{includeFeeLabelSuffix}</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive{includeFeeLabelSuffix}</Trans> : null,
+    ]
+  }, [trade, allowsOffchainSigning])
 
   const fullInputWithoutFee = trade?.inputAmountWithoutFee?.toFixed(trade?.inputAmount.currency.decimals) || '-'
   const fullOutputWithoutFee = trade?.outputAmountWithoutFee?.toFixed(trade?.outputAmount.currency.decimals) || '-'
@@ -144,6 +147,7 @@ SwapModalHeaderProps) {
             amountAfterFees={formatSmart(trade.inputAmountWithFee)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee)}
             feeAmount={formatSmart(trade.fee.feeAsCurrency)}
+            allowsOffchainSigning={allowsOffchainSigning}
             label={exactInLabel}
             showHelper
             trade={trade}
@@ -196,6 +200,7 @@ SwapModalHeaderProps) {
             amountAfterFees={formatSmart(trade.outputAmount)}
             amountBeforeFees={formatSmart(trade.outputAmountWithoutFee)}
             feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount))}
+            allowsOffchainSigning={allowsOffchainSigning}
             label={exactOutLabel}
             showHelper
             trade={trade}

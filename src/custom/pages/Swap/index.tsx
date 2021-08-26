@@ -148,6 +148,7 @@ export interface SwapProps extends RouteComponentProps {
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   Price: React.FC<PriceProps>
   className?: string
+  allowsOffchainSigning: boolean
 }
 
 const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
@@ -358,6 +359,7 @@ const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonPro
   )
 
 export default function Swap(props: RouteComponentProps) {
+  const { allowsOffchainSigning } = useWalletInfo()
   return (
     <SwapModWrapper
       TradeBasicDetails={TradeBasicDetails}
@@ -369,6 +371,7 @@ export default function Swap(props: RouteComponentProps) {
       TradeLoading={TradeLoading}
       ArrowWrapperLoader={ArrowWrapperLoader}
       Price={Price}
+      allowsOffchainSigning={allowsOffchainSigning}
       {...props}
     />
   )

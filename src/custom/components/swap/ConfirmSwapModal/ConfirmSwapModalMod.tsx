@@ -11,6 +11,7 @@ import SwapModalFooter from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
 // MOD
 import TradeGp from 'state/swap/TradeGp'
+import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -64,6 +65,7 @@ export default function ConfirmSwapModal({
   onDismiss: () => void
   PendingTextComponent: (props: { trade: TradeGp | undefined }) => JSX.Element // mod
 }) {
+  const { allowsOffchainSigning } = useWalletInfo()
   const showAcceptChanges = useMemo(
     /* 
     () =>
@@ -84,13 +86,14 @@ export default function ConfirmSwapModal({
     return trade ? (
       <SwapModalHeader
         trade={trade}
+        allowsOffchainSigning={allowsOffchainSigning}
         allowedSlippage={allowedSlippage}
         recipient={recipient}
         showAcceptChanges={showAcceptChanges}
         onAcceptChanges={onAcceptChanges}
       />
     ) : null
-  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
+  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade, allowsOffchainSigning])
 
   const modalBottom = useCallback(() => {
     return trade ? (
