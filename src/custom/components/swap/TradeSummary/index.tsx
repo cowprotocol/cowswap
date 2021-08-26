@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 export type TradeSummaryProps = Required<AdvancedSwapDetailsProps>
 
 export default function TradeSummary({ trade, allowedSlippage, showHelpers, showFee }: TradeSummaryProps) {
-  const allowsOffchainSigning = false // TODO: Next PR will handle this
+  const allowsOffchainSigning = true // TODO: Next PR will handle this
 
   return (
     <Wrapper>
