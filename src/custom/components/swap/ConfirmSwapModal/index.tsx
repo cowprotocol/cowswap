@@ -4,6 +4,7 @@ import { Trans } from '@lingui/macro'
 import ConfirmSwapModalMod from './ConfirmSwapModalMod'
 import TradeGp from 'state/swap/TradeGp'
 import { formatSmart } from 'utils/format'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export * from './ConfirmSwapModalMod'
 
@@ -18,11 +19,11 @@ function PendingText(props: { trade: TradeGp | undefined }): JSX.Element {
     <Trans>
       Swapping{' '}
       <span title={`${inputAmount?.toFixed(inputAmount?.currency.decimals)} ${inputSymbol}`}>
-        {formatSmart(inputAmount)} {inputSymbol}
+        {formatSmart(inputAmount, AMOUNT_PRECISION)} {inputSymbol}
       </span>{' '}
       for{' '}
       <span title={`${outputAmount?.toFixed(outputAmount?.currency.decimals)} ${outputSymbol}`}>
-        {formatSmart(outputAmount)} {outputSymbol}
+        {formatSmart(outputAmount, AMOUNT_PRECISION)} {outputSymbol}
       </span>
     </Trans>
   )

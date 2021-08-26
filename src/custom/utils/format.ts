@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 
 import { formatSmart as _formatSmart } from '@gnosis.pm/dex-js'
 import { Currency, CurrencyAmount, Percent, Fraction } from '@uniswap/sdk-core'
-import { DEFAULT_DECIMALS, DEFAULT_PRECISION, DEFAULT_SMALL_LIMIT } from 'constants/index'
+import { DEFAULT_DECIMALS, DEFAULT_PRECISION, DEFAULT_SMALL_LIMIT, FULL_PRICE_PRECISION } from 'constants/index'
 
 const TEN = new BigNumber(10)
 
@@ -70,7 +70,7 @@ export function formatSmart(
   } else {
     // Amount is already at desired precision (e.g.: a price), just need to format it nicely
     precision = 0
-    amount = value.toFixed(decimalsToShow)
+    amount = value.toFixed(FULL_PRICE_PRECISION) // To a large enough precision so very small values are not rounded to 0
     smallLimitPrecision = Math.min(decimalsToShow, DEFAULT_DECIMALS)
   }
 

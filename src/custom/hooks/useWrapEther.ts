@@ -6,6 +6,7 @@ import { useTransactionAdder } from '@src/state/transactions/hooks'
 import { useWETHContract } from 'hooks/useContract'
 import { ContractTransaction } from 'ethers'
 import { formatSmart } from '../utils/format'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export function useWrapEther() {
   const addTransaction = useTransactionAdder()
@@ -23,7 +24,7 @@ export function useWrapEther() {
 
       try {
         const txReceipt = await weth.deposit({ value: `0x${amount.quotient.toString(16)}` })
-        addTransaction(txReceipt, { summary: `Wrap ${formatSmart(amount)} ETH to WETH` })
+        addTransaction(txReceipt, { summary: `Wrap ${formatSmart(amount, AMOUNT_PRECISION)} ETH to WETH` })
         console.log('Wrapped!', amount)
         return txReceipt
       } catch (error) {

@@ -22,7 +22,7 @@ import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
-import { SHORT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
@@ -155,7 +155,7 @@ export default function Header() {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {formatSmart(userEthBalance, SHORT_PRECISION)} {nativeToken}
+                {formatSmart(userEthBalance, AMOUNT_PRECISION)} {nativeToken}
               </BalanceText>
             ) : null}
             <Web3Status />

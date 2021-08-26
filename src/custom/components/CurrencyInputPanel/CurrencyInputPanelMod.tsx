@@ -23,7 +23,7 @@ import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 
 import { WithClassName } from 'types'
 import { formatSmart } from 'utils/format'
-import { SHORT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import { AuxInformationContainer } from '.' // mod
 
 export const InputPanel = styled.div<{ hideInput?: boolean }>`
@@ -278,7 +278,7 @@ export default function CurrencyInputPanel({
                           renderBalance(selectedCurrencyBalance)
                         ) : (
                           <Trans>
-                            Balance: {formatSmart(selectedCurrencyBalance, SHORT_PRECISION)} {currency.symbol}
+                            Balance: {formatSmart(selectedCurrencyBalance, AMOUNT_PRECISION)} {currency.symbol}
                           </Trans>
                         )
                       ) : null}
