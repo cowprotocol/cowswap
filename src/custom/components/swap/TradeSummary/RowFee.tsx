@@ -16,7 +16,7 @@ export const GASLESS_FEE_TOOLTIP_MSG =
   'On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
 
 export const PRESIGN_FEE_TOOLTIP_MSG =
-  'The fees cover already your gas costs for executing an order, however since you are using a smart contract wallet, you will need to pay the gas for creating the order.'
+  'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
