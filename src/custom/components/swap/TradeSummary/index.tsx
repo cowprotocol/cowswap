@@ -9,7 +9,7 @@ import { RowFixed } from 'components/Row'
 import { RowFee } from './RowFee'
 import { RowSlippage } from './RowSlippage'
 import { RowReceivedAfterSlippage } from './RowReceivedAfterSlippage'
-import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 export function getIncludeFeeLabelSuffix(allowsOffchainSigning: boolean) {
   return allowsOffchainSigning ? ' (incl. fee)' : ''

@@ -11,7 +11,7 @@ import SwapModalFooter from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
 // MOD
 import TradeGp from 'state/swap/TradeGp'
-import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
