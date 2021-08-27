@@ -8,7 +8,7 @@ import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSD
 import { stringToCurrency } from 'state/swap/extension'
 import { SupportedChainId } from 'constants/chains'
 import { USDC_XDAI } from 'utils/xdai/constants'
-import { OrderKind } from '@src/custom/state/orders/actions'
+import { OrderKind } from 'state/orders/actions'
 
 export * from '@src/hooks/useUSDCPrice'
 

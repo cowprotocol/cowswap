@@ -1,16 +1,22 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import BigNumberJs from 'bignumber.js'
 
-import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'utils/operator'
-import GpQuoteError, { GpQuoteErrorCodes } from 'utils/operator/errors/QuoteError'
+import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
+import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
-import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation } from 'utils/paraswap'
+import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
+import {
+  getPriceQuote as getPriceQuoteMatcha,
+  MatchaPriceQuote,
+  toPriceInformation as toPriceInformationMatcha,
+} from 'api/matcha-0x'
 
 import { OptimalRatesWithPartnerFees as OptimalRatesWithPartnerFeesParaswap } from 'paraswap'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from 'state/lists/actions'
+import { toErc20Address } from 'utils/tokens'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -59,7 +65,7 @@ export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & 
   toDecimals: number
 }
 
-export type PriceSource = 'gnosis-protocol' | 'paraswap'
+export type PriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
 export type PriceInformationWithSource = PriceInformation & { source: PriceSource; data?: any }
 export type PromiseRejectedResultWithSource = PromiseRejectedResult & { source: PriceSource }
 
@@ -98,16 +104,17 @@ export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettle
  *  Return all price estimations from all price sources
  */
 export async function getAllPrices(params: PriceQuoteParams) {
-  // Get price from all API: Gpv2 and Paraswap
+  // Get price from all API: Gpv2, Paraswap, Matcha (0x)
   const pricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
   const paraSwapPricePromise = withTimeout(
     getPriceQuoteParaswap(params),
     PRICE_API_TIMEOUT_MS,
     'Paraswap: Get Price API'
   )
+  const matchaPricePromise = withTimeout(getPriceQuoteMatcha(params), PRICE_API_TIMEOUT_MS, 'Matcha(0x): Get Price API')
 
   // Get results from API queries
-  return Promise.allSettled([pricePromise, paraSwapPricePromise])
+  return Promise.allSettled([pricePromise, paraSwapPricePromise, matchaPricePromise])
 }
 
 /**
@@ -115,8 +122,11 @@ export async function getAllPrices(params: PriceQuoteParams) {
  * successful price quotes and errors price quotes. For each price, it also give the context (the name of the price feed)
  */
 function _extractPriceAndErrorPromiseValues(
+  // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
+  kind: OrderKind,
   gpPriceResult: PromiseSettledResult<PriceInformation>,
-  paraSwapPriceResult: PromiseSettledResult<OptimalRatesWithPartnerFeesParaswap | null>
+  paraSwapPriceResult: PromiseSettledResult<OptimalRatesWithPartnerFeesParaswap | null>,
+  matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
 ): [Array<PriceInformationWithSource>, Array<PromiseRejectedResultWithSource>] {
   // Prepare an array with all successful estimations
   const priceQuotes: Array<PriceInformationWithSource> = []
@@ -129,10 +139,17 @@ function _extractPriceAndErrorPromiseValues(
   }
 
   if (isPromiseFulfilled(paraSwapPriceResult)) {
-    const paraswapPrice = toPriceInformation(paraSwapPriceResult.value)
+    const paraswapPrice = toPriceInformationParaswap(paraSwapPriceResult.value)
     paraswapPrice && priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
   } else {
     errorsGetPrice.push({ ...paraSwapPriceResult, source: 'paraswap' })
+  }
+
+  if (isPromiseFulfilled(matchaPriceResult)) {
+    const matchaPrice = toPriceInformationMatcha(matchaPriceResult.value, kind)
+    matchaPrice && priceQuotes.push({ ...matchaPrice, source: 'matcha-0x', data: matchaPriceResult.value })
+  } else {
+    errorsGetPrice.push({ ...matchaPriceResult, source: 'matcha-0x' })
   }
 
   return [priceQuotes, errorsGetPrice]
@@ -143,10 +160,16 @@ function _extractPriceAndErrorPromiseValues(
  */
 export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPriceOptions): Promise<PriceInformation> {
   // Get all prices
-  const [priceResult, paraSwapPriceResult] = await getAllPrices(params)
+  const [priceResult, paraSwapPriceResult, matchaPriceResult] = await getAllPrices(params)
 
   // Aggregate successful and error prices
-  const [priceQuotes, errorsGetPrice] = _extractPriceAndErrorPromiseValues(priceResult, paraSwapPriceResult)
+  const [priceQuotes, errorsGetPrice] = _extractPriceAndErrorPromiseValues(
+    // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
+    params.kind,
+    priceResult,
+    paraSwapPriceResult,
+    matchaPriceResult
+  )
 
   // Print prices who failed to be fetched
   if (errorsGetPrice.length > 0) {
@@ -207,4 +230,12 @@ export async function getBestQuote({ quoteParams, fetchFee, previousFee }: Quote
         Promise.reject(FEE_EXCEEDS_FROM_ERROR)
 
   return Promise.allSettled([pricePromise, feePromise])
+}
+
+export function getValidParams(params: PriceQuoteParams) {
+  const { baseToken: baseTokenAux, quoteToken: quoteTokenAux, chainId } = params
+  const baseToken = toErc20Address(baseTokenAux, chainId)
+  const quoteToken = toErc20Address(quoteTokenAux, chainId)
+
+  return { ...params, baseToken, quoteToken }
 }
