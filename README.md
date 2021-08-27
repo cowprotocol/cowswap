@@ -16,6 +16,8 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
     * ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
     * The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/gnosis/gp-swap-ui/releases) section.
 
+- Docs: <https://docs.cowswap.exchange>
+- Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
 - Discord: <https://chat.cowswap.exchange>
