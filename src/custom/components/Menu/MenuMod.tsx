@@ -114,6 +114,7 @@ export const InternalMenuItem = styled(Link)`
   flex: 1;
   padding: 0.5rem 0.5rem;
   color: ${({ theme }) => theme.text2};
+  font-weight: 500;
   :hover {
     color: ${({ theme }) => theme.text1};
     cursor: pointer;
