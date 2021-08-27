@@ -5,7 +5,7 @@ import { clearAllTransactions } from '../../state/transactions/actions'
 import { shortenAddress } from 'utils'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { AutoRow } from '../Row'
-import Copy from './Copy'
+import Copy from 'components/Copy'
 import Transaction from 'components/AccountDetails/Transaction'
 
 import { SUPPORTED_WALLETS } from 'constants/index'

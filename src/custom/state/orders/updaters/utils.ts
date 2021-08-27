@@ -63,6 +63,11 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
         fulfillmentTime: new Date().toISOString(),
         transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
         summary: _computeFulfilledSummary({ orderFromStore, orderFromApi }),
+        apiAdditionalInfo: orderFromApi
+          ? {
+              ...orderFromApi,
+            }
+          : undefined,
       }
       break
     case 'expired':

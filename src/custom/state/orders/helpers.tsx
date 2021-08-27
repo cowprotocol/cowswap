@@ -5,7 +5,7 @@ import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from 'utils/operator'
 import { addPopup } from 'state/application/actions'
 import { OrderStatus } from './actions'
-import { CancellationSummary } from 'components/AccountDetails/Transaction'
+import { CancellationSummary } from 'components/AccountDetails/Transaction/styled'
 
 type OrderStatusExtended = OrderStatus | 'submitted'
 

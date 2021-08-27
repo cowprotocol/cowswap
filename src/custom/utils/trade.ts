@@ -119,6 +119,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
       summary,
       inputToken: sellToken,
       outputToken: buyToken,
+      apiAdditionalInfo: undefined,
     },
   })
 

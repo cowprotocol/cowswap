@@ -15,9 +15,9 @@ export * from './components'
 type TextProps = Omit<TextPropsOriginal, 'css'>
 
 export const MEDIA_WIDTHS = {
-  upToExtraSmall: 500,
-  upToSmall: 720,
-  upToMedium: 960,
+  upToExtraSmall: 340,
+  upToSmall: 736,
+  upToMedium: 1024,
   upToLarge: 1280,
 }
 

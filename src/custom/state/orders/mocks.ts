@@ -77,6 +77,7 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2), // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
     receiver: owner.replace('0x', ''),
+    apiAdditionalInfo: undefined,
   }
 }
 

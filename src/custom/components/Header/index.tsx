@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
@@ -8,10 +8,10 @@ import HeaderMod, {
   Title,
   HeaderLinks,
   HeaderRow,
-  HeaderControls,
+  HeaderControls as HeaderControlsUni,
+  BalanceText as BalanceTextUni,
   HeaderElement,
   HideSmall,
-  BalanceText,
   AccountElement,
   HeaderElementWrap,
   StyledNavLink as StyledNavLinkUni,
@@ -26,6 +26,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
+import OrdersPanel from 'components/OrdersPanel'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
@@ -58,6 +59,18 @@ const StyledNavLink = styled(StyledNavLinkUni)`
   }
 `
 
+const BalanceText = styled(BalanceTextUni)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
+`
+
+const HeaderControls = styled(HeaderControlsUni)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-width: 100%;
+  `};
+`
+
 export const HeaderModWrapper = styled(HeaderMod)`
   ${Title} {
     margin: 0;
@@ -73,6 +86,14 @@ export const HeaderModWrapper = styled(HeaderMod)`
 const NetworkCard = styled(NetworkCardUni)`
   background-color: ${({ theme }) => theme.networkCard.background};
   color: ${({ theme }) => theme.networkCard.text};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 0 0 8px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
 `
 
 const TwitterLink = styled(StyledMenuButton)`
@@ -130,6 +151,15 @@ export default function Header() {
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
+  const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
+  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
+
+  // Toggle the 'noScroll' class on body, whenever the orders panel is open.
+  // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
+  useEffect(() => {
+    isOrdersPanelOpen ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
+  }, [isOrdersPanelOpen])
 
   return (
     <HeaderModWrapper>
@@ -158,7 +188,7 @@ export default function Header() {
                 {formatSmart(userEthBalance, AMOUNT_PRECISION)} {nativeToken}
               </BalanceText>
             ) : null}
-            <Web3Status />
+            <Web3Status openOrdersPanel={openOrdersPanel} />
           </AccountElement>
         </HeaderElement>
         <HeaderElementWrap>
@@ -173,6 +203,7 @@ export default function Header() {
           <Menu />
         </HeaderElementWrap>
       </HeaderControls>
+      {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
     </HeaderModWrapper>
   )
 }

@@ -53,7 +53,7 @@ function _buildSmallLimit(smallLimit: string | undefined, decimalsToShow: number
  * @returns string or undefined
  */
 export function formatSmart(
-  value: CurrencyAmount<Currency> | Percent | Fraction | null | undefined,
+  value: CurrencyAmount<Currency> | Percent | BigNumber | Fraction | null | undefined,
   decimalsToShow: number = DEFAULT_PRECISION,
   options?: FormatSmartOptions
 ) {

@@ -5,6 +5,7 @@ export { Color, Grids } from '@src/theme/styled'
 // Override colors
 export interface Colors extends ColorsUniswap {
   purple: Color
+  yellow: Color
   redShade: Color
   textLink: Color
   greenShade: Color
@@ -68,6 +69,9 @@ declare module 'styled-components' {
         normal: string
         content: string
       }
+    }
+    neumorphism: {
+      boxShadow: FlattenSimpleInterpolation
     }
     header: {
       border: string

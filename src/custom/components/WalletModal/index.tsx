@@ -5,7 +5,7 @@ import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
 import { Trans } from '@lingui/macro'
 
-export * from '@src/components/WalletModal'
+// export * from '@src/components/WalletModal'
 
 const TermsWrapper = styled.div`
   color: ${({ theme }) => theme.text1};

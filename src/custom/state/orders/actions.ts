@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { OrderID } from 'utils/operator'
+import { OrderID, OrderMetaData } from 'utils/operator'
 import { OrderCreation } from 'utils/signatures'
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -24,7 +24,22 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   summary: string // for dapp use only, readable by user
   isCancelling?: boolean // intermediate state while the order has been cancelled but order is still pending
   isUnfillable?: boolean // whether the order is out of the market, due to price movements since placement
+  apiAdditionalInfo?: OrderInfoApi
 }
+
+/**
+ * The API provides some additional information
+ */
+type OrderInfoApi = Pick<
+  OrderMetaData,
+  | 'creationDate'
+  | 'availableBalance'
+  | 'executedBuyAmount'
+  | 'executedSellAmount'
+  | 'executedSellAmountBeforeFees'
+  | 'executedFeeAmount'
+  | 'invalidated'
+>
 
 export interface Order extends BaseOrder {
   inputToken: Token // for dapp use only, readable by user
@@ -65,6 +80,7 @@ export interface OrderFulfillmentData {
   fulfillmentTime: string
   transactionHash: string
   summary?: string
+  apiAdditionalInfo?: OrderInfoApi
 }
 
 export interface FulfillOrdersBatchParams {
