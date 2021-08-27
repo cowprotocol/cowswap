@@ -1,7 +1,7 @@
 import { SupportedChainId as ChainId } from '../../src/custom/constants/chains'
 import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
-import { FeeQuoteParams, FeeInformation } from '../../src/custom/utils/price'
+import { FeeQuoteParams, FeeInformation } from '../../src/custom/priceApi/price'
 import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'

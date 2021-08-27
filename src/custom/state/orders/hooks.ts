@@ -23,7 +23,7 @@ import {
 } from './actions'
 import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
 import { isTruthy } from 'utils/misc'
-import { OrderID } from 'utils/operator'
+import { OrderID } from 'api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
 import { deserializeToken, serializeToken } from '@src/state/user/hooks'
 
