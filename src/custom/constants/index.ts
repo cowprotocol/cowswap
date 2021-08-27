@@ -99,4 +99,6 @@ export const GAS_FEE_ENDPOINTS = {
   [ChainId.XDAI]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
 }
 
+export const GASNOW_PRICE_ENDPOINT = 'https://www.gasnow.org/api/v3/gas/price?utm_source=:cowswap'
+
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq#what-token-pairs-does-cowswap-allow-to-trade'

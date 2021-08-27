@@ -79,6 +79,7 @@ import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from '@src/custom/components/swap/TradeSummary'
+import { applyCustomGasPrice } from 'custom/utils/gas'
 
 export const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -295,11 +296,11 @@ export default function Swap({
       } catch (error) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
         if (error?.code !== 4001) {
-          await approveCallback()
+          await applyCustomGasPrice(approveCallback)
         }
       }
     } else {
-      await approveCallback()
+      await applyCustomGasPrice(approveCallback)
     }
   }, [approveCallback, gatherPermitSignature, signatureState])
 

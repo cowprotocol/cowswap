@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/providers'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'
-import { Contract } from 'ethers'
+import { Contract, Overrides } from 'ethers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -13,6 +13,7 @@ import { t } from '@lingui/macro'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
+import { applyCustomGasPrice } from 'custom/utils/gas'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -53,20 +54,20 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   // Create wrap/unwrap callback if sufficient balance
   let wrapUnwrapCallback: (() => Promise<TransactionResponse>) | undefined
   if (sufficientBalance && inputAmount) {
-    let wrapUnwrap: () => TransactionResponse
+    let wrapUnwrap: (opts: Overrides) => TransactionResponse
     let summary: string
 
     if (isWrap) {
-      wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.quotient.toString(RADIX_HEX)}` })
+      wrapUnwrap = (opts) => wethContract.deposit({ ...opts, value: `0x${inputAmount.quotient.toString(RADIX_HEX)}` })
       summary = t`Wrap ${formatSmart(inputAmount)} ${native} to ${wrapped}`
     } else {
-      wrapUnwrap = () => wethContract.withdraw(`0x${inputAmount.quotient.toString(RADIX_HEX)}`)
+      wrapUnwrap = (opts) => wethContract.withdraw(`0x${inputAmount.quotient.toString(RADIX_HEX)}`, opts)
       summary = t`Unwrap ${formatSmart(inputAmount)} ${wrapped} to ${native}`
     }
 
     wrapUnwrapCallback = async () => {
       try {
-        const txReceipt = await wrapUnwrap()
+        const txReceipt = await applyCustomGasPrice(wrapUnwrap)
         addTransaction(txReceipt, { summary })
 
         return txReceipt
