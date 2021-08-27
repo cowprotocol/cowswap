@@ -158,7 +158,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 }
 
 let moooooSend: HTMLAudioElement
-function getMoooooSend(): HTMLAudioElement {
+function getCowSoundSend(): HTMLAudioElement {
   if (!moooooSend) {
     moooooSend = new Audio('/audio/mooooo-send__lower-90.mp3')
   }
@@ -167,7 +167,7 @@ function getMoooooSend(): HTMLAudioElement {
 }
 
 let moooooSuccess: HTMLAudioElement
-function getMoooooSuccess(): HTMLAudioElement {
+function getCowSoundSuccess(): HTMLAudioElement {
   if (!moooooSuccess) {
     moooooSuccess = new Audio('/audio/mooooo-success__ben__lower-90.mp3')
   }
@@ -176,7 +176,7 @@ function getMoooooSuccess(): HTMLAudioElement {
 }
 
 let moooooError: HTMLAudioElement
-function getMoooooError(): HTMLAudioElement {
+function getCowSoundError(): HTMLAudioElement {
   if (!moooooError) {
     moooooError = new Audio('/audio/mooooo-error__lower-90.mp3')
   }
@@ -201,16 +201,19 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (updatedElements.length === 0) return result
   }
 
+  let cowSound
   if (isPendingOrderAction(action)) {
-    getMoooooSend().play()
+    cowSound = getCowSoundSend()
   } else if (isFulfillOrderAction(action)) {
-    getMoooooSuccess().play()
+    cowSound = getCowSoundSuccess()
   } else if (isExpireOrdersAction(action)) {
-    getMoooooError().play()
+    cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
     // TODO: find a unique sound for order cancellation
-    getMoooooError().play()
+    cowSound = getCowSoundError()
   }
+
+  cowSound?.play().catch((e) => console.error('🐮 Moooooo sound cannot be played', e))
 
   return result
 }
