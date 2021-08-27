@@ -42,6 +42,11 @@ const BottomGrouping = styled(BottomGroupingUni)`
   > div > button {
     align-self: stretch;
   }
+
+  div > svg,
+  div > svg > path {
+    stroke: ${({ theme }) => theme.text2};
+  }
 `
 
 export const ButtonError = styled(ButtonErrorMod)`
@@ -129,10 +134,6 @@ const SwapModWrapper = styled(SwapMod)`
 
     ${AutoRow} {
       z-index: 2;
-    }
-
-    ${AutoRow} svg > path {
-      stroke: ${({ theme }) => theme.text1};
     }
   }
 `
