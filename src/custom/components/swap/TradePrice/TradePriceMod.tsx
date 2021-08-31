@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
 import { formatSmart } from 'utils/format' // mod
-import { LONG_PRECISION } from 'constants/index' // mod
+import { FULL_PRICE_PRECISION } from 'constants/index' // mod
 import { LightGreyText } from 'pages/Swap'
 
 export interface TradePriceProps {
@@ -44,7 +44,9 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
     formattedPrice = 'N/A'
   }
 
-  const fullFormattedPrice = showInverted ? price?.toFixed(LONG_PRECISION) : price?.invert().toFixed(LONG_PRECISION)
+  const fullFormattedPrice = showInverted
+    ? price?.toFixed(FULL_PRICE_PRECISION)
+    : price?.invert().toFixed(FULL_PRICE_PRECISION)
 
   const label = showInverted ? `${price.quoteCurrency?.symbol}` : `${price.baseCurrency?.symbol} `
   const labelInverted = showInverted ? `${price.baseCurrency?.symbol} ` : `${price.quoteCurrency?.symbol}`

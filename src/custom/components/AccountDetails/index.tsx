@@ -1,13 +1,12 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback } from 'react'
 import { batch, useDispatch } from 'react-redux'
-import { ThemeContext } from 'styled-components'
+
 import { useActiveWeb3React } from 'hooks/web3'
 import { AppDispatch } from 'state'
 import { clearAllTransactions } from 'state/transactions/actions'
 import { getExplorerLabel, shortenAddress } from 'utils'
-import { AutoRow } from 'components/Row'
-import Copy, { CopyIcon } from 'components/AccountDetails/Copy'
-import styled from 'styled-components'
+
+import Copy from 'components/Copy'
 import { Trans } from '@lingui/macro'
 
 import { SUPPORTED_WALLETS } from 'constants/index'
@@ -19,39 +18,32 @@ import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 import PortisIcon from 'assets/images/portisIcon.png'
 import Identicon from 'components/Identicon'
 import { ExternalLink as LinkIcon } from 'react-feather'
-import { LinkStyledButton, TYPE } from 'theme'
+import { LinkStyledButton } from 'theme'
 import { clearOrders } from 'state/orders/actions'
+import { NETWORK_LABELS } from 'components/Header'
 import {
   WalletName,
   MainWalletAction,
-  AccountDetailsProps,
-  UpperSection,
-  CloseIcon,
-  CloseColor,
-  HeaderRow,
-  AccountSection,
-  YourAccount,
-  InfoCard,
-  AccountGroupingRow,
   WalletAction,
   AccountControl,
   AddressLink,
-  LowerSection,
   IconWrapper,
   renderTransactions,
 } from './AccountDetailsMod'
+import {
+  NetworkCard,
+  Wrapper,
+  InfoCard,
+  AccountGroupingRow,
+  NoActivityMessage,
+  LowerSection,
+  WalletActions,
+  WalletLowerActions,
+  WalletNameAddress,
+} from './styled'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
 import { MouseoverTooltip } from 'components/Tooltip'
-
-const Wrapper = styled.div`
-  color: ${({ theme }) => theme.text1};
-
-  ${WalletName},
-  ${AddressLink},
-  ${CopyIcon} {
-    color: ${({ theme }) => theme.text1};
-  }
-`
+import { supportedChainId } from 'utils/supportedChainId'
 
 type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
 
@@ -76,7 +68,7 @@ export function formatConnectorName(connector?: AbstractConnector, walletInfo?: 
 
   return (
     <WalletName>
-      Connected with {name}
+      Connected with {name} <br />
       {walletConnectSuffix}
     </WalletName>
   )
@@ -100,11 +92,7 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
       </IconWrapper>
     )
   } else if (connector === injected) {
-    return (
-      <IconWrapper size={16}>
-        <Identicon />
-      </IconWrapper>
-    )
+    return <Identicon />
   } else if (connector === walletconnect) {
     return (
       <IconWrapper size={16}>
@@ -142,16 +130,25 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
   return null
 }
 
+interface AccountDetailsProps {
+  pendingTransactions: string[]
+  confirmedTransactions: string[]
+  ENSName?: string
+  toggleWalletModal: () => void
+  closeOrdersPanel: () => void
+}
+
 export default function AccountDetails({
-  toggleWalletModal,
   pendingTransactions,
   confirmedTransactions,
   ENSName,
-  openOptions,
+  toggleWalletModal,
+  closeOrdersPanel,
 }: AccountDetailsProps) {
-  const { chainId, account, connector } = useActiveWeb3React()
+  const { account, connector, chainId: connectedChainId } = useActiveWeb3React()
+  const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
-  const theme = useContext(ThemeContext)
+  // const theme = useContext(ThemeContext)
   const dispatch = useDispatch<AppDispatch>()
 
   const clearAllActivityCallback = useCallback(() => {
@@ -163,122 +160,86 @@ export default function AccountDetails({
     }
   }, [dispatch, chainId])
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
+  const activityTotalCount = (pendingTransactions?.length || 0) + (confirmedTransactions?.length || 0)
+
+  const handleDisconnectClick = () => {
+    ;(connector as any).close()
+    closeOrdersPanel()
+    toggleWalletModal()
+  }
 
   return (
     <Wrapper>
-      <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
-        <HeaderRow>Account</HeaderRow>
-        <AccountSection>
-          <YourAccount>
-            <InfoCard>
-              <AccountGroupingRow>
-                {formatConnectorName(connector, walletInfo)}
-                <div>
-                  {connector !== injected && connector !== walletlink && (
-                    <WalletAction
-                      style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
-                      onClick={() => {
-                        ;(connector as any).close()
-                      }}
-                    >
-                      <Trans>Disconnect</Trans>
-                    </WalletAction>
-                  )}
+      <InfoCard>
+        <AccountGroupingRow id="web3-account-identifier-row">
+          <AccountControl>
+            <div>
+              {chainId && NETWORK_LABELS[chainId] && (
+                <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
+              )}
+              {getStatusIcon(connector, walletInfo)}
+
+              {(ENSName || account) && (
+                <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
+                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
+                </Copy>
+              )}
+            </div>
+
+            <WalletActions>
+              {formatConnectorName(connector, walletInfo)}
+              <div>
+                {connector !== injected && connector !== walletlink && (
                   <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400 }}
-                    onClick={() => {
-                      openOptions()
-                    }}
+                    style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
+                    onClick={handleDisconnectClick}
                   >
-                    <Trans>Change</Trans>
+                    <Trans>Disconnect</Trans>
                   </WalletAction>
-                </div>
-              </AccountGroupingRow>
-              <AccountGroupingRow id="web3-account-identifier-row">
-                <AccountControl>
-                  {ENSName ? (
-                    <>
-                      <div>
-                        {getStatusIcon(connector, walletInfo)}
-                        <p> {ENSName}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        {getStatusIcon(connector, walletInfo)}
-                        <p> {account && shortenAddress(account)}</p>
-                      </div>
-                    </>
-                  )}
-                </AccountControl>
-              </AccountGroupingRow>
-              <AccountGroupingRow>
-                {ENSName ? (
-                  <>
-                    <AccountControl>
-                      <div>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy Address</span>
-                          </Copy>
-                        )}
-                        {chainId && account && (
-                          <AddressLink
-                            hasENS={!!ENSName}
-                            isENS={true}
-                            href={getEtherscanLink(chainId, ENSName, 'address')}
-                          >
-                            <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
-                          </AddressLink>
-                        )}
-                      </div>
-                    </AccountControl>
-                  </>
-                ) : (
-                  <>
-                    <AccountControl>
-                      <div>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy Address</span>
-                          </Copy>
-                        )}
-                        {chainId && account && (
-                          <AddressLink
-                            hasENS={!!ENSName}
-                            isENS={false}
-                            href={getEtherscanLink(chainId, account, 'address')}
-                          >
-                            <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
-                          </AddressLink>
-                        )}
-                      </div>
-                    </AccountControl>
-                  </>
                 )}
-              </AccountGroupingRow>
-            </InfoCard>
-          </YourAccount>
-        </AccountSection>
-      </UpperSection>
+                <WalletAction style={{ fontSize: '.825rem', fontWeight: 400 }} onClick={toggleWalletModal}>
+                  <Trans>Change</Trans>
+                </WalletAction>
+              </div>
+            </WalletActions>
+          </AccountControl>
+        </AccountGroupingRow>
+        <AccountGroupingRow>
+          <AccountControl>
+            <WalletLowerActions>
+              {chainId && account && (
+                <AddressLink
+                  hasENS={!!ENSName}
+                  isENS={ENSName ? true : false}
+                  href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
+                >
+                  <LinkIcon size={16} />
+                  <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
+                </AddressLink>
+              )}
+            </WalletLowerActions>
+          </AccountControl>
+        </AccountGroupingRow>
+      </InfoCard>
+
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSection>
-          <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body>Recent Activity</TYPE.body>
-            <LinkStyledButton onClick={clearAllActivityCallback}>(clear all)</LinkStyledButton>
-          </AutoRow>
-          {renderTransactions(pendingTransactions)}
-          {renderTransactions(confirmedTransactions)}
+          <span>
+            {' '}
+            <h5>
+              Recent Activity <span>{`(${activityTotalCount})`}</span>
+            </h5>
+            <LinkStyledButton onClick={clearAllActivityCallback}>Clear activity</LinkStyledButton>
+          </span>
+
+          <div>
+            {renderTransactions(pendingTransactions)}
+            {renderTransactions(confirmedTransactions)}
+          </div>
         </LowerSection>
       ) : (
         <LowerSection>
-          <TYPE.body color={theme.text2}>Your activity will appear here...</TYPE.body>
+          <NoActivityMessage>Your activity will appear here...</NoActivityMessage>
         </LowerSection>
       )}
     </Wrapper>

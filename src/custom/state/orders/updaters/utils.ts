@@ -1,8 +1,8 @@
 import { Order, OrderFulfillmentData } from 'state/orders/actions'
-import { getOrder, OrderID, OrderMetaData } from 'utils/operator'
+import { getOrder, OrderID, OrderMetaData } from 'api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSmart } from 'utils/format'
-import { SHORT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import { ApiOrderStatus, classifyOrder } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
@@ -29,9 +29,9 @@ function _computeFulfilledSummary({
       const inputAmount = stringToCurrency(executedSellAmount, inputToken)
       const outputAmount = stringToCurrency(executedBuyAmount, outputToken)
 
-      summary = `Swap ${formatSmart(inputAmount, SHORT_PRECISION)} ${inputAmount.currency.symbol} for ${formatSmart(
+      summary = `Swap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${inputAmount.currency.symbol} for ${formatSmart(
         outputAmount,
-        SHORT_PRECISION
+        AMOUNT_PRECISION
       )} ${outputAmount.currency.symbol}`
     } else {
       // We only have the API order info, let's at least use that
@@ -63,6 +63,11 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
         fulfillmentTime: new Date().toISOString(),
         transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
         summary: _computeFulfilledSummary({ orderFromStore, orderFromApi }),
+        apiAdditionalInfo: orderFromApi
+          ? {
+              ...orderFromApi,
+            }
+          : undefined,
       }
       break
     case 'expired':

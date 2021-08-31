@@ -216,13 +216,13 @@ export function renderTransactions(transactions: string[]) {
   )
 }
 
-export interface AccountDetailsProps {
-  toggleWalletModal: () => void
-  pendingTransactions: string[]
-  confirmedTransactions: string[]
-  ENSName?: string
-  openOptions: () => void
-}
+// export interface AccountDetailsProps {
+//   toggleWalletModal: () => void
+//   pendingTransactions: string[]
+//   confirmedTransactions: string[]
+//   ENSName?: string
+//   openOptions: () => void
+// }
 
 /* 
 export default function AccountDetails({

@@ -2,10 +2,12 @@ import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER } from 'constants/index'
-import { OrderMetaData } from 'utils/operator'
+import { OrderMetaData } from 'api/gnosisProtocol'
 import { Order } from 'state/orders/actions'
 import { PriceInformation } from 'utils/price'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
+import { calculatePrice, invertPrice, ZERO_BIG_NUMBER } from '@gnosis.pm/dex-js'
+import { BigNumber } from 'bignumber.js'
 
 export type ApiOrderStatus = 'unknown' | 'fulfilled' | 'expired' | 'cancelled' | 'pending'
 
@@ -64,6 +66,97 @@ export function classifyOrder(order: OrderMetaData | null): ApiOrderStatus {
   }
   console.debug(`[state::orders::classifyOrder] pending order ${order.uid.slice(0, 10)}`)
   return 'pending'
+}
+
+export type GetLimitPriceParams = {
+  buyAmount: string
+  sellAmount: string
+  buyTokenDecimals: number
+  sellTokenDecimals: number
+  inverted?: boolean
+}
+
+// TODO: Use the SDK when ready
+/**
+ * Calculates order limit price base on order and buy/sell token decimals
+ *
+ * @param buyAmount The buy amount
+ * @param sellAmount The sell amount
+ * @param buyTokenDecimals The buy token decimals
+ * @param sellTokenDecimals The sell token decimals
+ * @param inverted Optional. Whether to invert the price (1/price).
+ */
+export function getLimitPrice({
+  buyAmount,
+  sellAmount,
+  buyTokenDecimals,
+  sellTokenDecimals,
+  inverted,
+}: GetLimitPriceParams): BigNumber {
+  const price = calculatePrice({
+    numerator: { amount: buyAmount, decimals: buyTokenDecimals },
+    denominator: { amount: sellAmount, decimals: sellTokenDecimals },
+  })
+
+  return inverted ? invertPrice(price) : price
+}
+
+type GetExecutionPriceParams = Omit<GetLimitPriceParams, 'buyAmount' | 'sellAmount'> & {
+  executedSellAmountBeforeFees?: string
+  executedBuyAmount?: string
+}
+
+// TODO: Use the SDK when ready
+/**
+ * Calculates order executed price base on order and buy/sell token decimals
+ * Result is given in sell token units
+ *
+ * @param executedSellAmount The sell amount
+ * @param executedBuyAmount The buy amount
+ * @param buyTokenDecimals The buy token decimals
+ * @param sellTokenDecimals The sell token decimals
+ * @param inverted Optional. Whether to invert the price (1/price).
+ */
+export function getExecutionPrice({
+  executedBuyAmount,
+  executedSellAmountBeforeFees,
+  buyTokenDecimals,
+  sellTokenDecimals,
+  inverted,
+}: GetExecutionPriceParams): BigNumber {
+  // Only calculate the price when both values are set
+  // Having only one value > 0 is anyway an invalid state
+  if (
+    !executedBuyAmount ||
+    !executedSellAmountBeforeFees ||
+    executedBuyAmount === '0' ||
+    executedSellAmountBeforeFees === '0'
+  ) {
+    return ZERO_BIG_NUMBER
+  }
+
+  const price = calculatePrice({
+    numerator: { amount: executedBuyAmount, decimals: buyTokenDecimals },
+    denominator: { amount: executedSellAmountBeforeFees, decimals: sellTokenDecimals },
+  })
+
+  return inverted ? invertPrice(price) : price
+}
+
+/**
+ * Syntactic sugar to get the order's executed amounts as a BigNumber (in atoms)
+ * Mostly because `executedSellAmount` is derived from 2 fields (at time or writing)
+ *
+ * @param order The order
+ */
+export function getOrderExecutedAmounts(order: OrderMetaData): {
+  executedBuyAmount: BigNumber
+  executedSellAmount: BigNumber
+} {
+  return {
+    executedBuyAmount: new BigNumber(order.executedBuyAmount),
+    executedSellAmount: new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount),
+  }
 }
 
 /**

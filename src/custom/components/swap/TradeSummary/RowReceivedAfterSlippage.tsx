@@ -12,6 +12,7 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/SwapMod'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export interface RowReceivedAfterSlippageProps {
   trade: TradeGp
@@ -68,7 +69,7 @@ export function RowReceivedAfterSlippage({
       </RowFixed>
 
       <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1} title={`${fullOutAmount} ${symbol}`}>
-        {`${formatSmart(swapAmount) || '-'} ${symbol}`}
+        {`${formatSmart(swapAmount, AMOUNT_PRECISION) || '-'} ${symbol}`}
       </TYPE.black>
     </RowBetween>
   )

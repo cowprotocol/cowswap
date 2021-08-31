@@ -89,12 +89,12 @@ export default function App(props?: { children?: ReactNode }) {
         <Route component={DarkModeQueryParamReader} />
         <Route component={ApeModeQueryParamReader} />
         <AppWrapper>
+          <Popups />
           <URLWarning />
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
           <BodyWrapper>
-            <Popups />
             <Polling />
             {/* <TopLevelModals /> */}
             <ReferralLinkUpdater />

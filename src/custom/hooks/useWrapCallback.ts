@@ -7,7 +7,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useWETHContract } from 'hooks/useContract'
-import { RADIX_HEX } from 'constants/index'
+import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
 import { WETH9_EXTENDED } from 'constants/tokens'
 import { t } from '@lingui/macro'
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -58,10 +58,10 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
     if (isWrap) {
       wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.quotient.toString(RADIX_HEX)}` })
-      summary = t`Wrap ${formatSmart(inputAmount)} ${native} to ${wrapped}`
+      summary = t`Wrap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
     } else {
       wrapUnwrap = () => wethContract.withdraw(`0x${inputAmount.quotient.toString(RADIX_HEX)}`)
-      summary = t`Unwrap ${formatSmart(inputAmount)} ${wrapped} to ${native}`
+      summary = t`Unwrap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${wrapped} to ${native}`
     }
 
     wrapUnwrapCallback = async () => {

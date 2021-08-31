@@ -3,7 +3,7 @@ import Page, { Title, Content, GdocsListStyle } from 'components/Page'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import CowsImg from 'assets/images/cows.png'
-import CopyHelper from '@src/components/AccountDetails/Copy'
+import CopyHelper from 'components/Copy'
 
 const ButtonGroup = styled.div`
   display: flex;

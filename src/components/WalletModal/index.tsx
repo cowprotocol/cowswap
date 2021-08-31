@@ -15,7 +15,7 @@ import usePrevious from '../../hooks/usePrevious'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useWalletModalToggle } from '../../state/application/hooks'
 import { ExternalLink, TYPE } from 'theme'
-import AccountDetails from 'components/AccountDetails'
+import AccountDetails from '@src/components/AccountDetails'
 import { Trans } from '@lingui/macro'
 
 import Modal from '../Modal'

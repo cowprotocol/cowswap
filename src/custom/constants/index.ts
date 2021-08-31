@@ -15,8 +15,9 @@ export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
 export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
 export const DEFAULT_SMALL_LIMIT = '0.000001'
-export const SHORT_PRECISION = 4
+export const AMOUNT_PRECISION = 4
 export const LONG_PRECISION = 10
+export const FULL_PRICE_PRECISION = 20
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2
 
@@ -76,6 +77,7 @@ export const XDAI_LOGO_URI =
 
 // 0.1 balance threshold
 export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
+export const DOCS_LINK = 'https://docs.cowswap.exchange'
 export const CONTRACTS_CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
 export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
 export const DISCORD_LINK = 'https://chat.cowswap.exchange'

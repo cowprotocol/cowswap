@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
 import { FeeQuoteParams, getBestQuote, QuoteParams, QuoteResult } from 'utils/price'
-import { isValidOperatorError, ApiErrorCodes } from 'utils/operator/errors/OperatorError'
-import { GpQuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
+import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import { GpQuoteErrorCodes, isValidQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
 import { registerOnWindow, getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 
 import { isOnline } from 'hooks/useIsOnline'
@@ -15,7 +15,7 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
-import { onlyResolvesLast } from '../utils/async'
+import { onlyResolvesLast } from 'utils/async'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | FeeQuoteParams

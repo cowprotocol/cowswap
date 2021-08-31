@@ -204,7 +204,7 @@ export default function Faq() {
           </h3>
 
           <p>
-            Defined by Phil Daian in the{' '}
+            Defined by Phil Daian et al. in the{' '}
             <ExternalLink href="https://arxiv.org/abs/1904.05234" target="_blank" rel="noopener noreferrer">
               {' '}
               paper Flash Boys 2.0{' '}

@@ -2,43 +2,109 @@ import { Trans } from '@lingui/macro'
 import React, { ErrorInfo } from 'react'
 import store, { AppState } from 'state/index'
 import { ExternalLink, TYPE } from 'theme/index'
+import Page, { Title } from 'components/Page'
 import { AutoColumn } from 'components/Column'
 import styled from 'styled-components/macro'
 import ReactGA from 'react-ga'
 import { getUserAgent } from 'utils/getUserAgent'
 import { AutoRow } from 'components/Row'
+import { MEDIA_WIDTHS } from '@src/theme'
+import CowError from 'assets/cow-swap/CowError.png'
 
-const FallbackWrapper = styled.div`
+const AppWrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+`
+
+const Wrapper = styled(Page)`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100vw;
+  max-width: 60vw;
+  margin: 120px 0;
+
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    max-width: 95vw;
+    margin: 0 0 80px;
+  }
+`
+
+const StyledTitle = styled(Title)`
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    text-align: center;
+  }
+`
+
+const FlexContainer = styled.div`
+  display: flex;
   align-items: center;
-  z-index: 1;
-`
+  justify-content: space-between;
+  padding: 1rem 0 0.5rem 0;
 
-const BodyWrapper = styled.div<{ margin?: string }>`
-  padding: 1rem;
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToMedium}px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`
+const HeaderWrapper = styled.div`
+  ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
-  white-space: pre;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    position: relative;
+  }
 `
 
+export const LogoImage = styled.img.attrs((props) => ({
+  src: props.theme.logo.src,
+  alt: props.theme.logo.alt,
+  width: props.theme.logo.width,
+  height: props.theme.logo.height,
+}))`
+  object-fit: contain;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 150px;
+  `};
+`
+
+const CowLogo = styled.div`
+  display: flex;
+  margin: 1rem;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(-5deg);
+  }
+`
 const CodeBlockWrapper = styled.div`
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.bg4};
   overflow: auto;
   white-space: pre;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 24px;
-  padding: 50px;
+  border-radius: 16px;
+  padding: 16px;
   color: ${({ theme }) => theme.text2};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 12px;
+    width: auto;
+  `};
+`
+
+const StyledParagraph = styled.p`
+  overflow-x: auto;
 `
 
 const LinkWrapper = styled.div`
   color: ${({ theme }) => theme.blue1};
-  padding: 6px 24px;
-`
-
-const SomethingWentWrongWrapper = styled.div`
   padding: 6px 24px;
 `
 
@@ -69,23 +135,26 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
     if (error !== null) {
       const encodedBody = encodeURIComponent(issueBody(error))
       return (
-        <FallbackWrapper>
-          <BodyWrapper>
+        <AppWrapper>
+          <HeaderWrapper>
+            <a href=".">
+              <CowLogo>
+                <LogoImage />
+              </CowLogo>
+            </a>
+          </HeaderWrapper>
+          <Wrapper>
+            <FlexContainer>
+              <StyledTitle>
+                <Trans> Something went wrong</Trans>
+              </StyledTitle>
+              <img src={CowError} alt="CowSwap Error" height="125" />
+            </FlexContainer>
             <AutoColumn gap={'md'}>
-              <SomethingWentWrongWrapper>
-                <TYPE.label fontSize={24} fontWeight={600}>
-                  <Trans>
-                    <span role="img" aria-label="cow-exclamation">
-                      🐮❕
-                    </span>{' '}
-                    Something went wrong
-                  </Trans>
-                </TYPE.label>
-              </SomethingWentWrongWrapper>
               <CodeBlockWrapper>
                 <code>
                   <TYPE.main fontSize={10} color={'text1'}>
-                    {error.stack}
+                    <StyledParagraph>{error.stack}</StyledParagraph>
                   </TYPE.main>
                 </code>
               </CodeBlockWrapper>
@@ -93,8 +162,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
                 <LinkWrapper>
                   <ExternalLink
                     id="create-github-issue-link"
-                    // href={`https://github.com/Uniswap/uniswap-interface/issues/new?assignees=&labels=bug&body=${encodedBody}&title=${encodeURIComponent(
-                    href={`https://github.com/gnosis/cowswap/issues/new?assignees=&labels=bug&body=${encodedBody}&title=${encodeURIComponent(
+                    href={`https://github.com/gnosis/cowswap/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
                       `Crash report: \`${error.name}${error.message && `: ${error.message}`}\``
                     )}`}
                     target="_blank"
@@ -106,7 +174,6 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
                   </ExternalLink>
                 </LinkWrapper>
                 <LinkWrapper>
-                  {/* <ExternalLink id="get-support-on-discord" href="https://discord.gg/FCfyBSbCU5" target="_blank"> */}
                   <ExternalLink id="get-support-on-discord" href="https://chat.cowswap.exchange/" target="_blank">
                     <TYPE.link fontSize={16}>
                       <Trans>Get support on Discord</Trans>
@@ -116,8 +183,8 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
                 </LinkWrapper>
               </AutoRow>
             </AutoColumn>
-          </BodyWrapper>
-        </FallbackWrapper>
+          </Wrapper>
+        </AppWrapper>
       )
     }
     return this.props.children

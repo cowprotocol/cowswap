@@ -8,7 +8,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { StyledInfo } from 'pages/Swap/SwapMod'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { SHORT_PRECISION, FIAT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { LightGreyText } from 'pages/Swap'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
 
@@ -85,7 +85,7 @@ export function RowFee({
       </RowFixed>
 
       <TYPE.black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        {formatSmart(displayFee, SHORT_PRECISION)} {feeCurrencySymbol}{' '}
+        {formatSmart(displayFee, AMOUNT_PRECISION)} {feeCurrencySymbol}{' '}
         {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
       </TYPE.black>
     </RowBetween>

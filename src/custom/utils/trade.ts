@@ -4,9 +4,9 @@ import { OrderStatus, OrderKind, ChangeOrderStatusParams } from 'state/orders/ac
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { sendSignedOrderCancellation, sendSignedOrder, OrderID } from 'utils/operator'
+import { sendSignedOrderCancellation, sendSignedOrder, OrderID } from 'api/gnosisProtocol'
 import { Signer } from 'ethers'
-import { APP_DATA_HASH, RADIX_DECIMAL, SHORT_PRECISION } from 'constants/index'
+import { APP_DATA_HASH, RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 
@@ -35,8 +35,8 @@ function _getSummary(params: PostOrderParams): string {
   ]
   const inputSymbol = inputAmount.currency.symbol
   const outputSymbol = outputAmount.currency.symbol
-  const inputAmountValue = formatSmart(feeAmount ? inputAmount.add(feeAmount) : inputAmount, SHORT_PRECISION)
-  const outputAmountValue = formatSmart(outputAmount, SHORT_PRECISION)
+  const inputAmountValue = formatSmart(feeAmount ? inputAmount.add(feeAmount) : inputAmount, AMOUNT_PRECISION)
+  const outputAmountValue = formatSmart(outputAmount, AMOUNT_PRECISION)
 
   const base = `Swap ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
 
@@ -119,6 +119,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
       summary,
       inputToken: sellToken,
       outputToken: buyToken,
+      apiAdditionalInfo: undefined,
     },
   })
 

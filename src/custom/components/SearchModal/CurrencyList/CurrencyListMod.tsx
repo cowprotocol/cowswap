@@ -25,7 +25,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import useTheme from 'hooks/useTheme'
 import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 import { formatSmart } from 'utils/format'
-import { SHORT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -63,7 +63,7 @@ export const FixedContentRow = styled.div`
 function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
   return (
     <StyledBalanceText title={balance.toExact()}>
-      {formatSmart(balance, SHORT_PRECISION) /* balance.toSignificant(4) */}
+      {formatSmart(balance, AMOUNT_PRECISION) /* balance.toSignificant(4) */}
     </StyledBalanceText>
   )
 }

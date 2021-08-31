@@ -47,6 +47,7 @@ export function colors(darkMode: boolean): Colors {
     // ****** other ******
     blue1: '#3F77FF',
     purple: '#8958FF',
+    yellow: '#fff6dc',
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',
@@ -90,6 +91,12 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         normal: '420px',
         content: '620px',
       },
+    },
+    neumorphism: {
+      boxShadow: css`
+        box-shadow: inset 2px -2px 4px ${darkMode ? '#1d4373' : '#ffffff'},
+          inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
+      `,
     },
     header: {
       border: `1px solid ${colorsTheme.border}`,

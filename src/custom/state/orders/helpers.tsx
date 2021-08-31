@@ -2,10 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { formatOrderId, shortenOrderId } from 'utils'
-import { OrderID } from 'utils/operator'
+import { OrderID } from 'api/gnosisProtocol'
 import { addPopup } from 'state/application/actions'
 import { OrderStatus } from './actions'
-import { CancellationSummary } from 'components/AccountDetails/Transaction'
+import { CancellationSummary } from 'components/AccountDetails/Transaction/styled'
 
 type OrderStatusExtended = OrderStatus | 'submitted'
 

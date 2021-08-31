@@ -6,10 +6,11 @@ import { TYPE } from 'theme'
 
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
 import { StyledInfo } from 'pages/Swap/SwapMod'
 import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
+import { formatSmart } from 'utils/format'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -58,9 +59,9 @@ export function RowSlippage({
       </RowFixed>
       <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1}>
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{allowedSlippage.toFixed(2)}%</ClickableText>
+          <ClickableText onClick={toggleSettings}>{formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%</ClickableText>
         ) : (
-          <span>{allowedSlippage.toFixed(2)}%</span>
+          <span>{formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%</span>
         )}
       </TYPE.black>
     </RowBetween>
