@@ -7,12 +7,17 @@ import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { GP_V2_SETTLEMENT_INTERFACE } from 'constants/GPv2Settlement'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import ENS_ABI from 'abis/ens-registrar.json'
+import { GPv2Settlement } from 'abis/types'
 
 export * from '@src/hooks/useContract'
 
-export function useGP2SettlementContract(): Contract | null {
+export function useGP2SettlementContract(): GPv2Settlement | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined, GP_V2_SETTLEMENT_INTERFACE, false)
+  return useContract<GPv2Settlement>(
+    chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
+    GP_V2_SETTLEMENT_INTERFACE,
+    false
+  )
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
