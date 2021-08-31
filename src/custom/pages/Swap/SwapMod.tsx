@@ -101,6 +101,7 @@ export default function Swap({
   ArrowWrapperLoader,
   Price,
   className,
+  allowsOffchainSigning,
 }: SwapProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -431,13 +432,12 @@ export default function Swap({
 
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
-  const [exactInLabel, exactOutLabel] = useMemo(
-    () => [
-      independentField === Field.OUTPUT && !showWrap && trade ? <Trans>From (incl. fee)</Trans> : null,
-      independentField === Field.INPUT && !showWrap && trade ? <Trans>Receive (incl. fee)</Trans> : null,
-    ],
-    [independentField, showWrap, trade]
-  )
+  const [exactInLabel, exactOutLabel] = useMemo(() => {
+    return [
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
+    ]
+  }, [trade])
 
   const swapBlankState = !swapInputError && !trade
   let amountBeforeFees: string | undefined
@@ -490,6 +490,7 @@ export default function Swap({
                       amountAfterFees={formatSmart(trade?.inputAmountWithFee, AMOUNT_PRECISION)}
                       type="From"
                       feeAmount={formatSmart(trade?.fee?.feeAsCurrency, AMOUNT_PRECISION)}
+                      allowsOffchainSigning={allowsOffchainSigning}
                     />
                   )
                 }
@@ -548,6 +549,7 @@ export default function Swap({
                         trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount),
                         AMOUNT_PRECISION
                       )}
+                      allowsOffchainSigning={allowsOffchainSigning}
                     />
                   )
                 }
