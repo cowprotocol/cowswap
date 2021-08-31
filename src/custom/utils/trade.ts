@@ -133,10 +133,6 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     signature,
   }
 
-  if (!allowsOffchainSigning) {
-    throw new Error('Presign is not implemented yet! Wait for next PR pls :)')
-  }
-
   // Update the state
   addPendingOrder({
     chainId,
