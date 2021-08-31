@@ -166,7 +166,7 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@gnosis.pm/cow-runner-game": "^0.2.9",
-    "@gnosis.pm/dex-js": "^0.11.0",
+    "@gnosis.pm/dex-js": "^0.12.0",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
     "@sentry/react": "^6.11.0",
     "@sentry/tracing": "^6.11.0",

@@ -6,7 +6,7 @@ import { warningSeverity } from 'utils/prices'
 import HoverInlineText from 'components/HoverInlineText'
 import { Trans } from '@lingui/macro'
 
-import { FIAT_PRECISION } from 'constants/index' // mod
+import { FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index' // mod
 import { formatSmart } from 'utils/format'
 
 export function FiatValue({
@@ -42,8 +42,7 @@ export function FiatValue({
       )}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}>
-          {' '}
-          (<Trans>{priceImpact.multiply(-1).toSignificant(3)}%</Trans>)
+          &nbsp;(<Trans>{formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%</Trans>)
         </span>
       ) : null}
     </TYPE.body>
