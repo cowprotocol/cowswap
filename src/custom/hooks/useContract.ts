@@ -12,7 +12,7 @@ import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 
 export * from '@src/hooks/useContract'
 
-export function useGP2SettlementContract(): Contract | null {
+export function useGP2SettlementContract(): GPv2Settlement | null {
   const { chainId } = useActiveWeb3React()
   return useContract<GPv2Settlement>(
     chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
