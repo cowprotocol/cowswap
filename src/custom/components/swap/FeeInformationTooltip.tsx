@@ -118,6 +118,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
                   {feeAmount} {symbol}
                 </span>{' '}
               </FeeTooltipLine>
+              {/* TODO: Add gas costs when available (wait for design) */}
               {allowsOffchainSigning && (
                 <FeeTooltipLine>
                   <span>Gas costs</span>
