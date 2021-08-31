@@ -134,7 +134,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
   }
 
   if (!allowsOffchainSigning) {
-    throw new Error('Not implemented yet: Presign')
+    throw new Error('Presign is not implemented yet! Wait for next PR pls :)')
   }
 
   // Update the state
