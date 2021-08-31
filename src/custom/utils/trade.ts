@@ -102,7 +102,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     signature = signedOrderInfo.signature
   } else {
     signingScheme = SigningScheme.PRESIGN
-    signature = undefined // Signature happens using a regular Ethereum transaction
+    signature = account
   }
 
   // Call API
