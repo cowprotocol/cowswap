@@ -19,6 +19,7 @@ export interface ConnectedWalletInfo {
   ensName?: string
   icon?: string
   isSupportedWallet: boolean
+  allowsOffchainSigning: boolean
 }
 
 async function checkIsSmartContractWallet(
@@ -33,8 +34,8 @@ async function checkIsSmartContractWallet(
   return code !== '0x'
 }
 
-function checkIsSupportedWallet(name: string | undefined, isSmartContractWallet: boolean): boolean {
-  return !isSmartContractWallet && !UNSUPPORTED_WC_WALLETS.has(name || '')
+function checkIsSupportedWallet(name: string | undefined): boolean {
+  return !UNSUPPORTED_WC_WALLETS.has(name || '')
 }
 
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
@@ -95,6 +96,10 @@ export function useWalletInfo(): ConnectedWalletInfo {
     walletName,
     icon,
     ensName: ENSName || undefined,
-    isSupportedWallet: checkIsSupportedWallet(walletName, isSmartContractWallet),
+    isSupportedWallet: checkIsSupportedWallet(walletName),
+
+    // TODO: For now, all SC wallets use pre-sign instead of offchain signing
+    // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
+    allowsOffchainSigning: !isSmartContractWallet,
   }
 }

@@ -7,6 +7,7 @@ import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import { HighFeeWarning as HighFeeWarningBase } from 'components/HighFeeWarning'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
   background-color: ${({ theme }) => darken(0.06, theme.bg1)};
@@ -45,11 +46,13 @@ const Wrapper = styled.div`
 `
 
 export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'LightCard'>) {
+  const { allowsOffchainSigning } = useWalletInfo()
   // const { priceImpactWithoutFee } = React.useMemo(() => computeTradePriceBreakdown(props.trade), [props.trade])
   return (
     <Wrapper>
       <SwapModalHeaderMod
         {...props}
+        allowsOffchainSigning={allowsOffchainSigning}
         LightCard={LightCard}
         HighFeeWarning={HighFeeWarning}
         /*priceImpactWithoutFee={priceImpactWithoutFee}*/

@@ -31,7 +31,6 @@ export function RowReceivedAfterSlippage({
   fontWeight = 500,
   rowHeight,
   showHelpers = true,
-  allowsOffchainSigning,
 }: RowReceivedAfterSlippageProps) {
   const theme = useContext(ThemeContext)
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
@@ -47,16 +46,15 @@ export function RowReceivedAfterSlippage({
     : [slippageIn, trade.inputAmount.currency.symbol]
 
   const fullOutAmount = formatMax(swapAmount, swapAmount?.currency.decimals) || '-'
-  const includeFeeMessage = allowsOffchainSigning ? ' (incl. fee)' : ''
 
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
         <TYPE.black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           {trade.tradeType === TradeType.EXACT_INPUT ? (
-            <Trans>Minimum received {includeFeeMessage}</Trans>
+            <Trans>Minimum received (incl. fee)</Trans>
           ) : (
-            <Trans>Maximum sent {includeFeeMessage}</Trans>
+            <Trans>Maximum sent (incl. fee)</Trans>
           )}
         </TYPE.black>
         {showHelpers && (

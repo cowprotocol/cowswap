@@ -62,6 +62,7 @@ export interface SwapModalHeaderProps {
   onAcceptChanges: () => void
   LightCard: LightCardType
   HighFeeWarning: React.FC<HighFeeWarningProps>
+  allowsOffchainSigning: boolean
 }
 
 export default function SwapModalHeader({
@@ -72,6 +73,7 @@ export default function SwapModalHeader({
   onAcceptChanges,
   LightCard,
   HighFeeWarning,
+  allowsOffchainSigning,
 }: /* 
 {
   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
@@ -102,13 +104,12 @@ SwapModalHeaderProps) {
     [slippageAdjustedAmounts]
   )
 
-  const [exactInLabel, exactOutLabel] = useMemo(
-    () => [
+  const [exactInLabel, exactOutLabel] = useMemo(() => {
+    return [
       trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
       trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
-    ],
-    [trade]
-  )
+    ]
+  }, [trade])
 
   const fullInputWithoutFee = formatMax(trade?.inputAmountWithoutFee, trade?.inputAmount.currency.decimals) || '-'
   const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
@@ -149,6 +150,7 @@ SwapModalHeaderProps) {
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
             feeAmount={formatSmart(trade.fee.feeAsCurrency, AMOUNT_PRECISION)}
+            allowsOffchainSigning={allowsOffchainSigning}
             label={exactInLabel}
             showHelper
             trade={trade}
@@ -203,6 +205,7 @@ SwapModalHeaderProps) {
             amountBeforeFees={formatSmart(trade.outputAmountWithoutFee, AMOUNT_PRECISION)}
             feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount), AMOUNT_PRECISION)}
             label={exactOutLabel}
+            allowsOffchainSigning={allowsOffchainSigning}
             showHelper
             trade={trade}
             type="To"
