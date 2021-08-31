@@ -11,10 +11,6 @@ import { RowSlippage } from './RowSlippage'
 import { RowReceivedAfterSlippage } from './RowReceivedAfterSlippage'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
-export function getIncludeFeeLabelSuffix(allowsOffchainSigning: boolean) {
-  return allowsOffchainSigning ? ' (incl. fee)' : ''
-}
-
 const Wrapper = styled.div`
   ${RowFixed} {
     > div {

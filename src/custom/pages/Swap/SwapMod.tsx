@@ -79,7 +79,6 @@ import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from '@src/custom/components/swap/TradeSummary/RowSlippage'
-import { getIncludeFeeLabelSuffix } from 'components/swap/TradeSummary'
 
 export const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -434,12 +433,11 @@ export default function Swap({
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
   const [exactInLabel, exactOutLabel] = useMemo(() => {
-    const includeFeeLabelSuffix = getIncludeFeeLabelSuffix(allowsOffchainSigning)
     return [
-      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From{includeFeeLabelSuffix}</Trans> : null,
-      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive{includeFeeLabelSuffix}</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
     ]
-  }, [trade, allowsOffchainSigning])
+  }, [trade])
 
   const swapBlankState = !swapInputError && !trade
   let amountBeforeFees: string | undefined

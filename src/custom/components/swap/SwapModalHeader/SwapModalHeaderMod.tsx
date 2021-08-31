@@ -32,7 +32,6 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { Price } from 'pages/Swap'
-import { getIncludeFeeLabelSuffix } from 'components/swap/TradeSummary'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -101,12 +100,11 @@ SwapModalHeaderProps) {
   )
 
   const [exactInLabel, exactOutLabel] = useMemo(() => {
-    const includeFeeLabelSuffix = getIncludeFeeLabelSuffix(allowsOffchainSigning)
     return [
-      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From{includeFeeLabelSuffix}</Trans> : null,
-      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive{includeFeeLabelSuffix}</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
+      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
     ]
-  }, [trade, allowsOffchainSigning])
+  }, [trade])
 
   const fullInputWithoutFee = trade?.inputAmountWithoutFee?.toFixed(trade?.inputAmount.currency.decimals) || '-'
   const fullOutputWithoutFee = trade?.outputAmountWithoutFee?.toFixed(trade?.outputAmount.currency.decimals) || '-'
