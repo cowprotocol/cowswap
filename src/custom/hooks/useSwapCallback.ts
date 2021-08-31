@@ -19,6 +19,7 @@ import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
+import { usePresignOrder } from './usePresignOrder'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -71,9 +72,18 @@ export function useSwapCallback(
     allowedSlippage
   )
   const wrapEther = useWrapEther()
+  const presignOrder = usePresignOrder()
 
   return useMemo(() => {
-    if (!trade || !library || !account || !chainId || !inputAmountWithSlippage || !outputAmountWithSlippage) {
+    if (
+      !trade ||
+      !library ||
+      !account ||
+      !chainId ||
+      !inputAmountWithSlippage ||
+      !outputAmountWithSlippage ||
+      !presignOrder
+    ) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
@@ -172,6 +182,19 @@ export function useSwapCallback(
           console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
         }
 
+        if (!allowsOffchainSigning) {
+          // Presign order workflow
+
+          // Wait for the posting of the order
+          const orderId = await postOrderPromise
+
+          // Send the ethereum tx
+          const presignTx = await presignOrder(orderId)
+          if (typeof presignTx === 'string') {
+            presignTx
+          }
+        }
+
         return postOrderPromise
       },
       error: null,
@@ -190,5 +213,6 @@ export function useSwapCallback(
     wrapEther,
     addPendingOrder,
     allowsOffchainSigning,
+    presignOrder,
   ])
 }
