@@ -5,6 +5,7 @@ import { useContract } from '@src/hooks/useContract'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
+
 import ENS_ABI from 'abis/ens-registrar.json'
 
 import { GPv2Settlement } from 'abis/types'
@@ -17,7 +18,7 @@ export function useGP2SettlementContract(): GPv2Settlement | null {
   return useContract<GPv2Settlement>(
     chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
     GPv2_SETTLEMENT_ABI,
-    false
+    true
   )
 }
 
