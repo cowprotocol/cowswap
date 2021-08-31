@@ -18,9 +18,11 @@ export function usePresignOrder(): ((orderId: string) => Promise<ContractTransac
         throw Error('SettlementContract is not ready')
       }
 
-      console.log('settlementContract', settlementContract)
+      // TODO: This message is just temporary. We probably do some better merging of the two transactions
       const txReceipt = await settlementContract.setPreSignature(orderId, true)
-      addTransaction(txReceipt, { summary: `Presign order ${orderId}` })
+      const trimmedOrderId = `${orderId.substring(0, 12)}...${orderId.substring(orderId.length - 12, orderId.length)}`
+      addTransaction(txReceipt, { summary: `Pre-sign order ${trimmedOrderId}` })
+
       console.log('Sent transaction for presigning', orderId, txReceipt)
 
       return txReceipt

@@ -24,7 +24,6 @@ export interface PostOrderParams {
   validTo: number
   recipient: string
   recipientAddressOrName: string | null
-  addPendingOrder: (order: AddUnserialisedPendingOrderParams) => void
   allowsOffchainSigning: boolean
 }
 
@@ -54,10 +53,9 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function sendOrder(params: PostOrderParams): Promise<string> {
+export async function sendOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
   const {
     kind,
-    addPendingOrder,
     chainId,
     inputAmount,
     outputAmount,
@@ -133,14 +131,11 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     signature,
   }
 
-  // Update the state
-  addPendingOrder({
+  return {
     chainId,
     id: orderId,
     order: pendingOrderParams,
-  })
-
-  return orderId
+  }
 }
 
 type OrderCancellationParams = {

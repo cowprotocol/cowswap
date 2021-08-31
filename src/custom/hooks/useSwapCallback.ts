@@ -19,7 +19,7 @@ import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
-import { usePresignOrder } from './usePresignOrder'
+import { usePresignOrder } from 'hooks/usePresignOrder'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -172,7 +172,6 @@ export function useSwapCallback(
           validTo,
           recipient,
           recipientAddressOrName,
-          addPendingOrder,
           signer: library.getSigner(),
           allowsOffchainSigning,
         })
@@ -182,20 +181,20 @@ export function useSwapCallback(
           console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
         }
 
+        // Wait until the order is posted to the API
+        const unserializedPendingOrder = await postOrderPromise
+        const orderid = unserializedPendingOrder.id
+
         if (!allowsOffchainSigning) {
-          // Presign order workflow
-
-          // Wait for the posting of the order
-          const orderId = await postOrderPromise
-
           // Send the ethereum tx
-          const presignTx = await presignOrder(orderId)
-          if (typeof presignTx === 'string') {
-            presignTx
-          }
+          const presignTx = await presignOrder(orderid)
+          console.log('Pre-sign order has been sent with: ', unserializedPendingOrder, presignTx)
         }
 
-        return postOrderPromise
+        // Update the state with the new pending order
+        addPendingOrder(unserializedPendingOrder)
+
+        return orderid
       },
       error: null,
     }
