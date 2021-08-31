@@ -125,11 +125,7 @@ function _delete(chainId: ChainId, url: string, data: any): Promise<Response> {
   return _fetch(chainId, url, 'DELETE', data)
 }
 
-export async function sendSignedOrder(params: {
-  chainId: ChainId
-  order: OrderCreation
-  owner: string
-}): Promise<OrderID> {
+export async function sendOrder(params: { chainId: ChainId; order: OrderCreation; owner: string }): Promise<OrderID> {
   const { chainId, order, owner } = params
   console.log(`[api:${API_NAME}] Post signed order for network`, chainId, order)
 
@@ -325,5 +321,13 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
 
 // Register some globals for convenience
 registerOnWindow({
-  operator: { getFeeQuote, getAppDataDoc, getOrder, sendSignedOrder, uploadAppDataDoc, apiGet: _get, apiPost: _post },
+  operator: {
+    getFeeQuote,
+    getAppDataDoc,
+    getOrder,
+    sendSignedOrder: sendOrder,
+    uploadAppDataDoc,
+    apiGet: _get,
+    apiPost: _post,
+  },
 })
