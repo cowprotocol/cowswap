@@ -26,7 +26,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
@@ -69,7 +69,7 @@ export default function SwapModalHeader({
   showAcceptChanges,
   onAcceptChanges,
   LightCard,
-}: /* 
+}: /*
 {
   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
   allowedSlippage: Percent
@@ -105,8 +105,8 @@ SwapModalHeaderProps) {
     [trade]
   )
 
-  const fullInputWithoutFee = trade?.inputAmountWithoutFee?.toFixed(trade?.inputAmount.currency.decimals) || '-'
-  const fullOutputWithoutFee = trade?.outputAmountWithoutFee?.toFixed(trade?.outputAmount.currency.decimals) || '-'
+  const fullInputWithoutFee = formatMax(trade?.inputAmountWithoutFee, trade?.inputAmount.currency.decimals) || '-'
+  const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
 
   return (
     <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>

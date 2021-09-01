@@ -3,7 +3,7 @@ import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components'
 import { TYPE } from 'theme'
 
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { StyledInfo } from 'pages/Swap/SwapMod'
 import { RowBetween, RowFixed } from 'components/Row'
@@ -66,7 +66,7 @@ export function RowFee({
 
   const displayFee = realizedFee || fee
   const feeCurrencySymbol = displayFee?.currency.symbol || '-'
-  const fullDisplayFee = displayFee?.toFixed(displayFee?.currency.decimals) || '-'
+  const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
 
   const includeGasMessage = allowsOffchainSigning ? ' (incl. gas costs)' : ''
   const tooltip = allowsOffchainSigning ? GASLESS_FEE_TOOLTIP_MSG : PRESIGN_FEE_TOOLTIP_MSG
