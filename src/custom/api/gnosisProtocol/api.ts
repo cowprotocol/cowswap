@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
-import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
+import { getSigningSchemeApiValue, OrderCreation, OrderCancellation, SigningSchemeValue } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
 import { registerOnWindow } from '../../utils/misc'
 import { isLocal, isDev, isPr, isBarn } from '../../utils/environments'
@@ -58,6 +58,7 @@ const API_NAME = 'Gnosis Protocol'
    where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
+export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'presignaturePending' | 'open'
 
 export interface OrderMetaData {
   creationDate: string
@@ -79,6 +80,8 @@ export interface OrderMetaData {
   kind: OrderKind
   partiallyFillable: false
   signature: string
+  signingScheme: SigningSchemeValue
+  status: ApiOrderStatus
 }
 
 export interface UnsupportedToken {

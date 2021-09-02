@@ -59,9 +59,11 @@ export interface OrderCancellation extends OrderCancellationGp {
   signingScheme: SigningScheme
 }
 
+export type SigningSchemeValue = 'eip712' | 'ethsign' | 'eip1271' | 'presign'
+
 interface SchemaInfo {
   libraryValue: number
-  apiValue: string
+  apiValue: SigningSchemeValue
 }
 const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.EIP712, { libraryValue: 0, apiValue: 'eip712' }],
