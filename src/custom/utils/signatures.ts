@@ -8,7 +8,9 @@ import {
   Signature,
   TypedDataV3Signer,
   IntChainIdTypedDataV4Signer,
+  SigningScheme,
 } from '@gnosis.pm/gp-v2-contracts'
+
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from 'ethers'
@@ -30,57 +32,30 @@ export interface SignOrderParams {
   chainId: ChainId
   signer: Signer
   order: UnsignedOrder
-  signingScheme: EcdsaSigningScheme
+  signingScheme: SigningScheme
 }
 
 // posted to /api/v1/orders on Order creation
 // serializable, so no BigNumbers
 //  See https://protocol-rinkeby.dev.gnosisdev.com/api/
 export interface OrderCreation extends UnsignedOrder {
-  // TODO: I commented this because I expect the API and contract to follow the same structure for the order data. confirm and delete this comment
-  signature: string // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
-  signingScheme: EcdsaSigningScheme // value of
+  signingScheme: SigningScheme // signed method
+
+  // Signature is only used for offchain signed transactions. It can be omitted for pre-signed ones
+  signature?: string // 65 bytes encoded as hex without `0x` prefix. r + s + v from the spec
 }
 
 export interface SingOrderCancellationParams {
   chainId: ChainId
   signer: Signer
   orderId: string
-  signingScheme: EcdsaSigningScheme
+  signingScheme: SigningScheme
 }
 
 export interface OrderCancellation extends OrderCancellationGp {
   signature: string
-  signingScheme: EcdsaSigningScheme
+  signingScheme: SigningScheme
 }
-
-// TODO: We cannot make use of the NPM exported enum for now. See https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats
-// After https://github.com/gnosis/gp-v2-contracts/pull/568/files is published, we can use it and we should remove our own definition
-export enum SigningScheme {
-  /**
-   * The EIP-712 typed data signing scheme. This is the preferred scheme as it
-   * provides more infomation to wallets performing the signature on the data
-   * being signed.
-   *
-   * <https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-domainseparator>
-   */
-  EIP712,
-  /**
-   * Message signed using eth_sign RPC call.
-   */
-  ETHSIGN,
-  /**
-   * Smart contract signatures as defined in EIP-1271.
-   *
-   * <https://eips.ethereum.org/EIPS/eip-1271>
-   */
-  EIP1271,
-  /**
-   * Pre-signed order.
-   */
-  PRESIGN,
-}
-export type EcdsaSigningScheme = SigningScheme.EIP712 | SigningScheme.ETHSIGN
 
 interface SchemaInfo {
   libraryValue: number
@@ -89,9 +64,11 @@ interface SchemaInfo {
 const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.EIP712, { libraryValue: 0, apiValue: 'eip712' }],
   [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }],
+  [SigningScheme.EIP1271, { libraryValue: 2, apiValue: 'eip1271' }],
+  [SigningScheme.PRESIGN, { libraryValue: 3, apiValue: 'presign' }],
 ])
 
-function _getSigningSchemeInfo(ecdaSigningScheme: EcdsaSigningScheme): SchemaInfo {
+function _getSigningSchemeInfo(ecdaSigningScheme: SigningScheme): SchemaInfo {
   const value = mapSigningSchema.get(ecdaSigningScheme)
   if (value === undefined) {
     throw new Error('Unknown schema ' + ecdaSigningScheme)
@@ -100,11 +77,11 @@ function _getSigningSchemeInfo(ecdaSigningScheme: EcdsaSigningScheme): SchemaInf
   return value
 }
 
-export function getSigningSchemeApiValue(ecdaSigningScheme: EcdsaSigningScheme): string {
+export function getSigningSchemeApiValue(ecdaSigningScheme: SigningScheme): string {
   return _getSigningSchemeInfo(ecdaSigningScheme).apiValue
 }
 
-export function getSigningSchemeLibValue(ecdaSigningScheme: EcdsaSigningScheme): number {
+export function getSigningSchemeLibValue(ecdaSigningScheme: SigningScheme): number {
   return _getSigningSchemeInfo(ecdaSigningScheme).libraryValue
 }
 // ---------------- end of the TODO:
@@ -147,7 +124,7 @@ async function _signOrderCancellation(params: SingOrderCancellationParams): Prom
   return signOrderCancellationGp(domain, orderId, signer, getSigningSchemeLibValue(signingScheme))
 }
 
-type SigningResult = { signature: string; signingScheme: EcdsaSigningScheme }
+type SigningResult = { signature: string; signingScheme: SigningScheme }
 
 async function _signPayload(
   payload: any,

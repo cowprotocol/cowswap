@@ -18,6 +18,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
 import { GpEther as ETHER } from 'constants/tokens'
+import { useWalletInfo } from './useWalletInfo'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -73,6 +74,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     closeModals,
   } = params
   const { account, chainId, library } = useActiveWeb3React()
+  const { allowsOffchainSigning } = useWalletInfo()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
@@ -178,6 +180,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
           recipientAddressOrName,
           addPendingOrder,
           signer: library.getSigner(),
+          allowsOffchainSigning,
         })
         postOrderPromise.finally(closeModals)
 
@@ -205,5 +208,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     addPendingOrder,
     openTransactionConfirmationModal,
     closeModals,
+    allowsOffchainSigning,
   ])
 }
