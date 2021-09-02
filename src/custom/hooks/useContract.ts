@@ -4,15 +4,21 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { useContract } from '@src/hooks/useContract'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
-import { GP_V2_SETTLEMENT_INTERFACE } from 'constants/GPv2Settlement'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import ENS_ABI from 'abis/ens-registrar.json'
+
+import { GPv2Settlement } from 'abis/types'
+import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 
 export * from '@src/hooks/useContract'
 
 export function useGP2SettlementContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined, GP_V2_SETTLEMENT_INTERFACE, false)
+  return useContract<GPv2Settlement>(
+    chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
+    GPv2_SETTLEMENT_ABI,
+    false
+  )
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
