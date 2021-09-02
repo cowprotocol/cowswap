@@ -28,6 +28,7 @@ export function RowSlippage({
 }: RowSlippageProps) {
   const theme = useContext(ThemeContext)
   const toggleSettings = useToggleSettingsMenu()
+  const displaySlippage = `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`
 
   return (
     <RowBetween height={rowHeight}>
@@ -59,9 +60,9 @@ export function RowSlippage({
       </RowFixed>
       <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1}>
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%</ClickableText>
+          <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
         ) : (
-          <span>{formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%</span>
+          <span>{displaySlippage}</span>
         )}
       </TYPE.black>
     </RowBetween>
