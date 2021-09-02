@@ -6,7 +6,7 @@ import { TYPE } from 'theme'
 
 import { Field } from 'state/swap/actions'
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { RowBetween, RowFixed } from 'components/Row'
@@ -45,7 +45,7 @@ export function RowReceivedAfterSlippage({
     ? [slippageOut, trade.outputAmount.currency.symbol]
     : [slippageIn, trade.inputAmount.currency.symbol]
 
-  const fullOutAmount = swapAmount?.toFixed(swapAmount?.currency.decimals) || '-'
+  const fullOutAmount = formatMax(swapAmount, swapAmount?.currency.decimals) || '-'
 
   return (
     <RowBetween height={rowHeight}>
