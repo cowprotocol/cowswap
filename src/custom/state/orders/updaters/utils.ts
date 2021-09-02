@@ -3,7 +3,7 @@ import { getOrder, OrderID, OrderMetaData } from 'api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
-import { ApiOrderStatus, classifyOrder } from 'state/orders/utils'
+import { OrderTransitionStatus, classifyOrder } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
@@ -45,12 +45,15 @@ function _computeFulfilledSummary({
 }
 
 type PopupData = {
-  status: ApiOrderStatus
+  status: OrderTransitionStatus
   popupData?: OrderLogPopupMixData
 }
 
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData> {
+  // Get order from API
   const orderFromApi = await getOrder(chainId, orderFromStore.id)
+
+  console.log('[orderFromApi}', orderFromApi)
 
   const status = classifyOrder(orderFromApi)
 
@@ -72,6 +75,7 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
       break
     case 'expired':
     case 'cancelled':
+    case 'presigned':
       popupData = orderFromStore.id
       break
     default:

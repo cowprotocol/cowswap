@@ -20,6 +20,7 @@ import {
   Order,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
+  markOrdersAsPresigned,
 } from './actions'
 import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
 import { isTruthy } from 'utils/misc'
@@ -56,6 +57,7 @@ interface UpdateOrdersBatchParams {
 
 type ExpireOrdersBatchParams = UpdateOrdersBatchParams
 type CancelOrdersBatchParams = UpdateOrdersBatchParams
+type MarkOrdersAsPresignedParams = UpdateOrdersBatchParams
 
 interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
@@ -69,13 +71,14 @@ type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
+type MarkOrdersAsPresignedCallback = (fulfillOrderParams: MarkOrdersAsPresignedParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 
 type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
-type OrderTypeKeys = 'pending' | 'expired' | 'fulfilled' | 'cancelled'
+type OrderTypeKeys = 'pending' | 'presignaturePending' | 'expired' | 'fulfilled' | 'cancelled'
 function _concatOrdersState(state: OrdersState[ChainId], keys: OrderTypeKeys[]) {
   if (!state) return []
 
@@ -119,7 +122,12 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
     if (!id || !chainId) return undefined
 
     const orders = state.orders[chainId]
-    const serialisedOrder = orders?.fulfilled[id] || orders?.pending[id] || orders?.expired[id] || orders?.cancelled[id]
+    const serialisedOrder =
+      orders?.fulfilled[id] ||
+      orders?.pending[id] ||
+      orders?.expired[id] ||
+      orders?.presignaturePending[id] ||
+      orders?.cancelled[id]
 
     return _deserializeOrder(serialisedOrder)
   })
@@ -158,7 +166,7 @@ export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = _concatOrdersState(state, ['pending', 'expired', 'fulfilled', 'cancelled'])
+    const allOrders = _concatOrdersState(state, ['pending', 'presignaturePending', 'expired', 'fulfilled', 'cancelled'])
       .map(_deserializeOrder)
       .filter(isTruthy)
 
@@ -174,6 +182,7 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
 
     return {
       ...state.pending,
+      ...state.presignaturePending,
       ...state.fulfilled,
       ...state.expired,
       ...state.cancelled,
@@ -182,14 +191,25 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
 }
 
 export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
-  const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.pending
+  const state = useSelector<AppState, { pending: PartialOrdersMap; presignaturePending: PartialOrdersMap } | undefined>(
+    (state) => {
+      const ordersState = chainId && state.orders?.[chainId]
+      if (!ordersState) {
+        return
+      }
+
+      return { pending: ordersState.pending, presignaturePending: ordersState.presignaturePending }
+      // return chainId && state.orders?.[chainId]?.pending
+    }
   )
 
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
+    const { pending, presignaturePending } = state
+    const allPending = Object.values(pending).concat(Object.values(presignaturePending))
+
+    return allPending.map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -262,6 +282,11 @@ export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => dispatch(fulfillOrdersBatch(fulfillOrdersBatchParams)),
     [dispatch]
   )
+}
+
+export const useMarkOrdersAsPresigned = (): MarkOrdersAsPresignedCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: MarkOrdersAsPresignedParams) => dispatch(markOrdersAsPresigned(params)), [dispatch])
 }
 
 export const useExpireOrder = (): ExpireOrderCallback => {
