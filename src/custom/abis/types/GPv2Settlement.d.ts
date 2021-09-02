@@ -34,7 +34,11 @@ interface GPv2SettlementInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "Trade(address,address,address,uint256,uint256,uint256,bytes)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "Trade"): EventFragment;
 }
 
 export class GPv2Settlement extends BaseContract {
@@ -102,7 +106,28 @@ export class GPv2Settlement extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    Trade(
+      owner?: string | null,
+      sellToken?: null,
+      buyToken?: null,
+      sellAmount?: null,
+      buyAmount?: null,
+      feeAmount?: null,
+      orderUid?: null
+    ): TypedEventFilter<
+      [string, string, string, BigNumber, BigNumber, BigNumber, string],
+      {
+        owner: string;
+        sellToken: string;
+        buyToken: string;
+        sellAmount: BigNumber;
+        buyAmount: BigNumber;
+        feeAmount: BigNumber;
+        orderUid: string;
+      }
+    >;
+  };
 
   estimateGas: {
     setPreSignature(
