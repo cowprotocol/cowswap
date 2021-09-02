@@ -1,14 +1,15 @@
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { OrderStatus, OrderKind, ChangeOrderStatusParams } from 'state/orders/actions'
+import { OrderStatus, OrderKind, ChangeOrderStatusParams, Order } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { sendSignedOrderCancellation, sendSignedOrder, OrderID } from 'api/gnosisProtocol'
+import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from 'api/gnosisProtocol'
 import { Signer } from 'ethers'
 import { APP_DATA_HASH, RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
+import { SigningScheme } from '@gnosis.pm/gp-v2-contracts'
 
 export interface PostOrderParams {
   account: string
@@ -24,6 +25,7 @@ export interface PostOrderParams {
   recipient: string
   recipientAddressOrName: string | null
   addPendingOrder: (order: AddUnserialisedPendingOrderParams) => void
+  allowsOffchainSigning: boolean
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -66,6 +68,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     account,
     signer,
     recipient,
+    allowsOffchainSigning,
   } = params
 
   // fee adjusted input amount
@@ -76,6 +79,7 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
   // Prepare order
   const summary = _getSummary(params)
   const receiver = recipient
+  const creationTime = new Date().toISOString()
 
   const unsignedOrder: UnsignedOrder = {
     sellToken: sellToken.address,
@@ -90,37 +94,50 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     partiallyFillable: false, // Always fill or kill
   }
 
-  const { signature, signingScheme } = await signOrder(unsignedOrder, chainId, signer)
-  const creationTime = new Date().toISOString()
+  let signingScheme: SigningScheme
+  let signature: string | undefined
+  if (allowsOffchainSigning) {
+    const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer)
+    signingScheme = signedOrderInfo.signingScheme
+    signature = signedOrderInfo.signature
+  } else {
+    signingScheme = SigningScheme.PRESIGN
+    signature = account
+  }
 
   // Call API
-  const orderId = await sendSignedOrder({
+  const orderId = await sendOrderApi({
     chainId,
     order: {
       ...unsignedOrder,
-      signature,
       receiver,
       signingScheme,
+      // Include the signature
+      signature,
     },
     owner: account,
   })
+
+  const pendingOrderParams: Order = {
+    ...unsignedOrder,
+    // TP
+    id: orderId,
+    owner: account,
+    creationTime,
+    status: OrderStatus.PENDING,
+    summary,
+    inputToken: sellToken,
+    outputToken: buyToken,
+    apiAdditionalInfo: undefined,
+    // Signature
+    signature,
+  }
 
   // Update the state
   addPendingOrder({
     chainId,
     id: orderId,
-    order: {
-      ...unsignedOrder,
-      id: orderId,
-      owner: account,
-      creationTime,
-      signature,
-      status: OrderStatus.PENDING,
-      summary,
-      inputToken: sellToken,
-      outputToken: buyToken,
-      apiAdditionalInfo: undefined,
-    },
+    order: pendingOrderParams,
   })
 
   return orderId

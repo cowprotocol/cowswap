@@ -432,12 +432,13 @@ export default function Swap({
 
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
-  const [exactInLabel, exactOutLabel] = useMemo(() => {
-    return [
-      trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
-      trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
-    ]
-  }, [trade])
+  const [exactInLabel, exactOutLabel] = useMemo(
+    () => [
+      independentField === Field.OUTPUT && !showWrap && trade ? <Trans>From (incl. fee)</Trans> : null,
+      independentField === Field.INPUT && !showWrap && trade ? <Trans>Receive (incl. fee)</Trans> : null,
+    ],
+    [independentField, showWrap, trade]
+  )
 
   const swapBlankState = !swapInputError && !trade
   let amountBeforeFees: string | undefined
