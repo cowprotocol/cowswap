@@ -212,5 +212,6 @@ export function useSwapCallback(
     wrapEther,
     addPendingOrder,
     allowsOffchainSigning,
+    presignOrder,
   ])
 }
