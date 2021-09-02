@@ -1,6 +1,6 @@
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { OrderStatus, OrderKind, ChangeOrderStatusParams, Order } from 'state/orders/actions'
+import { OrderStatus, OrderKind, ChangeOrderStatusParams, Order, addPendingOrder } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
@@ -24,7 +24,6 @@ export interface PostOrderParams {
   validTo: number
   recipient: string
   recipientAddressOrName: string | null
-  addPendingOrder: (order: AddUnserialisedPendingOrderParams) => void
   allowsOffchainSigning: boolean
 }
 
@@ -54,10 +53,9 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function sendOrder(params: PostOrderParams): Promise<string> {
+export async function sendOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
   const {
     kind,
-    addPendingOrder,
     chainId,
     inputAmount,
     outputAmount,
@@ -140,7 +138,11 @@ export async function sendOrder(params: PostOrderParams): Promise<string> {
     order: pendingOrderParams,
   })
 
-  return orderId
+  return {
+    chainId,
+    id: orderId,
+    order: pendingOrderParams,
+  }
 }
 
 type OrderCancellationParams = {

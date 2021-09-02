@@ -19,6 +19,7 @@ import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
+import { usePresignOrder } from './usePresignOrder'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -71,9 +72,18 @@ export function useSwapCallback(
     allowedSlippage
   )
   const wrapEther = useWrapEther()
+  const presignOrder = usePresignOrder()
 
   return useMemo(() => {
-    if (!trade || !library || !account || !chainId || !inputAmountWithSlippage || !outputAmountWithSlippage) {
+    if (
+      !trade ||
+      !library ||
+      !account ||
+      !chainId ||
+      !inputAmountWithSlippage ||
+      !outputAmountWithSlippage ||
+      !presignOrder
+    ) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
@@ -162,7 +172,6 @@ export function useSwapCallback(
           validTo,
           recipient,
           recipientAddressOrName,
-          addPendingOrder,
           signer: library.getSigner(),
           allowsOffchainSigning,
         })
@@ -172,7 +181,20 @@ export function useSwapCallback(
           console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
         }
 
-        return postOrderPromise
+        // Wait until the order is posted to the API
+        const unserializedPendingOrder = await postOrderPromise
+        const orderid = unserializedPendingOrder.id
+
+        if (!allowsOffchainSigning) {
+          // Send the ethereum tx
+          const presignTx = await presignOrder(orderid)
+          console.log('Pre-sign order has been sent with: ', unserializedPendingOrder, presignTx)
+        }
+
+        // Update the state with the new pending order
+        addPendingOrder(unserializedPendingOrder)
+
+        return orderid
       },
       error: null,
     }
@@ -190,5 +212,6 @@ export function useSwapCallback(
     wrapEther,
     addPendingOrder,
     allowsOffchainSigning,
+    presignOrder,
   ])
 }
