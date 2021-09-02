@@ -52,9 +52,6 @@ type PopupData = {
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData> {
   // Get order from API
   const orderFromApi = await getOrder(chainId, orderFromStore.id)
-
-  console.log('[orderFromApi}', orderFromApi)
-
   const status = classifyOrder(orderFromApi)
 
   let popupData = undefined

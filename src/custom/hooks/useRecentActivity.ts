@@ -130,8 +130,6 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id:
       isCancelling = (order.isCancelling || false) && isPending
       isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
 
-      console.log('order?.status', order?.status, { isPending, isPresignaturePending })
-
       activity = order
       type = ActivityType.ORDER
     } else {

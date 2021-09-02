@@ -79,7 +79,6 @@ export function PendingOrdersUpdater(): null {
         // Only mark as presigned the orders we were not aware of their new state
         const presignedOrderIds = presigned as OrderID[]
         const ordersPresignaturePendingSigned = _getPresignedOrdersStillWaiting(pendingRef.current, presignedOrderIds)
-        console.log({ presignedOrderIds, ordersPresignaturePendingSigned })
 
         if (ordersPresignaturePendingSigned.length > 0) {
           markOrdersAsPresigned({
