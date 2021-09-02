@@ -21,7 +21,7 @@ export const StyledWrap = styled.div`
   border-radius: 1.3rem;
   padding: 0.93rem;
   margin: 1.25rem 0;
-  border: ${({ theme }) => theme.appBody.border};
+  box-shadow: ${({ theme }) => `inset 2px -2px 4px ${theme.cardShadow21}, inset -2px 2px 4px ${theme.cardShadow22}`};
 `
 export const StyledSmallBtn = styled.a`
   width: 1.75rem;

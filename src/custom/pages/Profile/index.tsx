@@ -35,6 +35,7 @@ export default function Profile() {
           </Wrap>
           <Wrap justifyCont={['center', 'flex-end']} grow={'1'}>
             <RollBackIcon />
+            &nbsp;
             <Txt>
               <Txt secondary>Last updated:&nbsp;</Txt>
               <Txt fw={'bold'}>{label} ago</Txt>
