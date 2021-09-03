@@ -424,7 +424,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
               ? 'Pre-signing...'
               : isCancelled
               ? 'Cancelled'
-              : 'Open'}{' '}
+              : 'Open'}
           </StatusLabel>
           {isCancellable && (
             <StatusLabelBelow>
