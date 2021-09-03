@@ -3,7 +3,7 @@ import { OrderID } from 'api/gnosisProtocol'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addPendingOrder,
-  markOrdersAsPresigned,
+  preSignOrders,
   removeOrder,
   clearOrders,
   fulfillOrder,
@@ -128,7 +128,7 @@ export default createReducer(initialState, (builder) =>
       const orderStateList = order.status === OrderStatus.PRESIGNATURE_PENDING ? 'presignaturePending' : 'pending'
       state[chainId][orderStateList][id] = { order, id }
     })
-    .addCase(markOrdersAsPresigned, (state, action) => {
+    .addCase(preSignOrders, (state, action) => {
       prefillState(state, action)
       const { ids, chainId } = action.payload
       const pendingOrders = state[chainId].pending
