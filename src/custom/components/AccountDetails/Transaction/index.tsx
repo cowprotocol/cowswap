@@ -382,8 +382,12 @@ export default function Transaction({ hash: id }: { hash: string }) {
 
         <StatusLabelWrapper>
           <StatusLabel color={determinePillColour(status, type)} isPending={isPending} isCancelling={isCancelling}>
-            {isConfirmed ? (
+            {isConfirmed && isTransaction ? (
+              <SVG src={OrderCheckImage} description="Transaction Confirmed" />
+            ) : isConfirmed ? (
               <SVG src={OrderCheckImage} description="Order Filled" />
+            ) : isExpired && isTransaction ? (
+              <SVG src={OrderCancelledImage} description="Transaction Failed" />
             ) : isExpired ? (
               <SVG src={OrderExpiredImage} description="Order Expired" />
             ) : isCancelled ? (
@@ -391,12 +395,15 @@ export default function Transaction({ hash: id }: { hash: string }) {
             ) : isCancelling ? null : (
               <SVG src={OrderOpenImage} description="Order Open" />
             )}
+
             {isPending
               ? 'Open'
               : isConfirmed && isTransaction
               ? 'Approved'
               : isConfirmed
               ? 'Filled'
+              : isExpired && isTransaction
+              ? 'Failed'
               : isExpired
               ? 'Expired'
               : isCancelling
@@ -405,7 +412,6 @@ export default function Transaction({ hash: id }: { hash: string }) {
               ? 'Cancelled'
               : 'Open'}
           </StatusLabel>
-
           {isCancellable && (
             <StatusLabelBelow>
               <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>
