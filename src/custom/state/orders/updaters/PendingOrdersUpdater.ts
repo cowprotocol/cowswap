@@ -20,7 +20,7 @@ import { OrderID } from 'api/gnosisProtocol'
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 
 /**
- * Return the ids od the orders that we are not yet aware that are signed.
+ * Return the ids of the orders that we are not yet aware that are signed.
  * This is, pre-sign orders, in state of "PRESIGNATURE_PENDING", for which we now know they are signed
  *
  * Used as an auxiliar method to detect which orders we should mark as pre-signed, so we change their state
