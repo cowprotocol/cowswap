@@ -20,7 +20,7 @@ import {
   Order,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
-  markOrdersAsPresigned,
+  preSignOrders,
 } from './actions'
 import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
 import { isTruthy } from 'utils/misc'
@@ -57,7 +57,7 @@ interface UpdateOrdersBatchParams {
 
 type ExpireOrdersBatchParams = UpdateOrdersBatchParams
 type CancelOrdersBatchParams = UpdateOrdersBatchParams
-type MarkOrdersAsPresignedParams = UpdateOrdersBatchParams
+type PresignOrdersParams = UpdateOrdersBatchParams
 
 interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
@@ -71,7 +71,7 @@ type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
-type MarkOrdersAsPresignedCallback = (fulfillOrderParams: MarkOrdersAsPresignedParams) => void
+type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
 type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
@@ -284,9 +284,9 @@ export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
   )
 }
 
-export const useMarkOrdersAsPresigned = (): MarkOrdersAsPresignedCallback => {
+export const usePresignOrders = (): PresignOrdersCallback => {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback((params: MarkOrdersAsPresignedParams) => dispatch(markOrdersAsPresigned(params)), [dispatch])
+  return useCallback((params: PresignOrdersParams) => dispatch(preSignOrders(params)), [dispatch])
 }
 
 export const useExpireOrder = (): ExpireOrderCallback => {

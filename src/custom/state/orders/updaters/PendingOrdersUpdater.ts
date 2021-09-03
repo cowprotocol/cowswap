@@ -6,7 +6,7 @@ import {
   useCancelOrdersBatch,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
-  useMarkOrdersAsPresigned,
+  usePresignOrders,
   usePendingOrders,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
@@ -29,7 +29,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters
  * @param signedOrdersIds ids of orders we know are already pre-signed
  * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
  */
-function _getPresignedOrdersStillWaiting(allPendingOrders: Order[], signedOrdersIds: OrderID[]) {
+function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: OrderID[]) {
   const presignaturePendingIds = allPendingOrders
     .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING)
     .map((order) => order.id)
@@ -49,7 +49,7 @@ export function PendingOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
-  const markOrdersAsPresigned = useMarkOrdersAsPresigned()
+  const presignOrders = usePresignOrders()
 
   const updateOrders = useCallback(
     async (chainId: ChainId) => {
@@ -78,10 +78,10 @@ export function PendingOrdersUpdater(): null {
       if (presigned.length > 0) {
         // Only mark as presigned the orders we were not aware of their new state
         const presignedOrderIds = presigned as OrderID[]
-        const ordersPresignaturePendingSigned = _getPresignedOrdersStillWaiting(pendingRef.current, presignedOrderIds)
+        const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(pendingRef.current, presignedOrderIds)
 
         if (ordersPresignaturePendingSigned.length > 0) {
-          markOrdersAsPresigned({
+          presignOrders({
             ids: ordersPresignaturePendingSigned,
             chainId,
           })
@@ -109,7 +109,7 @@ export function PendingOrdersUpdater(): null {
         })
       }
     },
-    [cancelOrdersBatch, expireOrdersBatch, fulfillOrdersBatch, markOrdersAsPresigned]
+    [cancelOrdersBatch, expireOrdersBatch, fulfillOrdersBatch, presignOrders]
   )
 
   useEffect(() => {

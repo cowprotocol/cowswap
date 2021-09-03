@@ -93,7 +93,7 @@ export interface BatchOrdersUpdateParams {
   chainId: ChainId
 }
 
-export type MarkOrdersAsPresignedParams = BatchOrdersUpdateParams
+export type PresignedOrdersParams = BatchOrdersUpdateParams
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 
@@ -101,7 +101,7 @@ export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/
 
 export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
 
-export const markOrdersAsPresigned = createAction<MarkOrdersAsPresignedParams>('order/markOrdersAsPresigned')
+export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 
