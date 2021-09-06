@@ -33,7 +33,7 @@ import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import { /* ArrowWrapper, BottomGrouping, Dots, */ SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import TradePrice from 'components/swap/TradePrice'
-// import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
+import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -878,7 +878,7 @@ export default function Swap({
           </BottomGrouping>
         </Wrapper>
       </AppBody>
-      {/* <SwitchLocaleLink /> */}
+      <SwitchLocaleLink />
       {!swapIsUnsupported ? null : !isSupportedWallet ? (
         <UnsupportedCurrencyFooter
           show={!isSupportedWallet}
