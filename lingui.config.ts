@@ -24,7 +24,7 @@ export default {
     'en-US',
     // 'es-ES',
     // 'fi-FI',
-    // 'fr-FR',
+    'fr-FR',
     // 'he-IL',
     // 'hu-HU',
     // 'id-ID',

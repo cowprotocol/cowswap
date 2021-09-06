@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { ReactNode } from 'react'
-// import { useActiveLocale, useSetLocaleFromUrl } from 'hooks/useActiveLocale'
-// import { SupportedLocale } from 'constants/locales'
+import { useActiveLocale, useSetLocaleFromUrl } from 'hooks/useActiveLocale'
+import { SupportedLocale } from 'constants/locales'
 import {
   //   af,
   //   ar,
@@ -15,7 +15,7 @@ import {
   en,
   //   es,
   //   fi,
-  //   fr,
+  fr,
   //   he,
   //   hu,
   //   id,
@@ -38,8 +38,8 @@ import {
 } from 'make-plural/plurals'
 
 type LocalePlural = {
-  //   [key in SupportedLocale]: (n: number | string, ord?: boolean) => PluralCategory
-  ['en-US']: (n: number | string, ord?: boolean) => PluralCategory
+  [key in SupportedLocale]: (n: number | string, ord?: boolean) => PluralCategory
+  // ['en-US']: (n: number | string, ord?: boolean) => PluralCategory
 }
 
 const plurals: LocalePlural = {
@@ -53,7 +53,7 @@ const plurals: LocalePlural = {
   'en-US': en,
   //   'es-ES': es,
   //   'fi-FI': fi,
-  //   'fr-FR': fr,
+  'fr-FR': fr,
   //   'he-IL': he,
   //   'hu-HU': hu,
   //   'id-ID': id,
@@ -76,8 +76,8 @@ const plurals: LocalePlural = {
   //   'zh-TW': zh,
 }
 
-const DEFAULT_LOCALE = 'en-US' // mod
-type SupportedLocale = typeof DEFAULT_LOCALE // mod
+// const DEFAULT_LOCALE = 'en-US' // mod
+// type SupportedLocale = typeof DEFAULT_LOCALE // mod
 
 export async function dynamicActivate(locale: SupportedLocale) {
   const { messages } = await import(`@lingui/loader!../locales/${locale}.po`)
@@ -87,25 +87,19 @@ export async function dynamicActivate(locale: SupportedLocale) {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  //   useSetLocaleFromUrl()
-  //   const locale = useActiveLocale()
+  useSetLocaleFromUrl()
+  const locale = useActiveLocale()
   const [loaded, setLoaded] = useState(false)
 
-  useEffect(
-    () => {
-      // dynamicActivate(locale)
-      dynamicActivate(DEFAULT_LOCALE) // mod
-        .then(() => {
-          setLoaded(true)
-        })
-        .catch((error) => {
-          console.error('Failed to activate locale', /* locale, */ error)
-        })
-    },
-    [
-      /* locale */
-    ]
-  )
+  useEffect(() => {
+    dynamicActivate(locale)
+      .then(() => {
+        setLoaded(true)
+      })
+      .catch((error) => {
+        console.error('Failed to activate locale', /* locale, */ error)
+      })
+  }, [locale])
 
   // prevent the app from rendering with placeholder text before the locale is loaded
   if (!loaded) return null
