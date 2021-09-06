@@ -30,6 +30,7 @@ import OrdersPanel from 'components/OrdersPanel'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
+import { Trans } from '@lingui/macro'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -170,8 +171,12 @@ export default function Header() {
           </UniIcon>
         </Title>
         <HeaderLinks>
-          <StyledNavLink to="/swap">Swap</StyledNavLink>
-          <StyledNavLink to="/about">About</StyledNavLink>
+          <StyledNavLink to="/swap">
+            <Trans>Swap</Trans>
+          </StyledNavLink>
+          <StyledNavLink to="/about">
+            <Trans>About</Trans>
+          </StyledNavLink>
           {/* <StyledNavLink to="/profile">Profile</StyledNavLink> */}
         </HeaderLinks>
       </HeaderRow>

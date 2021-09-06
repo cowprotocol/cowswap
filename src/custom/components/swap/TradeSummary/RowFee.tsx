@@ -11,12 +11,11 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { LightGreyText } from 'pages/Swap'
 import { useUSDCValue } from 'hooks/useUSDCPrice'
+import { Trans, t } from '@lingui/macro'
 
-export const GASLESS_FEE_TOOLTIP_MSG =
-  'On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
+export const GASLESS_FEE_TOOLTIP_MSG = t`On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.`
 
-export const PRESIGN_FEE_TOOLTIP_MSG =
-  'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
+export const PRESIGN_FEE_TOOLTIP_MSG = t`These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.t`
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -68,14 +67,14 @@ export function RowFee({
   const feeCurrencySymbol = displayFee?.currency.symbol || '-'
   const fullDisplayFee = displayFee?.toFixed(displayFee?.currency.decimals) || '-'
 
-  const includeGasMessage = allowsOffchainSigning ? ' (incl. gas costs)' : ''
+  const includeGasMessage = allowsOffchainSigning ? t` (incl. gas costs)` : ''
   const tooltip = allowsOffchainSigning ? GASLESS_FEE_TOOLTIP_MSG : PRESIGN_FEE_TOOLTIP_MSG
 
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
         <TYPE.black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
-          Fees {includeGasMessage}
+          <Trans>Fees</Trans> {includeGasMessage}
         </TYPE.black>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} bgColor={theme.bg1} color={theme.text1}>

@@ -6,6 +6,8 @@ import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'cons
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 
+import { t } from '@lingui/macro'
+
 export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('1', '100') // 1%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
@@ -64,7 +66,7 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
 }
 
 export const ORDER_ID_SHORT_LENGTH = 8
-export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
+export const INPUT_OUTPUT_EXPLANATION = t`Only executed swaps incur fees.`
 export const DEFAULT_ORDER_DELAY = 20000 // 20s
 export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min

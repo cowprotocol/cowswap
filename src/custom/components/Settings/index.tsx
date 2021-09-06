@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { RowFixed } from 'components/Row'
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 import { Percent } from '@uniswap/sdk-core'
+import { Trans } from '@lingui/macro'
 
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
@@ -122,7 +123,9 @@ export interface SettingsTabProp extends WithClassName {
 function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {
   return (
     <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
-      <b>Settings</b>
+      <b>
+        <Trans>Settings</Trans>
+      </b>
       <StyledMenuIcon />
       {expertMode ? (
         <EmojiWrapper>

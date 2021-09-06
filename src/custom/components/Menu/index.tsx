@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { Separator as SeparatorBase } from 'components/swap/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK } from 'constants/index'
 import GameIcon from 'assets/cow-swap/game.gif'
+import { Trans } from '@lingui/macro'
 
 export const StyledMenu = styled(MenuMod)`
   hr {
@@ -185,7 +186,7 @@ export function Menu() {
         <Separator />
 
         <Policy to="/terms-and-conditions" onClick={close} onKeyDown={close}>
-          Terms and conditions
+          <Trans>Terms and conditions</Trans>
         </Policy>
         {/* 
         <Policy to="/privacy-policy">Privacy policy</Policy>
