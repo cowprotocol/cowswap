@@ -1,20 +1,22 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2021-06-16 02:37+0000\n"
-"Mime-Version: 1.0\n"
+"POT-Creation-Date: 2021-07-14 12:17+0200\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: af\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: uniswap-interface\n"
-"X-Crowdin-Project-ID: 458284\n"
-"X-Crowdin-Language: af\n"
-"X-Crowdin-File: en-US.po\n"
-"X-Crowdin-File-ID: 4\n"
-"Project-Id-Version: uniswap-interface\n"
+"Project-Id-Version: cowswap\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2021-09-06 11:23\n"
+"Last-Translator: \n"
 "Language-Team: Afrikaans\n"
-"PO-Revision-Date: 2021-06-16 15:05\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: cowswap\n"
+"X-Crowdin-Project-ID: 475061\n"
+"X-Crowdin-Language: af\n"
+"X-Crowdin-File: /crowdin-translations/src/locales/en-US.po\n"
+"X-Crowdin-File-ID: 9\n"
 
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -25,13 +27,14 @@ msgstr "$ -"
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "${0}"
-msgstr "${0}"
+msgstr ""
 
 #: src/components/earn/PoolCard.tsx
 msgid "${0} ETH"
-msgstr "${0} ETH"
+msgstr ""
 
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod.tsx
 msgid "(Max)"
 msgstr "(Maksimum)"
 
@@ -47,24 +50,29 @@ msgstr "(maak alles skoon)"
 msgid "(edit)"
 msgstr "(wysig)"
 
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "+ Add a send (optional)"
+msgstr ""
+
 #: src/components/InputStepCounter/InputStepCounter.tsx
 msgid "+{feeAmountFormatted}%"
-msgstr "+{feeAmountFormatted}%"
+msgstr ""
 
+#: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "- Remove send"
 msgstr "- Verwyder stuur"
 
 #: src/components/InputStepCounter/InputStepCounter.tsx
 msgid "-{feeAmountFormatted}%"
-msgstr "-{feeAmountFormatted}%"
+msgstr ""
 
 #: src/components/earn/PoolCard.tsx
 #: src/components/earn/PoolCard.tsx
 #: src/pages/Earn/Manage.tsx
 #: src/pages/Earn/Manage.tsx
 msgid "0 UNI / week"
-msgstr "0 UNI / week"
+msgstr ""
 
 #: src/components/FeeSelector/index.tsx
 msgid "0.05% fee"
@@ -80,15 +88,20 @@ msgstr "1% fooi"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "25%"
-msgstr "25%"
+msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "50%"
-msgstr "50%"
+msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "75%"
-msgstr "75%"
+msgstr ""
+
+#: 
+#: 
+#~ msgid "<0/>"
+#~ msgstr "<0/>"
 
 #: src/pages/Vote/VotePage.tsx
 msgid "<0/> All Proposals"
@@ -123,9 +136,18 @@ msgstr "<0> Wenk:</0> As u likiditeit byvoeg, sal u poeltekens ontvang wat u pos
 msgid "<0>Unlock voting</0> to prepare for the next proposal."
 msgstr "<0> Ontsluit stem</0> om voor te berei vir die volgende voorstel."
 
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
+#: src/custom/components/swap/TradeSummary/RowSlippage.tsx
+msgid "<0>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</0><1>The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.</1><2>{INPUT_OUTPUT_EXPLANATION}</2>"
+msgstr ""
+
 #: src/components/claim/ClaimModal.tsx
 msgid "<0>🎉 </0>Welcome to team Unicorn :) <1>🎉</1>"
 msgstr "<0> 🎉</0> Welkom by die Unicorn span :) <1> 🎉</1>"
+
+#: 
+#~ msgid "<0>🐮❕</0> Something went wrong"
+#~ msgstr "<0>🐮❕</0> Something went wrong"
 
 #: src/pages/Vote/index.tsx
 msgid "A minimum threshold of 0.25% of the total UNI supply is required to submit proposals"
@@ -136,6 +158,7 @@ msgid "About"
 msgstr "Oor"
 
 #: src/components/swap/SwapModalHeader.tsx
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
 msgid "Accept"
 msgstr "Aanvaar"
 
@@ -144,6 +167,7 @@ msgid "Account"
 msgstr "Rekening"
 
 #: src/components/SearchModal/ImportRow.tsx
+#: src/custom/components/SearchModal/ImportRow/ImportRowMod.tsx
 msgid "Active"
 msgstr "Aktief"
 
@@ -198,11 +222,16 @@ msgstr "Adres het geen eis nie"
 msgid "Against"
 msgstr "Teen"
 
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "Allow CowSwap to use your {0}"
+msgstr ""
+
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "Allow LP token migration"
 msgstr "Laat migrasie van LP-teken toe"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Allow high price impact trades and skip the confirm screen. Use at your own risk."
 msgstr "Laat handel oor hoë prysimpak toe en slaan die bevestigingsskerm oor. Gebruik op eie risiko."
 
@@ -259,6 +288,7 @@ msgid "Approving {0}"
 msgstr "Goedkeur {0}"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Are you sure?"
 msgstr "Is jy seker?"
 
@@ -266,11 +296,16 @@ msgstr "Is jy seker?"
 msgid "As a member of the Uniswap community you may claim UNI to be used for voting and governance.<0/><1/><2>Read more about UNI</2>"
 msgstr "As lid van die Uniswap-gemeenskap kan u daarop aanspraak maak dat UNI gebruik word vir stemming en beheer. <0/> <1/> <2> Lees meer oor UNI</2>"
 
+#: src/custom/components/swap/EthWethWrap/index.tsx
+msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation would be {0}"
+msgstr ""
+
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "At least {0} {1} and {2} {3} will be refunded to your wallet due to selected price range."
 msgstr "Minstens {0} {1} en {2} {3} sal aan u beursie terugbetaal word weens die gekose prysklas."
 
 #: src/components/TransactionSettings/index.tsx
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
 msgid "Auto"
 msgstr "Outomaties"
 
@@ -279,6 +314,7 @@ msgid "Available to deposit: {0}"
 msgstr "Beskikbaar vir deposito: {0}"
 
 #: src/components/WalletModal/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
 msgid "Back"
 msgstr "Terug"
 
@@ -287,6 +323,7 @@ msgid "Balance:"
 msgstr "Saldo:"
 
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod.tsx
 msgid "Balance: {0} {1}"
 msgstr "Saldo: {0} {1}"
 
@@ -311,14 +348,24 @@ msgid "By adding liquidity you'll earn 0.3% of all trades on this pair proportio
 msgstr "Deur likiditeit by te voeg, verdien u 0,3% van alle transaksies op hierdie paar in verhouding tot u deel van die poel. Fooie word by die poel gevoeg, word intyds toegeval en kan geëis word deur u likiditeit te onttrek."
 
 #: src/components/SearchModal/ImportList.tsx
+#: src/custom/components/SearchModal/ImportList/ImportListMod.tsx
 msgid "By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including creating fake versions of existing lists and lists that claim to represent projects that do not have one."
 msgstr "Deur hierdie lys by te voeg, vertrou u implisiet dat die data korrek is. Almal kan 'n lys opstel, insluitend die skep van vals weergawes van bestaande lyste en lyste wat beweer dat hulle projekte verteenwoordig wat nie een het nie."
+
+#: src/custom/components/WalletModal/index.tsx
+msgid "By connecting a wallet, you agree to GnosisDAO's <0>Terms & Conditions</0> and acknowledge that you have read, understood, and agree to them."
+msgstr ""
 
 #: src/components/WalletModal/index.tsx
 msgid "By connecting a wallet, you agree to Uniswap Labs’ <0>Terms of Service</0> and acknowledge that you have read and understand the <1>Uniswap protocol disclaimer</1>."
 msgstr "Deur 'n beursie aan te sluit, stem u in tot die <0> diensvoorwaardes van Uniswap Labs</0> en erken dat u die <1> vrywaring van Uniswap-protokol gelees en verstaan het</1> ."
 
+#: src/custom/components/swap/EthWethWrap/index.tsx
+msgid "Cancel"
+msgstr ""
+
 #: src/components/AccountDetails/index.tsx
+#: src/custom/components/AccountDetails/index.tsx
 msgid "Change"
 msgstr "Verander"
 
@@ -388,6 +435,7 @@ msgid "Clear All"
 msgstr "Maak alles skoon"
 
 #: src/components/SearchModal/ManageTokens.tsx
+#: src/custom/components/SearchModal/ManageTokens/ManageTokensMod.tsx
 msgid "Clear all"
 msgstr "Maak alles skoon"
 
@@ -437,6 +485,10 @@ msgstr "Die invorderingskoste sal tans beskikbare fooie vir u opneem."
 msgid "Common bases"
 msgstr "Algemene basisse"
 
+#: src/custom/components/SearchModal/CommonBases/CommonBasesMod.tsx
+msgid "Common tokens"
+msgstr ""
+
 #: src/pages/RemoveLiquidity/index.tsx
 msgid "Confirm"
 msgstr "Bevestig"
@@ -447,6 +499,8 @@ msgstr "Bevestig die aanbod"
 
 #: src/components/swap/ConfirmSwapModal.tsx
 #: src/components/swap/SwapModalFooter.tsx
+#: src/custom/components/swap/ConfirmSwapModal/ConfirmSwapModalMod.tsx
+#: src/custom/components/swap/SwapModalFooter/SwapModalFooterMod.tsx
 msgid "Confirm Swap"
 msgstr "Bevestig die ruil"
 
@@ -455,9 +509,15 @@ msgstr "Bevestig die ruil"
 #: src/components/claim/AddressClaimModal.tsx
 #: src/components/claim/ClaimModal.tsx
 #: src/components/vote/VoteModal.tsx
+#: src/custom/components/TransactionConfirmationModal/TransactionConfirmationModalMod.tsx
 msgid "Confirm this transaction in your wallet"
 msgstr "Bevestig hierdie transaksie in u beursie"
 
+#: src/custom/components/swap/EthWethWrap/index.tsx
+msgid "Confirm {nativeSymbol} wrap"
+msgstr ""
+
+#: src/custom/state/swap/hooks.ts
 #: src/pages/AddLiquidityV2/index.tsx
 #: src/pages/RemoveLiquidity/index.tsx
 #: src/pages/Swap/index.tsx
@@ -478,6 +538,8 @@ msgstr "Verbind 'n beursie"
 
 #: src/components/WalletModal/index.tsx
 #: src/components/Web3Status/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
+#: src/custom/components/Web3Status/Web3StatusMod.tsx
 msgid "Connect to a wallet"
 msgstr "Koppel aan 'n beursie"
 
@@ -502,7 +564,7 @@ msgstr "Verbind beursie"
 msgid "Connected with {name}"
 msgstr "Gekoppel met {name}"
 
-#: src/components/AccountDetails/Copy.tsx
+#: src/custom/components/Copy/CopyMod.tsx
 msgid "Copied"
 msgstr "Gekopieer"
 
@@ -510,6 +572,10 @@ msgstr "Gekopieer"
 #: src/components/AccountDetails/index.tsx
 msgid "Copy Address"
 msgstr "Kopieer adres"
+
+#: src/custom/components/swap/EthWethWrap/index.tsx
+msgid "CowSwap is a gasless exchange. <0>{nativeSymbol}</0> however, is required for paying <1>on-chain transaction costs associated with enabling tokens and the wrapping/unwrapping of {nativeSymbol}/{wrappedSymbol}</1>, respectively."
+msgstr ""
 
 #: src/pages/AddLiquidityV2/ConfirmAddModalBottom.tsx
 msgid "Create Pool & Supply"
@@ -524,7 +590,13 @@ msgstr "Skep 'n paar"
 msgid "Create a pool"
 msgstr "Skep 'n poel"
 
+#: src/custom/pages/Profile/index.tsx
+#: src/custom/pages/Rewards/index.tsx
+msgid "Create affiliate link"
+msgstr ""
+
 #: src/components/ErrorBoundary/index.tsx
+#: src/custom/components/ErrorBoundary/ErrorBoundaryMod.tsx
 msgid "Create an issue on GitHub"
 msgstr "Skep 'n probleem op GitHub"
 
@@ -613,6 +685,7 @@ msgid "Disable Multihops"
 msgstr "Skakel Multihops uit"
 
 #: src/components/AccountDetails/index.tsx
+#: src/custom/components/AccountDetails/index.tsx
 msgid "Disconnect"
 msgstr "Ontkoppel"
 
@@ -621,6 +694,7 @@ msgid "Discord"
 msgstr "Onenigheid"
 
 #: src/components/TransactionConfirmationModal/index.tsx
+#: src/custom/components/TransactionConfirmationModal/TransactionConfirmationModalMod.tsx
 msgid "Dismiss"
 msgstr "Verwerp"
 
@@ -640,11 +714,13 @@ msgstr "Verdiende UNI-tekens verteenwoordig stemgeregtigde aandele in Uniswap-be
 msgid "Enter a percent"
 msgstr "Voer 'n persentasie in"
 
+#: src/custom/state/swap/hooks.ts
 #: src/state/swap/hooks.ts
 msgid "Enter a recipient"
 msgstr "Voer 'n ontvanger in"
 
 #: src/components/TransactionSettings/index.tsx
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
 msgid "Enter a valid slippage percentage"
 msgstr "Voer 'n geldige glippersentasie in"
 
@@ -654,6 +730,8 @@ msgstr "Voer 'n adres in om 'n UNI-eis te aktiveer. As die adres 'n UNI kan eis,
 
 #: src/components/earn/ClaimRewardModal.tsx
 #: src/components/earn/UnstakingModal.tsx
+#: src/custom/hooks/useWrapCallback.ts
+#: src/custom/state/swap/hooks.ts
 #: src/state/burn/hooks.ts
 #: src/state/mint/hooks.ts
 #: src/state/mint/v3/hooks.ts
@@ -664,36 +742,57 @@ msgid "Enter an amount"
 msgstr "Voer 'n bedrag in"
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "Enter valid list location"
 msgstr "Voer geldige lysligging in"
 
 #: src/components/SearchModal/ManageTokens.tsx
+#: src/custom/components/SearchModal/ManageTokens/ManageTokensMod.tsx
 msgid "Enter valid token address"
 msgstr "Voer geldige tekenadres in"
 
 #: src/components/TransactionConfirmationModal/index.tsx
 #: src/components/Web3Status/index.tsx
+#: src/custom/components/TransactionConfirmationModal/TransactionConfirmationModalMod.tsx
+#: src/custom/components/Web3Status/Web3StatusMod.tsx
 msgid "Error"
 msgstr "Fout"
 
 #: src/components/WalletModal/PendingView.tsx
 #: src/components/WalletModal/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
 msgid "Error connecting"
 msgstr "Kon nie koppel nie"
 
 #: src/components/WalletModal/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
 msgid "Error connecting. Try refreshing the page."
 msgstr "Kon nie koppel nie. Probeer om die bladsy te verfris."
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "Error importing list"
 msgstr "Kon nie lys invoer nie"
 
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "Error loading price. Try again later."
+msgstr ""
+
+#: 
+#~ msgid "Error loading quote. Try again later."
+#~ msgstr "Error loading quote. Try again later."
+
+#: src/custom/hooks/useWrapCallback.ts
+msgid "Error {actionName} {symbol}"
+msgstr ""
+
 #: src/components/SearchModal/CurrencyList.tsx
+#: src/custom/components/SearchModal/CurrencyList/CurrencyListMod.tsx
 msgid "Expanded results from inactive Token Lists"
 msgstr "Uitgebreide resultate van onaktiewe tekenlyste"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result in bad rates and lost funds."
 msgstr "Die kundige modus skakel die bevestiging van die transaksie uit en laat transaksies met 'n hoë glip toe wat dikwels slegte tariewe en verlore fondse tot gevolg het."
 
@@ -714,6 +813,7 @@ msgid "For each pool shown below, click migrate to remove your liquidity from Un
 msgstr "Klik op migreer vir elke poel hieronder om u likiditeit uit Uniswap V2 te verwyder en dit in Uniswap V3 te deponeer."
 
 #: src/components/swap/SwapModalHeader.tsx
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "From"
 msgstr "Van"
@@ -722,7 +822,13 @@ msgstr "Van"
 msgid "From (at most)"
 msgstr "Van (hoogstens)"
 
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "From (incl. fee)"
+msgstr ""
+
 #: src/components/ErrorBoundary/index.tsx
+#: src/custom/components/ErrorBoundary/ErrorBoundaryMod.tsx
 msgid "Get support on Discord"
 msgstr "Kry ondersteuning op Discord"
 
@@ -734,11 +840,17 @@ msgstr "Versteek geslote posisies"
 msgid "High Price Impact"
 msgstr "Hoë prysimpak"
 
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
+msgid "High slippage amount selected"
+msgstr ""
+
 #: src/components/SearchModal/ImportList.tsx
+#: src/custom/components/SearchModal/ImportList/ImportListMod.tsx
 msgid "I understand"
 msgstr "ek verstaan"
 
 #: src/components/SearchModal/ImportList.tsx
+#: src/custom/components/SearchModal/ImportList/ImportListMod.tsx
 msgid "If you purchase a token from this list, you may not be able to sell it back."
 msgstr "As u 'n teken uit hierdie lys koop, kan u dit dalk nie terug verkoop nie."
 
@@ -746,10 +858,15 @@ msgstr "As u 'n teken uit hierdie lys koop, kan u dit dalk nie terug verkoop nie
 #: src/components/SearchModal/ImportRow.tsx
 #: src/components/SearchModal/ImportToken.tsx
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ImportList/ImportListMod.tsx
+#: src/custom/components/SearchModal/ImportRow/ImportRowMod.tsx
+#: src/custom/components/SearchModal/ImportToken/ImportTokenMod.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "Import"
 msgstr "Invoer"
 
 #: src/components/SearchModal/ImportList.tsx
+#: src/custom/components/SearchModal/ImportList/ImportListMod.tsx
 msgid "Import List"
 msgstr "Invoerlys"
 
@@ -762,6 +879,7 @@ msgid "Import V2 Pool"
 msgstr "Voer V2-swembad in"
 
 #: src/components/SearchModal/ImportList.tsx
+#: src/custom/components/SearchModal/ImportList/ImportListMod.tsx
 msgid "Import at your own risk"
 msgstr "Invoer op eie risiko"
 
@@ -785,10 +903,16 @@ msgstr "Inisialiseer tans ..."
 msgid "Input is estimated. You will sell at most <0>{0} {1}</0> or the transaction will revert."
 msgstr "Inset word geskat. U sal hoogstens <0>{0} {1}</0> anders gaan die transaksie terug."
 
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
+msgid "Input is estimated. You will sell at most <0>{1} {2}</0> or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}"
+msgstr ""
+
 #: src/components/WalletModal/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
 msgid "Install Metamask"
 msgstr "Installeer Metamask"
 
+#: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "Insufficient liquidity for this trade."
 msgstr "Onvoldoende likiditeit vir hierdie handel."
@@ -797,6 +921,7 @@ msgstr "Onvoldoende likiditeit vir hierdie handel."
 msgid "Insufficient liquidity for this trade. Try enabling multi-hop trades."
 msgstr "Onvoldoende likiditeit vir hierdie handel. Probeer multi-hop-transaksies aan te skakel."
 
+#: src/custom/state/swap/hooks.ts
 #: src/state/mint/hooks.ts
 #: src/state/mint/hooks.ts
 #: src/state/mint/v3/hooks.ts
@@ -805,7 +930,12 @@ msgstr "Onvoldoende likiditeit vir hierdie handel. Probeer multi-hop-transaksies
 msgid "Insufficient {0} balance"
 msgstr "Onvoldoende {0} balans"
 
+#: src/custom/hooks/useWrapCallback.ts
+msgid "Insufficient {symbol} balance"
+msgstr ""
+
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Interface Settings"
 msgstr "Interface-instellings"
 
@@ -827,6 +957,7 @@ msgstr "Ongeldige prysinsette"
 msgid "Invalid range selected. The min price must be lower than the max price."
 msgstr "Ongeldige reeks gekies. Die minimum prys moet laer wees as die maksimum prys."
 
+#: src/custom/state/swap/hooks.ts
 #: src/state/swap/hooks.ts
 msgid "Invalid recipient"
 msgstr "Ongeldige ontvanger"
@@ -834,6 +965,11 @@ msgstr "Ongeldige ontvanger"
 #: src/pages/Pool/index.tsx
 msgid "Learn"
 msgstr "Leer"
+
+#: src/custom/pages/Profile/index.tsx
+#: src/custom/pages/Rewards/index.tsx
+msgid "Learn about the Affiliate Program"
+msgstr ""
 
 #: src/components/claim/ClaimModal.tsx
 #: src/pages/Pool/PositionPage.tsx
@@ -853,10 +989,12 @@ msgid "Liquidity providers earn a 0.3% fee on all trades proportional to their s
 msgstr "Likiditeitsverskaffers verdien 'n fooi van 0,3% op alle transaksies wat eweredig is aan hul deel van die poel. Fooie word by die poel gevoeg, intyds toegeval en kan geëis word deur u likiditeit te onttrek."
 
 #: src/components/SearchModal/Manage.tsx
+#: src/custom/components/SearchModal/Manage/ManageMod.tsx
 msgid "Lists"
 msgstr "Lyste"
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "Loaded"
 msgstr "Gelaai"
 
@@ -871,6 +1009,10 @@ msgstr "Gelaai"
 msgid "Loading"
 msgstr "Laai tans"
 
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
+msgid "MEV protected slippage"
+msgstr ""
+
 #: src/components/Header/URLWarning.tsx
 msgid "Make sure the URL is<0>app.uniswap.org</0>"
 msgstr "Maak seker dat die URL <0> app.uniswap.org is</0>"
@@ -881,6 +1023,7 @@ msgstr "Maak seker dat die URL <0> app.uniswap.org is</0>"
 #: src/components/PositionCard/index.tsx
 #: src/components/SearchModal/Manage.tsx
 #: src/components/earn/PoolCard.tsx
+#: src/custom/components/SearchModal/Manage/ManageMod.tsx
 msgid "Manage"
 msgstr "Bestuur"
 
@@ -889,6 +1032,7 @@ msgid "Manage Liquidity in Rewards Pool"
 msgstr "Bestuur likiditeit in die beloningspoel"
 
 #: src/components/SearchModal/CurrencySearch.tsx
+#: src/custom/components/SearchModal/CurrencySearch/index.tsx
 msgid "Manage Token Lists"
 msgstr "Bestuur tekenlyste"
 
@@ -916,6 +1060,14 @@ msgstr "Maksimum:"
 #: src/components/swap/AdvancedSwapDetails.tsx
 msgid "Maximum sent"
 msgstr "Maksimum gestuur"
+
+#: 
+#~ msgid "Maximum sent (incl. fee)"
+#~ msgstr "Maximum sent (incl. fee)"
+
+#: src/custom/components/swap/TradeSummary/RowReceivedAfterSlippage.tsx
+msgid "Maximum sent {includeFeeMessage}"
+msgstr ""
 
 #: src/components/PositionCard/Sushi.tsx
 #: src/components/PositionCard/V2.tsx
@@ -961,11 +1113,19 @@ msgstr "Minimum prys"
 
 #: src/components/PositionListItem/index.tsx
 msgid "Min:"
-msgstr "Min:"
+msgstr ""
 
 #: src/components/swap/AdvancedSwapDetails.tsx
 msgid "Minimum received"
 msgstr "Minimum ontvang"
+
+#: 
+#~ msgid "Minimum received (incl. fee)"
+#~ msgstr "Minimum received (incl. fee)"
+
+#: src/custom/components/swap/TradeSummary/RowReceivedAfterSlippage.tsx
+msgid "Minimum received {includeFeeMessage}"
+msgstr ""
 
 #: src/pages/Pool/index.tsx
 msgid "More"
@@ -997,6 +1157,7 @@ msgid "No proposals found."
 msgstr "Geen voorstelle gevind nie."
 
 #: src/components/SearchModal/CurrencySearch.tsx
+#: src/custom/components/SearchModal/CurrencySearch/CurrencySearchMod.tsx
 msgid "No results found."
 msgstr "Geen resultate gevind."
 
@@ -1009,6 +1170,7 @@ msgid "ON"
 msgstr "AAN"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING."
 msgstr "GEBRUIK SLEGS hierdie modus as u weet wat u doen."
 
@@ -1045,7 +1207,16 @@ msgstr "Die uitset word geskat. As die prys met meer as {0}% verander, sal u tra
 msgid "Output is estimated. You will receive at least <0>{0} {1}</0> or the transaction will revert."
 msgstr "Die uitset word geskat. U sal minstens <0>{0} {1}</0> ontvang, anders gaan die transaksie terug."
 
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
+msgid "Output is estimated. You will receive at least <0>{1} {2}</0> or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}"
+msgstr ""
+
+#: 
+#~ msgid "Output is estimated. You will receive at least <0>{1} {2}</0> or the transaction will expire."
+#~ msgstr "Output is estimated. You will receive at least <0>{1} {2}</0> or the transaction will expire."
+
 #: src/components/swap/SwapModalHeader.tsx
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
 msgid "Output will be sent to <0>{0}</0>"
 msgstr "Uitset sal na <0>{0}</0> gestuur word"
 
@@ -1058,10 +1229,12 @@ msgid "Participating pools"
 msgstr "Deelnemende poele"
 
 #: src/components/WalletModal/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
 msgid "Please connect to the appropriate Ethereum network."
 msgstr "Verbind asseblief die toepaslike Ethereum-netwerk."
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Please type the word \"{confirmWord}\" to enable expert mode."
 msgstr "Tik die woord \"{confirmWord}\" in om die kundige modus te aktiveer."
 
@@ -1103,6 +1276,7 @@ msgid "Pools Overview"
 msgstr "Poele Oorsig"
 
 #: src/components/swap/SwapModalHeader.tsx
+#: src/custom/pages/Swap/index.tsx
 #: src/pages/RemoveLiquidity/index.tsx
 msgid "Price"
 msgstr "Prys"
@@ -1120,6 +1294,7 @@ msgid "Price Impact Too High"
 msgstr "Prysimpak te hoog"
 
 #: src/components/swap/SwapModalHeader.tsx
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
 msgid "Price Updated"
 msgstr "Prys opgedateer"
 
@@ -1168,6 +1343,11 @@ msgstr "Lees meer oor die voorsiening van likiditeit"
 msgid "Read more about unsupported assets"
 msgstr "Lees meer oor onondersteunde bates"
 
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "Receive (incl. fee)"
+msgstr ""
+
 #: src/components/AccountDetails/index.tsx
 msgid "Recent Transactions"
 msgstr "Onlangse transaksies"
@@ -1195,6 +1375,7 @@ msgid "Remove Liquidity"
 msgstr "Verwyder vloeibaarheid"
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "Remove list"
 msgstr "Verwyder lys"
 
@@ -1224,6 +1405,7 @@ msgid "Route"
 msgstr "Roete"
 
 #: src/components/SearchModal/CurrencySearch.tsx
+#: src/custom/components/SearchModal/CurrencySearch/CurrencySearchMod.tsx
 msgid "Search name or paste address"
 msgstr "Soek naam of plak adres"
 
@@ -1237,6 +1419,9 @@ msgstr "Kies 'n swembadtipe gebaseer op u fooi vir likiedeverskaffer."
 
 #: src/components/CurrencyInputPanel/index.tsx
 #: src/components/SearchModal/CurrencySearch.tsx
+#: src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod.tsx
+#: src/custom/components/SearchModal/CurrencySearch/CurrencySearchMod.tsx
+#: src/custom/state/swap/hooks.ts
 #: src/pages/PoolFinder/index.tsx
 #: src/pages/PoolFinder/index.tsx
 #: src/state/swap/hooks.ts
@@ -1257,7 +1442,7 @@ msgstr "Geselekteerde reeks"
 
 #: src/pages/Vote/index.tsx
 msgid "Self"
-msgstr "Self"
+msgstr ""
 
 #: src/components/vote/DelegateModal.tsx
 msgid "Self Delegate"
@@ -1288,8 +1473,14 @@ msgstr "Wys Portis"
 msgid "Simple"
 msgstr "Eenvoudig"
 
+#: 
+#~ msgid "Slippage Tolerance"
+#~ msgstr "Slippage Tolerance"
+
 #: src/components/TransactionSettings/index.tsx
 #: src/components/swap/AdvancedSwapDetails.tsx
+#: src/custom/components/swap/TradeSummary/RowSlippage.tsx
+#: src/custom/components/swap/TradeSummary/RowSlippage.tsx
 msgid "Slippage tolerance"
 msgstr "Glipverdraagsaamheid"
 
@@ -1298,6 +1489,7 @@ msgid "Some assets are not available through this interface because they may not
 msgstr "Sommige bates is nie beskikbaar via hierdie koppelvlak nie, omdat dit moontlik nie goed werk met die slim kontrakte nie, of omdat ons om regsredes nie handel kan toelaat nie."
 
 #: src/components/ErrorBoundary/index.tsx
+#: src/custom/components/ErrorBoundary/ErrorBoundaryMod.tsx
 msgid "Something went wrong"
 msgstr "Iets het verkeerd geloop"
 
@@ -1320,6 +1512,8 @@ msgstr "Verskaf {0} {1} en {2} {3}"
 #: src/components/Header/index.tsx
 #: src/components/NavigationTabs/index.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/custom/pages/Swap/SwapMod.tsx
+#: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
 #: src/pages/Swap/index.tsx
 msgid "Swap"
@@ -1329,6 +1523,10 @@ msgstr "Ruil om"
 #: src/pages/Swap/index.tsx
 msgid "Swap Anyway"
 msgstr "Ruil in elk geval"
+
+#: src/custom/components/swap/ConfirmSwapModal/index.tsx
+msgid "Swapping <0>{0} {inputSymbol}</0> for <1>{1} {outputSymbol}</1>"
+msgstr ""
 
 #: src/components/swap/ConfirmSwapModal.tsx
 msgid "Swapping {0} {1} for {2} {3}"
@@ -1347,6 +1545,7 @@ msgid "The input token cannot be transferred. There may be an issue with the inp
 msgstr "Die invoer-teken kan nie oorgedra word nie. Die invoer-teken kan 'n probleem hê."
 
 #: src/components/CurrencyInputPanel/index.tsx
+#: src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod.tsx
 msgid "The market price is outside your specified price range. Single-asset deposit only."
 msgstr "Die markprys is buite u gespesifiseerde prysklas. Slegs deposito vir enkelbates."
 
@@ -1375,12 +1574,18 @@ msgid "The transaction could not be sent because the deadline has passed. Please
 msgstr "Die transaksie kon nie gestuur word nie omdat die sperdatum verstryk het. Kyk dat u sperdatum nie te laag is nie."
 
 #: src/components/SearchModal/CommonBases.tsx
+#: src/custom/components/SearchModal/CommonBases/CommonBasesMod.tsx
 msgid "These tokens are commonly paired with other tokens."
 msgstr "Hierdie tekens word gewoonlik gekoppel aan ander tekens."
 
 #: src/components/SearchModal/ImportToken.tsx
+#: src/custom/components/SearchModal/ImportToken/ImportTokenMod.tsx
 msgid "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
 msgstr "Hierdie teken verskyn nie op die aktiewe tekenlys(te) nie. Maak seker dat dit die teken is wat u wil verhandel."
+
+#: src/custom/components/SearchModal/CurrencyList/index.tsx
+msgid "This token is unsupported as it does not operate optimally with Gnosis Protocol. Please refer to the FAQ for more information."
+msgstr ""
 
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "This tool will safely migrate your {0} liquidity to V3. The process is completely trustless thanks to the"
@@ -1394,11 +1599,17 @@ msgstr "Hierdie transaksie sal weens die prysbeweging nie slaag nie. Probeer u g
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 msgstr "Hierdie transaksie sal ook nie slaag nie as gevolg van prysbeweging of fooi by oordrag. Probeer u glyverdraagsaamheid verhoog."
 
+#: src/custom/components/swap/EthWethWrap/helpers.ts
+msgid "This {nativeSymbol} wrapping operation may leave insufficient funds to cover any future on-chain transaction costs."
+msgstr ""
+
 #: src/components/SearchModal/ManageTokens.tsx
+#: src/custom/components/SearchModal/ManageTokens/ManageTokensMod.tsx
 msgid "Tip: Custom tokens are stored locally in your browser"
 msgstr "Wenk: Pasgemaakte tekens word plaaslik in u blaaier geberg"
 
 #: src/components/swap/SwapModalHeader.tsx
+#: src/custom/components/swap/SwapModalHeader/SwapModalHeaderMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "To"
 msgstr "Aan"
@@ -1407,15 +1618,22 @@ msgstr "Aan"
 msgid "To (at least)"
 msgstr "Aan (ten minste)"
 
+#: 
+#~ msgid "To (incl. fee)"
+#~ msgstr "To (incl. fee)"
+
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Toggle Expert Mode"
 msgstr "Skakel deskundige modus af"
 
 #: src/components/SearchModal/Manage.tsx
+#: src/custom/components/SearchModal/Manage/ManageMod.tsx
 msgid "Tokens"
 msgstr "Tekens"
 
 #: src/components/SearchModal/CurrencyList.tsx
+#: src/custom/components/SearchModal/CurrencyList/CurrencyListMod.tsx
 msgid "Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists."
 msgstr "Tekens uit onaktiewe lyste. Voer spesifieke tekens hieronder in of klik op Bestuur om meer lyste te aktiveer."
 
@@ -1436,6 +1654,7 @@ msgid "Total deposits"
 msgstr "Totale deposito's"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Transaction Settings"
 msgstr "Transaksie-instellings"
 
@@ -1449,6 +1668,7 @@ msgid "Transaction Submitted"
 msgstr "Transaksie ingedien"
 
 #: src/components/TransactionSettings/index.tsx
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
 msgid "Transaction deadline"
 msgstr "Transaksiesperdatum"
 
@@ -1457,6 +1677,7 @@ msgid "Try Again"
 msgstr "Probeer weer"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "Turn On Expert Mode"
 msgstr "Skakel kundigheidsmodus aan"
 
@@ -1486,7 +1707,7 @@ msgstr "UNI-V2 LP-tekens word vereis. Nadat u likiditeit by die {0}-{1} poel gev
 
 #: src/pages/Earn/Manage.tsx
 msgid "UNI-V2 {0}-{1}"
-msgstr "UNI-V2 {0}-{1}"
+msgstr ""
 
 #: src/components/earn/ClaimRewardModal.tsx
 #: src/components/earn/UnstakingModal.tsx
@@ -1522,6 +1743,7 @@ msgid "Uniswap migration contract↗"
 msgstr "Onttrek migrasie kontrak↗"
 
 #: src/components/SearchModal/ImportToken.tsx
+#: src/custom/components/SearchModal/ImportToken/index.tsx
 msgid "Unknown Source"
 msgstr "Onbekende bron"
 
@@ -1542,6 +1764,10 @@ msgstr "Ontsluit stemming"
 msgid "Unlocking Votes"
 msgstr "Ontsluit stemme"
 
+#: src/custom/components/SearchModal/CurrencyList/index.tsx
+msgid "Unsupported"
+msgstr ""
+
 #: src/pages/AddLiquidity/index.tsx
 #: src/pages/AddLiquidityV2/index.tsx
 #: src/pages/Swap/index.tsx
@@ -1552,15 +1778,25 @@ msgstr "Nie-ondersteunde bate"
 msgid "Unsupported Assets"
 msgstr "Nie-ondersteunde bates"
 
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "Unsupported Token"
+msgstr ""
+
+#: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "Unwrap"
 msgstr "Maak oop"
+
+#: src/custom/hooks/useWrapCallback.ts
+msgid "Unwrap {0} {wrapped} to {native}"
+msgstr ""
 
 #: src/pages/Vote/index.tsx
 msgid "Update Delegation"
 msgstr "Delegasie op te dateer"
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "Update list"
 msgstr "Lys van opdaterings"
 
@@ -1574,7 +1810,7 @@ msgstr "V2 likiditeit"
 
 #: src/pages/Swap/index.tsx
 msgid "V3"
-msgstr "V3"
+msgstr ""
 
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
@@ -1594,6 +1830,7 @@ msgid "View accrued fees and analytics<0>↗</0>"
 msgstr "Kyk na opgelope fooie en analise <0> ↗</0>"
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "View list"
 msgstr "Kyk na lys"
 
@@ -1641,8 +1878,13 @@ msgid "Voting ends approximately {0}"
 msgstr "Die stemming eindig ongeveer {0}"
 
 #: src/components/TransactionConfirmationModal/index.tsx
+#: src/custom/components/TransactionConfirmationModal/TransactionConfirmationModalMod.tsx
 msgid "Waiting For Confirmation"
 msgstr "Wag op bevestiging"
+
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "Wallet Unsupported"
+msgstr ""
 
 #: src/components/earn/StakingModal.tsx
 msgid "Weekly Rewards"
@@ -1686,12 +1928,27 @@ msgstr "Onttrek {0} UNI-V2"
 msgid "Withdrew UNI-V2!"
 msgstr "UNI-V2 onttrek!"
 
+#: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "Wrap"
 msgstr "Draai toe"
 
+#: src/custom/components/swap/EthWethWrap/index.tsx
+msgid "Wrap my {nativeSymbol}"
+msgstr ""
+
+#: src/custom/components/swap/EthWethWrap/index.tsx
+msgid "Wrap my {nativeSymbol} anyways"
+msgstr ""
+
+#: src/custom/hooks/useWrapCallback.ts
+msgid "Wrap {0} {native} to {wrapped}"
+msgstr ""
+
 #: src/components/WalletModal/index.tsx
 #: src/components/Web3Status/index.tsx
+#: src/custom/components/WalletModal/WalletModalMod.tsx
+#: src/custom/components/Web3Status/Web3StatusMod.tsx
 msgid "Wrong Network"
 msgstr "Verkeerde netwerk"
 
@@ -1711,6 +1968,7 @@ msgstr "U is die eerste likiditeitsverskaffer."
 msgid "You can either vote on each proposal yourself or delegate your votes to a third party."
 msgstr "U kan self oor elke voorstel stem of u stemme aan 'n derde party delegeer."
 
+#: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
 msgid "You can now trade {0}"
 msgstr "U kan nou {0} verhandel"
@@ -1722,6 +1980,10 @@ msgstr "U het nog nie likiditeit in hierdie poel nie."
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "You must connect an account."
 msgstr "U moet 'n rekening koppel."
+
+#: src/custom/pages/Swap/SwapMod.tsx
+msgid "You must give the GP smart contracts permission to use your {0}. You only have to do this once per token."
+msgstr ""
 
 #: src/pages/Swap/index.tsx
 msgid "You must give the Uniswap smart contracts permission to use your {0}. You only have to do this once per token."
@@ -1798,6 +2060,10 @@ msgstr "U posisies"
 msgid "Your rate"
 msgstr "U tarief"
 
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
+msgid "Your swap expires and will not execute if it is pending for longer than the selected duration. {INPUT_OUTPUT_EXPLANATION}"
+msgstr ""
+
 #: src/components/PositionCard/V2.tsx
 #: src/components/PositionCard/index.tsx
 msgid "Your total pool tokens:"
@@ -1810,6 +2076,10 @@ msgstr "U transaksiekoste sal baie hoër wees, want dit bevat die gas om die poe
 #: src/components/TransactionSettings/index.tsx
 msgid "Your transaction may be frontrun"
 msgstr "U transaksie kan vooruitloop"
+
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
+msgid "Your transaction may expire"
+msgstr ""
 
 #: src/components/TransactionSettings/index.tsx
 msgid "Your transaction may fail"
@@ -1832,6 +2102,7 @@ msgid "Your unclaimed UNI"
 msgstr "U onopgeëiste UNI"
 
 #: src/components/Settings/index.tsx
+#: src/custom/components/Settings/SettingsMod.tsx
 msgid "confirm"
 msgstr "bevestig"
 
@@ -1840,41 +2111,56 @@ msgid "for {0}"
 msgstr "vir {0}"
 
 #: src/components/Web3Status/index.tsx
+#: src/custom/components/Web3Status/Web3StatusMod.tsx
 msgid "has socks emoji"
 msgstr "het sokkies emoji"
 
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "https:// or ipfs:// or ENS name"
 msgstr "https: // of ipfs: // of ENS naam"
 
 #: src/components/TransactionSettings/index.tsx
+#: src/custom/components/TransactionSettings/TransactionSettingsMod.tsx
 msgid "minutes"
 msgstr "minute"
 
 #: src/components/SearchModal/ImportRow.tsx
+#: src/custom/components/SearchModal/ImportRow/ImportRowMod.tsx
 msgid "via {0}"
-msgstr "via {0}"
+msgstr ""
 
 #: src/components/SearchModal/ImportToken.tsx
+#: src/custom/components/SearchModal/ImportToken/index.tsx
 msgid "via {0} token list"
 msgstr "via {0} tekenlys"
 
 #: src/components/SearchModal/ImportToken.tsx
+#: src/custom/components/SearchModal/ImportToken/ImportTokenMod.tsx
 msgid "{0, plural, one {Import token} other {Import tokens}}"
 msgstr "{0, plural, one {Invoer token} other {Voer tokens in}}"
+
+#: 
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/components/PositionCard/index.tsx
 #: src/pages/Vote/VotePage.tsx
 #: src/pages/Vote/VotePage.tsx
 msgid "{0} %"
-msgstr "{0} %"
+msgstr ""
+
+#: 
+#~ msgid "{0} (incl. fee)"
+#~ msgstr "{0} (incl. fee)"
 
 #: src/components/PositionListItem/index.tsx
 #: src/components/PositionListItem/index.tsx
 msgid "{0} <0/> per <1/>"
-msgstr "{0} <0/> per <1/>"
+msgstr ""
 
 #: src/components/SearchModal/ManageTokens.tsx
+#: src/custom/components/SearchModal/ManageTokens/ManageTokensMod.tsx
 msgid "{0} Custom Tokens"
 msgstr "{0} Persoonlike tekens"
 
@@ -1885,7 +2171,7 @@ msgstr "{0} gestort"
 
 #: src/components/Header/index.tsx
 msgid "{0} ETH"
-msgstr "{0} ETH"
+msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 #: src/pages/RemoveLiquidity/V3.tsx
@@ -1904,7 +2190,7 @@ msgstr "{0} hangende"
 #: src/components/claim/ClaimModal.tsx
 #: src/components/claim/ClaimModal.tsx
 msgid "{0} UNI"
-msgstr "{0} UNI"
+msgstr ""
 
 #: src/components/earn/PoolCard.tsx
 #: src/components/earn/PoolCard.tsx
@@ -1912,11 +2198,11 @@ msgstr "{0} UNI"
 #: src/pages/Earn/Manage.tsx
 #: src/pages/Earn/Manage.tsx
 msgid "{0} UNI / week"
-msgstr "{0} UNI / week"
+msgstr ""
 
 #: src/components/earn/StakingModal.tsx
 msgid "{0} UNI-V2"
-msgstr "{0} UNI-V2"
+msgstr ""
 
 #: src/pages/Earn/Manage.tsx
 msgid "{0} UNI-V2 LP tokens available"
@@ -1936,7 +2222,7 @@ msgstr "{0} Stemme"
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "{0} per {1}"
-msgstr "{0} per {1}"
+msgstr ""
 
 #: src/components/RateToggle/index.tsx
 #: src/components/RateToggle/index.tsx
@@ -1946,6 +2232,8 @@ msgstr "{0} prys"
 #: src/components/SearchModal/ImportList.tsx
 #: src/components/SearchModal/ManageLists.tsx
 #: src/components/SearchModal/ManageLists.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
+#: src/custom/components/SearchModal/ManageLists/ManageListsMod.tsx
 msgid "{0} tokens"
 msgstr "{0} tekens"
 
@@ -1955,19 +2243,21 @@ msgid "{0} {1} Price:"
 msgstr "{0} {1} Prys:"
 
 #: src/components/SearchModal/CurrencyList.tsx
+#: src/custom/components/SearchModal/CurrencyList/CurrencyListMod.tsx
 msgid "{0} • Added by user"
 msgstr "{0} • Bygevoeg deur gebruiker"
 
 #: src/components/CurrencyInputPanel/FiatValue.tsx
 #: src/components/PositionListItem/index.tsx
 #: src/components/PositionPreview/index.tsx
+#: src/custom/components/CurrencyInputPanel/FiatValue/FiatValueMod.tsx
 #: src/pages/AddLiquidityV2/ConfirmAddModalBottom.tsx
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "{0}%"
-msgstr "{0}%"
+msgstr ""
 
 #: src/pages/Earn/Manage.tsx
 msgid "{0}-{1} Liquidity Mining"
@@ -1975,7 +2265,7 @@ msgstr "{0}-{1} Likiditeitsmynbou"
 
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "{0}/{1} LP NFT"
-msgstr "{0}/{1} LP NFT"
+msgstr ""
 
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "{0}/{1} LP Tokens"
@@ -1983,19 +2273,39 @@ msgstr "{0}/{1} LP Tekens"
 
 #: src/components/claim/ClaimModal.tsx
 msgid "{SOCKS_AMOUNT} UNI"
-msgstr "{SOCKS_AMOUNT} UNI"
+msgstr ""
 
 #: src/components/claim/ClaimModal.tsx
 msgid "{USER_AMOUNT} UNI"
-msgstr "{USER_AMOUNT} UNI"
+msgstr ""
+
+#: src/custom/components/swap/UnsupportedCurrencyFooter/UnsupportedCurrencyFooterMod.tsx
+msgid "{detailsText}"
+msgstr ""
+
+#: src/custom/components/swap/UnsupportedCurrencyFooter/UnsupportedCurrencyFooterMod.tsx
+msgid "{detailsTitle}"
+msgstr ""
+
+#: src/custom/components/SearchModal/CurrencyList/index.tsx
+msgid "{name}: {description}"
+msgstr ""
+
+#: src/custom/components/Web3Status/Web3StatusMod.tsx
+msgid "{pendingCount} Pending"
+msgstr ""
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "{percentForSlider}%"
-msgstr "{percentForSlider}%"
+msgstr ""
+
+#: src/custom/components/swap/UnsupportedCurrencyFooter/UnsupportedCurrencyFooterMod.tsx
+msgid "{showDetailsText}"
+msgstr ""
 
 #: src/components/InputStepCounter/InputStepCounter.tsx
 msgid "{tokenB} per {tokenA}"
-msgstr "{tokenB} per {tokenA}"
+msgstr ""
 
 #: src/components/CurrencyInputPanel/FiatValue.tsx
 msgid "~$ <0/>"
@@ -2004,4 +2314,8 @@ msgstr "~ $ <0/>"
 #: src/pages/Pool/PositionPage.tsx
 msgid "← Back to Pools Overview"
 msgstr "← Terug na swembaddens"
+
+#: src/custom/components/CurrencyInputPanel/FiatValue/FiatValueMod.tsx
+msgid "≈ $<0/>"
+msgstr ""
 
