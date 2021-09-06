@@ -8,7 +8,7 @@ msgstr ""
 "Language: it\n"
 "Project-Id-Version: cowswap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-09-06 11:23\n"
+"PO-Revision-Date: 2021-09-06 13:44\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -49,6 +49,10 @@ msgstr "(cancella tutto)"
 #: src/pages/Vote/index.tsx
 msgid "(edit)"
 msgstr "(modifica)"
+
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "(incl. gas costs)"
+msgstr ""
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "+ Add a send (optional)"
@@ -154,6 +158,7 @@ msgid "A minimum threshold of 0.25% of the total UNI supply is required to submi
 msgstr "Per la presentazione delle proposte è richiesta una soglia minima dello 0,25% della fornitura UNI totale"
 
 #: src/components/Menu/index.tsx
+#: src/custom/components/Header/index.tsx
 msgid "About"
 msgstr "Informazioni"
 
@@ -804,6 +809,10 @@ msgstr "Esplora i pool popolari su Uniswap Analytics."
 msgid "Fee Tier"
 msgstr "Livello Di Tariffa"
 
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "Fees"
+msgstr ""
+
 #: src/pages/Vote/VotePage.tsx
 msgid "For"
 msgstr "Per"
@@ -1182,6 +1191,10 @@ msgstr ""
 msgid "On"
 msgstr ""
 
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already."
+msgstr ""
+
 #: src/pages/AddLiquidityV2/index.tsx
 msgid "Once you are happy with the rate click supply to review."
 msgstr "Una volta che sei soddisfatto del tasso di fornitura fai clic per recensire."
@@ -1189,6 +1202,10 @@ msgstr "Una volta che sei soddisfatto del tasso di fornitura fai clic per recens
 #: src/pages/Vote/VotePage.tsx
 msgid "Only UNI votes that were self delegated or delegated to another address before block {0} are eligible for voting."
 msgstr "Solo i voti UNI che sono stati auto-delegati o delegati a un altro indirizzo prima del blocco {0} sono ammissibili per votare."
+
+#: src/custom/constants/index.ts
+msgid "Only executed swaps incur fees."
+msgstr ""
 
 #: src/components/Web3ReactManager/index.tsx
 msgid "Oops! An unknown error occurred. Please refresh the page, or visit from another browser or device."
@@ -1457,6 +1474,10 @@ msgstr "Imposta Intervallo Di Prezzo"
 msgid "Set Starting Price"
 msgstr "Imposta Prezzo iniziale"
 
+#: src/custom/components/Settings/index.tsx
+msgid "Settings"
+msgstr ""
+
 #: src/pages/AddLiquidityV2/PoolPriceBar.tsx
 msgid "Share of Pool"
 msgstr "Quota del pool"
@@ -1512,6 +1533,7 @@ msgstr "Fornitura di {0} {1} e {2} {3}"
 #: src/components/Header/index.tsx
 #: src/components/NavigationTabs/index.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/custom/components/Header/index.tsx
 #: src/custom/pages/Swap/SwapMod.tsx
 #: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
@@ -1531,6 +1553,10 @@ msgstr ""
 #: src/components/swap/ConfirmSwapModal.tsx
 msgid "Swapping {0} {1} for {2} {3}"
 msgstr "Scambio di {0} {1} per {2} {3}"
+
+#: src/custom/components/Menu/index.tsx
+msgid "Terms and conditions"
+msgstr ""
 
 #: src/components/Popups/ClaimPopup.tsx
 msgid "Thanks for being part of the Uniswap community <0/>"
@@ -1572,6 +1598,10 @@ msgstr "Il rapporto tra i gettoni che aggiungi imposterà il prezzo di questo po
 #: src/hooks/useSwapCallback.ts
 msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
 msgstr "Impossibile inviare la transazione perché il termine è scaduto. Si prega di verificare che la scadenza della transazione non sia troppo bassa."
+
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.t"
+msgstr ""
 
 #: src/components/SearchModal/CommonBases.tsx
 #: src/custom/components/SearchModal/CommonBases/CommonBasesMod.tsx
