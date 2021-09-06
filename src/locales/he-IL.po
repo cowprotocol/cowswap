@@ -8,7 +8,7 @@ msgstr ""
 "Language: he\n"
 "Project-Id-Version: cowswap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-09-06 11:23\n"
+"PO-Revision-Date: 2021-09-06 13:44\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
@@ -49,6 +49,10 @@ msgstr "(נקה הכל)"
 #: src/pages/Vote/index.tsx
 msgid "(edit)"
 msgstr "(עריכה)"
+
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "(incl. gas costs)"
+msgstr ""
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "+ Add a send (optional)"
@@ -154,6 +158,7 @@ msgid "A minimum threshold of 0.25% of the total UNI supply is required to submi
 msgstr "הגשת הצעות נדרשת רף מינימלי של 0.25% מסך היצע ה- UNI"
 
 #: src/components/Menu/index.tsx
+#: src/custom/components/Header/index.tsx
 msgid "About"
 msgstr "אודות"
 
@@ -804,6 +809,10 @@ msgstr "גלה בריכות פופולריות ב- Uniswap Analytics."
 msgid "Fee Tier"
 msgstr "שכבת עמלה"
 
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "Fees"
+msgstr ""
+
 #: src/pages/Vote/VotePage.tsx
 msgid "For"
 msgstr "ל"
@@ -1182,6 +1191,10 @@ msgstr "כבוי"
 msgid "On"
 msgstr "דלוק"
 
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already."
+msgstr ""
+
 #: src/pages/AddLiquidityV2/index.tsx
 msgid "Once you are happy with the rate click supply to review."
 msgstr "ברגע שאתה מרוצה מההספק לחץ על האספקה לבדיקה."
@@ -1189,6 +1202,10 @@ msgstr "ברגע שאתה מרוצה מההספק לחץ על האספקה לב�
 #: src/pages/Vote/VotePage.tsx
 msgid "Only UNI votes that were self delegated or delegated to another address before block {0} are eligible for voting."
 msgstr "זכאים להצביע רק קולות של UNI שהועברו בעצמם או הועברו לכתובת אחרת לפני גוש {0}"
+
+#: src/custom/constants/index.ts
+msgid "Only executed swaps incur fees."
+msgstr ""
 
 #: src/components/Web3ReactManager/index.tsx
 msgid "Oops! An unknown error occurred. Please refresh the page, or visit from another browser or device."
@@ -1457,6 +1474,10 @@ msgstr "הגדר טווח מחירים"
 msgid "Set Starting Price"
 msgstr "הגדר מחיר התחלתי"
 
+#: src/custom/components/Settings/index.tsx
+msgid "Settings"
+msgstr ""
+
 #: src/pages/AddLiquidityV2/PoolPriceBar.tsx
 msgid "Share of Pool"
 msgstr "נתח המאגר"
@@ -1512,6 +1533,7 @@ msgstr "אספקת {0} {1} ו {2} {3}"
 #: src/components/Header/index.tsx
 #: src/components/NavigationTabs/index.tsx
 #: src/components/swap/SwapHeader.tsx
+#: src/custom/components/Header/index.tsx
 #: src/custom/pages/Swap/SwapMod.tsx
 #: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
@@ -1531,6 +1553,10 @@ msgstr ""
 #: src/components/swap/ConfirmSwapModal.tsx
 msgid "Swapping {0} {1} for {2} {3}"
 msgstr "החלפת {0} {1} ב- {2} {3}"
+
+#: src/custom/components/Menu/index.tsx
+msgid "Terms and conditions"
+msgstr ""
 
 #: src/components/Popups/ClaimPopup.tsx
 msgid "Thanks for being part of the Uniswap community <0/>"
@@ -1572,6 +1598,10 @@ msgstr "יחס האסימונים שתוסיף יקבע את מחיר הבריכ
 #: src/hooks/useSwapCallback.ts
 msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
 msgstr "לא ניתן היה לשלוח את העסקה מכיוון שהמועד האחרון חלף. אנא בדוק שמועד העסקה האחרון שלך אינו קרוב מדי."
+
+#: src/custom/components/swap/TradeSummary/RowFee.tsx
+msgid "These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.t"
+msgstr ""
 
 #: src/components/SearchModal/CommonBases.tsx
 #: src/custom/components/SearchModal/CommonBases/CommonBasesMod.tsx
