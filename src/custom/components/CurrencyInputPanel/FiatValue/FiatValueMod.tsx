@@ -42,7 +42,7 @@ export function FiatValue({
       )}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}>
-          &nbsp;(<Trans>{formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%</Trans>)
+          &nbsp;({formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%)
         </span>
       ) : null}
     </TYPE.body>
