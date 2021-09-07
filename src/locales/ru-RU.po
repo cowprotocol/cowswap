@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-09-06 13:44\n"
+"PO-Revision-Date: 2021-09-07 13:24\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -21,17 +21,17 @@ msgstr ""
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "$-"
-msgstr ""
+msgstr "$-"
 
 #: src/components/earn/PoolCard.tsx
 #: src/pages/Pool/PositionPage.tsx
 #: src/pages/Pool/PositionPage.tsx
 msgid "${0}"
-msgstr ""
+msgstr "${0}"
 
 #: src/components/earn/PoolCard.tsx
 msgid "${0} ETH"
-msgstr ""
+msgstr "${0} ETH"
 
 #: src/components/CurrencyInputPanel/index.tsx
 #: src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod.tsx
@@ -52,15 +52,15 @@ msgstr "(редактировать)"
 
 #: src/custom/components/swap/TradeSummary/RowFee.tsx
 msgid "(incl. gas costs)"
-msgstr ""
+msgstr "(вкл. расходы на газ)"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "+ Add a send (optional)"
-msgstr ""
+msgstr "Добавить получателя (опционально)"
 
 #: src/components/InputStepCounter/InputStepCounter.tsx
 msgid "+{feeAmountFormatted}%"
-msgstr ""
+msgstr "+{feeAmountFormatted}%"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
@@ -69,7 +69,7 @@ msgstr "- Удалить отправку"
 
 #: src/components/InputStepCounter/InputStepCounter.tsx
 msgid "-{feeAmountFormatted}%"
-msgstr ""
+msgstr "-{feeAmountFormatted}%"
 
 #: src/components/earn/PoolCard.tsx
 #: src/components/earn/PoolCard.tsx
@@ -92,15 +92,15 @@ msgstr "Комиссия 1%"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "50%"
-msgstr ""
+msgstr "50%"
 
 #: src/pages/RemoveLiquidity/V3.tsx
 msgid "75%"
-msgstr ""
+msgstr "75%"
 
 #: 
 #: 
@@ -229,7 +229,7 @@ msgstr "Против"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "Allow CowSwap to use your {0}"
-msgstr ""
+msgstr "Разрешить CowSwap использовать ваш {0}"
 
 #: src/pages/MigrateV2/MigrateV2Pair.tsx
 msgid "Allow LP token migration"
@@ -359,7 +359,7 @@ msgstr "Добавляя этот список, вы подразумевает�
 
 #: src/custom/components/WalletModal/index.tsx
 msgid "By connecting a wallet, you agree to GnosisDAO's <0>Terms & Conditions</0> and acknowledge that you have read, understood, and agree to them."
-msgstr ""
+msgstr "Подключая кошелек, вы соглашаетесь с <0>Условиями и положениями GnosisDAO</0> и подтверждаете, что вы прочитали, поняли и согласны с ними."
 
 #: src/components/WalletModal/index.tsx
 msgid "By connecting a wallet, you agree to Uniswap Labs’ <0>Terms of Service</0> and acknowledge that you have read and understand the <1>Uniswap protocol disclaimer</1>."
@@ -781,7 +781,7 @@ msgstr "Ошибка при импорте списка"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "Error loading price. Try again later."
-msgstr ""
+msgstr "Ошибка при загрузке цены. Повторите попытку позже."
 
 #: 
 #~ msgid "Error loading quote. Try again later."
@@ -811,7 +811,7 @@ msgstr "Уровень комиссии"
 
 #: src/custom/components/swap/TradeSummary/RowFee.tsx
 msgid "Fees"
-msgstr ""
+msgstr "Комиссия"
 
 #: src/pages/Vote/VotePage.tsx
 msgid "For"
@@ -1476,7 +1476,7 @@ msgstr "Установите начальную цену"
 
 #: src/custom/components/Settings/index.tsx
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 #: src/pages/AddLiquidityV2/PoolPriceBar.tsx
 msgid "Share of Pool"
@@ -1548,7 +1548,7 @@ msgstr "Всё равно обменять"
 
 #: src/custom/components/swap/ConfirmSwapModal/index.tsx
 msgid "Swapping <0>{0} {inputSymbol}</0> for <1>{1} {outputSymbol}</1>"
-msgstr ""
+msgstr "Обмен <0>{0} {inputSymbol}</0> на <1>{1} {outputSymbol}</1>"
 
 #: src/components/swap/ConfirmSwapModal.tsx
 msgid "Swapping {0} {1} for {2} {3}"
@@ -1556,7 +1556,7 @@ msgstr "Идет обмен {0} {1} на {2} {3}"
 
 #: src/custom/components/Menu/index.tsx
 msgid "Terms and conditions"
-msgstr ""
+msgstr "Условия и положения"
 
 #: src/components/Popups/ClaimPopup.tsx
 msgid "Thanks for being part of the Uniswap community <0/>"
@@ -1810,7 +1810,7 @@ msgstr "Неподдерживаемые активы"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "Unsupported Token"
-msgstr ""
+msgstr "Токен не поддерживается"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 #: src/pages/Swap/index.tsx
@@ -1914,7 +1914,7 @@ msgstr "Ожидание подтверждения"
 
 #: src/custom/pages/Swap/SwapMod.tsx
 msgid "Wallet Unsupported"
-msgstr ""
+msgstr "Кошелек не поддерживается"
 
 #: src/components/earn/StakingModal.tsx
 msgid "Weekly Rewards"
