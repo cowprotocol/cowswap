@@ -7,7 +7,7 @@ const { version } = require('./package.json')
 
 const plugins = []
 const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN
-const SENTRY_RELEASE_VERSION = 'CowSwap@' + version
+const SENTRY_RELEASE_VERSION = 'CowSwap@v' + version
 
 if (SENTRY_AUTH_TOKEN) {
   plugins.push(

@@ -27,6 +27,11 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from './utils/getLibrary'
 import { analyticsId } from './custom/utils/analytics'
 import AppziButton from 'components/AppziButton'
+import { nodeRemoveChildFix } from 'utils/node'
+
+// Node removeChild hackaround
+// based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
+nodeRemoveChildFix()
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
