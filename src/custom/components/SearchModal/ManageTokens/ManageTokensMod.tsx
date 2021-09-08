@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   padding-bottom: 80px;
 `
 
-const Footer = styled.div`
+export const Footer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
