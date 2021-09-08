@@ -24,7 +24,7 @@ if (SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
     integrations: [new Integrations.BrowserTracing()],
-    release: 'CowSwap@' + version,
+    release: 'CowSwap@v' + version,
     environment: environmentName,
 
     // Set tracesSampleRate to 1.0 to capture 100%
