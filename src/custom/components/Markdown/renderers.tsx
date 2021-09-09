@@ -11,7 +11,8 @@ const getTextFromMarkdownNode = (node: MarkdownNode): string => {
   // but can be `## heading text <span>span text</span> **bold text**`
   // =4 nodes (space is a text node)
   visit(node, 'text', (textNode) => {
-    text += textNode.value || ''
+    // TODO: fix this properly
+    text += (textNode as any).value || ''
   })
 
   return text

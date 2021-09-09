@@ -100,10 +100,12 @@ export default createReducer(initialState, (builder) =>
       fetchTokenList.pending,
       (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, requestId, url } }) => {
         const state = baseState[chainId]
+        const current = state.byUrl[url]?.current ?? null
+        const pendingUpdate = state.byUrl[url]?.pendingUpdate ?? null
+
         state.byUrl[url] = {
-          current: null,
-          pendingUpdate: null,
-          ...state.byUrl[url],
+          current,
+          pendingUpdate,
           loadingRequestId: requestId,
           error: null,
         }
@@ -123,7 +125,6 @@ export default createReducer(initialState, (builder) =>
           if (upgradeType === VersionUpgrade.NONE) return
           if (loadingRequestId === null || loadingRequestId === requestId) {
             state.byUrl[url] = {
-              ...state.byUrl[url],
               loadingRequestId: null,
               error: null,
               current: current,
@@ -137,7 +138,6 @@ export default createReducer(initialState, (builder) =>
           }
 
           state.byUrl[url] = {
-            ...state.byUrl[url],
             loadingRequestId: null,
             error: null,
             current: tokenList,
@@ -156,7 +156,6 @@ export default createReducer(initialState, (builder) =>
         }
 
         state.byUrl[url] = {
-          ...state.byUrl[url],
           loadingRequestId: null,
           error: errorMessage,
           current: null,
