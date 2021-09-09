@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useActiveWeb3React } from 'hooks/web3'
 
 import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
-import { ApiOrderStatus } from 'state/orders/utils'
+import { OrderTransitionStatus } from 'state/orders/utils'
 import { OrderFulfillmentData } from 'state/orders/actions'
 import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
@@ -55,12 +55,12 @@ export function CancelledOrdersUpdater(): null {
 
       // Group resolved promises by status
       // Only pick fulfilled
-      const { fulfilled } = unfilteredOrdersData.reduce<Record<ApiOrderStatus, OrderLogPopupMixData[]>>(
+      const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
         (acc, { status, popupData }) => {
           popupData && acc[status].push(popupData)
           return acc
         },
-        { fulfilled: [], expired: [], cancelled: [], unknown: [], pending: [] }
+        { fulfilled: [], presigned: [], expired: [], cancelled: [], unknown: [], pending: [] }
       )
 
       // Bach state update fulfilled orders, if any

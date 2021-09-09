@@ -8,6 +8,7 @@ export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export enum OrderStatus {
   PENDING = 'pending',
+  PRESIGNATURE_PENDING = 'presignaturePending',
   FULFILLED = 'fulfilled',
   EXPIRED = 'expired',
   CANCELLED = 'cancelled',
@@ -62,7 +63,6 @@ export interface AddPendingOrderParams {
   chainId: ChainId
   order: SerializedOrder
 }
-
 export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
 
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
@@ -92,12 +92,16 @@ export interface BatchOrdersUpdateParams {
   ids: OrderID[]
   chainId: ChainId
 }
+
+export type PresignedOrdersParams = BatchOrdersUpdateParams
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
 export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
+
+export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 

@@ -166,7 +166,7 @@ export const StatusLabelWrapper = styled.div`
   justify-content: center;
 `
 
-export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolean }>`
+export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolean; isPresignaturePending: boolean }>`
   height: 28px;
   width: 100px;
   ${({ isPending, isCancelling, theme }) => !isCancelling && isPending && `border:  1px solid ${theme.border2};`}
@@ -192,8 +192,8 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
     opacity: 0.1;
   }
 
-  ${({ theme, color, isCancelling, isPending }) =>
-    (isCancelling || isPending) &&
+  ${({ theme, color, isCancelling, isPending, isPresignaturePending }) =>
+    (isCancelling || isPending || isPresignaturePending) &&
     color &&
     css`
       &::after {
