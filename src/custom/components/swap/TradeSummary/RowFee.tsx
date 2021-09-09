@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components'
 import { TYPE } from 'theme'
 
@@ -10,7 +10,6 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { LightGreyText } from 'pages/Swap'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -39,7 +38,7 @@ export interface RowFeeProps {
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
   fee?: CurrencyAmount<Currency>
-
+  feeFiatValue: CurrencyAmount<Token> | null
   showHelpers: boolean
   allowsOffchainSigning: boolean
   fontWeight?: number
@@ -50,6 +49,7 @@ export interface RowFeeProps {
 export function RowFee({
   trade,
   fee,
+  feeFiatValue,
   allowsOffchainSigning,
   showHelpers,
   fontSize = 14,
@@ -60,8 +60,6 @@ export function RowFee({
   const { realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
   // trades are null when there is a fee quote error e.g
   // so we can take both
-  const feeAmount = trade?.fee.feeAsCurrency || fee
-  const feeFiatValue = useUSDCValue(feeAmount)
   const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
 
   const displayFee = realizedFee || fee

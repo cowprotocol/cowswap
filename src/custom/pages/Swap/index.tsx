@@ -33,6 +33,7 @@ import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceiv
 import { RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
@@ -217,11 +218,21 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
   const [isExpertMode] = useExpertModeManager()
   const { allowsOffchainSigning } = useWalletInfo()
 
+  // trades are null when there is a fee quote error e.g
+  // so we can take both
+  const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
+
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
       {(trade || fee) && (
-        <RowFee trade={trade} showHelpers={true} allowsOffchainSigning={allowsOffchainSigning} fee={fee} />
+        <RowFee
+          trade={trade}
+          showHelpers={true}
+          allowsOffchainSigning={allowsOffchainSigning}
+          fee={fee}
+          feeFiatValue={feeFiatValue}
+        />
       )}
 
       {isExpertMode && trade && (

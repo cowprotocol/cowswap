@@ -5,7 +5,7 @@ import React, { useState, useContext, useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { isAddress, shortenAddress } from 'utils'
@@ -91,8 +91,10 @@ SwapModalHeaderProps) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // show fiatValue for unadjusted trade amounts!
-  const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
-  const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+  // const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
+  // const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+  const fiatValueInput = useHigherUSDValue(trade.inputAmountWithoutFee)
+  const fiatValueOutput = useHigherUSDValue(trade.outputAmountWithoutFee)
 
   const [slippageIn, slippageOut] = useMemo(
     () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],
@@ -150,6 +152,7 @@ SwapModalHeaderProps) {
             showHelper
             trade={trade}
             type="From"
+            fiatValue={fiatValueInput}
           />
         </AuxInformationContainer>
       )}
@@ -203,6 +206,7 @@ SwapModalHeaderProps) {
             showHelper
             trade={trade}
             type="To"
+            fiatValue={fiatValueOutput}
           />
         </AuxInformationContainer>
       )}

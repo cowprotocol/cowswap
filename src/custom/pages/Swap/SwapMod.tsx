@@ -44,7 +44,7 @@ import useIsArgentWallet from 'hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import { /* useToggledVersion, */ Version } from 'hooks/useToggledVersion'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useWalletModalToggle /*, useToggleSettingsMenu */ } from 'state/application/hooks'
@@ -79,6 +79,7 @@ import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import usePrevious from 'hooks/usePrevious'
 
 export const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -229,8 +230,10 @@ export default function Swap({
     [independentField, parsedAmount, showWrap, trade]
   )
 
-  const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
-  const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
+  // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
+  // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
+  const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
+  const fiatValueOutput = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
   const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
@@ -287,6 +290,7 @@ export default function Swap({
 
   // check whether the user has approved the router on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+  const prevApprovalState = usePrevious(approvalState)
   const { state: signatureState, gatherPermitSignature } = useERC20PermitFromTrade(trade, allowedSlippage)
 
   const handleApprove = useCallback(async () => {
@@ -311,8 +315,11 @@ export default function Swap({
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
+    } else if (prevApprovalState === ApprovalState.PENDING && approvalState === ApprovalState.NOT_APPROVED) {
+      // user canceled the approval tx, reset the UI
+      setApprovalSubmitted(false)
     }
-  }, [approvalState, approvalSubmitted])
+  }, [approvalState, approvalSubmitted, prevApprovalState])
 
   const maxInputAmount: CurrencyAmount<Currency> | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
@@ -492,6 +499,7 @@ export default function Swap({
                       type="From"
                       feeAmount={formatSmart(trade?.fee?.feeAsCurrency, AMOUNT_PRECISION)}
                       allowsOffchainSigning={allowsOffchainSigning}
+                      fiatValue={fiatValueInput}
                     />
                   )
                 }
@@ -551,6 +559,7 @@ export default function Swap({
                         AMOUNT_PRECISION
                       )}
                       allowsOffchainSigning={allowsOffchainSigning}
+                      fiatValue={fiatValueOutput}
                     />
                   )
                 }

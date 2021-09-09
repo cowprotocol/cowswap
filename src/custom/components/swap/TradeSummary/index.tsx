@@ -10,6 +10,7 @@ import { RowFee } from './RowFee'
 import { RowSlippage } from './RowSlippage'
 import { RowReceivedAfterSlippage } from './RowReceivedAfterSlippage'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 
 const Wrapper = styled.div`
   ${RowFixed} {
@@ -23,6 +24,7 @@ export type TradeSummaryProps = Required<AdvancedSwapDetailsProps>
 
 export default function TradeSummary({ trade, allowedSlippage, showHelpers, showFee }: TradeSummaryProps) {
   const { allowsOffchainSigning } = useWalletInfo()
+  const feeFiatValue = useHigherUSDValue(trade.fee.feeAsCurrency)
 
   return (
     <Wrapper>
@@ -31,6 +33,7 @@ export default function TradeSummary({ trade, allowedSlippage, showHelpers, show
         {showFee && (
           <RowFee
             trade={trade}
+            feeFiatValue={feeFiatValue}
             allowsOffchainSigning={allowsOffchainSigning}
             showHelpers={showHelpers}
             fontSize={12}
