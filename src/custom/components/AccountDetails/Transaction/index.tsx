@@ -47,6 +47,7 @@ import {
 } from './styled'
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
 import { DEFAULT_PRECISION } from 'constants/index'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -326,6 +327,7 @@ function unfillableAlert(): JSX.Element {
 
 export default function Transaction({ hash: id }: { hash: string }) {
   const { chainId } = useActiveWeb3React()
+  const { allowsOffchainSigning } = useWalletInfo()
   // Return info necessary for rendering order/transaction info from the incoming id
   // returns info related to activity: TransactionDetails | Order
   const activityData = useActivityDescriptors({ id, chainId })
@@ -343,7 +345,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const isExpired = status === ActivityStatus.EXPIRED
   const isCancelling = status === ActivityStatus.CANCELLING
   const isCancelled = status === ActivityStatus.CANCELLED
-  const isCancellable = isPending && type === ActivityType.ORDER
+  const isCancellable = allowsOffchainSigning && isPending && type === ActivityType.ORDER
   const isUnfillable = isCancellable && (activity as Order).isUnfillable
 
   // Type of Transaction
