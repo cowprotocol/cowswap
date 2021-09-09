@@ -42,9 +42,10 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     if (!orders) return
 
-    const { pending, fulfilled, expired, cancelled } = orders
+    const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
 
-    const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
+    const orderObject =
+      pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
 
     // look up Order.summary for Popup
     const summary = orderObject?.order.summary
