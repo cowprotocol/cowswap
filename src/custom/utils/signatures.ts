@@ -41,8 +41,10 @@ export interface SignOrderParams {
 export interface OrderCreation extends UnsignedOrder {
   signingScheme: SigningScheme // signed method
 
-  // Signature is only used for offchain signed transactions. It can be omitted for pre-signed ones
-  signature?: string // 65 bytes encoded as hex without `0x` prefix. r + s + v from the spec
+  // Signature is used for:
+  //  - Signature: EIP-712,ETHSIGN
+  //  - Owner address: for PRESIGN
+  signature: string // 65 bytes encoded as hex without `0x` prefix. r + s + v from the spec
 }
 
 export interface SingOrderCancellationParams {
@@ -57,9 +59,11 @@ export interface OrderCancellation extends OrderCancellationGp {
   signingScheme: SigningScheme
 }
 
+export type SigningSchemeValue = 'eip712' | 'ethsign' | 'eip1271' | 'presign'
+
 interface SchemaInfo {
   libraryValue: number
-  apiValue: string
+  apiValue: SigningSchemeValue
 }
 const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.EIP712, { libraryValue: 0, apiValue: 'eip712' }],

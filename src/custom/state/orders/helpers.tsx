@@ -7,7 +7,7 @@ import { addPopup } from 'state/application/actions'
 import { OrderStatus } from './actions'
 import { CancellationSummary } from 'components/AccountDetails/Transaction/styled'
 
-type OrderStatusExtended = OrderStatus | 'submitted'
+type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
 interface SetOrderSummaryParams {
   id: string
@@ -103,6 +103,7 @@ export function setPopupData(
       descriptor,
     }),
   }
+
   let content: TxnPopupContent | MetaPopupContent
   if (type === OrderTxTypes.TXN) {
     content = {

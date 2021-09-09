@@ -105,7 +105,9 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-const isPending = (data: TransactionAndOrder) => data.status === OrderStatus.PENDING
+const isPending = (data: TransactionAndOrder) =>
+  data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
+
 const isConfirmed = (data: TransactionAndOrder) =>
   data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
 

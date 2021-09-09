@@ -20,6 +20,7 @@ export enum ActivityType {
 
 export enum ActivityStatus {
   PENDING,
+  PRESIGNATURE_PENDING,
   CONFIRMED,
   EXPIRED,
   CANCELLING,
@@ -114,12 +115,17 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id:
 
     let activity: TransactionDetails | Order, type: ActivityType
 
-    let isPending: boolean, isConfirmed: boolean, isCancelling: boolean, isCancelled: boolean
+    let isPending: boolean,
+      isPresignaturePending: boolean,
+      isConfirmed: boolean,
+      isCancelling: boolean,
+      isCancelled: boolean
 
     if (!tx && order) {
       // We're dealing with an ORDER
       // setup variables accordingly...
       isPending = order?.status === OrderStatus.PENDING
+      isPresignaturePending = order?.status === OrderStatus.PRESIGNATURE_PENDING
       isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
       isCancelling = (order.isCancelling || false) && isPending
       isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
@@ -132,6 +138,7 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id:
       const isReceiptConfirmed =
         tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
       isPending = !tx?.receipt
+      isPresignaturePending = false
       isConfirmed = !isPending && isReceiptConfirmed
       // TODO: can't tell when it's cancelled from the network yet
       isCancelling = false
@@ -147,6 +154,8 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id:
       status = ActivityStatus.CANCELLING
     } else if (isPending) {
       status = ActivityStatus.PENDING
+    } else if (isPresignaturePending) {
+      status = ActivityStatus.PRESIGNATURE_PENDING
     } else if (isConfirmed) {
       status = ActivityStatus.CONFIRMED
     } else if (isCancelled) {
