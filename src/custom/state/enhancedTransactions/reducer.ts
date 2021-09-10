@@ -6,7 +6,6 @@ import {
   finalizeTransaction,
   cancelTransaction,
   replaceTransaction,
-  updateSafeTransactions,
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
