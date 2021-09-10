@@ -6,10 +6,7 @@ import { EnhancedTransactionDetails } from './reducer'
 type WithChainId = { chainId: number }
 
 export type AddTransactionParams = WithChainId &
-  Pick<
-    EnhancedTransactionDetails,
-    'hash' | 'hashType' | 'from' | 'approval' | 'presign' | 'summary' | 'safeTransaction'
-  >
+  Pick<EnhancedTransactionDetails, 'hash' | 'hashType' | 'from' | 'approval' | 'presign' | 'summary'>
 
 export const addTransaction = createAction<AddTransactionParams>('enhancedTransactions/addTransaction')
 
@@ -38,9 +35,3 @@ export const replaceTransaction = createAction<{
   oldHash: string
   newHash: string
 }>('enhancedTransactions/replaceTransaction')
-
-// TODO: will be uncommented in next PR (let me leave it in this PR temporarilly)
-// export const updateSafeTransactions = createAction<{
-//   chainId: number
-//   safeTransactions: SafeMultisigTransactionResponse[]
-// }>('enhancedTransactions/updateSafeTransactions')
