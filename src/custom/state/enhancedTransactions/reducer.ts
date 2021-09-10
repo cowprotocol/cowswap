@@ -12,8 +12,8 @@ import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
 
 export enum HashType {
-  ETHEREUM_TX,
-  GNOSIS_SAFE_TX,
+  ETHEREUM_TX = 'ETHEREUM_TX',
+  GNOSIS_SAFE_TX = 'GNOSIS_SAFE_TX',
 }
 
 export interface EnhancedTransactionDetails {
