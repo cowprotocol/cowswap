@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { TransactionResponse } from '@ethersproject/providers'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'
 import { Contract } from 'ethers'
-import { useTransactionAdder } from 'state/transactions/hooks'
+import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useWETHContract } from 'hooks/useContract'
@@ -13,6 +13,7 @@ import { t } from '@lingui/macro'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
+import { HashType } from 'state/enhancedTransactions/reducer'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -67,7 +68,11 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     wrapUnwrapCallback = async () => {
       try {
         const txReceipt = await wrapUnwrap()
-        addTransaction(txReceipt, { summary })
+        addTransaction({
+          hash: txReceipt.hash,
+          hashType: HashType.ETHEREUM_TX,
+          summary,
+        })
 
         return txReceipt
       } catch (error) {

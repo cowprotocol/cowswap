@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
-import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import { isTransactionRecent, useAllTransactions } from 'state/enhancedTransactions/hooks'
 import { useOrder, useOrders } from 'state/orders/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { Order, OrderStatus } from 'state/orders/actions'
-import { TransactionDetails } from 'state/transactions/reducer'
+import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 export type TransactionAndOrder =
   | (Order & { addedTime: number })
-  | (TransactionDetails & {
+  | (EnhancedTransactionDetails & {
       id: string
       status: OrderStatus
     })
@@ -57,7 +57,7 @@ export default function useRecentActivity() {
     // and adjust order object to match TransactionDetail addedTime format
     // which is used later in app to render list of activity
     const adjustedOrders = allNonEmptyOrders.filter(isOrderRecent).map((order) => {
-      // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
+      // we need to essentially match EnhancedTransactionDetails type which uses "addedTime" for date checking
       // and time in MS vs ISO string as Orders uses
       return {
         ...order,
@@ -87,7 +87,7 @@ export default function useRecentActivity() {
   }, [allTransactions])
 
   return useMemo(() => {
-    // Concat together the TransactionDetails[] and Orders[]
+    // Concat together the EnhancedTransactionDetails[] and Orders[]
     // then sort them by newest first
     const sortedActivities = recentTransactionsAdjusted.concat(recentOrdersAdjusted).sort((a, b) => {
       return b.addedTime - a.addedTime
@@ -98,7 +98,7 @@ export default function useRecentActivity() {
 }
 
 interface ActivityDescriptors {
-  activity: TransactionDetails | Order
+  activity: EnhancedTransactionDetails | Order
   summary?: string
   status: ActivityStatus
   type: ActivityType
@@ -113,7 +113,7 @@ export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id:
   return useMemo(() => {
     if ((!tx && !order) || !chainId) return null
 
-    let activity: TransactionDetails | Order, type: ActivityType
+    let activity: EnhancedTransactionDetails | Order, type: ActivityType
 
     let isPending: boolean,
       isPresignaturePending: boolean,

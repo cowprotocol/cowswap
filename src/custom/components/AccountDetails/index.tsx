@@ -3,7 +3,7 @@ import { batch, useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from 'hooks/web3'
 import { AppDispatch } from 'state'
-import { clearAllTransactions } from 'state/transactions/actions'
+import { clearAllTransactions } from 'state/enhancedTransactions/actions'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import Copy from 'components/Copy'
