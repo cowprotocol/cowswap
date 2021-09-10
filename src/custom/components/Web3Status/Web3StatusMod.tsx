@@ -14,8 +14,8 @@ import styled, { css } from 'styled-components'
 import useENSName from 'hooks/useENSName'
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useWalletModalToggle } from 'state/application/hooks'
-// import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
-import { TransactionDetails } from 'state/transactions/reducer'
+// import { isTransactionRecent, useAllTransactions } from 'state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { shortenAddress } from 'utils'
 import { ButtonSecondary } from 'components/Button'
 
@@ -119,7 +119,7 @@ const NetworkIcon = styled(Activity)`
 `
 
 // we want the latest one to come first, so return negative if a is after b
-export function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+export function newTransactionsFirst(a: EnhancedTransactionDetails, b: EnhancedTransactionDetails) {
   return b.addedTime - a.addedTime
 }
 

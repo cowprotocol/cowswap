@@ -329,7 +329,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const { chainId } = useActiveWeb3React()
   const { allowsOffchainSigning } = useWalletInfo()
   // Return info necessary for rendering order/transaction info from the incoming id
-  // returns info related to activity: TransactionDetails | Order
+  // returns info related to activity: EnhancedTransactionDetails | Order
   const activityData = useActivityDescriptors({ id, chainId })
 
   const [showCancelModal, setShowCancelModal] = useState(false)
