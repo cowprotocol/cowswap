@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
-import { HighFeeWarning } from 'components/HighFeeWarning'
+import { HighFeeWarning as HighFeeWarningBase } from 'components/HighFeeWarning'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
   background-color: ${({ theme }) => darken(0.06, theme.bg1)};
@@ -15,6 +15,9 @@ const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
 `
 
 export type LightCardType = typeof LightCard
+
+// targettable by styled injection
+const HighFeeWarning = styled(HighFeeWarningBase)``
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -25,11 +28,11 @@ const Wrapper = styled.div`
     stroke: ${({ theme }) => theme.text1};
   }
 
-  ${AutoColumn} > div > div {
+  ${AutoColumn} > div:not(${HighFeeWarning}) > div {
     color: ${({ theme }) => theme.text1};
   }
 
-  ${AuxInformationContainer} {
+  ${AuxInformationContainer}:not(${HighFeeWarning}) {
     background-color: ${({ theme }) => theme.bg3};
     border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
     border-top: 0;

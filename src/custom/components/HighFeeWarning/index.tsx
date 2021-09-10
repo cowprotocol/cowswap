@@ -29,10 +29,9 @@ const HighFeeWarningContainer = styled(AuxInformationContainer).attrs((props) =>
   ...props,
   hideInput: true,
 }))<HighFeeContainerProps>`
-  &&&&& {
-    background: ${({ theme, bgColour }) => bgColour || theme.info};
-    color: ${({ theme, textColour }) => textColour || theme.infoText};
-  }
+  background: ${({ theme, bgColour }) => bgColour || theme.info};
+  color: ${({ theme, textColour }) => textColour || theme.infoText};
+
   padding: ${({ padding = '5px 12px' }) => padding};
   width: ${({ width = '100%' }) => width};
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
@@ -108,6 +107,7 @@ const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) 
 export type HighFeeWarningProps = {
   trade?: TradeGp
   acceptedStatus?: boolean
+  className?: string
   acceptWarningCb?: () => void
 } & HighFeeContainerProps
 
