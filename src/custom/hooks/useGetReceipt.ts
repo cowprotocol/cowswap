@@ -17,7 +17,7 @@ interface ReceiptResult extends WithCancel {
   promise: Promise<TransactionReceipt>
 }
 
-type GetReceipt = (hash: string) => ReceiptResult
+export type GetReceipt = (hash: string) => ReceiptResult
 
 export function useGetReceipt(): GetReceipt {
   const { chainId, library } = useActiveWeb3React()
