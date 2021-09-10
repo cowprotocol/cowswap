@@ -1,4 +1,3 @@
-import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { createAction } from '@reduxjs/toolkit'
 import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
 import { EnhancedTransactionDetails } from './reducer'
@@ -16,7 +15,6 @@ export const finalizeTransaction = createAction<{
   chainId: number
   hash: string
   receipt: SerializableTransactionReceipt
-  safeTransaction?: SafeMultisigTransactionResponse
 }>('enhancedTransactions/finalizeTransaction')
 
 export const checkedTransaction = createAction<{
