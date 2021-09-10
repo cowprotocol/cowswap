@@ -39,7 +39,8 @@ export const replaceTransaction = createAction<{
   newHash: string
 }>('enhancedTransactions/replaceTransaction')
 
-export const updateSafeTransactions = createAction<{
-  chainId: number
-  safeTransactions: SafeMultisigTransactionResponse[]
-}>('enhancedTransactions/updateSafeTransactions')
+// TODO: Wip, commented, cause the update of the state for safe tx will come in another PR. Pls don't review this part yet
+// export const updateSafeTransactions = createAction<{
+//   chainId: number
+//   safeTransactions: SafeMultisigTransactionResponse[]
+// }>('enhancedTransactions/updateSafeTransactions')
