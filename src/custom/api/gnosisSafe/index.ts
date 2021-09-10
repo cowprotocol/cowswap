@@ -2,15 +2,15 @@ import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } 
 import { registerOnWindow } from '@src/custom/utils/misc'
 import { ChainId } from '@uniswap/sdk'
 
-const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<ChainId, string>> = {
+const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'https://safe-transaction.gnosis.io',
   [ChainId.RINKEBY]: 'https://safe-transaction.rinkeby.gnosis.io',
   [ChainId.XDAI]: 'https://safe-transaction.xdai.gnosis.io',
 }
 
-const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<ChainId, SafeServiceClient | null>> = {}
+const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}
 
-function _getClient(chainId: ChainId): SafeServiceClient | null {
+function _getClient(chainId: number): SafeServiceClient | null {
   let client = SAFE_TRANSACTION_SERVICE_CACHE[chainId]
   if (client === undefined) {
     const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
@@ -27,7 +27,7 @@ function _getClient(chainId: ChainId): SafeServiceClient | null {
   return client
 }
 
-function _getClientOrThrow(chainId: ChainId): SafeServiceClient {
+function _getClientOrThrow(chainId: number): SafeServiceClient {
   const client = _getClient(chainId)
   if (!client) {
     throw new Error('Unsupported network for Gnosis Safe Transaction Service: ' + chainId)
@@ -36,13 +36,13 @@ function _getClientOrThrow(chainId: ChainId): SafeServiceClient {
   return client
 }
 
-export function getSafeTransaction(chainId: ChainId, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {
+export function getSafeTransaction(chainId: number, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {
   console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
   const client = _getClientOrThrow(chainId)
   return client.getTransaction(safeTxHash)
 }
 
-export function getSafeInfo(chainId: ChainId, safeAddress: string): Promise<SafeInfoResponse> {
+export function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
   console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
   const client = _getClientOrThrow(chainId)
 

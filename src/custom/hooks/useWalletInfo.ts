@@ -14,6 +14,7 @@ import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe']
 
 export interface ConnectedWalletInfo {
+  chainId?: number
   active: boolean
   account?: string | null
   activeNetwork: boolean // active default connection
@@ -102,6 +103,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
   }, [chainId, account, walletName])
 
   return {
+    chainId,
     active,
     account,
     activeNetwork: contextNetwork.active,
