@@ -14,7 +14,6 @@ import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
 import { useAllTransactionsDetails } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { noop } from 'react-use-gesture/dist/utils'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -122,7 +121,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
       return cancel
     } else {
       // TODO: Handle Gnosis Safe transactions
-      return noop
+      return () => console.error('Handle Gnosis Safe transactions. Not implemented yet!')
     }
   })
 
