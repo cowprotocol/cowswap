@@ -37,14 +37,14 @@ import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import { /* DEFAULT_LIST_OF_LISTS, */ DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
+import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import TradeGp from './TradeGp'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
 
 import { BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
-import { useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
+import { useIsExpertMode, useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
 
 export * from '@src/state/swap/hooks'
 
@@ -144,6 +144,62 @@ interface DerivedSwapInfo {
       : false)
   )
 } */
+
+function _computeFeeWarningAcceptedState({
+  feeWarningAccepted,
+  isHighFee,
+  isExpertMode,
+}: {
+  feeWarningAccepted: boolean
+  isHighFee: boolean
+  isExpertMode: boolean
+}) {
+  // in expert mode there is no fee warning thus it's true
+  if (isExpertMode || feeWarningAccepted) return true
+  else {
+    // not expert mode? is the fee high? that's only when we care
+    if (isHighFee) {
+      return feeWarningAccepted
+    } else {
+      return true
+    }
+  }
+}
+
+/**
+ * useHighFeeWarning
+ * @description checks whether fee vs trade inputAmount = high fee warning
+ * @description returns params related to high fee and a cb for checking/unchecking fee acceptance
+ * @param trade TradeGp param
+ */
+export function useHighFeeWarning(trade?: TradeGp) {
+  const isExpertMode = useIsExpertMode()
+  const { INPUT, OUTPUT, independentField } = useSwapState()
+
+  const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false) // mod - high fee warning disable state
+
+  // only considers inputAmount vs fee (fee is in input token)
+  const [isHighFee, feePercentage] = useMemo(() => {
+    if (!trade) return [false, undefined]
+
+    const { inputAmount, fee } = trade
+    const feePercentage = fee.feeAsCurrency.divide(inputAmount).asFraction
+    return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage.multiply('100')]
+  }, [trade])
+
+  // reset the state when users change swap params
+  useEffect(() => {
+    setFeeWarningAccepted(false)
+  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
+
+  return {
+    isHighFee,
+    feePercentage,
+    // we only care/check about feeWarning being accepted if the fee is actually high..
+    feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee, isExpertMode }),
+    setFeeWarningAccepted,
+  }
+}
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): /* {
