@@ -1,3 +1,4 @@
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { createAction } from '@reduxjs/toolkit'
 import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
 import { EnhancedTransactionDetails } from './reducer'
@@ -37,3 +38,9 @@ export const replaceTransaction = createAction<{
   oldHash: string
   newHash: string
 }>('enhancedTransactions/replaceTransaction')
+
+// TODO: will be uncommented in next PR (let me leave it in this PR temporarilly)
+// export const updateSafeTransactions = createAction<{
+//   chainId: number
+//   safeTransactions: SafeMultisigTransactionResponse[]
+// }>('enhancedTransactions/updateSafeTransactions')
