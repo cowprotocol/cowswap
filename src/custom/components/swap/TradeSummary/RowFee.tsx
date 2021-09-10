@@ -5,7 +5,7 @@ import { TYPE } from 'theme'
 
 import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
-import { StyledInfo } from 'pages/Swap/SwapMod'
+import { StyledInfo } from 'pages/Swap/styleds'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
