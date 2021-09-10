@@ -37,7 +37,7 @@ export interface EnhancedTransactionDetails {
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 }
 
-interface EnhancedTransactionState {
+export interface EnhancedTransactionState {
   [chainId: number]: {
     [txHash: string]: EnhancedTransactionDetails
   }
