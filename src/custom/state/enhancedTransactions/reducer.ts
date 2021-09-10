@@ -17,17 +17,19 @@ export enum HashType {
 }
 
 export interface EnhancedTransactionDetails {
-  hash: string // The hash is normally an ethereum transaction hash, however for multisigs can be other kind of hashes
-  hashType: HashType
+  hash: string // The hash of the transaction, normally Ethereum one, but not necessarily
+  hashType: HashType // Transaction hash: could be Ethereum tx, or for multisigs could be some kind of hash identifying the order (i.e. Gnosis Safe)
   transactionHash?: string // Transaction hash. For EOA this field is immediately available, however, other wallets go through a process of offchain signing before the transactionHash is available
+
+  // Params using for polling handling
+  addedTime: number // Used to determine the polling frequency
+  lastCheckedBlockNumber?: number
 
   // Basic data
   from: string
   summary?: string
-  lastCheckedBlockNumber?: number
-  addedTime: number
   confirmedTime?: number
-  receipt?: SerializableTransactionReceipt
+  receipt?: SerializableTransactionReceipt // Ethereum transaction receipt
 
   // Operations
   approval?: { tokenAddress: string; spender: string }
