@@ -10,12 +10,12 @@ import { retry, RetryableError, RetryOptions } from 'utils/retry'
 import { updateBlockNumber } from 'state/application/actions'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
 import { checkedTransaction, finalizeTransaction } from '../actions'
+import { EnhancedTransactionDetails } from '../reducer'
 
-interface TxInterface {
-  addedTime: number
-  receipt?: Record<string, any>
-  lastCheckedBlockNumber?: number
-}
+type TxInterface = Pick<
+  EnhancedTransactionDetails,
+  'addedTime' | 'lastCheckedBlockNumber' | 'receipt' | 'safeTransaction'
+>
 
 export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
   if (tx.receipt) return false
@@ -28,7 +28,7 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
     return blocksSinceCheck > 9
   } else if (minutesPending > 5) {
     // every 3 blocks if pending more than 5 minutes
-    return blocksSinceCheck > 2
+    return blocksSinceCheck >= 3
   } else {
     // otherwise every block
     return true
