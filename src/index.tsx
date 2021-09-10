@@ -17,6 +17,7 @@ import ApplicationUpdater from './state/application/updater'
 import ListsUpdater from 'state/lists/updater'
 import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
+import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import UserUpdater from './state/user/updater'
 import FeesUpdater from 'state/price/updater'
 import GasUpdater from 'state/gas/updater'
@@ -64,6 +65,7 @@ function Updaters() {
       <UserUpdater />
       <ApplicationUpdater />
       <TransactionUpdater />
+      <EnhancedTransactionUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />

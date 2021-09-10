@@ -5,7 +5,7 @@ import React, { useState, useContext, useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { isAddress, shortenAddress } from 'utils'
@@ -26,12 +26,13 @@ import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { Price } from 'pages/Swap'
+import { HighFeeWarningProps } from 'components/HighFeeWarning'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -60,6 +61,7 @@ export interface SwapModalHeaderProps {
   priceImpactWithoutFee?: Percent
   onAcceptChanges: () => void
   LightCard: LightCardType
+  HighFeeWarning: React.FC<HighFeeWarningProps>
 }
 
 export default function SwapModalHeader({
@@ -69,6 +71,7 @@ export default function SwapModalHeader({
   showAcceptChanges,
   onAcceptChanges,
   LightCard,
+  HighFeeWarning,
 }: /* 
 {
   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
@@ -89,8 +92,10 @@ SwapModalHeaderProps) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // show fiatValue for unadjusted trade amounts!
-  const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
-  const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+  // const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
+  // const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+  const fiatValueInput = useHigherUSDValue(trade.inputAmountWithoutFee)
+  const fiatValueOutput = useHigherUSDValue(trade.outputAmountWithoutFee)
 
   const [slippageIn, slippageOut] = useMemo(
     () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],
@@ -105,8 +110,8 @@ SwapModalHeaderProps) {
     [trade]
   )
 
-  const fullInputWithoutFee = trade?.inputAmountWithoutFee?.toFixed(trade?.inputAmount.currency.decimals) || '-'
-  const fullOutputWithoutFee = trade?.outputAmountWithoutFee?.toFixed(trade?.outputAmount.currency.decimals) || '-'
+  const fullInputWithoutFee = formatMax(trade?.inputAmountWithoutFee, trade?.inputAmount.currency.decimals) || '-'
+  const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
 
   return (
     <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
@@ -148,6 +153,7 @@ SwapModalHeaderProps) {
             showHelper
             trade={trade}
             type="From"
+            fiatValue={fiatValueInput}
           />
         </AuxInformationContainer>
       )}
@@ -200,6 +206,7 @@ SwapModalHeaderProps) {
             showHelper
             trade={trade}
             type="To"
+            fiatValue={fiatValueOutput}
           />
         </AuxInformationContainer>
       )}
@@ -277,6 +284,8 @@ SwapModalHeaderProps) {
           </TYPE.main>
         </AutoColumn>
       ) : null}
+      {/* High Fee Warning */}
+      <HighFeeWarning trade={trade} margin="0" />
     </AutoColumn>
   )
 }

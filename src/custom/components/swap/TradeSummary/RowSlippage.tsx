@@ -7,7 +7,7 @@ import { TYPE } from 'theme'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
-import { StyledInfo } from 'pages/Swap/SwapMod'
+import { StyledInfo } from 'pages/Swap/styleds'
 import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
@@ -28,6 +28,7 @@ export function RowSlippage({
 }: RowSlippageProps) {
   const theme = useContext(ThemeContext)
   const toggleSettings = useToggleSettingsMenu()
+  const displaySlippage = `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`
 
   return (
     <RowBetween height={rowHeight}>
@@ -59,9 +60,9 @@ export function RowSlippage({
       </RowFixed>
       <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1}>
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%</ClickableText>
+          <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
         ) : (
-          <span>{formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%</span>
+          <span>{displaySlippage}</span>
         )}
       </TYPE.black>
     </RowBetween>

@@ -22,7 +22,7 @@ import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 // import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { WithClassName } from 'types'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { AuxInformationContainer } from '.' // mod
 
@@ -270,8 +270,14 @@ export default function CurrencyInputPanel({
                       color={theme.text1}
                       fontWeight={400}
                       fontSize={14}
-                      style={{ display: 'inline', cursor: 'pointer' }}
-                      title={`${selectedCurrencyBalance?.toFixed(currency?.decimals) || '-'} ${currency?.symbol || ''}`}
+                      style={{
+                        display: 'inline',
+                        // cursor: 'pointer'
+                        cursor: showMaxButton ? 'pointer' : 'initial', // mod
+                      }}
+                      title={`${formatMax(selectedCurrencyBalance, currency?.decimals) || '-'} ${
+                        currency?.symbol || ''
+                      }`}
                     >
                       {!hideBalance && currency && selectedCurrencyBalance ? (
                         renderBalance ? (

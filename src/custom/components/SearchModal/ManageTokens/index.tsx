@@ -3,8 +3,10 @@ import { Token } from '@uniswap/sdk-core'
 import styled, { DefaultTheme } from 'styled-components/macro'
 import Card from 'components/Card'
 import ImportRow from 'components/SearchModal/ImportRow'
-import ManageTokensMod, { ManageTokensProps } from './ManageTokensMod'
+import ManageTokensMod, { ManageTokensProps, Footer } from './ManageTokensMod'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
+import { Separator } from 'components/SearchModal/styleds'
+import Column from 'components/Column'
 import Row, { RowFixed, RowBetween } from 'components/Row'
 import { ButtonText, LinkIcon } from 'theme'
 
@@ -17,6 +19,10 @@ export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+
+  > div {
+    padding: 0 0 40px;
+  }
 
   ${Row} > div {
     margin: 0;
@@ -53,6 +59,21 @@ export const Wrapper = styled.div`
 
   ${ButtonText} > div {
     color: ${({ theme }) => theme.primary1};
+  }
+
+  ${Column} > ${Separator} + div {
+    height: 100%;
+    grid-auto-rows: min-content;
+    ${({ theme }) => theme.neumorphism.boxShadow}
+  }
+
+  ${Footer} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    padding: 0;
+    height: 50px;
   }
 `
 

@@ -32,6 +32,8 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
 import { RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+import { HighFeeWarning, HighFeeWarningProps } from 'components/HighFeeWarning'
+import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
@@ -147,6 +149,7 @@ export interface SwapProps extends RouteComponentProps {
   SwapButton: React.FC<SwapButtonProps>
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   Price: React.FC<PriceProps>
+  HighFeeWarning: React.FC<HighFeeWarningProps>
   className?: string
 }
 
@@ -215,11 +218,21 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
   const [isExpertMode] = useExpertModeManager()
   const allowsOffchainSigning = true // TODO: Deal with this in next PR
 
+  // trades are null when there is a fee quote error e.g
+  // so we can take both
+  const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
+
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
       {(trade || fee) && (
-        <RowFee trade={trade} showHelpers={true} allowsOffchainSigning={allowsOffchainSigning} fee={fee} />
+        <RowFee
+          trade={trade}
+          showHelpers={true}
+          allowsOffchainSigning={allowsOffchainSigning}
+          fee={fee}
+          feeFiatValue={feeFiatValue}
+        />
       )}
 
       {isExpertMode && trade && (
@@ -369,6 +382,7 @@ export default function Swap(props: RouteComponentProps) {
       TradeLoading={TradeLoading}
       ArrowWrapperLoader={ArrowWrapperLoader}
       Price={Price}
+      HighFeeWarning={HighFeeWarning}
       {...props}
     />
   )
