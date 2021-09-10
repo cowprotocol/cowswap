@@ -2,15 +2,16 @@
  * This file is basically a Mod of src/state/transactions/updater
  */
 
-import { useCallback, useEffect, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { useEffect } from 'react'
+import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
-import { retry, RetryableError, RetryOptions } from 'utils/retry'
 import { updateBlockNumber } from 'state/application/actions'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
 import { checkedTransaction, finalizeTransaction } from '../actions'
 import { EnhancedTransactionDetails } from '../reducer'
+import { useGetReceipt } from 'hooks/useGetReceipt'
+import { useAllTransactions } from 'state/enhancedTransactions/hooks'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -35,43 +36,14 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
   }
 }
 
-const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {
-  // [SupportedChainId.ARBITRUM_ONE]: { n: 10, minWait: 250, maxWait: 1000 },
-  // [SupportedChainId.ARBITRUM_KOVAN]: { n: 10, minWait: 250, maxWait: 1000 },
-}
-const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
-
 export default function Updater(): null {
   const { chainId, library } = useActiveWeb3React()
-
   const lastBlockNumber = useBlockNumber()
+  const transactions = useAllTransactions()
 
   const dispatch = useAppDispatch()
-  const state = useAppSelector((state) => state.transactions)
-
-  const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [chainId, state])
-
-  // show popup on confirm
+  const getReceipt = useGetReceipt()
   const addPopup = useAddPopup()
-
-  const getReceipt = useCallback(
-    (hash: string) => {
-      if (!library || !chainId) throw new Error('No library or chainId')
-      const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
-      return retry(
-        () =>
-          library.getTransactionReceipt(hash).then((receipt) => {
-            if (receipt === null) {
-              console.debug('Retrying for hash', hash)
-              throw new RetryableError()
-            }
-            return receipt
-          }),
-        retryOptions
-      )
-    },
-    [chainId, library]
-  )
 
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
