@@ -6,8 +6,9 @@ import {
   finalizeTransaction,
   cancelTransaction,
   replaceTransaction,
-  // updateSafeTransactions,
+  updateSafeTransactions,
 } from 'state/enhancedTransactions/actions'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
 
 export enum HashType {
@@ -31,6 +32,9 @@ export interface EnhancedTransactionDetails {
   // Operations
   approval?: { tokenAddress: string; spender: string }
   presign?: { orderId: string }
+
+  // Wallet specific
+  safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 }
 
 export interface EnhancedTransactionState {
@@ -47,7 +51,7 @@ export default createReducer(initialState, (builder) =>
   builder
     .addCase(
       addTransaction,
-      (transactions, { payload: { chainId, from, hash, hashType, approval, summary, presign } }) => {
+      (transactions, { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction } }) => {
         if (transactions[chainId]?.[hash]) {
           throw Error('Attempted to add existing transaction.')
         }
@@ -62,6 +66,7 @@ export default createReducer(initialState, (builder) =>
           // Operations
           approval,
           presign,
+          safeTransaction,
         }
         transactions[chainId] = txs
       }
@@ -110,5 +115,20 @@ export default createReducer(initialState, (builder) =>
       const allTxs = transactions[chainId] ?? {}
       allTxs[newHash] = { ...allTxs[oldHash], hash: newHash, addedTime: new Date().getTime() }
       delete allTxs[oldHash]
+    })
+
+    .addCase(updateSafeTransactions, (transactions, { payload: { chainId, safeTransactions } }) => {
+      const allTxs = transactions[chainId] ?? {}
+
+      for (const safeTransaction of safeTransactions) {
+        const { safeTxHash } = safeTransaction
+        const tx = allTxs[safeTxHash]
+        if (!tx) {
+          console.error('Attempted to updateSafeTransactions for an unknown transaction')
+          continue
+        }
+
+        allTxs[safeTxHash].safeTransaction = safeTransaction
+      }
     })
 )

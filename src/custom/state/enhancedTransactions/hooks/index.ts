@@ -20,11 +20,18 @@ export function useTransactionAdder(): TransactionAdder {
     (addTransactionParams: AddTransactionHookParams) => {
       if (!account || !chainId) return
 
-      const { hash, hashType = HashType.ETHEREUM_TX, summary, approval, presign } = addTransactionParams
+      const {
+        hash,
+        hashType = HashType.ETHEREUM_TX,
+        summary,
+        approval,
+        presign,
+        safeTransaction,
+      } = addTransactionParams
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ hash, hashType, from: account, chainId, approval, summary, presign }))
+      dispatch(addTransaction({ hash, hashType, from: account, chainId, approval, summary, presign, safeTransaction }))
     },
     [dispatch, chainId, account]
   )
