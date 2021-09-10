@@ -4,7 +4,7 @@ import { useAppDispatch } from 'state/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { addTransaction, AddTransactionParams } from '../actions'
 import { HashType } from '../reducer'
-import { useAllTransactions } from '@src/custom/state/enhancedTransactions/hooks'
+import { useAllTransactions } from 'state/enhancedTransactions/hooks'
 
 export * from './TransactionHooksMod'
 
