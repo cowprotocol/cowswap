@@ -2,16 +2,19 @@
  * This file is basically a Mod of src/state/transactions/updater
  */
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import { updateBlockNumber } from 'state/application/actions'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
 import { checkedTransaction, finalizeTransaction } from '../actions'
-import { EnhancedTransactionDetails } from '../reducer'
-import { useGetReceipt } from 'hooks/useGetReceipt'
-import { useAllTransactions } from 'state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails, HashType } from '../reducer'
+import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
+import { useAllTransactionsDetails } from 'state/enhancedTransactions/hooks'
+import { Dispatch } from 'redux'
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { noop } from 'react-use-gesture/dist/utils'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -36,71 +39,128 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
   }
 }
 
+interface CheckEthereumTransactions {
+  chainId: number
+  transactions: EnhancedTransactionDetails[]
+  lastBlockNumber: number
+  getReceipt: GetReceipt
+  dispatch: Dispatch
+  addPopup: ReturnType<typeof useAddPopup>
+}
+
+type Cancel = () => void
+
+// async function checkEthereumTransactions(transaction: EnhancedTransactionDetails) {}
+
+function finalizeEthereumTransaction(
+  receipt: TransactionReceipt,
+  transaction: EnhancedTransactionDetails,
+  params: CheckEthereumTransactions
+) {
+  const { chainId, lastBlockNumber, addPopup, dispatch } = params
+  const { hash } = transaction
+
+  dispatch(
+    finalizeTransaction({
+      chainId,
+      hash,
+      receipt: {
+        blockHash: receipt.blockHash,
+        blockNumber: receipt.blockNumber,
+        contractAddress: receipt.contractAddress,
+        from: receipt.from,
+        status: receipt.status,
+        to: receipt.to,
+        transactionHash: receipt.transactionHash,
+        transactionIndex: receipt.transactionIndex,
+      },
+    })
+  )
+
+  addPopup(
+    {
+      txn: {
+        hash,
+        success: receipt.status === 1,
+        summary: transaction.summary,
+      },
+    },
+    hash
+  )
+
+  // the receipt was fetched before the block, fast forward to that block to trigger balance updates
+  if (receipt.blockNumber > lastBlockNumber) {
+    dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
+  }
+}
+
+function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {
+  const { transactions, chainId, lastBlockNumber, getReceipt, dispatch } = params
+
+  const promiseCancellations = transactions.map((transaction) => {
+    const { hash, hashType } = transaction
+
+    if (hashType === HashType.ETHEREUM_TX) {
+      // Get receipt for transaction, and finalize if needed
+      const { promise, cancel } = getReceipt(hash)
+      promise
+        .then((receipt) => {
+          if (receipt) {
+            // If the tx is mined. We finalize it!
+            finalizeEthereumTransaction(receipt, transaction, params)
+          } else {
+            // Update the last checked blockNumber
+            dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+          }
+        })
+        .catch((error) => {
+          if (!error.isCancelledError) {
+            console.error(`Failed to check transaction hash: ${hash}`, error)
+          }
+        })
+
+      return cancel
+    } else {
+      // TODO: Handle Gnosis Safe transactions
+      return noop
+    }
+  })
+
+  return promiseCancellations
+}
+
 export default function Updater(): null {
   const { chainId, library } = useActiveWeb3React()
   const lastBlockNumber = useBlockNumber()
-  const transactions = useAllTransactions()
 
   const dispatch = useAppDispatch()
   const getReceipt = useGetReceipt()
   const addPopup = useAddPopup()
 
+  // Get, from the pending transaction, the ones that we should re-check
+  const shouldCheckFilter = useMemo(() => {
+    if (!lastBlockNumber) {
+      return
+    }
+    return (tx: EnhancedTransactionDetails) => shouldCheck(lastBlockNumber, tx)
+  }, [lastBlockNumber])
+  const transactions = useAllTransactionsDetails(shouldCheckFilter)
+
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
 
-    const cancels = Object.keys(transactions)
-      .filter((hash) => shouldCheck(lastBlockNumber, transactions[hash]))
-      .map((hash) => {
-        const { promise, cancel } = getReceipt(hash)
-        promise
-          .then((receipt) => {
-            if (receipt) {
-              dispatch(
-                finalizeTransaction({
-                  chainId,
-                  hash,
-                  receipt: {
-                    blockHash: receipt.blockHash,
-                    blockNumber: receipt.blockNumber,
-                    contractAddress: receipt.contractAddress,
-                    from: receipt.from,
-                    status: receipt.status,
-                    to: receipt.to,
-                    transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex,
-                  },
-                })
-              )
-
-              addPopup(
-                {
-                  txn: {
-                    hash,
-                    success: receipt.status === 1,
-                    summary: transactions[hash]?.summary,
-                  },
-                },
-                hash
-              )
-
-              // the receipt was fetched before the block, fast forward to that block to trigger balance updates
-              if (receipt.blockNumber > lastBlockNumber) {
-                dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
-              }
-            } else {
-              dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
-            }
-          })
-          .catch((error) => {
-            if (!error.isCancelledError) {
-              console.error(`Failed to check transaction hash: ${hash}`, error)
-            }
-          })
-        return cancel
-      })
+    const promiseCancellations = checkEthereumTransactions({
+      transactions,
+      chainId,
+      lastBlockNumber,
+      getReceipt,
+      addPopup,
+      dispatch,
+    })
 
     return () => {
-      cancels.forEach((cancel) => cancel())
+      // Cancel all promises
+      promiseCancellations.forEach((cancel) => cancel())
     }
   }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt])
 
