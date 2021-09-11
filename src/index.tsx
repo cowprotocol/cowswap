@@ -64,7 +64,6 @@ function Updaters() {
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
-      <TransactionUpdater />
       <EnhancedTransactionUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
