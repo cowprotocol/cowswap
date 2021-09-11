@@ -114,14 +114,14 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
         })
         .catch((error) => {
           if (!error.isCancelledError) {
-            console.error(`Failed to check transaction hash: ${hash}`, error)
+            console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
           }
         })
 
       return cancel
     } else {
       // TODO: Handle Gnosis Safe transactions
-      return () => console.error('Handle Gnosis Safe transactions. Not implemented yet!')
+      return () => console.error('[FinalizeTxUpdater] Handle Gnosis Safe transactions. Not implemented yet!')
     }
   })
 
