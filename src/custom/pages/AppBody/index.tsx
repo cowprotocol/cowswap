@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { BodyWrapper as BodyWrapperMod } from '@src/pages/AppBody'
+import { transparentize } from 'polished'
 
 export const BodyWrapper = styled(BodyWrapperMod)`
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => transparentize(0.5, theme.bg1)};
+  backdrop-filter: blur(40px);
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
   border-radius: ${({ theme }) => theme.appBody.borderRadius};
   border: ${({ theme }) => theme.appBody.border};

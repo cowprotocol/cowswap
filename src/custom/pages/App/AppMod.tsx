@@ -55,7 +55,8 @@ const AppWrapper = styled.div<Partial<CSS.Properties & AppWrapProps>>`
     left: 0;
     bottom: 0;
     right: 0;
-    filter: blur(5px);
+    filter: blur(40px);
+    backdrop-filter: blur(40px);
     background-image: ${({ theme }) => theme.body.background};
     opacity: 0;
     transition: 0.5s;
@@ -87,7 +88,9 @@ const HeaderWrapper = styled.div`
   z-index: 1;
 ` */
 
-const FooterWrapper = styled(HeaderWrapper)``
+const FooterWrapper = styled(HeaderWrapper)`
+  z-index: 1;
+`
 
 const Marginer = styled.div`
   margin-top: 5rem;

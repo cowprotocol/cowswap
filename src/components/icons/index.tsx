@@ -9,31 +9,47 @@ interface IconProps {
 }
 
 const SvgWrap = styled.svg`
-  fill: ${({ theme }) => theme.text4};
+  .fill {
+    fill: ${({ theme }) => theme.text4};
+  }
+  .stroke {
+    stroke: ${({ theme }) => theme.text4};
+  }
 `
 
-export const RollBackIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
+export const QuestionIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
   return (
     <SvgWrap
       className="icon"
       width={width}
       height={width}
       viewBox="0 0 16 16"
-      fill={color}
+      fill={'none'}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path fillRule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
-      <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+      <path
+        className={'stroke'}
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeOpacity=".51"
+        strokeWidth="1.333"
+        d="M8 14.666A6.667 6.667 0 108 1.333a6.667 6.667 0 000 13.333z"
+      />
+      <path
+        className={'stroke'}
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeOpacity=".51"
+        strokeWidth="1.333"
+        d="M6.06 6a2 2 0 013.886.667c0 1.333-2 2-2 2M8 11.333h.007"
+      />
     </SvgWrap>
   )
 }
 
-RollBackIcon.propTypes = {
-  color: PropTypes.string,
-  width: PropTypes.string,
-}
-
-export const QuestionIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
+export const RollBackIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
   return (
     <SvgWrap
       className="icon"
@@ -54,23 +70,7 @@ QuestionIcon.propTypes = {
   width: PropTypes.string,
 }
 
-export const CopyIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
-  return (
-    <SvgWrap
-      className="icon"
-      width={width}
-      height={width}
-      viewBox="0 0 16 16"
-      fill={color}
-      style={{ transform: 'scale(-1, 1)' }}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" />
-    </SvgWrap>
-  )
-}
-
-CopyIcon.propTypes = {
+RollBackIcon.propTypes = {
   color: PropTypes.string,
   width: PropTypes.string,
 }

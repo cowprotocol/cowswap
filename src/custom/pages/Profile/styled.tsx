@@ -1,18 +1,25 @@
 import styled from 'styled-components'
-import Page, { GdocsListStyle } from 'components/Page'
+import Page, { GdocsListStyle, Title } from 'components/Page'
 
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
 
-  max-width: 1000px;
+  max-width: 910px;
   padding-top: 1rem;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  flex-direction: column;
 
   span[role='img'] {
-    font-size: 1.8em;
+    font-size: 2.7rem;
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      font-size: 2.5rem;
+    `}
   }
 `
 
-export const StyledWrap = styled.div`
+export const ChildWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,20 +27,103 @@ export const StyledWrap = styled.div`
   justify-content: center;
   border-radius: 1.3rem;
   padding: 0.93rem;
-  margin: 1.25rem 0;
   box-shadow: ${({ theme }) => `inset 2px -2px 4px ${theme.cardShadow21}, inset -2px 2px 4px ${theme.cardShadow22}`};
+  background-color: ${({ theme }) => theme.bg7};
 `
-export const StyledSmallBtn = styled.a`
-  width: 1.75rem;
+
+export const GridWrap = styled.div`
+  display: grid;
+  grid-column-gap: 1.3rem;
+  grid-row-gap: 1.3rem;
+  grid-template-columns: 1fr 1fr;
+  > :first-child,
+  > :nth-child(2),
+  > :last-child {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  > :nth-child(3) {
+    grid-row-start: 3;
+    grid-column-start: 1;
+    grid-column-end: 1;
+  }
+  > :nth-child(4) {
+    grid-row-start: 3;
+    grid-column: 2 / 2;
+  }
+  > :last-child {
+    grid-row-start: 4;
+    max-width: 11.5rem;
+    margin: auto;
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+  grid-template-columns: 1fr;
+    > :first-child,
+    > :nth-child(2),
+    > :nth-child(3),
+    > :nth-child(4),
+    > :last-child {
+      grid-column-start: 1;
+      grid-column-end: 2;
+  }
+  > :nth-child(3) {
+    grid-row-start: 3;
+  }
+  > :nth-child(4) {
+    grid-row-start: 4;
+  }
+  > :last-child {
+    display: none;
+  }
+  `};
+`
+
+export const CardHead = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 1.75rem;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.bg6};
-  margin-left: 0.75rem;
-  svg {
-    fill: ${({ theme }) => theme.text4};
-    font-size: 1rem;
-  }
+  flex-grow: 1;
+  flex-direction: row;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column;
+  `}
+`
+
+export const StyledTitle = styled(Title)`
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-start;
+  margin: 0;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    justify-content: center;
+  `}
+`
+export const ItemTitle = styled.p`
+  display: flex;
+  align-items: center;
+  margin: 0 0 1.875rem;
+  font-size: 1.125rem;
+  line-height: 1.2rem;
+  font-weight: bold;
+`
+
+export const Wrap = styled.div`
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: flex-start;
+`
+
+export const FlexCol = styled.div`
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  flex-direction: column;
+`
+
+export const FlexCentered = styled.div`
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
 `

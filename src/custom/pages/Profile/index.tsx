@@ -1,9 +1,23 @@
 import React from 'react'
-import { CopyIcon, QuestionIcon, RollBackIcon } from '@src/components/icons'
-import { Txt, Wrap, Row, Column } from '@src/assets/styles/styled'
-import { StyledSmallBtn, StyledWrap, Wrapper } from 'pages/Profile/styled'
+import { QuestionIcon } from '@src/components/icons'
+import { Txt } from '@src/assets/styles/styled'
+import {
+  ChildWrapper,
+  Wrapper,
+  GridWrap,
+  CardHead,
+  StyledTitle,
+  ItemTitle,
+  Wrap,
+  FlexCol,
+  FlexCentered,
+} from 'pages/Profile/styled'
+import { useActiveWeb3React } from '@src/hooks/web3'
+import { ButtonPrimary } from 'components/Button/ButtonMod'
+import Copy from 'components/Copy/CopyMod'
+import { AccountDetailsProps } from 'components/AccountDetails'
 
-export default function Profile() {
+export default function Profile({ ENSName }: AccountDetailsProps) {
   const today = new Date()
   //mockTime - mocked time of update
   const mockTime = new Date()
@@ -21,128 +35,97 @@ export default function Profile() {
     label = 'Just now'
   }
   const ethAddress = 'your-ethereum-address'
-  const copyToClipboard = () => {
-    alert('Copied!')
-  }
+  const { account } = useActiveWeb3React()
+
   return (
     <Wrapper>
-      <Wrap flexDir={'column'}>
-        <Wrap width={'100%'} alignItems={'center'} grow={'1'} flexDir={['column', 'row']}>
-          <Wrap justifyCont={['center', 'flex-start']} grow={'1'}>
-            <Txt fw={'bold'} txtAlign={['center', 'left']} fs={[18, 26]}>
-              Profile overview
-            </Txt>
-          </Wrap>
-          <Wrap justifyCont={['center', 'flex-end']} grow={'1'}>
-            <RollBackIcon />
+      <GridWrap>
+        <CardHead>
+          <StyledTitle>Profile overview</StyledTitle>
+          <Txt>
+            <QuestionIcon />
             &nbsp;
-            <Txt>
-              <Txt secondary>Last updated:&nbsp;</Txt>
-              <Txt fw={'bold'}>{label} ago</Txt>
-            </Txt>
-          </Wrap>
-        </Wrap>
-        <StyledWrap>
+            <Txt secondary>Last updated:&nbsp;</Txt>
+            <Txt fw={'bold'}>{label} ago</Txt>
+          </Txt>
+        </CardHead>
+        <ChildWrapper>
           <Txt secondary fw={'bold'}>
             Your referral url
           </Txt>
-          <Wrap alignItems={'center'} justifyCont={'center'}>
-            <Txt onClick={() => copyToClipboard()} fs={14} txtAlign={'center'}>
-              <Wrap grow={'1'} justifyCont={'center'}>
+          <Wrap>
+            <Txt fs={14} txtAlign={'center'}>
+              <span>
                 https://cowswap.exchange/#/?referral=
-                <strong>&lt;{ethAddress}&gt;</strong>
-              </Wrap>
+                <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
+              </span>
             </Txt>
-            <StyledSmallBtn onClick={() => copyToClipboard()}>
-              <CopyIcon />
-            </StyledSmallBtn>
+            {(ENSName || account) && <Copy bg toCopy={ENSName ? ENSName : account ? account : ''} />}
           </Wrap>
-        </StyledWrap>
-        <Wrap width={'100%'}>
-          <Row>
-            <Column md={50}>
-              <StyledWrap>
-                <Wrap alignItems={'center'} margin={'0 0 1.875rem'}>
-                  <Txt fs={18} secondary fw={'bold'}>
-                    Trades&nbsp;
-                  </Txt>
-                  <QuestionIcon />
-                </Wrap>
-                <Wrap width={'100%'}>
-                  <Wrap flexDir={'column'} alignItems={'center'} grow={'1'}>
-                    {/*temp pics solution  */}
-                    <img
-                      style={{ margin: ' .625rem auto' }}
-                      src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/72/apple/118/male-farmer_1f468-200d-1f33e.png"
-                      alt={'man-farmer'}
-                    />
-                    <Txt fs={[26, 21]} fw={'bold'}>
-                      -
-                    </Txt>
-                    <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
-                      Total trades
-                    </Txt>
-                  </Wrap>
-                  <Wrap flexDir={'column'} alignItems={'center'} grow={'1'}>
-                    {/*temp pics solution  */}
-                    <img
-                      style={{ margin: ' .625rem auto' }}
-                      src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/72/apple/118/money-bag_1f4b0.png"
-                      alt={'money-bag'}
-                    />
-                    <Txt fs={[26, 21]} fw={'bold'}>
-                      -
-                    </Txt>
-                    <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
-                      Total traded volume
-                    </Txt>
-                  </Wrap>
-                </Wrap>
-              </StyledWrap>
-            </Column>
-            <Column md={50}>
-              <StyledWrap>
-                <Wrap alignItems={'center'} margin={'0 0 1.875rem'}>
-                  <Txt fs={18} secondary fw={'bold'}>
-                    Referrals&nbsp;
-                  </Txt>
-                  <QuestionIcon />
-                </Wrap>
-                <Wrap width={'100%'}>
-                  <Wrap flexDir={'column'} alignItems={'center'} grow={'1'}>
-                    {/*temp pics solution  */}
-                    <img
-                      style={{ margin: ' .625rem auto' }}
-                      src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/72/apple/118/handshake_1f91d.png"
-                      alt={'handshake_1f91d'}
-                    />
-                    <Txt fs={[26, 21]} fw={'bold'}>
-                      -
-                    </Txt>
-                    <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
-                      Total trades
-                    </Txt>
-                  </Wrap>
-                  <Wrap flexDir={'column'} alignItems={'center'} grow={'1'}>
-                    {/*temp pics solution  */}
-                    <img
-                      style={{ margin: ' .625rem auto' }}
-                      src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/72/apple/118/money-with-wings_1f4b8.png"
-                      alt={'money-with-wings'}
-                    />
-                    <Txt fs={[26, 21]} fw={'bold'}>
-                      -
-                    </Txt>
-                    <Txt fs={14} secondary margin={'.5rem 0'}>
-                      Referrals Volume
-                    </Txt>
-                  </Wrap>
-                </Wrap>
-              </StyledWrap>
-            </Column>
-          </Row>
-        </Wrap>
-      </Wrap>
+          {!account && <Txt fs={12}>(Connect your wallet to create a referral url)</Txt>}
+        </ChildWrapper>
+        <ChildWrapper>
+          <ItemTitle>
+            Trades&nbsp;
+            <QuestionIcon />
+          </ItemTitle>
+          <FlexCentered>
+            <FlexCol>
+              <span role="img" aria-label="farmer">
+                🧑‍🌾
+              </span>
+              <Txt fs={[26, 21]} fw={'bold'}>
+                -
+              </Txt>
+              <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
+                Total trades
+              </Txt>
+            </FlexCol>
+            <FlexCol>
+              <span role="img" aria-label="moneybag">
+                💰
+              </span>
+              <Txt fs={[26, 21]} fw={'bold'}>
+                -
+              </Txt>
+              <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
+                Total traded volume
+              </Txt>
+            </FlexCol>
+          </FlexCentered>
+        </ChildWrapper>
+        <ChildWrapper>
+          <ItemTitle>
+            Referrals&nbsp;
+            <QuestionIcon />
+          </ItemTitle>
+          <FlexCentered>
+            <FlexCol>
+              <span role="img" aria-label="wingedmoney">
+                💸
+              </span>
+              <Txt fs={[26, 21]} fw={'bold'}>
+                -
+              </Txt>
+              <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
+                Total trades
+              </Txt>
+            </FlexCol>
+            <FlexCol>
+              <span role="img" aria-label="handshake">
+                🤝
+              </span>
+              <Txt fs={[26, 21]} fw={'bold'}>
+                -
+              </Txt>
+              <Txt fs={14} secondary margin={'.5rem 0'}>
+                Referrals Volume
+              </Txt>
+            </FlexCol>
+          </FlexCentered>
+        </ChildWrapper>
+        {account && <ButtonPrimary> Connect to a wallet</ButtonPrimary>}
+      </GridWrap>
     </Wrapper>
   )
 }
