@@ -1,5 +1,5 @@
 import React from 'react'
-import { QuestionIcon } from '@src/components/icons'
+import { QuestionIcon, RepeatIcon } from '@src/components/icons'
 import { Txt } from '@src/assets/styles/styled'
 import {
   ChildWrapper,
@@ -43,8 +43,8 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
         <CardHead>
           <StyledTitle>Profile overview</StyledTitle>
           <Txt>
-            <QuestionIcon />
-            &nbsp;
+            <RepeatIcon />
+            &nbsp;&nbsp;
             <Txt secondary>Last updated:&nbsp;</Txt>
             <Txt fw={'bold'}>{label} ago</Txt>
           </Txt>
@@ -66,7 +66,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
         </ChildWrapper>
         <ChildWrapper>
           <ItemTitle>
-            Trades&nbsp;
+            <span>Trades&nbsp;</span>
             <QuestionIcon />
           </ItemTitle>
           <FlexCentered>
@@ -96,7 +96,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
         </ChildWrapper>
         <ChildWrapper>
           <ItemTitle>
-            Referrals&nbsp;
+            <span>Referrals&nbsp;</span>
             <QuestionIcon />
           </ItemTitle>
           <FlexCentered>

@@ -9,50 +9,39 @@ interface IconProps {
 }
 
 const SvgWrap = styled.svg`
-  .fill {
+  &.fill {
     fill: ${({ theme }) => theme.text4};
   }
-  .stroke {
+  &.stroke {
     stroke: ${({ theme }) => theme.text4};
   }
 `
 
-export const QuestionIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
+export const RepeatIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
   return (
     <SvgWrap
-      className="icon"
+      className="icon stroke"
       width={width}
       height={width}
-      viewBox="0 0 16 16"
+      viewBox="0 0 24 24"
       fill={'none'}
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        className={'stroke'}
-        stroke={color}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeOpacity=".51"
-        strokeWidth="1.333"
-        d="M8 14.666A6.667 6.667 0 108 1.333a6.667 6.667 0 000 13.333z"
-      />
-      <path
-        className={'stroke'}
-        stroke={color}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeOpacity=".51"
-        strokeWidth="1.333"
-        d="M6.06 6a2 2 0 013.886.667c0 1.333-2 2-2 2M8 11.333h.007"
-      />
+      <polyline points="23 4 23 10 17 10" />
+      <polyline points="1 20 1 14 7 14" />
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
     </SvgWrap>
   )
 }
 
-export const RollBackIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
+export const QuestionIcon: FunctionComponent<IconProps> = ({ color, width = '16' }): React.ReactElement => {
   return (
     <SvgWrap
-      className="icon"
+      className="icon fill"
       width={width}
       height={width}
       viewBox="0 0 16 16"
@@ -65,12 +54,12 @@ export const RollBackIcon: FunctionComponent<IconProps> = ({ color, width = '16'
   )
 }
 
-QuestionIcon.propTypes = {
+RepeatIcon.propTypes = {
   color: PropTypes.string,
   width: PropTypes.string,
 }
 
-RollBackIcon.propTypes = {
+QuestionIcon.propTypes = {
   color: PropTypes.string,
   width: PropTypes.string,
 }

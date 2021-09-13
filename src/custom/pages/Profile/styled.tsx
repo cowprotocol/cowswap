@@ -104,6 +104,9 @@ export const ItemTitle = styled.p`
   font-size: 1.125rem;
   line-height: 1.2rem;
   font-weight: bold;
+  span {
+    opacity: 0.5;
+  }
 `
 
 export const Wrap = styled.div`

@@ -18,7 +18,7 @@ export const Txt = styled.div<
   display: inline-flex;
   text-align: ${(props) =>
     props.txtAlign ? (typeof props.txtAlign !== 'string' ? props.txtAlign[0] : props.txtAlign) : 'left'};
-  font-size: ${(props) => (props.fs ? (typeof props.fs !== 'number' ? props.fs[0] / 16 : props.fs / 16) : 0.87)}rem;
+  font-size: ${(props) => (props.fs ? (typeof props.fs !== 'number' ? props.fs[0] / 16 : props.fs / 16) : 1)}rem;
   opacity: ${(props) => props.secondary && '0.5'};
   line-height: ${(props) =>
     props.fs
