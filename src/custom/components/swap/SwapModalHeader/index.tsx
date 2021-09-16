@@ -6,8 +6,8 @@ import styled from 'styled-components'
 import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
+import { HighFeeWarning } from 'components/HighFeeWarning'
 
-// MOD
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
   background-color: ${({ theme }) => darken(0.06, theme.bg1)};
   border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
@@ -41,11 +41,16 @@ const Wrapper = styled.div`
   }
 `
 
-export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'LightCard'>) {
+export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'LightCard'>) {
   // const { priceImpactWithoutFee } = React.useMemo(() => computeTradePriceBreakdown(props.trade), [props.trade])
   return (
     <Wrapper>
-      <SwapModalHeaderMod {...props} LightCard={LightCard} /*priceImpactWithoutFee={priceImpactWithoutFee}*/ />
+      <SwapModalHeaderMod
+        {...props}
+        LightCard={LightCard}
+        HighFeeWarning={HighFeeWarning}
+        /*priceImpactWithoutFee={priceImpactWithoutFee}*/
+      />
     </Wrapper>
   )
 }

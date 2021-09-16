@@ -11,7 +11,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfo } from 'pages/Swap/SwapMod'
+import { StyledInfo } from 'pages/Swap/styleds'
 import { AMOUNT_PRECISION } from 'constants/index'
 
 export interface RowReceivedAfterSlippageProps {

@@ -6,7 +6,7 @@ import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'cons
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 
-export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('1', '100') // 1%
+export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
@@ -98,3 +98,6 @@ export const GAS_FEE_ENDPOINTS = {
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq#what-token-pairs-does-cowswap-allow-to-trade'
+
+// fee threshold - should be greater than percentage, show warning
+export const FEE_SIZE_THRESHOLD = new Fraction(10, 100) // 30%
