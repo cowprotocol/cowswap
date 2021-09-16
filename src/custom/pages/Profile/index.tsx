@@ -45,8 +45,12 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
           <Txt>
             <RepeatIcon />
             &nbsp;&nbsp;
-            <Txt secondary>Last updated:&nbsp;</Txt>
-            <Txt fw={'bold'}>{label} ago</Txt>
+            <Txt fs={12} secondary>
+              Last updated:&nbsp;
+            </Txt>
+            <Txt fs={12} fw={'bold'}>
+              {label} ago
+            </Txt>
           </Txt>
         </CardHead>
         <ChildWrapper>
@@ -74,7 +78,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
               <span role="img" aria-label="farmer">
                 🧑‍🌾
               </span>
-              <Txt fs={[26, 21]} fw={'bold'}>
+              <Txt fs={[24, 21]} fw={'bold'}>
                 -
               </Txt>
               <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
@@ -85,7 +89,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
               <span role="img" aria-label="moneybag">
                 💰
               </span>
-              <Txt fs={[26, 21]} fw={'bold'}>
+              <Txt fs={[24, 21]} fw={'bold'}>
                 -
               </Txt>
               <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
@@ -104,7 +108,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
               <span role="img" aria-label="wingedmoney">
                 💸
               </span>
-              <Txt fs={[26, 21]} fw={'bold'}>
+              <Txt fs={[24, 21]} fw={'bold'}>
                 -
               </Txt>
               <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
@@ -115,7 +119,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
               <span role="img" aria-label="handshake">
                 🤝
               </span>
-              <Txt fs={[26, 21]} fw={'bold'}>
+              <Txt fs={[24, 21]} fw={'bold'}>
                 -
               </Txt>
               <Txt fs={14} secondary margin={'.5rem 0'}>

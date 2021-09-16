@@ -29,6 +29,7 @@ export const Txt = styled.div<
   font-weight: ${(props) => (props.fw ? (typeof props.fw !== 'string' ? props.fw[0] : props.fw) : 'normal')};
   padding: ${(props) => (props.padding ? (typeof props.padding !== 'string' ? props.padding[0] : props.padding) : '0')};
   margin: ${(props) => (props.margin ? (typeof props.margin !== 'string' ? props.margin[0] : props.margin) : '0')};
+  color: ${({ theme }) => theme.text1};
   ${(props) => props.disabled && 'pointer-events:none;'}
   @media (min-width: 1024px) {
     padding: ${(props) =>

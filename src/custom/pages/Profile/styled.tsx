@@ -93,8 +93,10 @@ export const StyledTitle = styled(Title)`
   flex-grow: 1;
   justify-content: flex-start;
   margin: 0;
+  line-height: 1.5;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
+    font-size: 1.5rem;
   `}
 `
 export const ItemTitle = styled.p`
@@ -104,6 +106,7 @@ export const ItemTitle = styled.p`
   font-size: 1.125rem;
   line-height: 1.2rem;
   font-weight: bold;
+  color: ${({ theme }) => theme.text1};
   span {
     opacity: 0.5;
   }
