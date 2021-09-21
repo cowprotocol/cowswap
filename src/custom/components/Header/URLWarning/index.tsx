@@ -1,8 +1,9 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import { PRODUCTION_URL } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
-import URLWarningUni, { StyledClose } from './URLWarningMod'
+import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
@@ -11,6 +12,41 @@ import { useActiveWeb3React } from '@src/hooks/web3'
 import { ChainId } from '@uniswap/sdk'
 
 export * from './URLWarningMod'
+
+const Wrapper = styled.div`
+  width: 100%;
+
+  ${PhishAlert} {
+    justify-content: center;
+    font-size: 12px;
+    padding: 8px;
+    background-color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text2};
+
+    > div {
+      align-items: center;
+      width: 100%;
+    }
+
+    > div > svg {
+      min-width: 24px;
+    }
+
+    > div > p {
+      padding: 0 12px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 12px;
+      `};
+    }
+  }
+
+  ${StyledClose} {
+    height: 100%;
+    width: 24px;
+    margin: 0;
+  }
+`
 
 // Announcement content: Modify this file to edit the announcement
 //  https://github.com/gnosis/cowswap/blob/announcements/docs/announcements.md
@@ -39,11 +75,15 @@ export default function URLWarning() {
   const announcement = announcementVisible && announcementText && (
     <>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> <Markdown>{announcementText}</Markdown>
+        <AlertTriangle /> <Markdown>{announcementText}</Markdown>
       </div>
       <StyledClose size={12} onClick={() => closeAnnouncement(contentHash)} />
     </>
   )
 
-  return <URLWarningUni url={PRODUCTION_URL} announcement={announcement} />
+  return (
+    <Wrapper>
+      <URLWarningUni url={PRODUCTION_URL} announcement={announcement} />
+    </Wrapper>
+  )
 }
