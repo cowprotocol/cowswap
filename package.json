@@ -117,7 +117,9 @@
     "workbox-routing": "^6.1.0",
     "workbox-strategies": "^6.1.0"
   },
-  "resolutions": {},
+  "resolutions": {
+    "@walletconnect/ethereum-provider": "1.6.4"
+  },
   "scripts": {
     "start:default": "yarn i18n:extract && yarn compile-all-types && craco start",
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
