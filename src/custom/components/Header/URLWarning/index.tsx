@@ -7,17 +7,24 @@ import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hook
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
+import { useActiveWeb3React } from '@src/hooks/web3'
+import { ChainId } from '@uniswap/sdk'
 
 export * from './URLWarningMod'
 
 // Announcement content: Modify this file to edit the announcement
 //  https://github.com/gnosis/cowswap/blob/announcements/docs/announcements.md
-const ANNOUNCEMENTS_MARKDOWN_URL =
-  'https://raw.githubusercontent.com/gnosis/cowswap/announcements/docs/announcements.md'
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/gnosis/cowswap/announcements/docs'
+
+function getAnnouncementUrl(chainId: number) {
+  return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}/announcements-${chainId}.md`
+}
 
 export default function URLWarning() {
+  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
+
   // Ger announcement if there's one
-  const { file, error } = useFetchFile(ANNOUNCEMENTS_MARKDOWN_URL)
+  const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
   const announcementText = error ? undefined : file?.trim()
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
