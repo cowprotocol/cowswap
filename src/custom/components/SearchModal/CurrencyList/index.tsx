@@ -127,7 +127,7 @@ function TokenTags({ currency, isUnsupported }: { currency: Currency; isUnsuppor
 }
 
 export function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
-  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, LONG_PRECISION)}</StyledBalanceText>
+  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, LONG_PRECISION) || '0'}</StyledBalanceText>
 }
 
 export default function CurrencyList(
