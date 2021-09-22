@@ -1,18 +1,13 @@
-export enum MetadataKind {
-  REFERRAL = 'referrer',
-}
-
 interface Metadata {
-  kind: MetadataKind
   version: string
 }
 
 export interface ReferralMetadata extends Metadata {
-  referrer: string
+  address: string
 }
 
 export type MetadataDoc = {
-  [MetadataKind.REFERRAL]?: ReferralMetadata
+  referrer?: ReferralMetadata
 }
 
 export type AppDataDoc = {
@@ -32,9 +27,8 @@ export function generateReferralMetadataDoc(
     metadata: {
       ...appDataDoc.metadata,
       referrer: {
-        kind: MetadataKind.REFERRAL,
-        referrer: referralAddress,
-        version: '1.0.0',
+        address: referralAddress,
+        version: '0.1.0',
       },
     },
   }
@@ -42,7 +36,7 @@ export function generateReferralMetadataDoc(
 
 export function generateAppDataDoc(metadata: MetadataDoc = {}): AppDataDoc {
   return {
-    version: '1.0.0',
+    version: '0.1.0',
     appCode: DEFAULT_APP_CODE,
     metadata: {
       ...metadata,
