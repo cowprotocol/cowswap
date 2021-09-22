@@ -43,7 +43,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
           <StyledTitle>Profile overview</StyledTitle>
           {account && (
             <Txt>
-              <RefreshCcw size={20} />
+              <RefreshCcw size={16} />
               &nbsp;&nbsp;
               <Txt secondary>Last updated:&nbsp;</Txt>
               <strong>{label} ago</strong>
@@ -58,7 +58,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
             {account ? (
               <>
                 <span>
-                  https://cowswap.exchange/#/?referral=
+                  {window.location.href}
                   <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
                 </span>
                 {(ENSName || account) && <Copy bg toCopy={ENSName ? ENSName : account ? account : ''} />}

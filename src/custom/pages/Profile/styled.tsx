@@ -12,11 +12,14 @@ export const Wrapper = styled(Page)`
   width: 100%;
   justify-content: flex-end;
   flex-direction: column;
-
+  margin: 0;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 16px;
+  `}
   span[role='img'] {
     font-size: 55px;
     ${({ theme }) => theme.mediaWidth.upToMedium`
-      font-size: 45px;
+      font-size: 30px;
     `}
   }
 `
@@ -29,7 +32,7 @@ export const ChildWrapper = styled.div`
   justify-content: center;
   border-radius: 21px;
   padding: 15px;
-  box-shadow: ${({ theme }) => `inset 2px -2px 4px ${theme.cardShadow1}, inset -2px 2px 4px ${theme.cardShadow2}`};
+  ${({ theme }) => theme.neumorphism.boxShadow};
   background-color: ${({ theme }) => theme.bg7};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-column-start: 1;
@@ -43,11 +46,13 @@ export const ChildWrapper = styled.div`
 
 export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boolean }>>`
   display: grid;
-  grid-column-gap: 18px;
-  grid-row-gap: 18px;
+  grid-column-gap: 22px;
+  grid-row-gap: 22px;
   grid-template-columns: ${(props) => (props.horizontal ? '1fr 1fr' : '1fr')};
   ${({ theme }) => theme.mediaWidth.upToMedium`
   grid-template-columns: 1fr;
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
     grid-column-gap: 0;
     > :first-child,
     > :nth-child(2) {
@@ -85,10 +90,14 @@ export const StyledTitle = styled(Title)`
 export const ItemTitle = styled.h3`
   display: flex;
   align-items: center;
-  margin: 0 0 1.875rem;
-  font-size: 1.125rem;
-  line-height: 1.2rem;
+  margin: 0 0 34px 0;
+  font-size: 18px;
+  line-height: 1.21;
   color: ${({ theme }) => theme.text1};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 0 10px 0;
+    font-size: 16px;
+  `}
 `
 
 export const FlexWrap = styled.div`
@@ -101,7 +110,7 @@ export const FlexWrap = styled.div`
     max-width: 180px;
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: column;
+    flex-wrap: wrap;
     button {
       max-width: 100%;
     }
@@ -122,7 +131,6 @@ export const FlexCol = styled.div`
   }
   span:not([role='img']) {
     font-size: 14px;
-    margin: 4px;
     color: ${({ theme }) => theme.text6};
   }
 `

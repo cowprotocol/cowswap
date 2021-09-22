@@ -17,4 +17,7 @@ export const Txt = styled.span<
   font-size: ${(props) => (props.fs ? props.fs : 12)}px;
   line-height: ${(props) => (props.fs ? props.fs * 1.21 + 'px' : 1.21)};
   color: ${({ theme, secondary }) => (secondary ? theme.text6 : theme.text1)};
+  ${({ theme, fs }) => theme.mediaWidth.upToMedium`
+    font-size: ${fs ? fs * 0.8 : 12}px;
+  `}
 `
