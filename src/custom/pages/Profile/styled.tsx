@@ -1,10 +1,12 @@
 import styled from 'styled-components'
 import Page, { GdocsListStyle, Title } from 'components/Page'
+import * as CSS from 'csstype'
 
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
 
   max-width: 910px;
+  min-height: auto;
   padding-top: 1rem;
   display: flex;
   width: 100%;
@@ -12,9 +14,9 @@ export const Wrapper = styled(Page)`
   flex-direction: column;
 
   span[role='img'] {
-    font-size: 2.7rem;
+    font-size: 55px;
     ${({ theme }) => theme.mediaWidth.upToMedium`
-      font-size: 2.5rem;
+      font-size: 45px;
     `}
   }
 `
@@ -23,58 +25,38 @@ export const ChildWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  flex-grow: 1;
   justify-content: center;
-  border-radius: 1.3rem;
-  padding: 0.93rem;
-  box-shadow: ${({ theme }) => `inset 2px -2px 4px ${theme.cardShadow21}, inset -2px 2px 4px ${theme.cardShadow22}`};
+  border-radius: 21px;
+  padding: 15px;
+  box-shadow: ${({ theme }) => `inset 2px -2px 4px ${theme.cardShadow1}, inset -2px 2px 4px ${theme.cardShadow2}`};
   background-color: ${({ theme }) => theme.bg7};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-column-start: 1;
+    grid-column-end: 2;
+    width: 100%;
+  `}
+  > .item {
+    width: 100%;
+  }
 `
 
-export const GridWrap = styled.div`
+export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boolean }>>`
   display: grid;
-  grid-column-gap: 1.3rem;
-  grid-row-gap: 1.3rem;
-  grid-template-columns: 1fr 1fr;
-  > :first-child,
-  > :nth-child(2),
-  > :last-child {
-    grid-column-start: 1;
-    grid-column-end: 3;
-  }
-  > :nth-child(3) {
-    grid-row-start: 3;
-    grid-column-start: 1;
-    grid-column-end: 1;
-  }
-  > :nth-child(4) {
-    grid-row-start: 3;
-    grid-column: 2 / 2;
-  }
-  > :last-child {
-    grid-row-start: 4;
-    max-width: 11.5rem;
-    margin: auto;
-  }
+  grid-column-gap: 18px;
+  grid-row-gap: 18px;
+  grid-template-columns: ${(props) => (props.horizontal ? '1fr 1fr' : '1fr')};
   ${({ theme }) => theme.mediaWidth.upToMedium`
   grid-template-columns: 1fr;
+    grid-column-gap: 0;
     > :first-child,
-    > :nth-child(2),
-    > :nth-child(3),
-    > :nth-child(4),
-    > :last-child {
+    > :nth-child(2) {
       grid-column-start: 1;
       grid-column-end: 2;
-  }
-  > :nth-child(3) {
-    grid-row-start: 3;
-  }
-  > :nth-child(4) {
-    grid-row-start: 4;
-  }
-  > :last-child {
-    display: none;
-  }
+    }
+    > :nth-child(4) {
+      display: none;
+    }
   `};
 `
 
@@ -93,30 +75,37 @@ export const StyledTitle = styled(Title)`
   flex-grow: 1;
   justify-content: flex-start;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.21;
+  font-size: 26px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 24px;
   `}
 `
-export const ItemTitle = styled.p`
+export const ItemTitle = styled.h3`
   display: flex;
   align-items: center;
   margin: 0 0 1.875rem;
   font-size: 1.125rem;
   line-height: 1.2rem;
-  font-weight: bold;
   color: ${({ theme }) => theme.text1};
-  span {
-    opacity: 0.5;
-  }
 `
 
-export const Wrap = styled.div`
+export const FlexWrap = styled.div`
   display: flex;
   flex-grow: 1;
   align-items: center;
-  justify-content: flex-start;
+  flex-direction: row;
+  justify-content: center;
+  button {
+    max-width: 180px;
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column;
+    button {
+      max-width: 100%;
+    }
+  `}
 `
 
 export const FlexCol = styled.div`
@@ -124,12 +113,16 @@ export const FlexCol = styled.div`
   flex-grow: 1;
   align-items: center;
   flex-direction: column;
-`
-
-export const FlexCentered = styled.div`
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
+  justify-content: center;
+  strong {
+    font-size: 21px;
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 14px;
+  `}
+  }
+  span:not([role='img']) {
+    font-size: 14px;
+    margin: 4px;
+    color: ${({ theme }) => theme.text6};
+  }
 `

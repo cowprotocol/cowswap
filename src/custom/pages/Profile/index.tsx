@@ -1,21 +1,20 @@
 import React from 'react'
-import { QuestionIcon, RepeatIcon } from '@src/components/icons'
 import { Txt } from '@src/assets/styles/styled'
 import {
-  ChildWrapper,
+  FlexCol,
+  FlexWrap,
   Wrapper,
   GridWrap,
   CardHead,
   StyledTitle,
   ItemTitle,
-  Wrap,
-  FlexCol,
-  FlexCentered,
+  ChildWrapper,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from '@src/hooks/web3'
-import { ButtonPrimary } from 'components/Button/ButtonMod'
 import Copy from 'components/Copy/CopyMod'
 import { AccountDetailsProps } from 'components/AccountDetails'
+import { HelpCircle, RefreshCcw } from 'react-feather'
+import Web3Status from '@src/components/Web3Status'
 
 export default function Profile({ ENSName }: AccountDetailsProps) {
   const today = new Date()
@@ -42,93 +41,84 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
       <GridWrap>
         <CardHead>
           <StyledTitle>Profile overview</StyledTitle>
-          <Txt>
-            <RepeatIcon />
-            &nbsp;&nbsp;
-            <Txt fs={12} secondary>
-              Last updated:&nbsp;
+          {account && (
+            <Txt>
+              <RefreshCcw size={20} />
+              &nbsp;&nbsp;
+              <Txt secondary>Last updated:&nbsp;</Txt>
+              <strong>{label} ago</strong>
             </Txt>
-            <Txt fs={12} fw={'bold'}>
-              {label} ago
-            </Txt>
-          </Txt>
+          )}
         </CardHead>
         <ChildWrapper>
-          <Txt secondary fw={'bold'}>
-            Your referral url
+          <Txt fs={16}>
+            <strong>Your referral url</strong>
           </Txt>
-          <Wrap>
-            <Txt fs={14} txtAlign={'center'}>
-              <span>
-                https://cowswap.exchange/#/?referral=
-                <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
-              </span>
-            </Txt>
-            {(ENSName || account) && <Copy bg toCopy={ENSName ? ENSName : account ? account : ''} />}
-          </Wrap>
-          {!account && <Txt fs={12}>(Connect your wallet to create a referral url)</Txt>}
+          <Txt fs={14} center>
+            {account ? (
+              <>
+                <span>
+                  https://cowswap.exchange/#/?referral=
+                  <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
+                </span>
+                {(ENSName || account) && <Copy bg toCopy={ENSName ? ENSName : account ? account : ''} />}
+              </>
+            ) : (
+              '-'
+            )}
+          </Txt>
         </ChildWrapper>
-        <ChildWrapper>
-          <ItemTitle>
-            <span>Trades&nbsp;</span>
-            <QuestionIcon />
-          </ItemTitle>
-          <FlexCentered>
-            <FlexCol>
-              <span role="img" aria-label="farmer">
-                🧑‍🌾
-              </span>
-              <Txt fs={[24, 21]} fw={'bold'}>
-                -
-              </Txt>
-              <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
-                Total trades
-              </Txt>
-            </FlexCol>
-            <FlexCol>
-              <span role="img" aria-label="moneybag">
-                💰
-              </span>
-              <Txt fs={[24, 21]} fw={'bold'}>
-                -
-              </Txt>
-              <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
-                Total traded volume
-              </Txt>
-            </FlexCol>
-          </FlexCentered>
-        </ChildWrapper>
-        <ChildWrapper>
-          <ItemTitle>
-            <span>Referrals&nbsp;</span>
-            <QuestionIcon />
-          </ItemTitle>
-          <FlexCentered>
-            <FlexCol>
-              <span role="img" aria-label="wingedmoney">
-                💸
-              </span>
-              <Txt fs={[24, 21]} fw={'bold'}>
-                -
-              </Txt>
-              <Txt fs={14} secondary margin={'.5rem 0'} fw={'400'}>
-                Total trades
-              </Txt>
-            </FlexCol>
-            <FlexCol>
-              <span role="img" aria-label="handshake">
-                🤝
-              </span>
-              <Txt fs={[24, 21]} fw={'bold'}>
-                -
-              </Txt>
-              <Txt fs={14} secondary margin={'.5rem 0'}>
-                Referrals Volume
-              </Txt>
-            </FlexCol>
-          </FlexCentered>
-        </ChildWrapper>
-        {account && <ButtonPrimary> Connect to a wallet</ButtonPrimary>}
+        <GridWrap horizontal>
+          <ChildWrapper>
+            <ItemTitle>
+              Trades&nbsp;
+              <HelpCircle size={14} />
+            </ItemTitle>
+            <FlexWrap className="item">
+              <FlexCol>
+                <span role="img" aria-label="farmer">
+                  🧑‍🌾
+                </span>
+                <strong>-</strong>
+                <span>Total trades</span>
+              </FlexCol>
+              <FlexCol>
+                <span role="img" aria-label="moneybag">
+                  💰
+                </span>
+                <strong>-</strong>
+                <span>Total traded volume</span>
+              </FlexCol>
+            </FlexWrap>
+          </ChildWrapper>
+          <ChildWrapper>
+            <ItemTitle>
+              Referrals&nbsp;
+              <HelpCircle size={14} />
+            </ItemTitle>
+            <FlexWrap className="item">
+              <FlexCol>
+                <span role="img" aria-label="wingedmoney">
+                  💸
+                </span>
+                <strong>-</strong>
+                <span>Total trades</span>
+              </FlexCol>
+              <FlexCol>
+                <span role="img" aria-label="handshake">
+                  🤝
+                </span>
+                <strong>-</strong>
+                <span>Referrals Volume</span>
+              </FlexCol>
+            </FlexWrap>
+          </ChildWrapper>
+        </GridWrap>
+        {!account && (
+          <FlexWrap>
+            <Web3Status />
+          </FlexWrap>
+        )}
       </GridWrap>
     </Wrapper>
   )

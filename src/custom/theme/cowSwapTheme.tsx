@@ -34,8 +34,8 @@ export function colors(darkMode: boolean): Colors {
     white: darkMode ? '#c5daef' : '#ffffff',
     black: darkMode ? '#021E34' : '#000000',
     cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
-    cardShadow21: darkMode ? '#4C7487' : '#FFFFFF',
-    cardShadow22: darkMode ? 'rgba(11, 37, 53, 0.93)' : 'rgba(1, 10, 16, 0.15)',
+    cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
+    cardShadow2: darkMode ? 'rgba(11, 37, 53, 0.93)' : 'rgba(1, 10, 16, 0.15)',
 
     // ****** text ******
     text1: darkMode ? '#c5daef' : '#000000',

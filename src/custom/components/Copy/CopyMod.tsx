@@ -18,8 +18,9 @@ export const CopyIcon = styled(LinkStyledButton)`
   font-size: 0.825rem;
   border-radius: 50%;
   background-color: ${({ theme, bg, isCopied }) => (bg && !isCopied ? theme.bg6 : 'transparent')};
-  min-width: 1.5rem;
-  height: 1.5rem;
+  min-width: 20px;
+  min-height: 20px;
+  align-self: flex-end;
   :hover,
   :active,
   :focus {
@@ -52,7 +53,7 @@ export default function CopyHelper(props: {
           <TransactionStatusText
             isCopied={isCopied} // mod
           >
-            <CheckCircle size={'16'} />
+            <CheckCircle size={bg ? '12' : '16'} />
             <TransactionStatusText
               isCopied={isCopied} // mod
             >
@@ -61,7 +62,7 @@ export default function CopyHelper(props: {
           </TransactionStatusText>
         ) : (
           <TransactionStatusText>
-            <Copy size={'16'} />
+            <Copy size={bg ? '12' : '16'} />
           </TransactionStatusText>
         )}
         {isCopied ? '' : children}
