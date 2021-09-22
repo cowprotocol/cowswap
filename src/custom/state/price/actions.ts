@@ -19,6 +19,7 @@ export type QuoteError =
   | 'fee-exceeds-sell-amount'
   | 'unsupported-token'
   | 'offline-browser'
+  | 'zero-price'
 
 export type SetQuoteErrorParams = UpdateQuoteParams & { error?: QuoteError }
 
