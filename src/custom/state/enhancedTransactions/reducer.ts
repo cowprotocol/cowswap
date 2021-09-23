@@ -129,6 +129,7 @@ export default createReducer(initialState, (builder) =>
       const { safeTxHash, transactionHash } = safeTransaction
       const tx = transactions[chainId]?.[safeTxHash]
       if (!tx) {
+        console.warn('[updateSafeTransaction] Unknown safe transaction', safeTxHash)
         return
       }
 
