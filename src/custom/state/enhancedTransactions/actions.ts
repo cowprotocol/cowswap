@@ -43,4 +43,4 @@ export const updateSafeTransaction = createAction<{
   chainId: number
   safeTransaction: SafeMultisigTransactionResponse
   blockNumber: number
-}>('enhancedTransactions/checkedTransaction')
+}>('enhancedTransactions/updateSafeTransaction')
