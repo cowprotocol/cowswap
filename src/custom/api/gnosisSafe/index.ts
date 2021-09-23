@@ -1,5 +1,5 @@
 import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { registerOnWindow } from '@src/custom/utils/misc'
+import { registerOnWindow } from 'utils/misc'
 import { ChainId } from '@uniswap/sdk'
 
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
