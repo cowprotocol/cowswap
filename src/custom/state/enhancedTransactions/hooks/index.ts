@@ -8,8 +8,8 @@ import { useAllTransactions } from '@src/custom/state/enhancedTransactions/hooks
 
 export * from './TransactionHooksMod'
 
-type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from'> // The hook requires less params for convenience
-type TransactionAdder = (params: AddTransactionHookParams) => void
+export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from'> // The hook requires less params for convenience
+export type TransactionAdder = (params: AddTransactionHookParams) => void
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): TransactionAdder {

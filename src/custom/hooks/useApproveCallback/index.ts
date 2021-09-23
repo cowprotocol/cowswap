@@ -1,5 +1,4 @@
 import { useActiveWeb3React } from '@src/hooks/web3'
-import { useApproveCallback } from '@src/hooks/useApproveCallback'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'
@@ -7,7 +6,8 @@ import { GP_VAULT_RELAYER } from 'constants/index'
 import TradeGp from 'state/swap/TradeGp'
 import { ZERO_PERCENT } from 'constants/misc'
 
-export { ApprovalState } from '@src/hooks/useApproveCallback'
+import { useApproveCallback } from './useApproveCallbackMod'
+export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
 // export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
 export function useApproveCallbackFromTrade(trade?: TradeGp, allowedSlippage = ZERO_PERCENT) {
