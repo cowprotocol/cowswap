@@ -14,6 +14,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { HashType } from 'state/enhancedTransactions/reducer'
+import { useWalletInfo } from './useWalletInfo'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -36,12 +37,13 @@ interface GetWrapUnwrapCallback {
   inputAmount?: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
   wethContract: Contract
+  isGnosisSafeWallet: boolean
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallback {
-  const { chainId, isWrap, balance, inputAmount, addTransaction, wethContract } = params
+  const { chainId, isWrap, balance, inputAmount, isGnosisSafeWallet, addTransaction, wethContract } = params
   const { native, wrapped } = getChainCurrencySymbols(chainId)
   const symbol = isWrap ? native : wrapped
 
@@ -70,7 +72,6 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
         const txReceipt = await wrapUnwrap()
         addTransaction({
           hash: txReceipt.hash,
-          hashType: HashType.ETHEREUM_TX,
           summary,
         })
 
@@ -103,12 +104,13 @@ export default function useWrapCallback(
   inputAmount: CurrencyAmount<Currency> | undefined,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
-  const { chainId: connectedChainId, account } = useActiveWeb3React()
+  const { chainId: connectedChainId, account, gnosisSafeInfo } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const addTransaction = useTransactionAdder()
+  const isGnosisSafeWallet = !!gnosisSafeInfo
 
   return useMemo(() => {
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
@@ -128,7 +130,18 @@ export default function useWrapCallback(
         inputAmount,
         addTransaction,
         wethContract,
+        isGnosisSafeWallet,
       })
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, isEthTradeOverride, balance, inputAmount, addTransaction])
+  }, [
+    wethContract,
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    isEthTradeOverride,
+    isGnosisSafeWallet,
+    balance,
+    inputAmount,
+    addTransaction,
+  ])
 }

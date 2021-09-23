@@ -25,7 +25,6 @@ export function usePresignOrder(): ((orderId: string) => Promise<ContractTransac
       // const trimmedOrderId = `${orderId.substring(0, 12)}...${orderId.substring(orderId.length - 12, orderId.length)}`
       // addTransaction({
       //   hash: txReceipt.hash,
-      //   hashType: HashType.ETHEREUM_TX,
       //   summary: `Pre-sign order ${trimmedOrderId}`,
       // })
 
