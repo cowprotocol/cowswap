@@ -1831,6 +1831,19 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-1.0.2.tgz#bcc1f6a07061df6ab55298d7fe6ee93fcd1025aa"
   integrity sha512-bsWB8r8RENvpAGMRfRfENtMU7tPdfa1AtgTidUpxC9f3HREZ2FdiAvAghE3XZwy7BzJ0CQJ2lNl4ANKCZ+kj8Q==
 
+"@gnosis.pm/safe-core-sdk-types@^0.1.0":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-types/-/safe-core-sdk-types-0.1.1.tgz#908c394cb4660493b4e9c8e01b5a7aa36efafd30"
+  integrity sha512-PghXGDaI5Foq37nZGmI90U2OKMeGtxh5KqkDqou9aFHwGVa/nf9HRQPxG9/XUzcyfe9OlKttDlJnR3XnC3dSDw==
+
+"@gnosis.pm/safe-service-client@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-service-client/-/safe-service-client-0.1.1.tgz#4a664fc4c00634cd8f4d8138f900158ca621f3bb"
+  integrity sha512-7oQxcs1xTYdS+ZxqFPe44zlu7uzF654QNxI8XSMMnQ11sai7jgoMlom0ucRcWLp1cKATYMNA9+yUgPYYmTRgqA==
+  dependencies:
+    "@gnosis.pm/safe-core-sdk-types" "^0.1.0"
+    axios "^0.21.1"
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
