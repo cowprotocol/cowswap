@@ -163,6 +163,20 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
         })
 
       return cancel
+    } else if (hashType === HashType.GNOSIS_SAFE_TX) {
+      // Get receipt for transaction, and finalize if needed
+      const { promise, cancel } = getSafeInfo(hash)
+      promise
+        .then((safeTransaction) => {
+          dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
+        })
+        .catch((error) => {
+          if (!error.isCancelledError) {
+            console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
+          }
+        })
+
+      return cancel
     } else {
       throw new Error('[FinalizeTxUpdater] Unknown HashType: ' + hashType)
     }
