@@ -8,12 +8,13 @@ import { useAppDispatch } from 'state/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { updateBlockNumber } from 'state/application/actions'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
-import { checkedTransaction, finalizeTransaction } from '../actions'
+import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
 import { useAllTransactionsDetails } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -43,6 +44,7 @@ interface CheckEthereumTransactions {
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
   getReceipt: GetReceipt
+  getSafeInfo: GetSafeInfo
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
 }
@@ -94,7 +96,7 @@ function finalizeEthereumTransaction(
 }
 
 function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {
-  const { transactions, chainId, lastBlockNumber, getReceipt, dispatch } = params
+  const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch } = params
 
   const promiseCancellations = transactions.map((transaction) => {
     const { hash, hashType } = transaction
@@ -119,9 +121,22 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
         })
 
       return cancel
+    } else if (hashType === HashType.GNOSIS_SAFE_TX) {
+      // Get receipt for transaction, and finalize if needed
+      const { promise, cancel } = getSafeInfo(hash)
+      promise
+        .then((safeTransaction) => {
+          dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
+        })
+        .catch((error) => {
+          if (!error.isCancelledError) {
+            console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
+          }
+        })
+
+      return cancel
     } else {
-      // TODO: Handle Gnosis Safe transactions
-      return () => console.error('[FinalizeTxUpdater] Handle Gnosis Safe transactions. Not implemented yet!')
+      throw new Error('[FinalizeTxUpdater] Unknown HashType: ' + hashType)
     }
   })
 
@@ -134,6 +149,7 @@ export default function Updater(): null {
 
   const dispatch = useAppDispatch()
   const getReceipt = useGetReceipt()
+  const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
 
   // Get, from the pending transaction, the ones that we should re-check
@@ -153,6 +169,7 @@ export default function Updater(): null {
       chainId,
       lastBlockNumber,
       getReceipt,
+      getSafeInfo,
       addPopup,
       dispatch,
     })

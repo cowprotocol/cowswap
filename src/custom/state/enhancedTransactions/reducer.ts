@@ -6,6 +6,7 @@ import {
   finalizeTransaction,
   cancelTransaction,
   replaceTransaction,
+  updateSafeTransaction,
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
@@ -48,93 +49,96 @@ export const initialState: EnhancedTransactionState = {}
 
 const now = () => new Date().getTime()
 
-export default createReducer(
-  initialState,
-  (builder) =>
-    builder
-      .addCase(
-        addTransaction,
-        (transactions, { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction } }) => {
-          if (transactions[chainId]?.[hash]) {
-            console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
-            // Unknown transaction. Do nothing!
-            return
-          }
-          const txs = transactions[chainId] ?? {}
-          txs[hash] = {
-            hash,
-            hashType,
-            addedTime: now(),
-            from,
-            summary,
+function updateBlockNumber(tx: EnhancedTransactionDetails, blockNumber: number) {
+  if (!tx.lastCheckedBlockNumber) {
+    tx.lastCheckedBlockNumber = blockNumber
+  } else {
+    tx.lastCheckedBlockNumber = Math.max(blockNumber, tx.lastCheckedBlockNumber)
+  }
+}
 
-            // Operations
-            approval,
-            presign,
-            safeTransaction,
-          }
-          transactions[chainId] = txs
-        }
-      )
-
-      .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
-        if (!transactions[chainId]) return
-        transactions[chainId] = {}
-      })
-
-      .addCase(checkedTransaction, (transactions, { payload: { chainId, hash, blockNumber } }) => {
-        const tx = transactions[chainId]?.[hash]
-        if (!tx) {
+export default createReducer(initialState, (builder) =>
+  builder
+    .addCase(
+      addTransaction,
+      (transactions, { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction } }) => {
+        if (transactions[chainId]?.[hash]) {
+          console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
+          // Unknown transaction. Do nothing!
           return
         }
-        if (!tx.lastCheckedBlockNumber) {
-          tx.lastCheckedBlockNumber = blockNumber
-        } else {
-          tx.lastCheckedBlockNumber = Math.max(blockNumber, tx.lastCheckedBlockNumber)
+        const txs = transactions[chainId] ?? {}
+        txs[hash] = {
+          hash,
+          hashType,
+          addedTime: now(),
+          from,
+          summary,
+
+          // Operations
+          approval,
+          presign,
+          safeTransaction,
         }
-      })
+        transactions[chainId] = txs
+      }
+    )
 
-      .addCase(finalizeTransaction, (transactions, { payload: { hash, chainId, receipt } }) => {
-        const tx = transactions[chainId]?.[hash]
-        if (!tx) {
-          return
-        }
-        tx.receipt = receipt
-        tx.confirmedTime = now()
-      })
+    .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
+      if (!transactions[chainId]) return
+      transactions[chainId] = {}
+    })
 
-      .addCase(cancelTransaction, (transactions, { payload: { chainId, hash } }) => {
-        if (!transactions[chainId]?.[hash]) {
-          console.error('Attempted to cancel an unknown transaction.')
-          return
-        }
-        const allTxs = transactions[chainId] ?? {}
-        delete allTxs[hash]
-      })
+    .addCase(checkedTransaction, (transactions, { payload: { chainId, hash, blockNumber } }) => {
+      const tx = transactions[chainId]?.[hash]
+      if (!tx) {
+        return
+      }
+      updateBlockNumber(tx, blockNumber)
+    })
 
-      .addCase(replaceTransaction, (transactions, { payload: { chainId, oldHash, newHash } }) => {
-        if (!transactions[chainId]?.[oldHash]) {
-          console.error('Attempted to replace an unknown transaction.')
-          return
-        }
-        const allTxs = transactions[chainId] ?? {}
-        allTxs[newHash] = { ...allTxs[oldHash], hash: newHash, addedTime: new Date().getTime() }
-        delete allTxs[oldHash]
-      })
+    .addCase(finalizeTransaction, (transactions, { payload: { hash, chainId, receipt } }) => {
+      const tx = transactions[chainId]?.[hash]
+      if (!tx) {
+        return
+      }
+      tx.receipt = receipt
+      tx.confirmedTime = now()
+    })
 
-  // TODO: Wip, commented, cause the update of the state for safe tx will come in another PR. Pls don't review this part yet
-  // .addCase(updateSafeTransactions, (transactions, { payload: { chainId, safeTransactions } }) => {
-  //   const allTxs = transactions[chainId] ?? {}
+    .addCase(cancelTransaction, (transactions, { payload: { chainId, hash } }) => {
+      if (!transactions[chainId]?.[hash]) {
+        console.error('Attempted to cancel an unknown transaction.')
+        return
+      }
+      const allTxs = transactions[chainId] ?? {}
+      delete allTxs[hash]
+    })
 
-  //   for (const safeTransaction of safeTransactions) {
-  //     const { safeTxHash } = safeTransaction
-  //     const tx = allTxs[safeTxHash]
-  //     if (!tx) {
-  //       console.error('Attempted to updateSafeTransactions for an unknown transaction')
-  //       continue
-  //     }
+    .addCase(replaceTransaction, (transactions, { payload: { chainId, oldHash, newHash } }) => {
+      if (!transactions[chainId]?.[oldHash]) {
+        console.error('Attempted to replace an unknown transaction.')
+        return
+      }
+      const allTxs = transactions[chainId] ?? {}
+      allTxs[newHash] = { ...allTxs[oldHash], hash: newHash, addedTime: new Date().getTime() }
+      delete allTxs[oldHash]
+    })
 
-  //     allTxs[safeTxHash].safeTransaction = safeTransaction
-  //   }
-  // })
+    .addCase(updateSafeTransaction, (transactions, { payload: { chainId, safeTransaction, blockNumber } }) => {
+      const { safeTxHash, transactionHash } = safeTransaction
+      const tx = transactions[chainId]?.[safeTxHash]
+      if (!tx) {
+        return
+      }
+
+      // Update block number
+      updateBlockNumber(tx, blockNumber)
+
+      // Update tx hash (if present)
+      tx.transactionHash = transactionHash
+
+      // Update safe info
+      tx.safeTransaction = safeTransaction
+    })
 )
