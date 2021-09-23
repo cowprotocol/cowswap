@@ -24,19 +24,19 @@ export function useGetReceipt(): GetReceipt {
 
   const getReceipt = useCallback<GetReceipt>(
     (hash) => {
-      if (!library || !chainId) throw new Error('No library or chainId')
-      const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
-      return retry(
-        () =>
-          library.getTransactionReceipt(hash).then((receipt) => {
-            if (receipt === null) {
-              console.debug('[useGetReceipt] Retrying for hash', hash)
-              throw new RetryableError()
-            }
-            return receipt
-          }),
-        retryOptions
-      )
+      const retryOptions = chainId ? RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS : DEFAULT_RETRY_OPTIONS
+
+      return retry(() => {
+        if (!library || !chainId) throw new Error('No library or chainId yet')
+
+        return library.getTransactionReceipt(hash).then((receipt) => {
+          if (receipt === null) {
+            console.debug('[useGetReceipt] Retrying for hash', hash)
+            throw new RetryableError()
+          }
+          return receipt
+        })
+      }, retryOptions)
     },
     [chainId, library]
   )
