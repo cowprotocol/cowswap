@@ -743,6 +743,13 @@ export default function Swap({
                 </TYPE.main>
                 {/* {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>} */}
               </GreyCard>
+            ) : quote?.error === 'zero-price' ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">
+                  <Trans>Invalid price. Try increasing input/output amount.</Trans>
+                </TYPE.main>
+                {/* {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>} */}
+              </GreyCard>
             ) : quote?.error === 'fetch-quote-error' ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">
