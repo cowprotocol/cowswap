@@ -12,17 +12,23 @@ export const WALLET_CONNECT_BRIDGE = process.env.WALLET_CONNECT_BRIDGE || 'wss:/
 
 type RpcNetworks = { [chainId: number]: string }
 
-function getRpcNetworks(): [RpcNetworks, number[]] {
+export function getSupportedChainIds(): number[] {
   const supportedChainIdsEnv = process.env.REACT_APP_SUPPORTED_CHAIN_IDS
-  const defaultChainId = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1')
 
-  // Make sure the mandatory envs are present
   if (!supportedChainIdsEnv) {
     throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
   }
 
-  // Get list of supported chains
   const chainIds = supportedChainIdsEnv.split(',').map((chainId) => Number(chainId.trim()))
+
+  return chainIds
+}
+
+function getRpcNetworks(): [RpcNetworks, number[]] {
+  const defaultChainId = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1')
+
+  // Get list of supported chains
+  const chainIds = getSupportedChainIds()
   if (chainIds.length === 0) {
     throw new Error(`At least one network should be supported. REACT_APP_CHAIN_ID`)
   }

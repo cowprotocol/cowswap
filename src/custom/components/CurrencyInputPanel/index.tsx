@@ -17,6 +17,7 @@ import CurrencyInputPanelMod, {
 import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
 import { RowBetween } from 'components/Row'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
+import { TextWrapper } from 'components/HoverInlineText'
 
 import { StyledLogo } from 'components/CurrencyLogo'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
@@ -280,6 +281,14 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${StyledLogo} {
     background: ${({ theme }) => theme.bg1};
+  }
+
+  // Reset the cursor for the FIAT estimate & price impact
+  ${TextWrapper} {
+    &:hover,
+    + span:hover {
+      cursor: initial;
+    }
   }
 `
 

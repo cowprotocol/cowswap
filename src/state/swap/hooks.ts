@@ -21,6 +21,7 @@ import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies
 import { SwapState } from './reducer'
 import { useUserSingleHopOnly } from 'state/user/hooks'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { truncateOnMaxDecimals } from 'utils/format'
 
 export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
@@ -77,7 +78,9 @@ export function tryParseAmount<T extends Currency>(value?: string, currency?: T)
     return undefined
   }
   try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString()
+    // Here we drop everything after given token decimals to avoid parsing issues
+    const truncatedValue = currency.decimals ? truncateOnMaxDecimals(value, currency.decimals) : value
+    const typedValueParsed = parseUnits(truncatedValue, currency.decimals).toString()
     if (typedValueParsed !== '0') {
       return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
     }

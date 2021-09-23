@@ -2,17 +2,21 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
-import { registerOnWindow } from '../misc'
-import { isLocal, isDev, isPr, isBarn } from '../environments'
-import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'utils/operator/errors/OperatorError'
+import { registerOnWindow } from '../../utils/misc'
+import { isLocal, isDev, isPr, isBarn } from '../../utils/environments'
+import OperatorError, {
+  ApiErrorCodeDetails,
+  ApiErrorCodes,
+  ApiErrorObject,
+} from 'api/gnosisProtocol/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
   GpQuoteErrorDetails,
-} from 'utils/operator/errors/QuoteError'
+} from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
-import { FeeInformation, FeeQuoteParams, PriceInformation, PriceQuoteParams } from '../price'
+import { FeeInformation, FeeQuoteParams, PriceInformation, PriceQuoteParams } from 'utils/price'
 import { AppDataDoc } from 'utils/metadata'
 import MetadataError, {
   MetadataApiErrorCodeDetails,
@@ -20,7 +24,10 @@ import MetadataError, {
   MetadataApiErrorObject,
 } from './errors/MetadataError'
 
-function getOperatorUrl(): Partial<Record<ChainId, string>> {
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { GAS_FEE_ENDPOINTS } from 'constants/index'
+
+function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
       [ChainId.MAINNET]:
@@ -39,13 +46,13 @@ function getOperatorUrl(): Partial<Record<ChainId, string>> {
   }
 }
 
-const API_BASE_URL = getOperatorUrl()
+const API_BASE_URL = getGnosisProtocolUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
   'X-AppId': APP_DATA_HASH.toString(),
 }
-
+const API_NAME = 'Gnosis Protocol'
 /**
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
    where orderDigest = keccak256(orderStruct). bytes32.
@@ -85,7 +92,7 @@ function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL[chainId]
 
   if (!baseUrl) {
-    throw new Error('Unsupported Network. The operator API is not deployed in the Network ' + chainId)
+    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ` + chainId)
   } else {
     return baseUrl + '/v1'
   }
@@ -124,7 +131,7 @@ export async function sendSignedOrder(params: {
   owner: string
 }): Promise<OrderID> {
   const { chainId, order, owner } = params
-  console.log('[utils:operator] Post signed order for network', chainId, order)
+  console.log(`[api:${API_NAME}] Post signed order for network`, chainId, order)
 
   // Call API
   const response = await _post(chainId, `/orders`, {
@@ -141,7 +148,7 @@ export async function sendSignedOrder(params: {
   }
 
   const uid = (await response.json()) as string
-  console.log('[util:operator] Success posting the signed order', uid)
+  console.log(`[api:${API_NAME}] Success posting the signed order`, uid)
   return uid
 }
 
@@ -154,7 +161,7 @@ type OrderCancellationParams = {
 export async function sendSignedOrderCancellation(params: OrderCancellationParams): Promise<void> {
   const { chainId, cancellation, owner: from } = params
 
-  console.log('[utils:operator] Delete signed order for network', chainId, cancellation)
+  console.log(`[api:${API_NAME}] Delete signed order for network`, chainId, cancellation)
 
   const response = await _delete(chainId, `/orders/${cancellation.orderUid}`, {
     signature: cancellation.signature,
@@ -168,7 +175,7 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
     throw new Error(errorMessage)
   }
 
-  console.log('[utils:operator] Cancelled order', cancellation.orderUid, chainId)
+  console.log(`[api:${API_NAME}] Cancelled order`, cancellation.orderUid, chainId)
 }
 
 const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
@@ -200,7 +207,7 @@ async function _handleQuoteResponse(response: Response) {
 
 export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
   const { baseToken, quoteToken, amount, kind, chainId } = params
-  console.log('[util:operator] Get price from API', params)
+  console.log(`[api:${API_NAME}] Get price from API`, params)
 
   const response = await _get(
     chainId,
@@ -215,7 +222,7 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInfo
 
 export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
   const { sellToken, buyToken, amount, kind, chainId } = params
-  console.log('[util:operator] Get fee from API', params)
+  console.log(`[api:${API_NAME}] Get fee from API`, params)
 
   const response = await _get(
     chainId,
@@ -232,7 +239,7 @@ export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformatio
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
-  console.log('[util:operator] Get order for ', chainId, orderId)
+  console.log(`[api:${API_NAME}] Get order for `, chainId, orderId)
   try {
     const response = await _get(chainId, `/orders/${orderId}`)
 
@@ -249,7 +256,7 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
 }
 
 export async function getAppDataDoc(chainId: ChainId, address: string): Promise<AppMetadata | null> {
-  console.log('[util:operator] Get AppData doc for', chainId, address)
+  console.log(`[api:${API_NAME}] Get AppData doc for`, chainId, address)
   try {
     const response = await _get(chainId, `/appData/${address}`)
 
@@ -282,7 +289,7 @@ export type UploadMetadataParams = {
 
 export async function uploadAppDataDoc(params: UploadMetadataParams): Promise<void> {
   const { chainId, user, metadata, hash } = params
-  console.log('[utils:operator] Post AppData doc', params)
+  console.log(`[api:${API_NAME}] Post AppData doc`, params)
 
   // Call API
   // TODO: the final endpoint IS TBD
@@ -300,6 +307,20 @@ export async function uploadAppDataDoc(params: UploadMetadataParams): Promise<vo
   }
 
   await response.json()
+}
+
+export interface GasFeeEndpointResponse {
+  lastUpdate: string
+  lowest: string
+  safeLow: string
+  standard: string
+  fast: string
+  fastest: string
+}
+
+export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
+  const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
+  return response.json()
 }
 
 // Register some globals for convenience

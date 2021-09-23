@@ -3,11 +3,11 @@ name: CI
 on:
   # build on PR creation/updates, also when pushing to master/develop, or create a release
   pull_request:
-    types: [opened, synchronize] 
+    types: [opened, synchronize]
   push:
     branches: [master, develop]
     tags: [v*]
-    
+
 
 env:
   REPO_NAME_SLUG: gpswapui
@@ -26,7 +26,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: lts/*
 
       - name: Set output of cache
         id: yarn-cache
@@ -65,7 +65,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: lts/*
 
       - name: Load dependencies
         id: cache-node-modules
@@ -96,7 +96,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: lts/*
 
       - name: Load dependencies
         id: cache-node-modules
@@ -134,7 +134,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      
+
       - name: 'Deploy to S3: PRaul'
         if: env.PR_NUMBER
         run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ env.PR_NUMBER }} --delete
@@ -188,7 +188,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: lts/*
 
       # - name: Download website
       #   uses: actions/download-artifact@v2

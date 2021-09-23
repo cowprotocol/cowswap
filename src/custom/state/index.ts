@@ -5,7 +5,6 @@ import { save, load } from 'redux-localstorage-simple'
 import application from '@src/state/application/reducer'
 // import { updateVersion } from '@src/state/global/actions'
 import user from '@src/state/user/reducer'
-import transactions from '@src/state/transactions/reducer'
 import swap from '@src/state/swap/reducer'
 import mint from '@src/state/mint/reducer'
 import mintV3 from '@src/state/mint/v3/reducer'
@@ -21,6 +20,7 @@ import gas from 'state/gas/reducer'
 import profile from 'state/profile/reducer'
 import { updateVersion } from 'state/global/actions'
 import affiliate from 'state/affiliate/reducer'
+import transactions from 'state/enhancedTransactions/reducer'
 
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
@@ -28,7 +28,6 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 const UNISWAP_REDUCERS = {
   application,
   user,
-  transactions,
   swap,
   mint,
   mintV3,
@@ -39,6 +38,7 @@ const UNISWAP_REDUCERS = {
 
 const reducers = {
   ...UNISWAP_REDUCERS,
+  transactions,
   lists,
   orders,
   price,

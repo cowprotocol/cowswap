@@ -10,6 +10,7 @@ import TermsAndConditions from 'pages/TermsAndConditions'
 import About from 'pages/About'
 // import Profile from 'pages/Profile'
 import Faq from 'pages/Faq'
+import NotFound from 'pages/NotFound'
 import CowGame from 'pages/CowGame'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
@@ -65,7 +66,8 @@ export default function App() {
         <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact strict path="/cookie-policy" component={CookiePolicy} />
         <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
-        <Route component={RedirectPathToSwapOnly} />
+        <Route exact strict path="/" component={RedirectPathToSwapOnly} />
+        <Route component={NotFound} />
       </Switch>
     </Wrapper>
   )

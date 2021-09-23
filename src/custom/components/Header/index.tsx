@@ -172,7 +172,6 @@ export default function Header() {
         <HeaderLinks>
           <StyledNavLink to="/swap">Swap</StyledNavLink>
           <StyledNavLink to="/about">About</StyledNavLink>
-          {/* <StyledNavLink to="/profile">Profile</StyledNavLink> */}
         </HeaderLinks>
       </HeaderRow>
       <HeaderControls>

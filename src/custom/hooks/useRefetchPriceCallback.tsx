@@ -1,8 +1,12 @@
 import { useCallback } from 'react'
 
 import { FeeQuoteParams, getBestQuote, QuoteParams, QuoteResult } from 'utils/price'
-import { isValidOperatorError, ApiErrorCodes } from 'utils/operator/errors/OperatorError'
-import { GpQuoteErrorCodes, isValidQuoteError } from 'utils/operator/errors/QuoteError'
+import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import GpQuoteError, {
+  GpQuoteErrorCodes,
+  GpQuoteErrorDetails,
+  isValidQuoteError,
+} from 'api/gnosisProtocol/errors/QuoteError'
 import { registerOnWindow, getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 
 import { isOnline } from 'hooks/useIsOnline'
@@ -15,7 +19,7 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
-import { onlyResolvesLast } from '../utils/async'
+import { onlyResolvesLast } from 'utils/async'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | FeeQuoteParams
@@ -56,6 +60,10 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
       // e.g Insufficient Liquidity or Fee exceeds Price
       case GpQuoteErrorCodes.FeeExceedsFrom: {
         return 'fee-exceeds-sell-amount'
+      }
+
+      case GpQuoteErrorCodes.ZeroPrice: {
+        return 'zero-price'
       }
 
       case GpQuoteErrorCodes.InsufficientLiquidity: {
@@ -156,6 +164,14 @@ export function useRefetchQuoteCallback() {
         } else if (!isPromiseFulfilled(price)) {
           throw price.reason
         }
+
+        // we need to check if returned price is 0 - this is rare but can occur e.g DAI <> WBTC where price diff is huge
+        // TODO: check if this should be handled differently by backend - maybe we return a new error like "ZERO_PRICE"
+        if (price.value.amount === '0')
+          throw new GpQuoteError({
+            errorType: GpQuoteErrorCodes.ZeroPrice,
+            description: GpQuoteErrorDetails.ZeroPrice,
+          })
 
         const previouslyUnsupportedToken = isUnsupportedTokenGp(sellToken) || isUnsupportedTokenGp(buyToken)
         // can be a previously unsupported token which is now valid
