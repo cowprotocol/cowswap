@@ -56,7 +56,9 @@ export default createReducer(
         addTransaction,
         (transactions, { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction } }) => {
           if (transactions[chainId]?.[hash]) {
-            throw Error('Attempted to add existing transaction.')
+            console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
+            // Unknown transaction. Do nothing!
+            return
           }
           const txs = transactions[chainId] ?? {}
           txs[hash] = {
