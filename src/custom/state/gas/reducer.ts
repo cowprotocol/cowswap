@@ -13,7 +13,11 @@ export default createReducer(initialState, (builder) =>
     const { chainId, ...rest } = action.payload
 
     if (chainId) {
-      state[chainId] = rest
+      state[chainId] = {
+        ...rest,
+        // We don't use the last update of the endpoint, we use the one of the client time
+        lastUpdate: new Date().toISOString(),
+      }
     }
   })
 )

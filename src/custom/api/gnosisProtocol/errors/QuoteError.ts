@@ -11,6 +11,7 @@ export enum GpQuoteErrorCodes {
   UnsupportedToken = 'UnsupportedToken',
   InsufficientLiquidity = 'InsufficientLiquidity',
   FeeExceedsFrom = 'FeeExceedsFrom',
+  ZeroPrice = 'ZeroPrice',
   UNHANDLED_ERROR = 'UNHANDLED_ERROR',
 }
 
@@ -18,6 +19,7 @@ export enum GpQuoteErrorDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   InsufficientLiquidity = 'Token pair selected has insufficient liquidity',
   FeeExceedsFrom = 'Current fee exceeds entered "from" amount',
+  ZeroPrice = 'Quoted price is zero. This is likely due to a significant price difference between the two tokens. Please try increasing amounts.',
   UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
