@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 
-import { useActiveWeb3React } from 'hooks/web3'
 import { addTransaction, AddTransactionParams } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'

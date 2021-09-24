@@ -10,7 +10,6 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { HashType } from '@src/custom/state/enhancedTransactions/reducer'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',

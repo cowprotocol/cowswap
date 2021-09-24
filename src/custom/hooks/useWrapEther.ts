@@ -7,14 +7,10 @@ import { useWETHContract } from 'hooks/useContract'
 import { ContractTransaction } from 'ethers'
 import { formatSmart } from '../utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
-import { HashType } from '../state/enhancedTransactions/reducer'
-import { useWalletInfo } from './useWalletInfo'
 
 export function useWrapEther() {
   const addTransaction = useTransactionAdder()
   const weth = useWETHContract()
-  const { gnosisSafeInfo } = useWalletInfo()
-  const isGnosisSafeWallet = !!gnosisSafeInfo
 
   const wrapCallback = useCallback(
     async (amount: CurrencyAmount<Currency>): Promise<ContractTransaction | string | undefined> => {
