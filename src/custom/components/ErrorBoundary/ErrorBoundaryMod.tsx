@@ -112,6 +112,10 @@ type ErrorBoundaryState = {
   error: Error | null
 }
 
+function truncate(value?: string): string | undefined {
+  return value ? value.slice(0, 1000) : undefined
+}
+
 export default class ErrorBoundary extends React.Component<unknown, ErrorBoundaryState> {
   constructor(props: unknown) {
     super(props)
@@ -163,7 +167,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
                   <ExternalLink
                     id="create-github-issue-link"
                     href={`https://github.com/gnosis/cowswap/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                      `Crash report: \`${error.name}${error.message && `: ${error.message}`}\``
+                      `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
                     )}`}
                     target="_blank"
                   >
@@ -232,7 +236,7 @@ ${
   `## Error
 
 \`\`\`
-${error.name}${error.message && `: ${error.message}`}
+${error.name}${error.message && `: ${truncate(error.message)}`}
 \`\`\`
 `
 }
@@ -241,7 +245,7 @@ ${
   `## Stacktrace
 
 \`\`\`
-${error.stack}
+${truncate(error.stack)}
 \`\`\`
 `
 }
