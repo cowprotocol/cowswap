@@ -33,13 +33,6 @@ enum TxReceiptStatus {
   CONFIRMED,
 }
 
-function sortByDate(a: Order, b: Order): number {
-  const dateA = new Date(a.creationTime)
-  const dateB = new Date(b.creationTime)
-
-  return dateA > dateB ? -1 : dateA < dateB ? 1 : 0
-}
-
 /**
  * useRecentActivity
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
@@ -65,7 +58,7 @@ export default function useRecentActivity() {
             addedTime: Date.parse(order.creationTime),
           })
         )
-        .sort(sortByDate)
+        .sort((a, b) => b.addedTime - a.addedTime)
         // show at most 10 regular orders, and as much pending as there are
         .filter((order, index) => index < 10 || order.status === OrderStatus.PENDING)
     )
