@@ -17,6 +17,7 @@ import {
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
+  addOrUpdateOrdersBatch,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -153,6 +154,59 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { id, chainId } = action.payload
       deleteOrderById(state, chainId, id)
+    })
+    .addCase(addOrUpdateOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { chainId, orders } = action.payload
+      const pending = state[chainId].pending
+      const fulfilled = state[chainId].fulfilled
+      const expired = state[chainId].expired
+      const cancelled = state[chainId].cancelled
+
+      orders.forEach((newOrder) => {
+        const { id } = newOrder
+
+        // does the order exist already in the state?
+        // if so, get it, and remove from state
+        let orderObj
+        if (pending[id]) {
+          orderObj = pending[id]
+          delete pending[id]
+        } else if (fulfilled[id]) {
+          orderObj = fulfilled[id]
+          delete fulfilled[id]
+        } else if (expired[id]) {
+          orderObj = expired[id]
+          delete expired[id]
+        } else if (cancelled[id]) {
+          orderObj = cancelled[id]
+          delete cancelled[id]
+        }
+
+        const status = newOrder.status
+
+        const order = orderObj ? { ...orderObj.order, apiAdditionalInfo: newOrder.apiAdditionalInfo, status } : newOrder
+
+        // what's the status now?
+        // add order to respective state
+        switch (status) {
+          case 'pending':
+            pending[id] = { order, id }
+            break
+          case 'cancelled':
+            cancelled[id] = { order, id }
+            break
+          case 'expired':
+            expired[id] = { order, id }
+            break
+          case 'fulfilled':
+            fulfilled[id] = { order, id }
+            break
+          default:
+            // TODO: add it regardless?
+            console.warn(`Unknown state '${state}' for order`, id, newOrder)
+        }
+      })
     })
     .addCase(fulfillOrder, (state, action) => {
       prefillState(state, action)
