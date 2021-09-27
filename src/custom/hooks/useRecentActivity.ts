@@ -58,6 +58,7 @@ export default function useRecentActivity() {
             addedTime: Date.parse(order.creationTime),
           })
         )
+        // sort orders by calculated `addedTime` descending
         .sort((a, b) => b.addedTime - a.addedTime)
         // show at most 10 regular orders, and as much pending as there are
         .filter((order, index) => index < 10 || order.status === OrderStatus.PENDING)
