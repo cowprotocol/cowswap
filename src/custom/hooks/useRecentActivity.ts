@@ -77,6 +77,7 @@ export default function useRecentActivity() {
     // which is used later in app to render list of activity
     const adjustedTransactions = Object.values(allTransactions)
       .filter(isTransactionRecent)
+      .filter((tx) => tx.from === account)
       .map((tx) => {
         return {
           ...tx,
