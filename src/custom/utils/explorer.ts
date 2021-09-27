@@ -37,3 +37,9 @@ export function getExplorerOrderLink(chainId: ChainId, orderId: OrderID): string
 
   return baseUrl + `/orders/${orderId}`
 }
+
+export function getExplorerAddressLink(chainId: ChainId, address: string): string {
+  const baseUrl = _getExplorerBaseUrl(chainId)
+
+  return baseUrl + `/address/${address}`
+}
