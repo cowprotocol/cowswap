@@ -44,9 +44,6 @@ export function _constructTradePrice({
 }
 
 export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
-  if (pct.toSignificant(3) === '1.11') {
-    throw Error(`Wrong number!`)
-  }
   if (trade.tradeType === TradeType.EXACT_OUTPUT) {
     return trade.outputAmount
   }
