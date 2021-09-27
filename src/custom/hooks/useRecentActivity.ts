@@ -57,48 +57,44 @@ export default function useRecentActivity() {
       allNonEmptyOrders
         // only show orders for connected account
         .filter((order) => order.owner.toLowerCase() === account.toLowerCase())
-        .map((order) => {
+        .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses
-          return {
+          ({
             ...order,
             addedTime: Date.parse(order.creationTime),
-          }
-        })
+          })
+        )
         .sort(sortByDate)
         // show at most 10 regular orders, and as much pending as there are
         .filter((order, index) => index < 10 || order.status === OrderStatus.PENDING)
     )
   }, [account, allNonEmptyOrders, chainId])
 
-  const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(() => {
-    // Filter out any pending/fulfilled transactions OLDER than 1 day
-    // and adjust order object to match Order id + status format
-    // which is used later in app to render list of activity
-    const adjustedTransactions = Object.values(allTransactions)
-      .filter(isTransactionRecent)
-      .filter((tx) => tx.from === account)
-      .map((tx) => {
-        return {
+  const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(
+    () =>
+      // Filter out any pending/fulfilled transactions OLDER than 1 day
+      // and adjust order object to match Order id + status format
+      // which is used later in app to render list of activity
+      Object.values(allTransactions)
+        .filter(isTransactionRecent)
+        .filter((tx) => tx.from === account)
+        .map((tx) => ({
           ...tx,
           // we need to adjust Transaction object and add "id" + "status" to match Orders type
           id: tx.hash,
           status: tx.receipt ? OrderStatus.FULFILLED : OrderStatus.PENDING,
-        }
-      })
+        })),
+    [account, allTransactions]
+  )
 
-    return adjustedTransactions
-  }, [allTransactions])
-
-  return useMemo(() => {
-    // Concat together the EnhancedTransactionDetails[] and Orders[]
-    // then sort them by newest first
-    const sortedActivities = recentTransactionsAdjusted.concat(recentOrdersAdjusted).sort((a, b) => {
-      return b.addedTime - a.addedTime
-    })
-
-    return sortedActivities
-  }, [recentOrdersAdjusted, recentTransactionsAdjusted])
+  return useMemo(
+    () =>
+      // Concat together the EnhancedTransactionDetails[] and Orders[]
+      // then sort them by newest first
+      recentTransactionsAdjusted.concat(recentOrdersAdjusted).sort((a, b) => b.addedTime - a.addedTime),
+    [recentOrdersAdjusted, recentTransactionsAdjusted]
+  )
 }
 
 export interface ActivityDescriptors {
