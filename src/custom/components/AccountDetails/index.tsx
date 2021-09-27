@@ -203,7 +203,7 @@ export default function AccountDetails({
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}
-                  isENS={ENSName ? true : false}
+                  isENS={!!ENSName}
                   href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
                 >
                   {explorerLabel} ↗
