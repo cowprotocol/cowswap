@@ -20,6 +20,8 @@ import {
   Order,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
+  AddOrUpdateOrdersBatchParams,
+  addOrUpdateOrdersBatch,
   preSignOrders,
 } from './actions'
 import {
@@ -37,6 +39,10 @@ import { isTruthy } from 'utils/misc'
 import { OrderID } from 'api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
 import { deserializeToken, serializeToken } from '@src/state/user/hooks'
+
+export interface AddOrUpdateUnserialisedOrdersBatchParams extends Omit<AddOrUpdateOrdersBatchParams, 'orders'> {
+  orders: Order[]
+}
 
 export interface AddUnserialisedPendingOrderParams extends GetRemoveOrderParams {
   order: Order
@@ -77,6 +83,7 @@ interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
 }
 
+type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersBatchParams) => void
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
 type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
 type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
@@ -290,6 +297,21 @@ export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
 
     return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
+}
+
+export const useAddOrUpdateOrdersBatch = (): AddOrUpdateOrdersCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (params: AddOrUpdateUnserialisedOrdersBatchParams) => {
+      const orders = params.orders.map((order) => ({
+        ...order,
+        inputToken: serializeToken(order.inputToken),
+        outputToken: serializeToken(order.outputToken),
+      }))
+      dispatch(addOrUpdateOrdersBatch({ ...params, orders }))
+    },
+    [dispatch]
+  )
 }
 
 export const useAddPendingOrder = (): AddOrderCallback => {
