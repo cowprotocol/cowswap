@@ -106,11 +106,7 @@ export default function App(props?: { children?: ReactNode }) {
   const [bgBlur, setBgBlur] = useState(false)
   const location = useLocation()
   useEffect(() => {
-    if (location.pathname.length > 1 && location.pathname !== '/swap') {
-      setBgBlur(true)
-    } else {
-      setBgBlur(false)
-    }
+    setBgBlur(location.pathname.length > 1 && location.pathname !== '/swap')
   }, [location.pathname])
   return (
     <ErrorBoundary>
