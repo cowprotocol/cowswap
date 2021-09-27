@@ -33,17 +33,11 @@ enum TxReceiptStatus {
   CONFIRMED,
 }
 
-// One FULL day in MS (milliseconds not Microsoft)
-const DAY_MS = 86_400_000
+function sortByDate(a: Order, b: Order): number {
+  const dateA = new Date(a.creationTime)
+  const dateB = new Date(b.creationTime)
 
-/**
- * Returns whether a order happened in the last day (86400 seconds * 1000 milliseconds / second)
- * @param order
- */
-function isOrderRecent(order: Order): boolean {
-  // TODO: TEMPORARY CHANGE TO SEE HISTORY FOR 10 INSTEAD OF 1 DAY
-  // TODO: will become obsolete with the api orders stuff
-  return Date.now() - Date.parse(order.creationTime) < DAY_MS * 10
+  return dateA > dateB ? -1 : dateA < dateB ? 1 : 0
 }
 
 /**
@@ -51,25 +45,31 @@ function isOrderRecent(order: Order): boolean {
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
  */
 export default function useRecentActivity() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const allTransactions = useAllTransactions()
   const allNonEmptyOrders = useOrders({ chainId })
 
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
-    // Filter out any pending/fulfilled orders OLDER than 1 day
-    // and adjust order object to match TransactionDetail addedTime format
-    // which is used later in app to render list of activity
-    const adjustedOrders = allNonEmptyOrders.filter(isOrderRecent).map((order) => {
-      // we need to essentially match EnhancedTransactionDetails type which uses "addedTime" for date checking
-      // and time in MS vs ISO string as Orders uses
-      return {
-        ...order,
-        addedTime: Date.parse(order.creationTime),
-      }
-    })
-
-    return adjustedOrders
-  }, [allNonEmptyOrders])
+    if (!chainId || !account) {
+      return []
+    }
+    return (
+      allNonEmptyOrders
+        // only show orders for connected account
+        .filter((order) => order.owner.toLowerCase() === account.toLowerCase())
+        .map((order) => {
+          // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
+          // and time in MS vs ISO string as Orders uses
+          return {
+            ...order,
+            addedTime: Date.parse(order.creationTime),
+          }
+        })
+        .sort(sortByDate)
+        // show at most 10 regular orders, and as much pending as there are
+        .filter((order, index) => index < 10 || order.status === OrderStatus.PENDING)
+    )
+  }, [account, allNonEmptyOrders, chainId])
 
   const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(() => {
     // Filter out any pending/fulfilled transactions OLDER than 1 day
