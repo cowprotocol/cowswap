@@ -4,6 +4,9 @@
   "homepage": ".",
   "private": true,
   "version": "1.2.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
     "@craco/craco": "^5.7.0",
@@ -172,6 +175,7 @@
     "@gnosis.pm/cow-runner-game": "^0.2.9",
     "@gnosis.pm/dex-js": "^0.12.0",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
+    "@pinata/sdk": "^1.1.23",
     "@sentry/react": "^6.11.0",
     "@sentry/tracing": "^6.11.0",
     "@uniswap/default-token-list": "^2.0.0",
@@ -179,6 +183,7 @@
     "bignumber.js": "9.0.1",
     "bnc-sdk": "^3.5.0",
     "fast-safe-stringify": "^2.0.8",
+    "ipfs-http-client": "^52.0.3",
     "paraswap": "^4.18.0",
     "react-appzi": "^1.0.4",
     "react-inlinesvg": "^2.3.0",
