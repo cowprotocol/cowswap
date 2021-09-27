@@ -16,7 +16,7 @@ export type OrderTransitionStatus = 'unknown' | 'fulfilled' | 'expired' | 'cance
  *
  * We assume the order is `fillOrKill`
  */
-function isOrderFulfilled(order: OrderMetaData): boolean {
+function isOrderFulfilled(order: Pick<OrderMetaData, 'executedBuyAmount' | 'executedSellAmount'>): boolean {
   return Number(order.executedBuyAmount) > 0 && Number(order.executedSellAmount) > 0
 }
 
@@ -28,7 +28,7 @@ function isOrderFulfilled(order: OrderMetaData): boolean {
  *
  * We assume the order is not fulfilled.
  */
-function isOrderCancelled(order: OrderMetaData): boolean {
+function isOrderCancelled(order: Pick<OrderMetaData, 'creationDate' | 'invalidated'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
   return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
@@ -38,7 +38,7 @@ function isOrderCancelled(order: OrderMetaData): boolean {
  * The buffer is used to take into account race conditions where a solver might
  * execute a transaction after the backend changed the order status.
  */
-function isOrderExpired(order: OrderMetaData): boolean {
+function isOrderExpired(order: Pick<OrderMetaData, 'validTo'>): boolean {
   const validToTime = order.validTo * 1000 // validTo is in seconds
   return Date.now() - validToTime > PENDING_ORDERS_BUFFER
 }
@@ -46,11 +46,23 @@ function isOrderExpired(order: OrderMetaData): boolean {
 /**
  * An order is considered presigned, when it transitions from "presignaturePending" to just "pending"
  */
-function isOrderPresigned(order: OrderMetaData): boolean {
+function isOrderPresigned(order: Pick<OrderMetaData, 'signingScheme' | 'status'>): boolean {
   return order.signingScheme == 'presign' && order.status === 'open'
 }
 
-export function classifyOrder(order: OrderMetaData | null): OrderTransitionStatus {
+export function classifyOrder(
+  order: Pick<
+    OrderMetaData,
+    | 'uid'
+    | 'validTo'
+    | 'creationDate'
+    | 'invalidated'
+    | 'executedBuyAmount'
+    | 'executedSellAmount'
+    | 'signingScheme'
+    | 'status'
+  > | null
+): OrderTransitionStatus {
   if (!order) {
     console.debug(`[state::orders::classifyOrder] unknown order`)
     return 'unknown'
