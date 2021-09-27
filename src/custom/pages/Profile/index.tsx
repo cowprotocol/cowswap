@@ -14,7 +14,7 @@ import { useActiveWeb3React } from '@src/hooks/web3'
 import Copy from 'components/Copy/CopyMod'
 import { AccountDetailsProps } from 'components/AccountDetails'
 import { HelpCircle, RefreshCcw } from 'react-feather'
-import Web3Status from '@src/components/Web3Status'
+import Web3Status from 'components/Web3Status'
 
 export default function Profile({ ENSName }: AccountDetailsProps) {
   const today = new Date()
@@ -116,7 +116,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
         </GridWrap>
         {!account && (
           <FlexWrap>
-            <Web3Status />
+            <Web3Status openOrdersPanel={(): void => console.log('TODO: Implement open orders panel')} />
           </FlexWrap>
         )}
       </GridWrap>
