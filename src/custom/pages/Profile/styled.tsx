@@ -1,18 +1,22 @@
 import styled from 'styled-components'
 import Page, { GdocsListStyle, Title } from 'components/Page'
 import * as CSS from 'csstype'
+import { transparentize } from 'polished'
 
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
 
   max-width: 910px;
   min-height: auto;
-  padding-top: 1rem;
+  padding-top: 16px;
   display: flex;
   width: 100%;
   justify-content: flex-end;
   flex-direction: column;
   margin: 0;
+  background: ${({ theme }) => transparentize(0.5, theme.bg1)};
+  box-shadow: none;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px;
   `}

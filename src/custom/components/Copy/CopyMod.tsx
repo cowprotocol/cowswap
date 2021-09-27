@@ -17,7 +17,7 @@ export const CopyIcon = styled(LinkStyledButton)`
   text-decoration: none;
   font-size: 0.825rem;
   border-radius: 50%;
-  background-color: ${({ theme, bg, isCopied }) => (bg && !isCopied ? theme.bg6 : 'transparent')};
+  background-color: transparent;
   min-width: 20px;
   min-height: 20px;
   align-self: flex-end;
@@ -36,24 +36,19 @@ export const CopyIcon = styled(LinkStyledButton)`
   align-items: center;
 ` */
 
-export default function CopyHelper(props: {
-  toCopy: string
-  children?: React.ReactNode
-  clickableLink?: boolean
-  bg?: boolean
-}) {
-  const { toCopy, children, clickableLink, bg } = props
+export default function CopyHelper(props: { toCopy: string; children?: React.ReactNode; clickableLink?: boolean }) {
+  const { toCopy, children, clickableLink } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
   return (
     <>
       {clickableLink && <LinkStyledButton onClick={() => setCopied(toCopy)}>{toCopy}</LinkStyledButton>}
-      <CopyIcon bg={bg} isCopied={isCopied} onClick={() => setCopied(toCopy)}>
+      <CopyIcon isCopied={isCopied} onClick={() => setCopied(toCopy)}>
         {isCopied ? (
           <TransactionStatusText
             isCopied={isCopied} // mod
           >
-            <CheckCircle size={bg ? '12' : '16'} />
+            <CheckCircle size={'16'} />
             <TransactionStatusText
               isCopied={isCopied} // mod
             >
@@ -62,7 +57,7 @@ export default function CopyHelper(props: {
           </TransactionStatusText>
         ) : (
           <TransactionStatusText>
-            <Copy size={bg ? '12' : '16'} />
+            <Copy size={'16'} />
           </TransactionStatusText>
         )}
         {isCopied ? '' : children}
