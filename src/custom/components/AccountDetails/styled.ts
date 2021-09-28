@@ -206,7 +206,6 @@ export const LowerSection = styled.div`
   > div {
     display: flex;
     flex-flow: column wrap;
-    padding: 0;
     width: 100%;
     background-color: inherit;
     padding: 0 0 48px;
