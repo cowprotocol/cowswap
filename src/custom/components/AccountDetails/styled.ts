@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton, StyledLink } from 'theme'
 import {
   WalletName,
   AccountSection as AccountSectionMod,
@@ -224,14 +224,19 @@ export const LowerSection = styled.div`
     }
   }
 
-  ${LinkStyledButton} {
+  ${LinkStyledButton},${StyledLink} {
     opacity: 0.7;
     color: ${({ theme }) => theme.text1};
 
     &:hover {
       opacity: 1;
     }
-  }
+    
+  //  TODO: from merge, maybe no longer needed?
+  // ${LinkStyledButton},${StyledLink} {
+  //   text-decoration: underline;
+  //   font-size: 14px;
+  // }
 `
 
 const NetworkCardUni = styled(YellowCard)`
