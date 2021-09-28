@@ -84,11 +84,11 @@ export function APIOrdersUpdater(): null {
   useEffect(() => {
     if (account && chainId && tokenAreLoaded) {
       getOrders(chainId, account, 100)
-        .then((_orders) => {
-          console.log(`APIOrdersUpdater::Fetched ${_orders.length} orders for account ${account} on chain ${chainId}`)
+        .then((apiOrders) => {
+          console.log(`APIOrdersUpdater::Fetched ${apiOrders.length} orders for account ${account} on chain ${chainId}`)
 
           // Transform API orders into internal order objects and filter out orders that are not in a known state
-          const orders = _orders.reduce<Order[]>((acc, order) => {
+          const orders = apiOrders.reduce<Order[]>((acc, order) => {
             const storeOrder = transformApiOrderToStoreOrder(order, chainId, allTokens)
             if (storeOrder) {
               acc.push(storeOrder)
