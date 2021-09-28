@@ -33,6 +33,9 @@ export function colors(darkMode: boolean): Colors {
     // ****** base ******
     white: darkMode ? '#c5daef' : '#ffffff',
     black: darkMode ? '#021E34' : '#000000',
+    cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
+    cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
+    cardShadow2: darkMode ? 'rgba(11, 37, 53, 0.93)' : 'rgba(1, 10, 16, 0.15)',
 
     // ****** text ******
     text1: darkMode ? '#c5daef' : '#000000',
@@ -46,6 +49,8 @@ export function colors(darkMode: boolean): Colors {
     bg3: darkMode ? '#163861' : '#d5e8f0',
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
+    bg6: darkMode ? '#163861' : '#b0dfee',
+    bg7: darkMode ? '#1F4471' : '#CEE7EF',
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
@@ -108,12 +113,13 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
             ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
             : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
         background-attachment: fixed;
+        backdrop-filter: blur(40px);
       `,
     },
     appBody: {
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      boxShadow: `4px 4px 0px #000000;`,
       borderRadius: '16px',
-      border: `3px solid ${colorsTheme.black}`,
+      border: `3px solid #000000`,
       padding: '12px 6px',
       maxWidth: {
         normal: '460px',

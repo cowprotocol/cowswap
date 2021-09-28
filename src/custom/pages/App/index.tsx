@@ -8,7 +8,7 @@ import PrivacyPolicy from 'pages/PrivacyPolicy'
 import CookiePolicy from 'pages/CookiePolicy'
 import TermsAndConditions from 'pages/TermsAndConditions'
 import About from 'pages/About'
-// import Profile from 'pages/Profile'
+import Profile from 'pages/Profile'
 import Faq from 'pages/Faq'
 import NotFound from 'pages/NotFound'
 import CowGame from 'pages/CowGame'
@@ -47,7 +47,7 @@ export const BodyWrapper = styled.div`
   overflow-x: hidden;
   z-index: 1;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 0 10px 0;
   `};
 `
@@ -60,7 +60,7 @@ export default function App() {
         <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
         <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
         <Route exact strict path="/about" component={About} />
-        {/* <Route exact strict path="/profile" component={Profile} /> */}
+        <Route exact strict path="/profile" component={Profile} />
         <Route exact strict path="/faq" component={Faq} />
         <Route exact strict path="/play" component={CowGame} />
         <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />

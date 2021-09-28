@@ -24,6 +24,9 @@ export interface Colors extends ColorsUniswap {
   infoText: Color
   warningText: Color
   errorText: Color
+  cardBorder: Color
+  cardShadow1: Color
+  cardShadow2: Color
 }
 
 declare module 'styled-components' {
