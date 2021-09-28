@@ -11,6 +11,7 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { ChainId } from 'state/lists/actions'
 import { ApiOrderStatus, classifyOrder } from 'state/orders/utils'
+import { computeOrderSummary } from 'state/orders/updaters/utils'
 
 function getToken(address: string, chainId: ChainId, tokens: { [p: string]: Token }): Token | undefined {
   if (address.toLowerCase() === NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase()) {
@@ -54,17 +55,22 @@ function transformApiOrderToStoreOrder(
   }
 
   if (inputToken && outputToken) {
-    return {
+    const storeOrder: Order = {
       ...order,
       inputToken,
       outputToken,
       id,
       creationTime,
-      summary: 'TODO: loaded from API',
+      summary: '',
       status,
       receiver,
       apiAdditionalInfo: order,
     }
+    // The function to compute the summary needs the Order instance to exist already
+    // That's why it's not used before and an empty string is set instead
+    storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
+
+    return storeOrder
   } else {
     console.warn(
       `APIOrdersUpdater::Tokens not found for order ${id}: sellToken ${!inputToken ? sellToken : 'found'} - buyToken ${
