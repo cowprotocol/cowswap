@@ -97,7 +97,7 @@ export default function useRecentActivity() {
   }, [recentOrdersAdjusted, recentTransactionsAdjusted])
 }
 
-interface ActivityDescriptors {
+export interface ActivityDescriptors {
   activity: EnhancedTransactionDetails | Order
   summary?: string
   status: ActivityStatus

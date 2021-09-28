@@ -70,6 +70,7 @@ export default createReducer(initialState, (builder) =>
         const txs = transactions[chainId] ?? {}
         txs[hash] = {
           hash,
+          transactionHash: hashType === HashType.ETHEREUM_TX ? hash : undefined,
           hashType,
           addedTime: now(),
           from,
@@ -103,6 +104,7 @@ export default createReducer(initialState, (builder) =>
         return
       }
       tx.receipt = receipt
+      // tx.transactionHash = receipt.transactionHash
       tx.confirmedTime = now()
     })
 
