@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
@@ -37,10 +37,11 @@ function classifyLocalStatus(status: ApiOrderStatus): OrderStatus | undefined {
 export function APIOrdersUpdater(): null {
   const { account, chainId } = useActiveWeb3React()
   const allTokens = useAllTokens()
+  const tokenAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrdersBatch = useAddOrUpdateOrdersBatch()
 
   useEffect(() => {
-    if (account && chainId && Object.keys(allTokens).length > 0) {
+    if (account && chainId && tokenAreLoaded) {
       getOrders(chainId, account, 100)
         .then((_orders) => {
           console.log(`APIOrdersUpdater::Fetched ${_orders.length} orders for account ${account} on chain ${chainId}`)
@@ -89,7 +90,7 @@ export function APIOrdersUpdater(): null {
           console.error(`APIOrdersUpdater::Failed to fetch orders`, e)
         })
     }
-  }, [account, addOrUpdateOrdersBatch, allTokens, chainId])
+  }, [account, addOrUpdateOrdersBatch, allTokens, chainId, tokenAreLoaded])
 
   return null
 }
