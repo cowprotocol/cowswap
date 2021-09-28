@@ -5,7 +5,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import { useActiveWeb3React } from 'hooks/web3'
 import { useAddOrUpdateOrdersBatch } from 'state/orders/hooks'
-import { getOrders } from 'api/gnosisProtocol/api'
+import { getOrders, OrderMetaData } from 'api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
@@ -34,6 +34,47 @@ function classifyLocalStatus(status: ApiOrderStatus): OrderStatus | undefined {
   }
 }
 
+function transformApiOrderToStoreOrder(
+  order: OrderMetaData,
+  chainId: ChainId,
+  allTokens: { [address: string]: Token }
+): Order | undefined {
+  const { uid: id, sellToken, buyToken, creationDate: creationTime, receiver } = order
+
+  // TODO: load tokens from network when not found on local state
+  const inputToken = getToken(sellToken, chainId, allTokens)
+  const outputToken = getToken(buyToken, chainId, allTokens)
+
+  const apiStatus = classifyOrder(order)
+  const status = classifyLocalStatus(apiStatus)
+
+  if (!status) {
+    console.warn(`APIOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
+    return
+  }
+
+  if (inputToken && outputToken) {
+    return {
+      ...order,
+      inputToken,
+      outputToken,
+      id,
+      creationTime,
+      summary: 'TODO: loaded from API',
+      status,
+      receiver,
+      apiAdditionalInfo: order,
+    }
+  } else {
+    console.warn(
+      `APIOrdersUpdater::Tokens not found for order ${id}: sellToken ${!inputToken ? sellToken : 'found'} - buyToken ${
+        !outputToken ? buyToken : 'found'
+      }`
+    )
+    return
+  }
+}
+
 export function APIOrdersUpdater(): null {
   const { account, chainId } = useActiveWeb3React()
   const allTokens = useAllTokens()
@@ -46,39 +87,11 @@ export function APIOrdersUpdater(): null {
         .then((_orders) => {
           console.log(`APIOrdersUpdater::Fetched ${_orders.length} orders for account ${account} on chain ${chainId}`)
 
-          // Transform API orders into internal order objects
+          // Transform API orders into internal order objects and filter out orders that are not in a known state
           const orders = _orders.reduce<Order[]>((acc, order) => {
-            const { uid: id, sellToken, buyToken, creationDate: creationTime, receiver } = order
-
-            // TODO: load tokens from network when not found on local state
-            const inputToken = getToken(sellToken, chainId, allTokens)
-            const outputToken = getToken(buyToken, chainId, allTokens)
-
-            const apiStatus = classifyOrder(order)
-            const status = classifyLocalStatus(apiStatus)
-            if (!status) {
-              console.warn(`APIOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
-              return acc
-            }
-
-            if (inputToken && outputToken) {
-              acc.push({
-                ...order,
-                inputToken,
-                outputToken,
-                id,
-                creationTime,
-                summary: 'TODO: loaded from API',
-                status,
-                receiver,
-                apiAdditionalInfo: order,
-              })
-            } else {
-              console.warn(
-                `APIOrdersUpdater::Tokens not found for order ${id}: sellToken ${
-                  !inputToken ? sellToken : 'found'
-                } - buyToken ${!outputToken ? buyToken : 'found'}`
-              )
+            const storeOrder = transformApiOrderToStoreOrder(order, chainId, allTokens)
+            if (storeOrder) {
+              acc.push(storeOrder)
             }
             return acc
           }, [])
