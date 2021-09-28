@@ -209,6 +209,11 @@ export const LowerSection = styled.div`
     width: 100%;
     background-color: inherit;
     padding: 0 0 48px;
+
+    ${StyledLink} {
+      align-self: center;
+      margin: 20px 0;
+    }
   }
 
   h5 {

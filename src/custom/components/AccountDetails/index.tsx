@@ -232,6 +232,7 @@ export default function AccountDetails({
                 {renderActivities(activities)}
               </Fragment>
             ))}
+            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders</ExternalLink>}
           </div>
         </LowerSection>
       ) : (
