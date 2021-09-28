@@ -65,6 +65,7 @@ function transformApiOrderToStoreOrder(
       status,
       receiver,
       apiAdditionalInfo: order,
+      isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     }
     // The function to compute the summary needs the Order instance to exist already
     // That's why it's not used before and an empty string is set instead
