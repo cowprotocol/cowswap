@@ -1,0 +1,16 @@
+# generated stuff
+build
+.git
+.github
+src/**/*.d.ts
+src/abis
+#src/assets
+src/types
+
+# inherited from uniswap, better not touch it
+public_uniswap/index.html
+public/index.html
+
+# local stuff
+.yalc
+.vscode

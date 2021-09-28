@@ -34,9 +34,9 @@ CI checks will run against all PRs.
 
 <!-- # Translations
 TODO: read and re-enable
-Help CowSwap reach a global audience! 
+Help CowSwap reach a global audience!
 
-CowSwap uses [Crowdin](https://crowdin.com/project/cowswap) 
+CowSwap uses [Crowdin](https://crowdin.com/project/cowswap)
 for managing translations. Whenever a new string is added to the project,
 it gets uploaded to Crowdin for translation by [this workflow](./.github/workflows/crowdin.yaml).
 

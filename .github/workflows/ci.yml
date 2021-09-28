@@ -83,6 +83,36 @@ jobs:
       #   uses: coverallsapp/github-action@v1.1.2
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  lint:
+    name: Lint
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+          github_token: ${{ secrets.github_token }}
+          auto_fix: ${{ github.event_name == 'pull_request' }}
 
   build:
     name: Build apps
