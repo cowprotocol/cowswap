@@ -8,6 +8,13 @@ const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.XDAI]: 'https://safe-transaction.xdai.gnosis.io',
 }
 
+const SAFE_WEB_URL: Partial<Record<number, string>> = {
+  [ChainId.MAINNET]: 'https://gnosis-safe.io',
+  [ChainId.RINKEBY]: 'https://rinkeby.gnosis-safe.io',
+  [ChainId.XDAI]: 'https://xdai.gnosis-safe.io',
+}
+//
+
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}
 
 function _getClient(chainId: number): SafeServiceClient | null {
@@ -34,6 +41,16 @@ function _getClientOrThrow(chainId: number): SafeServiceClient {
   }
 
   return client
+}
+
+export function getSafeWebUrl(chaindId: number, safeAddress: string): string | null {
+  const safeWebUrl = SAFE_WEB_URL[chaindId]
+
+  if (!safeWebUrl) {
+    return null
+  }
+
+  return `${safeWebUrl}/app/#/safes/${safeAddress}/transactions`
 }
 
 export function getSafeTransaction(chainId: number, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {
