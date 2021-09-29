@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useCallback, useMemo, useRef } from 'react'
+import { MutableRefObject, useCallback, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
@@ -121,7 +121,9 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
   return useSelector<AppState, Order | undefined>((state) => {
     if (!id || !chainId) return undefined
 
-    const orders = state.orders[chainId]
+    const ordersState = state.orders[chainId]
+    const orders = { ...ORDERS_LIST, ...ordersState }
+
     const serialisedOrder =
       orders?.fulfilled[id] ||
       orders?.pending[id] ||
@@ -132,6 +134,14 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
     return _deserializeOrder(serialisedOrder)
   })
 }
+
+// function getDeserializedOrder(id: string, state: MutableRefObject<OrderStateNetwork>) {
+//   const orders = { ...ORDERS_LIST, ...state.current }
+
+//   const serialisedOrderObject = orders.fulfilled[id] || orders.pending[id] || orders.expired[id] || orders.cancelled[id]
+
+//   return _deserializeOrder(serialisedOrderObject)
+// }
 
 // used to extract Order.summary before showing popup
 // TODO: put the whole logic inside Popup middleware
