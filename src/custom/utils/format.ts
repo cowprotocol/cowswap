@@ -154,7 +154,7 @@ export function formatMax(value?: Fraction, decimals?: number): string | undefin
   if (!value) {
     return
   }
-  let amount = value.toFixed(decimals || LONG_PRECISION)
+  let amount = value.toFixed(decimals ?? LONG_PRECISION)
 
   if (+amount === 0) {
     amount = value.toSignificant(1)
