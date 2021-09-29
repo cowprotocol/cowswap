@@ -22,7 +22,7 @@ import {
   SetIsOrderUnfillableParams,
   preSignOrders,
 } from './actions'
-import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
+import { OrderObject, OrdersState, ORDERS_LIST, PartialOrdersMap, V2OrderObject } from './reducer'
 import { isTruthy } from 'utils/misc'
 import { OrderID } from 'api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
@@ -148,11 +148,10 @@ export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCall
     (id: OrderID) => {
       if (!chainId || !stateRef.current) return
 
+      const orders = { ...ORDERS_LIST, ...stateRef.current }
+
       const serialisedOrderObject =
-        stateRef.current.fulfilled[id] ||
-        stateRef.current.pending[id] ||
-        stateRef.current.expired[id] ||
-        stateRef.current.cancelled[id]
+        orders.fulfilled[id] || orders.pending[id] || orders.expired[id] || orders.cancelled[id]
 
       return _deserializeOrder(serialisedOrderObject)
     },
