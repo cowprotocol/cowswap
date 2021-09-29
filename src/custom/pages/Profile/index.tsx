@@ -57,11 +57,15 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
           <Txt fs={14} center>
             {account ? (
               <>
-                <span style={{ wordBreak: 'break-all' }}>
+                <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                   {window.location.href}
                   <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
+                  {(ENSName || account) && (
+                    <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                      <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
+                    </span>
+                  )}
                 </span>
-                {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
               </>
             ) : (
               '-'
