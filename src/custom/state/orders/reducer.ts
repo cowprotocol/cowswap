@@ -185,7 +185,14 @@ export default createReducer(initialState, (builder) =>
 
         const status = newOrder.status
 
-        const order = orderObj ? { ...orderObj.order, apiAdditionalInfo: newOrder.apiAdditionalInfo, status } : newOrder
+        const order = orderObj
+          ? {
+              ...orderObj.order,
+              apiAdditionalInfo: newOrder.apiAdditionalInfo,
+              isCancelling: newOrder.isCancelling,
+              status,
+            }
+          : newOrder
 
         // what's the status now?
         // add order to respective state
