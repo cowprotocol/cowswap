@@ -13,7 +13,6 @@ const SAFE_WEB_URL: Partial<Record<number, string>> = {
   [ChainId.RINKEBY]: 'https://rinkeby.gnosis-safe.io',
   [ChainId.XDAI]: 'https://xdai.gnosis-safe.io',
 }
-//
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}
 

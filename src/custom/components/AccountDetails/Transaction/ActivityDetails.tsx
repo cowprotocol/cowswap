@@ -68,7 +68,7 @@ interface OrderSummaryType {
 
 export function ActivityDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
   const { activityDerivedState } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable, gnosisSafeInfo } =
     activityDerivedState
 
   if (!order && !enhancedTransaction) return null
@@ -175,8 +175,11 @@ export function ActivityDetails(props: { chainId: number; activityDerivedState: 
           summary ?? id
         )}
         {/* TODO: Load gnosisSafeThreshold (not default!) */}
-        {enhancedTransaction && enhancedTransaction.safeTransaction && (
-          <GnosisSafeTxDetails enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
+        {gnosisSafeInfo && enhancedTransaction && enhancedTransaction.safeTransaction && (
+          <GnosisSafeTxDetails
+            enhancedTransaction={enhancedTransaction}
+            gnosisSafeThreshold={gnosisSafeInfo.threshold}
+          />
         )}
       </SummaryInner>
     </Summary>
