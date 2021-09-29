@@ -37,22 +37,27 @@ export interface OrderObject {
 type OrdersMap = Record<OrderID, OrderObject>
 export type PartialOrdersMap = Partial<OrdersMap>
 
+type OrderStateNetwork = {
+  pending: PartialOrdersMap
+  presignaturePending: PartialOrdersMap
+  fulfilled: PartialOrdersMap
+  expired: PartialOrdersMap
+  cancelled: PartialOrdersMap
+  lastCheckedBlock: number
+}
+
 export type OrdersState = {
-  readonly [chainId in ChainId]?: {
-    pending: PartialOrdersMap
-    presignaturePending: PartialOrdersMap
-    fulfilled: PartialOrdersMap
-    expired: PartialOrdersMap
-    cancelled: PartialOrdersMap
-    lastCheckedBlock: number
-  }
+  readonly [chainId in ChainId]?: OrderStateNetwork
 }
 
 export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export const ORDERS_LIST = {
+export const ORDERS_LIST: Pick<
+  OrderStateNetwork,
+  'pending' | 'presignaturePending' | 'fulfilled' | 'expired' | 'cancelled'
+> = {
   pending: {},
   presignaturePending: {},
   fulfilled: {},
@@ -79,6 +84,13 @@ function prefillState(
     }
     return
   }
+
+  // Object.keys(ORDERS_LIST).forEach((key) => {
+  //   const orderList = stateAtChainId[key]
+  //   if (!orderList) {
+  //     stateAtChainId[key] = ORDERS_LIST[key]
+  //   }
+  // })
 
   Object.assign(stateAtChainId, ORDERS_LIST)
 
