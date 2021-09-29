@@ -52,6 +52,18 @@ export interface PrefillStateRequired {
   chainId: ChainId
 }
 
+export const ORDERS_LIST = {
+  pending: {},
+  presignaturePending: {},
+  fulfilled: {},
+  expired: {},
+  cancelled: {},
+}
+
+function getDefaultLastCheckedBlock(chainId: ChainId): number {
+  return ContractDeploymentBlocks[chainId] ?? 0
+}
+
 // makes sure there's always an object at state[chainId], state[chainId].pending | .fulfilled
 function prefillState(
   state: Writable<OrdersState>,
@@ -62,38 +74,16 @@ function prefillState(
 
   if (!stateAtChainId) {
     state[chainId] = {
-      pending: {},
-      presignaturePending: {},
-      fulfilled: {},
-      expired: {},
-      cancelled: {},
-      lastCheckedBlock: ContractDeploymentBlocks[chainId] ?? 0,
+      ...ORDERS_LIST,
+      lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
     }
     return
   }
 
-  if (!stateAtChainId.pending) {
-    stateAtChainId.pending = {}
-  }
-
-  if (!stateAtChainId.fulfilled) {
-    stateAtChainId.fulfilled = {}
-  }
-
-  if (!stateAtChainId.presignaturePending) {
-    stateAtChainId.presignaturePending = {}
-  }
-
-  if (!stateAtChainId.expired) {
-    stateAtChainId.expired = {}
-  }
-
-  if (!stateAtChainId.cancelled) {
-    stateAtChainId.cancelled = {}
-  }
+  Object.assign(stateAtChainId, ORDERS_LIST)
 
   if (stateAtChainId.lastCheckedBlock === undefined) {
-    stateAtChainId.lastCheckedBlock = ContractDeploymentBlocks[chainId] ?? 0
+    stateAtChainId.lastCheckedBlock = getDefaultLastCheckedBlock(chainId)
   }
 }
 
@@ -272,11 +262,7 @@ export default createReducer(initialState, (builder) =>
       const lastCheckedBlock = state[chainId]?.lastCheckedBlock
 
       state[chainId] = {
-        pending: {},
-        presignaturePending: {},
-        fulfilled: {},
-        expired: {},
-        cancelled: {},
+        ...ORDERS_LIST,
         lastCheckedBlock: lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0,
       }
     })
