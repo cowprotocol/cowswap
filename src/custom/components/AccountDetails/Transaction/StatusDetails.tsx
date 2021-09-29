@@ -27,10 +27,12 @@ function GnosisSafeLink(props: {
     return null
   }
 
-  const { safe } = enhancedTransaction.safeTransaction
+  const { safe, transactionHash } = enhancedTransaction.safeTransaction
   const safeUrl = getSafeWebUrl(chainId, safe)
 
-  if (safeUrl === null) {
+  // Only show the link to the safe, if we have the "safeUrl" and the Ethereum transaction is not available
+  // The reason we don't show it when the tx is not available, is because the main link will point to the Gnosis Safe already
+  if (safeUrl === null || !transactionHash) {
     return null
   }
 
