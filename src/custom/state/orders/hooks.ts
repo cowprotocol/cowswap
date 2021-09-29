@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { MutableRefObject, useCallback, useMemo, useRef } from 'react'
+import { MutableRefOct, useCallback, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
@@ -146,7 +146,13 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
 // used to extract Order.summary before showing popup
 // TODO: put the whole logic inside Popup middleware
 export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCallback => {
-  const state = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => chainId && state.orders?.[chainId])
+  const state = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
+    if (!chainId) {
+      return undefined
+    }
+    const ordersState = state.orders?.[chainId] || {}
+    return { ...ORDERS_LIST, ...ordersState }
+  })
 
   // stable ref, so we don't recreate the function
   const stateRef = useRef(state)

@@ -37,27 +37,27 @@ export interface OrderObject {
 type OrdersMap = Record<OrderID, OrderObject>
 export type PartialOrdersMap = Partial<OrdersMap>
 
-type OrderStateNetwork = {
+type OrderLists = {
   pending: PartialOrdersMap
   presignaturePending: PartialOrdersMap
   fulfilled: PartialOrdersMap
   expired: PartialOrdersMap
   cancelled: PartialOrdersMap
+}
+
+interface OrdersStateNetwork extends OrderLists {
   lastCheckedBlock: number
 }
 
 export type OrdersState = {
-  readonly [chainId in ChainId]?: OrderStateNetwork
+  readonly [chainId in ChainId]?: OrdersStateNetwork
 }
 
 export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export const ORDERS_LIST: Pick<
-  OrderStateNetwork,
-  'pending' | 'presignaturePending' | 'fulfilled' | 'expired' | 'cancelled'
-> = {
+export const ORDERS_LIST: OrderLists = {
   pending: {},
   presignaturePending: {},
   fulfilled: {},
@@ -69,6 +69,13 @@ function getDefaultLastCheckedBlock(chainId: ChainId): number {
   return ContractDeploymentBlocks[chainId] ?? 0
 }
 
+function getDefaultNetworkState(chainId: ChainId): OrdersStateNetwork {
+  return {
+    ...ORDERS_LIST,
+    lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
+  }
+}
+
 // makes sure there's always an object at state[chainId], state[chainId].pending | .fulfilled
 function prefillState(
   state: Writable<OrdersState>,
@@ -78,21 +85,29 @@ function prefillState(
   const stateAtChainId = state[chainId]
 
   if (!stateAtChainId) {
-    state[chainId] = {
-      ...ORDERS_LIST,
-      lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
-    }
+    state[chainId] = getDefaultNetworkState(chainId)
     return
   }
 
-  // Object.keys(ORDERS_LIST).forEach((key) => {
-  //   const orderList = stateAtChainId[key]
-  //   if (!orderList) {
-  //     stateAtChainId[key] = ORDERS_LIST[key]
-  //   }
-  // })
+  if (!stateAtChainId.pending) {
+    stateAtChainId.pending = {}
+  }
 
-  Object.assign(stateAtChainId, ORDERS_LIST)
+  if (!stateAtChainId.fulfilled) {
+    stateAtChainId.fulfilled = {}
+  }
+
+  if (!stateAtChainId.presignaturePending) {
+    stateAtChainId.presignaturePending = {}
+  }
+
+  if (!stateAtChainId.expired) {
+    stateAtChainId.expired = {}
+  }
+
+  if (!stateAtChainId.cancelled) {
+    stateAtChainId.cancelled = {}
+  }
 
   if (stateAtChainId.lastCheckedBlock === undefined) {
     stateAtChainId.lastCheckedBlock = getDefaultLastCheckedBlock(chainId)
