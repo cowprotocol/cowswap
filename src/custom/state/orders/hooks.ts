@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { MutableRefOct, useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
