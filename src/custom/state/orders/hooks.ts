@@ -198,7 +198,7 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
         return
       }
 
-      return { pending: ordersState.pending, presignaturePending: ordersState.presignaturePending }
+      return { pending: ordersState.pending || {}, presignaturePending: ordersState.presignaturePending || {} }
       // return chainId && state.orders?.[chainId]?.pending
     }
   )
