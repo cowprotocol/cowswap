@@ -56,6 +56,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isTransaction,
     isCancelled,
     isCancellable,
+    gnosisSafeInfo,
   } = activityDerivedState
 
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -82,6 +83,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         ) : isCancelled ? (
           <SVG src={OrderCancelledImage} description="Order Cancelled" />
         ) : isPresignaturePending ? (
+          // TODO: Michel, is this image alright?
           // <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
           <PresignaturePendingImage size={16} />
         ) : isCancelling ? null : (
@@ -107,11 +109,14 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
       </StatusLabel>
 
       {/* Gnosis Safe Web Link (only shown when the transaction has been mined) */}
-      {enhancedTransaction && enhancedTransaction.safeTransaction && (
+      {gnosisSafeInfo && enhancedTransaction && enhancedTransaction.safeTransaction && (
         <StatusLabelBelow>
           {/* View in: Gnosis Safe */}
-          {/* TODO: Load gnosisSafeThreshold (not default!) */}
-          <GnosisSafeLink chainId={chainId} enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
+          <GnosisSafeLink
+            chainId={chainId}
+            enhancedTransaction={enhancedTransaction}
+            gnosisSafeThreshold={gnosisSafeInfo.threshold}
+          />
         </StatusLabelBelow>
       )}
 
