@@ -22,7 +22,17 @@ import {
   SetIsOrderUnfillableParams,
   preSignOrders,
 } from './actions'
-import { OrderObject, OrdersState, ORDERS_LIST, PartialOrdersMap, V2OrderObject } from './reducer'
+import {
+  getDefaultNetworkState,
+  OrderObject,
+  OrdersState,
+  OrdersStateNetwork,
+  ORDERS_LIST,
+  OrderTypeKeys,
+  ORDER_LIST_KEYS,
+  PartialOrdersMap,
+  V2OrderObject,
+} from './reducer'
 import { isTruthy } from 'utils/misc'
 import { OrderID } from 'api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
@@ -78,8 +88,7 @@ type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 
 type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
-type OrderTypeKeys = 'pending' | 'presignaturePending' | 'expired' | 'fulfilled' | 'cancelled'
-function _concatOrdersState(state: OrdersState[ChainId], keys: OrderTypeKeys[]) {
+function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
 
   const firstState = state[keys[0]] || {}
@@ -135,6 +144,16 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
   })
 }
 
+function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork | undefined {
+  return useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
+    if (!chainId) {
+      return undefined
+    }
+    const ordersState = state.orders?.[chainId] || {}
+    return { ...getDefaultNetworkState(chainId), ...ordersState }
+  })
+}
+
 // function getDeserializedOrder(id: string, state: MutableRefObject<OrderStateNetwork>) {
 //   const orders = { ...ORDERS_LIST, ...state.current }
 
@@ -146,13 +165,7 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
 // used to extract Order.summary before showing popup
 // TODO: put the whole logic inside Popup middleware
 export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCallback => {
-  const state = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
-    if (!chainId) {
-      return undefined
-    }
-    const ordersState = state.orders?.[chainId] || {}
-    return { ...ORDERS_LIST, ...ordersState }
-  })
+  const state = useOrdersStateNetwork(chainId)
 
   // stable ref, so we don't recreate the function
   const stateRef = useRef(state)
@@ -176,21 +189,19 @@ export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCall
 }
 
 export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
-  const state = useSelector<AppState, OrdersState[ChainId]>((state) => chainId && state.orders?.[chainId])
+  const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = _concatOrdersState(state, ['pending', 'presignaturePending', 'expired', 'fulfilled', 'cancelled'])
-      .map(_deserializeOrder)
-      .filter(isTruthy)
+    const allOrders = _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
 
     return allOrders
   }, [state])
 }
 
 export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
-  const state = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => chainId && state.orders?.[chainId])
+  const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
     if (!state) return {}
@@ -214,7 +225,6 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
       }
 
       return { pending: ordersState.pending || {}, presignaturePending: ordersState.presignaturePending || {} }
-      // return chainId && state.orders?.[chainId]?.pending
     }
   )
 
