@@ -5,10 +5,20 @@ import { OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 
 import { formatSmart } from 'utils/format'
-import { Summary, SummaryInner, SummaryInnerRow, TransactionAlertMessage } from './styled'
+import {
+  Summary,
+  SummaryInner,
+  SummaryInnerRow,
+  TransactionAlertMessage,
+  TransactionInnerDetail,
+  TextAlert,
+  TransactionState as ActivityLink,
+} from './styled'
+
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
 import { DEFAULT_PRECISION } from 'constants/index'
 import { ActivityDerivedState } from './index'
+import { GnosisSafeLink } from './StatusDetails'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -35,8 +45,9 @@ function unfillableAlert(): JSX.Element {
 function GnosisSafeTxDetails(props: {
   enhancedTransaction: EnhancedTransactionDetails | null
   gnosisSafeThreshold: number
+  chainId: number
 }): JSX.Element | null {
-  const { enhancedTransaction, gnosisSafeThreshold } = props
+  const { enhancedTransaction, gnosisSafeThreshold, chainId } = props
 
   if (!enhancedTransaction || !enhancedTransaction.safeTransaction) {
     return null
@@ -47,12 +58,30 @@ function GnosisSafeTxDetails(props: {
   const pendingSignatures = gnosisSafeThreshold - numConfirmations
 
   return (
-    <>
-      <div>
-        Gnosis Safe transaction. Nonce: <strong>{nonce}</strong>
-      </div>
-      {pendingSignatures > 0 && <div>{pendingSignatures} more signatures are required</div>}
-    </>
+    <TransactionInnerDetail>
+      <strong>Gnosis Safe</strong>
+      <span>
+        Safe Nonce: <b>{nonce}</b>
+      </span>
+      <span>
+        Signed:{' '}
+        <b>
+          {numConfirmations} of {gnosisSafeThreshold}
+        </b>
+      </span>
+      {pendingSignatures > 0 && (
+        <TextAlert>
+          {pendingSignatures} more signature{pendingSignatures > 1 ? 's are' : ' is'} required
+        </TextAlert>
+      )}
+
+      {/* Gnosis Safe Web Link (only shown when the transaction has been mined) */}
+      {/* View in: Gnosis Safe */}
+      {/* TODO: Load gnosisSafeThreshold (not default!) */}
+      {enhancedTransaction && enhancedTransaction.safeTransaction && (
+        <GnosisSafeLink chainId={chainId} enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
+      )}
+    </TransactionInnerDetail>
   )
 }
 
@@ -66,8 +95,13 @@ interface OrderSummaryType {
   kind?: string
 }
 
-export function ActivityDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { activityDerivedState } = props
+export function ActivityDetails(props: {
+  chainId: number
+  activityDerivedState: ActivityDerivedState
+  activityLinkUrl: string | undefined
+  disableMouseActions: boolean | undefined
+}) {
+  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
     activityDerivedState
 
@@ -127,9 +161,18 @@ export function ActivityDetails(props: { chainId: number; activityDerivedState: 
   }
 
   const { kind, from, to, executionPrice, limitPrice, fulfillmentTime, validTo } = orderSummary
+  const activityName = isOrder ? `${kind} order` : 'Transaction'
+
   return (
     <Summary>
-      <b>{isOrder ? `${kind} order` : 'Transaction'} ↗</b>
+      <b>{activityName} </b>
+      {activityLinkUrl && (
+        <span>
+          <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
+            View on explorer ↗
+          </ActivityLink>
+        </span>
+      )}
       <SummaryInner>
         {isOrder ? (
           <>
@@ -176,7 +219,7 @@ export function ActivityDetails(props: { chainId: number; activityDerivedState: 
         )}
         {/* TODO: Load gnosisSafeThreshold (not default!) */}
         {enhancedTransaction && enhancedTransaction.safeTransaction && (
-          <GnosisSafeTxDetails enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
+          <GnosisSafeTxDetails chainId={chainId} enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
         )}
       </SummaryInner>
     </Summary>

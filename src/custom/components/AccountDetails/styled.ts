@@ -11,6 +11,7 @@ import {
   TransactionListWrapper,
   AccountControl,
 } from './AccountDetailsMod'
+import { transparentize } from 'polished'
 
 export const WalletActions = styled.div`
   display: flex;
@@ -136,7 +137,7 @@ export const AccountGroupingRow = styled(AccountGroupingRowMod)`
 
 export const NoActivityMessage = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.text1};
   width: 100%;
   padding: 24px 0 0;
   text-align: center;
@@ -145,7 +146,7 @@ export const NoActivityMessage = styled.p`
 `
 
 export const LowerSection = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.bg6};
   border-radius: 0;
   height: 100%;
   width: 100%;
@@ -154,12 +155,13 @@ export const LowerSection = styled.div`
 
   > span {
     display: flex;
+    color: ${({ theme }) => theme.text1};
     justify-content: space-between;
     padding: 8px 16px;
-    border-bottom: 1px solid #d9e8ef;
+    border-bottom: 1px solid ${({ theme }) => theme.bg3};
     position: sticky;
     top: 38px;
-    background: rgb(255 255 255 / 60%);
+    background: ${({ theme }) => transparentize(0.75, theme.bg6)};
     backdrop-filter: blur(5px);
     z-index: 10;
     ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -172,14 +174,14 @@ export const LowerSection = styled.div`
     flex-flow: column wrap;
     padding: 0;
     width: 100%;
-    background-color: ${({ theme }) => theme.bg2};
+    background-color: inherit;
     padding: 0 0 100px;
   }
 
   h5 {
     margin: 0;
     font-weight: 500;
-    color: ${({ theme }) => theme.text2};
+    color: inherit;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -190,6 +192,11 @@ export const LowerSection = styled.div`
   }
 
   ${LinkStyledButton} {
-    text-decoration: underline;
+    opacity: 0.7;
+    color: ${({ theme }) => theme.text1};
+
+    &:hover {
+      opacity: 1;
+    }
   }
 `

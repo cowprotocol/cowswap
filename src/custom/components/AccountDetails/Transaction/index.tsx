@@ -4,12 +4,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink } from 'utils'
 import { RowFixed } from 'components/Row'
 
-import {
-  Wrapper,
-  TransactionWrapper,
-  TransactionStatusText as ActivityDetailsText,
-  TransactionState as ActivityLink,
-} from './styled'
+import { Wrapper, TransactionWrapper, TransactionStatusText as ActivityDetailsText } from './styled'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
@@ -17,8 +12,9 @@ import { getExplorerOrderLink } from 'utils/explorer'
 import { useActivityDescriptors, ActivityStatus, ActivityType, ActivityDescriptors } from 'hooks/useRecentActivity'
 
 import { ActivityDetails } from './ActivityDetails'
+
 import { StatusDetails } from './StatusDetails'
-import { StateIcon } from './StateIcon'
+// import { StateIcon } from './StateIcon'
 import { Order } from 'state/orders/actions'
 
 const PILL_COLOUR_MAP = {
@@ -171,17 +167,20 @@ export default function Transaction({ hash: id }: { hash: string }) {
   return (
     <Wrapper>
       <TransactionWrapper>
-        <ActivityLink href={activityLinkUrl ?? undefined} disableMouseActions={!hasLink}>
-          <RowFixed>
-            {/* Icon state: confirmed, expired, canceled, pending, ...  */}
-            {activityData?.activity && <StateIcon activityDerivedState={activityDerivedState} />}
+        <RowFixed>
+          {/* Icon state: confirmed, expired, canceled, pending, ...  */}
+          {/* {activityData?.activity && <StateIcon activityDerivedState={activityDerivedState} />} */}
 
-            {/* Details of activity: transaction/order details */}
-            <ActivityDetailsText>
-              <ActivityDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-            </ActivityDetailsText>
-          </RowFixed>
-        </ActivityLink>
+          {/* Details of activity: transaction/order details */}
+          <ActivityDetailsText>
+            <ActivityDetails
+              chainId={chainId}
+              activityDerivedState={activityDerivedState}
+              activityLinkUrl={activityLinkUrl ?? undefined}
+              disableMouseActions={!hasLink}
+            />
+          </ActivityDetailsText>
+        </RowFixed>
 
         {/* Status Details: icon, cancel, links */}
         <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />

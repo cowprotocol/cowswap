@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  border-bottom: 1px solid #d9e8ef;
+  border-bottom: 1px solid ${({ theme }) => theme.bg3};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
   border-bottom: 2px solid #d9e8ef;
@@ -64,8 +64,8 @@ export const IconType = styled.div`
 
 export const Summary = styled.div`
   display: flex;
-  flex-flow: column wrap;
-  color: ${({ theme }) => theme.text2};
+  flex-flow: row wrap;
+  color: ${({ theme }) => theme.text1};
 
   > b {
     color: inherit;
@@ -73,6 +73,7 @@ export const Summary = styled.div`
     line-height: 1;
     font-size: 15px;
     margin: 0 0 5px;
+    color: inherit;
     text-transform: capitalize;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -146,7 +147,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
 `
 
 export const TransactionStatusText = styled.div`
-  margin: 0 auto 0 16px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
 
@@ -164,6 +165,7 @@ export const StatusLabelWrapper = styled.div`
   flex-flow: column wrap;
   flex: 0 1 auto;
   justify-content: center;
+  margin: 0 0 auto;
 `
 
 export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolean; isPresignaturePending: boolean }>`
@@ -234,10 +236,6 @@ export const TransactionWrapper = styled.div`
   margin: 0;
   padding: 16px;
   transition: background 0.2s ease-in-out;
-
-  &:hover {
-    background: rgba(217, 232, 239, 0.35);
-  }
 `
 
 export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
@@ -308,4 +306,46 @@ export const TransactionAlertMessage = styled.div`
   > p > span {
     margin: 0 6px 0 0;
   }
+`
+
+export const TransactionInnerDetail = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  background: linear-gradient(145deg, #0f2644, #021e34);
+  border-radius: 12px;
+  padding: 16px;
+  color: ${({ theme }) => theme.text1};
+  margin: 24px 24px 8px 0;
+  box-shadow: inset 0 1px 1px 0 hsl(213deg 63% 23%), 0 2px 30px -20px rgb(0 0 0);
+
+  > strong {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 0 0 12px;
+  }
+
+  > span {
+    flex: 1 1 auto;
+  }
+
+  > a {
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid #163861;
+    padding: 8px;
+    display: block;
+    color: #c5daef;
+    margin: 8px 0 0;
+  }
+`
+
+export const TextAlert = styled.span`
+  background: rgb(214 123 90 / 10%);
+  margin: 6px auto 0;
+  padding: 8px 12px;
+  color: #ff956e;
+  border-radius: 4px;
+  text-align: center;
 `

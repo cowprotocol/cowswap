@@ -16,7 +16,7 @@ import { CancellationModal } from './CancelationModal'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 
-function GnosisSafeLink(props: {
+export function GnosisSafeLink(props: {
   chainId: number
   enhancedTransaction: EnhancedTransactionDetails | null
   gnosisSafeThreshold: number
@@ -38,14 +38,17 @@ function GnosisSafeLink(props: {
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { chainId, activityDerivedState } = props
+  const {
+    // chainId,
+    activityDerivedState,
+  } = props
 
   const {
     id,
     status,
     type,
     summary,
-    enhancedTransaction,
+    // enhancedTransaction,
     isPending,
     isCancelling,
     isPresignaturePending,
@@ -103,15 +106,6 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           ? 'Cancelled'
           : 'Open'}
       </StatusLabel>
-
-      {/* Gnosis Safe Web Link (only shown when the transaction has been mined) */}
-      {enhancedTransaction && enhancedTransaction.safeTransaction && (
-        <StatusLabelBelow>
-          {/* View in: Gnosis Safe */}
-          {/* TODO: Load gnosisSafeThreshold (not default!) */}
-          <GnosisSafeLink chainId={chainId} enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
-        </StatusLabelBelow>
-      )}
 
       {isCancellable && (
         <StatusLabelBelow>
