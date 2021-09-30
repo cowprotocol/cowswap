@@ -1,5 +1,5 @@
 import React from 'react'
-import { Txt } from '@src/assets/styles/styled'
+import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
   FlexWrap,
@@ -10,13 +10,14 @@ import {
   ItemTitle,
   ChildWrapper,
 } from 'pages/Profile/styled'
-import { useActiveWeb3React } from '@src/hooks/web3'
+import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
-import { AccountDetailsProps } from 'components/AccountDetails'
 import { HelpCircle, RefreshCcw } from 'react-feather'
-import Web3Status from '@src/components/Web3Status'
+import Web3Status from 'components/Web3Status'
+import useReferralLink from 'hooks/useReferralLink'
 
-export default function Profile({ ENSName }: AccountDetailsProps) {
+export default function Profile() {
+  const referralLink = useReferralLink()
   const today = new Date()
   //mockTime - mocked time of update
   const mockTime = new Date()
@@ -33,7 +34,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
   } else {
     label = 'Just now'
   }
-  const ethAddress = 'your-ethereum-address'
+
   const { account } = useActiveWeb3React()
 
   return (
@@ -55,16 +56,13 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
             <strong>Your referral url</strong>
           </Txt>
           <Txt fs={14} center>
-            {account ? (
+            {referralLink ? (
               <>
                 <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
-                  {window.location.href}
-                  <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
-                  {(ENSName || account) && (
-                    <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-                      <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
-                    </span>
-                  )}
+                  {referralLink}
+                  <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                    <Copy toCopy={referralLink} />
+                  </span>
                 </span>
               </>
             ) : (
@@ -120,7 +118,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
         </GridWrap>
         {!account && (
           <FlexWrap>
-            <Web3Status />
+            <Web3Status openOrdersPanel={() => console.log('TODO')} />
           </FlexWrap>
         )}
       </GridWrap>
