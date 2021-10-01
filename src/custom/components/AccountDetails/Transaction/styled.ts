@@ -5,11 +5,25 @@ import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 
+export const TransactionWrapper = styled.div`
+  width: calc(100% - 32px);
+  border-radius: 12px;
+  font-size: initial;
+  display: flex;
+  background: linear-gradient(145deg, #0f2644, #021e34);
+  margin: 12px auto 0;
+  padding: 22px;
+  box-shadow: inset 0 1px 1px 0 #1d4373, 0 2px 30px -20px #001626;
+`
+
 export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.bg3};
+
+  &:first-child > ${TransactionWrapper} {
+    margin: 0 auto;
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
   border-bottom: 2px solid #d9e8ef;
@@ -39,7 +53,7 @@ export const IconType = styled.div`
     height: inherit;
     width: inherit;
     border-radius: 36px;
-    opacity: 0.1;
+    opacity: 0.15;
   }
   svg {
     display: flex;
@@ -67,19 +81,31 @@ export const Summary = styled.div`
   flex-flow: row wrap;
   color: ${({ theme }) => theme.text1};
 
-  > b {
+  > span {
+    display: flex;
+    align-items: center;
+    margin: 0 0 8px;
+  }
+
+  > span > b {
     color: inherit;
-    font-weight: normal;
+    font-weight: bold;
     line-height: 1;
-    font-size: 15px;
-    margin: 0 0 5px;
+    font-size: 16px;
+    margin: 0 auto;
     color: inherit;
     text-transform: capitalize;
+    flex: 1 0 auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 0 12px;
     font-weight: bold;
   `}
+  }
+
+  > span > a {
+    font-size: 14px;
+    margin: 0 0 0 8px;
   }
 `
 
@@ -87,8 +113,9 @@ export const SummaryInner = styled.div`
   display: flex;
   flex-flow: row wrap;
   width: 100%;
-  opacity: 0.75;
+  opacity: 1;
   font-size: 13px;
+  margin: 8px 0 0;
 `
 
 export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: boolean }>`
@@ -97,6 +124,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   grid-template-rows: 1fr;
   grid-template-columns: 100px 1fr;
   width: 100%;
+  margin: 0 0 3px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr; 
@@ -108,25 +136,24 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   > i {
     position: relative;
     font-size: inherit;
-    font-weight: 500;
     margin: 0;
     color: inherit;
     display: flex;
     align-items: center;
     font-style: normal;
+    font-weight: normal;
   }
 
   > b {
     padding: 0;
-    font-weight: 500;
-    opacity: 0.8;
-    letter-spacing: -0.1px;
+    opacity: 0.85;
 
     &:before {
       content: '▶';
       margin: 0 5px 0 0;
-      color: ${({ theme }) => theme.text2};
+      color: ${({ theme }) => theme.text1};
       font-size: 8px;
+      opacity: 0.15;
     }
   }
 
@@ -165,7 +192,7 @@ export const StatusLabelWrapper = styled.div`
   flex-flow: column wrap;
   flex: 0 1 auto;
   justify-content: center;
-  margin: 0 0 auto;
+  margin: 0 0 auto auto;
 `
 
 export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolean; isPresignaturePending: boolean }>`
@@ -191,7 +218,7 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
     height: 100%;
     width: 100%;
     border-radius: 4px;
-    opacity: 0.1;
+    opacity: 0.15;
   }
 
   ${({ theme, color, isCancelling, isPending, isPresignaturePending }) =>
@@ -226,16 +253,6 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
   > svg {
     margin: 0 5px 0 0;
   }
-`
-
-export const TransactionWrapper = styled.div`
-  width: 100%;
-  border-radius: 0;
-  font-size: initial;
-  display: flex;
-  margin: 0;
-  padding: 16px;
-  transition: background 0.2s ease-in-out;
 `
 
 export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
@@ -328,24 +345,39 @@ export const TransactionInnerDetail = styled.div`
 
   > span {
     flex: 1 1 auto;
+    margin: 3px 0 0;
+  }
+
+  > span:last-of-type {
+    margin: 3px 0 12px;
   }
 
   > a {
     text-align: center;
-    border-radius: 4px;
+    border-radius: 16px;
     border: 1px solid #163861;
     padding: 8px;
     display: block;
     color: #c5daef;
     margin: 8px 0 0;
+    transition: border 0.2s ease-in-out;
+    text-decoration: none !important; // Todo: Do not use !important by editing the source
+  }
+
+  > a:focus {
+    text-decoration: none;
+  }
+
+  > a:hover {
+    border: 1px solid ${({ theme }) => theme.bg5};
   }
 `
 
-export const TextAlert = styled.span`
-  background: rgb(214 123 90 / 10%);
-  margin: 6px auto 0;
+export const TextAlert = styled.div<{ isPending: boolean }>`
+  background: ${({ isPending }) => (isPending ? 'rgb(214 123 90 / 10%)' : 'green')};
+  margin: 6px 0 3px;
   padding: 8px 12px;
-  color: #ff956e;
-  border-radius: 4px;
+  color: ${({ isPending }) => (isPending ? '#ff956e' : '#ff956e')};
+  border-radius: 8px;
   text-align: center;
 `

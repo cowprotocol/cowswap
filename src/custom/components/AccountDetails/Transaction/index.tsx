@@ -16,15 +16,16 @@ import { ActivityDetails } from './ActivityDetails'
 import { StatusDetails } from './StatusDetails'
 // import { StateIcon } from './StateIcon'
 import { Order } from 'state/orders/actions'
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
 const PILL_COLOUR_MAP = {
-  CONFIRMED: '#3B7848',
+  CONFIRMED: '#00d897',
   PENDING_ORDER: '#43758C',
   PRESIGNATURE_PENDING: '#43758C',
   PENDING_TX: '#43758C',
-  EXPIRED_ORDER: '#ED673A',
-  CANCELLED_ORDER: '#ED673A',
-  CANCELLING_ORDER: '#ED673A',
+  EXPIRED_ORDER: '#ff5722',
+  CANCELLED_ORDER: '#ff5722',
+  CANCELLING_ORDER: '#ff5722',
 }
 
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
@@ -70,6 +71,9 @@ export interface ActivityDerivedState {
   // Possible activity types
   enhancedTransaction?: EnhancedTransactionDetails
   order?: Order
+
+  // Gnosis Safe
+  gnosisSafeInfo?: SafeInfoResponse
 }
 
 function getActivityLinkUrl(params: {
@@ -104,8 +108,9 @@ function getActivityDerivedState(props: {
   id: string
   activityData: ActivityDescriptors | null
   allowsOffchainSigning: boolean
+  gnosisSafeInfo?: SafeInfoResponse
 }): ActivityDerivedState | null {
-  const { chainId, id, activityData, allowsOffchainSigning } = props
+  const { chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
   if (activityData === null || chainId === undefined) {
     return null
   }
@@ -144,20 +149,23 @@ function getActivityDerivedState(props: {
     // Convenient casting
     order,
     enhancedTransaction,
+
+    // Gnosis Safe
+    gnosisSafeInfo,
   }
 }
 
 export default function Transaction({ hash: id }: { hash: string }) {
   const { chainId } = useActiveWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   // Return info necessary for rendering order/transaction info from the incoming id
   //    - activity data can be either EnhancedTransactionDetails or Order
   const activityData = useActivityDescriptors({ id, chainId })
 
   // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
   const activityDerivedState = useMemo(
-    () => getActivityDerivedState({ chainId, id, activityData, allowsOffchainSigning }),
-    [chainId, id, activityData, allowsOffchainSigning]
+    () => getActivityDerivedState({ chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo }),
+    [chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo]
   )
 
   if (!activityDerivedState || !chainId) return null

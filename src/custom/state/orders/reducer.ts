@@ -37,27 +37,29 @@ export interface OrderObject {
 type OrdersMap = Record<OrderID, OrderObject>
 export type PartialOrdersMap = Partial<OrdersMap>
 
-type OrderStateNetwork = {
+export type OrderLists = {
   pending: PartialOrdersMap
   presignaturePending: PartialOrdersMap
   fulfilled: PartialOrdersMap
   expired: PartialOrdersMap
   cancelled: PartialOrdersMap
+}
+
+export interface OrdersStateNetwork extends OrderLists {
   lastCheckedBlock: number
 }
 
 export type OrdersState = {
-  readonly [chainId in ChainId]?: OrderStateNetwork
+  readonly [chainId in ChainId]?: OrdersStateNetwork
 }
 
 export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export const ORDERS_LIST: Pick<
-  OrderStateNetwork,
-  'pending' | 'presignaturePending' | 'fulfilled' | 'expired' | 'cancelled'
-> = {
+export type OrderTypeKeys = 'pending' | 'presignaturePending' | 'expired' | 'fulfilled' | 'cancelled'
+export const ORDER_LIST_KEYS: OrderTypeKeys[] = ['pending', 'presignaturePending', 'expired', 'fulfilled', 'cancelled']
+export const ORDERS_LIST: OrderLists = {
   pending: {},
   presignaturePending: {},
   fulfilled: {},
@@ -69,30 +71,31 @@ function getDefaultLastCheckedBlock(chainId: ChainId): number {
   return ContractDeploymentBlocks[chainId] ?? 0
 }
 
+export function getDefaultNetworkState(chainId: ChainId): OrdersStateNetwork {
+  return {
+    ...ORDERS_LIST,
+    lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
+  }
+}
+
 // makes sure there's always an object at state[chainId], state[chainId].pending | .fulfilled
 function prefillState(
   state: Writable<OrdersState>,
   { payload: { chainId } }: PayloadAction<PrefillStateRequired>
 ): asserts state is Required<OrdersState> {
-  // asserts that state[chainId].pending | .fulfilled | .expired is ok to access
   const stateAtChainId = state[chainId]
 
   if (!stateAtChainId) {
-    state[chainId] = {
-      ...ORDERS_LIST,
-      lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
-    }
+    state[chainId] = getDefaultNetworkState(chainId)
     return
   }
 
-  // Object.keys(ORDERS_LIST).forEach((key) => {
-  //   const orderList = stateAtChainId[key]
-  //   if (!orderList) {
-  //     stateAtChainId[key] = ORDERS_LIST[key]
-  //   }
-  // })
-
-  Object.assign(stateAtChainId, ORDERS_LIST)
+  // Assign default values for order lists in case they are missing
+  ORDER_LIST_KEYS.forEach((key) => {
+    if (!stateAtChainId[key]) {
+      stateAtChainId[key] = ORDERS_LIST[key]
+    }
+  })
 
   if (stateAtChainId.lastCheckedBlock === undefined) {
     stateAtChainId.lastCheckedBlock = getDefaultLastCheckedBlock(chainId)

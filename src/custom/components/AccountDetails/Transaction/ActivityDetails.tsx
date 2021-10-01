@@ -55,7 +55,8 @@ function GnosisSafeTxDetails(props: {
 
   const { confirmations, nonce } = enhancedTransaction.safeTransaction
   const numConfirmations = confirmations?.length ?? 0
-  const pendingSignatures = gnosisSafeThreshold - numConfirmations
+  const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
+  const isPendingSignatures = pendingSignaturesCount > 0
 
   return (
     <TransactionInnerDetail>
@@ -66,12 +67,12 @@ function GnosisSafeTxDetails(props: {
       <span>
         Signed:{' '}
         <b>
-          {numConfirmations} of {gnosisSafeThreshold}
+          {numConfirmations} out of {gnosisSafeThreshold} signers
         </b>
       </span>
-      {pendingSignatures > 0 && (
-        <TextAlert>
-          {pendingSignatures} more signature{pendingSignatures > 1 ? 's are' : ' is'} required
+      {isPendingSignatures && (
+        <TextAlert isPending={isPendingSignatures}>
+          {pendingSignaturesCount} more signature{pendingSignaturesCount > 1 ? 's are' : ' is'} required
         </TextAlert>
       )}
 
@@ -102,7 +103,7 @@ export function ActivityDetails(props: {
   disableMouseActions: boolean | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable, gnosisSafeInfo } =
     activityDerivedState
 
   if (!order && !enhancedTransaction) return null
@@ -165,14 +166,14 @@ export function ActivityDetails(props: {
 
   return (
     <Summary>
-      <b>{activityName} </b>
-      {activityLinkUrl && (
-        <span>
+      <span>
+        <b>{activityName} </b>
+        {activityLinkUrl && (
           <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
-            View on explorer ↗
+            View details ↗
           </ActivityLink>
-        </span>
-      )}
+        )}
+      </span>
       <SummaryInner>
         {isOrder ? (
           <>
@@ -218,8 +219,12 @@ export function ActivityDetails(props: {
           summary ?? id
         )}
         {/* TODO: Load gnosisSafeThreshold (not default!) */}
-        {enhancedTransaction && enhancedTransaction.safeTransaction && (
-          <GnosisSafeTxDetails chainId={chainId} enhancedTransaction={enhancedTransaction} gnosisSafeThreshold={2} />
+        {gnosisSafeInfo && enhancedTransaction && enhancedTransaction.safeTransaction && (
+          <GnosisSafeTxDetails
+            enhancedTransaction={enhancedTransaction}
+            gnosisSafeThreshold={gnosisSafeInfo.threshold}
+            chainId={chainId}
+          />
         )}
       </SummaryInner>
     </Summary>

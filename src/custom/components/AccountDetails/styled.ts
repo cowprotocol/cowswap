@@ -8,10 +8,11 @@ import {
   AccountGroupingRow as AccountGroupingRowMod,
   UpperSection as UpperSectionMod,
   AddressLink,
+  WalletAction,
   TransactionListWrapper,
   AccountControl,
+  IconWrapper,
 } from './AccountDetailsMod'
-import { transparentize } from 'polished'
 
 export const WalletActions = styled.div`
   display: flex;
@@ -20,11 +21,11 @@ export const WalletActions = styled.div`
 
 export const WalletLowerActions = styled.div`
   width: 100%;
-  padding: 12px;
+  padding: 9px;
   border-radius: 21px;
   justify-content: space-evenly;
   ${({ theme }) => theme.neumorphism.boxShadow}
-  margin: 16px 0 0;
+  margin: 8px 0 0;
 
   > a {
     align-items: center;
@@ -34,6 +35,7 @@ export const WalletLowerActions = styled.div`
 export const WalletNameAddress = styled.div`
   width: 100%;
   font-size: 21px;
+  font-weight: 500;
 `
 
 export const Wrapper = styled.div`
@@ -48,15 +50,24 @@ export const Wrapper = styled.div`
 
   ${WalletName},
   ${AddressLink},
-  ${CopyIcon} {
+  ${CopyIcon},
+  ${WalletAction} {
     color: ${({ theme }) => theme.text1};
     opacity: 0.7;
     transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
     margin: 0;
+    border: 0;
+    font-size: 13px;
+    font-weight: normal;
 
     &:hover {
       opacity: 1;
+      transform: none;
     }
+  }
+
+  ${IconWrapper} {
+    margin: 0;
   }
 
   ${TransactionStatusText} {
@@ -67,14 +78,11 @@ export const Wrapper = styled.div`
   }
 
   ${WalletName} {
-    text-align: right;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-      text-align: center;
-      justify-content: center;
-      margin: 0 auto 12px;
-    `};
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 12px;
   }
 
   ${TransactionListWrapper} {
@@ -115,7 +123,7 @@ export const InfoCard = styled.div`
   flex-flow: column wrap;
   margin: 0;
   border-radius: 0;
-  padding: 16px 16px 24px;
+  padding: 16px 16px 10px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
   padding: 16px 10px 24px;
@@ -146,7 +154,6 @@ export const NoActivityMessage = styled.p`
 `
 
 export const LowerSection = styled.div`
-  background-color: ${({ theme }) => theme.bg6};
   border-radius: 0;
   height: 100%;
   width: 100%;
@@ -157,13 +164,13 @@ export const LowerSection = styled.div`
     display: flex;
     color: ${({ theme }) => theme.text1};
     justify-content: space-between;
-    padding: 8px 16px;
+    padding: 8px 24px 12px;
     border-bottom: 1px solid ${({ theme }) => theme.bg3};
     position: sticky;
     top: 38px;
-    background: ${({ theme }) => transparentize(0.75, theme.bg6)};
-    backdrop-filter: blur(5px);
+    background: ${({ theme }) => theme.bg3};
     z-index: 10;
+
     ${({ theme }) => theme.mediaWidth.upToMedium`
       top: 42px;
     `};
@@ -175,7 +182,7 @@ export const LowerSection = styled.div`
     padding: 0;
     width: 100%;
     background-color: inherit;
-    padding: 0 0 100px;
+    padding: 0 0 48px;
   }
 
   h5 {

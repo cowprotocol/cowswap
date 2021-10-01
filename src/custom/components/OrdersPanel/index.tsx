@@ -6,6 +6,7 @@ import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { OrderStatus } from 'state/orders/actions'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { transparentize } from 'polished'
 
 const SideBar = styled.div`
   display: flex;
@@ -56,7 +57,8 @@ const SidebarBackground = styled.div`
   z-index: 0;
   width: 100%;
   height: 100%;
-  background: rgb(0 0 0 / 25%);
+  background: ${({ theme }) => transparentize(0.4, theme.bg4)};
+  backdrop-filter: blur(3px);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`    
     display: none;
@@ -101,7 +103,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: stretch;
-  height: 100%;
+  height: auto;
   width: 100%;
 `
 

@@ -68,8 +68,7 @@ export function formatConnectorName(connector?: AbstractConnector, walletInfo?: 
 
   return (
     <WalletName>
-      Connected with {name} <br />
-      {walletConnectSuffix}
+      Connected with {name} {walletConnectSuffix}
     </WalletName>
   )
 }
@@ -186,27 +185,20 @@ export default function AccountDetails({
               )}
             </div>
 
-            <WalletActions>
-              {formatConnectorName(connector, walletInfo)}
-              <div>
-                {connector !== injected && connector !== walletlink && (
-                  <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
-                    onClick={handleDisconnectClick}
-                  >
-                    <Trans>Disconnect</Trans>
-                  </WalletAction>
-                )}
-                <WalletAction style={{ fontSize: '.825rem', fontWeight: 400 }} onClick={toggleWalletModal}>
-                  <Trans>Change</Trans>
-                </WalletAction>
-              </div>
-            </WalletActions>
+            <WalletActions>{formatConnectorName(connector, walletInfo)}</WalletActions>
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
           <AccountControl>
             <WalletLowerActions>
+              {connector !== injected && connector !== walletlink && (
+                <WalletAction onClick={handleDisconnectClick}>
+                  <Trans>Disconnect</Trans>
+                </WalletAction>
+              )}
+              <WalletAction onClick={toggleWalletModal}>
+                <Trans>Change Wallet</Trans>
+              </WalletAction>
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}
