@@ -10,10 +10,10 @@ export const TransactionWrapper = styled.div`
   border-radius: 12px;
   font-size: initial;
   display: flex;
-  background: linear-gradient(145deg, #0f2644, #021e34);
   margin: 12px auto 0;
   padding: 22px;
-  box-shadow: inset 0 1px 1px 0 #1d4373, 0 2px 30px -20px #001626;
+  ${({ theme }) => theme.card.background};
+  ${({ theme }) => theme.card.boxShadow};
 `
 
 export const Wrapper = styled.div`
@@ -329,12 +329,12 @@ export const TransactionInnerDetail = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  background: linear-gradient(145deg, #0f2644, #021e34);
   border-radius: 12px;
   padding: 16px;
   color: ${({ theme }) => theme.text1};
   margin: 24px 24px 8px 0;
-  box-shadow: inset 0 1px 1px 0 hsl(213deg 63% 23%), 0 2px 30px -20px rgb(0 0 0);
+  ${({ theme }) => theme.card.background};
+  ${({ theme }) => theme.card.boxShadow};
 
   > strong {
     text-transform: uppercase;
@@ -355,10 +355,10 @@ export const TransactionInnerDetail = styled.div`
   > a {
     text-align: center;
     border-radius: 16px;
-    border: 1px solid #163861;
+    border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
     padding: 8px;
     display: block;
-    color: #c5daef;
+    color: ${({ theme }) => theme.text1};
     margin: 8px 0 0;
     transition: border 0.2s ease-in-out;
     text-decoration: none !important; // Todo: Do not use !important by editing the source
@@ -369,7 +369,7 @@ export const TransactionInnerDetail = styled.div`
   }
 
   > a:hover {
-    border: 1px solid ${({ theme }) => theme.bg5};
+    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
   }
 `
 

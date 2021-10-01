@@ -98,6 +98,15 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
           inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
       `,
     },
+    card: {
+      background: css`
+        background: linear-gradient(145deg, ${darkMode ? '#0f2644' : '#f3fbff'}, ${darkMode ? '#021e34' : '#d5e8f0'});
+      `,
+      boxShadow: css`
+        box-shadow: inset 0 1px 1px 0 ${darkMode ? '#1d4373' : '#ffffff'},
+          0 2px 30px -20px ${darkMode ? '#001626' : '#003358'};
+      `,
+    },
     header: {
       border: `1px solid ${colorsTheme.border}`,
       menuFlyout: {

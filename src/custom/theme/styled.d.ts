@@ -73,6 +73,10 @@ declare module 'styled-components' {
     neumorphism: {
       boxShadow: FlattenSimpleInterpolation
     }
+    card: {
+      background: FlattenSimpleInterpolation
+      boxShadow: FlattenSimpleInterpolation
+    }
     header: {
       border: string
       menuFlyout: {
