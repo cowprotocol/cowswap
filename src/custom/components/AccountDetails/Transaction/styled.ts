@@ -199,7 +199,7 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
   height: 28px;
   width: 100px;
   ${({ isPending, isCancelling, theme }) => !isCancelling && isPending && `border:  1px solid ${theme.border2};`}
-  color: ${({ color }) => color};
+  color: ${({ isPending, theme, color }) => (isPending ? theme.text1 : color)};
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -255,7 +255,7 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
   }
 
   > svg > path {
-    fill: ${({ color }) => color};
+    fill: ${({ theme, color, isPending }) => (isPending ? theme.text1 : color)};
   }
 `
 

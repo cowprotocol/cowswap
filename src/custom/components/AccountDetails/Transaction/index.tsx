@@ -174,19 +174,24 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const { activityLinkUrl } = activityDerivedState
   const hasLink = activityLinkUrl !== null
 
-  const creationTimeISO = activityDerivedState?.order?.creationTime || undefined
-  const creationTime =
-    (creationTimeISO &&
-      new Date(Date.parse(creationTimeISO)).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })) ||
-    undefined
+  const creationTimeFormat: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }
+
+  const creationTimeEnhanced = activityDerivedState?.enhancedTransaction?.addedTime
+  const creationTimeOrder = activityDerivedState?.order?.creationTime
+
+  const creationTime = creationTimeEnhanced
+    ? new Date(creationTimeEnhanced).toLocaleDateString('en-US', creationTimeFormat)
+    : creationTimeOrder
+    ? new Date(Date.parse(creationTimeOrder)).toLocaleDateString('en-US', creationTimeFormat)
+    : undefined
 
   return (
     <Wrapper>
-      <CreationTimeText>{creationTime && creationTime}</CreationTimeText>
+      {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
       <TransactionWrapper>
         <RowFixed>
           {/* Icon state: confirmed, expired, canceled, pending, ...  */}
