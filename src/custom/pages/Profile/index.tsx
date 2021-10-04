@@ -15,27 +15,15 @@ import Copy from 'components/Copy/CopyMod'
 import { HelpCircle, RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
+import useFetchProfile from 'hooks/useFetchProfile'
+import { numberFormatter } from 'utils/format'
+import useTimeAgo from 'hooks/useTimeAgo'
 
 export default function Profile() {
   const referralLink = useReferralLink()
-  const today = new Date()
-  //mockTime - mocked time of update
-  const mockTime = new Date()
-  mockTime.setDate(today.getDate() - 1)
-
-  let label = ''
-  if (mockTime.getHours() > 0) {
-    label = ''
-    label = `${mockTime.getHours()} ${mockTime.getHours() > 1 ? 'hours' : 'hour'}`
-  } else if (mockTime.getMinutes() > 0) {
-    label += `${mockTime.getMinutes()} ${mockTime.getMinutes() > 1 ? 'mins' : 'min'}`
-  } else if (mockTime.getSeconds() > 0) {
-    label += `${mockTime.getSeconds()} ${mockTime.getSeconds() > 1 ? 'secs' : 'sec'}`
-  } else {
-    label = 'Just now'
-  }
-
   const { account } = useActiveWeb3React()
+  const profileData = useFetchProfile()
+  const lastUpdated = useTimeAgo(profileData?.lastUpdated)
 
   return (
     <Wrapper>
@@ -47,7 +35,7 @@ export default function Profile() {
               <RefreshCcw size={16} />
               &nbsp;&nbsp;
               <Txt secondary>Last updated:&nbsp;</Txt>
-              <strong>{label} ago</strong>
+              <strong>{lastUpdated || '-'}</strong>
             </Txt>
           )}
         </CardHead>
@@ -81,14 +69,14 @@ export default function Profile() {
                 <span role="img" aria-label="farmer">
                   🧑‍🌾
                 </span>
-                <strong>-</strong>
+                <strong>{profileData?.totalTrades?.toLocaleString() || '-'}</strong>
                 <span>Total trades</span>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="moneybag">
                   💰
                 </span>
-                <strong>-</strong>
+                <strong>{format(profileData?.tradeVolumeUsd)}</strong>
                 <span>Total traded volume</span>
               </FlexCol>
             </FlexWrap>
@@ -103,14 +91,14 @@ export default function Profile() {
                 <span role="img" aria-label="wingedmoney">
                   💸
                 </span>
-                <strong>-</strong>
+                <strong>{profileData?.totalReferrals?.toLocaleString() || '-'}</strong>
                 <span>Total trades</span>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="handshake">
                   🤝
                 </span>
-                <strong>-</strong>
+                <strong>{format(profileData?.referralVolumeUsd)}</strong>
                 <span>Referrals Volume</span>
               </FlexCol>
             </FlexWrap>
@@ -124,4 +112,8 @@ export default function Profile() {
       </GridWrap>
     </Wrapper>
   )
+}
+
+const format = (number?: number): string => {
+  return number ? numberFormatter.format(number) : '-'
 }
