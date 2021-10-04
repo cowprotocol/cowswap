@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { PenTool as PresignaturePendingImage } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { LinkStyledButton, ExternalLink } from 'theme'
 
@@ -7,7 +6,7 @@ import OrderCheckImage from 'assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
 import OrderCancelledImage from 'assets/cow-swap/order-cancelled.svg'
 
-// import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
+import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
 import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
@@ -87,8 +86,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           <SVG src={OrderCancelledImage} description="Order Cancelled" />
         ) : isPresignaturePending ? (
           // TODO: Michel, is this image alright?
-          // <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
-          <PresignaturePendingImage size={16} />
+          <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
         ) : isCancelling ? null : (
           <SVG src={OrderOpenImage} description="Order Open" />
         )}

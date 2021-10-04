@@ -17,7 +17,6 @@ import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 import PortisIcon from 'assets/images/portisIcon.png'
 import Identicon from 'components/Identicon'
-import { ExternalLink as LinkIcon } from 'react-feather'
 import { LinkStyledButton } from 'theme'
 import { clearOrders } from 'state/orders/actions'
 import { NETWORK_LABELS } from 'components/Header'
@@ -205,8 +204,7 @@ export default function AccountDetails({
                   isENS={ENSName ? true : false}
                   href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
                 >
-                  <LinkIcon size={16} />
-                  <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
+                  {explorerLabel} ↗
                 </AddressLink>
               )}
             </WalletLowerActions>
