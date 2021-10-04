@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
@@ -100,13 +100,20 @@ function isRefetchQuoteRequired(
   return false
 }
 
-function unsupportedTokenNeedsRecheck(unsupportedToken: UnsupportedToken[string] | false) {
+function unsupportedTokenNeedsRecheck(
+  unsupportedToken: UnsupportedToken[string] | false,
+  lastUnsupportedCheck: null | number
+) {
   if (!unsupportedToken) return false
 
-  return Date.now() - unsupportedToken.dateAdded > UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL
+  const lastCheckTime = lastUnsupportedCheck || unsupportedToken.dateAdded
+  const shouldUpdate = Date.now() - lastCheckTime > UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL
+
+  return shouldUpdate
 }
 
 export default function FeesUpdater(): null {
+  const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
   const { chainId } = useActiveWeb3React()
   const {
     INPUT: { currencyId: sellToken },
@@ -174,11 +181,16 @@ export default function FeesUpdater(): null {
     const unsupportedToken =
       isUnsupportedTokenGp(sellToken.toLowerCase()) || isUnsupportedTokenGp(buyToken.toLowerCase())
 
-    // IS an unsupported token and it's been greater than the threshold time
-    const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken)
+    // if there is no more unsupported token, and there was previously, we set last check back to null
+    if (!unsupportedToken && lastUnsupportedCheck) {
+      setLastUnsupportedCheck(null)
+    }
 
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
+      // IS an unsupported token and it's been greater than the threshold time
+      const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken, lastUnsupportedCheck)
+
       // if no token is unsupported and needs refetching
       const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
@@ -188,6 +200,8 @@ export default function FeesUpdater(): null {
         const isPriceRefresh = quoteInfo
           ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
           : false
+
+        setLastUnsupportedCheck(Date.now())
 
         refetchQuote({
           quoteParams,
@@ -223,6 +237,7 @@ export default function FeesUpdater(): null {
     isUnsupportedTokenGp,
     isLoading,
     setQuoteError,
+    lastUnsupportedCheck,
   ])
 
   return null
