@@ -20,7 +20,7 @@ import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
 // ToDo: Refactor to use theme variables instead
 const PILL_COLOUR_MAP = {
-  CONFIRMED: '#00d897',
+  CONFIRMED: '#00d897', // Todo: use color '#00815a' for light mode.
   PENDING_ORDER: '#43758C',
   PRESIGNATURE_PENDING: '#43758C',
   PENDING_TX: '#43758C',
