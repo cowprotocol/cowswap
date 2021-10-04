@@ -105,7 +105,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           : isCancelling
           ? 'Cancelling...'
           : isPresignaturePending
-          ? 'Pre-signing...'
+          ? 'Signing...'
           : isCancelled
           ? 'Cancelled'
           : 'Open'}

@@ -4,7 +4,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink } from 'utils'
 import { RowFixed } from 'components/Row'
 
-import { Wrapper, TransactionWrapper, TransactionStatusText as ActivityDetailsText } from './styled'
+import { Wrapper, TransactionWrapper, TransactionStatusText as ActivityDetailsText, CreationTimeText } from './styled'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
@@ -18,6 +18,7 @@ import { StatusDetails } from './StatusDetails'
 import { Order } from 'state/orders/actions'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
+// ToDo: Refactor to use theme variables instead
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#00d897',
   PENDING_ORDER: '#43758C',
@@ -30,6 +31,7 @@ const PILL_COLOUR_MAP = {
 
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
   const isOrder = type === ActivityType.ORDER
+
   switch (status) {
     case ActivityStatus.PENDING:
       return isOrder ? PILL_COLOUR_MAP.PENDING_ORDER : PILL_COLOUR_MAP.PENDING_TX
@@ -172,8 +174,19 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const { activityLinkUrl } = activityDerivedState
   const hasLink = activityLinkUrl !== null
 
+  const creationTimeISO = activityDerivedState?.order?.creationTime || undefined
+  const creationTime =
+    (creationTimeISO &&
+      new Date(Date.parse(creationTimeISO)).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })) ||
+    undefined
+
   return (
     <Wrapper>
+      <CreationTimeText>{creationTime && creationTime}</CreationTimeText>
       <TransactionWrapper>
         <RowFixed>
           {/* Icon state: confirmed, expired, canceled, pending, ...  */}

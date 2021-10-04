@@ -10,7 +10,7 @@ export const TransactionWrapper = styled.div`
   border-radius: 12px;
   font-size: initial;
   display: flex;
-  margin: 12px auto 0;
+  margin: 0 auto 12px;
   padding: 22px;
   ${({ theme }) => theme.card.background};
   ${({ theme }) => theme.card.boxShadow};
@@ -21,9 +21,9 @@ export const Wrapper = styled.div`
   flex-flow: column wrap;
   width: 100%;
 
-  &:first-child > ${TransactionWrapper} {
+  /* &:first-child > ${TransactionWrapper} {
     margin: 0 auto;
-  }
+  } */
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
   border-bottom: 2px solid #d9e8ef;
@@ -221,7 +221,7 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
     opacity: 0.15;
   }
 
-  ${({ theme, color, isCancelling, isPending, isPresignaturePending }) =>
+  ${({ color, isCancelling, isPending, isPresignaturePending }) =>
     (isCancelling || isPending || isPresignaturePending) &&
     color &&
     css`
@@ -235,8 +235,8 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
         background-image: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0) 0,
-          ${transparentize(0.9, color)} 20%,
-          ${theme.bg2} 60%,
+          ${transparentize(0.3, color)} 20%,
+          ${color} 60%,
           rgba(255, 255, 255, 0)
         );
         animation: shimmer 2s infinite;
@@ -252,6 +252,10 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
 
   > svg {
     margin: 0 5px 0 0;
+  }
+
+  > svg > path {
+    fill: ${({ color }) => color};
   }
 `
 
@@ -380,4 +384,10 @@ export const TextAlert = styled.div<{ isPending: boolean }>`
   color: ${({ isPending }) => (isPending ? '#ff956e' : '#ff956e')};
   border-radius: 8px;
   text-align: center;
+`
+
+export const CreationTimeText = styled.div`
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 500;
 `
