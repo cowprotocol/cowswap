@@ -47,9 +47,10 @@ export default function Profile() {
             {referralLink ? (
               <>
                 <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
-                  {referralLink}
+                  {referralLink.prefix}
+                  <strong>{referralLink.address}</strong>
                   <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-                    <Copy toCopy={referralLink} />
+                    <Copy toCopy={referralLink.link} />
                   </span>
                 </span>
               </>
