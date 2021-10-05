@@ -375,7 +375,7 @@ export const TransactionInnerDetail = styled.div`
   display: flex;
   flex-flow: column wrap;
   border-radius: 16px;
-  padding: 24px;
+  padding: 18px;
   min-width: 300px;
   color: ${({ theme }) => theme.text1};
   margin: 24px auto 8px 0;
