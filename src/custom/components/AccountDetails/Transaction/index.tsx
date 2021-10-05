@@ -182,22 +182,19 @@ export default function Transaction({ hash: id }: { hash: string }) {
     ? new Date(Date.parse(creationTimeOrder))
     : undefined
 
-  const timeFormatMDY: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  const timeFormatOptionMDY: Intl.DateTimeFormatOptions = {
+    dateStyle: 'long',
   }
 
-  const timeFormatHM: Intl.DateTimeFormatOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
+  const timeFormatOptionHM: Intl.DateTimeFormatOptions = {
+    timeStyle: 'short',
   }
 
   // Month Day, Year
-  const creationTimeMDY = creationTimeFull?.toLocaleDateString('en-US', timeFormatMDY)
+  const creationTimeMDY = creationTimeFull?.toLocaleString(undefined, timeFormatOptionMDY)
 
   // Hour:Minute
-  const creationTime = creationTimeFull?.toLocaleTimeString('en-US', timeFormatHM)
+  const creationTime = creationTimeFull?.toLocaleString(undefined, timeFormatOptionHM)
 
   return (
     <Wrapper>

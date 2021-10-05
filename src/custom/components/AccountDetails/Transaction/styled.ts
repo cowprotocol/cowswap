@@ -19,6 +19,10 @@ export const TransactionWrapper = styled.div`
     flex-flow: column wrap;
     padding: 20px;
   `};
+
+  ${RowFixed} {
+    width: 100%;
+  }
 `
 
 export const Wrapper = styled.div`
@@ -76,9 +80,16 @@ export const IconType = styled.div`
 export const Summary = styled.div`
   display: grid;
   flex-flow: row wrap;
+  width: 100%;
   grid-template-rows: 1fr;
   grid-template-columns: 124px 1fr;
   color: ${({ theme }) => theme.text1};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    grid-template-rows: initial;
+    grid-template-columns: initial;
+  `};
 
   > span {
     display: flex;
@@ -89,6 +100,7 @@ export const Summary = styled.div`
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 100%;
+      flex-flow: row wrap;
     `};
   }
 
@@ -103,7 +115,9 @@ export const Summary = styled.div`
     flex: 0 0 auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      margin: 0 auto 0 0;
+      order: 3;
+      font-size: 18px;
+      flex: 1 1 100%;
       font-weight: bold;
     `}
   }
@@ -113,8 +127,10 @@ export const Summary = styled.div`
     margin: 0;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
+      order: 2;
       display: flex;
       justify-content: flex-end;
+      flex: 1 1 max-content;
     `}
   }
 `
@@ -182,7 +198,8 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
 `
 
 export const TransactionStatusText = styled.div`
-  margin: 0 auto;
+  margin: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   flex-flow: column wrap;
@@ -428,4 +445,10 @@ export const CreationTimeText = styled.div`
   font-weight: 400;
   opacity: 0.8;
   padding: 0 0 12px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    order: 1;
+    flex: 1 1 max-content;
+  `};
 `

@@ -151,14 +151,21 @@ export function ActivityDetails(props: {
       return `${price} ${sellAmt.currency.symbol} per ${outputAmount.currency.symbol}`
     }
 
+    const DateFormatOptions: Intl.DateTimeFormatOptions = {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }
+
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
       from: `${formatSmart(sellAmt.add(feeAmt))} ${sellAmt.currency.symbol}`,
       to: `${formatSmart(outputAmount)} ${outputAmount.currency.symbol}`,
       limitPrice: limitPrice && getPriceFormat(limitPrice),
       executionPrice: executionPrice && getPriceFormat(executionPrice),
-      validTo: new Date((validTo as number) * 1000).toLocaleString(),
-      fulfillmentTime: fulfillmentTime ? new Date(fulfillmentTime).toLocaleString() : undefined,
+      validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
+      fulfillmentTime: fulfillmentTime
+        ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
+        : undefined,
       kind: kind.toString(),
     }
   } else {
