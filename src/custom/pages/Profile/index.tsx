@@ -69,14 +69,14 @@ export default function Profile() {
                 <span role="img" aria-label="farmer">
                   🧑‍🌾
                 </span>
-                <strong>{profileData?.totalTrades?.toLocaleString() || '-'}</strong>
+                <strong>{formatInt(profileData?.totalTrades)}</strong>
                 <span>Total trades</span>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="moneybag">
                   💰
                 </span>
-                <strong>{format(profileData?.tradeVolumeUsd)}</strong>
+                <strong>{formatDecimal(profileData?.tradeVolumeUsd)}</strong>
                 <span>Total traded volume</span>
               </FlexCol>
             </FlexWrap>
@@ -91,14 +91,14 @@ export default function Profile() {
                 <span role="img" aria-label="wingedmoney">
                   💸
                 </span>
-                <strong>{profileData?.totalReferrals?.toLocaleString() || '-'}</strong>
+                <strong>{formatInt(profileData?.totalReferrals)}</strong>
                 <span>Total trades</span>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="handshake">
                   🤝
                 </span>
-                <strong>{format(profileData?.referralVolumeUsd)}</strong>
+                <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
                 <span>Referrals Volume</span>
               </FlexCol>
             </FlexWrap>
@@ -114,6 +114,10 @@ export default function Profile() {
   )
 }
 
-const format = (number?: number): string => {
+const formatDecimal = (number?: number): string => {
   return number ? numberFormatter.format(number) : '-'
+}
+
+const formatInt = (number?: number): string => {
+  return number ? number.toLocaleString() : '-'
 }
