@@ -2,22 +2,22 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { OrderID } from 'api/gnosisProtocol'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import {
+  addOrUpdateOrdersBatch,
   addPendingOrder,
   preSignOrders,
-  removeOrder,
-  clearOrders,
-  fulfillOrder,
-  OrderStatus,
-  updateLastCheckedBlock,
-  expireOrder,
-  fulfillOrdersBatch,
-  expireOrdersBatch,
   cancelOrder,
   cancelOrdersBatch,
+  clearOrders,
+  expireOrder,
+  expireOrdersBatch,
+  fulfillOrder,
+  fulfillOrdersBatch,
+  OrderStatus,
+  removeOrder,
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
-  addOrUpdateOrdersBatch,
+  updateLastCheckedBlock,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -123,6 +123,14 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.cancelled[id]
 }
 
+function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {
+  const orderObj = state?.[chainId]?.[status]?.[id]
+  if (orderObj) {
+    delete state?.[chainId]?.[status]?.[id]
+  }
+  return orderObj
+}
+
 const initialState: OrdersState = {}
 
 export default createReducer(initialState, (builder) =>
@@ -158,33 +166,25 @@ export default createReducer(initialState, (builder) =>
     .addCase(addOrUpdateOrdersBatch, (state, action) => {
       prefillState(state, action)
       const { chainId, orders } = action.payload
-      const pending = state[chainId].pending
-      const fulfilled = state[chainId].fulfilled
-      const expired = state[chainId].expired
-      const cancelled = state[chainId].cancelled
 
       orders.forEach((newOrder) => {
-        const { id } = newOrder
+        const { id, status } = newOrder
 
-        // does the order exist already in the state?
-        // if so, get it, and remove from state
-        let orderObj
-        if (pending[id]) {
-          orderObj = pending[id]
-          delete pending[id]
-        } else if (fulfilled[id]) {
-          orderObj = fulfilled[id]
-          delete fulfilled[id]
-        } else if (expired[id]) {
-          orderObj = expired[id]
-          delete expired[id]
-        } else if (cancelled[id]) {
-          orderObj = cancelled[id]
-          delete cancelled[id]
+        // sanity check, is the status set?
+        if (!status) {
+          console.error(`addOrUpdateOrdersBatch:: Status not set for order ${id}`)
+          return
         }
 
-        const status = newOrder.status
+        // fetch order from state, if any
+        const orderObj =
+          popOrder(state, chainId, OrderStatus.FULFILLED, id) ||
+          popOrder(state, chainId, OrderStatus.EXPIRED, id) ||
+          popOrder(state, chainId, OrderStatus.CANCELLED, id) ||
+          popOrder(state, chainId, OrderStatus.PENDING, id) ||
+          popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id)
 
+        // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
@@ -194,25 +194,8 @@ export default createReducer(initialState, (builder) =>
             }
           : newOrder
 
-        // what's the status now?
         // add order to respective state
-        switch (status) {
-          case 'pending':
-            pending[id] = { order, id }
-            break
-          case 'cancelled':
-            cancelled[id] = { order, id }
-            break
-          case 'expired':
-            expired[id] = { order, id }
-            break
-          case 'fulfilled':
-            fulfilled[id] = { order, id }
-            break
-          default:
-            // TODO: add it regardless?
-            console.warn(`Unknown state '${state}' for order`, id, newOrder)
-        }
+        state[chainId][status][id] = { order, id }
       })
     })
     .addCase(fulfillOrder, (state, action) => {
