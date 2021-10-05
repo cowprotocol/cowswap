@@ -6,17 +6,17 @@ import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 
 export const TransactionWrapper = styled.div`
-  width: calc(100% - 32px);
+  width: 100%;
+  margin: 0 auto 12px;
   border-radius: 12px;
   font-size: initial;
   display: flex;
-  margin: 0 auto 12px;
   padding: 22px;
   ${({ theme }) => theme.card.background};
   ${({ theme }) => theme.card.boxShadow};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: calc(100% - 24px);
+    // width: calc(100% - 24px);
     flex-flow: column wrap;
     padding: 20px;
   `};
@@ -405,7 +405,7 @@ export const TextAlert = styled.div<{ isPending: boolean }>`
 `
 
 export const CreationTimeText = styled.div`
-  padding: 12px 22px;
+  padding: 12px 0;
   font-size: 14px;
   font-weight: 500;
 `

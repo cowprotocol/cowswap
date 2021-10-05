@@ -16,25 +16,54 @@ const SideBar = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  width: 500px;
-  height: 100%;
+  width: 100%;
+  max-width: 750px;
+  height: 80vh;
+  border-radius: 24px;
+  margin: auto;
+  bottom: 0;
+  left: 0;
   z-index: 99;
   padding: 0;
   background: ${({ theme }) => theme.bg1};
   cursor: default;
-  overflow-y: auto;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
   animation: slideIn 0.3s cubic-bezier(0.87, 0, 0.13, 1);
 
   ${({ theme }) => theme.mediaWidth.upToMedium`    
     width: 100%;
+    height: 100%;
+    max-width: 100%;
   `};
+
+  &::-webkit-scrollbar {
+    width: 24px;
+    border-radius: 24px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.bg2};
+    border: 8px solid transparent;
+    border-radius: 24px;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-resizer,
+  &::-webkit-scrollbar-button,
+  &::-webkit-scrollbar-corner {
+    height: 6px;
+  }
 
   @keyframes slideIn {
     from {
-      transform: translateX(500px);
+      transform: translateY(-100vh);
     }
     to {
-      transform: translateX(0);
+      transform: translateY(0);
     }
   }
 
@@ -73,7 +102,7 @@ const CloseIcon = styled(Close)`
   height: 38px;
   padding: 10px 0;
   background: ${({ theme }) => theme.bg1};
-  transition: filter 0.2s ease-in-out;
+  transition: background 0.3s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 0;
@@ -91,7 +120,8 @@ const CloseIcon = styled(Close)`
 
   &:hover {
     cursor: pointer;
-    filter: saturate(0.5);
+    background: ${({ theme }) => theme.bg4};
+    color: ${({ theme }) => theme.text1};
   }
 
   path {

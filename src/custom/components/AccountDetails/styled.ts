@@ -123,7 +123,8 @@ export const InfoCard = styled.div`
   flex-flow: column wrap;
   margin: 0;
   border-radius: 0;
-  padding: 16px 16px 10px;
+  padding: 16px 24px 10px;
+  background: ${({ theme }) => theme.bg3};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
   padding: 16px 10px 24px;
@@ -159,12 +160,17 @@ export const LowerSection = styled.div`
   width: 100%;
   align-items: flex-start;
   justify-content: flex-start;
+  padding: 0 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 16px;
+  `};
 
   > span {
     display: flex;
     color: ${({ theme }) => theme.text1};
     justify-content: space-between;
-    padding: 8px 24px 12px;
+    padding: 8px 0 12px;
     border-bottom: 1px solid ${({ theme }) => theme.bg3};
     position: sticky;
     top: 38px;
