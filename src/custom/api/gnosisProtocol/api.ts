@@ -26,6 +26,7 @@ import MetadataError, {
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { GAS_FEE_ENDPOINTS } from 'constants/index'
+import * as Sentry from '@sentry/browser'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -193,13 +194,31 @@ const UNHANDLED_METADATA_ERROR: MetadataApiErrorObject = {
   description: MetadataApiErrorCodeDetails.UNHANDLED_GET_ERROR,
 }
 
-async function _handleQuoteResponse(response: Response) {
+async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams) {
   if (!response.ok) {
     const errorObj: ApiErrorObject = await response.json()
 
     // we need to map the backend error codes to match our own for quotes
     const mappedError = mapOperatorErrorToQuoteError(errorObj)
-    throw new QuoteError(mappedError)
+    const quoteError = new QuoteError(mappedError)
+
+    if (params) {
+      const { sellToken, buyToken } = params
+
+      const sentryError = new Error()
+      Object.assign(sentryError, quoteError, {
+        message: `Error querying fee from API - sellToken: ${sellToken}, buyToken: ${buyToken}`,
+        name: 'FeeErrorObject',
+      })
+
+      // report to sentry
+      Sentry.captureException(sentryError, {
+        tags: { errorType: 'getFeeQuote' },
+        contexts: { params },
+      })
+    }
+
+    throw quoteError
   } else {
     return response.json()
   }
@@ -235,7 +254,7 @@ export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformatio
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
   })
 
-  return _handleQuoteResponse(response)
+  return _handleQuoteResponse(response, params)
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
