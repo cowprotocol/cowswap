@@ -105,13 +105,12 @@ export const Summary = styled.div`
   }
 
   > span > b {
-    color: inherit;
     font-weight: bold;
     line-height: 1;
     font-size: 16px;
     color: inherit;
     text-transform: capitalize;
-    margin: 0 0 5px;
+    margin: 0 0 6px;
     flex: 0 0 auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -147,6 +146,7 @@ export const SummaryInner = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 14px;
     margin: 16px 0 0;
+    width: 100%;
   `};
 `
 

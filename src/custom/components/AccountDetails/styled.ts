@@ -13,6 +13,7 @@ import {
   AccountControl,
   IconWrapper,
 } from './AccountDetailsMod'
+import { transparentize } from 'polished'
 
 export const WalletActions = styled.div`
   display: flex;
@@ -176,6 +177,23 @@ export const LowerSection = styled.div`
     top: 38px;
     background: ${({ theme }) => theme.bg3};
     z-index: 10;
+
+    &::after {
+      content: '';
+      display: block;
+      background: linear-gradient(
+        to bottom,
+        ${({ theme }) => theme.bg3} 0%,
+        ${({ theme }) => transparentize(1, theme.bg3)} 100%
+      );
+      pointer-events: none;
+      height: 20px;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: -20px;
+      margin: auto;
+    }
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
       top: 42px;
