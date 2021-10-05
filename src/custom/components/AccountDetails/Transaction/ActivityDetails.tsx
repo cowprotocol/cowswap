@@ -13,6 +13,7 @@ import {
   TransactionInnerDetail,
   TextAlert,
   TransactionState as ActivityLink,
+  CreationTimeText,
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
@@ -103,8 +104,9 @@ export function ActivityDetails(props: {
   activityDerivedState: ActivityDerivedState
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
+  creationTime: string | undefined
 }) {
-  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions } = props
+  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable, gnosisSafeInfo } =
     activityDerivedState
 
@@ -169,6 +171,8 @@ export function ActivityDetails(props: {
   return (
     <Summary>
       <span>
+        {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
+
         <b>{activityName} </b>
         {activityLinkUrl && (
           <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>

@@ -4,7 +4,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink } from 'utils'
 import { RowFixed } from 'components/Row'
 
-import { Wrapper, TransactionWrapper, TransactionStatusText as ActivityDetailsText, CreationTimeText } from './styled'
+import { Wrapper, TransactionWrapper, TransactionStatusText as ActivityDetailsText, CreationDateText } from './styled'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
@@ -174,24 +174,34 @@ export default function Transaction({ hash: id }: { hash: string }) {
   const { activityLinkUrl } = activityDerivedState
   const hasLink = activityLinkUrl !== null
 
-  const creationTimeFormat: Intl.DateTimeFormatOptions = {
+  const creationTimeEnhanced = activityDerivedState?.enhancedTransaction?.addedTime
+  const creationTimeOrder = activityDerivedState?.order?.creationTime
+  const creationTimeFull = creationTimeEnhanced
+    ? new Date(creationTimeEnhanced)
+    : creationTimeOrder
+    ? new Date(Date.parse(creationTimeOrder))
+    : undefined
+
+  const timeFormatMDY: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }
 
-  const creationTimeEnhanced = activityDerivedState?.enhancedTransaction?.addedTime
-  const creationTimeOrder = activityDerivedState?.order?.creationTime
+  const timeFormatHM: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+  }
 
-  const creationTime = creationTimeEnhanced
-    ? new Date(creationTimeEnhanced).toLocaleDateString('en-US', creationTimeFormat)
-    : creationTimeOrder
-    ? new Date(Date.parse(creationTimeOrder)).toLocaleDateString('en-US', creationTimeFormat)
-    : undefined
+  // Month Day, Year
+  const creationTimeMDY = creationTimeFull?.toLocaleDateString('en-US', timeFormatMDY)
+
+  // Hour:Minute
+  const creationTime = creationTimeFull?.toLocaleTimeString('en-US', timeFormatHM)
 
   return (
     <Wrapper>
-      {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
+      {creationTimeMDY && <CreationDateText>{creationTimeMDY}</CreationDateText>}
       <TransactionWrapper>
         <RowFixed>
           {/* Icon state: confirmed, expired, canceled, pending, ...  */}
@@ -204,6 +214,7 @@ export default function Transaction({ hash: id }: { hash: string }) {
               activityDerivedState={activityDerivedState}
               activityLinkUrl={activityLinkUrl ?? undefined}
               disableMouseActions={!hasLink}
+              creationTime={creationTime && creationTime}
             />
           </ActivityDetailsText>
         </RowFixed>

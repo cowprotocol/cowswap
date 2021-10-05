@@ -74,14 +74,18 @@ export const IconType = styled.div`
 `
 
 export const Summary = styled.div`
-  display: flex;
+  display: grid;
   flex-flow: row wrap;
+  grid-template-rows: 1fr;
+  grid-template-columns: 124px 1fr;
   color: ${({ theme }) => theme.text1};
 
   > span {
     display: flex;
-    align-items: center;
-    margin: 0 0 8px;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    margin: 0;
+    justify-content: flex-start;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 100%;
@@ -93,10 +97,10 @@ export const Summary = styled.div`
     font-weight: bold;
     line-height: 1;
     font-size: 16px;
-    margin: 0 auto;
     color: inherit;
     text-transform: capitalize;
-    flex: 1 0 auto;
+    margin: 0 0 5px;
+    flex: 0 0 auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 auto 0 0;
@@ -105,8 +109,8 @@ export const Summary = styled.div`
   }
 
   > span > a {
-    font-size: 14px;
-    margin: 0 0 0 8px;
+    font-size: 13px;
+    margin: 0;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       display: flex;
@@ -118,10 +122,11 @@ export const Summary = styled.div`
 export const SummaryInner = styled.div`
   display: flex;
   flex-flow: column wrap;
-  width: 100%;
+  width: auto;
+  margin: 0;
   opacity: 1;
   font-size: 13px;
-  margin: 8px 0 0;
+  word-break: break-all;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 14px;
@@ -133,9 +138,9 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   display: grid;
   color: inherit;
   grid-template-rows: 1fr;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 85px 1fr;
   width: 100%;
-  margin: 0 0 3px;
+  margin: 0 0 4px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr; 
@@ -180,6 +185,8 @@ export const TransactionStatusText = styled.div`
   margin: 0 auto;
   display: flex;
   align-items: center;
+  flex-flow: column wrap;
+  align-items: flex-start;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0 auto 0 0;
@@ -410,8 +417,15 @@ export const TextAlert = styled.div<{ isPending: boolean }>`
   text-align: center;
 `
 
-export const CreationTimeText = styled.div`
+export const CreationDateText = styled.div`
   padding: 12px 0;
   font-size: 14px;
   font-weight: 500;
+`
+
+export const CreationTimeText = styled.div`
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.8;
+  padding: 0 0 12px;
 `
