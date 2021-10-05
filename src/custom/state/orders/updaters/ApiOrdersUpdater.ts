@@ -4,7 +4,7 @@ import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
 import { useActiveWeb3React } from 'hooks/web3'
-import { useAddOrUpdateOrdersBatch } from 'state/orders/hooks'
+import { useAddOrUpdateOrders } from 'state/orders/hooks'
 import { getOrders, OrderMetaData } from 'api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
 import { Order, OrderStatus } from 'state/orders/actions'
@@ -79,7 +79,7 @@ export function ApiOrdersUpdater(): null {
   const { account, chainId } = useActiveWeb3React()
   const allTokens = useAllTokens()
   const tokenAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
-  const addOrUpdateOrdersBatch = useAddOrUpdateOrdersBatch()
+  const addOrUpdateOrders = useAddOrUpdateOrders()
 
   useEffect(() => {
     if (account && chainId && tokenAreLoaded) {
@@ -97,13 +97,13 @@ export function ApiOrdersUpdater(): null {
           }, [])
 
           // Add to redux state
-          addOrUpdateOrdersBatch({ orders, chainId })
+          addOrUpdateOrders({ orders, chainId })
         })
         .catch((e) => {
           console.error(`APIOrdersUpdater::Failed to fetch orders`, e)
         })
     }
-  }, [account, addOrUpdateOrdersBatch, allTokens, chainId, tokenAreLoaded])
+  }, [account, addOrUpdateOrders, allTokens, chainId, tokenAreLoaded])
 
   return null
 }
