@@ -43,36 +43,35 @@ function transformApiOrderToStoreOrder(
   const status = statusMapping[apiStatus]
 
   if (!status) {
-    console.warn(`APIOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
+    console.warn(`ApiOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
     return
   }
-
-  if (inputToken && outputToken) {
-    const storeOrder: Order = {
-      ...order,
-      inputToken,
-      outputToken,
-      id,
-      creationTime,
-      summary: '',
-      status,
-      receiver,
-      apiAdditionalInfo: order,
-      isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
-    }
-    // The function to compute the summary needs the Order instance to exist already
-    // That's why it's not used before and an empty string is set instead
-    storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
-
-    return storeOrder
-  } else {
+  if (!inputToken || !outputToken) {
     console.warn(
-      `APIOrdersUpdater::Tokens not found for order ${id}: sellToken ${!inputToken ? sellToken : 'found'} - buyToken ${
+      `ApiOrdersUpdater::Tokens not found for order ${id}: sellToken ${!inputToken ? sellToken : 'found'} - buyToken ${
         !outputToken ? buyToken : 'found'
       }`
     )
     return
   }
+
+  const storeOrder: Order = {
+    ...order,
+    inputToken,
+    outputToken,
+    id,
+    creationTime,
+    summary: '',
+    status,
+    receiver,
+    apiAdditionalInfo: order,
+    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
+  }
+  // The function to compute the summary needs the Order instance to exist already
+  // That's why it's not used before and an empty string is set instead
+  storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
+
+  return storeOrder
 }
 
 export function ApiOrdersUpdater(): null {
@@ -85,7 +84,7 @@ export function ApiOrdersUpdater(): null {
     if (account && chainId && tokenAreLoaded) {
       getOrders(chainId, account, AMOUNT_OF_ORDERS_TO_FETCH)
         .then((apiOrders) => {
-          console.log(`APIOrdersUpdater::Fetched ${apiOrders.length} orders for account ${account} on chain ${chainId}`)
+          console.log(`ApiOrdersUpdater::Fetched ${apiOrders.length} orders for account ${account} on chain ${chainId}`)
 
           // Transform API orders into internal order objects and filter out orders that are not in a known state
           const orders = apiOrders.reduce<Order[]>((acc, order) => {
@@ -100,7 +99,7 @@ export function ApiOrdersUpdater(): null {
           addOrUpdateOrders({ orders, chainId })
         })
         .catch((e) => {
-          console.error(`APIOrdersUpdater::Failed to fetch orders`, e)
+          console.error(`ApiOrdersUpdater::Failed to fetch orders`, e)
         })
     }
   }, [account, addOrUpdateOrders, allTokens, chainId, tokenAreLoaded])
