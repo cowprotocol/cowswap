@@ -114,7 +114,8 @@ function unsupportedTokenNeedsRecheck(
 
 export default function FeesUpdater(): null {
   const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
+
   const {
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
@@ -162,6 +163,7 @@ export default function FeesUpdater(): null {
       toDecimals,
       kind,
       amount: amount.quotient.toString(),
+      userAddress: account,
     }
 
     // Don't refetch if offline.
@@ -237,6 +239,7 @@ export default function FeesUpdater(): null {
     isUnsupportedTokenGp,
     isLoading,
     setQuoteError,
+    account,
     lastUnsupportedCheck,
   ])
 

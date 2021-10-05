@@ -1,16 +1,18 @@
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
-import { OptimalRatesWithPartnerFees, APIError, RateOptions } from 'paraswap/build/types'
+import { OptimalRate } from 'paraswap-core'
+import { APIError, RateOptions } from 'paraswap/build/types'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams, PriceInformation, PriceQuoteParams } from 'utils/price'
+import { SOLVER_ADDRESS as defaultUserAddress } from 'custom/constants'
 
-type ParaSwapPriceQuote = OptimalRatesWithPartnerFees
+type ParaSwapPriceQuote = OptimalRate
 
 const API_NAME = 'ParaSwap'
 // Provided manually just to make sure it matches what GPv2 backend is using, although the value used  is the current SDK default
-const API_URL = 'https://apiv4.paraswap.io/v2'
+const API_URL = 'https://apiv5.paraswap.io'
 
 const paraSwapLibs: Map<ChainId, ParaSwap> = new Map()
 
@@ -29,28 +31,26 @@ function getParaswapChainId(chainId: ChainId): NetworkID | null {
 }
 
 export function toPriceInformation(priceRaw: ParaSwapPriceQuote | null): PriceInformation | null {
-  if (!priceRaw || !priceRaw.details) {
+  if (!priceRaw) {
     return null
   }
 
-  const { destAmount, srcAmount, details, side } = priceRaw
+  const { destAmount, srcAmount, srcToken, destToken, side } = priceRaw
   if (side === SwapSide.SELL) {
     return {
       amount: destAmount,
-      token: details.tokenTo,
+      token: destToken,
     }
   } else {
     return {
       amount: srcAmount,
-      token: details.tokenFrom,
+      token: srcToken,
     }
   }
 }
 
-function isGetRateSuccess(
-  rateResult: OptimalRatesWithPartnerFees | APIError
-): rateResult is OptimalRatesWithPartnerFees {
-  return !!(rateResult as OptimalRatesWithPartnerFees).destAmount
+function isGetRateSuccess(rateResult: OptimalRate | APIError): rateResult is OptimalRate {
+  return !!(rateResult as OptimalRate).destAmount
 }
 
 function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
@@ -63,7 +63,7 @@ function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
 }
 
 export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
-  const { baseToken, quoteToken, fromDecimals, toDecimals, amount, kind, chainId } = getValidParams(params)
+  const { baseToken, quoteToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress } = getValidParams(params)
 
   let paraSwap = paraSwapLibs.get(chainId)
   if (!paraSwap) {
@@ -89,7 +89,16 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapP
   }
 
   // Get price
-  const rateResult = await paraSwap.getRate(sellToken, buyToken, amount, swapSide, options, fromDecimals, toDecimals)
+  const rateResult = await paraSwap.getRate(
+    sellToken,
+    buyToken,
+    amount,
+    userAddress || defaultUserAddress,
+    swapSide,
+    options,
+    fromDecimals,
+    toDecimals
+  )
 
   if (isGetRateSuccess(rateResult)) {
     // Success getting the price
