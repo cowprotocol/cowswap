@@ -16,7 +16,6 @@ export const TransactionWrapper = styled.div`
   ${({ theme }) => theme.card.boxShadow};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    // width: calc(100% - 24px);
     flex-flow: column wrap;
     padding: 20px;
   `};
@@ -118,7 +117,7 @@ export const Summary = styled.div`
 
 export const SummaryInner = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   width: 100%;
   opacity: 1;
   font-size: 13px;
@@ -222,6 +221,7 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
     font-size: 13px;
+    height: 32px;
   `};
 
   &::before {
@@ -350,13 +350,19 @@ export const TransactionAlertMessage = styled.div`
 export const TransactionInnerDetail = styled.div`
   display: flex;
   flex-flow: column wrap;
-  width: 100%;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 300px;
   color: ${({ theme }) => theme.text1};
-  margin: 24px 24px 8px 0;
+  margin: 24px auto 8px 0;
   ${({ theme }) => theme.card.background};
-  ${({ theme }) => theme.card.boxShadow};
+  border: 1px solid ${({ theme }) => theme.bg1};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 24px auto 12px;
+    width: 100%;
+    max-width: 100%;
+  `};
 
   > strong {
     text-transform: uppercase;
@@ -377,12 +383,12 @@ export const TransactionInnerDetail = styled.div`
   > a {
     text-align: center;
     border-radius: 16px;
-    border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+    border: 1px solid ${({ theme }) => transparentize(0.3, theme.bg1)};
     padding: 8px;
     display: block;
     color: ${({ theme }) => theme.text1};
     margin: 8px 0 0;
-    transition: border 0.2s ease-in-out;
+    transition: background 0.3s ease-in-out;
     text-decoration: none !important; // Todo: Do not use !important by editing the source
   }
 
@@ -391,7 +397,7 @@ export const TransactionInnerDetail = styled.div`
   }
 
   > a:hover {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+    background: ${({ theme }) => theme.bg1};
   }
 `
 
