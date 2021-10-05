@@ -82,7 +82,7 @@ function transformApiOrderToStoreOrder(
   }
 }
 
-export function APIOrdersUpdater(): null {
+export function ApiOrdersUpdater(): null {
   const { account, chainId } = useActiveWeb3React()
   const allTokens = useAllTokens()
   const tokenAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
