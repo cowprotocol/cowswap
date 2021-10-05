@@ -20,19 +20,12 @@ function getToken(address: string, chainId: ChainId, tokens: { [p: string]: Toke
   return tokens[getAddress(address)]
 }
 
-function classifyLocalStatus(status: ApiOrderStatus): OrderStatus | undefined {
-  switch (status) {
-    case 'cancelled':
-      return OrderStatus.CANCELLED
-    case 'expired':
-      return OrderStatus.EXPIRED
-    case 'pending':
-      return OrderStatus.PENDING
-    case 'fulfilled':
-      return OrderStatus.FULFILLED
-    default:
-      return undefined
-  }
+const statusMapping: Record<ApiOrderStatus, OrderStatus | undefined> = {
+  cancelled: OrderStatus.CANCELLED,
+  expired: OrderStatus.EXPIRED,
+  fulfilled: OrderStatus.FULFILLED,
+  pending: OrderStatus.PENDING,
+  unknown: undefined,
 }
 
 function transformApiOrderToStoreOrder(
@@ -47,7 +40,7 @@ function transformApiOrderToStoreOrder(
   const outputToken = getToken(buyToken, chainId, allTokens)
 
   const apiStatus = classifyOrder(order)
-  const status = classifyLocalStatus(apiStatus)
+  const status = statusMapping[apiStatus]
 
   if (!status) {
     console.warn(`APIOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
