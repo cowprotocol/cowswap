@@ -106,3 +106,4 @@ export const FEE_SIZE_THRESHOLD = new Fraction(10, 100) // 30%
 export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
 
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10
+export const AMOUNT_OF_ORDERS_TO_FETCH = 100

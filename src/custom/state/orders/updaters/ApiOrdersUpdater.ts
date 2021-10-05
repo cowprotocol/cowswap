@@ -8,7 +8,7 @@ import { useAddOrUpdateOrdersBatch } from 'state/orders/hooks'
 import { getOrders, OrderMetaData } from 'api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
 import { Order, OrderStatus } from 'state/orders/actions'
-import { NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { AMOUNT_OF_ORDERS_TO_FETCH, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { ChainId } from 'state/lists/actions'
 import { ApiOrderStatus, classifyOrder } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
@@ -90,7 +90,7 @@ export function ApiOrdersUpdater(): null {
 
   useEffect(() => {
     if (account && chainId && tokenAreLoaded) {
-      getOrders(chainId, account, 100)
+      getOrders(chainId, account, AMOUNT_OF_ORDERS_TO_FETCH)
         .then((apiOrders) => {
           console.log(`APIOrdersUpdater::Fetched ${apiOrders.length} orders for account ${account} on chain ${chainId}`)
 
