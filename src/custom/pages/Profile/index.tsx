@@ -1,5 +1,5 @@
 import React from 'react'
-import { Txt } from '@src/assets/styles/styled'
+import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
   FlexWrap,
@@ -10,31 +10,20 @@ import {
   ItemTitle,
   ChildWrapper,
 } from 'pages/Profile/styled'
-import { useActiveWeb3React } from '@src/hooks/web3'
+import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
-import { AccountDetailsProps } from 'components/AccountDetails'
 import { HelpCircle, RefreshCcw } from 'react-feather'
-import Web3Status from '@src/components/Web3Status'
+import Web3Status from 'components/Web3Status'
+import useReferralLink from 'hooks/useReferralLink'
+import useFetchProfile from 'hooks/useFetchProfile'
+import { numberFormatter } from 'utils/format'
+import useTimeAgo from 'hooks/useTimeAgo'
 
-export default function Profile({ ENSName }: AccountDetailsProps) {
-  const today = new Date()
-  //mockTime - mocked time of update
-  const mockTime = new Date()
-  mockTime.setDate(today.getDate() - 1)
-
-  let label = ''
-  if (mockTime.getHours() > 0) {
-    label = ''
-    label = `${mockTime.getHours()} ${mockTime.getHours() > 1 ? 'hours' : 'hour'}`
-  } else if (mockTime.getMinutes() > 0) {
-    label += `${mockTime.getMinutes()} ${mockTime.getMinutes() > 1 ? 'mins' : 'min'}`
-  } else if (mockTime.getSeconds() > 0) {
-    label += `${mockTime.getSeconds()} ${mockTime.getSeconds() > 1 ? 'secs' : 'sec'}`
-  } else {
-    label = 'Just now'
-  }
-  const ethAddress = 'your-ethereum-address'
+export default function Profile() {
+  const referralLink = useReferralLink()
   const { account } = useActiveWeb3React()
+  const profileData = useFetchProfile()
+  const lastUpdated = useTimeAgo(profileData?.lastUpdated)
 
   return (
     <Wrapper>
@@ -46,7 +35,7 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
               <RefreshCcw size={16} />
               &nbsp;&nbsp;
               <Txt secondary>Last updated:&nbsp;</Txt>
-              <strong>{label} ago</strong>
+              <strong>{lastUpdated || '-'}</strong>
             </Txt>
           )}
         </CardHead>
@@ -55,16 +44,14 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
             <strong>Your referral url</strong>
           </Txt>
           <Txt fs={14} center>
-            {account ? (
+            {referralLink ? (
               <>
                 <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
-                  {window.location.href}
-                  <strong>&lt;{ethAddress}&gt;</strong>&nbsp;
-                  {(ENSName || account) && (
-                    <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-                      <Copy toCopy={ENSName ? ENSName : account ? account : ''} />
-                    </span>
-                  )}
+                  {referralLink.prefix}
+                  <strong>{referralLink.address}</strong>
+                  <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                    <Copy toCopy={referralLink.link} />
+                  </span>
                 </span>
               </>
             ) : (
@@ -83,14 +70,14 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
                 <span role="img" aria-label="farmer">
                   🧑‍🌾
                 </span>
-                <strong>-</strong>
+                <strong>{formatInt(profileData?.totalTrades)}</strong>
                 <span>Total trades</span>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="moneybag">
                   💰
                 </span>
-                <strong>-</strong>
+                <strong>{formatDecimal(profileData?.tradeVolumeUsd)}</strong>
                 <span>Total traded volume</span>
               </FlexCol>
             </FlexWrap>
@@ -102,17 +89,17 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
             </ItemTitle>
             <FlexWrap className="item">
               <FlexCol>
-                <span role="img" aria-label="wingedmoney">
-                  💸
-                </span>
-                <strong>-</strong>
-                <span>Total trades</span>
-              </FlexCol>
-              <FlexCol>
                 <span role="img" aria-label="handshake">
                   🤝
                 </span>
-                <strong>-</strong>
+                <strong>{formatInt(profileData?.totalReferrals)}</strong>
+                <span>Total referrals</span>
+              </FlexCol>
+              <FlexCol>
+                <span role="img" aria-label="wingedmoney">
+                  💸
+                </span>
+                <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
                 <span>Referrals Volume</span>
               </FlexCol>
             </FlexWrap>
@@ -120,10 +107,18 @@ export default function Profile({ ENSName }: AccountDetailsProps) {
         </GridWrap>
         {!account && (
           <FlexWrap>
-            <Web3Status />
+            <Web3Status openOrdersPanel={() => console.log('TODO')} />
           </FlexWrap>
         )}
       </GridWrap>
     </Wrapper>
   )
+}
+
+const formatDecimal = (number?: number): string => {
+  return number ? numberFormatter.format(number) : '-'
+}
+
+const formatInt = (number?: number): string => {
+  return number ? number.toLocaleString() : '-'
 }

@@ -1,6 +1,6 @@
 import { ChainId } from 'state/lists/actions'
 import deterministicHash from 'utils/deterministicHash'
-import { AppMetadata, UploadMetadataParams } from './api'
+import { AppMetadata, ProfileData, UploadMetadataParams } from './api'
 
 const appDataDoc = {
   version: '1.0.0',
@@ -39,4 +39,15 @@ export async function getAppDataDoc(chainId: ChainId, address: string): Promise<
 export async function uploadAppDataDoc(params: UploadMetadataParams): Promise<void> {
   console.log('[utils:operatorMock] Post AppData doc', params)
   return
+}
+
+export async function getProfileData(): Promise<ProfileData | null> {
+  console.log('[utils:operatorMock] Get profile data')
+  return {
+    lastUpdated: new Date(2021, 9, 4, 7).toUTCString(),
+    referralVolumeUsd: 250_000,
+    totalReferrals: 45,
+    totalTrades: 542,
+    tradeVolumeUsd: 1_250_300,
+  }
 }
