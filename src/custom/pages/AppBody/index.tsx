@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { BodyWrapper as BodyWrapperMod } from '@src/pages/AppBody'
+import { transparentize } from 'polished'
 
 export const BodyWrapper = styled(BodyWrapperMod)`
   background: ${({ theme }) => theme.bg1};
@@ -8,7 +9,9 @@ export const BodyWrapper = styled(BodyWrapperMod)`
     0px 24px 32px rgba(0, 0, 0, 0.01);
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
   border-radius: ${({ theme }) => theme.appBody.borderRadius};
-  border: ${({ theme }) => theme.appBody.border};
+  background: ${({ theme }) => transparentize(0.5, theme.bg1)};
+  box-shadow: none;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
   padding: ${({ theme }) => theme.appBody.padding};
   max-width: ${({ theme }) => theme.appBody.maxWidth.normal};
 `
