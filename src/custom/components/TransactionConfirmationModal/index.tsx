@@ -1,23 +1,33 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-import { CloseIcon } from 'theme'
+import {
+  CloseIcon,
+  // CustomLightSpinner
+} from 'theme'
+import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import { RowBetween, RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
 import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
-import { ArrowUpCircle, CheckCircle } from 'react-feather'
+import { ArrowUpCircle, CheckCircle, UserCheck } from 'react-feather'
 import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
+import { ColumnCenter } from 'components/Column'
+// import { lighten } from 'polished'
+import { getStatusIcon } from 'components/AccountDetails'
+import { shortenAddress } from 'utils'
 
 const Wrapper = styled.div`
   width: 100%;
 `
+
 const Section = styled.div`
   padding: 24px;
   align-items: center;
@@ -28,7 +38,43 @@ const Section = styled.div`
 
 const CloseIconWrapper = styled(CloseIcon)`
   display: flex;
-  margin: 0 0 0 auto;
+  margin: 16px 16px 0 auto;
+  opacity: 0.75;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
+const IconSpinner = styled.div`
+  --icon-size: 70px;
+  margin: 0 auto 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  ${({ theme }) => theme.neumorphism.boxShadow}
+  border-radius: var(--icon-size);
+
+  > div {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  > div > div {
+  }
+
+  > div > div > svg {
+    height: 100%;
+    width: 100%;
+  }
 `
 
 const CloseLink = styled.span`
@@ -52,10 +98,6 @@ export const GPModalHeader = styled(RowBetween)`
 `
 
 const InternalLink = styled(Link)``
-
-const ConfirmedIcon = styled.div`
-  padding: 16px 0;
-`
 
 const StyledIcon = styled.img`
   height: auto;
@@ -116,8 +158,294 @@ const CheckCircleCustom = styled(CheckCircle)`
   margin: 0 10px 0 0;
 `
 
+const ConfirmedIcon = styled(ColumnCenter)`
+  padding: 16px 0 32px;
+`
+
+const UpperSection = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  padding: 16px 0;
+
+  > div {
+    padding: 0 24px;
+  }
+`
+
+const LowerSection = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  background: ${({ theme }) => theme.bg4};
+  padding: 40px;
+  margin: 16px auto 0;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: 100%;
+  `}
+
+  > h3 {
+    text-align: center;
+    width: 100%;
+    font-size: 21px;
+    margin: 0 auto 42px;
+  }
+
+  > h3 > span:last-of-type {
+    display: block;
+    font-weight: 400;
+  }
+`
+
+const StepsIconWrapper = styled.div`
+  --circle-size: 65px;
+  --border-radius: 100%;
+  --border-size: 2px;
+  --border-bg: conic-gradient(${({ theme }) => theme.bg3} 40grad, 80grad, ${({ theme }) => theme.primary1} 360grad);
+
+  border-radius: var(--circle-size);
+  height: var(--circle-size);
+  width: var(--circle-size);
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: var(--border-size);
+    right: var(--border-size);
+    bottom: var(--border-size);
+    left: var(--border-size);
+    z-index: -1;
+    border-radius: calc(var(--border-radius) - var(--border-size));
+    ${({ theme }) => theme.neumorphism.boxShadowEmbossed};
+  }
+
+  > svg {
+    height: 100%;
+    width: 100%;
+    padding: 18px;
+    stroke: ${({ theme }) => theme.text1};
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`
+
+const StepsWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  position: relative;
+
+  > div {
+    flex: 0 1 35%;
+    display: flex;
+    flex-flow: column wrap;
+    animation: SlideInStep 1s forwards linear;
+    opacity: 0;
+    transform: translateX(-5px);
+    z-index: 2;
+  }
+
+  > div:first-child {
+    ${StepsIconWrapper} {
+      &::before {
+        content: '';
+        display: block;
+        background: var(--border-bg);
+        width: var(--circle-size);
+        padding: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        border-radius: 100%;
+        z-index: -2;
+        animation: spin 1.5s linear infinite;
+      }
+    }
+  }
+
+  > div:last-child {
+    animation-delay: 1s;
+  }
+
+  > hr {
+    flex: 1 1 auto;
+    height: 1px;
+    border: 0;
+    background: ${({ theme }) => theme.border2};
+    margin: auto;
+    position: absolute;
+    width: 100%;
+    max-width: 162px;
+    left: 0;
+    right: 0;
+    top: 32px;
+    z-index: 1;
+  }
+
+  > hr::before {
+    content: '';
+    height: 4px;
+    width: 100%;
+    background: ${({ theme }) => theme.bg4};
+    display: block;
+    margin: 0;
+    animation: Shrink 1s forwards linear;
+    transform: translateX(0%);
+  }
+
+  > div > p {
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  > div > p > span {
+    opacity: 0.7;
+  }
+
+  @keyframes SlideInStep {
+    from {
+      opacity: 0;
+      transform: translateX(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes Shrink {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+`
+
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
+
+enum walletTypes {
+  SAFE,
+  SC,
+  EOA,
+}
+
+enum orderTypes {
+  CANCEL,
+  APPROVAL,
+  ORDER,
+}
+
+export function ConfirmationPendingContent({
+  onDismiss,
+  pendingText,
+}: {
+  onDismiss: () => void
+  pendingText: ReactNode
+}) {
+  const { connector } = useActiveWeb3React()
+  const walletInfo = useWalletInfo()
+  const { isSupportedWallet, walletName, isSmartContractWallet, ensName, account } = useWalletInfo()
+
+  const getWalletType = (): walletTypes => {
+    if (walletName === 'Gnosis Safe' && isSmartContractWallet) {
+      return walletTypes.SAFE
+    } else if (isSmartContractWallet) {
+      return walletTypes.SC
+    } else {
+      return walletTypes.EOA
+    }
+  }
+  const walletType = isSupportedWallet && getWalletType()
+
+  const WalletNameLabel =
+    walletType === walletTypes.SAFE ? 'Gnosis Safe' : walletType === walletTypes.SC ? 'smart contract wallet' : 'wallet'
+  const orderType = orderTypes.ORDER as orderTypes
+
+  return (
+    <Wrapper>
+      <UpperSection>
+        <CloseIconWrapper onClick={onDismiss} />
+
+        <IconSpinner>{getStatusIcon(connector, walletInfo, 46)}</IconSpinner>
+
+        <Text fontWeight={500} fontSize={16} textAlign="center">
+          {pendingText}
+        </Text>
+      </UpperSection>
+
+      <LowerSection>
+        <h3>
+          <Trans>
+            {orderType === orderTypes.CANCEL ? (
+              <>
+                <span>Soft cancel your order.</span>
+              </>
+            ) : orderType === orderTypes.APPROVAL ? (
+              <>
+                <span>Approve the token.</span>
+              </>
+            ) : (
+              <span>Almost there!</span>
+            )}
+            <span>Follow these steps:</span>
+          </Trans>
+        </h3>
+
+        <StepsWrapper>
+          <div>
+            <StepsIconWrapper>
+              <UserCheck />
+            </StepsIconWrapper>
+            <p>
+              <Trans>
+                Sign the{' '}
+                {orderType === orderTypes.CANCEL
+                  ? 'cancellation'
+                  : orderType === orderTypes.APPROVAL
+                  ? 'token approval'
+                  : 'order'}{' '}
+                with your {WalletNameLabel} {account && <span>({ensName || shortenAddress(account)})</span>}
+              </Trans>
+            </p>
+          </div>
+          <hr />
+          <div>
+            <StepsIconWrapper>
+              <CheckCircle />
+            </StepsIconWrapper>
+            <p>
+              <Trans>
+                {orderType === orderTypes.CANCEL
+                  ? 'The cancellation request is submitted.'
+                  : orderType === orderTypes.APPROVAL
+                  ? 'The token approval is submitted.'
+                  : 'The order is submitted and ready to be settled.'}
+              </Trans>
+            </p>
+          </div>
+        </StepsWrapper>
+      </LowerSection>
+    </Wrapper>
+  )
+}
 
 export function TransactionSubmittedContent({
   onDismiss,

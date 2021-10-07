@@ -74,7 +74,7 @@ export function formatConnectorName(connector?: AbstractConnector, walletInfo?: 
   )
 }
 
-export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo) {
+export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo, size?: number) {
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
     return (
@@ -92,7 +92,7 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
       </IconWrapper>
     )
   } else if (connector === injected) {
-    return <Identicon />
+    return <Identicon size={size} />
   } else if (connector === walletconnect) {
     return (
       <IconWrapper size={16}>

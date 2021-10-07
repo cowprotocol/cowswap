@@ -75,6 +75,7 @@ declare module 'styled-components' {
     }
     neumorphism: {
       boxShadow: FlattenSimpleInterpolation
+      boxShadowEmbossed: FlattenSimpleInterpolation
     }
     header: {
       border: string

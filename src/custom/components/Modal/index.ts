@@ -8,6 +8,7 @@ export { default } from '@src/components/Modal'
 export const GpModal = styled(Modal)`
   > [data-reach-dialog-content] {
     background-color: ${({ theme }) => theme.bg1};
+    max-width: 470px;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;
@@ -15,6 +16,7 @@ export const GpModal = styled(Modal)`
       height: 100%;
       width: 100vw;
       border-radius: 0;
+      overflow-y: auto;
     `}
 
     ${HeaderRow} {

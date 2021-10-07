@@ -5,7 +5,10 @@ import styled, { ThemeContext } from 'styled-components'
 // import Modal from 'components/Modal'
 // import { ExternalLink } from 'theme'
 import { Text } from 'rebass'
-import { CloseIcon, CustomLightSpinner } from 'theme'
+import {
+  CloseIcon,
+  // CustomLightSpinner
+} from 'theme'
 import {
   RowBetween,
   // RowFixed
@@ -19,8 +22,11 @@ import {
   ButtonPrimary,
   // ButtonLight
 } from '../Button'
-import { AutoColumn, ColumnCenter } from 'components/Column'
-import Circle from 'assets/images/blue-loader.svg'
+import {
+  AutoColumn,
+  // ColumnCenter
+} from 'components/Column'
+// import Circle from 'assets/images/blue-loader.svg'
 // import MetaMaskLogo from 'assets/images/metamask.png'
 import { useActiveWeb3React } from 'hooks/web3'
 // import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
@@ -28,8 +34,13 @@ import { Trans } from '@lingui/macro'
 // MOD
 // import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { GpModal } from 'components/Modal'
-import { lighten } from 'polished'
-import { ConfirmationModalContentProps, TransactionSubmittedContent, GPModalHeader } from '.' // mod
+// import { lighten } from 'polished'
+import {
+  ConfirmationPendingContent,
+  ConfirmationModalContentProps,
+  TransactionSubmittedContent,
+  GPModalHeader,
+} from '.' // mod
 
 const Wrapper = styled.div`
   width: 100%;
@@ -50,9 +61,9 @@ const BottomSection = styled(Section)`
   `}
 `
 
-const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`
+/* const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '20px 0' : '60px 0;')};
-`
+` */
 
 // const StyledLogo = styled.img`
 //   height: 16px;
@@ -60,7 +71,7 @@ const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`
 //   margin-left: 6px;
 // `
 
-export function ConfirmationPendingContent({
+/* export function ConfirmationPendingContent({
   onDismiss,
   pendingText,
   inline,
@@ -97,7 +108,7 @@ export function ConfirmationPendingContent({
       </AutoColumn>
     </Wrapper>
   )
-}
+} */
 
 /* export function TransactionSubmittedContent({
   onDismiss,
