@@ -148,10 +148,18 @@ export default function Swap({
 
   // Transaction confirmation modal
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
-  const openTransactionConfirmationModal = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
   // const toggleTransactionConfirmation = useToggleTransactionConfirmation()
   const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+
+  const openTransactionConfirmationModal = useCallback(
+    (message: string) => {
+      setTransactionConfirmationModalMsg(message)
+      openTransactionConfirmationModalAux()
+    },
+    [setTransactionConfirmationModalMsg, openTransactionConfirmationModalAux]
+  )
 
   // for expert mode
   // const toggleSettings = useToggleSettingsMenu()
@@ -216,10 +224,7 @@ export default function Swap({
     execute: onWrap,
     inputError: wrapInputError,
   } = useWrapCallback(
-    (message: string) => {
-      setTransactionConfirmationModalMsg(message)
-      openTransactionConfirmationModal()
-    },
+    openTransactionConfirmationModal,
     closeModals,
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
@@ -314,10 +319,7 @@ export default function Swap({
 
   // check whether the user has approved the router on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTrade(
-    (message: string) => {
-      setTransactionConfirmationModalMsg(message)
-      openTransactionConfirmationModal()
-    },
+    openTransactionConfirmationModal,
     closeModals,
     trade,
     allowedSlippage
@@ -357,7 +359,22 @@ export default function Swap({
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback({
+    trade,
+    allowedSlippage,
+    recipientAddressOrName: recipient,
+    openTransactionConfirmationModal: () => {
+      setSwapState({
+        tradeToConfirm: trade,
+        attemptingTxn: true,
+        swapErrorMessage: undefined,
+        showConfirm: true,
+        txHash: undefined,
+      })
+    },
+    //openTransactionConfirmationModal,
+    closeModals,
+  })
 
   const [singleHopOnly] = useUserSingleHopOnly()
 

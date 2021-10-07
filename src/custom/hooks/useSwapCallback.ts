@@ -50,13 +50,28 @@ const _computeInputAmountForSignature = (params: {
   }
 }
 
+interface SwapCallbackParams {
+  trade?: TradeGp // trade to execute, required
+  allowedSlippage?: Percent // in bips
+  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  openTransactionConfirmationModal: () => void
+  closeModals: () => void
+}
+
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
-export function useSwapCallback(
-  trade: TradeGp | undefined, // trade to execute, required
-  allowedSlippage: Percent = INITIAL_ALLOWED_SLIPPAGE_PERCENT, // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
+export function useSwapCallback(params: SwapCallbackParams): {
+  state: SwapCallbackState
+  callback: null | (() => Promise<string>)
+  error: string | null
+} {
+  const {
+    trade,
+    allowedSlippage = INITIAL_ALLOWED_SLIPPAGE_PERCENT,
+    recipientAddressOrName,
+    openTransactionConfirmationModal,
+    closeModals,
+  } = params
   const { account, chainId, library } = useActiveWeb3React()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
@@ -108,7 +123,7 @@ export function useSwapCallback(
         const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
         const validTo = calculateValidTo(deadline)
 
-        console.log(
+        console.trace(
           `[useSwapCallback] >> Trading ${tradeType} 
             1. Original Input = ${inputAmountWithSlippage.toExact()}
             2. Fee = ${fee?.feeAsCurrency?.toExact() || '0'}
@@ -139,7 +154,8 @@ export function useSwapCallback(
 
         const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmountWithSlippage) : undefined
 
-        // TODO: indicate somehow in the order when the user was to receive ETH === isBuyEth flag
+        openTransactionConfirmationModal()
+
         const postOrderPromise = sendOrder({
           kind,
           account,
@@ -163,6 +179,7 @@ export function useSwapCallback(
           addPendingOrder,
           signer: library.getSigner(),
         })
+        postOrderPromise.finally(closeModals)
 
         if (wrapPromise) {
           const wrapTx = await wrapPromise
@@ -186,5 +203,7 @@ export function useSwapCallback(
     deadline,
     wrapEther,
     addPendingOrder,
+    openTransactionConfirmationModal,
+    closeModals,
   ])
 }
