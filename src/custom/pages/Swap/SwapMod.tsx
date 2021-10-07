@@ -47,7 +47,12 @@ import { /* useToggledVersion, */ Version } from 'hooks/useToggledVersion'
 import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useWalletModalToggle /*, useToggleSettingsMenu */ } from 'state/application/hooks'
+import {
+  useCloseModals,
+  useModalOpen,
+  useOpenModal,
+  useWalletModalToggle /*, useToggleSettingsMenu */,
+} from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -81,6 +86,8 @@ import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
+import { ApplicationModal } from 'state/application/actions'
+import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -138,6 +145,12 @@ export default function Swap({
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
+
+  // Transaction confirmation modal
+  const openTransactionConfirmationModal = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const closeModals = useCloseModals()
+  // const toggleTransactionConfirmation = useToggleTransactionConfirmation()
+  const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
   // for expert mode
   // const toggleSettings = useToggleSettingsMenu()
@@ -294,7 +307,12 @@ export default function Swap({
   const isLoadingRoute = toggledVersion === Version.v3 && V3TradeState.LOADING === v3TradeState */
 
   // check whether the user has approved the router on the input token
-  const [approvalState, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+  const [approvalState, approveCallback] = useApproveCallbackFromTrade(
+    openTransactionConfirmationModal,
+    closeModals,
+    trade,
+    allowedSlippage
+  )
   const prevApprovalState = usePrevious(approvalState)
   const { state: signatureState, gatherPermitSignature } = useERC20PermitFromTrade(trade, allowedSlippage)
 
@@ -470,6 +488,13 @@ export default function Swap({
         onConfirm={handleConfirmTokenWarning}
         onDismiss={handleDismissTokenWarning}
       />
+      <TransactionConfirmationModal
+        attemptingTxn={true}
+        isOpen={showTransactionConfirmationModal}
+        pendingText="Approving token for trading"
+        onDismiss={closeModals}
+      />
+
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>

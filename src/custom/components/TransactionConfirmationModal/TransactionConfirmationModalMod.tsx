@@ -255,11 +255,11 @@ export function TransactionErrorContent({ message, onDismiss }: { message: React
 interface ConfirmationModalProps {
   isOpen: boolean
   onDismiss: () => void
-  hash: string | undefined
-  content: () => ReactNode
+  hash?: string
+  content?: () => ReactNode
   attemptingTxn: boolean
   pendingText: ReactNode
-  currencyToAdd?: Currency | undefined
+  currencyToAdd?: Currency
 }
 
 export default function TransactionConfirmationModal({
@@ -288,7 +288,7 @@ export default function TransactionConfirmationModal({
           currencyToAdd={currencyToAdd}
         />
       ) : (
-        content()
+        content && content()
       )}
     </GpModal>
   )
