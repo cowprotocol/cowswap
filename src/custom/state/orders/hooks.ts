@@ -154,7 +154,6 @@ function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork
   })
 }
 
-
 // used to extract Order.summary before showing popup
 // TODO: put the whole logic inside Popup middleware
 export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCallback => {
