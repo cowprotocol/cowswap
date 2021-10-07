@@ -20,7 +20,7 @@ export enum ApprovalState {
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
-  openTransactionConfirmationModal: () => void,
+  openTransactionConfirmationModal: (message: string) => void,
   closeModals: () => void,
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string
@@ -80,7 +80,7 @@ export function useApproveCallback(
       return tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString())
     })
 
-    openTransactionConfirmationModal()
+    openTransactionConfirmationModal(`Approve token ${amountToApprove.currency.symbol} for trading`)
     return tokenContract
       .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
         gasLimit: calculateGasMargin(estimatedGas),
@@ -114,7 +114,7 @@ export function useApproveCallback(
 
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(
-  openTransactionConfirmationModal: () => void,
+  openTransactionConfirmationModal: (message: string) => void,
   closeModals: () => void,
   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent

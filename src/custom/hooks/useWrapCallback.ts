@@ -35,12 +35,23 @@ interface GetWrapUnwrapCallback {
   inputAmount?: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
   wethContract: Contract
+  openTransactionConfirmationModal: (message: string) => void
+  closeModals: () => void
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallback {
-  const { chainId, isWrap, balance, inputAmount, addTransaction, wethContract } = params
+  const {
+    chainId,
+    isWrap,
+    balance,
+    inputAmount,
+    addTransaction,
+    wethContract,
+    openTransactionConfirmationModal,
+    closeModals,
+  } = params
   const { native, wrapped } = getChainCurrencySymbols(chainId)
   const symbol = isWrap ? native : wrapped
 
@@ -55,22 +66,30 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   if (sufficientBalance && inputAmount) {
     let wrapUnwrap: () => TransactionResponse
     let summary: string
+    let confirmationMessage: string
 
     if (isWrap) {
       wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.quotient.toString(RADIX_HEX)}` })
-      summary = t`Wrap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
+      const baseSummary = t`Wrap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
+      summary = t`Wrap ${baseSummary}`
+      confirmationMessage = t`Wrapping ${baseSummary}`
     } else {
       wrapUnwrap = () => wethContract.withdraw(`0x${inputAmount.quotient.toString(RADIX_HEX)}`)
-      summary = t`Unwrap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${wrapped} to ${native}`
+      const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${wrapped} to ${native}`
+      summary = t`Unwrap ${baseSummary}`
+      confirmationMessage = t`Unwrapping ${baseSummary}`
     }
 
     wrapUnwrapCallback = async () => {
       try {
+        openTransactionConfirmationModal(confirmationMessage)
         const txReceipt = await wrapUnwrap()
         addTransaction(txReceipt, { summary })
+        closeModals()
 
         return txReceipt
       } catch (error) {
+        closeModals()
         const actionName = WrapType.WRAP ? 'wrapping' : 'unwrapping'
         console.error(t`Error ${actionName} ${symbol}`, error)
 
@@ -93,9 +112,11 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
  * @param typedValue the user input value
  */
 export default function useWrapCallback(
-  inputCurrency: Currency | undefined,
-  outputCurrency: Currency | undefined,
-  inputAmount: CurrencyAmount<Currency> | undefined,
+  openTransactionConfirmationModal: (message: string) => void,
+  closeModals: () => void,
+  inputCurrency?: Currency,
+  outputCurrency?: Currency,
+  inputAmount?: CurrencyAmount<Currency>,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
   const { chainId: connectedChainId, account } = useActiveWeb3React()
@@ -123,7 +144,20 @@ export default function useWrapCallback(
         inputAmount,
         addTransaction,
         wethContract,
+        openTransactionConfirmationModal,
+        closeModals,
       })
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, isEthTradeOverride, balance, inputAmount, addTransaction])
+  }, [
+    wethContract,
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    isEthTradeOverride,
+    balance,
+    inputAmount,
+    addTransaction,
+    openTransactionConfirmationModal,
+    closeModals,
+  ])
 }

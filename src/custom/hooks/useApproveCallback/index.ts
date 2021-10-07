@@ -12,7 +12,7 @@ export { ApprovalState } from '@src/hooks/useApproveCallback'
 
 // export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
 export function useApproveCallbackFromTrade(
-  openTransactionConfirmationModal: () => void,
+  openTransactionConfirmationModal: (message: string) => void,
   closeModals: () => void,
   trade?: TradeGp,
   allowedSlippage = ZERO_PERCENT
