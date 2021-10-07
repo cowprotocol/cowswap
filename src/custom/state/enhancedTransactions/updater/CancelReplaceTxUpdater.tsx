@@ -3,7 +3,7 @@ import { useAppDispatch } from 'state/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { sdk } from 'utils/blocknative'
 import { cancelTransaction, replaceTransaction } from 'state/enhancedTransactions/actions'
-import { useAllPendingHashes } from 'state/enhancedTransactions/hooks'
+import { useAllTransactionHashes } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
@@ -45,7 +45,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 export default function CancelReplaceTxUpdater(): null {
   const { chainId, library } = useActiveWeb3React()
   const dispatch = useAppDispatch()
-  const pendingHashes = useAllPendingHashes()
+  const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt)
 
   useEffect(() => {
     if (!chainId || !library) return
