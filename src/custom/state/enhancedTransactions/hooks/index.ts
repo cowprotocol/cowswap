@@ -1,34 +1,37 @@
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 
-import { useActiveWeb3React } from 'hooks/web3'
 import { addTransaction, AddTransactionParams } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
+import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
 
 export * from './TransactionHooksMod'
 
-export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from'> // The hook requires less params for convenience
+export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from' | 'hashType'> // The hook requires less params for convenience
 export type TransactionAdder = (params: AddTransactionHookParams) => void
 
 /**
  * Return helpers to add a new pending transaction
  */
 export function useTransactionAdder(): TransactionAdder {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, gnosisSafeInfo } = useWalletInfo()
   const dispatch = useAppDispatch()
+
+  const isGnosisSafeWallet = !!gnosisSafeInfo
 
   return useCallback(
     (addTransactionParams: AddTransactionHookParams) => {
       if (!account || !chainId) return
 
-      const { hash, hashType, summary, approval, presign, safeTransaction } = addTransactionParams
+      const { hash, summary, approval, presign, safeTransaction } = addTransactionParams
+      const hashType = isGnosisSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
       if (!hash) {
         throw Error('No transaction hash found')
       }
       dispatch(addTransaction({ hash, hashType, from: account, chainId, approval, summary, presign, safeTransaction }))
     },
-    [dispatch, chainId, account]
+    [dispatch, chainId, account, isGnosisSafeWallet]
   )
 }
 

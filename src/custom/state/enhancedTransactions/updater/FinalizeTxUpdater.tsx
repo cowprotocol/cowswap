@@ -8,12 +8,13 @@ import { useAppDispatch } from 'state/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { updateBlockNumber } from 'state/application/actions'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
-import { checkedTransaction, finalizeTransaction } from '../actions'
+import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
 import { useAllTransactionsDetails } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -43,6 +44,7 @@ interface CheckEthereumTransactions {
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
   getReceipt: GetReceipt
+  getSafeInfo: GetSafeInfo
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
 }
@@ -58,6 +60,8 @@ function finalizeEthereumTransaction(
 ) {
   const { chainId, lastBlockNumber, addPopup, dispatch } = params
   const { hash } = transaction
+
+  console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
 
   dispatch(
     finalizeTransaction({
@@ -94,10 +98,10 @@ function finalizeEthereumTransaction(
 }
 
 function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {
-  const { transactions, chainId, lastBlockNumber, getReceipt, dispatch } = params
+  const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch } = params
 
   const promiseCancellations = transactions.map((transaction) => {
-    const { hash, hashType } = transaction
+    const { hash, hashType, receipt } = transaction
 
     if (hashType === HashType.ETHEREUM_TX) {
       // Get receipt for transaction, and finalize if needed
@@ -114,14 +118,53 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
         })
         .catch((error) => {
           if (!error.isCancelledError) {
+            console.error(`[FinalizeTxUpdater] Failed to get transaction receipt for tx: ${hash}`, error)
+          }
+        })
+
+      return cancel
+    } else if (hashType === HashType.GNOSIS_SAFE_TX) {
+      // Get safe info and receipt
+      const { promise: safeTransactionPromise, cancel } = getSafeInfo(hash)
+
+      // Get safe info
+      safeTransactionPromise
+        .then(async (safeTransaction) => {
+          const { isExecuted, transactionHash } = safeTransaction
+
+          // If the safe transaction is executed, but we don't have a tx receipt yet
+          if (isExecuted && !receipt) {
+            // Get the ethereum tx receipt
+            console.log(
+              '[FinalizeTxUpdater] Safe transaction is executed, but we have not fetched the receipt yet. Tx: ',
+              transactionHash
+            )
+            // Get the transaction receipt
+            const { promise: receiptPromise } = getReceipt(transactionHash)
+
+            receiptPromise
+              .then((newReceipt) => finalizeEthereumTransaction(newReceipt, transaction, params))
+              .catch((error) => {
+                if (!error.isCancelledError) {
+                  console.error(
+                    `[FinalizeTxUpdater] Failed to get transaction receipt for safeTransaction: ${hash}`,
+                    error
+                  )
+                }
+              })
+          }
+
+          dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
+        })
+        .catch((error) => {
+          if (!error.isCancelledError) {
             console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
           }
         })
 
       return cancel
     } else {
-      // TODO: Handle Gnosis Safe transactions
-      return () => console.error('[FinalizeTxUpdater] Handle Gnosis Safe transactions. Not implemented yet!')
+      throw new Error('[FinalizeTxUpdater] Unknown HashType: ' + hashType)
     }
   })
 
@@ -134,6 +177,7 @@ export default function Updater(): null {
 
   const dispatch = useAppDispatch()
   const getReceipt = useGetReceipt()
+  const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
 
   // Get, from the pending transaction, the ones that we should re-check
@@ -153,6 +197,7 @@ export default function Updater(): null {
       chainId,
       lastBlockNumber,
       getReceipt,
+      getSafeInfo,
       addPopup,
       dispatch,
     })
@@ -161,7 +206,7 @@ export default function Updater(): null {
       // Cancel all promises
       promiseCancellations.forEach((cancel) => cancel())
     }
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt])
+  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt, getSafeInfo])
 
   return null
 }

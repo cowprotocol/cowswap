@@ -5,7 +5,6 @@ import { getChainCurrencySymbols } from 'utils/xdai/hack'
 import { Contract } from 'ethers'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
 import { useWETHContract } from 'hooks/useContract'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
 import { WETH9_EXTENDED } from 'constants/tokens'
@@ -13,7 +12,7 @@ import { t } from '@lingui/macro'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import { HashType } from 'state/enhancedTransactions/reducer'
+import { useWalletInfo } from './useWalletInfo'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -87,7 +86,6 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
         const txReceipt = await wrapUnwrap()
         addTransaction({
           hash: txReceipt.hash,
-          hashType: HashType.ETHEREUM_TX,
           summary,
         })
         closeModals()
@@ -124,7 +122,7 @@ export default function useWrapCallback(
   inputAmount?: CurrencyAmount<Currency>,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
-  const { chainId: connectedChainId, account } = useActiveWeb3React()
+  const { chainId: connectedChainId, account } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)

@@ -7,7 +7,6 @@ import { useWETHContract } from 'hooks/useContract'
 import { ContractTransaction } from 'ethers'
 import { formatSmart } from '../utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
-import { HashType } from '../state/enhancedTransactions/reducer'
 
 export function useWrapEther() {
   const addTransaction = useTransactionAdder()
@@ -27,7 +26,6 @@ export function useWrapEther() {
         const txReceipt = await weth.deposit({ value: `0x${amount.quotient.toString(16)}` })
         addTransaction({
           hash: txReceipt.hash,
-          hashType: HashType.ETHEREUM_TX,
           summary: `Wrap ${formatSmart(amount, AMOUNT_PRECISION)} ETH to WETH`,
         })
         console.log('Wrapped!', amount)

@@ -10,7 +10,6 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { HashType } from '@src/custom/state/enhancedTransactions/reducer'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -89,7 +88,6 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction({
           hash: response.hash,
-          hashType: HashType.ETHEREUM_TX,
           summary: 'Approve ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender },
         })
