@@ -143,46 +143,6 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
         })
 
       return cancel
-    } else if (hashType === HashType.GNOSIS_SAFE_TX) {
-      // Get safe info and receipt
-      const { promise: safeTransactionPromise, cancel } = getSafeInfo(hash)
-
-      // Get safe info
-      safeTransactionPromise
-        .then(async (safeTransaction) => {
-          const { isExecuted, transactionHash } = safeTransaction
-
-          // If the safe transaction is executed, but we don't have a tx receipt yet
-          if (isExecuted && !receipt) {
-            // Get the ethereum tx receipt
-            console.log(
-              '[FinalizeTxUpdater] Safe transaction is executed, but we have not fetched the receipt yet. Tx: ',
-              transactionHash
-            )
-            // Get the transaction receipt
-            const { promise: receiptPromise } = getReceipt(transactionHash)
-
-            receiptPromise
-              .then((newReceipt) => finalizeEthereumTransaction(newReceipt, transaction, params))
-              .catch((error) => {
-                if (!error.isCancelledError) {
-                  console.error(
-                    `[FinalizeTxUpdater] Failed to get transaction receipt for safeTransaction: ${hash}`,
-                    error
-                  )
-                }
-              })
-          }
-
-          dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
-        })
-        .catch((error) => {
-          if (!error.isCancelledError) {
-            console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
-          }
-        })
-
-      return cancel
     } else {
       // Get receipt for transaction, and finalize if needed
       const { promise, cancel } = getReceipt(hash)

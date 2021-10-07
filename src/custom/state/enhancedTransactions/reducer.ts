@@ -104,7 +104,6 @@ export default createReducer(initialState, (builder) =>
         return
       }
       tx.receipt = receipt
-      // tx.transactionHash = receipt.transactionHash
       tx.confirmedTime = now()
     })
 
