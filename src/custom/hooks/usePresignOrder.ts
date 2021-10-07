@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
-// import { useTransactionAdder } from '@src/state/transactions/hooks'
+// import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { ContractTransaction } from 'ethers'
+// import { HashType } from 'state/enhancedTransactions/reducer'
 
 export type PresignOrderFn = (orderId: string) => Promise<ContractTransaction>
 
@@ -22,7 +23,11 @@ export function usePresignOrder(): ((orderId: string) => Promise<ContractTransac
       const txReceipt = await settlementContract.setPreSignature(orderId, true)
 
       // const trimmedOrderId = `${orderId.substring(0, 12)}...${orderId.substring(orderId.length - 12, orderId.length)}`
-      // addTransaction(txReceipt, { summary: `Pre-sign order ${trimmedOrderId}` })
+      // addTransaction({
+      //   hash: txReceipt.hash,
+      //   hashType: HashType.ETHEREUM_TX,
+      //   summary: `Pre-sign order ${trimmedOrderId}`,
+      // })
 
       console.log('Sent transaction for presigning', orderId, txReceipt)
 

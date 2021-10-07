@@ -7,8 +7,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { ZERO_PERCENT } from 'constants/misc'
 
 import { useApproveCallback } from './useApproveCallbackMod'
-export * from './useApproveCallbackMod'
-export { ApprovalState } from '@src/hooks/useApproveCallback'
+export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
 // export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
 export function useApproveCallbackFromTrade(

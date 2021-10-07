@@ -9,7 +9,7 @@ import Loader from 'components/Loader'
 import WrappingVisualisation from './WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/wallet/hooks'
-import { useIsTransactionPending } from 'state/transactions/hooks'
+import { useIsTransactionPending } from 'state/enhancedTransactions/hooks'
 
 import Modal from 'components/Modal'
 import { useGasPrices } from 'state/gas/hooks'
