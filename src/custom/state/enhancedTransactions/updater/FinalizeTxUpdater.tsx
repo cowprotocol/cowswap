@@ -103,22 +103,42 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
   const promiseCancellations = transactions.map((transaction) => {
     const { hash, hashType, receipt } = transaction
 
-    if (hashType === HashType.ETHEREUM_TX) {
-      // Get receipt for transaction, and finalize if needed
-      const { promise, cancel } = getReceipt(hash)
-      promise
-        .then((receipt) => {
-          if (receipt) {
-            // If the tx is mined. We finalize it!
-            finalizeEthereumTransaction(receipt, transaction, params)
-          } else {
-            // Update the last checked blockNumber
-            dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+    if (hashType === HashType.GNOSIS_SAFE_TX) {
+      // Get safe info and receipt
+      const { promise: safeTransactionPromise, cancel } = getSafeInfo(hash)
+
+      // Get safe info
+      safeTransactionPromise
+        .then(async (safeTransaction) => {
+          const { isExecuted, transactionHash } = safeTransaction
+
+          // If the safe transaction is executed, but we don't have a tx receipt yet
+          if (isExecuted && !receipt) {
+            // Get the ethereum tx receipt
+            console.log(
+              '[FinalizeTxUpdater] Safe transaction is executed, but we have not fetched the receipt yet. Tx: ',
+              transactionHash
+            )
+            // Get the transaction receipt
+            const { promise: receiptPromise } = getReceipt(transactionHash)
+
+            receiptPromise
+              .then((newReceipt) => finalizeEthereumTransaction(newReceipt, transaction, params))
+              .catch((error) => {
+                if (!error.isCancelledError) {
+                  console.error(
+                    `[FinalizeTxUpdater] Failed to get transaction receipt for safeTransaction: ${hash}`,
+                    error
+                  )
+                }
+              })
           }
+
+          dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
         })
         .catch((error) => {
           if (!error.isCancelledError) {
-            console.error(`[FinalizeTxUpdater] Failed to get transaction receipt for tx: ${hash}`, error)
+            console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
           }
         })
 
@@ -164,7 +184,25 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 
       return cancel
     } else {
-      throw new Error('[FinalizeTxUpdater] Unknown HashType: ' + hashType)
+      // Get receipt for transaction, and finalize if needed
+      const { promise, cancel } = getReceipt(hash)
+      promise
+        .then((receipt) => {
+          if (receipt) {
+            // If the tx is mined. We finalize it!
+            finalizeEthereumTransaction(receipt, transaction, params)
+          } else {
+            // Update the last checked blockNumber
+            dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+          }
+        })
+        .catch((error) => {
+          if (!error.isCancelledError) {
+            console.error(`[FinalizeTxUpdater] Failed to get transaction receipt for tx: ${hash}`, error)
+          }
+        })
+
+      return cancel
     }
   })
 

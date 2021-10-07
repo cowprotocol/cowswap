@@ -37,19 +37,45 @@ export interface OrderObject {
 type OrdersMap = Record<OrderID, OrderObject>
 export type PartialOrdersMap = Partial<OrdersMap>
 
+export type OrderLists = {
+  pending: PartialOrdersMap
+  presignaturePending: PartialOrdersMap
+  fulfilled: PartialOrdersMap
+  expired: PartialOrdersMap
+  cancelled: PartialOrdersMap
+}
+
+export interface OrdersStateNetwork extends OrderLists {
+  lastCheckedBlock: number
+}
+
 export type OrdersState = {
-  readonly [chainId in ChainId]?: {
-    pending: PartialOrdersMap
-    presignaturePending: PartialOrdersMap
-    fulfilled: PartialOrdersMap
-    expired: PartialOrdersMap
-    cancelled: PartialOrdersMap
-    lastCheckedBlock: number
-  }
+  readonly [chainId in ChainId]?: OrdersStateNetwork
 }
 
 export interface PrefillStateRequired {
   chainId: ChainId
+}
+
+export type OrderTypeKeys = 'pending' | 'presignaturePending' | 'expired' | 'fulfilled' | 'cancelled'
+export const ORDER_LIST_KEYS: OrderTypeKeys[] = ['pending', 'presignaturePending', 'expired', 'fulfilled', 'cancelled']
+export const ORDERS_LIST: OrderLists = {
+  pending: {},
+  presignaturePending: {},
+  fulfilled: {},
+  expired: {},
+  cancelled: {},
+}
+
+function getDefaultLastCheckedBlock(chainId: ChainId): number {
+  return ContractDeploymentBlocks[chainId] ?? 0
+}
+
+export function getDefaultNetworkState(chainId: ChainId): OrdersStateNetwork {
+  return {
+    ...ORDERS_LIST,
+    lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
+  }
 }
 
 // makes sure there's always an object at state[chainId], state[chainId].pending | .fulfilled
@@ -57,43 +83,22 @@ function prefillState(
   state: Writable<OrdersState>,
   { payload: { chainId } }: PayloadAction<PrefillStateRequired>
 ): asserts state is Required<OrdersState> {
-  // asserts that state[chainId].pending | .fulfilled | .expired is ok to access
   const stateAtChainId = state[chainId]
 
   if (!stateAtChainId) {
-    state[chainId] = {
-      pending: {},
-      presignaturePending: {},
-      fulfilled: {},
-      expired: {},
-      cancelled: {},
-      lastCheckedBlock: ContractDeploymentBlocks[chainId] ?? 0,
-    }
+    state[chainId] = getDefaultNetworkState(chainId)
     return
   }
 
-  if (!stateAtChainId.pending) {
-    stateAtChainId.pending = {}
-  }
-
-  if (!stateAtChainId.fulfilled) {
-    stateAtChainId.fulfilled = {}
-  }
-
-  if (!stateAtChainId.presignaturePending) {
-    stateAtChainId.presignaturePending = {}
-  }
-
-  if (!stateAtChainId.expired) {
-    stateAtChainId.expired = {}
-  }
-
-  if (!stateAtChainId.cancelled) {
-    stateAtChainId.cancelled = {}
-  }
+  // Assign default values for order lists in case they are missing
+  ORDER_LIST_KEYS.forEach((key) => {
+    if (!stateAtChainId[key]) {
+      stateAtChainId[key] = ORDERS_LIST[key]
+    }
+  })
 
   if (stateAtChainId.lastCheckedBlock === undefined) {
-    stateAtChainId.lastCheckedBlock = ContractDeploymentBlocks[chainId] ?? 0
+    stateAtChainId.lastCheckedBlock = getDefaultLastCheckedBlock(chainId)
   }
 }
 
@@ -272,11 +277,7 @@ export default createReducer(initialState, (builder) =>
       const lastCheckedBlock = state[chainId]?.lastCheckedBlock
 
       state[chainId] = {
-        pending: {},
-        presignaturePending: {},
-        fulfilled: {},
-        expired: {},
-        cancelled: {},
+        ...ORDERS_LIST,
         lastCheckedBlock: lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0,
       }
     })

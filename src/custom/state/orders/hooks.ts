@@ -22,7 +22,17 @@ import {
   SetIsOrderUnfillableParams,
   preSignOrders,
 } from './actions'
-import { OrderObject, OrdersState, PartialOrdersMap, V2OrderObject } from './reducer'
+import {
+  getDefaultNetworkState,
+  OrderObject,
+  OrdersState,
+  OrdersStateNetwork,
+  ORDERS_LIST,
+  OrderTypeKeys,
+  ORDER_LIST_KEYS,
+  PartialOrdersMap,
+  V2OrderObject,
+} from './reducer'
 import { isTruthy } from 'utils/misc'
 import { OrderID } from 'api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
@@ -78,8 +88,7 @@ type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 
 type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
-type OrderTypeKeys = 'pending' | 'presignaturePending' | 'expired' | 'fulfilled' | 'cancelled'
-function _concatOrdersState(state: OrdersState[ChainId], keys: OrderTypeKeys[]) {
+function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
 
   const firstState = state[keys[0]] || {}
@@ -121,7 +130,9 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
   return useSelector<AppState, Order | undefined>((state) => {
     if (!id || !chainId) return undefined
 
-    const orders = state.orders[chainId]
+    const ordersState = state.orders[chainId]
+    const orders = { ...ORDERS_LIST, ...ordersState }
+
     const serialisedOrder =
       orders?.fulfilled[id] ||
       orders?.pending[id] ||
@@ -133,10 +144,21 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
   })
 }
 
+function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork | undefined {
+  return useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
+    if (!chainId) {
+      return undefined
+    }
+    const ordersState = state.orders?.[chainId] || {}
+    return { ...getDefaultNetworkState(chainId), ...ordersState }
+  })
+}
+
+
 // used to extract Order.summary before showing popup
 // TODO: put the whole logic inside Popup middleware
 export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCallback => {
-  const state = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => chainId && state.orders?.[chainId])
+  const state = useOrdersStateNetwork(chainId)
 
   // stable ref, so we don't recreate the function
   const stateRef = useRef(state)
@@ -148,11 +170,10 @@ export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCall
     (id: OrderID) => {
       if (!chainId || !stateRef.current) return
 
+      const orders = { ...ORDERS_LIST, ...stateRef.current }
+
       const serialisedOrderObject =
-        stateRef.current.fulfilled[id] ||
-        stateRef.current.pending[id] ||
-        stateRef.current.expired[id] ||
-        stateRef.current.cancelled[id]
+        orders.fulfilled[id] || orders.pending[id] || orders.expired[id] || orders.cancelled[id]
 
       return _deserializeOrder(serialisedOrderObject)
     },
@@ -161,21 +182,19 @@ export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCall
 }
 
 export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
-  const state = useSelector<AppState, OrdersState[ChainId]>((state) => chainId && state.orders?.[chainId])
+  const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = _concatOrdersState(state, ['pending', 'presignaturePending', 'expired', 'fulfilled', 'cancelled'])
-      .map(_deserializeOrder)
-      .filter(isTruthy)
+    const allOrders = _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
 
     return allOrders
   }, [state])
 }
 
 export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
-  const state = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => chainId && state.orders?.[chainId])
+  const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
     if (!state) return {}
@@ -198,8 +217,7 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
         return
       }
 
-      return { pending: ordersState.pending, presignaturePending: ordersState.presignaturePending }
-      // return chainId && state.orders?.[chainId]?.pending
+      return { pending: ordersState.pending || {}, presignaturePending: ordersState.presignaturePending || {} }
     }
   )
 

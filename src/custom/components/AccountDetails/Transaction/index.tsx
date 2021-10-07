@@ -1,60 +1,26 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import React, { useMemo } from 'react'
 
 import { useActiveWeb3React } from 'hooks/web3'
-import { getEtherscanLink, shortenOrderId } from 'utils'
+import { getEtherscanLink } from 'utils'
 import { RowFixed } from 'components/Row'
-import Loader from 'components/Loader'
-import { IconWrapper } from '../TransactionMod'
-import {
-  ConfirmationModalContent,
-  ConfirmationPendingContent,
-  TransactionErrorContent,
-} from 'components/TransactionConfirmationModal'
 
-import { ActivityStatus, ActivityType, useActivityDescriptors } from 'hooks/useRecentActivity'
-import { useCancelOrder } from 'hooks/useCancelOrder'
-import { LinkStyledButton } from 'theme'
-import { ButtonPrimary } from 'components/Button'
-import { GpModal as Modal } from 'components/Modal'
-import { Order, OrderStatus } from 'state/orders/actions'
-
-import SVG from 'react-inlinesvg'
-import TxArrowsImage from 'assets/cow-swap/transaction-arrows.svg'
-import TxCheckImage from 'assets/cow-swap/transaction-confirmed.svg'
-import OrderCheckImage from 'assets/cow-swap/order-check.svg'
-import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
-import OrderCancelledImage from 'assets/cow-swap/order-cancelled.svg'
-import { PenTool as PresignaturePendingImage } from 'react-feather'
-// import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
-import OrderOpenImage from 'assets/cow-swap/order-open.svg'
-
-import { formatSmart } from 'utils/format'
 import {
   Wrapper,
-  Summary,
-  SummaryInner,
-  SummaryInnerRow,
   TransactionWrapper,
-  TransactionAlertMessage,
-  TransactionStatusText,
-  StatusLabel,
-  StatusLabelWrapper,
-  StatusLabelBelow,
-  TransactionState,
-  CancellationSummary,
-  IconType,
+  TransactionStatusText as ActivityDetailsText,
+  TransactionState as ActivityLink,
 } from './styled'
-import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
-import { DEFAULT_PRECISION } from 'constants/index'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
+import { getSafeWebUrl } from 'api/gnosisSafe'
+import { getExplorerOrderLink } from 'utils/explorer'
+import { useActivityDescriptors, ActivityStatus, ActivityType, ActivityDescriptors } from 'hooks/useRecentActivity'
 
-const DEFAULT_ORDER_SUMMARY = {
-  from: '',
-  to: '',
-  limitPrice: '',
-  validTo: '',
-}
+import { ActivityDetails } from './ActivityDetails'
+import { StatusDetails } from './StatusDetails'
+import { StateIcon } from './StateIcon'
+import { Order } from 'state/orders/actions'
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: '#3B7848',
@@ -66,7 +32,7 @@ const PILL_COLOUR_MAP = {
   CANCELLING_ORDER: '#ED673A',
 }
 
-function determinePillColour(status: ActivityStatus, type: ActivityType) {
+export function determinePillColour(status: ActivityStatus, type: ActivityType) {
   const isOrder = type === ActivityType.ORDER
   switch (status) {
     case ActivityStatus.PENDING:
@@ -84,364 +50,149 @@ function determinePillColour(status: ActivityStatus, type: ActivityType) {
   }
 }
 
-interface OrderSummaryType {
-  from: string | undefined
-  to: string | undefined
-  limitPrice: string | undefined
-  executionPrice?: string | undefined
-  validTo: string | undefined
-  fulfillmentTime?: string | undefined
-  kind?: string
+/**
+ * Object derived from the activity state
+ */
+export interface ActivityDerivedState {
+  id: string
+  status: ActivityStatus
+  type: ActivityType
+  summary?: string
+  activityLinkUrl?: string
+
+  // Convenient flags
+  isTransaction: boolean
+  isOrder: boolean
+  isPending: boolean
+  isConfirmed: boolean
+  isExpired: boolean
+  isCancelling: boolean
+  isCancelled: boolean
+  isPresignaturePending: boolean
+  isUnfillable?: boolean
+  isCancellable: boolean
+
+  // Possible activity types
+  enhancedTransaction?: EnhancedTransactionDetails
+  order?: Order
+
+  // Gnosis Safe
+  gnosisSafeInfo?: SafeInfoResponse
 }
 
-function ActivitySummary(params: {
+function getActivityLinkUrl(params: {
+  chainId: number
   id: string
-  activityData: ReturnType<typeof useActivityDescriptors>
-  isCancelled?: boolean
-  isExpired?: boolean
-  isUnfillable?: boolean
-}) {
-  const { id, activityData, isCancelled, isExpired, isUnfillable } = params
+  enhancedTransaction?: EnhancedTransactionDetails
+  order?: Order
+}): string | undefined {
+  const { chainId, id, enhancedTransaction, order } = params
 
-  if (!activityData) return null
+  if (enhancedTransaction) {
+    const { transactionHash, safeTransaction } = enhancedTransaction
 
-  const { activity, type, summary } = activityData
-  const isOrder = activity && type === ActivityType.ORDER
-
-  // Order Summary default object
-  let orderSummary: OrderSummaryType
-  if (isOrder) {
-    const order = activity as Order
-    const { inputToken, sellAmount, feeAmount, outputToken, buyAmount, validTo, kind, fulfillmentTime } = order
-
-    const sellAmt = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
-    const feeAmt = CurrencyAmount.fromRawAmount(inputToken, feeAmount.toString())
-    const outputAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
-    const sellTokenDecimals = order?.inputToken?.decimals ?? DEFAULT_PRECISION
-    const buyTokenDecimals = order?.outputToken?.decimals ?? DEFAULT_PRECISION
-
-    const limitPrice = formatSmart(
-      getLimitPrice({
-        buyAmount: order.buyAmount.toString(),
-        sellAmount: order.sellAmount.toString(),
-        buyTokenDecimals,
-        sellTokenDecimals,
-        inverted: true, // TODO: handle invert price
-      })
-    )
-
-    let executionPrice: string | undefined
-    if (order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED) {
-      const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo
-      executionPrice = formatSmart(
-        getExecutionPrice({
-          executedSellAmountBeforeFees,
-          executedBuyAmount,
-          buyTokenDecimals,
-          sellTokenDecimals,
-          inverted: true, // TODO: Handle invert price
-        })
-      )
+    if (transactionHash) {
+      // Is an Ethereum transaction: Etherscan link
+      return getEtherscanLink(chainId, transactionHash, 'transaction')
+    } else if (safeTransaction && safeTransaction) {
+      // Its a safe transaction: Gnosis Safe Web link
+      const { safe } = safeTransaction
+      return getSafeWebUrl(chainId, safe) ?? undefined
     }
-
-    const getPriceFormat = (price: string): string => {
-      return `${price} ${sellAmt.currency.symbol} per ${outputAmount.currency.symbol}`
-    }
-
-    orderSummary = {
-      ...DEFAULT_ORDER_SUMMARY,
-      from: `${formatSmart(sellAmt.add(feeAmt))} ${sellAmt.currency.symbol}`,
-      to: `${formatSmart(outputAmount)} ${outputAmount.currency.symbol}`,
-      limitPrice: limitPrice && getPriceFormat(limitPrice),
-      executionPrice: executionPrice && getPriceFormat(executionPrice),
-      validTo: new Date((validTo as number) * 1000).toLocaleString(),
-      fulfillmentTime: fulfillmentTime ? new Date(fulfillmentTime).toLocaleString() : undefined,
-      kind: kind.toString(),
-    }
-  } else {
-    orderSummary = DEFAULT_ORDER_SUMMARY
+  } else if (order) {
+    // Its an order: GP Explorer link
+    return getExplorerOrderLink(chainId, id)
   }
 
-  const { kind, from, to, executionPrice, limitPrice, fulfillmentTime, validTo } = orderSummary
-  return (
-    <Summary>
-      <b>{isOrder ? `${kind} order` : 'Transaction'} ↗</b>
-      <SummaryInner>
-        {isOrder ? (
-          <>
-            <SummaryInnerRow>
-              <b>From{kind === 'buy' && ' at most'}</b>
-              <i>{from}</i>
-            </SummaryInnerRow>
-            <SummaryInnerRow>
-              <b>To{kind === 'sell' && ' at least'}</b>
-              <i>{to}</i>
-            </SummaryInnerRow>
-            <SummaryInnerRow>
-              {executionPrice ? (
-                <>
-                  {' '}
-                  <b>Exec. price</b>
-                  <i>{executionPrice}</i>
-                </>
-              ) : (
-                <>
-                  {' '}
-                  <b>Limit price</b>
-                  <i>{limitPrice}</i>
-                </>
-              )}
-            </SummaryInnerRow>
-            {isUnfillable && unfillableAlert()}
-            <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
-              {fulfillmentTime ? (
-                <>
-                  <b>Filled on</b>
-                  <i>{fulfillmentTime}</i>
-                </>
-              ) : (
-                <>
-                  <b>Valid to</b>
-                  <i>{validTo}</i>
-                </>
-              )}
-            </SummaryInnerRow>
-          </>
-        ) : (
-          summary ?? id
-        )}
-      </SummaryInner>
-    </Summary>
-  )
+  return undefined
 }
 
-type RequestCancellationModalProps = {
-  onDismiss: () => void
-  onClick: () => void
-  summary?: string
-  shortId: string
-}
+function getActivityDerivedState(props: {
+  chainId?: number
+  id: string
+  activityData: ActivityDescriptors | null
+  allowsOffchainSigning: boolean
+  gnosisSafeInfo?: SafeInfoResponse
+}): ActivityDerivedState | null {
+  const { chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
+  if (activityData === null || chainId === undefined) {
+    return null
+  }
 
-function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
-  const { onDismiss, onClick, summary, shortId } = props
+  const { activity, status, type, summary } = activityData
+  const isTransaction = type === ActivityType.TX
+  const isOrder = type === ActivityType.ORDER
+  const order = isOrder ? (activity as Order) : undefined
+  const enhancedTransaction = isTransaction ? (activity as EnhancedTransactionDetails) : undefined
 
-  const [showMore, setShowMore] = useState(false)
+  // Calculate some convenient status flags
+  const isPending = status === ActivityStatus.PENDING
+  const isCancellable = allowsOffchainSigning && isPending && isOrder
 
-  const toggleShowMore = () => setShowMore((showMore) => !showMore)
+  const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
 
-  return (
-    <ConfirmationModalContent
-      title={`Cancel order ${shortId}`}
-      onDismiss={onDismiss}
-      topContent={() => (
-        <>
-          <p>
-            Are you sure you want to cancel order <strong>{shortId}</strong>?
-          </p>
-          <CancellationSummary>{summary}</CancellationSummary>
-          <p>
-            Keep in mind this is a soft cancellation{' '}
-            <LinkStyledButton onClick={toggleShowMore}>[{showMore ? '- less' : '+ more'}]</LinkStyledButton>
-          </p>
-          {showMore && (
-            <>
-              <p>
-                This means that a solver might already have included the order in a solution even if this cancellation
-                is successful. Read more in the{' '}
-                <a target="_blank" href="/#/faq#can-i-cancel-an-order">
-                  FAQ
-                </a>
-                .
-              </p>
-            </>
-          )}
-        </>
-      )}
-      bottomContent={() => <ButtonPrimary onClick={onClick}>Request cancellation</ButtonPrimary>}
-    />
-  )
-}
+  return {
+    id,
+    status,
+    type,
+    summary,
+    activityLinkUrl,
 
-type CancellationModalProps = {
-  onDismiss: () => void
-  isOpen: boolean
-  orderId: string
-  summary: string | undefined
-}
+    // Convenient flags
+    isTransaction,
+    isOrder,
+    isPending,
+    isPresignaturePending: status === ActivityStatus.PRESIGNATURE_PENDING,
+    isConfirmed: status === ActivityStatus.CONFIRMED,
+    isExpired: status === ActivityStatus.EXPIRED,
+    isCancelling: status === ActivityStatus.CANCELLING,
+    isCancelled: status === ActivityStatus.CANCELLED,
+    isCancellable,
+    isUnfillable: isCancellable && (activity as Order).isUnfillable,
 
-function CancellationModal(props: CancellationModalProps): JSX.Element | null {
-  const { orderId, isOpen, onDismiss, summary } = props
-  const shortId = shortenOrderId(orderId)
+    // Convenient casting
+    order,
+    enhancedTransaction,
 
-  const [isWaitingSignature, setIsWaitingSignature] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const cancelOrder = useCancelOrder()
-
-  useEffect(() => {
-    // Reset status every time orderId changes to avoid race conditions
-    setIsWaitingSignature(false)
-    setError(null)
-  }, [orderId])
-
-  const onClick = useCallback(() => {
-    setIsWaitingSignature(true)
-    setError(null)
-
-    cancelOrder(orderId)
-      .then(onDismiss)
-      .catch((e) => {
-        setError(e.message)
-      })
-  }, [cancelOrder, onDismiss, orderId])
-
-  return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
-      {error !== null ? (
-        <TransactionErrorContent onDismiss={onDismiss} message={error || 'Failed to cancel order'} />
-      ) : isWaitingSignature ? (
-        <ConfirmationPendingContent
-          onDismiss={onDismiss}
-          pendingText={`Soft cancelling order with id ${shortId}\n\n${summary}`}
-        />
-      ) : (
-        <RequestCancellationModal onDismiss={onDismiss} onClick={onClick} summary={summary} shortId={shortId} />
-      )}
-    </Modal>
-  )
-}
-
-function unfillableAlert(): JSX.Element {
-  return (
-    <>
-      <TransactionAlertMessage>
-        <p>
-          <span role="img" aria-label="alert">
-            🚨
-          </span>{' '}
-          Limit price out of range. Wait for a matching price or cancel your order.
-        </p>
-      </TransactionAlertMessage>
-    </>
-  )
+    // Gnosis Safe
+    gnosisSafeInfo,
+  }
 }
 
 export default function Transaction({ hash: id }: { hash: string }) {
   const { chainId } = useActiveWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   // Return info necessary for rendering order/transaction info from the incoming id
-  // returns info related to activity: EnhancedTransactionDetails | Order
+  //    - activity data can be either EnhancedTransactionDetails or Order
   const activityData = useActivityDescriptors({ id, chainId })
 
-  const [showCancelModal, setShowCancelModal] = useState(false)
+  // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
+  const activityDerivedState = useMemo(
+    () => getActivityDerivedState({ chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo }),
+    [chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo]
+  )
 
-  if (!activityData || !chainId) return null
-
-  const { activity, status, type } = activityData
-
-  // Type of Statuses
-  const isPending = status === ActivityStatus.PENDING
-  const isPresignaturePending = status === ActivityStatus.PRESIGNATURE_PENDING
-  const isConfirmed = status === ActivityStatus.CONFIRMED
-  const isExpired = status === ActivityStatus.EXPIRED
-  const isCancelling = status === ActivityStatus.CANCELLING
-  const isCancelled = status === ActivityStatus.CANCELLED
-  const isCancellable = allowsOffchainSigning && isPending && type === ActivityType.ORDER
-  const isUnfillable = isCancellable && (activity as Order).isUnfillable
-
-  // Type of Transaction
-  const isTransaction = type === ActivityType.TX
-
-  const onCancelClick = () => setShowCancelModal(true)
-  const onDismiss = () => setShowCancelModal(false)
+  if (!activityDerivedState || !chainId) return null
+  const { activityLinkUrl } = activityDerivedState
+  const hasLink = activityLinkUrl !== null
 
   return (
     <Wrapper>
       <TransactionWrapper>
-        <TransactionState href={getEtherscanLink(chainId, id, 'transaction')}>
+        <ActivityLink href={activityLinkUrl ?? undefined} disableMouseActions={!hasLink}>
           <RowFixed>
-            {activity && (
-              <IconType color={determinePillColour(status, type)}>
-                <IconWrapper pending={isPending || isCancelling} success={isConfirmed || isCancelled}>
-                  {isPending || isPresignaturePending || isCancelling ? (
-                    <Loader />
-                  ) : isConfirmed ? (
-                    <SVG src={TxCheckImage} description="Order Filled" />
-                  ) : isExpired ? (
-                    <SVG src={TxArrowsImage} description="Order Expired" />
-                  ) : isCancelled ? (
-                    <SVG src={TxArrowsImage} description="Order Cancelled" />
-                  ) : (
-                    <SVG src={TxArrowsImage} description="Order Open" />
-                  )}
-                </IconWrapper>
-              </IconType>
-            )}
-            <TransactionStatusText>
-              <ActivitySummary
-                activityData={activityData}
-                id={id}
-                isCancelled={isCancelled}
-                isExpired={isExpired}
-                isUnfillable={isUnfillable}
-              />
-            </TransactionStatusText>
+            {/* Icon state: confirmed, expired, canceled, pending, ...  */}
+            {activityData?.activity && <StateIcon activityDerivedState={activityDerivedState} />}
+
+            {/* Details of activity: transaction/order details */}
+            <ActivityDetailsText>
+              <ActivityDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+            </ActivityDetailsText>
           </RowFixed>
-        </TransactionState>
-        <StatusLabelWrapper>
-          <StatusLabel
-            color={determinePillColour(status, type)}
-            isPending={isPending}
-            isCancelling={isCancelling}
-            isPresignaturePending={isPresignaturePending}
-          >
-            {isConfirmed && isTransaction ? (
-              <SVG src={OrderCheckImage} description="Transaction Confirmed" />
-            ) : isConfirmed ? (
-              <SVG src={OrderCheckImage} description="Order Filled" />
-            ) : isExpired && isTransaction ? (
-              <SVG src={OrderCancelledImage} description="Transaction Failed" />
-            ) : isExpired ? (
-              <SVG src={OrderExpiredImage} description="Order Expired" />
-            ) : isCancelled ? (
-              <SVG src={OrderCancelledImage} description="Order Cancelled" />
-            ) : isPresignaturePending ? (
-              // <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
-              <PresignaturePendingImage size={16} />
-            ) : isCancelling ? null : (
-              <SVG src={OrderOpenImage} description="Order Open" />
-            )}
-            {isPending
-              ? 'Open'
-              : isConfirmed && isTransaction
-              ? 'Approved'
-              : isConfirmed
-              ? 'Filled'
-              : isExpired && isTransaction
-              ? 'Failed'
-              : isExpired
-              ? 'Expired'
-              : isCancelling
-              ? 'Cancelling...'
-              : isPresignaturePending
-              ? 'Pre-signing...'
-              : isCancelled
-              ? 'Cancelled'
-              : 'Open'}
-          </StatusLabel>
-          {isCancellable && (
-            <StatusLabelBelow>
-              <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>
-              {showCancelModal && (
-                <CancellationModal
-                  orderId={id}
-                  summary={activityData.summary}
-                  isOpen={showCancelModal}
-                  onDismiss={onDismiss}
-                />
-              )}
-            </StatusLabelBelow>
-          )}
-        </StatusLabelWrapper>
+        </ActivityLink>
+
+        {/* Status Details: icon, cancel, links */}
+        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
       </TransactionWrapper>
     </Wrapper>
   )
