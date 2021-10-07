@@ -154,13 +154,6 @@ function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork
   })
 }
 
-// function getDeserializedOrder(id: string, state: MutableRefObject<OrderStateNetwork>) {
-//   const orders = { ...ORDERS_LIST, ...state.current }
-
-//   const serialisedOrderObject = orders.fulfilled[id] || orders.pending[id] || orders.expired[id] || orders.cancelled[id]
-
-//   return _deserializeOrder(serialisedOrderObject)
-// }
 
 // used to extract Order.summary before showing popup
 // TODO: put the whole logic inside Popup middleware
