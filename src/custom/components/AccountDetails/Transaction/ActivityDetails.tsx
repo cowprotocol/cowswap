@@ -5,10 +5,24 @@ import { OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 
 import { formatSmart } from 'utils/format'
-import { Summary, SummaryInner, SummaryInnerRow, TransactionAlertMessage } from './styled'
+import {
+  Summary,
+  SummaryInner,
+  SummaryInnerRow,
+  TransactionAlertMessage,
+  TransactionInnerDetail,
+  TextAlert,
+  TransactionState as ActivityLink,
+  CreationTimeText,
+  ActivityVisual,
+} from './styled'
+
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
 import { DEFAULT_PRECISION } from 'constants/index'
 import { ActivityDerivedState } from './index'
+import { GnosisSafeLink } from './StatusDetails'
+import CurrencyLogo from 'components/CurrencyLogo'
+import { useToken } from 'hooks/Tokens'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -35,8 +49,9 @@ function unfillableAlert(): JSX.Element {
 function GnosisSafeTxDetails(props: {
   enhancedTransaction: EnhancedTransactionDetails | null
   gnosisSafeThreshold: number
+  chainId: number
 }): JSX.Element | null {
-  const { enhancedTransaction, gnosisSafeThreshold } = props
+  const { enhancedTransaction, gnosisSafeThreshold, chainId } = props
 
   if (!enhancedTransaction || !enhancedTransaction.safeTransaction) {
     return null
@@ -44,15 +59,34 @@ function GnosisSafeTxDetails(props: {
 
   const { confirmations, nonce } = enhancedTransaction.safeTransaction
   const numConfirmations = confirmations?.length ?? 0
-  const pendingSignatures = gnosisSafeThreshold - numConfirmations
+  const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
+  const isPendingSignatures = pendingSignaturesCount > 0
 
   return (
-    <>
-      <div>
-        Gnosis Safe transaction. Nonce: <strong>{nonce}</strong>
-      </div>
-      {pendingSignatures > 0 && <div>{pendingSignatures} more signatures are required</div>}
-    </>
+    <TransactionInnerDetail>
+      <strong>Gnosis Safe</strong>
+      <span>
+        Safe Nonce: <b>{nonce}</b>
+      </span>
+      <span>
+        Signed:{' '}
+        <b>
+          {numConfirmations} out of {gnosisSafeThreshold} signers
+        </b>
+      </span>
+      {isPendingSignatures && (
+        <TextAlert isPending={isPendingSignatures}>
+          {pendingSignaturesCount} more signature{pendingSignaturesCount > 1 ? 's are' : ' is'} required
+        </TextAlert>
+      )}
+
+      {/* View in: Gnosis Safe */}
+      <GnosisSafeLink
+        chainId={chainId}
+        enhancedTransaction={enhancedTransaction}
+        gnosisSafeThreshold={gnosisSafeThreshold}
+      />
+    </TransactionInnerDetail>
   )
 }
 
@@ -66,10 +100,17 @@ interface OrderSummaryType {
   kind?: string
 }
 
-export function ActivityDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { activityDerivedState } = props
+export function ActivityDetails(props: {
+  chainId: number
+  activityDerivedState: ActivityDerivedState
+  activityLinkUrl: string | undefined
+  disableMouseActions: boolean | undefined
+  creationTime?: string | undefined
+}) {
+  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable, gnosisSafeInfo } =
     activityDerivedState
+  const approvalToken = useToken(enhancedTransaction?.approval?.tokenAddress) || null
 
   if (!order && !enhancedTransaction) return null
 
@@ -112,14 +153,21 @@ export function ActivityDetails(props: { chainId: number; activityDerivedState: 
       return `${price} ${sellAmt.currency.symbol} per ${outputAmount.currency.symbol}`
     }
 
+    const DateFormatOptions: Intl.DateTimeFormatOptions = {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }
+
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
       from: `${formatSmart(sellAmt.add(feeAmt))} ${sellAmt.currency.symbol}`,
       to: `${formatSmart(outputAmount)} ${outputAmount.currency.symbol}`,
       limitPrice: limitPrice && getPriceFormat(limitPrice),
       executionPrice: executionPrice && getPriceFormat(executionPrice),
-      validTo: new Date((validTo as number) * 1000).toLocaleString(),
-      fulfillmentTime: fulfillmentTime ? new Date(fulfillmentTime).toLocaleString() : undefined,
+      validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
+      fulfillmentTime: fulfillmentTime
+        ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
+        : undefined,
       kind: kind.toString(),
     }
   } else {
@@ -127,10 +175,32 @@ export function ActivityDetails(props: { chainId: number; activityDerivedState: 
   }
 
   const { kind, from, to, executionPrice, limitPrice, fulfillmentTime, validTo } = orderSummary
+  const activityName = isOrder ? `${kind} order` : 'Transaction'
+  const inputToken = activityDerivedState?.order?.inputToken || null
+  const outputToken = activityDerivedState?.order?.outputToken || null
+
   return (
     <Summary>
-      <b>{isOrder ? `${kind} order` : 'Transaction'} ↗</b>
+      <span>
+        {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
+
+        {/* Token Approval Currency Logo */}
+        {!isOrder && approvalToken && (
+          <ActivityVisual>
+            <CurrencyLogo currency={approvalToken} size={'24px'} />
+          </ActivityVisual>
+        )}
+
+        {/* Order Currency Logo */}
+        {inputToken && outputToken && (
+          <ActivityVisual>
+            <CurrencyLogo currency={inputToken} size={'24px'} />
+            <CurrencyLogo currency={outputToken} size={'24px'} />
+          </ActivityVisual>
+        )}
+      </span>
       <SummaryInner>
+        <b>{activityName}</b>
         {isOrder ? (
           <>
             <SummaryInnerRow>
@@ -174,9 +244,21 @@ export function ActivityDetails(props: { chainId: number; activityDerivedState: 
         ) : (
           summary ?? id
         )}
-        {/* TODO: Load gnosisSafeThreshold (not default!) */}
-        {gnosisSafeInfo && enhancedTransaction && enhancedTransaction.safeTransaction && (
+
+        {activityLinkUrl && (
+          <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
+            View details ↗
+          </ActivityLink>
+        )}
+
+        {/* 
+        TODO: Load gnosisSafeThreshold (not default!)
+        `enhancedTransaction` currently returns undefined (no data yet!) 
+        for regular orders done with a Safe. Only works for token approvals with a Safe. 
+        */}
+        {gnosisSafeInfo && enhancedTransaction?.safeTransaction && (
           <GnosisSafeTxDetails
+            chainId={chainId}
             enhancedTransaction={enhancedTransaction}
             gnosisSafeThreshold={gnosisSafeInfo.threshold}
           />

@@ -47,7 +47,6 @@ const Wrapper = styled.div`
 
 export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'LightCard'>) {
   const { allowsOffchainSigning } = useWalletInfo()
-  // const { priceImpactWithoutFee } = React.useMemo(() => computeTradePriceBreakdown(props.trade), [props.trade])
   return (
     <Wrapper>
       <SwapModalHeaderMod
@@ -55,7 +54,6 @@ export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighF
         allowsOffchainSigning={allowsOffchainSigning}
         LightCard={LightCard}
         HighFeeWarning={HighFeeWarning}
-        /*priceImpactWithoutFee={priceImpactWithoutFee}*/
       />
     </Wrapper>
   )

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { PenTool as PresignaturePendingImage } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { LinkStyledButton, ExternalLink } from 'theme'
 
@@ -7,7 +6,7 @@ import OrderCheckImage from 'assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
 import OrderCancelledImage from 'assets/cow-swap/order-cancelled.svg'
 
-// import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
+import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
 import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
@@ -16,23 +15,22 @@ import { CancellationModal } from './CancelationModal'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 
-function GnosisSafeLink(props: {
+export function GnosisSafeLink(props: {
   chainId: number
   enhancedTransaction: EnhancedTransactionDetails | null
   gnosisSafeThreshold: number
 }): JSX.Element | null {
   const { chainId, enhancedTransaction } = props
 
-  if (!enhancedTransaction || !enhancedTransaction.safeTransaction) {
+  if (!enhancedTransaction?.safeTransaction) {
     return null
   }
 
-  const { safe, transactionHash } = enhancedTransaction.safeTransaction
+  const { safe } = enhancedTransaction.safeTransaction
   const safeUrl = getSafeWebUrl(chainId, safe)
 
-  // Only show the link to the safe, if we have the "safeUrl" and the Ethereum transaction is not available
-  // The reason we don't show it when the tx is not available, is because the main link will point to the Gnosis Safe already
-  if (safeUrl === null || !transactionHash) {
+  // Only show the link to the safe, if we have the "safeUrl"
+  if (safeUrl === null) {
     return null
   }
 
@@ -40,14 +38,13 @@ function GnosisSafeLink(props: {
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { chainId, activityDerivedState } = props
+  const { activityDerivedState } = props
 
   const {
     id,
     status,
     type,
     summary,
-    enhancedTransaction,
     isPending,
     isCancelling,
     isPresignaturePending,
@@ -56,7 +53,6 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isTransaction,
     isCancelled,
     isCancellable,
-    gnosisSafeInfo,
   } = activityDerivedState
 
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -83,16 +79,14 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         ) : isCancelled ? (
           <SVG src={OrderCancelledImage} description="Order Cancelled" />
         ) : isPresignaturePending ? (
-          // TODO: Michel, is this image alright?
-          // <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
-          <PresignaturePendingImage size={16} />
+          <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
         ) : isCancelling ? null : (
           <SVG src={OrderOpenImage} description="Order Open" />
         )}
         {isPending
           ? 'Open'
           : isConfirmed && isTransaction
-          ? 'Approved'
+          ? 'Confirmed'
           : isConfirmed
           ? 'Filled'
           : isExpired && isTransaction
@@ -107,18 +101,6 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           ? 'Cancelled'
           : 'Open'}
       </StatusLabel>
-
-      {/* Gnosis Safe Web Link (only shown when the transaction has been mined) */}
-      {gnosisSafeInfo && enhancedTransaction && enhancedTransaction.safeTransaction && (
-        <StatusLabelBelow>
-          {/* View in: Gnosis Safe */}
-          <GnosisSafeLink
-            chainId={chainId}
-            enhancedTransaction={enhancedTransaction}
-            gnosisSafeThreshold={gnosisSafeInfo.threshold}
-          />
-        </StatusLabelBelow>
-      )}
 
       {isCancellable && (
         <StatusLabelBelow>

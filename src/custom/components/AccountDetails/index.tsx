@@ -17,7 +17,6 @@ import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 import PortisIcon from 'assets/images/portisIcon.png'
 import Identicon from 'components/Identicon'
-import { ExternalLink as LinkIcon } from 'react-feather'
 import { LinkStyledButton } from 'theme'
 import { clearOrders } from 'state/orders/actions'
 import { NETWORK_LABELS } from 'components/Header'
@@ -38,7 +37,7 @@ import {
   NoActivityMessage,
   LowerSection,
   WalletActions,
-  WalletLowerActions,
+  WalletSecondaryActions,
   WalletNameAddress,
 } from './styled'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
@@ -68,8 +67,7 @@ export function formatConnectorName(connector?: AbstractConnector, walletInfo?: 
 
   return (
     <WalletName>
-      Connected with {name} <br />
-      {walletConnectSuffix}
+      Connected with {name} {walletConnectSuffix}
     </WalletName>
   )
 }
@@ -174,9 +172,6 @@ export default function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <div>
-              {chainId && NETWORK_LABELS[chainId] && (
-                <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
-              )}
               {getStatusIcon(connector, walletInfo)}
 
               {(ENSName || account) && (
@@ -187,37 +182,35 @@ export default function AccountDetails({
             </div>
 
             <WalletActions>
+              {' '}
+              {chainId && NETWORK_LABELS[chainId] && (
+                <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
+              )}{' '}
               {formatConnectorName(connector, walletInfo)}
-              <div>
-                {connector !== injected && connector !== walletlink && (
-                  <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
-                    onClick={handleDisconnectClick}
-                  >
-                    <Trans>Disconnect</Trans>
-                  </WalletAction>
-                )}
-                <WalletAction style={{ fontSize: '.825rem', fontWeight: 400 }} onClick={toggleWalletModal}>
-                  <Trans>Change</Trans>
-                </WalletAction>
-              </div>
             </WalletActions>
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
           <AccountControl>
-            <WalletLowerActions>
+            <WalletSecondaryActions>
+              {connector !== injected && connector !== walletlink && (
+                <WalletAction onClick={handleDisconnectClick}>
+                  <Trans>Disconnect</Trans>
+                </WalletAction>
+              )}
+              <WalletAction onClick={toggleWalletModal}>
+                <Trans>Change Wallet</Trans>
+              </WalletAction>
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}
                   isENS={ENSName ? true : false}
                   href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
                 >
-                  <LinkIcon size={16} />
-                  <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
+                  {explorerLabel} ↗
                 </AddressLink>
               )}
-            </WalletLowerActions>
+            </WalletSecondaryActions>
           </AccountControl>
         </AccountGroupingRow>
       </InfoCard>

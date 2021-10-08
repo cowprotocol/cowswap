@@ -9,8 +9,8 @@ import { RowFixed } from 'components/Row'
 import { RowFee } from './RowFee'
 import { RowSlippage } from './RowSlippage'
 import { RowReceivedAfterSlippage } from './RowReceivedAfterSlippage'
-import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 
 const Wrapper = styled.div`
   ${RowFixed} {
