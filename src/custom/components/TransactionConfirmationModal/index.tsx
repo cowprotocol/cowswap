@@ -2,13 +2,13 @@ import { Currency } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import React, { ReactNode, useContext } from 'react'
+import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import {
   CloseIcon,
   // CustomLightSpinner
 } from 'theme'
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import { RowBetween, RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
@@ -341,16 +341,69 @@ const StepsWrapper = styled.div`
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
 
-enum walletTypes {
+enum WalletType {
   SAFE,
   SC,
   EOA,
 }
 
-enum orderTypes {
-  CANCEL,
-  APPROVAL,
-  ORDER,
+enum OperationType {
+  WRAP_ETHER,
+  UNWRAP_WETH,
+  APPROVE_TOKEN,
+  ORDER_SIGN,
+  ORDER_CANCEL,
+}
+
+function getWalletNameLabel(walletType: WalletType): string {
+  switch (walletType) {
+    case WalletType.SAFE:
+      return 'Gnosis Safe'
+    case WalletType.SC:
+      return 'smart contract wallet'
+    case WalletType.EOA:
+      return 'wallet'
+  }
+}
+
+function getOperationMessage(operationType: OperationType): string {
+  switch (operationType) {
+    case OperationType.WRAP_ETHER:
+      return 'Wrap Ether.'
+    case OperationType.UNWRAP_WETH:
+      return 'Wrap Ether.'
+    case OperationType.APPROVE_TOKEN:
+      return 'Approve the token.'
+    case OperationType.ORDER_CANCEL:
+      return 'Soft cancel your order.'
+
+    default:
+      return 'Almost there!'
+  }
+}
+
+function getOperationLabel(operationType: OperationType): string {
+  switch (operationType) {
+    case OperationType.WRAP_ETHER:
+      return t`wrapping`
+    case OperationType.UNWRAP_WETH:
+      return t`unwrapping`
+    case OperationType.APPROVE_TOKEN:
+      return t`token approval`
+    case OperationType.ORDER_SIGN:
+      return t`order`
+    case OperationType.ORDER_CANCEL:
+      return t`cancellation`
+  }
+}
+
+function getSubmittedMessage(operationLabel: string, operationType: OperationType): string {
+  switch (operationType) {
+    case OperationType.ORDER_SIGN:
+      return t`The order is submitted and ready to be settled.`
+    default:
+      return t`The ${operationLabel} is submitted.`
+  }
 }
 
 export function ConfirmationPendingContent({
@@ -362,22 +415,23 @@ export function ConfirmationPendingContent({
 }) {
   const { connector } = useActiveWeb3React()
   const walletInfo = useWalletInfo()
-  const { isSupportedWallet, walletName, isSmartContractWallet, ensName, account } = useWalletInfo()
+  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = useWalletInfo()
 
-  const getWalletType = (): walletTypes => {
-    if (walletName === 'Gnosis Safe' && isSmartContractWallet) {
-      return walletTypes.SAFE
+  const walletType = useMemo((): WalletType => {
+    if (gnosisSafeInfo) {
+      return WalletType.SAFE
     } else if (isSmartContractWallet) {
-      return walletTypes.SC
+      return WalletType.SC
     } else {
-      return walletTypes.EOA
+      return WalletType.EOA
     }
-  }
-  const walletType = isSupportedWallet && getWalletType()
+  }, [gnosisSafeInfo, isSmartContractWallet])
+  const walletNameLabel = getWalletNameLabel(walletType)
 
-  const WalletNameLabel =
-    walletType === walletTypes.SAFE ? 'Gnosis Safe' : walletType === walletTypes.SC ? 'smart contract wallet' : 'wallet'
-  const orderType = orderTypes.ORDER as orderTypes
+  const operationType = OperationType.ORDER_SIGN // TODO: Receive as a param
+  const operationMessage = getOperationMessage(operationType)
+  const operationLabel = getOperationLabel(operationType)
+  const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
 
   return (
     <Wrapper>
@@ -393,20 +447,10 @@ export function ConfirmationPendingContent({
 
       <LowerSection>
         <h3>
-          <Trans>
-            {orderType === orderTypes.CANCEL ? (
-              <>
-                <span>Soft cancel your order.</span>
-              </>
-            ) : orderType === orderTypes.APPROVAL ? (
-              <>
-                <span>Approve the token.</span>
-              </>
-            ) : (
-              <span>Almost there!</span>
-            )}
-            <span>Follow these steps:</span>
-          </Trans>
+          <span>{operationMessage} </span>
+          <span>
+            <Trans>Follow these steps:</Trans>
+          </span>
         </h3>
 
         <StepsWrapper>
@@ -416,13 +460,8 @@ export function ConfirmationPendingContent({
             </StepsIconWrapper>
             <p>
               <Trans>
-                Sign the{' '}
-                {orderType === orderTypes.CANCEL
-                  ? 'cancellation'
-                  : orderType === orderTypes.APPROVAL
-                  ? 'token approval'
-                  : 'order'}{' '}
-                with your {WalletNameLabel} {account && <span>({ensName || shortenAddress(account)})</span>}
+                Sign the {operationLabel} with your {walletNameLabel}{' '}
+                {account && <span>({ensName || shortenAddress(account)})</span>}
               </Trans>
             </p>
           </div>
@@ -431,15 +470,7 @@ export function ConfirmationPendingContent({
             <StepsIconWrapper>
               <CheckCircle />
             </StepsIconWrapper>
-            <p>
-              <Trans>
-                {orderType === orderTypes.CANCEL
-                  ? 'The cancellation request is submitted.'
-                  : orderType === orderTypes.APPROVAL
-                  ? 'The token approval is submitted.'
-                  : 'The order is submitted and ready to be settled.'}
-              </Trans>
-            </p>
+            <p>{operationSubmittedMessage}</p>
           </div>
         </StepsWrapper>
       </LowerSection>
