@@ -116,9 +116,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
 
     // TODO: For now, all SC wallets use pre-sign instead of offchain signing
     // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-    // allowsOffchainSigning: !isSmartContractWallet,
-    // TODO: Uncomment previous line after testing. This is just convenient to test presign functionality with an EOA
-    allowsOffchainSigning: false,
+    allowsOffchainSigning: !isSmartContractWallet,
     gnosisSafeInfo,
   }
 }
