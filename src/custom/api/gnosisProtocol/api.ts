@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
-import { registerOnWindow } from '../../utils/misc'
+import { registerOnWindow } from 'utils/misc'
 import { isLocal, isDev, isPr, isBarn } from '../../utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
@@ -54,6 +54,7 @@ const DEFAULT_HEADERS = {
   'X-AppId': APP_DATA_HASH.toString(),
 }
 const API_NAME = 'Gnosis Protocol'
+const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
 /**
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
    where orderDigest = keccak256(orderStruct). bytes32.
@@ -224,9 +225,13 @@ async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams)
   }
 }
 
-export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation> {
+export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation | null> {
   const { baseToken, quoteToken, amount, kind, chainId } = params
   console.log(`[api:${API_NAME}] Get price from API`, params)
+
+  if (!ENABLED) {
+    return null
+  }
 
   const response = await _get(
     chainId,
