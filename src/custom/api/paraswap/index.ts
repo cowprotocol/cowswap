@@ -63,45 +63,44 @@ function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
 }
 
 export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
-  return null
-  // const { baseToken, quoteToken, fromDecimals, toDecimals, amount, kind, chainId } = getValidParams(params)
+  const { baseToken, quoteToken, fromDecimals, toDecimals, amount, kind, chainId } = getValidParams(params)
 
-  // let paraSwap = paraSwapLibs.get(chainId)
-  // if (!paraSwap) {
-  //   const networkId = getParaswapChainId(chainId)
-  //   if (networkId == null) {
-  //     // Unsupported network
-  //     return null
-  //   }
-  //   paraSwap = new ParaSwap(networkId, API_URL)
-  //   paraSwapLibs.set(chainId, paraSwap)
-  // }
+  let paraSwap = paraSwapLibs.get(chainId)
+  if (!paraSwap) {
+    const networkId = getParaswapChainId(chainId)
+    if (networkId == null) {
+      // Unsupported network
+      return null
+    }
+    paraSwap = new ParaSwap(networkId, API_URL)
+    paraSwapLibs.set(chainId, paraSwap)
+  }
 
-  // console.log(`[pricesApi:${API_NAME}] Get price from Paraswap`, params)
+  console.log(`[pricesApi:${API_NAME}] Get price from Paraswap`, params)
 
-  // // Buy/sell token and side (sell/buy)
-  // const { sellToken, buyToken } = getTokensFromMarket({ baseToken, quoteToken, kind })
-  // const swapSide = kind === OrderKind.BUY ? SwapSide.BUY : SwapSide.SELL
+  // Buy/sell token and side (sell/buy)
+  const { sellToken, buyToken } = getTokensFromMarket({ baseToken, quoteToken, kind })
+  const swapSide = kind === OrderKind.BUY ? SwapSide.BUY : SwapSide.SELL
 
-  // // https://developers.paraswap.network/api/get-rate-for-a-token-pair
-  // const options: RateOptions | undefined = {
-  //   maxImpact: 100,
-  //   excludeDEXS: 'ParaSwapPool4',
-  // }
+  // https://developers.paraswap.network/api/get-rate-for-a-token-pair
+  const options: RateOptions | undefined = {
+    maxImpact: 100,
+    excludeDEXS: 'ParaSwapPool4',
+  }
 
-  // // Get price
-  // const rateResult = await paraSwap.getRate(sellToken, buyToken, amount, swapSide, options, fromDecimals, toDecimals)
+  // Get price
+  const rateResult = await paraSwap.getRate(sellToken, buyToken, amount, swapSide, options, fromDecimals, toDecimals)
 
-  // if (isGetRateSuccess(rateResult)) {
-  //   // Success getting the price
-  //   return rateResult
-  // } else {
-  //   // Error getting the price
-  //   const priceQuote = getPriceQuoteFromError(rateResult)
-  //   if (priceQuote) {
-  //     return priceQuote
-  //   } else {
-  //     throw rateResult
-  //   }
-  // }
+  if (isGetRateSuccess(rateResult)) {
+    // Success getting the price
+    return rateResult
+  } else {
+    // Error getting the price
+    const priceQuote = getPriceQuoteFromError(rateResult)
+    if (priceQuote) {
+      return priceQuote
+    } else {
+      throw rateResult
+    }
+  }
 }
