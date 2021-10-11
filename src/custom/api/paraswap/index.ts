@@ -1,74 +1,67 @@
-// import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
-import { PriceInformation, PriceQuoteParams } from 'utils/price'
-import { OptimalRatesWithPartnerFees } from 'paraswap/build/types'
-
-// import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
-// import { OptimalRatesWithPartnerFees, APIError, RateOptions } from 'paraswap/build/types'
-// import { SupportedChainId as ChainId } from 'constants/chains'
-// import { getTokensFromMarket } from 'utils/misc'
-// import { getValidParams, PriceInformation, PriceQuoteParams } from 'utils/price'
+import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
+import { OptimalRatesWithPartnerFees, APIError, RateOptions } from 'paraswap/build/types'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { getTokensFromMarket } from 'utils/misc'
+import { getValidParams, PriceInformation, PriceQuoteParams } from 'utils/price'
 
 type ParaSwapPriceQuote = OptimalRatesWithPartnerFees
 
-// const API_NAME = 'ParaSwap'
-// // Provided manually just to make sure it matches what GPv2 backend is using, although the value used  is the current SDK default
-// const API_URL = 'https://apiv4.paraswap.io/v2'
+const API_NAME = 'ParaSwap'
+// Provided manually just to make sure it matches what GPv2 backend is using, although the value used  is the current SDK default
+const API_URL = 'https://apiv4.paraswap.io/v2'
 
-// const paraSwapLibs: Map<ChainId, ParaSwap> = new Map()
+const paraSwapLibs: Map<ChainId, ParaSwap> = new Map()
 
-// function getParaswapChainId(chainId: ChainId): NetworkID | null {
-//   switch (chainId) {
-//     // Only Mainnnet and Ropsten supported
-//     //  See https://developers.paraswap.network/api/list-all-tokens
-//     case ChainId.MAINNET:
-//     case ChainId.ROPSTEN:
-//       return chainId
+function getParaswapChainId(chainId: ChainId): NetworkID | null {
+  switch (chainId) {
+    // Only Mainnnet and Ropsten supported
+    //  See https://developers.paraswap.network/api/list-all-tokens
+    case ChainId.MAINNET:
+    case ChainId.ROPSTEN:
+      return chainId
 
-//     default:
-//       // Unsupported network
-//       return null
-//   }
-// }
-
-// eslint-disable-next-line
-export function toPriceInformation(priceRaw: ParaSwapPriceQuote | null): PriceInformation | null {
-  return null
+    default:
+      // Unsupported network
+      return null
+  }
 }
-//   if (!priceRaw || !priceRaw.details) {
-//     return null
-//   }
 
-//   const { destAmount, srcAmount, details, side } = priceRaw
-//   if (side === SwapSide.SELL) {
-//     return {
-//       amount: destAmount,
-//       token: details.tokenTo,
-//     }
-//   } else {
-//     return {
-//       amount: srcAmount,
-//       token: details.tokenFrom,
-//     }
-//   }
-// }
+export function toPriceInformation(priceRaw: ParaSwapPriceQuote | null): PriceInformation | null {
+  if (!priceRaw || !priceRaw.details) {
+    return null
+  }
 
-// function isGetRateSuccess(
-//   rateResult: OptimalRatesWithPartnerFees | APIError
-// ): rateResult is OptimalRatesWithPartnerFees {
-//   return !!(rateResult as OptimalRatesWithPartnerFees).destAmount
-// }
+  const { destAmount, srcAmount, details, side } = priceRaw
+  if (side === SwapSide.SELL) {
+    return {
+      amount: destAmount,
+      token: details.tokenTo,
+    }
+  } else {
+    return {
+      amount: srcAmount,
+      token: details.tokenFrom,
+    }
+  }
+}
 
-// function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
-//   if (error.message === 'ESTIMATED_LOSS_GREATER_THAN_MAX_IMPACT' && error.data && error.data.priceRoute) {
-//     // If the price impact is too big, it still give you the estimation
-//     return error.data.priceRoute
-//   } else {
-//     return null
-//   }
-// }
+function isGetRateSuccess(
+  rateResult: OptimalRatesWithPartnerFees | APIError
+): rateResult is OptimalRatesWithPartnerFees {
+  return !!(rateResult as OptimalRatesWithPartnerFees).destAmount
+}
 
-// eslint-disable-next-line
+function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
+  if (error.message === 'ESTIMATED_LOSS_GREATER_THAN_MAX_IMPACT' && error.data && error.data.priceRoute) {
+    // If the price impact is too big, it still give you the estimation
+    return error.data.priceRoute
+  } else {
+    return null
+  }
+}
+
 export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
   return null
   // const { baseToken, quoteToken, fromDecimals, toDecimals, amount, kind, chainId } = getValidParams(params)
