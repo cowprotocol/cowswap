@@ -101,13 +101,19 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
 }
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
+export type AllPricesResult = {
+  gpPriceResult: PromiseSettledResult<PriceInformation | null>
+  paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>
+  matcha0xPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
+}
 
 /**
  *  Return all price estimations from all price sources
  */
-export async function getAllPrices(params: PriceQuoteParams) {
+export async function getAllPrices(params: PriceQuoteParams): Promise<AllPricesResult> {
   // Get price from all API: Gpv2, Paraswap, Matcha (0x)
-  const pricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
+  const gpPricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
+
   const paraSwapPricePromise = withTimeout(
     getPriceQuoteParaswap(params),
     PRICE_API_TIMEOUT_MS,
@@ -116,7 +122,17 @@ export async function getAllPrices(params: PriceQuoteParams) {
   const matchaPricePromise = withTimeout(getPriceQuoteMatcha(params), PRICE_API_TIMEOUT_MS, 'Matcha(0x): Get Price API')
 
   // Get results from API queries
-  return Promise.allSettled([pricePromise, paraSwapPricePromise, matchaPricePromise])
+  const [gpPrice, paraSwapPrice, matchaPrice] = await Promise.allSettled([
+    gpPricePromise,
+    paraSwapPricePromise,
+    matchaPricePromise,
+  ])
+
+  return {
+    gpPriceResult: gpPrice,
+    paraSwapPriceResult: paraSwapPrice,
+    matcha0xPriceResult: matchaPrice,
+  }
 }
 
 /**
@@ -126,7 +142,7 @@ export async function getAllPrices(params: PriceQuoteParams) {
 function _extractPriceAndErrorPromiseValues(
   // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
   kind: OrderKind,
-  gpPriceResult: PromiseSettledResult<PriceInformation>,
+  gpPriceResult: PromiseSettledResult<PriceInformation | null>,
   paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>,
   matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
 ): [Array<PriceInformationWithSource>, Array<PromiseRejectedResultWithSource>] {
@@ -135,21 +151,28 @@ function _extractPriceAndErrorPromiseValues(
   const errorsGetPrice: Array<PromiseRejectedResultWithSource> = []
 
   if (isPromiseFulfilled(gpPriceResult)) {
-    priceQuotes.push({ ...gpPriceResult.value, source: 'gnosis-protocol' })
+    const gpPrice = gpPriceResult.value
+    if (gpPrice) {
+      priceQuotes.push({ ...gpPrice, source: 'gnosis-protocol' })
+    }
   } else {
     errorsGetPrice.push({ ...gpPriceResult, source: 'gnosis-protocol' })
   }
 
   if (isPromiseFulfilled(paraSwapPriceResult)) {
     const paraswapPrice = toPriceInformationParaswap(paraSwapPriceResult.value)
-    paraswapPrice && priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
+    if (paraswapPrice) {
+      priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
+    }
   } else {
     errorsGetPrice.push({ ...paraSwapPriceResult, source: 'paraswap' })
   }
 
   if (isPromiseFulfilled(matchaPriceResult)) {
     const matchaPrice = toPriceInformationMatcha(matchaPriceResult.value, kind)
-    matchaPrice && priceQuotes.push({ ...matchaPrice, source: 'matcha-0x', data: matchaPriceResult.value })
+    if (matchaPrice) {
+      priceQuotes.push({ ...matchaPrice, source: 'matcha-0x', data: matchaPriceResult.value })
+    }
   } else {
     errorsGetPrice.push({ ...matchaPriceResult, source: 'matcha-0x' })
   }
@@ -162,15 +185,15 @@ function _extractPriceAndErrorPromiseValues(
  */
 export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPriceOptions): Promise<PriceInformation> {
   // Get all prices
-  const [priceResult, paraSwapPriceResult, matchaPriceResult] = await getAllPrices(params)
+  const { gpPriceResult, paraSwapPriceResult, matcha0xPriceResult } = await getAllPrices(params)
 
   // Aggregate successful and error prices
   const [priceQuotes, errorsGetPrice] = _extractPriceAndErrorPromiseValues(
     // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
     params.kind,
-    priceResult,
+    gpPriceResult,
     paraSwapPriceResult,
-    matchaPriceResult
+    matcha0xPriceResult
   )
 
   // Print prices who failed to be fetched
@@ -188,7 +211,7 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
     return _filterWinningPrice({ ...options, kind: params.kind, amounts, priceQuotes })
   } else {
     // It was not possible to get a price estimation
-    throw new PriceQuoteError('Error querying price from APIs', params, [priceResult, paraSwapPriceResult])
+    throw new PriceQuoteError('Error querying price from APIs', params, [gpPriceResult, paraSwapPriceResult])
   }
 }
 
