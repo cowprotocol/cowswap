@@ -106,12 +106,11 @@ export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettle
 export async function getAllPrices(params: PriceQuoteParams) {
   // Get price from all API: Gpv2, Paraswap, Matcha (0x)
   const pricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
-  // Hotfix to disable Paraswap price estimation
-  // const paraSwapPricePromise = withTimeout(
-  //   getPriceQuoteParaswap(params),
-  //   PRICE_API_TIMEOUT_MS,
-  //   'Paraswap: Get Price API'
-  // )
+  const paraSwapPricePromise = withTimeout(
+    getPriceQuoteParaswap(params),
+    PRICE_API_TIMEOUT_MS,
+    'Paraswap: Get Price API'
+  )
   const matchaPricePromise = withTimeout(getPriceQuoteMatcha(params), PRICE_API_TIMEOUT_MS, 'Matcha(0x): Get Price API')
 
   // Get results from API queries
