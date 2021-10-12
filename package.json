@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "1.2.4-rc.0",
+  "version": "1.2.4",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
     "@craco/craco": "^5.7.0",
