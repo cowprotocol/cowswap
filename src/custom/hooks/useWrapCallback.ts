@@ -70,7 +70,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
     if (isWrap) {
       wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.quotient.toString(RADIX_HEX)}` })
-      const baseSummary = t`Wrap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
+      const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
       summary = t`Wrap ${baseSummary}`
       confirmationMessage = t`Wrapping ${baseSummary}`
     } else {
