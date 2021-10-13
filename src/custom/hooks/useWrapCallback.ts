@@ -13,6 +13,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { useWalletInfo } from './useWalletInfo'
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -33,8 +34,9 @@ interface GetWrapUnwrapCallback {
   isWrap: boolean
   balance?: CurrencyAmount<Currency>
   inputAmount?: CurrencyAmount<Currency>
-  addTransaction: TransactionAdder
   wethContract: Contract
+  gnosisSafeInfo: SafeInfoResponse | undefined
+  addTransaction: TransactionAdder
   openTransactionConfirmationModal: (message: string) => void
   closeModals: () => void
 }
@@ -47,8 +49,9 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     isWrap,
     balance,
     inputAmount,
-    addTransaction,
     wethContract,
+    gnosisSafeInfo,
+    addTransaction,
     openTransactionConfirmationModal,
     closeModals,
   } = params
@@ -64,17 +67,36 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   // Create wrap/unwrap callback if sufficient balance
   let wrapUnwrapCallback: (() => Promise<TransactionResponse>) | undefined
   if (sufficientBalance && inputAmount) {
-    let wrapUnwrap: () => TransactionResponse
+    let wrapUnwrap: () => Promise<TransactionResponse>
     let summary: string
     let confirmationMessage: string
 
+    const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
     if (isWrap) {
-      wrapUnwrap = () => wethContract.deposit({ value: `0x${inputAmount.quotient.toString(RADIX_HEX)}` })
+      wrapUnwrap = async () => wethContract.deposit({ value: amountHex })
       const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
       summary = t`Wrap ${baseSummary}`
       confirmationMessage = t`Wrapping ${baseSummary}`
     } else {
-      wrapUnwrap = () => wethContract.withdraw(`0x${inputAmount.quotient.toString(RADIX_HEX)}`)
+      wrapUnwrap = async () => {
+        const options = gnosisSafeInfo
+          ? {
+              type: 1,
+              accessList: [
+                {
+                  address: gnosisSafeInfo.address,
+                  storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
+                },
+                {
+                  address: gnosisSafeInfo.masterCopy,
+                  storageKeys: [],
+                },
+              ],
+            }
+          : {}
+
+        return wethContract.withdraw(amountHex, options)
+      }
       const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${wrapped} to ${native}`
       summary = t`Unwrap ${baseSummary}`
       confirmationMessage = t`Unwrapping ${baseSummary}`
@@ -122,7 +144,7 @@ export default function useWrapCallback(
   inputAmount?: CurrencyAmount<Currency>,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
-  const { chainId: connectedChainId, account } = useWalletInfo()
+  const { chainId: connectedChainId, account, gnosisSafeInfo } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -147,6 +169,7 @@ export default function useWrapCallback(
         inputAmount,
         addTransaction,
         wethContract,
+        gnosisSafeInfo,
         openTransactionConfirmationModal,
         closeModals,
       })
@@ -159,6 +182,7 @@ export default function useWrapCallback(
     isEthTradeOverride,
     balance,
     inputAmount,
+    gnosisSafeInfo,
     addTransaction,
     openTransactionConfirmationModal,
     closeModals,
