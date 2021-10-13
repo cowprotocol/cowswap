@@ -39,6 +39,7 @@ import {
   WalletActions,
   WalletSecondaryActions,
   WalletNameAddress,
+  WalletWrapper,
 } from './styled'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
 import { MouseoverTooltip } from 'components/Tooltip'
@@ -181,7 +182,7 @@ export default function AccountDetails({
       <InfoCard>
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
-            <div>
+            <WalletWrapper>
               {getStatusIcon(connector, walletInfo)}
 
               {(ENSName || account) && (
@@ -189,7 +190,7 @@ export default function AccountDetails({
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
                 </Copy>
               )}
-            </div>
+            </WalletWrapper>
 
             <WalletActions>
               {' '}

@@ -226,11 +226,18 @@ export const StatusLabelWrapper = styled.div`
   `};
 `
 
-export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolean; isPresignaturePending: boolean }>`
+export const StatusLabel = styled.div<{
+  isPending: boolean
+  isCancelling: boolean
+  isPresignaturePending: boolean
+  color: string
+}>`
   height: 28px;
   width: 100px;
-  ${({ isPending, isCancelling, theme }) => !isCancelling && isPending && `border:  1px solid ${theme.card.border};`}
-  color: ${({ isPending, theme, color }) => (isPending ? theme.text1 : color)};
+  ${({ isPending, isPresignaturePending, isCancelling, theme }) =>
+    !isCancelling && (isPending || isPresignaturePending) && `border:  1px solid ${theme.card.border};`}
+  color: ${({ isPending, isPresignaturePending, theme, color }) =>
+    isPending || isPresignaturePending ? theme.text1 : color === 'success' ? theme.success : theme.attention};
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -249,7 +256,14 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
 
   &::before {
     content: '';
-    background: ${({ color, isPending, isCancelling }) => (!isCancelling && isPending ? 'transparent' : color)};
+    background: ${({ color, isPending, isPresignaturePending, isCancelling, theme }) =>
+      !isCancelling && isPending
+        ? 'transparent'
+        : isPresignaturePending
+        ? theme.pending
+        : color === 'success'
+        ? theme.success
+        : theme.attention};
     position: absolute;
     left: 0;
     top: 0;
@@ -259,9 +273,8 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
     opacity: 0.15;
   }
 
-  ${({ color, isCancelling, isPresignaturePending }) =>
+  ${({ theme, isCancelling, isPresignaturePending }) =>
     (isCancelling || isPresignaturePending) &&
-    color &&
     css`
       &::after {
         position: absolute;
@@ -273,8 +286,8 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
         background-image: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0) 0,
-          ${transparentize(0.3, color)} 20%,
-          ${color} 60%,
+          ${transparentize(0.3, theme.card.background2)} 20%,
+          ${theme.card.background2} 60%,
           rgba(255, 255, 255, 0)
         );
         animation: shimmer 2s infinite;
@@ -296,7 +309,8 @@ export const StatusLabel = styled.div<{ isPending: boolean; isCancelling: boolea
   }
 
   > svg > path {
-    fill: ${({ theme, color, isPending }) => (isPending ? theme.text1 : color)};
+    fill: ${({ theme, color, isPending, isPresignaturePending }) =>
+      isPending || isPresignaturePending ? theme.text1 : color === 'success' ? theme.success : theme.attention};
   }
 `
 
@@ -310,8 +324,10 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   margin: 7px auto 0;
   color: ${({ isCancelling, theme }) => (isCancelling ? theme.primary1 : 'inherit')};
 
-  ${LinkStyledButton} {
+  > ${LinkStyledButton} {
     margin: 2px 0;
+    opacity: 1;
+    color: ${({ theme }) => theme.primary1};
   }
 `
 
@@ -381,13 +397,11 @@ export const TransactionAlertMessage = styled.div`
 export const TransactionInnerDetail = styled.div`
   display: flex;
   flex-flow: column wrap;
-  border-radius: 16px;
-  padding: 16px;
-  min-width: 300px;
+  border-radius: 12px;
+  padding: 20px;
   color: ${({ theme }) => theme.text1};
   margin: 24px auto 0;
-  ${({ theme }) => theme.card.background3};
-  ${({ theme }) => theme.card.boxShadow};
+  border: 1px solid ${({ theme }) => theme.card.border};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 24px auto 12px;
@@ -396,16 +410,9 @@ export const TransactionInnerDetail = styled.div`
     grid-column: 1 / -1;
   `};
 
-  > strong {
-    text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 1px;
-    margin: 0 0 12px;
-  }
-
   > span {
     flex: 1 1 auto;
-    margin: 3px 0 0;
+    margin: 0;
   }
 
   > span:last-of-type {
@@ -413,14 +420,11 @@ export const TransactionInnerDetail = styled.div`
   }
 
   > a {
-    text-align: center;
-    border-radius: 16px;
-    ${({ theme }) => theme.card.border};
-    padding: 8px;
+    text-align: left;
     display: block;
-    color: ${({ theme }) => theme.text1};
-    margin: 8px 0 0;
-    text-decoration: none !important; // Todo: Do not use !important by editing the source
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
   }
 
   > a:focus {
@@ -465,9 +469,9 @@ export const ActivityVisual = styled.div`
 
   ${StyledLogo} {
     padding: 2px;
-    ${({ theme }) => theme.card.background2};
     box-sizing: content-box;
     box-shadow: none;
+    background: ${({ theme }) => theme.card.background2};
     color: ${({ theme }) =>
       theme.text1}!important; // Todo: Re-factor StyledLogo to prevent inline style and needing to use !important here
   }

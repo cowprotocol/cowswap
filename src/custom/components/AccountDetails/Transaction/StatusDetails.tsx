@@ -34,7 +34,7 @@ export function GnosisSafeLink(props: {
     return null
   }
 
-  return <ExternalLink href={safeUrl}>View Gnosis Safe</ExternalLink>
+  return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
@@ -96,7 +96,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           : isCancelling
           ? 'Cancelling...'
           : isPresignaturePending
-          ? 'Pre-signing...'
+          ? 'Signing...'
           : isCancelled
           ? 'Cancelled'
           : 'Open'}

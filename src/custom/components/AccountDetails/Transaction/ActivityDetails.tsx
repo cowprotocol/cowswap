@@ -64,7 +64,6 @@ function GnosisSafeTxDetails(props: {
 
   return (
     <TransactionInnerDetail>
-      <strong>Gnosis Safe</strong>
       <span>
         Safe Nonce: <b>{nonce}</b>
       </span>

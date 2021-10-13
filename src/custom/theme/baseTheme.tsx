@@ -43,7 +43,6 @@ export function colors(darkMode: boolean): Colors {
     bg3: darkMode ? '#163861' : '#d5e8f0',
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
-    // bg6: darkMode ? '#021E34' : '#D5E9F0',
     bg6: darkMode ? '#163861' : '#b0dfee',
     bg7: darkMode ? '#1F4471' : '#CEE7EF',
 
@@ -72,7 +71,7 @@ export function colors(darkMode: boolean): Colors {
     blueShade2: '#011e34',
 
     // states
-    success: '#00d897',
+    success: darkMode ? '#00d897' : '#00815a',
     danger: '#f1356e',
     pending: '#43758C',
     attention: '#ff5722',
@@ -83,9 +82,7 @@ export function colors(darkMode: boolean): Colors {
     cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
     cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
     cardShadow2: darkMode ? 'rgba(1, 10, 16, 0.15)' : 'rgba(11, 37, 53, 0.93)',
-    // cardShadow2: darkMode ? 'rgba(11, 37, 53, 0.93)' : 'rgba(1, 10, 16, 0.15)'
 
-    // disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)',
     disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
     redShade: darkMode ? '#842100' : '#AE2C00',
     textLink: darkMode ? '#ffffff' : '#AE2C00',
@@ -125,6 +122,9 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       width: '208px',
       height: '50px',
     },
+    util: {
+      invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
+    },
     cursor: css`
       cursor: url(${Cursor1}), auto;
       animation: cursor 1s infinite;
@@ -158,34 +158,19 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 2px -2px 4px ${darkMode ? '#1d4373' : '#ffffff'},
           inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
       `,
-      boxShadowEmbossed: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
-        box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
-      `,
     },
     card: {
       background: css`
-        background: linear-gradient(145deg, ${darkMode ? '#0f2644' : '#f3fbff'}, ${darkMode ? '#021e34' : '#ffffff'});
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
       `,
-      background2: css`
-        background: linear-gradient(
-          145deg,
-          ${darkMode ? '#111726' : '#d5e9f0'},
-          ${darkMode ? 'rgb(7 13 30 / 85%)' : 'rgb(213 233 240 / 75%)'}
-        );
-      `,
+      background2: darkMode ? '#01182a' : colorsTheme.bg3,
       background3: css`
-        background: linear-gradient(
-          145deg,
-          ${darkMode ? '#0e274e' : 'rgb(255 255 255 / 70%)'},
-          ${darkMode ? 'rgb(15 38 68 / 30%)' : 'rgb(255 255 255 / 40%)'}
-        );
+        background: ${darkMode ? '#0f2644' : '#ffffff'};
       `,
-
-      border: `${darkMode ? '#1a2744' : 'rgb(16 42 72 / 25%)'}`,
+      border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        box-shadow: inset 0 1px 1px 0 ${darkMode ? 'rgb(29 67 115 / 70%)' : '#ffffff'},
-          0 2px 30px -20px ${darkMode ? 'rgb(1 8 18 / 45%)' : 'rgb(0 51 88 / 60%)'};
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+        box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
     header: {

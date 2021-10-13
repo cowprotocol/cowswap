@@ -47,15 +47,14 @@ const CloseIconWrapper = styled(CloseIcon)`
   }
 `
 
-const IconSpinner = styled.div`
-  --icon-size: 70px;
+const WalletIcon = styled.div`
+  --icon-size: 54px;
   margin: 0 auto 21px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: var(--icon-size);
   height: var(--icon-size);
-  ${({ theme }) => theme.neumorphism.boxShadow}
   border-radius: var(--icon-size);
 
   > div {
@@ -66,14 +65,19 @@ const IconSpinner = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    margin: 0;
   }
 
-  > div > div {
-  }
-
+  > div > img,
   > div > div > svg {
     height: 100%;
     width: 100%;
+    object-fit: contain;
+  }
+
+  > div > img[alt='Gnosis Safe Multisig logo'] {
+    ${({ theme }) => theme.util.invertImageForDarkMode};
   }
 `
 
@@ -168,7 +172,7 @@ const UpperSection = styled.div`
   padding: 16px 0;
 
   > div {
-    padding: 0 24px;
+    padding: 0;
   }
 `
 
@@ -220,7 +224,7 @@ const StepsIconWrapper = styled.div`
     left: var(--border-size);
     z-index: -1;
     border-radius: calc(var(--border-radius) - var(--border-size));
-    ${({ theme }) => theme.neumorphism.boxShadowEmbossed};
+    ${({ theme }) => theme.card.boxShadow};
   }
 
   > svg {
@@ -438,7 +442,7 @@ export function ConfirmationPendingContent({
       <UpperSection>
         <CloseIconWrapper onClick={onDismiss} />
 
-        <IconSpinner>{getStatusIcon(connector, walletInfo, 46)}</IconSpinner>
+        <WalletIcon>{getStatusIcon(connector, walletInfo, 46)}</WalletIcon>
 
         <Text fontWeight={500} fontSize={16} textAlign="center">
           {pendingText}

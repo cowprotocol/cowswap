@@ -18,15 +18,14 @@ import { StatusDetails } from './StatusDetails'
 import { Order } from 'state/orders/actions'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
-// ToDo: Refactor to use theme variables instead
 const PILL_COLOUR_MAP = {
-  CONFIRMED: '#00d897', // Todo: use color '#00815a' for light mode.
-  PENDING_ORDER: '#43758C',
-  PRESIGNATURE_PENDING: '#43758C',
-  PENDING_TX: '#43758C',
-  EXPIRED_ORDER: '#ff5722',
-  CANCELLED_ORDER: '#ff5722',
-  CANCELLING_ORDER: '#ff5722',
+  CONFIRMED: 'success',
+  PENDING_ORDER: 'pending',
+  PRESIGNATURE_PENDING: 'pending',
+  PENDING_TX: 'pending',
+  EXPIRED_ORDER: 'attention',
+  CANCELLED_ORDER: 'attention',
+  CANCELLING_ORDER: 'attention',
 }
 
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
