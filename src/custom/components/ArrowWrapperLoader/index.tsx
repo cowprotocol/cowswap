@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 import { ArrowDown } from 'react-feather'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'

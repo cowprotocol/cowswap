@@ -10,11 +10,10 @@ import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useCurrency } from 'hooks/Tokens'
-// import { V2_SWAP_DEFAULT_SLIPPAGE } from 'hooks/useSwapSlippageTolerance'
+// import useSwapSlippageTolerance from '../../hooks/useSwapSlippageTolerance'
 // import { Version } from 'hooks/useToggledVersion'
 // import { useV2TradeExactIn, useV2TradeExactOut } from 'hooks/useV2Trade'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-
 import { isAddress } from 'utils'
 // import { AppState } from 'state'
 import { useCurrencyBalances } from 'state/wallet/hooks'
@@ -26,13 +25,8 @@ import { SwapState } from 'state/swap/reducer'
 // import { useUserSingleHopOnly } from 'state/user/hooks'
 import { useAppDispatch /* , useAppSelector */ } from 'state/hooks'
 
-import {
-  // parseIndependentFieldURLParameter,
-  // parseTokenAmountURLParameter,
-  tryParseAmount,
-  useSwapState,
-  // validatedRecipient
-} from 'state/swap/hooks'
+// MOD
+import { tryParseAmount, useSwapState } from 'state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
@@ -393,6 +387,39 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurre
   }
 }
 
+type DefaultFromUrlSearch = { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
+// updates the swap state to use the defaults for a given network
+export function useDefaultsFromURLSearch(): DefaultFromUrlSearch {
+  const { chainId } = useActiveWeb3React()
+  const replaceSwapState = useReplaceSwapState()
+  const parsedQs = useParsedQueryString()
+  const [result, setResult] = useState<DefaultFromUrlSearch>()
+
+  useEffect(() => {
+    if (!chainId) return
+    // This is not a great fix for setting a default token
+    // but it is better and easiest considering updating default files
+    const defaultInputToken = WETH[chainId].address
+    const parsed = queryParametersToSwapState(parsedQs, defaultInputToken)
+    const inputCurrencyId = parsed[Field.INPUT].currencyId ?? undefined
+    const outputCurrencyId = parsed[Field.OUTPUT].currencyId ?? undefined
+
+    replaceSwapState({
+      typedValue: parsed.typedValue,
+      field: parsed.independentField,
+      inputCurrencyId,
+      outputCurrencyId,
+      recipient: parsed.recipient,
+    })
+
+    setResult({ inputCurrencyId, outputCurrencyId })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId])
+
+  return result
+}
+
+// MODS
 export function useReplaceSwapState() {
   const dispatch = useAppDispatch()
   return useCallback(
@@ -407,42 +434,9 @@ export function useReplaceSwapState() {
   )
 }
 
-type DefaultFromUrlSearch = { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
-// updates the swap state to use the defaults for a given network
-export function useDefaultsFromURLSearch(): DefaultFromUrlSearch {
-  const { chainId } = useActiveWeb3React()
-  const replaceSwapState = useReplaceSwapState()
-  const parsedQs = useParsedQueryString()
-  const [result, setResult] = useState<DefaultFromUrlSearch>()
-
-  useEffect(() => {
-    if (!chainId) return
-
-    // This is not a great fix for setting a default token
-    // but it is better and easiest considering updating default files
-    const defaultInputToken = WETH[chainId].address
-    const parsed = queryParametersToSwapState(parsedQs, defaultInputToken)
-
-    replaceSwapState({
-      typedValue: parsed.typedValue,
-      field: parsed.independentField,
-      // Default to WETH
-      inputCurrencyId: parsed[Field.INPUT].currencyId,
-      // inputCurrencyId: parsed[Field.INPUT].currencyId,
-      outputCurrencyId: parsed[Field.OUTPUT].currencyId,
-      recipient: parsed.recipient,
-    })
-
-    setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId])
-
-  return result
-}
-
 interface CurrencyWithAddress {
   currency?: Currency
-  address?: string
+  address?: string | null
 }
 
 export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
@@ -473,7 +467,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
   }, [input, output, chainId])
 }
 
-export function useIsFeeGreaterThanInput({ address, chainId }: { address?: string; chainId?: ChainId }): {
+export function useIsFeeGreaterThanInput({ address, chainId }: { address?: string | null; chainId?: ChainId }): {
   isFeeGreater: boolean
   fee: CurrencyAmount<Currency> | null
 } {

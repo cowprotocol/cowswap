@@ -1,5 +1,5 @@
 import React /* , { useCallback, useContext } */ from 'react'
-import styled /* , { ThemeContext } */ from 'styled-components'
+import styled /* , { ThemeContext } */ from 'styled-components/macro'
 // import { useActiveWeb3React } from 'hooks/web3'
 // import { clearAllTransactions } from 'state/transactions/actions'
 // import { shortenAddress } from 'utils'

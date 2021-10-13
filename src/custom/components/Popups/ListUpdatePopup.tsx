@@ -1,4 +1,4 @@
-import React from 'react'
+import { useCallback } from 'react'
 import ListUpdatePopupMod from './ListUpdatePopupMod'
 import { TokenList } from '@uniswap/token-lists'
 import { ListRowProps } from '../SearchModal/ManageLists'
@@ -18,7 +18,7 @@ export interface ListUpdatePopupProps {
 
 export default function ListUpdatePopup(props: Omit<ListUpdatePopupProps, 'acceptListUpdate'>) {
   const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
-  const acceptListUpdateCustom = React.useCallback((url: string) => acceptListUpdate({ url, chainId }), [chainId])
+  const acceptListUpdateCustom = useCallback((url: string) => acceptListUpdate({ url, chainId }), [chainId])
 
   return <ListUpdatePopupMod {...props} acceptListUpdate={acceptListUpdateCustom} />
 }

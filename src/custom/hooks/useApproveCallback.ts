@@ -7,7 +7,7 @@ import { GP_VAULT_RELAYER } from 'constants/index'
 import TradeGp from 'state/swap/TradeGp'
 import { ZERO_PERCENT } from 'constants/misc'
 
-export { ApprovalState } from '@src/hooks/useApproveCallback'
+export { useApproveCallback, ApprovalState } from '@src/hooks/useApproveCallback'
 
 // export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
 export function useApproveCallbackFromTrade(trade?: TradeGp, allowedSlippage = ZERO_PERCENT) {

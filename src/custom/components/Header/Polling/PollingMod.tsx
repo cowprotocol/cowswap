@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import styled, { keyframes } from 'styled-components'
-import { TYPE, ExternalLink } from 'theme'
+import { useEffect, useState } from 'react'
+import styled, { keyframes } from 'styled-components/macro'
+import { useActiveWeb3React } from 'hooks/web3'
 
 import { useBlockNumber } from 'state/application/hooks'
 import { getEtherscanLink } from 'utils'
-import { useActiveWeb3React } from 'hooks/web3'
+import { ExternalLink, TYPE } from 'theme'
 
 export const StyledPolling = styled.div`
   position: fixed;
@@ -22,6 +22,13 @@ export const StyledPolling = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: none;
   `}
+`
+const StyledPollingNumber = styled(TYPE.small)<{ breathe: boolean; hovering: boolean }>`
+  transition: opacity 0.25s ease;
+  opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
+  :hover {
+    opacity: 1;
+  }
 `
 export const StyledPollingDot = styled.div`
   width: 8px;
@@ -67,16 +74,21 @@ export default function Polling() {
 
   const blockNumber = useBlockNumber()
 
-  const [isMounted, setIsMounted] = useState(true)
+  const [isMounting, setIsMounting] = useState(false)
+  const [isHover, setIsHover] = useState(false)
 
   useEffect(
     () => {
-      const timer1 = setTimeout(() => setIsMounted(true), 1000)
+      if (!blockNumber) {
+        return
+      }
+
+      setIsMounting(true)
+      const mountingTimer = setTimeout(() => setIsMounting(false), 1000)
 
       // this will clear Timeout when component unmount like in willComponentUnmount
       return () => {
-        setIsMounted(false)
-        clearTimeout(timer1)
+        clearTimeout(mountingTimer)
       }
     },
     [blockNumber] //useEffect will run only one time
@@ -85,13 +97,11 @@ export default function Polling() {
 
   return (
     <ExternalLink href={chainId && blockNumber ? getEtherscanLink(chainId, blockNumber.toString(), 'block') : ''}>
-      <StyledPolling>
-        <TYPE.small
-        // style={{ opacity: isMounted ? '0.2' : '0.6' }}
-        >
-          {blockNumber}
-        </TYPE.small>
-        <StyledPollingDot>{!isMounted && <Spinner />}</StyledPollingDot>
+      <StyledPolling onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
+        <StyledPollingNumber breathe={isMounting} hovering={isHover}>
+          {blockNumber}&ensp;
+        </StyledPollingNumber>
+        <StyledPollingDot>{isMounting && <Spinner />}</StyledPollingDot>
       </StyledPolling>
     </ExternalLink>
   )

@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { AlertTriangle } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { Fraction } from '@uniswap/sdk-core'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/styleds'

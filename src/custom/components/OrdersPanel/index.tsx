@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import AccountDetails from 'components/AccountDetails'

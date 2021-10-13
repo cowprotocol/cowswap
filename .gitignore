@@ -7,6 +7,8 @@
 /src/locales/**/*.ts
 /src/locales/**/*.json
 /src/locales/**/en-US.po
+# UNI ignores this but we may need it for CI
+# /src/state/data/generated.ts
 
 # dependencies
 /node_modules

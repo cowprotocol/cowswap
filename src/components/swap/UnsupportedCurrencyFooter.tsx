@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { TYPE, CloseIcon, ExternalLink } from 'theme'
 import { ButtonEmpty } from 'components/Button'
@@ -43,7 +43,7 @@ export default function UnsupportedCurrencyFooter({
   currencies,
 }: {
   show: boolean
-  currencies: (Currency | undefined)[]
+  currencies: (Currency | undefined | null)[]
 }) {
   const { chainId } = useActiveWeb3React()
   const [showDetails, setShowDetails] = useState(false)

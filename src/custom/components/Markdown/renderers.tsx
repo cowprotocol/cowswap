@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import visit from 'unist-util-visit'
 import { Node as MarkdownNode } from 'unist'
 

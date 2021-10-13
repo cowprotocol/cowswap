@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, Dispatch, SetStateAction, ReactNode } from 'react'
+import { useRef, useState, useEffect, useCallback, Dispatch, SetStateAction, ReactNode } from 'react'
 import { createChart, IChartApi } from 'lightweight-charts'
 import { darken } from 'polished'
 import { RowBetween } from 'components/Row'
@@ -73,11 +73,11 @@ const LineChart = ({
   useEffect(() => {
     if (!chartCreated && data && !!chartRef?.current?.parentElement) {
       const chart = createChart(chartRef.current, {
-        height: height,
+        height,
         width: chartRef.current.parentElement.clientWidth - 32,
         layout: {
           backgroundColor: 'transparent',
-          textColor: textColor,
+          textColor,
           fontFamily: 'Inter',
         },
         rightPriceScale: {

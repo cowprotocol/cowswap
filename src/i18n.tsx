@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { ReactNode } from 'react'
@@ -75,7 +75,7 @@ const plurals: LocalePlural = {
   'zh-TW': zh,
 }
 
-export async function dynamicActivate(locale: SupportedLocale) {
+async function dynamicActivate(locale: SupportedLocale) {
   const { messages } = await import(`@lingui/loader!./locales/${locale}.po`)
   i18n.loadLocaleData(locale, { plurals: () => plurals[locale] })
   i18n.load(locale, messages)
@@ -90,6 +90,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     dynamicActivate(locale)
       .then(() => {
+        document.documentElement.setAttribute('lang', locale)
         setLoaded(true)
       })
       .catch((error) => {

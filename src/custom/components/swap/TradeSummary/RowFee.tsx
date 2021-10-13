@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
-import { ThemeContext } from 'styled-components'
+import { ThemeContext } from 'styled-components/macro'
 import { TYPE } from 'theme'
 
 import { formatMax, formatSmart } from 'utils/format'
@@ -57,7 +57,7 @@ export function RowFee({
   rowHeight,
 }: RowFeeProps) {
   const theme = useContext(ThemeContext)
-  const { realizedFee } = React.useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
