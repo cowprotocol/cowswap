@@ -1,6 +1,6 @@
 ---
 name: Epic
-labels: epic
+labels: Epic
 about: Create a new Epic
 ---
 
