@@ -25,7 +25,7 @@ interface V3MigratorInterface extends ethers.utils.Interface {
     "WETH9()": FunctionFragment;
     "createAndInitializePoolIfNecessary(address,address,uint24,uint160)": FunctionFragment;
     "factory()": FunctionFragment;
-    "migrate(tuple)": FunctionFragment;
+    "migrate((address,uint256,uint8,address,address,uint24,int24,int24,uint256,uint256,address,uint256,bool))": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
     "nonfungiblePositionManager()": FunctionFragment;
     "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;

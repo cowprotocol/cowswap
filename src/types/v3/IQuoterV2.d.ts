@@ -22,9 +22,9 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface IQuoterV2Interface extends ethers.utils.Interface {
   functions: {
     "quoteExactInput(bytes,uint256)": FunctionFragment;
-    "quoteExactInputSingle(tuple)": FunctionFragment;
+    "quoteExactInputSingle((address,address,uint256,uint24,uint160))": FunctionFragment;
     "quoteExactOutput(bytes,uint256)": FunctionFragment;
-    "quoteExactOutputSingle(tuple)": FunctionFragment;
+    "quoteExactOutputSingle((address,address,uint256,uint24,uint160))": FunctionFragment;
   };
 
   encodeFunctionData(

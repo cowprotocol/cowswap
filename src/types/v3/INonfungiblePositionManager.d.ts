@@ -28,14 +28,14 @@ interface INonfungiblePositionManagerInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
-    "collect(tuple)": FunctionFragment;
+    "collect((uint256,address,uint128,uint128))": FunctionFragment;
     "createAndInitializePoolIfNecessary(address,address,uint24,uint160)": FunctionFragment;
-    "decreaseLiquidity(tuple)": FunctionFragment;
+    "decreaseLiquidity((uint256,uint128,uint256,uint256,uint256))": FunctionFragment;
     "factory()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "increaseLiquidity(tuple)": FunctionFragment;
+    "increaseLiquidity((uint256,uint256,uint256,uint256,uint256,uint256))": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(tuple)": FunctionFragment;
+    "mint((address,address,uint24,int24,int24,uint256,uint256,uint256,uint256,address,uint256))": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "permit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;

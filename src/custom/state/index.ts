@@ -58,7 +58,7 @@ const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'ga
 const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true })
+    getDefaultMiddleware({ thunk: true, serializableCheck: false })
       .concat(dataApi.middleware)
       .concat(routingApi.middleware)
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))

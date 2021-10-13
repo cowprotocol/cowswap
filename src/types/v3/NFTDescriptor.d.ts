@@ -20,7 +20,7 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface NFTDescriptorInterface extends ethers.utils.Interface {
   functions: {
-    "constructTokenURI(tuple)": FunctionFragment;
+    "constructTokenURI((uint256,address,address,string,string,uint8,uint8,bool,int24,int24,int24,int24,uint24,address))": FunctionFragment;
   };
 
   encodeFunctionData(

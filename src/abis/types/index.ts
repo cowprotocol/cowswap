@@ -8,6 +8,7 @@ export type { EnsPublicResolver } from "./EnsPublicResolver";
 export type { EnsRegistrar } from "./EnsRegistrar";
 export type { Erc20Bytes32 } from "./Erc20Bytes32";
 export type { Erc20 } from "./Erc20";
+export type { GovernorBravo } from "./GovernorBravo";
 export type { Multicall } from "./Multicall";
 export type { Multicall2 } from "./Multicall2";
 export type { Unisocks } from "./Unisocks";
@@ -20,6 +21,7 @@ export { EnsPublicResolver__factory } from "./factories/EnsPublicResolver__facto
 export { EnsRegistrar__factory } from "./factories/EnsRegistrar__factory";
 export { Erc20Bytes32__factory } from "./factories/Erc20Bytes32__factory";
 export { Erc20__factory } from "./factories/Erc20__factory";
+export { GovernorBravo__factory } from "./factories/GovernorBravo__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";
 export { Multicall2__factory } from "./factories/Multicall2__factory";
 export { Unisocks__factory } from "./factories/Unisocks__factory";

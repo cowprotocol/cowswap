@@ -24,9 +24,9 @@ interface QuoterV2Interface extends ethers.utils.Interface {
     "WETH9()": FunctionFragment;
     "factory()": FunctionFragment;
     "quoteExactInput(bytes,uint256)": FunctionFragment;
-    "quoteExactInputSingle(tuple)": FunctionFragment;
+    "quoteExactInputSingle((address,address,uint256,uint24,uint160))": FunctionFragment;
     "quoteExactOutput(bytes,uint256)": FunctionFragment;
-    "quoteExactOutputSingle(tuple)": FunctionFragment;
+    "quoteExactOutputSingle((address,address,uint256,uint24,uint160))": FunctionFragment;
     "uniswapV3SwapCallback(int256,int256,bytes)": FunctionFragment;
   };
 

@@ -23,7 +23,7 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface IV3MigratorInterface extends ethers.utils.Interface {
   functions: {
     "createAndInitializePoolIfNecessary(address,address,uint24,uint160)": FunctionFragment;
-    "migrate(tuple)": FunctionFragment;
+    "migrate((address,uint256,uint8,address,address,uint24,int24,int24,uint256,uint256,address,uint256,bool))": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
     "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
