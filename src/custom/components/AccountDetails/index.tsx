@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, Fragment } from 'react'
 import { batch, useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from 'hooks/web3'
@@ -27,7 +27,7 @@ import {
   AccountControl,
   AddressLink,
   IconWrapper,
-  renderTransactions,
+  renderActivities,
 } from './AccountDetailsMod'
 import {
   NetworkCard,
@@ -43,6 +43,12 @@ import {
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { supportedChainId } from 'utils/supportedChainId'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
+import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
+
+const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+  dateStyle: 'long',
+}
 
 type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
 
@@ -128,7 +134,7 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
   return null
 }
 
-export interface AccountDetailsProps {
+interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
@@ -137,8 +143,8 @@ export interface AccountDetailsProps {
 }
 
 export default function AccountDetails({
-  pendingTransactions,
-  confirmedTransactions,
+  pendingTransactions = [],
+  confirmedTransactions = [],
   ENSName,
   toggleWalletModal,
   closeOrdersPanel,
@@ -158,7 +164,11 @@ export default function AccountDetails({
     }
   }, [dispatch, chainId])
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
-  const activityTotalCount = (pendingTransactions?.length || 0) + (confirmedTransactions?.length || 0)
+
+  const activities =
+    useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) }) || []
+  const activitiesGroupedByDate = groupActivitiesByDay(activities)
+  const activityTotalCount = activities?.length || 0
 
   const handleDisconnectClick = () => {
     ;(connector as any).close()
@@ -226,8 +236,13 @@ export default function AccountDetails({
           </span>
 
           <div>
-            {renderTransactions(pendingTransactions)}
-            {renderTransactions(confirmedTransactions)}
+            {activitiesGroupedByDate.map(({ date, activities }) => (
+              <Fragment key={date.getTime()}>
+                {/* TODO: style me! */}
+                <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                {renderActivities(activities)}
+              </Fragment>
+            ))}
           </div>
         </LowerSection>
       ) : (

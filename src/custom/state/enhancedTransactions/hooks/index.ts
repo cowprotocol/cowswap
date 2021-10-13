@@ -84,3 +84,24 @@ export function useAllTransactionHashes(filter?: TransactionFilter): string[] {
 
   return useMemo(() => transactions.map((tx) => tx.hash), [transactions])
 }
+
+type EnhancedTransactionDetailsMap = {
+  [txHash: string]: EnhancedTransactionDetails
+}
+
+export function useTransactionsByHash({ hashes }: { hashes: string[] }): EnhancedTransactionDetailsMap {
+  const allTxs = useAllTransactions()
+
+  return useMemo(() => {
+    if (!allTxs || !hashes) {
+      return {}
+    }
+
+    return hashes.reduce<EnhancedTransactionDetailsMap>((acc, hash) => {
+      if (allTxs[hash]) {
+        acc[hash] = allTxs[hash]
+      }
+      return acc
+    }, {})
+  }, [allTxs, hashes])
+}

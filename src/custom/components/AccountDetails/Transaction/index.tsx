@@ -4,12 +4,12 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink } from 'utils'
 import { RowFixed } from 'components/Row'
 
-import { Wrapper, TransactionWrapper, TransactionStatusText as ActivityDetailsText, CreationDateText } from './styled'
+import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { useActivityDescriptors, ActivityStatus, ActivityType, ActivityDescriptors } from 'hooks/useRecentActivity'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
 
 import { ActivityDetails } from './ActivityDetails'
 
@@ -107,17 +107,16 @@ function getActivityLinkUrl(params: {
 
 function getActivityDerivedState(props: {
   chainId?: number
-  id: string
   activityData: ActivityDescriptors | null
   allowsOffchainSigning: boolean
   gnosisSafeInfo?: SafeInfoResponse
 }): ActivityDerivedState | null {
-  const { chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
+  const { chainId, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
   if (activityData === null || chainId === undefined) {
     return null
   }
 
-  const { activity, status, type, summary } = activityData
+  const { id, activity, status, type, summary } = activityData
   const isTransaction = type === ActivityType.TX
   const isOrder = type === ActivityType.ORDER
   const order = isOrder ? (activity as Order) : undefined
@@ -157,17 +156,14 @@ function getActivityDerivedState(props: {
   }
 }
 
-export default function Transaction({ hash: id }: { hash: string }) {
+export default function Activity({ activity: activityData }: { activity: ActivityDescriptors }) {
   const { chainId } = useActiveWeb3React()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
-  // Return info necessary for rendering order/transaction info from the incoming id
-  //    - activity data can be either EnhancedTransactionDetails or Order
-  const activityData = useActivityDescriptors({ id, chainId })
 
   // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
   const activityDerivedState = useMemo(
-    () => getActivityDerivedState({ chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo }),
-    [chainId, id, activityData, allowsOffchainSigning, gnosisSafeInfo]
+    () => getActivityDerivedState({ chainId, activityData, allowsOffchainSigning, gnosisSafeInfo }),
+    [chainId, activityData, allowsOffchainSigning, gnosisSafeInfo]
   )
 
   if (!activityDerivedState || !chainId) return null
@@ -182,23 +178,15 @@ export default function Transaction({ hash: id }: { hash: string }) {
     ? new Date(Date.parse(creationTimeOrder))
     : undefined
 
-  const timeFormatOptionMDY: Intl.DateTimeFormatOptions = {
-    dateStyle: 'long',
-  }
-
   const timeFormatOptionHM: Intl.DateTimeFormatOptions = {
     timeStyle: 'short',
   }
-
-  // Month Day, Year
-  const creationTimeMDY = creationTimeFull?.toLocaleString(undefined, timeFormatOptionMDY)
 
   // Hour:Minute
   const creationTime = creationTimeFull?.toLocaleString(undefined, timeFormatOptionHM)
 
   return (
     <Wrapper>
-      {creationTimeMDY && <CreationDateText>{creationTimeMDY}</CreationDateText>}
       <TransactionWrapper>
         <RowFixed>
           {/* Details of activity: transaction/order details */}

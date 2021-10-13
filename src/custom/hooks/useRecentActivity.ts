@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { isTransactionRecent, useAllTransactions } from 'state/enhancedTransactions/hooks'
-import { useOrder, useOrders } from 'state/orders/hooks'
+import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
+import { useOrder, useOrders, useOrdersById } from 'state/orders/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { getDateTimestamp } from 'utils/time'
 
 export type TransactionAndOrder =
   | (Order & { addedTime: number })
@@ -40,7 +41,9 @@ const DAY_MS = 86_400_000
  * @param order
  */
 function isOrderRecent(order: Order): boolean {
-  return Date.now() - Date.parse(order.creationTime) < DAY_MS
+  // TODO: TEMPORARY CHANGE TO SEE HISTORY FOR 10 INSTEAD OF 1 DAY
+  // TODO: will become obsolete with the api orders stuff
+  return Date.now() - Date.parse(order.creationTime) < DAY_MS * 10
 }
 
 /**
@@ -98,78 +101,161 @@ export default function useRecentActivity() {
 }
 
 export interface ActivityDescriptors {
+  id: string
   activity: EnhancedTransactionDetails | Order
   summary?: string
   status: ActivityStatus
   type: ActivityType
+  date: Date
 }
 
-export function useActivityDescriptors({ chainId, id }: { chainId?: ChainId; id: string }): ActivityDescriptors | null {
+type UseActivityDescriptionParams = {
+  chainId?: ChainId
+  ids: string[]
+}
+
+function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order): ActivityDescriptors | null {
+  if (!tx && !order) return null
+
+  let activity: EnhancedTransactionDetails | Order, type: ActivityType
+
+  let id: string,
+    isPending: boolean,
+    isPresignaturePending: boolean,
+    isConfirmed: boolean,
+    isCancelling: boolean,
+    isCancelled: boolean,
+    date: Date
+
+  if (!tx && order) {
+    // We're dealing with an ORDER
+    // setup variables accordingly...
+    id = order.id
+
+    isPending = order?.status === OrderStatus.PENDING
+    isPresignaturePending = order?.status === OrderStatus.PRESIGNATURE_PENDING
+    isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
+    isCancelling = (order.isCancelling || false) && isPending
+    isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
+
+    activity = order
+    type = ActivityType.ORDER
+
+    date = new Date(order?.creationTime)
+  } else if (tx) {
+    // We're dealing with a TRANSACTION
+    // setup variables accordingly...
+    id = tx.hash
+
+    const isReceiptConfirmed =
+      tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+    isPending = !tx.receipt
+    isPresignaturePending = false
+    isConfirmed = !isPending && isReceiptConfirmed
+    // TODO: can't tell when it's cancelled from the network yet
+    isCancelling = false
+    isCancelled = false
+
+    activity = tx
+    type = ActivityType.TX
+
+    date = new Date(tx.addedTime)
+  } else {
+    // Shouldn't happen but TS is bugging me
+    return null
+  }
+
+  let status
+
+  if (isCancelling) {
+    status = ActivityStatus.CANCELLING
+  } else if (isPending) {
+    status = ActivityStatus.PENDING
+  } else if (isPresignaturePending) {
+    status = ActivityStatus.PRESIGNATURE_PENDING
+  } else if (isConfirmed) {
+    status = ActivityStatus.CONFIRMED
+  } else if (isCancelled) {
+    status = ActivityStatus.CANCELLED
+  } else {
+    status = ActivityStatus.EXPIRED
+  }
+  const summary = activity.summary
+
+  return {
+    id,
+    activity,
+    summary,
+    status,
+    type,
+    date,
+  }
+}
+
+export function useMultipleActivityDescriptors({
+  chainId,
+  ids,
+}: UseActivityDescriptionParams): ActivityDescriptors[] | null {
+  const txs = useTransactionsByHash({ hashes: ids })
+  const orders = useOrdersById({ chainId, ids })
+
+  return useMemo(() => {
+    if (!chainId) return null
+
+    return ids.reduce<ActivityDescriptors[]>((acc, id) => {
+      const activity = createActivityDescriptor(txs[id], orders[id])
+      if (activity) {
+        acc.push(activity)
+      }
+      return acc
+    }, [])
+  }, [chainId, ids, orders, txs])
+}
+
+export function useSingleActivityDescriptor({
+  chainId,
+  id,
+}: {
+  chainId?: ChainId
+  id: string
+}): ActivityDescriptors | null {
   const allTransactions = useAllTransactions()
   const order = useOrder({ id, chainId })
 
   const tx = allTransactions?.[id]
 
   return useMemo(() => {
-    if ((!tx && !order) || !chainId) return null
-
-    let activity: EnhancedTransactionDetails | Order, type: ActivityType
-
-    let isPending: boolean,
-      isPresignaturePending: boolean,
-      isConfirmed: boolean,
-      isCancelling: boolean,
-      isCancelled: boolean
-
-    if (!tx && order) {
-      // We're dealing with an ORDER
-      // setup variables accordingly...
-      isPending = order?.status === OrderStatus.PENDING
-      isPresignaturePending = order?.status === OrderStatus.PRESIGNATURE_PENDING
-      isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
-      isCancelling = (order.isCancelling || false) && isPending
-      isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
-
-      activity = order
-      type = ActivityType.ORDER
-    } else {
-      // We're dealing with a TRANSACTION
-      // setup variables accordingly...
-      const isReceiptConfirmed =
-        tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
-      isPending = !tx?.receipt
-      isPresignaturePending = false
-      isConfirmed = !isPending && isReceiptConfirmed
-      // TODO: can't tell when it's cancelled from the network yet
-      isCancelling = false
-      isCancelled = false
-
-      activity = tx
-      type = ActivityType.TX
-    }
-
-    let status
-
-    if (isCancelling) {
-      status = ActivityStatus.CANCELLING
-    } else if (isPending) {
-      status = ActivityStatus.PENDING
-    } else if (isPresignaturePending) {
-      status = ActivityStatus.PRESIGNATURE_PENDING
-    } else if (isConfirmed) {
-      status = ActivityStatus.CONFIRMED
-    } else if (isCancelled) {
-      status = ActivityStatus.CANCELLED
-    } else {
-      status = ActivityStatus.EXPIRED
-    }
-    const summary = activity.summary
-
-    return {
-      activity,
-      summary,
-      status,
-      type,
-    }
+    if (!chainId) return null
+    return createActivityDescriptor(tx, order)
   }, [chainId, order, tx])
+}
+
+type ActivitiesGroupedByDate = {
+  date: Date
+  activities: ActivityDescriptors[]
+}[]
+
+/**
+ * Helper function that groups a list of activities by day
+ * To be used on the return of `useMultipleActivityDescriptors`
+ *
+ * @param activities
+ */
+export function groupActivitiesByDay(activities: ActivityDescriptors[]): ActivitiesGroupedByDate {
+  const mapByTimestamp: { [timestamp: number]: ActivityDescriptors[] } = {}
+
+  activities.forEach((activity) => {
+    const { date } = activity
+
+    const timestamp = getDateTimestamp(date)
+
+    mapByTimestamp[timestamp] = (mapByTimestamp[timestamp] || []).concat(activity)
+  })
+
+  return Object.keys(mapByTimestamp).map((strTimestamp) => {
+    // Keys are always string, convert back to number
+    const timestamp = Number(strTimestamp)
+    // For easier handling later, transform into a list of objects with nested lists
+    return { date: new Date(timestamp), activities: mapByTimestamp[timestamp] }
+  })
 }

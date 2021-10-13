@@ -54,6 +54,10 @@ interface GetRemoveOrderParams {
   id: OrderID
   chainId: ChainId
 }
+type GetOrdersByIdParams = {
+  ids: OrderID[]
+  chainId?: ChainId
+}
 
 type GetOrdersParams = Partial<Pick<GetRemoveOrderParams, 'chainId'>>
 type ClearOrdersParams = Pick<GetRemoveOrderParams, 'chainId'>
@@ -206,6 +210,28 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
       ...state.cancelled,
     }
   }, [state])
+}
+
+type OrdersMap = {
+  [id: string]: Order
+}
+
+export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap => {
+  const allOrders = useAllOrders({ chainId })
+
+  return useMemo(() => {
+    if (!allOrders || !ids) {
+      return {}
+    }
+
+    return ids.reduce<OrdersMap>((acc, id) => {
+      const order = _deserializeOrder(allOrders[id])
+      if (order) {
+        acc[id] = order
+      }
+      return acc
+    }, {})
+  }, [allOrders, ids])
 }
 
 export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
