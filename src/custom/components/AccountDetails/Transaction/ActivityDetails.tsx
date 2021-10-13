@@ -22,7 +22,9 @@ import { DEFAULT_PRECISION } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
+import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
+import SVG from 'react-inlinesvg'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -34,13 +36,9 @@ const DEFAULT_ORDER_SUMMARY = {
 function unfillableAlert(): JSX.Element {
   return (
     <>
-      <TransactionAlertMessage>
-        <p>
-          <span role="img" aria-label="alert">
-            🚨
-          </span>{' '}
-          Limit price out of range. Wait for a matching price or cancel your order.
-        </p>
+      <TransactionAlertMessage type="attention">
+        <SVG src={AttentionIcon} description="Limit Price Warning" />
+        <b>Limit price out of range:</b>&nbsp;Wait for a matching price or cancel your order.
       </TransactionAlertMessage>
     </>
   )
@@ -225,7 +223,6 @@ export function ActivityDetails(props: {
                 </>
               )}
             </SummaryInnerRow>
-            {isUnfillable && unfillableAlert()}
             <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
               {fulfillmentTime ? (
                 <>
@@ -249,6 +246,8 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
+
+        {isUnfillable && unfillableAlert()}
 
         {/* 
         TODO: Load gnosisSafeThreshold (not default!)

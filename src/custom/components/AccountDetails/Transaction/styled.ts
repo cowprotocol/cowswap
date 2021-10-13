@@ -55,7 +55,7 @@ export const IconType = styled.div`
     height: inherit;
     width: inherit;
     border-radius: 36px;
-    opacity: 0.15;
+    opacity: 0.1;
   }
   svg {
     display: flex;
@@ -364,33 +364,39 @@ export const CancellationSummary = styled.span`
   background: ${({ theme }) => theme.bg4};
 `
 
-export const TransactionAlertMessage = styled.div`
-  width: 100%;
-  padding: 0;
-  color: ${({ theme }) => theme.text2};
+export const TransactionAlertMessage = styled.div<{ type?: string }>`
   display: flex;
   justify-content: center;
-  margin: 0;
-  font-size: 12px;
+  color: ${({ theme, type }) => (type === 'attention' ? theme.attention : theme.danger)};
+  margin: 24px 0 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  line-height: 1.4;
+  background: ${({ theme, type }) =>
+    type === 'attention' ? transparentize(0.9, theme.attention) : transparentize(0.9, theme.danger)};
+  width: 100%;
+  height: auto;
 
-  > p {
-    margin: 6px 20px 6px 0;
-    padding: 10px;
-    border-radius: 6px;
-    display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-column: 1 / -1;
+    flex-flow: column wrap;
+    justify-content: flex-start;
     align-items: center;
-    line-height: 1.4;
-    background: ${({ theme }) => theme.yellow};
-    width: 100%;
-    height: 100%;
-  }
+    text-align: center;
+    padding: 16px 32px;
+    margin: 12px 0 0;
+  `};
 
-  > p > a {
-    color: ${({ theme }) => theme.primary1};
-  }
-
-  > p > span {
+  > svg,
+  > img {
     margin: 0 6px 0 0;
+    fill: ${({ theme, type }) => (type === 'attention' ? theme.attention : theme.danger)};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 12px;
+    `};
   }
 `
 
