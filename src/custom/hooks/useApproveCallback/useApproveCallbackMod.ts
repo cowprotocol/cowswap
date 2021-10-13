@@ -37,12 +37,13 @@ export function useApproveCallback(
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
-    // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lessThan(amountToApprove)
-      ? pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-      : ApprovalState.APPROVED
+    // Return approval state
+    if (currentAllowance.lessThan(amountToApprove)) {
+      return pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
+    } else {
+      // Enough allowance
+      return ApprovalState.APPROVED
+    }
   }, [amountToApprove, currentAllowance, pendingApproval, spender])
 
   const tokenContract = useTokenContract(token?.address)
@@ -120,6 +121,7 @@ export function useApproveCallbackFromTrade(
 ) {
   const { chainId } = useActiveWeb3React()
   const v3SwapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
+
   const amountToApprove = useMemo(
     () => (trade && trade.inputAmount.currency.isToken ? trade.maximumAmountIn(allowedSlippage) : undefined),
     [trade, allowedSlippage]
