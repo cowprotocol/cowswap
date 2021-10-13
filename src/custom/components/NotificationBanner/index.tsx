@@ -21,6 +21,7 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
   justify-content: space-between;
   align-items: center;
   display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
+  z-index: 1;
 `
 
 const StyledClose = styled(X)`

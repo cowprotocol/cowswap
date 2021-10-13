@@ -1,5 +1,6 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { stringify } from 'qs'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
 import { registerOnWindow } from '../../utils/misc'
@@ -17,12 +18,6 @@ import QuoteError, {
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
 import { FeeInformation, FeeQuoteParams, PriceInformation, PriceQuoteParams } from 'utils/price'
-import { AppDataDoc } from 'utils/metadata'
-import MetadataError, {
-  MetadataApiErrorCodeDetails,
-  MetadataApiErrorCodes,
-  MetadataApiErrorObject,
-} from './errors/MetadataError'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { GAS_FEE_ENDPOINTS } from 'constants/index'
@@ -82,11 +77,29 @@ export interface OrderMetaData {
   signature: string
 }
 
+export interface TradeMetaData {
+  blockNumber: number
+  logIndex: number
+  orderUid: OrderID
+  owner: string
+  sellToken: string
+  buyToken: string
+  sellAmount: string
+  buyAmount: string
+  sellAmountBeforeFees: string
+  txHash: string
+}
+
 export interface UnsupportedToken {
   [token: string]: {
     address: string
     dateAdded: number
   }
+}
+
+type PaginationParams = {
+  limit?: number
+  offset?: number
 }
 
 function _getApiBaseUrl(chainId: ChainId): string {
@@ -189,11 +202,6 @@ const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
   description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
 }
 
-const UNHANDLED_METADATA_ERROR: MetadataApiErrorObject = {
-  errorType: MetadataApiErrorCodes.UNHANDLED_GET_ERROR,
-  description: MetadataApiErrorCodeDetails.UNHANDLED_GET_ERROR,
-}
-
 async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams) {
   if (!response.ok) {
     const errorObj: ApiErrorObject = await response.json()
@@ -274,6 +282,30 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
   }
 }
 
+type GetTradesParams = {
+  chainId: ChainId
+  owner: string
+} & PaginationParams
+
+export async function getTrades(params: GetTradesParams): Promise<TradeMetaData[]> {
+  const { chainId, owner, limit, offset } = params
+  const qsParams = stringify({ owner, limit, offset })
+  console.log('[util:operator] Get trades for', chainId, owner, { limit, offset })
+  try {
+    const response = await _get(chainId, `/trades?${qsParams}`)
+
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      throw new Error(errorResponse)
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    console.error('Error getting trades:', error)
+    throw new Error('Error getting trades: ' + error)
+  }
+}
+
 export type ProfileData = {
   totalTrades: number
   totalReferrals: number
@@ -306,60 +338,6 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   }
 }
 
-export async function getAppDataDoc(chainId: ChainId, address: string): Promise<AppMetadata | null> {
-  console.log(`[api:${API_NAME}] Get AppData doc for`, chainId, address)
-  try {
-    const response = await _get(chainId, `/appData/${address}`)
-
-    if (!response.ok) {
-      const errorResponse: MetadataApiErrorObject = await response.json()
-
-      if (errorResponse.errorType === MetadataApiErrorCodes.AddressNotFound) {
-        return null
-      }
-
-      throw new MetadataError(errorResponse)
-    } else {
-      return response.json()
-    }
-  } catch (error) {
-    console.error('Error getting AppData doc information:', error)
-    throw new MetadataError(UNHANDLED_METADATA_ERROR)
-  }
-}
-
-export type AppMetadata = {
-  user: string
-  metadata: AppDataDoc
-  hash: string
-}
-
-export type UploadMetadataParams = {
-  chainId: ChainId
-} & AppMetadata
-
-export async function uploadAppDataDoc(params: UploadMetadataParams): Promise<void> {
-  const { chainId, user, metadata, hash } = params
-  console.log(`[api:${API_NAME}] Post AppData doc`, params)
-
-  // Call API
-  // TODO: the final endpoint IS TBD
-  const response = await _post(chainId, `/metadata`, {
-    user,
-    metadata,
-    hash,
-  })
-
-  // Handle response
-  if (!response.ok) {
-    // Raise an exception
-    const errorMessage = await MetadataError.getErrorFromStatusCode(response, 'update')
-    throw new Error(errorMessage)
-  }
-
-  await response.json()
-}
-
 export interface GasFeeEndpointResponse {
   lastUpdate: string
   lowest: string
@@ -376,5 +354,5 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
 
 // Register some globals for convenience
 registerOnWindow({
-  operator: { getFeeQuote, getAppDataDoc, getOrder, sendSignedOrder, uploadAppDataDoc, apiGet: _get, apiPost: _post },
+  operator: { getFeeQuote, getTrades, getOrder, sendSignedOrder, apiGet: _get, apiPost: _post },
 })
