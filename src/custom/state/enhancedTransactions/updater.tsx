@@ -13,9 +13,16 @@ export default function Updater(): null {
   useEffect(() => {
     if (!chainId || !library) return
 
+    const blocknativeSdk = sdk[chainId]
+
+    if (!blocknativeSdk) {
+      console.warn(`TransactionUpdater::BlocknativeSdk not available`)
+      return
+    }
+
     for (const hash of pendingHashes) {
       try {
-        const { emitter } = sdk[chainId].transaction(hash)
+        const { emitter } = blocknativeSdk.transaction(hash)
         const currentHash = hash
         let isSpeedup = false
 
@@ -40,7 +47,7 @@ export default function Updater(): null {
     return () => {
       for (const hash of pendingHashes) {
         try {
-          sdk[chainId].unsubscribe(hash)
+          blocknativeSdk.unsubscribe(hash)
         } catch (error) {
           console.error('Failed to unsubscribe', hash)
         }
