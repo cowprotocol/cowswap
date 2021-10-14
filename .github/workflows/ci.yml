@@ -56,14 +56,12 @@ jobs:
         id: cache-compiled-types
         uses: actions/cache@v2
         with:
-          path: ~/src/abis/types
-          key: ${{ runner.os }}-${{ matrix.node-version }}-compiledtypes-${{ hashFiles('**/package.json') }}
+          path: | 
+            ~/src/abis
+            ~/src/custom/abis
+          key: ${{ runner.os }}-${{ matrix.node-version }}-compiledtypes-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-compiledtypes-
-
-      - name: Compile types
-        if: steps.cache-compiled-types.outputs.cache-hit != 'true'
-        run: yarn postinstall
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -156,7 +154,9 @@ jobs:
         id: cache-compiled-types
         uses: actions/cache@v2
         with:
-          path: ~/src/abis/types
+          path: |
+            ~/src/abis
+            ~/src/custom/abis
           key: ${{ runner.os }}-${{ matrix.node-version }}-compiledtypes-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-compiledtypes-
