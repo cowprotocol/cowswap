@@ -215,6 +215,7 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
     const priceQuoteError = new PriceQuoteError('Error querying price from APIs', params, [
       gpPriceResult,
       paraSwapPriceResult,
+      matcha0xPriceResult,
     ])
 
     const { baseToken, quoteToken } = params
