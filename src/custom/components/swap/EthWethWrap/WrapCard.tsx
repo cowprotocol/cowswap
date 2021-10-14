@@ -1,6 +1,5 @@
-import React from 'react'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'

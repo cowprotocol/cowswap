@@ -1,4 +1,3 @@
-import React from 'react'
 import contentFile from './TermsAndConditions.md'
 import { MarkdownPage } from 'components/Markdown'
 

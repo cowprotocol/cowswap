@@ -1,8 +1,7 @@
-import React from 'react'
 import { Token } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { DefaultTheme } from 'styled-components'
+import { DefaultTheme } from 'styled-components/macro'
 import { AlertCircle } from 'react-feather'
 import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
 import Card from 'components/Card'
@@ -75,7 +74,7 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
             </TYPE.small>
           </RowFixed>
         ) : (
-          <WarningWrapper borderRadius="4px" padding="4px" highWarning={true}>
+          <WarningWrapper $borderRadius="4px" padding="4px" highWarning={true}>
             <RowFixed>
               <AlertCircle size="10px" />
               <TYPE.body color={theme.red1} ml="4px" fontSize="10px" fontWeight={500}>

@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import JSBI from 'jsbi'
 import { DateTime } from 'luxon'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import ReactMarkdown from 'react-markdown'
 
@@ -23,7 +23,7 @@ import {
   DEFAULT_AVERAGE_BLOCK_TIME_IN_SECS,
 } from '../../constants/governance'
 import { ZERO_ADDRESS } from '../../constants/misc'
-import { UNI } from 'constants/tokens'
+import { UNI } from '../../constants/tokens'
 import { useActiveWeb3React } from '../../hooks/web3'
 import { ApplicationModal } from '../../state/application/actions'
 import { useBlockNumber, useModalOpen, useToggleDelegateModal, useToggleVoteModal } from '../../state/application/hooks'
@@ -33,6 +33,7 @@ import {
   useProposalData,
   useUserDelegatee,
   useUserVotesAsOfBlock,
+  VoteOption,
 } from '../../state/governance/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink, StyledInternalLink, TYPE } from '../../theme'
@@ -46,13 +47,14 @@ const PageWrapper = styled(AutoColumn)`
 `
 
 const ProposalInfo = styled(AutoColumn)`
-  border: 1px solid ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg0};
   border-radius: 12px;
   padding: 1.5rem;
   position: relative;
   max-width: 640px;
   width: 100%;
 `
+
 const ArrowWrapper = styled(StyledInternalLink)`
   display: flex;
   align-items: center;
@@ -129,8 +131,8 @@ export default function VotePage({
   // get data for this specific proposal
   const proposalData: ProposalData | undefined = useProposalData(Number.parseInt(governorIndex), id)
 
-  // update support based on button interactions
-  const [support, setSupport] = useState<boolean>(true)
+  // update vote option based on button interactions
+  const [voteOption, setVoteOption] = useState<VoteOption | undefined>(undefined)
 
   // modal for casting votes
   const showVoteModal = useModalOpen(ApplicationModal.VOTE)
@@ -174,7 +176,7 @@ export default function VotePage({
     availableVotes &&
     JSBI.greaterThan(availableVotes.quotient, JSBI.BigInt(0)) &&
     proposalData &&
-    proposalData.status === ProposalState.Active
+    proposalData.status === ProposalState.ACTIVE
 
   const uniBalance: CurrencyAmount<Token> | undefined = useTokenBalance(
     account ?? undefined,
@@ -202,7 +204,12 @@ export default function VotePage({
   return (
     <>
       <PageWrapper gap="lg" justify="center">
-        <VoteModal isOpen={showVoteModal} onDismiss={toggleVoteModal} proposalId={proposalData?.id} support={support} />
+        <VoteModal
+          isOpen={showVoteModal}
+          onDismiss={toggleVoteModal}
+          proposalId={proposalData?.id}
+          voteOption={voteOption}
+        />
         <DelegateModal isOpen={showDelegateModal} onDismiss={toggleDelegateModal} title={<Trans>Unlock Votes</Trans>} />
         <ProposalInfo gap="lg" justify="start">
           <RowBetween style={{ width: '100%' }}>
@@ -211,9 +218,7 @@ export default function VotePage({
                 <ArrowLeft size={20} /> All Proposals
               </Trans>
             </ArrowWrapper>
-            {proposalData && (
-              <ProposalStatus status={proposalData.status}>{ProposalState[proposalData.status]}</ProposalStatus>
-            )}
+            {proposalData && <ProposalStatus status={proposalData.status} />}
           </RowBetween>
           <AutoColumn gap="10px" style={{ width: '100%' }}>
             <TYPE.largeHeader style={{ marginBottom: '.5rem' }}>{proposalData?.title}</TYPE.largeHeader>
@@ -228,7 +233,7 @@ export default function VotePage({
                 )}
               </TYPE.main>
             </RowBetween>
-            {proposalData && proposalData.status === ProposalState.Active && !showVotingButtons && (
+            {proposalData && proposalData.status === ProposalState.ACTIVE && !showVotingButtons && (
               <GreyCard>
                 <TYPE.black>
                   <Trans>
@@ -251,9 +256,9 @@ export default function VotePage({
             <RowFixed style={{ width: '100%', gap: '12px' }}>
               <ButtonPrimary
                 padding="8px"
-                borderRadius="8px"
+                $borderRadius="8px"
                 onClick={() => {
-                  setSupport(true)
+                  setVoteOption(VoteOption.For)
                   toggleVoteModal()
                 }}
               >
@@ -261,9 +266,9 @@ export default function VotePage({
               </ButtonPrimary>
               <ButtonPrimary
                 padding="8px"
-                borderRadius="8px"
+                $borderRadius="8px"
                 onClick={() => {
-                  setSupport(false)
+                  setVoteOption(VoteOption.Against)
                   toggleVoteModal()
                 }}
               >
@@ -349,7 +354,7 @@ export default function VotePage({
                   : ''
               }
             >
-              {proposalData?.proposer && <ReactMarkdown source={proposalData?.proposer} />}
+              {proposalData?.proposer && <ReactMarkdown source={proposalData.proposer} />}
             </ProposerAddressLink>
           </AutoColumn>
         </ProposalInfo>

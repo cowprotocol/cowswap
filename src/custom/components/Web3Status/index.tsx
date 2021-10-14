@@ -1,23 +1,52 @@
-import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import { useMemo } from 'react'
+import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
-import { Web3StatusInner, Web3StatusConnected } from './Web3StatusMod'
+import { Web3StatusInner, Web3StatusConnected, Text } from './Web3StatusMod'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { getStatusIcon } from 'components/AccountDetails'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { OrderStatus } from 'state/orders/actions'
+import { ButtonSecondary } from 'components/Button'
 
 const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
+  width: 100%;
+
+  ${ButtonSecondary} {
+    height: 38px;
+
+    > p {
+      font-size: 15px;
+
+      ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+        font-size: 13px;
+      `};
+    }
+  }
 
   ${Web3StatusConnected} {
     color: ${({ theme }) => theme.wallet?.color};
     background: ${({ theme }) => theme.wallet?.background};
+    height: 38px;
+    border: 1px solid transparent;
+    box-shadow: none;
+    transform: none;
+
+    &:hover {
+      border: 1px solid ${({ theme }) => theme.primary1};
+    }
 
     > div > svg > path {
       stroke: ${({ theme }) => theme.black};
     }
+  }
+
+  ${Text} {
+    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+      font-size: 13px;
+      margin: 1px 3px;
+    `}
   }
 `
 

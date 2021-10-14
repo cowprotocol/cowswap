@@ -14,6 +14,7 @@ env:
   PR_NUMBER: ${{ github.event.number }}
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
 
 jobs:
   setup:
@@ -54,6 +55,17 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Cache generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
   test:
     name: Test
     needs: setup
@@ -76,6 +88,17 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Unit Test
         run: yarn test
@@ -107,6 +130,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
       - name: Run linters
         uses: wearerequired/lint-action@v1
         with:
@@ -137,6 +171,17 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Build Web Apps
         run: yarn build

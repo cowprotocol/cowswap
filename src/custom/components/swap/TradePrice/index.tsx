@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import TradePriceMod, { TradePriceProps } from './TradePriceMod'
 import { useHigherUSDValue /*  useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { formatSmart } from 'utils/format'

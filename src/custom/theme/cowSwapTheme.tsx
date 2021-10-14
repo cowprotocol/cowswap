@@ -1,5 +1,5 @@
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 import React, { useMemo } from 'react'
+import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, css } from 'styled-components/macro'
 
 import { Colors } from 'theme/styled'
 import {
@@ -9,10 +9,10 @@ import {
   ThemedGlobalStyle as ThemedGlobalStyleBase,
 } from 'theme/baseTheme'
 
-import { theme as themeUniswap } from '@src/theme'
+import { theme as themeUniswap, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 
-export { TYPE } from '@src/theme'
+export { TYPE, MEDIA_WIDTHS } from '@src/theme'
 export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
@@ -27,6 +27,23 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   }
 }
 
+const MEDIA_WIDTHS = {
+  ...MEDIA_WIDTHS_UNISWAP,
+  upToVerySmall: 500,
+}
+
+const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
+  (accumulator, size) => {
+    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+        ${css(a, b, c)}
+      }
+    `
+    return accumulator
+  },
+  {}
+) as any
+
 export function theme(darkmode: boolean): DefaultTheme {
   const colorsTheme = colors(darkmode)
   return {
@@ -36,6 +53,7 @@ export function theme(darkmode: boolean): DefaultTheme {
     // Overide Theme
     ...baseThemeVariables(darkmode, colorsTheme),
     ...themeVariables(darkmode, colorsTheme),
+    mediaWidth: mediaWidthTemplates,
   }
 }
 

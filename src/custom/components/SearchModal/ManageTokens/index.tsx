@@ -1,4 +1,3 @@
-import React from 'react'
 import { Token } from '@uniswap/sdk-core'
 import styled, { DefaultTheme } from 'styled-components/macro'
 import Card from 'components/Card'

@@ -3,7 +3,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 import {
   CloseIcon,
   // CustomLightSpinner

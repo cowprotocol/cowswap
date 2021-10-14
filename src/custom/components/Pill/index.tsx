@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const Pill = styled.strong<{ color?: string; bgColor?: string; minWidth?: string }>`
   padding: 0.2rem 0.4rem;

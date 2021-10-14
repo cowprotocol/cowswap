@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components/macro'
 import { BodyWrapper as BodyWrapperMod } from '@src/pages/AppBody'
 import { transparentize } from 'polished'

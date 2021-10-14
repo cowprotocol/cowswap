@@ -1,6 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
-
+import styled from 'styled-components/macro'
 import { PRODUCTION_URL } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'

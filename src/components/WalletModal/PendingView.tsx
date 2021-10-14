@@ -1,11 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import React from 'react'
 import styled from 'styled-components/macro'
-import { SUPPORTED_WALLETS } from '../../constants/wallet'
+import { SUPPORTED_WALLETS } from 'constants/wallet'
 import Option from 'components/WalletModal/Option'
 import { injected } from 'connectors'
 import { darken } from 'polished'
-import Loader from '../Loader'
+import Loader from 'components/Loader'
 import { Trans } from '@lingui/macro'
 
 const PendingSection = styled.div`

@@ -2,7 +2,7 @@ import JSBI from 'jsbi'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useEffect, useState } from 'react'
-import { UNI } from 'constants/tokens'
+import { UNI } from '../../constants/tokens'
 import { useActiveWeb3React } from '../../hooks/web3'
 import { useMerkleDistributorContract } from '../../hooks/useContract'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
@@ -162,7 +162,7 @@ export function useClaimCallback(account: string | null | undefined): {
 
     return distributorContract.estimateGas['claim'](...args, {}).then((estimatedGasLimit) => {
       return distributorContract
-        .claim(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
+        .claim(...args, { value: null, gasLimit: calculateGasMargin(chainId, estimatedGasLimit) })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
             summary: `Claimed ${unclaimedAmount?.toSignificant(4)} UNI`,

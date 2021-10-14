@@ -1,17 +1,22 @@
-import React, { useRef } from 'react'
-// import { BookOpen, Code, Info, MessageCircle, PieChart } from 'react-feather'
+import { t } from '@lingui/macro'
+import { useRef } from 'react'
+// import { BookOpen, Code, Info, MessageCircle, PieChart, Moon, Sun, Globe, ChevronLeft, Check } from 'react-feather'
 import { Link } from 'react-router-dom'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import { ReactComponent as MenuIcon } from 'assets/images/menu.svg'
 // import { useActiveWeb3React } from 'hooks/web3'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleModal } from 'state/application/hooks'
 // import { Trans } from '@lingui/macro'
-
 import { ExternalLink } from 'theme'
 // import { ButtonPrimary } from 'components/Button'
+/* import { useDarkModeManager } from 'state/user/hooks'
 
+import { L2_CHAIN_IDS, CHAIN_INFO, SupportedChainId } from 'constants/chains'
+import { LOCALE_LABEL, SupportedLocale, SUPPORTED_LOCALES } from 'constants/locales'
+import { useLocationLinkProps } from 'hooks/useLocationLinkProps'
+import { useActiveLocale } from 'hooks/useActiveLocale' */
 import { WithClassName } from 'types'
 
 export enum FlyoutAlignment {
@@ -93,7 +98,7 @@ export const MenuFlyout = styled.span<{ flyoutAlignment?: FlyoutAlignment }>`
   `};
 `
 
-export const MenuItem = styled(ExternalLink)`
+export const MenuItemBase = css`
   display: flex;
   flex: 1;
   flex-direction: row;
@@ -108,6 +113,10 @@ export const MenuItem = styled(ExternalLink)`
   > svg {
     margin-right: 8px;
   }
+`
+
+export const MenuItem = styled(ExternalLink)`
+  ${MenuItemBase}
 `
 
 export const InternalMenuItem = styled(Link)`
@@ -125,65 +134,161 @@ export const InternalMenuItem = styled(Link)`
   }
 `
 
+/* const InternalLinkMenuItem = styled(InternalMenuItem)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+  justify-content: space-between;
+  text-decoration: none;
+  :hover {
+    color: ${({ theme }) => theme.text1};
+    cursor: pointer;
+    text-decoration: none;
+  }
+`
+
+const ToggleMenuItem = styled.button`
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text2};
+  :hover {
+    color: ${({ theme }) => theme.text1};
+    cursor: pointer;
+    text-decoration: none;
+  }
+` */
+
 // const CODE_LINK = 'https://github.com/Uniswap/uniswap-interface'
 
+/* function LanguageMenuItem({ locale, active, key }: { locale: SupportedLocale; active: boolean; key: string }) {
+  const { to, onClick } = useLocationLinkProps(locale)
+
+  if (!to) return null
+
+  return (
+    <InternalLinkMenuItem onClick={onClick} key={key} to={to}>
+      <div>{LOCALE_LABEL[locale]}</div>
+      {active && <Check opacity={0.6} size={16} />}
+    </InternalLinkMenuItem>
+  )
+} */
+
+/* function LanguageMenu({ close }: { close: () => void }) {
+  const activeLocale = useActiveLocale()
+
+  return (
+    <MenuFlyout>
+      <ToggleMenuItem onClick={close}>
+        <ChevronLeft size={16} />
+      </ToggleMenuItem>
+      {SUPPORTED_LOCALES.map((locale) => (
+        <LanguageMenuItem locale={locale} active={activeLocale === locale} key={locale} />
+      ))}
+    </MenuFlyout>
+  )
+} */
+
 export default function Menu(props: { children?: React.ReactNode } & WithClassName) {
-  // const { account } = useActiveWeb3React()
+  // const { account, chainId } = useActiveWeb3React()
 
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.MENU)
   const toggle = useToggleModal(ApplicationModal.MENU)
   useOnClickOutside(node, open ? toggle : undefined)
-  // const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
+  /* const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
+  const showUNIClaimOption = Boolean(!!account && !!chainId && !L2_CHAIN_IDS.includes(chainId))
+  const { infoLink } = CHAIN_INFO[chainId ? chainId : SupportedChainId.MAINNET]
 
+  const [darkMode, toggleDarkMode] = useDarkModeManager()
+
+  const [menu, setMenu] = useState<'main' | 'lang'>('main')
+
+  useEffect(() => {
+    setMenu('main')
+  }, [open])
+ */
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any} className={props?.className}>
-      <StyledMenuButton onClick={toggle}>
+      <StyledMenuButton onClick={toggle} aria-label={t`Menu`}>
         <StyledMenuIcon />
       </StyledMenuButton>
 
       {open &&
-        /*
-        <MenuFlyout>
-          <MenuItem href="https://uniswap.org/">
-            <Info size={14} />
-            <div>
-              <Trans>About</Trans>
-            </div>
-          </MenuItem>
-          <MenuItem href="https://docs.uniswap.org/">
-            <BookOpen size={14} />
-            <div>
-              <Trans>Docs</Trans>
-            </div>
-          </MenuItem>
-          <MenuItem href={CODE_LINK}>
-            <Code size={14} />
-            <div>
-              <Trans>Code</Trans>
-            </div>
-          </MenuItem>
-          <MenuItem href="https://discord.gg/FCfyBSbCU5">
-            <MessageCircle size={14} />
-            <div>
-              <Trans>Discord</Trans>
-            </div>
-          </MenuItem>
-          <MenuItem href="https://info.uniswap.org/">
-            <PieChart size={14} />
-            <div>
-              <Trans>Analytics</Trans>
-            </div>
-          </MenuItem>
-          {account && (
-            <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
-              <Trans>Claim UNI</Trans>
-            </UNIbutton>
-          )}
-        </MenuFlyout>
-        
-        */
+        /* (() => {
+          switch (menu) {
+            case 'lang':
+              return <LanguageMenu close={() => setMenu('main')} />
+            case 'main':
+            default:
+              return (
+                <MenuFlyout>
+                  <MenuItem href="https://uniswap.org/">
+                    <div>
+                      <Trans>About</Trans>
+                    </div>
+                    <Info opacity={0.6} size={16} />
+                  </MenuItem>
+                  <MenuItem href="https://docs.uniswap.org/">
+                    <div>
+                      <Trans>Docs</Trans>
+                    </div>
+                    <BookOpen opacity={0.6} size={16} />
+                  </MenuItem>
+                  <MenuItem href={CODE_LINK}>
+                    <div>
+                      <Trans>Code</Trans>
+                    </div>
+                    <Code opacity={0.6} size={16} />
+                  </MenuItem>
+                  <MenuItem href="https://discord.gg/FCfyBSbCU5">
+                    <div>
+                      <Trans>Discord</Trans>
+                    </div>
+                    <MessageCircle opacity={0.6} size={16} />
+                  </MenuItem>
+                  <MenuItem href={infoLink}>
+                    <div>
+                      <Trans>Analytics</Trans>
+                    </div>
+                    <PieChart opacity={0.6} size={16} />
+                  </MenuItem>
+                  <ToggleMenuItem onClick={() => setMenu('lang')}>
+                    <div>
+                      <Trans>Language</Trans>
+                    </div>
+                    <Globe opacity={0.6} size={16} />
+                  </ToggleMenuItem>
+                  <ToggleMenuItem onClick={() => toggleDarkMode()}>
+                    <div>{darkMode ? <Trans>Light Theme</Trans> : <Trans>Dark Theme</Trans>}</div>
+                    {darkMode ? <Moon opacity={0.6} size={16} /> : <Sun opacity={0.6} size={16} />}
+                  </ToggleMenuItem>
+                  {showUNIClaimOption && (
+                    <UNIbutton
+                      onClick={openClaimModal}
+                      padding="8px 16px"
+                      width="100%"
+                      $borderRadius="12px"
+                      mt="0.5rem"
+                    >
+                      <Trans>Claim UNI</Trans>
+                    </UNIbutton>
+                  )}
+                </MenuFlyout>
+                )
+          }
+        })()} */
         props?.children}
     </StyledMenu>
   )
