@@ -142,7 +142,7 @@
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
     "start:service-worker": "yarn build && yarn serve -s build",
     "mock": "REACT_APP_MOCK=true yarn start",
-    "build": "yarn i18n:extract && craco build",
+    "build": "craco build",
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "ipfs-deploy build -p infura -O",
     "test": "NODE_PATH=src/custom craco test --env=jsdom",
