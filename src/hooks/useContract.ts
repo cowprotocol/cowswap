@@ -37,7 +37,7 @@ import { Quoter, NonfungiblePositionManager, UniswapInterfaceMulticall } from 't
 import { V3Migrator } from 'types/v3/V3Migrator'
 import { getContract } from 'utils'
 import { Erc20, ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Weth } from '../abis/types'
-import { UNI, WETH9_EXTENDED } from '../constants/tokens'
+import { UNI, WETH9_EXTENDED } from 'constants/tokens'
 import { useActiveWeb3React } from './web3'
 
 // returns null on errors

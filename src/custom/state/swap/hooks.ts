@@ -450,10 +450,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
 
     const native = ETHER.onChain(chainId || DEFAULT_NETWORK_FOR_LISTS)
 
-    const [isNativeIn, isNativeOut] = [
-      input?.currency && native.equals(input.currency),
-      output?.currency && native.equals(output.currency),
-    ]
+    const [isNativeIn, isNativeOut] = [input?.currency?.isNative, output?.currency?.isNative]
     const [isWrappedIn, isWrappedOut] = [input?.currency?.equals(wrappedToken), output?.currency?.equals(wrappedToken)]
 
     return {
