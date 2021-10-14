@@ -85,17 +85,17 @@ Make a copy of `.env` named `.env.local`, this will allow you to set your own co
 Modify the environment variables in `.env.production`, or override them in build time.
 
 ### Price feeds
+
 CowSwap tries to find the best price available onchain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
-|        Name         |             Environment variable         |              Type            | Description          |
-|---------------------|------------------------------------------|------------------------------|----------------------|
-| **Gnosis Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [Gnosis Protocol](https://docs.cowswap.exchange/) price estimation. Used for all price estimation. |
-| **Paraswap**        | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations. |
-| **0x**             | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`)  | [0x](https://0x.org/) price estimation. Used for all price estimation. |
+| Name                | Environment variable                     | Type                         | Description                                                                                                        |
+| ------------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Gnosis Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [Gnosis Protocol](https://docs.cowswap.exchange/) price estimation. Used for all price estimation.                 |
+| **Paraswap**        | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
+| **0x**              | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
 | **Coingecko**       | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
-
 
 ### Metadata attached to orders (AppData)
 
