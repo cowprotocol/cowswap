@@ -88,14 +88,6 @@ const initialState: ListsStateByNetwork = {
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
-      const state = baseState[chainId]
-      state.gpUnsupportedTokens[restToken.address.toLowerCase()] = restToken
-    })
-    .addCase(removeGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, address } }) => {
-      const state = baseState[chainId]
-      delete state.gpUnsupportedTokens[address.toLowerCase()]
-    })
     .addCase(
       fetchTokenList.pending,
       (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, requestId, url } }) => {
@@ -125,10 +117,10 @@ export default createReducer(initialState, (builder) =>
           if (upgradeType === VersionUpgrade.NONE) return
           if (loadingRequestId === null || loadingRequestId === requestId) {
             state.byUrl[url] = {
+              current,
+              pendingUpdate: tokenList,
               loadingRequestId: null,
               error: null,
-              current: current,
-              pendingUpdate: tokenList,
             }
           }
         } else {
@@ -138,10 +130,10 @@ export default createReducer(initialState, (builder) =>
           }
 
           state.byUrl[url] = {
-            loadingRequestId: null,
-            error: null,
             current: tokenList,
             pendingUpdate: null,
+            loadingRequestId: null,
+            error: null,
           }
         }
       }
@@ -156,10 +148,10 @@ export default createReducer(initialState, (builder) =>
         }
 
         state.byUrl[url] = {
-          loadingRequestId: null,
-          error: errorMessage,
           current: null,
           pendingUpdate: null,
+          loadingRequestId: null,
+          error: errorMessage,
         }
       }
     )
@@ -206,8 +198,8 @@ export default createReducer(initialState, (builder) =>
       }
       state.byUrl[url] = {
         ...state.byUrl[url],
-        pendingUpdate: null,
         current: state.byUrl[url].pendingUpdate,
+        pendingUpdate: null,
       }
     })
     .addCase(
@@ -264,4 +256,12 @@ export default createReducer(initialState, (builder) =>
         }
       }
     )
+    .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
+      const state = baseState[chainId]
+      state.gpUnsupportedTokens[restToken.address.toLowerCase()] = restToken
+    })
+    .addCase(removeGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, address } }) => {
+      const state = baseState[chainId]
+      delete state.gpUnsupportedTokens[address.toLowerCase()]
+    })
 )

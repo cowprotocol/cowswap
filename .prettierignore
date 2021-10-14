@@ -1,4 +1,5 @@
 # generated stuff
+/src/state/data/generated.ts
 build
 .git
 .github

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Info } from 'react-feather'
 import AppBody from 'pages/AppBody'
 

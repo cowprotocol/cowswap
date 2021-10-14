@@ -1,14 +1,14 @@
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { useUSDCValue } from '../../hooks/useUSDCPrice'
-import { TYPE } from 'theme'
+import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
-import { isAddress, shortenAddress } from 'utils'
+import { isAddress, shortenAddress } from '../../utils'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { AutoColumn } from '../Column'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
@@ -22,7 +22,7 @@ import { LightCard } from '../Card'
 
 import TradePrice from '../swap/TradePrice'
 
-export const ArrowWrapper = styled.div`
+const ArrowWrapper = styled.div`
   padding: 4px;
   border-radius: 12px;
   height: 32px;

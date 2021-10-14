@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import styled from 'styled-components/macro'
 import ReactGA from 'react-ga'
 import { TYPE, CloseIcon } from 'theme'
@@ -15,7 +15,7 @@ import { ExternalLink } from 'theme'
 import ListLogo from 'components/ListLogo'
 import { PaddedColumn, Checkbox, TextDot } from 'components/SearchModal/styleds'
 // import { TokenList } from '@uniswap/token-lists'
-// import { useDispatch } from 'react-redux'
+
 // import { AppDispatch } from 'state'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 // import { removeList, enableList } from 'state/lists/actions'
@@ -104,7 +104,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
                     </TYPE.body>
                     <TextDot />
                     <TYPE.main fontSize={'16px'} ml="6px">
-                      {list.tokens.length} tokens
+                      <Trans>{list.tokens.length} tokens</Trans>
                     </TYPE.main>
                   </RowFixed>
                   <ExternalLink href={`https://tokenlists.org/token-list?url=${listURL}`}>
@@ -152,7 +152,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
           <ButtonPrimary
             disabled={!confirmed}
             altDisabledStyle={true}
-            borderRadius="20px"
+            $borderRadius="20px"
             padding="10px 1rem"
             onClick={handleAddList}
           >

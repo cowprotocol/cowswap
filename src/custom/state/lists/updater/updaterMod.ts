@@ -1,23 +1,22 @@
-import { useAllLists } from 'state/lists/hooks'
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
+// import { SupportedChainId } from '@src/constants/chains'
+import { /* ARBITRUM_LIST, OPTIMISM_LIST, */ DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useCallback, useEffect } from 'react'
-
-import { useActiveWeb3React } from 'hooks/web3'
+import { useAppDispatch } from 'state/hooks'
+import { useAllLists } from 'state/lists/hooks'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import useInterval from 'hooks/useInterval'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { acceptListUpdate } from 'state/lists/actions'
+import { useActiveWeb3React } from 'hooks/web3'
+import { acceptListUpdate /* , enableList  */ } from 'state/lists/actions'
 import { useActiveListUrls } from 'state/lists/hooks'
-import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
-import { useAppDispatch } from 'state/hooks'
+
 // MOD: add updateVersion for chainId change init
 import { updateVersion } from 'state/global/actions'
 import { supportedChainId } from 'utils/supportedChainId'
 
 export default function Updater(): null {
-  // MOD: chainId
-  // const { library } = useActiveWeb3React()
-  const { chainId: connectedChainId, library } = useActiveWeb3React()
+  const { chainId: connectedChainId, library } = useActiveWeb3React() // MOD: chainId
   // chainId returns number or undefined we need to map against supported chains
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
@@ -28,10 +27,6 @@ export default function Updater(): null {
   const lists = useAllLists()
   const activeListUrls = useActiveListUrls()
 
-  // TODO: removed in V3, review if this is ok
-  // initiate loading
-  // useAllInactiveTokens()
-
   const fetchList = useFetchListCallback()
   const fetchAllListsCallback = useCallback(() => {
     if (!isWindowVisible) return
@@ -40,6 +35,16 @@ export default function Updater(): null {
     )
   }, [fetchList, isWindowVisible, lists])
 
+  /* useEffect(() => {
+    if (chainId && [SupportedChainId.OPTIMISM, SupportedChainId.OPTIMISTIC_KOVAN].includes(chainId)) {
+      // dispatch(enableList(OPTIMISM_LIST))
+      dispatch(enableList({ url: OPTIMISM_LIST, chainId }))
+    }
+    if (chainId && [SupportedChainId.ARBITRUM_ONE, SupportedChainId.ARBITRUM_RINKEBY].includes(chainId)) {
+      // dispatch(enableList(ARBITRUM_LIST))
+      dispatch(enableList({ url: ARBITRUM_LIST, chainId }))
+    }
+  }, [chainId, dispatch]) */
   // fetch all lists every 10 minutes, but only after we initialize library
   useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
 

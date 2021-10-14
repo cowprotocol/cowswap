@@ -1,21 +1,23 @@
-import { configureStore, getDefaultMiddleware, StateFromReducersMapObject } from '@reduxjs/toolkit'
+import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 
-// UNI REDUCERS
 import application from '@src/state/application/reducer'
 // import { updateVersion } from '@src/state/global/actions'
 import user from '@src/state/user/reducer'
 import swap from '@src/state/swap/reducer'
 import mint from '@src/state/mint/reducer'
 import mintV3 from '@src/state/mint/v3/reducer'
-// import lists from './lists/reducer'
+// import lists from '@src/state/lists/reducer'
 import burn from '@src/state/burn/reducer'
 import burnV3 from '@src/state/burn/v3/reducer'
+import logs from '@src/state/logs/slice'
 import multicall from '@src/state/multicall/reducer'
+import { api as dataApi } from '@src/state/data/slice'
+import { routingApi } from '@src/state/routing/slice'
 // CUSTOM REDUCERS
-import lists from './lists/reducer'
-import orders from './orders/reducer'
-import price from './price/reducer'
+import lists from 'state/lists/reducer'
+import orders from 'state/orders/reducer'
+import price from 'state/price/reducer'
 import gas from 'state/gas/reducer'
 import profile from 'state/profile/reducer'
 import { updateVersion } from 'state/global/actions'
@@ -34,6 +36,10 @@ const UNISWAP_REDUCERS = {
   burn,
   burnV3,
   multicall,
+  // lists,
+  logs,
+  [dataApi.reducerPath]: dataApi.reducer,
+  [routingApi.reducerPath]: routingApi.reducer,
 }
 
 const reducers = {
@@ -51,13 +57,14 @@ const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'ga
 
 const store = configureStore({
   reducer: reducers,
-  middleware: [
-    ...getDefaultMiddleware({ thunk: false }),
-    save({ states: PERSISTED_KEYS, debounce: 1000 }),
-    popupMiddleware,
-    soundMiddleware,
-  ],
-  preloadedState: load({ states: PERSISTED_KEYS }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ thunk: true, serializableCheck: false })
+      .concat(dataApi.middleware)
+      .concat(routingApi.middleware)
+      .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
+      .concat(popupMiddleware)
+      .concat(soundMiddleware),
+  preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
 
 // this instantiate the app / reducers in several places using the default chainId

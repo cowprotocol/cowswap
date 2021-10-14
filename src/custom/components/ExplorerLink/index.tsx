@@ -1,4 +1,3 @@
-import React from 'react'
 import { ExternalLink } from 'theme'
 import { useActiveWeb3React } from '@src/hooks/web3'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'utils'

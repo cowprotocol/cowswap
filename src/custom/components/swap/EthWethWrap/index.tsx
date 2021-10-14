@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
-import styled from 'styled-components'
+import { useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
+import styled from 'styled-components/macro'
 import { TransactionResponse } from '@ethersproject/providers'
 import { AlertTriangle } from 'react-feather'
 import { Currency, Token, CurrencyAmount } from '@uniswap/sdk-core'

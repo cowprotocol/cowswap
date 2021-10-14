@@ -1,5 +1,5 @@
 import JSBI from 'jsbi'
-import React, { useCallback, useMemo, useState, useEffect, ReactNode } from 'react'
+import { useCallback, useMemo, useState, useEffect, ReactNode } from 'react'
 import { Fraction, Percent, Price, Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { Redirect, RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
@@ -7,8 +7,8 @@ import { AutoColumn } from '../../components/Column'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import FormattedCurrencyAmount from '../../components/FormattedCurrencyAmount'
 import { AutoRow, RowBetween, RowFixed } from '../../components/Row'
-import { WETH9_EXTENDED } from 'constants/tokens'
-import { V2_FACTORY_ADDRESSES } from 'constants/addresses'
+import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
+import { WETH9_EXTENDED } from '../../constants/tokens'
 import { useV2LiquidityTokenPermit } from '../../hooks/useERC20Permit'
 import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useTotalSupply } from '../../hooks/useTotalSupply'
@@ -25,7 +25,7 @@ import { BodyWrapper } from '../AppBody'
 import { PoolState, usePool } from 'hooks/usePools'
 import { FeeAmount, Pool, Position, priceToClosestTick, TickMath } from '@uniswap/v3-sdk'
 import { BlueCard, DarkGreyCard, LightCard, YellowCard } from 'components/Card'
-import { ApprovalState, useApproveCallback } from '@src/hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { Dots } from 'components/swap/styleds'
 import { ButtonConfirmed } from 'components/Button'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
@@ -49,7 +49,7 @@ import DoubleCurrencyLogo from 'components/DoubleLogo'
 import Badge, { BadgeVariant } from 'components/Badge'
 
 import { useAppDispatch } from 'state/hooks'
-import SettingsTab from '@src/components/Settings'
+import SettingsTab from 'components/Settings'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -176,7 +176,7 @@ function V2PairMigration({
 
   // the following is a small hack to get access to price range data/input handlers
   const [baseToken, setBaseToken] = useState(token0)
-  const { ticks, pricesAtTicks, invertPrice, invalidRange, outOfRange } = useV3DerivedMintInfo(
+  const { ticks, pricesAtTicks, invertPrice, invalidRange, outOfRange, ticksAtLimit } = useV3DerivedMintInfo(
     token0,
     token1,
     feeAmount,
@@ -270,7 +270,8 @@ function V2PairMigration({
       typeof tickLower !== 'number' ||
       typeof tickUpper !== 'number' ||
       !v3Amount0Min ||
-      !v3Amount1Min
+      !v3Amount1Min ||
+      !chainId
     )
       return
 
@@ -331,7 +332,7 @@ function V2PairMigration({
       .multicall(data)
       .then((gasEstimate) => {
         return migrator
-          .multicall(data, { gasLimit: calculateGasMargin(gasEstimate) })
+          .multicall(data, { gasLimit: calculateGasMargin(chainId, gasEstimate) })
           .then((response: TransactionResponse) => {
             ReactGA.event({
               category: 'Migrate',
@@ -349,6 +350,7 @@ function V2PairMigration({
         setConfirmingMigration(false)
       })
   }, [
+    chainId,
     isNotUniswap,
     migrator,
     noLiquidity,
@@ -541,10 +543,11 @@ function V2PairMigration({
             currencyA={invertPrice ? currency1 : currency0}
             currencyB={invertPrice ? currency0 : currency1}
             feeAmount={feeAmount}
+            ticksAtLimit={ticksAtLimit}
           />
 
           {outOfRange ? (
-            <YellowCard padding="8px 12px" borderRadius="12px">
+            <YellowCard padding="8px 12px" $borderRadius="12px">
               <RowBetween>
                 <AlertTriangle stroke={theme.yellow3} size="16px" />
                 <TYPE.yellow ml="12px" fontSize="12px">
@@ -557,7 +560,7 @@ function V2PairMigration({
           ) : null}
 
           {invalidRange ? (
-            <YellowCard padding="8px 12px" borderRadius="12px">
+            <YellowCard padding="8px 12px" $borderRadius="12px">
               <RowBetween>
                 <AlertTriangle stroke={theme.yellow3} size="16px" />
                 <TYPE.yellow ml="12px" fontSize="12px">

@@ -1,5 +1,5 @@
 import { Currency, Token } from '@uniswap/sdk-core'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import useLast from '../../hooks/useLast'
 import { WrappedTokenInfo } from '../../state/lists/wrappedTokenInfo'
 import Modal from '../Modal'
@@ -10,7 +10,7 @@ import Manage from 'components/SearchModal/Manage'
 import { TokenList } from '@uniswap/token-lists'
 import { ImportList } from 'components/SearchModal/ImportList'
 
-interface CurrencySearchModalProps {
+export interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
@@ -18,6 +18,8 @@ interface CurrencySearchModalProps {
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
   className?: string
+  showCurrencyAmount?: boolean
+  disableNonToken?: boolean
 }
 
 export enum CurrencyModalView {
@@ -35,6 +37,8 @@ export default function CurrencySearchModal({
   otherSelectedCurrency,
   showCommonBases = false,
   className,
+  showCurrencyAmount = true,
+  disableNonToken = false,
 }: CurrencySearchModalProps) {
   const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.manage)
   const lastOpen = useLast(isOpen)
@@ -76,6 +80,8 @@ export default function CurrencySearchModal({
           selectedCurrency={selectedCurrency}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={showCommonBases}
+          showCurrencyAmount={showCurrencyAmount}
+          disableNonToken={disableNonToken}
           showImportView={() => setModalView(CurrencyModalView.importToken)}
           setImportToken={setImportToken}
           showManageView={() => setModalView(CurrencyModalView.manage)}

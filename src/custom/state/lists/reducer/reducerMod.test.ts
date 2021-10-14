@@ -34,22 +34,7 @@ const EMPTY_STORE = {
     activeListUrls: undefined,
     gpUnsupportedTokens: {},
   },
-  [ChainId.GOERLI]: {
-    byUrl: {},
-    activeListUrls: undefined,
-    gpUnsupportedTokens: {},
-  },
-  [ChainId.KOVAN]: {
-    byUrl: {},
-    activeListUrls: undefined,
-    gpUnsupportedTokens: {},
-  },
   [ChainId.RINKEBY]: {
-    byUrl: {},
-    activeListUrls: undefined,
-    gpUnsupportedTokens: {},
-  },
-  [ChainId.ROPSTEN]: {
     byUrl: {},
     activeListUrls: undefined,
     gpUnsupportedTokens: {},

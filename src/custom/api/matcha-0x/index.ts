@@ -41,6 +41,10 @@ export interface MatchaPriceQuote extends MatchaBaseQuote {
 }
 
 function getMatchaChainId(chainId: ChainId): NetworkID | null {
+  if (!ENABLED) {
+    return null
+  }
+
   switch (chainId) {
     // Support: Mainnet, Ropsten, Polygon, Binance Smart Chain
     // See https://0x.org/docs/api#introduction
@@ -59,13 +63,12 @@ function getApiUrl(): Partial<Record<ChainId, string>> {
   // See https://0x.org/docs/api#introduction
   return {
     [ChainId.MAINNET]: 'https://api.0x.org/swap',
-    // we don't support ropsten but let's leave it for posterity
-    [ChainId.ROPSTEN]: 'https://ropsten.api.0x.org/swap',
   }
 }
 
 // Defaults
 const API_NAME = 'Matcha(0x)'
+const ENABLED = process.env.REACT_APP_PRICE_FEED_0X_ENABLED !== 'false'
 const API_BASE_URL = getApiUrl()
 const API_VERSION = 'v1'
 const DEFAULT_HEADERS = {

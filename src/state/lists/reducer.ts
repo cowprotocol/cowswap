@@ -1,4 +1,4 @@
-import { DEFAULT_ACTIVE_LIST_URLS, UNSUPPORTED_LIST_URLS } from './../../constants/lists'
+import { DEFAULT_ACTIVE_LIST_URLS } from '../../constants/lists'
 import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
 import { TokenList } from '@uniswap/token-lists/dist/types'
@@ -36,7 +36,7 @@ export type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<
 const initialState: ListsState = {
   lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
   byUrl: {
-    ...DEFAULT_LIST_OF_LISTS.concat(UNSUPPORTED_LIST_URLS).reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
+    ...DEFAULT_LIST_OF_LISTS.reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
       memo[listUrl] = NEW_LIST_STATE
       return memo
     }, {}),
@@ -68,10 +68,10 @@ export default createReducer(initialState, (builder) =>
         if (upgradeType === VersionUpgrade.NONE) return
         if (loadingRequestId === null || loadingRequestId === requestId) {
           state.byUrl[url] = {
+            current,
+            pendingUpdate: tokenList,
             loadingRequestId: null,
             error: null,
-            current: current,
-            pendingUpdate: tokenList,
           }
         }
       } else {
@@ -81,10 +81,10 @@ export default createReducer(initialState, (builder) =>
         }
 
         state.byUrl[url] = {
-          loadingRequestId: null,
-          error: null,
           current: tokenList,
           pendingUpdate: null,
+          loadingRequestId: null,
+          error: null,
         }
       }
     })
@@ -95,10 +95,10 @@ export default createReducer(initialState, (builder) =>
       }
 
       state.byUrl[url] = {
-        loadingRequestId: null,
-        error: errorMessage,
         current: null,
         pendingUpdate: null,
+        loadingRequestId: null,
+        error: errorMessage,
       }
     })
     .addCase(addList, (state, { payload: url }) => {
@@ -139,8 +139,8 @@ export default createReducer(initialState, (builder) =>
       }
       state.byUrl[url] = {
         ...state.byUrl[url],
-        pendingUpdate: null,
         current: state.byUrl[url].pendingUpdate,
+        pendingUpdate: null,
       }
     })
     .addCase(updateVersion, (state) => {
