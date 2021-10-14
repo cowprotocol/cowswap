@@ -54,6 +54,7 @@ jobs:
           REACT_APP_ADDITIONAL_SERVICES_API_URL_XDAI: https://ido-api-xdai.gnosis.io/
           REACT_APP_NETWORK_URL_MAINNET: https://mainnet.infura.io/v3/${{ secrets.INFURA_PROJECT_KEY }}
           REACT_APP_ADDITIONAL_SERVICES_API_URL_MAINNET: https://ido-api-mainnet.gnosis.io/
+          REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
 
       - name: "Deploy to IPFS with infura"
         run: yarn ipfs:publish
