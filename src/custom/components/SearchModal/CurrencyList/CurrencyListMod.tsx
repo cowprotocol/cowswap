@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -112,6 +112,7 @@ function CurrencyRow({
   isSelected,
   otherSelected,
   style,
+  showCurrencyAmount,
   isUnsupported,
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
@@ -121,6 +122,7 @@ function CurrencyRow({
   isSelected: boolean
   otherSelected: boolean
   style: CSSProperties
+  showCurrencyAmount?: boolean
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
   isUnsupported: boolean // gp-added
@@ -156,10 +158,11 @@ function CurrencyRow({
       </Column>
       {/* <TokenTags currency={currency} /> */}
       <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} />
-      <RowFixed style={{ justifySelf: 'flex-end' }}>
-        {/* {balance ? <Balance balance={balance} /> : account ? <Loader /> : null} */}
-        {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
-      </RowFixed>
+      {showCurrencyAmount && (
+        <RowFixed style={{ justifySelf: 'flex-end' }}>
+          {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
+        </RowFixed>
+      )}
     </MenuItem>
   )
 }
@@ -174,7 +177,7 @@ function BreakLineComponent({ style }: { style: CSSProperties }) {
   const theme = useTheme()
   return (
     <FixedContentRow style={style}>
-      <LightGreyCard padding="8px 12px" borderRadius="8px">
+      <LightGreyCard padding="8px 12px" $borderRadius="8px">
         <RowBetween>
           <RowFixed>
             <TokenListLogoWrapper src={TokenListLogo} />
@@ -205,6 +208,7 @@ export default function CurrencyList({
   fixedListRef,
   showImportView,
   setImportToken,
+  showCurrencyAmount,
   BalanceComponent = Balance, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
 }: {
@@ -217,6 +221,8 @@ export default function CurrencyList({
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showImportView: () => void
   setImportToken: (token: Token) => void
+  showCurrencyAmount?: boolean
+  disableNonToken?: boolean
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
@@ -264,6 +270,7 @@ export default function CurrencyList({
             BalanceComponent={BalanceComponent} // gp-swap added
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
             isUnsupported={isUnsupported}
+            showCurrencyAmount={showCurrencyAmount}
           />
         )
       } else {
@@ -276,6 +283,7 @@ export default function CurrencyList({
       otherCurrency,
       selectedCurrency,
       setImportToken,
+      showCurrencyAmount,
       showImportView,
       checkIsUnsupported,
       BalanceComponent,

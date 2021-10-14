@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import { StyledSVG } from 'components/Loader'
 import { LinkStyledButton } from 'theme'
 import { TransactionState as OldTransactionState } from '../TransactionMod'

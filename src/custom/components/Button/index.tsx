@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown } from 'react-feather'
 
@@ -20,6 +19,8 @@ import {
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
 import { ButtonSize } from 'theme'
+
+export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
@@ -106,13 +107,18 @@ export const ButtonLight = styled(ButtonLightMod)`
 
 export const ButtonGray = styled(ButtonGrayMod)`
   // CSS overrides
+  &:hover,
+  &:focus {
+    box-shadow: none;
+  }
 `
 
 export const ButtonSecondary = styled(ButtonSecondaryMod)`
   // CSS overrides
   transition: box-shadow 0.1s ease-in-out;
 
-  &:hover {
+  &:hover,
+  &:focus {
     box-shadow: none;
   }
 `

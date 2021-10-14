@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from 'api/gnosisProtocol'

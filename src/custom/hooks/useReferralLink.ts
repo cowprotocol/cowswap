@@ -1,18 +1,27 @@
-import { stringify } from 'qs'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
 export const REFERRAL_QUERY_PARAM = 'referral'
 
-export function getReferralLink(walletAddress: string): string {
-  const referralParam = { [REFERRAL_QUERY_PARAM]: walletAddress }
+export type ReferralLink = {
+  link: string
+  prefix: string
+  address: string
+}
 
-  return `${window.location.origin}/#/?${stringify(referralParam)}`
+export function getReferralLink(walletAddress: string): ReferralLink {
+  const prefix = `${window.location.origin}/#/?${REFERRAL_QUERY_PARAM}=`
+
+  return {
+    link: prefix + walletAddress,
+    prefix,
+    address: walletAddress,
+  }
 }
 
 /**
  * Returns the referral link with the connected wallet address
  */
-export default function useReferralLink(): string | null {
+export default function useReferralLink(): ReferralLink | null {
   const { account } = useWalletInfo()
 
   if (account) {

@@ -1,16 +1,14 @@
 import { Trans } from '@lingui/macro'
-import React from 'react'
 import { Text } from 'rebass'
 import { Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 
 import { COMMON_BASES } from 'constants/routing'
 import { currencyId } from 'utils/currencyId'
-// import { AutoColumn } from 'components/Column'
 import QuestionHelper from 'components/QuestionHelper'
 import { AutoRow } from 'components/Row'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { BaseWrapper, CommonBasesRow, CommonBasesProps, AutoColumn } from '.' // mod
+import { BaseWrapper, CommonBasesRow, CommonBasesProps, MobileWrapper } from '.' // mod
 
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   // mod
@@ -39,7 +37,7 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
   const bases = typeof chainId !== 'undefined' ? COMMON_BASES[chainId] ?? [] : []
 
   return bases.length > 0 ? (
-    <AutoColumn gap="md">
+    <MobileWrapper gap="md">
       <AutoRow>
         <Text fontWeight={500} fontSize={14}>
           {/* <Trans>Common bases</Trans> */}
@@ -64,6 +62,6 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
           )
         })}
       </CommonBasesRow>
-    </AutoColumn>
+    </MobileWrapper>
   ) : null
 }

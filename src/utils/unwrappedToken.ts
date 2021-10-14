@@ -1,5 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
-import { GpEther as ExtendedEther, WETH9_EXTENDED } from 'constants/tokens'
+import { ExtendedEther, WETH9_EXTENDED } from 'constants/tokens'
 import { supportedChainId } from './supportedChainId'
 
 export function unwrappedToken(currency: Currency): Currency {

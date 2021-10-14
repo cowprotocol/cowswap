@@ -1,7 +1,7 @@
 pull_request_rules:
   - name: Merge approved and green PRs when tagged with 'Auto-merge'
     conditions:
-      - "#approved-reviews-by>=2"
+      - '#approved-reviews-by>=2'
       - label="Auto-merge"
       - check-success=Deploy
       - check-success=Cypress
@@ -13,7 +13,7 @@ pull_request_rules:
   - name: automatic merge for Dependabot pull requests
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
-      - "#approved-reviews-by>=0"
+      - '#approved-reviews-by>=0'
       - label!=["WIP", "Don't merge", "On hold"]
       - check-success=Deploy
       - base=develop
@@ -22,4 +22,3 @@ pull_request_rules:
         method: squash
         strict: smart+fasttrack
         commit_message: title+body
-    

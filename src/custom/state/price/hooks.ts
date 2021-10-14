@@ -16,11 +16,14 @@ import {
   RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 type GetNewQuoteCallback = (params: GetQuoteParams) => void
 type RefreshQuoteCallback = (params: RefreshQuoteParams) => void
 type AddPriceCallback = (params: UpdateQuoteParams) => void
 type SetQuoteErrorCallback = (params: SetQuoteErrorParams) => void
+
+type QuoteParams = { chainId?: ChainId; token?: string | null }
 
 export const useAllQuotes = ({
   chainId,
@@ -34,7 +37,7 @@ export const useAllQuotes = ({
   })
 }
 
-export const useQuote = ({ token, chainId }: Partial<ClearQuoteParams>): QuoteInformationObject | undefined => {
+export const useQuote = ({ token, chainId }: QuoteParams): QuoteInformationObject | undefined => {
   return useSelector<AppState, QuoteInformationObject | undefined>((state) => {
     const fees = chainId && state.price.quotes[chainId]
 
@@ -55,7 +58,7 @@ interface UseGetQuoteAndStatus {
   isRefreshingQuote: boolean
 }
 
-export const useGetQuoteAndStatus = (params: Partial<ClearQuoteParams>): UseGetQuoteAndStatus => {
+export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus => {
   const quote = useQuote(params)
   const isLoading = useIsQuoteLoading()
 

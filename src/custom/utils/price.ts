@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import BigNumberJs from 'bignumber.js'
+import * as Sentry from '@sentry/browser'
 
 import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
@@ -211,7 +212,26 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
     return _filterWinningPrice({ ...options, kind: params.kind, amounts, priceQuotes })
   } else {
     // It was not possible to get a price estimation
-    throw new PriceQuoteError('Error querying price from APIs', params, [gpPriceResult, paraSwapPriceResult])
+    const priceQuoteError = new PriceQuoteError('Error querying price from APIs', params, [
+      gpPriceResult,
+      paraSwapPriceResult,
+    ])
+
+    const { baseToken, quoteToken } = params
+
+    const sentryError = new Error()
+    Object.assign(sentryError, priceQuoteError, {
+      message: `Error querying best price from APIs - baseToken: ${baseToken}, quoteToken: ${quoteToken}`,
+      name: 'PriceErrorObject',
+    })
+
+    // report this to sentry
+    Sentry.captureException(sentryError, {
+      tags: { errorType: 'getBestPrice' },
+      contexts: { params },
+    })
+
+    throw priceQuoteError
   }
 }
 

@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Page, { Content, Title } from 'components/Page'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { DISCORD_LINK } from 'constants/index'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme, StyledInternalLink } from 'theme'
@@ -324,7 +324,10 @@ export default function Faq() {
             . Whilst CowSwap has taken a major step forward in terms of security and stability, as with other crypto
             protocols or dapps, your use is at your own risk.{' '}
             <strong>
-              Please review our <StyledInternalLink to="/terms-and-conditions">Terms and Conditions</StyledInternalLink>
+              Please review our{' '}
+              <StyledInternalLink to="/terms-and-conditions">
+                <strong>Terms and Conditions</strong>
+              </StyledInternalLink>
               .
             </strong>
           </p>

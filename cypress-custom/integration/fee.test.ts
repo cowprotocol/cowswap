@@ -1,7 +1,7 @@
 import { SupportedChainId as ChainId } from '../../src/custom/constants/chains'
 import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
-import { FeeQuoteParams, FeeInformation } from '../../src/custom/priceApi/price'
+import { FeeQuoteParams, FeeInformation } from '../../src/custom/utils/price'
 import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
@@ -60,6 +60,8 @@ describe('Fee endpoint', () => {
       buyToken: DAI,
       amount: parseUnits('0.1', DEFAULT_SELL_TOKEN.decimals).toString(),
       kind: OrderKind.SELL,
+      fromDecimals: DEFAULT_SELL_TOKEN.decimals,
+      toDecimals: 6,
     })
 
     // GIVEN: -
@@ -78,6 +80,8 @@ describe('Fee: Complex fetch and persist fee', () => {
     buyToken: DAI,
     amount: parseUnits(INPUT_AMOUNT, DEFAULT_SELL_TOKEN.decimals).toString(),
     kind: OrderKind.SELL,
+    fromDecimals: DEFAULT_SELL_TOKEN.decimals,
+    toDecimals: 6,
   })
 
   // Needs to run first to pass because of Cypress async issues between tests
@@ -128,6 +132,8 @@ describe('Fee: simple checks it exists', () => {
     buyToken: DAI,
     amount: parseUnits(INPUT_AMOUNT, DEFAULT_SELL_TOKEN.decimals).toString(),
     kind: OrderKind.SELL,
+    fromDecimals: DEFAULT_SELL_TOKEN.decimals,
+    toDecimals: 6,
   })
   const FEE_RESP = {
     // 1 min in future

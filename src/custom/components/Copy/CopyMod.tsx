@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components/macro'
 import useCopyClipboard from 'hooks/useCopyClipboard'
 
@@ -11,8 +10,15 @@ export const CopyIcon = styled(LinkStyledButton)`
   color: ${({ theme }) => theme.text3};
   flex-shrink: 0;
   display: flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
   font-size: 0.825rem;
+  border-radius: 50%;
+  background-color: transparent;
+  min-width: 20px;
+  min-height: 20px;
+  align-self: flex-end;
   :hover,
   :active,
   :focus {
@@ -35,7 +41,7 @@ export default function CopyHelper(props: { toCopy: string; children?: React.Rea
   return (
     <>
       {clickableLink && <LinkStyledButton onClick={() => setCopied(toCopy)}>{toCopy}</LinkStyledButton>}
-      <CopyIcon onClick={() => setCopied(toCopy)}>
+      <CopyIcon isCopied={isCopied} onClick={() => setCopied(toCopy)}>
         {isCopied ? (
           <TransactionStatusText
             isCopied={isCopied} // mod

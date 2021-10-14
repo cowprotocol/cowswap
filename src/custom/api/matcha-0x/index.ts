@@ -63,8 +63,6 @@ function getApiUrl(): Partial<Record<ChainId, string>> {
   // See https://0x.org/docs/api#introduction
   return {
     [ChainId.MAINNET]: 'https://api.0x.org/swap',
-    // we don't support ropsten but let's leave it for posterity
-    [ChainId.ROPSTEN]: 'https://ropsten.api.0x.org/swap',
   }
 }
 

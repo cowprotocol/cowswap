@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import ToggleUni, { ToggleProps as TogglePropsUni, ToggleElement } from '@src/components/Toggle'
 
 export type ToggleProps = TogglePropsUni

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components/macro'
 import SVG from 'react-inlinesvg'
 import QuestionImage from 'assets/svg/question.svg'

@@ -5,11 +5,8 @@ import { Colors } from 'theme/styled'
 import { colors as colorsUniswap } from '@src/theme'
 import { ButtonSize } from 'theme'
 
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
-import React, { useMemo } from 'react'
+import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { theme as themeUniswap } from '@src/theme'
-import { useIsDarkMode } from 'state/user/hooks'
 import { transparentize } from 'polished'
 
 export { TYPE } from '@src/theme'
@@ -53,6 +50,9 @@ export function colors(darkMode: boolean): Colors {
     blueShade2: '#011e34',
     border: darkMode ? '#3a3b5a' : 'rgb(58 59 90 / 10%)',
     border2: darkMode ? '#254F83' : '#afcbda',
+    cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
+    cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
+    cardShadow2: darkMode ? 'rgba(1, 10, 16, 0.15)' : 'rgba(11, 37, 53, 0.93)',
     disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)',
     redShade: darkMode ? '#842100' : '#AE2C00',
     textLink: darkMode ? '#ffffff' : '#AE2C00',
@@ -184,25 +184,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       background: colorsTheme.bg1,
     },
   }
-}
-
-export function theme(darkmode: boolean): DefaultTheme {
-  const colorsTheme = colors(darkmode)
-  return {
-    ...themeUniswap(darkmode),
-    ...colorsTheme,
-
-    // Overide Theme
-    ...themeVariables(darkmode, colorsTheme),
-  }
-}
-
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useIsDarkMode()
-
-  const themeObject = useMemo(() => theme(darkMode), [darkMode])
-
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
 export const UniFixedGlobalStyle = css`

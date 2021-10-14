@@ -26,6 +26,7 @@ import MetadataError, {
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { GAS_FEE_ENDPOINTS } from 'constants/index'
+import * as Sentry from '@sentry/browser'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -194,13 +195,31 @@ const UNHANDLED_METADATA_ERROR: MetadataApiErrorObject = {
   description: MetadataApiErrorCodeDetails.UNHANDLED_GET_ERROR,
 }
 
-async function _handleQuoteResponse(response: Response) {
+async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams) {
   if (!response.ok) {
     const errorObj: ApiErrorObject = await response.json()
 
     // we need to map the backend error codes to match our own for quotes
     const mappedError = mapOperatorErrorToQuoteError(errorObj)
-    throw new QuoteError(mappedError)
+    const quoteError = new QuoteError(mappedError)
+
+    if (params) {
+      const { sellToken, buyToken } = params
+
+      const sentryError = new Error()
+      Object.assign(sentryError, quoteError, {
+        message: `Error querying fee from API - sellToken: ${sellToken}, buyToken: ${buyToken}`,
+        name: 'FeeErrorObject',
+      })
+
+      // report to sentry
+      Sentry.captureException(sentryError, {
+        tags: { errorType: 'getFeeQuote' },
+        contexts: { params },
+      })
+    }
+
+    throw quoteError
   } else {
     return response.json()
   }
@@ -240,7 +259,7 @@ export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformatio
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
   })
 
-  return _handleQuoteResponse(response)
+  return _handleQuoteResponse(response, params)
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
@@ -257,6 +276,38 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
   } catch (error) {
     console.error('Error getting order information:', error)
     throw new OperatorError(UNHANDLED_ORDER_ERROR)
+  }
+}
+
+export type ProfileData = {
+  totalTrades: number
+  totalReferrals: number
+  tradeVolumeUsd: number
+  referralVolumeUsd: number
+  lastUpdated: string
+}
+
+export async function getProfileData(chainId: ChainId, address: string): Promise<ProfileData | null> {
+  console.log(`[api:${API_NAME}] Get profile data for`, chainId, address)
+  try {
+    if (chainId !== ChainId.MAINNET) {
+      console.info('Profile data is only available for mainnet')
+      return null
+    }
+
+    const response = await _get(chainId, `/profile/${address}`)
+
+    // TODO: Update the error handler when the openAPI profile spec is defined
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      console.log(errorResponse)
+      throw new Error(errorResponse?.description)
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    console.error('Error getting profile data:', error)
+    throw error
   }
 }
 

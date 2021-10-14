@@ -1,23 +1,13 @@
-import { SupportedChainId } from '../constants/chains'
+import { L1_CHAIN_IDS, SupportedChainId } from '../constants/chains'
 
 export function constructSameAddressMap<T extends string>(
   address: T,
-  includeArbitrum: boolean
+  additionalNetworks: SupportedChainId[] = []
 ): { [chainId: number]: T } {
-  if (includeArbitrum)
-    return {
-      [SupportedChainId.MAINNET]: address,
-      [SupportedChainId.ROPSTEN]: address,
-      [SupportedChainId.RINKEBY]: address,
-      [SupportedChainId.GOERLI]: address,
-      [SupportedChainId.KOVAN]: address,
-      [SupportedChainId.ARBITRUM_ONE]: address,
-    }
-  return {
-    [SupportedChainId.MAINNET]: address,
-    [SupportedChainId.ROPSTEN]: address,
-    [SupportedChainId.RINKEBY]: address,
-    [SupportedChainId.GOERLI]: address,
-    [SupportedChainId.KOVAN]: address,
-  }
+  return (L1_CHAIN_IDS as readonly SupportedChainId[])
+    .concat(additionalNetworks)
+    .reduce<{ [chainId: number]: T }>((memo, chainId) => {
+      memo[chainId] = address
+      return memo
+    }, {})
 }

@@ -13,6 +13,8 @@ env:
   REPO_NAME_SLUG: gpswapui
   PR_NUMBER: ${{ github.event.number }}
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+  REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
 
 jobs:
   setup:
@@ -53,6 +55,17 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Cache generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
   test:
     name: Test
     needs: setup
@@ -76,6 +89,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
       - name: Unit Test
         run: yarn test
 
@@ -83,6 +107,47 @@ jobs:
       #   uses: coverallsapp/github-action@v1.1.2
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  lint:
+    name: Lint
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+          github_token: ${{ secrets.github_token }}
+          auto_fix: ${{ github.event_name == 'pull_request' }}
 
   build:
     name: Build apps
@@ -106,6 +171,17 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/types/v3
+            src/abis/types
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Build Web Apps
         run: yarn build

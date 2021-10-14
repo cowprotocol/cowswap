@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { AdvancedSwapDetailsProps } from '../AdvancedSwapDetails'
 
 import { AutoColumn } from 'components/Column'

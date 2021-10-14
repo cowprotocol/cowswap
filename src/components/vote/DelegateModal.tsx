@@ -1,5 +1,5 @@
-import React, { ReactNode, useState } from 'react'
-import { UNI } from 'constants/tokens'
+import { ReactNode, useState } from 'react'
+import { UNI } from '../../constants/tokens'
 
 import Modal from '../Modal'
 import { AutoColumn } from '../Column'

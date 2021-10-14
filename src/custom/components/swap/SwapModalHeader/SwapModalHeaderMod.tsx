@@ -1,10 +1,10 @@
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import React, { useState, useContext, useMemo } from 'react'
+import { useContext, useState, useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
 import { ButtonPrimary } from 'components/Button'
@@ -18,6 +18,7 @@ import { TruncatedText, SwapShowAcceptChanges } from 'components/swap/styleds'
 import { Trans } from '@lingui/macro'
 
 import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
+// import { LightCard } from '../Card'
 
 // import TradePrice from 'components/swap/TradePrice'
 

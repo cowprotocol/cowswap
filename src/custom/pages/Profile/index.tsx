@@ -1,87 +1,123 @@
-import React from 'react'
-import Page, { Title, Content, GdocsListStyle } from 'components/Page'
-import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
-import CowsImg from 'custom/assets/cow-swap/cows-side-by-side.png'
-import { ButtonPrimary, ButtonSecondary } from 'custom/components/Button'
-
-const ButtonGroup = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-`
-
-const ButtonContainer = styled.div`
-  margin: 0 0.5rem;
-`
-
-const FlexContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`
-
-const TextGroup = styled.div`
-  margin-left: 1.5rem;
-`
-
-const Wrapper = styled(Page)`
-  ${GdocsListStyle}
-
-  max-width: 1000px;
-  padding-top: 1rem;
-
-  span[role='img'] {
-    font-size: 1.8em;
-  }
-`
+import { Txt } from 'assets/styles/styled'
+import {
+  FlexCol,
+  FlexWrap,
+  Wrapper,
+  GridWrap,
+  CardHead,
+  StyledTitle,
+  ItemTitle,
+  ChildWrapper,
+} from 'pages/Profile/styled'
+import { useActiveWeb3React } from 'hooks/web3'
+import Copy from 'components/Copy/CopyMod'
+import { HelpCircle, RefreshCcw } from 'react-feather'
+import Web3Status from 'components/Web3Status'
+import useReferralLink from 'hooks/useReferralLink'
+import useFetchProfile from 'hooks/useFetchProfile'
+import { numberFormatter } from 'utils/format'
+import useTimeAgo from 'hooks/useTimeAgo'
 
 export default function Profile() {
+  const referralLink = useReferralLink()
+  const { account } = useActiveWeb3React()
+  const profileData = useFetchProfile()
+  const lastUpdated = useTimeAgo(profileData?.lastUpdated)
+
   return (
     <Wrapper>
-      <Content>
-        <FlexContainer>
-          <div>
-            <Title>Profile</Title>
-            <TextGroup>
-              <strong>
-                <span role="img" aria-label="Milk">
-                  🥛
+      <GridWrap>
+        <CardHead>
+          <StyledTitle>Profile overview</StyledTitle>
+          {account && (
+            <Txt>
+              <RefreshCcw size={16} />
+              &nbsp;&nbsp;
+              <Txt secondary>Last updated:&nbsp;</Txt>
+              <strong>{lastUpdated || '-'}</strong>
+            </Txt>
+          )}
+        </CardHead>
+        <ChildWrapper>
+          <Txt fs={16}>
+            <strong>Your referral url</strong>
+          </Txt>
+          <Txt fs={14} center>
+            {referralLink ? (
+              <>
+                <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
+                  {referralLink.prefix}
+                  <strong>{referralLink.address}</strong>
+                  <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                    <Copy toCopy={referralLink.link} />
+                  </span>
                 </span>
-                Milk taste better, when shared with friends!
-              </strong>
-              <p>
-                You love CowSwap, we know that, but what if we told you you can let others love it too and get some
-                rewards for doing so.
-              </p>
-              <br />
-              <p>Join CowSwap affiliate program, and start now accruing rewards every time they trade.</p>
-              <p>
-                The best part, is your referrals will also get rewards for trading if they join CowSwap using your link.
-              </p>
-            </TextGroup>
-          </div>
-          <img src={CowsImg} alt="Cows" style={{ marginBottom: '1rem' }} />
-        </FlexContainer>
-
-        <b style={{ marginLeft: '1.5rem' }}>Create your referral link now:</b>
-        <ButtonGroup>
-          <ButtonContainer>
-            <ButtonPrimary>
-              <Trans>Create affiliate link</Trans>
-            </ButtonPrimary>
-          </ButtonContainer>
-          <ButtonContainer>
-            <ButtonSecondary>
-              <Trans>Learn about the Affiliate Program</Trans>
-            </ButtonSecondary>
-          </ButtonContainer>
-        </ButtonGroup>
-      </Content>
+              </>
+            ) : (
+              '-'
+            )}
+          </Txt>
+        </ChildWrapper>
+        <GridWrap horizontal>
+          <ChildWrapper>
+            <ItemTitle>
+              Trades&nbsp;
+              <HelpCircle size={14} />
+            </ItemTitle>
+            <FlexWrap className="item">
+              <FlexCol>
+                <span role="img" aria-label="farmer">
+                  🧑‍🌾
+                </span>
+                <strong>{formatInt(profileData?.totalTrades)}</strong>
+                <span>Total trades</span>
+              </FlexCol>
+              <FlexCol>
+                <span role="img" aria-label="moneybag">
+                  💰
+                </span>
+                <strong>{formatDecimal(profileData?.tradeVolumeUsd)}</strong>
+                <span>Total traded volume</span>
+              </FlexCol>
+            </FlexWrap>
+          </ChildWrapper>
+          <ChildWrapper>
+            <ItemTitle>
+              Referrals&nbsp;
+              <HelpCircle size={14} />
+            </ItemTitle>
+            <FlexWrap className="item">
+              <FlexCol>
+                <span role="img" aria-label="handshake">
+                  🤝
+                </span>
+                <strong>{formatInt(profileData?.totalReferrals)}</strong>
+                <span>Total referrals</span>
+              </FlexCol>
+              <FlexCol>
+                <span role="img" aria-label="wingedmoney">
+                  💸
+                </span>
+                <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
+                <span>Referrals Volume</span>
+              </FlexCol>
+            </FlexWrap>
+          </ChildWrapper>
+        </GridWrap>
+        {!account && (
+          <FlexWrap>
+            <Web3Status openOrdersPanel={() => console.log('TODO')} />
+          </FlexWrap>
+        )}
+      </GridWrap>
     </Wrapper>
   )
+}
+
+const formatDecimal = (number?: number): string => {
+  return number ? numberFormatter.format(number) : '-'
+}
+
+const formatInt = (number?: number): string => {
+  return number ? number.toLocaleString() : '-'
 }

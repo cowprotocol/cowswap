@@ -1,5 +1,10 @@
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
-import React, { useMemo } from 'react'
+import {
+  DefaultTheme,
+  ThemeProvider as StyledComponentsThemeProvider,
+  createGlobalStyle,
+  css,
+} from 'styled-components/macro'
+import { useMemo } from 'react'
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
 import Cursor3 from 'assets/cow-swap/cursor3.gif'
@@ -13,7 +18,7 @@ import {
   UniThemedGlobalStyle,
 } from 'theme/baseTheme'
 
-import { theme as themeUniswap } from '@src/theme'
+import { theme as themeUniswap, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 import { cowSwapBackground, cowSwapLogo } from './cowSwapAssets'
 
@@ -23,7 +28,7 @@ import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { ModalContentWrapper } from 'components/Settings/SettingsMod'
 
-export { TYPE } from '@src/theme'
+export { TYPE, MEDIA_WIDTHS } from '@src/theme'
 export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
@@ -33,6 +38,9 @@ export function colors(darkMode: boolean): Colors {
     // ****** base ******
     white: darkMode ? '#c5daef' : '#ffffff',
     black: darkMode ? '#021E34' : '#000000',
+    cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
+    cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
+    cardShadow2: darkMode ? 'rgba(11, 37, 53, 0.93)' : 'rgba(1, 10, 16, 0.15)',
 
     // ****** text ******
     text1: darkMode ? '#c5daef' : '#000000',
@@ -46,6 +54,8 @@ export function colors(darkMode: boolean): Colors {
     bg3: darkMode ? '#163861' : '#d5e8f0',
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
+    bg6: darkMode ? '#163861' : '#b0dfee',
+    bg7: darkMode ? '#1F4471' : '#CEE7EF',
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
@@ -108,12 +118,13 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
             ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
             : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
         background-attachment: fixed;
+        backdrop-filter: blur(40px);
       `,
     },
     appBody: {
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      boxShadow: `4px 4px 0px ${colorsTheme.black};`,
       borderRadius: '16px',
-      border: `3px solid ${colorsTheme.black}`,
+      border: `3px solid ${colorsTheme.black};`,
       padding: '12px 6px',
       maxWidth: {
         normal: '460px',
@@ -191,6 +202,23 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   }
 }
 
+const MEDIA_WIDTHS = {
+  ...MEDIA_WIDTHS_UNISWAP,
+  upToVerySmall: 500,
+}
+
+const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
+  (accumulator, size) => {
+    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+        ${css(a, b, c)}
+      }
+    `
+    return accumulator
+  },
+  {}
+) as any
+
 export function theme(darkmode: boolean): DefaultTheme {
   const colorsTheme = colors(darkmode)
   return {
@@ -200,6 +228,7 @@ export function theme(darkmode: boolean): DefaultTheme {
     // Overide Theme
     ...baseThemeVariables(darkmode, colorsTheme),
     ...themeVariables(darkmode, colorsTheme),
+    mediaWidth: mediaWidthTemplates,
   }
 }
 
