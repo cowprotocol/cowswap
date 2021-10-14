@@ -328,17 +328,22 @@ export default function Swap({
   const { state: signatureState, gatherPermitSignature } = useERC20PermitFromTrade(trade, allowedSlippage)
 
   const handleApprove = useCallback(async () => {
+    let approveRequired = false
     if (signatureState === UseERC20PermitState.NOT_SIGNED && gatherPermitSignature) {
       try {
         await gatherPermitSignature()
       } catch (error) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
         if (error?.code !== 4001) {
-          await approveCallback()
+          approveRequired = true
         }
       }
     } else {
-      await approveCallback()
+      approveRequired = true
+    }
+
+    if (approveRequired) {
+      return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
     }
   }, [approveCallback, gatherPermitSignature, signatureState])
 
@@ -407,6 +412,7 @@ export default function Swap({
         })
       })
       .catch((error) => {
+        console.error('Error swapping tokens', error)
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,
@@ -771,7 +777,11 @@ export default function Swap({
                 </Text>
               </ButtonError>
             ) : showWrap ? (
-              <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} buttonSize={ButtonSize.BIG}>
+              <ButtonPrimary
+                disabled={Boolean(wrapInputError)}
+                onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
+                buttonSize={ButtonSize.BIG}
+              >
                 {wrapInputError ??
                   (wrapType === WrapType.WRAP ? (
                     <Trans>Wrap</Trans>

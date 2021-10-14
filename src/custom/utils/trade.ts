@@ -53,7 +53,7 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function sendOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
+export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
   const {
     kind,
     chainId,

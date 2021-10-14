@@ -1,25 +1,26 @@
 import { useMemo } from 'react'
-import { Currency, /* Ether as ETHER, */ Percent, TradeType, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, /* Ether as ETHER, */ Percent, TradeType, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 
-import { useAddPendingOrder } from 'state/orders/hooks'
+import { AddOrderCallback, AddUnserialisedPendingOrderParams, useAddPendingOrder } from 'state/orders/hooks'
 
 import { SwapCallbackState } from '@src/hooks/useSwapCallback'
 import useENS from '@src/hooks/useENS'
 
 import { useActiveWeb3React } from 'hooks/web3'
-import { useWrapEther } from 'hooks/useWrapEther'
+import { useWrapEther, Wrap } from 'hooks/useWrapEther'
 
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { sendOrder } from 'utils/trade'
+import { signAndPostOrder } from 'utils/trade'
 import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
-import { usePresignOrder } from 'hooks/usePresignOrder'
+import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
+import { Web3Provider } from '@ethersproject/providers'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -60,8 +61,185 @@ interface SwapCallbackParams {
   closeModals: () => void
 }
 
+interface SwapParams {
+  chainId: number
+  account: string
+  allowsOffchainSigning: boolean
+  library: Web3Provider
+
+  // Trade details and derived data
+  trade: TradeGp
+  slippagePercent: Percent // in bips
+  deadline: number
+  inputAmountWithSlippage: CurrencyAmount<Currency>
+  outputAmountWithSlippage: CurrencyAmount<Currency>
+  sellToken: Token
+  buyToken: Token
+  isSellEth: boolean
+  isBuyEth: boolean
+  recipientAddressOrName: string | null
+  recipient: string
+
+  // Callbacks
+  wrapEther: Wrap | null
+  presignOrder: PresignOrder
+
+  // Ui actions
+  addPendingOrder: AddOrderCallback
+  openTransactionConfirmationModal: () => void
+  closeModals: () => void
+}
+
+/**
+ * Internal swap function that does the actually swap logic.
+ *
+ * @param params All the required swap dependencies
+ * @returns
+ */
+async function _swap(params: SwapParams): Promise<string> {
+  const {
+    chainId,
+    account,
+    allowsOffchainSigning,
+    library,
+
+    // Trade details and derived data
+    trade,
+    slippagePercent,
+    deadline,
+    inputAmountWithSlippage,
+    outputAmountWithSlippage,
+    sellToken,
+    buyToken,
+    isSellEth,
+    isBuyEth,
+    recipientAddressOrName,
+    recipient,
+
+    // Callbacks
+    wrapEther,
+    presignOrder,
+
+    // Ui actions
+    addPendingOrder,
+    openTransactionConfirmationModal,
+    closeModals,
+  } = params
+
+  const {
+    executionPrice,
+    inputAmount: expectedInputAmount,
+    inputAmountWithFee,
+    fee,
+    outputAmount: expectedOutputAmount,
+    tradeType,
+  } = trade
+
+  const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
+  const validTo = calculateValidTo(deadline)
+
+  // Log the trade
+  console.trace(
+    `[useSwapCallback] >> Trading ${tradeType} 
+      1. Original Input = ${inputAmountWithSlippage.toExact()}
+      2. Fee = ${fee?.feeAsCurrency?.toExact() || '0'}
+      3. Input Adjusted for Fee = ${inputAmountWithFee.toExact()}
+      4. Expected Output = ${expectedOutputAmount.toExact()}
+      4b. Output with SLIPPAGE = ${outputAmountWithSlippage.toExact()}
+      5. Price = ${executionPrice.toFixed()} 
+      6. Details: `,
+    {
+      expectedInputAmount: expectedInputAmount.toExact(),
+      expectedOutputAmount: expectedOutputAmount.toExact(),
+      inputAmountEstimated: inputAmountWithSlippage.toExact(),
+      outputAmountEstimated: outputAmountWithSlippage.toExact(),
+      executionPrice: executionPrice.toFixed(),
+      sellToken,
+      buyToken,
+      validTo,
+      isSellEth,
+      isBuyEth,
+      tradeType: tradeType.toString(),
+      slippagePercent: slippagePercent.toFixed() + '%',
+      recipient,
+      recipientAddressOrName,
+      chainId,
+    }
+  )
+
+  // Wrap ETH if necessary
+  const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmountWithSlippage) : undefined
+
+  // Show confirmation modal
+  openTransactionConfirmationModal()
+
+  // Post order
+  const postOrderPromise = signAndPostOrder({
+    kind,
+    account,
+    chainId,
+    // unadjusted inputAmount
+    inputAmount: _computeInputAmountForSignature({
+      input: trade.inputAmountWithFee,
+      inputWithSlippage: inputAmountWithSlippage,
+      fee: trade.fee?.feeAsCurrency,
+      kind,
+    }),
+    // unadjusted outputAmount
+    outputAmount: outputAmountWithSlippage,
+    // pass Trade feeAmount as raw string or give 0
+    feeAmount: fee?.feeAsCurrency,
+    sellToken,
+    buyToken,
+    validTo,
+    recipient,
+    recipientAddressOrName,
+    signer: library.getSigner(),
+    allowsOffchainSigning,
+  })
+
+  let order: AddUnserialisedPendingOrderParams
+
+  // Wait for promises, and close modals
+  try {
+    if (wrapPromise) {
+      // Wait for order and the wrap
+      const [orderAux, wrapTx] = await Promise.all([postOrderPromise, wrapPromise])
+      console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
+      order = orderAux
+    } else {
+      // Wait just for the order
+      order = await postOrderPromise
+    }
+  } finally {
+    closeModals()
+  }
+
+  const { id: orderId } = order
+
+  // Send pre-sign transaction, if necessary
+  if (!allowsOffchainSigning) {
+    const presignTx = await presignOrder(orderId)
+    console.log('Pre-sign order has been sent with: ', order, presignTx)
+  }
+
+  // Update the state with the new pending order
+  addPendingOrder(order)
+
+  return orderId
+}
+
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
+
+/**
+ * Returns a callback function that will execute the swap (or null if any required param is missing)
+ *
+ * This callback will return the UID
+ *
+ * @param params
+ * @returns
+ */
 export function useSwapCallback(params: SwapCallbackParams): {
   state: SwapCallbackState
   callback: null | (() => Promise<string>)
@@ -119,100 +297,38 @@ export function useSwapCallback(params: SwapCallbackParams): {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
 
+    const swapParams: SwapParams = {
+      chainId,
+      account,
+      allowsOffchainSigning,
+      library,
+
+      // Trade details and derived data
+      trade,
+      slippagePercent: allowedSlippage,
+      deadline,
+      inputAmountWithSlippage,
+      outputAmountWithSlippage,
+      sellToken,
+      buyToken,
+      isBuyEth,
+      isSellEth,
+      recipientAddressOrName,
+      recipient,
+
+      // Callbacks
+      wrapEther,
+      presignOrder,
+
+      // Ui actions
+      addPendingOrder,
+      closeModals,
+      openTransactionConfirmationModal,
+    }
+
     return {
       state: SwapCallbackState.VALID,
-      callback: async function onSwap(): Promise<string> {
-        const {
-          executionPrice,
-          inputAmount: expectedInputAmount,
-          inputAmountWithFee,
-          fee,
-          outputAmount: expectedOutputAmount,
-          tradeType,
-        } = trade
-
-        const slippagePercent = allowedSlippage
-        const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
-        const validTo = calculateValidTo(deadline)
-
-        console.trace(
-          `[useSwapCallback] >> Trading ${tradeType} 
-            1. Original Input = ${inputAmountWithSlippage.toExact()}
-            2. Fee = ${fee?.feeAsCurrency?.toExact() || '0'}
-            3. Input Adjusted for Fee = ${inputAmountWithFee.toExact()}
-            4. Expected Output = ${expectedOutputAmount.toExact()}
-            4b. Output with SLIPPAGE = ${outputAmountWithSlippage.toExact()}
-            5. Price = ${executionPrice.toFixed()} 
-            6. Details: `,
-          {
-            expectedInputAmount: expectedInputAmount.toExact(),
-            expectedOutputAmount: expectedOutputAmount.toExact(),
-            inputAmountEstimated: inputAmountWithSlippage.toExact(),
-            outputAmountEstimated: outputAmountWithSlippage.toExact(),
-            executionPrice: executionPrice.toFixed(),
-            sellToken,
-            buyToken,
-            validTo,
-            isSellEth,
-            isBuyEth,
-            tradeType: tradeType.toString(),
-            allowedSlippage,
-            slippagePercent: slippagePercent.toFixed() + '%',
-            recipient,
-            recipientAddressOrName,
-            chainId,
-          }
-        )
-
-        const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmountWithSlippage) : undefined
-
-        openTransactionConfirmationModal()
-
-        const postOrderPromise = sendOrder({
-          kind,
-          account,
-          chainId,
-          // unadjusted inputAmount
-          inputAmount: _computeInputAmountForSignature({
-            input: trade.inputAmountWithFee,
-            inputWithSlippage: inputAmountWithSlippage,
-            fee: trade.fee?.feeAsCurrency,
-            kind,
-          }),
-          // unadjusted outputAmount
-          outputAmount: outputAmountWithSlippage,
-          // pass Trade feeAmount as raw string or give 0
-          feeAmount: fee?.feeAsCurrency,
-          sellToken,
-          buyToken,
-          validTo,
-          recipient,
-          recipientAddressOrName,
-          signer: library.getSigner(),
-          allowsOffchainSigning,
-        })
-        postOrderPromise.finally(closeModals)
-
-        if (wrapPromise) {
-          const wrapTx = await wrapPromise
-          console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
-        }
-
-        // Wait until the order is posted to the API
-        const unserializedPendingOrder = await postOrderPromise
-        const orderid = unserializedPendingOrder.id
-
-        if (!allowsOffchainSigning) {
-          // Send the ethereum tx
-          const presignTx = await presignOrder(orderid)
-          console.log('Pre-sign order has been sent with: ', unserializedPendingOrder, presignTx)
-        }
-
-        // Update the state with the new pending order
-        addPendingOrder(unserializedPendingOrder)
-
-        return orderid
-      },
+      callback: () => _swap(swapParams),
       error: null,
     }
   }, [

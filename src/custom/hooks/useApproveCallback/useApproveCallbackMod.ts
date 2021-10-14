@@ -82,22 +82,24 @@ export function useApproveCallback(
     })
 
     openTransactionConfirmationModal(`Approve token ${amountToApprove.currency.symbol} for trading`)
-    return tokenContract
-      .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas),
-      })
-      .then((response: TransactionResponse) => {
-        addTransaction({
-          hash: response.hash,
-          summary: 'Approve ' + amountToApprove.currency.symbol,
-          approval: { tokenAddress: token.address, spender: spender },
+    return (
+      tokenContract
+        .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
+          gasLimit: calculateGasMargin(estimatedGas),
         })
-      })
-      .catch((error: Error) => {
-        console.debug('Failed to approve token', error)
-        throw error
-      })
-      .finally(closeModals)
+        .then((response: TransactionResponse) => {
+          addTransaction({
+            hash: response.hash,
+            summary: 'Approve ' + amountToApprove.currency.symbol,
+            approval: { tokenAddress: token.address, spender: spender },
+          })
+        })
+        // .catch((error: Error) => {
+        //   console.debug('Failed to approve token', error)
+        //   throw error
+        // })
+        .finally(closeModals)
+    )
   }, [
     approvalState,
     token,
