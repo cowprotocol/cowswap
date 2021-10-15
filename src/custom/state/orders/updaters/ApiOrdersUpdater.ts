@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
@@ -10,7 +10,7 @@ import { useAllTokens } from 'hooks/Tokens'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { AMOUNT_OF_ORDERS_TO_FETCH, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { ChainId } from 'state/lists/actions'
-import { ApiOrderStatus, classifyOrder } from 'state/orders/utils'
+import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokensLazy } from 'hooks/useTokensLazy'
 
@@ -26,11 +26,12 @@ function getTokenFromMapping(
   return tokens[getAddress(address)] || tokens[address]
 }
 
-const statusMapping: Record<ApiOrderStatus, OrderStatus | undefined> = {
+const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   cancelled: OrderStatus.CANCELLED,
   expired: OrderStatus.EXPIRED,
   fulfilled: OrderStatus.FULFILLED,
   pending: OrderStatus.PENDING,
+  presigned: OrderStatus.PENDING, // presigned is still pending
   unknown: undefined,
 }
 
