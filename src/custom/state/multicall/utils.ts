@@ -1,9 +1,11 @@
 import { Contract } from '@ethersproject/contracts'
 
-import { Call, ListenerOptions } from 'state/multicall/actions'
+import { Call } from '@src/state/multicall/utils'
+
+import { ListenerOptions } from 'state/multicall/actions'
 import { CallResult, isValidMethodArgs, OptionalMethodInputs, Result, toCallState } from 'state/multicall/hooks'
-import { Multicall2 } from 'abis/types'
 import { fetchChunk } from 'state/multicall/updater'
+import { UniswapInterfaceMulticall } from '@src/types/v3'
 
 export type CallParams = {
   contract: Contract | null | undefined
@@ -13,7 +15,7 @@ export type CallParams = {
 }
 
 export type GetSingleCallParams = CallParams & {
-  multicall2Contract: Multicall2
+  multicall2Contract: UniswapInterfaceMulticall
   options?: ListenerOptions
   latestBlockNumber?: number
 }
@@ -75,7 +77,9 @@ async function executeCalls({
   }
 
   try {
-    const { results, blockNumber } = await fetchChunk(multicall2Contract, validCalls, latestBlockNumber || 1)
+    const blockNumber = latestBlockNumber || 1
+
+    const results = await fetchChunk(multicall2Contract, validCalls, blockNumber)
     // Return results in same order as received
     const fixedResults = calls.map((call, index) =>
       !call ? { success: false, returnData: '' } : results[validCallsOriginalIds[index]]
