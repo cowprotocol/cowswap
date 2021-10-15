@@ -35,11 +35,13 @@ export default function Profile() {
               <RefreshCcw size={16} />
               &nbsp;&nbsp;
               <Txt secondary>Last updated:&nbsp;</Txt>
-              {!lastUpdated ? '-' : 
-              <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
-                <strong>{lastUpdated}</strong>
-              </MouseoverTooltipContent>
-              }
+              {!lastUpdated ? (
+                '-'
+              ) : (
+                <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                  <strong>{lastUpdated}</strong>
+                </MouseoverTooltipContent>
+              )}
             </Txt>
           )}
         </CardHead>
@@ -124,7 +126,7 @@ export default function Profile() {
 }
 
 interface TimeProps {
- date: string | undefined
+  date: string | undefined
 }
 
 const TimeFormatted = ({ date }: TimeProps) => {
@@ -148,11 +150,7 @@ const TimeFormatted = ({ date }: TimeProps) => {
   const monthName = months[_date.getMonth()]
   const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 
-  return (
-    <p>
-      {`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}
-    </p>
-  )
+  return <p>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</p>
 }
 
 const formatDecimal = (number?: number): string => {
