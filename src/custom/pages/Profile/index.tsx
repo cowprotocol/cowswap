@@ -17,6 +17,7 @@ import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
 import { numberFormatter } from 'utils/format'
 import useTimeAgo from 'hooks/useTimeAgo'
+import { MouseoverTooltipContent } from 'components/Tooltip'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -34,7 +35,11 @@ export default function Profile() {
               <RefreshCcw size={16} />
               &nbsp;&nbsp;
               <Txt secondary>Last updated:&nbsp;</Txt>
-              <strong>{lastUpdated || '-'}</strong>
+              {!lastUpdated ? '-' : 
+              <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                <strong>{lastUpdated}</strong>
+              </MouseoverTooltipContent>
+              }
             </Txt>
           )}
         </CardHead>
@@ -62,7 +67,9 @@ export default function Profile() {
           <ChildWrapper>
             <ItemTitle>
               Trades&nbsp;
-              <HelpCircle size={14} />
+              <MouseoverTooltipContent content="Statistics regarding your own trades.">
+                <HelpCircle size={14} />
+              </MouseoverTooltipContent>
             </ItemTitle>
             <FlexWrap className="item">
               <FlexCol>
@@ -84,7 +91,9 @@ export default function Profile() {
           <ChildWrapper>
             <ItemTitle>
               Referrals&nbsp;
-              <HelpCircle size={14} />
+              <MouseoverTooltipContent content="Statistics regarding trades by people who used your referral link.">
+                <HelpCircle size={14} />
+              </MouseoverTooltipContent>
             </ItemTitle>
             <FlexWrap className="item">
               <FlexCol>
@@ -111,6 +120,38 @@ export default function Profile() {
         )}
       </GridWrap>
     </Wrapper>
+  )
+}
+
+interface TimeProps {
+ date: string | undefined
+}
+
+const TimeFormatted = ({ date }: TimeProps) => {
+  if (!date) return null
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+  const _date = new Date(date)
+  const monthName = months[_date.getMonth()]
+  const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  return (
+    <p>
+      {`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}
+    </p>
   )
 }
 
