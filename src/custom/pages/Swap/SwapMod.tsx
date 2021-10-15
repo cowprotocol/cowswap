@@ -187,14 +187,13 @@ export default function Swap({
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
-  const { isNativeIn, isWrappedOut, native, wrappedToken } = useDetectNativeToken(
+  const { isNativeIn, native, wrappedToken } = useDetectNativeToken(
     { currency: currencies.INPUT, address: INPUT.currencyId },
     { currency: currencies.OUTPUT, address: OUTPUT.currencyId },
     chainId
   )
-
   // Is user swapping Eth as From token and not wrapping to WETH?
-  const isNativeInSwap = isNativeIn && !isWrappedOut
+  const isNativeInSwap = isNativeIn
 
   // Is fee greater than input?
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({

@@ -1,4 +1,4 @@
-import { SupportedChainId } from '../constants/chains'
+import { SupportedChainId } from 'constants/chains'
 
 export function isSupportedChain(chainId?: number): chainId is SupportedChainId {
   if (!chainId) return false
