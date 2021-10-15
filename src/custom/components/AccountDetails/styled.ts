@@ -233,15 +233,12 @@ export const LowerSection = styled.div`
     opacity: 0.7;
     color: ${({ theme }) => theme.text1};
 
+    text-decoration: underline;
+    font-size: 14px;
+
     &:hover {
       opacity: 1;
     }
-    
-  //  TODO: from merge, maybe no longer needed?
-  // ${LinkStyledButton},${StyledLink} {
-  //   text-decoration: underline;
-  //   font-size: 14px;
-  // }
 `
 
 const NetworkCardUni = styled(YellowCard)`
