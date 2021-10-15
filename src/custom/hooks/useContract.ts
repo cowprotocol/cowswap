@@ -9,11 +9,10 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 
 import ENS_ABI from 'abis/ens-registrar.json'
 import { getContract } from 'utils'
-import { Erc20 } from 'abis/types'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 
-import { GPv2Settlement } from 'abis/types'
+import { GPv2Settlement, Erc20 } from 'abis/types'
 import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 
 export * from '@src/hooks/useContract'
