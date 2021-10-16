@@ -3,8 +3,8 @@ import ToggleUni, { ToggleProps as TogglePropsUni, ToggleElement } from '@src/co
 
 export type ToggleProps = TogglePropsUni
 
-const WrappedToggle = styled(ToggleUni)`
-  background: ${({ theme }) => theme.bg7};
+const Wrapper = styled(ToggleUni)`
+  background: ${({ theme }) => theme.bg4};
 
   ${ToggleElement} {
     color: ${({ theme }) => theme.text1};
@@ -23,5 +23,5 @@ const WrappedToggle = styled(ToggleUni)`
 `
 
 export default function Toggle(props: ToggleProps) {
-  return <WrappedToggle {...props} />
+  return <Wrapper {...props} />
 }

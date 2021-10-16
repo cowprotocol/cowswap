@@ -41,7 +41,7 @@ export function colors(darkMode: boolean): Colors {
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
     bg6: darkMode ? '#163861' : '#b0dfee',
-    bg7: darkMode ? '#001e3659' : '#8080806b',
+    bg7: darkMode ? '#1F4471' : '#CEE7EF',
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
