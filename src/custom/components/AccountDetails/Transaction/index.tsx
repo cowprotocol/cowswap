@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useActiveWeb3React } from 'hooks/web3'

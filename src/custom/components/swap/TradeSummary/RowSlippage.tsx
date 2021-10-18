@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Percent } from '@uniswap/sdk-core'
-import { ThemeContext } from 'styled-components'
+import { ThemeContext } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { TYPE } from 'theme'
 

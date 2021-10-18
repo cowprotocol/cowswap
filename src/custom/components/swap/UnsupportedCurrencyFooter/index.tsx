@@ -1,4 +1,3 @@
-import React from 'react'
 import { HashLink } from 'react-router-hash-link'
 import UnsupportedCurrencyFooterMod, { UnsupportedCurrencyFooterParams } from './UnsupportedCurrencyFooterMod'
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'

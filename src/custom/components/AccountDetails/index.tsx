@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { batch, useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from 'hooks/web3'

@@ -1,6 +1,5 @@
-import React from 'react'
 import AppMod from './AppMod'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
 import { Route, Switch } from 'react-router-dom'
 import Swap from 'pages/Swap'

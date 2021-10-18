@@ -1,5 +1,5 @@
 import { t, Trans } from '@lingui/macro'
-import React, { useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -10,6 +10,8 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
 import { darken } from 'polished'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
+import { L2_CHAIN_IDS } from 'constants/chains'
+import { useActiveWeb3React } from 'hooks/web3'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 
 enum SlippageError {
@@ -92,6 +94,7 @@ export interface TransactionSettingsProps {
 }
 
 export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
+  const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
   const userSlippageTolerance = useUserSlippageTolerance()
@@ -151,6 +154,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     }
   }
 
+  const showCustomDeadlineRow = Boolean(chainId && !L2_CHAIN_IDS.includes(chainId))
+
   return (
     <AutoColumn gap="md">
       <AutoColumn gap="sm">
@@ -162,6 +167,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             bgColor={theme.bg3}
             color={theme.text1}
             text={
+              // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
               <Trans>
                 <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
                 <p>
@@ -230,41 +236,43 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         ) : null}
       </AutoColumn>
 
-      <AutoColumn gap="sm">
-        <RowFixed>
-          <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-            <Trans>Transaction deadline</Trans>
-          </TYPE.black>
-          <QuestionHelper
-            bgColor={theme.bg3}
-            color={theme.text1}
-            text={t`Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
-          />
-        </RowFixed>
-        <RowFixed>
-          <OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
-            <Input
-              placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
-              value={
-                deadlineInput.length > 0
-                  ? deadlineInput
-                  : deadline === DEFAULT_DEADLINE_FROM_NOW
-                  ? ''
-                  : (deadline / 60).toString()
-              }
-              onChange={(e) => parseCustomDeadline(e.target.value)}
-              onBlur={() => {
-                setDeadlineInput('')
-                setDeadlineError(false)
-              }}
-              color={deadlineError ? 'red' : ''}
+      {showCustomDeadlineRow && (
+        <AutoColumn gap="sm">
+          <RowFixed>
+            <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
+              <Trans>Transaction deadline</Trans>
+            </TYPE.black>
+            <QuestionHelper
+              bgColor={theme.bg3}
+              color={theme.text1}
+              text={t`Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
             />
-          </OptionCustom>
-          <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>
-            <Trans>minutes</Trans>
-          </TYPE.body>
-        </RowFixed>
-      </AutoColumn>
+          </RowFixed>
+          <RowFixed>
+            <OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
+              <Input
+                placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
+                value={
+                  deadlineInput.length > 0
+                    ? deadlineInput
+                    : deadline === DEFAULT_DEADLINE_FROM_NOW
+                    ? ''
+                    : (deadline / 60).toString()
+                }
+                onChange={(e) => parseCustomDeadline(e.target.value)}
+                onBlur={() => {
+                  setDeadlineInput('')
+                  setDeadlineError(false)
+                }}
+                color={deadlineError ? 'red' : ''}
+              />
+            </OptionCustom>
+            <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>
+              <Trans>minutes</Trans>
+            </TYPE.body>
+          </RowFixed>
+        </AutoColumn>
+      )}
     </AutoColumn>
   )
 }

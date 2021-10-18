@@ -1,10 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { darken, lighten } from 'polished'
-import React /*{, useMemo }*/ from 'react'
+// import { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { t, Trans } from '@lingui/macro'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 // import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 // import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 // import PortisIcon from 'assets/images/portisIcon.png'
@@ -61,6 +61,7 @@ const Web3StatusError = styled(Web3StatusGeneric)`
 const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   background-color: ${({ theme }) => theme.primary4};
   border: none;
+
   color: ${({ theme }) => theme.primaryText1};
   font-weight: 500;
 

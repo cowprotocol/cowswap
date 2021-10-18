@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Price, Currency } from '@uniswap/sdk-core'
 import { useContext } from 'react'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { formatMax, formatSmart } from 'utils/format' // mod
 import { LightGreyText } from 'pages/Swap'
 

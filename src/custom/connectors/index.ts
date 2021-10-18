@@ -8,6 +8,8 @@ import { FortmaticConnector } from 'connectors/Fortmatic'
 import { NetworkConnector } from 'connectors/NetworkConnector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
+export * from '@src/connectors'
+
 export const WALLET_CONNECT_BRIDGE = process.env.WALLET_CONNECT_BRIDGE || 'wss://safe-walletconnect.gnosis.io'
 
 type RpcNetworks = { [chainId: number]: string }

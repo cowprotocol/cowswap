@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Page, { Content, Title } from 'components/Page'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { DISCORD_LINK } from 'constants/index'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme, StyledInternalLink } from 'theme'

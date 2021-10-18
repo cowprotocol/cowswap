@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import * as CSS from 'csstype'
 
 // with font size convert to rems

@@ -1,6 +1,6 @@
 import { Pair } from '@uniswap/v2-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import React, { useState, useCallback, ReactNode } from 'react'
+import { useState, useCallback, ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { darken } from 'polished'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -53,7 +53,8 @@ const Container = styled.div<{ hideInput: boolean }>`
   }
 `
 
-const CurrencySelect = styled(ButtonGray)<{ selected: boolean; hideInput?: boolean }>`
+const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
   align-items: center;
   font-size: 24px;
   font-weight: 500;
@@ -160,6 +161,8 @@ interface CurrencyInputPanelProps {
   priceImpact?: Percent
   id: string
   showCommonBases?: boolean
+  showCurrencyAmount?: boolean
+  disableNonToken?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
 }
@@ -174,6 +177,8 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
+  showCurrencyAmount,
+  disableNonToken,
   renderBalance,
   fiatValue,
   priceImpact,
@@ -207,6 +212,7 @@ export default function CurrencyInputPanel({
       <Container hideInput={hideInput}>
         <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={!onCurrencySelect}>
           <CurrencySelect
+            visible={currency !== null}
             selected={!!currency}
             hideInput={hideInput}
             className="open-currency-select-button"
@@ -298,6 +304,8 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          showCurrencyAmount={showCurrencyAmount}
+          disableNonToken={disableNonToken}
         />
       )}
     </InputPanel>

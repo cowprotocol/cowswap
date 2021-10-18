@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import { useEffect, useState } from 'react'
+import styled, { keyframes } from 'styled-components/macro'
 import { useActiveWeb3React } from '../../hooks/web3'
 
 import { useBlockNumber } from '../../state/application/hooks'
@@ -26,12 +26,11 @@ const StyledPollingNumber = styled(TYPE.small)<{ breathe: boolean; hovering: boo
     opacity: 1;
   }
 `
-const StyledPollingDot = styled.div`
+export const StyledPollingDot = styled.div`
   width: 8px;
   height: 8px;
   min-height: 8px;
   min-width: 8px;
-  margin-left: 0.5rem;
   border-radius: 50%;
   position: relative;
   background-color: ${({ theme }) => theme.green1};
@@ -96,7 +95,7 @@ export default function Polling() {
     >
       <StyledPolling onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
         <StyledPollingNumber breathe={isMounting} hovering={isHover}>
-          {blockNumber}
+          {blockNumber}&ensp;
         </StyledPollingNumber>
         <StyledPollingDot>{isMounting && <Spinner />}</StyledPollingDot>
       </StyledPolling>

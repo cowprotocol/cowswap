@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Price, Currency } from '@uniswap/sdk-core'
 import { useContext } from 'react'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 
 interface TradePriceProps {
   price: Price<Currency, Currency>
@@ -19,7 +19,7 @@ const StyledPriceContainer = styled.button`
   font-weight: 400;
   background-color: transparent;
   border: none;
-  /* height: 24px; */
+  height: 24px;
   cursor: pointer;
 `
 

@@ -1,7 +1,6 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
 import { LinkStyledButton } from 'theme'
-import { NetworkCard as NetworkCardUni } from 'components/Header/HeaderMod'
 import {
   WalletName,
   AccountSection as AccountSectionMod,
@@ -11,6 +10,7 @@ import {
   TransactionListWrapper,
   AccountControl,
 } from './AccountDetailsMod'
+import { YellowCard } from 'components/Card'
 
 export const WalletActions = styled.div`
   display: flex;
@@ -88,19 +88,6 @@ export const Wrapper = styled.div`
         width: 100%;
     `};
   }
-`
-
-export const NetworkCard = styled(NetworkCardUni)`
-  background-color: ${({ theme }) => theme.networkCard.background};
-  color: ${({ theme }) => theme.networkCard.text};
-  padding: 6px 8px;
-  font-size: 13px;
-  margin: 0 8px 0 0;
-  letter-spacing: 0.7px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-shrink: 0;
-  `};
 `
 
 export const UpperSection = styled(UpperSectionMod)`
@@ -192,4 +179,32 @@ export const LowerSection = styled.div`
   ${LinkStyledButton} {
     text-decoration: underline;
   }
+`
+
+const NetworkCardUni = styled(YellowCard)`
+  border-radius: 12px;
+  padding: 8px 12px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0;
+    margin-right: 0.5rem;
+    width: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+  `};
+`
+
+export const NetworkCard = styled(NetworkCardUni)`
+  background-color: ${({ theme }) => theme.networkCard.background};
+  color: ${({ theme }) => theme.networkCard.text};
+
+  padding: 6px 8px;
+  font-size: 13px;
+  margin: 0 8px 0 0;
+  letter-spacing: 0.7px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-shrink: 0;
+  `};
 `

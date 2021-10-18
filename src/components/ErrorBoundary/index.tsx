@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import React, { ErrorInfo } from 'react'
+import { Component, ErrorInfo } from 'react'
 import store, { AppState } from '../../state'
 import { ExternalLink, TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
@@ -46,7 +46,7 @@ type ErrorBoundaryState = {
   error: Error | null
 }
 
-export default class ErrorBoundary extends React.Component<unknown, ErrorBoundaryState> {
+export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState> {
   constructor(props: unknown) {
     super(props)
     this.state = { error: null }

@@ -1,6 +1,5 @@
-import React from 'react'
 import { GpModal } from 'components/Modal' // mod
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
 import { Trans } from '@lingui/macro'

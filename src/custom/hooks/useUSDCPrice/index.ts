@@ -1,14 +1,18 @@
 import { CurrencyAmount, Currency, Price, Token } from '@uniswap/sdk-core'
 import { useEffect, useMemo, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { supportedChainId } from 'utils/supportedChainId'
+import { SupportedChainId } from 'constants/chains'
+/* import { DAI_OPTIMISM, USDC, USDC_ARBITRUM } from '../constants/tokens'
+import { useV2TradeExactOut } from './useV2Trade'
+import { useBestV3TradeExactOut } from './useBestV3Trade' */
 import { useActiveWeb3React } from 'hooks/web3'
+
+import { supportedChainId } from 'utils/supportedChainId'
 import { getBestPrice } from 'utils/price'
 import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSDCPrice'
 import { stringToCurrency } from 'state/swap/extension'
-import { SupportedChainId } from 'constants/chains'
 import { USDC_XDAI } from 'utils/xdai/constants'
 import { OrderKind } from 'state/orders/actions'
+import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { getUSDPriceQuote, toPriceInformation } from 'api/coingecko'
 import { tryParseAmount } from 'state/swap/hooks'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
@@ -19,19 +23,52 @@ export * from '@src/hooks/useUSDCPrice'
 
 const STABLECOIN_AMOUNT_OUT: { [chainId: number]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
+  // MOD: lowers threshold from 100k to 100
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC, 100e6),
   [SupportedChainId.XDAI]: CurrencyAmount.fromRawAmount(USDC_XDAI, 10_000e6),
 }
 
+/**
+ * Returns the price in USDC of the input currency
+ * @param currency currency to compute the USDC price of
+ */
 export default function useUSDCPrice(currency?: Currency) {
   const [bestUsdPrice, setBestUsdPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
   const { chainId, account } = useActiveWeb3React()
 
-  // USDC constants
-  // 100_000e6 USDC @ 6 decimals
   const amountOut = chainId ? STABLECOIN_AMOUNT_OUT[chainId] : undefined
   const stablecoin = amountOut?.currency
+
+  /* 
+  const v2USDCTrade = useV2TradeExactOut(currency, amountOut, {
+    maxHops: 2,
+  })
+  const v3USDCTrade = useBestV3TradeExactOut(currency, amountOut)
+
+  return useMemo(() => {
+    if (!currency || !stablecoin) {
+      return undefined
+    }
+
+    // handle usdc
+    if (currency?.wrapped.equals(stablecoin)) {
+      return new Price(stablecoin, stablecoin, '1', '1')
+    }
+
+    // use v2 price if available, v3 as fallback
+    if (v2USDCTrade) {
+      const { numerator, denominator } = v2USDCTrade.route.midPrice
+      return new Price(currency, stablecoin, denominator, numerator)
+    } else if (v3USDCTrade.trade) {
+      const { numerator, denominator } = v3USDCTrade.trade.route.midPrice
+      return new Price(currency, stablecoin, denominator, numerator)
+    }
+
+    return undefined
+  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) 
+  */
 
   useEffect(() => {
     const isSupportedChain = supportedChainId(chainId)
@@ -98,13 +135,16 @@ interface GetPriceQuoteParams {
 // common logic for returning price quotes
 function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams) {
   return useMemo(() => {
+    // if (!price || !currencyAmount) return null
     if (!price || error || !currencyAmount) return null
 
     try {
+      // return price.quote(currencyAmount)
       return price.invert().quote(currencyAmount)
     } catch (error) {
       return null
     }
+    // }, [currencyAmount, price])
   }, [currencyAmount, error, price])
 }
 

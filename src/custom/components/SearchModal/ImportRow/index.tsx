@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import { CSSProperties } from 'react'
 import { Token } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import ImportRowMod, { TokenSection } from './ImportRowMod'

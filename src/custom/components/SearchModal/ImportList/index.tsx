@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
 import { ImportList as ImportListMod } from './ImportListMod'
 import { enableList as enableListMod, removeList as removeListMod } from 'state/lists/actions'

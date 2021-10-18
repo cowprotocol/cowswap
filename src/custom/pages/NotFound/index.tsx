@@ -1,6 +1,5 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import Page, { Title, Content, GdocsListStyle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import cow404IMG from 'assets/cow-swap/cow-404.png'

@@ -4,7 +4,7 @@ import { Router, Trade as V2Trade } from '@uniswap/v2-sdk'
 import { SwapRouter, Trade as V3Trade } from '@uniswap/v3-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
-import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
+import { SWAP_ROUTER_ADDRESSES } from '../constants/addresses'
 import { calculateGasMargin } from '../utils/calculateGasMargin'
 import approveAmountCalldata from '../utils/approveAmountCalldata'
 import { getTradeVersion } from '../utils/getTradeVersion'
@@ -101,7 +101,7 @@ function useSwapCallArguments(
                 approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), routerContract.address),
                 {
                   to: routerContract.address,
-                  value: value,
+                  value,
                   data: routerContract.interface.encodeFunctionData(methodName, args),
                 },
               ],
@@ -155,7 +155,7 @@ function useSwapCallArguments(
                 approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
                 {
                   to: swapRouterAddress,
-                  value: value,
+                  value,
                   data: calldata,
                 },
               ],
@@ -191,7 +191,7 @@ function useSwapCallArguments(
  * This object seems to be undocumented by ethers.
  * @param error an error from the ethers provider
  */
-export function swapErrorToUserReadableMessage(error: any): string {
+function swapErrorToUserReadableMessage(error: any): string {
   let reason: string | undefined
   while (Boolean(error)) {
     reason = error.reason ?? error.message ?? reason
@@ -221,7 +221,7 @@ export function swapErrorToUserReadableMessage(error: any): string {
     default:
       if (reason?.indexOf('undefined is not an object') !== -1) {
         console.error(error, reason)
-        return t`An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note fee on transfer and rebase tokens are incompatible with Uniswap V3.`
+        return t`An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3.`
       }
       return t`Unknown error${
         reason ? `: "${reason}"` : ''
@@ -328,7 +328,9 @@ export function useSwapCallback(
             to: address,
             data: calldata,
             // let the wallet try if we can't estimate the gas
-            ...('gasEstimate' in bestCallOption ? { gasLimit: calculateGasMargin(bestCallOption.gasEstimate) } : {}),
+            ...('gasEstimate' in bestCallOption
+              ? { gasLimit: calculateGasMargin(chainId, bestCallOption.gasEstimate) }
+              : {}),
             ...(value && !isZero(value) ? { value } : {}),
           })
           .then((response) => {

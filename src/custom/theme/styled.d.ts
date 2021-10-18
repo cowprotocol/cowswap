@@ -1,6 +1,5 @@
 import { Colors as ColorsUniswap } from '@src/theme/styled'
 import { ButtonSize } from 'theme'
-export { Color, Grids } from '@src/theme/styled'
 
 // Override colors
 export interface Colors extends ColorsUniswap {
@@ -149,6 +148,14 @@ declare module 'styled-components' {
     wallet: {
       background?: string
       color?: string
+    }
+    mediaWidth: {
+      upToExtraSmall: ThemedCssFunction<DefaultTheme>
+      // MOD
+      upToVerySmall: ThemedCssFunction<DefaultTheme>
+      upToSmall: ThemedCssFunction<DefaultTheme>
+      upToMedium: ThemedCssFunction<DefaultTheme>
+      upToLarge: ThemedCssFunction<DefaultTheme>
     }
   }
 }
