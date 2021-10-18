@@ -1,6 +1,6 @@
 import { Pair } from '@uniswap/v2-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import React, { useState, useCallback, ReactNode } from 'react'
+import { useState, useCallback, ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { darken } from 'polished'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -8,7 +8,7 @@ import { useCurrencyBalance } from 'state/wallet/hooks'
 import { CurrencySearchModal } from '.' // mod
 import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-// import { ButtonGray } from '../Button'
+import { ButtonGray } from 'components/Button'
 import { RowBetween, RowFixed } from 'components/Row'
 import { TYPE } from 'theme'
 import { Input as NumericalInput } from 'components/NumericalInput'
@@ -59,7 +59,8 @@ export const Container = styled.div<{ hideInput: boolean; showAux?: boolean }>`
   }
 `
 
-export const CurrencySelect = styled.button<{ selected: boolean; hideInput?: boolean }>`
+export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
   align-items: center;
   font-size: 24px;
   font-weight: 500;
@@ -160,6 +161,8 @@ export interface CurrencyInputPanelProps extends WithClassName {
   priceImpact?: Percent
   id: string
   showCommonBases?: boolean
+  showCurrencyAmount?: boolean
+  disableNonToken?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   customBalanceText?: string
@@ -175,6 +178,8 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
+  showCurrencyAmount,
+  disableNonToken,
   renderBalance,
   fiatValue,
   priceImpact,
@@ -210,6 +215,7 @@ export default function CurrencyInputPanel({
         <Container hideInput={hideInput} showAux={!!label}>
           <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={!onCurrencySelect}>
             <CurrencySelect
+              visible={currency !== null}
               selected={!!currency}
               hideInput={hideInput}
               className="open-currency-select-button"
@@ -311,6 +317,8 @@ export default function CurrencyInputPanel({
             selectedCurrency={currency}
             otherSelectedCurrency={otherCurrency}
             showCommonBases={showCommonBases}
+            showCurrencyAmount={showCurrencyAmount}
+            disableNonToken={disableNonToken}
           />
         )}
       </InputPanel>

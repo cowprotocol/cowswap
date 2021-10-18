@@ -1,4 +1,3 @@
-import React from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,

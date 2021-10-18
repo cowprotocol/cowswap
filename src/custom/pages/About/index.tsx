@@ -1,6 +1,5 @@
-import React from 'react'
 import Page, { Title, Content, GdocsListStyle } from 'components/Page'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
 

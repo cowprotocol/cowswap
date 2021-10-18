@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import styled, { DefaultTheme } from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
 
@@ -8,12 +8,11 @@ import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { AutoRow, RowBetween } from 'components/Row'
-import { BottomGrouping as BottomGroupingUni, Wrapper as WrapperUni, Dots } from 'components/swap/styleds'
+import { Wrapper as WrapperUni, Dots } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
 import { GreyCard } from 'components/Card'
-import { StyledBalanceMaxMini } from 'components/swap/styleds'
 import Card from 'components/Card'
 import {
   ButtonError as ButtonErrorMod,
@@ -40,7 +39,7 @@ interface TradeBasicDetailsProp extends BoxProps {
   fee: CurrencyAmount<Currency>
 }
 
-const BottomGrouping = styled(BottomGroupingUni)`
+const BottomGrouping = styled.div`
   > div > button {
     align-self: stretch;
   }
@@ -123,11 +122,6 @@ const SwapModWrapper = styled(SwapMod)`
 
     ${InputContainer} > div > div > div {
       color: ${({ theme }) => theme.text1};
-    }
-
-    ${StyledBalanceMaxMini} {
-      background: ${({ theme }) => theme.bg2};
-      color: ${({ theme }) => theme.text2};
     }
 
     .expertMode ${ArrowWrapper} {
@@ -276,7 +270,7 @@ function SwitchToWethBtn({ wrappedToken }: SwitchToWethBtnProps) {
       onClick={() =>
         replaceSwapState({
           inputCurrencyId: wrappedToken.address,
-          outputCurrencyId: OUTPUT.currencyId,
+          outputCurrencyId: OUTPUT.currencyId ?? undefined,
           typedValue,
           recipient: null,
           field: independentField,

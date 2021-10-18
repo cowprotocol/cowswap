@@ -1,6 +1,6 @@
 import { Placement } from '@popperjs/core'
 import { transparentize } from 'polished'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import useInterval from 'hooks/useInterval'

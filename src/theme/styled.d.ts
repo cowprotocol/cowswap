@@ -1,3 +1,5 @@
+// import { FlattenSimpleInterpolation, ThemedCssFunction } from 'styled-components/macro'
+
 export type Color = string
 export interface Colors {
   // base
@@ -50,20 +52,15 @@ export interface Colors {
   yellow3: Color
   blue1: Color
   blue2: Color
+  blue4: Color
 
   error: Color
   success: Color
   warning: Color
 }
 
-export interface Grids {
-  sm: number
-  md: number
-  lg: number
-}
-
-declare module 'styled-components' {
-  export interface DefaultTheme extends Colors {
+/* declare module 'styled-components' {
+  interface DefaultTheme extends Colors {
     grids: Grids
 
     // shadows
@@ -81,4 +78,4 @@ declare module 'styled-components' {
     flexColumnNoWrap: FlattenSimpleInterpolation
     flexRowNoWrap: FlattenSimpleInterpolation
   }
-}
+} */

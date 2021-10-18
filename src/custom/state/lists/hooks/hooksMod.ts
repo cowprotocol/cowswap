@@ -1,12 +1,14 @@
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { TokenList } from '@uniswap/token-lists'
-import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'state/hooks'
-import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
+import { useMemo, useCallback } from 'react'
+import { useAppSelector, useAppDispatch } from 'state/hooks'
 import sortByListPriority from 'utils/listSort'
-import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
-import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
+import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/unsupported.tokenlist.json'
+import BROKEN_LIST from 'constants/tokenLists/broken.tokenlist.json'
+import { AppState } from 'state'
+import { UNSUPPORTED_LIST_URLS, DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+// MOD
 import { useActiveWeb3React } from 'hooks/web3'
 import {
   addGpUnsupportedToken,
@@ -18,61 +20,26 @@ import { UnsupportedToken } from 'api/gnosisProtocol'
 import { isAddress } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
+import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
 
-/* type TagDetails = Tags[keyof Tags]
-export interface TagInfo extends TagDetails {
-  id: string
-} */
+/* 
+export type TokenAddressMap = Readonly<{
+  [chainId: number]: Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList } }>
+}>
+
+type Mutable<T> = {
+  -readonly [P in keyof T]: Mutable<T[P]>
+} 
+*/
 
 /**
  * An empty result, useful as a default.
  */
-
 export const EMPTY_LIST: TokenAddressMap = {
-  [ChainId.KOVAN]: {},
   [ChainId.RINKEBY]: {},
-  [ChainId.ROPSTEN]: {},
-  [ChainId.GOERLI]: {},
   [ChainId.MAINNET]: {},
   [ChainId.XDAI]: {},
 }
-
-// type TagDetails = Tags[keyof Tags]
-// export interface TagInfo extends TagDetails {
-//   id: string
-// }
-
-// /**
-//  * Token instances created from token info.
-//  */
-// export class WrappedTokenInfo extends Token {
-//   public readonly tokenInfo: TokenInfo
-//   public readonly tags: TagInfo[]
-//   constructor(tokenInfo: TokenInfo, tags: TagInfo[]) {
-//     super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
-//     this.tokenInfo = tokenInfo
-//     this.tags = tags
-//   }
-//   public get logoURI(): string | undefined {
-//     return this.tokenInfo.logoURI
-//   }
-// }
-
-// export type TokenAddressMap = Readonly<
-//   { [chainId in ChainId]: Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList } }> }
-// >
-
-// /**
-//  * An empty result, useful as a default.
-//  */
-// export const EMPTY_LIST: TokenAddressMap = {
-//   [ChainId.KOVAN]: {},
-//   [ChainId.RINKEBY]: {},
-//   [ChainId.ROPSTEN]: {},
-//   [ChainId.GÖRLI]: {},
-//   [ChainId.MAINNET]: {},
-//   [ChainId.XDAI]: {}
-// }
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =
   typeof WeakMap !== 'undefined' ? new WeakMap<TokenList, TokenAddressMap>() : null
@@ -82,26 +49,22 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
   if (result) return result
 
   /*
-    const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
-        const token = new WrappedTokenInfo(tokenInfo, list)
-        if (tokenMap[token.chainId]?.[token.address] !== undefined) {
-          console.error(new Error(`Duplicate token! ${token.address}`))
-          return tokenMap
-        }
-        return {
-          ...tokenMap,
-          [token.chainId]: {
-            ...tokenMap[token.chainId],
-            [token.address]: {
-              token,
-              list
-            }
-          }
-        }
-      }, {})
-      listCache?.set(list, map)
-      return map
-    } 
+    const map = list.tokens.reduce<Mutable<TokenAddressMap>>((tokenMap, tokenInfo) => {
+    const token = new WrappedTokenInfo(tokenInfo, list)
+    if (tokenMap[token.chainId]?.[token.address] !== undefined) {
+      console.error(`Duplicate token! ${token.address}`)
+      return tokenMap
+    }
+    if (!tokenMap[token.chainId]) tokenMap[token.chainId] = {}
+    tokenMap[token.chainId][token.address] = {
+      token,
+      list,
+    }
+    return tokenMap
+  }, {}) as TokenAddressMap
+    listCache?.set(list, map)
+    return map
+  } 
 */
 
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
@@ -117,7 +80,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
         ...tokensByNetwork,
         [token.address]: {
           token,
-          list: list,
+          list,
         },
       },
     }
@@ -126,14 +89,8 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
   return map
 }
 
-export function useAllLists(): {
-  readonly [url: string]: {
-    readonly current: TokenList | null
-    readonly pendingUpdate: TokenList | null
-    readonly loadingRequestId: string | null
-    readonly error: string | null
-  }
-} {
+// export function useAllLists(): AppState['lists']['byUrl'] {
+export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
   // MOD: adds { chainId } support to the hooks
   const { chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
@@ -141,21 +98,37 @@ export function useAllLists(): {
   return useAppSelector((state) => state.lists[chainId].byUrl)
 }
 
-/* export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
-  return {
-    1: { ...map1[1], ...map2[1] },
-    3: { ...map1[3], ...map2[3] },
-    4: { ...map1[4], ...map2[4] },
-    5: { ...map1[5], ...map2[5] },
-    42: { ...map1[42], ...map2[42] },
-    100: { ...map1[100], ...map2[100] }
-  } */
+/**
+ * Combine the tokens in map2 with the tokens on map1, where tokens on map1 take precedence
+ * @param map1 the base token map
+ * @param map2 the map of additioanl tokens to add to the base map
+ */
+/*
+export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
+  const chainIds = Object.keys(
+    Object.keys(map1)
+      .concat(Object.keys(map2))
+      .reduce<{ [chainId: string]: true }>((memo, value) => {
+        memo[value] = true
+        return memo
+      }, {})
+  ).map((id) => parseInt(id))
+
+  return chainIds.reduce<Mutable<TokenAddressMap>>((memo, chainId) => {
+    memo[chainId] = {
+      ...map2[chainId],
+      // map1 takes precedence
+      ...map1[chainId],
+    }
+    return memo
+  }, {}) as TokenAddressMap
+} 
+*/
 
 // merge tokens contained within lists from urls
 export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {
   // MOD: recreated here to allow it to use the custom useAllLists hook
   const lists = useAllLists()
-
   return useMemo(() => {
     if (!urls) return EMPTY_LIST
 
@@ -222,21 +195,26 @@ export function useDefaultTokenList(): TokenAddressMap {
   return listToTokenMap(DEFAULT_TOKEN_LIST)
 }
 
-// list of tokens not supported on interface, used to show warnings and prevent swaps and adds
+// list of tokens not supported on interface for various reasons, used to show warnings and prevent swaps and adds
 export function useUnsupportedTokenList(): TokenAddressMap {
   // MOD: adds { chainId } support to the hooks
   const { chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
-  // get hard coded unsupported tokens
-  const localUnsupportedListMap = listToTokenMap(UNSUPPORTED_TOKEN_LIST)
+  // get hard-coded broken tokens
+  const brokenListMap = useMemo(() => listToTokenMap(BROKEN_LIST), [])
 
-  // get any loaded unsupported tokens
+  // get hard-coded list of unsupported tokens
+  const localUnsupportedListMap = useMemo(() => listToTokenMap(UNSUPPORTED_TOKEN_LIST), [])
+
+  // get dynamic list of unsupported tokens
   const loadedUnsupportedListMap = useCombinedTokenMapFromUrls(UNSUPPORTED_LIST_URLS[chainId])
 
   // format into one token address map
-  return combineMaps(localUnsupportedListMap, loadedUnsupportedListMap)
+  return useMemo(
+    () => combineMaps(brokenListMap, combineMaps(localUnsupportedListMap, loadedUnsupportedListMap)),
+    [brokenListMap, localUnsupportedListMap, loadedUnsupportedListMap]
+  )
 }
-
 export function useIsListActive(url: string): boolean {
   // MOD: added here to use the scoped functions
   const activeListUrls = useActiveListUrls()

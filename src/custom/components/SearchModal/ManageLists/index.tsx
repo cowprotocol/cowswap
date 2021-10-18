@@ -1,4 +1,3 @@
-import React from 'react'
 import { ManageLists as ManageListsMod, ListContainer } from './ManageListsMod'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -27,8 +26,9 @@ const Wrapper = styled.div`
   }
 `
 
-export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean }>`
+export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasActiveTokens: boolean }>`
   background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg4)};
+  opacity: ${({ hasActiveTokens }) => (hasActiveTokens ? 1 : 0.4)};
   transition: 0.2s;
   align-items: center;
   padding: 1rem;
