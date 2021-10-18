@@ -6,6 +6,7 @@ import {
   GridWrap,
   CardHead,
   StyledTitle,
+  StyledTime,
   ItemTitle,
   ChildWrapper,
 } from 'pages/Profile/styled'
@@ -150,7 +151,7 @@ const TimeFormatted = ({ date }: TimeProps) => {
   const monthName = months[_date.getMonth()]
   const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 
-  return <p>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</p>
+  return <StyledTime>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</StyledTime>
 }
 
 const formatDecimal = (number?: number): string => {
