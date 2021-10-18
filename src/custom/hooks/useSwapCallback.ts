@@ -18,6 +18,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 import { BigNumber } from 'ethers'
 import { GpEther as ETHER } from 'constants/tokens'
+import { useAppDataHash } from 'state/affiliate/hooks'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -63,6 +64,7 @@ export function useSwapCallback(
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   const [deadline] = useUserTransactionTTL()
+  const appDataHash = useAppDataHash()
   const addPendingOrder = useAddPendingOrder()
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -160,6 +162,7 @@ export function useSwapCallback(
           validTo,
           recipient,
           recipientAddressOrName,
+          appDataHash,
           addPendingOrder,
           signer: library.getSigner(),
         })
@@ -186,5 +189,6 @@ export function useSwapCallback(
     deadline,
     wrapEther,
     addPendingOrder,
+    appDataHash,
   ])
 }

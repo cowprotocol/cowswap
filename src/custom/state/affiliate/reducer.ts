@@ -4,7 +4,7 @@ import { APP_DATA_HASH } from 'constants/index'
 
 export interface AffiliateState {
   referralAddress?: string
-  appDataHash?: string
+  appDataHash: string
 }
 
 export const initialState: AffiliateState = {

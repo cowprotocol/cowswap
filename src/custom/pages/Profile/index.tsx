@@ -89,15 +89,15 @@ export default function Profile() {
             </ItemTitle>
             <FlexWrap className="item">
               <FlexCol>
-                <span role="img" aria-label="wingedmoney">
-                  💸
-                </span>
-                <strong>{formatInt(profileData?.totalReferrals)}</strong>
-                <span>Total trades</span>
-              </FlexCol>
-              <FlexCol>
                 <span role="img" aria-label="handshake">
                   🤝
+                </span>
+                <strong>{formatInt(profileData?.totalReferrals)}</strong>
+                <span>Total referrals</span>
+              </FlexCol>
+              <FlexCol>
+                <span role="img" aria-label="wingedmoney">
+                  💸
                 </span>
                 <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
                 <span>Referrals Volume</span>

@@ -65,7 +65,6 @@ import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 // import { isTradeBetter } from 'utils/isTradeBetter'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 // import { warningSeverity } from 'utils/prices'
-import AppBody from 'pages/AppBody'
 
 import { AMOUNT_PRECISION, /*PERCENTAGE_PRECISION,*/ INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -81,6 +80,7 @@ import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDrop
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
+import { StyledAppBody } from './styleds'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -470,7 +470,7 @@ export default function Swap({
         onConfirm={handleConfirmTokenWarning}
         onDismiss={handleDismissTokenWarning}
       />
-      <AppBody className={className}>
+      <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>
           <ConfirmSwapModal
@@ -906,7 +906,7 @@ export default function Swap({
             {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
           </BottomGrouping>
         </Wrapper>
-      </AppBody>
+      </StyledAppBody>
       {/* <SwitchLocaleLink /> */}
       {!swapIsUnsupported ? null : !isSupportedWallet ? (
         <UnsupportedCurrencyFooter

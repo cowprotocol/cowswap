@@ -50,7 +50,7 @@ describe('Detect environments using host and path', () => {
     })
 
     it('cloudflare-ipfs.com/ipfs/<HASH>', () => {
-      expect(checkEnvironment('cloudflare-ipfs.com', '/ipfs/somehash')).toEqual(isEns)
+      expect(checkEnvironment('cloudflare-ipfs.com', '/ipfs/whatever')).toEqual(isEns)
     })
 
     it('gateway.pinata.cloud/ipfs/<HASH>', () => {

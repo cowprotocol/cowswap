@@ -6,7 +6,7 @@ const { version } = require('./package.json')
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
 
 const plugins = []
-const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN
+const SENTRY_AUTH_TOKEN = process.env.REACT_APP_SENTRY_AUTH_TOKEN
 const SENTRY_RELEASE_VERSION = 'CowSwap@v' + version
 
 if (SENTRY_AUTH_TOKEN) {
