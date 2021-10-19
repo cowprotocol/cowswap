@@ -3,7 +3,7 @@ import { YellowCard } from 'components/Card'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { /* ArrowDownCircle, */ AlertCircle, ChevronDown, ToggleLeft } from 'react-feather'
+import { /* ArrowDownCircle, */ AlertCircle, ChevronDown /* , ToggleLeft */ } from 'react-feather'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleModal, useWalletModalToggle } from 'state/application/hooks'
 import styled, { css } from 'styled-components/macro'
@@ -18,7 +18,8 @@ import {
   ALL_SUPPORTED_CHAIN_IDS,
 } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
-import EthereumLogo from 'assets/images/ethereum-logo.png'
+// import EthereumLogo from 'assets/images/ethereum-logo.png'
+import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg'
 import QuestionHelper from 'components/QuestionHelper'
 import { StyledPollingDot } from '@src/components/Header/Polling'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
@@ -194,6 +195,10 @@ export const NetworkInfo = styled.button<{ chainId: SupportedChainId }>`
   }
 `
 
+const GreyPollingDot = styled(StyledPollingDot)`
+  background: grey;
+`
+
 export default function NetworkCard() {
   const { account, chainId: preChainId, library } = useActiveWeb3React()
   const { error } = useWeb3React() // MOD: check unsupported network
@@ -263,7 +268,12 @@ export default function NetworkCard() {
     return (
       <L2Wrapper ref={node}>
         <NetworkInfo onClick={toggle} chainId={chainId}>
-          <Icon src={EthereumLogo} />
+          <Icon
+            src={
+              // {EthereumLogo}
+              info.logoUrl || EthereumLogo // mod
+            } // mod
+          />
           <NetworkName chainId={chainId} hide>
             {info.label}
           </NetworkName>
@@ -303,7 +313,12 @@ export default function NetworkCard() {
                 /*  Current selected network */
                 return (
                   <ButtonMenuItem $selected key={'selected_' + chainId}>
-                    <Icon src={EthereumLogo} />
+                    <Icon
+                      src={
+                        // {EthereumLogo}
+                        info.logoUrl || EthereumLogo // mod
+                      }
+                    />
                     <NetworkName chainId={chainId}>{NETWORK_LABELS[chainId]}</NetworkName>
                     <StyledPollingDot />
                   </ButtonMenuItem>
@@ -317,10 +332,15 @@ export default function NetworkCard() {
                   onClick={callback}
                   $disabled={Boolean(!implements3085 && account)}
                 >
-                  <Icon src={EthereumLogo} />
+                  <Icon
+                    src={
+                      // {EthereumLogo}
+                      CHAIN_INFO[supportedChainId].logoUrl || EthereumLogo // mod
+                    }
+                  />
                   <NetworkName chainId={supportedChainId}>{NETWORK_LABELS[supportedChainId]}</NetworkName>
                   {implements3085 || !account ? (
-                    <ToggleLeft opacity={0.6} size={16} />
+                    <GreyPollingDot />
                   ) : (
                     <>
                       <AlertCircle size={16} />

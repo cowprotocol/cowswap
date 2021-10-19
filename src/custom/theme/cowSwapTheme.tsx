@@ -16,15 +16,11 @@ export { TYPE, MEDIA_WIDTHS } from '@src/theme'
 export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
-  return {
-    ...colorsBaseTheme(darkMode),
-  }
+  return colorsBaseTheme(darkMode)
 }
 
 function themeVariables(darkMode: boolean, colorsTheme: Colors) {
-  return {
-    ...baseThemeVariables(darkMode, colorsTheme),
-  }
+  return baseThemeVariables(darkMode, colorsTheme)
 }
 
 const MEDIA_WIDTHS = {

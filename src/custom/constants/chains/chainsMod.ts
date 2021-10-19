@@ -1,5 +1,8 @@
 import { L1ChainInfo } from '@src/constants/chains'
-import EthereumLogo from 'assets/images/ethereum-logo.png'
+// import EthereumLogo from 'assets/images/ethereum-logo.png'
+import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg' // mod
+import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg' // mod
+import xDaiLogo from 'assets/cow-swap/network-xdai-logo.svg' // mod
 export * from '@src/constants/chains'
 
 export enum SupportedChainId {
@@ -38,7 +41,8 @@ export const CHAIN_INFO: ChainInfo = {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://gnosis-protocol.io/mainnet',
     infoLink: '',
-    label: 'Mainnet',
+    // label: 'Mainnet',
+    label: 'Ethereum',
     logoUrl: EthereumLogo,
   },
   [SupportedChainId.RINKEBY]: {
@@ -46,14 +50,16 @@ export const CHAIN_INFO: ChainInfo = {
     explorer: 'https://gnosis-protocol.io/rinkeby',
     infoLink: '',
     label: 'Rinkeby',
-    logoUrl: EthereumLogo,
+    // logoUrl: EthereumLogo,
+    logoUrl: RinkebyLogo, // mod
   },
   [SupportedChainId.XDAI]: {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://gnosis-protocol.io/xdai',
     infoLink: '',
     label: 'xDai',
-    logoUrl: EthereumLogo,
+    // logoUrl: EthereumLogo,
+    logoUrl: xDaiLogo, // mod
   },
   /* [SupportedChainId.ROPSTEN]: {
     docs: 'https://docs.uniswap.org/',
@@ -92,12 +98,14 @@ export const CHAIN_INFO: ChainInfo = {
 }
 
 export const NETWORK_LABELS: { [chainId in SupportedChainId | number]: string } = {
-  [SupportedChainId.MAINNET]: 'Mainnet',
+  // [SupportedChainId.MAINNET]: 'Mainnet',
+  [SupportedChainId.MAINNET]: 'Ethereum', // mod
   [SupportedChainId.RINKEBY]: 'Rinkeby',
   // [SupportedChainId.ROPSTEN]: 'Ropsten',
   // [SupportedChainId.GOERLI]: 'Görli',
   // [SupportedChainId.KOVAN]: 'Kovan',
-  [SupportedChainId.XDAI]: 'XDai',
+  // [SupportedChainId.XDAI]: 'XDai',
+  [SupportedChainId.XDAI]: 'xDai', // mod
   //   [SupportedChainId.ARBITRUM_KOVAN]: 'kArbitrum',
   //   [SupportedChainId.ARBITRUM_ONE]: 'Arbitrum One',
 }
