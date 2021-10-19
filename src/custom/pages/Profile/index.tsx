@@ -36,10 +36,11 @@ export default function Profile() {
               <RefreshCcw size={16} />
               &nbsp;&nbsp;
               <Txt secondary>
-                Last updated:&nbsp;
+                Last updated
                 <MouseoverTooltipContent content="Data is updated on the background periodically.">
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
+                :&nbsp;
               </Txt>
               {!lastUpdated ? (
                 '-'
