@@ -87,7 +87,7 @@ export const Wrapper = styled.div`
   width: 100%;
 
   ${HeaderFrame} {
-    padding: 12px 16px;
+    padding: 16px;
     grid-template-columns: auto auto;
     grid-gap: 16px;
 
@@ -157,29 +157,32 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 `
 
-export const LogoImage = styled.img.attrs((props) => ({
-  src: props.theme.logo.src,
-  alt: props.theme.logo.alt,
-  width: props.theme.logo.width,
-  height: props.theme.logo.height,
-}))`
-  object-fit: contain;
-  width: 100%;
+export const LogoImage = styled.div`
+  width: 190px;
+  height: 48px;
+  background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
+  margin: 0 32px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 150px;
-  `};
+    width: 160px;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToVerySmall`
+    background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
+    height: 34px;
+  `}
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 `
 
 const UniIcon = styled.div`
   display: flex;
   position: relative;
   transition: transform 0.3s ease;
-
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
-    overflow-x: hidden;
-    width: 30px;
-  `};
 
   &:hover {
     transform: rotate(-5deg);
