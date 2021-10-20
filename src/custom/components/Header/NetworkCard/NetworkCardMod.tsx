@@ -239,12 +239,13 @@ export default function NetworkCard() {
         toggleWalletModal()
         return setQueuedNetworkSwitch(supportedChainId)
       } else if (implements3085 && library && supportedChainId) {
-        return switchToNetwork({ library, chainId: supportedChainId })
+        switchToNetwork({ library, chainId: supportedChainId })
+        return open && toggle()
       }
 
       return
     },
-    [account, implements3085, library, toggleWalletModal]
+    [account, implements3085, library, open, toggle, toggleWalletModal]
   )
 
   // MOD: used with mod hook - used to connect disconnected wallet to selected network
