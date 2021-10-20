@@ -309,7 +309,9 @@ export default function NetworkCard() {
             )} */}
             {/* Supported networks to change to */}
             {ALL_SUPPORTED_CHAIN_IDS.map((supportedChainId) => {
-              if (supportedChainId === chainId) {
+              const callback = () => networkCallback(supportedChainId)
+
+              if (account && supportedChainId === chainId) {
                 /*  Current selected network */
                 return (
                   <ButtonMenuItem $selected key={'selected_' + chainId}>
@@ -325,7 +327,6 @@ export default function NetworkCard() {
                 )
               }
 
-              const callback = () => networkCallback(supportedChainId)
               return (
                 <ButtonMenuItem
                   key={supportedChainId}
