@@ -239,12 +239,13 @@ export default function NetworkCard() {
         toggleWalletModal()
         return setQueuedNetworkSwitch(supportedChainId)
       } else if (implements3085 && library && supportedChainId) {
-        return switchToNetwork({ library, chainId: supportedChainId })
+        switchToNetwork({ library, chainId: supportedChainId })
+        return open && toggle()
       }
 
       return
     },
-    [account, implements3085, library, toggleWalletModal]
+    [account, implements3085, library, open, toggle, toggleWalletModal]
   )
 
   // MOD: used with mod hook - used to connect disconnected wallet to selected network
@@ -309,7 +310,9 @@ export default function NetworkCard() {
             )} */}
             {/* Supported networks to change to */}
             {ALL_SUPPORTED_CHAIN_IDS.map((supportedChainId) => {
-              if (supportedChainId === chainId) {
+              const callback = () => networkCallback(supportedChainId)
+
+              if (account && supportedChainId === chainId) {
                 /*  Current selected network */
                 return (
                   <ButtonMenuItem $selected key={'selected_' + chainId}>
@@ -325,7 +328,6 @@ export default function NetworkCard() {
                 )
               }
 
-              const callback = () => networkCallback(supportedChainId)
               return (
                 <ButtonMenuItem
                   key={supportedChainId}
