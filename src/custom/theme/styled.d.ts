@@ -54,9 +54,8 @@ declare module 'styled-components' {
     // css snippets
     logo: {
       src?: string
+      srcIcon?: string
       alt?: string
-      width?: string
-      height?: string
     }
     cursor?: FlattenSimpleInterpolation
     body: {

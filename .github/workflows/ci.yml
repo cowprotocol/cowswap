@@ -140,7 +140,6 @@ jobs:
             src/types/v3
             src/abis/types
             src/state/data
-            src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run linters

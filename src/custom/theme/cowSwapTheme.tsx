@@ -88,9 +88,8 @@ function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   return {
     logo: {
       src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
+      srcIcon: `data:image/svg+xml;base64,${cowSwapLogo(darkMode, true)}`,
       alt: 'CowSwap Logo',
-      width: '208px',
-      height: '50px',
     },
     cursor: css`
       cursor: url(${Cursor1}), auto;
