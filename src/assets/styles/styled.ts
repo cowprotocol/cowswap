@@ -20,4 +20,5 @@ export const Txt = styled.span<
   ${({ theme, fs }) => theme.mediaWidth.upToMedium`
     font-size: ${fs ? fs * 0.8 : 12}px;
   `}
+  min-height: 22px;
 `
