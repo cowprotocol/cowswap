@@ -124,16 +124,16 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     // setup variables accordingly...
     id = order.id
 
-    isPending = order?.status === OrderStatus.PENDING
-    isPresignaturePending = order?.status === OrderStatus.PRESIGNATURE_PENDING
-    isConfirmed = !isPending && order?.status === OrderStatus.FULFILLED
+    isPending = order.status === OrderStatus.PENDING
+    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING
+    isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
     isCancelling = (order.isCancelling || false) && isPending
-    isCancelled = !isConfirmed && order?.status === OrderStatus.CANCELLED
+    isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
 
     activity = order
     type = ActivityType.ORDER
 
-    date = new Date(order?.creationTime)
+    date = new Date(order.creationTime)
   } else if (tx) {
     // We're dealing with a TRANSACTION
     // setup variables accordingly...
