@@ -35,13 +35,14 @@ export const ChildWrapper = styled.div`
   flex-grow: 1;
   justify-content: center;
   border-radius: 21px;
-  padding: 15px;
+  padding: 20px;
   ${({ theme }) => theme.neumorphism.boxShadow};
   background-color: ${({ theme }) => theme.bg7};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-column-start: 1;
     grid-column-end: 2;
     width: 100%;
+    padding: 14px;
   `}
   > .item {
     width: 100%;
@@ -99,7 +100,7 @@ export const StyledTime = styled.p`
 export const ItemTitle = styled.h3`
   display: flex;
   align-items: center;
-  margin: 0 0 34px 0;
+  margin: 0 0 16px 0;
   font-size: 18px;
   line-height: 1.21;
   color: ${({ theme }) => theme.text1};
@@ -134,6 +135,7 @@ export const FlexCol = styled.div`
   justify-content: center;
   strong {
     font-size: 21px;
+    margin-top: 6px;
     ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 14px;
   `}
@@ -141,5 +143,6 @@ export const FlexCol = styled.div`
   span:not([role='img']) {
     font-size: 14px;
     color: ${({ theme }) => theme.text6};
+    line-height: 32px;
   }
 `

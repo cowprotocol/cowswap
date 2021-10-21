@@ -1,6 +1,3 @@
-import Logo from 'assets/svg/logo.svg'
-import LogoDark from 'assets/svg/logo_white.svg'
-
 import { Colors } from 'theme/styled'
 import { colors as colorsUniswap } from '@src/theme'
 import { ButtonSize } from 'theme'
@@ -8,6 +5,12 @@ import { ButtonSize } from 'theme'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { transparentize } from 'polished'
+import { cowSwapLogo } from 'theme/cowSwapAssets'
+
+import Cursor1 from 'assets/cow-swap/cursor1.gif'
+import Cursor2 from 'assets/cow-swap/cursor2.gif'
+import Cursor3 from 'assets/cow-swap/cursor3.gif'
+import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 export { TYPE } from '@src/theme'
 export * from '@src/theme/components'
@@ -84,7 +87,34 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         background: radial-gradient(50% 50%, ${colorsTheme.primary1} 0%, ${colorsTheme.bg1} 100%) 0 -30vh no-repeat;
       `,
     },
-    logo: { src: `${darkMode ? LogoDark : Logo}`, alt: 'GP Logo', width: '24px', height: 'auto' },
+    logo: {
+      src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
+      srcIcon: `data:image/svg+xml;base64,${cowSwapLogo(darkMode, true)}`,
+      alt: 'CowSwap Logo',
+      width: '208px',
+      height: '50px',
+    },
+    util: {
+      invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
+    },
+    cursor: css`
+      cursor: url(${Cursor1}), auto;
+      animation: cursor 1s infinite;
+      @keyframes cursor {
+        0% {
+          cursor: url(${Cursor1}), auto;
+        }
+        25% {
+          cursor: url(${Cursor2}), auto;
+        }
+        50% {
+          cursor: url(${Cursor3}), auto;
+        }
+        75% {
+          cursor: url(${Cursor4}), auto;
+        }
+      }
+    `,
     appBody: {
       boxShadow: `0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
   0px 24px 32px rgba(0, 0, 0, 0.01)`,
