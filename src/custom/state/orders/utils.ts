@@ -9,7 +9,14 @@ import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { calculatePrice, invertPrice, ZERO_BIG_NUMBER } from '@gnosis.pm/dex-js'
 import { BigNumber } from 'bignumber.js'
 
-export type OrderTransitionStatus = 'unknown' | 'fulfilled' | 'expired' | 'cancelled' | 'presigned' | 'pending'
+export type OrderTransitionStatus =
+  | 'unknown'
+  | 'fulfilled'
+  | 'expired'
+  | 'cancelled'
+  | 'presignaturePending'
+  | 'presigned'
+  | 'pending'
 
 /**
  * An order is considered fulfilled if `executedByAmount` and `executedSellAmount` are > 0.
@@ -41,6 +48,10 @@ function isOrderCancelled(order: Pick<OrderMetaData, 'creationDate' | 'invalidat
 function isOrderExpired(order: Pick<OrderMetaData, 'validTo'>): boolean {
   const validToTime = order.validTo * 1000 // validTo is in seconds
   return Date.now() - validToTime > PENDING_ORDERS_BUFFER
+}
+
+function isPresignPending(order: Pick<OrderMetaData, 'status'>): boolean {
+  return order.status === 'presignaturePending'
 }
 
 /**
@@ -82,6 +93,9 @@ export function classifyOrder(
       new Date(order.validTo * 1000)
     )
     return 'expired'
+  } else if (isPresignPending(order)) {
+    console.debug(`[state::orders::classifyOrder] presignPending order ${order.uid.slice(0, 10)}`)
+    return 'presignaturePending'
   } else if (isOrderPresigned(order)) {
     console.debug(`[state::orders::classifyOrder] presigned order ${order.uid.slice(0, 10)}`)
     return 'presigned'

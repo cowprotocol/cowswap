@@ -60,7 +60,7 @@ export function CancelledOrdersUpdater(): null {
           popupData && acc[status].push(popupData)
           return acc
         },
-        { fulfilled: [], presigned: [], expired: [], cancelled: [], unknown: [], pending: [] }
+        { fulfilled: [], presigned: [], expired: [], cancelled: [], unknown: [], presignaturePending: [], pending: [] }
       )
 
       // Bach state update fulfilled orders, if any

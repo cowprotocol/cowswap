@@ -30,6 +30,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   cancelled: OrderStatus.CANCELLED,
   expired: OrderStatus.EXPIRED,
   fulfilled: OrderStatus.FULFILLED,
+  presignaturePending: OrderStatus.PRESIGNATURE_PENDING,
   pending: OrderStatus.PENDING,
   presigned: OrderStatus.PENDING, // presigned is still pending
   unknown: undefined,
