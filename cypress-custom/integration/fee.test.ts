@@ -1,4 +1,3 @@
-import { SupportedChainId as ChainId } from '../../src/custom/constants/chains'
 import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { FeeQuoteParams, FeeInformation } from '../../src/custom/utils/price'
@@ -6,7 +5,7 @@ import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
 const FOUR_HOURS = 3600 * 4 * 1000
-const DEFAULT_SELL_TOKEN = WETH[ChainId.RINKEBY]
+const DEFAULT_SELL_TOKEN = WETH[4]
 
 const getFeeQuery = ({ sellToken, buyToken, amount, kind }: Omit<FeeQuoteParams, 'chainId'>) =>
   `https://protocol-rinkeby.dev.gnosisdev.com/api/v1/fee?sellToken=${sellToken}&buyToken=${buyToken}&amount=${amount}&kind=${kind}`
