@@ -51,7 +51,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order) {
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 
@@ -70,11 +70,18 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updatePending = useCallback(() => {
-    if (!chainId || pendingRef.current.length === 0) {
+    if (!chainId || !account) {
       return
     }
 
-    pendingRef.current.forEach((order, index) =>
+    // Only check pending orders of the connected account
+    const pending = pendingRef.current.filter((order) => order.owner === account)
+
+    if (pending.length === 0) {
+      return
+    }
+
+    pending.forEach((order, index) =>
       _getOrderPrice(chainId, order).then((price) => {
         console.debug(
           `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
@@ -83,7 +90,7 @@ export function UnfillableOrdersUpdater(): null {
         price?.amount && updateIsUnfillableFlag(chainId, order, price)
       })
     )
-  }, [chainId, updateIsUnfillableFlag])
+  }, [account, chainId, updateIsUnfillableFlag])
 
   useEffect(() => {
     updatePending()
