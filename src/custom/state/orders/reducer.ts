@@ -4,6 +4,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addPendingOrder,
   preSignOrders,
+  updatePresignGnosisSafeTx,
   removeOrder,
   clearOrders,
   fulfillOrder,
@@ -150,6 +151,15 @@ export default createReducer(initialState, (builder) =>
           pendingOrders[id] = orderObject
         }
       })
+    })
+    .addCase(updatePresignGnosisSafeTx, (state, action) => {
+      prefillState(state, action)
+      const { orderId, chainId, safeTransaction } = action.payload
+
+      const orderObject = getOrderById(state, chainId, orderId)
+      if (orderObject) {
+        orderObject.order.presignGnosisSafeTx = safeTransaction
+      }
     })
     .addCase(removeOrder, (state, action) => {
       prefillState(state, action)

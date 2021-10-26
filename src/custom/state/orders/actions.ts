@@ -4,6 +4,7 @@ import { OrderCreation } from 'utils/signatures'
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { SerializedToken } from '@src/state/user/actions'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export enum OrderStatus {
@@ -36,7 +37,8 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   apiAdditionalInfo?: OrderInfoApi
 
   // Wallet specific
-  presignGnosisSafeTxHash?: string
+  presignGnosisSafeTxHash?: string // Gnosis Safe tx
+  presignGnosisSafeTx?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 }
 
 /**
@@ -110,6 +112,11 @@ export interface BatchOrdersUpdateParams {
 }
 
 export type PresignedOrdersParams = BatchOrdersUpdateParams
+export interface UpdatePresignGnosisSafeTxParams {
+  orderId: OrderID
+  chainId: ChainId
+  safeTransaction: SafeMultisigTransactionResponse
+}
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 
@@ -118,6 +125,10 @@ export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/
 export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
 
 export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
+
+export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxParams>(
+  'order/updatePresignGnosisSafeTx'
+)
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 
