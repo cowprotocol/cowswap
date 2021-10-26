@@ -118,17 +118,23 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   const pendingOrderParams: Order = {
     ...unsignedOrder,
-    // TP
+
+    // Basic order params
     id: orderId,
     owner: account,
-    creationTime,
-    status: allowsOffchainSigning ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
     summary,
     inputToken: sellToken,
     outputToken: buyToken,
-    apiAdditionalInfo: undefined,
+
+    // Status
+    status: allowsOffchainSigning ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
+    creationTime,
+
     // Signature
     signature,
+
+    // Additional API info
+    apiAdditionalInfo: undefined,
   }
 
   return {

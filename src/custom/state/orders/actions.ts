@@ -14,22 +14,37 @@ export enum OrderStatus {
   CANCELLED = 'cancelled',
 }
 
-// used internally by dapp
+// Abstract type for the order used in the Dapp. Its composed out of 3 types of props:
+//  - Information present in the order creation type used in the API to post new orders
+//  - Additional information available in the API
+//  - Derived/additional information that is handy for this app
+// Doesn't have input/output tokens, these are declared in the subtypes of this base type
 export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
-  id: OrderID // it is special :), Unique identifier for the order: 56 bytes encoded as hex without 0x
-  owner: string // address, without '0x' prefix
+  id: OrderID // Unique identifier for the order: 56 bytes encoded as hex without 0x
+  owner: string // Address, without '0x' prefix
+  summary: string // Description of the order, for dapp use only, readable by user
+
+  // Status
   status: OrderStatus
-  fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
-  fulfilledTransactionHash?: string // hash of transaction when Order was fulfilled
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
-  summary: string // for dapp use only, readable by user
-  isCancelling?: boolean // intermediate state while the order has been cancelled but order is still pending
-  isUnfillable?: boolean // whether the order is out of the market, due to price movements since placement
+  isCancelling?: boolean // Intermediate state while the order has been cancelled but order is still pending
+  isUnfillable?: boolean // Whether the order is out of the market, due to price movements since placement
+  fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
+  fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
+
+  // Additional information from the order available in the API
   apiAdditionalInfo?: OrderInfoApi
+
+  // Wallet specific
+  presignGnosisSafeTxHash?: string
 }
 
 /**
- * The API provides some additional information
+ * Additional order information coming from the API
+ * When you fetch orders by orderId, the API provides some additional information not available at creation time.
+ * This type models the fields that are present in this endpoint and not in the creation time order.
+ *
+ * Note it uses OrderMetaData, which is the return type of the endpoint that get's an order by orderId
  */
 type OrderInfoApi = Pick<
   OrderMetaData,
@@ -42,20 +57,21 @@ type OrderInfoApi = Pick<
   | 'invalidated'
 >
 
+/**
+ * Order as used by the Dapp
+ */
 export interface Order extends BaseOrder {
   inputToken: Token // for dapp use only, readable by user
   outputToken: Token // for dapp use only, readable by user
 }
 
+/**
+ * Order used for persisting it in the state.
+ * The only difference with Order is that all it's fields are serializable
+ */
 export interface SerializedOrder extends BaseOrder {
   inputToken: SerializedToken // for dapp use only, readable by user
   outputToken: SerializedToken // for dapp use only, readable by user
-}
-
-// gotten from querying /api/v1/orders
-export interface OrderFromApi extends OrderCreation {
-  creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
-  owner: string // address, without '0x' prefix
 }
 
 export interface AddPendingOrderParams {
