@@ -113,7 +113,8 @@ async function _updateOrders({
   getSafeInfo,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
-  const pending = orders.filter((order) => order.owner === account)
+  const lowerCaseAccount = account.toLowerCase()
+  const pending = orders.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
   // Exit early when there are no pending orders
   if (pending.length === 0) {

@@ -39,12 +39,14 @@ export function CancelledOrdersUpdater(): null {
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string) => {
+      const lowerCaseAccount = account.toLowerCase()
       // Filter orders:
       // - Owned by the current connected account
       // - Created in the last 5 min, no further
       const pending = cancelledRef.current.filter(
-        (order) =>
-          order.owner === account && Date.now() - new Date(order.creationTime).getTime() < CANCELLED_ORDERS_PENDING_TIME
+        ({ owner, creationTime }) =>
+          owner.toLowerCase() === lowerCaseAccount &&
+          Date.now() - new Date(creationTime).getTime() < CANCELLED_ORDERS_PENDING_TIME
       )
 
       if (pending.length === 0) {

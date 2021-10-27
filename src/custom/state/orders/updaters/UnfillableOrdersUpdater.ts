@@ -74,8 +74,9 @@ export function UnfillableOrdersUpdater(): null {
       return
     }
 
+    const lowerCaseAccount = account.toLowerCase()
     // Only check pending orders of the connected account
-    const pending = pendingRef.current.filter((order) => order.owner === account)
+    const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
     if (pending.length === 0) {
       return
