@@ -430,8 +430,8 @@ export default function Faq() {
             considering it for their solutions.
           </p>
           <p>
-            In the future, the protocol could provide also EIP712 support for off-chain signing also for smart
-            contracts, making gas-less trading possible also for smart contracts.
+            In the future, the protocol could provide EIP712 support for off-chain signing also for smart contracts,
+            making gas-less trading possible also for smart contracts.
           </p>
 
           <h3 id="what-is-presign">What is pre-sign?</h3>
