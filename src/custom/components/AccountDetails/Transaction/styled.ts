@@ -126,7 +126,7 @@ export const SummaryInner = styled.div`
     margin: 16px 0 0;
     width: 100%;
     display: grid;
-    grid-template-columns: fit-content(100%) fit-content(100%);
+    grid-template-columns: 1fr;
     grid-gap: 0 18px;
     justify-items: flex-start;
     align-items: flex-start;
@@ -438,13 +438,16 @@ export const TransactionInnerDetail = styled.div`
   }
 `
 
-export const TextAlert = styled.div<{ isPending: boolean }>`
-  background: ${({ isPending }) => (isPending ? 'rgb(255 87 34 / 15%)' : 'rgb(0 216 151 / 15%)')};
-  margin: 6px 0 3px;
+export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`
+  background: ${({ theme, isPending }) =>
+    isPending ? transparentize(0.85, theme.attention) : transparentize(0.85, theme.success)};
+  margin: 6px 0 16px;
   padding: 8px 12px;
-  color: ${({ isPending }) => (isPending ? '#ff5722' : '#00d897')};
+  color: ${({ theme, isPending }) => (isPending ? theme.attention : theme.success)};
+  text-decoration: ${({ isExpired, isCancelled }) => (isExpired || isCancelled) && 'line-through'};
   border-radius: 8px;
   text-align: center;
+  font-weight: 600;
 `
 
 export const CreationDateText = styled.div`

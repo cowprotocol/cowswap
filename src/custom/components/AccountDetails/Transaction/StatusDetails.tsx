@@ -12,21 +12,21 @@ import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { CancellationModal } from './CancelationModal'
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 
 export function GnosisSafeLink(props: {
   chainId: number
-  enhancedTransaction: EnhancedTransactionDetails | null
+  safeTransaction?: SafeMultisigTransactionResponse
   gnosisSafeThreshold: number
 }): JSX.Element | null {
-  const { chainId, enhancedTransaction } = props
+  const { chainId, safeTransaction } = props
 
-  if (!enhancedTransaction?.safeTransaction) {
+  if (!safeTransaction) {
     return null
   }
 
-  const { safe } = enhancedTransaction.safeTransaction
+  const { safe } = safeTransaction
   const safeUrl = getSafeWebUrl(chainId, safe)
 
   // Only show the link to the safe, if we have the "safeUrl"
