@@ -117,7 +117,7 @@ export default function Profile() {
                   💸
                 </span>
                 <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
-                <span>Referrals Volume</span>
+                <span>Referrals volume</span>
               </FlexCol>
             </FlexWrap>
           </ChildWrapper>
