@@ -409,25 +409,25 @@ export default function Faq() {
           </p>
           <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
           <p>
-            CowSwap uses offline signatures to offer gasless orders, additionally has support for smart contract wallets
+            CowSwap uses offchain signatures to offer gasless orders, additionally has support for smart contract wallets
             by using some alternative signing method called{' '}
             <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
           <p>
-            Smart Contract (SC) are supported by using pre-sign method, however for normal wallets (EOA) CowSwaps
+            Smart Contract (SC) are supported by using pre-sign method, however for normal wallets (EOA) CowSwap
             requires the wallet to support offchain-signing (EIP712 standard).
           </p>
           <p>
-            Some wallets have reported issues with this offchain-signing, so they are disabled. If that is the case for
-            you, reach out to your wallet developers and ask for it.
+            Some wallets have reported issues with this offchain-signing, so they disabled it. If that is the case for
+            your wallet, reach out to your wallet provider and ask for it to be implemented.
           </p>
           <h3 id="smart-contract-support">Are smart contract integrations supported?</h3>
-          <p>Yes! Any smart contract can trade in CowSwap by using one signing method called pre-sign.</p>
+          <p>Yes! Any smart contract can trade in CowSwap by using the signing method called pre-sign.</p>
           <p>
             pre-sign is a protocol operation that can be invoked by any contract. The operation has a single parameter
             that is the &quot;orderId&quot; which identifies the order that the smart contract is approving. Once the
             smart contract pre-signs an order, it becomes automatically tradable, therefore solvers will start
-            considering it for their solutions.
+            considering the order for their settlement solutions.
           </p>
           <p>
             In the future, the protocol could provide EIP712 support for off-chain signing also for smart contracts,
