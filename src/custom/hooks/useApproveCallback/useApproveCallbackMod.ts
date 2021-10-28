@@ -87,7 +87,7 @@ export function useApproveCallback(
       return tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString())
     })
 
-    openTransactionConfirmationModal(`Approve token ${amountToApprove.currency.symbol} for trading`)
+    openTransactionConfirmationModal(`Approving ${amountToApprove.currency.symbol} for trading`)
     return (
       tokenContract
         .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {

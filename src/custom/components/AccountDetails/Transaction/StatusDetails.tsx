@@ -38,7 +38,7 @@ export function GnosisSafeLink(props: {
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { activityDerivedState } = props
+  const { activityDerivedState, chainId } = props
 
   const {
     id,
@@ -107,7 +107,13 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           {/* Cancel order */}
           <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>
           {showCancelModal && (
-            <CancellationModal orderId={id} summary={summary} isOpen={showCancelModal} onDismiss={onDismiss} />
+            <CancellationModal
+              chainId={chainId}
+              orderId={id}
+              summary={summary}
+              isOpen={showCancelModal}
+              onDismiss={onDismiss}
+            />
           )}
         </StatusLabelBelow>
       )}

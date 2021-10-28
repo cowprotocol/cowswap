@@ -14,6 +14,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { useWalletInfo } from './useWalletInfo'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { OperationType } from '../components/TransactionConfirmationModal'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -37,7 +38,7 @@ interface GetWrapUnwrapCallback {
   wethContract: Contract
   gnosisSafeInfo: SafeInfoResponse | undefined
   addTransaction: TransactionAdder
-  openTransactionConfirmationModal: (message: string) => void
+  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
   closeModals: () => void
 }
 
@@ -70,14 +71,17 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     let wrapUnwrap: () => Promise<TransactionResponse>
     let summary: string
     let confirmationMessage: string
+    let operationType: OperationType
 
     const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
     if (isWrap) {
+      operationType = OperationType.WRAP_ETHER
       wrapUnwrap = async () => wethContract.deposit({ value: amountHex })
       const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
       summary = t`Wrap ${baseSummary}`
       confirmationMessage = t`Wrapping ${baseSummary}`
     } else {
+      operationType = OperationType.UNWRAP_WETH
       wrapUnwrap = async () => {
         const options = gnosisSafeInfo
           ? {
@@ -104,7 +108,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
     wrapUnwrapCallback = async () => {
       try {
-        openTransactionConfirmationModal(confirmationMessage)
+        openTransactionConfirmationModal(confirmationMessage, operationType)
         const txReceipt = await wrapUnwrap()
         addTransaction({
           hash: txReceipt.hash,
@@ -137,7 +141,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
  * @param typedValue the user input value
  */
 export default function useWrapCallback(
-  openTransactionConfirmationModal: (message: string) => void,
+  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void,
   closeModals: () => void,
   inputCurrency?: Currency,
   outputCurrency?: Currency,
