@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
-import { useReferralAddress, useResetReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
+import { useReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
 import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
 import { retry, RetryOptions } from 'utils/retry'
@@ -24,7 +24,6 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 
 export default function AffiliateStatusCheck() {
   const appDispatch = useAppDispatch()
-  const resetReferralAddress = useResetReferralAddress()
   const uploadReferralDocAndSetDataHash = useUploadReferralDocAndSetDataHash()
   const history = useHistory()
   const { account, chainId } = useActiveWeb3React()
@@ -34,7 +33,6 @@ export default function AffiliateStatusCheck() {
 
   const uploadDataDoc = useCallback(async () => {
     setError('')
-
     if (!chainId || !account || !referralAddress) {
       return
     }
@@ -44,7 +42,6 @@ export default function AffiliateStatusCheck() {
       const userHasTrades = await retry(() => hasTrades(chainId, account), DEFAULT_RETRY_OPTIONS).promise
 
       if (userHasTrades) {
-        resetReferralAddress()
         setAffiliateState('ALREADY_TRADED')
         return
       }
@@ -62,7 +59,7 @@ export default function AffiliateStatusCheck() {
       console.error(error)
       setError('There was an error while uploading the referral document to IPFS. Please try again.')
     }
-  }, [chainId, account, referralAddress, resetReferralAddress, uploadReferralDocAndSetDataHash])
+  }, [chainId, account, referralAddress, uploadReferralDocAndSetDataHash])
 
   useEffect(() => {
     if (!referralAddress) {
@@ -83,14 +80,13 @@ export default function AffiliateStatusCheck() {
 
     if (referralAddress === account) {
       // clean-up saved referral address if the user follows its own referral link
-      resetReferralAddress()
       history.push('/profile')
       setAffiliateState('OWN_LINK')
       return
     }
 
     uploadDataDoc()
-  }, [referralAddress, account, resetReferralAddress, history, chainId, appDispatch, uploadDataDoc])
+  }, [referralAddress, account, history, chainId, appDispatch, uploadDataDoc])
 
   if (error) {
     return (
