@@ -672,6 +672,10 @@ export default function Faq() {
               sound.
             </li>
           </ol>
+          <p>
+            This workflow applies for normal ethereum accounts (EOA). For smart contracts, instead of the signing a
+            meta-tx you would need to do a <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
+          </p>
 
           <h3 id="can-i-cancel-an-order">Can I cancel an order?</h3>
 
@@ -681,6 +685,11 @@ export default function Faq() {
           <p>
             That is because when the offline order cancellation is received, a settlement solution may have already been
             prepared by one of the solvers and sent to the Ethereum network.
+          </p>
+          <p>
+            Alternatively there is the so-called hard cancellations, which allow to cancel your order onchain. This is
+            not currently supported by CowSwap web interface, and you would need to pay for the gas of the on-chain
+            cancellation, but is available at protocol level.
           </p>
 
           <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
