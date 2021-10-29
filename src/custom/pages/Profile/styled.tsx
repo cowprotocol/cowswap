@@ -92,6 +92,11 @@ export const StyledTitle = styled(Title)`
     font-size: 24px;
   `}
 `
+
+export const StyledTime = styled.p`
+  margin: 0;
+`
+
 export const ItemTitle = styled.h3`
   display: flex;
   align-items: center;
@@ -111,6 +116,9 @@ export const FlexWrap = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: center;
+  > div {
+    width: auto;
+  }
   button {
     max-width: 180px;
   }

@@ -21,6 +21,7 @@ import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
 import { Web3Provider } from '@ethersproject/providers'
+import { useAppDataHash } from 'state/affiliate/hooks'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -80,6 +81,7 @@ interface SwapParams {
   isBuyEth: boolean
   recipientAddressOrName: string | null
   recipient: string
+  appDataHash: string
 
   // Callbacks
   wrapEther: Wrap | null
@@ -117,6 +119,7 @@ async function _swap(params: SwapParams): Promise<string> {
     isBuyEth,
     recipientAddressOrName,
     recipient,
+    appDataHash,
 
     // Callbacks
     wrapEther,
@@ -198,6 +201,7 @@ async function _swap(params: SwapParams): Promise<string> {
     recipientAddressOrName,
     signer: library.getSigner(),
     allowsOffchainSigning,
+    appDataHash,
   })
 
   let pendingOrderParams: AddUnserialisedPendingOrderParams
@@ -273,6 +277,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   const [deadline] = useUserTransactionTTL()
+  const appDataHash = useAppDataHash()
   const addPendingOrder = useAddPendingOrder()
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -330,6 +335,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
       isSellEth,
       recipientAddressOrName,
       recipient,
+      appDataHash,
 
       // Callbacks
       wrapEther,
@@ -364,5 +370,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     openTransactionConfirmationModal,
     closeModals,
     presignOrder,
+    appDataHash,
   ])
 }

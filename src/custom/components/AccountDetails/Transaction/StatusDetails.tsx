@@ -14,7 +14,6 @@ import { ActivityDerivedState, determinePillColour } from './index'
 import { CancellationModal } from './CancelationModal'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { HashType } from '@src/custom/state/enhancedTransactions/reducer'
 
 export function GnosisSafeLink(props: {
   chainId: number

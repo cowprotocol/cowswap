@@ -6,10 +6,11 @@ import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
 import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from 'api/gnosisProtocol'
 import { Signer } from 'ethers'
-import { APP_DATA_HASH, RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
+import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@gnosis.pm/gp-v2-contracts'
+import { getTrades } from 'api/gnosisProtocol/api'
 
 export interface PostOrderParams {
   account: string
@@ -25,6 +26,7 @@ export interface PostOrderParams {
   recipient: string
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
+  appDataHash: string
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -67,6 +69,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     signer,
     recipient,
     allowsOffchainSigning,
+    appDataHash,
   } = params
 
   // fee adjusted input amount
@@ -85,7 +88,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     sellAmount,
     buyAmount,
     validTo,
-    appData: APP_DATA_HASH,
+    appData: appDataHash,
     feeAmount: feeAmount?.quotient.toString() || '0',
     kind,
     receiver,
@@ -164,4 +167,10 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
   })
 
   cancelPendingOrder({ chainId, id: orderId })
+}
+
+export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
+  const trades = await getTrades({ chainId, owner: address, limit: 1 })
+
+  return trades.length > 0
 }
