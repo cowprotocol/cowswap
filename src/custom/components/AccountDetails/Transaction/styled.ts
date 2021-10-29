@@ -227,6 +227,7 @@ export const StatusLabelWrapper = styled.div`
 `
 
 export const StatusLabel = styled.div<{
+  isTransaction: boolean
   isPending: boolean
   isCancelling: boolean
   isPresignaturePending: boolean
@@ -256,10 +257,10 @@ export const StatusLabel = styled.div<{
 
   &::before {
     content: '';
-    background: ${({ color, isPending, isPresignaturePending, isCancelling, theme }) =>
+    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, theme }) =>
       !isCancelling && isPending
         ? 'transparent'
-        : isPresignaturePending
+        : isPresignaturePending || (isPending && isTransaction)
         ? theme.pending
         : color === 'success'
         ? theme.success
@@ -273,8 +274,8 @@ export const StatusLabel = styled.div<{
     opacity: 0.15;
   }
 
-  ${({ theme, isCancelling, isPresignaturePending }) =>
-    (isCancelling || isPresignaturePending) &&
+  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending }) =>
+    (isCancelling || isPresignaturePending || (isPending && isTransaction)) &&
     css`
       &::after {
         position: absolute;

@@ -14,6 +14,7 @@ import { ActivityDerivedState, determinePillColour } from './index'
 import { CancellationModal } from './CancelationModal'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { HashType } from '@src/custom/state/enhancedTransactions/reducer'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -35,6 +36,51 @@ export function GnosisSafeLink(props: {
   }
 
   return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
+}
+
+function _getStateLabel({
+  isPending,
+  isOrder,
+  isConfirmed,
+  isExpired,
+  isCancelling,
+  isPresignaturePending,
+  isCancelled,
+  enhancedTransaction,
+}: ActivityDerivedState) {
+  if (isPending) {
+    if (enhancedTransaction) {
+      console.log('enhancedTransaction', enhancedTransaction)
+      const { safeTransaction, transactionHash } = enhancedTransaction
+      if (safeTransaction && !transactionHash) {
+        return 'Signing...'
+      }
+    }
+
+    return isOrder ? 'Open' : 'Pending...'
+  }
+
+  if (isConfirmed) {
+    return 'Filled'
+  }
+
+  if (isExpired) {
+    return isOrder ? 'Expired' : 'Failed'
+  }
+
+  if (isCancelling) {
+    return 'Cancelling...'
+  }
+
+  if (isPresignaturePending) {
+    return 'Signing...'
+  }
+
+  if (isCancelled) {
+    return 'Cancelled'
+  }
+
+  return 'Open'
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
@@ -64,6 +110,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     <StatusLabelWrapper>
       <StatusLabel
         color={determinePillColour(status, type)}
+        isTransaction={isTransaction}
         isPending={isPending}
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
@@ -83,23 +130,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         ) : isCancelling ? null : (
           <SVG src={OrderOpenImage} description="Order Open" />
         )}
-        {isPending
-          ? 'Open'
-          : isConfirmed && isTransaction
-          ? 'Confirmed'
-          : isConfirmed
-          ? 'Filled'
-          : isExpired && isTransaction
-          ? 'Failed'
-          : isExpired
-          ? 'Expired'
-          : isCancelling
-          ? 'Cancelling...'
-          : isPresignaturePending
-          ? 'Signing...'
-          : isCancelled
-          ? 'Cancelled'
-          : 'Open'}
+        {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
       {isCancellable && (
