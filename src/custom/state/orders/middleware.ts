@@ -5,6 +5,7 @@ import { AppState } from 'state'
 import * as OrderActions from './actions'
 
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
+import { registerOnWindow } from 'utils/misc'
 
 type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
@@ -14,10 +15,10 @@ const COW_SOUNDS: Sounds = {
   SUCCESS: '/audio/mooooo-success__ben__lower-90.mp3',
   ERROR: '/audio/mooooo-error__lower-90.mp3',
 }
-const HALLOWING_SOUNDS: Sounds = {
-  SEND: '/audio/mooooo-halloween.wav',
-  SUCCESS: '/audio/mooooo-halloween.wav',
-  ERROR: '/audio/mooooo-halloween.wav',
+const HALLOWEEN_SOUNDS: Sounds = {
+  SEND: '/audio/mooooo-halloween__lower.wav',
+  SUCCESS: '/audio/mooooo-halloween__lower.wav',
+  ERROR: '/audio/mooooo-halloween__lower.wav',
 }
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
 
@@ -174,7 +175,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
 function getCowSounds(isDarkMode: boolean): Sounds {
   if (isDarkMode) {
-    return HALLOWING_SOUNDS
+    return HALLOWEEN_SOUNDS
   } else {
     return COW_SOUNDS
   }
@@ -203,6 +204,19 @@ function getCowSoundSuccess(isDarkMode: boolean): HTMLAudioElement {
 function getCowSoundError(isDarkMode: boolean): HTMLAudioElement {
   return getAudio('ERROR', isDarkMode)
 }
+
+function removeLightningEffect() {
+  document.body.classList.remove('lightning')
+}
+
+function addLightningEffect() {
+  document.body.classList.add('lightning')
+
+  setTimeout(() => {
+    removeLightningEffect()
+  }, 3000)
+}
+registerOnWindow({ addLightningEffect })
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponsing sound is dispatched
@@ -237,7 +251,15 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     cowSound = getCowSoundError(isDarkMode)
   }
 
-  cowSound?.play().catch((e) => console.error('🐮 Moooooo sound cannot be played', e))
+  if (cowSound) {
+    if (isDarkMode) {
+      setTimeout(addLightningEffect, 300)
+    }
+    cowSound?.play().catch((e) => {
+      removeLightningEffect()
+      console.error('🐮 Moooooo sound cannot be played', e)
+    })
+  }
 
   return result
 }
