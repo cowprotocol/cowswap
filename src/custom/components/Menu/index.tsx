@@ -262,11 +262,18 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           </span>
         </MenuItem>
 
-        <InternalMenuItem to="/play" onClick={close}>
+        <InternalMenuItem to="/play/mev-slicer" onClick={close}>
           <span role="img" aria-label="Play CowGame">
-            <img src={GameIcon} alt="Play CowGame" />
+            <img src={GameIcon} alt="Play Cow MEV Slicer" />
           </span>{' '}
-          CowGame
+          MEV Slicer
+        </InternalMenuItem>
+
+        <InternalMenuItem to="/play/cow-runner" onClick={close}>
+          <span role="img" aria-label="Play CowGame">
+            <img src={GameIcon} alt="Play Cow Runner Game" />
+          </span>{' '}
+          Cow Runner
         </InternalMenuItem>
 
         <MenuItemResponsive onClick={() => toggleDarkMode()}>
