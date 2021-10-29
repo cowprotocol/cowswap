@@ -28,7 +28,7 @@ const Wrapper = styled(Page)`
   }
 `
 
-export default function CowGamePage() {
+export default function CowRunnerPage() {
   return (
     <Wrapper>
       <p>
