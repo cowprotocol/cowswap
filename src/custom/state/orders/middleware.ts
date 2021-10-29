@@ -6,6 +6,21 @@ import * as OrderActions from './actions'
 
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
 
+type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
+type Sounds = Record<SoundType, string>
+
+const COW_SOUNDS: Sounds = {
+  SEND: '/audio/mooooo-send__lower-90.mp3',
+  SUCCESS: '/audio/mooooo-success__ben__lower-90.mp3',
+  ERROR: '/audio/mooooo-error__lower-90.mp3',
+}
+const HALLOWING_SOUNDS: Sounds = {
+  SEND: '/audio/mooooo-halloween.wav',
+  SUCCESS: '/audio/mooooo-halloween.wav',
+  ERROR: '/audio/mooooo-halloween.wav',
+}
+const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
+
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
   OrderActions.addPendingOrder,
@@ -157,37 +172,46 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   return result
 }
 
-let moooooSend: HTMLAudioElement
-function getCowSoundSend(): HTMLAudioElement {
-  if (!moooooSend) {
-    moooooSend = new Audio('/audio/mooooo-send__lower-90.mp3')
+function getCowSounds(isDarkMode: boolean): Sounds {
+  if (isDarkMode) {
+    return HALLOWING_SOUNDS
+  } else {
+    return COW_SOUNDS
   }
-
-  return moooooSend
 }
 
-let moooooSuccess: HTMLAudioElement
-function getCowSoundSuccess(): HTMLAudioElement {
-  if (!moooooSuccess) {
-    moooooSuccess = new Audio('/audio/mooooo-success__ben__lower-90.mp3')
+function getAudio(type: SoundType, isDarkMode: boolean): HTMLAudioElement {
+  const soundPath = getCowSounds(isDarkMode)[type]
+  let sound = SOUND_CACHE[soundPath]
+
+  if (!sound) {
+    sound = new Audio(soundPath)
+    SOUND_CACHE[soundPath] = sound
   }
 
-  return moooooSuccess
+  return sound
 }
 
-let moooooError: HTMLAudioElement
-function getCowSoundError(): HTMLAudioElement {
-  if (!moooooError) {
-    moooooError = new Audio('/audio/mooooo-error__lower-90.mp3')
-  }
+function getCowSoundSend(isDarkMode: boolean): HTMLAudioElement {
+  return getAudio('SEND', isDarkMode)
+}
 
-  return moooooError
+function getCowSoundSuccess(isDarkMode: boolean): HTMLAudioElement {
+  return getAudio('SUCCESS', isDarkMode)
+}
+
+function getCowSoundError(isDarkMode: boolean): HTMLAudioElement {
+  return getAudio('ERROR', isDarkMode)
 }
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponsing sound is dispatched
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
+
+  // Halloween temporary
+  const { userDarkMode, matchesDarkMode } = store.getState().user
+  const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
 
   if (isBatchOrderAction(action)) {
     const { chainId } = action.payload
@@ -203,14 +227,14 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   let cowSound
   if (isPendingOrderAction(action)) {
-    cowSound = getCowSoundSend()
+    cowSound = getCowSoundSend(isDarkMode)
   } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
+    cowSound = getCowSoundSuccess(isDarkMode)
   } else if (isExpireOrdersAction(action)) {
-    cowSound = getCowSoundError()
+    cowSound = getCowSoundError(isDarkMode)
   } else if (isCancelOrderAction(action)) {
     // TODO: find a unique sound for order cancellation
-    cowSound = getCowSoundError()
+    cowSound = getCowSoundError(isDarkMode)
   }
 
   cowSound?.play().catch((e) => console.error('🐮 Moooooo sound cannot be played', e))
