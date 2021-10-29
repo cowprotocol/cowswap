@@ -12,7 +12,6 @@ function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Disp
       const blocknativeSdk = sdk[chainId]
 
       if (!blocknativeSdk) {
-        console.warn(`TransactionUpdater::BlocknativeSdk not available`)
         return
       }
 
@@ -43,7 +42,6 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
   const blocknativeSdk = sdk[chainId]
 
   if (!blocknativeSdk) {
-    console.warn(`TransactionUpdater::BlocknativeSdk not available`)
     return
   }
 
