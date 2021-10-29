@@ -2,12 +2,13 @@ import { ButtonPrimary } from 'components/Button/ButtonMod'
 import Page, { Content } from 'components/Page'
 import styled from 'styled-components/macro'
 
-import nijaCowImg from './nija-cow.png'
+import ninjaCowImg from 'assets/cow-swap/ninja-cow.png'
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 
 const Wrapper = styled(Page)`
   min-height: initial;
+  padding: 48px 24px 0;
 
   // Override. Should be addressed in the CowGame package instead.
   .icon-offline {
@@ -17,6 +18,12 @@ const Wrapper = styled(Page)`
   h1,
   p {
     text-align: center;
+    margin: 0;
+  }
+
+  p > img {
+    width: 100%;
+    max-width: 200px;
   }
 
   ${Content} {
@@ -39,9 +46,9 @@ function openGame() {
 export default function MevSlicer() {
   return (
     <Wrapper>
-      <p>This Cow doesn&apos;t run any more! Not from MEV!</p>
+      <p>This Cow doesn&apos;t run away any more! Not from MEV!</p>
       <p>
-        Now is time to take some action! -{' '}
+        Now is the time to take some action! -{' '}
         <strong>
           Let&apos;s slice some{' '}
           <span role="img" aria-label="sandwich-icon">
@@ -51,11 +58,11 @@ export default function MevSlicer() {
         </strong>
       </p>
       <p>
-        <img src={nijaCowImg} alt="Nija Cow" />
+        <img src={ninjaCowImg} alt="Ninja Cow" />
       </p>
       <p>
         <ButtonPrimary padding="8px" $borderRadius="8px" onClick={openGame}>
-          MEV Slicer
+          Play MEV Slicer
         </ButtonPrimary>
       </p>
 
