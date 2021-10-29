@@ -18,7 +18,6 @@ import { ApplicationModal } from 'state/application/actions'
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
 import SVG from 'react-inlinesvg'
-import { CowGame } from '@gnosis.pm/cow-runner-game'
 
 export * from './MenuMod'
 
