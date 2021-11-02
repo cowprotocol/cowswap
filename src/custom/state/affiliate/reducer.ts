@@ -7,7 +7,7 @@ export interface AffiliateState {
     value: string
     isValid: boolean
   }
-  appDataHash: string
+  appDataHash?: string
 }
 
 export const initialState: AffiliateState = {

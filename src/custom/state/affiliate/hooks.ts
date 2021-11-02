@@ -1,13 +1,14 @@
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
 import { useAppDispatch } from 'state/hooks'
 import { updateAppDataHash, updateReferralAddress } from 'state/affiliate/actions'
-import { useCallback } from 'react'
 import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
+import { APP_DATA_HASH } from 'constants/index'
 
 export function useAppDataHash() {
   return useSelector<AppState, string>((state) => {
-    return state.affiliate.appDataHash
+    return state.affiliate.appDataHash || APP_DATA_HASH
   })
 }
 
