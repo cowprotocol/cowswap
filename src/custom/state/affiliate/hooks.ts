@@ -12,7 +12,14 @@ export function useAppDataHash() {
 }
 
 export function useReferralAddress() {
-  return useSelector<AppState, string | undefined>((state) => {
+  return useSelector<
+    AppState,
+    | {
+        value: string
+        isValid: boolean
+      }
+    | undefined
+  >((state) => {
     return state.affiliate.referralAddress
   })
 }
@@ -20,7 +27,7 @@ export function useReferralAddress() {
 export function useResetReferralAddress() {
   const dispatch = useAppDispatch()
 
-  return useCallback(() => dispatch(updateReferralAddress('')), [dispatch])
+  return useCallback(() => dispatch(updateReferralAddress(null)), [dispatch])
 }
 
 export function useUploadReferralDocAndSetDataHash() {

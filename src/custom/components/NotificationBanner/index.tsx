@@ -10,6 +10,7 @@ export interface BannerProps {
   children: React.ReactNode
   level: Level
   isVisible: boolean
+  canClose?: boolean
 }
 
 const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
@@ -41,10 +42,12 @@ const BannerContainer = styled.div`
 `
 export default function NotificationBanner(props: BannerProps) {
   const [isActive, setIsActive] = useState(props.isVisible)
+  const { canClose = true } = props
+
   return (
     <Banner {...props} isVisible={isActive}>
       <BannerContainer>{props.children}</BannerContainer>
-      <StyledClose size={16} onClick={() => setIsActive(false)} />
+      {canClose && <StyledClose size={16} onClick={() => setIsActive(false)} />}
     </Banner>
   )
 }
