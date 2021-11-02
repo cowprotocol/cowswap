@@ -45,13 +45,17 @@ export interface QuestionHelperProps extends Omit<TooltipProps, 'children' | 'sh
 export default function QuestionHelper({ text, className, QuestionMark, ...tooltipProps }: QuestionHelperProps) {
   const [show, setShow] = useState<boolean>(false)
 
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+  const toggle = useCallback(() => setShow((show) => !show), [setShow])
 
   return (
     <QuestionHelperContainer className={className}>
       <Tooltip {...tooltipProps} show={show} text={text}>
-        <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
+        <QuestionWrapper
+          style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem', cursor: 'pointer' }}
+          onMouseDown={toggle}
+          role="button"
+          tabIndex={0}
+        >
           {/* <QuestionMark>?</QuestionMark> */}
           <QuestionMark />
         </QuestionWrapper>

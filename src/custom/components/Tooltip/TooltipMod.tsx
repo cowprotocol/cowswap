@@ -28,11 +28,16 @@ export function TooltipContent({ content, ...rest }: TooltipContentProps) {
 
 export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show'>) {
   const [show, setShow] = useState(false)
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+  const toggle = useCallback(() => setShow((show) => !show), [setShow])
+
   return (
     <Tooltip {...rest} show={show}>
-      <div onMouseEnter={open} onMouseLeave={close}>
+      <div
+        style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem', cursor: 'pointer' }}
+        onMouseDown={toggle}
+        role="button"
+        tabIndex={0}
+      >
         {children}
       </div>
     </Tooltip>
@@ -41,14 +46,14 @@ export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show
 
 export function MouseoverTooltipContent({ content, children, ...rest }: Omit<TooltipContentProps, 'show'>) {
   const [show, setShow] = useState(false)
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+  const toggle = useCallback(() => setShow((show) => !show), [setShow])
   return (
     <TooltipContent {...rest} show={show} content={content}>
       <div
-        style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem' }}
-        onMouseEnter={open}
-        onMouseLeave={close}
+        style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem', cursor: 'pointer' }}
+        onMouseDown={toggle}
+        role="button"
+        tabIndex={0}
       >
         {children}
       </div>

@@ -76,7 +76,13 @@ export default function Profile() {
           <ChildWrapper>
             <ItemTitle>
               Trades&nbsp;
-              <MouseoverTooltipContent content="Statistics regarding your own trades.">
+              <MouseoverTooltipContent
+                content={
+                  <p>
+                    Statistics regarding your own trades. <a href="faq#/faq#trading">See FAQ section</a>
+                  </p>
+                }
+              >
                 <HelpCircle size={14} />
               </MouseoverTooltipContent>
             </ItemTitle>
