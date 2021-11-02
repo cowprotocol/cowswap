@@ -1,7 +1,7 @@
 import ms from 'ms.macro'
 import { useState, useEffect } from 'react'
 
-type GpQuoteStatus = 'COWSWAP' | 'LEGACY'
+export type GpQuoteStatus = 'COWSWAP' | 'LEGACY'
 // TODO: use actual API call
 export async function checkGpQuoteApiStatus(): Promise<GpQuoteStatus> {
   return new Promise((accept) => setTimeout(() => accept('COWSWAP'), 500))
