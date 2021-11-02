@@ -19,7 +19,7 @@ import HeaderMod, {
 } from './HeaderMod'
 import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -35,9 +35,6 @@ import { formatSmart } from 'utils/format'
 import NetworkCard, { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-
-// Halloween temporary
-import SpiderRag from 'assets/cow-swap/halloween-spider.svg'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -88,30 +85,8 @@ const HeaderControls = styled(HeaderControlsUni)`
   `};
 `
 
-export const Wrapper = styled.div<{ isDarkMode: boolean }>`
+export const Wrapper = styled.div`
   width: 100%;
-  position: relative;
-
-  // Halloween temporary start
-  ${({ isDarkMode }) =>
-    isDarkMode &&
-    css`
-      &::after {
-        content: '';
-        display: block;
-        background: url(${SpiderRag}) no-repeat center/contain;
-        height: 200px;
-        width: 200px;
-        position: absolute;
-        right: -42px;
-        top: 90px;
-
-        ${({ theme }) => theme.mediaWidth.upToSmall`
-          display: none;
-          content: none;
-        `};
-      }
-    `}
 
   ${HeaderFrame} {
     padding: 16px;
@@ -238,7 +213,7 @@ export default function Header() {
   }, [isOrdersPanelOpen, isMenuOpen])
 
   return (
-    <Wrapper isDarkMode={darkMode}>
+    <Wrapper>
       <HeaderModWrapper>
         <HeaderRow marginRight="0">
           <Title href={'./#/?' + stringify(parsedQs)}>
