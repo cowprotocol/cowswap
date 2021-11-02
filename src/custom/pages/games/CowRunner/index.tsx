@@ -29,12 +29,10 @@ const Wrapper = styled(Page)`
   }
 `
 
-export default function CowGamePage() {
-  const { gnosisSafeInfo } = useWalletInfo()
+export default function CowRunnerPage() {
   return (
     <Wrapper>
       <p>
-        <pre>{JSON.stringify(gnosisSafeInfo, null, 2)}</pre>
         Run! ...and try not getting sandwiched{' '}
         <span role="img" aria-label="sandwich-icon">
           🥪
