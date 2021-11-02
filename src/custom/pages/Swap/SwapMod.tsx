@@ -77,7 +77,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { SwapProps, ButtonError, ButtonPrimary, ButtonLight } from '.' // mod
+import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
@@ -771,9 +771,9 @@ export default function Swap({
                 </TYPE.main>
               </ButtonPrimary>
             ) : !account ? (
-              <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonLight>
+              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>
