@@ -88,7 +88,6 @@ export default function AffiliateStatusCheck() {
 
     if (referralAddress.value === account) {
       // clean-up saved referral address if the user follows its own referral link
-      history.push('/profile')
       setAffiliateState('OWN_LINK')
 
       if (referralAddressQueryParam) {

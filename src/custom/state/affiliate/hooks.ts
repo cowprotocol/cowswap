@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
 import { useAppDispatch } from 'state/hooks'
-import { updateAppDataHash, updateReferralAddress } from 'state/affiliate/actions'
+import { updateAppDataHash } from 'state/affiliate/actions'
 import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
 import { APP_DATA_HASH } from 'constants/index'
 
@@ -25,21 +25,14 @@ export function useReferralAddress() {
   })
 }
 
-export function useResetReferralAddress() {
-  const dispatch = useAppDispatch()
-
-  return useCallback(() => dispatch(updateReferralAddress(null)), [dispatch])
-}
-
 export function useUploadReferralDocAndSetDataHash() {
   const dispatch = useAppDispatch()
 
-  return useCallback(
-    async (referralAddress: string) => {
-      const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress))
+  return
+  ;async (referralAddress: string) => {
+    const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress))
 
-      dispatch(updateAppDataHash(appDataHash))
-    },
+    dispatch(updateAppDataHash(appDataHash))
+  },
     [dispatch]
-  )
 }
