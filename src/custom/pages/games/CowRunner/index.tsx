@@ -1,7 +1,6 @@
 import Page, { Content } from 'components/Page'
 import styled from 'styled-components/macro'
 import { CowGame } from '@gnosis.pm/cow-runner-game'
-import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
 
 const Wrapper = styled(Page)`
   min-height: initial;
