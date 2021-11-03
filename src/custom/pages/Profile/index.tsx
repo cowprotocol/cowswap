@@ -1,3 +1,4 @@
+import styled from 'styled-components/macro'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -19,10 +20,12 @@ import useFetchProfile from 'hooks/useFetchProfile'
 import { numberFormatter } from 'utils/format'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
+import NotificationBanner from 'components/NotificationBanner'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 export default function Profile() {
   const referralLink = useReferralLink()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const profileData = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
 
@@ -52,6 +55,11 @@ export default function Profile() {
             </Txt>
           )}
         </CardHead>
+        {chainId && chainId !== ChainId.MAINNET && (
+          <StyledNotificationBanner isVisible level="info" canClose={false}>
+            Profile data is only available for mainnet. Please change the network to see it.
+          </StyledNotificationBanner>
+        )}
         <ChildWrapper>
           <Txt fs={16}>
             <strong>Your referral url</strong>
@@ -167,3 +175,7 @@ const formatDecimal = (number?: number): string => {
 const formatInt = (number?: number): string => {
   return number ? number.toLocaleString() : '-'
 }
+
+const StyledNotificationBanner = styled(NotificationBanner)`
+  border-radius: 14px;
+`

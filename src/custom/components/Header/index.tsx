@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
+import { stringify } from 'qs'
 
 import HeaderMod, {
   Title,
@@ -18,7 +19,7 @@ import HeaderMod, {
 } from './HeaderMod'
 import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -33,9 +34,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import NetworkCard, { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
-
-// Halloween temporary
-import SpiderRag from 'assets/cow-swap/halloween-spider.svg'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -86,30 +85,8 @@ const HeaderControls = styled(HeaderControlsUni)`
   `};
 `
 
-export const Wrapper = styled.div<{ isDarkMode: boolean }>`
+export const Wrapper = styled.div`
   width: 100%;
-  position: relative;
-
-  // Halloween temporary start
-  ${({ isDarkMode }) =>
-    isDarkMode &&
-    css`
-      &::after {
-        content: '';
-        display: block;
-        background: url(${SpiderRag}) no-repeat center/contain;
-        height: 200px;
-        width: 200px;
-        position: absolute;
-        right: -42px;
-        top: 90px;
-
-        ${({ theme }) => theme.mediaWidth.upToSmall`
-          display: none;
-          content: none;
-        `};
-      }
-    `}
 
   ${HeaderFrame} {
     padding: 16px;
@@ -225,6 +202,7 @@ export default function Header() {
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
+  const parsedQs = useParsedQueryString()
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -235,17 +213,17 @@ export default function Header() {
   }, [isOrdersPanelOpen, isMenuOpen])
 
   return (
-    <Wrapper isDarkMode={darkMode}>
+    <Wrapper>
       <HeaderModWrapper>
         <HeaderRow marginRight="0">
-          <Title href=".">
+          <Title href={'./#/?' + stringify(parsedQs)}>
             <UniIcon>
               <LogoImage />
             </UniIcon>
           </Title>
           <HeaderLinks>
             <StyledNavLink to="/swap">Swap</StyledNavLink>
-            <StyledNavLink to="/profile">Profile</StyledNavLink>
+            <StyledNavLink to="/about">About</StyledNavLink>
           </HeaderLinks>
         </HeaderRow>
         <HeaderControls>

@@ -64,9 +64,6 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
       grid-column-start: 1;
       grid-column-end: 2;
     }
-    > :nth-child(4) {
-      display: none;
-    }
   `};
 `
 
