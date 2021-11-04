@@ -83,7 +83,7 @@ function finalizeEthereumTransaction(
   addPopup(
     {
       txn: {
-        hash,
+        hash: receipt.transactionHash,
         success: receipt.status === 1,
         summary: transaction.summary,
       },
