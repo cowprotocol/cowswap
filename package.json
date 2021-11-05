@@ -7,6 +7,7 @@
   "engines": {
     "node": ">=14.0.0"
   },
+  "type": "module",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
     "@craco/craco": "^5.7.0",
@@ -159,10 +160,11 @@
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 './node_modules/@uniswap/?(v3-core|v3-periphery)/artifacts/contracts/**/*.json'",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3",
     "graphql:generate": "graphql-codegen --config codegen.yml",
-    "postinstall": "yarn contracts:compile && yarn graphql:generate && yarn i18n:compile",
+    "postinstall": "yarn contracts:compile && yarn graphql:generate && yarn i18n:compile && yarn sitemap",
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
-    "prei18n:extract": "touch src/locales/en-US.po"
+    "prei18n:extract": "touch src/locales/en-US.po",
+    "sitemap": "node src/custom/sitemap"
   },
   "jest": {
     "moduleNameMapper": {
@@ -205,6 +207,7 @@
     "react-appzi": "^1.0.4",
     "react-inlinesvg": "^2.3.0",
     "react-router-hash-link": "^2.4.0",
+    "simple-sitemap-renderer": "^1.1.0",
     "timeago.js": "^4.0.2"
   }
 }
