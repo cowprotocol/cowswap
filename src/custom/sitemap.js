@@ -1,8 +1,9 @@
-import { renderSitemap } from 'simple-sitemap-renderer'
-import fs from 'fs'
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { renderSitemap } = require('simple-sitemap-renderer')
+const fs = require('fs')
 
 const OUTPUT_FILE = 'public/sitemap.xml'
-export const PRODUCTION_URL = 'https://cowswap.exchange'
+const PRODUCTION_URL = 'https://cowswap.exchange'
 
 const PAGES = [
   'swap',

@@ -7,7 +7,6 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "type": "module",
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
     "@craco/craco": "^5.7.0",
