@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -26,7 +26,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
-  const profileData = useFetchProfile()
+  const { profileData, isLoading } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
 
   return (
@@ -35,24 +35,26 @@ export default function Profile() {
         <CardHead>
           <StyledTitle>Profile overview</StyledTitle>
           {account && (
-            <Txt>
-              <RefreshCcw size={16} />
-              &nbsp;&nbsp;
-              <Txt secondary>
-                Last updated
-                <MouseoverTooltipContent content="Data is updated on the background periodically.">
-                  <HelpCircle size={14} />
-                </MouseoverTooltipContent>
-                :&nbsp;
+            <Loader isLoading={isLoading}>
+              <Txt>
+                <RefreshCcw size={16} />
+                &nbsp;&nbsp;
+                <Txt secondary>
+                  Last updated
+                  <MouseoverTooltipContent content="Data is updated on the background periodically.">
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                  :&nbsp;
+                </Txt>
+                {!lastUpdated ? (
+                  '-'
+                ) : (
+                  <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                    <strong>{lastUpdated}</strong>
+                  </MouseoverTooltipContent>
+                )}
               </Txt>
-              {!lastUpdated ? (
-                '-'
-              ) : (
-                <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
-                  <strong>{lastUpdated}</strong>
-                </MouseoverTooltipContent>
-              )}
-            </Txt>
+            </Loader>
           )}
         </CardHead>
         {chainId && chainId !== ChainId.MAINNET && (
@@ -93,15 +95,23 @@ export default function Profile() {
                 <span role="img" aria-label="farmer">
                   🧑‍🌾
                 </span>
-                <strong>{formatInt(profileData?.totalTrades)}</strong>
-                <span>Total trades</span>
+                <Loader isLoading={isLoading}>
+                  <strong>{formatInt(profileData?.totalTrades)}</strong>
+                </Loader>
+                <Loader isLoading={isLoading}>
+                  <span>Total trades</span>
+                </Loader>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="moneybag">
                   💰
                 </span>
-                <strong>{formatDecimal(profileData?.tradeVolumeUsd)}</strong>
-                <span>Total traded volume</span>
+                <Loader isLoading={isLoading}>
+                  <strong>{formatDecimal(profileData?.tradeVolumeUsd)}</strong>
+                </Loader>
+                <Loader isLoading={isLoading}>
+                  <span>Total traded volume</span>
+                </Loader>
               </FlexCol>
             </FlexWrap>
           </ChildWrapper>
@@ -117,15 +127,23 @@ export default function Profile() {
                 <span role="img" aria-label="handshake">
                   🤝
                 </span>
-                <strong>{formatInt(profileData?.totalReferrals)}</strong>
-                <span>Total referrals</span>
+                <Loader isLoading={isLoading}>
+                  <strong>{formatInt(profileData?.totalReferrals)}</strong>
+                </Loader>
+                <Loader isLoading={isLoading}>
+                  <span>Total referrals</span>
+                </Loader>
               </FlexCol>
               <FlexCol>
                 <span role="img" aria-label="wingedmoney">
                   💸
                 </span>
-                <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
-                <span>Referrals volume</span>
+                <Loader isLoading={isLoading}>
+                  <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
+                </Loader>
+                <Loader isLoading={isLoading}>
+                  <span>Referrals volume</span>
+                </Loader>
               </FlexCol>
             </FlexWrap>
           </ChildWrapper>
@@ -178,4 +196,38 @@ const formatInt = (number?: number): string => {
 
 const StyledNotificationBanner = styled(NotificationBanner)`
   border-radius: 14px;
+`
+
+const Loader = styled.div<{ isLoading: boolean }>`
+  ${({ theme, isLoading }) =>
+    isLoading &&
+    css`
+      position: relative;
+      display: inline-block;
+
+      overflow: hidden;
+      &::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0,
+          ${theme.shimmer1} 20%,
+          ${theme.shimmer2} 60%,
+          rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+        content: '';
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `}
 `
