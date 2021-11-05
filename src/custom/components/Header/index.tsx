@@ -240,7 +240,7 @@ export default function Header() {
           </HeaderElement>
           <HeaderElementWrap>
             <TwitterLink>
-              <ExternalLink href="https://twitter.com/mevprotection" target="_blank" rel="noopener noreferrer">
+              <ExternalLink href="https://twitter.com/mevprotection">
                 <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" />
               </ExternalLink>
             </TwitterLink>
