@@ -160,7 +160,8 @@
     "postinstall": "yarn contracts:compile && yarn graphql:generate && yarn i18n:compile",
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
-    "prei18n:extract": "touch src/locales/en-US.po"
+    "prei18n:extract": "touch src/locales/en-US.po",
+    "sitemap": "node src/custom/sitemap"
   },
   "jest": {
     "moduleNameMapper": {
@@ -203,6 +204,7 @@
     "react-appzi": "^1.0.4",
     "react-inlinesvg": "^2.3.0",
     "react-router-hash-link": "^2.4.0",
+    "simple-sitemap-renderer": "^1.1.0",
     "timeago.js": "^4.0.2"
   }
 }
