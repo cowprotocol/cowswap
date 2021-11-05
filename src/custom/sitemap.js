@@ -13,7 +13,7 @@ const PAGES = [
   'play/cow-runner',
   'play/mev-slicer',
   'privacy-policy',
-  'cookie-policy',
+  // 'cookie-policy',
   'terms-and-conditions',
 ]
 
