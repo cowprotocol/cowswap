@@ -51,31 +51,49 @@ function isOrderRecent(order: Order): boolean {
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
  */
 export default function useRecentActivity() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const allTransactions = useAllTransactions()
   const allNonEmptyOrders = useOrders({ chainId })
 
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
+    if (!account) {
+      return []
+    }
+
     // Filter out any pending/fulfilled orders OLDER than 1 day
     // and adjust order object to match TransactionDetail addedTime format
     // which is used later in app to render list of activity
-    const adjustedOrders = allNonEmptyOrders.filter(isOrderRecent).map((order) => {
-      // we need to essentially match EnhancedTransactionDetails type which uses "addedTime" for date checking
-      // and time in MS vs ISO string as Orders uses
-      return {
-        ...order,
-        addedTime: Date.parse(order.creationTime),
-      }
-    })
+    const accountLowerCase = account.toLowerCase()
+    const adjustedOrders = allNonEmptyOrders
+      // Only show orders for connected account
+      .filter((order) => order.owner.toLowerCase() === accountLowerCase)
+      // Only recent orders
+      .filter(isOrderRecent)
+      .map((order) => {
+        // we need to essentially match EnhancedTransactionDetails type which uses "addedTime" for date checking
+        // and time in MS vs ISO string as Orders uses
+        return {
+          ...order,
+          addedTime: Date.parse(order.creationTime),
+        }
+      })
 
     return adjustedOrders
-  }, [allNonEmptyOrders])
+  }, [allNonEmptyOrders, account])
 
   const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(() => {
+    if (!account) {
+      return []
+    }
+
     // Filter out any pending/fulfilled transactions OLDER than 1 day
     // and adjust order object to match Order id + status format
     // which is used later in app to render list of activity
+    const accountLowerCase = account.toLowerCase()
     const adjustedTransactions = Object.values(allTransactions)
+      // Only show orders for connected account
+      .filter((tx) => tx.from.toLowerCase() === accountLowerCase)
+      // Only recent transactions
       .filter(isTransactionRecent)
       .map((tx) => {
         return {
@@ -87,7 +105,7 @@ export default function useRecentActivity() {
       })
 
     return adjustedTransactions
-  }, [allTransactions])
+  }, [allTransactions, account])
 
   return useMemo(() => {
     // Concat together the EnhancedTransactionDetails[] and Orders[]
