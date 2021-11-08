@@ -26,8 +26,23 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
-  const { profileData, isLoading } = useFetchProfile()
+  const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
+
+  const renderNotificationMessages = (
+    <>
+      {error && (
+        <StyledNotificationBanner isVisible level="error" canClose={false}>
+          There was an error loading your profile data. Please try again later.
+        </StyledNotificationBanner>
+      )}
+      {chainId && chainId !== ChainId.MAINNET && (
+        <StyledNotificationBanner isVisible level="info" canClose={false}>
+          Profile data is only available for mainnet. Please change the network to see it.
+        </StyledNotificationBanner>
+      )}
+    </>
+  )
 
   return (
     <Wrapper>
@@ -57,11 +72,7 @@ export default function Profile() {
             </Loader>
           )}
         </CardHead>
-        {chainId && chainId !== ChainId.MAINNET && (
-          <StyledNotificationBanner changeOnProp={account} isVisible level="info" canClose={false}>
-            Profile data is only available for mainnet. Please change the network to see it.
-          </StyledNotificationBanner>
-        )}
+        {renderNotificationMessages}
         <ChildWrapper>
           <Txt fs={16}>
             <strong>Your referral url</strong>

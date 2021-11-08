@@ -5,13 +5,13 @@ import { ProfileData } from 'api/gnosisProtocol/api'
 
 type FetchProfileState = {
   profileData: ProfileData | null
-  //error: string
+  error: string
   isLoading: boolean
 }
 
 const emptyState: FetchProfileState = {
   profileData: null,
-  //error: '',
+  error: '',
   isLoading: false,
 }
 
