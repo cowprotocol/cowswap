@@ -36,7 +36,7 @@ function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: Or
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
 
   const pending = usePendingOrders({ chainId })
 
@@ -50,15 +50,19 @@ export function PendingOrdersUpdater(): null {
   const presignOrders = usePresignOrders()
 
   const updateOrders = useCallback(
-    async (chainId: ChainId) => {
+    async (chainId: ChainId, account: string) => {
+      const lowerCaseAccount = account.toLowerCase()
+      // Only check pending orders of current connected account
+      const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+
       // Exit early when there are no pending orders
-      if (pendingRef.current.length === 0) {
+      if (pending.length === 0) {
         return
       }
 
       // Iterate over pending orders fetching API data
       const unfilteredOrdersData = await Promise.all(
-        pendingRef.current.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+        pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
       )
 
       // Group resolved promises by status
@@ -76,7 +80,7 @@ export function PendingOrdersUpdater(): null {
       if (presigned.length > 0) {
         // Only mark as presigned the orders we were not aware of their new state
         const presignedOrderIds = presigned as OrderID[]
-        const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(pendingRef.current, presignedOrderIds)
+        const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(pending, presignedOrderIds)
 
         if (ordersPresignaturePendingSigned.length > 0) {
           presignOrders({
@@ -111,14 +115,14 @@ export function PendingOrdersUpdater(): null {
   )
 
   useEffect(() => {
-    if (!chainId) {
+    if (!chainId || !account) {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId), OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [chainId, updateOrders])
+  }, [account, chainId, updateOrders])
 
   return null
 }

@@ -123,6 +123,21 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.cancelled[id]
 }
 
+function addOrderToState(
+  state: Required<OrdersState>,
+  chainId: ChainId,
+  id: string,
+  status: OrderTypeKeys,
+  order: SerializedOrder
+): void {
+  // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
+  // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png
+  // by creating a new object instead of trying to edit the existing one
+  // Seems to be due to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
+  // but only happened on Chrome
+  state[chainId][status] = { ...state[chainId][status], [id]: { order, id } }
+}
+
 function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {
   const orderObj = state?.[chainId]?.[status]?.[id]
   if (orderObj) {
@@ -140,12 +155,12 @@ export default createReducer(initialState, (builder) =>
       const { order, id, chainId } = action.payload
 
       const orderStateList = order.status === OrderStatus.PRESIGNATURE_PENDING ? 'presignaturePending' : 'pending'
-      state[chainId][orderStateList][id] = { order, id }
+
+      addOrderToState(state, chainId, id, orderStateList, order)
     })
     .addCase(preSignOrders, (state, action) => {
       prefillState(state, action)
       const { ids, chainId } = action.payload
-      const pendingOrders = state[chainId].pending
 
       ids.forEach((id) => {
         const orderObject = getOrderById(state, chainId, id)
@@ -154,7 +169,8 @@ export default createReducer(initialState, (builder) =>
           deleteOrderById(state, chainId, id)
 
           orderObject.order.status = OrderStatus.PENDING
-          pendingOrders[id] = orderObject
+
+          addOrderToState(state, chainId, id, 'pending', orderObject.order)
         }
       })
     })
@@ -195,7 +211,7 @@ export default createReducer(initialState, (builder) =>
           : newOrder
 
         // add order to respective state
-        state[chainId][status][id] = { order, id }
+        addOrderToState(state, chainId, id, status, order)
       })
     })
     .addCase(fulfillOrder, (state, action) => {
@@ -212,7 +228,7 @@ export default createReducer(initialState, (builder) =>
         orderObject.order.fulfilledTransactionHash = transactionHash
         orderObject.order.isCancelling = false
 
-        state[chainId].fulfilled[id] = orderObject
+        addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
       }
     })
     .addCase(fulfillOrdersBatch, (state, action) => {
@@ -235,7 +251,7 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.apiAdditionalInfo = apiAdditionalInfo
 
-          state[chainId].fulfilled[id] = orderObject
+          addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
         }
       })
     })
@@ -251,13 +267,12 @@ export default createReducer(initialState, (builder) =>
         orderObject.order.status = OrderStatus.EXPIRED
         orderObject.order.isCancelling = false
 
-        state[chainId].expired[id] = orderObject
+        addOrderToState(state, chainId, id, 'expired', orderObject.order)
       }
     })
     .addCase(expireOrdersBatch, (state, action) => {
       prefillState(state, action)
       const { ids, chainId } = action.payload
-      const fulfilledOrders = state[chainId].expired
 
       // if there are any newly fulfilled orders
       // update them
@@ -269,7 +284,8 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.status = OrderStatus.EXPIRED
           orderObject.order.isCancelling = false
-          fulfilledOrders[id] = orderObject
+
+          addOrderToState(state, chainId, id, 'expired', orderObject.order)
         }
       })
     })
@@ -295,13 +311,12 @@ export default createReducer(initialState, (builder) =>
         orderObject.order.status = OrderStatus.CANCELLED
         orderObject.order.isCancelling = false
 
-        state[chainId].cancelled[id] = orderObject
+        addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
       }
     })
     .addCase(cancelOrdersBatch, (state, action) => {
       prefillState(state, action)
       const { ids, chainId } = action.payload
-      const cancelledOrders = state[chainId].cancelled
 
       ids.forEach((id) => {
         const orderObject = getOrderById(state, chainId, id)
@@ -311,7 +326,8 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.status = OrderStatus.CANCELLED
           orderObject.order.isCancelling = false
-          cancelledOrders[id] = orderObject
+
+          addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
         }
       })
     })
