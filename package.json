@@ -189,7 +189,7 @@
   "dependencies": {
     "@gnosis.pm/cow-runner-game": "^0.2.9",
     "@gnosis.pm/dex-js": "^0.12.0",
-    "@gnosis.pm/gp-v2-contracts": "^1.0.2",
+    "@gnosis.pm/gp-v2-contracts": "ˆ1.1.2",
     "@gnosis.pm/safe-service-client": "^0.1.1",
     "@pinata/sdk": "^1.1.23",
     "@sentry/react": "^6.11.0",

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 export type GpQuoteStatus = 'COWSWAP' | 'LEGACY'
 // TODO: use actual API call
 export async function checkGpQuoteApiStatus(): Promise<GpQuoteStatus> {
-  return new Promise((accept) => setTimeout(() => accept('COWSWAP'), 500))
+  return new Promise((accept) => setTimeout(() => accept('LEGACY'), 500))
 }
 const GP_QUOTE_STATUS_INTERVAL_TIME = ms`2 hours`
 

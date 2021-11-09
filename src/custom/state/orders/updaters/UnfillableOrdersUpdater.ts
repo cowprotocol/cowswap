@@ -8,8 +8,10 @@ import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { getBestPrice, PriceInformation } from 'utils/price'
+import { getBestQuote, PriceInformation } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
+import useCheckGpQuoteStatus, { GpQuoteStatus } from 'hooks/useGetGpApiStatus'
+import { getPromiseFulfilledValue } from 'utils/misc'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -17,7 +19,7 @@ import { isOrderUnfillable } from 'state/orders/utils'
  * @param chainId
  * @param order
  */
-async function _getOrderPrice(chainId: ChainId, order: Order) {
+async function _getOrderPrice(chainId: ChainId, order: Order, apiStatus: GpQuoteStatus) {
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
@@ -34,14 +36,17 @@ async function _getOrderPrice(chainId: ChainId, order: Order) {
     chainId,
     amount,
     kind: order.kind,
+    sellToken: order.sellToken,
+    buyToken: order.buyToken,
     baseToken,
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
+    validTo: Date.now() / 1000 + 3000,
   }
 
   try {
-    return await getBestPrice(quoteParams)
+    return getBestQuote({ apiStatus, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e) {
     return null
   }
@@ -54,6 +59,7 @@ export function UnfillableOrdersUpdater(): null {
   const { chainId } = useActiveWeb3React()
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
+  const gpApiStatus = useCheckGpQuoteStatus((process.env.DEFAULT_GP_API as GpQuoteStatus) || 'LEGACY')
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -75,15 +81,19 @@ export function UnfillableOrdersUpdater(): null {
     }
 
     pendingRef.current.forEach((order, index) =>
-      _getOrderPrice(chainId, order).then((price) => {
-        console.debug(
-          `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-          price ? price.amount : 'no :('
-        )
-        price?.amount && updateIsUnfillableFlag(chainId, order, price)
+      _getOrderPrice(chainId, order, gpApiStatus).then((quote) => {
+        if (quote) {
+          const [promisedPrice] = quote
+          const price = getPromiseFulfilledValue(promisedPrice, null)
+          console.debug(
+            `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
+            price ? price.amount : 'no :('
+          )
+          price?.amount && updateIsUnfillableFlag(chainId, order, price)
+        }
       })
     )
-  }, [chainId, updateIsUnfillableFlag])
+  }, [chainId, gpApiStatus, updateIsUnfillableFlag])
 
   useEffect(() => {
     updatePending()

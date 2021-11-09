@@ -18,6 +18,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
+import { useOrderValidTo } from 'state/user/hooks'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -140,6 +141,7 @@ export default function FeesUpdater(): null {
 
   const windowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
+  const validTo = useOrderValidTo()
 
   // Update if any parameter is changing
   useEffect(() => {
@@ -164,6 +166,7 @@ export default function FeesUpdater(): null {
       kind,
       amount: amount.quotient.toString(),
       userAddress: account,
+      validTo,
     }
 
     // Don't refetch if offline.
@@ -241,6 +244,7 @@ export default function FeesUpdater(): null {
     setQuoteError,
     account,
     lastUnsupportedCheck,
+    validTo,
   ])
 
   return null

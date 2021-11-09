@@ -20,14 +20,13 @@ import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
 import { onlyResolvesLast } from 'utils/async'
+import useCheckGpQuoteStatus, { GpQuoteStatus } from 'hooks/useGetGpApiStatus'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | FeeQuoteParams
   error: unknown
   addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
 }
-
-export const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
 
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
@@ -115,6 +114,8 @@ export function useRefetchQuoteCallback() {
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
 
+  const gpApiStatus = useCheckGpQuoteStatus((process.env.DEFAULT_GP_API as GpQuoteStatus) || 'COWSWAP')
+
   registerOnWindow({
     getNewQuote,
     refreshQuote,
@@ -140,9 +141,11 @@ export function useRefetchQuoteCallback() {
           getNewQuote(quoteParams)
         }
 
+        const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
+
         // Get the quote
         // price can be null if fee > price
-        const { cancelled, data } = await getBestQuoteResolveOnlyLastCall(params)
+        const { cancelled, data } = await getBestQuoteResolveOnlyLastCall({ ...params, apiStatus: gpApiStatus })
         if (cancelled) {
           // Cancellation can happen if a new request is made, then any ongoing query is canceled
           console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
@@ -204,13 +207,14 @@ export function useRefetchQuoteCallback() {
       }
     },
     [
+      gpApiStatus,
       isUnsupportedTokenGp,
       updateQuote,
-      removeGpUnsupportedToken,
-      setQuoteError,
-      addUnsupportedToken,
-      getNewQuote,
       refreshQuote,
+      getNewQuote,
+      removeGpUnsupportedToken,
+      addUnsupportedToken,
+      setQuoteError,
     ]
   )
 }

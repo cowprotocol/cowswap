@@ -2049,10 +2049,10 @@
     "@gnosis.pm/dex-contracts" "^0.5.0"
     bignumber.js "^9.0.0"
 
-"@gnosis.pm/gp-v2-contracts@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-1.0.2.tgz#bcc1f6a07061df6ab55298d7fe6ee93fcd1025aa"
-  integrity sha512-bsWB8r8RENvpAGMRfRfENtMU7tPdfa1AtgTidUpxC9f3HREZ2FdiAvAghE3XZwy7BzJ0CQJ2lNl4ANKCZ+kj8Q==
+"@gnosis.pm/gp-v2-contracts@ˆ1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-1.1.2.tgz#0453bb097377dc63cf46ee195f7e521d429f7e22"
+  integrity sha512-BvZMNS+fwITb+qs+trs2fyvYksa6MPjjLze9AOXPnvcKVYFEGwG6cfsecBswEMo+xevLIQNDyF7HZRhN7ply8w==
 
 "@gnosis.pm/safe-apps-provider@0.8.0":
   version "0.8.0"

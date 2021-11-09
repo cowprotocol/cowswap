@@ -24,7 +24,7 @@ import { Web3Provider } from '@ethersproject/providers'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
-function calculateValidTo(deadline: number): number {
+export function calculateValidTo(deadline: number): number {
   // Need the timestamp in seconds
   const now = Date.now() / 1000
   // Must be an integer

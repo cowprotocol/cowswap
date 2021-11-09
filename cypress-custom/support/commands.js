@@ -53,7 +53,7 @@ function enterOutputAmount(tokenAddress, amount, selectToken = false) {
 }
 
 function stubResponse({ url, alias = 'stubbedResponse', body }) {
-  cy.intercept({ method: 'GET', url }, _responseHandlerFactory(body)).as(alias)
+  cy.intercept({ method: 'POST', url }, _responseHandlerFactory(body)).as(alias)
 }
 
 Cypress.Commands.add('swapClickInputToken', () => clickInputToken)

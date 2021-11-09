@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import BigNumberJs from 'bignumber.js'
 import * as Sentry from '@sentry/browser'
 
-import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
+import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
@@ -15,9 +15,10 @@ import {
 } from 'api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { GetQuoteResponse, OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from 'state/lists/actions'
 import { toErc20Address } from 'utils/tokens'
+import { GpQuoteStatus } from 'hooks/useGetGpApiStatus'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -41,6 +42,19 @@ export interface PriceInformation {
   amount: string | null
 }
 
+// GetQuoteResponse from @gnosis.pm/gp-v2-contracts types Timestamp and BigNumberish
+// do not play well with our existing methods, using string instead
+export type SimpleGetQuoteResponse = Pick<GetQuoteResponse, 'from'> & {
+  // We need to map BigNumberIsh and Timestamp to what we use: string
+  quote: Omit<GetQuoteResponse['quote'], 'sellAmount' | 'buyAmount' | 'feeAmount' | 'validTo'> & {
+    sellAmount: string
+    buyAmount: string
+    validTo: string
+    feeAmount: string
+  }
+  expirationDate: string
+}
+
 export class PriceQuoteError extends Error {
   params: PriceQuoteParams
   results: PromiseSettledResult<any>[]
@@ -58,14 +72,12 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
   toDecimals: number
   chainId: ChainId
   userAddress?: string | null
+  validTo: number
 }
 
 export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
   baseToken: string
   quoteToken: string
-  fromDecimals: number
-  toDecimals: number
-  userAddress?: string | null
 }
 
 export type PriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
@@ -237,16 +249,37 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
 }
 
 /**
+ * getFullQuote
+ * Queries the new Quote api endpoint found here: https://protocol-mainnet.gnosis.io/api/#/default/post_api_v1_quote
+ * TODO: consider name // check with backend when logic returns best quote, not first
+ */
+export async function getFullQuote({ quoteParams }: { quoteParams: FeeQuoteParams }): Promise<QuoteResult> {
+  const { kind } = quoteParams
+  const { quote, expirationDate } = await getQuote(quoteParams)
+
+  const price = {
+    amount: kind === OrderKind.SELL ? quote.buyAmount : quote.sellAmount,
+    token: kind === OrderKind.SELL ? quote.buyToken : quote.sellToken,
+  }
+  const fee = {
+    amount: quote.feeAmount,
+    expirationDate,
+  }
+
+  return Promise.allSettled([price, fee])
+}
+
+/**
+ * (LEGACY) Will be overwritten in the near future
  *  Return the best quote considering all price feeds. The quote contains information about the price and fee
  */
-export async function getBestQuote({ quoteParams, fetchFee, previousFee }: QuoteParams): Promise<QuoteResult> {
-  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress } = quoteParams
+export async function getBestQuoteLegacy({ quoteParams, fetchFee, previousFee }: QuoteParams): Promise<QuoteResult> {
+  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress, validTo } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
-
   // Get a new fee quote (if required)
   const feePromise =
     fetchFee || !previousFee
-      ? getFeeQuote({ chainId, sellToken, buyToken, fromDecimals, toDecimals, amount, kind })
+      ? getQuote(quoteParams).then((resp) => ({ amount: resp.quote.feeAmount, expirationDate: resp.expirationDate }))
       : Promise.resolve(previousFee)
 
   // Get a new price quote
@@ -280,11 +313,35 @@ export async function getBestQuote({ quoteParams, fetchFee, previousFee }: Quote
           amount: exchangeAmount,
           kind,
           userAddress,
+          validTo,
         })
       : // fee exceeds our price, is invalid
         Promise.reject(FEE_EXCEEDS_FROM_ERROR)
 
   return Promise.allSettled([pricePromise, feePromise])
+}
+
+export async function getBestQuote({
+  quoteParams,
+  fetchFee,
+  previousFee,
+  apiStatus,
+}: QuoteParams & {
+  apiStatus: GpQuoteStatus
+}): Promise<QuoteResult> {
+  if (apiStatus === 'COWSWAP') {
+    return getFullQuote({ quoteParams }).catch((err) => {
+      console.error(
+        '[PRICE::API] getBestQuote - error in COWSWAP full quote endpoint, reason: <',
+        err,
+        '> - trying back up price sources...'
+      )
+      // ATTEMPT LEGACY CALL
+      return getBestQuote({ apiStatus: 'LEGACY', quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+    })
+  } else {
+    return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+  }
 }
 
 export function getValidParams(params: PriceQuoteParams) {
