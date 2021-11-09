@@ -37,6 +37,7 @@ const FeeTooltipLine = styled.p`
   justify-content: space-between;
   align-items: center;
   margin: 0;
+  gap: 0 8px;
 
   font-size: small;
 
@@ -114,10 +115,14 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
               </FeeTooltipLine>
               <FeeTooltipLine>
                 <span>Fee</span>
-                <span>
-                  {type === 'From' ? '+' : '-'}
-                  {feeAmount} {symbol}
-                </span>{' '}
+                {feeAmount ? (
+                  <span>
+                    {type === 'From' ? '+' : '-'}
+                    {feeAmount} {symbol}
+                  </span>
+                ) : (
+                  <strong className="green">Free</strong>
+                )}{' '}
               </FeeTooltipLine>
               {/* TODO: Add gas costs when available (wait for design) */}
               {allowsOffchainSigning && (
