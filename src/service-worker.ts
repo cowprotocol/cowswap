@@ -25,11 +25,13 @@ setCacheNameDetails({
 self.addEventListener('message', (event) => {
   // Regular skip waiting
   if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[worker] Skip waiting')
     self.skipWaiting()
   }
 
   // Our special skip waiting function!
   if (event.data && event.data.type === 'SKIP_WAITING_WHEN_SOLO') {
+    console.log('[worker] Skip waiting when solo')
     self.clients
       .matchAll({
         includeUncontrolled: true,
@@ -42,6 +44,7 @@ self.addEventListener('message', (event) => {
   }
 
   if (event.data && event.data.type === 'PREPARE_CACHES_FOR_UPDATE') {
+    console.log('[worker] Prepare cache for update')
     prepareCachesForUpdate().then()
   }
 })
@@ -49,9 +52,12 @@ self.addEventListener('message', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     getCacheStorageNames().then(({ outdatedCacheNames }) =>
-      // Delete old caches
-      // https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker#removing_outdated_caches
-      outdatedCacheNames.map((cacheName) => caches.delete(cacheName))
+      outdatedCacheNames.map((cacheName) => {
+        console.log('[worker] Delete cache', cacheName)
+        // Delete old caches
+        // https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker#removing_outdated_caches
+        return caches.delete(cacheName)
+      })
     )
   )
 })
@@ -132,28 +138,28 @@ type IndexRegisterParams = { request: Request; url: URL }
 registerRoute((params: IndexRegisterParams) => {
   const { request, url } = params
 
-  console.log('[worker] Index.html', request, url, params)
+  // console.log('[worker] Index.html', request, url, params)
   // return false
   // If this isn't a DNS domain skip. IPFS gateways may not have domain
   // separation, so they cannot use App Shell-style routing.
   const hostName = url.hostname
   if (!DNS_DOMAINS.includes(hostName) && !hostName.endsWith(DEV_DOMAINS_SUFFIX)) {
-    console.log('[worker] FALSE. hostname', hostName)
+    // console.log('[worker] FALSE. hostname', hostName)
     return false
   }
 
   // If this isn't a navigation, skip.
   if (request.mode !== 'navigate') {
-    console.log('[worker] FALSE. No navigate', request.mode)
+    // console.log('[worker] FALSE. No navigate', request.mode)
     return false
   }
 
   // If this looks like a URL for a resource, skip.
   if (url.pathname.match(fileExtensionRegexp)) {
-    console.log('[worker] FALSE. If this looks like a URL for a resource, skip.', request.mode)
+    // console.log('[worker] FALSE. If this looks like a URL for a resource, skip.', request.mode)
     return false
   }
 
-  console.log('[worker] TRUE!')
+  // console.log('[worker] TRUE!')
   return true
 }, createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html'))

@@ -41,6 +41,7 @@ const SWHelper = {
   },
 
   async prepareCachesForUpdate() {
+    console.log('[worker] prepareCachesForUpdate')
     return (await SWHelper.getWaitingWorker())?.postMessage({ type: 'PREPARE_CACHES_FOR_UPDATE' })
   },
 }
@@ -50,6 +51,7 @@ function registerValidSW(swUrl: string, config?: Config) {
     .register(swUrl)
     .then((registration) => {
       if (registration.waiting && registration.active) {
+        console.log('[worker] Needs update (waiting & active)')
         window.swNeedUpdate = true
       }
 
@@ -61,6 +63,7 @@ function registerValidSW(swUrl: string, config?: Config) {
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
+              console.log('[worker] Needs update (installed)')
               window.swNeedUpdate = true
 
               SWHelper.prepareCachesForUpdate().then()
