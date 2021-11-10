@@ -110,7 +110,7 @@ export default function AffiliateStatusCheck() {
 
   if (error) {
     return (
-      <NotificationBanner isVisible level="error">
+      <NotificationBanner isVisible changeOnProp={account} level="error">
         Affiliate program error: {error}
       </NotificationBanner>
     )
@@ -118,7 +118,7 @@ export default function AffiliateStatusCheck() {
 
   if (affiliateState) {
     return (
-      <NotificationBanner isVisible level="info">
+      <NotificationBanner isVisible changeOnProp={account} level="info">
         {STATUS_TO_MESSAGE_MAPPING[affiliateState]}
       </NotificationBanner>
     )

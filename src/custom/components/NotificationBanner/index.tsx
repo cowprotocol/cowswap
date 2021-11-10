@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Colors } from 'theme/styled'
 import { X } from 'react-feather'
 import { MEDIA_WIDTHS } from '@src/theme'
+import { useDismissNotification } from 'state/affiliate/hooks'
+import { useAppDispatch } from '@src/state/hooks'
+import { dismissNotification } from 'state/affiliate/actions'
 
 type Level = 'info' | 'warning' | 'error'
 
@@ -10,6 +13,7 @@ export interface BannerProps {
   children: React.ReactNode
   level: Level
   isVisible: boolean
+  changeOnProp?: string | null
   canClose?: boolean
 }
 
@@ -42,12 +46,27 @@ const BannerContainer = styled.div`
 `
 export default function NotificationBanner(props: BannerProps) {
   const [isActive, setIsActive] = useState(props.isVisible)
+  const [changeOnPropStore, setChangeOnPropStore] = useState(props.changeOnProp)
   const { canClose = true } = props
 
+  const dispatch = useAppDispatch()
+  const isNotificationDismissed = useDismissNotification()
+  const noteHandleClose = () => {
+    setIsActive(false)
+    dispatch(dismissNotification(!isNotificationDismissed))
+  }
+
+  useEffect(() => {
+    if (changeOnPropStore !== props.changeOnProp) {
+      dispatch(dismissNotification(false))
+      setChangeOnPropStore(props.changeOnProp)
+    }
+  }, [dispatch, props.changeOnProp, changeOnPropStore])
+
   return (
-    <Banner {...props} isVisible={isActive}>
+    <Banner {...props} isVisible={isActive} style={{ display: isNotificationDismissed ? 'none' : 'flex' }}>
       <BannerContainer>{props.children}</BannerContainer>
-      {canClose && <StyledClose size={16} onClick={() => setIsActive(false)} />}
+      {canClose && <StyledClose size={16} onClick={() => noteHandleClose()} />}
     </Banner>
   )
 }

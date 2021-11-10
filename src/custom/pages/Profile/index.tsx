@@ -56,7 +56,7 @@ export default function Profile() {
           )}
         </CardHead>
         {chainId && chainId !== ChainId.MAINNET && (
-          <StyledNotificationBanner isVisible level="info" canClose={false}>
+          <StyledNotificationBanner changeOnProp={account} isVisible level="info" canClose={false}>
             Profile data is only available for mainnet. Please change the network to see it.
           </StyledNotificationBanner>
         )}
