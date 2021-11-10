@@ -848,6 +848,47 @@ export default function Faq() {
             ).
           </p>
 
+          <h3 id="why-do-i-see-more-trades">
+            Why do I see more trades and referrals in my profile page than I actually see in the activity list?
+          </h3>
+
+          <p>The number of trades on the profile page is calculated based on on-chain data.</p>
+          <p>We have two publicly facing interfaces where both use the same contracts, which are:</p>
+          <ul>
+            <li>
+              The production version:{' '}
+              <ExternalLink href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
+                <strong>https://cowswap.exchange</strong>
+              </ExternalLink>
+            </li>
+            <li>
+              The public test version:{' '}
+              <ExternalLink href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
+                <strong>https://barn.cowswap.exchange</strong>
+              </ExternalLink>
+            </li>
+          </ul>
+
+          <p>
+            Even though both use the same contract, the backend services, solvers and infrastructure are independent.
+          </p>
+
+          <p>
+            Thus, when accessing{' '}
+            <ExternalLink href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
+              <strong>https://cowswap.exchange</strong>
+            </ExternalLink>{' '}
+            you&apos;ll see orders/trades placed only using this interface. The same is true for orders/trades placed on{' '}
+            <ExternalLink href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
+              <strong>https://barn.cowswap.exchange</strong>
+            </ExternalLink>
+            .
+          </p>
+
+          <p>If you ever traded on both, you might have more trades than you would expect.</p>
+
+          <p>In the future, the data will be consolidated and this number will match your expectations.</p>
+
           <hr />
 
           <p>
