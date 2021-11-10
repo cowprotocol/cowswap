@@ -42,7 +42,23 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   }
 }
 
+function getProfileUrl(): Partial<Record<ChainId, string>> {
+  if (isLocal || isDev || isPr || isBarn) {
+    return {
+      [ChainId.MAINNET]:
+        process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.dev.gnosisdev.com/api',
+    }
+  }
+
+  // Production, staging, ens, ...
+  return {
+    [ChainId.MAINNET]:
+      process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.gnosis.io/api',
+  }
+}
+
 const API_BASE_URL = getGnosisProtocolUrl()
+const PROFILE_API_BASE_URL = getProfileUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -113,6 +129,16 @@ function _getApiBaseUrl(chainId: ChainId): string {
   }
 }
 
+function _getProfileApiBaseUrl(chainId: ChainId): string {
+  const baseUrl = PROFILE_API_BASE_URL[chainId]
+
+  if (!baseUrl) {
+    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ` + chainId)
+  } else {
+    return baseUrl + '/v1'
+  }
+}
+
 export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
   const baseUrl = _getApiBaseUrl(chainId)
 
@@ -128,12 +154,30 @@ function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE'
   })
 }
 
+function _fetchProfile(
+  chainId: ChainId,
+  url: string,
+  method: 'GET' | 'POST' | 'DELETE',
+  data?: any
+): Promise<Response> {
+  const baseUrl = _getProfileApiBaseUrl(chainId)
+  return fetch(baseUrl + url, {
+    headers: DEFAULT_HEADERS,
+    method,
+    body: data !== undefined ? JSON.stringify(data) : data,
+  })
+}
+
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
   return _fetch(chainId, url, 'POST', data)
 }
 
 function _get(chainId: ChainId, url: string): Promise<Response> {
   return _fetch(chainId, url, 'GET')
+}
+
+function _getProfile(chainId: ChainId, url: string): Promise<Response> {
+  return _fetchProfile(chainId, url, 'GET')
 }
 
 function _delete(chainId: ChainId, url: string, data: any): Promise<Response> {
@@ -321,25 +365,20 @@ export type ProfileData = {
 
 export async function getProfileData(chainId: ChainId, address: string): Promise<ProfileData | null> {
   console.log(`[api:${API_NAME}] Get profile data for`, chainId, address)
-  try {
-    if (chainId !== ChainId.MAINNET) {
-      console.info('Profile data is only available for mainnet')
-      return null
-    }
+  if (chainId !== ChainId.MAINNET) {
+    console.info('Profile data is only available for mainnet')
+    return null
+  }
 
-    const response = await _get(chainId, `/profile/${address}`)
+  const response = await _getProfile(chainId, `/profile/${address}`)
 
-    // TODO: Update the error handler when the openAPI profile spec is defined
-    if (!response.ok) {
-      const errorResponse = await response.json()
-      console.log(errorResponse)
-      throw new Error(errorResponse?.description)
-    } else {
-      return response.json()
-    }
-  } catch (error) {
-    console.error('Error getting profile data:', error)
-    throw error
+  // TODO: Update the error handler when the openAPI profile spec is defined
+  if (!response.ok) {
+    const errorResponse = await response.json()
+    console.log(errorResponse)
+    throw new Error(errorResponse?.description)
+  } else {
+    return response.json()
   }
 }
 

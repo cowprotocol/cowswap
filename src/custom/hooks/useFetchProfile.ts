@@ -10,7 +10,11 @@ export default function useFetchProfile() {
   useEffect(() => {
     async function fetchAndSetProfileData() {
       if (chainId && account) {
-        const profileData = await getProfileData(chainId, account)
+        const profileData = await getProfileData(chainId, account).catch((error) => {
+          console.error('Error getting profile data:', error)
+          return null
+        })
+
         setProfileData(profileData)
       } else {
         setProfileData(null)
