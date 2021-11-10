@@ -80,6 +80,7 @@ import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -471,6 +472,7 @@ export default function Swap({
         onDismiss={handleDismissTokenWarning}
       />
       <NetworkAlert />
+      <AffiliateStatusCheck />
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>

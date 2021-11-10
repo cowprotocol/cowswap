@@ -20,10 +20,13 @@ export interface BannerProps {
 const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
   width: 100%;
   min-height: 40px;
-  padding: 6px 6px;
+  padding: 8px;
+  border-radius: 12px;
+  margin: 0 0 16px 0;
   background-color: ${({ theme, level }) => theme[level]};
   color: ${({ theme, level }) => theme[`${level}Text` as keyof Colors]};
   font-size: 16px;
+  text-align: center;
   justify-content: space-between;
   align-items: center;
   display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
@@ -31,6 +34,8 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
 
   @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
     font-size: 12px;
+    width: 100%;
+    text-align: center;
   }
 `
 
@@ -66,7 +71,7 @@ export default function NotificationBanner(props: BannerProps) {
   return (
     <Banner {...props} isVisible={isActive} style={{ display: isNotificationDismissed ? 'none' : 'flex' }}>
       <BannerContainer>{props.children}</BannerContainer>
-      {canClose && <StyledClose size={16} onClick={() => noteHandleClose()} />}
+      {canClose && <StyledClose size={24} onClick={() => noteHandleClose()} />}
     </Banner>
   )
 }
