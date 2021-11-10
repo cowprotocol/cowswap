@@ -228,10 +228,10 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <ResponsiveInternalMenuItem to="/profile" onClick={close}>
           <User size={14} /> Profile
         </ResponsiveInternalMenuItem>
-        <ResponsiveInternalMenuItem to="/about" onClick={close}>
+        <InternalMenuItem to="/about" onClick={close}>
           <Star size={14} />
           About
-        </ResponsiveInternalMenuItem>
+        </InternalMenuItem>
 
         <InternalMenuItem to="/faq" onClick={close}>
           <HelpCircle size={14} />

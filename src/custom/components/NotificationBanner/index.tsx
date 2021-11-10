@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { Colors } from 'theme/styled'
 import { X } from 'react-feather'
 import { MEDIA_WIDTHS } from '@src/theme'
-import { useDismissNotification } from 'state/affiliate/hooks'
-import { useAppDispatch } from '@src/state/hooks'
+import { useIsNotificationClosed } from 'state/affiliate/hooks'
+import { useAppDispatch } from 'state/hooks'
 import { dismissNotification } from 'state/affiliate/actions'
 
 type Level = 'info' | 'warning' | 'error'
@@ -13,7 +13,7 @@ export interface BannerProps {
   children: React.ReactNode
   level: Level
   isVisible: boolean
-  changeOnProp?: string | null
+  id?: string
   canClose?: boolean
 }
 
@@ -50,28 +50,22 @@ const BannerContainer = styled.div`
   justify-content: center;
 `
 export default function NotificationBanner(props: BannerProps) {
-  const [isActive, setIsActive] = useState(props.isVisible)
-  const [changeOnPropStore, setChangeOnPropStore] = useState(props.changeOnProp)
-  const { canClose = true } = props
-
+  const { id, canClose = true } = props
   const dispatch = useAppDispatch()
-  const isNotificationDismissed = useDismissNotification()
-  const noteHandleClose = () => {
+  const isNotificationClosed = useIsNotificationClosed(id) // TODO: the notification closed state is now tied to the Affiliate state, this should generic
+  const [isActive, setIsActive] = useState(!isNotificationClosed ?? props.isVisible)
+
+  const handleClose = () => {
     setIsActive(false)
-    dispatch(dismissNotification(!isNotificationDismissed))
+    if (id) {
+      dispatch(dismissNotification(id))
+    }
   }
 
-  useEffect(() => {
-    if (changeOnPropStore !== props.changeOnProp) {
-      dispatch(dismissNotification(false))
-      setChangeOnPropStore(props.changeOnProp)
-    }
-  }, [dispatch, props.changeOnProp, changeOnPropStore])
-
   return (
-    <Banner {...props} isVisible={isActive} style={{ display: isNotificationDismissed ? 'none' : 'flex' }}>
+    <Banner {...props} isVisible={isActive}>
       <BannerContainer>{props.children}</BannerContainer>
-      {canClose && <StyledClose size={24} onClick={() => noteHandleClose()} />}
+      {canClose && <StyledClose size={24} onClick={handleClose} />}
     </Banner>
   )
 }

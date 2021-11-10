@@ -4,7 +4,7 @@ import { AppState } from 'state'
 import { useAppDispatch } from 'state/hooks'
 import { updateAppDataHash, updateReferralAddress } from 'state/affiliate/actions'
 import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
-import { APP_DATA_HASH, IS_NOTIFICATION_CLOSED } from 'constants/index'
+import { APP_DATA_HASH } from 'constants/index'
 
 export function useAppDataHash() {
   return useSelector<AppState, string>((state) => {
@@ -31,9 +31,9 @@ export function useResetReferralAddress() {
   return useCallback(() => dispatch(updateReferralAddress(null)), [dispatch])
 }
 
-export function useDismissNotification() {
-  return useSelector<AppState, boolean>((state) => {
-    return state.affiliate.isNotificationClosed || IS_NOTIFICATION_CLOSED
+export function useIsNotificationClosed(id?: string) {
+  return useSelector<AppState, boolean | null>((state) => {
+    return id ? state.affiliate.isNotificationClosed?.[id] ?? false : null
   })
 }
 

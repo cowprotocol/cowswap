@@ -25,7 +25,6 @@ export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
 export const PRODUCTION_URL = 'cowswap.exchange'
-export const IS_NOTIFICATION_CLOSED = false
 
 const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|FORTMATIC|Portis)$/i
 
