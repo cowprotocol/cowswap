@@ -78,7 +78,7 @@ export default function AffiliateStatusCheck() {
       }
     } catch (error) {
       console.error(error)
-      setError('There was an error validating existing trades. Please try again.')
+      setError('There was an error validating existing trades. Please try again later.')
       return
     }
 
@@ -89,7 +89,7 @@ export default function AffiliateStatusCheck() {
       isFirstTrade.current = true
     } catch (error) {
       console.error(error)
-      setError('There was an error while uploading the referral document to IPFS. Please try again.')
+      setError('There was an error while uploading the referral document to IPFS. Please try again later.')
     }
   }, [
     chainId,
