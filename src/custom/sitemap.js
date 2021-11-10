@@ -6,10 +6,19 @@ const OUTPUT_FILE = 'public/sitemap.xml'
 const PRODUCTION_URL = 'https://cowswap.exchange'
 
 const PAGES = [
+  // Main pages
   'swap',
   'about',
   // 'profile',
   'faq',
+
+  // External pages
+  'chat',
+  'docs',
+  'stats',
+  'twitter',
+
+  // Additional pages
   'play/cow-runner',
   'play/mev-slicer',
   'privacy-policy',

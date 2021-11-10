@@ -52,6 +52,13 @@ export const BodyWrapper = styled.div`
   `};
 `
 
+function createRedirectExternal(url: string) {
+  return () => {
+    window.location.replace(url)
+    return null
+  }
+}
+
 export default function App() {
   return (
     <Wrapper>
@@ -67,6 +74,17 @@ export default function App() {
         <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact strict path="/cookie-policy" component={CookiePolicy} />
         <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
+
+        <Route exact strict path="/chat" component={createRedirectExternal('https://chat.cowswap.exchange')} />
+        <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cowswap.exchange')} />
+        <Route
+          exact
+          strict
+          path="/stats"
+          component={createRedirectExternal('https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2')}
+        />
+        <Route exact strict path="/twitter" component={createRedirectExternal('https://twitter.com/MEVprotection')} />
+
         <Route exact strict path="/" component={RedirectPathToSwapOnly} />
         <Route component={NotFound} />
       </Switch>
