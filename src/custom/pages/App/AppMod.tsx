@@ -35,8 +35,6 @@ import VotePage from './Vote/VotePage'
 */
 import ReferralLinkUpdater from 'state/affiliate/updater'
 import URLWarning from 'components/Header/URLWarning'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-
 import Footer from 'components/Footer'
 import { BodyWrapper } from '.'
 import * as CSS from 'csstype' // mod
@@ -86,6 +84,7 @@ const HeaderWrapper = styled.div`
   width: 100%;
   justify-content: space-between;
 `
+
 const FooterWrapper = styled(HeaderWrapper)`
   z-index: 1;
   width: auto;
@@ -116,7 +115,6 @@ export default function App(props?: { children?: ReactNode }) {
         <Web3ReactManager>
           <AppWrapper bgBlur={bgBlur}>
             <Popups />
-            <AffiliateStatusCheck />
             <URLWarning />
             <HeaderWrapper>
               <Header />

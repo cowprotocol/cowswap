@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { updateAppDataHash, updateReferralAddress } from './actions'
+import { dismissNotification, updateAppDataHash, updateReferralAddress } from './actions'
 import { APP_DATA_HASH } from 'constants/index'
 
 export interface AffiliateState {
@@ -8,6 +8,9 @@ export interface AffiliateState {
     isValid: boolean
   }
   appDataHash?: string
+  isNotificationClosed?: {
+    [key: string]: boolean
+  }
 }
 
 export const initialState: AffiliateState = {
@@ -21,5 +24,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateAppDataHash, (state, action) => {
       state.appDataHash = action.payload
+    })
+    .addCase(dismissNotification, (state, action) => {
+      state.isNotificationClosed = state.isNotificationClosed ?? {}
+      state.isNotificationClosed[action.payload] = true
     })
 )
