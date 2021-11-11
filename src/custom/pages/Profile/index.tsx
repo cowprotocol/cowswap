@@ -114,7 +114,12 @@ export default function Profile() {
                     <strong>{formatInt(profileData?.totalTrades)}</strong>
                   </Loader>
                   <Loader isLoading={isLoading}>
-                    <span>Total trades</span>
+                    <span>
+                      Total trades
+                      <MouseoverTooltipContent content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ.">
+                        <HelpCircle size={14} />
+                      </MouseoverTooltipContent>
+                    </span>
                   </Loader>
                 </FlexCol>
                 <FlexCol>
