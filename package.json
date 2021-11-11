@@ -143,7 +143,7 @@
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
     "start:service-worker": "yarn build && yarn serve",
     "mock": "REACT_APP_MOCK=true yarn start",
-    "build": "craco build",
+    "build": "craco build && yarn writeVersion",
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "ipfs-deploy build -p infura -O",
     "test": "NODE_PATH=src/custom craco test --env=jsdom",
@@ -161,7 +161,8 @@
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
     "prei18n:extract": "touch src/locales/en-US.po",
-    "sitemap": "node src/custom/sitemap"
+    "sitemap": "node src/custom/sitemap",
+    "writeVersion": "node src/custom/writeVersion"
   },
   "jest": {
     "moduleNameMapper": {
