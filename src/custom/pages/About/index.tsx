@@ -92,11 +92,8 @@ export default function About() {
         </p>
         <p>
           Heard about Maximum Extractable Value yet? It’s scary. To date more than{' '}
-          <ExternalLink href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
-            USD 797M
-          </ExternalLink>{' '}
-          in value has been extracted from users by bots frontrunning transactions, exploiting the slippage users allow
-          in a trade.
+          <ExternalLink href="https://explore.flashbots.net/">USD 797M</ExternalLink> in value has been extracted from
+          users by bots frontrunning transactions, exploiting the slippage users allow in a trade.
           <br />
           <br />
           CowSwap is the first DEX Aggregator offering some protection against it: COWs enable tight slippages and can

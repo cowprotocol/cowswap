@@ -98,7 +98,11 @@ export function useWalletInfo(): ConnectedWalletInfo {
     if (!chainId || !account || !walletName || !GNOSIS_SAFE_WALLET_NAMES.includes(walletName)) {
       setGnosisSafeInfo(undefined)
     } else {
-      getSafeInfo(chainId, account).then(setGnosisSafeInfo)
+      getSafeInfo(chainId, account)
+        .then(setGnosisSafeInfo)
+        .catch((error) => {
+          console.error('[api/gnosisSafe] Error fetching GnosisSafe info', error)
+        })
     }
   }, [chainId, account, walletName])
 

@@ -86,6 +86,7 @@ import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
 import { ApplicationModal } from 'state/application/actions'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -526,6 +527,7 @@ export default function Swap({
       />
 
       <NetworkAlert />
+      <AffiliateStatusCheck />
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>

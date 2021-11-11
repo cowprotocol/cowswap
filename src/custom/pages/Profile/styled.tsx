@@ -1,16 +1,20 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import Page, { GdocsListStyle, Title } from 'components/Page'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 
+export const Container = styled.div`
+  max-width: 910px;
+  width: 100%;
+`
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
 
   max-width: 910px;
+  width: 100%;
   min-height: auto;
   padding-top: 16px;
   display: flex;
-  width: 100%;
   justify-content: flex-end;
   flex-direction: column;
   margin: 0;
@@ -151,4 +155,37 @@ export const FlexCol = styled.div`
     display: flex;
     align-items: center;
   }
+`
+export const Loader = styled.div<{ isLoading: boolean }>`
+  ${({ theme, isLoading }) =>
+    isLoading &&
+    css`
+      position: relative;
+      display: inline-block;
+
+      overflow: hidden;
+      &::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0,
+          ${theme.shimmer1} 20%,
+          ${theme.shimmer2} 60%,
+          rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+        content: '';
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `}
 `

@@ -31,6 +31,12 @@ export function useResetReferralAddress() {
   return useCallback(() => dispatch(updateReferralAddress(null)), [dispatch])
 }
 
+export function useIsNotificationClosed(id?: string) {
+  return useSelector<AppState, boolean | null>((state) => {
+    return id ? state.affiliate.isNotificationClosed?.[id] ?? false : null
+  })
+}
+
 export function useUploadReferralDocAndSetDataHash() {
   const dispatch = useAppDispatch()
 
