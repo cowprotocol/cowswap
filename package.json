@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "1.4.3",
+  "version": "1.4.4-cache.0",
   "engines": {
     "node": ">=14.0.0"
   },
