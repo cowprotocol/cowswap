@@ -8,7 +8,11 @@
       "jsx": true
     }
   },
-  "ignorePatterns": ["node_modules/**/*", ".github/*"],
+  "ignorePatterns": [
+    "node_modules/**/*",
+    ".github/*",
+    "src/components/RateToggle/index.tsx"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -30,7 +34,10 @@
     "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "react/react-in-jsx-scope": "off",
-    "object-shorthand": ["error", "always"],
+    "object-shorthand": [
+      "error",
+      "always"
+    ],
     "no-restricted-imports": [
       "error",
       {
@@ -40,7 +47,9 @@
             "message": "Please import from styled-components/macro."
           }
         ],
-        "patterns": ["!styled-components/macro"]
+        "patterns": [
+          "!styled-components/macro"
+        ]
       }
     ]
   }

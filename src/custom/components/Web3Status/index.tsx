@@ -6,8 +6,8 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { getStatusIcon } from 'components/AccountDetails'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { OrderStatus } from 'state/orders/actions'
 import { ButtonSecondary } from 'components/Button'
+import { OrderStatus } from '@src/custom/state/orders/actions'
 
 const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};

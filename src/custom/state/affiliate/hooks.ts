@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
 import { useAppDispatch } from 'state/hooks'
-import { updateAppDataHash } from 'state/affiliate/actions'
+import { updateAppDataHash, updateReferralAddress } from 'state/affiliate/actions'
 import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
 import { APP_DATA_HASH } from 'constants/index'
 
@@ -22,6 +22,18 @@ export function useReferralAddress() {
     | undefined
   >((state) => {
     return state.affiliate.referralAddress
+  })
+}
+
+export function useResetReferralAddress() {
+  const dispatch = useAppDispatch()
+
+  return useCallback(() => dispatch(updateReferralAddress(null)), [dispatch])
+}
+
+export function useIsNotificationClosed(id?: string) {
+  return useSelector<AppState, boolean | null>((state) => {
+    return id ? state.affiliate.isNotificationClosed?.[id] ?? false : null
   })
 }
 

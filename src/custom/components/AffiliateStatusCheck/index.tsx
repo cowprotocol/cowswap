@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
-import { useReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
+import { useReferralAddress, useResetReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
 import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
 import useParseReferralQueryParam from 'hooks/useParseReferralQueryParam'
+import useRecentActivity from 'hooks/useRecentActivity'
+import { OrderStatus } from 'state/orders/actions'
 
 type AffiliateStatus = 'NOT_CONNECTED' | 'OWN_LINK' | 'ALREADY_TRADED' | 'ACTIVE' | 'UNSUPPORTED_NETWORK'
 
@@ -25,14 +27,30 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 
 export default function AffiliateStatusCheck() {
   const appDispatch = useAppDispatch()
+  const resetReferralAddress = useResetReferralAddress()
   const uploadReferralDocAndSetDataHash = useUploadReferralDocAndSetDataHash()
   const history = useHistory()
   const location = useLocation()
   const { account, chainId } = useActiveWeb3React()
   const referralAddress = useReferralAddress()
   const referralAddressQueryParam = useParseReferralQueryParam()
+  const allRecentActivity = useRecentActivity()
   const [affiliateState, setAffiliateState] = useState<AffiliateStatus | null>()
   const [error, setError] = useState('')
+  const isFirstTrade = useRef(false)
+  const fulfilledActivity = allRecentActivity.filter((data) => data.status === OrderStatus.FULFILLED)
+
+  const notificationBannerId = useMemo(() => {
+    if (!referralAddress?.value) {
+      return
+    }
+
+    if (!account) {
+      return `referral-${referralAddress.value}`
+    }
+
+    return `wallet-${account}:referral-${referralAddress.value}:chain-${chainId}`
+  }, [account, chainId, referralAddress?.value])
 
   const uploadDataDoc = useCallback(async () => {
     if (!chainId || !account || !referralAddress) {
@@ -44,17 +62,23 @@ export default function AffiliateStatusCheck() {
       return
     }
 
+    if (fulfilledActivity.length >= 1 && isFirstTrade.current) {
+      setAffiliateState(null)
+      resetReferralAddress()
+      isFirstTrade.current = false
+      return
+    }
+
     try {
       // we first validate that the user hasn't already traded
       const userHasTrades = await retry(() => hasTrades(chainId, account), DEFAULT_RETRY_OPTIONS).promise
-
       if (userHasTrades) {
         setAffiliateState('ALREADY_TRADED')
         return
       }
     } catch (error) {
       console.error(error)
-      setError('There was an error validating existing trades. Please try again.')
+      setError('There was an error validating existing trades. Please try again later.')
       return
     }
 
@@ -62,11 +86,19 @@ export default function AffiliateStatusCheck() {
       await retry(() => uploadReferralDocAndSetDataHash(referralAddress.value), DEFAULT_RETRY_OPTIONS).promise
 
       setAffiliateState('ACTIVE')
+      isFirstTrade.current = true
     } catch (error) {
       console.error(error)
-      setError('There was an error while uploading the referral document to IPFS. Please try again.')
+      setError('There was an error while uploading the referral document to IPFS. Please try again later.')
     }
-  }, [chainId, account, referralAddress, uploadReferralDocAndSetDataHash])
+  }, [
+    chainId,
+    account,
+    referralAddress,
+    resetReferralAddress,
+    uploadReferralDocAndSetDataHash,
+    fulfilledActivity.length,
+  ])
 
   useEffect(() => {
     if (!referralAddress) {
@@ -104,6 +136,7 @@ export default function AffiliateStatusCheck() {
     chainId,
     appDispatch,
     uploadDataDoc,
+    resetReferralAddress,
     location.search,
     referralAddressQueryParam,
   ])
@@ -118,7 +151,7 @@ export default function AffiliateStatusCheck() {
 
   if (affiliateState) {
     return (
-      <NotificationBanner isVisible level="info">
+      <NotificationBanner isVisible id={notificationBannerId} level="info">
         {STATUS_TO_MESSAGE_MAPPING[affiliateState]}
       </NotificationBanner>
     )

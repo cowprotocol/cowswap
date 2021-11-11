@@ -58,13 +58,22 @@ export function RowFee({
 }: RowFeeProps) {
   const theme = useContext(ThemeContext)
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
-  // trades are null when there is a fee quote error e.g
-  // so we can take both
-  const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
-
   const displayFee = realizedFee || fee
   const feeCurrencySymbol = displayFee?.currency.symbol || '-'
-  const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
+  // trades are null when there is a fee quote error e.g
+  // so we can take both
+  const { feeToken, feeUsd, fullDisplayFee } = useMemo(() => {
+    const smartFeeFiatValue = formatSmart(feeFiatValue, FIAT_PRECISION)
+    const smartFeeTokenValue = formatSmart(displayFee, AMOUNT_PRECISION)
+    const feeToken = smartFeeTokenValue ? `${smartFeeTokenValue} ${feeCurrencySymbol}` : '🎉 Free!'
+    const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
+
+    return {
+      feeToken,
+      feeUsd: smartFeeFiatValue && `(≈$${smartFeeFiatValue})`,
+      fullDisplayFee,
+    }
+  }, [displayFee, feeCurrencySymbol, feeFiatValue])
 
   const includeGasMessage = allowsOffchainSigning ? ' (incl. gas costs)' : ''
   const tooltip = allowsOffchainSigning ? GASLESS_FEE_TOOLTIP_MSG : PRESIGN_FEE_TOOLTIP_MSG
@@ -83,8 +92,7 @@ export function RowFee({
       </RowFixed>
 
       <TYPE.black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        {formatSmart(displayFee, AMOUNT_PRECISION)} {feeCurrencySymbol}{' '}
-        {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
+        {feeToken} {feeUsd && <LightGreyText>{feeUsd}</LightGreyText>}
       </TYPE.black>
     </RowBetween>
   )

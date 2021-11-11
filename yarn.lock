@@ -19878,6 +19878,11 @@ simple-get@^2.7.0:
     once "^1.3.1"
     simple-concat "^1.0.0"
 
+simple-sitemap-renderer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/simple-sitemap-renderer/-/simple-sitemap-renderer-1.1.0.tgz#dbbb4b465207cd249cf7ee3f6221b7d4e9445c38"
+  integrity sha512-UyVxQxErk/B1OuZyrNRYjOMFDSBKqJyt6upw7GaKfqgYgyLIy+MTFiHDf9XeuUmGLHy5MikfT7HsuH48HXJwww==
+
 simple-swizzle@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/simple-swizzle/-/simple-swizzle-0.2.2.tgz#a4da6b635ffcccca33f70d17cb92592de95e557a"
