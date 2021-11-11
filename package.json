@@ -161,7 +161,8 @@
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
     "prei18n:extract": "touch src/locales/en-US.po",
-    "sitemap": "node src/custom/sitemap"
+    "sitemap": "node src/custom/sitemap",
+    "writeVersion": "node src/custom/writeVersion"
   },
   "jest": {
     "moduleNameMapper": {
