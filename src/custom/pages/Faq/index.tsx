@@ -762,17 +762,17 @@ export default function Faq() {
           </p>
 
           <p>
-            CowSwap's positive network effect scales exponentially with more people using it, therefore, the affiliate
-            program aims to acknowledge which users are contributing more to the success of the protocol.{' '}
+            CowSwap&apos;s positive network effect scales exponentially with more people using it, therefore, the
+            affiliate program aims to acknowledge which users are contributing more to the success of the protocol.{' '}
           </p>
 
           <p>
-            CowSwap’s positive network effect explained: CowSwap's name comes from the economic phenomenon "Coincidence
-            of Wants", where users' orders can be matched with each other to obtain better prices. When the protocol
-            finds a CoW, trades are settled p2p which allows saving some $$ in slippage, gas, and LP fees. The network
-            effect of CoWs increases alongside with the number of traders using the protocol, the more users we have
-            sending orders to the protocol, the better the prices and gas savings the protocol is able to offer. Our new
-            CoW-filiate program is aiming to increase this positive network effect.
+            CowSwap’s positive network effect explained: CowSwap&apos;s name comes from the economic phenomenon
+            &quot;Coincidence of Wants&quot;, where users&apos; orders can be matched with each other to obtain better
+            prices. When the protocol finds a CoW, trades are settled p2p which allows saving some $$ in slippage, gas,
+            and LP fees. The network effect of CoWs increases alongside with the number of traders using the protocol,
+            the more users we have sending orders to the protocol, the better the prices and gas savings the protocol is
+            able to offer. Our new CoW-filiate program is aiming to increase this positive network effect.
           </p>
 
           <h3 id="who-can-share-the-referral-link">Who can share the referral link?</h3>
