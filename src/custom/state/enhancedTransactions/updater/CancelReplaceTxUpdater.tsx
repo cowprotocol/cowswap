@@ -55,9 +55,10 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 }
 
 export default function CancelReplaceTxUpdater(): null {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, library, account } = useActiveWeb3React()
   const dispatch = useAppDispatch()
-  const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt)
+  const accountLowerCase = account?.toLowerCase() || ''
+  const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)
 
   useEffect(() => {
     if (!chainId || !library) return
