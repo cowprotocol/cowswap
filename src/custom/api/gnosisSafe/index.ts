@@ -42,14 +42,15 @@ function _getClientOrThrow(chainId: number): SafeServiceClient {
   return client
 }
 
-export function getSafeWebUrl(chaindId: number, safeAddress: string): string | null {
+export function getSafeWebUrl(chaindId: number, safeAddress: string, safeTxHash?: string): string | null {
   const safeWebUrl = SAFE_WEB_URL[chaindId]
 
   if (!safeWebUrl) {
     return null
   }
 
-  return `${safeWebUrl}/app/#/safes/${safeAddress}/transactions`
+  const baseUrl = `${safeWebUrl}/app/#/safes/${safeAddress}/transactions`
+  return safeTxHash ? `${baseUrl}/${safeTxHash}` : baseUrl
 }
 
 export function getSafeTransaction(chainId: number, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {

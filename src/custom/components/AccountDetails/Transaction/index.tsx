@@ -93,8 +93,8 @@ function getActivityLinkUrl(params: {
       return getEtherscanLink(chainId, transactionHash, 'transaction')
     } else if (safeTransaction && safeTransaction) {
       // Its a safe transaction: Gnosis Safe Web link
-      const { safe } = safeTransaction
-      return getSafeWebUrl(chainId, safe) ?? undefined
+      const { safe, safeTxHash } = safeTransaction
+      return getSafeWebUrl(chainId, safe, safeTxHash) ?? undefined
     }
   } else if (order) {
     // Its an order: GP Explorer link
