@@ -216,7 +216,7 @@ export default function Swap({
   const nativeInput = !!(tradeCurrentVersion?.tradeType === TradeType.EXACT_INPUT)
     ? tradeCurrentVersion?.inputAmount
     : // else use the slippage + fee adjusted amount
-    computeSlippageAdjustedAmounts(tradeCurrentVersion, allowedSlippage).INPUT
+      computeSlippageAdjustedAmounts(tradeCurrentVersion, allowedSlippage).INPUT
 
   const {
     wrapType,
@@ -244,15 +244,15 @@ export default function Swap({
     () =>
       showWrap
         ? {
-          [Field.INPUT]: parsedAmount,
-          [Field.OUTPUT]: parsedAmount,
-        }
+            [Field.INPUT]: parsedAmount,
+            [Field.OUTPUT]: parsedAmount,
+          }
         : {
-          // [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-          // [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-          [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmountWithoutFee,
-          [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmountWithoutFee,
-        },
+            // [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+            // [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmountWithoutFee,
+            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmountWithoutFee,
+          },
     [independentField, parsedAmount, showWrap, trade]
   )
 
@@ -404,8 +404,8 @@ export default function Swap({
             recipient === null
               ? 'Swap w/o Send'
               : (recipientAddress ?? recipient) === account
-                ? 'Swap w/o Send + recipient'
-                : 'Swap w/ Send',
+              ? 'Swap w/o Send + recipient'
+              : 'Swap w/ Send',
           label: [
             trade?.inputAmount?.currency?.symbol,
             trade?.outputAmount?.currency?.symbol,
@@ -594,7 +594,7 @@ export default function Swap({
               <AutoColumn justify="space-between" style={{ margin: `${isExpertMode ? 10 : 3}px 0` }}>
                 <AutoRow
                   justify={isExpertMode ? 'space-between' : 'center'}
-                // style={{ padding: '0 1rem' }}
+                  // style={{ padding: '0 1rem' }}
                 >
                   <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} setApprovalSubmitted={setApprovalSubmitted} />
                   {recipient === null && !showWrap && isExpertMode ? (
@@ -900,7 +900,7 @@ export default function Swap({
                       !isValid ||
                       (approvalState !== ApprovalState.APPROVED && signatureState !== UseERC20PermitState.SIGNED) // || priceImpactTooHigh
                     }
-                  // error={isValid && priceImpactSeverity > 2}
+                    // error={isValid && priceImpactSeverity > 2}
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                       <Trans>Swap</Trans>
@@ -935,7 +935,7 @@ export default function Swap({
                 }}
                 id="swap-button"
                 disabled={!isValid /*|| priceImpactTooHigh */ || !!swapCallbackError}
-              // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
+                // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                   {swapInputError || <Trans>Swap</Trans>}

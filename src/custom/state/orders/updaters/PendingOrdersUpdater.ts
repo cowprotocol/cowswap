@@ -86,6 +86,7 @@ async function _updatePresignGnosisSafeTx(
 }
 
 interface UpdateOrdersParams {
+  account: string
   chainId: ChainId
   orders: Order[]
 
@@ -99,6 +100,7 @@ interface UpdateOrdersParams {
 }
 
 async function _updateOrders({
+  account,
   chainId,
   orders,
 
@@ -110,14 +112,18 @@ async function _updateOrders({
   updatePresignGnosisSafeTx,
   getSafeInfo,
 }: UpdateOrdersParams): Promise<void> {
+  // Only check pending orders of current connected account
+  const lowerCaseAccount = account.toLowerCase()
+  const pending = orders.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+
   // Exit early when there are no pending orders
-  if (orders.length === 0) {
+  if (pending.length === 0) {
     return
   }
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    orders.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
   )
 
   // Group resolved promises by status
@@ -171,7 +177,7 @@ async function _updateOrders({
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
 
   const pending = usePendingOrders({ chainId })
 
@@ -187,8 +193,13 @@ export function PendingOrdersUpdater(): null {
   const getSafeInfo = useGetSafeInfo()
 
   const updateOrders = useCallback(
-    async (chainId: ChainId) =>
-      _updateOrders({
+    async (chainId: ChainId, account: string) => {
+      if (!account) {
+        return []
+      }
+
+      return _updateOrders({
+        account,
         chainId,
         orders: pendingRef.current,
         fulfillOrdersBatch,
@@ -197,19 +208,20 @@ export function PendingOrdersUpdater(): null {
         presignOrders,
         updatePresignGnosisSafeTx,
         getSafeInfo,
-      }),
+      })
+    },
     [cancelOrdersBatch, updatePresignGnosisSafeTx, expireOrdersBatch, fulfillOrdersBatch, presignOrders, getSafeInfo]
   )
 
   useEffect(() => {
-    if (!chainId) {
+    if (!chainId || !account) {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId), OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [chainId, updateOrders])
+  }, [account, chainId, updateOrders])
 
   return null
 }
