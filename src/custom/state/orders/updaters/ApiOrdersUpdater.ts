@@ -12,7 +12,7 @@ import { AMOUNT_OF_ORDERS_TO_FETCH, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY
 import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
-import { useTokensLazy } from 'hooks/useTokensLazy'
+import { useTokenLazyNoMulticall } from 'hooks/useTokensLazy'
 
 function getTokenFromMapping(
   address: string,
@@ -81,12 +81,53 @@ function transformApiOrderToStoreOrder(
   return storeOrder
 }
 
+function getMissingTokensAddresses(orders: OrderMetaData[], tokens: Record<string, Token>, chainId: ChainId): string[] {
+  const tokensToFetch = new Set<string>()
+
+  // Find out which tokens are not yet loaded in the UI
+  orders.forEach(({ sellToken, buyToken }) => {
+    if (!getTokenFromMapping(sellToken, chainId, tokens)) tokensToFetch.add(sellToken)
+    if (!getTokenFromMapping(buyToken, chainId, tokens)) tokensToFetch.add(buyToken)
+  })
+
+  return Array.from(tokensToFetch)
+}
+
+async function fetchTokens(
+  tokensToFetch: string[],
+  getToken: (address: string) => Promise<Token | null>
+): Promise<Record<string, Token | null>> {
+  if (tokensToFetch.length === 0) {
+    return {}
+  }
+
+  const promises = tokensToFetch.map((address) => getToken(address))
+  const settledPromises = await Promise.allSettled(promises)
+
+  return settledPromises.reduce<Record<string, Token | null>>((acc, promiseResult) => {
+    if (promiseResult.status === 'fulfilled' && promiseResult.value) {
+      acc[promiseResult.value.address] = promiseResult.value
+    }
+    return acc
+  }, {})
+}
+
+function filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
+  return orders.reduce<Order[]>((acc, order) => {
+    const storeOrder = transformApiOrderToStoreOrder(order, chainId, tokens)
+    if (storeOrder) {
+      acc.push(storeOrder)
+    }
+    return acc
+  }, [])
+}
+
 export function ApiOrdersUpdater(): null {
   const { account, chainId } = useActiveWeb3React()
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
-  const getTokensFromChain = useTokensLazy()
+  const getToken = useTokenLazyNoMulticall()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
   // but still use the latest whenever the callback is invoked
@@ -106,41 +147,29 @@ export function ApiOrdersUpdater(): null {
         // Fetch latest orders from API
         const apiOrders = await getOrders(chainId, account, AMOUNT_OF_ORDERS_TO_FETCH)
 
-        const tokensToFetch = new Set<string>()
-
-        // Find out which tokens are not yet loaded in the UI
-        apiOrders.forEach(({ sellToken, buyToken }) => {
-          if (!getTokenFromMapping(sellToken, chainId, tokens)) tokensToFetch.add(sellToken)
-          if (!getTokenFromMapping(buyToken, chainId, tokens)) tokensToFetch.add(buyToken)
-        })
-
-        let fetchedTokens
-
-        if (tokensToFetch.size > 0) {
-          // Fetch them from the chain, only if we have to
-          fetchedTokens = await getTokensFromChain(Array.from(tokensToFetch))
+        if (apiOrders.length === 0) {
+          return
         }
 
+        const tokensToFetch = getMissingTokensAddresses(apiOrders, tokens, chainId)
+
+        // Fetch them from the chain
+        const fetchedTokens = await fetchTokens(tokensToFetch, getToken)
+
         // Merge fetched tokens with what's currently loaded
-        const reallyAllTokens = fetchedTokens ? { ...tokens, ...fetchedTokens } : tokens
+        const reallyAllTokens = { ...tokens, ...fetchedTokens }
 
         // Build store order objects, for all orders which we found both input/output tokens
         // Don't add order for those we didn't
-        const orders = apiOrders.reduce<Order[]>((acc, order) => {
-          const storeOrder = transformApiOrderToStoreOrder(order, chainId, reallyAllTokens)
-          if (storeOrder) {
-            acc.push(storeOrder)
-          }
-          return acc
-        }, [])
+        const orders = filterOrders(apiOrders, reallyAllTokens, chainId)
 
         // Add orders to redux state
-        addOrUpdateOrders({ orders, chainId })
+        orders.length && addOrUpdateOrders({ orders, chainId })
       } catch (e) {
         console.error(`ApiOrdersUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, getTokensFromChain]
+    [addOrUpdateOrders, getToken]
   )
 
   useEffect(() => {
