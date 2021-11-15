@@ -4,7 +4,7 @@ import { Token } from '@uniswap/sdk-core'
 import { Contract } from '@ethersproject/contracts'
 
 import { useActiveWeb3React } from 'hooks/web3'
-import { getBytes32TokenContract, getTokenContract, useMulticall2Contract } from 'hooks/useContract'
+import { getBytes32TokenContract, getTokenContract } from 'hooks/useContract'
 import { parseStringOrBytes32 } from 'hooks/Tokens'
 import { useAddUserToken } from 'state/user/hooks'
 import { Erc20 } from 'abis/types'
