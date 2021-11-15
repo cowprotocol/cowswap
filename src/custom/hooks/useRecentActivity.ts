@@ -47,10 +47,13 @@ export default function useRecentActivity() {
     if (!chainId || !account) {
       return []
     }
+
+    const accountLowerCase = account.toLowerCase()
+
     return (
       allNonEmptyOrders
         // only show orders for connected account
-        .filter((order) => order.owner.toLowerCase() === account.toLowerCase())
+        .filter((order) => order.owner.toLowerCase() === accountLowerCase)
         .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses
@@ -66,22 +69,27 @@ export default function useRecentActivity() {
     )
   }, [account, allNonEmptyOrders, chainId])
 
-  const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(
-    () =>
-      // Filter out any pending/fulfilled transactions OLDER than 1 day
-      // and adjust order object to match Order id + status format
-      // which is used later in app to render list of activity
+  const recentTransactionsAdjusted = useMemo<TransactionAndOrder[]>(() => {
+    if (!account) {
+      return []
+    }
+
+    const accountLowerCase = account.toLowerCase()
+
+    return (
       Object.values(allTransactions)
+        // Only show orders for connected account
+        .filter((tx) => tx.from.toLowerCase() === accountLowerCase)
+        // Only recent transactions
         .filter(isTransactionRecent)
-        .filter((tx) => tx.from === account)
         .map((tx) => ({
           ...tx,
           // we need to adjust Transaction object and add "id" + "status" to match Orders type
           id: tx.hash,
           status: tx.receipt ? OrderStatus.FULFILLED : OrderStatus.PENDING,
-        })),
-    [account, allTransactions]
-  )
+        }))
+    )
+  }, [account, allTransactions])
 
   return useMemo(
     () =>

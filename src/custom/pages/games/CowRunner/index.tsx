@@ -1,7 +1,6 @@
 import Page, { Content } from 'components/Page'
 import styled from 'styled-components/macro'
 import { CowGame } from '@gnosis.pm/cow-runner-game'
-import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
 
 const Wrapper = styled(Page)`
   min-height: initial;
@@ -29,12 +28,10 @@ const Wrapper = styled(Page)`
   }
 `
 
-export default function CowGamePage() {
-  const { gnosisSafeInfo } = useWalletInfo()
+export default function CowRunnerPage() {
   return (
     <Wrapper>
       <p>
-        <pre>{JSON.stringify(gnosisSafeInfo, null, 2)}</pre>
         Run! ...and try not getting sandwiched{' '}
         <span role="img" aria-label="sandwich-icon">
           🥪

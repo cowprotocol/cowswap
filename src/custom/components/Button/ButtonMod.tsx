@@ -58,20 +58,12 @@ const Base = styled(RebassButton)<
 `
 
 export const ButtonPrimary = styled(Base)`
-  background-color: ${({ theme }) => theme.primary1};
-  color: white;
+  ${({ theme }) => theme.buttonPrimary.background}
   font-size: 16px;
-
-  &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.primary1)};
-    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
-  }
-  &:hover {
-    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
-  }
+  &:focus,
+  &:hover,
   &:active {
-    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.primary1)};
-    background-color: ${({ theme }) => darken(0.1, theme.primary1)};
+    color: ${({ theme }) => theme.primaryText1};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle, disabled }) =>

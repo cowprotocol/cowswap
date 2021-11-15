@@ -37,7 +37,9 @@ export const Wrapper = styled.div`
   padding: 0;
   height: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 12px 0 0;`};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 12px 0 0;
+  `};
 
   ${WalletName},
   ${AddressLink},
@@ -255,34 +257,17 @@ const NetworkCardUni = styled(YellowCard)`
   `};
 `
 
-// export const NetworkCard = styled(NetworkCardUni)`
-//   background-color: ${({ theme }) => theme.networkCard.background};
-//   color: ${({ theme }) => theme.networkCard.text};
-
-//   padding: 6px 8px;
-//   font-size: 13px;
-//   margin: 0 8px 0 0;
-//   letter-spacing: 0.7px;
-
-//   ${({ theme }) => theme.mediaWidth.upToSmall`
-//     flex-shrink: 0;
-//   `};
-// `
-
 export const NetworkCard = styled(NetworkCardUni)`
   background-color: ${({ theme }) => theme.networkCard.background};
   color: ${({ theme }) => theme.networkCard.text};
-
   padding: 6px 8px;
   font-size: 13px;
   margin: 0 8px 0 0;
   letter-spacing: 0.7px;
-  /* width: auto; */
   min-width: initial;
+  flex: 0 0 fit-content;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-shrink: 0;
-    // margin: 12px auto 0;
-    // order: 1;
+    margin: 0 auto 12px;
   `};
 `

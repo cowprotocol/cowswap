@@ -8,7 +8,7 @@ import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { AutoRow, RowBetween } from 'components/Row'
-import { Wrapper as WrapperUni, Dots } from 'components/swap/styleds'
+import { Wrapper as WrapperUni, Dots, Container } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
@@ -369,19 +369,21 @@ const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonPro
 export default function Swap(props: RouteComponentProps) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
-    <SwapModWrapper
-      TradeBasicDetails={TradeBasicDetails}
-      EthWethWrapMessage={EthWethWrapMessage}
-      SwitchToWethBtn={SwitchToWethBtn}
-      FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
-      BottomGrouping={BottomGrouping}
-      SwapButton={SwapButton}
-      TradeLoading={TradeLoading}
-      ArrowWrapperLoader={ArrowWrapperLoader}
-      Price={Price}
-      HighFeeWarning={HighFeeWarning}
-      allowsOffchainSigning={allowsOffchainSigning}
-      {...props}
-    />
+    <Container>
+      <SwapModWrapper
+        TradeBasicDetails={TradeBasicDetails}
+        EthWethWrapMessage={EthWethWrapMessage}
+        SwitchToWethBtn={SwitchToWethBtn}
+        FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
+        BottomGrouping={BottomGrouping}
+        SwapButton={SwapButton}
+        TradeLoading={TradeLoading}
+        ArrowWrapperLoader={ArrowWrapperLoader}
+        Price={Price}
+        HighFeeWarning={HighFeeWarning}
+        allowsOffchainSigning={allowsOffchainSigning}
+        {...props}
+      />
+    </Container>
   )
 }

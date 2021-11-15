@@ -83,7 +83,7 @@ function finalizeEthereumTransaction(
   addPopup(
     {
       txn: {
-        hash,
+        hash: receipt.transactionHash,
         success: receipt.status === 1,
         summary: transaction.summary,
       },
@@ -170,8 +170,9 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 }
 
 export default function Updater(): null {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, library, account } = useActiveWeb3React()
   const lastBlockNumber = useBlockNumber()
+  const accountLowerCase = account?.toLowerCase() || ''
 
   const dispatch = useAppDispatch()
   const getReceipt = useGetReceipt()
@@ -180,11 +181,12 @@ export default function Updater(): null {
 
   // Get, from the pending transaction, the ones that we should re-check
   const shouldCheckFilter = useMemo(() => {
-    if (!lastBlockNumber) {
+    if (!lastBlockNumber || !accountLowerCase) {
       return
     }
-    return (tx: EnhancedTransactionDetails) => shouldCheck(lastBlockNumber, tx)
-  }, [lastBlockNumber])
+    return (tx: EnhancedTransactionDetails) =>
+      tx.from.toLowerCase() === accountLowerCase && shouldCheck(lastBlockNumber, tx)
+  }, [accountLowerCase, lastBlockNumber])
   const transactions = useAllTransactionsDetails(shouldCheckFilter)
 
   useEffect(() => {

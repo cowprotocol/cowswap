@@ -5,6 +5,18 @@ import { AppState } from 'state'
 import * as OrderActions from './actions'
 
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
+import { registerOnWindow } from 'utils/misc'
+
+type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
+type Sounds = Record<SoundType, string>
+
+const COW_SOUNDS: Sounds = {
+  SEND: '/audio/mooooo-send__lower-90.mp3',
+  SUCCESS: '/audio/mooooo-success__ben__lower-90.mp3',
+  ERROR: '/audio/mooooo-error__lower-90.mp3',
+}
+
+const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -161,35 +173,44 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   return result
 }
 
-let moooooSend: HTMLAudioElement
+function getAudio(type: SoundType): HTMLAudioElement {
+  const soundPath = COW_SOUNDS[type]
+  let sound = SOUND_CACHE[soundPath]
+
+  if (!sound) {
+    sound = new Audio(soundPath)
+    SOUND_CACHE[soundPath] = sound
+  }
+
+  return sound
+}
+
 function getCowSoundSend(): HTMLAudioElement {
-  if (!moooooSend) {
-    moooooSend = new Audio('/audio/mooooo-send__lower-90.mp3')
-  }
-
-  return moooooSend
+  return getAudio('SEND')
 }
 
-let moooooSuccess: HTMLAudioElement
 function getCowSoundSuccess(): HTMLAudioElement {
-  if (!moooooSuccess) {
-    moooooSuccess = new Audio('/audio/mooooo-success__ben__lower-90.mp3')
-  }
-
-  return moooooSuccess
+  return getAudio('SUCCESS')
 }
 
-let moooooError: HTMLAudioElement
 function getCowSoundError(): HTMLAudioElement {
-  if (!moooooError) {
-    moooooError = new Audio('/audio/mooooo-error__lower-90.mp3')
-  }
-
-  return moooooError
+  return getAudio('ERROR')
 }
 
-// on each Pending, Expired, Fulfilled order action
-// a corresponsing sound is dispatched
+function removeLightningEffect() {
+  document.body.classList.remove('lightning')
+}
+
+function addLightningEffect() {
+  document.body.classList.add('lightning')
+
+  setTimeout(() => {
+    removeLightningEffect()
+  }, 3000)
+}
+registerOnWindow({ addLightningEffect })
+
+// On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -213,11 +234,14 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   } else if (isExpireOrdersAction(action)) {
     cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
-    // TODO: find a unique sound for order cancellation
     cowSound = getCowSoundError()
   }
 
-  cowSound?.play().catch((e) => console.error('🐮 Moooooo sound cannot be played', e))
+  if (cowSound) {
+    cowSound.play().catch((e) => {
+      console.error('🐮 Moooooo sound cannot be played', e)
+    })
+  }
 
   return result
 }

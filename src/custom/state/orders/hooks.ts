@@ -23,6 +23,8 @@ import {
   AddOrUpdateOrdersParams,
   addOrUpdateOrders,
   preSignOrders,
+  UpdatePresignGnosisSafeTxParams,
+  updatePresignGnosisSafeTx,
 } from './actions'
 import {
   getDefaultNetworkState,
@@ -85,19 +87,22 @@ interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
 
 type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
-type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
-type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
-type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
-type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
-type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
-type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
-type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
-type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
-type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
-type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
-type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
+export type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
+export type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
+export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
+export type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
+export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
+export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
+export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
+export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
+export type UpdatePresignGnosisSafeTxCallback = (
+  updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
+) => void
+export type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
+export type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
+export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 
-type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
+export type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
 function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
@@ -352,6 +357,14 @@ export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
 export const usePresignOrders = (): PresignOrdersCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((params: PresignOrdersParams) => dispatch(preSignOrders(params)), [dispatch])
+}
+
+export const useUpdatePresignGnosisSafeTx = (): UpdatePresignGnosisSafeTxCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (params: UpdatePresignGnosisSafeTxParams) => dispatch(updatePresignGnosisSafeTx(params)),
+    [dispatch]
+  )
 }
 
 export const useExpireOrder = (): ExpireOrderCallback => {

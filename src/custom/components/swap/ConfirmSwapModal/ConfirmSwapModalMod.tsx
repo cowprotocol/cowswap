@@ -5,6 +5,7 @@ import { /* Currency,  */ Percent /* , TradeType */ } from '@uniswap/sdk-core'
 import { ReactNode, useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
+  OperationType,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import SwapModalFooter from 'components/swap/SwapModalFooter'
@@ -135,6 +136,7 @@ export default function ConfirmSwapModal({
       content={confirmationContent}
       pendingText={<PendingTextComponent trade={trade} /> /*pendingText*/}
       currencyToAdd={trade?.outputAmount.currency}
+      operationType={OperationType.ORDER_SIGN}
     />
   )
 }

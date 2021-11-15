@@ -36,6 +36,7 @@ import {
   ConfirmationModalContentProps,
   TransactionSubmittedContent,
   GPModalHeader,
+  OperationType,
 } from '.' // mod
 
 const Wrapper = styled.div`
@@ -346,6 +347,7 @@ interface ConfirmationModalProps {
   attemptingTxn: boolean
   pendingText: ReactNode
   currencyToAdd?: Currency
+  operationType: OperationType
 }
 
 export default function TransactionConfirmationModal({
@@ -356,6 +358,7 @@ export default function TransactionConfirmationModal({
   pendingText,
   content,
   currencyToAdd,
+  operationType,
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -370,7 +373,12 @@ export default function TransactionConfirmationModal({
       {isL2 && (hash || attemptingTxn) ? (
         <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
       ) : attemptingTxn ? (
-        <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
+        <ConfirmationPendingContent
+          chainId={chainId}
+          operationType={operationType}
+          onDismiss={onDismiss}
+          pendingText={pendingText}
+        />
       ) : hash ? (
         <TransactionSubmittedContent
           chainId={chainId}
