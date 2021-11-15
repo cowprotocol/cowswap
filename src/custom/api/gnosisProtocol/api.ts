@@ -1,5 +1,6 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
+import { stringify } from 'qs'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation, SigningSchemeValue } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
@@ -17,12 +18,6 @@ import QuoteError, {
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
 import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
-import { AppDataDoc } from 'utils/metadata'
-import MetadataError, {
-  MetadataApiErrorCodeDetails,
-  MetadataApiErrorCodes,
-  MetadataApiErrorObject,
-} from './errors/MetadataError'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { GAS_FEE_ENDPOINTS } from 'constants/index'
@@ -49,7 +44,23 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   }
 }
 
+function getProfileUrl(): Partial<Record<ChainId, string>> {
+  if (isLocal || isDev || isPr || isBarn) {
+    return {
+      [ChainId.MAINNET]:
+        process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.dev.gnosisdev.com/api',
+    }
+  }
+
+  // Production, staging, ens, ...
+  return {
+    [ChainId.MAINNET]:
+      process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.gnosis.io/api',
+  }
+}
+
 const API_BASE_URL = getGnosisProtocolUrl()
+const PROFILE_API_BASE_URL = getProfileUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -88,6 +99,19 @@ export interface OrderMetaData {
   status: ApiOrderStatus
 }
 
+export interface TradeMetaData {
+  blockNumber: number
+  logIndex: number
+  orderUid: OrderID
+  owner: string
+  sellToken: string
+  buyToken: string
+  sellAmount: string
+  buyAmount: string
+  sellAmountBeforeFees: string
+  txHash: string
+}
+
 export interface UnsupportedToken {
   [token: string]: {
     address: string
@@ -95,8 +119,23 @@ export interface UnsupportedToken {
   }
 }
 
+type PaginationParams = {
+  limit?: number
+  offset?: number
+}
+
 function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL[chainId]
+
+  if (!baseUrl) {
+    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ` + chainId)
+  } else {
+    return baseUrl + '/v1'
+  }
+}
+
+function _getProfileApiBaseUrl(chainId: ChainId): string {
+  const baseUrl = PROFILE_API_BASE_URL[chainId]
 
   if (!baseUrl) {
     throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ` + chainId)
@@ -120,12 +159,30 @@ function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE'
   })
 }
 
+function _fetchProfile(
+  chainId: ChainId,
+  url: string,
+  method: 'GET' | 'POST' | 'DELETE',
+  data?: any
+): Promise<Response> {
+  const baseUrl = _getProfileApiBaseUrl(chainId)
+  return fetch(baseUrl + url, {
+    headers: DEFAULT_HEADERS,
+    method,
+    body: data !== undefined ? JSON.stringify(data) : data,
+  })
+}
+
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
   return _fetch(chainId, url, 'POST', data)
 }
 
 function _get(chainId: ChainId, url: string): Promise<Response> {
   return _fetch(chainId, url, 'GET')
+}
+
+function _getProfile(chainId: ChainId, url: string): Promise<Response> {
+  return _fetchProfile(chainId, url, 'GET')
 }
 
 function _delete(chainId: ChainId, url: string, data: any): Promise<Response> {
@@ -189,11 +246,6 @@ const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
 const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
   errorType: ApiErrorCodes.UNHANDLED_CREATE_ERROR,
   description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
-}
-
-const UNHANDLED_METADATA_ERROR: MetadataApiErrorObject = {
-  errorType: MetadataApiErrorCodes.UNHANDLED_GET_ERROR,
-  description: MetadataApiErrorCodeDetails.UNHANDLED_GET_ERROR,
 }
 
 async function _handleQuoteResponse<T = any, P extends QuoteQuery = QuoteQuery>(
@@ -303,6 +355,30 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
   }
 }
 
+type GetTradesParams = {
+  chainId: ChainId
+  owner: string
+} & PaginationParams
+
+export async function getTrades(params: GetTradesParams): Promise<TradeMetaData[]> {
+  const { chainId, owner, limit, offset } = params
+  const qsParams = stringify({ owner, limit, offset })
+  console.log('[util:operator] Get trades for', chainId, owner, { limit, offset })
+  try {
+    const response = await _get(chainId, `/trades?${qsParams}`)
+
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      throw new Error(errorResponse)
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    console.error('Error getting trades:', error)
+    throw new Error('Error getting trades: ' + error)
+  }
+}
+
 export type ProfileData = {
   totalTrades: number
   totalReferrals: number
@@ -313,80 +389,21 @@ export type ProfileData = {
 
 export async function getProfileData(chainId: ChainId, address: string): Promise<ProfileData | null> {
   console.log(`[api:${API_NAME}] Get profile data for`, chainId, address)
-  try {
-    if (chainId !== ChainId.MAINNET) {
-      console.info('Profile data is only available for mainnet')
-      return null
-    }
-
-    const response = await _get(chainId, `/profile/${address}`)
-
-    // TODO: Update the error handler when the openAPI profile spec is defined
-    if (!response.ok) {
-      const errorResponse = await response.json()
-      console.log(errorResponse)
-      throw new Error(errorResponse?.description)
-    } else {
-      return response.json()
-    }
-  } catch (error) {
-    console.error('Error getting profile data:', error)
-    throw error
+  if (chainId !== ChainId.MAINNET) {
+    console.info('Profile data is only available for mainnet')
+    return null
   }
-}
 
-export async function getAppDataDoc(chainId: ChainId, address: string): Promise<AppMetadata | null> {
-  console.log(`[api:${API_NAME}] Get AppData doc for`, chainId, address)
-  try {
-    const response = await _get(chainId, `/appData/${address}`)
+  const response = await _getProfile(chainId, `/profile/${address}`)
 
-    if (!response.ok) {
-      const errorResponse: MetadataApiErrorObject = await response.json()
-
-      if (errorResponse.errorType === MetadataApiErrorCodes.AddressNotFound) {
-        return null
-      }
-
-      throw new MetadataError(errorResponse)
-    } else {
-      return response.json()
-    }
-  } catch (error) {
-    console.error('Error getting AppData doc information:', error)
-    throw new MetadataError(UNHANDLED_METADATA_ERROR)
-  }
-}
-
-export type AppMetadata = {
-  user: string
-  metadata: AppDataDoc
-  hash: string
-}
-
-export type UploadMetadataParams = {
-  chainId: ChainId
-} & AppMetadata
-
-export async function uploadAppDataDoc(params: UploadMetadataParams): Promise<void> {
-  const { chainId, user, metadata, hash } = params
-  console.log(`[api:${API_NAME}] Post AppData doc`, params)
-
-  // Call API
-  // TODO: the final endpoint IS TBD
-  const response = await _post(chainId, `/metadata`, {
-    user,
-    metadata,
-    hash,
-  })
-
-  // Handle response
+  // TODO: Update the error handler when the openAPI profile spec is defined
   if (!response.ok) {
-    // Raise an exception
-    const errorMessage = await MetadataError.getErrorFromStatusCode(response, 'update')
-    throw new Error(errorMessage)
+    const errorResponse = await response.json()
+    console.log(errorResponse)
+    throw new Error(errorResponse?.description)
+  } else {
+    return response.json()
   }
-
-  await response.json()
 }
 
 export interface GasFeeEndpointResponse {
@@ -407,10 +424,9 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
 registerOnWindow({
   operator: {
     getQuote,
-    getAppDataDoc,
+    getTrades,
     getOrder,
     sendSignedOrder: sendOrder,
-    uploadAppDataDoc,
     apiGet: _get,
     apiPost: _post,
   },

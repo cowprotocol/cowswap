@@ -77,7 +77,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { SwapProps, ButtonError, ButtonPrimary, ButtonLight } from '.' // mod
+import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
@@ -85,7 +85,8 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
 import { ApplicationModal } from 'state/application/actions'
-import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
+import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -146,6 +147,7 @@ export default function Swap({
   const toggleWalletModal = useWalletModalToggle()
 
   // Transaction confirmation modal
+  const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
@@ -153,8 +155,9 @@ export default function Swap({
   const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
   const openTransactionConfirmationModal = useCallback(
-    (message: string) => {
+    (message: string, operationType: OperationType) => {
       setTransactionConfirmationModalMsg(message)
+      setOperationType(operationType)
       openTransactionConfirmationModalAux()
     },
     [setTransactionConfirmationModalMsg, openTransactionConfirmationModalAux]
@@ -316,7 +319,7 @@ export default function Swap({
 
   // check whether the user has approved the router on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTrade(
-    openTransactionConfirmationModal,
+    (message: string) => openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
     closeModals,
     trade,
     allowedSlippage
@@ -520,9 +523,11 @@ export default function Swap({
         isOpen={showTransactionConfirmationModal}
         pendingText={transactionConfirmationModalMsg}
         onDismiss={closeModals}
+        operationType={operationType}
       />
 
       <NetworkAlert />
+      <AffiliateStatusCheck />
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>
@@ -768,9 +773,9 @@ export default function Swap({
                 </TYPE.main>
               </ButtonPrimary>
             ) : !account ? (
-              <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonLight>
+              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>

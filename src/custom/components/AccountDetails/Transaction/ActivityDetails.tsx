@@ -2,7 +2,6 @@ import React from 'react'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 
 import { formatSmart } from 'utils/format'
 import {
@@ -25,6 +24,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
 import SVG from 'react-inlinesvg'
+import { ActivityStatus } from '@src/custom/hooks/useRecentActivity'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -45,44 +45,97 @@ function unfillableAlert(): JSX.Element {
 }
 
 function GnosisSafeTxDetails(props: {
-  enhancedTransaction: EnhancedTransactionDetails | null
-  gnosisSafeThreshold: number
   chainId: number
+  activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
-  const { enhancedTransaction, gnosisSafeThreshold, chainId } = props
+  const { chainId, activityDerivedState } = props
+  const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
+  const gnosisSafeThreshold = gnosisSafeInfo?.threshold
+  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
 
-  if (!enhancedTransaction || !enhancedTransaction.safeTransaction) {
+  if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
     return null
   }
 
-  const { confirmations, nonce } = enhancedTransaction.safeTransaction
+  // The activity is executed Is tx mined or is the swap executed
+  const isExecutedActivity = isOrder
+    ? order?.fulfillmentTime !== undefined
+    : enhancedTransaction?.confirmedTime !== undefined
+
+  // Check if its in a state where we dont need more signatures. We do this, because this state comes from CowSwap API, which
+  // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
+  // this check to infer that we don't need to sign anything anymore
+  const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING
+
+  const { confirmations, nonce, isExecuted } = safeTransaction
+
   const numConfirmations = confirmations?.length ?? 0
   const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
   const isPendingSignatures = pendingSignaturesCount > 0
+
+  let signaturesMessage: JSX.Element
+
+  const areIsMessage = pendingSignaturesCount > 1 ? 's are' : ' is'
+
+  if (isExecutedActivity) {
+    signaturesMessage = <span>Executed</span>
+  } else if (isCancelled) {
+    signaturesMessage = <span>Cancelled order</span>
+  } else if (isExpired) {
+    signaturesMessage = <span>Expired order</span>
+  } else if (alreadySigned) {
+    signaturesMessage = <span>Enough signatures</span>
+  } else if (numConfirmations == 0) {
+    signaturesMessage = (
+      <>
+        <span>
+          <b>No signatures yet</b>
+        </span>
+        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+          {gnosisSafeThreshold} signature{areIsMessage} required
+        </TextAlert>
+      </>
+    )
+  } else if (numConfirmations >= gnosisSafeThreshold) {
+    signaturesMessage = isExecuted ? (
+      <span>
+        <b>Enough signatures</b>
+      </span>
+    ) : (
+      <>
+        <span>
+          Enough signatures, <b>but not executed</b>
+        </span>
+        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+          Execute Gnosis Safe transaction
+        </TextAlert>
+      </>
+    )
+  } else {
+    signaturesMessage = (
+      <>
+        <span>
+          Signed:{' '}
+          <b>
+            {numConfirmations} out of {gnosisSafeThreshold} signers
+          </b>
+        </span>
+        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+          {pendingSignaturesCount} more signature{areIsMessage} required
+        </TextAlert>
+      </>
+    )
+  }
 
   return (
     <TransactionInnerDetail>
       <span>
         Safe Nonce: <b>{nonce}</b>
       </span>
-      <span>
-        Signed:{' '}
-        <b>
-          {numConfirmations} out of {gnosisSafeThreshold} signers
-        </b>
-      </span>
-      {isPendingSignatures && (
-        <TextAlert isPending={isPendingSignatures}>
-          {pendingSignaturesCount} more signature{pendingSignaturesCount > 1 ? 's are' : ' is'} required
-        </TextAlert>
-      )}
+      {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <GnosisSafeLink
-        chainId={chainId}
-        enhancedTransaction={enhancedTransaction}
-        gnosisSafeThreshold={gnosisSafeThreshold}
-      />
+      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} gnosisSafeThreshold={gnosisSafeThreshold} />
     </TransactionInnerDetail>
   )
 }
@@ -105,7 +158,7 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable, gnosisSafeInfo } =
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
     activityDerivedState
   const approvalToken = useToken(enhancedTransaction?.approval?.tokenAddress) || null
 
@@ -249,18 +302,7 @@ export function ActivityDetails(props: {
 
         {isUnfillable && unfillableAlert()}
 
-        {/* 
-        TODO: Load gnosisSafeThreshold (not default!)
-        `enhancedTransaction` currently returns undefined (no data yet!) 
-        for regular orders done with a Safe. Only works for token approvals with a Safe. 
-        */}
-        {gnosisSafeInfo && enhancedTransaction?.safeTransaction && (
-          <GnosisSafeTxDetails
-            chainId={chainId}
-            enhancedTransaction={enhancedTransaction}
-            gnosisSafeThreshold={gnosisSafeInfo.threshold}
-          />
-        )}
+        <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
       </SummaryInner>
     </Summary>
   )

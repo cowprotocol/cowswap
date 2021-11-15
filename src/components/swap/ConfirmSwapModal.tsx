@@ -6,7 +6,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
-} from 'components/TransactionConfirmationModal'
+} from '@src/components/TransactionConfirmationModal'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
 

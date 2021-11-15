@@ -14,6 +14,12 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { useWalletInfo } from './useWalletInfo'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { OperationType } from '../components/TransactionConfirmationModal'
+import { ethers } from 'ethers'
+import { calculateGasMargin } from '@src/utils/calculateGasMargin'
+
+// Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
+const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = ethers.BigNumber.from('180000')
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -37,11 +43,20 @@ interface GetWrapUnwrapCallback {
   wethContract: Contract
   gnosisSafeInfo: SafeInfoResponse | undefined
   addTransaction: TransactionAdder
-  openTransactionConfirmationModal: (message: string) => void
+  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
   closeModals: () => void
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
+
+function _handleGasEstimateError(error: any) {
+  console.log(
+    '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +
+      WRAP_UNWRAP_GAS_LIMIT_DEFAULT.toString(),
+    error
+  )
+  return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
+}
 
 function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallback {
   const {
@@ -50,7 +65,6 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     balance,
     inputAmount,
     wethContract,
-    gnosisSafeInfo,
     addTransaction,
     openTransactionConfirmationModal,
     closeModals,
@@ -70,32 +84,30 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     let wrapUnwrap: () => Promise<TransactionResponse>
     let summary: string
     let confirmationMessage: string
+    let operationType: OperationType
+
+    if (!chainId) {
+      throw new Error('ChainId is unknown')
+    }
 
     const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
     if (isWrap) {
-      wrapUnwrap = async () => wethContract.deposit({ value: amountHex })
+      operationType = OperationType.WRAP_ETHER
+      wrapUnwrap = async () => {
+        const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
+        const gasLimit = calculateGasMargin(chainId, estimatedGas)
+
+        return wethContract.deposit({ value: amountHex, gasLimit })
+      }
       const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${native} to ${wrapped}`
       summary = t`Wrap ${baseSummary}`
       confirmationMessage = t`Wrapping ${baseSummary}`
     } else {
+      operationType = OperationType.UNWRAP_WETH
       wrapUnwrap = async () => {
-        const options = gnosisSafeInfo
-          ? {
-              type: 1,
-              accessList: [
-                {
-                  address: gnosisSafeInfo.address,
-                  storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
-                },
-                {
-                  address: gnosisSafeInfo.masterCopy,
-                  storageKeys: [],
-                },
-              ],
-            }
-          : {}
-
-        return wethContract.withdraw(amountHex, options)
+        const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
+        const gasLimit = calculateGasMargin(chainId, estimatedGas)
+        return wethContract.withdraw(amountHex, { gasLimit })
       }
       const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${wrapped} to ${native}`
       summary = t`Unwrap ${baseSummary}`
@@ -104,7 +116,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
     wrapUnwrapCallback = async () => {
       try {
-        openTransactionConfirmationModal(confirmationMessage)
+        openTransactionConfirmationModal(confirmationMessage, operationType)
         const txReceipt = await wrapUnwrap()
         addTransaction({
           hash: txReceipt.hash,
@@ -137,7 +149,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
  * @param typedValue the user input value
  */
 export default function useWrapCallback(
-  openTransactionConfirmationModal: (message: string) => void,
+  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void,
   closeModals: () => void,
   inputCurrency?: Currency,
   outputCurrency?: Currency,

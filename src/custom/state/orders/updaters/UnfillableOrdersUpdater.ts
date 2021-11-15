@@ -56,7 +56,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, apiStatus: GpQuote
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const gpApiStatus = useCheckGpQuoteStatus((process.env.DEFAULT_GP_API as GpQuoteStatus) || 'LEGACY')
@@ -76,11 +76,19 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updatePending = useCallback(() => {
-    if (!chainId || pendingRef.current.length === 0) {
+    if (!chainId || !account) {
       return
     }
 
-    pendingRef.current.forEach((order, index) =>
+    const lowerCaseAccount = account.toLowerCase()
+    // Only check pending orders of the connected account
+    const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+
+    if (pending.length === 0) {
+      return
+    }
+
+    pending.forEach((order, index) =>
       _getOrderPrice(chainId, order, gpApiStatus).then((quote) => {
         if (quote) {
           const [promisedPrice] = quote
@@ -93,7 +101,7 @@ export function UnfillableOrdersUpdater(): null {
         }
       })
     )
-  }, [chainId, gpApiStatus, updateIsUnfillableFlag])
+  }, [account, chainId, gpApiStatus, updateIsUnfillableFlag])
 
   useEffect(() => {
     updatePending()

@@ -1,10 +1,14 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
+
 import JSBI from 'jsbi'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { BigNumber } from 'ethers'
 import { ZERO_ADDRESS } from '../constants/misc'
 import { computeUniCirculation } from './computeUniCirculation'
 
-describe('computeUniCirculation', () => {
+describe.skip('computeUniCirculation', () => {
   const token = new Token(4, ZERO_ADDRESS, 18)
 
   function expandTo18Decimals(num: JSBI | string | number) {

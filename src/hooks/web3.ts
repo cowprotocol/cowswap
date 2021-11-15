@@ -14,7 +14,7 @@ export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> {
 }
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
+  const { activate, active } = useWeb3ReactCore()
   const [tried, setTried] = useState(false)
 
   const triedToConnectToSafe = useSafeAppConnection(gnosisSafe)

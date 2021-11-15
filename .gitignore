@@ -47,3 +47,6 @@ cypress-custom/fixtures/example.json
 
 .yalc*
 yalc.lock
+
+# public
+public/version.json

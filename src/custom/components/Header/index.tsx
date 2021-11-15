@@ -92,7 +92,7 @@ export const Wrapper = styled.div`
     grid-gap: 16px;
 
     ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 10px 10px 0;
+      padding: 10px;
     `}
   }
 
@@ -220,7 +220,7 @@ export default function Header() {
           </Title>
           <HeaderLinks>
             <StyledNavLink to="/swap">Swap</StyledNavLink>
-            <StyledNavLink to="/about">About</StyledNavLink>
+            <StyledNavLink to="/profile">Profile</StyledNavLink>
           </HeaderLinks>
         </HeaderRow>
         <HeaderControls>
@@ -237,7 +237,7 @@ export default function Header() {
           </HeaderElement>
           <HeaderElementWrap>
             <TwitterLink>
-              <ExternalLink href="https://twitter.com/mevprotection" target="_blank" rel="noopener noreferrer">
+              <ExternalLink href="https://twitter.com/mevprotection">
                 <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" />
               </ExternalLink>
             </TwitterLink>

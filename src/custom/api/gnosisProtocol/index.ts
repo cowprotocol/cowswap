@@ -10,9 +10,7 @@ const useMock = process.env.REACT_APP_MOCK === 'true'
 // without manually naming the exports
 export const {
   // functions that have a mock
-  getAppDataDoc,
   getProfileData,
-  uploadAppDataDoc,
   // functions that do not have a mock
   getOrderLink = realApi.getOrderLink,
   sendOrder = realApi.sendOrder,
@@ -20,5 +18,6 @@ export const {
   getQuote = realApi.getQuote,
   getPriceQuoteLegacy = realApi.getPriceQuoteLegacy,
   getOrder = realApi.getOrder,
+  getTrades = realApi.getTrades,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }

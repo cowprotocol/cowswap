@@ -23,6 +23,7 @@ import { ColumnCenter } from 'components/Column'
 // import { lighten } from 'polished'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
+import { getChainCurrencySymbols } from 'utils/xdai/hack'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -345,13 +346,13 @@ const StepsWrapper = styled.div`
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
 
-enum WalletType {
+export enum WalletType {
   SAFE,
   SC,
   EOA,
 }
 
-enum OperationType {
+export enum OperationType {
   WRAP_ETHER,
   UNWRAP_WETH,
   APPROVE_TOKEN,
@@ -370,16 +371,18 @@ function getWalletNameLabel(walletType: WalletType): string {
   }
 }
 
-function getOperationMessage(operationType: OperationType): string {
+function getOperationMessage(operationType: OperationType, chainId: number): string {
+  const { native, wrapped } = getChainCurrencySymbols(chainId)
+
   switch (operationType) {
     case OperationType.WRAP_ETHER:
-      return 'Wrap Ether.'
+      return 'Wrapping ' + native
     case OperationType.UNWRAP_WETH:
-      return 'Wrap Ether.'
+      return 'Unwrapping ' + wrapped
     case OperationType.APPROVE_TOKEN:
-      return 'Approve the token.'
+      return 'Approving token'
     case OperationType.ORDER_CANCEL:
-      return 'Soft cancel your order.'
+      return 'Soft canceling your order'
 
     default:
       return 'Almost there!'
@@ -413,9 +416,13 @@ function getSubmittedMessage(operationLabel: string, operationType: OperationTyp
 export function ConfirmationPendingContent({
   onDismiss,
   pendingText,
+  operationType,
+  chainId,
 }: {
   onDismiss: () => void
   pendingText: ReactNode
+  operationType: OperationType
+  chainId: number
 }) {
   const { connector } = useActiveWeb3React()
   const walletInfo = useWalletInfo()
@@ -430,10 +437,9 @@ export function ConfirmationPendingContent({
       return WalletType.EOA
     }
   }, [gnosisSafeInfo, isSmartContractWallet])
-  const walletNameLabel = getWalletNameLabel(walletType)
 
-  const operationType = OperationType.ORDER_SIGN // TODO: Receive as a param
-  const operationMessage = getOperationMessage(operationType)
+  const walletNameLabel = getWalletNameLabel(walletType)
+  const operationMessage = getOperationMessage(operationType, chainId)
   const operationLabel = getOperationLabel(operationType)
   const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
 
@@ -534,10 +540,18 @@ export function TransactionSubmittedContent({
             </ButtonCustom>
           )}
 
+          {/* 
           <ButtonCustom>
-            <InternalLink to="/play" onClick={onDismiss}>
+            <InternalLink to="/play/cow-runner" onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
-              Play the CowGame!
+              Play the Cow Runner Game!
+            </InternalLink>
+          </ButtonCustom> 
+          */}
+          <ButtonCustom>
+            <InternalLink to="/play/mev-slicer" onClick={onDismiss}>
+              <StyledIcon src={GameIcon} alt="Play Cow Slicer Game" />
+              Play the Cow Slicer Game!
             </InternalLink>
           </ButtonCustom>
         </ButtonGroup>

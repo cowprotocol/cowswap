@@ -29,7 +29,15 @@ if (SENTRY_AUTH_TOKEN) {
 module.exports = function () {
   return {
     babel: {
-      plugins: ['@babel/plugin-proposal-nullish-coalescing-operator'],
+      plugins: [
+        '@babel/plugin-proposal-nullish-coalescing-operator',
+        [
+          '@simbathesailor/babel-plugin-use-what-changed',
+          {
+            active: process.env.NODE_ENV === 'development', // boolean
+          },
+        ],
+      ],
     },
     webpack: {
       plugins,

@@ -21,6 +21,7 @@ import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
 import { Web3Provider } from '@ethersproject/providers'
+import { useAppDataHash } from 'state/affiliate/hooks'
 
 const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -65,6 +66,7 @@ interface SwapParams {
   chainId: number
   account: string
   allowsOffchainSigning: boolean
+  isGnosisSafeWallet: boolean
   library: Web3Provider
 
   // Trade details and derived data
@@ -79,6 +81,7 @@ interface SwapParams {
   isBuyEth: boolean
   recipientAddressOrName: string | null
   recipient: string
+  appDataHash: string
 
   // Callbacks
   wrapEther: Wrap | null
@@ -101,6 +104,7 @@ async function _swap(params: SwapParams): Promise<string> {
     chainId,
     account,
     allowsOffchainSigning,
+    isGnosisSafeWallet,
     library,
 
     // Trade details and derived data
@@ -115,6 +119,7 @@ async function _swap(params: SwapParams): Promise<string> {
     isBuyEth,
     recipientAddressOrName,
     recipient,
+    appDataHash,
 
     // Callbacks
     wrapEther,
@@ -196,9 +201,10 @@ async function _swap(params: SwapParams): Promise<string> {
     recipientAddressOrName,
     signer: library.getSigner(),
     allowsOffchainSigning,
+    appDataHash,
   })
 
-  let order: AddUnserialisedPendingOrderParams
+  let pendingOrderParams: AddUnserialisedPendingOrderParams
 
   // Wait for promises, and close modals
   try {
@@ -206,25 +212,37 @@ async function _swap(params: SwapParams): Promise<string> {
       // Wait for order and the wrap
       const [orderAux, wrapTx] = await Promise.all([postOrderPromise, wrapPromise])
       console.log('[useSwapCallback] Wrapped ETH successfully. Tx: ', wrapTx)
-      order = orderAux
+      pendingOrderParams = orderAux
     } else {
       // Wait just for the order
-      order = await postOrderPromise
+      pendingOrderParams = await postOrderPromise
     }
   } finally {
     closeModals()
   }
 
-  const { id: orderId } = order
+  const { id: orderId, order } = pendingOrderParams
 
   // Send pre-sign transaction, if necessary
+  let presignGnosisSafeTxHash: string | undefined
   if (!allowsOffchainSigning) {
     const presignTx = await presignOrder(orderId)
-    console.log('Pre-sign order has been sent with: ', order, presignTx)
+    console.log('Pre-sign order has been sent with: ', pendingOrderParams, presignTx)
+
+    if (isGnosisSafeWallet) {
+      presignGnosisSafeTxHash = presignTx.hash
+    }
   }
 
   // Update the state with the new pending order
-  addPendingOrder(order)
+  addPendingOrder({
+    id: orderId,
+    chainId,
+    order: {
+      ...order,
+      presignGnosisSafeTxHash,
+    },
+  })
 
   return orderId
 }
@@ -253,12 +271,13 @@ export function useSwapCallback(params: SwapCallbackParams): {
     closeModals,
   } = params
   const { account, chainId, library } = useActiveWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   const [deadline] = useUserTransactionTTL()
+  const appDataHash = useAppDataHash()
   const addPendingOrder = useAddPendingOrder()
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -301,6 +320,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
       chainId,
       account,
       allowsOffchainSigning,
+      isGnosisSafeWallet: !!gnosisSafeInfo,
       library,
 
       // Trade details and derived data
@@ -315,6 +335,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
       isSellEth,
       recipientAddressOrName,
       recipient,
+      appDataHash,
 
       // Callbacks
       wrapEther,
@@ -342,11 +363,13 @@ export function useSwapCallback(params: SwapCallbackParams): {
     recipientAddressOrName,
     allowedSlippage,
     deadline,
+    allowsOffchainSigning,
+    gnosisSafeInfo,
     wrapEther,
     addPendingOrder,
     openTransactionConfirmationModal,
     closeModals,
-    allowsOffchainSigning,
     presignOrder,
+    appDataHash,
   ])
 }
