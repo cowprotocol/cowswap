@@ -12,7 +12,7 @@ import { AMOUNT_OF_ORDERS_TO_FETCH, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY
 import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
-import { useTokenLazyNoMulticall } from 'hooks/useTokenLazy'
+import { useTokenLazy } from 'hooks/useTokenLazy'
 
 function getTokenFromMapping(
   address: string,
@@ -127,7 +127,7 @@ export function ApiOrdersUpdater(): null {
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
-  const getToken = useTokenLazyNoMulticall()
+  const getToken = useTokenLazy()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
   // but still use the latest whenever the callback is invoked

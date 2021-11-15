@@ -15,7 +15,13 @@ const bytes32ContractsCache: Record<string, Contract> = {}
 
 const RETRY_OPTIONS = { n: 3, minWait: 100, maxWait: 3_000 }
 
-export function useTokenLazyNoMulticall() {
+/**
+ * Hook that returns a callback which fetches data for a single token from the chain
+ *
+ * Alternative to hooks/Token/useToken where token address does not need to be known
+ * at hook phase nor uses multicall
+ */
+export function useTokenLazy() {
   const { library, account, chainId } = useActiveWeb3React()
   const addUserToken = useAddUserToken()
 
