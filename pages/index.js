@@ -1,8 +1,13 @@
 import Head from 'next/head'
 import Alert from '../components/Alerts'
-import Layout, { siteTitle } from '../components/layout'
+import Link from 'next/link'
+
 import { getSortedPostsData } from '../lib/posts'
+import Layout, { siteTitle } from '../components/layout'
+import Date from '../components/date'
+
 import utilStyles from '../styles/utils.module.scss'
+
 
 export default function Home({ allPostsData }) {
   return (
@@ -11,12 +16,7 @@ export default function Home({ allPostsData }) {
         <title>{siteTitle}</title>
       </Head>
       <section className={utilStyles.headingMd}>
-        <p>Hi there, I'm reviewing how easy it is to develop for NEXT</p>
-      </section>
-      <section>
-        <Alert type="success">
-          hi
-        </Alert>
+        <p>Hi there, I'm reviewing how easy it is to develop for NEXT.js</p>
       </section>
 
        {/* Add this <section> tag below the existing <section> tag */}
@@ -25,15 +25,17 @@ export default function Home({ allPostsData }) {
         <ul className={utilStyles.list}>
           {allPostsData.map(({ id, date, title }) => (
             <li className={utilStyles.listItem} key={id}>
-              {title}
+              <Link href={`/posts/${id}`}>
+                <a>{title}</a>
+              </Link>
               <br />
-              {id}
-              <br />
-              {date}
+              <small className={utilStyles.lightText}>
+                <Date dateString={date} />
+              </small>
             </li>
           ))}
         </ul>
-      </section>
+      </section>      
     </Layout>
   )
 }
