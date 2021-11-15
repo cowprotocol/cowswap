@@ -3,9 +3,11 @@ import { Slash } from 'react-feather'
 import { ImageProps } from 'rebass'
 import useTheme from '../../hooks/useTheme'
 
+import useTheme from '../../hooks/useTheme'
+
 const BAD_SRCS: { [tokenAddress: string]: true } = {}
 
-export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className'> {
+interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className'> {
   srcs: string[]
 }
 

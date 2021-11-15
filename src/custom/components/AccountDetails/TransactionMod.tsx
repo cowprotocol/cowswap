@@ -1,14 +1,13 @@
-import styled from 'styled-components/macro'
 import { CheckCircle, Triangle } from 'react-feather'
+import styled from 'styled-components/macro'
 
 import { useActiveWeb3React } from 'hooks/web3'
-import { getEtherscanLink } from 'utils'
-import { ExternalLink } from 'theme'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
-import { RowFixed } from 'components/Row'
+import { ExternalLink } from 'theme'
+import { getEtherscanLink } from 'utils'
 import Loader from 'components/Loader'
+import { RowFixed } from 'components/Row'
 
-export const TransactionWrapper = styled.div``
 
 export const TransactionStatusText = styled.div`
   margin-right: 0.5rem;
@@ -47,7 +46,7 @@ export default function Transaction({ hash }: { hash: string }) {
   if (!chainId) return null
 
   return (
-    <TransactionWrapper>
+    <div>
       <TransactionState
         // href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}
         href={getEtherscanLink(chainId, hash, 'transaction')}
@@ -61,6 +60,6 @@ export default function Transaction({ hash }: { hash: string }) {
           {pending ? <Loader /> : success ? <CheckCircle size="16" /> : <Triangle size="16" />}
         </IconWrapper>
       </TransactionState>
-    </TransactionWrapper>
+    </div>
   )
 }

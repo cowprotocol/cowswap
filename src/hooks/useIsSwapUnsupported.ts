@@ -1,6 +1,7 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
-import { useUnsupportedTokens } from 'hooks/Tokens'
+
+import { useUnsupportedTokens } from './Tokens'
 
 /**
  * Returns true if the input currency or output currency cannot be traded in the interface

@@ -1,4 +1,4 @@
-import { HTMLProps } from 'react'
+import React, { HTMLProps } from 'react'
 import { ArrowLeft, ExternalLink as LinkIconFeather, Trash, X } from 'react-feather'
 import ReactGA from 'react-ga'
 import { Link } from 'react-router-dom'
@@ -128,7 +128,7 @@ const LinkIconWrapper = styled.a`
   }
 `
 
-export const LinkIcon = styled(LinkIconFeather)`
+const LinkIcon = styled(LinkIconFeather)`
   height: 16px;
   width: 18px;
   margin-left: 10px;
@@ -220,7 +220,7 @@ const rotate = keyframes`
   }
 `
 
-export const Spinner = styled.img`
+const Spinner = styled.img`
   animation: 2s ${rotate} linear infinite;
   width: 16px;
   height: 16px;
@@ -255,13 +255,6 @@ export const HideExtraSmall = styled.span`
 `
 
 export const SmallOnly = styled.span`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: block;
-  `};
-`
-
-export const ExtraSmallOnly = styled.span`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: block;

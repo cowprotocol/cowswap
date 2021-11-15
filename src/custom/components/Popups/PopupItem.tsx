@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { PopupContent } from 'state/application/actions'
+import { PopupContent } from 'state/application/reducer'
 import { default as PopupItemUni, Fader, StyledClose } from './PopupItemMod'
 
 export const Wrapper = styled(PopupItemUni)`

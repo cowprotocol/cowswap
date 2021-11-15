@@ -1,23 +1,23 @@
-import 'inter-ui'
 import '@reach/dialog/styles.css'
+import 'inter-ui'
 import 'polyfills'
+import 'components/analytics'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { StrictMode } from 'react'
-import { isMobile } from 'react-device-detect'
 import ReactDOM from 'react-dom'
-import ReactGA from 'react-ga'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import Blocklist from 'components/Blocklist'
 import { NetworkContextName } from 'constants/misc'
 import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
-import store from 'state'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+import store from 'state'
 import ApplicationUpdater from 'state/application/updater'
 import ListsUpdater from 'state/lists/updater'
-import MulticallUpdater from 'state/multicall/updater'
 import LogsUpdater from 'state/logs/updater'
+import MulticallUpdater from 'state/multicall/updater'
+import TransactionUpdater from 'state/transactions/updater'
 import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import UserUpdater from 'state/user/updater'
 import FeesUpdater from 'state/price/updater'
@@ -26,7 +26,6 @@ import { CancelledOrdersUpdater, PendingOrdersUpdater, UnfillableOrdersUpdater }
 // import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from 'utils/getLibrary'
-import { analyticsId } from 'custom/utils/analytics'
 import AppziButton from 'components/AppziButton'
 import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
 import { nodeRemoveChildFix } from 'utils/node'
@@ -41,25 +40,6 @@ if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-if (typeof analyticsId === 'string') {
-  ReactGA.initialize(analyticsId, {
-    gaOptions: {
-      storage: 'none',
-      storeGac: false,
-    },
-  })
-  ReactGA.set({
-    anonymizeIp: true,
-    customBrowserType: !isMobile
-      ? 'desktop'
-      : 'web3' in window || 'ethereum' in window
-      ? 'mobileWeb3'
-      : 'mobileRegular',
-  })
-} else {
-  ReactGA.initialize('test', { testMode: true, debug: true })
-}
-
 function Updaters() {
   return (
     <>
@@ -67,6 +47,7 @@ function Updaters() {
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
+      <TransactionUpdater />
       <EnhancedTransactionUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />

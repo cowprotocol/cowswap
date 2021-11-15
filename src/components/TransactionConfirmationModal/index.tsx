@@ -1,24 +1,26 @@
+import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
+import Badge from 'components/Badge'
+import { CHAIN_INFO, L2_CHAIN_IDS, SupportedL2ChainId } from '@src/constants/chains'
+import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import { ReactNode, useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components/macro'
-import { getExplorerLink, ExplorerDataType } from '../../utils/getExplorerLink'
-import Modal from '../Modal'
-import { ExternalLink } from 'theme'
-import { Text } from 'rebass'
-import { CloseIcon, CustomLightSpinner } from 'theme'
-import { RowBetween, RowFixed } from '../Row'
 import { AlertCircle, AlertTriangle, ArrowUpCircle, CheckCircle } from 'react-feather'
-import { ButtonPrimary, ButtonLight } from '../Button'
-import { AutoColumn, ColumnCenter } from '../Column'
+import { Text } from 'rebass'
+import { useIsTransactionConfirmed, useTransaction } from 'state/transactions/hooks'
+import styled, { ThemeContext } from 'styled-components/macro'
+
 import Circle from '../../assets/images/blue-loader.svg'
 import MetaMaskLogo from '../../assets/images/metamask.png'
-import { useActiveWeb3React } from 'hooks/web3'
-import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
-import { Trans } from '@lingui/macro'
-import { CHAIN_INFO, L2_CHAIN_IDS, SupportedL2ChainId } from '@src/constants/chains'
-import { useIsTransactionConfirmed, useTransaction } from 'state/transactions/hooks'
-import Badge from 'components/Badge'
-import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
+import { useActiveWeb3React } from '../../hooks/web3'
+import { ExternalLink } from '../../theme'
+import { CloseIcon, CustomLightSpinner } from '../../theme/components'
+import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
+import { TransactionSummary } from '../AccountDetails/TransactionSummary'
+import { ButtonLight, ButtonPrimary } from '../Button'
+import { AutoColumn, ColumnCenter } from '../Column'
+import Modal from '../Modal'
+import { RowBetween, RowFixed } from '../Row'
+import AnimatedConfirmation from './AnimatedConfirmation'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -43,7 +45,7 @@ const StyledLogo = styled.img`
   margin-left: 6px;
 `
 
-export function ConfirmationPendingContent({
+function ConfirmationPendingContent({
   onDismiss,
   pendingText,
   inline,
@@ -273,7 +275,7 @@ function L2Content({
             )}
           </Text>
           <Text fontWeight={400} fontSize={16} textAlign="center">
-            {transaction?.summary ?? pendingText ?? ''}
+            {transaction ? <TransactionSummary info={transaction.info} /> : pendingText}
           </Text>
           {chainId && hash ? (
             <ExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}>

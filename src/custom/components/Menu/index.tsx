@@ -12,7 +12,7 @@ import styled from 'styled-components/macro'
 import { Separator as SeparatorBase } from 'components/SearchModal/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import GameIcon from 'assets/cow-swap/game.gif'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 import DiscordImage from 'assets/cow-swap/discord.svg'

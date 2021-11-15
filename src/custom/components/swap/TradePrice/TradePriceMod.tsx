@@ -1,8 +1,10 @@
-import { useCallback } from 'react'
-import { Price, Currency } from '@uniswap/sdk-core'
-import { useContext } from 'react'
+import { Trans } from '@lingui/macro'
+import { Currency, Price } from '@uniswap/sdk-core'
+import useUSDCPrice from '@src/hooks/useUSDCPrice'
+import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
+import { TYPE } from 'theme'
 import { formatMax, formatSmart } from 'utils/format' // mod
 import { LightGreyText } from 'pages/Swap'
 
@@ -13,27 +15,23 @@ export interface TradePriceProps {
   setShowInverted: (showInverted: boolean) => void
 }
 
-export const StyledPriceContainer = styled.button`
-  display: flex;
-  justify-content: center;
+const StyledPriceContainer = styled.button`
   align-items: center;
-  padding: 0;
-  font-size: 0.875rem;
-  font-weight: 400;
   background-color: transparent;
   border: none;
-  /* height: 24px; */
   cursor: pointer;
-
-  > div {
-    display: flex;
-    align-items: center;
-    width: fit-content;
-  }
+  display: grid;
+  height: 24px;
+  justify-content: center;
+  padding: 0;
+  grid-template-columns: 1fr auto;
+  grid-gap: 0.25rem;
 `
 
 export default function TradePrice({ price, showInverted, fiatValue, setShowInverted }: TradePriceProps) {
   const theme = useContext(ThemeContext)
+
+  const usdcPrice = useUSDCPrice(showInverted ? price.baseCurrency : price.quoteCurrency)
 
   let formattedPrice: string
   try {
@@ -56,15 +54,17 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
 
   return (
     <StyledPriceContainer onClick={flipPrice}>
-      {/* <div style={{ alignItems: 'center', display: 'flex', width: 'fit-content' }}> */}
-      <div>
-        <Text fontWeight={500} fontSize={14} color={theme.text1}>
-          {/* {text} */}
-          <LightGreyText>{baseText}</LightGreyText>
-          <span title={`${fullFormattedPrice} ${label}`}>{quoteText}</span>
-          {fiatValue && <LightGreyText>{fiatText}</LightGreyText>}
-        </Text>
-      </div>
+      <Text fontWeight={500} fontSize={14} color={theme.text1}>
+        {/* {text} */}
+        <LightGreyText>{baseText}</LightGreyText>
+        <span title={`${fullFormattedPrice} ${label}`}>{quoteText}</span>
+        {fiatValue && <LightGreyText>{fiatText}</LightGreyText>}
+      </Text>{' '}
+      {usdcPrice && (
+        <TYPE.darkGray>
+          <Trans>(${usdcPrice.toSignificant(6, { groupSeparator: ',' })})</Trans>
+        </TYPE.darkGray>
+      )}
     </StyledPriceContainer>
   )
 }

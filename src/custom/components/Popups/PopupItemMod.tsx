@@ -1,12 +1,13 @@
 import { useCallback, useContext, useEffect } from 'react'
 import { X } from 'react-feather'
+import { animated } from 'react-spring'
 import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { animated } from 'react-spring'
-import { PopupContent } from 'state/application/actions'
+
 import { useRemovePopup } from 'state/application/hooks'
-import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
+import { PopupContent } from 'state/application/reducer'
 import TransactionPopup from './TransactionPopupMod'
+import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
 
 export const StyledClose = styled(X)`
   position: absolute;
@@ -76,9 +77,9 @@ export default function PopupItem({
   let popupContent
   if ('txn' in content) {
     const {
-      txn: { hash, success, summary },
+      txn: { hash },
     } = content
-    popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
+    popupContent = <TransactionPopup hash={hash} />
   } else if ('listUpdate' in content) {
     const {
       listUpdate: { listUrl, oldList, newList, auto },
@@ -86,9 +87,9 @@ export default function PopupItem({
     popupContent = <ListUpdatePopup popKey={popKey} listUrl={listUrl} oldList={oldList} newList={newList} auto={auto} />
   } else if ('metatxn' in content) {
     const {
-      metatxn: { id, success, summary },
+      metatxn: { id },
     } = content
-    popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
+    popupContent = <TransactionPopup hash={id} />
   }
 
   const faderStyle = useSpring({

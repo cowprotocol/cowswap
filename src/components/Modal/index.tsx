@@ -1,9 +1,11 @@
-import styled, { css } from 'styled-components/macro'
-import { animated, useTransition, useSpring } from 'react-spring'
-import { DialogOverlay, DialogContent } from '@reach/dialog'
-import { isMobile } from 'react-device-detect'
+import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { transparentize } from 'polished'
+import React from 'react'
+import { animated, useSpring, useTransition } from 'react-spring'
 import { useGesture } from 'react-use-gesture'
+import styled, { css } from 'styled-components/macro'
+
+import { isMobile } from '../../utils/userAgent'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -91,7 +93,6 @@ export default function Modal({
   minHeight = false,
   maxHeight = 90,
   initialFocusRef,
-  className,
   children,
 }: ModalProps) {
   const fadeTransition = useTransition(isOpen, null, {

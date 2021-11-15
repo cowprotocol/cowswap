@@ -1,5 +1,6 @@
-import { HTMLProps, memo } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
+
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
@@ -53,7 +54,7 @@ export const Input = memo(function InnerInput({
   fontSize?: string
   align?: 'right' | 'left'
   prependSymbol?: string | undefined
-} & Omit<HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+} & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
   const enforcer = (nextUserInput: string) => {
     if (nextUserInput === '' || inputRegex.test(escapeRegExp(nextUserInput))) {
       onUserInput(nextUserInput)

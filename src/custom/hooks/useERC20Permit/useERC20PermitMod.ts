@@ -1,37 +1,38 @@
-// import JSBI from 'jsbi'
-import { Percent, CurrencyAmount, Currency /*, TradeType, Token */ } from '@uniswap/sdk-core'
+// import { splitSignature } from 'ethers/lib/utils'
+import { Currency, CurrencyAmount, Percent /*, TradeType, Token */ } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
-// import { splitSignature } from 'ethers/lib/utils'
+// import JSBI from 'jsbi'
 import { useMemo /* , useState */ } from 'react'
+
 // import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 // import { DAI, UNI, USDC } from 'constants/tokens'
 // import { useSingleCallResult } from 'state/multicall/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
 // import { useEIP2612Contract } from 'hooks/useContract'
 // import useIsArgentWallet from 'hooks/useIsArgentWallet'
 // import useTransactionDeadline from 'hooks/useTransactionDeadline'
+import { useActiveWeb3React } from 'hooks/web3'
 
-import { PermitInfo, SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
+import { SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
 import { GP_VAULT_RELAYER } from 'custom/constants'
 
 export * from '@src/hooks/useERC20Permit'
 
-// enum PermitType {
-//   AMOUNT = 1,
-//   ALLOWED = 2,
-// }
+enum PermitType {
+  AMOUNT = 1,
+  ALLOWED = 2,
+}
 
 // // 20 minutes to submit after signing
 // const PERMIT_VALIDITY_BUFFER = 20 * 60
 
-// interface PermitInfo {
-//   type: PermitType
-//   name: string
-//   // version is optional, and if omitted, will not be included in the domain
-//   version?: string
-// }
+interface PermitInfo {
+  type: PermitType
+  name: string
+  // version is optional, and if omitted, will not be included in the domain
+  version?: string
+}
 
 // // todo: read this information from extensions on token lists or elsewhere (permit registry?)
 // const PERMITTABLE_TOKENS: {

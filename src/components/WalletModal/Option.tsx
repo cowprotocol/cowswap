@@ -1,5 +1,7 @@
+import React from 'react'
 import styled from 'styled-components/macro'
-import { ExternalLink } from 'theme'
+
+import { ExternalLink } from '../../theme'
 
 const InfoCard = styled.button<{ active?: boolean }>`
   background-color: ${({ theme, active }) => (active ? theme.bg3 : theme.bg2)};

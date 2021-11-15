@@ -1,9 +1,10 @@
-import { CurrencyAmount, Currency, Price, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import { useEffect, useMemo, useState } from 'react'
+
 import { SupportedChainId } from 'constants/chains'
 /* import { DAI_OPTIMISM, USDC, USDC_ARBITRUM } from '../constants/tokens'
-import { useV2TradeExactOut } from './useV2Trade'
-import { useBestV3TradeExactOut } from './useBestV3Trade' */
+import { useBestV2Trade } from './useBestV2Trade'
+import { useClientSideV3Trade } from './useClientSideV3Trade' */
 import { useActiveWeb3React } from 'hooks/web3'
 
 import { supportedChainId } from 'utils/supportedChainId'
@@ -42,10 +43,10 @@ export default function useUSDCPrice(currency?: Currency) {
   const stablecoin = amountOut?.currency
 
   /* 
-  const v2USDCTrade = useV2TradeExactOut(currency, amountOut, {
+  const v2USDCTrade = useBestV2Trade(TradeType.EXACT_OUTPUT, amountOut, currency, {
     maxHops: 2,
   })
-  const v3USDCTrade = useBestV3TradeExactOut(currency, amountOut)
+  const v3USDCTrade = useClientSideV3Trade(TradeType.EXACT_OUTPUT, amountOut, currency)
 
   return useMemo(() => {
     if (!currency || !stablecoin) {

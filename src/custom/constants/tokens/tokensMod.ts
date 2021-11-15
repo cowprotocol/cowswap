@@ -1,4 +1,5 @@
 import { /* WETH9,  */ Token, /* Ether, */ NativeCurrency, Currency } from '@uniswap/sdk-core'
+
 // import { UNI_ADDRESS } from '@src/constants/addresses'
 import { SupportedChainId } from 'constants/chains'
 
@@ -23,6 +24,20 @@ export const DAI = new Token(
   'DAI',
   'Dai Stablecoin'
 )
+export const DAI_ARBITRUM_ONE = new Token(
+  SupportedChainId.ARBITRUM_ONE,
+  '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+  18,
+  'DAI',
+  'Dai stable coin'
+)
+export const DAI_OPTIMISM = new Token(
+  SupportedChainId.OPTIMISM,
+  '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+  18,
+  'DAI',
+  'Dai stable coin'
+)
 export const USDC = new Token(
   SupportedChainId.MAINNET,
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -32,21 +47,28 @@ export const USDC = new Token(
 )
 export const USDC_ARBITRUM = new Token(
   SupportedChainId.ARBITRUM_ONE,
-  '0xe865dF68133fcEd7c2285ff3896B406CAfAa2dB8',
+  '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   6,
   'USDC',
   'USD//C'
 )
-export const DAI_OPTIMISM = new Token(
+export const USDC_OPTIMISM = new Token(
   SupportedChainId.OPTIMISM,
-  '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-  18,
-  'DAI',
-  'Dai stable coin'
+  '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+  6,
+  'USDC',
+  'USD//C'
 )
 export const USDT = new Token(
   SupportedChainId.MAINNET,
   '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+  6,
+  'USDT',
+  'Tether USD'
+)
+export const USDT_ARBITRUM_ONE = new Token(
+  SupportedChainId.ARBITRUM_ONE,
+  '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   6,
   'USDT',
   'Tether USD'
@@ -61,6 +83,13 @@ export const USDT_OPTIMISM = new Token(
 export const WBTC = new Token(
   SupportedChainId.MAINNET,
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+  8,
+  'WBTC',
+  'Wrapped BTC'
+)
+export const WBTC_ARBITRUM_ONE = new Token(
+  SupportedChainId.ARBITRUM_ONE,
+  '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
   8,
   'WBTC',
   'Wrapped BTC'

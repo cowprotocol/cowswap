@@ -1,13 +1,17 @@
+// eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
+// import { Percent } from '@uniswap/sdk-core'
+import { SupportedChainId } from 'constants/chains'
+import { useActiveWeb3React } from 'hooks/web3'
 import { useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
-// import ReactGA from 'react-ga'
+import ReactGA from 'react-ga'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
-import { useExpertModeManager /* , useUserSingleHopOnly */ } from 'state/user/hooks'
+import { ApplicationModal } from 'state/application/reducer'
+import { useClientSideRouter, useExpertModeManager } from 'state/user/hooks'
 import { TYPE } from 'theme'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
@@ -16,7 +20,6 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
-// import { Percent } from '@uniswap/sdk-core'
 import { SettingsTabProp } from '.'
 
 export const StyledMenuIcon = styled(Settings)`
@@ -115,6 +118,8 @@ export const ModalContentWrapper = styled.div`
 `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
+  const { chainId } = useActiveWeb3React()
+
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
@@ -123,7 +128,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
 
-  // const [singleHopOnly, setSingleHopOnly] = useUserSingleHopOnly()
+  const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
   // show confirmation view before turning on
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -194,10 +199,35 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
             <Text fontWeight={600} fontSize={14}>
               <Trans>Interface Settings</Trans>
             </Text>
+
+            {chainId === SupportedChainId.MAINNET && (
+              <RowBetween>
+                <RowFixed>
+                  <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                    <Trans>Auto Router</Trans>
+                  </TYPE.black>
+                  <QuestionHelper
+                    text={<Trans>Use the Uniswap Labs API to get better pricing through a more efficient route.</Trans>}
+                  />
+                </RowFixed>
+                <Toggle
+                  id="toggle-optimized-router-button"
+                  isActive={!clientSideRouter}
+                  toggle={() => {
+                    ReactGA.event({
+                      category: 'Routing',
+                      action: clientSideRouter ? 'enable routing API' : 'disable routing API',
+                    })
+                    setClientSideRouter(!clientSideRouter)
+                  }}
+                />
+              </RowBetween>
+            )}
+
             <RowBetween>
               <RowFixed>
                 <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-                  <Trans>Toggle Expert Mode</Trans>
+                  <Trans>Expert Mode</Trans>
                 </TYPE.black>
                 <QuestionHelper
                   bgColor={theme.bg3}
@@ -223,25 +253,6 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                 }
               />
             </RowBetween>
-            {/* <RowBetween>
-              <RowFixed>
-                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-                  <Trans>Disable Multihops</Trans>
-                </TYPE.black>
-                <QuestionHelper text={<Trans>Restricts swaps to direct pairs only.</Trans>} />
-              </RowFixed>
-              <Toggle
-                id="toggle-disable-multihop-button"
-                isActive={singleHopOnly}
-                toggle={() => {
-                  ReactGA.event({
-                    category: 'Routing',
-                    action: singleHopOnly ? 'disable single hop' : 'enable single hop',
-                  })
-                  setSingleHopOnly(!singleHopOnly)
-                }}
-              />
-            </RowBetween> */}
           </AutoColumn>
         </MenuFlyout>
       )}

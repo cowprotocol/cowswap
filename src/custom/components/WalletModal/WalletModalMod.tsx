@@ -1,26 +1,26 @@
+import { Trans } from '@lingui/macro'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AutoRow } from 'components/Row'
 import { useEffect, useState } from 'react'
-import { isMobile } from 'react-device-detect'
 import ReactGA from 'react-ga'
 import styled from 'styled-components/macro'
+
 import MetamaskIcon from 'assets/images/metamask.png'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { fortmatic, injected, portis } from 'connectors'
 import { OVERLAY_READY } from 'connectors/Fortmatic'
 import { SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
-import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
+import { ApplicationModal } from 'state/application/actions'
 import {
   // ExternalLink,
   TYPE,
 } from 'theme'
+import { isMobile } from 'react-device-detect'
 // import AccountDetails from 'components/AccountDetails'
-import { Trans } from '@lingui/macro'
-
 import ModalMod from '@src/components/Modal'
 import Option from 'components/WalletModal/Option'
 import PendingView from 'components/WalletModal/PendingView'

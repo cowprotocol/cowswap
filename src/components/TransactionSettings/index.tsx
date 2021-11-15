@@ -1,17 +1,17 @@
-import { t, Trans } from '@lingui/macro'
-import { useState, useContext } from 'react'
+import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
+import { useActiveWeb3React } from 'hooks/web3'
+import { darken } from 'polished'
+import { useContext, useState } from 'react'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import QuestionHelper from '../QuestionHelper'
-import { TYPE } from 'theme'
+import { TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
+import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
-import { darken } from 'polished'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
-import { L2_CHAIN_IDS } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -89,7 +89,7 @@ const SlippageEmojiContainer = styled.span`
   `}
 `
 
-export interface TransactionSettingsProps {
+interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
 
@@ -233,7 +233,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               <Trans>Transaction deadline</Trans>
             </TYPE.black>
             <QuestionHelper
-              text={t`Your transaction will revert if it is pending for more than this period of time.`}
+              text={<Trans>Your transaction will revert if it is pending for more than this period of time.</Trans>}
             />
           </RowFixed>
           <RowFixed>

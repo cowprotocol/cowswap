@@ -1,13 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react'
 import { X } from 'react-feather'
+import { animated } from 'react-spring'
 import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { animated } from 'react-spring'
-import { PopupContent } from 'state/application/actions'
+
 import { useRemovePopup } from '../../state/application/hooks'
+import { PopupContent } from 'state/application/reducer'
 import TransactionPopup from './TransactionPopup'
 
-export const StyledClose = styled(X)`
+const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;
@@ -16,7 +17,7 @@ export const StyledClose = styled(X)`
     cursor: pointer;
   }
 `
-export const Popup = styled.div`
+const Popup = styled.div`
   display: inline-block;
   width: 100%;
   padding: 1em;
@@ -73,9 +74,9 @@ export default function PopupItem({
   let popupContent
   if ('txn' in content) {
     const {
-      txn: { hash, success, summary },
+      txn: { hash },
     } = content
-    popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
+    popupContent = <TransactionPopup hash={hash} />
   }
 
   const faderStyle = useSpring({

@@ -4,6 +4,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
