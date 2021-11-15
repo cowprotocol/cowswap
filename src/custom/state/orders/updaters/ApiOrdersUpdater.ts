@@ -12,7 +12,7 @@ import { AMOUNT_OF_ORDERS_TO_FETCH, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY
 import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
-import { useTokenLazyNoMulticall } from 'hooks/useTokensLazy'
+import { useTokenLazyNoMulticall } from 'hooks/useTokenLazy'
 
 function getTokenFromMapping(
   address: string,
