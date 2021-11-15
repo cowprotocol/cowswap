@@ -27,13 +27,13 @@ export function useTokenLazy() {
 
   return useCallback(
     async (address: string): Promise<Token | null> => {
-      console.debug(`[useTokenLazyNoMulticall::callback] callback called`, address, account, chainId)
+      console.debug(`[useTokenLazy::callback] callback called`, address, account, chainId)
 
       if (!account || !chainId || !address) {
         return null
       }
 
-      console.debug(`[useTokenLazyNoMulticall::callback] input is valid`, address, account, chainId)
+      console.debug(`[useTokenLazy::callback] input is valid`, address, account, chainId)
 
       contractsCache[address] =
         contractsCache[address] || getTokenContract(address, undefined, library, account, chainId)
@@ -54,7 +54,7 @@ export function useTokenLazy() {
         // If no decimals, stop here
         decimals = await decimalsPromise
       } catch (e) {
-        console.debug(`[useTokenLazyNoMulticall::callback] no decimals, stopping`, address, account, chainId, e)
+        console.debug(`[useTokenLazy::callback] no decimals, stopping`, address, account, chainId, e)
 
         cancelNamePromise()
         cancelSymbolPromise()
@@ -73,7 +73,7 @@ export function useTokenLazy() {
         !symbolSettled.value
       ) {
         console.debug(
-          `[useTokenLazyNoMulticall::callback] name or symbol failed, trying bytes32`,
+          `[useTokenLazy::callback] name or symbol failed, trying bytes32`,
           address,
           account,
           chainId,
@@ -104,7 +104,7 @@ export function useTokenLazy() {
 
       const token = new Token(chainId, address, decimals, symbol, name)
 
-      console.debug(`[useTokenLazyNoMulticall::callback] loaded token`, address, account, chainId, token)
+      console.debug(`[useTokenLazy::callback] loaded token`, address, account, chainId, token)
 
       addUserToken(token)
 
