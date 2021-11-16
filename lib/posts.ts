@@ -5,18 +5,19 @@ import matter from 'gray-matter'
 import { remark } from 'remark'
 import html from 'remark-html'
 import { NotFoundItem, Post, PostDetails } from '../types'
+import { toPostPath } from '../util/posts'
 
 const postsDirectory = path.join(process.cwd(), 'posts')
 
 const regex = /(.+)(?=__(\w{2}(?:_\w{2})?)$)/;
 
 
-export function getSortedPostsData() {
-  // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory)
-  const allPostsData: Post[] = fileNames.map(fileName => {
+export function getSortedPostsData(locale: string) {
+  const allPosts = getAllPostIds(locale)
+
+  const allPostsData: Post[] = allPosts.map(post => {
     // Remove ".md" from file name to get id
-    const id = fileName.replace(/\.md$/, '')
+    const { id, locale, fileName } = post.params
 
     // Read markdown file as string
     const fullPath = path.join(postsDirectory, fileName)
@@ -28,6 +29,7 @@ export function getSortedPostsData() {
     // Combine the data with the id
     return {
       id,
+      locale,
       ...matterResult.data
     }
   })
@@ -44,7 +46,7 @@ export function getSortedPostsData() {
   })
 }
 
-export function getAllPostIds() {
+export function getAllPostIds(locale?: string) {
   const fileNames = fs.readdirSync(postsDirectory)
 
   // Returns an array that looks like this:
@@ -60,19 +62,21 @@ export function getAllPostIds() {
   //     }
   //   }
   // ]
-  return fileNames.map(fileName => {
+  const allPosts = fileNames.map(fileName => {
     const name = fileName.replace(/\.md$/, '')
     const match = regex.exec(name)
-    const params = match && match.length >=3  ? { id: match[1], locale: match[2] } : { id: name, locale: 'es'}
+    const params = match && match.length >=3  ? { id: match[1], locale: match[2], fileName } : { id: name, locale: 'en', fileName}
 
     return {
       params
     }
   })
+
+  return locale ? allPosts.filter(post => post.params.locale === locale) : allPosts
 }
 
 export async function getPostData(id: string, locale: string): Promise<PostDetails | NotFoundItem> {
-  const fullPath = path.join(postsDirectory, locale === 'en' ? `${id}.md` : `${id}__${locale}.md`)
+  const fullPath = path.join(postsDirectory, toPostPath(id, locale) + '.md')
   if (!fs.existsSync(fullPath)) {
     return {
       notFound: true,
@@ -88,7 +92,7 @@ export async function getPostData(id: string, locale: string): Promise<PostDetai
   const processedContent = await remark()
     .use(html)
     .process(matterResult.content)
-  const contentHtml = locale + '----' +processedContent.toString()
+  const contentHtml = processedContent.toString()
 
   // Combine the data with the id and contentHtml
   return {
@@ -97,3 +101,4 @@ export async function getPostData(id: string, locale: string): Promise<PostDetai
     ...matterResult.data
   }
 }
+

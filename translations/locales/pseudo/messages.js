@@ -1,0 +1,1 @@
+/*eslint-disable*/module.exports={messages:{"Attachment {name} saved":["Àţţàćĥmēńţ ",["name"]," śàvēď"],"Back to home":"ßàćķ ţō ĥōmē","Hi there, I'm reviewing how easy it is to develop for NEXT.js":"Ĥĩ ţĥēŕē, Ĩ'm ŕēvĩēŵĩńĝ ĥōŵ ēàśŷ ĩţ ĩś ţō ďēvēĺōƥ ƒōŕ ŃĒXŢ.Ĵś","back":"ƀàćķ"}};

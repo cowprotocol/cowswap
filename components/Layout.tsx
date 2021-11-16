@@ -7,6 +7,7 @@ import utilStyles from '../styles/utils.module.scss'
 import { PropsWithChildren } from 'react'
 import { useRouter } from 'next/router'
 import cn from 'classnames'
+import { Trans } from '@lingui/macro'
 
 const name = 'Anxo'
 export const siteTitle = 'CoW Protocol'
@@ -19,8 +20,6 @@ export default function Layout(props: LayoutProps) {
   const { children, home = false } = props
   const router = useRouter()
   const { locale } = router
-
-
 
   return (
     <>
@@ -80,7 +79,7 @@ export default function Layout(props: LayoutProps) {
         {!home && (
           <div className={styles.backToHome}>
             <Link href="/">
-              <a>← Back to home</a>
+              <a>← {' '}<Trans>Back to home</Trans></a>
             </Link>
           </div>
         )}
@@ -94,7 +93,7 @@ export default function Layout(props: LayoutProps) {
         </Link> | <Link href={router.asPath} locale="es">
           <a className={cn({
             [styles.active]: locale === "es"
-          })}>Spanish</a>
+          })}>Español</a>
         </Link>
       </footer>
     </>

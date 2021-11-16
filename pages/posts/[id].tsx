@@ -9,6 +9,7 @@ import { getAllPostIds, getPostData } from '../../lib/posts'
 
 export default function Post({ postData }) {
   const { id, title, date, contentHtml } = postData
+
   return (
     <Layout>
       <Head>

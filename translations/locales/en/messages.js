@@ -1,0 +1,1 @@
+/*eslint-disable*/module.exports={messages:{"Attachment {name} saved":["Attachment ",["name"]," saved"],"Back to home":"Back to home","Hi there, I'm reviewing how easy it is to develop for NEXT.js":"Hi there, I'm reviewing how easy it is to develop for NEXT.js","back":"back"}};
