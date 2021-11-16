@@ -12,7 +12,10 @@ import { AMOUNT_OF_ORDERS_TO_FETCH, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY
 import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
-import { useTokenLazy } from 'hooks/useTokenLazy'
+import { TokenGetter, useTokenLazy } from 'hooks/useTokenLazy'
+import { RetryResult, WithCancel } from 'custom/types'
+
+const NO_TOKENS = { promise: Promise.resolve({}), cancel: () => {} } // eslint-disable-line
 
 function getTokenFromMapping(
   address: string,
@@ -93,23 +96,37 @@ function getMissingTokensAddresses(orders: OrderMetaData[], tokens: Record<strin
   return Array.from(tokensToFetch)
 }
 
-async function fetchTokens(
-  tokensToFetch: string[],
-  getToken: (address: string) => Promise<Token | null>
-): Promise<Record<string, Token | null>> {
+function fetchTokens(tokensToFetch: string[], getToken: TokenGetter): RetryResult<Record<string, Token | null>> {
   if (tokensToFetch.length === 0) {
-    return {}
+    return NO_TOKENS
   }
 
-  const promises = tokensToFetch.map((address) => getToken(address))
-  const settledPromises = await Promise.allSettled(promises)
+  const getTokenResult = tokensToFetch.map((address) => getToken(address))
+  const { cancellations, promises } = getTokenResult.reduce(
+    (acc, result) => {
+      const { cancel, promise } = result
+      acc.promises.push(promise)
+      acc.cancellations.push(cancel)
 
-  return settledPromises.reduce<Record<string, Token | null>>((acc, promiseResult) => {
-    if (promiseResult.status === 'fulfilled' && promiseResult.value) {
-      acc[promiseResult.value.address] = promiseResult.value
-    }
-    return acc
-  }, {})
+      return acc
+    },
+    { cancellations: [] as WithCancel['cancel'][], promises: [] as Promise<Token | null>[] }
+  )
+
+  // Resolve all promises
+  const promise = Promise.allSettled(promises).then((settledPromises) => {
+    return settledPromises.reduce<Record<string, Token | null>>((acc, promiseResult) => {
+      if (promiseResult.status === 'fulfilled' && promiseResult.value) {
+        acc[promiseResult.value.address] = promiseResult.value
+      }
+      return acc
+    }, {})
+  })
+
+  // Cancel promises
+  const cancel = () => cancellations.forEach((cancel) => cancel())
+
+  return { cancel, promise }
 }
 
 function filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
@@ -143,31 +160,36 @@ export function ApiOrdersUpdater(): null {
           Object.keys(tokens).length
         }`
       )
-      try {
-        // Fetch latest orders from API
-        const apiOrders = await getOrders(chainId, account, AMOUNT_OF_ORDERS_TO_FETCH)
 
-        if (apiOrders.length === 0) {
-          return
-        }
+      // Fetch latest orders from API
+      getOrders(chainId, account, AMOUNT_OF_ORDERS_TO_FETCH)
+        .then((apiOrders) => {
+          if (apiOrders.length === 0) {
+            return
+          }
 
-        const tokensToFetch = getMissingTokensAddresses(apiOrders, tokens, chainId)
+          const tokensToFetch = getMissingTokensAddresses(apiOrders, tokens, chainId)
 
-        // Fetch them from the chain
-        const fetchedTokens = await fetchTokens(tokensToFetch, getToken)
+          // Fetch them from the chain
+          const { promise: fetchedTokensPromise, cancel } = fetchTokens(tokensToFetch, getToken)
 
-        // Merge fetched tokens with what's currently loaded
-        const reallyAllTokens = { ...tokens, ...fetchedTokens }
+          fetchedTokensPromise.then((fetchedTokens) => {
+            // Merge fetched tokens with what's currently loaded
+            const reallyAllTokens = { ...tokens, ...fetchedTokens }
 
-        // Build store order objects, for all orders which we found both input/output tokens
-        // Don't add order for those we didn't
-        const orders = filterOrders(apiOrders, reallyAllTokens, chainId)
+            // Build store order objects, for all orders which we found both input/output tokens
+            // Don't add order for those we didn't
+            const orders = filterOrders(apiOrders, reallyAllTokens, chainId)
 
-        // Add orders to redux state
-        orders.length && addOrUpdateOrders({ orders, chainId })
-      } catch (e) {
-        console.error(`ApiOrdersUpdater::Failed to fetch orders`, e)
-      }
+            // Add orders to redux state
+            orders.length && addOrUpdateOrders({ orders, chainId })
+          })
+
+          return cancel
+        })
+        .catch((e) => {
+          console.error(`ApiOrdersUpdater::Failed to fetch orders`, e)
+        })
     },
     [addOrUpdateOrders, getToken]
   )
