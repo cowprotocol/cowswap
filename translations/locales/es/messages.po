@@ -27,4 +27,4 @@ msgstr "MetaDEX Aggregator Exchange con protección contra MEV"
 
 #: pages/index.tsx:35
 msgid "Posts are not internationalized yet. This is just a PoC"
-msgstr ""
+msgstr "Lost articulos no stán internacionalizados aún. Esto es solo una prueba de concepto"
