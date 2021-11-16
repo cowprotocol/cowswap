@@ -153,7 +153,7 @@ export function ApiOrdersUpdater(): null {
   allTokensRef.current = allTokens
 
   const updateOrders = useCallback(
-    async (chainId: ChainId, account: string): Promise<void> => {
+    (chainId: ChainId, account: string): Promise<void> => {
       const tokens = allTokensRef.current
       console.log(
         `ApiOrdersUpdater:: updating orders. Network ${chainId}, account ${account}, loaded tokens count ${
@@ -162,6 +162,7 @@ export function ApiOrdersUpdater(): null {
       )
 
       // Fetch latest orders from API
+      let cancel: () => void | undefined
       getOrders(chainId, account, AMOUNT_OF_ORDERS_TO_FETCH)
         .then((apiOrders) => {
           if (apiOrders.length === 0) {
@@ -171,7 +172,8 @@ export function ApiOrdersUpdater(): null {
           const tokensToFetch = getMissingTokensAddresses(apiOrders, tokens, chainId)
 
           // Fetch them from the chain
-          const { promise: fetchedTokensPromise, cancel } = fetchTokens(tokensToFetch, getToken)
+          const { promise: fetchedTokensPromise, cancel: cancelTokenPromise } = fetchTokens(tokensToFetch, getToken)
+          cancel = cancelTokenPromise
 
           fetchedTokensPromise.then((fetchedTokens) => {
             // Merge fetched tokens with what's currently loaded
@@ -184,19 +186,20 @@ export function ApiOrdersUpdater(): null {
             // Add orders to redux state
             orders.length && addOrUpdateOrders({ orders, chainId })
           })
-
-          return cancel
         })
         .catch((e) => {
           console.error(`ApiOrdersUpdater::Failed to fetch orders`, e)
         })
+
+      return () => cancel && cancel()
     },
     [addOrUpdateOrders, getToken]
   )
 
   useEffect(() => {
     if (account && chainId && tokensAreLoaded) {
-      updateOrders(chainId, account)
+      const cancel = updateOrders(chainId, account)
+      return cancel
     }
   }, [account, chainId, tokensAreLoaded, updateOrders])
 
