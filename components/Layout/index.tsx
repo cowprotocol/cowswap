@@ -2,14 +2,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import styles from './layout.module.scss'
-import utilStyles from '../styles/utils.module.scss'
+import styles from './Layout.style'
+import utilStyles from '../../styles/utils.module.scss'
+
 import { PropsWithChildren } from 'react'
 import { useRouter } from 'next/router'
 import cn from 'classnames'
 import { Trans } from '@lingui/macro'
 
-const name = 'Anxo'
+const name = 'CoW Protocol'
 export const siteTitle = 'CoW Protocol'
 
 type LayoutProps = PropsWithChildren<{
@@ -23,7 +24,7 @@ export default function Layout(props: LayoutProps) {
 
   return (
     <>
-      <div className={styles.container}>
+      <div className="container">
         <Head>
           <link rel="icon" href="/favicon.ico" />
           <meta
@@ -40,7 +41,7 @@ export default function Layout(props: LayoutProps) {
           <meta name="og:title" content={siteTitle} />
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
-        <header className={styles.header}>
+        <header className="header">
           {home ? (
             <>
               <Image
@@ -77,7 +78,7 @@ export default function Layout(props: LayoutProps) {
         </header>
         <main>{children}</main>
         {!home && (
-          <div className={styles.backToHome}>
+          <div className="backToHome">
             <Link href="/">
               <a>← {' '}<Trans>Back to home</Trans></a>
             </Link>
@@ -88,14 +89,15 @@ export default function Layout(props: LayoutProps) {
         Languages:
         <Link href={router.asPath} locale="en">
           <a className={cn({
-            [styles.active]: locale === "en"
+            active: locale === "en"
           })}>English</a>
         </Link> | <Link href={router.asPath} locale="es">
           <a className={cn({
-            [styles.active]: locale === "es"
+            active: locale === "es"
           })}>Español</a>
         </Link>
       </footer>
+      <style jsx>{styles}</style>
     </>
   )
 }

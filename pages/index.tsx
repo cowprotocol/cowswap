@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { GetStaticProps } from 'next'
 
 import { getSortedPostsData } from '../lib/posts'
-// import Alert from '../components/Alerts'
 import Layout, { siteTitle } from '../components/Layout'
 import Date from '../components/Date'
 
@@ -12,9 +11,12 @@ import utilStyles from '../styles/utils.module.scss'
 import { Trans } from '@lingui/macro'
 import { loadTranslation } from '../lib/i18n'
 import { toPostPath } from '../util/posts'
+import { useRouter } from 'next/router'
+import Alert from '../components/Alerts'
 // import { useRouter } from 'next/router'
 
 export default function Home({ allPostsData }) {
+  const { locale } = useRouter()
   return (
     <Layout home>
       <Head>
@@ -29,6 +31,9 @@ export default function Home({ allPostsData }) {
       {/* Add this <section> tag below the existing <section> tag */}
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}><Trans>Blog</Trans></h2>
+        {locale !== 'en' && (
+          <Alert type="warning"><Trans>Posts are not internationalized yet. This is just a PoC</Trans></Alert>
+        )}
         <ul className={utilStyles.list}>
           {allPostsData.map(({ id, date, locale, title }) => (
             <li className={utilStyles.listItem} key={id}>

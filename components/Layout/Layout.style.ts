@@ -1,3 +1,6 @@
+import css from 'styled-jsx/css'
+
+export default css`
 .container {
   max-width: 36rem;
   padding: 0 1rem;
@@ -17,3 +20,5 @@
 .active {
   font-weight: 800;
 }
+`
+
