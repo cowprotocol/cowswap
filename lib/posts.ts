@@ -4,9 +4,12 @@ import matter from 'gray-matter'
 
 import { remark } from 'remark'
 import html from 'remark-html'
-import { Post } from '../types'
+import { NotFoundItem, Post, PostDetails } from '../types'
 
 const postsDirectory = path.join(process.cwd(), 'posts')
+
+const regex = /(.+)(?=__(\w{2}(?:_\w{2})?)$)/;
+
 
 export function getSortedPostsData() {
   // Get file names under /posts
@@ -58,16 +61,24 @@ export function getAllPostIds() {
   //   }
   // ]
   return fileNames.map(fileName => {
+    const name = fileName.replace(/\.md$/, '')
+    const match = regex.exec(name)
+    const params = match && match.length >=3  ? { id: match[1], locale: match[2] } : { id: name, locale: 'es'}
+
     return {
-      params: {
-        id: fileName.replace(/\.md$/, '')
-      }
+      params
     }
   })
 }
 
-export async function getPostData(id: string) {
-  const fullPath = path.join(postsDirectory, `${id}.md`)
+export async function getPostData(id: string, locale: string): Promise<PostDetails | NotFoundItem> {
+  const fullPath = path.join(postsDirectory, locale === 'en' ? `${id}.md` : `${id}__${locale}.md`)
+  if (!fs.existsSync(fullPath)) {
+    return {
+      notFound: true,
+    }
+  }
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
 
   // Use gray-matter to parse the post metadata section
@@ -77,7 +88,7 @@ export async function getPostData(id: string) {
   const processedContent = await remark()
     .use(html)
     .process(matterResult.content)
-  const contentHtml = processedContent.toString()
+  const contentHtml = locale + '----' +processedContent.toString()
 
   // Combine the data with the id and contentHtml
   return {

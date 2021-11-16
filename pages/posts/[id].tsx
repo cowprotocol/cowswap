@@ -13,6 +13,10 @@ export default function Post({ postData }) {
     <Layout>
       <Head>
         <title>CoW - {title}</title>
+        {/* 
+        // alternatives to specify alternative versions: (sitemap / headers / link rel)
+        <link rel="alternate" href="es" href="https://es.myweb.com/mycontent" /> 
+        */}
       </Head>
       <h1 className={utilStyles.headingXl}>{postData.title}</h1>
       <div className={utilStyles.lightText}>
@@ -34,8 +38,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (props) => {
   const { params } = props
+  props.locale
 
-  const postData = await getPostData(params.id as string)
+  const postData = await getPostData(params.id as string, props.locale)
   return {
     props: {
       postData

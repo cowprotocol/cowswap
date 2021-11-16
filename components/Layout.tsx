@@ -6,7 +6,7 @@ import styles from './layout.module.scss'
 import utilStyles from '../styles/utils.module.scss'
 import { PropsWithChildren } from 'react'
 import { useRouter } from 'next/router'
-
+import cn from 'classnames'
 
 const name = 'Anxo'
 export const siteTitle = 'CoW Protocol'
@@ -18,7 +18,9 @@ type LayoutProps = PropsWithChildren<{
 export default function Layout(props: LayoutProps) {
   const { children, home = false } = props
   const router = useRouter()
-  console.log(router)
+  const { locale } = router
+
+
 
   return (
     <>
@@ -86,9 +88,13 @@ export default function Layout(props: LayoutProps) {
       <footer>
         Languages:
         <Link href={router.asPath} locale="en">
-          <a>English</a>
+          <a className={cn({
+            [styles.active]: locale === "en"
+          })}>English</a>
         </Link> | <Link href={router.asPath} locale="es">
-          <a>Spanish</a>
+          <a className={cn({
+            [styles.active]: locale === "es"
+          })}>Spanish</a>
         </Link>
       </footer>
     </>
