@@ -1,9 +1,11 @@
 import Head from 'next/head'
+import { GetStaticPaths, GetStaticProps } from 'next'
 
-import Layout from '../../components/layout'
+import Layout from '../../components/Layout'
 import Date from '../../components/Date'
 import utilStyles from '../../styles/utils.module.scss'
 import { getAllPostIds, getPostData } from '../../lib/posts'
+import { Post } from '../../types'
 
 
 export default function Post({ postData }) {
@@ -11,11 +13,11 @@ export default function Post({ postData }) {
   return (
     <Layout>
       <Head>
-        <title>CoW - { title }</title>
+        <title>CoW - {title}</title>
       </Head>
       <h1 className={utilStyles.headingXl}>{postData.title}</h1>
       <div className={utilStyles.lightText}>
-        <Date dateString={postData.date} />
+        <Date dateString={date} />
       </div>
       {/* <pre>{ JSON.stringify(postData, null, 2) }</pre> */}
       <div data-post-id={id} dangerouslySetInnerHTML={{ __html: contentHtml }} />
@@ -23,7 +25,7 @@ export default function Post({ postData }) {
   )
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const paths = getAllPostIds()
   return {
     paths,
@@ -31,8 +33,10 @@ export async function getStaticPaths() {
   }
 }
 
-export async function getStaticProps({ params }) {
-  const postData = await getPostData(params.id)
+export const getStaticProps: GetStaticProps = async (props) => {
+  const { params } = props
+
+  const postData = await getPostData(params.id as string)
   return {
     props: {
       postData

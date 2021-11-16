@@ -4,11 +4,17 @@ import Link from 'next/link'
 
 import styles from './layout.module.scss'
 import utilStyles from '../styles/utils.module.scss'
+import { PropsWithChildren } from 'react'
 
 const name = 'Anxo'
 export const siteTitle = 'CoW Protocol'
 
-export default function Layout({ children, home }) {
+type LayoutProps = PropsWithChildren<{
+  home?: boolean
+}>
+
+export default function Layout(props: LayoutProps) {
+  const { children, home = false } = props
   return (
     <div className={styles.container}>
       <Head>
