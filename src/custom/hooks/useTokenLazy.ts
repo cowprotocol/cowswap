@@ -54,47 +54,49 @@ async function _getTokenByte32Contract(params: GetTokenInfoParams): Promise<Cont
 
 function _tryGetToken(params: GetTokenInfoParams): { promise: Promise<TokenInfo | null>; cancel: () => void } {
   // Fetch each property individually
-  const contract = await _getTokenContract(params)
+  let cancel: () => void | undefined
+  const promise = _getTokenContract(params)
+    .then((contract) => {
+      const { promise: decimalsPromise, cancel: cancelDecimalsPromise } = retry(contract.decimals, RETRY_OPTIONS)
+      const { promise: namePromise, cancel: cancelNamePromise } = retry(contract.name, RETRY_OPTIONS)
+      const { promise: symbolPromise, cancel: cancelSymbolPromise } = retry(contract.symbol, RETRY_OPTIONS)
 
-  const { promise: decimalsPromise, cancel: cancelDecimalsPromise } = retry(contract.decimals, RETRY_OPTIONS)
-  const { promise: namePromise, cancel: cancelNamePromise } = retry(contract.name, RETRY_OPTIONS)
-  const { promise: symbolPromise, cancel: cancelSymbolPromise } = retry(contract.symbol, RETRY_OPTIONS)
+      cancel = () => {
+        cancelDecimalsPromise()
+        cancelNamePromise()
+        cancelSymbolPromise()
+      }
+      return decimalsPromise.then((decimals) => {
+        return Promise.allSettled([namePromise, symbolPromise]).then(([nameSettled, symbolSettled]) => {
+          let name
+          if (nameSettled.status === 'fulfilled' && nameSettled.value) {
+            name = nameSettled.value
+          }
 
-  const cancel = () => {
-    cancelDecimalsPromise()
-    cancelNamePromise()
-    cancelSymbolPromise()
-  }
+          let symbol
+          if (symbolSettled.status === 'fulfilled' && symbolSettled.value) {
+            symbol = symbolSettled.value
+          }
 
-  const promise = decimalsPromise
-    .then((decimals) => {
-      return Promise.allSettled([namePromise, symbolPromise]).then(([nameSettled, symbolSettled]) => {
-        let name
-        if (nameSettled.status === 'fulfilled' && nameSettled.value) {
-          name = nameSettled.value
-        }
-
-        let symbol
-        if (symbolSettled.status === 'fulfilled' && symbolSettled.value) {
-          symbol = symbolSettled.value
-        }
-
-        return {
-          decimals,
-          name,
-          symbol,
-        }
+          return {
+            decimals,
+            name,
+            symbol,
+          }
+        })
       })
     })
     .catch((e) => {
       const { address, account, chainId } = params
       console.debug(`[useTokenLazy::callback] no decimals, stopping`, address, account, chainId, e)
 
-      cancel()
+      if (cancel) {
+        cancel()
+      }
       return null
     })
 
-  return { promise, cancel }
+  return { promise, cancel: () => cancel && cancel() }
 }
 
 function _tryGetFieldByte32(
