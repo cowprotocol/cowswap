@@ -1,1 +1,1 @@
-/*eslint-disable*/module.exports={messages:{"Attachment {name} saved":["Attachment ",["name"]," saved"],"Back to home":"Volver","Hi there, I'm reviewing how easy it is to develop for NEXT.js":"Hola! Estoy revisando lo facil que es desarrollar en NEXT.js","back":"back"}};
+/*eslint-disable*/module.exports={messages:{"Back to home":"Volver","Blog":"Blog","MetaDEX Aggregator Exchange with MEV Protection":"MetaDEX Aggregator Exchange con protección contra MEV","Posts are not internationalized yet. This is just a PoC":"Posts are not internationalized yet. This is just a PoC"}};

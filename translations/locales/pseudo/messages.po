@@ -13,16 +13,28 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/Layout.tsx:82
+#: components/Layout/index.tsx:50
 msgid "Back to home"
 msgstr ""
 
-#: pages/index.tsx:31
+#: pages/index.tsx:33
 msgid "Blog"
 msgstr ""
 
+#: pages/index.tsx:27
+#~ msgid "DEFI Liquidity Protocol with MEV Protection"
+#~ msgstr ""
+
 #: pages/index.tsx:25
-msgid "Hi there, I'm reviewing how easy it is to develop for NEXT.js"
+#~ msgid "Hi there, I'm reviewing how easy it is to develop for NEXT.js"
+#~ msgstr ""
+
+#: pages/index.tsx:27
+msgid "MetaDEX Aggregator Exchange with MEV Protection"
+msgstr ""
+
+#: pages/index.tsx:35
+msgid "Posts are not internationalized yet. This is just a PoC"
 msgstr ""
 
 #: pages/index.tsx:47

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { GetStaticProps } from 'next'
 
 import { getSortedPostsData } from '../lib/posts'
-import Layout, { siteTitle } from '../components/Layout'
+import Layout, { SITE_TITLE } from '../components/Layout'
 import Date from '../components/Date'
 
 import utilStyles from '../styles/utils.module.scss'
@@ -20,11 +20,11 @@ export default function Home({ allPostsData }) {
   return (
     <Layout home>
       <Head>
-        <title>{siteTitle}</title>
+        <title>{SITE_TITLE}</title>
       </Head>
       <section className={utilStyles.headingMd}>
         {/* https://blog.logrocket.com/complete-guide-internationalization-nextjs/ */}
-        <p><Trans>Hi there, I'm reviewing how easy it is to develop for NEXT.js</Trans></p>
+        <p><Trans>MetaDEX Aggregator Exchange with MEV Protection</Trans></p>
 
       </section>
 

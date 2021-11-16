@@ -1,5 +1,5 @@
 ---
-title: 'Cuando usar Static Generation vs Server Side Rendering'
+title: 'How to become a solver for CoW protocol'
 date: '2020-01-02'
 ---
 

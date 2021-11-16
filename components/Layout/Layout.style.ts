@@ -7,12 +7,6 @@ export default css`
   margin: 3rem auto 6rem;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .backToHome {
   margin: 3rem 0 0;
 }

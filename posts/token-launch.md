@@ -1,5 +1,5 @@
 ---
-title: 'Two Forms of Pre-rendering'
+title: 'CoW Token launch, learn all about it!'
 date: '2020-01-01'
 ---
 

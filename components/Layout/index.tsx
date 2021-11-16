@@ -1,81 +1,52 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import styles from './Layout.style'
-import utilStyles from '../../styles/utils.module.scss'
 
 import { PropsWithChildren } from 'react'
-import { useRouter } from 'next/router'
-import cn from 'classnames'
+
 import { Trans } from '@lingui/macro'
+import Header from './Header'
+import Footer from './Footer'
 
-const name = 'CoW Protocol'
-export const siteTitle = 'CoW Protocol'
+export const SITE_TITLE = 'CoW Protocol'
+export const URL_PRODUCTION = "https://cowswap.exchange"
 
-type LayoutProps = PropsWithChildren<{
+export type LayoutProps = PropsWithChildren<{
   home?: boolean
 }>
 
 export default function Layout(props: LayoutProps) {
   const { children, home = false } = props
-  const router = useRouter()
-  const { locale } = router
 
   return (
     <>
-      <div className="container">
-        <Head>
-          <link rel="icon" href="/favicon.ico" />
-          <meta
-            name="description"
-            content="Learn how to build a personal website using Next.js"
-          />
+      <Head>
+        <meta
+          name="description"
+          content="Ethereum's MetaDEX Aggregator that allows to trade with MEV protection while using ETH-less orders that are settled p2p among users or the best AMM."
+        />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#163861" />
 
-          <meta
-            property="og:image"
-            content={`https://og-image.vercel.app/${encodeURI(
-              siteTitle
-            )}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}
-          />
-          <meta name="og:title" content={siteTitle} />
-          <meta name="twitter:card" content="summary_large_image" />
-        </Head>
-        <header className="header">
-          {home ? (
-            <>
-              <Image
-                priority
-                src="/images/profile.jpg"
-                className={utilStyles.borderCircle}
-                height={144}
-                width={144}
-                alt={name}
-              />
-              <h1 className={utilStyles.heading2Xl}>{name}</h1>
-            </>
-          ) : (
-            <>
-              <Link href="/">
-                <a>
-                  <Image
-                    priority
-                    src="/images/profile.jpg"
-                    className={utilStyles.borderCircle}
-                    height={108}
-                    width={108}
-                    alt={name}
-                  />
-                </a>
-              </Link>
-              <h2 className={utilStyles.headingLg}>
-                <Link href="/">
-                  <a className={utilStyles.colorInherit}>{name}</a>
-                </Link>
-              </h2>
-            </>
-          )}
-        </header>
+        <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/images/logo-square-192.png" />
+        <link rel="apple-touch-icon" sizes="512x512" href="/images/logo-square-512.png" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={SITE_TITLE} />
+
+        <meta property="og:description" content="Ethereums MetaDEX Aggregator built by Gnosis. It allows users to trade tokens with MEV protection while using ETH-less orders that are settled p2p among users or into the best on-chain liquidity pool." />
+        <meta property="og:image" content={URL_PRODUCTION + "/images/og-meta-cowswap.png"} />
+        <meta property="og:url" content={URL_PRODUCTION} /> {/* TODO: Add URL */}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@MEVprotection" />
+        <meta name="twitter:title" content={SITE_TITLE} />
+        <meta name="twitter:image" content={URL_PRODUCTION + "/images/og-meta-cowswap.png"} />
+      </Head>
+      <div className="container">
+        <Header home={home} />
         <main>{children}</main>
         {!home && (
           <div className="backToHome">
@@ -85,18 +56,8 @@ export default function Layout(props: LayoutProps) {
           </div>
         )}
       </div>
-      <footer>
-        Languages:
-        <Link href={router.asPath} locale="en">
-          <a className={cn({
-            active: locale === "en"
-          })}>English</a>
-        </Link> | <Link href={router.asPath} locale="es">
-          <a className={cn({
-            active: locale === "es"
-          })}>Español</a>
-        </Link>
-      </footer>
+      <Footer />
+
       <style jsx>{styles}</style>
     </>
   )
