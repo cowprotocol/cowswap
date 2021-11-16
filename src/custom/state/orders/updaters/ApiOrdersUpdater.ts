@@ -153,7 +153,7 @@ export function ApiOrdersUpdater(): null {
   allTokensRef.current = allTokens
 
   const updateOrders = useCallback(
-    (chainId: ChainId, account: string): Promise<void> => {
+    (chainId: ChainId, account: string): (() => void) => {
       const tokens = allTokensRef.current
       console.log(
         `ApiOrdersUpdater:: updating orders. Network ${chainId}, account ${account}, loaded tokens count ${
@@ -197,10 +197,11 @@ export function ApiOrdersUpdater(): null {
   )
 
   useEffect(() => {
+    let cancel
     if (account && chainId && tokensAreLoaded) {
-      const cancel = updateOrders(chainId, account)
-      return cancel
+      cancel = updateOrders(chainId, account)
     }
+    return cancel
   }, [account, chainId, tokensAreLoaded, updateOrders])
 
   return null
