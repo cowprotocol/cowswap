@@ -5,7 +5,6 @@ import Layout from '../../components/Layout'
 import Date from '../../components/Date'
 import utilStyles from '../../styles/utils.module.scss'
 import { getAllPostIds, getPostData } from '../../lib/posts'
-import { Post } from '../../types'
 
 
 export default function Post({ postData }) {
