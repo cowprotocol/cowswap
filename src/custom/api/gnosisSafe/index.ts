@@ -8,10 +8,11 @@ const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.XDAI]: 'https://safe-transaction.xdai.gnosis.io',
 }
 
-const SAFE_WEB_URL: Partial<Record<number, string>> = {
-  [ChainId.MAINNET]: 'https://gnosis-safe.io',
-  [ChainId.RINKEBY]: 'https://rinkeby.gnosis-safe.io',
-  [ChainId.XDAI]: 'https://xdai.gnosis-safe.io',
+const SAFE_BASE_URL = 'https://gnosis-safe.io'
+const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
+  [ChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
+  [ChainId.RINKEBY]: 'rin', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-4.json
+  [ChainId.XDAI]: 'xdai', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
 }
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}
@@ -43,13 +44,13 @@ function _getClientOrThrow(chainId: number): SafeServiceClient {
 }
 
 export function getSafeWebUrl(chaindId: number, safeAddress: string): string | null {
-  const safeWebUrl = SAFE_WEB_URL[chaindId]
+  const chainShortName = CHAIN_SHORT_NAME[chaindId]
 
-  if (!safeWebUrl) {
+  if (!chainShortName) {
     return null
   }
 
-  return `${safeWebUrl}/app/#/safes/${safeAddress}/transactions`
+  return `${SAFE_BASE_URL}/app/${chainShortName}:${safeAddress}/transactions/queue` // TODO: This will change soon in https://github.com/gnosis/safe-react/issues/970
 }
 
 export function getSafeTransaction(chainId: number, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {
