@@ -30,11 +30,12 @@ export function useEagerConnect() {
 
       // if there is no last saved provider set tried state to true
       if (!latestProvider) {
-        setTried(true)
-      }
-
-      // check if the last saved provider is Metamask
-      if (latestProvider === WalletProvider.INJECTED) {
+        // Try to auto-connect to the injected wallet
+        activate(injected, undefined, true).catch(() => {
+          setTried(true)
+        })
+      } else if (latestProvider === WalletProvider.INJECTED) {
+        // check if the last saved provider is Metamask
         // check if the our application is authorized/connected with Metamask
         injected.isAuthorized().then((isAuthorized) => {
           if (isAuthorized) {
