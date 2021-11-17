@@ -6,7 +6,16 @@ import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme, StyledInternalLink } from 'theme'
 import { LinkScrollable } from 'components/Link'
 
-const ExternalLink = styled(ExternalLinkTheme)``
+const ExternalLink = styled(ExternalLinkTheme)`
+  color: ${({ theme }) => theme.text1};
+  text-decoration: underline;
+  font-weight: normal;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: ${({ theme }) => theme.textLink};
+  }
+`
 
 const Wrapper = styled.div`
   #table-container {
@@ -55,22 +64,6 @@ const Wrapper = styled.div`
   }
 
   ${Content} {
-    > div ${ExternalLink}, > p ${ExternalLink}, > p ${StyledInternalLink} {
-      color: ${({ theme }) => theme.text1};
-      text-decoration: underline;
-      font-weight: 400;
-      transition: color 0.2s ease-in-out;
-
-      &:hover {
-        color: ${({ theme }) => theme.textLink};
-      }
-    }
-
-    > div > ${ExternalLink} {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
     > div > ul {
       margin: 12px 0 24px;
       padding: 0 0 0 20px;
@@ -910,13 +903,13 @@ export default function Faq() {
             <li>
               The production version:{' '}
               <ExternalLink href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
-                <strong>https://cowswap.exchange</strong>
+                https://cowswap.exchange
               </ExternalLink>
             </li>
             <li>
               The public test version:{' '}
               <ExternalLink href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
-                <strong>https://barn.cowswap.exchange</strong>
+                https://barn.cowswap.exchange
               </ExternalLink>
             </li>
           </ul>
@@ -928,11 +921,11 @@ export default function Faq() {
           <p>
             Thus, when accessing{' '}
             <ExternalLink href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
-              <strong>https://cowswap.exchange</strong>
+              https://cowswap.exchange
             </ExternalLink>{' '}
             you&apos;ll see orders/trades placed only using this interface. The same is true for orders/trades placed on{' '}
             <ExternalLink href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
-              <strong>https://barn.cowswap.exchange</strong>
+              https://barn.cowswap.exchange
             </ExternalLink>
             .
           </p>

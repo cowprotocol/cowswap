@@ -746,7 +746,7 @@ export default function Swap({
                   {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
-                {isNativeIn && onWrap && (
+                {isNativeIn && isSupportedWallet && onWrap && (
                   <EthWethWrapMessage
                     account={account ?? undefined}
                     native={native}
