@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "1.4.10-rc.0",
+  "version": "1.4.11",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -202,7 +202,6 @@
     "bignumber.js": "9.0.1",
     "bnc-sdk": "^3.5.0",
     "fast-safe-stringify": "^2.0.8",
-    "ipfs-http-client": "^52.0.3",
     "paraswap": "^5.0.1",
     "react-appzi": "^1.0.4",
     "react-inlinesvg": "^2.3.0",
