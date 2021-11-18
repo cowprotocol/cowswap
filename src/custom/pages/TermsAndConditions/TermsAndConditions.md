@@ -6,7 +6,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 
 **TERMS AND CONDITIONS (“TERMS”)**
 
-1. **WHO WE ARE AND HOW TO CONTACT US**
+**1. WHO WE ARE AND HOW TO CONTACT US**
 
    1. CowSwap  is operated by GnosisDAO (”**we**” or “**us**”). We are an
       Ethereum based organisation managed by community members. To contact
@@ -18,7 +18,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
       version 2 (the “**Protocol**”). The provision of the Platform and
       the Protocol is based solely on our independent actions.
 
-2. **WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS PROTOCOL**
+**2. WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS PROTOCOL**
 
    1. We provide a graphical user interface (the “**Platform**”) to
       facilitate you interacting with the Protocol.
@@ -32,7 +32,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
       any order matching, guaranteed prices, or similar exchange or
       trading platform services.
 
-3. **BY USING OUR PLATFORM, YOU ACCEPT THESE** **TERMS**
+**3. BY USING OUR PLATFORM, YOU ACCEPT THESE** **TERMS**
 
    1. These are the general terms and conditions ("**Terms**") that apply
       to the use of our Platform and the Protocol.
@@ -57,7 +57,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
       shall not be liable for any agreement or terms that may exist
       between you and the respective third party.
 
-4. **WHAT YOU REQUIRE TO USE OUR PLATFORM**
+**4. WHAT YOU REQUIRE TO USE OUR PLATFORM**
 
    1. Users may use our Platform to interact with the Protocol and buy or sell
       ERC 20 tokens by submitting orders into a batch auction running on the
@@ -80,13 +80,13 @@ Please read these Terms carefully before using our Platform. By using our Platfo
          incurred through the Protocol on Ethereum or the Ethereum Virtual
          Machine compatible validation mechanism.
 
-5. **FEES**
+**5. FEES**
 
    Cowswap does not levy any fees on users of the Platform, however the
    user incurs a fee on the Protocol level, which is shown to the user on
    the Cowswap interface when the user places their trade.
 
-6. **WE MAY MAKE CHANGES TO OR SUSPEND OR WITHDRAW OUR PLATFORM**
+**6. WE MAY MAKE CHANGES TO OR SUSPEND OR WITHDRAW OUR PLATFORM**
 
    1. We may update and change our Platform from time to time. Our Platform is
       currently made available free of charge. We do not guarantee that our
@@ -118,7 +118,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
       Platform through your internet connection are aware of these Terms and
       that they comply with them.
 
-7. **YOU ARE RESPONSIBLE TO SECURE YOUR CRYPTOGRAPHIC ASSETS, WE DO NOT TAKE CUSTODY**
+**7. YOU ARE RESPONSIBLE TO SECURE YOUR CRYPTOGRAPHIC ASSETS, WE DO NOT TAKE CUSTODY**
 
    1. You must control the wallet you use in connection with our
       Platform.
@@ -134,7 +134,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
       loss of access or custody of any cryptographic assets stored
       thereon.
 
-8. **YOU ARE RESPONSIBLE FOR AND DETERMINE YOUR TAX LIABILITIES**
+**8. YOU ARE RESPONSIBLE FOR AND DETERMINE YOUR TAX LIABILITIES**
 
    You are solely responsible to determine if your use of the Platform has
    tax implications for you. By using the Platform you agree not to hold us
@@ -142,7 +142,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
    your usage of the Platform or any other action or transaction related
    thereto.
 
-9. **INFORMATION ON THE PLATFORM ARE NOT ADVICE**
+**9. INFORMATION ON THE PLATFORM ARE NOT ADVICE**
 
    None of the information available on our Platform, or made otherwise
    available to you in relation to its use, constitutes any legal, tax,
@@ -150,7 +150,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
    take, you should consult your legal, financial, tax or other
    professional advisors.
 
-10. **OUR INTELLECTUAL PROPERTY RIGHTS ARE RESERVED**
+**10. OUR INTELLECTUAL PROPERTY RIGHTS ARE RESERVED**
 
     1. Subject to the application of the GNU Lesser General Public License
        v3.0 to the software code of the Platform, we are the owner or the
@@ -172,7 +172,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        license to use our Platform will automatically be revoked and
        terminated immediately.
 
-11. **WE ARE NOT RESPONSIBLE FOR BUGS AND YOU MUST NOT INTRODUCE THEM**
+**11. WE ARE NOT RESPONSIBLE FOR BUGS AND YOU MUST NOT INTRODUCE THEM**
 
     1. We do not guarantee that our Platform will be secure or free from
        bugs or viruses.
@@ -191,7 +191,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        disclosing your identity to them. In the event of such a breach,
        your right to use our Platform will cease immediately.
 
-12. **RULES ABOUT YOU LINKING TO OUR PLATFORM**
+**12. RULES ABOUT YOU LINKING TO OUR PLATFORM**
 
     1. You may link to our Platform, provided you do so in a way that is
        fair and legal and does not damage our reputation or take advantage
@@ -205,7 +205,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        please contact us at the GnosisDAO
        subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
 
-13. **YOUR WARRANTIES AND REPRESENTATIONS TO US**
+**13. YOUR WARRANTIES AND REPRESENTATIONS TO US**
 
     1. By using our Platform you hereby agree, represent and warrant that:
 
@@ -260,7 +260,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
            hereby expressly incorporated into these Terms, and you are willing to accept
            the risk of loss associated therewith.
 
-14. **YOUR INDEMNIFICATION AND LIABILITY TO US**
+**14. YOUR INDEMNIFICATION AND LIABILITY TO US**
 
     1. You agree to release and indemnify, defend and hold us and any of
        our Affiliates harmless, as well as any members, participants,
@@ -278,7 +278,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        any other remedies that may be available to us under applicable
        law.
 
-15. **OUR LIABILITY FOR LOSS SUFFERED BY YOU IS LIMITED**
+**15. OUR LIABILITY FOR LOSS SUFFERED BY YOU IS LIMITED**
 
     1. We do not exclude or limit our liability to you where it would be
        unlawful to do so. This includes liability for death or personal
@@ -297,7 +297,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        ANTICIPATED SAVINGS, BUSINESS OPPORTUNITY, GOODWILL OR REPUTATION OR
        ANY INDIRECT OR CONSEQUENTIAL LOSS OR DAMAGE.**</em>
 
-16. **HOW TO RESOLVE COMPLAINTS AND DISPUTES**
+**16. HOW TO RESOLVE COMPLAINTS AND DISPUTES**
 
     1. If an alleged breach, controversy, claim, dispute or difference
        arises out of or in connection with
@@ -309,7 +309,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
     2. Your right to take legal action remains unaffected by the existence
        or use of this complaints procedure.
 
-17. **DISPUTE RESOLUTION**
+**17. DISPUTE RESOLUTION**
 
     1. YOU AGREE AND UNDERSTAND THAT BY ENTERING INTO THIS AGREEMENT, YOU
        EXPRESSLY WAIVE ANY RIGHT, IF ANY, TO A TRIAL BY JURY AND RIGHT TO
@@ -336,14 +336,14 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        England and Wales shall have exclusive jurisdiction to resolve the
        Dispute.
 
-18. **GOVERNING LAW**
+**18. GOVERNING LAW**
 
     This Agreement shall be governed by and construed in accordance with the
     substantive laws of England & Wales without regard to conflict of laws
     principles but with the Hague Principles on the Choice of Law in
     International Commercial Contracts hereby incorporated by reference.
 
-19. **THIRD PARTY BENEFICIARIES**
+**19. THIRD PARTY BENEFICIARIES**
 
     1. Clauses 4 to 21 also apply to the
        benefit of the Affiliates and such benefit also encompasses  Protocol-related
@@ -352,7 +352,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        give rise to any third party rights, which may be enforced against
        Us.
 
-20. **THE TERMS ARE OUR ENTIRE AGREEMENT WITH YOU AND WE MAY ASSIGN THE TERMS**
+**20. THE TERMS ARE OUR ENTIRE AGREEMENT WITH YOU AND WE MAY ASSIGN THE TERMS**
 
     1. We may assign these Terms to
        any of our Affiliates or in connection with a merger or other
@@ -367,7 +367,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        in these Terms, though nothing in this clause shall limit or exclude
        any liability for fraud.
 
-21. **WE WAIVE NO RIGHTS AND DO NOT ALLOW ASSIGNMENT**
+**21. WE WAIVE NO RIGHTS AND DO NOT ALLOW ASSIGNMENT**
 
     1. You may not assign, transfer or delegate any of your rights or
        duties arising out of or in connection with these Terms to a third party. Any such
@@ -378,7 +378,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        shall not as a result exclude or prevent the later exercise
        of such a right.
 
-22. **PROVISIONS ARE SEVERABLE, IF FOUND INVALID**
+**22. PROVISIONS ARE SEVERABLE, IF FOUND INVALID**
 
     1. If any provision or part-provision of these Terms is or becomes invalid, illegal
        or unenforceable, it shall be deemed modified to the minimum extent
