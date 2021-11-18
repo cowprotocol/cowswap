@@ -187,7 +187,6 @@ export default function Activity({ activity: activityData }: { activity: Activit
     () => getActivityDerivedState({ chainId, activityData, allowsOffchainSigning, gnosisSafeInfo }),
     [chainId, activityData, allowsOffchainSigning, gnosisSafeInfo]
   )
-  console.log('activityDerivedState', activityDerivedState)
 
   if (!activityDerivedState || !chainId) return null
   const { activityLinkUrl } = activityDerivedState
