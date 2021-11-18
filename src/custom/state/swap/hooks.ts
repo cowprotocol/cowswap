@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 // import JSBI from 'jsbi'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'

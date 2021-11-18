@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react'
+import React /*, { useMemo } */ from 'react'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
   createGlobalStyle,
   css,
-  DefaultTheme,
-  ThemeProvider as StyledComponentsThemeProvider,
+  DefaultThemeUniswap as DefaultTheme,
+  // ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components/macro'
 
-import { useIsDarkMode } from '../state/user/hooks'
+// import { useIsDarkMode } from '../state/user/hooks'
 import { Colors } from './styled'
 
 export * from './components'
@@ -51,7 +51,7 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 const white = '#FFFFFF'
 const black = '#000000'
 
-function colors(darkMode: boolean): Colors {
+export function colors(darkMode: boolean): Colors {
   return {
     darkMode,
     // base
@@ -74,6 +74,9 @@ function colors(darkMode: boolean): Colors {
     bg4: darkMode ? '#565A69' : '#888D9B',
     bg5: darkMode ? '#6C7284' : '#888D9B',
     bg6: darkMode ? '#1A2028' : '#6C7284',
+
+    // mod
+    bg7: darkMode ? '#1F4471' : '#CEE7EF',
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
@@ -114,7 +117,7 @@ function colors(darkMode: boolean): Colors {
   }
 }
 
-function theme(darkMode: boolean): DefaultTheme {
+export function theme(darkMode: boolean): DefaultTheme {
   return {
     ...colors(darkMode),
 

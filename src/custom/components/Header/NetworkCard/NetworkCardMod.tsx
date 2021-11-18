@@ -4,7 +4,7 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { /* ArrowDownCircle, */ AlertCircle, ChevronDown /* , ToggleLeft */ } from 'react-feather'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import { useModalOpen, useToggleModal, useWalletModalToggle } from 'state/application/hooks'
 import styled, { css } from 'styled-components/macro'
 // import { ExternalLink } from 'theme'
@@ -30,7 +30,6 @@ const BaseWrapper = css`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-self: end;
   `};
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 0.5rem 0 0;
     width: initial;
@@ -84,17 +83,14 @@ const FallbackWrapper = styled(YellowCard)`
 const Icon = styled.img`
   width: 16px;
   margin-right: 2px;
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
   margin-right: 4px;
-
   `};
 `
 
 const MenuFlyout = styled.span`
   background-color: ${({ theme }) => theme.bg1};
   border: 1px solid ${({ theme }) => theme.bg0};
-
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 12px;
@@ -114,7 +110,6 @@ const MenuFlyout = styled.span`
     bottom: unset;
     top: 4.5em
     right: 0;
-
   `};
   > {
     padding: 12px;
@@ -158,18 +153,14 @@ const ButtonMenuItem = styled.button<{ $disabled?: boolean; $selected?: boolean 
   background-color: ${({ theme, $selected }) => $selected && theme.primary1};
   outline: none;
   padding: 6px 10px;
-
   ${({ $selected }) => $selected && `margin: 3px 0;`}
-
   > ${NetworkName} {
     margin: 0 auto 0 8px;
   }
-
   &:hover {
     color: ${({ theme, $selected, $disabled }) => (!$selected || !$disabled) && theme.text1};
     background: ${({ theme, $selected, $disabled }) => ($disabled ? 'transparent' : !$selected && theme.bg4)};
   }
-
   transition: background 0.13s ease-in-out;
 `
 export const NetworkInfo = styled.button<{ chainId: SupportedChainId }>`
@@ -186,7 +177,6 @@ export const NetworkInfo = styled.button<{ chainId: SupportedChainId }>`
   margin: 0;
   height: 38px;
   padding: 0.7rem;
-
   :hover,
   :focus {
     cursor: pointer;
@@ -323,7 +313,7 @@ export default function NetworkCard() {
                       }
                     />
                     <NetworkName chainId={chainId}>{NETWORK_LABELS[chainId]}</NetworkName>
-                    <StyledPollingDot />
+                    <StyledPollingDot warning={false} />
                   </ButtonMenuItem>
                 )
               }
@@ -342,7 +332,7 @@ export default function NetworkCard() {
                   />
                   <NetworkName chainId={supportedChainId}>{NETWORK_LABELS[supportedChainId]}</NetworkName>
                   {implements3085 || !account ? (
-                    <GreyPollingDot />
+                    <GreyPollingDot warning={false} />
                   ) : (
                     <>
                       <AlertCircle size={16} />

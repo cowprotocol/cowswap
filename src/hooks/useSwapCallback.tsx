@@ -20,7 +20,7 @@ import { SignatureData } from './useERC20Permit'
 import useTransactionDeadline from './useTransactionDeadline'
 import { useActiveWeb3React } from './web3'
 
-enum SwapCallbackState {
+export enum SwapCallbackState {
   INVALID,
   LOADING,
   VALID,

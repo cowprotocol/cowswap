@@ -16,14 +16,17 @@ export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverCon
 
 interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
   content: ReactNode
+  onOpen?: () => void
+  // whether to wrap the content in a `TooltipContainer`
+  wrap?: boolean
 }
 
 export default function Tooltip({ text, ...rest }: TooltipProps) {
   return <Popover content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
-export function TooltipContent({ content, ...rest }: TooltipContentProps) {
-  return <Popover content={<TooltipContainer>{content}</TooltipContainer>} {...rest} />
+export function TooltipContent({ content, wrap = false, ...rest }: TooltipContentProps) {
+  return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
 }
 
 export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show'>) {
@@ -39,10 +42,19 @@ export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show
   )
 }
 
-export function MouseoverTooltipContent({ content, children, ...rest }: Omit<TooltipContentProps, 'show'>) {
+export function MouseoverTooltipContent({
+  content,
+  children,
+  onOpen: openCallback = undefined,
+  ...rest
+}: Omit<TooltipContentProps, 'show'>) {
   const [show, setShow] = useState(false)
-  const open = useCallback(() => setShow(true), [setShow])
+  const open = useCallback(() => {
+    setShow(true)
+    openCallback?.()
+  }, [openCallback])
   const close = useCallback(() => setShow(false), [setShow])
+
   return (
     <TooltipContent {...rest} show={show} content={content}>
       <div

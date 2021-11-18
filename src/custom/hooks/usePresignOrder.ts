@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { useGP2SettlementContract } from 'hooks/useContract'
-import { ContractTransaction } from 'ethers'
+import { ContractTransaction } from '@ethersproject/contracts'
 
 export type PresignOrder = (orderId: string) => Promise<ContractTransaction>
 

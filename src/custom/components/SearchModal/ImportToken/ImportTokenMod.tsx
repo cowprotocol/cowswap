@@ -11,10 +11,13 @@ import { AlertCircle, ArrowLeft } from 'react-feather'
 import { useAddUserToken } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { CloseIcon, TYPE } from 'theme'
+import { transparentize } from 'polished'
 
 import BlockedToken from 'components/SearchModal/BlockedToken'
 import { PaddedColumn } from 'components/SearchModal/styleds'
 import TokenImportCard from 'components/SearchModal/TokenImportCard'
+import Card from 'components/Card'
+import { CardComponentProps } from '.'
 
 const Wrapper = styled.div`
   position: relative;
@@ -22,12 +25,27 @@ const Wrapper = styled.div`
   overflow: auto;
 `
 
-interface ImportProps {
+export const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
+  background-color: ${({ theme, highWarning }) =>
+    highWarning ? transparentize(0.8, theme.red1) : transparentize(0.8, theme.yellow2)};
+  width: fit-content;
+`
+
+export const AddressText = styled(TYPE.blue)`
+  font-size: 12px;
+  word-break: break-all;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 10px;
+`}
+`
+
+export interface ImportProps {
   tokens: Token[]
   list?: TokenList
   onBack?: () => void
   onDismiss?: () => void
   handleCurrencySelect?: (currency: Currency) => void
+  CardComponent: (props: CardComponentProps) => JSX.Element // mod
 }
 
 export function ImportToken(props: ImportProps) {

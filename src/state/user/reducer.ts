@@ -162,9 +162,6 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateHideClosedPositions, (state, action) => {
       state.userHideClosedPositions = action.payload.userHideClosedPositions
     })
-    .addCase(updateHideClosedPositions, (state, action) => {
-      state.userHideClosedPositions = action.payload.userHideClosedPositions
-    })
     .addCase(addSerializedToken, (state, { payload: { serializedToken } }) => {
       if (!state.tokens) {
         state.tokens = {}

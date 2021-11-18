@@ -317,12 +317,6 @@ export function useDelegateCallback(): (delegatee: string | undefined) => undefi
   )
 }
 
-export enum VoteOption {
-  Against,
-  For,
-  Abstain,
-}
-
 export function useVoteCallback(): {
   voteCallback: (proposalId: string | undefined, voteOption: VoteOption) => undefined | Promise<string>
 } {

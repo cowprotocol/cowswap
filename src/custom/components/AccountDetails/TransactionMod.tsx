@@ -8,7 +8,6 @@ import { getEtherscanLink } from 'utils'
 import Loader from 'components/Loader'
 import { RowFixed } from 'components/Row'
 
-
 export const TransactionStatusText = styled.div`
   margin-right: 0.5rem;
   display: flex;

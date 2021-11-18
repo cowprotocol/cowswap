@@ -3,7 +3,7 @@ import { FeeAmount } from '@uniswap/v3-sdk'
 import { ButtonGray } from 'components/Button'
 import { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { Minus, Plus } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
 import { TYPE } from 'theme'
@@ -161,7 +161,7 @@ const StepCounter = ({
             value={localValue}
             fontSize="20px"
             disabled={locked}
-            onUserInput={(val) => {
+            onUserInput={(val: SetStateAction<string>) => {
               setLocalValue(val)
             }}
           />

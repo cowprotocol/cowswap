@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from 'api/gnosisProtocol'
-import { addPopup } from 'state/application/actions'
+import { addPopup } from 'state/application/reducer'
 import { OrderStatus } from './actions'
 import { CancellationSummary } from 'components/AccountDetails/Transaction/styled'
 

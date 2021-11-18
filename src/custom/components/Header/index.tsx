@@ -26,12 +26,12 @@ import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import { useModalOpen } from 'state/application/hooks'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import NetworkCard, { NetworkInfo } from './NetworkCard'
+import { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -224,7 +224,7 @@ export default function Header() {
           </HeaderLinks>
         </HeaderRow>
         <HeaderControls>
-          <NetworkCard />
+          {/* <NetworkCard /> */}
           <HeaderElement>
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (

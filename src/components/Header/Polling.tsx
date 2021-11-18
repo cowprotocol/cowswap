@@ -8,7 +8,7 @@ import { ExternalLink, TYPE } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 
-const StyledPolling = styled.div<{ warning: boolean }>`
+export const StyledPolling = styled.div<{ warning: boolean }>`
   position: fixed;
   display: flex;
   align-items: center;
@@ -22,14 +22,14 @@ const StyledPolling = styled.div<{ warning: boolean }>`
     display: none;
   `}
 `
-const StyledPollingNumber = styled(TYPE.small)<{ breathe: boolean; hovering: boolean }>`
+export const StyledPollingNumber = styled(TYPE.small)<{ breathe: boolean; hovering: boolean }>`
   transition: opacity 0.25s ease;
   opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
   :hover {
     opacity: 1;
   }
 `
-const StyledPollingDot = styled.div<{ warning: boolean }>`
+export const StyledPollingDot = styled.div<{ warning: boolean }>`
   width: 8px;
   height: 8px;
   min-height: 8px;

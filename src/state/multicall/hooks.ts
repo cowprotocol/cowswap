@@ -50,8 +50,6 @@ function useCallsData(
   const callResults = useAppSelector((state) => state.multicall.callResults)
   const dispatch = useAppDispatch()
 
-  console.log('called this')
-
   const serializedCallKeys: string = useMemo(
     () =>
       JSON.stringify(

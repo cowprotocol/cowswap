@@ -7,6 +7,7 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import { RowFixed } from 'components/Row'
 import { LightGreyCard } from 'components/Card'
 import { HashLink } from 'react-router-hash-link'
+// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { TagInfo /* , WrappedTokenInfo */ } from 'state/lists/wrappedTokenInfo'
 import { formatSmart } from 'utils/format'
