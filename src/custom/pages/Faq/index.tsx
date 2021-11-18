@@ -408,16 +408,38 @@ export default function Faq() {
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
           <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
-          <p>CowSwap uses offline signatures to offer gasless orders.</p>
-          <p>
-            Currently, Smart Contract (SC) wallets such as Gnosis Safe, Argent or Pillar are not supported because it
-            would require signing an on-chain transaction to place the order, making it no longer gasless. We are
-            working to make this a possibility and support will be added soon.
+          <p> 
+            CowSwap uses offchain signatures to offer gasless orders, additionally has support for smart contract
+            wallets by using some alternative signing method called{' '}
+            <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
           <p>
-            Nevertheless, even if your wallet is not an SC wallet, it might be unsupported in some cases. Not all
-            wallets implement the necessary signing methods from EIP712 standard. If that is the case for you, reach out
-            to your wallet developers and ask for it.
+            Smart Contract (SC) are supported by using pre-sign method, however for normal wallets (EOA) CowSwap
+            requires the wallet to support offchain-signing (EIP712 standard).
+          </p>
+          <p>
+            Some wallets have reported issues with this offchain-signing, so they disabled it. If that is the case for
+            your wallet, reach out to your wallet provider and ask for it to be implemented.
+          </p>
+           <h3 id="smart-contract-support">Are smart contract integrations supported?</h3>
+          <p>Yes! Any smart contract can trade in CowSwap by using the signing method called pre-sign.</p>
+          <p>
+            pre-sign is a protocol operation that can be invoked by any contract. The operation has a single parameter
+            that is the &quot;orderId&quot; which identifies the order that the smart contract is approving. Once the
+            smart contract pre-signs an order, it becomes automatically tradable, therefore solvers will start
+            considering the order for their settlement solutions.
+          </p>
+          <p>
+            In the future, the protocol could provide EIP712 support for off-chain signing also for smart contracts,
+            making gas-less trading possible also for smart contracts.
+          </p>
+
+          <h3 id="what-is-presign">What is pre-sign?</h3>
+          <p>
+            It&apos;s an alternative way of signing orders offered by the protocol. It&apos;s specially interesting for
+            smart contract integrations and smart contract wallets. See{' '}
+            <LinkScrollable href={'#smart-contract-support'}>smart contract support</LinkScrollable> for more
+            information.         
           </p>
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
           <p>
@@ -447,7 +469,7 @@ export default function Faq() {
             What interactions can I encounter when using CowSwap?
           </h3>
           <p>
-            <strong>Internal CowSwap Operations</strong>
+            <strong> CowSwap Operations</strong>
           </p>
           <div id="table-container">
             <table>
@@ -538,6 +560,42 @@ export default function Faq() {
               </p>
             </li>
           </ul>
+            
+          <p>
+            <strong>Smart contracts</strong>
+          </p>
+          <div id="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Signed tx (free / gasless)</th>
+                  <th>Ethereum tx (costs gas)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pre-sign</td>
+                  <td />
+                  <td>
+                    <span role="img" aria-label="pre-sign order in an ethereum tx and costs gas">
+                      ✅
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>
+              <p>
+                <strong>Pre-sign order</strong> <br />
+                Alternative signing method offered by the protocol to allow smart contract integration. See{' '}
+                <LinkScrollable href={'#smart-contract-support'}>smart contract support</LinkScrollable> for more
+                information.
+              </p>
+            </li>
+          </ul>            
         </Content>
       </Page>
 
@@ -614,7 +672,11 @@ export default function Faq() {
               sound.
             </li>
           </ol>
-
+          <p>
+            This workflow applies for normal ethereum accounts (EOA). For smart contracts, instead of the signing a
+            meta-tx you would need to do a <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
+          </p>
+          
           <h3 id="can-i-cancel-an-order">Can I cancel an order?</h3>
 
           <p>Yes! You can request to cancel any order while it is still pending.</p>
@@ -624,7 +686,12 @@ export default function Faq() {
             That is because when the offline order cancellation is received, a settlement solution may have already been
             prepared by one of the solvers and sent to the Ethereum network.
           </p>
-
+          <p>
+            Alternatively there is the so-called hard cancellations, which allow to cancel your order onchain. This is
+            not currently supported by CowSwap web interface, and you would need to pay for the gas of the on-chain
+            cancellation, but is available at protocol level.
+          </p>
+          
           <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
             Why does the UI dapp have a warning &ldquo;Fees exceed From amount&rdquo;?
           </h3>
