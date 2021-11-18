@@ -43,14 +43,14 @@ function _getClientOrThrow(chainId: number): SafeServiceClient {
   return client
 }
 
-export function getSafeWebUrl(chaindId: number, safeAddress: string): string | null {
+export function getSafeWebUrl(chaindId: number, safeAddress: string, isPending: boolean): string | null {
   const chainShortName = CHAIN_SHORT_NAME[chaindId]
 
   if (!chainShortName) {
     return null
   }
 
-  return `${SAFE_BASE_URL}/app/${chainShortName}:${safeAddress}/transactions/queue` // TODO: This will change soon in https://github.com/gnosis/safe-react/issues/970
+  return `${SAFE_BASE_URL}/app/${chainShortName}:${safeAddress}/transactions/${isPending ? 'queue' : 'history'}` // TODO: This will change soon in https://github.com/gnosis/safe-react/issues/970
 }
 
 export function getSafeTransaction(chainId: number, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {

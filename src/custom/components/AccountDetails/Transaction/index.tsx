@@ -93,8 +93,9 @@ function getActivityLinkUrl(params: {
       return getEtherscanLink(chainId, transactionHash, 'transaction')
     } else if (safeTransaction && safeTransaction) {
       // Its a safe transaction: Gnosis Safe Web link
-      const { safe } = safeTransaction
-      return getSafeWebUrl(chainId, safe) ?? undefined
+      const { safe, isExecuted } = safeTransaction
+      const isPending = !isExecuted
+      return getSafeWebUrl(chainId, safe, isPending) ?? undefined
     }
   } else if (order) {
     // Its an order: GP Explorer link
@@ -174,8 +175,8 @@ export default function Activity({ activity: activityData }: { activity: Activit
   const creationTimeFull = creationTimeEnhanced
     ? new Date(creationTimeEnhanced)
     : creationTimeOrder
-    ? new Date(Date.parse(creationTimeOrder))
-    : undefined
+      ? new Date(Date.parse(creationTimeOrder))
+      : undefined
 
   const timeFormatOptionHM: Intl.DateTimeFormatOptions = {
     timeStyle: 'short',
