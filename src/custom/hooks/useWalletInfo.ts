@@ -18,6 +18,7 @@ export interface ConnectedWalletInfo {
   chainId?: number
   active: boolean
   account?: string | null
+  library?: any
   activeNetwork: boolean // active default connection
   provider?: WalletProvider
   isSmartContractWallet: boolean
@@ -77,7 +78,7 @@ async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ w
 }
 
 export function useWalletInfo(): ConnectedWalletInfo {
-  const { active, account, connector, chainId } = useWeb3React()
+  const { active, account, connector, chainId, library } = useWeb3React()
   const web3Instance = useActiveWeb3Instance()
   const [walletName, setWalletName] = useState<string>()
   const [icon, setIcon] = useState<string>()
@@ -128,6 +129,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
     chainId,
     active,
     account,
+    library,
     activeNetwork: contextNetwork.active,
     provider,
     isSmartContractWallet,

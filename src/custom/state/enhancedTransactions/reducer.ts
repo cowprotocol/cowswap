@@ -5,6 +5,7 @@ import {
   checkedTransaction,
   finalizeTransaction,
   cancelTransaction,
+  rejectTransaction,
   replaceTransaction,
   updateSafeTransaction,
 } from 'state/enhancedTransactions/actions'
@@ -29,6 +30,7 @@ export interface EnhancedTransactionDetails {
   from: string
   summary?: string
   confirmedTime?: number
+  rejectedTime?: number
   receipt?: SerializableTransactionReceipt // Ethereum transaction receipt
 
   // Operations
@@ -114,6 +116,14 @@ export default createReducer(initialState, (builder) =>
       }
       const allTxs = transactions[chainId] ?? {}
       delete allTxs[hash]
+    })
+
+    .addCase(rejectTransaction, (transactions, { payload: { chainId, hash } }) => {
+      const tx = transactions[chainId]?.[hash]
+      if (!tx) {
+        return
+      }
+      tx.rejectedTime = now()
     })
 
     .addCase(replaceTransaction, (transactions, { payload: { chainId, oldHash, newHash } }) => {

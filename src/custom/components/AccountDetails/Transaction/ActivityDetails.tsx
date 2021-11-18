@@ -49,28 +49,41 @@ function GnosisSafeTxDetails(props: {
   activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
   const { chainId, activityDerivedState } = props
-  const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
+  const {
+    gnosisSafeInfo,
+    enhancedTransaction,
+    status,
+    isOrder,
+    order,
+    isExpired,
+    isCancelled,
+    gnosisSafeOldNonce,
+    gnosisSafeTransaction,
+  } = activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const gnosisSafeNonce = gnosisSafeInfo?.nonce
-  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
 
-  if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction || gnosisSafeNonce === undefined) {
+  if (
+    !gnosisSafeThreshold ||
+    !gnosisSafeInfo ||
+    !gnosisSafeTransaction ||
+    gnosisSafeNonce === undefined ||
+    gnosisSafeOldNonce === undefined
+  ) {
     return null
   }
 
   // The activity is executed Is tx mined or is the swap executed
   const isExecutedActivity = isOrder
     ? order?.fulfillmentTime !== undefined
-    : enhancedTransaction?.confirmedTime !== undefined
+    : enhancedTransaction?.confirmedTime !== undefined || enhancedTransaction?.rejectedTime !== undefined
 
   // Check if its in a state where we dont need more signatures. We do this, because this state comes from CowSwap API, which
   // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
   // this check to infer that we don't need to sign anything anymore
   const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING
 
-  const { confirmations, nonce, isExecuted } = safeTransaction
-
-  const nonceIsOld = gnosisSafeNonce > nonce
+  const { confirmations, nonce, isExecuted } = gnosisSafeTransaction
 
   const numConfirmations = confirmations?.length ?? 0
   const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
@@ -84,7 +97,7 @@ function GnosisSafeTxDetails(props: {
     signaturesMessage = <span>Executed</span>
   } else if (isCancelled) {
     signaturesMessage = <span>Cancelled order</span>
-  } else if (nonceIsOld) {
+  } else if (gnosisSafeOldNonce) {
     signaturesMessage = <span>Rejected</span>
   } else if (isExpired) {
     signaturesMessage = <span>Expired order</span>
@@ -142,9 +155,9 @@ function GnosisSafeTxDetails(props: {
       {/* View in: Gnosis Safe */}
       <GnosisSafeLink
         chainId={chainId}
-        safeTransaction={safeTransaction}
+        safeTransaction={gnosisSafeTransaction}
         gnosisSafeThreshold={gnosisSafeThreshold}
-        gnosisSafeNonce={gnosisSafeNonce}
+        gnosisSafeOldNonce={gnosisSafeOldNonce}
       />
     </TransactionInnerDetail>
   )

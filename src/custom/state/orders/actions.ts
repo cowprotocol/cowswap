@@ -116,6 +116,7 @@ export interface UpdatePresignGnosisSafeTxParams {
   orderId: OrderID
   chainId: ChainId
   safeTransaction: SafeMultisigTransactionResponse
+  isRejected?: boolean
 }
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams

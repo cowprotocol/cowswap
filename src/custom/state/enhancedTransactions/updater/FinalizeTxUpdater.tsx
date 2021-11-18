@@ -5,16 +5,18 @@
 import { useEffect, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
 import { updateBlockNumber } from 'state/application/actions'
 import { useAddPopup, useBlockNumber } from 'state/application/hooks'
-import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
+import { rejectTransaction, checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
 import { useAllTransactionsDetails } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
+import { GetSafeTransactionInfo, useGetSafeTransactionInfo } from '@src/custom/hooks/useGetSafeTransactionInfo'
+import { useWalletInfo } from 'hooks/useWalletInfo'
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { getSafeInfo } from 'api/gnosisSafe'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -43,8 +45,9 @@ interface CheckEthereumTransactions {
   chainId: number
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
+  gnosisSafeInfo?: SafeInfoResponse
   getReceipt: GetReceipt
-  getSafeInfo: GetSafeInfo
+  getSafeTransactionInfo: GetSafeTransactionInfo
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
 }
@@ -98,19 +101,20 @@ function finalizeEthereumTransaction(
 }
 
 function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {
-  const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch } = params
+  const { transactions, chainId, lastBlockNumber, gnosisSafeInfo, getReceipt, getSafeTransactionInfo, dispatch } =
+    params
 
   const promiseCancellations = transactions.map((transaction) => {
     const { hash, hashType, receipt } = transaction
 
     if (hashType === HashType.GNOSIS_SAFE_TX) {
       // Get safe info and receipt
-      const { promise: safeTransactionPromise, cancel } = getSafeInfo(hash)
+      const { promise: safeTransactionPromise, cancel } = getSafeTransactionInfo(hash)
 
       // Get safe info
       safeTransactionPromise
         .then(async (safeTransaction) => {
-          const { isExecuted, transactionHash } = safeTransaction
+          const { isExecuted, nonce, transactionHash } = safeTransaction
 
           // If the safe transaction is executed, but we don't have a tx receipt yet
           if (isExecuted && !receipt) {
@@ -132,6 +136,20 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
                   )
                 }
               })
+          } else if (gnosisSafeInfo && !receipt) {
+            const { nonce: safeNonce } = await getSafeInfo(chainId, gnosisSafeInfo.address)
+            const isOldNonce = safeNonce > nonce
+
+            if (isOldNonce) {
+              // If the transaction is not executed, but the nonce is bigger than the tx, it means it was rejected
+              console.log('[FinalizeTxUpdater] Safe transaction has been rejected. Tx: ', hash)
+              dispatch(
+                rejectTransaction({
+                  chainId,
+                  hash,
+                })
+              )
+            }
           }
 
           dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
@@ -170,13 +188,14 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 }
 
 export default function Updater(): null {
-  const { chainId, library, account } = useActiveWeb3React()
+  // const { chainId, library, account } = useActiveWeb3React()
+  const { chainId, library, account, gnosisSafeInfo } = useWalletInfo()
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''
 
   const dispatch = useAppDispatch()
   const getReceipt = useGetReceipt()
-  const getSafeInfo = useGetSafeInfo()
+  const getSafeTransactionInfo = useGetSafeTransactionInfo()
   const addPopup = useAddPopup()
 
   // Get, from the pending transaction, the ones that we should re-check
@@ -193,11 +212,12 @@ export default function Updater(): null {
     if (!chainId || !library || !lastBlockNumber) return
 
     const promiseCancellations = checkEthereumTransactions({
+      gnosisSafeInfo,
       transactions,
       chainId,
       lastBlockNumber,
       getReceipt,
-      getSafeInfo,
+      getSafeTransactionInfo,
       addPopup,
       dispatch,
     })
@@ -206,7 +226,17 @@ export default function Updater(): null {
       // Cancel all promises
       promiseCancellations.forEach((cancel) => cancel())
     }
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt, getSafeInfo])
+  }, [
+    chainId,
+    library,
+    transactions,
+    lastBlockNumber,
+    dispatch,
+    addPopup,
+    getReceipt,
+    getSafeTransactionInfo,
+    gnosisSafeInfo,
+  ])
 
   return null
 }

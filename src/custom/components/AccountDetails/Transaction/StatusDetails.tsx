@@ -19,17 +19,16 @@ export function GnosisSafeLink(props: {
   chainId: number
   safeTransaction?: SafeMultisigTransactionResponse
   gnosisSafeThreshold: number
-  gnosisSafeNonce: number
+  gnosisSafeOldNonce: boolean
 }): JSX.Element | null {
-  const { chainId, safeTransaction, gnosisSafeNonce } = props
+  const { chainId, safeTransaction, gnosisSafeOldNonce } = props
 
   if (!safeTransaction) {
     return null
   }
 
-  const { safe, isExecuted, nonce } = safeTransaction
-  const isOldNonce = gnosisSafeNonce > nonce
-  const isPending = !isExecuted && !isOldNonce
+  const { safe, isExecuted } = safeTransaction
+  const isPending = !isExecuted && !gnosisSafeOldNonce
   const safeUrl = getSafeWebUrl(chainId, safe, isPending)
 
   // Only show the link to the safe, if we have the "safeUrl"
@@ -49,6 +48,7 @@ function _getStateLabel({
   isPresignaturePending,
   isCancelled,
   enhancedTransaction,
+  isRejected,
 }: ActivityDerivedState) {
   if (isPending) {
     if (enhancedTransaction) {
@@ -64,6 +64,10 @@ function _getStateLabel({
 
   if (isConfirmed) {
     return 'Filled'
+  }
+
+  if (isRejected) {
+    return 'Rejected'
   }
 
   if (isExpired) {
@@ -101,6 +105,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isTransaction,
     isCancelled,
     isCancellable,
+    isRejected,
   } = activityDerivedState
 
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -121,6 +126,8 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           <SVG src={OrderCheckImage} description="Transaction Confirmed" />
         ) : isConfirmed ? (
           <SVG src={OrderCheckImage} description="Order Filled" />
+        ) : isRejected ? (
+          <SVG src={OrderCancelledImage} description="Rejected" />
         ) : isExpired && isTransaction ? (
           <SVG src={OrderCancelledImage} description="Transaction Failed" />
         ) : isExpired ? (

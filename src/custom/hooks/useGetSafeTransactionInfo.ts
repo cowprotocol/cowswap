@@ -7,12 +7,12 @@ import { RetryResult } from '../types'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
-export type GetSafeInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
+export type GetSafeTransactionInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
-export function useGetSafeInfo(): GetSafeInfo {
+export function useGetSafeTransactionInfo(): GetSafeTransactionInfo {
   const { chainId } = useActiveWeb3React()
 
-  const getSafeInfo = useCallback<GetSafeInfo>(
+  const getSafeTransactionInfo = useCallback<GetSafeTransactionInfo>(
     (hash) => {
       return retry(() => {
         if (chainId === undefined) {
@@ -25,5 +25,5 @@ export function useGetSafeInfo(): GetSafeInfo {
     [chainId]
   )
 
-  return getSafeInfo
+  return getSafeTransactionInfo
 }

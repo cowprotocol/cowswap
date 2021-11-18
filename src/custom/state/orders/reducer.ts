@@ -154,11 +154,15 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updatePresignGnosisSafeTx, (state, action) => {
       prefillState(state, action)
-      const { orderId, chainId, safeTransaction } = action.payload
+      const { orderId, chainId, safeTransaction, isRejected } = action.payload
 
       const orderObject = getOrderById(state, chainId, orderId)
       if (orderObject) {
         orderObject.order.presignGnosisSafeTx = safeTransaction
+
+        if (isRejected !== undefined) {
+          orderObject.order.status = OrderStatus.CANCELLED
+        }
       }
     })
     .addCase(removeOrder, (state, action) => {

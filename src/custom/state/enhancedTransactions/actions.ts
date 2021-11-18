@@ -28,6 +28,14 @@ export const checkedTransaction = createAction<{
   blockNumber: number
 }>('enhancedTransactions/checkedTransaction')
 
+/**
+ * Reject multisig transactions
+ */
+export const rejectTransaction = createAction<{
+  chainId: number
+  hash: string
+}>('enhancedTransactions/rejectTransaction')
+
 export const cancelTransaction = createAction<{
   chainId: number
   hash: string

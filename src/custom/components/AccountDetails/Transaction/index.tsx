@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-
 import { useActiveWeb3React } from 'hooks/web3'
 import { getEtherscanLink } from 'utils'
 import { RowFixed } from 'components/Row'
@@ -16,7 +15,7 @@ import { ActivityDetails } from './ActivityDetails'
 import { StatusDetails } from './StatusDetails'
 // import { StateIcon } from './StateIcon'
 import { Order } from 'state/orders/actions'
-import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { SafeInfoResponse, SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
@@ -68,6 +67,7 @@ export interface ActivityDerivedState {
   isPresignaturePending: boolean
   isUnfillable?: boolean
   isCancellable: boolean
+  isRejected: boolean
 
   // Possible activity types
   enhancedTransaction?: EnhancedTransactionDetails
@@ -75,6 +75,8 @@ export interface ActivityDerivedState {
 
   // Gnosis Safe
   gnosisSafeInfo?: SafeInfoResponse
+  gnosisSafeTransaction?: SafeMultisigTransactionResponse
+  gnosisSafeOldNonce?: boolean
 }
 
 function getActivityLinkUrl(params: {
@@ -122,9 +124,26 @@ function getActivityDerivedState(props: {
   const order = isOrder ? (activity as Order) : undefined
   const enhancedTransaction = isTransaction ? (activity as EnhancedTransactionDetails) : undefined
 
+  // Gnosis Safe
+  const gnosisSafeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
+  let gnosisSafeOldNonce: boolean | undefined
+  if (gnosisSafeTransaction && gnosisSafeInfo) {
+    const { nonce: txNonce } = gnosisSafeTransaction
+    const { nonce: safeNonce } = gnosisSafeInfo
+    gnosisSafeOldNonce = safeNonce > txNonce
+  }
+
   // Calculate some convenient status flags
-  const isPending = status === ActivityStatus.PENDING
-  const isCancellable = allowsOffchainSigning && isPending && isOrder
+  const isRejected = !!enhancedTransaction?.rejectedTime || gnosisSafeOldNonce === true
+  const isPending = status === ActivityStatus.PENDING && !isRejected
+  const isCancellable = allowsOffchainSigning && isPending && isOrder && !isRejected
+  const isPresignaturePending = status === ActivityStatus.PRESIGNATURE_PENDING && !isRejected
+  const isCancelling = status === ActivityStatus.CANCELLING && !isRejected
+
+  const isCancelled = status === ActivityStatus.CANCELLED
+  const isConfirmed = status === ActivityStatus.CONFIRMED
+  const isExpired = status === ActivityStatus.EXPIRED
+  const isUnfillable = isCancellable && (activity as Order).isUnfillable
 
   const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
 
@@ -139,13 +158,14 @@ function getActivityDerivedState(props: {
     isTransaction,
     isOrder,
     isPending,
-    isPresignaturePending: status === ActivityStatus.PRESIGNATURE_PENDING,
-    isConfirmed: status === ActivityStatus.CONFIRMED,
-    isExpired: status === ActivityStatus.EXPIRED,
-    isCancelling: status === ActivityStatus.CANCELLING,
-    isCancelled: status === ActivityStatus.CANCELLED,
+    isPresignaturePending,
+    isConfirmed,
+    isExpired,
+    isCancelling,
+    isCancelled,
     isCancellable,
-    isUnfillable: isCancellable && (activity as Order).isUnfillable,
+    isUnfillable,
+    isRejected,
 
     // Convenient casting
     order,
@@ -153,6 +173,8 @@ function getActivityDerivedState(props: {
 
     // Gnosis Safe
     gnosisSafeInfo,
+    gnosisSafeTransaction,
+    gnosisSafeOldNonce,
   }
 }
 
@@ -165,6 +187,7 @@ export default function Activity({ activity: activityData }: { activity: Activit
     () => getActivityDerivedState({ chainId, activityData, allowsOffchainSigning, gnosisSafeInfo }),
     [chainId, activityData, allowsOffchainSigning, gnosisSafeInfo]
   )
+  console.log('activityDerivedState', activityDerivedState)
 
   if (!activityDerivedState || !chainId) return null
   const { activityLinkUrl } = activityDerivedState

@@ -24,7 +24,8 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderID } from 'api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
-import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
+import { GetSafeTransactionInfo, useGetSafeTransactionInfo } from '@src/custom/hooks/useGetSafeTransactionInfo'
+import { getSafeInfo } from 'api/gnosisSafe'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -53,7 +54,7 @@ function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: Or
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
   allPendingOrders: Order[],
-  getSafeInfo: GetSafeInfo,
+  getSafeTransactionInfo: GetSafeTransactionInfo,
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
 ) {
   const getSafeTxPromises = allPendingOrders
@@ -64,13 +65,24 @@ async function _updatePresignGnosisSafeTx(
       const presignGnosisSafeTxHash = order.presignGnosisSafeTxHash as string
       console.log('[PendingOrdersUpdater] Get Gnosis Transaction info for tx:', presignGnosisSafeTxHash)
 
-      const { promise: safeTransactionPromise } = getSafeInfo(presignGnosisSafeTxHash)
+      const { promise: safeTransactionPromise } = getSafeTransactionInfo(presignGnosisSafeTxHash)
 
       // Get safe info
       return safeTransactionPromise
-        .then((safeTransaction) => {
+        .then(async (safeTransaction) => {
           console.log('[PendingOrdersUpdater] Update Gnosis Safe transaction info: ', safeTransaction)
-          updatePresignGnosisSafeTx({ orderId: order.id, chainId, safeTransaction })
+
+          // Get the current nonce of the safe. It's possible that the transaction has been rejected
+          const safeNonce = await getSafeInfo(chainId, safeTransaction.safe)
+            .then((info) => info.nonce)
+            .catch((error) => {
+              console.error('[PendingOrdersUpdater] Error getting nonce for Safe', error)
+              return undefined
+            })
+
+          const isRejected = safeNonce !== undefined ? safeNonce > safeTransaction.nonce : undefined
+
+          updatePresignGnosisSafeTx({ orderId: order.id, chainId, safeTransaction, isRejected })
         })
         .catch((error) => {
           if (!error.isCancelledError) {
@@ -96,7 +108,7 @@ interface UpdateOrdersParams {
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
-  getSafeInfo: GetSafeInfo
+  getSafeTransactionInfo: GetSafeTransactionInfo
 }
 
 async function _updateOrders({
@@ -110,7 +122,7 @@ async function _updateOrders({
   cancelOrdersBatch,
   presignOrders,
   updatePresignGnosisSafeTx,
-  getSafeInfo,
+  getSafeTransactionInfo,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -173,7 +185,7 @@ async function _updateOrders({
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)}
-  await _updatePresignGnosisSafeTx(chainId, orders, getSafeInfo, updatePresignGnosisSafeTx)
+  await _updatePresignGnosisSafeTx(chainId, orders, getSafeTransactionInfo, updatePresignGnosisSafeTx)
 }
 
 export function PendingOrdersUpdater(): null {
@@ -190,7 +202,7 @@ export function PendingOrdersUpdater(): null {
   const cancelOrdersBatch = useCancelOrdersBatch()
   const presignOrders = usePresignOrders()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
-  const getSafeInfo = useGetSafeInfo()
+  const getSafeTransactionInfo = useGetSafeTransactionInfo()
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string) => {
@@ -207,10 +219,17 @@ export function PendingOrdersUpdater(): null {
         cancelOrdersBatch,
         presignOrders,
         updatePresignGnosisSafeTx,
-        getSafeInfo,
+        getSafeTransactionInfo,
       })
     },
-    [cancelOrdersBatch, updatePresignGnosisSafeTx, expireOrdersBatch, fulfillOrdersBatch, presignOrders, getSafeInfo]
+    [
+      cancelOrdersBatch,
+      updatePresignGnosisSafeTx,
+      expireOrdersBatch,
+      fulfillOrdersBatch,
+      presignOrders,
+      getSafeTransactionInfo,
+    ]
   )
 
   useEffect(() => {
