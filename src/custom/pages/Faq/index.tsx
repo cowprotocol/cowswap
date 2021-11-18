@@ -408,7 +408,7 @@ export default function Faq() {
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
           <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
-          <p> 
+          <p>
             CowSwap uses offchain signatures to offer gasless orders, additionally has support for smart contract
             wallets by using some alternative signing method called{' '}
             <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
@@ -421,7 +421,7 @@ export default function Faq() {
             Some wallets have reported issues with this offchain-signing, so they disabled it. If that is the case for
             your wallet, reach out to your wallet provider and ask for it to be implemented.
           </p>
-           <h3 id="smart-contract-support">Are smart contract integrations supported?</h3>
+          <h3 id="smart-contract-support">Are smart contract integrations supported?</h3>
           <p>Yes! Any smart contract can trade in CowSwap by using the signing method called pre-sign.</p>
           <p>
             pre-sign is a protocol operation that can be invoked by any contract. The operation has a single parameter
@@ -439,7 +439,7 @@ export default function Faq() {
             It&apos;s an alternative way of signing orders offered by the protocol. It&apos;s specially interesting for
             smart contract integrations and smart contract wallets. See{' '}
             <LinkScrollable href={'#smart-contract-support'}>smart contract support</LinkScrollable> for more
-            information.         
+            information.
           </p>
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
           <p>
@@ -560,7 +560,7 @@ export default function Faq() {
               </p>
             </li>
           </ul>
-            
+
           <p>
             <strong>Smart contracts</strong>
           </p>
@@ -595,7 +595,7 @@ export default function Faq() {
                 information.
               </p>
             </li>
-          </ul>            
+          </ul>
         </Content>
       </Page>
 
@@ -676,7 +676,7 @@ export default function Faq() {
             This workflow applies for normal ethereum accounts (EOA). For smart contracts, instead of the signing a
             meta-tx you would need to do a <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
-          
+
           <h3 id="can-i-cancel-an-order">Can I cancel an order?</h3>
 
           <p>Yes! You can request to cancel any order while it is still pending.</p>
@@ -691,7 +691,7 @@ export default function Faq() {
             not currently supported by CowSwap web interface, and you would need to pay for the gas of the on-chain
             cancellation, but is available at protocol level.
           </p>
-          
+
           <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
             Why does the UI dapp have a warning &ldquo;Fees exceed From amount&rdquo;?
           </h3>
