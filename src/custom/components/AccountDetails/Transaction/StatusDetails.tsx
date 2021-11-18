@@ -19,15 +19,17 @@ export function GnosisSafeLink(props: {
   chainId: number
   safeTransaction?: SafeMultisigTransactionResponse
   gnosisSafeThreshold: number
+  gnosisSafeNonce: number
 }): JSX.Element | null {
-  const { chainId, safeTransaction } = props
+  const { chainId, safeTransaction, gnosisSafeNonce } = props
 
   if (!safeTransaction) {
     return null
   }
 
-  const { safe, isExecuted } = safeTransaction
-  const isPending = !isExecuted
+  const { safe, isExecuted, nonce } = safeTransaction
+  const isOldNonce = gnosisSafeNonce > nonce
+  const isPending = !isExecuted && !isOldNonce
   const safeUrl = getSafeWebUrl(chainId, safe, isPending)
 
   // Only show the link to the safe, if we have the "safeUrl"

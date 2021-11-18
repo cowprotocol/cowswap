@@ -51,9 +51,10 @@ function GnosisSafeTxDetails(props: {
   const { chainId, activityDerivedState } = props
   const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
+  const gnosisSafeNonce = gnosisSafeInfo?.nonce
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
 
-  if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
+  if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction || gnosisSafeNonce === undefined) {
     return null
   }
 
@@ -69,6 +70,8 @@ function GnosisSafeTxDetails(props: {
 
   const { confirmations, nonce, isExecuted } = safeTransaction
 
+  const nonceIsOld = gnosisSafeNonce > nonce
+
   const numConfirmations = confirmations?.length ?? 0
   const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
   const isPendingSignatures = pendingSignaturesCount > 0
@@ -81,6 +84,8 @@ function GnosisSafeTxDetails(props: {
     signaturesMessage = <span>Executed</span>
   } else if (isCancelled) {
     signaturesMessage = <span>Cancelled order</span>
+  } else if (nonceIsOld) {
+    signaturesMessage = <span>Rejected</span>
   } else if (isExpired) {
     signaturesMessage = <span>Expired order</span>
   } else if (alreadySigned) {
@@ -135,7 +140,12 @@ function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} gnosisSafeThreshold={gnosisSafeThreshold} />
+      <GnosisSafeLink
+        chainId={chainId}
+        safeTransaction={safeTransaction}
+        gnosisSafeThreshold={gnosisSafeThreshold}
+        gnosisSafeNonce={gnosisSafeNonce}
+      />
     </TransactionInnerDetail>
   )
 }

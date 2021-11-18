@@ -175,8 +175,8 @@ export default function Activity({ activity: activityData }: { activity: Activit
   const creationTimeFull = creationTimeEnhanced
     ? new Date(creationTimeEnhanced)
     : creationTimeOrder
-    ? new Date(Date.parse(creationTimeOrder))
-    : undefined
+      ? new Date(Date.parse(creationTimeOrder))
+      : undefined
 
   const timeFormatOptionHM: Intl.DateTimeFormatOptions = {
     timeStyle: 'short',
