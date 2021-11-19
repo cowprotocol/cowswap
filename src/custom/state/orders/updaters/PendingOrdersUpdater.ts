@@ -17,7 +17,6 @@ import {
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
-import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
@@ -25,6 +24,7 @@ import { OrderID } from 'api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
+import { useBlockNumber } from 'state/application/hooks'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -118,7 +118,12 @@ async function _updateOrders({
 
   // Exit early when there are no pending orders
   if (pending.length === 0) {
+    console.debug('[PendingOrdersUpdater] No orders to update')
     return
+  } else {
+    console.debug(
+      `[PendingOrdersUpdater] Update ${pending.length} orders for account ${account} and network ${chainId}`
+    )
   }
 
   // Iterate over pending orders fetching API data
@@ -178,12 +183,14 @@ async function _updateOrders({
 
 export function PendingOrdersUpdater(): null {
   const { chainId, account } = useActiveWeb3React()
+  const lastBlockNumber = useBlockNumber()
 
   const pending = usePendingOrders({ chainId })
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   const fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
@@ -198,30 +205,45 @@ export function PendingOrdersUpdater(): null {
         return []
       }
 
-      return _updateOrders({
-        account,
-        chainId,
-        orders: pendingRef.current,
-        fulfillOrdersBatch,
-        expireOrdersBatch,
-        cancelOrdersBatch,
-        presignOrders,
-        updatePresignGnosisSafeTx,
-        getSafeInfo,
-      })
+      if (!isUpdating.current) {
+        isUpdating.current = true
+        return _updateOrders({
+          account,
+          chainId,
+          orders: pendingRef.current,
+          fulfillOrdersBatch,
+          expireOrdersBatch,
+          cancelOrdersBatch,
+          presignOrders,
+          updatePresignGnosisSafeTx,
+          getSafeInfo,
+        }).finally(() => {
+          isUpdating.current = false
+        })
+      }
     },
-    [cancelOrdersBatch, updatePresignGnosisSafeTx, expireOrdersBatch, fulfillOrdersBatch, presignOrders, getSafeInfo]
+    [
+      cancelOrdersBatch,
+      updatePresignGnosisSafeTx,
+      expireOrdersBatch,
+      fulfillOrdersBatch,
+      presignOrders,
+      getSafeInfo,
+      isUpdating,
+    ]
   )
 
   useEffect(() => {
-    if (!chainId || !account) {
+    if (!chainId || !account || !lastBlockNumber) {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
-
-    return () => clearInterval(interval)
-  }, [account, chainId, updateOrders])
+    const startTime = Date.now()
+    console.debug(`[PendingOrdersUpdater] [Block = ${lastBlockNumber}] Updating orders.... `)
+    updateOrders(chainId, account).finally(() =>
+      console.debug(`[PendingOrdersUpdater] [Block = ${lastBlockNumber}] Updated orders in ${Date.now() - startTime}ms`)
+    )
+  }, [account, chainId, lastBlockNumber, updateOrders])
 
   return null
 }
