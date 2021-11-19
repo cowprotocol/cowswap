@@ -8,7 +8,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 
 **1. WHO WE ARE AND HOW TO CONTACT US**
 
-1.  CowSwap  is operated by GnosisDAO (”**we**” or “**us**”). We are an
+1.  CowSwap is operated by GnosisDAO (”**we**” or “**us**”). We are an
     Ethereum based organisation managed by community members. To contact
     us, please write to us via the
     GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
@@ -346,7 +346,7 @@ International Commercial Contracts hereby incorporated by reference.
 **19. THIRD PARTY BENEFICIARIES**
 
 1.  Clauses 4 to 21 also apply to the
-    benefit of the Affiliates and such benefit also encompasses  Protocol-related
+    benefit of the Affiliates and such benefit also encompasses Protocol-related
     matters.
 2.  Subject to 19.1, these Terms do not
     give rise to any third party rights, which may be enforced against
@@ -436,7 +436,7 @@ responsibility to recover, or assist to recover, any such tokens.
 SYSTEMS</span>
 
 Our Platform may in part be established on servers at data centre
-facilities of third party providers and on  distributed systems for
+facilities of third party providers and on distributed systems for
 storing and accessing data including IPFS. Where centralised services
 may be used, we may be required to transfer our Platform to different
 facilities, and may incur service interruption in connection with such
@@ -444,7 +444,7 @@ relocation. Data centre facilities are vulnerable to force majeure
 events or other failures. Third party providers may suffer breaches of
 security and others may obtain unauthorised access to our server data.
 Where content is stored via distributed systems, there may be
-interference in  content addressing, content linking, indexing and
+interference in content addressing, content linking, indexing and
 discovery. As techniques used to obtain unauthorised access change
 frequently and generally are not recognised until used against a target,
 it may not be possible to anticipate these techniques or to implement
