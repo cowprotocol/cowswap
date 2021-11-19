@@ -8,147 +8,147 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 
 **1. WHO WE ARE AND HOW TO CONTACT US**
 
-   1. CowSwap  is operated by GnosisDAO (”**we**” or “**us**”). We are an
-      Ethereum based organisation managed by community members. To contact
-      us, please write to us via the
-      GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
-   2. We use open source products and developer materials from Gnosis
-      Limited and affiliated persons and entities (“**Affiliates**”) as
-      well as other third parties to provide a Platform to Gnosis Protocol
-      version 2 (the “**Protocol**”). The provision of the Platform and
-      the Protocol is based solely on our independent actions.
+1.  CowSwap  is operated by GnosisDAO (”**we**” or “**us**”). We are an
+    Ethereum based organisation managed by community members. To contact
+    us, please write to us via the
+    GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
+2.  We use open source products and developer materials from Gnosis
+    Limited and affiliated persons and entities (“**Affiliates**”) as
+    well as other third parties to provide a Platform to Gnosis Protocol
+    version 2 (the “**Protocol**”). The provision of the Platform and
+    the Protocol is based solely on our independent actions.
 
 **2. WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS PROTOCOL**
 
-   1. We provide a graphical user interface (the “**Platform**”) to
-      facilitate you interacting with the Protocol.
-   2. The Protocol was developed by Gnosis Limited and is governed by
-      smart contracts that allow permissionless peer-to-peer trades
-      between users applying a batch auction mechanism and without the
-      need for intermediaries on Ethereum Mainnet, and Ethereum Virtual
-      Machine compatible validation mechanisms. We are not a custodian or
-      a counterparty to any transactions executed by you on the Protocol.
-      We do not support any other service, particularly we do not provide
-      any order matching, guaranteed prices, or similar exchange or
-      trading platform services.
+1.  We provide a graphical user interface (the “**Platform**”) to
+    facilitate you interacting with the Protocol.
+2.  The Protocol was developed by Gnosis Limited and is governed by
+    smart contracts that allow permissionless peer-to-peer trades
+    between users applying a batch auction mechanism and without the
+    need for intermediaries on Ethereum Mainnet, and Ethereum Virtual
+    Machine compatible validation mechanisms. We are not a custodian or
+    a counterparty to any transactions executed by you on the Protocol.
+    We do not support any other service, particularly we do not provide
+    any order matching, guaranteed prices, or similar exchange or
+    trading platform services.
 
 **3. BY USING OUR PLATFORM, YOU ACCEPT THESE** **TERMS**
 
-   1. These are the general terms and conditions ("**Terms**") that apply
-      to the use of our Platform and the Protocol.
-   2. By using our Platform, you confirm that you (1) accept and agree to
-      these Terms and that you agree
-      to comply with them. If you do not agree, you must not use our
-      Platform.
-   3. You are responsible for ensuring that all persons who access or use
-      our Platform through your device or internet connection are aware of
-      these Terms, and that they
-      comply with them.
-   4. We may amend these Terms at our
-      sole discretion. We regularly do so. Every time you wish to use our
-      Platform, please check these Terms
-      to ensure you understand the terms that apply at that time.
-   5. We may terminate or suspend your access to our Platform immediately,
-      without prior notice or liability, if you breach any clause of the
-      Terms. Upon termination of your access, your right to use the
-      Platform will immediately cease. Clauses 7 to 22 and any other term
-      intended so will survive any termination of these Terms.
-   6. You may have been recommended to the Platform by a third party. We
-      shall not be liable for any agreement or terms that may exist
-      between you and the respective third party.
+1.  These are the general terms and conditions ("**Terms**") that apply
+    to the use of our Platform and the Protocol.
+2.  By using our Platform, you confirm that you (1) accept and agree to
+    these Terms and that you agree
+    to comply with them. If you do not agree, you must not use our
+    Platform.
+3.  You are responsible for ensuring that all persons who access or use
+    our Platform through your device or internet connection are aware of
+    these Terms, and that they
+    comply with them.
+4.  We may amend these Terms at our
+    sole discretion. We regularly do so. Every time you wish to use our
+    Platform, please check these Terms
+    to ensure you understand the terms that apply at that time.
+5.  We may terminate or suspend your access to our Platform immediately,
+    without prior notice or liability, if you breach any clause of the
+    Terms. Upon termination of your access, your right to use the
+    Platform will immediately cease. Clauses 7 to 22 and any other term
+    intended so will survive any termination of these Terms.
+6.  You may have been recommended to the Platform by a third party. We
+    shall not be liable for any agreement or terms that may exist
+    between you and the respective third party.
 
 **4. WHAT YOU REQUIRE TO USE OUR PLATFORM**
 
-   1. Users may use our Platform to interact with the Protocol and buy or sell
-      ERC 20 tokens by submitting orders into a batch auction running on the
-      Protocol.
+1.  Users may use our Platform to interact with the Protocol and buy or sell
+    ERC 20 tokens by submitting orders into a batch auction running on the
+    Protocol.
 
-   2. A detailed step-by-step guide on how to use the Platform may be found <a href="/#/faq#what-is-cowswap" target="_blank" rel="noopener nofollow">in the “FAQ” section on the Platform</a>.
+2.  A detailed step-by-step guide on how to use the Platform may be found <a href="/#/faq#what-is-cowswap" target="_blank" rel="noopener nofollow">in the “FAQ” section on the Platform</a>.
 
-   3. To use the Platform you require:
-      1. A wallet compatible with the Ethereum Blockchain or an Ethereum
-         Virtual Machine compatible validation mechanism, depending on which
-         network you interact with the Protocol. We currently only support
-         MetaMask and WalletConnect compatible wallets, and do not yet
-         support any smart contract wallet. We have not tested compatibility
-         with any other wallet.
-      2. An ERC 20 token to trade
-      3. Depending on whether you interact with the Protocol on Ethereum
-         mainnet or an Ethereum Virtual Machine compatible validation
-         mechanism, sufficient ETH or the networks native crypto asset in
-         your Wallet, respectively, to pay for transactions fees, which are
-         incurred through the Protocol on Ethereum or the Ethereum Virtual
-         Machine compatible validation mechanism.
+3.  To use the Platform you require:
+    1. A wallet compatible with the Ethereum Blockchain or an Ethereum
+       Virtual Machine compatible validation mechanism, depending on which
+       network you interact with the Protocol. We currently only support
+       MetaMask and WalletConnect compatible wallets, and do not yet
+       support any smart contract wallet. We have not tested compatibility
+       with any other wallet.
+    2. An ERC 20 token to trade
+    3. Depending on whether you interact with the Protocol on Ethereum
+       mainnet or an Ethereum Virtual Machine compatible validation
+       mechanism, sufficient ETH or the networks native crypto asset in
+       your Wallet, respectively, to pay for transactions fees, which are
+       incurred through the Protocol on Ethereum or the Ethereum Virtual
+       Machine compatible validation mechanism.
 
 **5. FEES**
 
-   Cowswap does not levy any fees on users of the Platform, however the
-   user incurs a fee on the Protocol level, which is shown to the user on
-   the Cowswap interface when the user places their trade.
+Cowswap does not levy any fees on users of the Platform, however the
+user incurs a fee on the Protocol level, which is shown to the user on
+the Cowswap interface when the user places their trade.
 
 **6. WE MAY MAKE CHANGES TO OR SUSPEND OR WITHDRAW OUR PLATFORM**
 
-   1. We may update and change our Platform from time to time. Our Platform is
-      currently made available free of charge. We do not guarantee that our
-      Platform will always be available or be uninterrupted or be free of
-      charge. We may suspend or withdraw or restrict the availability of all
-      or any part of our Platform for business, operational or regulatory
-      reasons at 1-day’s notice or, in case of Force Majeure in accordance
-      with clause 6.2, at no notice.
+1.  We may update and change our Platform from time to time. Our Platform is
+    currently made available free of charge. We do not guarantee that our
+    Platform will always be available or be uninterrupted or be free of
+    charge. We may suspend or withdraw or restrict the availability of all
+    or any part of our Platform for business, operational or regulatory
+    reasons at 1-day’s notice or, in case of Force Majeure in accordance
+    with clause 6.2, at no notice.
 
-   2. Force Majeure shall mean any event, circumstance or cause beyond our
-      reasonable control, which makes the provision of our Platform impossible
-      or onerous, including, without limitation:
+2.  Force Majeure shall mean any event, circumstance or cause beyond our
+    reasonable control, which makes the provision of our Platform impossible
+    or onerous, including, without limitation:
 
-      1. acts of God, flood, storm, drought, earthquake or other natural
-         disaster;
-      2. epidemic or pandemic;
-      3. terrorist attack, civil war, civil commotion or riots, war, threat
-         of or preparation for war, armed conflict, imposition of sanctions,
-         embargo, or breaking off of diplomatic relations;
-      4. nuclear, chemical or biological contamination;
-      5. any law or any action taken by a government or public authority,
-         including without limitation imposing a prohibition, or failing to
-         grant a necessary licence or consent;
-      6. collapse of buildings, breakdown of plant or machinery, fire,
-         explosion or accident; and
-      7. strike, industrial action or lockout.
+    1. acts of God, flood, storm, drought, earthquake or other natural
+       disaster;
+    2. epidemic or pandemic;
+    3. terrorist attack, civil war, civil commotion or riots, war, threat
+       of or preparation for war, armed conflict, imposition of sanctions,
+       embargo, or breaking off of diplomatic relations;
+    4. nuclear, chemical or biological contamination;
+    5. any law or any action taken by a government or public authority,
+       including without limitation imposing a prohibition, or failing to
+       grant a necessary licence or consent;
+    6. collapse of buildings, breakdown of plant or machinery, fire,
+       explosion or accident; and
+    7. strike, industrial action or lockout.
 
-   3. You are also responsible for ensuring that all persons who access our
-      Platform through your internet connection are aware of these Terms and
-      that they comply with them.
+3.  You are also responsible for ensuring that all persons who access our
+    Platform through your internet connection are aware of these Terms and
+    that they comply with them.
 
 **7. YOU ARE RESPONSIBLE TO SECURE YOUR CRYPTOGRAPHIC ASSETS, WE DO NOT TAKE CUSTODY**
 
-   1. You must control the wallet you use in connection with our
-      Platform.
-   2. You are responsible for implementing all appropriate measures for
-      securing the wallet you use for the Platform, including any private
-      key(s), seed words or other credentials necessary to access such
-      storage mechanism(s). By using our Platform, we do not gain custody
-      of any of your private keys.
-   3. We shall not be responsible for any security measures relating to
-      the wallet you use for the Platform and exclude (to the fullest
-      extent permitted under applicable law) any and all liability for any
-      security breaches or other acts or omissions, which result in your
-      loss of access or custody of any cryptographic assets stored
-      thereon.
+1.  You must control the wallet you use in connection with our
+    Platform.
+2.  You are responsible for implementing all appropriate measures for
+    securing the wallet you use for the Platform, including any private
+    key(s), seed words or other credentials necessary to access such
+    storage mechanism(s). By using our Platform, we do not gain custody
+    of any of your private keys.
+3.  We shall not be responsible for any security measures relating to
+    the wallet you use for the Platform and exclude (to the fullest
+    extent permitted under applicable law) any and all liability for any
+    security breaches or other acts or omissions, which result in your
+    loss of access or custody of any cryptographic assets stored
+    thereon.
 
 **8. YOU ARE RESPONSIBLE FOR AND DETERMINE YOUR TAX LIABILITIES**
 
-   You are solely responsible to determine if your use of the Platform has
-   tax implications for you. By using the Platform you agree not to hold us
-   liable for any tax liability you incur arising out of or associated with
-   your usage of the Platform or any other action or transaction related
-   thereto.
+You are solely responsible to determine if your use of the Platform has
+tax implications for you. By using the Platform you agree not to hold us
+liable for any tax liability you incur arising out of or associated with
+your usage of the Platform or any other action or transaction related
+thereto.
 
 **9. INFORMATION ON THE PLATFORM ARE NOT ADVICE**
 
-   None of the information available on our Platform, or made otherwise
-   available to you in relation to its use, constitutes any legal, tax,
-   financial or other advice. When in doubt as to the action you should
-   take, you should consult your legal, financial, tax or other
-   professional advisors.
+None of the information available on our Platform, or made otherwise
+available to you in relation to its use, constitutes any legal, tax,
+financial or other advice. When in doubt as to the action you should
+take, you should consult your legal, financial, tax or other
+professional advisors.
 
 **10. OUR INTELLECTUAL PROPERTY RIGHTS ARE RESERVED**
 
