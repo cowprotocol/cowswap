@@ -31,6 +31,7 @@ const SideBar = styled.div`
   box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%);
   animation: slideIn 0.3s cubic-bezier(0.87, 0, 0.13, 1);
   background: ${({ theme }) => theme.card.background2};
+  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`    
     width: 100%;
