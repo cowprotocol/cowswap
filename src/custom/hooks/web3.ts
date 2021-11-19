@@ -24,6 +24,31 @@ export function useEagerConnect() {
     }
   }, [connector, active])
 
+  const connectInjected = useCallback(() => {
+    // check if the our application is authorized/connected with Metamask
+    injected.isAuthorized().then((isAuthorized) => {
+      if (isAuthorized) {
+        activate(injected, undefined, true).catch(() => {
+          setTried(true)
+        })
+      } else {
+        if (isMobile && window.ethereum) {
+          activate(injected, undefined, true).catch(() => {
+            setTried(true)
+          })
+        } else {
+          setTried(true)
+        }
+      }
+    })
+  }, [activate, setTried])
+
+  const connectWalletConnect = useCallback(() => {
+    activate(walletconnect, undefined, true).catch(() => {
+      setTried(true)
+    })
+  }, [activate, setTried])
+
   useEffect(() => {
     if (!active) {
       const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
@@ -31,35 +56,16 @@ export function useEagerConnect() {
       // if there is no last saved provider set tried state to true
       if (!latestProvider) {
         // Try to auto-connect to the injected wallet
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
+        connectInjected()
       } else if (latestProvider === WalletProvider.INJECTED) {
-        // check if the last saved provider is Metamask
-        // check if the our application is authorized/connected with Metamask
-        injected.isAuthorized().then((isAuthorized) => {
-          if (isAuthorized) {
-            activate(injected, undefined, true).catch(() => {
-              setTried(true)
-            })
-          } else {
-            if (isMobile && window.ethereum) {
-              activate(injected, undefined, true).catch(() => {
-                setTried(true)
-              })
-            } else {
-              setTried(true)
-            }
-          }
-        })
-        // check if the last saved provider is WalletConnect
+        // MM is last provider
+        connectInjected()
       } else if (latestProvider === WalletProvider.WALLET_CONNECT) {
-        activate(walletconnect, undefined, true).catch(() => {
-          setTried(true)
-        })
+        // WC is last provider
+        connectWalletConnect()
       }
     }
-  }, [activate, active, connector]) // intentionally only running on mount (make sure it's only mounted once :))
+  }, [connectInjected, connectWalletConnect, active]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
