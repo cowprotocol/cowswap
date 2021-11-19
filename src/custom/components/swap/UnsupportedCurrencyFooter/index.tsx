@@ -1,6 +1,10 @@
 import { HashLink } from 'react-router-hash-link'
-import UnsupportedCurrencyFooterMod, { UnsupportedCurrencyFooterParams } from './UnsupportedCurrencyFooterMod'
+import UnsupportedCurrencyFooterMod, {
+  UnsupportedCurrencyFooterParams,
+  DetailsFooter,
+} from './UnsupportedCurrencyFooterMod'
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
+import styled from 'styled-components/macro'
 
 const DEFAULT_DETAILS_TEXT = (
   <div>
@@ -18,6 +22,17 @@ type Props = Omit<UnsupportedCurrencyFooterParams, 'currencies'> & {
   currencies?: UnsupportedCurrencyFooterParams['currencies']
 }
 
+const Wrapper = styled.div`
+  position: relative;
+
+  ${DetailsFooter} {
+    margin: 1px auto 0;
+    max-width: calc(100% - 38px);
+    padding: 20px 24px 24px;
+    border-top: ${({ theme }) => theme.appBody.border};
+  }
+`
+
 export default function UnsupportedCurrencyFooter({
   detailsText = DEFAULT_DETAILS_TEXT,
   detailsTitle = DEFAULT_DETAILS_TITLE,
@@ -26,12 +41,14 @@ export default function UnsupportedCurrencyFooter({
   ...props
 }: Props) {
   return (
-    <UnsupportedCurrencyFooterMod
-      {...props}
-      detailsText={detailsText}
-      detailsTitle={detailsTitle}
-      showDetailsText={showDetailsText}
-      currencies={currencies}
-    />
+    <Wrapper>
+      <UnsupportedCurrencyFooterMod
+        {...props}
+        detailsText={detailsText}
+        detailsTitle={detailsTitle}
+        showDetailsText={showDetailsText}
+        currencies={currencies}
+      />
+    </Wrapper>
   )
 }
