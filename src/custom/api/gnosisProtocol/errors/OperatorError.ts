@@ -6,7 +6,9 @@ export interface ApiErrorObject {
 }
 
 // Conforms to backend API
-// https://github.com/gnosis/gp-v2-services/blob/0bd5f7743bebaa5acd3be13e35ede2326a096f14/orderbook/openapi.yml#L562
+// https://github.com/gnosis/gp-v2-services/blob/d932e11c9a2125fdba239530be7684799f694909/crates/orderbook/openapi.yml#L801
+// and
+// https://github.com/gnosis/gp-v2-services/blob/d932e11c9a2125fdba239530be7684799f694909/crates/orderbook/openapi.yml#L740
 export enum ApiErrorCodes {
   DuplicateOrder = 'DuplicateOrder',
   InvalidSignature = 'InvalidSignature',
@@ -14,13 +16,16 @@ export enum ApiErrorCodes {
   InsufficientValidTo = 'InsufficientValidTo',
   InsufficientFunds = 'InsufficientFunds',
   InsufficientFee = 'InsufficientFee',
-  UnsupportedToken = 'UnsupportedToken',
   WrongOwner = 'WrongOwner',
   NotFound = 'NotFound',
   OrderNotFound = 'OrderNotFound',
   AlreadyCancelled = 'AlreadyCancelled',
   OrderFullyExecuted = 'OrderFullyExecuted',
   OrderExpired = 'OrderExpired',
+  NoLiquidity = 'NoLiquidity',
+  UnsupportedToken = 'UnsupportedToken',
+  AmountIsZero = 'AmountIsZero',
+  SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
@@ -33,13 +38,16 @@ export enum ApiErrorCodeDetails {
   MissingOrderData = 'The order has missing information',
   InsufficientValidTo = 'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
   InsufficientFunds = "The account doesn't have enough funds",
-  UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
   NotFound = 'Token pair selected has insufficient liquidity',
   OrderNotFound = 'The order you are trying to cancel does not exist',
   AlreadyCancelled = 'Order is already cancelled',
   OrderFullyExecuted = 'Order is already filled',
   OrderExpired = 'Order is expired',
+  NoLiquidity = 'Token pair selected has insufficient liquidity',
+  UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
+  AmountIsZero = 'Amount is zero',
+  SellAmountDoesNotCoverFee = 'Sell amount does not sufficiently cover the current fee',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network',

@@ -26,10 +26,18 @@ export enum GpQuoteErrorDetails {
 export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErrorObject {
   switch (error?.errorType) {
     case ApiErrorCodes.NotFound:
+    case ApiErrorCodes.NoLiquidity:
       return {
         errorType: GpQuoteErrorCodes.InsufficientLiquidity,
         description: GpQuoteErrorDetails.InsufficientLiquidity,
       }
+
+    case ApiErrorCodes.SellAmountDoesNotCoverFee:
+      return {
+        errorType: GpQuoteErrorCodes.FeeExceedsFrom,
+        description: GpQuoteErrorDetails.FeeExceedsFrom,
+      }
+
     case ApiErrorCodes.UnsupportedToken:
       return {
         errorType: GpQuoteErrorCodes.UnsupportedToken,
