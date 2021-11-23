@@ -167,12 +167,12 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
 
     const isReceiptConfirmed =
       tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+    const isCancelTx = tx?.replacementType === 'cancel'
     isPending = !tx.receipt
     isPresignaturePending = false
     isConfirmed = !isPending && isReceiptConfirmed
-    // TODO: can't tell when it's cancelled from the network yet
-    isCancelling = false
-    isCancelled = false
+    isCancelling = isCancelTx && isPending
+    isCancelled = isCancelTx && !isPending && isReceiptConfirmed
 
     activity = tx
     type = ActivityType.TX
@@ -191,10 +191,10 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     status = ActivityStatus.PENDING
   } else if (isPresignaturePending) {
     status = ActivityStatus.PRESIGNATURE_PENDING
-  } else if (isConfirmed) {
-    status = ActivityStatus.CONFIRMED
   } else if (isCancelled) {
     status = ActivityStatus.CANCELLED
+  } else if (isConfirmed) {
+    status = ActivityStatus.CONFIRMED
   } else {
     status = ActivityStatus.EXPIRED
   }
