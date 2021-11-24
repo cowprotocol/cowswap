@@ -105,3 +105,6 @@ export const FEE_SIZE_THRESHOLD = new Fraction(10, 100) // 30%
 
 // default value provided as userAddress to Paraswap API if the user wallet is not connected
 export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
+
+// last wallet provider key used in local storage
+export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
