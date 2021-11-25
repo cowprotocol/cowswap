@@ -14,6 +14,7 @@ import { SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
+import { WALLET_CONNECT_STORAGE_KEY } from 'constants/misc'
 import {
   // ExternalLink,
   TYPE,
@@ -211,13 +212,21 @@ export default function WalletModal({
     }
 
     connector &&
-      activate(connector, undefined, true).catch((error) => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector) // a little janky...can't use setError because the connector isn't set
-        } else {
-          setPendingError(true)
-        }
-      })
+      activate(connector, undefined, true)
+        .catch((error) => {
+          if (error instanceof UnsupportedChainIdError) {
+            activate(connector) // a little janky...can't use setError because the connector isn't set
+          } else {
+            setPendingError(true)
+          }
+        })
+        .then(() => {
+          const tmpWCdata = localStorage.getItem(WALLET_CONNECT_STORAGE_KEY)
+
+          if (tmpWCdata) {
+            setTimeout(() => localStorage.setItem(WALLET_CONNECT_STORAGE_KEY, tmpWCdata), 1500)
+          }
+        })
   }
 
   // close wallet modal if fortmatic modal is active
