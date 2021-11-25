@@ -1,1 +1,1 @@
-**IMPORTANT**: If you are getting a message about a CowSwap token sale - **THIS IS A SCAM!** For more info click [here](https://discord.com/channels/869166959739170836/869948218388119584/911951973547393126)
+**IMPORTANT**: xDAI might have low liquidity for some trading pairs, and the slippage indicator won't always warn you. Please, double check the amount received matches your expectations.
