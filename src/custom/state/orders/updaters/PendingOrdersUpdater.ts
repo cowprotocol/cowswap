@@ -118,8 +118,13 @@ async function _updateOrders({
 
   // Exit early when there are no pending orders
   if (pending.length === 0) {
+    // console.debug('[PendingOrdersUpdater] No orders to update')
     return
-  }
+  } /* else {
+    console.debug(
+      `[PendingOrdersUpdater] Update ${pending.length} orders for account ${account} and network ${chainId}`
+    )
+  }*/
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
@@ -180,6 +185,7 @@ export function PendingOrdersUpdater(): null {
   const { chainId, account } = useActiveWeb3React()
 
   const pending = usePendingOrders({ chainId })
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -198,17 +204,25 @@ export function PendingOrdersUpdater(): null {
         return []
       }
 
-      return _updateOrders({
-        account,
-        chainId,
-        orders: pendingRef.current,
-        fulfillOrdersBatch,
-        expireOrdersBatch,
-        cancelOrdersBatch,
-        presignOrders,
-        updatePresignGnosisSafeTx,
-        getSafeInfo,
-      })
+      if (!isUpdating.current) {
+        isUpdating.current = true
+        // const startTime = Date.now()
+        // console.debug('[PendingOrdersUpdater] Updating orders....')
+        return _updateOrders({
+          account,
+          chainId,
+          orders: pendingRef.current,
+          fulfillOrdersBatch,
+          expireOrdersBatch,
+          cancelOrdersBatch,
+          presignOrders,
+          updatePresignGnosisSafeTx,
+          getSafeInfo,
+        }).finally(() => {
+          isUpdating.current = false
+          // console.debug(`[PendingOrdersUpdater] Updated orders in ${Date.now() - startTime}ms`)
+        })
+      }
     },
     [cancelOrdersBatch, updatePresignGnosisSafeTx, expireOrdersBatch, fulfillOrdersBatch, presignOrders, getSafeInfo]
   )
