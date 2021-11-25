@@ -2,12 +2,10 @@ import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { useEffect, useState, useCallback } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected, walletconnect, getProviderType, WalletProvider } from 'connectors'
+import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 // exports from the original file
 export { useActiveWeb3React, useInactiveListener } from '@src/hooks/web3'
-
-// last wallet provider key used in local storage
-export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
 
 export function useEagerConnect() {
   const { activate, active, connector } = useWeb3ReactCore()

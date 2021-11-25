@@ -9,7 +9,7 @@ import { getExplorerLabel, shortenAddress } from 'utils'
 import Copy from 'components/Copy'
 import { Trans } from '@lingui/macro'
 
-import { SUPPORTED_WALLETS } from 'constants/index'
+import { SUPPORTED_WALLETS, STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { getEtherscanLink } from 'utils'
 import { injected, walletconnect, walletlink, fortmatic, portis, WalletProvider } from 'connectors'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
@@ -173,6 +173,7 @@ export default function AccountDetails({
 
   const handleDisconnectClick = () => {
     ;(connector as any).close()
+    localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
     closeOrdersPanel()
     toggleWalletModal()
   }

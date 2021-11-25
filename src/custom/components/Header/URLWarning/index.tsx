@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { PRODUCTION_URL } from 'constants/index'
+import { BARN_URL, PRODUCTION_URL } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
@@ -8,6 +8,7 @@ import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
 import { useActiveWeb3React } from '@src/hooks/web3'
 import { ChainId } from '@uniswap/sdk'
+import { isBarn } from 'utils/environments'
 
 export * from './URLWarningMod'
 
@@ -54,6 +55,8 @@ function getAnnouncementUrl(chainId: number) {
   return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}/announcements-${chainId}.md`
 }
 
+const WARNING_URL = isBarn ? BARN_URL : PRODUCTION_URL
+
 export default function URLWarning() {
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
 
@@ -81,7 +84,7 @@ export default function URLWarning() {
 
   return (
     <Wrapper>
-      <URLWarningUni url={PRODUCTION_URL} announcement={announcement} />
+      <URLWarningUni url={WARNING_URL} announcement={announcement} />
     </Wrapper>
   )
 }
