@@ -12,7 +12,7 @@ describe('Swap (custom)', () => {
 
     // cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').should('be.visible')
     // cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').click({ force: true })
-    cy.visit('https://cowswap.exchange')
+    cy.visit('/swap')
     // search by name and select input
     cy.get('#swap-currency-output .open-currency-select-button').click()
     cy.get('#token-search-input').click().type('DAI')
