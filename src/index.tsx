@@ -22,7 +22,12 @@ import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import UserUpdater from 'state/user/updater'
 import FeesUpdater from 'state/price/updater'
 import GasUpdater from 'state/gas/updater'
-import { CancelledOrdersUpdater, PendingOrdersUpdater, UnfillableOrdersUpdater } from 'state/orders/updaters'
+import {
+  ApiOrdersUpdater,
+  CancelledOrdersUpdater,
+  PendingOrdersUpdater,
+  UnfillableOrdersUpdater,
+} from 'state/orders/updaters'
 // import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from 'utils/getLibrary'
@@ -73,6 +78,7 @@ function Updaters() {
       <CancelledOrdersUpdater />
       <FeesUpdater />
       <UnfillableOrdersUpdater />
+      <ApiOrdersUpdater />
       <GasUpdater />
       <LogsUpdater />
     </>

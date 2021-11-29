@@ -68,7 +68,7 @@ const API_NAME = 'Gnosis Protocol'
 const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
 /**
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
-   where orderDigest = keccak256(orderStruct). bytes32.
+ * where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
 export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'presignaturePending' | 'open'
@@ -95,6 +95,7 @@ export interface OrderMetaData {
   signature: string
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
+  receiver: string
 }
 
 export interface TradeMetaData {
@@ -326,6 +327,26 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
     }
   } catch (error) {
     console.error('Error getting order information:', error)
+    throw new OperatorError(UNHANDLED_ORDER_ERROR)
+  }
+}
+
+export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<OrderMetaData[]> {
+  console.log(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
+
+  const queryString = stringify({ limit, offset }, { addQueryPrefix: true })
+
+  try {
+    const response = await _get(chainId, `/account/${owner}/orders/${queryString}`)
+
+    if (!response.ok) {
+      const errorResponse: ApiErrorObject = await response.json()
+      throw new OperatorError(errorResponse)
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    console.error('Error getting orders information:', error)
     throw new OperatorError(UNHANDLED_ORDER_ERROR)
   }
 }
