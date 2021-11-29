@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components/macro'
 import Page, { GdocsListStyle, Title } from 'components/Page'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
+import { ExternalLink } from 'theme'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -29,6 +30,12 @@ export const Wrapper = styled(Page)`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 30px;
     `}
+  }
+`
+
+export const ExtLink = styled(ExternalLink)`
+  &:hover {
+    color: ${({ theme }) => theme.text1};
   }
 `
 

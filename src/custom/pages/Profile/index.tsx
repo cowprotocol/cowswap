@@ -11,6 +11,7 @@ import {
   ItemTitle,
   ChildWrapper,
   Loader,
+  ExtLink,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -24,6 +25,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -96,6 +98,15 @@ export default function Profile() {
                 '-'
               )}
             </Txt>
+          </ChildWrapper>
+          <ChildWrapper>
+            {account ? (
+              <ExtLink href={getExplorerLink(chainId || 1, account, ExplorerDataType.ORDERS)}>
+                <Txt fs={16}>View all orders ↗</Txt>
+              </ExtLink>
+            ) : (
+              '-'
+            )}
           </ChildWrapper>
           <GridWrap horizontal>
             <ChildWrapper>
