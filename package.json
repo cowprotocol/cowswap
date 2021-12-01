@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.5.1",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -74,7 +74,7 @@
     "@web3-react/fortmatic-connector": "^6.1.6",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/portis-connector": "^6.1.9",
-    "@web3-react/walletconnect-connector": "^6.2.8",
+    "@web3-react/walletconnect-connector": "6.2.4",
     "@web3-react/walletlink-connector": "^6.2.5",
     "ajv": "^6.12.3",
     "cids": "^1.0.0",
@@ -128,6 +128,7 @@
     "start-server-and-test": "^1.11.0",
     "styled-components": "^5.3.0",
     "styled-system": "^5.1.5",
+    "swr": "^1.0.1",
     "typechain": "^5.0.0",
     "typescript": "^4.4.2",
     "ua-parser-js": "^0.7.28",

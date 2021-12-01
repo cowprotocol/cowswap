@@ -140,7 +140,7 @@ async function _updateOrders({
       popupData && acc[status].push(popupData)
       return acc
     },
-    { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [] }
+    { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] }
   )
 
   if (presigned.length > 0) {

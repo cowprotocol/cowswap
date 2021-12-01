@@ -1,4 +1,4 @@
-import { Order, OrderFulfillmentData } from 'state/orders/actions'
+import { Order, OrderFulfillmentData, OrderKind, OrderStatus } from 'state/orders/actions'
 import { getOrder, OrderID, OrderMetaData } from 'api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSmart } from 'utils/format'
@@ -8,7 +8,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
-function _computeFulfilledSummary({
+export function computeOrderSummary({
   orderFromStore,
   orderFromApi,
 }: {
@@ -21,18 +21,22 @@ function _computeFulfilledSummary({
   // if we can find the order from the API
   // and our specific order exists in our state, let's use that
   if (orderFromApi) {
-    const { buyToken, sellToken, executedBuyAmount, executedSellAmount } = orderFromApi
+    const { buyToken, sellToken, sellAmount, buyAmount, executedBuyAmount, executedSellAmount } = orderFromApi
 
     if (orderFromStore) {
-      const { inputToken, outputToken } = orderFromStore
-      // don't show amounts in atoms
-      const inputAmount = stringToCurrency(executedSellAmount, inputToken)
-      const outputAmount = stringToCurrency(executedBuyAmount, outputToken)
+      const { inputToken, outputToken, status, kind } = orderFromStore
+      const isFulfilled = status === OrderStatus.FULFILLED
 
-      summary = `Swap ${formatSmart(inputAmount, AMOUNT_PRECISION)} ${inputAmount.currency.symbol} for ${formatSmart(
-        outputAmount,
-        AMOUNT_PRECISION
-      )} ${outputAmount.currency.symbol}`
+      // don't show amounts in atoms
+      const inputAmount = stringToCurrency(isFulfilled ? executedSellAmount : sellAmount, inputToken)
+      const outputAmount = stringToCurrency(isFulfilled ? executedBuyAmount : buyAmount, outputToken)
+
+      const inputPrefix = !isFulfilled && kind === OrderKind.BUY ? 'at most ' : ''
+      const outputPrefix = !isFulfilled && kind === OrderKind.SELL ? 'at least ' : ''
+
+      summary = `Swap ${inputPrefix}${formatSmart(inputAmount, AMOUNT_PRECISION)} ${
+        inputAmount.currency.symbol
+      } for ${outputPrefix}${formatSmart(outputAmount, AMOUNT_PRECISION)} ${outputAmount.currency.symbol}`
     } else {
       // We only have the API order info, let's at least use that
       summary = `Swap ${sellToken} for ${buyToken}`
@@ -62,7 +66,7 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
         id: orderFromStore.id,
         fulfillmentTime: new Date().toISOString(),
         transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
-        summary: _computeFulfilledSummary({ orderFromStore, orderFromApi }),
+        summary: computeOrderSummary({ orderFromStore, orderFromApi }),
         apiAdditionalInfo: orderFromApi
           ? {
               ...orderFromApi,

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton, StyledLink } from 'theme'
 import {
   WalletName,
   AccountSection as AccountSectionMod,
@@ -208,10 +208,14 @@ export const LowerSection = styled.div`
   > div {
     display: flex;
     flex-flow: column wrap;
-    padding: 0;
     width: 100%;
     background-color: inherit;
     padding: 0 0 48px;
+
+    ${StyledLink} {
+      align-self: center;
+      margin: 20px 0;
+    }
   }
 
   h5 {
@@ -227,14 +231,16 @@ export const LowerSection = styled.div`
     }
   }
 
-  ${LinkStyledButton} {
+  ${LinkStyledButton},${StyledLink} {
     opacity: 0.7;
     color: ${({ theme }) => theme.text1};
+
+    text-decoration: underline;
+    font-size: 14px;
 
     &:hover {
       opacity: 1;
     }
-  }
 `
 
 const NetworkCardUni = styled(YellowCard)`

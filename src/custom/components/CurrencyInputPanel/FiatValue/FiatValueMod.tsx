@@ -34,7 +34,12 @@ export function FiatValue({
         <Trans>
           ≈ $
           <HoverInlineText
-            text={formatSmart(fiatValue, FIAT_PRECISION) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */}
+            text={
+              formatSmart(fiatValue, FIAT_PRECISION, {
+                thousandSeparator: true,
+                isLocaleAware: true,
+              }) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */
+            }
           />
         </Trans>
       ) : (
