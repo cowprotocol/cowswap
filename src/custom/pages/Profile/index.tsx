@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -20,19 +21,32 @@ import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
 import { numberFormatter } from 'utils/format'
+import { getExplorerAddressLink } from 'utils/explorer'
+import { hasTrades } from 'utils/trade'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
+  const [userHasTrades, setUserHasTrades] = useState(false)
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
+
+  useEffect(() => {
+    async function fetchUserTrades() {
+      if (!account || !chainId) return
+      const hasAlreadyTraded = await hasTrades(chainId, account)
+      setUserHasTrades(hasAlreadyTraded)
+    }
+
+    fetchUserTrades()
+  }, [account, chainId, setUserHasTrades])
+
   const renderNotificationMessages = (
     <>
       {error && (
@@ -58,6 +72,11 @@ export default function Profile() {
             {account && (
               <Loader isLoading={isLoading}>
                 <Txt>
+                  {userHasTrades && (
+                    <ExtLink href={getExplorerAddressLink(chainId || 1, account)}>
+                      <Txt fs={14}>View all orders ↗</Txt>
+                    </ExtLink>
+                  )}
                   <RefreshCcw size={16} />
                   &nbsp;&nbsp;
                   <Txt secondary>
@@ -98,15 +117,6 @@ export default function Profile() {
                 '-'
               )}
             </Txt>
-          </ChildWrapper>
-          <ChildWrapper>
-            {account ? (
-              <ExtLink href={getExplorerLink(chainId || 1, account, ExplorerDataType.ORDERS)}>
-                <Txt fs={16}>View all orders ↗</Txt>
-              </ExtLink>
-            ) : (
-              '-'
-            )}
           </ChildWrapper>
           <GridWrap horizontal>
             <ChildWrapper>

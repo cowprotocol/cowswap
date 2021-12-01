@@ -15,7 +15,6 @@ export enum ExplorerDataType {
   TOKEN = 'token',
   ADDRESS = 'address',
   BLOCK = 'block',
-  ORDERS = 'orders',
 }
 
 /**
@@ -50,20 +49,6 @@ export function getExplorerLink(chainId: number, data: string, type: ExplorerDat
         return `https://rinkeby-explorer.arbitrum.io/block/${data}`
       default:
         return `https://rinkeby-explorer.arbitrum.io/`
-    }
-  }
-
-  if (chainId === SupportedChainId.MAINNET) {
-    switch (type) {
-      case ExplorerDataType.ORDERS:
-        return `https://gnosis-protocol.io/address/${data}`
-    }
-  }
-
-  if (chainId === SupportedChainId.RINKEBY) {
-    switch (type) {
-      case ExplorerDataType.ORDERS:
-        return `https://gnosis-protocol.io/rinkeby/address/${data}`
     }
   }
 

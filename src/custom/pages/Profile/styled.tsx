@@ -34,9 +34,11 @@ export const Wrapper = styled(Page)`
 `
 
 export const ExtLink = styled(ExternalLink)`
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${({ theme }) => theme.text1};
   }
+  margin-right: 15px;
 `
 
 export const ChildWrapper = styled.div`

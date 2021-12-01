@@ -15,7 +15,7 @@ import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWIT
 import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/actions'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { getExplorerAddressLink } from 'utils/explorer'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -257,7 +257,7 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           </span>
         </MenuItem>
         {account && (
-          <MenuItem id="link" href={getExplorerLink(chainId || 1, account, ExplorerDataType.ORDERS)}>
+          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
             <span aria-hidden="true" onClick={close} onKeyDown={close}>
               <ExternalLink size={14} />
               View all orders
