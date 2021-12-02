@@ -33,6 +33,7 @@ export function CancelledOrdersUpdater(): null {
 
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
   cancelledRef.current = cancelled
 
   const fulfillOrdersBatch = useFulfillOrdersBatch()
@@ -41,40 +42,65 @@ export function CancelledOrdersUpdater(): null {
     async (chainId: ChainId, account: string) => {
       const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()
-      // Filter orders:
-      // - Owned by the current connected account
-      // - Created in the last 5 min, no further
-      const pending = cancelledRef.current.filter(({ owner, creationTime: creationTimeString }) => {
-        const creationTime = new Date(creationTimeString).getTime()
 
-        return owner.toLowerCase() === lowerCaseAccount && now - creationTime < CANCELLED_ORDERS_PENDING_TIME
-      })
-
-      if (pending.length === 0) {
+      if (isUpdating.current) {
         return
       }
 
-      // Iterate over pending orders fetching operator order data, async
-      const unfilteredOrdersData = await Promise.all(
-        pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
-      )
+      // const startTime = Date.now()
+      // console.debug('[CancelledOrdersUpdater] Checking recently canceled orders....')
+      try {
+        isUpdating.current = true
 
-      // Group resolved promises by status
-      // Only pick fulfilled
-      const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
-        (acc, { status, popupData }) => {
-          popupData && acc[status].push(popupData)
-          return acc
-        },
-        { fulfilled: [], presigned: [], expired: [], cancelled: [], unknown: [], pending: [] }
-      )
+        // Filter orders:
+        // - Owned by the current connected account
+        // - Created in the last 5 min, no further
+        const pending = cancelledRef.current.filter(({ owner, creationTime: creationTimeString }) => {
+          const creationTime = new Date(creationTimeString).getTime()
 
-      // Bach state update fulfilled orders, if any
-      fulfilled.length > 0 &&
-        fulfillOrdersBatch({
-          ordersData: fulfilled as OrderFulfillmentData[],
-          chainId,
+          return owner.toLowerCase() === lowerCaseAccount && now - creationTime < CANCELLED_ORDERS_PENDING_TIME
         })
+
+        if (pending.length === 0) {
+          // console.debug(`[CancelledOrdersUpdater] No orders are being cancelled`)
+          return
+        } /* else {
+          console.debug(`[CancelledOrdersUpdater] Checking ${pending.length} recently canceled orders...`)
+        }*/
+
+        // Iterate over pending orders fetching operator order data, async
+        const unfilteredOrdersData = await Promise.all(
+          pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+        )
+
+        // Group resolved promises by status
+        // Only pick fulfilled
+        const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
+          (acc, { status, popupData }) => {
+            popupData && acc[status].push(popupData)
+            return acc
+          },
+          {
+            fulfilled: [],
+            presigned: [],
+            expired: [],
+            cancelled: [],
+            unknown: [],
+            presignaturePending: [],
+            pending: [],
+          }
+        )
+
+        // Bach state update fulfilled orders, if any
+        fulfilled.length > 0 &&
+          fulfillOrdersBatch({
+            ordersData: fulfilled as OrderFulfillmentData[],
+            chainId,
+          })
+      } finally {
+        isUpdating.current = false
+        // console.debug(`[CancelledOrdersUpdater] Checked recently canceled orders in ${Date.now() - startTime}ms`)
+      }
     },
     [fulfillOrdersBatch]
   )

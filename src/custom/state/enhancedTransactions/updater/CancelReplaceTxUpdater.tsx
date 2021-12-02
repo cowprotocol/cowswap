@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { sdk } from 'utils/blocknative'
-import { cancelTransaction, replaceTransaction } from 'state/enhancedTransactions/actions'
+import { replaceTransaction } from 'state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 
@@ -17,19 +17,16 @@ function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Disp
 
       const { emitter } = blocknativeSdk.transaction(hash)
       const currentHash = hash
-      let isSpeedup = false
 
       emitter.on('txSpeedUp', (e) => {
-        isSpeedup = true
         if ('hash' in e && typeof e.hash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash }))
+          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash, type: 'speedup' }))
         }
       })
 
-      emitter.on('txConfirmed', (e) => {
-        // canceled txs are automatically watched by bnc so if the confirmed tx hash is different than the previously tracked one, it means the user sent a cancel tx
-        if ('hash' in e && e.hash !== currentHash && !isSpeedup) {
-          dispatch(cancelTransaction({ chainId, hash: currentHash }))
+      emitter.on('txCancel', (e) => {
+        if ('hash' in e && typeof e.hash === 'string') {
+          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash, type: 'cancel' }))
         }
       })
     } catch (error) {

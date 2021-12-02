@@ -1,9 +1,6 @@
-import React, { useCallback, Fragment } from 'react'
-import { batch, useDispatch } from 'react-redux'
+import React, { Fragment } from 'react'
 
 import { useActiveWeb3React } from 'hooks/web3'
-import { AppDispatch } from 'state'
-import { clearAllTransactions } from 'state/enhancedTransactions/actions'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import Copy from 'components/Copy'
@@ -17,8 +14,6 @@ import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 import PortisIcon from 'assets/images/portisIcon.png'
 import Identicon from 'components/Identicon'
-import { LinkStyledButton } from 'theme'
-import { clearOrders } from 'state/orders/actions'
 import { NETWORK_LABELS } from 'components/Header'
 import {
   WalletName,
@@ -46,6 +41,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import { supportedChainId } from 'utils/supportedChainId'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
+import { ExternalLink } from 'theme'
+import { getExplorerAddressLink } from 'utils/explorer'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -153,17 +150,8 @@ export default function AccountDetails({
   const { account, connector, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
-  // const theme = useContext(ThemeContext)
-  const dispatch = useDispatch<AppDispatch>()
 
-  const clearAllActivityCallback = useCallback(() => {
-    if (chainId) {
-      batch(() => {
-        dispatch(clearAllTransactions({ chainId }))
-        dispatch(clearOrders({ chainId }))
-      })
-    }
-  }, [dispatch, chainId])
+  const explorerOrdersLink = account && connectedChainId && getExplorerAddressLink(connectedChainId, account)
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
 
   const activities =
@@ -216,7 +204,7 @@ export default function AccountDetails({
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}
-                  isENS={ENSName ? true : false}
+                  isENS={!!ENSName}
                   href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
                 >
                   {explorerLabel} ↗
@@ -234,7 +222,7 @@ export default function AccountDetails({
             <h5>
               Recent Activity <span>{`(${activityTotalCount})`}</span>
             </h5>
-            <LinkStyledButton onClick={clearAllActivityCallback}>Clear activity</LinkStyledButton>
+            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders</ExternalLink>}
           </span>
 
           <div>
@@ -245,6 +233,7 @@ export default function AccountDetails({
                 {renderActivities(activities)}
               </Fragment>
             ))}
+            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders</ExternalLink>}
           </div>
         </LowerSection>
       ) : (

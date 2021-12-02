@@ -58,6 +58,7 @@ export function UnfillableOrdersUpdater(): null {
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   const updateIsUnfillableFlag = useCallback(
     (chainId: ChainId, order: Order, price: Required<PriceInformation>) => {
@@ -70,27 +71,41 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updatePending = useCallback(() => {
-    if (!chainId || !account) {
+    if (!chainId || !account || isUpdating.current) {
       return
     }
 
-    const lowerCaseAccount = account.toLowerCase()
-    // Only check pending orders of the connected account
-    const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+    const startTime = Date.now()
+    console.debug('[UnfillableOrdersUpdater] Checking new market price for orders....')
+    try {
+      isUpdating.current = true
 
-    if (pending.length === 0) {
-      return
-    }
+      const lowerCaseAccount = account.toLowerCase()
+      // Only check pending orders of the connected account
+      const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
-    pending.forEach((order, index) =>
-      _getOrderPrice(chainId, order).then((price) => {
+      if (pending.length === 0) {
+        // console.debug('[UnfillableOrdersUpdater] No orders to update')
+        return
+      } else {
         console.debug(
-          `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-          price ? price.amount : 'no :('
+          `[UnfillableOrdersUpdater] Checking new market price for ${pending.length} orders, account ${account} and network ${chainId}`
         )
-        price?.amount && updateIsUnfillableFlag(chainId, order, price)
-      })
-    )
+      }
+
+      pending.forEach((order, index) =>
+        _getOrderPrice(chainId, order).then((price) => {
+          console.debug(
+            `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
+            price ? price.amount : 'no :('
+          )
+          price?.amount && updateIsUnfillableFlag(chainId, order, price)
+        })
+      )
+    } finally {
+      isUpdating.current = false
+      console.debug(`[UnfillableOrdersUpdater] Checked canceled orders in ${Date.now() - startTime}ms`)
+    }
   }, [account, chainId, updateIsUnfillableFlag])
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Colors } from 'theme/styled'
 import { X } from 'react-feather'
@@ -50,10 +50,12 @@ const BannerContainer = styled.div`
   justify-content: center;
 `
 export default function NotificationBanner(props: BannerProps) {
-  const { id, canClose = true } = props
+  const { id, isVisible, canClose = true } = props
   const dispatch = useAppDispatch()
-  const isNotificationClosed = useIsNotificationClosed(id) // TODO: the notification closed state is now tied to the Affiliate state, this should generic
-  const [isActive, setIsActive] = useState(!isNotificationClosed ?? props.isVisible)
+  const isNotificationClosed = useIsNotificationClosed(id) // TODO: the notification closed state is now tied to the Affiliate state, this should be generic
+  const [isActive, setIsActive] = useState(!isNotificationClosed ?? isVisible)
+
+  const isHidden = !isVisible || isNotificationClosed || !isActive
 
   const handleClose = () => {
     setIsActive(false)
@@ -62,8 +64,14 @@ export default function NotificationBanner(props: BannerProps) {
     }
   }
 
+  useEffect(() => {
+    if (isNotificationClosed !== null) {
+      setIsActive(!isNotificationClosed)
+    }
+  }, [isNotificationClosed, isActive])
+
   return (
-    <Banner {...props} isVisible={isActive}>
+    <Banner {...props} isVisible={!isHidden}>
       <BannerContainer>{props.children}</BannerContainer>
       {canClose && <StyledClose size={24} onClick={handleClose} />}
     </Banner>

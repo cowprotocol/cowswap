@@ -38,7 +38,7 @@ export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((
 }, {} as { [key: string]: WalletInfo })
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
-export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', '1inch Wallet', 'WallETH'])
+export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
@@ -105,6 +105,9 @@ export const FEE_SIZE_THRESHOLD = new Fraction(10, 100) // 30%
 
 // default value provided as userAddress to Paraswap API if the user wallet is not connected
 export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
+
+export const MAXIMUM_ORDERS_TO_DISPLAY = 10
+export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 
 // last wallet provider key used in local storage
 export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'

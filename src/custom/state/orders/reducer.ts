@@ -2,22 +2,23 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { OrderID } from 'api/gnosisProtocol'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import {
+  addOrUpdateOrders,
   addPendingOrder,
   preSignOrders,
   updatePresignGnosisSafeTx,
   removeOrder,
-  clearOrders,
-  fulfillOrder,
-  OrderStatus,
-  updateLastCheckedBlock,
-  expireOrder,
-  fulfillOrdersBatch,
-  expireOrdersBatch,
   cancelOrder,
   cancelOrdersBatch,
+  clearOrders,
+  expireOrder,
+  expireOrdersBatch,
+  fulfillOrder,
+  fulfillOrdersBatch,
+  OrderStatus,
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
+  updateLastCheckedBlock,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -140,6 +141,14 @@ function addOrderToState(
   state[chainId][status] = { ...state[chainId][status], [id]: { order, id } }
 }
 
+function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {
+  const orderObj = state?.[chainId]?.[status]?.[id]
+  if (orderObj) {
+    delete state?.[chainId]?.[status]?.[id]
+  }
+  return orderObj
+}
+
 const initialState: OrdersState = {}
 
 export default createReducer(initialState, (builder) =>
@@ -181,6 +190,41 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { id, chainId } = action.payload
       deleteOrderById(state, chainId, id)
+    })
+    .addCase(addOrUpdateOrders, (state, action) => {
+      prefillState(state, action)
+      const { chainId, orders } = action.payload
+
+      orders.forEach((newOrder) => {
+        const { id, status } = newOrder
+
+        // sanity check, is the status set?
+        if (!status) {
+          console.error(`addOrUpdateOrders:: Status not set for order ${id}`)
+          return
+        }
+
+        // fetch order from state, if any
+        const orderObj =
+          popOrder(state, chainId, OrderStatus.FULFILLED, id) ||
+          popOrder(state, chainId, OrderStatus.EXPIRED, id) ||
+          popOrder(state, chainId, OrderStatus.CANCELLED, id) ||
+          popOrder(state, chainId, OrderStatus.PENDING, id) ||
+          popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id)
+
+        // merge existing and new order objects
+        const order = orderObj
+          ? {
+              ...orderObj.order,
+              apiAdditionalInfo: newOrder.apiAdditionalInfo,
+              isCancelling: newOrder.isCancelling,
+              status,
+            }
+          : newOrder
+
+        // add order to respective state
+        addOrderToState(state, chainId, id, status, order)
+      })
     })
     .addCase(fulfillOrder, (state, action) => {
       prefillState(state, action)
