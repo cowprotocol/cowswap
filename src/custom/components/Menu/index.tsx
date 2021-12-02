@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User, ExternalLink } from 'react-feather'
 
 import MenuMod, {
@@ -11,13 +10,14 @@ import MenuMod, {
 import { useToggleModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
+
 import { Separator as SeparatorBase } from 'components/SearchModal/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/actions'
 import { getExplorerAddressLink } from 'utils/explorer'
-import { hasTrades } from 'utils/trade'
+import { useGpOrders } from 'api/gnosisProtocol/hooks'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -220,20 +220,10 @@ interface MenuProps {
 }
 
 export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
-  const [userHasTrades, setUserHasTrades] = useState(false)
   const close = useToggleModal(ApplicationModal.MENU)
   const { account, chainId } = useActiveWeb3React()
-  const showOrdersLink = account && userHasTrades
-
-  useEffect(() => {
-    async function fetchUserTrades() {
-      if (!account || !chainId) return
-      const hasAlreadyTraded = await hasTrades(chainId, account)
-      setUserHasTrades(hasAlreadyTraded)
-    }
-
-    fetchUserTrades()
-  }, [account, chainId, setUserHasTrades])
+  const gpOrders = useGpOrders(account)
+  const showOrdersLink = account && (gpOrders?.length || 0) > 0
 
   return (
     <StyledMenu>
