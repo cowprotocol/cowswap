@@ -21,20 +21,20 @@ function isMethodArg(x: unknown): x is MethodArg {
   return BigNumber.isBigNumber(x) || ['string', 'number'].indexOf(typeof x) !== -1
 }
 
-function isValidMethodArgs(x: unknown): x is MethodArgs | undefined {
+export function isValidMethodArgs(x: unknown): x is MethodArgs | undefined {
   return (
     x === undefined ||
     (Array.isArray(x) && x.every((xi) => isMethodArg(xi) || (Array.isArray(xi) && xi.every(isMethodArg))))
   )
 }
 
-interface CallResult {
+export interface CallResult {
   readonly valid: boolean
   readonly data: string | undefined
   readonly blockNumber: number | undefined
 }
 
-const INVALID_RESULT: CallResult = { valid: false, blockNumber: undefined, data: undefined }
+export const INVALID_RESULT: CallResult = { valid: false, blockNumber: undefined, data: undefined }
 
 // use this options object
 export const NEVER_RELOAD: ListenerOptions = {
@@ -117,7 +117,7 @@ export interface CallState {
 const INVALID_CALL_STATE: CallState = { valid: false, result: undefined, loading: false, syncing: false, error: false }
 const LOADING_CALL_STATE: CallState = { valid: true, result: undefined, loading: true, syncing: true, error: false }
 
-function toCallState(
+export function toCallState(
   callResult: CallResult | undefined,
   contractInterface: Interface | undefined,
   fragment: FunctionFragment | undefined,

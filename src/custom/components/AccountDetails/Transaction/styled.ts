@@ -407,7 +407,7 @@ export const TransactionInnerDetail = styled.div`
   border-radius: 12px;
   padding: 20px;
   color: ${({ theme }) => theme.text1};
-  margin: 24px auto 0;
+  margin: 24px auto 0 0;
   border: 1px solid ${({ theme }) => theme.card.border};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

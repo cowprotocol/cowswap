@@ -35,7 +35,6 @@ const NameOverflow = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 140px;
   font-size: 12px;
 `

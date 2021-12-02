@@ -9,6 +9,7 @@ export const GpModal = styled(Modal)`
   > [data-reach-dialog-content] {
     background-color: ${({ theme }) => theme.bg1};
     max-width: 470px;
+    z-index: 100;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;

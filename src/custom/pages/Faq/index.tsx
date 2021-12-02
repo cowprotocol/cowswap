@@ -798,8 +798,8 @@ export default function Faq() {
           </h3>
 
           <p>
-            The affiliate program will initially run as a trial, and therefore there are currently no announced rewards,
-            the tracing however, has already started.
+            The affiliate program will initially run as a trial and therefore there are currently no announced rewards.
+            The tracking however, has already started.
           </p>
 
           <p>

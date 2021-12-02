@@ -60,7 +60,7 @@ function _getStateLabel({
   }
 
   if (isConfirmed) {
-    return 'Filled'
+    return isOrder ? 'Filled' : 'Executed'
   }
 
   if (isExpired) {
