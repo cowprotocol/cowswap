@@ -92,7 +92,6 @@ export const CardHead = styled.div`
 
 export const StyledTitle = styled(Title)`
   display: flex;
-  flex-grow: 1;
   justify-content: flex-start;
   margin: 0;
   line-height: 1.21;
@@ -143,6 +142,19 @@ export const FlexWrap = styled.div`
   `}
 `
 
+export const StyledContainer = styled.div`
+  display: flex;
+  flex:1;
+  align-items:center;
+  justify-content: space-between;
+  margin-left:20px;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-wrap: wrap;
+    flex-direction: column;
+  `}
+`
+
 export const FlexCol = styled.div`
   display: flex;
   flex-grow: 1;
@@ -166,6 +178,8 @@ export const FlexCol = styled.div`
   }
 `
 export const Loader = styled.div<{ isLoading: boolean }>`
+  display: flex;
+  flex: 1;
   ${({ theme, isLoading }) =>
     isLoading &&
     css`

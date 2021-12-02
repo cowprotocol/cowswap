@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User, ExternalLink } from 'react-feather'
 
 import MenuMod, {
@@ -16,6 +17,7 @@ import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/actions'
 import { getExplorerAddressLink } from 'utils/explorer'
+import { hasTrades } from 'utils/trade'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -218,8 +220,21 @@ interface MenuProps {
 }
 
 export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
+  const [userHasTrades, setUserHasTrades] = useState(false)
   const close = useToggleModal(ApplicationModal.MENU)
   const { account, chainId } = useActiveWeb3React()
+  const showOrdersLink = account && userHasTrades
+
+  useEffect(() => {
+    async function fetchUserTrades() {
+      if (!account || !chainId) return
+      const hasAlreadyTraded = await hasTrades(chainId, account)
+      setUserHasTrades(hasAlreadyTraded)
+    }
+
+    fetchUserTrades()
+  }, [account, chainId, setUserHasTrades])
+
   return (
     <StyledMenu>
       <MenuFlyout>
@@ -256,14 +271,6 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
             Code
           </span>
         </MenuItem>
-        {account && (
-          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
-            <span aria-hidden="true" onClick={close} onKeyDown={close}>
-              <ExternalLink size={14} />
-              View all orders
-            </span>
-          </MenuItem>
-        )}
         <MenuItem id="link" href={DISCORD_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
             <SVG src={discordImage} description="Find CowSwap on Discord!" />
@@ -290,7 +297,14 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           </span>{' '}
           Cow Runner
         </InternalMenuItem>
-
+        {showOrdersLink && (
+          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
+            <span aria-hidden="true" onClick={close} onKeyDown={close}>
+              <ExternalLink size={14} />
+              View all orders
+            </span>
+          </MenuItem>
+        )}
         <MenuItemResponsive onClick={() => toggleDarkMode()}>
           {darkMode ? (
             <>
