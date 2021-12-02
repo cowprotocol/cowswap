@@ -10,7 +10,7 @@ import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@gnosis.pm/gp-v2-contracts'
-import { getTrades } from 'api/gnosisProtocol/api'
+import { getTrades, getProfileData } from 'api/gnosisProtocol/api'
 
 export interface PostOrderParams {
   account: string
@@ -170,7 +170,10 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 }
 
 export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
-  const trades = await getTrades({ chainId, owner: address, limit: 1 })
+  const [trades, profileData] = await Promise.all([
+    getTrades({ chainId, owner: address, limit: 1 }),
+    getProfileData(chainId, address),
+  ])
 
-  return trades.length > 0
+  return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
 }
