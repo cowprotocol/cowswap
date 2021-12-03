@@ -38,7 +38,6 @@ export const ExtLink = styled(ExternalLink)`
   &:focus {
     color: ${({ theme }) => theme.text1};
   }
-  margin-right: 15px;
 `
 
 export const ChildWrapper = styled.div`
@@ -82,12 +81,8 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
 
 export const CardHead = styled.div`
   display: flex;
-  align-items: center;
   flex-grow: 1;
-  flex-direction: row;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-direction: column;
-  `}
+  flex-direction: column;
 `
 
 export const StyledTitle = styled(Title)`
@@ -147,7 +142,6 @@ export const StyledContainer = styled.div`
   flex:1;
   align-items:center;
   justify-content: space-between;
-  margin-left:20px;
   }
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;

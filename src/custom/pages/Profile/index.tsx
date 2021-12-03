@@ -83,7 +83,7 @@ export default function Profile() {
                   </Txt>
                   {hasOrders && (
                     <ExtLink href={getExplorerAddressLink(chainId || 1, account)}>
-                      <Txt fs={14}>View all orders ↗</Txt>
+                      <Txt secondary>View all orders ↗</Txt>
                     </ExtLink>
                   )}
                 </StyledContainer>
