@@ -167,7 +167,6 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
-  //uwc-debug
   useEffect(() => {
     const isSupportedChainId = supportedChainId(chainId)
     if (!isSupportedChainId || !currency) return

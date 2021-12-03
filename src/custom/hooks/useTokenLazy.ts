@@ -36,10 +36,75 @@ async function _getTokenContract(params: GetTokenInfoParams): Promise<Erc20> {
   return contractsCache[address] || getTokenContract(address, undefined, library, account, chainId)
 }
 
-async function _getTokenByte32Contract(params: GetTokenInfoParams): Promise<Contract> {
+async function _getTokenBytes32Contract(params: GetTokenInfoParams): Promise<Contract> {
   const { address, account, chainId, library } = params
 
   return bytes32ContractsCache[address] || getBytes32TokenContract(address, undefined, library, account, chainId)
+}
+
+async function _getBytes32NameAndSymbol(
+  address: string,
+  account: string,
+  chainId: number,
+  nameSettled: PromiseFulfilledResult<string> | PromiseRejectedResult,
+  symbolSettled: PromiseFulfilledResult<string> | PromiseRejectedResult,
+  params: GetTokenInfoParams
+) {
+  console.debug(
+    `[useTokenLazy::callback] name or symbol failed, trying bytes32`,
+    address,
+    account,
+    chainId,
+    nameSettled,
+    symbolSettled
+  )
+
+  const bytes32Contract = await _getTokenBytes32Contract(params)
+  const [nameBytes32Settled, symbolBytes32Settled] = await Promise.allSettled([
+    retry<string>(bytes32Contract.name, RETRY_OPTIONS).promise,
+    retry<string>(bytes32Contract.symbol, RETRY_OPTIONS).promise,
+  ])
+
+  // Merge regular and bytes32 versions in case one them was good
+  const name = parseStringOrBytes32(
+    nameSettled.status === 'fulfilled' ? nameSettled.value : '',
+    nameBytes32Settled.status === 'fulfilled' ? nameBytes32Settled.value : '',
+    'Unknown Token'
+  )
+  const symbol = parseStringOrBytes32(
+    symbolSettled.status === 'fulfilled' ? symbolSettled.value : '',
+    symbolBytes32Settled.status === 'fulfilled' ? (symbolBytes32Settled.value as any) : '',
+    'UNKNOWN'
+  )
+  return { name, symbol }
+}
+
+async function _getNameAndSymbol(
+  namePromise: Promise<string>,
+  symbolPromise: Promise<string>,
+  address: string,
+  account: string,
+  chainId: number,
+  params: GetTokenInfoParams
+) {
+  const [nameSettled, symbolSettled] = await Promise.allSettled([namePromise, symbolPromise])
+
+  let name, symbol
+  // If no name or symbol, try the bytes32 contract
+  if (
+    nameSettled.status === 'rejected' ||
+    !nameSettled.value ||
+    symbolSettled.status === 'rejected' ||
+    !symbolSettled.value
+  ) {
+    const bytes32Values = await _getBytes32NameAndSymbol(address, account, chainId, nameSettled, symbolSettled, params)
+    name = bytes32Values.name
+    symbol = bytes32Values.symbol
+  } else {
+    name = nameSettled.value
+    symbol = symbolSettled.value
+  }
+  return { name, symbol }
 }
 
 async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | null> {
@@ -65,47 +130,7 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
     cancelSymbolPromise()
     return null
   }
-
-  const [nameSettled, symbolSettled] = await Promise.allSettled([namePromise, symbolPromise])
-
-  let name, symbol
-  // If no name or symbol, try the bytes32 contract
-  if (
-    nameSettled.status === 'rejected' ||
-    !nameSettled.value ||
-    symbolSettled.status === 'rejected' ||
-    !symbolSettled.value
-  ) {
-    console.debug(
-      `[useTokenLazy::callback] name or symbol failed, trying bytes32`,
-      address,
-      account,
-      chainId,
-      nameSettled,
-      symbolSettled
-    )
-
-    const bytes32Contract = await _getTokenByte32Contract(params)
-    const [nameBytes32Settled, symbolBytes32Settled] = await Promise.allSettled([
-      retry<string>(bytes32Contract.name, RETRY_OPTIONS).promise,
-      retry<string>(bytes32Contract.symbol, RETRY_OPTIONS).promise,
-    ])
-
-    // Merge regular and bytes32 versions in case one them was good
-    name = parseStringOrBytes32(
-      nameSettled.status === 'fulfilled' ? nameSettled.value : '',
-      nameBytes32Settled.status === 'fulfilled' ? nameBytes32Settled.value : '',
-      'Unknown Token'
-    )
-    symbol = parseStringOrBytes32(
-      symbolSettled.status === 'fulfilled' ? symbolSettled.value : '',
-      symbolBytes32Settled.status === 'fulfilled' ? (symbolBytes32Settled.value as any) : '',
-      'UNKNOWN'
-    )
-  } else {
-    name = nameSettled.value
-    symbol = symbolSettled.value
-  }
+  const { name, symbol } = await _getNameAndSymbol(namePromise, symbolPromise, address, account, chainId, params)
 
   return { decimals, symbol, name }
 }
