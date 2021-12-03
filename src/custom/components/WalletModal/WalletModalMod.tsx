@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import ReactGA from 'react-ga'
 import styled from 'styled-components/macro'
+import { SignerConnection } from '@walletconnect/signer-connection'
 import MetamaskIcon from 'assets/images/metamask.png'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { fortmatic, injected, portis } from 'connectors'
@@ -211,13 +212,22 @@ export default function WalletModal({
     }
 
     connector &&
-      activate(connector, undefined, true).catch((error) => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector) // a little janky...can't use setError because the connector isn't set
-        } else {
-          setPendingError(true)
-        }
-      })
+      activate(connector, undefined, true)
+        .catch((error) => {
+          if (error instanceof UnsupportedChainIdError) {
+            activate(connector) // a little janky...can't use setError because the connector isn't set
+          } else {
+            setPendingError(true)
+          }
+        })
+        .then(() => {
+          // manually set the WalletConnectConnector http.connection.url to currently connected network url
+          if (connector instanceof WalletConnectConnector) {
+            const { http, rpc, signer } = connector.walletConnectProvider
+            const chainId = (signer.connection as SignerConnection).chainId
+            http.connection.url = rpc.custom[chainId || 1]
+          }
+        })
   }
 
   // close wallet modal if fortmatic modal is active
