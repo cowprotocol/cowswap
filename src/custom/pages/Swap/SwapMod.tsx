@@ -61,10 +61,11 @@ import {
   useDetectNativeToken,
   useIsFeeGreaterThanInput,
   useHighFeeWarning,
+  useUnknownImpactWarning,
 } from 'state/swap/hooks'
 import { useExpertModeManager, useUserSingleHopOnly } from 'state/user/hooks'
 import { /* HideSmall, */ LinkStyledButton, TYPE, ButtonSize } from 'theme'
-import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
+// import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 // import { getTradeVersion } from 'utils/getTradeVersion'
 // import { isTradeBetter } from 'utils/isTradeBetter'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -87,6 +88,7 @@ import { StyledAppBody } from './styleds'
 import { ApplicationModal } from 'state/application/actions'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import usePriceImpact from 'hooks/usePriceImpact'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -110,6 +112,7 @@ export default function Swap({
   ArrowWrapperLoader,
   Price,
   HighFeeWarning,
+  NoImpactWarning,
   className,
   allowsOffchainSigning,
 }: SwapProps) {
@@ -256,17 +259,19 @@ export default function Swap({
     [independentField, parsedAmount, showWrap, trade]
   )
 
+  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts })
+  const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
+
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
+  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
   // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
   // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
   const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
   const fiatValueOutput = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
 
-  const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
-
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   // const isValid = !swapInputError
-  const isValid = !swapInputError && feeWarningAccepted // mod
+  const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const handleTypeInput = useCallback(
@@ -541,6 +546,7 @@ export default function Swap({
             txHash={txHash}
             recipient={recipient}
             allowedSlippage={allowedSlippage}
+            priceImpact={priceImpact}
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
@@ -630,7 +636,8 @@ export default function Swap({
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={priceImpact}
+                priceImpact={onWrap ? undefined : priceImpact}
+                priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
@@ -763,6 +770,14 @@ export default function Swap({
             trade={trade}
             acceptedStatus={feeWarningAccepted}
             acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
+            width="99%"
+            padding="5px 15px"
+          />
+          <NoImpactWarning
+            trade={trade}
+            hide={!trade || !!onWrap || !priceImpactError || priceImpactLoading}
+            acceptedStatus={impactWarningAccepted}
+            acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
             width="99%"
             padding="5px 15px"
           />

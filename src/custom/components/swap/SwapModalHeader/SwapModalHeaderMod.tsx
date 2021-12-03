@@ -9,7 +9,7 @@ import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { isAddress, shortenAddress } from 'utils'
-import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
+// import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 import { AutoColumn } from 'components/Column'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -33,7 +33,7 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { Price } from 'pages/Swap'
-import { HighFeeWarningProps } from 'components/HighFeeWarning'
+import { WarningProps } from 'components/SwapWarnings'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -60,9 +60,11 @@ export interface SwapModalHeaderProps {
   recipient: string | null
   showAcceptChanges: boolean
   priceImpactWithoutFee?: Percent
+  priceImpact?: Percent
   onAcceptChanges: () => void
   LightCard: LightCardType
-  HighFeeWarning: React.FC<HighFeeWarningProps>
+  HighFeeWarning: React.FC<WarningProps>
+  NoImpactWarning: React.FC<WarningProps>
   allowsOffchainSigning: boolean
 }
 
@@ -71,9 +73,11 @@ export default function SwapModalHeader({
   allowedSlippage,
   recipient,
   showAcceptChanges,
+  priceImpact,
   onAcceptChanges,
   LightCard,
   HighFeeWarning,
+  NoImpactWarning,
   allowsOffchainSigning,
 }: /* 
 {
@@ -174,10 +178,7 @@ SwapModalHeaderProps) {
               <Trans>To</Trans>
             </TYPE.body>
             <TYPE.body fontSize={14} color={theme.text3}>
-              <FiatValue
-                fiatValue={fiatValueOutput}
-                priceImpact={computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)}
-              />
+              <FiatValue fiatValue={fiatValueOutput} priceImpact={priceImpact} />
             </TYPE.body>
           </RowBetween>
           <RowBetween align="flex-end">
@@ -289,7 +290,9 @@ SwapModalHeaderProps) {
         </AutoColumn>
       ) : null}
       {/* High Fee Warning */}
-      <HighFeeWarning trade={trade} margin="0" />
+      <HighFeeWarning trade={trade} />
+      {/* No Impact Warning */}
+      {!priceImpact && <NoImpactWarning margin="0" />}
     </AutoColumn>
   )
 }
