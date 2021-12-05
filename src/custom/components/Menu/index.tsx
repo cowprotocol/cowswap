@@ -17,7 +17,7 @@ import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/actions'
 import { getExplorerAddressLink } from 'utils/explorer'
-import { useGpOrders } from 'api/gnosisProtocol/hooks'
+import { useHasOrders } from 'api/gnosisProtocol/hooks'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -222,8 +222,8 @@ interface MenuProps {
 export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
   const close = useToggleModal(ApplicationModal.MENU)
   const { account, chainId } = useActiveWeb3React()
-  const gpOrders = useGpOrders(account)
-  const showOrdersLink = account && (gpOrders?.length || 0) > 0
+  const hasOrders = useHasOrders(account)
+  const showOrdersLink = account && hasOrders
 
   return (
     <StyledMenu>

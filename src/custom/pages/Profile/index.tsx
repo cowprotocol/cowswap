@@ -27,7 +27,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-import { useGpOrders } from 'api/gnosisProtocol/hooks'
+import { useHasOrders } from 'api/gnosisProtocol/hooks'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -35,8 +35,7 @@ export default function Profile() {
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
-  const gpOrders = useGpOrders(account)
-  const hasOrders = (gpOrders?.length || 0) > 0
+  const hasOrders = useHasOrders(account)
 
   const renderNotificationMessages = (
     <>
