@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useSwapState } from 'state/swap/hooks'
-import { Field } from 'state/swap/actions'
 
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
 import { FallbackPriceImpactParams } from './commonTypes'
@@ -40,18 +39,15 @@ function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: 
   return abTrade.outputAmountWithoutFee
 }
 
-export default function useFallbackPriceImpact({ abTrade, fiatPriceImpact }: FallbackPriceImpactParams) {
+export default function useFallbackPriceImpact({ abTrade, fiatPriceImpact, isWrapping }: FallbackPriceImpactParams) {
   const {
     typedValue,
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
-    independentField,
   } = useSwapState()
 
-  const abTradeIsSell = independentField === Field.INPUT
-
-  // Should we even calc this? Check if fiatPriceImpact exists
-  const shouldCalculate = !Boolean(fiatPriceImpact)
+  // Should we even calc this? Check if fiatPriceImpact exists OR user is wrapping token
+  const shouldCalculate = !Boolean(fiatPriceImpact) || !isWrapping
 
   // Calculate the necessary params to get the inverse trade impact
   const { parsedAmount, outputCurrency, ...swapQuoteParams } = useMemo(
@@ -103,7 +99,7 @@ export default function useFallbackPriceImpact({ abTrade, fiatPriceImpact }: Fal
       setImpact(undefined)
       setError(undefined)
     }
-  }, [abIn, abOut, baOut, quoteError, abTradeIsSell, loading, typedValue])
+  }, [abIn, abOut, baOut, quoteError, loading, typedValue])
 
   return { impact, error, loading }
 }
