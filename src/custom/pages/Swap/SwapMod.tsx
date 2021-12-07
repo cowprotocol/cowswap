@@ -76,7 +76,7 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
-import { logTradeDetails } from 'state/swap/utils'
+// import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
@@ -189,7 +189,7 @@ export default function Swap({
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({ token: INPUT.currencyId, chainId })
 
   // Log all trade information
-  logTradeDetails(v2Trade, allowedSlippage)
+  // logTradeDetails(v2Trade, allowedSlippage)
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
