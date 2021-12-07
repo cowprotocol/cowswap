@@ -24,6 +24,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import AddressSelector from './AddressSelector'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -86,7 +87,9 @@ export default function Profile() {
                 <>
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
-                    <strong>{referralLink.address}</strong>
+                    {/*  <strong>{referralLink.address}</strong> */}
+                    <AddressSelector address={referralLink.address} />
+
                     <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
                       <Copy toCopy={referralLink.link} />
                     </span>
