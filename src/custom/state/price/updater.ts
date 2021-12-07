@@ -18,8 +18,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
-import { WETH9_EXTENDED } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { isWrappingTrade } from 'state/swap/utils'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -151,11 +150,8 @@ export default function FeesUpdater(): null {
     //  - it is a wrapping operation
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
 
-    const isWrapping =
-      (sellCurrency?.isNative && buyCurrency?.wrapped.equals(WETH9_EXTENDED[chainId || SupportedChainId.MAINNET])) ||
-      (sellCurrency?.wrapped.equals(WETH9_EXTENDED[chainId || SupportedChainId.MAINNET]) && buyCurrency?.isNative)
-
-    if (isWrapping) return
+    // Native wrap trade, return
+    if (isWrappingTrade(sellCurrency, buyCurrency, chainId)) return
 
     // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
