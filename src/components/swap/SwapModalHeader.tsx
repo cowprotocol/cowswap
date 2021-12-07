@@ -14,7 +14,7 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { ButtonPrimary } from '../Button'
 import { LightCard } from '../Card'
 import { AutoColumn } from '../Column'
-import { FiatValue } from '../CurrencyInputPanel/FiatValue'
+import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import CurrencyLogo from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
 import TradePrice from '../swap/TradePrice'

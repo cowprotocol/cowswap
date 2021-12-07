@@ -15,12 +15,12 @@ import { useActiveWeb3React } from '../../hooks/web3'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
 import { ButtonGray } from '../Button'
-import CurrencyLogo from '../CurrencyLogo'
+import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween, RowFixed } from '../Row'
-import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import { FiatValue } from './FiatValue'
+import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
+import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
