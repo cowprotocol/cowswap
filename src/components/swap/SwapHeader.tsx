@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 import { TYPE } from '../../theme'
 import { RowBetween, RowFixed } from '../Row'
-import SettingsTab from '../Settings'
+import SettingsTab from 'components/Settings'
 
 const StyledSwapHeader = styled.div`
   padding: 1rem 1.25rem 0.5rem 1.25rem;
