@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
-import { HighFeeWarning as HighFeeWarningBase } from 'components/HighFeeWarning'
+import { HighFeeWarning as HighFeeWarningBase, NoImpactWarning as NoImpactWarningBase } from 'components/SwapWarnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
@@ -18,6 +18,7 @@ export type LightCardType = typeof LightCard
 
 // targettable by styled injection
 const HighFeeWarning = styled(HighFeeWarningBase)``
+const NoImpactWarning = styled(NoImpactWarningBase)``
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -28,11 +29,11 @@ const Wrapper = styled.div`
     stroke: ${({ theme }) => theme.text1};
   }
 
-  ${AutoColumn} > div:not(${HighFeeWarning}) > div {
+  ${AutoColumn} > div:not(${HighFeeWarning}):not(${NoImpactWarning}) > div {
     color: ${({ theme }) => theme.text1};
   }
 
-  ${AuxInformationContainer}:not(${HighFeeWarning}) {
+  ${AuxInformationContainer}:not(${HighFeeWarning}):not(${NoImpactWarning}) {
     background-color: ${({ theme }) => theme.bg3};
     border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
     border-top: 0;
@@ -44,7 +45,9 @@ const Wrapper = styled.div`
   }
 `
 
-export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'LightCard'>) {
+export default function SwapModalHeader(
+  props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'NoImpactWarning' | 'LightCard'>
+) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
     <Wrapper>
@@ -53,6 +56,7 @@ export default function SwapModalHeader(props: Omit<SwapModalHeaderProps, 'HighF
         allowsOffchainSigning={allowsOffchainSigning}
         LightCard={LightCard}
         HighFeeWarning={HighFeeWarning}
+        NoImpactWarning={NoImpactWarning}
       />
     </Wrapper>
   )

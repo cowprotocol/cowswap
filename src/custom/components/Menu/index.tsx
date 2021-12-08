@@ -15,8 +15,8 @@ import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/reducer'
 
-import TwitterImage from 'assets/cow-swap/twitter.svg'
-import DiscordImage from 'assets/cow-swap/discord.svg'
+import twitterImage from 'assets/cow-swap/twitter.svg'
+import discordImage from 'assets/cow-swap/discord.svg'
 import SVG from 'react-inlinesvg'
 
 export * from './MenuMod'
@@ -256,14 +256,14 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         </MenuItem>
         <MenuItem id="link" href={DISCORD_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
-            <SVG src={DiscordImage} description="Find CowSwap on Discord!" />
+            <SVG src={discordImage} description="Find CowSwap on Discord!" />
             Discord
           </span>
         </MenuItem>
 
         <MenuItem id="link" href={TWITTER_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
-            <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" /> Twitter
+            <SVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
           </span>
         </MenuItem>
 

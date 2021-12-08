@@ -20,7 +20,7 @@ const DEFAULT_CALL_GAS_REQUIRED = 1_000_000
  * @param chunk chunk of calls to make
  * @param blockNumber block number passed as the block tag in the eth_call
  */
-async function fetchChunk(
+export async function fetchChunk(
   multicall: UniswapInterfaceMulticall,
   chunk: Call[],
   blockNumber: number

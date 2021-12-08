@@ -19,6 +19,7 @@ import { tryParseAmount } from 'state/swap/hooks'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
 import { USDC } from 'constants/tokens'
+import { useBlockNumber } from '@src/state/application/hooks'
 
 export * from '@src/hooks/useUSDCPrice'
 
@@ -38,6 +39,7 @@ export default function useUSDCPrice(currency?: Currency) {
   const [error, setError] = useState<Error | null>(null)
 
   const { chainId, account } = useActiveWeb3React()
+  const blockNumber = useBlockNumber()
 
   const amountOut = chainId ? STABLECOIN_AMOUNT_OUT[chainId] : undefined
   const stablecoin = amountOut?.currency
@@ -122,7 +124,7 @@ export default function useUSDCPrice(currency?: Currency) {
           })
         })
     }
-  }, [amountOut, chainId, currency, stablecoin, account])
+  }, [amountOut, chainId, currency, stablecoin, account, blockNumber])
 
   return { price: bestUsdPrice, error }
 }
@@ -162,6 +164,7 @@ export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
 export function useCoingeckoUsdPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
   const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
+  const blockNumber = useBlockNumber()
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
@@ -220,7 +223,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
           })
         })
     }
-  }, [chainId, currency])
+  }, [chainId, currency, blockNumber])
 
   return { price, error }
 }
@@ -238,15 +241,19 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   return useMemo(() => {
     // USDC PRICE UNAVAILABLE
     if (!usdcValue && coingeckoUsdPrice) {
+      console.debug('[USD Estimation]::COINGECKO')
       return coingeckoUsdPrice
       // COINGECKO PRICE UNAVAILABLE
     } else if (usdcValue && !coingeckoUsdPrice) {
+      console.debug('[USD Estimation]::UNIv2')
       return usdcValue
       // BOTH AVAILABLE
     } else if (usdcValue && coingeckoUsdPrice) {
-      // take the greater of the 2 values
-      return usdcValue.greaterThan(coingeckoUsdPrice) ? usdcValue : coingeckoUsdPrice
+      console.debug('[USD Estimation]::[BOTH] ==> COIN')
+      // coingecko logic takes precedence
+      return coingeckoUsdPrice
     } else {
+      console.debug('[USD Estimation]::None found')
       return null
     }
   }, [usdcValue, coingeckoUsdPrice])

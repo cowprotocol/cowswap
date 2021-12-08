@@ -8,7 +8,7 @@ import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { AutoRow, RowBetween } from 'components/Row'
-import { Wrapper as WrapperUni, Dots } from 'components/swap/styleds'
+import { Wrapper as WrapperUni, Dots, Container } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
@@ -31,7 +31,7 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
 import { RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
-import { HighFeeWarning, HighFeeWarningProps } from 'components/HighFeeWarning'
+import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
 import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
@@ -144,7 +144,8 @@ export interface SwapProps extends RouteComponentProps {
   SwapButton: React.FC<SwapButtonProps>
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   Price: React.FC<PriceProps>
-  HighFeeWarning: React.FC<HighFeeWarningProps>
+  HighFeeWarning: React.FC<WarningProps>
+  NoImpactWarning: React.FC<WarningProps>
   className?: string
   allowsOffchainSigning: boolean
 }
@@ -369,19 +370,22 @@ const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonPro
 export default function Swap(props: RouteComponentProps) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
-    <SwapModWrapper
-      TradeBasicDetails={TradeBasicDetails}
-      EthWethWrapMessage={EthWethWrapMessage}
-      SwitchToWethBtn={SwitchToWethBtn}
-      FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
-      BottomGrouping={BottomGrouping}
-      SwapButton={SwapButton}
-      TradeLoading={TradeLoading}
-      ArrowWrapperLoader={ArrowWrapperLoader}
-      Price={Price}
-      HighFeeWarning={HighFeeWarning}
-      allowsOffchainSigning={allowsOffchainSigning}
-      {...props}
-    />
+    <Container>
+      <SwapModWrapper
+        TradeBasicDetails={TradeBasicDetails}
+        EthWethWrapMessage={EthWethWrapMessage}
+        SwitchToWethBtn={SwitchToWethBtn}
+        FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
+        BottomGrouping={BottomGrouping}
+        SwapButton={SwapButton}
+        TradeLoading={TradeLoading}
+        ArrowWrapperLoader={ArrowWrapperLoader}
+        Price={Price}
+        HighFeeWarning={HighFeeWarning}
+        NoImpactWarning={NoImpactWarning}
+        allowsOffchainSigning={allowsOffchainSigning}
+        {...props}
+      />
+    </Container>
   )
 }

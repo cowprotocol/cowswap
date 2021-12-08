@@ -171,6 +171,7 @@ export interface CurrencyInputPanelProps extends WithClassName {
   otherCurrency?: Currency | null
   fiatValue?: CurrencyAmount<Token> | null
   priceImpact?: Percent
+  priceImpactLoading?: boolean
   id: string
   showCommonBases?: boolean
   showCurrencyAmount?: boolean
@@ -197,6 +198,7 @@ export default function CurrencyInputPanel({
   renderBalance,
   fiatValue,
   priceImpact,
+  priceImpactLoading,
   hideBalance = false,
   pair = null, // used for double token logo
   hideInput = false,
@@ -317,7 +319,7 @@ export default function CurrencyInputPanel({
                   <span />
                 )}
                 <LoadingOpacityContainer $loading={loading}>
-                  <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
+                  <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatValue} priceImpact={priceImpact} />
                 </LoadingOpacityContainer>
               </RowBetween>
             </FiatRow>

@@ -12,21 +12,21 @@ import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { CancellationModal } from './CancelationModal'
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { getSafeWebUrl } from 'api/gnosisSafe'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 
 export function GnosisSafeLink(props: {
   chainId: number
-  enhancedTransaction: EnhancedTransactionDetails | null
+  safeTransaction?: SafeMultisigTransactionResponse
   gnosisSafeThreshold: number
 }): JSX.Element | null {
-  const { chainId, enhancedTransaction } = props
+  const { chainId, safeTransaction } = props
 
-  if (!enhancedTransaction?.safeTransaction) {
+  if (!safeTransaction) {
     return null
   }
 
-  const { safe } = enhancedTransaction.safeTransaction
+  const { safe } = safeTransaction
   const safeUrl = getSafeWebUrl(chainId, safe)
 
   // Only show the link to the safe, if we have the "safeUrl"
@@ -37,8 +37,53 @@ export function GnosisSafeLink(props: {
   return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
 }
 
+function _getStateLabel({
+  isPending,
+  isOrder,
+  isConfirmed,
+  isExpired,
+  isCancelling,
+  isPresignaturePending,
+  isCancelled,
+  enhancedTransaction,
+}: ActivityDerivedState) {
+  if (isPending) {
+    if (enhancedTransaction) {
+      console.log('enhancedTransaction', enhancedTransaction)
+      const { safeTransaction, transactionHash } = enhancedTransaction
+      if (safeTransaction && !transactionHash) {
+        return 'Signing...'
+      }
+    }
+
+    return isOrder ? 'Open' : 'Pending...'
+  }
+
+  if (isConfirmed) {
+    return isOrder ? 'Filled' : 'Executed'
+  }
+
+  if (isExpired) {
+    return isOrder ? 'Expired' : 'Failed'
+  }
+
+  if (isCancelling) {
+    return 'Cancelling...'
+  }
+
+  if (isPresignaturePending) {
+    return 'Signing...'
+  }
+
+  if (isCancelled) {
+    return 'Cancelled'
+  }
+
+  return 'Open'
+}
+
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { activityDerivedState } = props
+  const { activityDerivedState, chainId } = props
 
   const {
     id,
@@ -64,6 +109,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     <StatusLabelWrapper>
       <StatusLabel
         color={determinePillColour(status, type)}
+        isTransaction={isTransaction}
         isPending={isPending}
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
@@ -83,23 +129,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         ) : isCancelling ? null : (
           <SVG src={OrderOpenImage} description="Order Open" />
         )}
-        {isPending
-          ? 'Open'
-          : isConfirmed && isTransaction
-          ? 'Confirmed'
-          : isConfirmed
-          ? 'Filled'
-          : isExpired && isTransaction
-          ? 'Failed'
-          : isExpired
-          ? 'Expired'
-          : isCancelling
-          ? 'Cancelling...'
-          : isPresignaturePending
-          ? 'Signing...'
-          : isCancelled
-          ? 'Cancelled'
-          : 'Open'}
+        {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
       {isCancellable && (
@@ -107,7 +137,13 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           {/* Cancel order */}
           <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>
           {showCancelModal && (
-            <CancellationModal orderId={id} summary={summary} isOpen={showCancelModal} onDismiss={onDismiss} />
+            <CancellationModal
+              chainId={chainId}
+              orderId={id}
+              summary={summary}
+              isOpen={showCancelModal}
+              onDismiss={onDismiss}
+            />
           )}
         </StatusLabelBelow>
       )}

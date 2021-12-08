@@ -169,7 +169,6 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
                     href={`https://github.com/gnosis/cowswap/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
                       `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
                     )}`}
-                    target="_blank"
                   >
                     <TYPE.link fontSize={16}>
                       <Trans>Create an issue on GitHub</Trans>
@@ -178,7 +177,7 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
                   </ExternalLink>
                 </LinkWrapper>
                 <LinkWrapper>
-                  <ExternalLink id="get-support-on-discord" href="https://chat.cowswap.exchange/" target="_blank">
+                  <ExternalLink id="get-support-on-discord" href="https://chat.cowswap.exchange/">
                     <TYPE.link fontSize={16}>
                       <Trans>Get support on Discord</Trans>
                       <span>↗</span>

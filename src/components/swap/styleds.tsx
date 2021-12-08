@@ -10,6 +10,10 @@ import { TYPE } from 'theme'
 import { AutoColumn } from '../Column'
 import TradePrice from './TradePrice'
 
+export const Container = styled.div`
+  max-width: 460px;
+  width: 100%;
+`
 export const Wrapper = styled.div`
   position: relative;
   padding: 8px;

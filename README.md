@@ -144,3 +144,13 @@ The API endpoint is configured using the environment variable ` {XDAI|RINKEBY|MA
 Wallet Connect allows to connect the app to any [Wallet Connect supported wallet](https://walletconnect.org/wallets).
 
 In order to do so, it uses a Websocket, that can be configured using: the env var `WALLET_CONNECT_BRIDGE`.
+
+## Sitemap
+
+The sitemap can be found in <./public/sitemap.xml>
+
+To update its content:
+
+1. Edit the list of pages in <./src/custom/sitemap.js>
+2. Run `yarn sitemap`
+3. Commit the changes to git

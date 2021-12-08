@@ -6,16 +6,21 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { getStatusIcon } from 'components/AccountDetails'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { OrderStatus } from 'state/orders/actions'
 import { ButtonSecondary } from 'components/Button'
+import { OrderStatus } from '@src/custom/state/orders/actions'
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
   width: 100%;
+  display: flex;
+  justify-content: center;
 
   ${ButtonSecondary} {
     height: 38px;
-
+    max-width: 180px;
+    ${({ theme }) => theme.mediaWidth.upToVerySmall`
+        max-width: 100%;
+      `};
     > p {
       font-size: 15px;
 

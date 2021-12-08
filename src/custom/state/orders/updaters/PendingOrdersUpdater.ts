@@ -86,6 +86,7 @@ async function _updatePresignGnosisSafeTx(
 }
 
 interface UpdateOrdersParams {
+  account: string
   chainId: ChainId
   orders: Order[]
 
@@ -99,6 +100,7 @@ interface UpdateOrdersParams {
 }
 
 async function _updateOrders({
+  account,
   chainId,
   orders,
 
@@ -110,14 +112,23 @@ async function _updateOrders({
   updatePresignGnosisSafeTx,
   getSafeInfo,
 }: UpdateOrdersParams): Promise<void> {
+  // Only check pending orders of current connected account
+  const lowerCaseAccount = account.toLowerCase()
+  const pending = orders.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+
   // Exit early when there are no pending orders
-  if (orders.length === 0) {
+  if (pending.length === 0) {
+    // console.debug('[PendingOrdersUpdater] No orders to update')
     return
-  }
+  } /* else {
+    console.debug(
+      `[PendingOrdersUpdater] Update ${pending.length} orders for account ${account} and network ${chainId}`
+    )
+  }*/
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    orders.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
   )
 
   // Group resolved promises by status
@@ -129,7 +140,7 @@ async function _updateOrders({
       popupData && acc[status].push(popupData)
       return acc
     },
-    { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [] }
+    { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] }
   )
 
   if (presigned.length > 0) {
@@ -171,9 +182,10 @@ async function _updateOrders({
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
 
   const pending = usePendingOrders({ chainId })
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -187,29 +199,43 @@ export function PendingOrdersUpdater(): null {
   const getSafeInfo = useGetSafeInfo()
 
   const updateOrders = useCallback(
-    async (chainId: ChainId) =>
-      _updateOrders({
-        chainId,
-        orders: pendingRef.current,
-        fulfillOrdersBatch,
-        expireOrdersBatch,
-        cancelOrdersBatch,
-        presignOrders,
-        updatePresignGnosisSafeTx,
-        getSafeInfo,
-      }),
+    async (chainId: ChainId, account: string) => {
+      if (!account) {
+        return []
+      }
+
+      if (!isUpdating.current) {
+        isUpdating.current = true
+        // const startTime = Date.now()
+        // console.debug('[PendingOrdersUpdater] Updating orders....')
+        return _updateOrders({
+          account,
+          chainId,
+          orders: pendingRef.current,
+          fulfillOrdersBatch,
+          expireOrdersBatch,
+          cancelOrdersBatch,
+          presignOrders,
+          updatePresignGnosisSafeTx,
+          getSafeInfo,
+        }).finally(() => {
+          isUpdating.current = false
+          // console.debug(`[PendingOrdersUpdater] Updated orders in ${Date.now() - startTime}ms`)
+        })
+      }
+    },
     [cancelOrdersBatch, updatePresignGnosisSafeTx, expireOrdersBatch, fulfillOrdersBatch, presignOrders, getSafeInfo]
   )
 
   useEffect(() => {
-    if (!chainId) {
+    if (!chainId || !account) {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId), OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [chainId, updateOrders])
+  }, [account, chainId, updateOrders])
 
   return null
 }

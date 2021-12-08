@@ -51,13 +51,14 @@ async function _getOrderPrice(chainId: ChainId, order: Order) {
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   const updateIsUnfillableFlag = useCallback(
     (chainId: ChainId, order: Order, price: Required<PriceInformation>) => {
@@ -70,20 +71,42 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updatePending = useCallback(() => {
-    if (!chainId || pendingRef.current.length === 0) {
+    if (!chainId || !account || isUpdating.current) {
       return
     }
 
-    pendingRef.current.forEach((order, index) =>
-      _getOrderPrice(chainId, order).then((price) => {
+    const startTime = Date.now()
+    console.debug('[UnfillableOrdersUpdater] Checking new market price for orders....')
+    try {
+      isUpdating.current = true
+
+      const lowerCaseAccount = account.toLowerCase()
+      // Only check pending orders of the connected account
+      const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+
+      if (pending.length === 0) {
+        // console.debug('[UnfillableOrdersUpdater] No orders to update')
+        return
+      } else {
         console.debug(
-          `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-          price ? price.amount : 'no :('
+          `[UnfillableOrdersUpdater] Checking new market price for ${pending.length} orders, account ${account} and network ${chainId}`
         )
-        price?.amount && updateIsUnfillableFlag(chainId, order, price)
-      })
-    )
-  }, [chainId, updateIsUnfillableFlag])
+      }
+
+      pending.forEach((order, index) =>
+        _getOrderPrice(chainId, order).then((price) => {
+          console.debug(
+            `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
+            price ? price.amount : 'no :('
+          )
+          price?.amount && updateIsUnfillableFlag(chainId, order, price)
+        })
+      )
+    } finally {
+      isUpdating.current = false
+      console.debug(`[UnfillableOrdersUpdater] Checked canceled orders in ${Date.now() - startTime}ms`)
+    }
+  }, [account, chainId, updateIsUnfillableFlag])
 
   useEffect(() => {
     updatePending()

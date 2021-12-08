@@ -26,6 +26,7 @@ import { filterTokens, useSortedTokensByQuery } from 'components/SearchModal/fil
 import ImportRow from 'components/SearchModal/ImportRow'
 import { useTokenComparator } from 'components/SearchModal/sorting'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
+import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.' //mod
 
 // const ContentWrapper = styled(Column)`
@@ -92,6 +93,8 @@ export function CurrencySearch({
   const searchToken = useToken(debouncedQuery)
 
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
+
+  const network = useNetworkName()
 
   useEffect(() => {
     if (isAddressSearch) {
@@ -225,10 +228,16 @@ export function CurrencySearch({
             )}
           </AutoSizer>
         </div>
+      ) : isAddressSearch ? (
+        <Column style={{ padding: '20px', height: '100%' }}>
+          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+            <Trans>No tokens found with this address in {network} network</Trans>
+          </TYPE.main>
+        </Column>
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
           <TYPE.main color={theme.text3} textAlign="center" mb="20px">
-            <Trans>No results found.</Trans>
+            <Trans>Enter valid token name or address</Trans>
           </TYPE.main>
         </Column>
       )}

@@ -3,9 +3,9 @@ import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
 import styled from 'styled-components/macro'
 
-import { network } from '../../connectors'
+import { network } from 'connectors'
+import { useEagerConnect, useInactiveListener } from 'hooks/web3'
 import { NetworkContextName } from '../../constants/misc'
-import { useEagerConnect, useInactiveListener } from '../../hooks/web3'
 
 const MessageWrapper = styled.div`
   display: flex;

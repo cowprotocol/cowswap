@@ -17,8 +17,8 @@ import AddressInputPanel from 'components/AddressInputPanel'
 import {
   ButtonConfirmed,
   /* ButtonError,
-  ButtonGray, 
-  ButtonLight, 
+  ButtonGray,
+  ButtonLight,
   ButtonPrimary */
 } from 'components/Button'
 import Card, { GreyCard } from 'components/Card'
@@ -61,10 +61,11 @@ import {
   useDetectNativeToken,
   useIsFeeGreaterThanInput,
   useHighFeeWarning,
+  useUnknownImpactWarning,
 } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { /* HideSmall, */ LinkStyledButton, TYPE, ButtonSize } from 'theme'
-import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
+// import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 // import { getTradeVersion } from 'utils/getTradeVersion'
 // import { isTradeBetter } from 'utils/isTradeBetter'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -77,7 +78,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
 import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { SwapProps, ButtonError, ButtonPrimary, ButtonLight } from '.' // mod
+import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
@@ -85,7 +86,9 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
 import { ApplicationModal } from '@src/state/application/reducer'
-import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
+import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import usePriceImpact from 'hooks/usePriceImpact'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -109,6 +112,7 @@ export default function Swap({
   ArrowWrapperLoader,
   Price,
   HighFeeWarning,
+  NoImpactWarning,
   className,
   allowsOffchainSigning,
 }: SwapProps) {
@@ -146,6 +150,7 @@ export default function Swap({
   const toggleWalletModal = useWalletModalToggle()
 
   // Transaction confirmation modal
+  const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
@@ -153,8 +158,9 @@ export default function Swap({
   const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
   const openTransactionConfirmationModal = useCallback(
-    (message: string) => {
+    (message: string, operationType: OperationType) => {
       setTransactionConfirmationModalMsg(message)
+      setOperationType(operationType)
       openTransactionConfirmationModalAux()
     },
     [setTransactionConfirmationModalMsg, openTransactionConfirmationModalAux]
@@ -253,17 +259,19 @@ export default function Swap({
     [independentField, parsedAmount, showWrap, trade]
   )
 
+  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts })
+  const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
+
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
+  const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
   // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
   // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
   const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
   const fiatValueOutput = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
 
-  const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
-
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   // const isValid = !swapInputError
-  const isValid = !swapInputError && feeWarningAccepted // mod
+  const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const handleTypeInput = useCallback(
@@ -316,7 +324,7 @@ export default function Swap({
 
   // check whether the user has approved the router on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTrade(
-    openTransactionConfirmationModal,
+    (message: string) => openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
     closeModals,
     trade,
     allowedSlippage
@@ -495,6 +503,7 @@ export default function Swap({
       amountBeforeFees = formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)
     }
   }
+
   return (
     <>
       <TokenWarningModal
@@ -508,9 +517,11 @@ export default function Swap({
         isOpen={showTransactionConfirmationModal}
         pendingText={transactionConfirmationModalMsg}
         onDismiss={closeModals}
+        operationType={operationType}
       />
 
       <NetworkAlert />
+      <AffiliateStatusCheck />
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>
@@ -523,6 +534,7 @@ export default function Swap({
             txHash={txHash}
             recipient={recipient}
             allowedSlippage={allowedSlippage}
+            priceImpact={priceImpact}
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
@@ -561,7 +573,7 @@ export default function Swap({
                 id="swap-currency-input"
               />
               {/* UNI ARROW SWITCHER */}
-              {/* 
+              {/*
               <ArrowWrapper clickable>
                 <ArrowDown
                   size="16"
@@ -612,7 +624,8 @@ export default function Swap({
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={priceImpact}
+                priceImpact={onWrap ? undefined : priceImpact}
+                priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
@@ -729,7 +742,7 @@ export default function Swap({
                   {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
-                {isNativeIn && onWrap && (
+                {isNativeIn && isSupportedWallet && onWrap && (
                   <EthWethWrapMessage
                     account={account ?? undefined}
                     native={native}
@@ -748,6 +761,14 @@ export default function Swap({
             width="99%"
             padding="5px 15px"
           />
+          <NoImpactWarning
+            trade={trade}
+            hide={!trade || !!onWrap || !priceImpactError || priceImpactLoading}
+            acceptedStatus={impactWarningAccepted}
+            acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+            width="99%"
+            padding="5px 15px"
+          />
           <BottomGrouping>
             {swapIsUnsupported ? (
               <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
@@ -756,9 +777,9 @@ export default function Swap({
                 </TYPE.main>
               </ButtonPrimary>
             ) : !account ? (
-              <ButtonLight buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonLight>
+              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>

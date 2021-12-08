@@ -1,4 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
+import { Web3Provider } from '@ethersproject/providers'
 import { useActiveWeb3React } from 'hooks/web3'
 
 import { useContract } from '@src/hooks/useContract'
@@ -7,8 +8,11 @@ import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 import ENS_ABI from 'abis/ens-registrar.json'
+import { getContract } from 'utils'
+import ERC20_ABI from 'abis/erc20.json'
+import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 
-import { GPv2Settlement } from 'abis/types'
+import { GPv2Settlement, Erc20 } from 'abis/types'
 import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 
 export * from '@src/hooks/useContract'
@@ -39,4 +43,54 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
     }
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)
+}
+
+/**
+ * Non-hook version of useContract
+ */
+function _getContract<T extends Contract = Contract>(
+  addressOrAddressMap: string | { [chainId: number]: string } | undefined,
+  ABI: any,
+  withSignerIfPossible = true,
+  library?: Web3Provider,
+  account?: string,
+  chainId?: ChainId
+): T | null {
+  if (!addressOrAddressMap || !ABI || !library || !chainId) return null
+  let address: string | undefined
+  if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
+  else address = addressOrAddressMap[chainId]
+  if (!address) return null
+  try {
+    return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined) as T
+  } catch (error) {
+    console.error('Failed to get contract', error)
+    return null
+  }
+}
+
+/**
+ * Non-hook version of useTokenContract
+ */
+export function getTokenContract(
+  tokenAddress?: string,
+  withSignerIfPossible?: boolean,
+  library?: Web3Provider,
+  account?: string,
+  chainId?: ChainId
+): Erc20 | null {
+  return _getContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible, library, account, chainId)
+}
+
+/**
+ * Non-hook version of useBytes32TokenContract
+ */
+export function getBytes32TokenContract(
+  tokenAddress?: string,
+  withSignerIfPossible?: boolean,
+  library?: Web3Provider,
+  account?: string,
+  chainId?: ChainId
+): Contract | null {
+  return _getContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible, library, account, chainId)
 }

@@ -137,7 +137,7 @@ export default function CurrencyList(
 ): ReturnType<typeof CurrencyListMod> {
   const [params] = paramsList
   return (
-    <Wrapper>
+    <Wrapper id="currency-list">
       <CurrencyListMod {...params} BalanceComponent={Balance} TokenTagsComponent={TokenTags} />
     </Wrapper>
   )

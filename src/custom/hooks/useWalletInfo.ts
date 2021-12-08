@@ -10,6 +10,7 @@ import { getProviderType, WalletProvider } from 'connectors'
 import { useActiveWeb3Instance } from 'hooks/index'
 import { getSafeInfo } from 'api/gnosisSafe'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { ChainId } from '../state/lists/actions'
 
 const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe']
 
@@ -40,8 +41,25 @@ async function checkIsSmartContractWallet(
   return code !== '0x'
 }
 
-function checkIsSupportedWallet(name: string | undefined): boolean {
-  return !UNSUPPORTED_WC_WALLETS.has(name || '')
+function checkIsSupportedWallet(params: {
+  walletName?: string
+  chainId?: number
+  gnosisSafeInfo?: SafeInfoResponse
+}): boolean {
+  const { walletName, chainId, gnosisSafeInfo } = params
+
+  if (walletName && UNSUPPORTED_WC_WALLETS.has(walletName)) {
+    // Unsupported wallet
+    return false
+  }
+
+  if (chainId === ChainId.XDAI && !!gnosisSafeInfo) {
+    // Gnosis Safe is unsupported in xDAI
+    // See https://github.com/gnosis/safe-react/issues/2999 and https://github.com/gnosis/safe-react/issues/3002
+    return false
+  }
+
+  return true
 }
 
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
@@ -98,7 +116,11 @@ export function useWalletInfo(): ConnectedWalletInfo {
     if (!chainId || !account || !walletName || !GNOSIS_SAFE_WALLET_NAMES.includes(walletName)) {
       setGnosisSafeInfo(undefined)
     } else {
-      getSafeInfo(chainId, account).then(setGnosisSafeInfo)
+      getSafeInfo(chainId, account)
+        .then(setGnosisSafeInfo)
+        .catch((error) => {
+          console.error('[api/gnosisSafe] Error fetching GnosisSafe info', error)
+        })
     }
   }, [chainId, account, walletName])
 
@@ -112,7 +134,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
     walletName,
     icon,
     ensName: ENSName || undefined,
-    isSupportedWallet: checkIsSupportedWallet(walletName),
+    isSupportedWallet: checkIsSupportedWallet({ walletName, chainId, gnosisSafeInfo }),
 
     // TODO: For now, all SC wallets use pre-sign instead of offchain signing
     // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing

@@ -25,6 +25,7 @@ export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
 export const PRODUCTION_URL = 'cowswap.exchange'
+export const BARN_URL = `barn.${PRODUCTION_URL}`
 
 const DISABLED_WALLETS = /^(?:WALLET_LINK|INJECTED|COINBASE_LINK|FORTMATIC|Portis)$/i
 
@@ -37,7 +38,7 @@ export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((
 }, {} as { [key: string]: WalletInfo })
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
-export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', '1inch Wallet', 'WallETH'])
+export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
@@ -68,6 +69,7 @@ export const DEFAULT_ORDER_DELAY = 20000 // 20s
 export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
 export const PRICE_API_TIMEOUT_MS = 10000 // 10s
+export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
@@ -104,3 +106,9 @@ export const FEE_SIZE_THRESHOLD = new Fraction(10, 100) // 30%
 
 // default value provided as userAddress to Paraswap API if the user wallet is not connected
 export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
+
+export const MAXIMUM_ORDERS_TO_DISPLAY = 10
+export const AMOUNT_OF_ORDERS_TO_FETCH = 100
+
+// last wallet provider key used in local storage
+export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'

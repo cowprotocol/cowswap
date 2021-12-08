@@ -139,7 +139,7 @@ function CurrencyRow({
   return (
     <MenuItem
       style={style}
-      className={`token-item-${key}`}
+      className={`token-item token-item-${key}`}
       onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}

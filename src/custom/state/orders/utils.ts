@@ -9,14 +9,21 @@ import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { calculatePrice, invertPrice, ZERO_BIG_NUMBER } from '@gnosis.pm/dex-js'
 import { BigNumber } from 'bignumber.js'
 
-export type OrderTransitionStatus = 'unknown' | 'fulfilled' | 'expired' | 'cancelled' | 'presigned' | 'pending'
+export type OrderTransitionStatus =
+  | 'unknown'
+  | 'fulfilled'
+  | 'expired'
+  | 'cancelled'
+  | 'presignaturePending'
+  | 'presigned'
+  | 'pending'
 
 /**
  * An order is considered fulfilled if `executedByAmount` and `executedSellAmount` are > 0.
  *
  * We assume the order is `fillOrKill`
  */
-function isOrderFulfilled(order: OrderMetaData): boolean {
+function isOrderFulfilled(order: Pick<OrderMetaData, 'executedBuyAmount' | 'executedSellAmount'>): boolean {
   return Number(order.executedBuyAmount) > 0 && Number(order.executedSellAmount) > 0
 }
 
@@ -28,7 +35,7 @@ function isOrderFulfilled(order: OrderMetaData): boolean {
  *
  * We assume the order is not fulfilled.
  */
-function isOrderCancelled(order: OrderMetaData): boolean {
+function isOrderCancelled(order: Pick<OrderMetaData, 'creationDate' | 'invalidated'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
   return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
@@ -38,19 +45,35 @@ function isOrderCancelled(order: OrderMetaData): boolean {
  * The buffer is used to take into account race conditions where a solver might
  * execute a transaction after the backend changed the order status.
  */
-function isOrderExpired(order: OrderMetaData): boolean {
+function isOrderExpired(order: Pick<OrderMetaData, 'validTo'>): boolean {
   const validToTime = order.validTo * 1000 // validTo is in seconds
   return Date.now() - validToTime > PENDING_ORDERS_BUFFER
+}
+
+function isPresignPending(order: Pick<OrderMetaData, 'status'>): boolean {
+  return order.status === 'presignaturePending'
 }
 
 /**
  * An order is considered presigned, when it transitions from "presignaturePending" to just "pending"
  */
-function isOrderPresigned(order: OrderMetaData): boolean {
+function isOrderPresigned(order: Pick<OrderMetaData, 'signingScheme' | 'status'>): boolean {
   return order.signingScheme == 'presign' && order.status === 'open'
 }
 
-export function classifyOrder(order: OrderMetaData | null): OrderTransitionStatus {
+export function classifyOrder(
+  order: Pick<
+    OrderMetaData,
+    | 'uid'
+    | 'validTo'
+    | 'creationDate'
+    | 'invalidated'
+    | 'executedBuyAmount'
+    | 'executedSellAmount'
+    | 'signingScheme'
+    | 'status'
+  > | null
+): OrderTransitionStatus {
   if (!order) {
     console.debug(`[state::orders::classifyOrder] unknown order`)
     return 'unknown'
@@ -70,6 +93,9 @@ export function classifyOrder(order: OrderMetaData | null): OrderTransitionStatu
       new Date(order.validTo * 1000)
     )
     return 'expired'
+  } else if (isPresignPending(order)) {
+    console.debug(`[state::orders::classifyOrder] presignPending order ${order.uid.slice(0, 10)}`)
+    return 'presignaturePending'
   } else if (isOrderPresigned(order)) {
     console.debug(`[state::orders::classifyOrder] presigned order ${order.uid.slice(0, 10)}`)
     return 'presigned'

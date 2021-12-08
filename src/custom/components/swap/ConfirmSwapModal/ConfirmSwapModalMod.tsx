@@ -5,6 +5,7 @@ import { /* Currency,  */ Percent /* , TradeType */ } from '@uniswap/sdk-core'
 import { ReactNode, useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
+  OperationType,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import SwapModalFooter from 'components/swap/SwapModalFooter'
@@ -44,6 +45,7 @@ export default function ConfirmSwapModal({
   onConfirm,
   onDismiss,
   recipient,
+  priceImpact,
   swapErrorMessage,
   isOpen,
   attemptingTxn,
@@ -58,6 +60,7 @@ export default function ConfirmSwapModal({
   attemptingTxn: boolean
   txHash: string | undefined
   recipient: string | null
+  priceImpact?: Percent
   allowedSlippage: Percent
   onAcceptChanges: () => void
   onConfirm: () => void
@@ -88,12 +91,13 @@ export default function ConfirmSwapModal({
         trade={trade}
         allowsOffchainSigning={allowsOffchainSigning}
         allowedSlippage={allowedSlippage}
+        priceImpact={priceImpact}
         recipient={recipient}
         showAcceptChanges={showAcceptChanges}
         onAcceptChanges={onAcceptChanges}
       />
     ) : null
-  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade, allowsOffchainSigning])
+  }, [trade, allowsOffchainSigning, allowedSlippage, priceImpact, recipient, showAcceptChanges, onAcceptChanges])
 
   const modalBottom = useCallback(() => {
     return trade ? (
@@ -135,6 +139,7 @@ export default function ConfirmSwapModal({
       content={confirmationContent}
       pendingText={<PendingTextComponent trade={trade} /> /*pendingText*/}
       currencyToAdd={trade?.outputAmount.currency}
+      operationType={OperationType.ORDER_SIGN}
     />
   )
 }

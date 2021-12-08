@@ -9,14 +9,17 @@ import { warningSeverity } from 'utils/prices'
 
 import { FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index' // mod
 import { formatSmart } from 'utils/format'
+import Loader from 'components/Loader'
 
 export function FiatValue({
   fiatValue,
   priceImpact,
+  priceImpactLoading, // mod
   className, // mod
 }: {
   fiatValue: CurrencyAmount<Currency> | null | undefined
   priceImpact?: Percent
+  priceImpactLoading?: boolean
   className?: string // mod
 }) {
   const theme = useTheme()
@@ -35,7 +38,12 @@ export function FiatValue({
         <Trans>
           ≈ $
           <HoverInlineText
-            text={formatSmart(fiatValue, FIAT_PRECISION) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */}
+            text={
+              formatSmart(fiatValue, FIAT_PRECISION, {
+                thousandSeparator: true,
+                isLocaleAware: true,
+              }) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */
+            }
           />
         </Trans>
       ) : (
@@ -46,6 +54,7 @@ export function FiatValue({
           &nbsp;({formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%)
         </span>
       ) : null}
+      {priceImpactLoading && <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />}
     </TYPE.body>
   )
 }

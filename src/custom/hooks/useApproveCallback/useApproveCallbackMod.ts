@@ -1,5 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
+import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
@@ -11,6 +12,9 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useActiveWeb3React } from 'hooks/web3'
+
+// Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
+const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -84,10 +88,18 @@ export function useApproveCallback(
     const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
       // general fallback for tokens who restrict approval amounts
       useExact = true
-      return tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString())
+      return tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString()).catch((error) => {
+        console.log(
+          '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
+            APPROVE_GAS_LIMIT_DEFAULT.toString(),
+          error
+        )
+        useExact = false
+        return APPROVE_GAS_LIMIT_DEFAULT
+      })
     })
 
-    openTransactionConfirmationModal(`Approve token ${amountToApprove.currency.symbol} for trading`)
+    openTransactionConfirmationModal(`Approving ${amountToApprove.currency.symbol} for trading`)
     return (
       tokenContract
         .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
