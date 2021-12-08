@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
 
 import HeaderMod, {
@@ -32,6 +31,8 @@ import { useModalOpen } from 'state/application/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { NetworkInfo } from './NetworkCard'
+import Web3Status from 'components/Web3Status'
+import NetworkSelector from 'components/Header/NetworkSelector'
 import SVG from 'react-inlinesvg'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -223,8 +224,11 @@ export default function Header() {
             <StyledNavLink to="/profile">Profile</StyledNavLink>
           </HeaderLinks>
         </HeaderRow>
+
         <HeaderControls>
-          {/* <NetworkCard /> */}
+          <HeaderElement>
+            <NetworkSelector />
+          </HeaderElement>
           <HeaderElement>
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (

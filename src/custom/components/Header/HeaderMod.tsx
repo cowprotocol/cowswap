@@ -70,6 +70,10 @@ export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
 
+  &:not(:first-child) {
+    margin-left: 0.5em;
+  }
+
   /* addresses safari's lack of support for "gap" */
   & > *:not(:first-child) {
     margin-left: 8px;
