@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 
-import { gnosisSafe, injected } from '../connectors'
+import { gnosisSafe, injected } from 'connectors'
 import { IS_IN_IFRAME, NetworkContextName } from '../constants/misc'
 import { isMobile } from '../utils/userAgent'
 
