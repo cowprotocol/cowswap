@@ -1,4 +1,4 @@
-import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star } from 'react-feather'
+import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User } from 'react-feather'
 
 import MenuMod, {
   MenuItem,
@@ -11,7 +11,8 @@ import { useToggleModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
 import { Separator as SeparatorBase } from 'components/SearchModal/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
-import GameIcon from 'assets/cow-swap/game.gif'
+import cowRunnerImage from 'assets/cow-swap/game.gif'
+import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/reducer'
 
 import TwitterImage from 'assets/cow-swap/twitter.svg'
@@ -224,9 +225,13 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap
         </ResponsiveInternalMenuItem>
-        <ResponsiveInternalMenuItem to="/about" onClick={close}>
-          <Star size={14} /> About
+        <ResponsiveInternalMenuItem to="/profile" onClick={close}>
+          <User size={14} /> Profile
         </ResponsiveInternalMenuItem>
+        <InternalMenuItem to="/about" onClick={close}>
+          <Star size={14} />
+          About
+        </InternalMenuItem>
 
         <InternalMenuItem to="/faq" onClick={close}>
           <HelpCircle size={14} />
@@ -262,11 +267,18 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           </span>
         </MenuItem>
 
-        <InternalMenuItem to="/play" onClick={close}>
+        <InternalMenuItem to="/play/mev-slicer" onClick={close}>
           <span role="img" aria-label="Play CowGame">
-            <img src={GameIcon} alt="Play CowGame" />
+            <img src={ninjaCowImage} alt="Play Cow MEV Slicer" />
           </span>{' '}
-          CowGame
+          MEV Slicer
+        </InternalMenuItem>
+
+        <InternalMenuItem to="/play/cow-runner" onClick={close}>
+          <span role="img" aria-label="Play CowGame">
+            <img src={cowRunnerImage} alt="Play Cow Runner Game" />
+          </span>{' '}
+          Cow Runner
         </InternalMenuItem>
 
         <MenuItemResponsive onClick={() => toggleDarkMode()}>
