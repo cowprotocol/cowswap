@@ -16,6 +16,7 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { SupportedChainId } from 'constants/chains'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
+import { isWrappingTrade } from 'state/swap/utils'
 
 type ExactInSwapParams = {
   parsedAmount: CurrencyAmount<Currency> | undefined
@@ -107,10 +108,15 @@ export function useCalculateQuote(params: GetQuoteParams) {
 
 // calculates a new Quote and inverse swap values
 export default function useExactInSwap({ quote, outputCurrency, parsedAmount }: ExactInSwapParams) {
+  const { chainId } = useActiveWeb3React()
+
+  const isWrapping = isWrappingTrade(parsedAmount?.currency, outputCurrency, chainId)
+
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount,
     outputCurrency,
     quote,
+    isWrapping,
   })
 
   return bestTradeExactIn

@@ -9,4 +9,5 @@ export type ParsedAmounts = {
 export interface FallbackPriceImpactParams {
   abTrade?: TradeGp
   fiatPriceImpact?: Percent
+  isWrapping: boolean
 }

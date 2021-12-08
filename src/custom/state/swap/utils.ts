@@ -1,5 +1,18 @@
-import { Percent, TradeType } from '@uniswap/sdk-core'
+import { SupportedChainId } from 'constants/chains'
+import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import TradeGp from './TradeGp'
+import { WETH9_EXTENDED } from 'constants/tokens'
+
+export function isWrappingTrade(
+  sellCurrency: Currency | null | undefined,
+  buyCurrency: Currency | null | undefined,
+  chainId?: SupportedChainId
+): boolean {
+  return Boolean(
+    (sellCurrency?.isNative && buyCurrency?.wrapped.equals(WETH9_EXTENDED[chainId || SupportedChainId.MAINNET])) ||
+      (sellCurrency?.wrapped.equals(WETH9_EXTENDED[chainId || SupportedChainId.MAINNET]) && buyCurrency?.isNative)
+  )
+}
 
 export function logTradeDetails(trade: TradeGp | undefined, allowedSlippage: Percent) {
   // don't do anything outside of dev env

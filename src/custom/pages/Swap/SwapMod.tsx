@@ -259,7 +259,7 @@ export default function Swap({
     [independentField, parsedAmount, showWrap, trade]
   )
 
-  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts })
+  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
