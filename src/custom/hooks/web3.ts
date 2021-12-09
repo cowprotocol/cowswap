@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected, walletconnect, getProviderType, WalletProvider } from 'connectors'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 // exports from the original file
 export { useActiveWeb3React, useInactiveListener } from '@src/hooks/web3'
@@ -71,6 +72,26 @@ export function useEagerConnect() {
       setTried(true)
     }
   }, [active])
+
+  useEffect(() => {
+    if (connector) {
+      // check if current connector is of type WalletConnect
+      if (connector instanceof WalletConnectConnector) {
+        const walletConnect = connector.walletConnectProvider.signer.connection.wc
+
+        // listen on disconnect events directly on WalletConnect client and close connection
+        // important if the connection is closed from the wallet side after page refresh
+        walletConnect.on('disconnect', (error: any) => {
+          connector.close()
+          localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+
+          if (error) {
+            throw error
+          }
+        })
+      }
+    }
+  }, [connector])
 
   useEffect(() => {
     // add beforeunload event listener on initial component mount
