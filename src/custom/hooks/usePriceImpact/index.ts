@@ -1,7 +1,7 @@
 import { Percent } from '@uniswap/sdk-core'
 import useFiatValuePriceImpact from './useFiatValuePriceImpact'
 import useFallbackPriceImpact from './useFallbackPriceImpact'
-import { FallbackPriceImpactParams, ParsedAmounts } from './commonTypes'
+import { FallbackPriceImpactParams, ParsedAmounts } from './types'
 import { QuoteError } from 'state/price/actions'
 
 type PriceImpactParams = Omit<FallbackPriceImpactParams, 'fiatPriceImpact'> & {

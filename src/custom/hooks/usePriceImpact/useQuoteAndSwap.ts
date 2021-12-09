@@ -17,6 +17,7 @@ import { SupportedChainId } from 'constants/chains'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
+import { useSwapState } from 'state/swap/hooks'
 
 type ExactInSwapParams = {
   parsedAmount: CurrencyAmount<Currency> | undefined
@@ -34,6 +35,14 @@ type GetQuoteParams = {
 
 type FeeQuoteParamsWithError = FeeQuoteParams & { error?: QuoteError }
 
+function useOnSwapParamChange<T>({ onChangeCb, predicate }: { predicate: T; onChangeCb: (...params: any[]) => any }) {
+  const { typedValue, INPUT, OUTPUT, independentField } = useSwapState()
+
+  useEffect(() => {
+    Boolean(predicate) && onChangeCb
+  }, [typedValue, INPUT.currencyId, OUTPUT.currencyId, independentField, predicate, onChangeCb])
+}
+
 export function useCalculateQuote(params: GetQuoteParams) {
   const {
     amountAtoms: amount,
@@ -47,6 +56,12 @@ export function useCalculateQuote(params: GetQuoteParams) {
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
   const [loading, setLoading] = useState(false)
+
+  // listens to changed swap params and calls onChangeCb based on predicate Boolean(predicate)
+  useOnSwapParamChange({
+    onChangeCb: () => setLoading(true),
+    predicate: amount,
+  })
 
   useEffect(() => {
     const chainId = supportedChainId(preChain)

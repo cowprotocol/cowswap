@@ -4,7 +4,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { useSwapState } from 'state/swap/hooks'
 
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
-import { FallbackPriceImpactParams } from './commonTypes'
+import { FallbackPriceImpactParams } from './types'
 import { calculateFallbackPriceImpact, FeeQuoteParams } from 'utils/price'
 import TradeGp from 'state/swap/TradeGp'
 import { QuoteInformationObject } from 'state/price/reducer'
