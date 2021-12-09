@@ -1,3 +1,7 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
+
 // include style rules in snapshots
 import 'jest-styled-components'
 
