@@ -1,4 +1,4 @@
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'

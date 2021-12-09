@@ -1,7 +1,7 @@
 import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { FeeQuoteParams, FeeInformation } from '../../src/custom/utils/price'
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from '@ethersproject/units'
 
 const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
 const FOUR_HOURS = 3600 * 4 * 1000
