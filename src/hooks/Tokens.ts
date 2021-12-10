@@ -5,7 +5,7 @@ import { SupportedChainId } from 'constants/chains'
 import { useMemo } from 'react'
 
 import { createTokenFilterFunction } from '../components/SearchModal/filtering'
-import { ExtendedEther, WETH9_EXTENDED } from '../constants/tokens'
+import { GpEther as ExtendedEther, WETH9_EXTENDED } from 'constants/tokens'
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
