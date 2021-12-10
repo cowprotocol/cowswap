@@ -49,7 +49,7 @@ const ActiveRowWrapper = styled.div`
   width: 100%;
 `
 const FlyoutHeader = styled.div`
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.text1};
   font-weight: 400;
 `
 const FlyoutMenu = styled.div`
@@ -76,7 +76,7 @@ const FlyoutMenu = styled.div`
 `
 const FlyoutRow = styled.div<{ active: boolean }>`
   align-items: center;
-  background-color: ${({ active, theme }) => (active ? theme.bg2 : 'transparent')};
+  background-color: ${({ active, theme }) => (active ? theme.primary1 : 'transparent')};
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -85,6 +85,12 @@ const FlyoutRow = styled.div<{ active: boolean }>`
   padding: 6px 8px;
   text-align: left;
   width: 100%;
+  color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+  &:hover {
+    color: ${({ theme, active }) => !active && theme.text1};
+    background: ${({ theme, active }) => !active && theme.bg4};
+  }
+  transition: background 0.13s ease-in-out;
 `
 const FlyoutRowActiveIndicator = styled.div`
   background-color: ${({ theme }) => theme.green1};
