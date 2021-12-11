@@ -77,9 +77,9 @@ export default function PopupItem({
   let popupContent
   if ('txn' in content) {
     const {
-      txn: { hash },
+      txn: { hash, success, summary },
     } = content
-    popupContent = <TransactionPopup hash={hash} />
+    popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
   } else if ('listUpdate' in content) {
     const {
       listUpdate: { listUrl, oldList, newList, auto },
@@ -87,9 +87,9 @@ export default function PopupItem({
     popupContent = <ListUpdatePopup popKey={popKey} listUrl={listUrl} oldList={oldList} newList={newList} auto={auto} />
   } else if ('metatxn' in content) {
     const {
-      metatxn: { id },
+      metatxn: { id, success, summary },
     } = content
-    popupContent = <TransactionPopup hash={id} />
+    popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
   }
 
   const faderStyle = useSpring({
