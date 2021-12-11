@@ -138,7 +138,6 @@ export const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  padding: 0;
   color: ${({ theme }) => theme.primary5};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   pointer-events: ${({ disabled }) => (!disabled ? 'initial' : 'none')};

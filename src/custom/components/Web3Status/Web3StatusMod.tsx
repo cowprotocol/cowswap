@@ -234,7 +234,7 @@ export function Web3StatusInner({
     return (
       <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <Text>
-          <Trans>Connect Wallet</Trans>
+          <Trans>Connect to a Wallet</Trans>
         </Text>
       </Web3StatusConnect>
     )
