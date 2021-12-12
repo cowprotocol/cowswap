@@ -92,8 +92,8 @@ const FlyoutRow = styled.div<{ active: boolean }>`
   }
   transition: background 0.13s ease-in-out;
 `
-const FlyoutRowActiveIndicator = styled.div`
-  background-color: ${({ theme }) => theme.green1};
+const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
+  background-color: ${({ active, theme }) => (active ? theme.green1 : '#a7a7a7')};
   border-radius: 50%;
   height: 9px;
   width: 9px;
@@ -210,7 +210,8 @@ export default function NetworkSelector() {
       <FlyoutRow onClick={handleRowClick} active={active}>
         <Logo src={CHAIN_INFO[targetChain].logoUrl} />
         <NetworkLabel>{rowText}</NetworkLabel>
-        {chainId === targetChain && <FlyoutRowActiveIndicator />}
+        {/* {chainId === targetChain && <FlyoutRowActiveIndicator />} */}
+        <FlyoutRowActiveIndicator active={chainId === targetChain} />
       </FlyoutRow>
     )
     // const helpCenterLink = isOptimism ? OPTIMISM_HELP_CENTER_LINK : ARBITRUM_HELP_CENTER_LINK
