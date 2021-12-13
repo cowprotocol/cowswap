@@ -1,5 +1,5 @@
 import TradeGp from 'state/swap/TradeGp'
-import { CurrencyAmount, Currency, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 export type ParsedAmounts = {
   INPUT: CurrencyAmount<Currency> | undefined
@@ -8,6 +8,5 @@ export type ParsedAmounts = {
 
 export interface FallbackPriceImpactParams {
   abTrade?: TradeGp
-  fiatPriceImpact?: Percent
   isWrapping: boolean
 }

@@ -264,6 +264,9 @@ export default function Swap({
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
   const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
+  // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
+  const hideUnknownImpactWarning = !trade || !!onWrap || !priceImpactError || priceImpactLoading
+
   // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
   // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
   const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
@@ -775,7 +778,7 @@ export default function Swap({
           />
           <NoImpactWarning
             trade={trade}
-            hide={!trade || !!onWrap || !priceImpactError || priceImpactLoading}
+            hide={hideUnknownImpactWarning}
             acceptedStatus={impactWarningAccepted}
             acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
             width="99%"

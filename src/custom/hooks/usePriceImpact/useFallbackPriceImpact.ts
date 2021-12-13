@@ -33,34 +33,45 @@ function _getBaTradeParams({ abTrade, sellToken, buyToken }: SwapParams) {
 }
 
 function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: boolean) {
-  if (!shouldCalculate || !abTrade) return undefined
+  if (!shouldCalculate) return undefined
 
   // return the AB Trade's output amount WITHOUT fee
-  return abTrade.outputAmountWithoutFee
+  return abTrade?.outputAmountWithoutFee
 }
 
-export default function useFallbackPriceImpact({ abTrade, fiatPriceImpact, isWrapping }: FallbackPriceImpactParams) {
+export default function useFallbackPriceImpact({ abTrade, isWrapping }: FallbackPriceImpactParams) {
   const {
     typedValue,
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
   } = useSwapState()
 
+  const [loading, setLoading] = useState(false)
+
   // Should we even calc this? Check if fiatPriceImpact exists OR user is wrapping token
-  const shouldCalculate = !Boolean(fiatPriceImpact) || !isWrapping
+  const shouldCalculate = !!abTrade && !isWrapping
+
+  // to bail out early
+  useEffect(() => {
+    if (!shouldCalculate) {
+      setLoading(false)
+    }
+  }, [shouldCalculate])
 
   // Calculate the necessary params to get the inverse trade impact
   const { parsedAmount, outputCurrency, ...swapQuoteParams } = useMemo(
     () => ({
-      parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
       ..._getBaTradeParams({ abTrade, sellToken, buyToken }),
+      parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
     }),
     [abTrade, buyToken, sellToken, shouldCalculate]
   )
 
-  const { quote, loading } = useCalculateQuote({
-    amountAtoms: parsedAmount?.quotient.toString(),
+  const { quote } = useCalculateQuote({
     ...swapQuoteParams,
+    amountAtoms: parsedAmount?.quotient.toString(),
+    loading,
+    setLoading,
   })
 
   // Calculate BA trade

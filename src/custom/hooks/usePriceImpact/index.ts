@@ -15,16 +15,14 @@ export interface PriceImpact {
 }
 
 export default function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpactParams): PriceImpact {
-  /* const fiatPriceImpact =  */ useFiatValuePriceImpact(parsedAmounts)
-  // TODO: remove this - testing only - forces fallback price impact
+  const fiatPriceImpact = useFiatValuePriceImpact(parsedAmounts)
   const {
     impact: fallbackPriceImpact,
     error,
     loading,
-  } = useFallbackPriceImpact({ abTrade, fiatPriceImpact: undefined, isWrapping })
+  } = useFallbackPriceImpact({ abTrade: fiatPriceImpact ? undefined : abTrade, isWrapping })
 
-  const priceImpact = /* fiatPriceImpact ||  */ fallbackPriceImpact
+  const priceImpact = fiatPriceImpact || fallbackPriceImpact
 
-  // TODO: remove this - testing only - forces fallback
-  return { priceImpact, error, loading }
+  return { priceImpact, error: fiatPriceImpact ? undefined : error, loading }
 }
