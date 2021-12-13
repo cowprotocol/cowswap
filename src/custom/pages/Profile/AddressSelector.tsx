@@ -83,7 +83,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
 const Wrapper = styled.div`
   position: relative;
   display: inline;
-  margin-right: 8px;
+  margin-right: 0.4rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-self: end;
   `};
@@ -108,10 +108,13 @@ const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  left: 0rem;
+  left: 0;
   top: 1.75rem;
   z-index: 100;
-  min-width: 185px;
+  min-width: 350px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`;
+    min-width: 145px
+  `};
 
   > {
     padding: 12px;
@@ -128,7 +131,7 @@ const MenuItem = css`
   flex-direction: row;
   font-size: 16px;
   font-weight: 400;
-  justify-content: space-between;
+  justify-content: start;
   :hover {
     text-decoration: none;
   }
@@ -145,8 +148,8 @@ export const AddressInfo = styled.button`
   font-weight: 700;
   font-size: 12px;
   height: 100%;
-  margin: 0;
-  padding: 0.2rem;
+  margin: 0 0.4rem;
+  padding: 0.2rem 0.4rem;
 
   :hover,
   :focus {
