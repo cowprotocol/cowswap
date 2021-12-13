@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/macro'
+// import { Trans } from '@lingui/macro'
 import {
   // ARBITRUM_HELP_CENTER_LINK,
   // CHAIN_INFO,
@@ -48,27 +48,28 @@ const ActiveRowWrapper = styled.div`
   padding: 8px 0 8px 0;
   width: 100%;
 `
-const FlyoutHeader = styled.div`
-  color: ${({ theme }) => theme.text1};
-  font-weight: 400;
-`
+// const FlyoutHeader = styled.div`
+//   color: ${({ theme }) => theme.text1};
+//   font-weight: 400;
+// `
 const FlyoutMenu = styled.div`
   align-items: flex-start;
+  border: 1px solid ${({ theme }) => theme.bg0};
   background-color: ${({ theme }) => theme.bg1};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 20px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   font-size: 16px;
   overflow: auto;
-  padding: 16px;
+  padding: 0.3rem;
   position: absolute;
   top: 64px;
-  width: 272px;
+  min-width: 175px;
   z-index: 99;
   & > *:not(:last-child) {
-    margin-bottom: 12px;
+    margin-bottom: 5px;
   }
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 50px;
@@ -105,14 +106,16 @@ const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
 // `
 const Logo = styled.img`
   height: 20px;
-  width: 20px;
+  width: 16px;
   margin-right: 8px;
 `
 const NetworkLabel = styled.div`
   flex: 1 1 auto;
+  margin: 0px auto 0px 8px;
 `
 const SelectorLabel = styled(NetworkLabel)`
   display: none;
+  margin-left: 0;
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     display: block;
     margin-right: 8px;
@@ -120,8 +123,8 @@ const SelectorLabel = styled(NetworkLabel)`
 `
 const SelectorControls = styled.div<{ interactive: boolean }>`
   align-items: center;
-  background-color: ${({ theme }) => theme.bg1};
-  border: 2px solid ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.bg4};
+  border: 1px solid ${({ theme }) => theme.bg0};
   border-radius: 12px;
   color: ${({ theme }) => theme.text1};
   cursor: ${({ interactive }) => (interactive ? 'pointer' : 'auto')};
@@ -245,9 +248,9 @@ export default function NetworkSelector() {
       </SelectorControls>
       {open && (
         <FlyoutMenu>
-          <FlyoutHeader>
+          {/* <FlyoutHeader>
             <Trans>Select a network</Trans>
-          </FlyoutHeader>
+          </FlyoutHeader> */}
           <Row targetChain={SupportedChainId.MAINNET} />
           <Row targetChain={SupportedChainId.RINKEBY} />
           <Row targetChain={SupportedChainId.XDAI} />
