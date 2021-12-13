@@ -76,7 +76,7 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
-import { logTradeDetails } from 'state/swap/utils'
+// import { logTradeDetails } from 'state/swap/utils'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
@@ -189,7 +189,7 @@ export default function Swap({
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({ token: INPUT.currencyId, chainId })
 
   // Log all trade information
-  logTradeDetails(v2Trade, allowedSlippage)
+  // logTradeDetails(v2Trade, allowedSlippage)
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
@@ -259,11 +259,14 @@ export default function Swap({
     [independentField, parsedAmount, showWrap, trade]
   )
 
-  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts })
+  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
   const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
+  // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
+  const hideUnknownImpactWarning = !trade || !!onWrap || !priceImpactError || priceImpactLoading
+
   // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
   // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
   const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
@@ -775,7 +778,7 @@ export default function Swap({
           />
           <NoImpactWarning
             trade={trade}
-            hide={!trade || !!onWrap || !priceImpactError || priceImpactLoading}
+            hide={hideUnknownImpactWarning}
             acceptedStatus={impactWarningAccepted}
             acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
             width="99%"

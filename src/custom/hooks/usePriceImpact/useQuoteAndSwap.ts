@@ -16,6 +16,9 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { SupportedChainId } from 'constants/chains'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
+import { isWrappingTrade } from 'state/swap/utils'
+
+type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
 type ExactInSwapParams = {
   parsedAmount: CurrencyAmount<Currency> | undefined
@@ -29,7 +32,7 @@ type GetQuoteParams = {
   buyToken?: string | null
   fromDecimals?: number
   toDecimals?: number
-}
+} & WithLoading
 
 type FeeQuoteParamsWithError = FeeQuoteParams & { error?: QuoteError }
 
@@ -40,12 +43,13 @@ export function useCalculateQuote(params: GetQuoteParams) {
     buyToken,
     fromDecimals = DEFAULT_DECIMALS,
     toDecimals = DEFAULT_DECIMALS,
+    loading,
+    setLoading,
   } = params
   const { chainId: preChain } = useActiveWeb3React()
   const { account } = useWalletInfo()
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const chainId = supportedChainId(preChain)
@@ -100,17 +104,22 @@ export function useCalculateQuote(params: GetQuoteParams) {
         setLocalQuote(quoteError)
       })
       .finally(() => setLoading(false))
-  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals])
+  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, setLoading])
 
   return { quote, loading, setLoading }
 }
 
 // calculates a new Quote and inverse swap values
 export default function useExactInSwap({ quote, outputCurrency, parsedAmount }: ExactInSwapParams) {
+  const { chainId } = useActiveWeb3React()
+
+  const isWrapping = isWrappingTrade(parsedAmount?.currency, outputCurrency, chainId)
+
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount,
     outputCurrency,
     quote,
+    isWrapping,
   })
 
   return bestTradeExactIn
