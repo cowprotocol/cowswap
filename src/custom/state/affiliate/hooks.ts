@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import useSWR from 'swr'
 import { AppState } from 'state'
 import { useAppDispatch } from 'state/hooks'
 import { updateAppDataHash, updateReferralAddress } from 'state/affiliate/actions'
@@ -37,15 +38,11 @@ export function useIsNotificationClosed(id?: string): boolean | null {
   })
 }
 
-export function useUploadReferralDocAndSetDataHash() {
+export function useUploadReferralDocAndSetDataHash(referralAddress?: string) {
   const dispatch = useAppDispatch()
-
-  return useCallback(
-    async (referralAddress: string) => {
-      const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress))
-
-      dispatch(updateAppDataHash(appDataHash))
-    },
-    [dispatch]
+  const { data } = useSWR(['referralAddress', referralAddress], () =>
+    referralAddress ? uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress)) : ''
   )
+
+  return useCallback(() => data && dispatch(updateAppDataHash(data)), [data, dispatch])
 }

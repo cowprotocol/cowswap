@@ -3,7 +3,6 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
 import { useReferralAddress, useResetReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
-import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
@@ -26,13 +25,12 @@ const STATUS_TO_MESSAGE_MAPPING: Record<AffiliateStatus, string> = {
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
 export default function AffiliateStatusCheck() {
-  const appDispatch = useAppDispatch()
   const resetReferralAddress = useResetReferralAddress()
-  const uploadReferralDocAndSetDataHash = useUploadReferralDocAndSetDataHash()
   const history = useHistory()
   const location = useLocation()
   const { account, chainId } = useActiveWeb3React()
   const referralAddress = useReferralAddress()
+  const uploadReferralDocAndSetDataHash = useUploadReferralDocAndSetDataHash(referralAddress?.value)
   const referralAddressQueryParam = useParseReferralQueryParam()
   const allRecentActivity = useRecentActivity()
   const [affiliateState, setAffiliateState] = useState<AffiliateStatus | null>()
@@ -83,7 +81,7 @@ export default function AffiliateStatusCheck() {
     }
 
     try {
-      await retry(() => uploadReferralDocAndSetDataHash(referralAddress.value), DEFAULT_RETRY_OPTIONS).promise
+      await retry(async () => uploadReferralDocAndSetDataHash(), DEFAULT_RETRY_OPTIONS).promise
 
       setAffiliateState('ACTIVE')
       isFirstTrade.current = true
@@ -95,9 +93,9 @@ export default function AffiliateStatusCheck() {
     chainId,
     account,
     referralAddress,
+    fulfilledActivity.length,
     resetReferralAddress,
     uploadReferralDocAndSetDataHash,
-    fulfilledActivity.length,
   ])
 
   useEffect(() => {
@@ -129,17 +127,7 @@ export default function AffiliateStatusCheck() {
     }
 
     uploadDataDoc()
-  }, [
-    referralAddress,
-    account,
-    history,
-    chainId,
-    appDispatch,
-    uploadDataDoc,
-    resetReferralAddress,
-    location.search,
-    referralAddressQueryParam,
-  ])
+  }, [referralAddress, account, history, chainId, uploadDataDoc, location.search, referralAddressQueryParam])
 
   if (error) {
     return (
