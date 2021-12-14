@@ -1,60 +1,43 @@
-import { Token } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
-import { DefaultTheme } from 'styled-components/macro'
-import { AlertCircle } from 'react-feather'
-import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
+import { Token } from '@uniswap/sdk-core'
+import { TokenList } from '@uniswap/token-lists'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import { RowFixed } from 'components/Row'
-import { TYPE } from 'theme'
-import { ExternalLink } from 'theme/components'
-import ListLogo from 'components/ListLogo'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { PaddedColumn } from '@src/components/SearchModal/styleds'
+import ListLogo from 'components/ListLogo'
+import { RowFixed } from 'components/Row'
+import { useActiveWeb3React } from 'hooks/web3'
+import { transparentize } from 'polished'
+import { AlertCircle } from 'react-feather'
+import styled, { useTheme } from 'styled-components/macro'
+import { ExternalLink, TYPE } from 'theme'
+import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 
-export interface CardComponentProps extends Pick<ImportProps, 'list'> {
-  chainId?: number
-  theme: DefaultTheme
-  token: Token
-  key: string
-}
-
-const Wrapper = styled.div`
-  width: 100%;
-
-  > div {
-    height: 100%;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    overflow-y: scroll;
-  `}
-
-  ${AutoColumn} > ${AutoColumn} > svg {
-    stroke: ${({ theme }) => theme.red1};
-  }
-
-  ${RowFixed} > svg {
-    stroke: ${({ theme }) => theme.red1};
-  }
-
-  ${PaddedColumn} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      position: sticky;
-      top: 0;
-      background: ${({ theme }) => theme.bg1};
-    `}
-  }
+const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
+  background-color: ${({ theme, highWarning }) =>
+    highWarning ? transparentize(0.8, theme.red1) : transparentize(0.8, theme.yellow2)};
+  width: fit-content;
 `
 
-function CardComponent({ theme, key, token, chainId, list }: CardComponentProps) {
+const AddressText = styled(TYPE.blue)`
+  font-size: 12px;
+  word-break: break-all;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 10px;
+  `}
+`
+interface TokenImportCardProps {
+  list?: TokenList
+  token: Token
+}
+const TokenImportCard = ({ list, token }: TokenImportCardProps) => {
+  const theme = useTheme()
+  const { chainId } = useActiveWeb3React()
   return (
-    <Card backgroundColor={theme.bg4} key={key} className=".token-warning-container" padding="2rem">
+    <Card backgroundColor={theme.bg4} padding="2rem">
       <AutoColumn gap="10px" justify="center">
         <CurrencyLogo currency={token} size={'32px'} />
-
         <AutoColumn gap="4px" justify="center">
           <TYPE.body ml="8px" mr="8px" fontWeight={500} fontSize={20}>
             {token.symbol}
@@ -78,7 +61,7 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
         ) : (
           <WarningWrapper $borderRadius="4px" padding="4px" highWarning={true}>
             <RowFixed>
-              <AlertCircle size="10px" />
+              <AlertCircle stroke={theme.red1} size="10px" />
               <TYPE.body color={theme.red1} ml="4px" fontSize="10px" fontWeight={500}>
                 <Trans>Unknown Source</Trans>
               </TYPE.body>
@@ -90,10 +73,4 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
   )
 }
 
-export function ImportToken(props: Omit<ImportProps, 'CardComponent'>) {
-  return (
-    <Wrapper>
-      <ImportTokenMod {...props} CardComponent={CardComponent} />{' '}
-    </Wrapper>
-  )
-}
+export default TokenImportCard
