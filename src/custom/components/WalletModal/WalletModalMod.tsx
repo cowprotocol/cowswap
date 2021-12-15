@@ -3,6 +3,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AutoRow } from 'components/Row'
+// import { useWalletConnectMonitoringEventCallback } from 'hooks/useMonitoringEventCallback'
 import { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import styled from 'styled-components/macro'
@@ -154,6 +155,8 @@ export default function WalletModal({
 
   const previousAccount = usePrevious(account)
 
+  // const logMonitoringEvent = useWalletConnectMonitoringEventCallback()
+
   // close on connection, when logged out before
   useEffect(() => {
     if (account && !previousAccount && walletModalOpen) {
@@ -211,13 +214,18 @@ export default function WalletModal({
     }
 
     connector &&
-      activate(connector, undefined, true).catch((error) => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector) // a little janky...can't use setError because the connector isn't set
-        } else {
-          setPendingError(true)
-        }
-      })
+      activate(connector, undefined, true)
+        // .then(async () => {
+        //   const walletAddress = await connector.getAccount()
+        //   logMonitoringEvent({ walletAddress })
+        // })
+        .catch((error) => {
+          if (error instanceof UnsupportedChainIdError) {
+            activate(connector) // a little janky...can't use setError because the connector isn't set
+          } else {
+            setPendingError(true)
+          }
+        })
   }
 
   // close wallet modal if fortmatic modal is active
