@@ -30,7 +30,6 @@ import { useModalOpen } from 'state/application/hooks'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import { NetworkInfo } from './NetworkCard'
 import Web3Status from 'components/Web3Status'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import SVG from 'react-inlinesvg'
@@ -83,7 +82,6 @@ const HeaderControls = styled(HeaderControlsUni)`
     width: 100%;
   `};
 `
-
 export const Wrapper = styled.div`
   width: 100%;
 
@@ -101,10 +99,6 @@ export const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 100%;
     `};
-  }
-
-  ${NetworkInfo} {
-    height: 38px;
   }
 
   ${StyledMenuButton} {

@@ -1,23 +1,24 @@
 // import { Trans } from '@lingui/macro'
-import {
-  // ARBITRUM_HELP_CENTER_LINK,
-  // CHAIN_INFO,
-  L2_CHAIN_IDS,
-  // OPTIMISM_HELP_CENTER_LINK,
-  // SupportedL2ChainId,
-  // SupportedChainId
-} from '@src/constants/chains'
-import { SupportedChainId, CHAIN_INFO } from 'constants/chains'
+import // ARBITRUM_HELP_CENTER_LINK,
+// CHAIN_INFO,
+// L2_CHAIN_IDS,
+// OPTIMISM_HELP_CENTER_LINK,
+// SupportedL2ChainId,
+// SupportedChainId
+'@src/constants/chains'
+import { supportedChainId } from 'utils/supportedChainId'
+import { SupportedChainId, CHAIN_INFO, ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect, useState, useMemo } from 'react'
 import { /* ArrowDownCircle, */ ChevronDown } from 'react-feather'
-import { useModalOpen, useToggleModal } from 'state/application/hooks'
+import { useModalOpen, useToggleModal, useWalletModalToggle } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useAppSelector } from 'state/hooks'
 import styled from 'styled-components/macro'
 import { /* ExternalLink, */ MEDIA_WIDTHS } from 'theme'
 import { switchToNetwork } from 'utils/switchToNetwork'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 
 // const ActiveRowLinkList = styled.div`
 //   display: flex;
@@ -41,13 +42,13 @@ import { switchToNetwork } from 'utils/switchToNetwork'
 //     padding-top: 10px;
 //   }
 // `
-const ActiveRowWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
-  border-radius: 8px;
-  cursor: pointer;
-  padding: 8px 0 8px 0;
-  width: 100%;
-`
+// const ActiveRowWrapper = styled.div`
+//   background-color: ${({ theme }) => theme.bg2};
+//   border-radius: 8px;
+//   cursor: pointer;
+//   padding: 8px 0 8px 0;
+//   width: 100%;
+// `
 // const FlyoutHeader = styled.div`
 //   color: ${({ theme }) => theme.text1};
 //   font-weight: 400;
@@ -173,17 +174,32 @@ const StyledChevronDown = styled(ChevronDown)`
 // }
 
 export default function NetworkSelector() {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId: preChainId, library, account } = useActiveWeb3React()
+  const { error } = useWeb3React() // MOD: check unsupported network
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggle = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
+  const toggleWalletModal = useWalletModalToggle() // MOD
   useOnClickOutside(node, open ? toggle : undefined)
   const implements3085 = useAppSelector((state) => state.application.implements3085)
 
+  // MOD: checks if a requested network switch was sent
+  // used for when user disconnected and selects a network internally
+  // if 3085 supported, will connect wallet and change network
+  const [queuedNetworkSwitch, setQueuedNetworkSwitch] = useState<null | number>(null)
+
+  // MOD: get supported chain and check unsupported
+  const [chainId, isUnsupportedChain] = useMemo(() => {
+    const chainId = supportedChainId(preChainId)
+
+    return [chainId, error instanceof UnsupportedChainIdError] // Mod - return if chainId is unsupported
+  }, [preChainId, error])
+
   const info = chainId ? CHAIN_INFO[chainId] : undefined
 
-  const isOnL2 = chainId ? L2_CHAIN_IDS.includes(chainId) : false
-  const showSelector = Boolean(implements3085 || isOnL2)
+  // const isOnL2 = chainId ? L2_CHAIN_IDS.includes(chainId) : false
+  // const showSelector = Boolean(!account || implements3085 || isOnL2)
+  const showSelector = Boolean(!account || implements3085)
   const mainnetInfo = CHAIN_INFO[SupportedChainId.MAINNET]
 
   const conditionalToggle = useCallback(() => {
@@ -192,11 +208,35 @@ export default function NetworkSelector() {
     }
   }, [showSelector, toggle])
 
-  if (!chainId || !info || !library) {
+  const networkCallback = useCallback(
+    (supportedChainId) => {
+      if (!account) {
+        toggleWalletModal()
+        return setQueuedNetworkSwitch(supportedChainId)
+      } else if (implements3085 && library && supportedChainId) {
+        switchToNetwork({ library, chainId: supportedChainId })
+        return open && toggle()
+      }
+
+      return
+    },
+    [account, implements3085, library, open, toggle, toggleWalletModal]
+  )
+
+  // MOD: used with mod hook - used to connect disconnected wallet to selected network
+  // if wallet supports 3085
+  useEffect(() => {
+    if (queuedNetworkSwitch && account && chainId && implements3085) {
+      networkCallback(queuedNetworkSwitch)
+      setQueuedNetworkSwitch(null)
+    }
+  }, [networkCallback, queuedNetworkSwitch, chainId, account, implements3085])
+
+  if (!chainId || !info || !library || isUnsupportedChain) {
     return null
   }
 
-  function Row({ targetChain }: { targetChain: number }) {
+  /* function Row({ targetChain }: { targetChain: number }) {
     if (!library || !chainId || (!implements3085 && targetChain !== chainId)) {
       return null
     }
@@ -206,23 +246,23 @@ export default function NetworkSelector() {
     }
     const active = chainId === targetChain
     const hasExtendedInfo = L2_CHAIN_IDS.includes(targetChain)
-    // const isOptimism = targetChain === SupportedChainId.OPTIMISM
-    // const rowText = `${CHAIN_INFO[targetChain].label}${isOptimism ? ' (Optimism)' : ''}`
+    const isOptimism = targetChain === SupportedChainId.OPTIMISM
+    const rowText = `${CHAIN_INFO[targetChain].label}${isOptimism ? ' (Optimism)' : ''}`
     const rowText = CHAIN_INFO[targetChain].label // mod
     const RowContent = () => (
       <FlyoutRow onClick={handleRowClick} active={active}>
         <Logo src={CHAIN_INFO[targetChain].logoUrl} />
         <NetworkLabel>{rowText}</NetworkLabel>
-        {/* {chainId === targetChain && <FlyoutRowActiveIndicator />} */}
+        {chainId === targetChain && <FlyoutRowActiveIndicator />}
         <FlyoutRowActiveIndicator active={chainId === targetChain} />
       </FlyoutRow>
     )
-    // const helpCenterLink = isOptimism ? OPTIMISM_HELP_CENTER_LINK : ARBITRUM_HELP_CENTER_LINK
+    const helpCenterLink = isOptimism ? OPTIMISM_HELP_CENTER_LINK : ARBITRUM_HELP_CENTER_LINK
     if (active && hasExtendedInfo) {
       return (
         <ActiveRowWrapper>
           <RowContent />
-          {/* <ActiveRowLinkList>
+          <ActiveRowLinkList>
             <ExternalLink href={CHAIN_INFO[targetChain as SupportedL2ChainId].bridge}>
               <BridgeText chainId={chainId} /> <LinkOutCircle />
             </ExternalLink>
@@ -232,12 +272,12 @@ export default function NetworkSelector() {
             <ExternalLink href={helpCenterLink}>
               <Trans>Help Center</Trans> <LinkOutCircle />
             </ExternalLink>
-          </ActiveRowLinkList> */}
+          </ActiveRowLinkList>
         </ActiveRowWrapper>
       )
     }
     return <RowContent />
-  }
+  } */
 
   return (
     <SelectorWrapper ref={node as any}>
@@ -250,10 +290,24 @@ export default function NetworkSelector() {
         <FlyoutMenu>
           {/* <FlyoutHeader>
             <Trans>Select a network</Trans>
-          </FlyoutHeader> */}
+          </FlyoutHeader>
           <Row targetChain={SupportedChainId.MAINNET} />
           <Row targetChain={SupportedChainId.RINKEBY} />
-          <Row targetChain={SupportedChainId.XDAI} />
+          <Row targetChain={SupportedChainId.XDAI} /> */}
+
+          {ALL_SUPPORTED_CHAIN_IDS.map((targetChain) => {
+            const active = !!account && chainId === targetChain
+            const rowText = CHAIN_INFO[targetChain].label
+            const callback = () => networkCallback(targetChain)
+
+            return (
+              <FlyoutRow key={targetChain} onClick={callback} active={active}>
+                <Logo src={CHAIN_INFO[targetChain].logoUrl} />
+                <NetworkLabel>{rowText}</NetworkLabel>
+                <FlyoutRowActiveIndicator active={active} />
+              </FlyoutRow>
+            )
+          })}
         </FlyoutMenu>
       )}
     </SelectorWrapper>
