@@ -3,6 +3,8 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
 import { useReferralAddress, useResetReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
+import { updateAppDataHash } from 'state/affiliate/actions'
+import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
@@ -25,12 +27,13 @@ const STATUS_TO_MESSAGE_MAPPING: Record<AffiliateStatus, string> = {
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
 export default function AffiliateStatusCheck() {
+  const appDispatch = useAppDispatch()
   const resetReferralAddress = useResetReferralAddress()
   const history = useHistory()
   const location = useLocation()
   const { account, chainId } = useActiveWeb3React()
   const referralAddress = useReferralAddress()
-  const uploadReferralDocAndSetDataHash = useUploadReferralDocAndSetDataHash(referralAddress?.value)
+  const { data: appDataHash, error: ipfsError } = useUploadReferralDocAndSetDataHash(referralAddress?.value)
   const referralAddressQueryParam = useParseReferralQueryParam()
   const allRecentActivity = useRecentActivity()
   const [affiliateState, setAffiliateState] = useState<AffiliateStatus | null>()
@@ -50,7 +53,7 @@ export default function AffiliateStatusCheck() {
     return `wallet-${account}:referral-${referralAddress.value}:chain-${chainId}`
   }, [account, chainId, referralAddress?.value])
 
-  const uploadDataDoc = useCallback(async () => {
+  const handleAffiliateState = useCallback(async () => {
     if (!chainId || !account || !referralAddress) {
       return
     }
@@ -80,22 +83,22 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    try {
-      await retry(async () => uploadReferralDocAndSetDataHash(), DEFAULT_RETRY_OPTIONS).promise
-
+    if (ipfsError) {
+      setError('There was an error while uploading the referral document to IPFS. Please try again later.')
+    } else if (appDataHash) {
+      appDispatch(updateAppDataHash(appDataHash))
       setAffiliateState('ACTIVE')
       isFirstTrade.current = true
-    } catch (error) {
-      console.error(error)
-      setError('There was an error while uploading the referral document to IPFS. Please try again later.')
     }
   }, [
     chainId,
     account,
     referralAddress,
     fulfilledActivity.length,
+    ipfsError,
+    appDataHash,
     resetReferralAddress,
-    uploadReferralDocAndSetDataHash,
+    appDispatch,
   ])
 
   useEffect(() => {
@@ -126,8 +129,8 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    uploadDataDoc()
-  }, [referralAddress, account, history, chainId, uploadDataDoc, location.search, referralAddressQueryParam])
+    handleAffiliateState()
+  }, [referralAddress, account, history, chainId, handleAffiliateState, location.search, referralAddressQueryParam])
 
   if (error) {
     return (
