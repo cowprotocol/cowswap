@@ -1,5 +1,5 @@
 import { CurrencyAmount, Currency, Price, Token } from '@uniswap/sdk-core'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { SupportedChainId } from 'constants/chains'
 /* import { DAI_OPTIMISM, USDC, USDC_ARBITRUM } from '../constants/tokens'
 import { useV2TradeExactOut } from './useV2Trade'
@@ -167,62 +167,67 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
+  // Currency is deep nested and we only really care about token address changing
+  // so we ref it here as to avoid updating useEffect
+  const currencyRef = useRef(currency)
+  currencyRef.current = currency
+
+  const tokenAddress = currencyRef.current ? currencyId(currencyRef.current) : undefined
+
   useEffect(() => {
     const isSupportedChainId = supportedChainId(chainId)
-    if (!isSupportedChainId || !currency) return
+    const baseAmount = tryParseAmount('1', currencyRef.current)
 
-    const baseAmount = tryParseAmount('1', currency)
-    const tokenAddress = currencyId(currency)
+    if (!isSupportedChainId || !tokenAddress || !baseAmount) return
 
-    if (baseAmount) {
-      getUSDPriceQuote({
-        chainId: isSupportedChainId,
-        tokenAddress,
+    getUSDPriceQuote({
+      chainId: isSupportedChainId,
+      tokenAddress,
+    })
+      .then(toPriceInformation)
+      .then((priceResponse) => {
+        setError(null)
+
+        if (!priceResponse?.amount) return
+
+        const { amount: apiUsdPrice } = priceResponse
+        // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
+        // we need to parse all USD returned amounts
+        // and convert to the same currencyRef.current for both sides (SDK math invariant)
+        // in our case we stick to the USDC paradigm
+        const quoteAmount = tryParseAmount(apiUsdPrice.toString(), USDC)
+        // parse failure is unlikely - type safe
+        if (!quoteAmount) return
+        // create a new Price object
+        // we need to invert here as it is
+        // constructed based on the coingecko USD price response
+        // e.g 1 unit of USER'S TOKEN represented in USD
+        const usdPrice = new Price({
+          baseAmount,
+          quoteAmount,
+        }).invert()
+
+        console.debug(
+          '[useCoingeckoUsdPrice] Best Coingecko USD price amount',
+          usdPrice.toSignificant(12),
+          usdPrice.invert().toSignificant(12)
+        )
+
+        return setPrice(usdPrice)
       })
-        .then(toPriceInformation)
-        .then((priceResponse) => {
-          setError(null)
-
-          if (!priceResponse?.amount) return
-
-          const { amount: apiUsdPrice } = priceResponse
-          // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
-          // we need to parse all USD returned amounts
-          // and convert to the same currency for both sides (SDK math invariant)
-          // in our case we stick to the USDC paradigm
-          const quoteAmount = tryParseAmount(apiUsdPrice.toString(), USDC)
-          // parse failure is unlikely - type safe
-          if (!quoteAmount) return
-          // create a new Price object
-          // we need to invert here as it is
-          // constructed based on the coingecko USD price response
-          // e.g 1 unit of USER'S TOKEN represented in USD
-          const usdPrice = new Price({
-            baseAmount,
-            quoteAmount,
-          }).invert()
-
-          console.debug(
-            '[useCoingeckoUsdPrice] Best Coingecko USD price amount',
-            usdPrice.toSignificant(12),
-            usdPrice.invert().toSignificant(12)
-          )
-
-          return setPrice(usdPrice)
+      .catch((error) => {
+        console.error(
+          '[useUSDCPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
+          tokenAddress,
+          error
+        )
+        return batchedUpdate(() => {
+          setError(new Error(error))
+          setPrice(null)
         })
-        .catch((error) => {
-          console.error(
-            '[useUSDCPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
-            currency.symbol,
-            error
-          )
-          return batchedUpdate(() => {
-            setError(new Error(error))
-            setPrice(null)
-          })
-        })
-    }
-  }, [chainId, currency, blockNumber])
+      })
+    // don't depend on Currency (deep nested object)
+  }, [chainId, blockNumber, tokenAddress])
 
   return { price, error }
 }
@@ -234,26 +239,8 @@ export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | 
 }
 
 export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
-  const usdcValue = useUSDCValue(currencyAmount)
+  const gpUsdPrice = useUSDCValue(currencyAmount)
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
 
-  return useMemo(() => {
-    // USDC PRICE UNAVAILABLE
-    if (!usdcValue && coingeckoUsdPrice) {
-      console.debug('[USD Estimation]::COINGECKO')
-      return coingeckoUsdPrice
-      // COINGECKO PRICE UNAVAILABLE
-    } else if (usdcValue && !coingeckoUsdPrice) {
-      console.debug('[USD Estimation]::UNIv2')
-      return usdcValue
-      // BOTH AVAILABLE
-    } else if (usdcValue && coingeckoUsdPrice) {
-      console.debug('[USD Estimation]::[BOTH] ==> COIN')
-      // coingecko logic takes precedence
-      return coingeckoUsdPrice
-    } else {
-      console.debug('[USD Estimation]::None found')
-      return null
-    }
-  }, [usdcValue, coingeckoUsdPrice])
+  return coingeckoUsdPrice || gpUsdPrice
 }

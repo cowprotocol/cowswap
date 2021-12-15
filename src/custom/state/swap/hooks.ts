@@ -40,6 +40,7 @@ import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
 import { BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { isWrappingTrade } from './utils'
 
 export * from '@src/state/swap/hooks'
 
@@ -295,15 +296,19 @@ export function useDerivedSwapInfo(): /* {
     console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
   }, [quote])
 
+  const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
+
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
     quote,
+    isWrapping,
   })
   const bestTradeExactOut = useTradeExactOutWithFee({
     parsedAmount: isExactIn ? undefined : parsedAmount,
     inputCurrency,
     quote,
+    isWrapping,
   })
 
   // TODO: rename v2Trade to just "trade" we dont have versions
