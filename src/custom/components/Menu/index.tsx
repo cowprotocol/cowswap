@@ -1,4 +1,4 @@
-import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User } from 'react-feather'
+import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User, ExternalLink } from 'react-feather'
 
 import MenuMod, {
   MenuItem,
@@ -9,11 +9,15 @@ import MenuMod, {
 } from './MenuMod'
 import { useToggleModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
+import { useActiveWeb3React } from 'hooks/web3'
+
 import { Separator as SeparatorBase } from 'components/SearchModal/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/actions'
+import { getExplorerAddressLink } from 'utils/explorer'
+import { useHasOrders } from 'api/gnosisProtocol/hooks'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -217,6 +221,9 @@ interface MenuProps {
 
 export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
   const close = useToggleModal(ApplicationModal.MENU)
+  const { account, chainId } = useActiveWeb3React()
+  const hasOrders = useHasOrders(account)
+  const showOrdersLink = account && hasOrders
 
   return (
     <StyledMenu>
@@ -280,7 +287,14 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           </span>{' '}
           Cow Runner
         </InternalMenuItem>
-
+        {showOrdersLink && (
+          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
+            <span aria-hidden="true" onClick={close} onKeyDown={close}>
+              <ExternalLink size={14} />
+              View all orders
+            </span>
+          </MenuItem>
+        )}
         <MenuItemResponsive onClick={() => toggleDarkMode()}>
           {darkMode ? (
             <>
