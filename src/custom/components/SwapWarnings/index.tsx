@@ -8,7 +8,7 @@ import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import { darken } from 'polished'
-import useDebounceWithForceUpdate from '@src/custom/hooks/useDebounceWithForceUpdate'
+import useDebounce from 'hooks/useDebounce'
 
 interface HighFeeContainerProps {
   padding?: string
@@ -160,11 +160,10 @@ export const HighFeeWarning = (props: WarningProps) => {
 }
 
 export const NoImpactWarning = (props: WarningProps) => {
-  const { acceptedStatus, acceptWarningCb, hide, trade } = props
+  const { acceptedStatus, acceptWarningCb, hide } = props
   const theme = useContext(ThemeContext)
-  // TODO: change this - probably not the best way to do this..
-  // TODO: should likely make a global flag indiciating ABA impact loading
-  const debouncedHide = useDebounceWithForceUpdate(hide, 2000, trade)
+
+  const debouncedHide = useDebounce(hide, 2000)
   const [bgColour, textColour] = [LOW_TIER_FEE.colour, darken(0.7, HIGH_TIER_FEE.colour)]
 
   if (!!debouncedHide) return null

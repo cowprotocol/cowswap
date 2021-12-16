@@ -1,10 +1,12 @@
 import { Percent } from '@uniswap/sdk-core'
 import useFiatValuePriceImpact from './useFiatValuePriceImpact'
 import useFallbackPriceImpact from './useFallbackPriceImpact'
-import { FallbackPriceImpactParams, ParsedAmounts } from './commonTypes'
+import { FallbackPriceImpactParams, ParsedAmounts } from './types'
 import { QuoteError } from 'state/price/actions'
 
-type PriceImpactParams = Omit<FallbackPriceImpactParams, 'fiatPriceImpact'> & { parsedAmounts: ParsedAmounts }
+type PriceImpactParams = Omit<FallbackPriceImpactParams, 'fiatPriceImpact'> & {
+  parsedAmounts: ParsedAmounts
+}
 
 export interface PriceImpact {
   priceImpact: Percent | undefined
@@ -12,17 +14,15 @@ export interface PriceImpact {
   loading: boolean
 }
 
-export default function usePriceImpact({ abTrade, parsedAmounts }: PriceImpactParams): PriceImpact {
-  /* const fiatPriceImpact =  */ useFiatValuePriceImpact(parsedAmounts)
-  // TODO: remove this - testing only - forces fallback price impact
+export default function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: PriceImpactParams): PriceImpact {
+  const fiatPriceImpact = useFiatValuePriceImpact(parsedAmounts)
   const {
     impact: fallbackPriceImpact,
     error,
     loading,
-  } = useFallbackPriceImpact({ abTrade, fiatPriceImpact: undefined })
+  } = useFallbackPriceImpact({ abTrade: fiatPriceImpact ? undefined : abTrade, isWrapping })
 
-  const priceImpact = /* fiatPriceImpact ||  */ fallbackPriceImpact
+  const priceImpact = fiatPriceImpact || fallbackPriceImpact
 
-  // TODO: remove this - testing only - forces fallback
-  return { priceImpact, error, loading }
+  return { priceImpact, error: fiatPriceImpact ? undefined : error, loading }
 }
