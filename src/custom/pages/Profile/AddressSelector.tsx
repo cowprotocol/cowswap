@@ -2,11 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Check, ChevronDown } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { useActiveWeb3React } from '@src/hooks/web3'
+import { useActiveWeb3React } from 'hooks/web3'
 import { ensNames } from './ens'
 import { useAddress } from 'state/affiliate/hooks'
 import { updateAddress } from 'state/affiliate/actions'
 import { useAppDispatch } from 'state/hooks'
+import { isAddress, shortenAddress } from 'utils'
 
 type AddressSelectorProps = {
   address: string
@@ -73,7 +74,8 @@ export default function AddressSelector(props: AddressSelectorProps) {
         <MenuFlyout>
           {items.map((item) => (
             <ButtonMenuItem key={item} $selected={item === ''} onClick={() => handleSelectItem(item)}>
-              <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} /> {item}
+              <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} />{' '}
+              {isAddress(item) ? shortenAddress(item) : item}
             </ButtonMenuItem>
           ))}
         </MenuFlyout>
@@ -170,6 +172,7 @@ const ButtonMenuItem = styled.button<{ $selected?: boolean }>`
   outline: none;
   font-weight: ${({ $selected }) => ($selected ? '700' : '500')};
   font-size: 12px;
+  text-transform: lowercase;
   padding: 6px 10px 6px 5px;
 
   ${({ $selected }) => $selected && `margin: 3px 0;`}

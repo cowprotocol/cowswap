@@ -29,6 +29,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import AddressSelector from './AddressSelector'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useAddress } from 'state/affiliate/hooks'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -37,6 +38,7 @@ export default function Profile() {
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
+  const selectedAddress = useAddress()
 
   const renderNotificationMessages = (
     <>
@@ -100,11 +102,10 @@ export default function Profile() {
                 <>
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
-                    {/*  <strong>{referralLink.address}</strong> */}
                     <AddressSelector address={referralLink.address} />
 
                     <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
-                      <Copy toCopy={referralLink.link} />
+                      <Copy toCopy={selectedAddress ? `${referralLink.prefix}${selectedAddress}` : referralLink.link} />
                     </span>
                   </span>
                 </>
