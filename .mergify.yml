@@ -1,3 +1,9 @@
+queue_rules:
+  - name: default
+    conditions:
+      - check-success=Deploy
+      - check-success=Cypress
+
 pull_request_rules:
   - name: Merge approved and green PRs when tagged with 'Auto-merge'
     conditions:
@@ -6,10 +12,11 @@ pull_request_rules:
       - check-success=Deploy
       - check-success=Cypress
     actions:
-      merge:
+      queue:
         method: squash
-        strict: smart+fasttrack
+        name: default
         commit_message: title+body
+  # DEPENDABOT PRs
   - name: automatic merge for Dependabot pull requests
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
@@ -18,7 +25,7 @@ pull_request_rules:
       - check-success=Deploy
       - base=develop
     actions:
-      merge:
+      queue:
         method: squash
-        strict: smart+fasttrack
+        name: default
         commit_message: title+body

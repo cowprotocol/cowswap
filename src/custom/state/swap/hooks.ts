@@ -39,6 +39,8 @@ import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
 
 import { BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
+import { PriceImpact } from 'hooks/usePriceImpact'
+import { isWrappingTrade } from './utils'
 
 export * from '@src/state/swap/hooks'
 
@@ -160,6 +162,46 @@ function _computeFeeWarningAcceptedState({
   }
 }
 
+function _computeUnknownPriceImpactAcceptedState({
+  impactWarningAccepted,
+  priceImpactParams,
+  isExpertMode,
+}: {
+  impactWarningAccepted: boolean
+  priceImpactParams?: PriceImpact
+  isExpertMode: boolean
+}) {
+  if (isExpertMode || impactWarningAccepted) return true
+  else {
+    if (priceImpactParams?.error) {
+      return impactWarningAccepted
+    }
+  }
+
+  return true
+}
+
+export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
+  const isExpertMode = useIsExpertMode()
+  const { INPUT, OUTPUT, independentField } = useSwapState()
+
+  const [impactWarningAccepted, setImpactWarningAccepted] = useState<boolean>(false)
+
+  // reset the state when users change swap params
+  useEffect(() => {
+    setImpactWarningAccepted(false)
+  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
+
+  return {
+    impactWarningAccepted: _computeUnknownPriceImpactAcceptedState({
+      priceImpactParams,
+      impactWarningAccepted,
+      isExpertMode,
+    }),
+    setImpactWarningAccepted,
+  }
+}
+
 /**
  * useHighFeeWarning
  * @description checks whether fee vs trade inputAmount = high fee warning
@@ -254,15 +296,19 @@ export function useDerivedSwapInfo(): /* {
     console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
   }, [quote])
 
+  const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
+
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
     quote,
+    isWrapping,
   })
   const bestTradeExactOut = useTradeExactOutWithFee({
     parsedAmount: isExactIn ? undefined : parsedAmount,
     inputCurrency,
     quote,
+    isWrapping,
   })
 
   // TODO: rename v2Trade to just "trade" we dont have versions

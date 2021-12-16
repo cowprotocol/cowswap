@@ -7,10 +7,12 @@ import {
   GridWrap,
   CardHead,
   StyledTitle,
+  StyledContainer,
   StyledTime,
   ItemTitle,
   ChildWrapper,
   Loader,
+  ExtLink,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -19,12 +21,14 @@ import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
 import { numberFormatter } from 'utils/format'
+import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import AddressSelector from './AddressSelector'
+import { useHasOrders } from 'api/gnosisProtocol/hooks'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -32,6 +36,8 @@ export default function Profile() {
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
+  const hasOrders = useHasOrders(account)
+
   const renderNotificationMessages = (
     <>
       {error && (
@@ -56,24 +62,31 @@ export default function Profile() {
             <StyledTitle>Profile overview</StyledTitle>
             {account && (
               <Loader isLoading={isLoading}>
-                <Txt>
-                  <RefreshCcw size={16} />
-                  &nbsp;&nbsp;
-                  <Txt secondary>
-                    Last updated
-                    <MouseoverTooltipContent content="Data is updated on the background periodically.">
-                      <HelpCircle size={14} />
-                    </MouseoverTooltipContent>
-                    :&nbsp;
+                <StyledContainer>
+                  <Txt>
+                    <RefreshCcw size={16} />
+                    &nbsp;&nbsp;
+                    <Txt secondary>
+                      Last updated
+                      <MouseoverTooltipContent content="Data is updated on the background periodically.">
+                        <HelpCircle size={14} />
+                      </MouseoverTooltipContent>
+                      :&nbsp;
+                    </Txt>
+                    {!lastUpdated ? (
+                      '-'
+                    ) : (
+                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                        <strong>{lastUpdated}</strong>
+                      </MouseoverTooltipContent>
+                    )}
                   </Txt>
-                  {!lastUpdated ? (
-                    '-'
-                  ) : (
-                    <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
-                      <strong>{lastUpdated}</strong>
-                    </MouseoverTooltipContent>
+                  {hasOrders && (
+                    <ExtLink href={getExplorerAddressLink(chainId || 1, account)}>
+                      <Txt secondary>View all orders ↗</Txt>
+                    </ExtLink>
                   )}
-                </Txt>
+                </StyledContainer>
               </Loader>
             )}
           </CardHead>

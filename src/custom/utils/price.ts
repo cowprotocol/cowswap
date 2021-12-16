@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import BigNumberJs from 'bignumber.js'
 import * as Sentry from '@sentry/browser'
+import { Percent } from '@uniswap/sdk-core'
 
 import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
@@ -293,4 +294,23 @@ export function getValidParams(params: PriceQuoteParams) {
   const quoteToken = toErc20Address(quoteTokenAux, chainId)
 
   return { ...params, baseToken, quoteToken }
+}
+
+export function calculateFallbackPriceImpact(initialValue: string, finalValue: string) {
+  const initialValueBn = new BigNumberJs(initialValue)
+  const finalValueBn = new BigNumberJs(finalValue)
+  // ((finalValue - initialValue) / initialValue / 2) * 100
+  const output = finalValueBn.minus(initialValueBn).div(initialValueBn).div('2')
+  const [numerator, denominator] = output.toFraction()
+
+  const isPositive = numerator.isNegative() === denominator.isNegative()
+
+  const percentage = new Percent(numerator.abs().toString(10), denominator.abs().toString(10))
+  // UI shows NEGATIVE impact as a POSITIVE effect, so we need to swap the sign here
+  // see FiatValue: line 38
+  const impact = isPositive ? percentage.multiply('-1') : percentage
+
+  console.debug(`[calculateFallbackPriceImpact]::${impact.toSignificant(2)}%`)
+
+  return impact
 }
