@@ -1,5 +1,9 @@
 overrideExisting: true
-schema: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
+schema:
+  [
+    'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+    'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
+  ]
 documents: 'src/**/!(*.d).{ts,tsx}'
 generates:
   ./src/state/data/generated.ts:

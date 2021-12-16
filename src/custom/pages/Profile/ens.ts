@@ -1,5 +1,6 @@
 import { SupportedChainId } from 'constants/chains'
 import { ClientError, gql, GraphQLClient } from 'graphql-request'
+import { EnsNamesQuery } from 'state/data/generated'
 
 // List of supported subgraphs. Note that the app currently only support one active subgraph at a time
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {
@@ -21,7 +22,7 @@ export async function ensNames(
   | {
       error: { name: string; message: string; stack: string | undefined }
     }
-  | { data: string[] }
+  | string[]
 > {
   try {
     const subgraphUrl = chainId ? CHAIN_SUBGRAPH_URL[chainId] : undefined
@@ -36,11 +37,13 @@ export async function ensNames(
       }
     }
 
-    const data = await new GraphQLClient(subgraphUrl).request(DOMAINS_BY_ADDRESS_QUERY, { resolvedAddress: address })
+    const data = await new GraphQLClient(subgraphUrl).request<EnsNamesQuery>(DOMAINS_BY_ADDRESS_QUERY, {
+      resolvedAddress: address,
+    })
 
-    return {
-      data: data.domains.map((domain: { name: string }) => domain.name),
-    }
+    return data.domains
+      .map((domain) => domain.name)
+      .filter((domainName): domainName is string => domainName !== null && domainName !== undefined)
   } catch (error) {
     if (error instanceof ClientError) {
       const { name, message, stack } = error
