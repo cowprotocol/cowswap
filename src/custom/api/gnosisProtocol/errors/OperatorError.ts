@@ -49,7 +49,7 @@ export enum ApiErrorCodeDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   AmountIsZero = 'Amount is zero',
   SellAmountDoesNotCoverFee = 'Sell amount does not sufficiently cover the current fee',
-  TransferEthToContract = 'Sending Ether to smart contract wallets is not currently supported',
+  TransferEthToContract = 'Sending the native currency to smart contract wallets is not currently supported',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network',
