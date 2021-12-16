@@ -30,9 +30,12 @@ export default function AddressSelector(props: AddressSelectorProps) {
   }, [])
 
   const lookup = useCallback(async () => {
-    const ensName = await library?.lookupAddress(address)
-    setPrimaryEnsName(ensName)
-    console.log({ ensName })
+    try {
+      const ensName = await library?.lookupAddress(address)
+      setPrimaryEnsName(ensName)
+    } catch (error) {
+      console.log(error)
+    }
   }, [library, address])
 
   useEffect(() => {
@@ -46,8 +49,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
         console.info(response.error)
         return
       }
-      console.log(response.data)
-      setItems([...response.data, address])
+      setItems([...response, address])
     })
   }, [address, chainId])
 
