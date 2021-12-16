@@ -30,9 +30,7 @@ interface HandleQuoteErrorParams {
   addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
 }
 
-interface QuoteParamsForFetching extends Omit<QuoteParams, 'quoteParams' | 'strategy'> {
-  quoteParams: Omit<FeeQuoteParams, 'validTo'>
-}
+type QuoteParamsForFetching = Omit<QuoteParams, 'strategy'>
 
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
@@ -135,16 +133,11 @@ export function useRefetchQuoteCallback() {
   })
 
   return useCallback(
-    async (preParams: QuoteParamsForFetching) => {
-      // construct params with validTo
-      const params = {
-        ...preParams,
-        quoteParams: {
-          ...preParams.quoteParams,
-          validTo: calculateValidTo(deadline),
-        },
-      }
+    async (params: QuoteParamsForFetching) => {
       const { quoteParams, isPriceRefresh } = params
+      // set the validTo time here
+      quoteParams.validTo = calculateValidTo(deadline)
+
       let quoteData: FeeQuoteParams | QuoteInformationObject = quoteParams
 
       const { sellToken, buyToken, chainId } = quoteData
