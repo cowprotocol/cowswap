@@ -46,16 +46,10 @@ function checkIsSupportedWallet(params: {
   chainId?: number
   gnosisSafeInfo?: SafeInfoResponse
 }): boolean {
-  const { walletName, chainId, gnosisSafeInfo } = params
+  const { walletName } = params
 
   if (walletName && UNSUPPORTED_WC_WALLETS.has(walletName)) {
     // Unsupported wallet
-    return false
-  }
-
-  if (chainId === ChainId.XDAI && !!gnosisSafeInfo) {
-    // Gnosis Safe is unsupported in xDAI
-    // See https://github.com/gnosis/safe-react/issues/2999 and https://github.com/gnosis/safe-react/issues/3002
     return false
   }
 
