@@ -18,7 +18,8 @@ import { tryParseAmount } from 'state/swap/hooks'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
 import { USDC } from 'constants/tokens'
-import { useBlockNumber } from '@src/state/application/hooks'
+import { useOrderValidTo } from 'state/user/hooks'
+import { useBlockNumber } from 'state/application/hooks'
 
 export * from '@src/hooks/useUSDCPrice'
 
@@ -38,6 +39,7 @@ export default function useUSDCPrice(currency?: Currency) {
   const [error, setError] = useState<Error | null>(null)
 
   const { chainId, account } = useActiveWeb3React()
+  const { validTo } = useOrderValidTo()
   const blockNumber = useBlockNumber()
 
   const amountOut = chainId ? STABLECOIN_AMOUNT_OUT[chainId] : undefined
@@ -85,6 +87,7 @@ export default function useUSDCPrice(currency?: Currency) {
       fromDecimals: currency.decimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
+      validTo,
     }
 
     if (currency.wrapped.equals(stablecoin)) {
@@ -123,7 +126,7 @@ export default function useUSDCPrice(currency?: Currency) {
           })
         })
     }
-  }, [amountOut, chainId, currency, stablecoin, account, blockNumber])
+  }, [amountOut, chainId, currency, stablecoin, account, validTo, blockNumber])
 
   return { price: bestUsdPrice, error }
 }

@@ -9,6 +9,8 @@ import { calculateFallbackPriceImpact, FeeQuoteParams } from 'utils/price'
 import TradeGp from 'state/swap/TradeGp'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
+import { useQuote } from 'state/price/hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
 
@@ -46,6 +48,9 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
     OUTPUT: { currencyId: buyToken },
   } = useSwapState()
 
+  const { chainId } = useActiveWeb3React()
+  const lastQuote = useQuote({ token: sellToken, chainId })
+
   const [loading, setLoading] = useState(false)
 
   // Should we even calc this? Check if fiatPriceImpact exists OR user is wrapping token
@@ -63,8 +68,9 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
     () => ({
       ..._getBaTradeParams({ abTrade, sellToken, buyToken }),
       parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
+      validTo: lastQuote?.validTo,
     }),
-    [abTrade, buyToken, sellToken, shouldCalculate]
+    [abTrade, buyToken, lastQuote?.validTo, sellToken, shouldCalculate]
   )
 
   const { quote } = useCalculateQuote({

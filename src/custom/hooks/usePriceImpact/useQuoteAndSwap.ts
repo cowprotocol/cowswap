@@ -10,13 +10,15 @@ import { useActiveWeb3React } from 'hooks/web3'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
-import { FeeQuoteParams, getBestQuote, QuoteResult } from 'utils/price'
+import { FeeQuoteParams, QuoteResult } from 'utils/price'
 
 import { ZERO_ADDRESS } from 'constants/misc'
 import { SupportedChainId } from 'constants/chains'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
+import useGetGpPriceStrategy from '../useGetGpPriceStrategy'
+import { getBestQuoteResolveOnlyLastCall as getBestQuote } from 'hooks/useRefetchPriceCallback'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
@@ -32,6 +34,7 @@ type GetQuoteParams = {
   buyToken?: string | null
   fromDecimals?: number
   toDecimals?: number
+  validTo?: number
 } & WithLoading
 
 type FeeQuoteParamsWithError = FeeQuoteParams & { error?: QuoteError }
@@ -45,16 +48,18 @@ export function useCalculateQuote(params: GetQuoteParams) {
     toDecimals = DEFAULT_DECIMALS,
     loading,
     setLoading,
+    validTo,
   } = params
   const { chainId: preChain } = useActiveWeb3React()
   const { account } = useWalletInfo()
+  const strategy = useGetGpPriceStrategy()
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
 
   useEffect(() => {
     const chainId = supportedChainId(preChain)
     // bail out early - amount here is undefined if usd price impact is valid
-    if (!sellToken || !buyToken || !amount) return
+    if (!sellToken || !buyToken || !amount || !validTo) return
 
     setLoading(true)
 
@@ -69,15 +74,19 @@ export function useCalculateQuote(params: GetQuoteParams) {
       // TODO: check
       userAddress: account || ZERO_ADDRESS,
       chainId: chainId || SupportedChainId.MAINNET,
+      validTo,
     }
     let quoteData: QuoteInformationObject | FeeQuoteParams = quoteParams
     getBestQuote({
+      strategy,
       quoteParams,
       fetchFee: true,
       isPriceRefresh: false,
     })
-      .then((quoteResp) => {
-        const [price, fee] = quoteResp as QuoteResult
+      .then(({ cancelled, data }) => {
+        if (cancelled) return
+
+        const [price, fee] = data as QuoteResult
 
         quoteData = {
           ...quoteParams,
@@ -104,7 +113,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
         setLocalQuote(quoteError)
       })
       .finally(() => setLoading(false))
-  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, setLoading])
+  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, strategy, validTo, setLoading])
 
   return { quote, loading, setLoading }
 }

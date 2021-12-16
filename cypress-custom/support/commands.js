@@ -52,8 +52,8 @@ function enterOutputAmount(tokenAddress, amount, selectToken = false) {
   cy.get('#swap-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
-function stubResponse({ url, alias = 'stubbedResponse', body }) {
-  cy.intercept({ method: 'GET', url }, _responseHandlerFactory(body)).as(alias)
+function stubResponse({ method, url, alias = 'stubbedResponse', body }) {
+  cy.intercept({ method, url }, _responseHandlerFactory(body)).as(alias)
 }
 
 Cypress.Commands.add('swapClickInputToken', () => clickInputToken)
