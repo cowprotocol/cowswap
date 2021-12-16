@@ -25,7 +25,7 @@ export const Wrapper = styled.div`
       font-size: 15px;
 
       ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-        font-size: 1rem;
+        font-size: 13px;
       `};
     }
   }
