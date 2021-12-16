@@ -10,7 +10,6 @@ import { getProviderType, WalletProvider } from 'connectors'
 import { useActiveWeb3Instance } from 'hooks/index'
 import { getSafeInfo } from 'api/gnosisSafe'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
-import { ChainId } from '../state/lists/actions'
 
 const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe']
 
