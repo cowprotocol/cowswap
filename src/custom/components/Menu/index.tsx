@@ -1,4 +1,5 @@
 import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User, ExternalLink } from 'react-feather'
+import { Trans } from '@lingui/macro'
 
 import MenuMod, {
   MenuItem,
@@ -6,6 +7,7 @@ import MenuMod, {
   MenuFlyout as MenuFlyoutUni,
   MenuItemBase,
   StyledMenuButton,
+  UNIbutton,
 } from './MenuMod'
 import { useToggleModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
@@ -225,6 +227,9 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
   const hasOrders = useHasOrders(account)
   const showOrdersLink = account && hasOrders
 
+  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
+  const showUNIClaimOption = Boolean(!!account && !!chainId)
+
   return (
     <StyledMenu>
       <MenuFlyout>
@@ -317,6 +322,11 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <Policy to="/privacy-policy">Privacy policy</Policy>
         <Policy to="/cookie-policy">Cookie policy</Policy> 
         */}
+        {showUNIClaimOption && (
+          <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" $borderRadius="12px" mt="0.5rem">
+            <Trans>Claim vCOW</Trans>
+          </UNIbutton>
+        )}
       </MenuFlyout>
     </StyledMenu>
   )

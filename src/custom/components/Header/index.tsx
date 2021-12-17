@@ -1,7 +1,10 @@
+import { Trans } from '@lingui/macro'
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { Dots } from 'components/swap/styleds'
 import Web3Status from 'components/Web3Status'
-import { ExternalLink } from 'theme'
+import { CardNoise } from 'components/earn/styled'
+import { ExternalLink, TYPE } from 'theme'
 
 import HeaderMod, {
   Title,
@@ -15,6 +18,8 @@ import HeaderMod, {
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
+  UNIAmount,
+  UNIWrapper,
 } from './HeaderMod'
 import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
@@ -27,12 +32,18 @@ import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
 import { ApplicationModal } from 'state/application/actions'
-import { useModalOpen } from 'state/application/hooks'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import NetworkCard, { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
+import { useModalOpen, useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
+import { useUserHasAvailableClaim } from 'state/claim/hooks'
+import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
+
+import Modal from 'components/Modal'
+import ClaimModal from 'components/claim/ClaimModal'
+import UniBalanceContent from 'components/Header/UniBalanceContent'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -196,6 +207,13 @@ export default function Header() {
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+
+  const toggleClaimModal = useToggleSelfClaimModal()
+  const availableClaim: boolean = useUserHasAvailableClaim(account)
+  const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
+  const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
+  const showClaimPopup = useShowClaimPopup()
+
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
@@ -213,6 +231,10 @@ export default function Header() {
     <Wrapper>
       <HeaderModWrapper>
         <HeaderRow marginRight="0">
+          <ClaimModal />
+          <Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
+            <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
+          </Modal>
           <Title href=".">
             <UniIcon>
               <LogoImage />
@@ -226,6 +248,22 @@ export default function Header() {
         <HeaderControls>
           <NetworkCard />
           <HeaderElement>
+            {availableClaim && !showClaimPopup && (
+              <UNIWrapper onClick={toggleClaimModal}>
+                <UNIAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
+                  <TYPE.white padding="0 2px">
+                    {claimTxn && !claimTxn?.receipt ? (
+                      <Dots>
+                        <Trans>Claiming vCOW</Trans>
+                      </Dots>
+                    ) : (
+                      <Trans>Claim vCOW</Trans>
+                    )}
+                  </TYPE.white>
+                </UNIAmount>
+                <CardNoise />
+              </UNIWrapper>
+            )}
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
                 <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>

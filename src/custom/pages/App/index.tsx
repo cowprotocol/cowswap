@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
 import { Route, Switch } from 'react-router-dom'
 import Swap from 'pages/Swap'
+import Claim from 'pages/Claim'
 import PrivacyPolicy from 'pages/PrivacyPolicy'
 import CookiePolicy from 'pages/CookiePolicy'
 import TermsAndConditions from 'pages/TermsAndConditions'
@@ -70,6 +71,7 @@ export default function App() {
         <Route exact strict path="/swap" component={Swap} />
         <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
         <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
+        <Route exact strict path="/claim" component={Claim} />
         <Route exact strict path="/about" component={About} />
         <Route exact strict path="/profile" component={Profile} />
         <Route exact strict path="/faq" component={Faq} />
@@ -78,7 +80,6 @@ export default function App() {
         <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact strict path="/cookie-policy" component={CookiePolicy} />
         <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
-
         <Route exact strict path="/chat" component={createRedirectExternal('https://chat.cowswap.exchange')} />
         <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cowswap.exchange')} />
         <Route
@@ -88,7 +89,6 @@ export default function App() {
           component={createRedirectExternal('https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2')}
         />
         <Route exact strict path="/twitter" component={createRedirectExternal('https://twitter.com/MEVprotection')} />
-
         <Route exact strict path="/" component={RedirectPathToSwapOnly} />
         <Route component={NotFound} />
       </Switch>

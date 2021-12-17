@@ -8,7 +8,7 @@ type WithChainId = { chainId: number }
 export type AddTransactionParams = WithChainId &
   Pick<
     EnhancedTransactionDetails,
-    'hash' | 'hashType' | 'from' | 'approval' | 'presign' | 'summary' | 'safeTransaction'
+    'hash' | 'hashType' | 'from' | 'approval' | 'presign' | 'claim' | 'summary' | 'safeTransaction'
   >
 
 export const addTransaction = createAction<AddTransactionParams>('enhancedTransactions/addTransaction')
