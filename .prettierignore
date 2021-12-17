@@ -1,0 +1,20 @@
+# generated stuff
+build
+.git
+.github
+.next
+.vscode
+
+.next
+dist
+node_modules/
+
+# public folder
+public/**/*
+
+# Every commit this is changed. NO MORE!
+tsconfig.json
+
+# local stuff
+.yalc
+.vscode

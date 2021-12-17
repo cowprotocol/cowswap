@@ -1,0 +1,26 @@
+import Markdown from 'markdown-to-jsx';
+import { GetStaticProps } from 'next'
+import Content from 'components/Layout/Content'
+import Terms from 'public/markdown/terms'
+
+// pages/404.js
+export default function Terms({ markdownContent }) {
+  return (
+    <Content>
+      <h1>Terms &amp; Conditions</h1>
+      <section>
+        <Markdown>{markdownContent}</Markdown>
+      </section>
+    </Content>
+  )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const response = await fetch('https://raw.githubusercontent.com/gnosis/cowswap/master/src/custom/pages/TermsAndConditions/TermsAndConditions.md')
+  const markdownContent = await response.json
+
+  console.log(markdownContent)
+  return {
+    props: { markdownContent }
+  }
+}

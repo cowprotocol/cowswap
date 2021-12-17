@@ -5,7 +5,7 @@ import { siteConfig } from 'const/meta'
 import { mainMenu, footerMenu } from '../../const/menu'
 import Header from 'components/Layout/Header'
 import Footer from 'components/Layout/Footer'
-import { Media } from 'const/styles/variables'
+import { Color, Font, Media } from 'const/styles/variables'
 
 export type LayoutProps = PropsWithChildren<{
   siteConfigData?: any // needs fix
@@ -22,12 +22,36 @@ const Wrapper = styled.div`
 `
 
 const Content = styled.main`
-  margin: 0;
-  padding: 0;
+  margin: 0 auto;
+  padding: 18rem 0 0;
   box-sizing: border-box;
   width: 100%;
+  max-width: 84rem;
   display: flex;
   flex-flow: column wrap;
+  min-height: 80rem;
+
+  h1 {
+    font-size: 8rem;
+    line-height: 1.2;
+    margin: 0 0 6rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+    line-height: 1.2;
+    margin: 0 0 2.4rem;
+  }
+
+  p {
+    margin: 0 0 1.6rem;
+    font-size: ${Font.sizeDefault};
+    color: ${Color.grey};
+  }
+
+  section {
+    margin: 0 0 6rem;
+  }
 
   ${Media.mobile} {
     margin: 10rem 0 0;

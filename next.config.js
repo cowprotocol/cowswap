@@ -3,4 +3,8 @@ module.exports = {
     locales: ['en', 'es', 'pseudo'],
     defaultLocale: 'en',
   },
+  experimental: {
+    // Enables the styled-components SWC transform
+    styledComponents: true
+  }
 }

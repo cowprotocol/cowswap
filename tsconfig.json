@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/const/*": ["const/*"],
+      "@/pages/*": ["pages/*"]
+    },
     "target": "es5",
     "lib": [
       "dom",
@@ -9,8 +15,13 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
+    "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "noUnusedLocals": false,
+    // "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -23,8 +34,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "lib/i18n.bak", "pages/terms.bak"  ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+    "typeRoots": [ "./types", "./node_modules/@types"],
 }
