@@ -256,8 +256,8 @@ export default function CowSlider() {
         }
       </CowTop>
 
-      {activeBatchData.map(({ description }) =>
-        <CowSliderDescription>{description}</CowSliderDescription>
+      {activeBatchData.map(({ description }, index) =>
+        <CowSliderDescription key={index}>{description}</CowSliderDescription>
       )
       }
 
