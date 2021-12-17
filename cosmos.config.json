@@ -2,6 +2,6 @@
   "staticPath": "public",
   "watchDirs": ["src"],
   "webpack": {
-    "configPath": "react-scripts/config/webpack.config"
+    "configPath": "./cosmos.webpack.config"
   }
 }

@@ -182,7 +182,7 @@
     "i18n:compile": "yarn i18n:extract && lingui compile",
     "prei18n:extract": "touch src/locales/en-US.po",
     "bundle": "microbundle --tsconfig tsconfig.lib.json src/lib/index.tsx --format esm,cjs",
-    "cosmos": "open http://localhost:5000 && cross-env FAST_REFRESH=false cosmos",
+    "cosmos": "cross-env FAST_REFRESH=false cosmos",
     "sitemap": "node src/custom/sitemap",
     "writeVersion": "node src/custom/writeVersion"
   },
