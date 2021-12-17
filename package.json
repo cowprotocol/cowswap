@@ -5,7 +5,8 @@
     "build": "next build",
     "start": "next start",
     "i18n:extract": "NODE_ENV=test npx lingui extract",
-    "i18n:compile": "npx lingui compile"
+    "i18n:compile": "npx lingui compile",
+    "lint": "next lint"
   },
   "dependencies": {
     "@lingui/macro": "^3.12.1",
@@ -13,6 +14,7 @@
     "add": "^2.0.6",
     "classnames": "^2.3.1",
     "date-fns": "^2.25.0",
+    "gray-matter": "^4.0.3",
     "inter-ui": "^3.19.3",
     "make-plural": "^7.0.0",
     "markdown-to-jsx": "^7.1.5",
@@ -22,6 +24,8 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-intersection-observer": "^8.33.1",
+    "remark": "^14.0.2",
+    "remark-html": "^15.0.1",
     "sass": "^1.43.4",
     "styled-components": "^5.3.3"
   },
@@ -33,8 +37,10 @@
     "@types/react": "^17.0.34",
     "@types/styled-components": "^5.1.17",
     "babel-plugin-macros": "^3.1.0",
-    "eslint": "^8.4.1",
+    "eslint": "7.32.0",
+    "eslint-config-next": "12.0.7",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.27.1",
     "prettier": "2.5.1",
     "typescript": "^4.4.4"
   }

@@ -69,7 +69,7 @@ export default function SocialList({ social, labels = true, iconSize, gap, inner
     <Wrapper iconSize={iconSize} gap={gap} innerPadding={innerPadding} alignItems={alignItems}>
       {Object.keys(social).map((item, i) =>
         <li key={i}>
-          <a href={social[item].url} target="_blank" rel="noopener nofollow">
+          <a href={social[item].url} target="_blank" rel="noopener nofollow noreferrer">
             <img src={`images/icons/${social[item].label.toLowerCase()}.svg`} alt={social[item].label}></img>
             {labels && <b>{social[item].label}</b>}
           </a>

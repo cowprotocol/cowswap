@@ -109,23 +109,23 @@ export default function Home({ metricsData, siteConfigData }) {
             </IconListItem>
 
           </IconList>
-        </div>
-      </Section>
+        </div >
+      </Section >
 
       {/* 4th section */}
-      <Section flow={'column'}>
+      < Section flow={'column'} >
         <div>
           <h3>The life cycle of a CoW order</h3>
           <SubTitle align='center'>The protocol improves prices for users by batching trades, finding coincidence of wants (CoWs) <br />and tapping into all on chain liquidity - including aggregators. <Link href="#">Read More</Link></SubTitle>
           <SectionImage margin={'0'}>
             <a href="/images/how-it-works.jpg" target="_blank" rel="nofollow noopener"><img loading="lazy" src="/images/how-it-works.jpg" alt="How it works" /></a>
             <ButtonWrapper className="mobileOnly"><Button label={'View Full Image'} href="/images/how-it-works.jpg" target="_blank" rel="nofollow noopener" /></ButtonWrapper>
-          </SectionImage>
-        </div>
-      </Section>
+          </SectionImage >
+        </div >
+      </Section >
 
       {/* 5th section */}
-      <Section mobileSwitchOrder id="developers">
+      < Section mobileSwitchOrder id="developers" >
         <div>
           <ApiTool>
             <h4>Get a price quote</h4>
@@ -144,22 +144,22 @@ export default function Home({ metricsData, siteConfigData }) {
             <ApiOutput>
               <b>Quoted order response:</b>
               <div>
-                <span>curl</span> -X 'POST' \ <br />
-                'https://protocol-mainnet.dev.gnosisdev.com/api/v1/quote' \<br />
-                -H 'accept: application/json' \<br />
-                -H 'Content-Type: application/json' \<br />
-                -d '{'{'} <br />
-                <span>"sellToken":</span> "0x6810e776880c02933d47db1b9fc05908e5386b96",<br />
-                <span>"buyToken":</span> "0x6810e776880c02933d47db1b9fc05908e5386b96",<br />
-                <span>"receiver":</span> "0x6810e776880c02933d47db1b9fc05908e5386b96",<br />
-                <span>"validTo":</span> 0,<br />
-                <span>"appData":</span> "0x0000000000000000000000000000000000000000000000000000000000000000",<br />
-                <span>"partiallyFillable":</span> true,<br />
-                <span>"sellTokenBalance":</span> "erc20",<br />
-                <span>"buyTokenBalance":</span> "erc20",<br />
-                <span>"from":</span> "0x6810e776880c02933d47db1b9fc05908e5386b96",<br />
-                <span>"kind":</span> "sell",<br />
-                <span>"sellAmountBeforeFee":</span> "1234567890"<br />
+                <span>curl</span> -X &apos;POST&apos; \ <br />
+                &apos;https://protocol-mainnet.dev.gnosisdev.com/api/v1/quote&apos; \<br />
+                -H &apos;accept: application/json&apos; \<br />
+                -H &apos;Content-Type: application/json&apos; \<br />
+                -d &apos;{'{'} <br />
+                <span>&ldquo;sellToken&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
+                <span>&ldquo;buyToken&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
+                <span>&ldquo;receiver&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
+                <span>&ldquo;validTo&ldquo;:</span> 0,<br />
+                <span>&ldquo;appData&ldquo;:</span> &ldquo;0x0000000000000000000000000000000000000000000000000000000000000000&ldquo;,<br />
+                <span>&ldquo;partiallyFillable&ldquo;:</span> true,<br />
+                <span>&ldquo;sellTokenBalance&ldquo;:</span> &ldquo;erc20&ldquo;,<br />
+                <span>&ldquo;buyTokenBalance&ldquo;:</span> &ldquo;erc20&ldquo;,<br />
+                <span>&ldquo;from&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
+                <span>&ldquo;kind&ldquo;:</span> &ldquo;sell&ldquo;,<br />
+                <span>&ldquo;sellAmountBeforeFee&ldquo;:</span> &ldquo;1234567890&ldquo;<br />
                 {'}'}
               </div>
 
@@ -169,7 +169,7 @@ export default function Home({ metricsData, siteConfigData }) {
         <div>
           <SectionImage margin={"0 0 -4rem -1rem"} width={"10rem"} height={"10rem"}>
             <img loading="lazy" src="/images/icons/plug.svg" alt="Plug-n-play" />
-          </SectionImage>
+          </SectionImage >
 
           <h3>Plug-n-play trading protocol with just a few lines of code</h3>
           <SubTitle>Directly interact with the COW protocol to place, manage and settle your orders through a documented API interface.</SubTitle>
@@ -183,16 +183,16 @@ export default function Home({ metricsData, siteConfigData }) {
           <ButtonWrapper>
             <Button href="/" label="Api Docs" />
           </ButtonWrapper>
-        </div>
-      </Section>
+        </div >
+      </Section >
 
       {/* 6th section */}
-      <Section flow={'column'} fullWidth>
+      < Section flow={'column'} fullWidth >
         <div>
           <SectionImage margin={'0 0 -7rem'} height={'78rem'}>
             <img loading="lazy" src="/images/cow-dark-forest.jpg" alt="Guardian in the dark forest" />
-          </SectionImage>
-        </div>
+          </SectionImage >
+        </div >
 
         <div>
           <h3>Your guardian in the dark forest</h3>
@@ -227,16 +227,16 @@ export default function Home({ metricsData, siteConfigData }) {
             </IconListItem>
           </IconList>
         </div>
-      </Section>
+      </Section >
 
       {/* 7th section */}
-      <Section flow={'column'} id="community">
+      < Section flow={'column'} id="community" >
         <div>
           <h3>Join the community</h3>
           <SubTitle align={'center'} maxWidth={62}>Learn more about COW Protocol, chat with the team, others in the community, and have your say in shaping the future of decentralized finance.</SubTitle>
           <SocialList social={social} />
         </div>
-      </Section>
+      </Section >
 
     </Layout >
   )

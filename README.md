@@ -13,6 +13,13 @@ yarn
 yarn dev
 ```
 
+## Lint
+```bash
+# Run eslint
+yarn lint
+```
+
+
 ## Build
 ```bash
 yarn build

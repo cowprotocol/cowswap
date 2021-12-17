@@ -94,7 +94,7 @@ export default function Header({ siteConfig, menu }) {
           <Pixel ref={ref} />
           <Wrapper className={!inView && 'sticky'}>
 
-            <Link href="/">
+            <Link passHref href="/">
               <Logo />
             </Link>
 
