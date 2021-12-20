@@ -1,25 +1,31 @@
-pull_request_rules:
-  - name: Merge approved and green PRs when tagged with 'merge when green'
+queue_rules:
+  - name: default
     conditions:
-      - "#approved-reviews-by>=2"
-      - label="merge when green"
+      - check-success=Deploy
+      - check-success=Cypress
+
+pull_request_rules:
+  - name: Merge approved and green PRs when tagged with 'Auto-merge'
+    conditions:
+      - '#approved-reviews-by>=2'
+      - label="Auto-merge"
       - check-success=Deploy
       - check-success=Cypress
     actions:
-      merge:
+      queue:
         method: squash
-        strict: smart+fasttrack
+        name: default
         commit_message: title+body
+  # DEPENDABOT PRs
   - name: automatic merge for Dependabot pull requests
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
-      - "#approved-reviews-by>=0"
+      - '#approved-reviews-by>=0'
       - label!=["WIP", "Don't merge", "On hold"]
       - check-success=Deploy
       - base=develop
     actions:
-      merge:
+      queue:
         method: squash
-        strict: smart+fasttrack
+        name: default
         commit_message: title+body
-    

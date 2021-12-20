@@ -1,12 +1,12 @@
 import React /* , { useCallback, useContext } */ from 'react'
-import styled /* , { ThemeContext } */ from 'styled-components'
+import styled /* , { ThemeContext } */ from 'styled-components/macro'
 // import { useActiveWeb3React } from 'hooks/web3'
 // import { clearAllTransactions } from 'state/transactions/actions'
 // import { shortenAddress } from 'utils'
 // import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 // import { AutoRow } from 'components/Row'
 // import Copy from 'components/AccountDetails/Copy'
-import Transaction from 'components/AccountDetails/Transaction'
+import Activity from 'components/AccountDetails/Transaction'
 
 // import { SUPPORTED_WALLETS } from 'constants/index'
 import { ReactComponent as Close } from 'assets/images/x.svg'
@@ -20,6 +20,7 @@ import { ReactComponent as Close } from 'assets/images/x.svg'
 import { ButtonSecondary } from 'components/Button'
 // import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink /* , LinkStyledButton, TYPE */ } from 'theme'
+import { ActivityDescriptors } from 'hooks/useRecentActivity'
 // import { Trans } from '@lingui/macro'
 // import { useAppDispatch } from 'state/hooks'
 
@@ -206,25 +207,25 @@ export const MainWalletAction = styled(WalletAction)`
   color: ${({ theme }) => theme.primary1};
 `
 
-export function renderTransactions(transactions: string[]) {
+export function renderActivities(activities: ActivityDescriptors[]) {
   return (
     <TransactionListWrapper>
-      {transactions.map((hash, i) => {
-        return <Transaction key={i} hash={hash} />
+      {activities.map((activity) => {
+        return <Activity key={activity.id} activity={activity} />
       })}
     </TransactionListWrapper>
   )
 }
 
-export interface AccountDetailsProps {
-  toggleWalletModal: () => void
-  pendingTransactions: string[]
-  confirmedTransactions: string[]
-  ENSName?: string
-  openOptions: () => void
-}
+// export interface AccountDetailsProps {
+//   toggleWalletModal: () => void
+//   pendingTransactions: string[]
+//   confirmedTransactions: string[]
+//   ENSName?: string
+//   openOptions: () => void
+// }
 
-/* 
+/*
 export default function AccountDetails({
   toggleWalletModal,
   pendingTransactions,
@@ -294,7 +295,7 @@ export default function AccountDetails({
       )
     }
     return null
-  } 
+  }
 
   const clearAllTransactionsCallback = useCallback(() => {
     if (chainId) dispatch(clearAllTransactions({ chainId }))

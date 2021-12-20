@@ -1,12 +1,21 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Page, { Content, Title } from 'components/Page'
-import styled from 'styled-components'
-import { ContentLink } from 'components/ContentLink'
+import styled from 'styled-components/macro'
 import { DISCORD_LINK } from 'constants/index'
 import { Link } from 'react-router-dom'
-import { ExternalLink as ExternalLinkTheme } from 'theme'
+import { ExternalLink as ExternalLinkTheme, StyledInternalLink } from 'theme'
+import { LinkScrollable } from 'components/Link'
 
-const ExternalLink = styled(ExternalLinkTheme)``
+const ExternalLink = styled(ExternalLinkTheme)`
+  color: ${({ theme }) => theme.text1};
+  text-decoration: underline;
+  font-weight: normal;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: ${({ theme }) => theme.textLink};
+  }
+`
 
 const Wrapper = styled.div`
   #table-container {
@@ -55,22 +64,6 @@ const Wrapper = styled.div`
   }
 
   ${Content} {
-    > div ${ExternalLink}, > p ${ExternalLink} {
-      color: ${({ theme }) => theme.text1};
-      text-decoration: underline;
-      font-weight: 400;
-      transition: color 0.2s ease-in-out;
-
-      &:hover {
-        color: ${({ theme }) => theme.textLink};
-      }
-    }
-
-    > div > ${ExternalLink} {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
     > div > ul {
       margin: 12px 0 24px;
       padding: 0 0 0 20px;
@@ -162,11 +155,11 @@ export default function Faq() {
         <Content>
           {toc.map(({ section, items }) => (
             <div key={section.id}>
-              <ContentLink href={'#' + section.id}>{section.label}</ContentLink>
+              <LinkScrollable href={'#' + section.id}>{section.label}</LinkScrollable>
               <ul>
                 {items.map((tocItem) => (
                   <li key={tocItem.id}>
-                    <ContentLink href={'#' + tocItem.id}>{tocItem.label}</ContentLink>
+                    <LinkScrollable href={'#' + tocItem.id}>{tocItem.label}</LinkScrollable>
                   </li>
                 ))}
               </ul>
@@ -180,8 +173,8 @@ export default function Faq() {
           <h3 id="what-is-cowswap">What is CowSwap?</h3>
           <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
           <p>
-            It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
-            into any on-chain liquidity source while providing MEV protection.
+            CowSwap is a Meta DEX aggregator that allows you to buy and sell tokens using gasless orders that are
+            settled peer-to-peer among its users, or into any on-chain liquidity source while providing MEV protection.
           </p>
 
           <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CowSwap a &quot;Meta&quot; DEX aggregator?</h3>
@@ -204,19 +197,16 @@ export default function Faq() {
           </h3>
 
           <p>
-            Defined by Phil Daian in the{' '}
-            <ExternalLink href="https://arxiv.org/abs/1904.05234" target="_blank" rel="noopener noreferrer">
-              {' '}
-              paper Flash Boys 2.0{' '}
-            </ExternalLink>
-            , MEV is a measure of the profit a miner (or validator, sequencer, etc.) can make through their ability to
-            arbitrarily include, exclude, or re-order transactions within the blocks they produce.
+            Defined by Phil Daian et al. in the{' '}
+            <ExternalLink href="https://arxiv.org/abs/1904.05234">paper Flash Boys 2.0 </ExternalLink>, MEV is a measure
+            of the profit a miner (or validator, sequencer, etc.) can make through their ability to arbitrarily include,
+            exclude, or re-order transactions within the blocks they produce.
           </p>
 
           <p>
             Since January 2020 until now (July&#39;21), the total amount of value extracted by miners (etc.) on Ethereum
             transactions has reached{' '}
-            <ExternalLink href="https://explore.flashbots.net/" target="_blank" rel="noopener noreferrer">
+            <ExternalLink href="https://explore.flashbots.net/">
               $ 796.8 Million, including successful and failed transactions.
             </ExternalLink>
           </p>
@@ -226,11 +216,7 @@ export default function Faq() {
           </h3>
 
           <p>
-            <ExternalLink
-              href="https://en.wikipedia.org/wiki/Coincidence_of_wants"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://en.wikipedia.org/wiki/Coincidence_of_wants">
               Coincidence of Wants (CoWs)
             </ExternalLink>{' '}
             can be explained as “an economic phenomenon where two parties each hold an item the other wants, so they
@@ -247,7 +233,7 @@ export default function Faq() {
 
           <p>
             CowSwap allows for coincidence of wants (CoWs) orders to be traded directly against one another. Only the
-            excess order amount that cannot be settled directly with other CowSwap traders are sent to the underlying
+            excess order amounts that cannot be settled directly with other CowSwap traders are sent to the underlying
             AMMs (automated market makers).
           </p>
 
@@ -263,16 +249,16 @@ export default function Faq() {
           </p>
 
           <p>
-            Batches are decentrally settled by an external, independent party (called “solvers”) on-chain. Solvers are a
+            Batches are decentrally settled by external, independent parties (called “solvers”) on-chain. A solver is a
             person or entity who submits order settlement solutions that maximize trade surplus for a given batch.
             Solvers are incentivized to implement professional transaction management techniques that allow them to set
-            very tight slippage bounds on any interactions with external liquidity sources (e.g. trading CoW excess on
+            very tight slippage bounds on any interactions with external liquidity sources (e.g., trading CoW excess on
             Uniswap). This dramatically reduces the manipulation surface of miners and front-runners.
           </p>
 
           <p>
-            Additionally, depending on the composition of the orders submitted and valid for a given batch, the
-            existence of CoWs may significantly reduce the amount that has to be exchanged via external MEV-prone
+            Additionally, depending on the composition of the orders that are submitted and are valid for a given batch,
+            the existence of CoWs may significantly reduce the amount that has to be exchanged via external MEV-prone
             protocols, such as Uniswap.
           </p>
 
@@ -294,11 +280,7 @@ export default function Faq() {
 
           <p>
             Finding the best settlement for orders is a challenging task, which very soon may have its own{' '}
-            <ExternalLink
-              href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245">
               decentralized competition
             </ExternalLink>
             .
@@ -307,21 +289,25 @@ export default function Faq() {
           <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
 
           <p>
-            CowSwap is in ongoing development, and that is why this is not a beta product but rather a proof-of-concept
-            dapp for the community to test and leverage before the final version is released.
+            As of August 11th, 2021, CowSwap is no longer in alpha and moves to a final, stable version. The underlying
+            Gnosis Protocol Smart contracts have been upgraded to integrate tightly with Balancer v2.
           </p>
 
           <p>
-            The code has been carefully tested, peer-reviewed and fully{' '}
-            <ExternalLink
-              href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            With this upgrade, CowSwap evolves into its most stable, performant form: the code has been thoroughly and
+            carefully tested, peer-reviewed and fully{' '}
+            <ExternalLink href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf">
               audited
             </ExternalLink>
-            . Although this can be seen as a step forward in terms of security, it&#39;s recommended to use the protocol
-            at <strong>your own risk</strong>.
+            . Whilst CowSwap has taken a major step forward in terms of security and stability, as with other crypto
+            protocols or dapps, your use is at your own risk.{' '}
+            <strong>
+              Please review our{' '}
+              <StyledInternalLink to="/terms-and-conditions">
+                <strong>Terms and Conditions</strong>
+              </StyledInternalLink>
+              .
+            </strong>
           </p>
         </Content>
       </Page>
@@ -331,28 +317,20 @@ export default function Faq() {
           <h2 id="protocol">Protocol</h2>
           <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
           <p>
-            There is currently no CowSwap specific token, however, the community has expressed their desire to
-            participate in this exciting project. That is why there is an ongoing discussion in the{' '}
-            <ExternalLink href="https://forum.gnosis.io/c/gnosis-protocol" target="_blank" rel="noopener noreferrer">
-              Forum
-            </ExternalLink>{' '}
-            and{' '}
-            <ExternalLink href="https://chat.cowswap.exchange" target="_blank" rel="noopener noreferrer">
-              Discord
-            </ExternalLink>{' '}
-            about possibility of creating one, so make sure your voice is heard!
+            There is currently no CowSwap specific token, however, the community has expressed its desire to participate
+            in this exciting project. That is why there is an ongoing discussion in the{' '}
+            <ExternalLink href="https://forum.gnosis.io/c/gnosis-protocol">Forum</ExternalLink> and{' '}
+            <ExternalLink href="https://chat.cowswap.exchange">Discord</ExternalLink> about the possibility of creating
+            one, so make sure your voice is heard!
           </p>
           <p>
             Be cautious, some people may create fake COW tokens, that are not affiliated with this project. Please note
-            that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape or
+            that any token listed in any AMM is <strong>NOT</strong> associated with this project in any way, shape, or
             form.
           </p>
           <p>
-            Follow{' '}
-            <ExternalLink href="https://twitter.com/mevprotection" target="_blank" rel="noopener noreferrer">
-              @MEVProtection
-            </ExternalLink>{' '}
-            on Twitter to be up to date!
+            Follow <ExternalLink href="https://twitter.com/mevprotection">@MEVProtection</ExternalLink> on Twitter to be
+            up to date!
           </p>
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
           <p>
@@ -363,20 +341,20 @@ export default function Faq() {
             The fee consists of the &quot;base cost to execute the trade&quot; and the &quot;protocol fee&quot;
             (although it is only exposed to the user as one fee). As a user, you are only signing a message to submit
             your trade and the underlying solver will end up submitting the transaction for you. Essentially you are
-            paying this &quot;base cost to execute the trade&quot; aka &quot;gas costs&quot; with your sell token and
+            paying this &quot;base cost to execute the trade&quot;, aka &quot;gas costs&quot;, with your sell token and
             the cost is already included in your price estimation. The protocol is currently subsidizing a portion of
             the gas costs, while the protocol fee is currently switched off.
           </p>
           <p>
             <strong>
-              Note that you will only have to pay fees IF your trade is executed. No more gas-costs on any failed
+              Note that you will only have to pay fees IF your trade is executed. No more gas costs on any failed
               transactions!
             </strong>
           </p>
           <h3 id="how-does-cowswap-connect-to-all-on-chain-liquidity">
             How does CowSwap connect to all on-chain liquidity?
           </h3>
-          <p>CowSwap can connect to all on-chain liquidity:</p>
+          <p>CowSwap can connect to all on-chain liquidity.</p>
           <p>
             When CowSwap does not have enough CoWs (Coincidence of Wants) among the orders available for a batch, it
             taps other AMMs’ liquidity to be able to settle the traders’ orders. Gnosis Protocol v2 can be connected to
@@ -389,7 +367,7 @@ export default function Faq() {
           <p>
             Before using on-chain liquidity, CowSwap tries to find CoWs (Coincidences of Wants) within the set of
             currently valid orders and match them directly with one another. CoWs result in better prices because no fee
-            is paid to the liquidity provider (e.g. 0.3% for Uniswap v2). In the case that CowSwap does not have CoWs,
+            is paid to the liquidity provider (e.g., 0.3% for Uniswap v2). In the case that CowSwap does not have CoWs,
             it taps into the DEX that gives the next best price. This results in the same or better performance than
             existing DEX aggregators.
           </p>
@@ -400,40 +378,72 @@ export default function Faq() {
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
           <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
-          <p>CowSwap uses offline signatures to offer gasless orders.</p>
           <p>
-            Currently, Smart Contract (SC) wallets such as Gnosis Safe, Argent or Pillar are not supported because it
-            would require signing an on-chain transaction to place the order, making it no longer gasless. We are
-            working to make this a possibility and support will be added soon.
+            CowSwap uses offline signatures to offer gasless orders. Additionally, Smart Contract (SC) wallets are
+            supported through an alternative signing method called{' '}
+            <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
           <p>
-            Nevertheless, even if your wallet is not an SC wallet, it might be unsupported in some cases. Not all
-            wallets implement the necessary signing methods from EIP712 standard. If that is the case for you, reach out
+            Regular, non Smart Contract wallets (called EOA) require the wallet to support off-chain signing (
+            <ExternalLink href="https://eips.ethereum.org/EIPS/eip-712">EIP-712</ExternalLink> standard).
+          </p>
+          <p>
+            Through our own internal testing and user reports, we identified some EOA wallets that do not yet work with
+            off-chain signing. Thus, you might find your wallet is not supported. If that is the case for you, reach out
             to your wallet developers and ask for it.
+          </p>
+          <h3 id="smart-contract-support">Are Smart Contract wallets supported?</h3>
+          <p>
+            Yes! Any Smart Contract (be it a wallet or regular contract) can trade in CowSwap by using one signing
+            method called pre-sign.
+          </p>
+          <p>
+            pre-sign is a protocol operation that can be invoked by any contract. The operation has a single parameter
+            that is the &quot;orderId&quot; which identifies the order being approved. Pre-signing your order in the
+            settlement contract is equivalent to providing an off-chain signature for the orderId.
+          </p>
+          <p>
+            In the future, the protocol might provide{' '}
+            <ExternalLink href="https://eips.ethereum.org/EIPS/eip-1271">EIP-1271</ExternalLink> support for off-chain
+            signing also for smart contracts, making gasless trading possible also for smart contracts.
+          </p>
+
+          <h3 id="what-is-presign">What is pre-sign?</h3>
+          <p>
+            It is an alternative way of signing orders offered by the protocol, that is especially interesting for smart
+            contract integrations and Smart Contract wallets. See{' '}
+            <LinkScrollable href={'#smart-contract-support'}>Smart Contract support</LinkScrollable> for more
+            information.
           </p>
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
           <p>
             In GPv2, instead of using a central operator or a constant function market maker to determine trade
-            settlements, solvers compete against each other to submit the most optimal batch settlement solution. Each
-            time a solver submits a successful batch settlement solution, the protocol rewards them with GNO. Anyone can
-            become a solver, although, in order to become one, there are certain requirements:
+            settlements, the protocol uses a party called a &quot;solver&quot;, who is the party in charge of providing
+            the settlement solution to the batch auctions. Solvers compete against each other to submit the best
+            possible batch settlement solution. Each time a solver submits a successful batch settlement solution, the
+            protocol rewards them with tokens, meaning that the protocol rewards solvers for solving the batch auction
+            optimization problem. By meeting certain requirements, anyone can become a solver:
           </p>
           <ol>
-            <li>To become a solver, an Ethereum address needs to deposit a bond of GNO tokens to GnosisDAO.</li>
             <li>
-              Once the GNO tokens have been staked (locked up), GnosisDAO has to vote to approve or reject the Ethereum
-              address that will identify the solver.
+              To become a solver, an Ethereum address needs to deposit a bond in the form of tokens. Asset type and
+              amounts are pending to be defined by the GnosisDAO or GnosisProtocolDAO.
+            </li>
+            <li>
+              Once the tokens have been staked (locked up), GnosisDAO/GnosisProtocolDAO must vote to approve or reject
+              the Ethereum address that will identify the solver. If the vote is successful, the solver Ethereum address
+              will be included in the allowlist (verification) solvers contract.
             </li>
             <li>
               Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
-              solutions, or take the risk of being slashed by the GnosisDAO for wrongdoing.
+              solutions, or take the risk of being slashed by the GnosisDAO/GnosisProtocolDAO for wrongdoing.
             </li>
           </ol>
           <h3 id="what-interactions-can-i-encounter-when-using-Cowswap">
             What interactions can I encounter when using CowSwap?
           </h3>
           <p>
-            <strong>Internal CowSwap Operations</strong>
+            <strong>CowSwap Operations</strong>
           </p>
           <div id="table-container">
             <table>
@@ -519,7 +529,44 @@ export default function Faq() {
                 <strong>Cancel an order (Sign cancellation)</strong> <br />
                 Signature of a gasless off-chain cancellation request. This cancellation is considered
                 &ldquo;soft&rdquo; as it might not be placed with enough time for the solvers to take into
-                consideration. See more via <ContentLink href={'#can-i-cancel-an-order'}>this FAQ entry</ContentLink>.
+                consideration. See more via{' '}
+                <LinkScrollable href={'#can-i-cancel-an-order'}>this FAQ entry</LinkScrollable>.
+              </p>
+            </li>
+          </ul>
+
+          <p>
+            <strong>Smart contracts</strong>
+          </p>
+          <div id="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Signed tx (free / gasless)</th>
+                  <th>Ethereum tx (costs gas)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pre-sign</td>
+                  <td />
+                  <td>
+                    <span role="img" aria-label="pre-sign order in an ethereum tx and costs gas">
+                      ✅
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>
+              <p>
+                <strong>Pre-sign order</strong> <br />
+                Alternative signing method offered by the protocol to allow Smart Contract integration. See{' '}
+                <LinkScrollable href={'#smart-contract-support'}>Smart Contract support</LinkScrollable> for more
+                information.
               </p>
             </li>
           </ul>
@@ -549,7 +596,7 @@ export default function Faq() {
             Unfortunately, CowSwap does not support some tokens. While these tokens implement the typical ERC20
             interface, when calling the transfer and transferFrom methods, the actual amount the receiver will get will
             be smaller than the specified sent amount. This causes problems with CowSwap&apos;s settlement logic which
-            expects the received amount (e.g. from a Uniswap interaction) to be fully transferable to the trader.
+            expects the received amount (e.g., from a Uniswap interaction) to be fully transferable to the trader.
           </p>
 
           <h3 id="why-is-cowswap-able-to-offer-gas-free-trades">Why is CowSwap able to offer gas-free trades?</h3>
@@ -565,8 +612,8 @@ export default function Faq() {
           <p>
             For the trade itself you do not need to hold ETH. Although, in order to be able to trade on CowSwap, you
             first need to approve your funds for spending on the dapp<small>*</small>. For that action, you need ETH to
-            pay for gas fees. Once you’ve done this, ETH is no longer required as CowSwap charges the fee from the sell
-            token.
+            pay for gas fees. Once you have done this, ETH is no longer required as CowSwap charges the fee from the
+            sell token.
           </p>
 
           <p>
@@ -592,22 +639,33 @@ export default function Faq() {
             </li>
             <li>
               Once the approval has been mined, the next step is to sign a meta-tx in which you will see the parameters
-              of the order you are about to place in the CowSwap interface. After that, there&#39;s nothing else to do.
+              of the order you are about to place in the CowSwap interface. After that, there is nothing else to do.
             </li>
             <li>
               Once the order is executed, you will see a notification in the CowSwap UI and hear a confirming “Moo”
               sound.
             </li>
           </ol>
+          <p>
+            This workflow applies for normal Ethereum accounts (EOA). For smart contracts, instead of signing a meta-tx
+            you would need to do a <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
+          </p>
 
           <h3 id="can-i-cancel-an-order">Can I cancel an order?</h3>
 
           <p>Yes! You can request to cancel any order while it is still pending.</p>
           <p>Cancellations, like orders, are free and require no gas to be paid.</p>
-          <p>Keep in mind even though the request to cancel an order succeeds, the order might still be executed.</p>
+          <p>
+            Keep in mind that even though the request to cancel an order succeeds, the order might still be executed.
+          </p>
           <p>
             That is because when the offline order cancellation is received, a settlement solution may have already been
             prepared by one of the solvers and sent to the Ethereum network.
+          </p>
+          <p>
+            Alternatively, there is the so-called hard cancellation, which allows to cancel an order on-chain. This is
+            not currently supported by the CowSwap web interface, and you would need to pay for the gas of the on-chain
+            cancellation. For more information, check the Smart Contract implementation.
           </p>
 
           <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
@@ -625,11 +683,15 @@ export default function Faq() {
 
           <p>
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
-            via the Allowance Manager (for more information read{' '}
-            <ExternalLink href="https://github.com/gnosis/gp-v2-contracts" target="_blank" rel="noopener noreferrer">
+            via the GPv2 Vault Relayer (for more information read{' '}
+            <ExternalLink
+              href="https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2VaultRelayer.sol"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Smart Contract Architecture
             </ExternalLink>
-            ). In order to allow that to happen, the trader has to first approve the Allowance Manager contract to spend
+            ). In order to allow that to happen, the trader must first approve the GPv2 Vault Relayer contract to spend
             tokens on their behalf. The smart contract logic ensures that no token can be spent without deliberately
             signing an order for it.
           </p>
@@ -639,10 +701,10 @@ export default function Faq() {
           </h3>
 
           <p>
-            Signing a message incurs no gas cost and is therefore free to the user. When placing an order, the protocol
-            cannot guarantee that the order will be executed (e.g. the price could change to no longer satisfy the
-            specified limit). By only signing the intent to trade, we can ensure that users only incur a cost when their
-            trade is successfully executed.
+            Signing a message incurs no gas cost and is therefore free. When placing an order, the protocol cannot
+            guarantee that the order will be executed (e.g., the price could change to no longer satisfy the specified
+            limit). By only signing the intent to trade, we can ensure that users only incur a cost when their trade is
+            successfully executed.
           </p>
 
           <p>
@@ -687,22 +749,7 @@ export default function Faq() {
             buy WETH and will directly unwrap it for you.
           </p>
 
-          <hr />
-
-          <p>
-            Didn&#39;t find an answer? Join the{' '}
-            <ExternalLink href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
-              community on Discord
-            </ExternalLink>
-          </p>
-          <p>
-            We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
-            <span role="img" aria-label="glass of milk">
-              🥛
-            </span>
-          </p>
-
-          {/* 
+          {/*
         <h2 id="discardedquestionstobeaddedlater">Discarded Questions to be added later</h2>
 
         <ul>
@@ -724,6 +771,186 @@ export default function Faq() {
           </li>
         </ol>
         */}
+        </Content>
+      </Page>
+
+      <Page>
+        <Content>
+          <h2 id="affiliate">Affiliate program</h2>
+
+          <h3 id="what-is-the-profile-page">What is the Profile page?</h3>
+
+          <p>
+            It is a page where you can see your number of trades and volume that you have done with the wallet you have
+            connected with.
+          </p>
+
+          <p>
+            Additionally, you will be able to get your own referral/affiliate link, so you can share it with others, and
+            if you do so, you will also be able to see the number of trades and volume that your referral link gets
+            credited from the users who followed your link and interacted with the DEX.
+          </p>
+
+          <h3 id="in-which-networks-it-is-available">In which networks is it available?</h3>
+
+          <p>At this time, the affiliate program only works for Ethereum Mainnet.</p>
+
+          <h3 id="are-there-any-rewards-for-sharing-the-referral-link">
+            Are there any rewards for sharing the referral link?
+          </h3>
+
+          <p>
+            The affiliate program will initially run as a trial and therefore there are currently no announced rewards.
+            The tracking, however, has already started.
+          </p>
+
+          <p>
+            CowSwap&apos;s positive network effect scales exponentially with more people using it, therefore, the
+            affiliate program aims to acknowledge which users are contributing more to the success of the protocol.{' '}
+          </p>
+
+          <p>
+            We now briefly explain CowSwap’s positive network effect. CowSwap&apos;s name comes from the economic
+            phenomenon &quot;Coincidence of Wants&quot;, where users&apos; orders can be matched with each other to
+            obtain better prices. When the protocol finds a CoW, trades are directly settled among traders, which allows
+            saving on slippage, gas, and LP fees. The network effect of CoWs increases alongside with the number of
+            traders using the protocol&#59; the more users we have sending orders to the protocol, the better the prices
+            and gas savings the protocol is able to offer. Our new CoW-filiate program is aiming to increase this
+            positive network effect.
+          </p>
+
+          <h3 id="who-can-share-the-referral-link">Who can share the referral link?</h3>
+
+          <p>
+            Everyone can share a link, you only need a valid Ethereum wallet address to create your own personal link.
+          </p>
+
+          <h3 id="who-can-follow-the-referral-link">Who can follow the referral link?</h3>
+
+          <p>
+            Everyone! Please share the excitement for the CowSwap protocol & dapp. It would really make a difference for
+            the Cow-mmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
+            interested.
+          </p>
+
+          <p>
+            Share your referral link with all your friends if you think they can be interested in the qualities Cowswap
+            has to offer. These qualities range from ETH-less trading experience, MEV protection, no fees for failed
+            transactions, and more.{' '}
+            <span role="img" aria-label="cow">
+              🐮
+            </span>
+          </p>
+
+          <p>
+            Note that trades and volume will only be credited to your wallet if the user has not traded in CowSwap with
+            that address before, and their first trade is done after following your link.
+          </p>
+
+          <h3 id="what-is-the-source-of-truth-for-accounting-trade-volume">
+            What is the source of truth for accounting trade volume?
+          </h3>
+
+          <p>
+            The referral program fetches data from Dune, and therefore, the USD value is taken from the information
+            available in Dune under price feed. If the token is not in the Dune price feed, then volume will not be
+            counted.
+          </p>
+
+          <h3 id="why-do-not-i-see-any-referral-trades-in-my-profile-page">
+            I shared my referral with a friend, who then also traded. Why do I not see any referral trades in my profile
+            page?
+          </h3>
+
+          <p>There could be a few reasons for this:</p>
+          <ol>
+            <li>
+              Your friend was trading tokens that do not have a price feed available (see FAQ entry{' '}
+              <LinkScrollable href={'#why-is-my-total-trade-referral-trade-volume-smaller-than-the-real-volume'}>
+                Why is the volume smaller than the real volume?
+              </LinkScrollable>
+              ).
+            </li>
+            <li>The data has not yet propagated from the chain to our backend.</li>
+            <li>
+              Your friend had already traded with that account, which does not count towards referral volume (see FAQ
+              entry{' '}
+              <LinkScrollable href={'#who-can-follow-the-referral-link'}>
+                Who can follow the referral link?
+              </LinkScrollable>
+              ).
+            </li>
+          </ol>
+
+          <h3 id="why-is-my-total-trade-referral-trade-volume-smaller-than-the-real-volume">
+            Why is my total trade/referral trade volume smaller than the real volume?
+          </h3>
+
+          <p>
+            Some tokens might not yet have a proper price feed linking them to a USD estimation at the date/time when
+            your trade was executed. When that happens the trade volume is set to 0. Thus, your total volume can be
+            smaller, or even be shown as 0 (see FAQ entry{' '}
+            <LinkScrollable href={'#what-is-the-source-of-truth-for-accounting-trade-volume'}>
+              What is the source of truth for accounting trade volume?
+            </LinkScrollable>
+            ).
+          </p>
+
+          <h3 id="why-do-i-see-more-trades">
+            Why do I see more trades and referrals in my profile page than I actually see in the activity list?
+          </h3>
+
+          <p>The number of trades on the profile page is calculated based on on-chain data.</p>
+          <p>We have two publicly facing interfaces where both use the same contracts, which are:</p>
+          <ul>
+            <li>
+              The production version:{' '}
+              <ExternalLink href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
+                https://cowswap.exchange
+              </ExternalLink>
+            </li>
+            <li>
+              The public test version:{' '}
+              <ExternalLink href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
+                https://barn.cowswap.exchange
+              </ExternalLink>
+            </li>
+          </ul>
+
+          <p>
+            Even though both use the same contract, the backend services, solvers and infrastructure are independent.
+          </p>
+
+          <p>
+            Thus, when accessing{' '}
+            <ExternalLink href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
+              https://cowswap.exchange
+            </ExternalLink>{' '}
+            you will see orders/trades placed only using this interface. The same is true for orders/trades placed on{' '}
+            <ExternalLink href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
+              https://barn.cowswap.exchange
+            </ExternalLink>
+            .
+          </p>
+
+          <p>If you ever traded on both, you might have more trades than you would expect.</p>
+
+          <p>In the future, the data will be consolidated and this number will match your expectations.</p>
+
+          <hr />
+
+          <p>
+            Didn&#39;t find an answer? Join the{' '}
+            <ExternalLink href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
+              community on Discord
+            </ExternalLink>
+          </p>
+          <p>
+            We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
+            <span role="img" aria-label="glass of milk">
+              🥛
+            </span>
+          </p>
         </Content>
       </Page>
     </Wrapper>

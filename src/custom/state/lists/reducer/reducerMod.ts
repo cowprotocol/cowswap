@@ -22,7 +22,7 @@ import {
 } from 'state/lists/actions'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getChainIdValues } from 'utils/misc'
-import { UnsupportedToken } from 'utils/operator'
+import { UnsupportedToken } from 'api/gnosisProtocol'
 
 // Mod: change state shape - adds network map
 export type ListsStateByNetwork = {
@@ -88,22 +88,16 @@ const initialState: ListsStateByNetwork = {
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
-      const state = baseState[chainId]
-      state.gpUnsupportedTokens[restToken.address.toLowerCase()] = restToken
-    })
-    .addCase(removeGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, address } }) => {
-      const state = baseState[chainId]
-      delete state.gpUnsupportedTokens[address.toLowerCase()]
-    })
     .addCase(
       fetchTokenList.pending,
       (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, requestId, url } }) => {
         const state = baseState[chainId]
+        const current = state.byUrl[url]?.current ?? null
+        const pendingUpdate = state.byUrl[url]?.pendingUpdate ?? null
+
         state.byUrl[url] = {
-          current: null,
-          pendingUpdate: null,
-          ...state.byUrl[url],
+          current,
+          pendingUpdate,
           loadingRequestId: requestId,
           error: null,
         }
@@ -123,11 +117,10 @@ export default createReducer(initialState, (builder) =>
           if (upgradeType === VersionUpgrade.NONE) return
           if (loadingRequestId === null || loadingRequestId === requestId) {
             state.byUrl[url] = {
-              ...state.byUrl[url],
+              current,
+              pendingUpdate: tokenList,
               loadingRequestId: null,
               error: null,
-              current: current,
-              pendingUpdate: tokenList,
             }
           }
         } else {
@@ -137,11 +130,10 @@ export default createReducer(initialState, (builder) =>
           }
 
           state.byUrl[url] = {
-            ...state.byUrl[url],
-            loadingRequestId: null,
-            error: null,
             current: tokenList,
             pendingUpdate: null,
+            loadingRequestId: null,
+            error: null,
           }
         }
       }
@@ -156,11 +148,10 @@ export default createReducer(initialState, (builder) =>
         }
 
         state.byUrl[url] = {
-          ...state.byUrl[url],
-          loadingRequestId: null,
-          error: errorMessage,
           current: null,
           pendingUpdate: null,
+          loadingRequestId: null,
+          error: errorMessage,
         }
       }
     )
@@ -207,8 +198,8 @@ export default createReducer(initialState, (builder) =>
       }
       state.byUrl[url] = {
         ...state.byUrl[url],
-        pendingUpdate: null,
         current: state.byUrl[url].pendingUpdate,
+        pendingUpdate: null,
       }
     })
     .addCase(
@@ -265,4 +256,12 @@ export default createReducer(initialState, (builder) =>
         }
       }
     )
+    .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
+      const state = baseState[chainId]
+      state.gpUnsupportedTokens[restToken.address.toLowerCase()] = restToken
+    })
+    .addCase(removeGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, address } }) => {
+      const state = baseState[chainId]
+      delete state.gpUnsupportedTokens[address.toLowerCase()]
+    })
 )

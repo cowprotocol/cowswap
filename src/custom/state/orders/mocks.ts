@@ -46,7 +46,7 @@ const generateOrderId = (ind: number) => {
   return `OrderId_${ind}_`.padEnd(56 * 2, 'X')
 }
 
-const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Order => {
+export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Order => {
   const sellAmount = randomNumberInRange(0.5, 5) * 10 ** sellToken.decimals // in atoms
   const buyAmount = randomNumberInRange(0.5, 5) * 10 ** buyToken.decimals // in atoms
 
@@ -77,6 +77,7 @@ const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Ord
     // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2), // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
     receiver: owner.replace('0x', ''),
+    apiAdditionalInfo: undefined,
   }
 }
 

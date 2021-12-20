@@ -2,16 +2,17 @@ import { Trans } from '@lingui/macro'
 import { /* Currency,  */ Percent /* , TradeType */ } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
+  OperationType,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import SwapModalFooter from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
 // MOD
 import TradeGp from 'state/swap/TradeGp'
-import { formatSmart } from 'utils/format'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -44,10 +45,12 @@ export default function ConfirmSwapModal({
   onConfirm,
   onDismiss,
   recipient,
+  priceImpact,
   swapErrorMessage,
   isOpen,
   attemptingTxn,
   txHash,
+  PendingTextComponent, // mod
 }: {
   isOpen: boolean
   //   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined
@@ -57,12 +60,15 @@ export default function ConfirmSwapModal({
   attemptingTxn: boolean
   txHash: string | undefined
   recipient: string | null
+  priceImpact?: Percent
   allowedSlippage: Percent
   onAcceptChanges: () => void
   onConfirm: () => void
   swapErrorMessage: ReactNode | undefined
   onDismiss: () => void
+  PendingTextComponent: (props: { trade: TradeGp | undefined }) => JSX.Element // mod
 }) {
+  const { allowsOffchainSigning } = useWalletInfo()
   const showAcceptChanges = useMemo(
     /* 
     () =>
@@ -83,13 +89,15 @@ export default function ConfirmSwapModal({
     return trade ? (
       <SwapModalHeader
         trade={trade}
+        allowsOffchainSigning={allowsOffchainSigning}
         allowedSlippage={allowedSlippage}
+        priceImpact={priceImpact}
         recipient={recipient}
         showAcceptChanges={showAcceptChanges}
         onAcceptChanges={onAcceptChanges}
       />
     ) : null
-  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
+  }, [trade, allowsOffchainSigning, allowedSlippage, priceImpact, recipient, showAcceptChanges, onAcceptChanges])
 
   const modalBottom = useCallback(() => {
     return trade ? (
@@ -97,15 +105,15 @@ export default function ConfirmSwapModal({
     ) : null
   }, [onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
+  /*
   // text to show while loading
   const pendingText = (
     <Trans>
-      Swapping {formatSmart(trade?.inputAmount) /* trade?.inputAmount?.toSignificant(6) */}{' '}
-      {trade?.inputAmount?.currency?.symbol} for{' '}
-      {formatSmart(trade?.outputAmount) /* trade?.outputAmount?.toSignificant(6) */}{' '}
-      {trade?.outputAmount?.currency?.symbol}
+      Swapping {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
+      {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol}
     </Trans>
   )
+  */
 
   const confirmationContent = useCallback(
     () =>
@@ -129,8 +137,9 @@ export default function ConfirmSwapModal({
       attemptingTxn={attemptingTxn}
       hash={txHash}
       content={confirmationContent}
-      pendingText={pendingText}
+      pendingText={<PendingTextComponent trade={trade} /> /*pendingText*/}
       currencyToAdd={trade?.outputAmount.currency}
+      operationType={OperationType.ORDER_SIGN}
     />
   )
 }

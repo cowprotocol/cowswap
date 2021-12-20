@@ -1,4 +1,3 @@
-import React from 'react'
 import ManageMod from './ManageMod'
 import styled from 'styled-components/macro'
 import { Token } from '@uniswap/sdk-core'
@@ -12,21 +11,25 @@ export const Wrapper = styled.div`
   width: 100%;
   position: relative;
   padding-bottom: 80px;
+  overflow-y: hidden;
 
   ${SearchInput} {
-    border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)}};
-  }
-  
-  ${SearchInput}:focus {
-    border-color: ${({ theme }) => theme.primary1}};
+    border: none;
+    transition: background 0.3s ease-in-out;
+    ${({ theme }) => theme.neumorphism.boxShadow}
   }
 
   ${SearchInput}::placeholder {
+    font-size: 16px;
     color: ${({ theme }) => transparentize(0.5, theme.text1)};
   }
 
+  ${SearchInput}:focus::placeholder {
+    color: ${({ theme }) => transparentize(0.7, theme.text1)};
+  }
+
   ${Separator} {
-    background: ${({ theme }) => transparentize(0.7, theme.text1)};
+    background: none;
   }
 `
 

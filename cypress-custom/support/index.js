@@ -10,3 +10,6 @@ import '../../cypress/support/commands'
 
 // Import commands.ts using ES2015 syntax:
 import './commands'
+
+// Import events.ts using ES2015 syntax:
+import './events'

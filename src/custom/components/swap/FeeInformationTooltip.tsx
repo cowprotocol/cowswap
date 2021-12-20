@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
-import styled from 'styled-components'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
-import { formatSmart } from 'utils/format'
+import styled from 'styled-components/macro'
+import { formatMax, formatSmart } from 'utils/format'
 import useTheme from 'hooks/useTheme'
 import { FIAT_PRECISION } from 'constants/index'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -15,7 +15,9 @@ interface FeeInformationTooltipProps {
   amountAfterFees?: string
   feeAmount?: string
   type: 'From' | 'To'
+  fiatValue: CurrencyAmount<Token> | null
   showFiat?: boolean
+  allowsOffchainSigning: boolean
 }
 
 const WrappedQuestionHelper = styled(QuestionHelper)`
@@ -35,6 +37,7 @@ const FeeTooltipLine = styled.p`
   justify-content: space-between;
   align-items: center;
   margin: 0;
+  gap: 0 8px;
 
   font-size: small;
 
@@ -73,12 +76,25 @@ const FeeInnerWrapper = styled.div`
 `
 
 export default function FeeInformationTooltip(props: FeeInformationTooltipProps) {
-  const { trade, label, amountBeforeFees, amountAfterFees, feeAmount, type, showHelper, showFiat = false } = props
+  const {
+    trade,
+    label,
+    amountBeforeFees,
+    amountAfterFees,
+    feeAmount,
+    type,
+    showHelper,
+    fiatValue,
+    showFiat = false,
+    allowsOffchainSigning,
+  } = props
 
   const theme = useTheme()
-  const fiatValue = useUSDCValue(type === 'From' ? trade?.inputAmount : trade?.outputAmount)
 
-  const symbol = useMemo(() => trade?.[type === 'From' ? 'inputAmount' : 'outputAmount'].currency.symbol, [trade, type])
+  const [symbol, fullFeeAmount] = useMemo(() => {
+    const amount = trade?.[type === 'From' ? 'inputAmount' : 'outputAmount']
+    return amount ? [amount.currency.symbol || '', formatMax(amount, amount.currency.decimals) || '-'] : []
+  }, [trade, type])
 
   if (!trade || !showHelper) return null
 
@@ -99,15 +115,22 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
               </FeeTooltipLine>
               <FeeTooltipLine>
                 <span>Fee</span>
-                <span>
-                  {type === 'From' ? '+' : '-'}
-                  {feeAmount} {symbol}
-                </span>{' '}
+                {feeAmount ? (
+                  <span>
+                    {type === 'From' ? '+' : '-'}
+                    {feeAmount} {symbol}
+                  </span>
+                ) : (
+                  <strong className="green">Free</strong>
+                )}{' '}
               </FeeTooltipLine>
-              <FeeTooltipLine>
-                <span>Gas costs</span>
-                <strong className="green">Free</strong>{' '}
-              </FeeTooltipLine>
+              {/* TODO: Add gas costs when available (wait for design) */}
+              {allowsOffchainSigning && (
+                <FeeTooltipLine>
+                  <span>Gas costs</span>
+                  <strong className="green">Free</strong>
+                </FeeTooltipLine>
+              )}
               <Breakline />
               <FeeTooltipLine>
                 <strong>{type}</strong>
@@ -119,7 +142,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
           }
         />
       </span>
-      <FeeAmountAndFiat>
+      <FeeAmountAndFiat title={`${fullFeeAmount} ${symbol}`}>
         {amountAfterFees} {showFiat && fiatValue && <small>≈ ${formatSmart(fiatValue, FIAT_PRECISION)}</small>}
       </FeeAmountAndFiat>
     </FeeInformationTooltipWrapper>

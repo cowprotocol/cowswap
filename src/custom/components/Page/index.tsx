@@ -1,6 +1,6 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import AppBody from 'pages/AppBody'
 import { WithClassName } from 'types'
 
@@ -13,6 +13,7 @@ export const PageWrapper = styled(AppBody)`
 export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0 16px;
+  color: ${({ theme }) => theme.text1};
 `
 
 export const Content = styled.div`

@@ -1,19 +1,18 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import styled, { DefaultTheme, ThemeContext } from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
 
 import { ButtonSize, TYPE } from 'theme/index'
 
 import SwapMod from './SwapMod'
-import { AutoRow, RowBetween, RowFixed } from 'components/Row'
-import { BottomGrouping as BottomGroupingUni, Wrapper as WrapperUni, Dots } from 'components/swap/styleds'
+import { AutoRow, RowBetween } from 'components/Row'
+import { Wrapper as WrapperUni, Dots, Container } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
 import { GreyCard } from 'components/Card'
-import { StyledBalanceMaxMini } from 'components/swap/styleds'
 import Card from 'components/Card'
 import {
   ButtonError as ButtonErrorMod,
@@ -23,28 +22,32 @@ import {
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { FIAT_PRECISION, LONG_LOAD_THRESHOLD, SHORT_PRECISION } from 'constants/index'
-import { formatSmart } from 'utils/format'
-import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfo } from 'pages/Swap/SwapMod'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, LONG_LOAD_THRESHOLD } from 'constants/index'
 import { Repeat } from 'react-feather'
 import { Trans } from '@lingui/macro'
 import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
-import { computeTradePriceBreakdown, FEE_TOOLTIP_MSG } from 'components/swap/TradeSummary/TradeSummaryMod'
+import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
+import { RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
-import { V2_SWAP_DEFAULT_SLIPPAGE } from 'hooks/useSwapSlippageTolerance'
-import { RowReceivedAfterSlippage, RowSlippage } from '@src/custom/components/swap/TradeSummary'
+import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
+import { useHigherUSDValue } from 'hooks/useUSDCPrice'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
 }
 
-const BottomGrouping = styled(BottomGroupingUni)`
+const BottomGrouping = styled.div`
   > div > button {
     align-self: stretch;
+  }
+
+  div > svg,
+  div > svg > path {
+    stroke: ${({ theme }) => theme.text2};
   }
 `
 
@@ -122,21 +125,12 @@ const SwapModWrapper = styled(SwapMod)`
       color: ${({ theme }) => theme.text1};
     }
 
-    ${StyledBalanceMaxMini} {
-      background: ${({ theme }) => theme.bg2};
-      color: ${({ theme }) => theme.text2};
-    }
-
     .expertMode ${ArrowWrapper} {
       position: relative;
     }
 
     ${AutoRow} {
       z-index: 2;
-    }
-
-    ${AutoRow} svg > path {
-      stroke: ${({ theme }) => theme.text1};
     }
   }
 `
@@ -150,7 +144,10 @@ export interface SwapProps extends RouteComponentProps {
   SwapButton: React.FC<SwapButtonProps>
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   Price: React.FC<PriceProps>
+  HighFeeWarning: React.FC<WarningProps>
+  NoImpactWarning: React.FC<WarningProps>
   className?: string
+  allowsOffchainSigning: boolean
 }
 
 const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
@@ -214,33 +211,26 @@ export const LightGreyText = styled.span`
 `
 
 function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
-  const theme = useContext(ThemeContext)
+  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
+  const [isExpertMode] = useExpertModeManager()
+  const { allowsOffchainSigning } = useWalletInfo()
+
   // trades are null when there is a fee quote error e.g
   // so we can take both
-  const feeAmount = trade?.fee.feeAsCurrency || fee
-  const feeFiatValue = useUSDCValue(feeAmount)
-
-  const { realizedFee } = computeTradePriceBreakdown(trade)
-  const feeFiatDisplay = `(≈$${formatSmart(feeFiatValue, FIAT_PRECISION)})`
-
-  const allowedSlippage = useUserSlippageToleranceWithDefault(V2_SWAP_DEFAULT_SLIPPAGE)
-  const [isExpertMode] = useExpertModeManager()
+  const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
 
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
-      <RowFixed>
-        <TYPE.black fontSize={14} fontWeight={500} color={theme.text1}>
-          Fees (incl. gas costs)
-        </TYPE.black>
-        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={FEE_TOOLTIP_MSG}>
-          <StyledInfo />
-        </MouseoverTooltipContent>
-      </RowFixed>
-      <TYPE.black fontSize={14} color={theme.text1}>
-        {formatSmart(realizedFee || fee, SHORT_PRECISION)} {(realizedFee || fee)?.currency.symbol}{' '}
-        {feeFiatValue && <LightGreyText>{feeFiatDisplay}</LightGreyText>}
-      </TYPE.black>
+      {(trade || fee) && (
+        <RowFee
+          trade={trade}
+          showHelpers={true}
+          allowsOffchainSigning={allowsOffchainSigning}
+          fee={fee}
+          feeFiatValue={feeFiatValue}
+        />
+      )}
 
       {isExpertMode && trade && (
         <>
@@ -248,7 +238,12 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
           <RowSlippage allowedSlippage={allowedSlippage} />
 
           {/* Min/Max received */}
-          <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippage} showHelpers={true} />
+          <RowReceivedAfterSlippage
+            trade={trade}
+            allowedSlippage={allowedSlippage}
+            showHelpers={true}
+            allowsOffchainSigning={allowsOffchainSigning}
+          />
         </>
       )}
     </LowerSectionWrapper>
@@ -278,7 +273,7 @@ function SwitchToWethBtn({ wrappedToken }: SwitchToWethBtnProps) {
       onClick={() =>
         replaceSwapState({
           inputCurrencyId: wrappedToken.address,
-          outputCurrencyId: OUTPUT.currencyId,
+          outputCurrencyId: OUTPUT.currencyId ?? undefined,
           typedValue,
           recipient: null,
           field: independentField,
@@ -373,18 +368,24 @@ const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonPro
   )
 
 export default function Swap(props: RouteComponentProps) {
+  const { allowsOffchainSigning } = useWalletInfo()
   return (
-    <SwapModWrapper
-      TradeBasicDetails={TradeBasicDetails}
-      EthWethWrapMessage={EthWethWrapMessage}
-      SwitchToWethBtn={SwitchToWethBtn}
-      FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
-      BottomGrouping={BottomGrouping}
-      SwapButton={SwapButton}
-      TradeLoading={TradeLoading}
-      ArrowWrapperLoader={ArrowWrapperLoader}
-      Price={Price}
-      {...props}
-    />
+    <Container>
+      <SwapModWrapper
+        TradeBasicDetails={TradeBasicDetails}
+        EthWethWrapMessage={EthWethWrapMessage}
+        SwitchToWethBtn={SwitchToWethBtn}
+        FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
+        BottomGrouping={BottomGrouping}
+        SwapButton={SwapButton}
+        TradeLoading={TradeLoading}
+        ArrowWrapperLoader={ArrowWrapperLoader}
+        Price={Price}
+        HighFeeWarning={HighFeeWarning}
+        NoImpactWarning={NoImpactWarning}
+        allowsOffchainSigning={allowsOffchainSigning}
+        {...props}
+      />
+    </Container>
   )
 }

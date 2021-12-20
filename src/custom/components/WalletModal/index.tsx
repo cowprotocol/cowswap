@@ -1,11 +1,10 @@
-import React from 'react'
 import { GpModal } from 'components/Modal' // mod
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
 import { Trans } from '@lingui/macro'
 
-export * from '@src/components/WalletModal'
+// export * from '@src/components/WalletModal'
 
 const TermsWrapper = styled.div`
   color: ${({ theme }) => theme.text1};

@@ -1,10 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { darken, lighten } from 'polished'
-import React /*{, useMemo }*/ from 'react'
+// import { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { t, Trans } from '@lingui/macro'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 // import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 // import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 // import PortisIcon from 'assets/images/portisIcon.png'
@@ -14,8 +14,8 @@ import styled, { css } from 'styled-components'
 import useENSName from 'hooks/useENSName'
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useWalletModalToggle } from 'state/application/hooks'
-// import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
-import { TransactionDetails } from 'state/transactions/reducer'
+// import { isTransactionRecent, useAllTransactions } from 'state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { shortenAddress } from 'utils'
 import { ButtonSecondary } from 'components/Button'
 
@@ -61,6 +61,7 @@ const Web3StatusError = styled(Web3StatusGeneric)`
 const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   background-color: ${({ theme }) => theme.primary4};
   border: none;
+
   color: ${({ theme }) => theme.primaryText1};
   font-weight: 500;
 
@@ -119,7 +120,7 @@ const NetworkIcon = styled(Activity)`
 `
 
 // we want the latest one to come first, so return negative if a is after b
-export function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+export function newTransactionsFirst(a: EnhancedTransactionDetails, b: EnhancedTransactionDetails) {
   return b.addedTime - a.addedTime
 }
 
@@ -168,9 +169,11 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
 export function Web3StatusInner({
   pendingCount,
   StatusIconComponent,
+  openOrdersPanel, // mod
 }: {
   pendingCount?: number
   StatusIconComponent: (props: { connector: AbstractConnector }) => JSX.Element | null
+  openOrdersPanel: () => void // mod
 }) {
   const { account, connector, error } = useWeb3React()
 
@@ -194,7 +197,12 @@ export function Web3StatusInner({
 
   if (account) {
     return (
-      <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
+      <Web3StatusConnected
+        id="web3-status-connected"
+        // onClick={toggleWalletModal}
+        onClick={openOrdersPanel} // mod
+        pending={hasPendingTransactions}
+      >
         {hasPendingTransactions ? (
           <RowBetween>
             <Text>

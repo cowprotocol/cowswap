@@ -1,36 +1,34 @@
-import React, { memo, useCallback, useMemo, useRef, useState, useEffect } from 'react'
-import { Settings, CheckCircle } from 'react-feather'
+import { t, Trans } from '@lingui/macro'
+import { TokenList } from '@uniswap/token-lists'
+// import Card from 'components/Card'
+// import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
+import { useListColor } from 'hooks/useColor'
+import { useActiveWeb3React } from 'hooks/web3'
+import { memo, useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { CheckCircle, Settings } from 'react-feather'
 import ReactGA from 'react-ga'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { usePopper } from 'react-popper'
 import styled from 'styled-components/macro'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { TokenList } from '@uniswap/token-lists'
-import { t, Trans } from '@lingui/macro'
-
+import useTheme from 'hooks/useTheme'
 import useToggle from 'hooks/useToggle'
-// import { acceptListUpdate, removeList, disableList, enableList } from '@src/state/lists/actions'
-import { useIsListActive, useAllLists, useActiveListUrls } from 'state/lists/hooks'
-import { ExternalLink, LinkStyledButton, TYPE, IconWrapper } from 'theme'
+// import { acceptListUpdate, disableList, enableList, removeList } from 'state/lists/actions'
+import { useActiveListUrls, useIsListActive, useAllLists } from 'state/lists/hooks'
+import { ExternalLink, IconWrapper, LinkStyledButton, TYPE } from 'theme'
 import listVersionLabel from 'utils/listVersionLabel'
 import { parseENSAddress } from 'utils/parseENSAddress'
 import uriToHttp from 'utils/uriToHttp'
 import { ButtonEmpty, ButtonPrimary } from 'components/Button'
-
 import Column, { AutoColumn } from 'components/Column'
 import ListLogo from 'components/ListLogo'
 import Row, { RowFixed, RowBetween } from 'components/Row'
-import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/SearchModal/styleds'
-import { useListColor } from 'hooks/useColor'
-import useTheme from 'hooks/useTheme'
 import ListToggle from 'components/Toggle/ListToggle'
-// import Card from 'components/Card'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
-// import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
+import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/SearchModal/styleds'
 // Mod:
 import { ListRowProps, RowWrapper, Card } from '.' // mod
-import { useActiveWeb3React } from 'hooks/web3'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
 
@@ -85,8 +83,9 @@ const StyledListUrlText = styled(TYPE.main)<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.white : theme.text2)};
 `
 
-/* const RowWrapper = styled(Row)<{ bgColor: string; active: boolean }>`
+/* const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasActiveTokens: boolean }>`
   background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg2)};
+  opacity: ${({ hasActiveTokens }) => (hasActiveTokens ? 1 : 0.4)};
   transition: 200ms;
   align-items: center;
   padding: 1rem;
@@ -112,6 +111,13 @@ ListRowProps & { listUrl: string }) {
   const listsByUrl = useAppSelector((state) => state.lists[chainId].byUrl)
   const dispatch = useAppDispatch()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
+
+  const activeTokensOnThisChain = useMemo(() => {
+    if (!list || !chainId) {
+      return 0
+    }
+    return list.tokens.reduce((acc, cur) => (cur.chainId === chainId ? acc + 1 : acc), 0)
+  }, [chainId, list])
 
   const theme = useTheme()
   const listColor = useListColor(list?.logoURI)
@@ -147,7 +153,7 @@ ListRowProps & { listUrl: string }) {
       action: 'Start Remove List',
       label: listUrl,
     })
-    if (window.prompt(`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
+    if (window.prompt(t`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
       ReactGA.event({
         category: 'Lists',
         action: 'Confirm Remove List',
@@ -181,7 +187,13 @@ ListRowProps & { listUrl: string }) {
   if (!list) return null
 
   return (
-    <RowWrapper active={isActive} bgColor={listColor} key={listUrl} id={listUrlRowHTMLId(listUrl)}>
+    <RowWrapper
+      active={isActive}
+      hasActiveTokens={activeTokensOnThisChain > 0}
+      bgColor={listColor}
+      key={listUrl}
+      id={listUrlRowHTMLId(listUrl)}
+    >
       {list.logoURI ? (
         <ListLogo size="40px" style={{ marginRight: '1rem' }} logoURI={list.logoURI} alt={`${list.name} list logo`} />
       ) : (
@@ -230,7 +242,7 @@ ListRowProps & { listUrl: string }) {
   )
 })
 
-const ListContainer = styled.div`
+export const ListContainer = styled.div`
   padding: 1rem;
   height: 100%;
   overflow: auto;
@@ -250,20 +262,29 @@ export function ManageLists({
   unsupportedListUrls: string[]
   listRowProps: ListRowProps
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
 
   const [listUrlInput, setListUrlInput] = useState<string>('')
 
   const lists = useAllLists()
 
+  const tokenCountByListName = useMemo<Record<string, number>>(
+    () =>
+      Object.values(lists).reduce((acc, { current: list }) => {
+        if (!list) {
+          return acc
+        }
+        return {
+          ...acc,
+          [list.name]: list.tokens.reduce((count: number, token) => (token.chainId === chainId ? count + 1 : count), 0),
+        }
+      }, {}),
+    [chainId, lists]
+  )
+
   // sort by active but only if not visible
   const activeListUrls = useActiveListUrls()
-  const [activeCopy, setActiveCopy] = useState<string[] | undefined>()
-  useEffect(() => {
-    if (!activeCopy && activeListUrls) {
-      setActiveCopy(activeListUrls)
-    }
-  }, [activeCopy, activeListUrls])
 
   const handleInput = useCallback((e) => {
     setListUrlInput(e.target.value)
@@ -284,32 +305,38 @@ export function ManageLists({
           // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
           return Boolean(lists[listUrl].current) && !Boolean(unsupportedListUrls.includes(listUrl))
         })
-        .sort((u1, u2) => {
-          const { current: l1 } = lists[u1]
-          const { current: l2 } = lists[u2]
+        .sort((listUrlA, listUrlB) => {
+          const { current: listA } = lists[listUrlA]
+          const { current: listB } = lists[listUrlB]
 
           // first filter on active lists
-          if (activeCopy?.includes(u1) && !activeCopy?.includes(u2)) {
+          if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
             return -1
           }
-          if (!activeCopy?.includes(u1) && activeCopy?.includes(u2)) {
+          if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
             return 1
           }
 
-          if (l1 && l2) {
-            return l1.name.toLowerCase() < l2.name.toLowerCase()
+          if (listA && listB) {
+            if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
+              return -1
+            }
+            if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
+              return 1
+            }
+            return listA.name.toLowerCase() < listB.name.toLowerCase()
               ? -1
-              : l1.name.toLowerCase() === l2.name.toLowerCase()
+              : listA.name.toLowerCase() === listB.name.toLowerCase()
               ? 0
               : 1
           }
-          if (l1) return -1
-          if (l2) return 1
+          if (listA) return -1
+          if (listB) return 1
           return 0
         })
     },
-    // [lists, activeCopy]
-    [lists, unsupportedListUrls, activeCopy]
+    // [lists, activeListUrls, tokenCountByListName]
+    [lists, unsupportedListUrls, activeListUrls, tokenCountByListName]
   )
 
   // temporary fetched list for import flow

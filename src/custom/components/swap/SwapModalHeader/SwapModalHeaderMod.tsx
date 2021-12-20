@@ -1,15 +1,15 @@
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import React, { useState, useContext, useMemo } from 'react'
+import { useContext, useState, useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
-import { useUSDCValue } from 'hooks/useUSDCPrice'
+import styled, { ThemeContext } from 'styled-components/macro'
+import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 import { isAddress, shortenAddress } from 'utils'
-import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
+// import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 import { AutoColumn } from 'components/Column'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -18,20 +18,22 @@ import { TruncatedText, SwapShowAcceptChanges } from 'components/swap/styleds'
 import { Trans } from '@lingui/macro'
 
 import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
+// import { LightCard } from '../Card'
 
 // import TradePrice from 'components/swap/TradePrice'
 
 // MOD
 import TradeGp from 'state/swap/TradeGp'
-import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { AMOUNT_PRECISION, INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { Price } from 'pages/Swap'
+import { WarningProps } from 'components/SwapWarnings'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -58,8 +60,12 @@ export interface SwapModalHeaderProps {
   recipient: string | null
   showAcceptChanges: boolean
   priceImpactWithoutFee?: Percent
+  priceImpact?: Percent
   onAcceptChanges: () => void
   LightCard: LightCardType
+  HighFeeWarning: React.FC<WarningProps>
+  NoImpactWarning: React.FC<WarningProps>
+  allowsOffchainSigning: boolean
 }
 
 export default function SwapModalHeader({
@@ -67,8 +73,12 @@ export default function SwapModalHeader({
   allowedSlippage,
   recipient,
   showAcceptChanges,
+  priceImpact,
   onAcceptChanges,
   LightCard,
+  HighFeeWarning,
+  NoImpactWarning,
+  allowsOffchainSigning,
 }: /* 
 {
   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
@@ -89,21 +99,25 @@ SwapModalHeaderProps) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // show fiatValue for unadjusted trade amounts!
-  const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
-  const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+  // const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
+  // const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
+  const fiatValueInput = useHigherUSDValue(trade.inputAmountWithoutFee)
+  const fiatValueOutput = useHigherUSDValue(trade.outputAmountWithoutFee)
 
   const [slippageIn, slippageOut] = useMemo(
     () => [slippageAdjustedAmounts[Field.INPUT], slippageAdjustedAmounts[Field.OUTPUT]],
     [slippageAdjustedAmounts]
   )
 
-  const [exactInLabel, exactOutLabel] = useMemo(
-    () => [
+  const [exactInLabel, exactOutLabel] = useMemo(() => {
+    return [
       trade?.tradeType === TradeType.EXACT_OUTPUT ? <Trans>From (incl. fee)</Trans> : null,
       trade?.tradeType === TradeType.EXACT_INPUT ? <Trans>Receive (incl. fee)</Trans> : null,
-    ],
-    [trade]
-  )
+    ]
+  }, [trade])
+
+  const fullInputWithoutFee = formatMax(trade?.inputAmountWithoutFee, trade?.inputAmount.currency.decimals) || '-'
+  const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
 
   return (
     <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
@@ -127,8 +141,9 @@ SwapModalHeaderProps) {
                 fontSize={24}
                 fontWeight={500}
                 color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
+                title={`${fullInputWithoutFee} ${trade.inputAmount.currency.symbol || ''}`}
               >
-                {formatSmart(trade.inputAmountWithoutFee)}
+                {formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
@@ -137,13 +152,15 @@ SwapModalHeaderProps) {
       {!!exactInLabel && (
         <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
           <FeeInformationTooltip
-            amountAfterFees={formatSmart(trade.inputAmountWithFee)}
-            amountBeforeFees={formatSmart(trade.inputAmountWithoutFee)}
-            feeAmount={formatSmart(trade.fee.feeAsCurrency)}
+            amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
+            amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
+            feeAmount={formatSmart(trade.fee.feeAsCurrency, AMOUNT_PRECISION)}
+            allowsOffchainSigning={allowsOffchainSigning}
             label={exactInLabel}
             showHelper
             trade={trade}
             type="From"
+            fiatValue={fiatValueInput}
           />
         </AuxInformationContainer>
       )}
@@ -161,10 +178,7 @@ SwapModalHeaderProps) {
               <Trans>To</Trans>
             </TYPE.body>
             <TYPE.body fontSize={14} color={theme.text3}>
-              <FiatValue
-                fiatValue={fiatValueOutput}
-                priceImpact={computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)}
-              />
+              <FiatValue fiatValue={fiatValueOutput} priceImpact={priceImpact} />
             </TYPE.body>
           </RowBetween>
           <RowBetween align="flex-end">
@@ -175,8 +189,12 @@ SwapModalHeaderProps) {
               </Text>
             </RowFixed>
             <RowFixed gap={'0px'}>
-              <TruncatedText fontSize={24} fontWeight={500}>
-                {formatSmart(trade.outputAmountWithoutFee)}
+              <TruncatedText
+                fontSize={24}
+                fontWeight={500}
+                title={`${fullOutputWithoutFee} ${trade.outputAmount.currency.symbol || ''}`}
+              >
+                {formatSmart(trade.outputAmountWithoutFee, AMOUNT_PRECISION)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
@@ -185,13 +203,15 @@ SwapModalHeaderProps) {
       {!!exactOutLabel && (
         <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
           <FeeInformationTooltip
-            amountAfterFees={formatSmart(trade.outputAmount)}
-            amountBeforeFees={formatSmart(trade.outputAmountWithoutFee)}
-            feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount))}
+            amountAfterFees={formatSmart(trade.outputAmount, AMOUNT_PRECISION)}
+            amountBeforeFees={formatSmart(trade.outputAmountWithoutFee, AMOUNT_PRECISION)}
+            feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount), AMOUNT_PRECISION)}
             label={exactOutLabel}
+            allowsOffchainSigning={allowsOffchainSigning}
             showHelper
             trade={trade}
             type="To"
+            fiatValue={fiatValueOutput}
           />
         </AuxInformationContainer>
       )}
@@ -240,7 +260,7 @@ SwapModalHeaderProps) {
               Output is estimated. You will receive at least{' '}
               <b>
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
-                {formatSmart(slippageOut) || '-'} {trade.outputAmount.currency.symbol}
+                {formatSmart(slippageOut, AMOUNT_PRECISION) || '-'} {trade.outputAmount.currency.symbol}
               </b>{' '}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
@@ -251,7 +271,7 @@ SwapModalHeaderProps) {
               Input is estimated. You will sell at most{' '}
               <b>
                 {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
-                {formatSmart(slippageIn) || '-'} {trade.inputAmount.currency.symbol}
+                {formatSmart(slippageIn, AMOUNT_PRECISION) || '-'} {trade.inputAmount.currency.symbol}
               </b>{' '}
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
@@ -269,6 +289,10 @@ SwapModalHeaderProps) {
           </TYPE.main>
         </AutoColumn>
       ) : null}
+      {/* High Fee Warning */}
+      <HighFeeWarning trade={trade} />
+      {/* No Impact Warning */}
+      {!priceImpact && <NoImpactWarning margin="0" />}
     </AutoColumn>
   )
 }

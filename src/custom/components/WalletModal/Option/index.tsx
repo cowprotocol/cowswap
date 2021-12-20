@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { darken } from 'polished'
 import OptionMod, { OptionCardClickable as OptionCardClickableMod, OptionProps } from './OptionMod'
 

@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
-import { UnsupportedToken } from 'utils/operator'
+import { UnsupportedToken } from 'api/gnosisProtocol'
 import { FeeQuoteParams } from 'utils/price'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
@@ -18,6 +18,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
+import { isWrappingTrade } from 'state/swap/utils'
 
 const DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -100,14 +101,22 @@ function isRefetchQuoteRequired(
   return false
 }
 
-function unsupportedTokenNeedsRecheck(unsupportedToken: UnsupportedToken[string] | false) {
+function unsupportedTokenNeedsRecheck(
+  unsupportedToken: UnsupportedToken[string] | false,
+  lastUnsupportedCheck: null | number
+) {
   if (!unsupportedToken) return false
 
-  return Date.now() - unsupportedToken.dateAdded > UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL
+  const lastCheckTime = lastUnsupportedCheck || unsupportedToken.dateAdded
+  const shouldUpdate = Date.now() - lastCheckTime > UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL
+
+  return shouldUpdate
 }
 
 export default function FeesUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
+  const { chainId, account } = useActiveWeb3React()
+
   const {
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
@@ -138,7 +147,11 @@ export default function FeesUpdater(): null {
     // Don't refetch if:
     //  - window is not visible
     //  - some parameter is missing
+    //  - it is a wrapping operation
     if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
+
+    // Native wrap trade, return
+    if (isWrappingTrade(sellCurrency, buyCurrency, chainId)) return
 
     // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
@@ -155,6 +168,7 @@ export default function FeesUpdater(): null {
       toDecimals,
       kind,
       amount: amount.quotient.toString(),
+      userAddress: account,
     }
 
     // Don't refetch if offline.
@@ -174,11 +188,16 @@ export default function FeesUpdater(): null {
     const unsupportedToken =
       isUnsupportedTokenGp(sellToken.toLowerCase()) || isUnsupportedTokenGp(buyToken.toLowerCase())
 
-    // IS an unsupported token and it's been greater than the threshold time
-    const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken)
+    // if there is no more unsupported token, and there was previously, we set last check back to null
+    if (!unsupportedToken && lastUnsupportedCheck) {
+      setLastUnsupportedCheck(null)
+    }
 
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
+      // IS an unsupported token and it's been greater than the threshold time
+      const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken, lastUnsupportedCheck)
+
       // if no token is unsupported and needs refetching
       const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
@@ -188,6 +207,8 @@ export default function FeesUpdater(): null {
         const isPriceRefresh = quoteInfo
           ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
           : false
+
+        setLastUnsupportedCheck(Date.now())
 
         refetchQuote({
           quoteParams,
@@ -223,6 +244,8 @@ export default function FeesUpdater(): null {
     isUnsupportedTokenGp,
     isLoading,
     setQuoteError,
+    account,
+    lastUnsupportedCheck,
   ])
 
   return null

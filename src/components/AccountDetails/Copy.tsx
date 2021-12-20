@@ -1,12 +1,11 @@
-import React from 'react'
 import styled from 'styled-components/macro'
 import useCopyClipboard from '../../hooks/useCopyClipboard'
 
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton } from '../../theme'
 import { CheckCircle, Copy } from 'react-feather'
 import { Trans } from '@lingui/macro'
 
-export const CopyIcon = styled(LinkStyledButton)`
+const CopyIcon = styled(LinkStyledButton)`
   color: ${({ theme }) => theme.text3};
   flex-shrink: 0;
   display: flex;

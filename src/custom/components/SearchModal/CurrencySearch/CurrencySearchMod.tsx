@@ -1,5 +1,5 @@
 import { Currency, Token } from '@uniswap/sdk-core'
-import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga'
 import { t, Trans } from '@lingui/macro'
 import { FixedSizeList } from 'react-window'
@@ -24,6 +24,7 @@ import useTheme from 'hooks/useTheme'
 import ImportRow from 'components/SearchModal/ImportRow'
 // import { Edit } from 'react-feather'
 import useDebounce from 'hooks/useDebounce'
+import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.' //mod
 
 // const ContentWrapper = styled(Column)`
@@ -51,6 +52,8 @@ export interface CurrencySearchProps {
   showCommonBases?: boolean
   showManageView: () => void
   showImportView: () => void
+  showCurrencyAmount?: boolean
+  disableNonToken?: boolean
   setImportToken: (token: Token) => void
   FooterButtonTextComponent: (props: { theme: DefaultTheme }) => JSX.Element // MOD
 }
@@ -64,6 +67,7 @@ export function CurrencySearch({
   isOpen,
   showManageView,
   showImportView,
+  showCurrencyAmount,
   setImportToken,
   FooterButtonTextComponent, // MOD
 }: CurrencySearchProps) {
@@ -86,6 +90,8 @@ export function CurrencySearch({
   const searchToken = useToken(debouncedQuery)
 
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
+
+  const network = useNetworkName()
 
   useEffect(() => {
     if (isAddressSearch) {
@@ -214,14 +220,21 @@ export function CurrencySearch({
                 fixedListRef={fixedList}
                 showImportView={showImportView}
                 setImportToken={setImportToken}
+                showCurrencyAmount={showCurrencyAmount}
               />
             )}
           </AutoSizer>
         </div>
+      ) : isAddressSearch ? (
+        <Column style={{ padding: '20px', height: '100%' }}>
+          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+            <Trans>No tokens found with this address in {network} network</Trans>
+          </TYPE.main>
+        </Column>
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
           <TYPE.main color={theme.text3} textAlign="center" mb="20px">
-            <Trans>No results found.</Trans>
+            <Trans>Enter valid token name or address</Trans>
           </TYPE.main>
         </Column>
       )}

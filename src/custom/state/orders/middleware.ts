@@ -5,6 +5,18 @@ import { AppState } from 'state'
 import * as OrderActions from './actions'
 
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
+import { registerOnWindow } from 'utils/misc'
+
+type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
+type Sounds = Record<SoundType, string>
+
+const COW_SOUNDS: Sounds = {
+  SEND: '/audio/mooooo-send__lower-90.mp3',
+  SUCCESS: '/audio/mooooo-success__ben__lower-90.mp3',
+  ERROR: '/audio/mooooo-error__lower-90.mp3',
+}
+
+const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -14,6 +26,7 @@ const isSingleOrderChangeAction = isAnyOf(
   OrderActions.cancelOrder
 )
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
+const isPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
 const isBatchOrderAction = isAnyOf(
   OrderActions.fulfillOrdersBatch,
@@ -41,9 +54,10 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     if (!orders) return
 
-    const { pending, fulfilled, expired, cancelled } = orders
+    const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
 
-    const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
+    const orderObject =
+      pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
 
     // look up Order.summary for Popup
     const summary = orderObject?.order.summary
@@ -52,6 +66,8 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (isPendingOrderAction(action)) {
       // Pending Order Popup
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
+    } else if (isPresignOrders(action)) {
+      popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'presigned', id })
     } else if (isSingleFulfillOrderAction(action)) {
       // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
       // because it's nicer there
@@ -157,35 +173,44 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   return result
 }
 
-let moooooSend: HTMLAudioElement
-function getMoooooSend(): HTMLAudioElement {
-  if (!moooooSend) {
-    moooooSend = new Audio('/audio/mooooo-send__lower-90.mp3')
+function getAudio(type: SoundType): HTMLAudioElement {
+  const soundPath = COW_SOUNDS[type]
+  let sound = SOUND_CACHE[soundPath]
+
+  if (!sound) {
+    sound = new Audio(soundPath)
+    SOUND_CACHE[soundPath] = sound
   }
 
-  return moooooSend
+  return sound
 }
 
-let moooooSuccess: HTMLAudioElement
-function getMoooooSuccess(): HTMLAudioElement {
-  if (!moooooSuccess) {
-    moooooSuccess = new Audio('/audio/mooooo-success__ben__lower-90.mp3')
-  }
-
-  return moooooSuccess
+function getCowSoundSend(): HTMLAudioElement {
+  return getAudio('SEND')
 }
 
-let moooooError: HTMLAudioElement
-function getMoooooError(): HTMLAudioElement {
-  if (!moooooError) {
-    moooooError = new Audio('/audio/mooooo-error__lower-90.mp3')
-  }
-
-  return moooooError
+function getCowSoundSuccess(): HTMLAudioElement {
+  return getAudio('SUCCESS')
 }
 
-// on each Pending, Expired, Fulfilled order action
-// a corresponsing sound is dispatched
+function getCowSoundError(): HTMLAudioElement {
+  return getAudio('ERROR')
+}
+
+function removeLightningEffect() {
+  document.body.classList.remove('lightning')
+}
+
+function addLightningEffect() {
+  document.body.classList.add('lightning')
+
+  setTimeout(() => {
+    removeLightningEffect()
+  }, 3000)
+}
+registerOnWindow({ addLightningEffect })
+
+// On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -201,15 +226,21 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (updatedElements.length === 0) return result
   }
 
+  let cowSound
   if (isPendingOrderAction(action)) {
-    getMoooooSend().play()
+    cowSound = getCowSoundSend()
   } else if (isFulfillOrderAction(action)) {
-    getMoooooSuccess().play()
+    cowSound = getCowSoundSuccess()
   } else if (isExpireOrdersAction(action)) {
-    getMoooooError().play()
+    cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
-    // TODO: find a unique sound for order cancellation
-    getMoooooError().play()
+    cowSound = getCowSoundError()
+  }
+
+  if (cowSound) {
+    cowSound.play().catch((e) => {
+      console.error('🐮 Moooooo sound cannot be played', e)
+    })
   }
 
   return result

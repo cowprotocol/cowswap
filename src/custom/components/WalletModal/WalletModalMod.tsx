@@ -2,7 +2,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AutoRow } from 'components/Row'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import ReactGA from 'react-ga'
 import styled from 'styled-components/macro'
@@ -18,7 +18,7 @@ import {
   // ExternalLink,
   TYPE,
 } from 'theme'
-import AccountDetails from 'components/AccountDetails'
+// import AccountDetails from 'components/AccountDetails'
 import { Trans } from '@lingui/macro'
 
 import ModalMod from '@src/components/Modal'
@@ -128,9 +128,9 @@ export interface WalletModalProps {
 }
 
 export default function WalletModal({
-  pendingTransactions,
-  confirmedTransactions,
-  ENSName,
+  // pendingTransactions,
+  // confirmedTransactions,
+  // ENSName,
   Modal,
   NewToEthereum,
   CustomTerms,
@@ -175,8 +175,18 @@ export default function WalletModal({
   useEffect(() => {
     if (walletModalOpen && ((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
       setWalletView(WALLET_VIEWS.ACCOUNT)
+      toggleWalletModal() // mod
     }
-  }, [setWalletView, active, error, connector, walletModalOpen, activePrevious, connectorPrevious])
+  }, [
+    setWalletView,
+    active,
+    error,
+    connector,
+    walletModalOpen,
+    activePrevious,
+    connectorPrevious,
+    toggleWalletModal, // mod
+  ])
 
   const tryActivation = async (connector: AbstractConnector | undefined) => {
     let name = ''
@@ -325,17 +335,17 @@ export default function WalletModal({
         </UpperSection>
       )
     }
-    if (account && walletView === WALLET_VIEWS.ACCOUNT) {
-      return (
-        <AccountDetails
-          toggleWalletModal={toggleWalletModal}
-          pendingTransactions={pendingTransactions}
-          confirmedTransactions={confirmedTransactions}
-          ENSName={ENSName}
-          openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
-        />
-      )
-    }
+    // if (account && walletView === WALLET_VIEWS.ACCOUNT) {
+    //   return (
+    //     <AccountDetails
+    //       toggleWalletModal={toggleWalletModal}
+    //       pendingTransactions={pendingTransactions}
+    //       confirmedTransactions={confirmedTransactions}
+    //       ENSName={ENSName}
+    //       openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+    //     />
+    //   )
+    // }
     return (
       <UpperSection>
         <CloseIcon onClick={toggleWalletModal}>

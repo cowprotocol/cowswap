@@ -1,13 +1,15 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderID } from 'utils/operator'
-import { isDev, isStaging, isPreStaging } from './environments'
+import { OrderID } from 'api/gnosisProtocol'
+import { isLocal, isDev, isPr, isStaging, isBarn } from './environments'
 
 function _getExplorerUrlByEnvironment() {
   let baseUrl: string | undefined
-  if (isDev || isPreStaging) {
+  if (isLocal || isDev || isPr) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://protocol-explorer.dev.gnosisdev.com'
   } else if (isStaging) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://protocol-explorer.staging.gnosisdev.com'
+  } else if (isBarn) {
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_BARN || 'https://barn.gnosis-protocol.io'
   } else {
     // Production by default
     baseUrl = process.env.REACT_APP_EXPLORER_URL_PROD || 'https://gnosis-protocol.io'
@@ -36,4 +38,10 @@ export function getExplorerOrderLink(chainId: ChainId, orderId: OrderID): string
   const baseUrl = _getExplorerBaseUrl(chainId)
 
   return baseUrl + `/orders/${orderId}`
+}
+
+export function getExplorerAddressLink(chainId: ChainId, address: string): string {
+  const baseUrl = _getExplorerBaseUrl(chainId)
+
+  return baseUrl + `/address/${address}`
 }

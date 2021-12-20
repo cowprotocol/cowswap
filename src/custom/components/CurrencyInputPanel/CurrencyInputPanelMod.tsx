@@ -1,6 +1,6 @@
 import { Pair } from '@uniswap/v2-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import React, { useState, useCallback, ReactNode } from 'react'
+import { useState, useCallback, ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { darken } from 'polished'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -8,7 +8,7 @@ import { useCurrencyBalance } from 'state/wallet/hooks'
 import { CurrencySearchModal } from '.' // mod
 import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-// import { ButtonGray } from '../Button'
+import { ButtonGray } from 'components/Button'
 import { RowBetween, RowFixed } from 'components/Row'
 import { TYPE } from 'theme'
 import { Input as NumericalInput } from 'components/NumericalInput'
@@ -22,8 +22,8 @@ import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 // import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { WithClassName } from 'types'
-import { formatSmart } from 'utils/format'
-import { SHORT_PRECISION } from 'constants/index'
+import { formatMax, formatSmart } from 'utils/format'
+import { AMOUNT_PRECISION } from 'constants/index'
 import { AuxInformationContainer } from '.' // mod
 
 export const InputPanel = styled.div<{ hideInput?: boolean }>`
@@ -59,7 +59,8 @@ export const Container = styled.div<{ hideInput: boolean; showAux?: boolean }>`
   }
 `
 
-export const CurrencySelect = styled.button<{ selected: boolean; hideInput?: boolean }>`
+export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
   align-items: center;
   font-size: 24px;
   font-weight: 500;
@@ -158,8 +159,11 @@ export interface CurrencyInputPanelProps extends WithClassName {
   otherCurrency?: Currency | null
   fiatValue?: CurrencyAmount<Token> | null
   priceImpact?: Percent
+  priceImpactLoading?: boolean
   id: string
   showCommonBases?: boolean
+  showCurrencyAmount?: boolean
+  disableNonToken?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   customBalanceText?: string
@@ -175,9 +179,12 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
+  showCurrencyAmount,
+  disableNonToken,
   renderBalance,
   fiatValue,
   priceImpact,
+  priceImpactLoading,
   hideBalance = false,
   pair = null, // used for double token logo
   hideInput = false,
@@ -210,6 +217,7 @@ export default function CurrencyInputPanel({
         <Container hideInput={hideInput} showAux={!!label}>
           <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={!onCurrencySelect}>
             <CurrencySelect
+              visible={currency !== null}
               selected={!!currency}
               hideInput={hideInput}
               className="open-currency-select-button"
@@ -270,14 +278,21 @@ export default function CurrencyInputPanel({
                       color={theme.text1}
                       fontWeight={400}
                       fontSize={14}
-                      style={{ display: 'inline', cursor: 'pointer' }}
+                      style={{
+                        display: 'inline',
+                        // cursor: 'pointer'
+                        cursor: showMaxButton ? 'pointer' : 'initial', // mod
+                      }}
+                      title={`${formatMax(selectedCurrencyBalance, currency?.decimals) || '-'} ${
+                        currency?.symbol || ''
+                      }`}
                     >
                       {!hideBalance && currency && selectedCurrencyBalance ? (
                         renderBalance ? (
                           renderBalance(selectedCurrencyBalance)
                         ) : (
                           <Trans>
-                            Balance: {formatSmart(selectedCurrencyBalance, SHORT_PRECISION)} {currency.symbol}
+                            Balance: {formatSmart(selectedCurrencyBalance, AMOUNT_PRECISION) || '0'} {currency.symbol}
                           </Trans>
                         )
                       ) : null}
@@ -291,7 +306,7 @@ export default function CurrencyInputPanel({
                 ) : (
                   <span />
                 )}
-                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
+                <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatValue} priceImpact={priceImpact} />
               </RowBetween>
             </FiatRow>
           )}
@@ -304,6 +319,8 @@ export default function CurrencyInputPanel({
             selectedCurrency={currency}
             otherSelectedCurrency={otherCurrency}
             showCommonBases={showCommonBases}
+            showCurrencyAmount={showCurrencyAmount}
+            disableNonToken={disableNonToken}
           />
         )}
       </InputPanel>

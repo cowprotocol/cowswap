@@ -1,16 +1,12 @@
-import React, { useCallback, useContext } from 'react'
-import { batch, useDispatch } from 'react-redux'
-import { ThemeContext } from 'styled-components'
+import React, { Fragment } from 'react'
+
 import { useActiveWeb3React } from 'hooks/web3'
-import { AppDispatch } from 'state'
-import { clearAllTransactions } from 'state/transactions/actions'
 import { getExplorerLabel, shortenAddress } from 'utils'
-import { AutoRow } from 'components/Row'
-import Copy, { CopyIcon } from 'components/AccountDetails/Copy'
-import styled from 'styled-components'
+
+import Copy from 'components/Copy'
 import { Trans } from '@lingui/macro'
 
-import { SUPPORTED_WALLETS } from 'constants/index'
+import { SUPPORTED_WALLETS, STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { getEtherscanLink } from 'utils'
 import { injected, walletconnect, walletlink, fortmatic, portis, WalletProvider } from 'connectors'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
@@ -18,40 +14,39 @@ import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
 import PortisIcon from 'assets/images/portisIcon.png'
 import Identicon from 'components/Identicon'
-import { ExternalLink as LinkIcon } from 'react-feather'
-import { LinkStyledButton, TYPE } from 'theme'
-import { clearOrders } from 'state/orders/actions'
+import { NETWORK_LABELS } from 'components/Header'
 import {
   WalletName,
   MainWalletAction,
-  AccountDetailsProps,
-  UpperSection,
-  CloseIcon,
-  CloseColor,
-  HeaderRow,
-  AccountSection,
-  YourAccount,
-  InfoCard,
-  AccountGroupingRow,
   WalletAction,
   AccountControl,
   AddressLink,
-  LowerSection,
   IconWrapper,
-  renderTransactions,
+  renderActivities,
 } from './AccountDetailsMod'
+import {
+  NetworkCard,
+  Wrapper,
+  InfoCard,
+  AccountGroupingRow,
+  NoActivityMessage,
+  LowerSection,
+  WalletActions,
+  WalletSecondaryActions,
+  WalletNameAddress,
+  WalletWrapper,
+} from './styled'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
 import { MouseoverTooltip } from 'components/Tooltip'
+import { supportedChainId } from 'utils/supportedChainId'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
+import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
+import { ExternalLink } from 'theme'
+import { getExplorerAddressLink } from 'utils/explorer'
 
-const Wrapper = styled.div`
-  color: ${({ theme }) => theme.text1};
-
-  ${WalletName},
-  ${AddressLink},
-  ${CopyIcon} {
-    color: ${({ theme }) => theme.text1};
-  }
-`
+const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+  dateStyle: 'long',
+}
 
 type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
 
@@ -76,13 +71,12 @@ export function formatConnectorName(connector?: AbstractConnector, walletInfo?: 
 
   return (
     <WalletName>
-      Connected with {name}
-      {walletConnectSuffix}
+      Connected with {name} {walletConnectSuffix}
     </WalletName>
   )
 }
 
-export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo) {
+export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo, size?: number) {
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
     return (
@@ -100,11 +94,7 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
       </IconWrapper>
     )
   } else if (connector === injected) {
-    return (
-      <IconWrapper size={16}>
-        <Identicon />
-      </IconWrapper>
-    )
+    return <Identicon size={size} />
   } else if (connector === walletconnect) {
     return (
       <IconWrapper size={16}>
@@ -142,143 +132,113 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
   return null
 }
 
-export default function AccountDetails({
-  toggleWalletModal,
-  pendingTransactions,
-  confirmedTransactions,
-  ENSName,
-  openOptions,
-}: AccountDetailsProps) {
-  const { chainId, account, connector } = useActiveWeb3React()
-  const walletInfo = useWalletInfo()
-  const theme = useContext(ThemeContext)
-  const dispatch = useDispatch<AppDispatch>()
+interface AccountDetailsProps {
+  pendingTransactions: string[]
+  confirmedTransactions: string[]
+  ENSName?: string
+  toggleWalletModal: () => void
+  closeOrdersPanel: () => void
+}
 
-  const clearAllActivityCallback = useCallback(() => {
-    if (chainId) {
-      batch(() => {
-        dispatch(clearAllTransactions({ chainId }))
-        dispatch(clearOrders({ chainId }))
-      })
-    }
-  }, [dispatch, chainId])
+export default function AccountDetails({
+  pendingTransactions = [],
+  confirmedTransactions = [],
+  ENSName,
+  toggleWalletModal,
+  closeOrdersPanel,
+}: AccountDetailsProps) {
+  const { account, connector, chainId: connectedChainId } = useActiveWeb3React()
+  const chainId = supportedChainId(connectedChainId)
+  const walletInfo = useWalletInfo()
+
+  const explorerOrdersLink = account && connectedChainId && getExplorerAddressLink(connectedChainId, account)
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
+
+  const activities =
+    useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) }) || []
+  const activitiesGroupedByDate = groupActivitiesByDay(activities)
+  const activityTotalCount = activities?.length || 0
+
+  const handleDisconnectClick = () => {
+    ;(connector as any).close()
+    localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+    closeOrdersPanel()
+    toggleWalletModal()
+  }
 
   return (
     <Wrapper>
-      <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
-        <HeaderRow>Account</HeaderRow>
-        <AccountSection>
-          <YourAccount>
-            <InfoCard>
-              <AccountGroupingRow>
-                {formatConnectorName(connector, walletInfo)}
-                <div>
-                  {connector !== injected && connector !== walletlink && (
-                    <WalletAction
-                      style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
-                      onClick={() => {
-                        ;(connector as any).close()
-                      }}
-                    >
-                      <Trans>Disconnect</Trans>
-                    </WalletAction>
-                  )}
-                  <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400 }}
-                    onClick={() => {
-                      openOptions()
-                    }}
-                  >
-                    <Trans>Change</Trans>
-                  </WalletAction>
-                </div>
-              </AccountGroupingRow>
-              <AccountGroupingRow id="web3-account-identifier-row">
-                <AccountControl>
-                  {ENSName ? (
-                    <>
-                      <div>
-                        {getStatusIcon(connector, walletInfo)}
-                        <p> {ENSName}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        {getStatusIcon(connector, walletInfo)}
-                        <p> {account && shortenAddress(account)}</p>
-                      </div>
-                    </>
-                  )}
-                </AccountControl>
-              </AccountGroupingRow>
-              <AccountGroupingRow>
-                {ENSName ? (
-                  <>
-                    <AccountControl>
-                      <div>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy Address</span>
-                          </Copy>
-                        )}
-                        {chainId && account && (
-                          <AddressLink
-                            hasENS={!!ENSName}
-                            isENS={true}
-                            href={getEtherscanLink(chainId, ENSName, 'address')}
-                          >
-                            <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
-                          </AddressLink>
-                        )}
-                      </div>
-                    </AccountControl>
-                  </>
-                ) : (
-                  <>
-                    <AccountControl>
-                      <div>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy Address</span>
-                          </Copy>
-                        )}
-                        {chainId && account && (
-                          <AddressLink
-                            hasENS={!!ENSName}
-                            isENS={false}
-                            href={getEtherscanLink(chainId, account, 'address')}
-                          >
-                            <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{explorerLabel}</span>
-                          </AddressLink>
-                        )}
-                      </div>
-                    </AccountControl>
-                  </>
-                )}
-              </AccountGroupingRow>
-            </InfoCard>
-          </YourAccount>
-        </AccountSection>
-      </UpperSection>
+      <InfoCard>
+        <AccountGroupingRow id="web3-account-identifier-row">
+          <AccountControl>
+            <WalletWrapper>
+              {getStatusIcon(connector, walletInfo)}
+
+              {(ENSName || account) && (
+                <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
+                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
+                </Copy>
+              )}
+            </WalletWrapper>
+
+            <WalletActions>
+              {' '}
+              {chainId && NETWORK_LABELS[chainId] && (
+                <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
+              )}{' '}
+              {formatConnectorName(connector, walletInfo)}
+            </WalletActions>
+          </AccountControl>
+        </AccountGroupingRow>
+        <AccountGroupingRow>
+          <AccountControl>
+            <WalletSecondaryActions>
+              {connector !== injected && connector !== walletlink && (
+                <WalletAction onClick={handleDisconnectClick}>
+                  <Trans>Disconnect</Trans>
+                </WalletAction>
+              )}
+              <WalletAction onClick={toggleWalletModal}>
+                <Trans>Change Wallet</Trans>
+              </WalletAction>
+              {chainId && account && (
+                <AddressLink
+                  hasENS={!!ENSName}
+                  isENS={!!ENSName}
+                  href={getEtherscanLink(chainId, ENSName ? ENSName : account, 'address')}
+                >
+                  {explorerLabel} ↗
+                </AddressLink>
+              )}
+            </WalletSecondaryActions>
+          </AccountControl>
+        </AccountGroupingRow>
+      </InfoCard>
+
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSection>
-          <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body>Recent Activity</TYPE.body>
-            <LinkStyledButton onClick={clearAllActivityCallback}>(clear all)</LinkStyledButton>
-          </AutoRow>
-          {renderTransactions(pendingTransactions)}
-          {renderTransactions(confirmedTransactions)}
+          <span>
+            {' '}
+            <h5>
+              Recent Activity <span>{`(${activityTotalCount})`}</span>
+            </h5>
+            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders</ExternalLink>}
+          </span>
+
+          <div>
+            {activitiesGroupedByDate.map(({ date, activities }) => (
+              <Fragment key={date.getTime()}>
+                {/* TODO: style me! */}
+                <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                {renderActivities(activities)}
+              </Fragment>
+            ))}
+            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders</ExternalLink>}
+          </div>
         </LowerSection>
       ) : (
         <LowerSection>
-          <TYPE.body color={theme.text2}>Your activity will appear here...</TYPE.body>
+          <NoActivityMessage>Your activity will appear here...</NoActivityMessage>
         </LowerSection>
       )}
     </Wrapper>

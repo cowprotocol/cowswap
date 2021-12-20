@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { LONG_PRECISION, UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
@@ -9,7 +8,7 @@ import { RowFixed } from 'components/Row'
 import { LightGreyCard } from 'components/Card'
 import { HashLink } from 'react-router-hash-link'
 import { t } from '@lingui/macro'
-import { TagInfo, WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { TagInfo /* , WrappedTokenInfo */ } from 'state/lists/wrappedTokenInfo'
 import { formatSmart } from 'utils/format'
 import Column from 'components/Column'
 import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
@@ -103,7 +102,7 @@ function TagDescriptor({ tags, bg, children }: { children?: React.ReactNode; tag
   )
 }
 
-function TokenTags({ currency, isUnsupported }: { currency: Currency; isUnsupported: boolean }) {
+function TokenTags({ /* currency, */ isUnsupported }: { /* currency: Currency; */ isUnsupported: boolean }) {
   if (isUnsupported) {
     return (
       <TagDescriptor bg="#f3a1a1" tags={UNSUPPORTED_TOKEN_TAG}>
@@ -116,18 +115,20 @@ function TokenTags({ currency, isUnsupported }: { currency: Currency; isUnsuppor
     )
   }
 
-  if (!(currency instanceof WrappedTokenInfo)) {
+  return <span /> // MOD: return only UnsupportedToken tags
+
+  /* if (!(currency instanceof WrappedTokenInfo)) {
     return <span />
   }
 
   const tags = currency.tags
   if (!tags || tags.length === 0) return <span />
 
-  return <TagDescriptor tags={tags} />
+  return <TagDescriptor tags={tags} /> */
 }
 
 export function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
-  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, LONG_PRECISION)}</StyledBalanceText>
+  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, LONG_PRECISION) || '0'}</StyledBalanceText>
 }
 
 export default function CurrencyList(
@@ -135,7 +136,7 @@ export default function CurrencyList(
 ): ReturnType<typeof CurrencyListMod> {
   const [params] = paramsList
   return (
-    <Wrapper>
+    <Wrapper id="currency-list">
       <CurrencyListMod {...params} BalanceComponent={Balance} TokenTagsComponent={TokenTags} />
     </Wrapper>
   )

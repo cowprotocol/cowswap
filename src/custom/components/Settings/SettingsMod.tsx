@@ -1,9 +1,9 @@
 import { t, Trans } from '@lingui/macro'
-import React, { useContext, useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
 // import ReactGA from 'react-ga'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
@@ -186,7 +186,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
       </StyledMenuButton> */}
       {open && (
         <MenuFlyout>
-          <AutoColumn style={{ padding: '1rem' }}>
+          <AutoColumn gap="md" style={{ padding: '1rem' }}>
             <Text fontWeight={600} fontSize={14}>
               <Trans>Transaction Settings</Trans>
             </Text>
@@ -226,14 +226,20 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
             {/* <RowBetween>
               <RowFixed>
                 <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-                  Disable Multihops
+                  <Trans>Disable Multihops</Trans>
                 </TYPE.black>
-                <QuestionHelper text="Restricts swaps to direct pairs only." />
+                <QuestionHelper text={<Trans>Restricts swaps to direct pairs only.</Trans>} />
               </RowFixed>
               <Toggle
                 id="toggle-disable-multihop-button"
                 isActive={singleHopOnly}
-                toggle={() => (singleHopOnly ? setSingleHopOnly(false) : setSingleHopOnly(true))}
+                toggle={() => {
+                  ReactGA.event({
+                    category: 'Routing',
+                    action: singleHopOnly ? 'disable single hop' : 'enable single hop',
+                  })
+                  setSingleHopOnly(!singleHopOnly)
+                }}
               />
             </RowBetween> */}
           </AutoColumn>

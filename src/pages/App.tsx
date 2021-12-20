@@ -1,34 +1,34 @@
-import React from 'react'
+import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
+import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import AddressClaimModal from '../components/claim/AddressClaimModal'
-import Header from 'components/Header'
+import ErrorBoundary from '../components/ErrorBoundary'
+import Header from '../components/Header'
 import Polling from '../components/Header/Polling'
 import Popups from 'components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
-import ErrorBoundary from '../components/ErrorBoundary'
 import { ApplicationModal } from '../state/application/actions'
 import { useModalOpen, useToggleModal } from '../state/application/hooks'
-import DarkModeQueryParamReader from 'theme'
+import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
+import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
+import { RedirectDuplicateTokenIdsV2 } from './AddLiquidityV2/redirects'
+import CreateProposal from './CreateProposal'
 import Earn from './Earn'
 import Manage from './Earn/Manage'
 import MigrateV2 from './MigrateV2'
 import MigrateV2Pair from './MigrateV2/MigrateV2Pair'
 import Pool from './Pool'
+import { PositionPage } from './Pool/PositionPage'
 import PoolV2 from './Pool/v2'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
-import RemoveLiquidityV3 from 'pages/RemoveLiquidity/V3'
-import Swap from 'pages/Swap'
+import RemoveLiquidityV3 from './RemoveLiquidity/V3'
+import Swap from './Swap'
 import { OpenClaimAddressModalAndRedirectToSwap, RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 import Vote from './Vote'
 import VotePage from './Vote/VotePage'
-import { RedirectDuplicateTokenIdsV2 } from './AddLiquidityV2/redirects'
-import { PositionPage } from './Pool/PositionPage'
-import AddLiquidity from './AddLiquidity'
-import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -40,14 +40,13 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 120px;
+  padding: 120px 16px 0px 16px;
   align-items: center;
   flex: 1;
   z-index: 1;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 16px;
-    padding-top: 6rem;
+    padding: 6rem 16px 16px 16px;
   `};
 `
 
@@ -76,15 +75,15 @@ export default function App() {
       <Route component={GoogleAnalyticsReporter} />
       <Route component={DarkModeQueryParamReader} />
       <Route component={ApeModeQueryParamReader} />
-      <AppWrapper>
-        <HeaderWrapper>
-          <Header />
-        </HeaderWrapper>
-        <BodyWrapper>
-          <Popups />
-          <Polling />
-          <TopLevelModals />
-          <Web3ReactManager>
+      <Web3ReactManager>
+        <AppWrapper>
+          <HeaderWrapper>
+            <Header />
+          </HeaderWrapper>
+          <BodyWrapper>
+            <Popups />
+            <Polling />
+            <TopLevelModals />
             <Switch>
               <Route exact strict path="/vote" component={Vote} />
               <Route exact strict path="/vote/:governorIndex/:id" component={VotePage} />
@@ -122,12 +121,13 @@ export default function App() {
               <Route exact strict path="/migrate/v2" component={MigrateV2} />
               <Route exact strict path="/migrate/v2/:address" component={MigrateV2Pair} />
 
+              <Route exact strict path="/create-proposal" component={CreateProposal} />
               <Route component={RedirectPathToSwapOnly} />
             </Switch>
-          </Web3ReactManager>
-          <Marginer />
-        </BodyWrapper>
-      </AppWrapper>
+            <Marginer />
+          </BodyWrapper>
+        </AppWrapper>
+      </Web3ReactManager>
     </ErrorBoundary>
   )
 }

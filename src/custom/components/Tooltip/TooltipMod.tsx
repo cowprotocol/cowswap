@@ -1,9 +1,9 @@
-import React, { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
 import Popover, { PopoverProps } from 'components/Popover'
 
 const TooltipContainer = styled.div`
-  width: 256px;
+  max-width: 256px;
   padding: 0.6rem 1rem;
   font-weight: 400;
   word-break: break-word;

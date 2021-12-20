@@ -1,16 +1,22 @@
-import Logo from 'assets/svg/logo.svg'
-import LogoDark from 'assets/svg/logo_white.svg'
-
 import { Colors } from 'theme/styled'
 import { colors as colorsUniswap } from '@src/theme'
 import { ButtonSize } from 'theme'
 
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
-import React, { useMemo } from 'react'
+import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { theme as themeUniswap } from '@src/theme'
-import { useIsDarkMode } from 'state/user/hooks'
 import { transparentize } from 'polished'
+import { cowSwapBackground, cowSwapLogo } from 'theme/cowSwapAssets'
+
+import Cursor1 from 'assets/cow-swap/cursor1.gif'
+import Cursor2 from 'assets/cow-swap/cursor2.gif'
+import Cursor3 from 'assets/cow-swap/cursor3.gif'
+import Cursor4 from 'assets/cow-swap/cursor4.gif'
+
+// Modal override items
+import { HeaderText } from '@src/components/WalletModal/Option'
+import { AutoColumn } from 'components/Column'
+import { RowBetween } from 'components/Row'
+import { ModalContentWrapper } from 'components/Settings/SettingsMod'
 
 export { TYPE } from '@src/theme'
 export * from '@src/theme/components'
@@ -20,39 +26,62 @@ export function colors(darkMode: boolean): Colors {
     ...colorsUniswap(darkMode),
 
     // ****** base ******
+    white: darkMode ? '#c5daef' : '#ffffff',
+    black: darkMode ? '#021E34' : '#000000',
 
     // ****** text ******
-    text2: darkMode ? '#DCDCDC' : '#565A69',
+    text1: darkMode ? '#c5daef' : '#000000',
+    text2: darkMode ? '#021E34' : '#000000',
+    text3: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#000000',
+    text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds / greys ******
-    bg1: darkMode ? '#1E1F2C' : '#FFFFFF',
-    bg2: darkMode ? '#2C2D3F' : '#F7F8FA',
-    bg3: darkMode ? '#1E1F2C' : '#EDEEF2',
+    bg1: darkMode ? '#163861' : '#D5E9F0',
+    bg2: darkMode ? '#c5daef' : '#ffffff',
+    bg3: darkMode ? '#163861' : '#d5e8f0',
+    bg4: darkMode ? '#021E34' : '#ffffff',
+    bg5: darkMode ? '#1d4373' : '#D5E9F0',
+    bg6: darkMode ? '#163861' : '#b0dfee',
+    bg7: darkMode ? '#1F4471' : '#CEE7EF',
 
     // ****** specialty colors ******
-    advancedBG: darkMode ? '#2B2D3F' : 'rgb(247 248 250)',
+    advancedBG: darkMode ? '#163861' : '#d5e8f0',
 
     // ****** primary colors ******
-    primary1: darkMode ? '#3F77FF' : '#8958FF',
-    primary5: darkMode ? '#153d6f70' : 'rgba(137,88,255,0.6)',
+    primary1: darkMode ? '#D67B5A' : '#FF784A',
+    primary3: darkMode ? '#D67B5A' : '#FF784A',
+    primary4: darkMode ? '#ff5d25' : '#ff5d25',
+    primary5: darkMode ? '#D67B5A' : '#FF784A',
 
     // ****** color text ******
-    primaryText1: darkMode ? '#6da8ff' : '#8958FF',
+    primaryText1: darkMode ? '#021E34' : '#000000',
 
     // ****** secondary colors ******
     secondary1: darkMode ? '#2172E5' : '#8958FF',
-    // secondary2: darkMode ? '#17000b26' : '#F6DDE8',
     secondary3: darkMode ? '#17000b26' : 'rgba(137,88,255,0.6)',
 
     // ****** other ******
     blue1: '#3F77FF',
     purple: '#8958FF',
+    yellow: '#fff6dc',
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',
-    border: darkMode ? '#3a3b5a' : 'rgb(58 59 90 / 10%)',
+
+    // states
+    success: darkMode ? '#00d897' : '#00815a',
+    danger: '#f1356e',
+    pending: '#43758C',
+    attention: '#ff5722',
+
+    // ****** other ******
+    border: darkMode ? '#021E34' : '#000000',
     border2: darkMode ? '#254F83' : '#afcbda',
-    disabled: darkMode ? '#31323e' : 'rgb(237, 238, 242)',
+    cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
+    cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
+    cardShadow2: darkMode ? 'rgba(1, 10, 16, 0.15)' : 'rgba(11, 37, 53, 0.93)',
+
+    disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
     redShade: darkMode ? '#842100' : '#AE2C00',
     textLink: darkMode ? '#ffffff' : '#AE2C00',
     shimmer1: darkMode ? 'rgb(22 56 97 / 20%)' : 'rgb(175 203 218 / 20%)',
@@ -63,8 +92,8 @@ export function colors(darkMode: boolean): Colors {
     tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
 
     // banner styles
-    info: '#FFEDAF',
-    infoText: '#564D00',
+    info: darkMode ? '#615845' : '#FFEDAF',
+    infoText: darkMode ? '#ffca4a' : '#564D00',
     warning: '#FFEDAF',
     warningText: '#564D00',
     error: '#FFC7AF',
@@ -76,29 +105,81 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   return {
     body: {
       background: css`
-        background: radial-gradient(50% 50%, ${colorsTheme.primary1} 0%, ${colorsTheme.bg1} 100%) 0 -30vh no-repeat;
+        background: rgba(164, 211, 227, 1);
+        background: url(data:image/svg+xml;base64,${cowSwapBackground(darkMode)}) no-repeat 100% / cover fixed,
+          ${darkMode
+            ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
+            : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
+        background-attachment: fixed;
+        backdrop-filter: blur(40px);
       `,
     },
-    logo: { src: `${darkMode ? LogoDark : Logo}`, alt: 'GP Logo', width: '24px', height: 'auto' },
+    logo: {
+      src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
+      srcIcon: `data:image/svg+xml;base64,${cowSwapLogo(darkMode, true)}`,
+      alt: 'CowSwap Logo',
+      width: '208px',
+      height: '50px',
+    },
+    util: {
+      invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
+    },
+    cursor: css`
+      cursor: url(${Cursor1}), auto;
+      animation: cursor 1s infinite;
+      @keyframes cursor {
+        0% {
+          cursor: url(${Cursor1}), auto;
+        }
+        25% {
+          cursor: url(${Cursor2}), auto;
+        }
+        50% {
+          cursor: url(${Cursor3}), auto;
+        }
+        75% {
+          cursor: url(${Cursor4}), auto;
+        }
+      }
+    `,
     appBody: {
-      boxShadow: `0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-  0px 24px 32px rgba(0, 0, 0, 0.01)`,
-      borderRadius: '30px',
-      border: 'none',
-      padding: '1rem',
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      borderRadius: '16px',
+      border: `3px solid ${colorsTheme.black}`,
+      padding: '12px 6px',
       maxWidth: {
-        normal: '420px',
-        content: '620px',
+        normal: '460px',
+        content: '680px',
       },
     },
+    neumorphism: {
+      boxShadow: css`
+        box-shadow: inset 2px -2px 4px ${darkMode ? '#1d4373' : '#ffffff'},
+          inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
+      `,
+    },
+    card: {
+      background: css`
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+      `,
+      background2: darkMode ? '#01182a' : colorsTheme.bg3,
+      background3: css`
+        background: ${darkMode ? '#0f2644' : '#ffffff'};
+      `,
+      border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
+      boxShadow: css`
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+        box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
+      `,
+    },
     header: {
-      border: `1px solid ${colorsTheme.border}`,
+      border: 'none',
       menuFlyout: {
-        background: colorsTheme.bg3,
-        color: colorsTheme.text2,
-        colorHover: colorsTheme.text2,
-        colorHoverBg: colorsTheme.bg3,
-        closeButtonBg: colorsTheme.bg3,
+        background: 'transparent',
+        color: darkMode ? colorsTheme.text1 : colorsTheme.text2,
+        colorHover: darkMode ? colorsTheme.text1 : colorsTheme.text2,
+        colorHoverBg: darkMode ? colorsTheme.black : colorsTheme.disabled,
+        closeButtonBg: darkMode ? colorsTheme.white : colorsTheme.disabled,
         closeButtonColor: colorsTheme.black,
         seperatorColor: colorsTheme.disabled,
       },
@@ -130,72 +211,55 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     buttonPrimary: {
       background: css`
-        background: transparent linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
+        background: ${colorsTheme.primary1};
+        color: ${colorsTheme.black};
       `,
-      fontWeight: '500',
-      border: '0',
-      borderRadius: '9px',
-      boxShadow: 'none',
+      fontWeight: '800',
+      border: `4px solid ${colorsTheme.black}`,
+      borderRadius: '16px',
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     buttonOutlined: {
       background: css`
-        background: transparent linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
+        background: ${colorsTheme.bg1};
+        color: ${colorsTheme.text1};
       `,
-      fontWeight: '500',
-      border: '0',
-      borderRadius: '9px',
-      boxShadow: 'none',
+      fontWeight: '800',
+      border: `4px solid ${colorsTheme.black}`,
+      borderRadius: '16px',
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     buttonLight: {
-      fontWeight: '500',
-      border: 'none',
-      borderHover: '1px solid transparent',
-      boxShadow: 'none',
-      backgroundHover: `${colorsTheme.primary4}`,
-      borderRadius: '9px',
+      backgroundHover: colorsTheme.primary4,
+      fontWeight: '800',
+      border: `4px solid ${colorsTheme.black}`,
+      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     currencyInput: {
-      background: `${colorsTheme.bg1}`,
-      border: `1px solid ${colorsTheme.bg2}`,
+      background: `${darkMode ? colorsTheme.blueShade : colorsTheme.white}`,
+      color: colorsTheme.text1,
+      border: `2px solid ${darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled}`,
     },
     buttonCurrencySelect: {
-      background: `linear-gradient(270deg, ${colorsTheme.purple} 0%, ${colorsTheme.blue1} 100%)`,
-      color: `${colorsTheme.white}`,
-      colorSelected: `${colorsTheme.text1}`,
-      boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.075)',
+      background: colorsTheme.bg1,
+      border: `2px solid ${colorsTheme.black}`,
+      boxShadow: `2px 2px 0px ${colorsTheme.black}`,
+      color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
+      colorSelected: darkMode ? colorsTheme.white : colorsTheme.text1,
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
     `,
-    footerColor: colorsTheme.text1,
+    footerColor: darkMode ? colorsTheme.text1 : colorsTheme.greenShade,
     networkCard: {
-      background: 'rgba(243, 132, 30, 0.05)',
-      text: colorsTheme.yellow2,
+      background: 'rgb(255 120 74 / 60%)',
+      text: colorsTheme.black,
     },
     wallet: {
-      color: colorsTheme.text1,
-      background: colorsTheme.bg1,
+      color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
+      background: darkMode ? colorsTheme.white : colorsTheme.bg2,
     },
   }
-}
-
-export function theme(darkmode: boolean): DefaultTheme {
-  const colorsTheme = colors(darkmode)
-  return {
-    ...themeUniswap(darkmode),
-    ...colorsTheme,
-
-    // Overide Theme
-    ...themeVariables(darkmode, colorsTheme),
-  }
-}
-
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useIsDarkMode()
-
-  const themeObject = useMemo(() => theme(darkMode), [darkMode])
-
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
 export const UniFixedGlobalStyle = css`
@@ -238,7 +302,6 @@ export const UniFixedGlobalStyle = css`
   }
 `
 
-// export const ThemedGlobalStyle = createGlobalStyle`
 export const UniThemedGlobalStyle = css`
   html {
     color: ${({ theme }) => theme.text1};
@@ -266,10 +329,38 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${UniThemedGlobalStyle}
 
   html {
-    // Uniswap default
     color: ${({ theme }) => theme.text1};
-    background-image: ${({ theme }) => `linear-gradient(0deg, ${theme.bg1} 0%, ${theme.bg2} 100%)`};
+    ${({ theme }) => theme.body.background}
   }
 
   *, *:after, *:before { box-sizing:border-box; }
+
+  body {
+    background-position: initial;
+    background-repeat: no-repeat;
+    background-image: initial;
+
+    &.noScroll {
+      overflow: hidden;
+    }
+  }
+
+  ::selection { 
+    background: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text2};
+  }
+
+  // START - Modal overrides
+  ${HeaderText} {
+    color: ${({ theme }) => theme.text1};
+  }
+
+  ${ModalContentWrapper} {
+    ${RowBetween} > div,
+    ${AutoColumn} > div {
+      color: ${({ theme }) => theme.text2};
+    }
+  }
+  // END - Modal overrides
+
 `

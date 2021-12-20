@@ -1,16 +1,24 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import BigNumberJs from 'bignumber.js'
+import * as Sentry from '@sentry/browser'
+import { Percent } from '@uniswap/sdk-core'
 
-import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'utils/operator'
-import GpQuoteError, { GpQuoteErrorCodes } from 'utils/operator/errors/QuoteError'
+import { getFeeQuote, getPriceQuote as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
+import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
-import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation } from 'utils/paraswap'
+import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
+import {
+  getPriceQuote as getPriceQuoteMatcha,
+  MatchaPriceQuote,
+  toPriceInformation as toPriceInformationMatcha,
+} from 'api/matcha-0x'
 
-import { OptimalRatesWithPartnerFees as OptimalRatesWithPartnerFeesParaswap } from 'paraswap'
+import { OptimalRate } from 'paraswap-core'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from 'state/lists/actions'
+import { toErc20Address } from 'utils/tokens'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -50,6 +58,7 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
   fromDecimals: number
   toDecimals: number
   chainId: ChainId
+  userAddress?: string | null
 }
 
 export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
@@ -57,9 +66,10 @@ export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & 
   quoteToken: string
   fromDecimals: number
   toDecimals: number
+  userAddress?: string | null
 }
 
-export type PriceSource = 'gnosis-protocol' | 'paraswap'
+export type PriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
 export type PriceInformationWithSource = PriceInformation & { source: PriceSource; data?: any }
 export type PromiseRejectedResultWithSource = PromiseRejectedResult & { source: PriceSource }
 
@@ -93,21 +103,38 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
 }
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
+export type AllPricesResult = {
+  gpPriceResult: PromiseSettledResult<PriceInformation | null>
+  paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>
+  matcha0xPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
+}
 
 /**
  *  Return all price estimations from all price sources
  */
-export async function getAllPrices(params: PriceQuoteParams) {
-  // Get price from all API: Gpv2 and Paraswap
-  const pricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
+export async function getAllPrices(params: PriceQuoteParams): Promise<AllPricesResult> {
+  // Get price from all API: Gpv2, Paraswap, Matcha (0x)
+  const gpPricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
+
   const paraSwapPricePromise = withTimeout(
     getPriceQuoteParaswap(params),
     PRICE_API_TIMEOUT_MS,
     'Paraswap: Get Price API'
   )
+  const matchaPricePromise = withTimeout(getPriceQuoteMatcha(params), PRICE_API_TIMEOUT_MS, 'Matcha(0x): Get Price API')
 
   // Get results from API queries
-  return Promise.allSettled([pricePromise, paraSwapPricePromise])
+  const [gpPrice, paraSwapPrice, matchaPrice] = await Promise.allSettled([
+    gpPricePromise,
+    paraSwapPricePromise,
+    matchaPricePromise,
+  ])
+
+  return {
+    gpPriceResult: gpPrice,
+    paraSwapPriceResult: paraSwapPrice,
+    matcha0xPriceResult: matchaPrice,
+  }
 }
 
 /**
@@ -115,24 +142,41 @@ export async function getAllPrices(params: PriceQuoteParams) {
  * successful price quotes and errors price quotes. For each price, it also give the context (the name of the price feed)
  */
 function _extractPriceAndErrorPromiseValues(
-  gpPriceResult: PromiseSettledResult<PriceInformation>,
-  paraSwapPriceResult: PromiseSettledResult<OptimalRatesWithPartnerFeesParaswap | null>
+  // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
+  kind: OrderKind,
+  gpPriceResult: PromiseSettledResult<PriceInformation | null>,
+  paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>,
+  matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
 ): [Array<PriceInformationWithSource>, Array<PromiseRejectedResultWithSource>] {
   // Prepare an array with all successful estimations
   const priceQuotes: Array<PriceInformationWithSource> = []
   const errorsGetPrice: Array<PromiseRejectedResultWithSource> = []
 
   if (isPromiseFulfilled(gpPriceResult)) {
-    priceQuotes.push({ ...gpPriceResult.value, source: 'gnosis-protocol' })
+    const gpPrice = gpPriceResult.value
+    if (gpPrice) {
+      priceQuotes.push({ ...gpPrice, source: 'gnosis-protocol' })
+    }
   } else {
     errorsGetPrice.push({ ...gpPriceResult, source: 'gnosis-protocol' })
   }
 
   if (isPromiseFulfilled(paraSwapPriceResult)) {
-    const paraswapPrice = toPriceInformation(paraSwapPriceResult.value)
-    paraswapPrice && priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
+    const paraswapPrice = toPriceInformationParaswap(paraSwapPriceResult.value)
+    if (paraswapPrice) {
+      priceQuotes.push({ ...paraswapPrice, source: 'paraswap', data: paraSwapPriceResult.value })
+    }
   } else {
     errorsGetPrice.push({ ...paraSwapPriceResult, source: 'paraswap' })
+  }
+
+  if (isPromiseFulfilled(matchaPriceResult)) {
+    const matchaPrice = toPriceInformationMatcha(matchaPriceResult.value, kind)
+    if (matchaPrice) {
+      priceQuotes.push({ ...matchaPrice, source: 'matcha-0x', data: matchaPriceResult.value })
+    }
+  } else {
+    errorsGetPrice.push({ ...matchaPriceResult, source: 'matcha-0x' })
   }
 
   return [priceQuotes, errorsGetPrice]
@@ -143,10 +187,16 @@ function _extractPriceAndErrorPromiseValues(
  */
 export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPriceOptions): Promise<PriceInformation> {
   // Get all prices
-  const [priceResult, paraSwapPriceResult] = await getAllPrices(params)
+  const { gpPriceResult, paraSwapPriceResult, matcha0xPriceResult } = await getAllPrices(params)
 
   // Aggregate successful and error prices
-  const [priceQuotes, errorsGetPrice] = _extractPriceAndErrorPromiseValues(priceResult, paraSwapPriceResult)
+  const [priceQuotes, errorsGetPrice] = _extractPriceAndErrorPromiseValues(
+    // we pass the kind of trade here as matcha doesn't have an easy way to differentiate
+    params.kind,
+    gpPriceResult,
+    paraSwapPriceResult,
+    matcha0xPriceResult
+  )
 
   // Print prices who failed to be fetched
   if (errorsGetPrice.length > 0) {
@@ -163,7 +213,27 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
     return _filterWinningPrice({ ...options, kind: params.kind, amounts, priceQuotes })
   } else {
     // It was not possible to get a price estimation
-    throw new PriceQuoteError('Error querying price from APIs', params, [priceResult, paraSwapPriceResult])
+    const priceQuoteError = new PriceQuoteError('Error querying price from APIs', params, [
+      gpPriceResult,
+      paraSwapPriceResult,
+      matcha0xPriceResult,
+    ])
+
+    const { baseToken, quoteToken } = params
+
+    const sentryError = new Error()
+    Object.assign(sentryError, priceQuoteError, {
+      message: `Error querying best price from APIs - baseToken: ${baseToken}, quoteToken: ${quoteToken}`,
+      name: 'PriceErrorObject',
+    })
+
+    // report this to sentry
+    Sentry.captureException(sentryError, {
+      tags: { errorType: 'getBestPrice' },
+      contexts: { params },
+    })
+
+    throw priceQuoteError
   }
 }
 
@@ -171,7 +241,7 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
  *  Return the best quote considering all price feeds. The quote contains information about the price and fee
  */
 export async function getBestQuote({ quoteParams, fetchFee, previousFee }: QuoteParams): Promise<QuoteResult> {
-  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId } = quoteParams
+  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
 
   // Get a new fee quote (if required)
@@ -202,9 +272,45 @@ export async function getBestQuote({ quoteParams, fetchFee, previousFee }: Quote
   // Get price for price estimation
   const pricePromise =
     !feeExceedsPrice && exchangeAmount
-      ? getBestPrice({ chainId, baseToken, quoteToken, fromDecimals, toDecimals, amount: exchangeAmount, kind })
+      ? getBestPrice({
+          chainId,
+          baseToken,
+          quoteToken,
+          fromDecimals,
+          toDecimals,
+          amount: exchangeAmount,
+          kind,
+          userAddress,
+        })
       : // fee exceeds our price, is invalid
         Promise.reject(FEE_EXCEEDS_FROM_ERROR)
 
   return Promise.allSettled([pricePromise, feePromise])
+}
+
+export function getValidParams(params: PriceQuoteParams) {
+  const { baseToken: baseTokenAux, quoteToken: quoteTokenAux, chainId } = params
+  const baseToken = toErc20Address(baseTokenAux, chainId)
+  const quoteToken = toErc20Address(quoteTokenAux, chainId)
+
+  return { ...params, baseToken, quoteToken }
+}
+
+export function calculateFallbackPriceImpact(initialValue: string, finalValue: string) {
+  const initialValueBn = new BigNumberJs(initialValue)
+  const finalValueBn = new BigNumberJs(finalValue)
+  // ((finalValue - initialValue) / initialValue / 2) * 100
+  const output = finalValueBn.minus(initialValueBn).div(initialValueBn).div('2')
+  const [numerator, denominator] = output.toFraction()
+
+  const isPositive = numerator.isNegative() === denominator.isNegative()
+
+  const percentage = new Percent(numerator.abs().toString(10), denominator.abs().toString(10))
+  // UI shows NEGATIVE impact as a POSITIVE effect, so we need to swap the sign here
+  // see FiatValue: line 38
+  const impact = isPositive ? percentage.multiply('-1') : percentage
+
+  console.debug(`[calculateFallbackPriceImpact]::${impact.toSignificant(2)}%`)
+
+  return impact
 }

@@ -1,5 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown } from 'react-feather'
 
@@ -21,15 +20,17 @@ import {
 } from './ButtonMod'
 import { ButtonSize } from 'theme'
 
+export * from './ButtonMod'
+
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
   ${({ theme }) => theme.buttonPrimary.background}
-  color: ${({ theme }) => theme.primaryText1};
   font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
   font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
   border: ${({ theme }) => theme.buttonPrimary.border};
   box-shadow: ${({ theme }) => theme.buttonPrimary.boxShadow};
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
+  color: ${({ theme }) => theme.primaryText1};
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
@@ -43,10 +44,10 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   &:focus,
   &:hover,
   &:active {
-    ${({ theme }) => theme.buttonPrimary.background}
     border: ${({ theme }) => theme.buttonPrimary.border};
     box-shadow: none;
-    transform: translateY(3px);
+    transform: translateY(3px) scale(0.99);
+    ${({ theme }) => theme.buttonPrimary.background}
   }
   &:disabled {
     background-color: ${({ theme }) => theme.disabled};
@@ -106,13 +107,18 @@ export const ButtonLight = styled(ButtonLightMod)`
 
 export const ButtonGray = styled(ButtonGrayMod)`
   // CSS overrides
+  &:hover,
+  &:focus {
+    box-shadow: none;
+  }
 `
 
 export const ButtonSecondary = styled(ButtonSecondaryMod)`
   // CSS overrides
   transition: box-shadow 0.1s ease-in-out;
 
-  &:hover {
+  &:hover,
+  &:focus {
     box-shadow: none;
   }
 `

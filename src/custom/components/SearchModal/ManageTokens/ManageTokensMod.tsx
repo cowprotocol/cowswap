@@ -1,4 +1,4 @@
-import React, { useRef, RefObject, useCallback, useState, useMemo } from 'react'
+import { useRef, RefObject, useCallback, useState, useMemo } from 'react'
 import Column from 'components/Column'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { PaddedColumn, Separator, SearchInput } from 'components/SearchModal/styleds'
@@ -18,6 +18,7 @@ import { Trans } from '@lingui/macro'
 
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { ImportTokensRowProps } from '.' // mod
+import useNetworkName from 'hooks/useNetworkName'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -26,7 +27,7 @@ const Wrapper = styled.div`
   padding-bottom: 80px;
 `
 
-const Footer = styled.div`
+export const Footer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -49,6 +50,8 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const theme = useTheme()
+
+  const network = useNetworkName()
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
@@ -114,6 +117,11 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
           {searchQuery !== '' && !isAddressSearch && (
             <TYPE.error error={true}>
               <Trans>Enter valid token address</Trans>
+            </TYPE.error>
+          )}
+          {searchQuery !== '' && isAddressSearch && !searchToken && (
+            <TYPE.error error={true}>
+              <Trans>No tokens found with this address in {network} network</Trans>
             </TYPE.error>
           )}
           {searchToken && ( // MOD

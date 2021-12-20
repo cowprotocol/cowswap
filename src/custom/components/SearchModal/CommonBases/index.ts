@@ -28,6 +28,12 @@ export const AutoColumn = styled(AutoColumnUni)`
   `}
 `
 
+export const MobileWrapper = styled(AutoColumn)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    isplay: none;
+  `};
+`
+
 export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`
   color: ${({ theme, disable }) => disable && transparentize(0.7, theme.text1)};
   filter: ${({ disable }) => disable && 'contrast(0.85)'};

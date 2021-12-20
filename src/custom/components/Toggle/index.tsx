@@ -1,11 +1,10 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import ToggleUni, { ToggleProps as TogglePropsUni, ToggleElement } from '@src/components/Toggle'
 
 export type ToggleProps = TogglePropsUni
 
-const Wrapper = styled(ToggleUni)`
-  background: ${({ theme }) => theme.bg4};
+const WrappedToggle = styled(ToggleUni)`
+  background: ${({ theme }) => theme.bg7};
 
   ${ToggleElement} {
     color: ${({ theme }) => theme.text1};
@@ -24,5 +23,5 @@ const Wrapper = styled(ToggleUni)`
 `
 
 export default function Toggle(props: ToggleProps) {
-  return <Wrapper {...props} />
+  return <WrappedToggle {...props} />
 }

@@ -1,0 +1,21 @@
+# generated stuff
+/src/state/data/generated.ts
+build
+.git
+.github
+src/**/*.d.ts
+src/abis
+#src/assets
+src/types
+src/custom/abis
+
+# inherited from uniswap, better not touch it
+public_uniswap/index.html
+public/index.html
+
+# Every commit this is changed. NO MORE!
+tsconfig.json
+
+# local stuff
+.yalc
+.vscode

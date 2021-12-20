@@ -1,13 +1,12 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { formatOrderId, shortenOrderId } from 'utils'
-import { OrderID } from 'utils/operator'
+import { OrderID } from 'api/gnosisProtocol'
 import { addPopup } from 'state/application/actions'
 import { OrderStatus } from './actions'
-import { CancellationSummary } from 'components/AccountDetails/Transaction'
+import { CancellationSummary } from 'components/AccountDetails/Transaction/styled'
 
-type OrderStatusExtended = OrderStatus | 'submitted'
+type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
 interface SetOrderSummaryParams {
   id: string
@@ -103,6 +102,7 @@ export function setPopupData(
       descriptor,
     }),
   }
+
   let content: TxnPopupContent | MetaPopupContent
   if (type === OrderTxTypes.TXN) {
     content = {

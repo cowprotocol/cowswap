@@ -1,6 +1,6 @@
 // import { darken } from 'polished'
-import React from 'react'
-import styled, { css } from 'styled-components'
+
+import styled, { css } from 'styled-components/macro'
 import { darken } from 'polished'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
 import { useIsQuoteRefreshing } from 'state/price/hooks'
@@ -17,6 +17,7 @@ import CurrencyInputPanelMod, {
 import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
 import { RowBetween } from 'components/Row'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
+import { TextWrapper } from 'components/HoverInlineText'
 
 import { StyledLogo } from 'components/CurrencyLogo'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
@@ -30,6 +31,7 @@ export const CurrencySearchModal = styled(CurrencySearchModalUni)`
       width: 100%;
       height: 100%;
       max-height: 100%;
+      max-width: 100%;
       border-radius: 0;
     `}
   }
@@ -279,6 +281,14 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${StyledLogo} {
     background: ${({ theme }) => theme.bg1};
+  }
+
+  // Reset the cursor for the FIAT estimate & price impact
+  ${TextWrapper} {
+    &:hover,
+    + span:hover {
+      cursor: initial;
+    }
   }
 `
 

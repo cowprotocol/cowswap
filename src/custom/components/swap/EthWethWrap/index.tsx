@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
-import styled from 'styled-components'
+import { useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
+import styled from 'styled-components/macro'
 import { TransactionResponse } from '@ethersproject/providers'
 import { AlertTriangle } from 'react-feather'
 import { Currency, Token, CurrencyAmount } from '@uniswap/sdk-core'
@@ -9,7 +9,7 @@ import Loader from 'components/Loader'
 import WrappingVisualisation from './WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/wallet/hooks'
-import { useIsTransactionPending } from 'state/transactions/hooks'
+import { useIsTransactionPending } from 'state/enhancedTransactions/hooks'
 
 import Modal from 'components/Modal'
 import { useGasPrices } from 'state/gas/hooks'

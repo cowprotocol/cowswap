@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Price, Currency } from '@uniswap/sdk-core'
 import { useContext } from 'react'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
-import { formatSmart, FormatSmartOptions } from 'utils/format' // mod
-import { DEFAULT_PRECISION } from 'constants/index' // mod
+import styled, { ThemeContext } from 'styled-components/macro'
+import { formatMax, formatSmart } from 'utils/format' // mod
 import { LightGreyText } from 'pages/Swap'
 
 export interface TradePriceProps {
@@ -33,20 +32,18 @@ export const StyledPriceContainer = styled.button`
   }
 `
 
-const PRICE_FORMAT_OPTIONS: [number, FormatSmartOptions] = [DEFAULT_PRECISION, { smallLimit: '0.00001' }]
-
 export default function TradePrice({ price, showInverted, fiatValue, setShowInverted }: TradePriceProps) {
   const theme = useContext(ThemeContext)
 
   let formattedPrice: string
   try {
     // formattedPrice = showInverted ? price.toSignificant(4) : price.invert()?.toSignificant(4)
-    formattedPrice = showInverted
-      ? formatSmart(price, ...PRICE_FORMAT_OPTIONS) ?? 'N/A'
-      : formatSmart(price.invert(), ...PRICE_FORMAT_OPTIONS) ?? 'N/A'
+    formattedPrice = showInverted ? formatSmart(price) ?? 'N/A' : formatSmart(price.invert()) ?? 'N/A'
   } catch (error) {
     formattedPrice = 'N/A'
   }
+
+  const fullFormattedPrice = formatMax(showInverted ? price : price?.invert()) || '-'
 
   const label = showInverted ? `${price.quoteCurrency?.symbol}` : `${price.baseCurrency?.symbol} `
   const labelInverted = showInverted ? `${price.baseCurrency?.symbol} ` : `${price.quoteCurrency?.symbol}`
@@ -64,7 +61,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
         <Text fontWeight={500} fontSize={14} color={theme.text1}>
           {/* {text} */}
           <LightGreyText>{baseText}</LightGreyText>
-          <span>{quoteText}</span>
+          <span title={`${fullFormattedPrice} ${label}`}>{quoteText}</span>
           {fiatValue && <LightGreyText>{fiatText}</LightGreyText>}
         </Text>
       </div>

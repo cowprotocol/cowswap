@@ -1,16 +1,15 @@
-import React, { useCallback, useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import { useCallback, useContext } from 'react'
+import styled, { ThemeContext } from 'styled-components/macro'
+import { SUPPORTED_WALLETS } from 'constants/wallet'
 import { useActiveWeb3React } from '../../hooks/web3'
 import { clearAllTransactions } from '../../state/transactions/actions'
 import { shortenAddress } from 'utils'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { AutoRow } from '../Row'
-import Copy from './Copy'
-import Transaction from 'components/AccountDetails/Transaction'
+import Copy from 'components/Copy'
+import Transaction from '@src/components/AccountDetails/Transaction'
 
-import { SUPPORTED_WALLETS } from 'constants/index'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-// import { getEtherscanLink } from 'utils'
 import { injected, walletconnect, walletlink, fortmatic, portis } from 'connectors'
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
@@ -135,7 +134,6 @@ const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
   font-size: 0.825rem;
   color: ${({ theme }) => theme.text3};
   margin-left: 1rem;
-  font-size: 0.825rem;
   display: flex;
   :hover {
     color: ${({ theme }) => theme.text2};

@@ -21,6 +21,7 @@ import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies
 import { SwapState } from './reducer'
 import { useUserSingleHopOnly } from 'state/user/hooks'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { truncateOnMaxDecimals } from 'utils/format'
 
 export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
@@ -77,7 +78,9 @@ export function tryParseAmount<T extends Currency>(value?: string, currency?: T)
     return undefined
   }
   try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString()
+    // Here we drop everything after given token decimals to avoid parsing issues
+    const truncatedValue = currency.decimals ? truncateOnMaxDecimals(value, currency.decimals) : value
+    const typedValueParsed = parseUnits(truncatedValue, currency.decimals).toString()
     if (typedValueParsed !== '0') {
       return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
     }
@@ -115,7 +118,7 @@ export function involvesAddress(
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(toggledVersion: Version): {
-  currencies: { [field in Field]?: Currency }
+  currencies: { [field in Field]?: Currency | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: string
@@ -167,9 +170,9 @@ export function useDerivedSwapInfo(toggledVersion: Version): {
     [Field.OUTPUT]: relevantTokenBalances[1],
   }
 
-  const currencies: { [field in Field]?: Currency } = {
-    [Field.INPUT]: inputCurrency ?? undefined,
-    [Field.OUTPUT]: outputCurrency ?? undefined,
+  const currencies: { [field in Field]?: Currency | null } = {
+    [Field.INPUT]: inputCurrency,
+    [Field.OUTPUT]: outputCurrency,
   }
 
   let inputError: string | undefined
@@ -288,18 +291,20 @@ export function useDefaultsFromURLSearch():
   useEffect(() => {
     if (!chainId) return
     const parsed = queryParametersToSwapState(parsedQs)
+    const inputCurrencyId = parsed[Field.INPUT].currencyId ?? undefined
+    const outputCurrencyId = parsed[Field.OUTPUT].currencyId ?? undefined
 
     dispatch(
       replaceSwapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
-        inputCurrencyId: parsed[Field.INPUT].currencyId,
-        outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+        inputCurrencyId,
+        outputCurrencyId,
         recipient: parsed.recipient,
       })
     )
 
-    setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId })
+    setResult({ inputCurrencyId, outputCurrencyId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, chainId])
 

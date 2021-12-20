@@ -5,14 +5,15 @@ on:
     tags: [v*]
 
 env:
-  APP_ID: 1
   REPO_NAME_SLUG: gpswapui
+  REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
+  REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
 
 jobs:
   ipfs:
     name: IPFS
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -20,7 +21,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: lts/*
 
       - name: Set output of cache
         id: yarn-cache
@@ -55,6 +56,7 @@ jobs:
           REACT_APP_ADDITIONAL_SERVICES_API_URL_XDAI: https://ido-api-xdai.gnosis.io/
           REACT_APP_NETWORK_URL_MAINNET: https://mainnet.infura.io/v3/${{ secrets.INFURA_PROJECT_KEY }}
           REACT_APP_ADDITIONAL_SERVICES_API_URL_MAINNET: https://ido-api-mainnet.gnosis.io/
+          REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
 
       - name: "Deploy to IPFS with infura"
         run: yarn ipfs:publish

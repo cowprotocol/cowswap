@@ -1,5 +1,4 @@
-import React from 'react'
-import { ManageLists as ManageListsMod } from './ManageListsMod'
+import { ManageLists as ManageListsMod, ListContainer } from './ManageListsMod'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useActiveWeb3React } from 'hooks/web3'
 import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
@@ -18,8 +17,18 @@ export interface ListRowProps {
   enableList: (url: string) => ReturnType<typeof enableList>
 }
 
-export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean }>`
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+
+  ${ListContainer} {
+    ${({ theme }) => theme.neumorphism.boxShadow}
+  }
+`
+
+export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasActiveTokens: boolean }>`
   background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg4)};
+  opacity: ${({ hasActiveTokens }) => (hasActiveTokens ? 1 : 0.4)};
   transition: 0.2s;
   align-items: center;
   padding: 1rem;
@@ -71,5 +80,9 @@ export const ManageLists = (props: {
     disableList: (url: string) => disableList({ url, chainId }),
     enableList: (url: string) => enableList({ url, chainId }),
   }
-  return <ManageListsMod {...props} unsupportedListUrls={UNSUPPORTED_LIST_URLS[chainId]} listRowProps={listRowProps} />
+  return (
+    <Wrapper>
+      <ManageListsMod {...props} unsupportedListUrls={UNSUPPORTED_LIST_URLS[chainId]} listRowProps={listRowProps} />
+    </Wrapper>
+  )
 }

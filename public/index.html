@@ -2,45 +2,71 @@
 <html lang="en">
 
 <head>
+  <title>CowSwap - Meta DEX aggregator</title>
   <meta charset="utf-8" />
-  <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
-  <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/images/logo-square-192.png" />
-  <link rel="apple-touch-icon" sizes="512x512" href="%PUBLIC_URL%/images/logo-square-512.png" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#ff784a" />
-  <meta name="fortmatic-site-verification" content="LzjrtdM7hqVJfvvA" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+  <meta name="description"
+    content="Ethereum's MetaDEX Aggregator that allows to trade with MEV protection while using ETH-less orders that are settled p2p among users or the best AMM.">
+
+  <!-- Manifest, theme & colors -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#163861">
+  <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/favicon.png?v=1" />
+  <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/favicon.png?v=1" />
+  <link rel="apple-touch-icon" sizes="512x512" href="%PUBLIC_URL%/favicon.png?v=1" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+  <!-- Social media tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CowSwap | Meta DEX aggregator">
+  <meta property="og:description"
+    content="Ethereums MetaDEX Aggregator built by Gnosis. It allows users to trade tokens with MEV protection while using ETH-less orders that are settled p2p among users or into the best on-chain liquidity pool.">
+  <meta property="og:image" content="https://cowswap.exchange/images/og-meta-cowswap.png?v=1">
+  <meta property="og:url" content="https://cowswap.exchange">
 
-  <title>CowSwap</title>
+  <!-- Twitter media tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@MEVprotection">
+  <meta name="twitter:title" content="CowSwap | Meta DEX aggregator">
+  <meta name="twitter:image" content="https://cowswap.exchange/images/og-meta-cowswap.png?v=1">
+
+  <!-- Other tags -->
+  <meta name="fortmatic-site-verification" content="%REACT_APP_FORTMATIC_SITE_VERIFICATION%" />
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <noscript>
+    <style>
+      main {
+        max-width: 35em;
+        margin: 0 auto;
+      }
+
+      main img {
+        width: 100%;
+      }
+
+      .banner {
+        padding: 1em;
+        background-color: #fdfda8;
+        border-radius: 0.5em;
+      }
+    </style>
+    <main>
+      <img src="https://cowswap.exchange/images/og-meta-cowswap.png?v=1" alt="CowSwap Logo" />
+      <p class="banner">CowSwap uses JavasScript. Please <a href="https://support.google.com/adsense/answer/12654?hl=en"
+          target="_blank" rel="noopener noreferrer">enable it in your browser</a> 🐮</p>
+
+      <ul>
+        <li><a href="https://cowswap.exchange/">Home | CowSwap</a></li>
+        <li><a href="https://chat.cowswap.exchange">Chat</a></li>
+        <li><a href="https://docs.cowswap.exchange">Docs</a></li>
+        <li><a href="https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2">Stats</a></li>
+        <li><a href="https://twitter.com/MEVprotection">Twitter (@MEVprotection)</a></li>
+      </ul>
+    </main>
+  </noscript>
   <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
 </body>
 
 </html>

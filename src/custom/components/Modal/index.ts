@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import Modal from '@src/components/Modal'
 import { HeaderRow, ContentWrapper, CloseIcon, HoverText } from 'components/WalletModal/WalletModalMod'
 
@@ -8,6 +8,8 @@ export { default } from '@src/components/Modal'
 export const GpModal = styled(Modal)`
   > [data-reach-dialog-content] {
     background-color: ${({ theme }) => theme.bg1};
+    max-width: 470px;
+    z-index: 100;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;
@@ -15,6 +17,7 @@ export const GpModal = styled(Modal)`
       height: 100%;
       width: 100vw;
       border-radius: 0;
+      overflow-y: auto;
     `}
 
     ${HeaderRow} {
