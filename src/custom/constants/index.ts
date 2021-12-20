@@ -117,4 +117,4 @@ export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
 // Default price strategy to use for getting app prices
 // COWSWAP = new quote endpoint
 // LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
-export const DEFAULT_GP_PRICE_STRATEGY = 'LEGACY'
+export const DEFAULT_GP_PRICE_STRATEGY = 'COWSWAP'

@@ -1,8 +1,8 @@
 import ms from 'ms.macro'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
-import { getPriceStrategy } from 'api/gnosisProtocol/api'
+import { getPriceStrategy, PriceStrategy } from 'api/gnosisProtocol/api'
 import { useActiveWeb3React } from 'hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { SupportedChainId } from 'constants/chains'
@@ -16,6 +16,8 @@ export default function useGetGpPriceStrategy(): GpPriceStrategy {
   const [gpPriceStrategy, setGpPriceStrategy] = useState<GpPriceStrategy>(DEFAULT_GP_PRICE_STRATEGY)
   const { chainId: preChainId } = useActiveWeb3React()
 
+  const _handleSetStrategy = useCallback((response: PriceStrategy) => setGpPriceStrategy(response.primary), [])
+
   useEffect(() => {
     const chainId = supportedChainId(preChainId)
     console.debug('[useGetGpPriceStrategy::GP Price Strategy]::', gpPriceStrategy)
@@ -23,7 +25,7 @@ export default function useGetGpPriceStrategy(): GpPriceStrategy {
     const getStrategy = () => {
       // default to MAINNET if not connected, or incorrect network
       getPriceStrategy(chainId || SupportedChainId.MAINNET)
-        .then(setGpPriceStrategy)
+        .then(_handleSetStrategy)
         .catch((err: Error) => {
           console.error('[useGetGpPriceStrategy::useEffect] Error getting GP price strategy::', err)
           // Fallback to DEFAULT
@@ -39,7 +41,7 @@ export default function useGetGpPriceStrategy(): GpPriceStrategy {
     }, GP_PRICE_STRATEGY_INTERVAL_TIME)
 
     return () => clearInterval(intervalId)
-  }, [gpPriceStrategy, preChainId])
+  }, [_handleSetStrategy, gpPriceStrategy, preChainId])
 
   // TODO: REMOVE
   return process.env.NODE_ENV !== 'production' ? (window as any).GP_STRATEGY : gpPriceStrategy

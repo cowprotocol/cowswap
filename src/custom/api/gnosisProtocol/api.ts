@@ -459,7 +459,12 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   }
 }
 
-export async function getPriceStrategy(chainId: ChainId): Promise<GpPriceStrategy> {
+export type PriceStrategy = {
+  primary: GpPriceStrategy
+  secondary: GpPriceStrategy
+}
+
+export async function getPriceStrategy(chainId: ChainId): Promise<PriceStrategy> {
   console.log(`[api:${API_NAME}] Get GP price strategy for`, chainId)
 
   const response = await _fetchPriceStrategy(chainId)
