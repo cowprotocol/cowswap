@@ -1,17 +1,17 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
-import { SupportedChainId } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
+// import { SupportedChainId } from 'constants/chains'
+// import { useActiveWeb3React } from 'hooks/web3'
 import { useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { useClientSideRouter, useExpertModeManager } from 'state/user/hooks'
+import { /* useClientSideRouter, */ useExpertModeManager } from 'state/user/hooks'
 import { TYPE } from 'theme'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
@@ -118,7 +118,7 @@ export const ModalContentWrapper = styled.div`
 `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
-  const { chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
 
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.SETTINGS)
@@ -128,7 +128,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
 
-  const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
+  // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
   // show confirmation view before turning on
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -200,7 +200,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
               <Trans>Interface Settings</Trans>
             </Text>
 
-            {chainId === SupportedChainId.MAINNET && (
+            {/* {chainId === SupportedChainId.MAINNET && (
               <RowBetween>
                 <RowFixed>
                   <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
@@ -222,7 +222,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                   }}
                 />
               </RowBetween>
-            )}
+            )} */}
 
             <RowBetween>
               <RowFixed>
