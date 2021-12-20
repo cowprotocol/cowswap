@@ -208,6 +208,7 @@
     "react-appzi": "^1.0.4",
     "react-inlinesvg": "^2.3.0",
     "react-router-hash-link": "^2.4.0",
+    "react-snowfall": "^1.1.1",
     "simple-sitemap-renderer": "^1.1.0",
     "timeago.js": "^4.0.2"
   }
