@@ -7,7 +7,7 @@ import {
   DAI_ARBITRUM_ONE,
   DAI_OPTIMISM,
   ETH2X_FLI,
-  ExtendedEther,
+  GpEther as ExtendedEther,
   FEI,
   FRAX,
   FXS,
@@ -23,7 +23,7 @@ import {
   WBTC_ARBITRUM_ONE,
   WBTC_OPTIMISM,
   WETH9_EXTENDED,
-} from './tokens'
+} from 'constants/tokens'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
