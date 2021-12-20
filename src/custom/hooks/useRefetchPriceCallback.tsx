@@ -20,6 +20,9 @@ import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
 import { onlyResolvesLast } from 'utils/async'
+import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
+import { calculateValidTo } from 'hooks/useSwapCallback'
+import { useUserTransactionTTL } from 'state/user/hooks'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | FeeQuoteParams
@@ -27,7 +30,7 @@ interface HandleQuoteErrorParams {
   addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
 }
 
-export const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
+type QuoteParamsForFetching = Omit<QuoteParams, 'strategy'>
 
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
@@ -105,6 +108,8 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
   }
 }
 
+export const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
+
 /**
  * @returns callback that fetches a new quote and update the state
  */
@@ -114,6 +119,9 @@ export function useRefetchQuoteCallback() {
   const { getNewQuote, refreshQuote, updateQuote, setQuoteError } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
+  // check which price strategy to use (COWSWAP/LEGACY)
+  const priceStrategy = useGetGpPriceStrategy()
+  const [deadline] = useUserTransactionTTL()
 
   registerOnWindow({
     getNewQuote,
@@ -125,8 +133,11 @@ export function useRefetchQuoteCallback() {
   })
 
   return useCallback(
-    async (params: QuoteParams) => {
+    async (params: QuoteParamsForFetching) => {
       const { quoteParams, isPriceRefresh } = params
+      // set the validTo time here
+      quoteParams.validTo = calculateValidTo(deadline)
+
       let quoteData: FeeQuoteParams | QuoteInformationObject = quoteParams
 
       const { sellToken, buyToken, chainId } = quoteData
@@ -142,7 +153,7 @@ export function useRefetchQuoteCallback() {
 
         // Get the quote
         // price can be null if fee > price
-        const { cancelled, data } = await getBestQuoteResolveOnlyLastCall(params)
+        const { cancelled, data } = await getBestQuoteResolveOnlyLastCall({ ...params, strategy: priceStrategy })
         if (cancelled) {
           // Cancellation can happen if a new request is made, then any ongoing query is canceled
           console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
@@ -204,13 +215,15 @@ export function useRefetchQuoteCallback() {
       }
     },
     [
+      deadline,
+      priceStrategy,
       isUnsupportedTokenGp,
       updateQuote,
-      removeGpUnsupportedToken,
-      setQuoteError,
-      addUnsupportedToken,
-      getNewQuote,
       refreshQuote,
+      getNewQuote,
+      removeGpUnsupportedToken,
+      addUnsupportedToken,
+      setQuoteError,
     ]
   )
 }
