@@ -23,7 +23,7 @@ export const StyledPolling = styled.div<{ warning: boolean }>`
     display: none;
   `}
 `
-const StyledPollingNumber = styled(TYPE.small)<{ breathe: boolean; hovering: boolean }>`
+export const StyledPollingNumber = styled(TYPE.small)<{ breathe: boolean; hovering: boolean }>`
   transition: opacity 0.25s ease;
   opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
   :hover {
