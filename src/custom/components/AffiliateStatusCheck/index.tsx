@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
-import { useReferralAddress, useResetReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
+import { useReferralAddress, useResetReferralAddress } from 'state/affiliate/hooks'
 import { updateAppDataHash } from 'state/affiliate/actions'
 import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
+import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
 import useParseReferralQueryParam from 'hooks/useParseReferralQueryParam'
@@ -33,7 +34,6 @@ export default function AffiliateStatusCheck() {
   const location = useLocation()
   const { account, chainId } = useActiveWeb3React()
   const referralAddress = useReferralAddress()
-  const { data: appDataHash, error: ipfsError } = useUploadReferralDocAndSetDataHash(referralAddress?.value)
   const referralAddressQueryParam = useParseReferralQueryParam()
   const allRecentActivity = useRecentActivity()
   const [affiliateState, setAffiliateState] = useState<AffiliateStatus | null>()
@@ -82,24 +82,24 @@ export default function AffiliateStatusCheck() {
       setError('There was an error validating existing trades. Please try again later.')
       return
     }
+    setAffiliateState('ACTIVE')
+    isFirstTrade.current = true
+  }, [chainId, account, referralAddress, fulfilledActivity.length, resetReferralAddress])
 
-    if (ipfsError) {
-      setError('There was an error while uploading the referral document to IPFS. Please try again later.')
-    } else if (appDataHash) {
-      appDispatch(updateAppDataHash(appDataHash))
-      setAffiliateState('ACTIVE')
-      isFirstTrade.current = true
+  useEffect(() => {
+    async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
+      if (!referralAddress?.value) return
+      try {
+        const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress.value))
+        appDispatch(updateAppDataHash(appDataHash))
+      } catch (e) {
+        console.error(e)
+        setError('There was an error while uploading the referral document to IPFS. Please try again later.')
+      }
     }
-  }, [
-    chainId,
-    account,
-    referralAddress,
-    fulfilledActivity.length,
-    ipfsError,
-    appDataHash,
-    resetReferralAddress,
-    appDispatch,
-  ])
+
+    if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
+  }, [referralAddress, affiliateState, appDispatch])
 
   useEffect(() => {
     if (!referralAddress) {
