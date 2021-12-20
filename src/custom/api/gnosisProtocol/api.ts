@@ -59,18 +59,18 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
       process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.gnosis.io/api',
   }
 }
-
+const STRATEGY_URL_BASE = 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/strategies'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
   return {
-    [SupportedChainId.MAINNET]: 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/price/strategy-1.json',
-    [SupportedChainId.RINKEBY]: 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/price/strategy-4.json',
-    [SupportedChainId.XDAI]: 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/price/strategy-100.json',
+    [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
+    [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
+    [SupportedChainId.XDAI]: STRATEGY_URL_BASE + '/strategy-100.json',
   }
 }
 
 const API_BASE_URL = getGnosisProtocolUrl()
 const PROFILE_API_BASE_URL = getProfileUrl()
-const STRATEGY_API_BASE_URL = getPriceStrategyUrl()
+const STRATEGY_API_URL = getPriceStrategyUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -156,7 +156,7 @@ function _getProfileApiBaseUrl(chainId: ChainId): string {
 }
 
 function _getPriceStrategyApiBaseUrl(chainId: ChainId): string {
-  const baseUrl = STRATEGY_API_BASE_URL[chainId]
+  const baseUrl = STRATEGY_API_URL[chainId]
 
   if (!baseUrl) {
     new Error(
@@ -200,10 +200,7 @@ function _fetchProfile(
 
 function _fetchPriceStrategy(chainId: ChainId): Promise<Response> {
   const baseUrl = _getPriceStrategyApiBaseUrl(chainId)
-  return fetch(baseUrl, {
-    headers: DEFAULT_HEADERS,
-    method: 'GET',
-  })
+  return fetch(baseUrl)
 }
 
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {

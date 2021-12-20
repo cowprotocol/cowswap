@@ -1,7 +1,6 @@
 import ms from 'ms.macro'
 import { useState, useEffect, useCallback } from 'react'
 import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
-import { registerOnWindow } from 'utils/misc'
 import { getPriceStrategy, PriceStrategy } from 'api/gnosisProtocol/api'
 import { useActiveWeb3React } from 'hooks'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -43,12 +42,5 @@ export default function useGetGpPriceStrategy(): GpPriceStrategy {
     return () => clearInterval(intervalId)
   }, [_handleSetStrategy, gpPriceStrategy, preChainId])
 
-  // TODO: REMOVE
-  return process.env.NODE_ENV !== 'production' ? (window as any).GP_STRATEGY : gpPriceStrategy
+  return gpPriceStrategy
 }
-
-/* TESTING ONLY! */
-;(window as any).GP_STRATEGY = DEFAULT_GP_PRICE_STRATEGY
-registerOnWindow({
-  setStrategy: (strat: GpPriceStrategy) => ((window as any).GP_STRATEGY = strat),
-})
