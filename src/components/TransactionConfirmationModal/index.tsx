@@ -20,7 +20,7 @@ import { ButtonLight, ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Modal from '../Modal'
 import { RowBetween, RowFixed } from '../Row'
-import AnimatedConfirmation from './AnimatedConfirmation'
+import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -45,7 +45,7 @@ const StyledLogo = styled.img`
   margin-left: 6px;
 `
 
-function ConfirmationPendingContent({
+export function ConfirmationPendingContent({
   onDismiss,
   pendingText,
   inline,

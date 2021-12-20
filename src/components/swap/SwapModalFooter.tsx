@@ -5,7 +5,7 @@ import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { ReactNode } from 'react'
 import { Text } from 'rebass'
 
-import { ButtonError } from '../Button'
+import { ButtonError } from 'components/Button'
 import { AutoRow } from '../Row'
 import { SwapCallbackError } from './styleds'
 

@@ -13,7 +13,7 @@ import { RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { TransactionDetailsLabel } from './styleds'
 
-interface AdvancedSwapDetailsProps {
+export interface AdvancedSwapDetailsProps {
   trade?: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
   allowedSlippage: Percent
   syncing?: boolean

@@ -89,7 +89,7 @@ const SlippageEmojiContainer = styled.span`
   `}
 `
 
-interface TransactionSettingsProps {
+export interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
 

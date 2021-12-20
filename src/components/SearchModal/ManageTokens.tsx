@@ -15,7 +15,7 @@ import { isAddress } from 'utils'
 import useTheme from '../../hooks/useTheme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { CurrencyModalView } from './CurrencySearchModal'
-import ImportRow from './ImportRow'
+import ImportRow from 'components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 
 const Wrapper = styled.div`

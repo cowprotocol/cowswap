@@ -8,7 +8,7 @@ import { useRemovePopup } from '../../state/application/hooks'
 import { PopupContent } from 'state/application/reducer'
 import TransactionPopup from './TransactionPopup'
 
-const StyledClose = styled(X)`
+export const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;

@@ -127,7 +127,7 @@ const DataText = styled.div`
   `};
 `
 
-interface PositionListItemProps {
+export interface PositionListItemProps {
   positionDetails: PositionDetails
 }
 

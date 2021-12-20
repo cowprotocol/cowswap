@@ -17,11 +17,11 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
 import { isTokenOnList } from '../../utils'
 import Column from '../Column'
-import CurrencyLogo from '../CurrencyLogo'
+import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from '../Loader'
 import { RowBetween, RowFixed } from '../Row'
 import { MouseoverTooltip } from '../Tooltip'
-import ImportRow from './ImportRow'
+import ImportRow from 'components/SearchModal/ImportRow'
 import { MenuItem } from './styleds'
 
 function currencyKey(currency: Currency): string {
