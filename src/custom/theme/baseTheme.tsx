@@ -158,6 +158,14 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
           inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
       `,
     },
+    cowToken: {
+      background: css`
+        background: linear-gradient(70.89deg, #292a30 10.71%, #101015 33%, #0e0501 88.54%);
+      `,
+      boxShadow: css`
+        box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
+      `,
+    },
     card: {
       background: css`
         background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});

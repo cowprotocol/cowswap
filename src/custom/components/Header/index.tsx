@@ -4,7 +4,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Dots } from 'components/swap/styleds'
 import Web3Status from 'components/Web3Status'
 import { CardNoise } from 'components/earn/styled'
-import { ExternalLink, TYPE } from 'theme'
+import { ExternalLink } from 'theme'
 
 import HeaderMod, {
   Title,
@@ -18,7 +18,7 @@ import HeaderMod, {
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
-  UNIAmount,
+  UNIAmount as UNIAmountMod,
   UNIWrapper,
 } from './HeaderMod'
 import Menu from 'components/Menu'
@@ -44,6 +44,7 @@ import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import Modal from 'components/Modal'
 import ClaimModal from 'components/claim/ClaimModal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
+import CowProtocolLogo from 'components/CowProtocolLogo'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -200,6 +201,15 @@ const UniIcon = styled.div`
   }
 `
 
+const VCowAmount = styled(UNIAmountMod)`
+  ${({ theme }) => theme.cowToken.background};
+  ${({ theme }) => theme.cowToken.boxShadow};
+  color: ${({ theme }) => theme.text1};
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+`
+
 export default function Header() {
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
@@ -250,17 +260,18 @@ export default function Header() {
           <HeaderElement>
             {availableClaim && !showClaimPopup && (
               <UNIWrapper onClick={toggleClaimModal}>
-                <UNIAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
-                  <TYPE.white padding="0 2px">
-                    {claimTxn && !claimTxn?.receipt ? (
-                      <Dots>
-                        <Trans>Claiming vCOW</Trans>
-                      </Dots>
-                    ) : (
+                <VCowAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
+                  {claimTxn && !claimTxn?.receipt ? (
+                    <Dots>
+                      <Trans>Claiming vCOW...</Trans>
+                    </Dots>
+                  ) : (
+                    <>
+                      <CowProtocolLogo />
                       <Trans>Claim vCOW</Trans>
-                    )}
-                  </TYPE.white>
-                </UNIAmount>
+                    </>
+                  )}
+                </VCowAmount>
                 <CardNoise />
               </UNIWrapper>
             )}
