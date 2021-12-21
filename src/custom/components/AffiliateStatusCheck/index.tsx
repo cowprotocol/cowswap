@@ -84,7 +84,8 @@ export default function AffiliateStatusCheck() {
     }
     setAffiliateState('ACTIVE')
     isFirstTrade.current = true
-  }, [chainId, account, referralAddress, fulfilledActivity.length, resetReferralAddress])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, account, JSON.stringify(referralAddress), fulfilledActivity.length, resetReferralAddress])
 
   useEffect(() => {
     async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
@@ -99,7 +100,8 @@ export default function AffiliateStatusCheck() {
     }
 
     if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
-  }, [referralAddress, affiliateState, appDispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(referralAddress), affiliateState, appDispatch])
 
   useEffect(() => {
     if (!referralAddress) {
