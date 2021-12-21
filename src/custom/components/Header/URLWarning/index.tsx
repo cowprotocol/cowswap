@@ -48,8 +48,9 @@ const Wrapper = styled.div`
 `
 
 // Announcement content: Modify this file to edit the announcement
-//  https://github.com/gnosis/cowswap/blob/announcements/docs/announcements.md
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/gnosis/cowswap/announcements/docs'
+//  https://github.com/gnosis/cowswap/blob/configuration/config/announcements/announcements.md
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL =
+  'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/announcements'
 
 function getAnnouncementUrl(chainId: number) {
   return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}/announcements-${chainId}.md`
