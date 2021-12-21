@@ -5,7 +5,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks/web3'
-import { ExternalLink, TYPE } from '../../theme'
+import { ExternalLink, TYPE } from 'theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'

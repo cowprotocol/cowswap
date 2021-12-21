@@ -18,16 +18,15 @@ interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverCon
   content: ReactNode
   onOpen?: () => void
   // whether to wrap the content in a `TooltipContainer`
-  // wrap?: boolean
+  wrap?: boolean
 }
 
 export default function Tooltip({ text, ...rest }: TooltipProps) {
   return <Popover content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
-export function TooltipContent({ content, ...rest }: TooltipContentProps) {
-  // return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
-  return <Popover content={<TooltipContainer>{content}</TooltipContainer>} {...rest} /> // mod
+export function TooltipContent({ content, wrap = true, ...rest }: TooltipContentProps) {
+  return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
 }
 
 export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show'>) {

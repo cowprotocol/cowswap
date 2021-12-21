@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { IdenticonProps } from 'components/Identicon'
 
-import { useActiveWeb3React } from '../../hooks/web3'
+import { useActiveWeb3React } from 'hooks/web3'
 
 export const StyledIdenticonContainer = styled.div`
   height: 1rem;

@@ -13,7 +13,7 @@ export enum BadgeVariant {
   WARNING_OUTLINE = 'WARNING_OUTLINE',
 }
 
-interface BadgeProps {
+export interface BadgeProps {
   variant?: BadgeVariant
 }
 

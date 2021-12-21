@@ -17,7 +17,7 @@ export const StyledClose = styled(X)`
     cursor: pointer;
   }
 `
-const Popup = styled.div`
+export const Popup = styled.div`
   display: inline-block;
   width: 100%;
   padding: 1em;

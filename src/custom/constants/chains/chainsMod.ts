@@ -168,7 +168,7 @@ export const CHAIN_INFO: ChainInfo = {
   }, */
   [SupportedChainId.XDAI]: {
     docs: 'https://docs.uniswap.org/',
-    explorer: 'https://gnosis-protocol.io/xdai',
+    explorer: 'https://blockscout.com/xdai/mainnet/  ',
     infoLink: '',
     label: 'xDai',
     logoUrl: xDaiLogo, // mod

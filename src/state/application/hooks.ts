@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'state/hooks'
 
 import { useActiveWeb3React } from 'hooks/web3'
 import { AppState } from 'state'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './reducer'
+import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from 'state/application/reducer'
 
 export function useBlockNumber(): number | undefined {
   const { chainId } = useActiveWeb3React()

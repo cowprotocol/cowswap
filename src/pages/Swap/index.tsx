@@ -24,7 +24,7 @@ import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'compon
 import { GreyCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from '../../components/Loader'
 import Row, { AutoRow, RowFixed } from '../../components/Row'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
@@ -58,13 +58,13 @@ import {
   useSwapActionHandlers,
   useSwapState,
 } from '@src/state/swap/hooks'
-import { useExpertModeManager } from '../../state/user/hooks'
-import { LinkStyledButton, TYPE } from '../../theme'
+import { useExpertModeManager } from 'state/user/hooks'
+import { LinkStyledButton, TYPE } from 'theme'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { getTradeVersion } from '../../utils/getTradeVersion'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { warningSeverity } from '../../utils/prices'
-import AppBody from '../AppBody'
+import AppBody from 'pages/AppBody'
 
 const StyledInfo = styled(Info)`
   height: 16px;

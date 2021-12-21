@@ -248,6 +248,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               text={
                 <Trans>
                   Your swap expires and will not execute if it is pending for longer than the selected duration.
+                  {INPUT_OUTPUT_EXPLANATION}
                 </Trans>
               }
             />
