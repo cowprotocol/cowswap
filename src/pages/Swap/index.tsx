@@ -9,7 +9,7 @@ import { AutoRouterLogo } from 'components/swap/RouterLabel'
 import SwapRoute from 'components/swap/SwapRoute'
 import TradePrice from 'components/swap/TradePrice'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
-import { MouseoverTooltip, MouseoverTooltipContent } from '@src/components/Tooltip'
+import { MouseoverTooltip, MouseoverTooltipContent } from 'components/Tooltip'
 import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle, Info } from 'react-feather'
@@ -20,7 +20,7 @@ import { V3TradeState } from 'state/routing/types'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import AddressInputPanel from '../../components/AddressInputPanel'
-import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
+import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from 'components/Button'
 import { GreyCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
@@ -448,7 +448,6 @@ export default function Swap({ history }: RouteComponentProps) {
               <Row justify={!trade ? 'center' : 'space-between'}>
                 <RowFixed style={{ position: 'relative' }}>
                   <MouseoverTooltipContent
-                    wrap={false}
                     content={
                       <ResponsiveTooltipContainer>
                         <SwapRoute trade={trade} syncing={routeIsSyncing} />
@@ -481,7 +480,6 @@ export default function Swap({ history }: RouteComponentProps) {
                     />
                   </LoadingOpacityContainer>
                   <MouseoverTooltipContent
-                    wrap={false}
                     content={
                       <ResponsiveTooltipContainer origin="top right" width={'295px'}>
                         <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} syncing={routeIsSyncing} />

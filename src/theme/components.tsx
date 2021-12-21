@@ -220,7 +220,7 @@ const rotate = keyframes`
   }
 `
 
-const Spinner = styled.img`
+export const Spinner = styled.img`
   animation: 2s ${rotate} linear infinite;
   width: 16px;
   height: 16px;

@@ -17,6 +17,8 @@ export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverCon
 interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
   content: ReactNode
   onOpen?: () => void
+  // whether to wrap the content in a `TooltipContainer`
+  // wrap?: boolean
 }
 
 export default function Tooltip({ text, ...rest }: TooltipProps) {
@@ -24,7 +26,8 @@ export default function Tooltip({ text, ...rest }: TooltipProps) {
 }
 
 export function TooltipContent({ content, ...rest }: TooltipContentProps) {
-  return <Popover content={<TooltipContainer>{content}</TooltipContainer>} {...rest} />
+  // return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
+  return <Popover content={<TooltipContainer>{content}</TooltipContainer>} {...rest} /> // mod
 }
 
 export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show'>) {

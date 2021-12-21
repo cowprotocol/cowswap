@@ -1,9 +1,9 @@
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
 
-import { useActiveWeb3React } from '../../hooks/web3'
-import { AppState } from '../index'
+import { useActiveWeb3React } from 'hooks/web3'
+import { AppState } from 'state'
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './reducer'
 
 export function useBlockNumber(): number | undefined {
