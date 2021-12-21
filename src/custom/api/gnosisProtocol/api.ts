@@ -24,7 +24,7 @@ import { GAS_FEE_ENDPOINTS } from 'constants/index'
 import * as Sentry from '@sentry/browser'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
-import { GpPriceStrategy } from '@src/custom/hooks/useGetGpPriceStrategy'
+import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
