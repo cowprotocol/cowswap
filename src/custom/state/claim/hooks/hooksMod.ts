@@ -95,18 +95,40 @@ export function fetchClaims(account: string): Promise<UserClaims> {
 // null means we know it does not
 export function useUserClaims(account: string | null | undefined): UserClaims | null {
   console.log('[useUserClaims] ', account)
+  // real world mock claim data
   return [
     {
-      index: 0,
-      amount: '100000000000000000',
-      proof: ['this', 'proofs', 'nothing'],
+      proof: [
+        '0x85bb2d293209f2ef10959e033b3d43c6d67058717f7b0a70568ca7d028b3592d',
+        '0x045442670919da3b5ce18ccc62308d670555184af497be8907560ff83e96fbc9',
+        '0x49535c52497395e0f14b85ebe0900de58f0809aca5d54de44b6e1ad4a00868b5',
+        '0xb3c22776e4694752f3f4d70f4a83fa50457b3df2c383b36fa26043dde76474cc',
+        '0x23b39cfa6ca6ae97ba67daa849e6497e0e89fbf997eabbd31fe8af7e54544967',
+        '0x1e88526debfd1b5c3955fc6c3facdbda5a99ba2cb1144d6cb7f21075c4becdf4',
+        '0x82c926e522b6eeca8139d31cfb200b1af4e4c02e0992d25125fe7ec8c8e15feb',
+        '0xac5661c776a0808e457967488a00e26d4ccf3e50426fc83a143d9150ae4f058a',
+      ],
+      index: 138,
+      type: 'Airdrop',
+      amount: '3925000000000000000000',
     },
     {
-      index: 1,
-      amount: '2000000000000000000',
-      proof: ['this', 'proofs', 'even', 'less'],
+      proof: [
+        '0x9ee4da15b49ddee8590aba5a89c4f137c3574920df8a44a52e6b88e420d068c7',
+        '0xbc4e08f8cbd18bdc713aa11f6cb5f5b3ea4d5ddccdaed57118d45899c83aa8ff',
+        '0x47591e84986f34a393c100f30219f4ba72c941053a598a1091644f9ee2920065',
+        '0x3cbbad2cfe9bdb3dd08d7f31edf23a0e7b33386d28ef5adeb3601289315e4a69',
+        '0xa168e9a8fd611fc5a6b83d06677a0a9fee5cc1b554a5dc3f5ed2485463901447',
+        '0xb27279799e2cfd94f9296ab300661ab7b938882420878f87b1fb0dc0d0d4ac35',
+        '0x82c926e522b6eeca8139d31cfb200b1af4e4c02e0992d25125fe7ec8c8e15feb',
+        '0xac5661c776a0808e457967488a00e26d4ccf3e50426fc83a143d9150ae4f058a',
+      ],
+      index: 139,
+      type: 'GnoOption',
+      amount: '3925000000000000000000',
     },
   ]
+
   // const { chainId } = useActiveWeb3React()
   // const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaims | null }>({})
 
