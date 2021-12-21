@@ -13,26 +13,26 @@ import { useMemo /* , useState */ } from 'react'
 // import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { useActiveWeb3React } from 'hooks/web3'
 
-import { SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
+import { PermitInfo, SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
 import { GP_VAULT_RELAYER } from 'custom/constants'
 
 export * from '@src/hooks/useERC20Permit'
 
-enum PermitType {
-  AMOUNT = 1,
-  ALLOWED = 2,
-}
+// enum PermitType {
+//   AMOUNT = 1,
+//   ALLOWED = 2,
+// }
 
 // // 20 minutes to submit after signing
 // const PERMIT_VALIDITY_BUFFER = 20 * 60
 
-interface PermitInfo {
-  type: PermitType
-  name: string
-  // version is optional, and if omitted, will not be included in the domain
-  version?: string
-}
+// interface PermitInfo {
+//   type: PermitType
+//   name: string
+//   // version is optional, and if omitted, will not be included in the domain
+//   version?: string
+// }
 
 // // todo: read this information from extensions on token lists or elsewhere (permit registry?)
 // const PERMITTABLE_TOKENS: {

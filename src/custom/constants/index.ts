@@ -27,7 +27,7 @@ export const APP_DATA_HASH = getAppDataHash()
 export const PRODUCTION_URL = 'cowswap.exchange'
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
-const DISABLED_WALLETS = /^(?:WALLET_LINK|INJECTED|COINBASE_LINK|FORTMATIC|Portis)$/i
+const DISABLED_WALLETS = /^(?:WALLET_LINK|COINBASE_LINK|FORTMATIC|Portis)$/i
 
 // Re-export only the supported wallets
 export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {

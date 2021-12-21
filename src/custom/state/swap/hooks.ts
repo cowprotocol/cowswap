@@ -27,7 +27,7 @@ import { SwapState } from 'state/swap/reducer'
 import { useAppDispatch /* , useAppSelector */ } from 'state/hooks'
 
 // MOD
-import { tryParseAmount, useSwapState } from 'state/swap/hooks'
+import { tryParseAmount, useSwapState, BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
@@ -38,7 +38,6 @@ import TradeGp from './TradeGp'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
 
-import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { isWrappingTrade } from './utils'
