@@ -66,7 +66,6 @@ export default function AffiliateStatusCheck() {
     if (fulfilledActivity.length >= 1 && isFirstTrade.current) {
       setAffiliateState(null)
       resetReferralAddress()
-      isFirstTrade.current = false
       return
     }
 
@@ -85,7 +84,7 @@ export default function AffiliateStatusCheck() {
     setAffiliateState('ACTIVE')
     isFirstTrade.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, account, JSON.stringify(referralAddress), fulfilledActivity.length, resetReferralAddress])
+  }, [chainId, account, referralAddress, fulfilledActivity.length, resetReferralAddress])
 
   useEffect(() => {
     async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
@@ -132,7 +131,17 @@ export default function AffiliateStatusCheck() {
     }
 
     handleAffiliateState()
-  }, [referralAddress, account, history, chainId, handleAffiliateState, location.search, referralAddressQueryParam])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(referralAddress),
+    account,
+    history,
+    chainId,
+    handleAffiliateState,
+    location.search,
+    referralAddressQueryParam,
+  ])
 
   if (error) {
     return (
