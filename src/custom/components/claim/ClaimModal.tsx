@@ -1,10 +1,10 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isAddress } from 'ethers/lib/utils'
 import { useEffect, useState } from 'react'
-import { Text } from 'rebass'
+// import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import Circle from 'assets/images/blue-loader.svg'
-import tokenLogo from 'assets/images/token-logo.png'
+// import tokenLogo from 'assets/images/token-logo.png'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleSelfClaimModal } from 'state/application/hooks'
@@ -14,16 +14,25 @@ import {
   useUserUnclaimedAmount,
 } from '@src/state/claim/hooks'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
-import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE, UniTokenAnimated } from 'theme'
+import {
+  CloseIcon,
+  CustomLightSpinner,
+  ExternalLink,
+  // TYPE,
+  // UniTokenAnimated
+} from 'theme'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { ButtonPrimary } from 'components/Button'
-import { AutoColumn, ColumnCenter } from 'components/Column'
+import {
+  // AutoColumn,
+  ColumnCenter,
+} from 'components/Column'
 import Confetti from 'components/Confetti'
-import { CardBGImageSmaller, CardNoise } from 'components/earn/styled'
+// import { CardBGImageSmaller, CardNoise } from 'components/earn/styled'
 import { Trans } from '@lingui/macro'
 
 import { GpModal } from 'components/Modal'
-import { RowBetween } from 'components/Row'
+// import { RowBetween } from 'components/Row'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { CheckCircle } from 'react-feather'
 
@@ -31,9 +40,15 @@ const ContentWrapper = styled.div`
   background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
   padding: 32px;
   min-height: 500px;
+  height: 100%;
   width: 100%;
   position: relative;
   color: #bbbbbb;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 20px;
+    min-height: initial;
+  `};
 
   ${CloseIcon} {
     position: absolute;
@@ -46,6 +61,10 @@ const ContentWrapper = styled.div`
     border: 0;
     box-shadow: none;
     color: black;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 auto 24px;
+    `};
 
     &:hover {
       border: 0;
@@ -74,7 +93,7 @@ const ContentWrapper = styled.div`
     display: block;
     line-height: 1.6;
     font-weight: 300;
-    margin: 32px auto;
+    margin: 24px auto;
     text-align: center;
   }
 
@@ -124,6 +143,7 @@ const AmountField = styled.div`
   border: 1px solid rgba(151, 151, 151, 0.4);
   background: rgba(151, 151, 151, 0.1);
   width: 100%;
+  margin: 0 0 16px;
 
   > b {
     display: block;
@@ -268,6 +288,17 @@ export default function ClaimModal() {
               <Trans>{USER_AMOUNT} vCOW</Trans>
             </div>
           )} */}
+          </AmountField>
+
+          <AmountField>
+            <b>You are also eligble to buy</b>
+            <div>
+              <CowProtocolLogo size={32} />
+              <p>
+                {/* <Trans>{unclaimedAmount?.toFixed(0, { groupSeparator: ',' } ?? '-')} vCOW</Trans> */}
+                <Trans>10,231.99 vCOW</Trans>
+              </p>
+            </div>
           </AmountField>
 
           <p>

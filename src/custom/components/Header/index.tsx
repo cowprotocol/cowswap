@@ -204,7 +204,7 @@ const UniIcon = styled.div`
 const VCowAmount = styled(UNIAmountMod)`
   ${({ theme }) => theme.cowToken.background};
   ${({ theme }) => theme.cowToken.boxShadow};
-  color: ${({ theme }) => theme.text1};
+  color: white;
   padding: 0 16px;
   display: flex;
   align-items: center;
