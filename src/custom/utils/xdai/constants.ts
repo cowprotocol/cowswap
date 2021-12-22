@@ -17,7 +17,7 @@ export const WETH_XDAI = new Token(
   '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
   8,
   'WETH',
-  'Wrapped Ether on xDAI'
+  'Wrapped Ether on Gnosis Chain'
 )
 
 export const GNO_XDAI = new Token(ChainId.XDAI, '0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb', 18, 'GNO', 'Gnosis Token')
