@@ -272,12 +272,12 @@ export default function ClaimModal() {
           </EligibleBanner>
 
           <AmountField>
-            <b>You will receive</b>
+            <b>Available to claim</b>
             <div>
               <CowProtocolLogo size={32} />
               <p>
                 {/* <Trans>{unclaimedAmount?.toFixed(0, { groupSeparator: ',' } ?? '-')} vCOW</Trans> */}
-                <Trans>120,543.12 vCOW</Trans>
+                120,543.12 vCOW
               </p>
             </div>
 
@@ -288,17 +288,6 @@ export default function ClaimModal() {
               <Trans>{USER_AMOUNT} vCOW</Trans>
             </div>
           )} */}
-          </AmountField>
-
-          <AmountField>
-            <b>You are also eligble to buy</b>
-            <div>
-              <CowProtocolLogo size={32} />
-              <p>
-                {/* <Trans>{unclaimedAmount?.toFixed(0, { groupSeparator: ',' } ?? '-')} vCOW</Trans> */}
-                <Trans>10,231.99 vCOW</Trans>
-              </p>
-            </div>
           </AmountField>
 
           <p>
@@ -319,6 +308,8 @@ export default function ClaimModal() {
           >
             <Trans>Claim vCOW</Trans>
           </ButtonPrimary>
+
+          <ExternalLink href="#">Check for another wallet</ExternalLink>
         </ContentWrapper>
       )}
 
