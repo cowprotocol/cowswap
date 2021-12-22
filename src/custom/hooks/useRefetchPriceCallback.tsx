@@ -108,7 +108,7 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
   }
 }
 
-export const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
+const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
 
 /**
  * @returns callback that fetches a new quote and update the state
@@ -150,6 +150,10 @@ export function useRefetchQuoteCallback() {
           // Get new quote
           getNewQuote(quoteParams)
         }
+
+        registerOnWindow({
+          getBestQuote: async () => getBestQuoteResolveOnlyLastCall({ ...params, strategy: priceStrategy }),
+        })
 
         // Get the quote
         // price can be null if fee > price

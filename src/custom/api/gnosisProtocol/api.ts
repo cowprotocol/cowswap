@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
 import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
 import { stringify } from 'qs'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation, SigningSchemeValue } from 'utils/signatures'
@@ -24,6 +24,7 @@ import { GAS_FEE_ENDPOINTS } from 'constants/index'
 import * as Sentry from '@sentry/browser'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
+import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -58,9 +59,18 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
       process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.gnosis.io/api',
   }
 }
+const STRATEGY_URL_BASE = 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/strategies'
+function getPriceStrategyUrl(): Record<SupportedChainId, string> {
+  return {
+    [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
+    [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
+    [SupportedChainId.XDAI]: STRATEGY_URL_BASE + '/strategy-100.json',
+  }
+}
 
 const API_BASE_URL = getGnosisProtocolUrl()
 const PROFILE_API_BASE_URL = getProfileUrl()
+const STRATEGY_API_URL = getPriceStrategyUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -145,6 +155,20 @@ function _getProfileApiBaseUrl(chainId: ChainId): string {
   }
 }
 
+function _getPriceStrategyApiBaseUrl(chainId: ChainId): string {
+  const baseUrl = STRATEGY_API_URL[chainId]
+
+  if (!baseUrl) {
+    new Error(
+      `Unsupported Network. The ${API_NAME} strategy API is not deployed in the Network ` +
+        chainId +
+        '. Defaulting to using Mainnet strategy.'
+    )
+  }
+
+  return baseUrl
+}
+
 export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
   const baseUrl = _getApiBaseUrl(chainId)
 
@@ -172,6 +196,11 @@ function _fetchProfile(
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
   })
+}
+
+function _fetchPriceStrategy(chainId: ChainId): Promise<Response> {
+  const baseUrl = _getPriceStrategyApiBaseUrl(chainId)
+  return fetch(baseUrl)
 }
 
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
@@ -418,6 +447,25 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   const response = await _getProfile(chainId, `/profile/${address}`)
 
   // TODO: Update the error handler when the openAPI profile spec is defined
+  if (!response.ok) {
+    const errorResponse = await response.json()
+    console.log(errorResponse)
+    throw new Error(errorResponse?.description)
+  } else {
+    return response.json()
+  }
+}
+
+export type PriceStrategy = {
+  primary: GpPriceStrategy
+  secondary: GpPriceStrategy
+}
+
+export async function getPriceStrategy(chainId: ChainId): Promise<PriceStrategy> {
+  console.log(`[api:${API_NAME}] Get GP price strategy for`, chainId)
+
+  const response = await _fetchPriceStrategy(chainId)
+
   if (!response.ok) {
     const errorResponse = await response.json()
     console.log(errorResponse)
