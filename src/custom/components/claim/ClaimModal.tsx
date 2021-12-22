@@ -8,7 +8,11 @@ import tokenLogo from 'assets/images/token-logo.png'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useToggleSelfClaimModal } from 'state/application/hooks'
-import { useClaimCallback, useUserClaimData, useUserUnclaimedAmount } from '@src/state/claim/hooks'
+import {
+  useClaimCallback,
+  // useUserClaimData,
+  useUserUnclaimedAmount,
+} from '@src/state/claim/hooks'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE, UniTokenAnimated } from 'theme'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
@@ -18,22 +22,38 @@ import Confetti from 'components/Confetti'
 import { CardBGImageSmaller, CardNoise } from 'components/earn/styled'
 import { Trans } from '@lingui/macro'
 
-import Modal from 'components/Modal'
+import { GpModal } from 'components/Modal'
 import { RowBetween } from 'components/Row'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { CheckCircle } from 'react-feather'
 
 const ContentWrapper = styled.div`
-  background: linear-gradient(-45deg, #000000 0%, #000000 55%, #202020 100%);
+  background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
   padding: 32px;
   min-height: 500px;
   width: 100%;
   position: relative;
+  color: #bbbbbb;
 
   ${CloseIcon} {
     position: absolute;
     right: 16px;
     top: 16px;
+  }
+
+  > button {
+    background: rgb(237, 104, 52);
+    border: 0;
+    box-shadow: none;
+    color: black;
+
+    &:hover {
+      border: 0;
+      box-shadow: none;
+      transform: none;
+      background: rgb(247 127 80);
+      color: black;
+    }
   }
 
   h3 {
@@ -42,9 +62,10 @@ const ContentWrapper = styled.div`
     line-height: 1.2;
     text-align: center;
     margin: 0 0 24px;
+    color: white;
 
     > b {
-      font-weight: bold;
+      font-weight: 600;
     }
   }
 
@@ -53,13 +74,18 @@ const ContentWrapper = styled.div`
     display: block;
     line-height: 1.6;
     font-weight: 300;
-    margin: 24px auto;
+    margin: 32px auto;
     text-align: center;
+  }
+
+  p > i {
+    color: rgb(237, 104, 52);
   }
 
   p > a {
     display: block;
-    margin: 6px 0 0;
+    margin: 24px 0 0;
+    color: rgb(237, 104, 52);
   }
 `
 
@@ -80,6 +106,7 @@ const EligibleBanner = styled.div`
   border: 0.1rem solid rgb(237, 104, 52);
   color: rgb(237, 104, 52);
   justify-content: center;
+  align-items: center;
   margin: 0 auto 16px;
 `
 
@@ -102,6 +129,7 @@ const AmountField = styled.div`
     display: block;
     margin: 0 0 12px;
     font-weight: normal;
+    color: #979797;
   }
 
   > div {
@@ -115,24 +143,53 @@ const AmountField = styled.div`
     margin: 0 0 0 6px;
     padding: 0;
     font-size: 22px;
-    font-weight: bold;
+    font-weight: 600;
+    color: white;
   }
 `
 
 const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
-  width: 100 %;
+  width: 100%;
   padding: 24px;
+  color: white;
   position: relative;
-  background: ${({ activeBG }) =>
+  background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
+  /* background: ${({ activeBG }) =>
     activeBG &&
-    'radial-gradient(76.02% 75.41% at 1.84% 0%, rgba(255, 0, 122, 0.2) 0%, rgba(33, 114, 229, 0.2) 100%), #FFFFFF;'};
+    'radial-gradient(76.02% 75.41% at 1.84% 0%, rgba(255, 0, 122, 0.2) 0%, rgba(33, 114, 229, 0.2) 100%), #FFFFFF;'}; */
+
+  ${CloseIcon} {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+  }
+
+  h3 {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    margin: 0 0 24px;
+    color: white;
+  }
 `
 
 const ConfirmedIcon = styled(ColumnCenter)`
   padding: 60px 0;
 `
 
-const USER_AMOUNT = 400
+const AttemptFooter = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  > p {
+    font-size: 14px;
+  }
+`
+
+// const USER_AMOUNT = 400
 
 export default function ClaimModal() {
   const isOpen = useModalOpen(ApplicationModal.SELF_CLAIM)
@@ -144,7 +201,7 @@ export default function ClaimModal() {
   const [attempting, setAttempting] = useState<boolean>(false)
 
   // get user claim data
-  const userClaimData = useUserClaimData(account)
+  // const userClaimData = useUserClaimData(account)
 
   // monitor the status of the claim from contracts and txns
   const { claimCallback } = useClaimCallback(account)
@@ -173,7 +230,7 @@ export default function ClaimModal() {
   }, [attempting, claimConfirmed, claimSubmitted, isOpen, toggleClaimModal])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={toggleClaimModal}>
+    <GpModal isOpen={isOpen} onDismiss={toggleClaimModal} maxWidth={510} backgroundColor={'black'} border={'none'}>
       <Confetti start={Boolean(isOpen && claimConfirmed)} />
       {!attempting && !claimConfirmed && (
         <ContentWrapper>
@@ -194,13 +251,6 @@ export default function ClaimModal() {
             <Trans>You are eligible for the airdrop!</Trans>
           </EligibleBanner>
 
-          <p>
-            <Trans>
-              As an important member of CowSwap Community you may claim vCOW to be used for voting and governance.
-              <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
-            </Trans>
-          </p>
-
           <AmountField>
             <b>You will receive</b>
             <div>
@@ -220,7 +270,13 @@ export default function ClaimModal() {
           )} */}
           </AmountField>
 
-          <p>You can claim your tokens until [DATE]</p>
+          <p>
+            <Trans>
+              As an important member of the CowSwap Community you may claim vCOW to be used for voting and governance.
+              You can claim your tokens until <i>[XX-XX-XXXX - XX:XX GMT]</i>
+              <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
+            </Trans>
+          </p>
 
           <ButtonPrimary
             disabled={!isAddress(account ?? '')}
@@ -234,65 +290,59 @@ export default function ClaimModal() {
           </ButtonPrimary>
         </ContentWrapper>
       )}
+
       {(attempting || claimConfirmed) && (
         <ConfirmOrLoadingWrapper activeBG={true}>
-          <CardNoise />
-          <CardBGImageSmaller desaturate />
-
-          <RowBetween>
-            <div />
-            <CloseIcon onClick={toggleClaimModal} style={{ zIndex: 99 }} stroke="black" />
-          </RowBetween>
+          <CloseIcon onClick={toggleClaimModal} style={{ zIndex: 99 }} color="white" />
 
           <ConfirmedIcon>
             {!claimConfirmed ? (
               <CustomLightSpinner src={Circle} alt="loader" size={'90px'} />
             ) : (
-              <UniTokenAnimated width="72px" src={tokenLogo} alt="vCOW" />
+              <CowProtocolLogo size={100} />
             )}
           </ConfirmedIcon>
-          <AutoColumn gap="100px" justify={'center'}>
-            <AutoColumn gap="12px" justify={'center'}>
-              <TYPE.largeHeader fontWeight={600} color="black">
-                {claimConfirmed ? 'Claimed!' : 'Claiming'}
-              </TYPE.largeHeader>
-              {!claimConfirmed && (
-                <Text fontSize={36} color={'#ff007a'} fontWeight={800}>
-                  <Trans>{unclaimedAmount?.toFixed(0, { groupSeparator: ',' } ?? '-')} vCOW</Trans>
-                </Text>
-              )}
-            </AutoColumn>
-            {claimConfirmed && (
-              <>
-                <TYPE.subHeader fontWeight={500} color="black">
-                  <Trans>
-                    <span role="img" aria-label="party-hat">
-                      🎉{' '}
-                    </span>
-                    Welcome to team Unicorn :){' '}
-                    <span role="img" aria-label="party-hat">
-                      🎉
-                    </span>
-                  </Trans>
-                </TYPE.subHeader>
-              </>
-            )}
-            {attempting && !claimSubmitted && (
-              <TYPE.subHeader color="black">
+
+          <h3>{claimConfirmed ? 'Claimed!' : 'Claiming'}</h3>
+
+          {!claimConfirmed && (
+            <p>
+              <Trans>{unclaimedAmount?.toFixed(0, { groupSeparator: ',' } ?? '-')} vCOW</Trans>
+            </p>
+          )}
+
+          {claimConfirmed && (
+            <>
+              <Trans>
+                <span role="img" aria-label="party-hat">
+                  🎉{' '}
+                </span>
+                Welcome to team Unicorn :){' '}
+                <span role="img" aria-label="party-hat">
+                  🎉
+                </span>
+              </Trans>
+            </>
+          )}
+
+          {attempting && !claimSubmitted && (
+            <AttemptFooter>
+              <p>
                 <Trans>Confirm this transaction in your wallet</Trans>
-              </TYPE.subHeader>
-            )}
-            {attempting && claimSubmitted && !claimConfirmed && chainId && claimTxn?.hash && (
-              <ExternalLink
-                href={getExplorerLink(chainId, claimTxn?.hash, ExplorerDataType.TRANSACTION)}
-                style={{ zIndex: 99 }}
-              >
-                <Trans>View transaction on Explorer</Trans>
-              </ExternalLink>
-            )}
-          </AutoColumn>
+              </p>
+            </AttemptFooter>
+          )}
+
+          {attempting && claimSubmitted && !claimConfirmed && chainId && claimTxn?.hash && (
+            <ExternalLink
+              href={getExplorerLink(chainId, claimTxn?.hash, ExplorerDataType.TRANSACTION)}
+              style={{ zIndex: 99 }}
+            >
+              <Trans>View transaction on Explorer</Trans>
+            </ExternalLink>
+          )}
         </ConfirmOrLoadingWrapper>
       )}
-    </Modal>
+    </GpModal>
   )
 }
