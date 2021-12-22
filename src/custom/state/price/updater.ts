@@ -21,7 +21,7 @@ import { QuoteInformationObject } from './reducer'
 import { isWrappingTrade } from 'state/swap/utils'
 import { useOrderValidTo } from 'state/user/hooks'
 
-const DEBOUNCE_TIME = 350
+export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
@@ -130,7 +130,7 @@ export default function FeesUpdater(): null {
 
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
-  const typedValue = useDebounce(rawTypedValue, DEBOUNCE_TIME)
+  const typedValue = useDebounce(rawTypedValue, TYPED_VALUE_DEBOUNCE_TIME)
 
   const sellCurrency = useCurrency(sellToken)
   const buyCurrency = useCurrency(buyToken)

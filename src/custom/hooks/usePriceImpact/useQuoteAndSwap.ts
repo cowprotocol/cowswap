@@ -10,15 +10,15 @@ import { useActiveWeb3React } from 'hooks/web3'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
-import { FeeQuoteParams, QuoteResult } from 'utils/price'
+import { FeeQuoteParams, getBestQuote, QuoteResult } from 'utils/price'
 
 import { ZERO_ADDRESS } from 'constants/misc'
 import { SupportedChainId } from 'constants/chains'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
-import useGetGpPriceStrategy from '../useGetGpPriceStrategy'
-import { getBestQuoteResolveOnlyLastCall as getBestQuote } from 'hooks/useRefetchPriceCallback'
+import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
+import { onlyResolvesLast } from 'utils/async'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
@@ -38,6 +38,8 @@ type GetQuoteParams = {
 } & WithLoading
 
 type FeeQuoteParamsWithError = FeeQuoteParams & { error?: QuoteError }
+
+const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
 
 export function useCalculateQuote(params: GetQuoteParams) {
   const {
@@ -77,7 +79,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
       validTo,
     }
     let quoteData: QuoteInformationObject | FeeQuoteParams = quoteParams
-    getBestQuote({
+    getBestQuoteResolveOnlyLastCall({
       strategy,
       quoteParams,
       fetchFee: true,

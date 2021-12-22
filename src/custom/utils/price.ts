@@ -20,6 +20,7 @@ import { GetQuoteResponse, OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { ChainId } from 'state/lists/actions'
 import { toErc20Address } from 'utils/tokens'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -338,7 +339,7 @@ export async function getBestQuote({
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
 
     return getFullQuote({ quoteParams }).catch((err) => {
-      console.error(
+      console.warn(
         '[GP PRICE::API] getBestQuote - error using COWSWAP price strategy, reason: [',
         err,
         '] - trying back up price sources...'
@@ -378,4 +379,32 @@ export function calculateFallbackPriceImpact(initialValue: string, finalValue: s
   console.debug(`[calculateFallbackPriceImpact]::${impact.toSignificant(2)}%`)
 
   return impact
+}
+
+export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams, 'strategy' | 'quoteParams'>) {
+  if (strategy === 'COWSWAP') {
+    console.debug(
+      '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
+    )
+    quoteParams.validTo = MAX_VALID_TO_EPOCH
+    const { quote } = await getQuote(quoteParams)
+
+    // BUY order always. We also need to add the fee to the sellAmount to get the unaffected price
+    const amountWithoutFee = new BigNumberJs(quote.feeAmount).plus(new BigNumberJs(quote.sellAmount))
+    return amountWithoutFee.toString(10)
+  } else {
+    console.debug(
+      '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
+    )
+    // legacy
+    const legacyParams = {
+      ...quoteParams,
+      baseToken: quoteParams.buyToken,
+      quoteToken: quoteParams.sellToken,
+    }
+
+    const quote = await getBestPrice(legacyParams)
+
+    return quote.amount
+  }
 }
