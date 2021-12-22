@@ -4,7 +4,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 
 import { useContract } from '@src/hooks/useContract'
 
-import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
+import { GP_SETTLEMENT_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 import ENS_ABI from 'abis/ens-registrar.json'
@@ -12,8 +12,9 @@ import { getContract } from 'utils'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 
-import { GPv2Settlement, Erc20 } from 'abis/types'
+import { GPv2Settlement, Erc20, VCow } from 'abis/types'
 import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
+import V_COW_ABI from 'abis/vCow.json'
 
 export * from '@src/hooks/useContract'
 
@@ -24,6 +25,11 @@ export function useGP2SettlementContract(): GPv2Settlement | null {
     GPv2_SETTLEMENT_ABI,
     true
   )
+}
+
+export function useVCowContract() {
+  const { chainId } = useActiveWeb3React()
+  return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, V_COW_ABI, true)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
