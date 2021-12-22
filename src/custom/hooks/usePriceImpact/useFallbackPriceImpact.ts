@@ -9,6 +9,10 @@ import { calculateFallbackPriceImpact, FeeQuoteParams } from 'utils/price'
 import TradeGp from 'state/swap/TradeGp'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
+import { useQuote } from 'state/price/hooks'
+import { useActiveWeb3React } from 'hooks/web3'
+import { TYPED_VALUE_DEBOUNCE_TIME } from 'state/price/updater'
+import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
 
@@ -39,12 +43,21 @@ function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: 
   return abTrade?.outputAmountWithoutFee
 }
 
-export default function useFallbackPriceImpact({ abTrade, isWrapping }: FallbackPriceImpactParams) {
+export default function useFallbackPriceImpact({ abTrade: rawAbTrade, isWrapping }: FallbackPriceImpactParams) {
   const {
-    typedValue,
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
   } = useSwapState()
+
+  // debounce trade creation and force update when tradeType changes
+  const abTrade = useDebounceWithForceUpdate(rawAbTrade, TYPED_VALUE_DEBOUNCE_TIME, [
+    rawAbTrade?.tradeType,
+    sellToken,
+    buyToken,
+  ])
+
+  const { chainId } = useActiveWeb3React()
+  const lastQuote = useQuote({ token: sellToken, chainId })
 
   const [loading, setLoading] = useState(false)
 
@@ -63,8 +76,9 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
     () => ({
       ..._getBaTradeParams({ abTrade, sellToken, buyToken }),
       parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
+      validTo: lastQuote?.validTo,
     }),
-    [abTrade, buyToken, sellToken, shouldCalculate]
+    [abTrade, buyToken, lastQuote?.validTo, sellToken, shouldCalculate]
   )
 
   const { quote } = useCalculateQuote({
@@ -110,7 +124,7 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
       setImpact(undefined)
       setError(undefined)
     }
-  }, [abIn, abOut, baOut, quoteError, loading, typedValue])
+  }, [abIn, abOut, baOut, quoteError, loading])
 
   return { impact, error, loading }
 }

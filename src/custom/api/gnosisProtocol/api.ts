@@ -1,5 +1,5 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
+import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
 import { stringify } from 'qs'
 import { getSigningSchemeApiValue, OrderCreation, OrderCancellation, SigningSchemeValue } from 'utils/signatures'
 import { APP_DATA_HASH } from 'constants/index'
@@ -17,11 +17,14 @@ import QuoteError, {
   GpQuoteErrorDetails,
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
-import { FeeInformation, FeeQuoteParams, PriceInformation, PriceQuoteParams } from 'utils/price'
+import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { GAS_FEE_ENDPOINTS } from 'constants/index'
 import * as Sentry from '@sentry/browser'
+import { ZERO_ADDRESS } from 'constants/misc'
+import { getAppDataHash } from 'constants/appDataHash'
+import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -56,9 +59,18 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
       process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://protocol-affiliate.gnosis.io/api',
   }
 }
+const STRATEGY_URL_BASE = 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/strategies'
+function getPriceStrategyUrl(): Record<SupportedChainId, string> {
+  return {
+    [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
+    [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
+    [SupportedChainId.XDAI]: STRATEGY_URL_BASE + '/strategy-100.json',
+  }
+}
 
 const API_BASE_URL = getGnosisProtocolUrl()
 const PROFILE_API_BASE_URL = getProfileUrl()
+const STRATEGY_API_URL = getPriceStrategyUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -143,6 +155,20 @@ function _getProfileApiBaseUrl(chainId: ChainId): string {
   }
 }
 
+function _getPriceStrategyApiBaseUrl(chainId: ChainId): string {
+  const baseUrl = STRATEGY_API_URL[chainId]
+
+  if (!baseUrl) {
+    new Error(
+      `Unsupported Network. The ${API_NAME} strategy API is not deployed in the Network ` +
+        chainId +
+        '. Defaulting to using Mainnet strategy.'
+    )
+  }
+
+  return baseUrl
+}
+
 export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
   const baseUrl = _getApiBaseUrl(chainId)
 
@@ -170,6 +196,11 @@ function _fetchProfile(
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
   })
+}
+
+function _fetchPriceStrategy(chainId: ChainId): Promise<Response> {
+  const baseUrl = _getPriceStrategyApiBaseUrl(chainId)
+  return fetch(baseUrl)
 }
 
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
@@ -247,7 +278,10 @@ const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
   description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
 }
 
-async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams) {
+async function _handleQuoteResponse<T = any, P extends QuoteQuery = QuoteQuery>(
+  response: Response,
+  params?: P
+): Promise<T> {
   if (!response.ok) {
     const errorObj: ApiErrorObject = await response.json()
 
@@ -267,7 +301,7 @@ async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams)
       // report to sentry
       Sentry.captureException(sentryError, {
         tags: { errorType: 'getFeeQuote' },
-        contexts: { params },
+        contexts: { params: { ...params } },
       })
     }
 
@@ -277,7 +311,45 @@ async function _handleQuoteResponse(response: Response, params?: FeeQuoteParams)
   }
 }
 
-export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInformation | null> {
+function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId } = params
+  const fallbackAddress = userAddress || ZERO_ADDRESS
+
+  const baseParams = {
+    sellToken: toErc20Address(sellToken, chainId),
+    buyToken: toErc20Address(buyToken, chainId),
+    from: fallbackAddress,
+    receiver: receiver || fallbackAddress,
+    appData: getAppDataHash(),
+    validTo,
+    partiallyFillable: false,
+  }
+
+  const finalParams: QuoteQuery =
+    kind === OrderKind.SELL
+      ? {
+          kind: OrderKind.SELL,
+          sellAmountBeforeFee: amount,
+          ...baseParams,
+        }
+      : {
+          kind: OrderKind.BUY,
+          buyAmountAfterFee: amount,
+          ...baseParams,
+        }
+
+  return finalParams
+}
+
+export async function getQuote(params: FeeQuoteParams) {
+  const { chainId } = params
+  const quoteParams = _mapNewToLegacyParams(params)
+  const response = await _post(chainId, '/quote', quoteParams)
+
+  return _handleQuoteResponse<SimpleGetQuoteResponse>(response)
+}
+
+export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<PriceInformation | null> {
   const { baseToken, quoteToken, amount, kind, chainId } = params
   console.log(`[api:${API_NAME}] Get price from API`, params)
 
@@ -293,25 +365,7 @@ export async function getPriceQuote(params: PriceQuoteParams): Promise<PriceInfo
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
   })
 
-  return _handleQuoteResponse(response)
-}
-
-export async function getFeeQuote(params: FeeQuoteParams): Promise<FeeInformation> {
-  const { sellToken, buyToken, amount, kind, chainId } = params
-  console.log(`[api:${API_NAME}] Get fee from API`, params)
-
-  const response = await _get(
-    chainId,
-    `/fee?sellToken=${toErc20Address(sellToken, chainId)}&buyToken=${toErc20Address(
-      buyToken,
-      chainId
-    )}&amount=${amount}&kind=${kind}`
-  ).catch((error) => {
-    console.error('Error getting fee quote:', error)
-    throw new QuoteError(UNHANDLED_QUOTE_ERROR)
-  })
-
-  return _handleQuoteResponse(response, params)
+  return _handleQuoteResponse<PriceInformation | null>(response)
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
@@ -402,6 +456,25 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   }
 }
 
+export type PriceStrategy = {
+  primary: GpPriceStrategy
+  secondary: GpPriceStrategy
+}
+
+export async function getPriceStrategy(chainId: ChainId): Promise<PriceStrategy> {
+  console.log(`[api:${API_NAME}] Get GP price strategy for`, chainId)
+
+  const response = await _fetchPriceStrategy(chainId)
+
+  if (!response.ok) {
+    const errorResponse = await response.json()
+    console.log(errorResponse)
+    throw new Error(errorResponse?.description)
+  } else {
+    return response.json()
+  }
+}
+
 export interface GasFeeEndpointResponse {
   lastUpdate: string
   lowest: string
@@ -418,5 +491,12 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
 
 // Register some globals for convenience
 registerOnWindow({
-  operator: { getFeeQuote, getTrades, getOrder, sendSignedOrder: sendOrder, apiGet: _get, apiPost: _post },
+  operator: {
+    getQuote,
+    getTrades,
+    getOrder,
+    sendSignedOrder: sendOrder,
+    apiGet: _get,
+    apiPost: _post,
+  },
 })

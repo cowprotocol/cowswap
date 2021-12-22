@@ -70,6 +70,7 @@ export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
 export const PRICE_API_TIMEOUT_MS = 10000 // 10s
 export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
+export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
@@ -112,3 +113,8 @@ export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 
 // last wallet provider key used in local storage
 export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
+
+// Default price strategy to use for getting app prices
+// COWSWAP = new quote endpoint
+// LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
+export const DEFAULT_GP_PRICE_STRATEGY = 'COWSWAP'
