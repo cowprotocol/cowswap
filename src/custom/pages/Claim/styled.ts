@@ -8,7 +8,8 @@ export const PageWrapper = styled.div`
   --color-tr: #3b4052;
   --color-grey: rgb(151, 151, 151);
   --color-orange: rgb(237, 104, 52);
-  --border-radius: 12px;
+  --color-container-bg: rgb(255 255 255 / 4%);
+  --border-radius: 24px;
 
   display: flex;
   flex-flow: column wrap;
@@ -16,8 +17,8 @@ export const PageWrapper = styled.div`
   width: 100%;
   background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
   color: white;
-  border-radius: 24px;
-  padding: 32px;
+  border-radius: var(--border-radius);
+  padding: 24px;
 
   a {
     color: var(--color-orange);
@@ -106,8 +107,9 @@ export const ClaimSummary = styled.div`
     width: 100%;
     height: 100%;
     z-index: 0;
-    filter: blur(75px);
-    background: conic-gradient(var(--color-tr) 25%, var(--color-tl) 0 28%, var(--color-tr) 0 30%, var(--color-tl) 0);
+    /* filter: blur(75px); */
+    /* background: conic-gradient(var(--color-tr) 25%, var(--color-tl) 0 28%, var(--color-tr) 0 30%, var(--color-tl) 0); */
+    background: var(--color-container-bg);
     opacity: 1;
   }
 
@@ -357,9 +359,10 @@ export const EligibleBanner = styled.div`
   border-radius: 12px;
   padding: 12px;
   text-align: center;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: rgba(237, 104, 52, 0.1);
-  border: 0.1rem solid var(--color-orange);
   color: var(--color-orange);
   text-align: center;
   margin: 0 auto 16px;
@@ -480,11 +483,11 @@ export const TopNav = styled.div`
   background: rgb(255 255 255 / 4%);
   border-radius: 24px;
   padding: 24px;
-  margin: 0 0 24px;
+  margin: 0 auto 16px;
 
   ${ButtonSecondary} {
     margin: 0;
-    color: var(--color-orange);
+    color: var(--color-grey);
     font-size: 15px;
     width: auto;
   }

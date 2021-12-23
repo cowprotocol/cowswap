@@ -54,7 +54,7 @@ export default function Claim() {
   useEffect(() => {
     setIsInputAddressValid(isAddress(inputAddress))
     setHasClaims(unclaimedAmount > 0 ? true : false)
-  }, [inputAddress, unclaimedAmount])
+  }, [inputAddress, unclaimedAmount, claimConfirmed])
 
   return (
     <PageWrapper>
@@ -197,7 +197,7 @@ export default function Claim() {
       {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
 
       {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
-      {!activeClaimAccount && (
+      {!activeClaimAccount && !claimConfirmed && (
         <CheckAddress>
           <p>
             Enter an address to check for any eligible vCOW claims{' '}
@@ -213,6 +213,7 @@ export default function Claim() {
               onChange={(e) => setInputAddress(e.currentTarget.value)}
             />
           </InputField>
+          {!isInputAddressValid && 'Incorrect address'}
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
@@ -361,13 +362,17 @@ export default function Claim() {
 
       {/* START -- CLAIM button OR other actions */}
       <FooterNavButtons>
-        {activeClaimAccount && hasClaims && (
+        {activeClaimAccount && hasClaims && !claimConfirmed && (
           <ButtonPrimary>
             <Trans>Claim vCOW</Trans>
           </ButtonPrimary>
         )}
         {!activeClaimAccount && !hasClaims && (
-          <ButtonPrimary disabled={!isInputAddressValid} type="text">
+          <ButtonPrimary
+            disabled={!isInputAddressValid}
+            type="text"
+            onClick={() => setActiveClaimAccount(inputAddress)}
+          >
             <Trans>Check claimable vCOW</Trans>
           </ButtonPrimary>
         )}
