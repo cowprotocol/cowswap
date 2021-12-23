@@ -1,15 +1,17 @@
-import JSBI from 'jsbi'
+// import JSBI from 'jsbi'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
 // import { useEffect, useState } from 'react'
-import { UNI } from 'constants/tokens'
+// import { UNI } from 'constants/tokens'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useMerkleDistributorContract } from 'hooks/useContract'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 // import { useSingleCallResult } from 'state/multicall/hooks'
 import { isAddress } from 'utils/index'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
-import { UserClaims } from '.'
+import { UserClaims, useUserUnclaimedAmount } from '.'
+// import { useSingleCallResult } from '@src/state/multicall/hooks'
+export { useUserClaimData } from '@src/state/claim/hooks'
 
 // interface UserClaimData {
 //   index: number
@@ -158,34 +160,26 @@ export function useUserClaims(account: string | null | undefined): UserClaims | 
 }
 
 // check if user is in blob and has not yet claimed UNI
-export function useUserHasAvailableClaim(account: string | null | undefined): boolean {
-  const userClaims = useUserClaims(account)
-  // const distributorContract = useMerkleDistributorContract()
+// export function useUserHasAvailableClaim(account: string | null | undefined): boolean {
+//   const userClaimData = useUserClaimData(account)
+//   const distributorContract = useMerkleDistributorContract()
+//   const isClaimedResult = useSingleCallResult(distributorContract, 'isClaimed', [userClaimData?.index])
+//   // user is in blob and contract marks as unclaimed
+//   return Boolean(userClaimData && !isClaimedResult.loading && isClaimedResult.result?.[0] === false)
+// }
 
-  // TODO: Go claiming by claiming, and check if claimed or not
-  // TODO: Should we do a multicall instead, or the contract allows to check multiple claimings at once?
-  const isClaimedResult = { loading: false, result: [false] } //useSingleCallResult(distributorContract, 'isClaimed', [userClaimData?.index])
-
-  // user is in blob and contract marks as unclaimed
-  return Boolean(userClaims && !isClaimedResult.loading && isClaimedResult.result?.[0] === false)
-}
-
-export function useUserUnclaimedAmount(account: string | null | undefined): CurrencyAmount<Token> | undefined {
-  const { chainId } = useActiveWeb3React()
-  const claims = useUserClaims(account)
-  const canClaim = useUserHasAvailableClaim(account)
-
-  const uni = chainId ? UNI[chainId] : undefined
-  if (!uni) return undefined
-  if (!canClaim || !claims) {
-    return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(0))
-  }
-  const totalAmount = claims.reduce((acc, claim) => {
-    return JSBI.add(acc, JSBI.BigInt(claim.amount))
-  }, JSBI.BigInt('0'))
-
-  return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(totalAmount))
-}
+// export function useUserUnclaimedAmount(account: string | null | undefined): CurrencyAmount<Token> | undefined {
+//   const { chainId } = useActiveWeb3React()
+//   const userClaimData = useUserClaimData(account)
+//   const canClaim = useUserHasAvailableClaim(account)
+//
+//   const uni = chainId ? UNI[chainId] : undefined
+//   if (!uni) return undefined
+//   if (!canClaim || !userClaimData) {
+//     return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(0))
+//   }
+//   return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(userClaimData.amount))
+// }
 
 export function useClaimCallback(account: string | null | undefined): {
   claimCallback: () => Promise<string>
