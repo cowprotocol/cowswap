@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Dots } from 'components/swap/styleds'
 import Web3Status from 'components/Web3Status'
-import { CardNoise } from 'components/earn/styled'
 import { ExternalLink } from 'theme'
+import { useHistory } from 'react-router-dom'
 
 import HeaderMod, {
   Title,
@@ -37,12 +37,16 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import NetworkCard, { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
-import { useModalOpen, useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
+import {
+  useModalOpen,
+  useShowClaimPopup,
+  // useToggleSelfClaimModal
+} from 'state/application/hooks'
 import { useUserHasAvailableClaim } from 'state/claim/hooks'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 
 import Modal from 'components/Modal'
-import ClaimModal from 'components/claim/ClaimModal'
+// import ClaimModal from 'components/claim/ClaimModal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 
@@ -218,7 +222,7 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
-  const toggleClaimModal = useToggleSelfClaimModal()
+  // const toggleClaimModal = useToggleSelfClaimModal()
   const availableClaim: boolean = useUserHasAvailableClaim(account)
   const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
@@ -228,6 +232,9 @@ export default function Header() {
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
+
+  const history = useHistory()
+  const handleOnClickClaim = () => history.push('/claim')
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -241,7 +248,6 @@ export default function Header() {
     <Wrapper>
       <HeaderModWrapper>
         <HeaderRow marginRight="0">
-          <ClaimModal />
           <Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
             <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
           </Modal>
@@ -259,7 +265,7 @@ export default function Header() {
           <NetworkCard />
           <HeaderElement>
             {availableClaim && !showClaimPopup && (
-              <UNIWrapper onClick={toggleClaimModal}>
+              <UNIWrapper onClick={handleOnClickClaim}>
                 <VCowAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
                   {claimTxn && !claimTxn?.receipt ? (
                     <Dots>
@@ -272,7 +278,6 @@ export default function Header() {
                     </>
                   )}
                 </VCowAmount>
-                <CardNoise />
               </UNIWrapper>
             )}
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
