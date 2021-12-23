@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ButtonPrimary } from 'components/Button'
 import { Trans } from '@lingui/macro'
@@ -14,7 +14,6 @@ import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,
   AttemptFooter,
-  ContentWrapper,
   TopTitle,
   CheckIcon,
   AvailableClaimTotal,
@@ -33,6 +32,8 @@ export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
 
   // Fake states ============================
+  const [inputAddress, setInputAddress] = useState('')
+  const [isInputAddressValid, setIsInputAddressValid] = useState(false)
   const [activeClaimAccount, setActiveClaimAccount] = useState('')
   const [isAirdropOnly, setIsAirdropOnly] = useState(false)
   const [hasClaims, setHasClaims] = useState(false)
@@ -42,12 +43,24 @@ export default function Claim() {
   const [unclaimedAmount, setUnclaimedAmount] = useState(0)
   // =========================================
 
+  useEffect(() => {
+    setIsInputAddressValid(isAddress(inputAddress))
+  }, [inputAddress])
+
   return (
     <PageWrapper>
       {/* DEMO ONLY */}
       <Demo>
         <table>
           <tbody>
+            <tr>
+              <td>inputAddress</td>
+              <td>{String(inputAddress)}</td>
+            </tr>
+            <tr>
+              <td>isInputAddressValid</td>
+              <td>{String(isInputAddressValid)}</td>
+            </tr>
             <tr>
               <td>web3 connected account</td>
               <td>{String(account)}</td>
@@ -130,27 +143,38 @@ export default function Claim() {
       {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
       {!activeClaimAccount && (
         <CheckAddress>
-          <p>Enter an address to check for any eligible vCOW claims.</p>
+          <p>
+            Enter an address to check for any eligible vCOW claims{' '}
+            <ExternalLink href="#">
+              <Trans>or connect a wallet</Trans>
+            </ExternalLink>
+          </p>
           <InputField>
             <b>Input address</b>
-            <input placeholder="Address or ENS name" />
+            <input
+              placeholder="Address or ENS name"
+              value={inputAddress}
+              onChange={(e) => setInputAddress(e.currentTarget.value)}
+            />
           </InputField>
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
 
       {/* START - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-      {activeClaimAccount && hasClaims && (
+      {activeClaimAccount && (
         <AvailableClaimTotal>
-          <EligibleBanner>
-            <CheckIcon />
-            <Trans>You are eligible for vCOW token claims!</Trans>
-          </EligibleBanner>
+          {hasClaims && (
+            <EligibleBanner>
+              <CheckIcon />
+              <Trans>You are eligible for vCOW token claims!</Trans>
+            </EligibleBanner>
+          )}
           <ClaimSummary>
             <CowProtocolLogo size={54} />
             <span>
               <b>Total available to claim</b>
-              <p>4,320,3234.43 vCOW</p>
+              <p>{unclaimedAmount} vCOW</p>
             </span>
           </ClaimSummary>
         </AvailableClaimTotal>
@@ -158,7 +182,7 @@ export default function Claim() {
       {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
 
       {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
-      {activeClaimAccount && isAirdropOnly && !claimAttempting && !claimConfirmed && (
+      {activeClaimAccount && hasClaims && isAirdropOnly && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
           <Trans>
             Thank you for being a supporter of CowSwap and the CoW protocol. As an important member of the CowSwap
@@ -295,16 +319,21 @@ export default function Claim() {
       {/* END -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
       {/* START -- CLAIM button OR reset/check for another account */}
       <FooterNavButtons>
-        {activeClaimAccount && (
+        {
           <>
-            {hasClaims && (
-              <ButtonPrimary padding="16px 16px" width="100%" $borderRadius="12px" mt="1rem">
+            {activeClaimAccount && hasClaims && (
+              <ButtonPrimary>
                 <Trans>Claim vCOW</Trans>
               </ButtonPrimary>
             )}
-            <ExternalLink href="#">Check for another account {' ->'}</ExternalLink>
+            {!activeClaimAccount && !hasClaims && (
+              <ButtonPrimary disabled={!isInputAddressValid} type="text">
+                <Trans>Check claimable vCOW</Trans>
+              </ButtonPrimary>
+            )}
+            {activeClaimAccount && <ExternalLink href="#">Check for another account {' ->'}</ExternalLink>}
           </>
-        )}
+        }
       </FooterNavButtons>
       {/* END -- CLAIM button OR reset/check for another account */}
     </PageWrapper>

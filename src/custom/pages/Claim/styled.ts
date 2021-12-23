@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { CheckCircle } from 'react-feather'
+import { ButtonPrimary } from 'components/Button'
 
 export const PageWrapper = styled.div`
   display: flex;
@@ -11,11 +12,34 @@ export const PageWrapper = styled.div`
   border-radius: 24px;
   padding: 32px;
 
-  > button {
+  p {
+    font-size: 16px;
+    display: block;
+    line-height: 1.6;
+    font-weight: 300;
+    margin: 24px auto;
+    text-align: center;
+  }
+
+  p > i {
+    color: rgb(237, 104, 52);
+  }
+
+  p > a {
+    display: block;
+    margin: 24px 0 0;
+    color: rgb(237, 104, 52);
+  }
+
+  ${ButtonPrimary} {
     background: rgb(237, 104, 52);
     border: 0;
     box-shadow: none;
     color: black;
+    border-radius: 12px;
+    width: 100%;
+    font-size: 21px;
+    padding: 24px 16px;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 auto 24px;
@@ -27,6 +51,12 @@ export const PageWrapper = styled.div`
       transform: none;
       background: rgb(247 127 80);
       color: black;
+    }
+
+    &[disabled] {
+      background: rgba(151, 151, 151, 0.6);
+      cursor: not-allowed;
+      pointer-events: all;
     }
   }
 `
@@ -98,6 +128,7 @@ export const ClaimTable = styled.div`
     padding-top: 10px;
     padding-bottom: 10px;
     color: white;
+    word-break: break-word;
   }
 
   tr:nth-child(even) td {
@@ -162,71 +193,46 @@ export const ConfirmedIcon = styled.div`
   padding: 60px 0;
 `
 
-export const ContentWrapper = styled.div`
-  background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
-  padding: 32px;
-  min-height: 500px;
-  height: 100%;
-  width: 100%;
-  position: relative;
-  color: #bbbbbb;
+// export const ContentWrapper = styled.div`
+//   background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
+//   padding: 32px;
+//   min-height: 500px;
+//   height: 100%;
+//   width: 100%;
+//   position: relative;
+//   color: #bbbbbb;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 20px;
-    min-height: initial;
-  `};
+//   ${({ theme }) => theme.mediaWidth.upToSmall`
+//     padding: 20px;
+//     min-height: initial;
+//   `};
 
-  > button {
-    background: rgb(237, 104, 52);
-    border: 0;
-    box-shadow: none;
-    color: black;
+//   > button {
+//     background: rgb(237, 104, 52);
+//     border: 0;
+//     box-shadow: none;
+//     color: black;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      margin: 0 auto 24px;
-    `};
+//     ${({ theme }) => theme.mediaWidth.upToSmall`
+//       margin: 0 auto 24px;
+//     `};
 
-    &:hover {
-      border: 0;
-      box-shadow: none;
-      transform: none;
-      background: rgb(247 127 80);
-      color: black;
-    }
-  }
+//   }
 
-  h3 {
-    font-size: 26px;
-    font-weight: 300;
-    line-height: 1.2;
-    text-align: center;
-    margin: 0 0 24px;
-    color: white;
+//   h3 {
+//     font-size: 26px;
+//     font-weight: 300;
+//     line-height: 1.2;
+//     text-align: center;
+//     margin: 0 0 24px;
+//     color: white;
 
-    > b {
-      font-weight: 600;
-    }
-  }
+//     > b {
+//       font-weight: 600;
+//     }
+//   }
 
-  p {
-    font-size: 16px;
-    display: block;
-    line-height: 1.6;
-    font-weight: 300;
-    margin: 24px auto;
-    text-align: center;
-  }
-
-  p > i {
-    color: rgb(237, 104, 52);
-  }
-
-  p > a {
-    display: block;
-    margin: 24px 0 0;
-    color: rgb(237, 104, 52);
-  }
-`
+// `
 
 export const CheckIcon = styled(CheckCircle)`
   height: 16px;
@@ -264,7 +270,20 @@ export const InputField = styled.div`
   border: 1px solid rgba(151, 151, 151, 0.4);
   background: rgba(151, 151, 151, 0.1);
   width: 100%;
-  margin: 0 0 16px;
+  margin: 0 0 24px;
+
+  > input {
+    background: transparent;
+    border: 0;
+    font-size: 32px;
+    color: white;
+    outline: 0;
+    width: 100%;
+  }
+
+  > input::placeholder {
+    color: rgba(151, 151, 151, 0.4);
+  }
 
   > b {
     display: block;
@@ -293,6 +312,13 @@ export const CheckAddress = styled.div`
   display: flex;
   width: 100%;
   flex-flow: column wrap;
+
+  > p {
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.2;
+    margin: 0 0 24px;
+  }
 `
 
 export const ClaimBreakdown = styled.div`
