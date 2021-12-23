@@ -237,7 +237,7 @@ export default function Claim() {
       )}
       {/* END -- Try claiming or inform succesfull claim  ----------------------------------------------------- */}
       {/* START -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
-      {!isAirdropOnly && (
+      {activeClaimAccount && !isAirdropOnly && (
         <ClaimBreakdown>
           <h2>vCOW claim breakdown</h2>
           <ClaimTable>
