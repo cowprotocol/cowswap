@@ -1,9 +1,14 @@
 import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
 import { Icon } from 'components/CowProtocolLogo'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 
 export const PageWrapper = styled.div`
+  --color-tl: #141722;
+  --color-tr: #3b4052;
+  --color-grey: rgb(151, 151, 151);
+  --color-orange: rgb(237, 104, 52);
+
   display: flex;
   flex-flow: column wrap;
   max-width: 760px;
@@ -12,6 +17,10 @@ export const PageWrapper = styled.div`
   color: white;
   border-radius: 24px;
   padding: 32px;
+
+  a {
+    color: var(--color-orange);
+  }
 
   p {
     font-size: 16px;
@@ -23,17 +32,16 @@ export const PageWrapper = styled.div`
   }
 
   p > i {
-    color: rgb(237, 104, 52);
+    color: var(--color-orange);
   }
 
   p > a {
     display: block;
     margin: 24px 0 0;
-    color: rgb(237, 104, 52);
   }
 
   ${ButtonPrimary} {
-    background: rgb(237, 104, 52);
+    background: var(--color-orange);
     border: 0;
     box-shadow: none;
     color: black;
@@ -60,17 +68,61 @@ export const PageWrapper = styled.div`
       pointer-events: all;
     }
   }
+
+  ${ButtonSecondary} {
+    background: 0;
+    color: var(--color-orange);
+    border: none;
+
+    &:hover {
+      border: 0;
+      box-shadow: none;
+      transform: none;
+      background: 0;
+      color: inherit;
+    }
+  }
 `
 
 export const ClaimSummary = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: center;
-  padding: 12px;
+  justify-content: flex-start;
+  padding: 32px;
   border-radius: 12px;
   margin: 0 auto 24px;
-  background: rgba(151, 151, 151, 0.1);
+  /* background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%); */
+  position: relative;
+  color: #bbbbbb;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    filter: blur(75px);
+    background: conic-gradient(var(--color-tr) 25%, var(--color-tl) 0 28%, var(--color-tr) 0 30%, var(--color-tl) 0);
+    opacity: 1;
+  }
+
+  h1,
+  div {
+    z-index: 1;
+  }
+
+  p {
+    margin: 0;
+    display: block;
+  }
+
+  > div {
+    margin: 0 0 0 24px;
+  }
 `
 
 export const IntroDescription = styled.div`
@@ -136,20 +188,66 @@ export const ClaimAccount = styled.div`
   flex-flow: row nowrap;
   width: 100%;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   margin: 0 0 24px;
 
-  > div {
-    background: grey;
-    width: 56px;
-    height: 56px;
-    border-radius: 56px;
-    margin: 0 12px 0 0;
+  > b {
+    font-size: 13px;
+    margin: 0 0 6px;
+    font-weight: normal;
   }
 
-  > span {
+  > div {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255 255 255 / 8%);
+    border-radius: 36px;
+    padding: 12px 18px;
+  }
+
+  > div > img {
+    height: 46px;
+    width: 46px;
+    border-radius: 46px;
+    object-fit: contain;
+    background-color: var(--color-grey);
+  }
+
+  > div > span {
     display: flex;
     flex-flow: column wrap;
+    align-items: flex-start;
+  }
+
+  > div > span > p {
+    margin: 0 0 0 10px;
+    font-size: 18px;
+    color: white;
+    font-weight: normal;
+  }
+`
+
+export const ClaimTotal = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 0 0 24px;
+
+  > b {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0 0 2px;
+  }
+
+  > p {
+    margin: 0;
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
   }
 `
 
@@ -203,7 +301,7 @@ export const ConfirmedIcon = styled.div`
 //   `};
 
 //   > button {
-//     background: rgb(237, 104, 52);
+//     background: var(--color-orange);
 //     border: 0;
 //     box-shadow: none;
 //     color: black;
@@ -233,25 +331,25 @@ export const CheckIcon = styled(CheckCircle)`
   height: 16px;
   width: 16px;
   margin-right: 6px;
-  stroke: rgb(237, 104, 52);
+  stroke: var(--color-orange);
 `
 
 export const NegativeIcon = styled(Frown)`
   height: 16px;
   width: 16px;
   margin-right: 6px;
-  stroke: rgb(237, 104, 52);
+  stroke: var(--color-orange);
 `
 
-export const EligibleBanner = styled.div<{ type?: string }>`
+export const EligibleBanner = styled.div`
   width: 100%;
   border-radius: 12px;
   padding: 12px;
   text-align: center;
   display: block;
-  background: ${({ type }) => (type === 'negative' ? 'red' : 'rgba(237, 104, 52, 0.1)')};
-  border: 0.1rem solid rgb(237, 104, 52);
-  color: rgb(237, 104, 52);
+  background: rgba(237, 104, 52, 0.1);
+  border: 0.1rem solid var(--color-orange);
+  color: var(--color-orange);
   text-align: center;
   margin: 0 auto 16px;
 `
@@ -345,6 +443,35 @@ export const FooterNavButtons = styled.div`
   display: flex;
   width: 100%;
   flex-flow: column wrap;
+
+  ${ButtonSecondary} {
+    margin: 24px auto 0;
+    color: var(--colorgrey);
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: var(--color-orange);
+      text-decoration: underline;
+    }
+
+    > svg {
+      margin: 0 6px 0 0;
+    }
+  }
+`
+
+export const TopNav = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  ${ButtonSecondary} {
+    margin: 0;
+    color: var(--color-orange);
+    font-size: 15px;
+    width: auto;
+  }
 `
 
 export const Demo = styled(ClaimTable)`
@@ -352,4 +479,20 @@ export const Demo = styled(ClaimTable)`
   > table {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  > table tr td:first-of-type {
+    opacity: 0.6;
+  }
+  > table tr td:last-of-type {
+    font-weight: bold;
+  }
+`
+
+export const DemoToggle = styled.button`
+  background: rgb(255 255 255 / 17%);
+  color: white;
+  border: 0;
+  margin: 0 0 16px;
+  font-size: 12px;
+  padding: 5px 0;
 `
