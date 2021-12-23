@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
-import { CheckCircle } from 'react-feather'
+import { CheckCircle, Frown } from 'react-feather'
+import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary } from 'components/Button'
 
 export const PageWrapper = styled.div`
@@ -59,12 +60,6 @@ export const PageWrapper = styled.div`
       pointer-events: all;
     }
   }
-`
-
-export const AvailableClaimTotal = styled.div`
-  display: flex;
-  width: 100%;
-  flex-flow: column wrap;
 `
 
 export const ClaimSummary = styled.div`
@@ -241,27 +236,32 @@ export const CheckIcon = styled(CheckCircle)`
   stroke: rgb(237, 104, 52);
 `
 
-export const EligibleBanner = styled.div`
+export const NegativeIcon = styled(Frown)`
+  height: 16px;
+  width: 16px;
+  margin-right: 6px;
+  stroke: rgb(237, 104, 52);
+`
+
+export const EligibleBanner = styled.div<{ type?: string }>`
   width: 100%;
   border-radius: 12px;
   padding: 12px;
   text-align: center;
-  display: flex;
-  background: rgba(237, 104, 52, 0.1);
-  flex-flow: row;
+  display: block;
+  background: ${({ type }) => (type === 'negative' ? 'red' : 'rgba(237, 104, 52, 0.1)')};
   border: 0.1rem solid rgb(237, 104, 52);
   color: rgb(237, 104, 52);
-  justify-content: center;
-  align-items: center;
+  text-align: center;
   margin: 0 auto 16px;
 `
 
-export const TopTitle = styled.div<{ titleOnly: boolean }>`
+export const TopTitle = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: ${({ titleOnly }) => (!titleOnly ? 'center' : 'flex-start')};
-  padding: ${({ titleOnly }) => (!titleOnly ? '30px 0' : '0')};
+  justify-content: flex-start;
+  padding: 30px 0;
 `
 
 export const InputField = styled.div`
@@ -275,7 +275,7 @@ export const InputField = styled.div`
   > input {
     background: transparent;
     border: 0;
-    font-size: 32px;
+    font-size: 24px;
     color: white;
     outline: 0;
     width: 100%;
@@ -312,6 +312,20 @@ export const CheckAddress = styled.div`
   display: flex;
   width: 100%;
   flex-flow: column wrap;
+
+  ${Icon} {
+    margin: 0 auto;
+  }
+
+  > h1 {
+    font-size: 32px;
+    font-weight: 300;
+    text-align: center;
+  }
+
+  > h1 > b {
+    font-weight: bold;
+  }
 
   > p {
     text-align: center;

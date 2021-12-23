@@ -16,7 +16,7 @@ import {
   AttemptFooter,
   TopTitle,
   CheckIcon,
-  AvailableClaimTotal,
+  NegativeIcon,
   ClaimSummary,
   IntroDescription,
   ClaimTable,
@@ -45,7 +45,8 @@ export default function Claim() {
 
   useEffect(() => {
     setIsInputAddressValid(isAddress(inputAddress))
-  }, [inputAddress])
+    setHasClaims(unclaimedAmount > 0 ? true : false)
+  }, [inputAddress, unclaimedAmount])
 
   return (
     <PageWrapper>
@@ -129,16 +130,39 @@ export default function Claim() {
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimConfirmed} />
 
-      {/* START - Show title IF inputting address OR is simple airdrop claim */}
-      <TopTitle titleOnly={!!activeClaimAccount}>
-        {!activeClaimAccount && <CowProtocolLogo size={100} />}
-        <h1>
+      {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
+      {activeClaimAccount && hasClaims && (
+        <EligibleBanner>
+          <CheckIcon />
+          <Trans>You are eligible for vCOW token claims!</Trans>
+        </EligibleBanner>
+      )}
+      {activeClaimAccount && !hasClaims && (
+        <EligibleBanner>
+          <NegativeIcon />
           <Trans>
-            Claim <b>vCOW</b> token
+            This account is <b>not eligible</b> for any vCOW token claim.
           </Trans>
-        </h1>
-      </TopTitle>
-      {/* END - Show title IF inputting address OR is simple airdrop claim */}
+        </EligibleBanner>
+      )}
+      <ClaimSummary>
+        <CowProtocolLogo size={54} />
+        {!activeClaimAccount && !hasClaims && (
+          <h1>
+            <Trans>
+              Claim <b>vCOW</b> token
+            </Trans>
+          </h1>
+        )}
+        {activeClaimAccount && (
+          <span>
+            <b>Total available to claim</b>
+            <p>{unclaimedAmount} vCOW</p>
+          </span>
+        )}
+      </ClaimSummary>
+
+      {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
 
       {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
       {!activeClaimAccount && (
@@ -160,26 +184,6 @@ export default function Claim() {
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
-
-      {/* START - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-      {activeClaimAccount && (
-        <AvailableClaimTotal>
-          {hasClaims && (
-            <EligibleBanner>
-              <CheckIcon />
-              <Trans>You are eligible for vCOW token claims!</Trans>
-            </EligibleBanner>
-          )}
-          <ClaimSummary>
-            <CowProtocolLogo size={54} />
-            <span>
-              <b>Total available to claim</b>
-              <p>{unclaimedAmount} vCOW</p>
-            </span>
-          </ClaimSummary>
-        </AvailableClaimTotal>
-      )}
-      {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
 
       {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
       {activeClaimAccount && hasClaims && isAirdropOnly && !claimAttempting && !claimConfirmed && (

@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
 
-const Icon = styled.span<Props>`
+export const Icon = styled.span<Props>`
   ${({ theme }) => theme.cowToken.background};
   ${({ theme }) => theme.cowToken.boxShadow};
   height: ${({ size }) => (size ? `${size}px` : '24px')};
