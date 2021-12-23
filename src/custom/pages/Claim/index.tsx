@@ -149,24 +149,6 @@ export default function Claim() {
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimConfirmed} />
 
-      {/* START -- Top nav buttons */}
-      {activeClaimAccount && (
-        <TopNav>
-          <ClaimAccount>
-            <div>
-              <img src={dummyIdenticon} alt={activeClaimAccount} />
-              <span>
-                <p>{activeClaimAccountENS}</p>
-                <p>{activeClaimAccount}</p>
-              </span>
-            </div>
-            <ButtonSecondary>Change account</ButtonSecondary>
-          </ClaimAccount>
-        </TopNav>
-      )}
-      {/* END -- Top nav buttons */}
-
-      {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
       {(!claimAttempting || !claimConfirmed || !claimSubmitted) && activeClaimAccount && hasClaims && (
         <EligibleBanner>
           <CheckIcon />
@@ -174,6 +156,24 @@ export default function Claim() {
         </EligibleBanner>
       )}
 
+      {/* START -- Top nav buttons */}
+      {activeClaimAccount && (
+        <TopNav>
+          <ClaimAccount hasENS={!!activeClaimAccountENS}>
+            <div>
+              <img src={dummyIdenticon} alt={activeClaimAccount} />
+              <span>
+                <p>{activeClaimAccountENS}</p>
+                <p>{activeClaimAccount}</p>
+              </span>
+            </div>
+            <ButtonSecondary onClick={() => setActiveClaimAccount('')}>Change account</ButtonSecondary>
+          </ClaimAccount>
+        </TopNav>
+      )}
+      {/* END -- Top nav buttons */}
+
+      {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
       {(!claimAttempting || !claimConfirmed || !claimSubmitted) && (
         <ClaimSummary>
           <CowProtocolLogo size={100} />
@@ -236,7 +236,8 @@ export default function Claim() {
       {activeClaimAccount && !hasClaims && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
           <Trans>
-            Unfortunately this account is not eligible for any vCOW claims. Try another account or
+            Unfortunately this account is not eligible for any vCOW claims.{' '}
+            <ButtonSecondary onClick={() => setActiveClaimAccount('')}>Try another account</ButtonSecondary> or
             <ExternalLink href="https://cow.fi/">read more about vCOW</ExternalLink>
           </Trans>
         </IntroDescription>

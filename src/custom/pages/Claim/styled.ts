@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
@@ -8,6 +8,7 @@ export const PageWrapper = styled.div`
   --color-tr: #3b4052;
   --color-grey: rgb(151, 151, 151);
   --color-orange: rgb(237, 104, 52);
+  --border-radius: 12px;
 
   display: flex;
   flex-flow: column wrap;
@@ -45,7 +46,7 @@ export const PageWrapper = styled.div`
     border: 0;
     box-shadow: none;
     color: black;
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     width: 100%;
     font-size: 21px;
     padding: 24px 16px;
@@ -89,8 +90,8 @@ export const ClaimSummary = styled.div`
   width: 100%;
   align-items: center;
   justify-content: flex-start;
-  padding: 32px;
-  border-radius: 12px;
+  padding: 24px;
+  border-radius: var(--border-radius);
   margin: 0 auto 24px;
   /* background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%); */
   position: relative;
@@ -129,6 +130,11 @@ export const IntroDescription = styled.div`
   display: block;
   width: 100%;
   margin: 0 0 24px;
+
+  > button {
+    width: auto;
+    display: inline;
+  }
 `
 
 export const ClaimTable = styled.div`
@@ -183,13 +189,13 @@ export const ClaimTable = styled.div`
   }
 `
 
-export const ClaimAccount = styled.div`
+export const ClaimAccount = styled.div<{ hasENS?: boolean }>`
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin: 0 0 24px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
 
   > b {
     font-size: 13px;
@@ -202,9 +208,6 @@ export const ClaimAccount = styled.div`
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    background: rgb(255 255 255 / 8%);
-    border-radius: 36px;
-    padding: 12px 18px;
   }
 
   > div > img {
@@ -226,6 +229,15 @@ export const ClaimAccount = styled.div`
     font-size: 18px;
     color: white;
     font-weight: normal;
+
+    ${({ hasENS }) =>
+      hasENS &&
+      css`
+        &:last-of-type {
+          font-size: 13px;
+          color: var(--color-grey);
+        }
+      `}
   }
 `
 
@@ -235,7 +247,6 @@ export const ClaimTotal = styled.div`
   width: 100%;
   justify-content: flex-start;
   align-items: flex-start;
-  margin: 0 0 24px;
 
   > b {
     font-size: 14px;
@@ -465,6 +476,11 @@ export const TopNav = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  background: rgb(255 255 255 / 4%);
+  border-radius: 24px;
+  padding: 24px;
+  margin: 0 0 24px;
 
   ${ButtonSecondary} {
     margin: 0;
