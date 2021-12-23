@@ -15,7 +15,7 @@ import {
   ConfirmedIcon,
   AttemptFooter,
   ContentWrapper,
-  TopWrapper,
+  TopTitle,
   CheckIcon,
   AvailableClaimTotal,
   ClaimSummary,
@@ -115,19 +115,21 @@ export default function Claim() {
       {/* DEMO ONLY */}
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimConfirmed} />
+
       {/* START - Show title IF inputting address OR is simple airdrop claim */}
-      <h1>
-        <Trans>
-          Claim <b>vCOW</b> token
-        </Trans>
-      </h1>
+      <TopTitle titleOnly={!!activeClaimAccount}>
+        {!activeClaimAccount && <CowProtocolLogo size={100} />}
+        <h1>
+          <Trans>
+            Claim <b>vCOW</b> token
+          </Trans>
+        </h1>
+      </TopTitle>
       {/* END - Show title IF inputting address OR is simple airdrop claim */}
+
       {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
       {!activeClaimAccount && (
         <CheckAddress>
-          <TopWrapper>
-            <CowProtocolLogo size={100} />
-          </TopWrapper>
           <p>Enter an address to check for any eligible vCOW claims.</p>
           <InputField>
             <b>Input address</b>
@@ -136,6 +138,7 @@ export default function Claim() {
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
+
       {/* START - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
       {activeClaimAccount && hasClaims && (
         <AvailableClaimTotal>
@@ -150,36 +153,20 @@ export default function Claim() {
               <p>4,320,3234.43 vCOW</p>
             </span>
           </ClaimSummary>
-          <IntroDescription>
-            Thank you for being a supporter of CowSwap and the CoW protocol. The protocol would like to invite you to
-            become part of the COWmunity and share the goals and success. Please proceed below to claim you vCOW token.
-          </IntroDescription>
         </AvailableClaimTotal>
       )}
       {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
+
       {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
-      {isAirdropOnly && !claimAttempting && !claimConfirmed && (
-        <ContentWrapper>
-          <p>
-            <Trans>
-              As an important member of the CowSwap Community you may claim vCOW to be used for voting and governance.
-              You can claim your tokens until <i>[XX-XX-XXXX - XX:XX GMT]</i>
-              <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
-            </Trans>
-          </p>
-
-          <ButtonPrimary
-            disabled={!isAddress(account ?? '')}
-            padding="16px 16px"
-            width="100%"
-            $borderRadius="12px"
-            mt="1rem"
-          >
-            <Trans>Claim vCOW</Trans>
-          </ButtonPrimary>
-
-          <ExternalLink href="#">Check for another wallet</ExternalLink>
-        </ContentWrapper>
+      {activeClaimAccount && isAirdropOnly && !claimAttempting && !claimConfirmed && (
+        <IntroDescription>
+          <Trans>
+            Thank you for being a supporter of CowSwap and the CoW protocol. As an important member of the CowSwap
+            Community you may claim vCOW to be used for voting and governance. You can claim your tokens until{' '}
+            <i>[XX-XX-XXXX - XX:XX GMT]</i>
+            <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
+          </Trans>
+        </IntroDescription>
       )}
       {/* END -- IS Airdrop only (simple)  ----------------------------------------------------- */}
       {/* START - Try claiming or inform succesfull claim  ----------------------------------------------------- */}
@@ -237,7 +224,7 @@ export default function Claim() {
       )}
       {/* END -- Try claiming or inform succesfull claim  ----------------------------------------------------- */}
       {/* START -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
-      {activeClaimAccount && !isAirdropOnly && (
+      {activeClaimAccount && !isAirdropOnly && hasClaims && (
         <ClaimBreakdown>
           <h2>vCOW claim breakdown</h2>
           <ClaimTable>
@@ -308,19 +295,16 @@ export default function Claim() {
       {/* END -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
       {/* START -- CLAIM button OR reset/check for another account */}
       <FooterNavButtons>
-        <ButtonPrimary
-          // disabled={!isAddress(account ?? '')}
-          padding="16px 16px"
-          width="100%"
-          $borderRadius="12px"
-          mt="1rem"
-        >
-          <Trans>Claim vCOW</Trans>
-        </ButtonPrimary>
-        <br />
-        or
-        <br />
-        <ExternalLink href="#">Check for another account {' ->'}</ExternalLink>
+        {activeClaimAccount && (
+          <>
+            {hasClaims && (
+              <ButtonPrimary padding="16px 16px" width="100%" $borderRadius="12px" mt="1rem">
+                <Trans>Claim vCOW</Trans>
+              </ButtonPrimary>
+            )}
+            <ExternalLink href="#">Check for another account {' ->'}</ExternalLink>
+          </>
+        )}
       </FooterNavButtons>
       {/* END -- CLAIM button OR reset/check for another account */}
     </PageWrapper>
