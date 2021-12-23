@@ -273,6 +273,21 @@ export async function getFullQuote({ quoteParams }: { quoteParams: FeeQuoteParam
   return Promise.allSettled([price, fee])
 }
 
+function _checkFeeErrorForData(error: GpQuoteError) {
+  console.warn('[getBestQuote:Legacy]::Fee error', error)
+
+  // check if our error response has any fee data attached to it
+  if (error?.data) {
+    return {
+      amount: error?.data.feeAmount,
+      expirationDate: error?.data.expiration,
+    }
+  } else {
+    // no data object, just rethrow
+    throw error
+  }
+}
+
 /**
  * (LEGACY) Will be overwritten in the near future
  *  Return the best quote considering all price feeds. The quote contains information about the price and fee
@@ -287,7 +302,9 @@ export async function getBestQuoteLegacy({
   // Get a new fee quote (if required)
   const feePromise =
     fetchFee || !previousFee
-      ? getQuote(quoteParams).then((resp) => ({ amount: resp.quote.feeAmount, expirationDate: resp.expiration }))
+      ? getQuote(quoteParams)
+          .then((resp) => ({ amount: resp.quote.feeAmount, expirationDate: resp.expiration }))
+          .catch(_checkFeeErrorForData)
       : Promise.resolve(previousFee)
 
   // Get a new price quote
