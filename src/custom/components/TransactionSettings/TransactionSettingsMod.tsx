@@ -1,18 +1,18 @@
 import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
-import { L2_CHAIN_IDS } from '@src/constants/chains'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
-import { useActiveWeb3React } from 'hooks/web3'
-import { darken } from 'polished'
 import { useContext, useState } from 'react'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { TYPE } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
+import { darken } from 'polished'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { useActiveWeb3React } from 'hooks/web3'
+import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ORDER_VALID_TO_TIME_SECONDS } from 'constants/index'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -142,7 +142,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     } else {
       try {
         const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-        if (!Number.isInteger(parsed) || parsed < 60 || parsed > 180 * 60) {
+        if (!Number.isInteger(parsed) || parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || parsed > 180 * 60) {
           setDeadlineError(DeadlineError.InvalidInput)
         } else {
           setDeadline(parsed)

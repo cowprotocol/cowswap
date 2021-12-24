@@ -1,3 +1,7 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
+
 import { createStore, Store } from 'redux'
 
 import { Field, selectCurrency } from './actions'

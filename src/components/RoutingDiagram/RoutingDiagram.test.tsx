@@ -1,3 +1,7 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
+
 import { Currency, Percent } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { DAI, USDC, WBTC } from 'constants/tokens'
