@@ -1,5 +1,4 @@
 import { WETH9 as WETH } from '@uniswap/sdk-core'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { FeeQuoteParams, FeeInformation } from '../../src/custom/utils/price'
 import { parseUnits } from '@ethersproject/units'
 
@@ -16,6 +15,11 @@ function _assertFeeData(fee: FeeInformation | string): void {
   }
   expect(fee).to.have.property('amount')
   expect(fee).to.have.property('expirationDate')
+}
+
+enum OrderKind {
+  SELL = 'sell',
+  BUY = 'buy',
 }
 
 /* Fee not currently being saved in local so commenting this out
