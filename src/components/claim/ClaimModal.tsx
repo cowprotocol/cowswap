@@ -51,8 +51,9 @@ export default function ClaimModal() {
   const isOpen = useModalOpen(ApplicationModal.SELF_CLAIM)
   const toggleClaimModal = useToggleSelfClaimModal()
 
-  const { account, chainId } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
 
+  const account = '0x0Ae21f9700eD15E1a83baa3183a67d54b1DA2086'
   // used for UI loading states
   const [attempting, setAttempting] = useState<boolean>(false)
 
@@ -60,14 +61,15 @@ export default function ClaimModal() {
   const userClaimData = useUserClaimData(account)
 
   // monitor the status of the claim from contracts and txns
-  const { claimCallback } = useClaimCallback('0x82850293A348107E798E5D366c10D1b566145Cd5') // TODO: remove me, hard coded only for testing
+  const { claimCallback } = useClaimCallback(account) // TODO: remove me, hard coded only for testing
   const unclaimedAmount: CurrencyAmount<Token> | undefined = useUserUnclaimedAmount(account)
   const { claimSubmitted, claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
   const claimConfirmed = Boolean(claimTxn?.receipt)
 
   function onClaim() {
+    console.log(`Trying to claim!!!`, unclaimedAmount?.toString(), claimConfirmed)
     setAttempting(true)
-    claimCallback()
+    claimCallback([{ index: 1080 }])
       // reset modal and log error
       .catch((error) => {
         setAttempting(false)
