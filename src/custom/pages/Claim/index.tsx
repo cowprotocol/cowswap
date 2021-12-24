@@ -35,6 +35,7 @@ import {
   InvestAvailableBar,
   InvestSummary,
   InvestFlowValidation,
+  InvestTokenSubtotal,
   StepIndicator,
   Steps,
   TokenLogo,
@@ -219,7 +220,8 @@ export default function Claim() {
       {!activeClaimAccount && !claimConfirmed && (
         <CheckAddress>
           <p>
-            Enter an address to check for any eligible vCOW claims{' '}
+            Enter an address to check for any eligible vCOW claims. <br />
+            <i>Note: It is possible to claim for an account, using any wallet/account.</i>
             <ButtonSecondary onClick={() => setActiveClaimAccount('0x0000000000000000000000000000')}>
               <Trans>or connect a wallet</Trans>
             </ButtonSecondary>
@@ -394,6 +396,7 @@ export default function Claim() {
             </Steps>
           </StepIndicator>
 
+          {/* Invest flow: Step 1 > Set allowances and investment amounts */}
           {isInvestFlowStep === 1 && (
             <InvestContent>
               <p>
@@ -493,7 +496,40 @@ export default function Claim() {
                 </span>
               </InvestTokenGroup>
 
+              <InvestTokenSubtotal>
+                {activeClaimAccount} will receive: 4,054,671.28 vCOW based on investment(s)
+              </InvestTokenSubtotal>
+
               <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
+            </InvestContent>
+          )}
+
+          {/* Invest flow: Step 2 > Review summary */}
+          {isInvestFlowStep === 2 && (
+            <InvestContent>
+              1. Claim airdrop: {activeClaimAccount} receives 13,120.50 vCOW (Note: please make sure you intend to claim
+              and send vCOW to the mentioned account)
+              <br />
+              <br />
+              2. Claim and invest: Investing with account: {account} (connected account). Investing: 1343 GNO (50% of
+              available investing opportunity) and 32 ETH (30% of available investing opportunity)
+              <br />
+              <br />
+              3. Receive vCOW claims on account {activeClaimAccount}: 23,947.6 vCOW - available NOW! and 120,567.12 vCOW
+              - Vested linearly 4 years <br />
+              <br />
+              <br />
+              <h4>Ready to claim your vCOW?</h4>
+              <p>
+                <b>What will happen?</b> By sending this Ethereum transaction, you will be investing tokens from the
+                connected account and exchanging them for vCOW tokens that will be received by the claiming account
+                specified above.
+              </p>
+              <p>
+                <b>Can I modify the invested amounts or invest partial amounts later?</b> No. Once you send the
+                transaction, you cannot increase or reduce the investment. Investment oportunities can only be exercised
+                once.
+              </p>
             </InvestContent>
           )}
         </InvestFlow>

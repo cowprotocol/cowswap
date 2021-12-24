@@ -10,6 +10,7 @@ export const PageWrapper = styled.div`
   --color-orange: rgb(237, 104, 52);
   --color-container-bg: rgb(255 255 255 / 6%);
   --color-container-bg2: rgb(255 255 255 / 12%);
+  --color-container-bg3: rgb(255 255 255 / 25%);
   --border-radius: 56px;
 
   display: flex;
@@ -697,4 +698,14 @@ export const InvestFlowValidation = styled.div`
   color: red;
   text-align: center;
   margin: 0 auto 16px;
+`
+
+export const InvestTokenSubtotal = styled.div`
+  display: flex;
+  padding: 56px;
+  margin: 0 0 24px;
+  background: var(--color-container-bg3);
+  color: white;
+  border-radius: var(--border-radius);
+  font-size: 21px;
 `
