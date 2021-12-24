@@ -17,8 +17,7 @@ export function ReferralLinkUpdater() {
     } else if (referralAddressParam) {
       dispatch(updateReferralAddress(referralAddressParam))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [referralAddressParam, JSON.stringify(referralAddress), dispatch])
+  }, [referralAddressParam, referralAddress, dispatch])
 
   return null
 }

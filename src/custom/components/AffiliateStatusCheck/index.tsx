@@ -65,6 +65,8 @@ export default function AffiliateStatusCheck() {
 
     if (fulfilledActivity.length >= 1 && isFirstTrade.current) {
       setAffiliateState(null)
+      isFirstTrade.current = false
+      history.replace({ search: '' })
       resetReferralAddress()
       return
     }
@@ -83,8 +85,7 @@ export default function AffiliateStatusCheck() {
     }
     setAffiliateState('ACTIVE')
     isFirstTrade.current = true
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, account, referralAddress, fulfilledActivity.length, resetReferralAddress])
+  }, [referralAddress, chainId, account, fulfilledActivity.length, history, resetReferralAddress])
 
   useEffect(() => {
     async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
@@ -97,10 +98,8 @@ export default function AffiliateStatusCheck() {
         setError('There was an error while uploading the referral document to IPFS. Please try again later.')
       }
     }
-
     if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(referralAddress), affiliateState, appDispatch])
+  }, [referralAddress, affiliateState, appDispatch])
 
   useEffect(() => {
     if (!referralAddress) {
@@ -131,17 +130,7 @@ export default function AffiliateStatusCheck() {
     }
 
     handleAffiliateState()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(referralAddress),
-    account,
-    history,
-    chainId,
-    handleAffiliateState,
-    location.search,
-    referralAddressQueryParam,
-  ])
+  }, [referralAddress, account, history, chainId, handleAffiliateState, location.search, referralAddressQueryParam])
 
   if (error) {
     return (
