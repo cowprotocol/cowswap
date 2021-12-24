@@ -23,13 +23,21 @@ import {
   ClaimAccount,
   EligibleBanner,
   InputField,
+  InputError,
   CheckAddress,
   ClaimBreakdown,
   FooterNavButtons,
   TopNav,
   InvestFlow,
+  InvestContent,
+  InvestTokenGroup,
+  InvestInput,
+  InvestAvailableBar,
+  InvestSummary,
+  InvestFlowValidation,
   StepIndicator,
   Steps,
+  TokenLogo,
 } from './styled'
 
 export default function Claim() {
@@ -163,6 +171,20 @@ export default function Claim() {
       {/* DEMO ONLY */}
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimConfirmed} />
+      {/* START -- Top nav buttons */}
+      {activeClaimAccount && (
+        <TopNav>
+          <ClaimAccount>
+            <div>
+              <img src={dummyIdenticon} alt={activeClaimAccount} />
+              <p>{activeClaimAccountENS ? activeClaimAccountENS : activeClaimAccount}</p>
+            </div>
+            <ButtonSecondary onClick={() => setActiveClaimAccount('')}>Change account</ButtonSecondary>
+          </ClaimAccount>
+        </TopNav>
+      )}
+      {/* END -- Top nav buttons */}
+      {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
       {(!claimAttempting || !claimConfirmed || !claimSubmitted) &&
         activeClaimAccount &&
         hasClaims &&
@@ -172,27 +194,10 @@ export default function Claim() {
             <Trans>This account is eligible for vCOW token claims!</Trans>
           </EligibleBanner>
         )}
-      {/* START -- Top nav buttons */}
-      {activeClaimAccount && (
-        <TopNav>
-          <ClaimAccount hasENS={!!activeClaimAccountENS}>
-            <div>
-              <img src={dummyIdenticon} alt={activeClaimAccount} />
-              <span>
-                <p>{activeClaimAccountENS}</p>
-                <p>{activeClaimAccount}</p>
-              </span>
-            </div>
-            <ButtonSecondary onClick={() => setActiveClaimAccount('')}>Change account</ButtonSecondary>
-          </ClaimAccount>
-        </TopNav>
-      )}
-      {/* END -- Top nav buttons */}
-      {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-      {(!claimAttempting || !claimConfirmed || !claimSubmitted) && (
+      {(!claimAttempting || !claimConfirmed || !claimSubmitted) && !isInvestFlowActive && (
         <ClaimSummary>
           <CowProtocolLogo size={100} />
-          {!activeClaimAccount && !hasClaims && (!claimAttempting || !claimConfirmed) && (
+          {!activeClaimAccount && !hasClaims && (
             <h1>
               <Trans>
                 Claim <b>vCOW</b> token
@@ -215,9 +220,9 @@ export default function Claim() {
         <CheckAddress>
           <p>
             Enter an address to check for any eligible vCOW claims{' '}
-            <ExternalLink href="#">
+            <ButtonSecondary onClick={() => setActiveClaimAccount('0x0000000000000000000000000000')}>
               <Trans>or connect a wallet</Trans>
-            </ExternalLink>
+            </ButtonSecondary>
           </p>
           <InputField>
             <b>Input address</b>
@@ -227,7 +232,7 @@ export default function Claim() {
               onChange={(e) => setInputAddress(e.currentTarget.value)}
             />
           </InputField>
-          {!isInputAddressValid && 'Incorrect address'}
+          {!isInputAddressValid && <InputError>Incorrect address</InputError>}
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
@@ -244,7 +249,8 @@ export default function Claim() {
           </p>
         </IntroDescription>
       )}
-      {/* END -- IS Airdrop only (simple)  ----------------------------------------------------- */}
+      {/* END -- IS Airdrop only (simple)  ---------------------------------------- */}
+
       {/* START -- NO CLAIMS  ----------------------------------------------------- */}
       {activeClaimAccount && !hasClaims && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
@@ -255,8 +261,9 @@ export default function Claim() {
           </Trans>
         </IntroDescription>
       )}
-      {/* END -- NO CLAIMS  ----------------------------------------------------- */}
-      {/* START - Try claiming or inform succesfull claim  ----------------------------------------------------- */}
+      {/* END ---- NO CLAIMS  ----------------------------------------------------- */}
+
+      {/* START - Try claiming or inform succesfull claim  ---------------------- */}
       {activeClaimAccount && (claimAttempting || claimConfirmed) && (
         <ConfirmOrLoadingWrapper activeBG={true}>
           <ConfirmedIcon>
@@ -312,6 +319,7 @@ export default function Claim() {
         </ConfirmOrLoadingWrapper>
       )}
       {/* END -- Try claiming or inform succesfull claim  ----------------------------------------------------- */}
+
       {/* START -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
       {activeClaimAccount && !isAirdropOnly && hasClaims && !isInvestFlowActive && (
         <ClaimBreakdown>
@@ -320,11 +328,7 @@ export default function Claim() {
             <table>
               <thead>
                 <tr>
-                  <th>
-                    <label className="checkAll">
-                      <input type="checkbox" name="check" />
-                    </label>
-                  </th>
+                  <th>Select</th>
                   <th>Type of Claim</th>
                   <th>Amount</th>
                   <th>Price</th>
@@ -372,6 +376,7 @@ export default function Claim() {
         </ClaimBreakdown>
       )}
       {/* END -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
+
       {/* START -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
       {activeClaimAccount && hasClaims && !claimConfirmed && !isAirdropOnly && isInvestFlowActive && (
         <InvestFlow>
@@ -388,17 +393,124 @@ export default function Claim() {
               <li>Submit and confirm the transaction to claim vCOW</li>
             </Steps>
           </StepIndicator>
+
+          {isInvestFlowStep === 1 && (
+            <InvestContent>
+              <p>
+                Your account can participate in the investment of vCOW. Each investment opportunity will allow you to
+                invest up to a predefined maximum amount of tokens{' '}
+              </p>
+              <InvestTokenGroup>
+                <div>
+                  <span>
+                    <TokenLogo symbol={'GNO'} size={72} />
+                    <CowProtocolLogo size={72} />
+                  </span>
+                  <h3>Buy vCOW with GNO</h3>
+                </div>
+
+                <span>
+                  <InvestSummary>
+                    <span>
+                      <b>Price</b> <i>16.66 vCoW per GNO</i>
+                    </span>
+                    <span>
+                      <b>Token approval</b>
+                      <i>GNO not approved</i>
+                      <button>Approve GNO</button>
+                    </span>
+                    <span>
+                      <b>Max. investment available</b> <i>2,500.04 GNO</i>
+                    </span>
+                    <span>
+                      <b>Available investment used</b> <InvestAvailableBar percentage={50} />
+                    </span>
+                  </InvestSummary>
+                  <InvestInput>
+                    <div>
+                      <span>
+                        <b>Balance:</b> <i>10,583.34 GNO</i>
+                        {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
+                        <button>Invest max. possible</button>
+                      </span>
+                      <label>
+                        <b>GNO</b>
+                        <input placeholder="0" />
+                      </label>
+                      <i>Receive: 32,432.54 vCOW</i>
+                      {/* Insufficient balance validation error */}
+                      <small>
+                        Insufficient balance to invest. Adjust the amount or go back to remove this investment option.
+                      </small>
+                    </div>
+                  </InvestInput>
+                </span>
+              </InvestTokenGroup>
+
+              <InvestTokenGroup>
+                <div>
+                  <span>
+                    <TokenLogo symbol={'ETH'} size={72} />
+                    <CowProtocolLogo size={72} />
+                  </span>
+                  <h3>Buy vCOW with ETH</h3>
+                </div>
+
+                <span>
+                  <InvestSummary>
+                    <span>
+                      <b>Price</b> <i>16.66 vCoW per ETH</i>
+                    </span>
+                    <span>
+                      <b>Token approval</b>
+                      <i>Not needed for ETH!</i>
+                    </span>
+                    <span>
+                      <b>Max. investment available</b> <i>2,500.04 ETH</i>
+                    </span>
+                    <span>
+                      <b>Available investment used</b> <InvestAvailableBar percentage={50} />
+                    </span>
+                  </InvestSummary>
+                  <InvestInput>
+                    <div>
+                      <span>
+                        <b>Balance:</b> <i>10,583.34 ETH</i>
+                        {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
+                        <button>Invest max. possible</button>
+                      </span>
+                      <label>
+                        <b>ETH</b>
+                        <input placeholder="0" />
+                      </label>
+                      <i>Receive: 32,432.54 vCOW</i>
+                      {/* Insufficient balance validation error */}
+                      <small>
+                        Insufficient balance to invest. Adjust the amount or go back to remove this investment option.
+                      </small>
+                    </div>
+                  </InvestInput>
+                </span>
+              </InvestTokenGroup>
+
+              <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
+            </InvestContent>
+          )}
         </InvestFlow>
       )}
       {/* END -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
+
       {/* START -- CLAIM button OR other actions */}
       <FooterNavButtons>
         {/* General claim vCOW button  (no invest) */}
-        {activeClaimAccount && hasClaims && !claimConfirmed && !isInvestFlowActive && (
-          <ButtonPrimary onClick={() => (!isAirdropOnly ? setIsInvestFlowActive(true) : null)}>
-            <Trans>Claim vCOW</Trans>
-          </ButtonPrimary>
-        )}
+        {activeClaimAccount &&
+          hasClaims &&
+          (!claimConfirmed || !claimAttempting || !claimSubmitted) &&
+          !isInvestFlowActive && (
+            <ButtonPrimary onClick={() => (!isAirdropOnly ? setIsInvestFlowActive(true) : setClaimAttempting(true))}>
+              <Trans>Claim vCOW</Trans>
+            </ButtonPrimary>
+          )}
         {/* Check for claims button */}
         {!activeClaimAccount && !hasClaims && (
           <ButtonPrimary

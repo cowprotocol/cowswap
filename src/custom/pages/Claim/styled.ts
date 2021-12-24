@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
@@ -8,17 +8,18 @@ export const PageWrapper = styled.div`
   --color-tr: #3b4052;
   --color-grey: rgb(151, 151, 151);
   --color-orange: rgb(237, 104, 52);
-  --color-container-bg: rgb(255 255 255 / 4%);
-  --border-radius: 24px;
+  --color-container-bg: rgb(255 255 255 / 6%);
+  --color-container-bg2: rgb(255 255 255 / 12%);
+  --border-radius: 56px;
 
   display: flex;
   flex-flow: column wrap;
   max-width: 760px;
   width: 100%;
-  background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
+  background: linear-gradient(315deg, #000000 0%, #000000 55%, #2a2a2a 100%);
   color: white;
   border-radius: var(--border-radius);
-  padding: 24px;
+  padding: 30px;
 
   a {
     color: var(--color-orange);
@@ -91,7 +92,7 @@ export const ClaimSummary = styled.div`
   width: 100%;
   align-items: center;
   justify-content: flex-start;
-  padding: 24px;
+  padding: 8px;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
   /* background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%); */
@@ -124,7 +125,7 @@ export const ClaimSummary = styled.div`
   }
 
   > div {
-    margin: 0 0 0 24px;
+    margin: 0 0 0 18px;
   }
 `
 
@@ -132,6 +133,10 @@ export const IntroDescription = styled.div`
   display: block;
   width: 100%;
   margin: 0 0 24px;
+
+  > p {
+    margin: 8px auto 24px;
+  }
 
   > button {
     width: auto;
@@ -167,7 +172,7 @@ export const ClaimTable = styled.div`
   th {
     position: sticky;
     top: 0;
-    background: rgba(151, 151, 151, 0.3);
+    background: transparent;
     text-align: left;
     font-weight: normal;
     font-size: 13px;
@@ -186,12 +191,13 @@ export const ClaimTable = styled.div`
     word-break: break-word;
   }
 
-  tr:nth-child(even) td {
-    background: rgba(151, 151, 151, 0.1);
+  tr > td {
+    background: var(--color-container-bg);
+    margin: 0 0 12px;
   }
 `
 
-export const ClaimAccount = styled.div<{ hasENS?: boolean }>`
+export const ClaimAccount = styled.div`
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
@@ -220,26 +226,11 @@ export const ClaimAccount = styled.div<{ hasENS?: boolean }>`
     background-color: var(--color-grey);
   }
 
-  > div > span {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: flex-start;
-  }
-
-  > div > span > p {
+  > div > p {
     margin: 0 0 0 10px;
     font-size: 18px;
     color: white;
     font-weight: normal;
-
-    ${({ hasENS }) =>
-      hasENS &&
-      css`
-        &:last-of-type {
-          font-size: 13px;
-          color: var(--color-grey);
-        }
-      `}
   }
 `
 
@@ -356,7 +347,7 @@ export const NegativeIcon = styled(Frown)`
 
 export const EligibleBanner = styled.div`
   width: 100%;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   padding: 12px;
   text-align: center;
   display: flex;
@@ -420,6 +411,10 @@ export const InputField = styled.div`
   }
 `
 
+export const InputError = styled.div`
+  color: red;
+`
+
 export const CheckAddress = styled.div`
   display: flex;
   width: 100%;
@@ -480,10 +475,9 @@ export const TopNav = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background: rgb(255 255 255 / 4%);
-  border-radius: 24px;
-  padding: 24px;
-  margin: 0 auto 16px;
+  background: transparent;
+  padding: 0;
+  margin: 0 auto 24px;
 
   ${ButtonSecondary} {
     margin: 0;
@@ -521,15 +515,186 @@ export const InvestFlow = styled.div`
   flex-flow: column wrap;
 `
 
+export const InvestContent = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+`
+
 export const StepIndicator = styled.div`
   display: flex;
   flex-flow: column wrap;
 `
 
 export const Steps = styled.div<{ step: number | 0 }>`
-  list-style-type: none;
+  list-style-type: decimal;
+  margin: 0 0 12px;
+  background: var(--color-container-bg);
+  padding: 12px;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+
+  > li {
+    margin: 0 0 12px;
+  }
 
   > li:nth-of-type(${({ step }) => step}) {
-    background: grey;
+    background: rgb(237 104 52 / 29%);
   }
+`
+
+export const TokenLogo = styled.div<{ symbol: string; size: number }>`
+  display: flex;
+  width: ${({ size }) => `${size}px`};
+  height: ${({ size }) => `${size}px`};
+  border-radius: ${({ size }) => `${size}px`};
+  /* background: ${({ symbol }) => `url(${symbol}.png) no-repeat center/contain`}; */
+  background: grey;
+`
+
+export const InvestTokenGroup = styled.div`
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+  background: var(--color-container-bg);
+  border-radius: var(--border-radius);
+  padding: 24px;
+  margin: 0 0 24px;
+  border: 1px solid #3a3a3a;
+
+  > div {
+    display: flex;
+    flex-flow: column wrap;
+    flex: 0 1 auto;
+    padding: 0 32px 0 0;
+  }
+
+  > div > span {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 0 25px 0 0;
+  }
+
+  > div > h3 {
+    font-size: 14px;
+  }
+
+  ${TokenLogo},
+  ${Icon} {
+    border: 4px solid black;
+  }
+
+  ${TokenLogo} {
+    margin: 0 -34px 0 0;
+  }
+
+  > span {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    gap: 18px;
+  }
+`
+
+export const InvestInput = styled.span`
+  display: flex;
+  flex-flow: column wrap;
+  font-size: 15px;
+  width: 100%;
+
+  > div {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 8px;
+    width: 100%;
+  }
+
+  > div > label {
+    display: flex;
+    position: relative;
+  }
+
+  > div > label > b {
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 12px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    opacity: 0.5;
+  }
+
+  > div > label > input {
+    background: black;
+    color: white;
+    border: 1px solid grey;
+    border-radius: 12px;
+    padding: 12px 70px 12px 12px;
+    font-size: 26px;
+    outline: 0;
+    width: 100%;
+  }
+
+  > div > small {
+    color: red;
+    margin: 12px 0;
+  }
+`
+
+export const InvestAvailableBar = styled.div<{ percentage?: number }>`
+  width: 100%;
+  display: flex;
+  position: relative;
+  height: 10px;
+  border-radius: 24px;
+  background: var(--color-container-bg2);
+  margin: 8px 0;
+
+  &::before {
+    content: '';
+    display: block;
+    background: var(--color-orange);
+    height: 100%;
+    border-radius: 24px;
+    width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
+  }
+
+  &::after {
+    content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
+    display: inline-block;
+    font-size: 13px;
+    color: var(--color-orange);
+  }
+`
+
+export const InvestSummary = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+  font-size: 15px;
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    margin: 0 0 12px;
+  }
+`
+
+export const InvestFlowValidation = styled.div`
+  width: 100%;
+  border-radius: var(--border-radius);
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(255 0 0 / 25%);
+  color: red;
+  text-align: center;
+  margin: 0 auto 16px;
 `
