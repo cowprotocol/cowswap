@@ -3,7 +3,7 @@
   "description": "CowSwap - Gnosis Protocol",
   "homepage": ".",
   "private": true,
-  "version": "1.7.3",
+  "version": "1.8.0-rc.1",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -193,15 +193,14 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@gnosis.pm/cow-runner-game": "^0.2.9",
-    "@gnosis.pm/dex-js": "^0.13.0",
-    "@gnosis.pm/gp-v2-contracts": "^1.0.2",
+    "@gnosis.pm/dex-js": "^0.14.0",
+    "@gnosis.pm/gp-v2-contracts": "^1.1.2",
     "@gnosis.pm/safe-service-client": "^0.1.1",
     "@pinata/sdk": "^1.1.23",
     "@sentry/react": "^6.11.0",
     "@sentry/tracing": "^6.11.0",
     "@uniswap/default-token-list": "^2.0.0",
     "@walletconnect/web3-provider": "^1.6.6",
-    "bignumber.js": "9.0.1",
     "bnc-sdk": "^3.5.0",
     "fast-safe-stringify": "^2.0.8",
     "paraswap": "^5.0.1",

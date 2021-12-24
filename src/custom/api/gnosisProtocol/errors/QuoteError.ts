@@ -3,6 +3,7 @@ import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
 export interface GpQuoteErrorObject {
   errorType: GpQuoteErrorCodes
   description: string
+  data?: any
 }
 
 // Conforms to backend API
@@ -36,11 +37,17 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErr
       return {
         errorType: GpQuoteErrorCodes.FeeExceedsFrom,
         description: GpQuoteErrorDetails.FeeExceedsFrom,
+        data: error?.data,
       }
 
     case ApiErrorCodes.UnsupportedToken:
       return {
         errorType: GpQuoteErrorCodes.UnsupportedToken,
+        description: error.description,
+      }
+    case ApiErrorCodes.SellAmountDoesNotCoverFee:
+      return {
+        errorType: GpQuoteErrorCodes.FeeExceedsFrom,
         description: error.description,
       }
     default:
@@ -52,6 +59,8 @@ export default class GpQuoteError extends Error {
   name = 'QuoteErrorObject'
   type: GpQuoteErrorCodes
   description: string
+  // any data attached
+  data?: any
 
   // Status 400 errors
   // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
@@ -96,6 +105,7 @@ export default class GpQuoteError extends Error {
     this.type = quoteError.errorType
     this.description = quoteError.description
     this.message = GpQuoteError.quoteErrorDetails[quoteError.errorType]
+    this.data = quoteError?.data
   }
 }
 
