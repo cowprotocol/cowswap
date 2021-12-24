@@ -368,13 +368,13 @@ export const EligibleBanner = styled.div`
   margin: 0 auto 16px;
 `
 
-export const TopTitle = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 30px 0;
-`
+// export const TopTitle = styled.div`
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: flex-start;
+//   padding: 30px 0;
+// `
 
 export const InputField = styled.div`
   padding: 18px;
@@ -514,4 +514,22 @@ export const DemoToggle = styled.button`
   margin: 0 0 16px;
   font-size: 12px;
   padding: 5px 0;
+`
+
+export const InvestFlow = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+`
+
+export const StepIndicator = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+`
+
+export const Steps = styled.div<{ step: number | 0 }>`
+  list-style-type: none;
+
+  > li:nth-of-type(${({ step }) => step}) {
+    background: grey;
+  }
 `

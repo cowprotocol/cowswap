@@ -15,9 +15,7 @@ import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,
   AttemptFooter,
-  TopTitle,
   CheckIcon,
-  NegativeIcon,
   ClaimSummary,
   ClaimTotal,
   IntroDescription,
@@ -29,6 +27,9 @@ import {
   ClaimBreakdown,
   FooterNavButtons,
   TopNav,
+  InvestFlow,
+  StepIndicator,
+  Steps,
 } from './styled'
 
 export default function Claim() {
@@ -44,6 +45,8 @@ export default function Claim() {
   const [activeClaimAccount, setActiveClaimAccount] = useState('')
   const [isAirdropOnly, setIsAirdropOnly] = useState(false)
   const [hasClaims, setHasClaims] = useState(false)
+  const [isInvestFlowActive, setIsInvestFlowActive] = useState(false)
+  const [isInvestFlowStep, setIsInvestFlowStep] = useState(0)
   const [claimConfirmed, setClaimConfirmed] = useState(false)
   const [claimAttempting, setClaimAttempting] = useState(false)
   const [claimSubmitted, setClaimSubmitted] = useState(false)
@@ -109,6 +112,19 @@ export default function Claim() {
                 </td>
               </tr>
               <tr>
+                <td>isInvestFlowActive</td>
+                <td>
+                  {' '}
+                  <button onClick={() => setIsInvestFlowActive(!isInvestFlowActive)}>
+                    Toggle ({String(isInvestFlowActive)})
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>isInvestFlowStep</td>
+                <td>{String(isInvestFlowStep)}</td>
+              </tr>
+              <tr>
                 <td>claimConfirmed</td>
                 <td>
                   {' '}
@@ -145,17 +161,17 @@ export default function Claim() {
         </Demo>
       )}
       {/* DEMO ONLY */}
-
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimConfirmed} />
-
-      {(!claimAttempting || !claimConfirmed || !claimSubmitted) && activeClaimAccount && hasClaims && (
-        <EligibleBanner>
-          <CheckIcon />
-          <Trans>You are eligible for vCOW token claims!</Trans>
-        </EligibleBanner>
-      )}
-
+      {(!claimAttempting || !claimConfirmed || !claimSubmitted) &&
+        activeClaimAccount &&
+        hasClaims &&
+        !isInvestFlowActive && (
+          <EligibleBanner>
+            <CheckIcon />
+            <Trans>This account is eligible for vCOW token claims!</Trans>
+          </EligibleBanner>
+        )}
       {/* START -- Top nav buttons */}
       {activeClaimAccount && (
         <TopNav>
@@ -172,7 +188,6 @@ export default function Claim() {
         </TopNav>
       )}
       {/* END -- Top nav buttons */}
-
       {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
       {(!claimAttempting || !claimConfirmed || !claimSubmitted) && (
         <ClaimSummary>
@@ -195,7 +210,6 @@ export default function Claim() {
         </ClaimSummary>
       )}
       {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-
       {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
       {!activeClaimAccount && !claimConfirmed && (
         <CheckAddress>
@@ -217,7 +231,6 @@ export default function Claim() {
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
-
       {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
       {activeClaimAccount && hasClaims && isAirdropOnly && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
@@ -232,7 +245,6 @@ export default function Claim() {
         </IntroDescription>
       )}
       {/* END -- IS Airdrop only (simple)  ----------------------------------------------------- */}
-
       {/* START -- NO CLAIMS  ----------------------------------------------------- */}
       {activeClaimAccount && !hasClaims && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
@@ -244,7 +256,6 @@ export default function Claim() {
         </IntroDescription>
       )}
       {/* END -- NO CLAIMS  ----------------------------------------------------- */}
-
       {/* START - Try claiming or inform succesfull claim  ----------------------------------------------------- */}
       {activeClaimAccount && (claimAttempting || claimConfirmed) && (
         <ConfirmOrLoadingWrapper activeBG={true}>
@@ -256,7 +267,6 @@ export default function Claim() {
             )}
           </ConfirmedIcon>
           <h3>{claimConfirmed ? 'Claimed!' : 'Claiming'}</h3>
-
           {!claimConfirmed && (
             <p>
               <Trans>{unclaimedAmount} vCOW</Trans>
@@ -266,17 +276,22 @@ export default function Claim() {
           {claimConfirmed && (
             <>
               <Trans>
+                <h3>You have successfully claimed</h3>
+              </Trans>
+              <Trans>
+                <p>[CLAIMED AMOUNT] vCOW</p>
+              </Trans>
+              <Trans>
                 <span role="img" aria-label="party-hat">
                   🎉🐮{' '}
                 </span>
-                Welcome to team COW :){' '}
+                Welcome to the COWmunnity! :){' '}
                 <span role="img" aria-label="party-hat">
                   🐄🎉
                 </span>
               </Trans>
             </>
           )}
-
           {claimAttempting && !claimSubmitted && (
             <AttemptFooter>
               <p>
@@ -284,7 +299,6 @@ export default function Claim() {
               </p>
             </AttemptFooter>
           )}
-
           {claimAttempting && claimSubmitted && !claimConfirmed && chainId && (
             // && claimTxn?.hash
             <ExternalLink
@@ -298,9 +312,8 @@ export default function Claim() {
         </ConfirmOrLoadingWrapper>
       )}
       {/* END -- Try claiming or inform succesfull claim  ----------------------------------------------------- */}
-
       {/* START -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
-      {activeClaimAccount && !isAirdropOnly && hasClaims && (
+      {activeClaimAccount && !isAirdropOnly && hasClaims && !isInvestFlowActive && (
         <ClaimBreakdown>
           <h2>vCOW claim breakdown</h2>
           <ClaimTable>
@@ -359,14 +372,34 @@ export default function Claim() {
         </ClaimBreakdown>
       )}
       {/* END -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
-
+      {/* START -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
+      {activeClaimAccount && hasClaims && !claimConfirmed && !isAirdropOnly && isInvestFlowActive && (
+        <InvestFlow>
+          <StepIndicator>
+            <h1>
+              {isInvestFlowStep === 0
+                ? 'Claiming vCOW is a two step process'
+                : isInvestFlowStep === 1
+                ? 'Set allowance to Buy vCOW'
+                : 'Confirm transaction to claim all vCOW'}
+            </h1>
+            <Steps step={isInvestFlowStep}>
+              <li>Allowances: Approve all tokens to be used for investment.</li>
+              <li>Submit and confirm the transaction to claim vCOW</li>
+            </Steps>
+          </StepIndicator>
+        </InvestFlow>
+      )}
+      {/* END -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
       {/* START -- CLAIM button OR other actions */}
       <FooterNavButtons>
-        {activeClaimAccount && hasClaims && !claimConfirmed && (
-          <ButtonPrimary>
+        {/* General claim vCOW button  (no invest) */}
+        {activeClaimAccount && hasClaims && !claimConfirmed && !isInvestFlowActive && (
+          <ButtonPrimary onClick={() => (!isAirdropOnly ? setIsInvestFlowActive(true) : null)}>
             <Trans>Claim vCOW</Trans>
           </ButtonPrimary>
         )}
+        {/* Check for claims button */}
         {!activeClaimAccount && !hasClaims && (
           <ButtonPrimary
             disabled={!isInputAddressValid}
@@ -375,6 +408,32 @@ export default function Claim() {
           >
             <Trans>Check claimable vCOW</Trans>
           </ButtonPrimary>
+        )}
+        {/* Invest flow button */}
+        {activeClaimAccount && hasClaims && !claimConfirmed && !isAirdropOnly && isInvestFlowActive && (
+          <>
+            {isInvestFlowStep === 0 ? (
+              <ButtonPrimary onClick={() => setIsInvestFlowStep(1)}>
+                <Trans>Approve tokens</Trans>
+              </ButtonPrimary>
+            ) : isInvestFlowStep === 1 ? (
+              <ButtonPrimary onClick={() => setIsInvestFlowStep(2)}>
+                <Trans>Review</Trans>
+              </ButtonPrimary>
+            ) : (
+              <ButtonPrimary onClick={() => setIsInvestFlowStep(3)}>
+                <Trans>Claim and invest vCOW</Trans>
+              </ButtonPrimary>
+            )}
+
+            <ButtonSecondary
+              onClick={() =>
+                isInvestFlowStep === 0 ? setIsInvestFlowActive(false) : setIsInvestFlowStep(isInvestFlowStep - 1)
+              }
+            >
+              <Trans>Go back</Trans>
+            </ButtonSecondary>
+          </>
         )}
       </FooterNavButtons>
       {/* END -- CLAIM button OR other actions */}
