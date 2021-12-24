@@ -5,7 +5,7 @@
 
 import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg' // mod
 import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg' // mod
-import xDaiLogo from 'assets/cow-swap/network-xdai-logo.svg' // mod
+import GnosisChainLogo from 'assets/cow-swap/network-gnosis-chain-logo.svg' // mod
 export * from '@src/constants/chains'
 
 export enum SupportedChainId {
@@ -170,8 +170,8 @@ export const CHAIN_INFO: ChainInfo = {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://blockscout.com/xdai/mainnet/  ',
     infoLink: '',
-    label: 'xDai',
-    logoUrl: xDaiLogo, // mod
+    label: 'Gnosis Chain',
+    logoUrl: GnosisChainLogo, // mod
     nativeCurrency: { name: 'xDai', symbol: 'XDAI', decimals: 18 },
   },
 }
@@ -188,7 +188,7 @@ export const NETWORK_LABELS: { [chainId in SupportedChainId | number]: string } 
   // [SupportedChainId.GOERLI]: 'Görli',
   // [SupportedChainId.KOVAN]: 'Kovan',
   // [SupportedChainId.XDAI]: 'XDai',
-  [SupportedChainId.XDAI]: 'xDai', // mod
+  [SupportedChainId.XDAI]: 'Gnosis Chain', // mod
   //   [SupportedChainId.ARBITRUM_KOVAN]: 'kArbitrum',
   //   [SupportedChainId.ARBITRUM_ONE]: 'Arbitrum One',
 }

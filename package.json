@@ -10,7 +10,7 @@
     "dist"
   ],
   "private": true,
-  "version": "1.7.0",
+  "version": "1.7.3",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -228,6 +228,7 @@
     "react-appzi": "^1.0.4",
     "react-inlinesvg": "^2.3.0",
     "react-router-hash-link": "^2.4.0",
+    "react-snowfall": "^1.1.1",
     "simple-sitemap-renderer": "^1.1.0",
     "timeago.js": "^4.0.2"
   }
