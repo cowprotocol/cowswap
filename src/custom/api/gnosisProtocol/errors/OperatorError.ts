@@ -3,6 +3,7 @@ type ApiActionType = 'get' | 'create' | 'delete'
 export interface ApiErrorObject {
   errorType: ApiErrorCodes
   description: string
+  data?: any
 }
 
 // Conforms to backend API

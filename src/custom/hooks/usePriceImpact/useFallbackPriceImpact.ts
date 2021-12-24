@@ -11,8 +11,6 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { useQuote } from 'state/price/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
-import { TYPED_VALUE_DEBOUNCE_TIME } from 'state/price/updater'
-import useDebounceWithForceUpdate from 'hooks/useDebounceWithForceUpdate'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
 
@@ -43,18 +41,11 @@ function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: 
   return abTrade?.outputAmountWithoutFee
 }
 
-export default function useFallbackPriceImpact({ abTrade: rawAbTrade, isWrapping }: FallbackPriceImpactParams) {
+export default function useFallbackPriceImpact({ abTrade, isWrapping }: FallbackPriceImpactParams) {
   const {
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
   } = useSwapState()
-
-  // debounce trade creation and force update when tradeType changes
-  const abTrade = useDebounceWithForceUpdate(rawAbTrade, TYPED_VALUE_DEBOUNCE_TIME, [
-    rawAbTrade?.tradeType,
-    sellToken,
-    buyToken,
-  ])
 
   const { chainId } = useActiveWeb3React()
   const lastQuote = useQuote({ token: sellToken, chainId })
