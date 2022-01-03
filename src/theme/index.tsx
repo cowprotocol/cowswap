@@ -1,13 +1,13 @@
-// import { useMemo } from 'react'
+import React /*, { useMemo } */ from 'react'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
   createGlobalStyle,
   css,
-  DefaultThemeUniswap,
-  // DefaultTheme,
+  DefaultThemeUniswap as DefaultTheme,
   // ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components/macro'
-// import { useIsDarkMode } from 'state/user/hooks'
+
+// import { useIsDarkMode } from '../state/user/hooks'
 import { Colors } from './styled'
 
 export * from './components'
@@ -15,13 +15,25 @@ export * from './components'
 type TextProps = Omit<TextPropsOriginal, 'css'>
 
 export const MEDIA_WIDTHS = {
-  upToExtraSmall: 340,
-  upToSmall: 736,
-  upToMedium: 1024,
-  // upToExtraSmall: 500,
-  // upToSmall: 720,
-  // upToMedium: 960,
+  upToExtraSmall: 500,
+  upToSmall: 720,
+  upToMedium: 960,
   upToLarge: 1280,
+}
+
+// Migrating to a standard z-index system https://getbootstrap.com/docs/5.0/layout/z-index/
+// Please avoid using deprecated numbers
+export enum Z_INDEX {
+  deprecated_zero = 0,
+  deprecated_content = 1,
+  dropdown = 1000,
+  sticky = 1020,
+  fixed = 1030,
+  modalBackdrop = 1040,
+  offcanvas = 1050,
+  modal = 1060,
+  popover = 1070,
+  tooltip = 1080,
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
@@ -41,6 +53,7 @@ const black = '#000000'
 
 export function colors(darkMode: boolean): Colors {
   return {
+    darkMode,
     // base
     white,
     black,
@@ -61,8 +74,9 @@ export function colors(darkMode: boolean): Colors {
     bg4: darkMode ? '#565A69' : '#888D9B',
     bg5: darkMode ? '#6C7284' : '#888D9B',
     bg6: darkMode ? '#1A2028' : '#6C7284',
+
+    // mod
     bg7: darkMode ? '#1F4471' : '#CEE7EF',
-    bg8: darkMode ? '#1F4471' : '#D9E8EF',
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
@@ -76,8 +90,7 @@ export function colors(darkMode: boolean): Colors {
     primary5: darkMode ? '#153d6f70' : '#FDEAF1',
 
     // color text
-    primaryText1: darkMode ? '#438BF0' : '#D50066',
-    // primaryText1: darkMode ? '#5090ea' : '#D50066',
+    primaryText1: darkMode ? '#5090ea' : '#D50066',
 
     // secondary colors
     secondary1: darkMode ? '#2172E5' : '#E8006F',
@@ -104,7 +117,7 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function theme(darkMode: boolean): DefaultThemeUniswap {
+export function theme(darkMode: boolean): DefaultTheme {
   return {
     ...colors(darkMode),
 
@@ -196,12 +209,12 @@ export const TYPE = {
 }
 
 export const ThemedGlobalStyle = createGlobalStyle`
-  html {
-    color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.bg1} !important;
-  }
+html {
+  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.bg1} !important;
+}
 
-  a {
-    color: ${({ theme }) => theme.blue1}; 
-  }
+a {
+ color: ${({ theme }) => theme.blue1}; 
+}
 `

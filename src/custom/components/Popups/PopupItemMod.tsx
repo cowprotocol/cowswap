@@ -1,12 +1,13 @@
 import { useCallback, useContext, useEffect } from 'react'
 import { X } from 'react-feather'
+import { animated } from 'react-spring'
 import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { animated } from 'react-spring'
-import { PopupContent } from 'state/application/actions'
+
 import { useRemovePopup } from 'state/application/hooks'
-import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
+import { PopupContent } from 'state/application/reducer'
 import TransactionPopup from './TransactionPopupMod'
+import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
 
 export const StyledClose = styled(X)`
   position: absolute;

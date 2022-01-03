@@ -1,10 +1,10 @@
-import { Placement } from '@popperjs/core'
-import { transparentize } from 'polished'
-import { useCallback, useState } from 'react'
+import { Options, Placement } from '@popperjs/core'
+import Portal from '@reach/portal'
+import React, { useCallback, useMemo, useState } from 'react'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
+import { transparentize } from 'polished'
 import useInterval from 'hooks/useInterval'
-import Portal from '@reach/portal'
 import { PopoverContainerProps } from '.'
 
 export const PopoverContainer = styled.div<{ show: boolean }>`
@@ -96,14 +96,22 @@ export default function Popover({
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
   const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
-  const { styles, update, attributes } = usePopper(referenceElement, popperElement, {
-    placement,
-    strategy: 'fixed',
-    modifiers: [
-      { name: 'offset', options: { offset: [8, 8] } },
-      { name: 'arrow', options: { element: arrowElement } },
-    ],
-  })
+
+  const options = useMemo(
+    (): Options => ({
+      placement,
+      strategy: 'fixed',
+      modifiers: [
+        { name: 'offset', options: { offset: [8, 8] } },
+        { name: 'arrow', options: { element: arrowElement } },
+        { name: 'preventOverflow', options: { padding: 8 } },
+      ],
+    }),
+    [arrowElement, placement]
+  )
+
+  const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
+
   const updateCallback = useCallback(() => {
     update && update()
   }, [update])

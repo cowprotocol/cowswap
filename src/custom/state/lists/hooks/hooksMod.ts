@@ -3,11 +3,12 @@ import { TokenList } from '@uniswap/token-lists'
 import { useMemo, useCallback } from 'react'
 import { useAppSelector, useAppDispatch } from 'state/hooks'
 import sortByListPriority from 'utils/listSort'
-import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/unsupported.tokenlist.json'
+
 import BROKEN_LIST from 'constants/tokenLists/broken.tokenlist.json'
+import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/unsupported.tokenlist.json'
 import { AppState } from 'state'
-import { UNSUPPORTED_LIST_URLS, DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { UNSUPPORTED_LIST_URLS, DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 // MOD
 import { useActiveWeb3React } from 'hooks/web3'
 import {

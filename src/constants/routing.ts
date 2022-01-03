@@ -4,6 +4,9 @@ import { SupportedChainId } from './chains'
 import {
   AMPL,
   DAI,
+  DAI_ARBITRUM_ONE,
+  DAI_OPTIMISM,
+  ETH2X_FLI,
   GpEther as ExtendedEther,
   FEI,
   FRAX,
@@ -11,13 +14,15 @@ import {
   renBTC,
   TRIBE,
   USDC,
+  USDC_ARBITRUM,
+  USDC_OPTIMISM,
   USDT,
-  WBTC,
-  ETH2X_FLI,
-  WETH9_EXTENDED,
-  DAI_OPTIMISM,
+  USDT_ARBITRUM_ONE,
   USDT_OPTIMISM,
+  WBTC,
+  WBTC_ARBITRUM_ONE,
   WBTC_OPTIMISM,
+  WETH9_EXTENDED,
 } from 'constants/tokens'
 
 type ChainTokenList = {
@@ -37,6 +42,12 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
   [SupportedChainId.MAINNET]: [...WETH_ONLY[SupportedChainId.MAINNET], DAI, USDC, USDT, WBTC],
   [SupportedChainId.OPTIMISM]: [...WETH_ONLY[SupportedChainId.OPTIMISM], DAI_OPTIMISM, USDT_OPTIMISM, WBTC_OPTIMISM],
+  [SupportedChainId.ARBITRUM_ONE]: [
+    ...WETH_ONLY[SupportedChainId.ARBITRUM_ONE],
+    DAI_ARBITRUM_ONE,
+    USDT_ARBITRUM_ONE,
+    WBTC_ARBITRUM_ONE,
+  ],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -83,13 +94,23 @@ export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.KOVAN]: [ExtendedEther.onChain(SupportedChainId.KOVAN), WETH9_EXTENDED[SupportedChainId.KOVAN]],
   [SupportedChainId.ARBITRUM_ONE]: [
     ExtendedEther.onChain(SupportedChainId.ARBITRUM_ONE),
+    DAI_ARBITRUM_ONE,
+    USDC_ARBITRUM,
+    USDT_ARBITRUM_ONE,
+    WBTC_ARBITRUM_ONE,
     WETH9_EXTENDED[SupportedChainId.ARBITRUM_ONE],
   ],
   [SupportedChainId.ARBITRUM_RINKEBY]: [
     ExtendedEther.onChain(SupportedChainId.ARBITRUM_RINKEBY),
     WETH9_EXTENDED[SupportedChainId.ARBITRUM_RINKEBY],
   ],
-  [SupportedChainId.OPTIMISM]: [ExtendedEther.onChain(SupportedChainId.OPTIMISM)],
+  [SupportedChainId.OPTIMISM]: [
+    ExtendedEther.onChain(SupportedChainId.OPTIMISM),
+    DAI_OPTIMISM,
+    USDC_OPTIMISM,
+    USDT_OPTIMISM,
+    WBTC_OPTIMISM,
+  ],
   [SupportedChainId.OPTIMISTIC_KOVAN]: [ExtendedEther.onChain(SupportedChainId.OPTIMISTIC_KOVAN)],
 }
 

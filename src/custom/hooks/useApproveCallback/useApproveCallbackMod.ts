@@ -1,19 +1,20 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { CurrencyAmount, Percent, Currency, TradeType } from '@uniswap/sdk-core'
+import { BigNumber } from '@ethersproject/bignumber'
+import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useCallback, useMemo } from 'react'
+
 import { SWAP_ROUTER_ADDRESSES, V2_ROUTER_ADDRESS } from 'constants/addresses'
-import { useTransactionAdder, useHasPendingApproval } from 'state/enhancedTransactions/hooks'
+import { useHasPendingApproval, useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
-import { useActiveWeb3React } from 'hooks/web3'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { ethers } from 'ethers'
+import { useActiveWeb3React } from 'hooks/web3'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const APPROVE_GAS_LIMIT_DEFAULT = ethers.BigNumber.from('150000')
+const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -58,7 +59,6 @@ export function useApproveCallback(
       console.error('approve was called unnecessarily')
       return
     }
-
     if (!chainId) {
       console.error('no chainId')
       return

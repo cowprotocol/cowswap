@@ -22,7 +22,7 @@ import Modal from '../Modal' */
 import Row, { RowFixed } from 'components/Row'
 /* import { Dots } from '../swap/styleds'
 import Web3Status from '../Web3Status'
-import NetworkCard from './NetworkCard'
+import NetworkSelector from './NetworkSelector'
 import UniBalanceContent from './UniBalanceContent' */
 
 export const HeaderFrame = styled.div<{ showBackground: boolean }>`
@@ -69,6 +69,10 @@ export const HeaderControls = styled.div`
 export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
+
+  &:not(:first-child) {
+    margin-left: 0.5em;
+  }
 
   /* addresses safari's lack of support for "gap" */
   & > *:not(:first-child) {
@@ -328,7 +332,9 @@ export default function Header({ children }: PropsWithChildren<void>) {
         </StyledExternalLink>
       </HeaderLinks>
       <HeaderControls>
-        // <NetworkCard />
+        <HeaderElement>
+          <NetworkSelector />
+        </HeaderElement>
         <HeaderElement>
           {availableClaim && !showClaimPopup && (
             <UNIWrapper onClick={toggleClaimModal}>

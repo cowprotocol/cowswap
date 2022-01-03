@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { L2_CHAIN_IDS } from 'constants/chains'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import styled from 'styled-components/macro'
 import { TYPE } from 'theme'

@@ -72,6 +72,14 @@ yarn start:default
 yarn cypress
 ```
 
+### Run cosmos
+
+This will start a server on the `http://localhost:5000/`
+
+```bash
+yarn run cosmos
+```
+
 ## Configuring the environment (optional)
 
 The app has some default configuration, but it's highly encouraged to define your own.
