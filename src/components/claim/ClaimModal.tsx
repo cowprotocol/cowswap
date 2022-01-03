@@ -53,7 +53,7 @@ export default function ClaimModal() {
 
   const { chainId } = useActiveWeb3React()
 
-  const account = '0x0Ae21f9700eD15E1a83baa3183a67d54b1DA2086'
+  const account = '0x0010B775429d6C92333E363CBd6BF28dDF1A87E6'
   // used for UI loading states
   const [attempting, setAttempting] = useState<boolean>(false)
 
@@ -69,7 +69,7 @@ export default function ClaimModal() {
   function onClaim() {
     console.log(`Trying to claim!!!`, unclaimedAmount?.toString(), claimConfirmed)
     setAttempting(true)
-    claimCallback([{ index: 1080 }])
+    claimCallback([{ index: 3 }])
       // reset modal and log error
       .catch((error) => {
         setAttempting(false)

@@ -39,10 +39,10 @@ import NetworkCard, { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
 import {
   useModalOpen,
-  useShowClaimPopup,
+  /*useShowClaimPopup,*/
   // useToggleSelfClaimModal
 } from 'state/application/hooks'
-import { useUserHasAvailableClaim } from 'state/claim/hooks'
+//import { useUserHasAvailableClaim } from 'state/claim/hooks'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 
 import Modal from 'components/Modal'
@@ -223,10 +223,10 @@ export default function Header() {
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
   // const toggleClaimModal = useToggleSelfClaimModal()
-  const availableClaim: boolean = useUserHasAvailableClaim(account)
+  // const availableClaim: boolean = useUserHasAvailableClaim(account)
   const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
-  const showClaimPopup = useShowClaimPopup()
+  // const showClaimPopup = useShowClaimPopup()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
@@ -264,22 +264,20 @@ export default function Header() {
         <HeaderControls>
           <NetworkCard />
           <HeaderElement>
-            {availableClaim && !showClaimPopup && (
-              <UNIWrapper onClick={handleOnClickClaim}>
-                <VCowAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
-                  {claimTxn && !claimTxn?.receipt ? (
-                    <Dots>
-                      <Trans>Claiming vCOW...</Trans>
-                    </Dots>
-                  ) : (
-                    <>
-                      <CowProtocolLogo />
-                      <Trans>Claim vCOW</Trans>
-                    </>
-                  )}
-                </VCowAmount>
-              </UNIWrapper>
-            )}
+            <UNIWrapper onClick={handleOnClickClaim}>
+              <VCowAmount active={!!account} style={{ pointerEvents: 'auto' }}>
+                {claimTxn && !claimTxn?.receipt ? (
+                  <Dots>
+                    <Trans>Claiming vCOW...</Trans>
+                  </Dots>
+                ) : (
+                  <>
+                    <CowProtocolLogo />
+                    <Trans>vCOW</Trans>
+                  </>
+                )}
+              </VCowAmount>
+            </UNIWrapper>
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
                 <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>

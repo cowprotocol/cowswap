@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import JSBI from 'jsbi'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -15,11 +15,14 @@ import { V_COW } from 'constants/tokens'
 import { formatSmart } from 'utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
-import { useUserClaims } from 'state/claim/hooks/hooksMod'
+import { fetchClaims } from 'state/claim/hooks/hooksMod'
 
 export * from './hooksMod'
 
-export const enum ClaimType {
+// TODO: replace with real repo when known
+export const CLAIMS_REPO = 'https://raw.githubusercontent.com/gnosis/cow-mrkl-drop-data-chunks/final/chunks/'
+
+export enum ClaimType {
   Airdrop, // free, no vesting, can be available on both mainnet and gchain
   GnoOption, // paid, with vesting, must use GNO, can be available on both mainnet and gchain
   UserOption, // paid, with vesting, must use Native currency, can be available on both mainnet and gchain
@@ -27,6 +30,8 @@ export const enum ClaimType {
   Team, // free, with vesting, only on mainnet
   Advisor, // free, with vesting, only on mainnet
 }
+
+type RepoClaimType = keyof typeof ClaimType
 
 export const FREE_CLAIM_TYPES: ClaimType[] = [ClaimType.Airdrop, ClaimType.Team, ClaimType.Advisor]
 export const PAID_CLAIM_TYPES: ClaimType[] = [ClaimType.GnoOption, ClaimType.UserOption, ClaimType.Investor]
@@ -36,6 +41,10 @@ export interface UserClaimData {
   amount: string
   proof: string[]
   type: ClaimType
+}
+
+export type RepoClaimData = Omit<UserClaimData, 'type'> & {
+  type: RepoClaimType
 }
 
 export interface ClaimInput {
@@ -53,6 +62,7 @@ export interface ClaimInput {
 type Account = string | null | undefined
 
 export type UserClaims = UserClaimData[]
+export type RepoClaims = RepoClaimData[]
 
 /**
  * Gets an array of available claim
@@ -115,6 +125,46 @@ export function useUserUnclaimedAmount(account: string | null | undefined): Curr
   }, JSBI.BigInt('0'))
 
   return CurrencyAmount.fromRawAmount(vCow, JSBI.BigInt(totalAmount))
+}
+
+/**
+ * Gets user claims from claim repo
+ * Stores fetched claims in local state
+ *
+ * @param account
+ */
+export function useUserClaims(account: Account): UserClaims | null {
+  const { chainId } = useActiveWeb3React()
+  const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaims | null }>({})
+
+  // We'll have claims on multiple networks
+  const claimKey = chainId && account && `${chainId}:${account}`
+
+  useEffect(() => {
+    if (!claimKey) {
+      return
+    }
+
+    fetchClaims(account)
+      .then((accountClaimInfo) =>
+        setClaimInfo((claimInfo) => {
+          return {
+            ...claimInfo,
+            [claimKey]: accountClaimInfo,
+          }
+        })
+      )
+      .catch(() => {
+        setClaimInfo((claimInfo) => {
+          return {
+            ...claimInfo,
+            [claimKey]: null,
+          }
+        })
+      })
+  }, [account, chainId, claimKey])
+
+  return claimKey ? claimInfo[claimKey] : null
 }
 
 /**
