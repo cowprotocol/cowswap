@@ -153,10 +153,10 @@ const GlobalStyles = createGlobalStyle`
   }
 
   .mobileOnly {
-    display: none;
+    display: none !important;
     
     ${Media.mobile} {
-      display: block;
+      display: block !important;
     }
   }
 `

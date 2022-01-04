@@ -128,7 +128,7 @@ export const SubTitle = styled.p<{ maxWidth?: number, align?: string, lineHeight
   }
 `
 
-export const SectionImage = styled.div<{ margin?: string, height?: string, width?: string }>`
+export const SectionImage = styled.div<{ centerMobile?: boolean, margin?: string, height?: string, width?: string }>`
   width: ${({ width }) => width ? width : '100%'};
   height: ${({ height }) => height ? height : '100%'};
   margin: ${({ margin }) => margin ? margin : '0'};
@@ -141,6 +141,11 @@ export const SectionImage = styled.div<{ margin?: string, height?: string, width
 
   ${Media.mobile} {
     height: initial;
+
+    ${({ centerMobile }) => centerMobile && `
+      margin-left: auto;
+      margin-right: auto;
+    `}
   }
 
   > a > img,
@@ -308,21 +313,25 @@ export const CheckList = styled.ol`
   }
 `
 
+export const ApiWrapper = styled.div`
+  overflow: hidden;
+  max-width: 100%;
+`
+
 export const ApiTool = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
   flex-flow: column wrap;
   background: black;
   border: 0.1rem solid ${Color.border};
   backdrop-filter: blur(6rem);
   border-radius: 7rem;
-  max-height: 64rem;
+  // max-height: 64rem;
   padding: 2.4rem 4.8rem;
   font-size: ${Font.sizeDefault};
 
   ${Media.mobile} {
-    max-height: initial;
+    // max-height: initial;
     border-radius: 2rem;
     padding: 0 2.4rem 2.4rem;
   }
@@ -332,6 +341,10 @@ export const ApiTool = styled.div`
     font-size: 2.4rem;
     line-height: 1;
     color: ${Color.white}
+  }
+
+  pre {
+    max-width: 100%;
   }
 `
 
@@ -359,7 +372,7 @@ export const ApiParams = styled.div`
   }
 `
 
-export const ApiUrl = styled.div`
+export const ApiCurlCommand = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -375,49 +388,12 @@ export const ApiUrl = styled.div`
     gap: 1rem;
   }
 
-  > b {
-    margin: 0 0.6rem 0 0;
-    padding: 0;
-    display: inline-block;
-    color: ${Color.orange};
-  }
-
   > p {
     display: inline-block;
     line-height: 1.2;
   }
 
   > p > span {
-    color: ${Color.orange};
-  }
-`
-
-export const ApiOutput = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  margin: 4rem 0 0;
-
-  > b {
-    margin: 0 0 1.6rem 0;
-    font-weight: ${Font.weightNormal};
-  }
-
-  > div {
-    border: 0.1rem solid ${Color.border};
-    color: ${Color.grey};
-    padding: 2.1rem;
-    border-radius: 1.2rem;
-    line-height: 1.4;
-    overflow-y: auto;
-    font-size: 1.4rem;
-    height: 23rem;
-    word-break: break-all;
-  }
-
-  > div > span {
     color: ${Color.orange};
   }
 `

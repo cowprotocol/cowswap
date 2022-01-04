@@ -1,21 +1,30 @@
 import Head from 'next/head'
-import Link from 'next/link'
 import { GetStaticProps } from 'next'
+import { useRef } from 'react'
 
-import Layout from '../components/Layout'
-import { ExternalLink } from '../const/styles/global'
-import { ButtonWrapper } from '../components/Button'
-import CowSlider from '../components/CowSlider'
-import { Section, SubTitle, ScrollDownButton, SectionImage, IconList, IconListItem, Metrics, CheckList, ApiTool, ApiUrl, ApiOutput, ApiParams } from '../const/styles/pages/index'
-import SocialList from '../components/SocialList'
+import { ExternalLink } from '@/const/styles/global'
+import { siteConfig } from '@/const/meta'
+import metrics from '@/const/metrics'
+import { GET_QUOTE } from '@/const/api'
 
-// import { Trans } from '@lingui/macro'
-import { siteConfig } from '../const/meta'
-import metrics from '../const/metrics'
-import Button from '../components/Button'
+import Layout from '@/components/Layout'
+import { ButtonWrapper } from '@/components/Button'
+import CowSlider from '@/components/CowSlider'
+import { Section, SubTitle, ScrollDownButton, SectionImage, IconList, IconListItem, Metrics, CheckList, ApiWrapper, ApiTool, ApiCurlCommand, ApiParams } from '../const/styles/pages/index'
+import SocialList from '@/components/SocialList'
+import Button from '@/components/Button'
+
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { default as dark } from 'react-syntax-highlighter/dist/esm/styles/prism/coldark-dark';
 
 export default function Home({ metricsData, siteConfigData }) {
   const { title, descriptionShort, social, url } = siteConfigData
+  
+  const scrollToElRef = useRef(null);
+
+  const handleScrollDown = () => {
+    scrollToElRef.current.scrollIntoView({behavior: 'smooth'})
+  }
 
   return (
     <Layout>
@@ -39,11 +48,11 @@ export default function Home({ metricsData, siteConfigData }) {
         <div>
           <CowSlider />
         </div>
-        <ScrollDownButton>Scroll down</ScrollDownButton>
+        <ScrollDownButton onClick={handleScrollDown}>Scroll down</ScrollDownButton>
       </Section>
 
       {/* 2nd section */}
-      <Section flow={'column'}>
+      <Section ref={scrollToElRef} flow={'column'}>
         <div>
           <SectionImage margin={'0 auto -18rem'} height={'68rem'}><img loading="lazy" src="/images/cowBelt.jpg" alt="A fast growing protocol" /></SectionImage>
           <h2>A fast growing protocol</h2>
@@ -126,49 +135,27 @@ export default function Home({ metricsData, siteConfigData }) {
       </Section >
 
       {/* 5th section */}
-      < Section mobileSwitchOrder id="developers" >
-        <div>
+      <Section mobileSwitchOrder id="developers">
+        <ApiWrapper>
           <ApiTool>
             <h4>Get a price quote</h4>
+            <p>Example, how to get a price and fee quotes for selling 10 ETH for USDC.</p>
 
             <ApiParams>
               <span><b>WETH</b><small>sellToken</small></span>
               <span><b>USDC</b><small>buyToken</small></span>
-              <span><b>340</b><small>sellAmountBeforeFee</small></span>
+              <span><b>10</b><small>sellAmountBeforeFee</small></span>
             </ApiParams>
 
-            <ApiUrl>
-              <b>curl</b>
-              <p>https://protocol-mainnet.gnosis.io/api/<span>v1/quote</span></p>
-            </ApiUrl>
-
-            <ApiOutput>
-              <b>Quoted order response:</b>
-              <div>
-                <span>curl</span> -X &apos;POST&apos; \ <br />
-                &apos;https://protocol-mainnet.dev.gnosisdev.com/api/v1/quote&apos; \<br />
-                -H &apos;accept: application/json&apos; \<br />
-                -H &apos;Content-Type: application/json&apos; \<br />
-                -d &apos;{'{'} <br />
-                <span>&ldquo;sellToken&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
-                <span>&ldquo;buyToken&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
-                <span>&ldquo;receiver&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
-                <span>&ldquo;validTo&ldquo;:</span> 0,<br />
-                <span>&ldquo;appData&ldquo;:</span> &ldquo;0x0000000000000000000000000000000000000000000000000000000000000000&ldquo;,<br />
-                <span>&ldquo;partiallyFillable&ldquo;:</span> true,<br />
-                <span>&ldquo;sellTokenBalance&ldquo;:</span> &ldquo;erc20&ldquo;,<br />
-                <span>&ldquo;buyTokenBalance&ldquo;:</span> &ldquo;erc20&ldquo;,<br />
-                <span>&ldquo;from&ldquo;:</span> &ldquo;0x6810e776880c02933d47db1b9fc05908e5386b96&ldquo;,<br />
-                <span>&ldquo;kind&ldquo;:</span> &ldquo;sell&ldquo;,<br />
-                <span>&ldquo;sellAmountBeforeFee&ldquo;:</span> &ldquo;1234567890&ldquo;<br />
-                {'}'}
-              </div>
-
-            </ApiOutput>
+            <ApiCurlCommand>
+              <SyntaxHighlighter language="json" style={dark}>
+                {GET_QUOTE}
+              </SyntaxHighlighter>
+            </ApiCurlCommand>
           </ApiTool>
-        </div>
+        </ApiWrapper>
         <div>
-          <SectionImage margin={"0 0 -4rem -1rem"} width={"10rem"} height={"10rem"}>
+          <SectionImage centerMobile margin={"0 0 -4rem -1rem"} width={"10rem"} height={"10rem"}>
             <img loading="lazy" src="/images/icons/plug.svg" alt="Plug-n-play" />
           </SectionImage >
 
