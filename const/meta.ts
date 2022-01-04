@@ -8,7 +8,8 @@ export const siteConfig = {
     rootIPFS: "https://IPFS-URL-HERE",
     swap: "https://cowswap.exchange",
     docs: "https://docs.cowswap.exchange/",
-    analytics: "https://dune.xyz/CryptoOrca/GP"
+    apiDocs: "https://protocol-mainnet.gnosis.io/api/",
+    analytics: "https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2",
   },
   social: {
     twitter: { label: 'Twitter', account: '@MEVprotection', url: 'https://twitter.com/mevprotection' },

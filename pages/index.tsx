@@ -32,7 +32,7 @@ export default function Home({ metricsData, siteConfigData }) {
           <SubTitle lineHeight={2}>COW Protocol enables top DeFi rates with MEV protection by settling orders using batch settlements and leverages P2P (CoW) orders in combination with fallback liquidity from AMMs and DEX aggregators.</SubTitle>
 
           <ButtonWrapper>
-            <Button href={url.docs} target="_blank" label="API Docs" />
+            <Button href={url.docs} target="_blank" label="Documentation" />
             <Button variant='white' href={url.analytics} label='Analytics' target="_blank" rel="noopener nofollow" />
           </ButtonWrapper>
         </div>
@@ -69,7 +69,7 @@ export default function Home({ metricsData, siteConfigData }) {
             <IconListItem icon="images/icons/equal.svg">
               <span>
                 <b>Uniform clearing prices</b>
-                <p>Using <Link href="/">batch auctions</Link>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
+                <p>Using <a href="https://docs.cowswap.exchange/overview-1/batch-auctions" target="_blank" rel="noreferrer">batch auctions</a>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
               </span>
             </IconListItem>
 
@@ -116,7 +116,8 @@ export default function Home({ metricsData, siteConfigData }) {
       < Section flow={'column'} >
         <div>
           <h3>The life cycle of a CoW order</h3>
-          <SubTitle align='center'>The protocol improves prices for users by batching trades, finding coincidence of wants (CoWs) <br />and tapping into all on chain liquidity - including aggregators. <Link href="#">Read More</Link></SubTitle>
+          <SubTitle align='center'>The protocol improves prices for users by batching trades, finding coincidence of wants (CoWs) <br />and tapping into all on chain liquidity - including aggregators.
+            {' '}<a href="https://docs.cowswap.exchange/overview-1/coincidence-of-wants" target="_blank" rel="noreferrer">Read More</a></SubTitle>
           <SectionImage margin={'0'}>
             <a href="/images/how-it-works.jpg" target="_blank" rel="nofollow noopener"><img loading="lazy" src="/images/how-it-works.jpg" alt="How it works" /></a>
             <ButtonWrapper className="mobileOnly"><Button label={'View Full Image'} href="/images/how-it-works.jpg" target="_blank" rel="nofollow noopener" /></ButtonWrapper>
@@ -177,11 +178,12 @@ export default function Home({ metricsData, siteConfigData }) {
           <CheckList>
             <li>Fetch Quotes</li>
             <li>Create and cancel limit orders</li>
-            <li>Manage orders accross Ethereum, Rinkeby and XDAI.</li>
+            <li>Manage orders across Ethereum, Rinkeby and Gnosis Chain.</li>
           </CheckList>
 
           <ButtonWrapper>
-            <Button href="/" label="Api Docs" />
+            <Button href={url.apiDocs} label='Explore API Docs' target="_blank" rel="noopener nofollow" />
+            <Button href={url.docs} label="Documentation" target="_blank" rel="noopener nofollow" variant='white' />
           </ButtonWrapper>
         </div >
       </Section >
@@ -201,7 +203,7 @@ export default function Home({ metricsData, siteConfigData }) {
             <IconListItem icon="images/icons/equal.svg">
               <span>
                 <b>Uniform clearing prices</b>
-                <p>Using <Link href="/">batch auctions</Link>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
+                <p>Using <a href="https://docs.cowswap.exchange/overview-1/batch-auctions" target="_blank" rel="noreferrer">batch auctions</a>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
               </span>
             </IconListItem>
 

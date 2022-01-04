@@ -142,10 +142,12 @@ export default function Footer({ siteConfig, menu }) {
         <MenuWrapper key={id}>
           <b>{title}</b>
           <Menu>
-            {links.map(({ title, url }, index) =>
+            {links.map(({ title, url, target }, index) =>
               <li key={index}>
                 <Link href={url}>
-                  {title}
+                  <a target={target}>
+                    {title}
+                  </a>
                 </Link>
               </li>
             )}
@@ -159,7 +161,7 @@ export default function Footer({ siteConfig, menu }) {
         <SocialList social={social} labels={false} iconSize={2.8} gap={0.7} innerPadding={1} alignItems={'right'} />
         <CopyrightLinks>
           <li>©{siteConfig.title} - {currentYear}</li>
-          <li>ENS: <a href={siteConfig.url.rootETH} target="_blank" rel="nofollow noopener noreferrer">{siteConfig.url.rootETH}</a></li>
+          {/* TODO: <li>ENS: <a href={siteConfig.url.rootETH} target="_blank" rel="nofollow noopener noreferrer">{siteConfig.url.rootETH}</a></li> */}
         </CopyrightLinks>
       </LogoSection>
 
