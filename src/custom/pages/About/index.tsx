@@ -29,7 +29,7 @@ export default function About() {
       <Title>About</Title>
 
       <Content>
-        <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
+        <p>CowSwap is the first trading interface built on top of CoW Protocol.</p>
         <p>
           It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
           into any on-chain liquidity source while providing MEV protection.
