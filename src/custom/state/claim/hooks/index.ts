@@ -14,13 +14,14 @@ import { V_COW } from 'constants/tokens'
 
 import { formatSmart } from 'utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { isAddress } from 'utils'
 
-import { fetchClaims } from 'state/claim/hooks/hooksMod'
+import { getClaimKey, getClaimsRepoPath, transformRepoClaimsToUserClaims } from 'state/claim/hooks/utils'
 
-export * from './hooksMod'
+export { useUserClaimData } from '@src/state/claim/hooks'
 
-// TODO: replace with real repo when known
-export const CLAIMS_REPO = 'https://raw.githubusercontent.com/gnosis/cow-mrkl-drop-data-chunks/final/chunks/'
+const CLAIMS_REPO_BRANCH = 'main'
+export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 export enum ClaimType {
   Airdrop, // free, no vesting, can be available on both mainnet and gchain
@@ -145,7 +146,7 @@ export function useUserClaims(account: Account): UserClaims | null {
       return
     }
 
-    fetchClaims(account)
+    fetchClaims(account, chainId)
       .then((accountClaimInfo) =>
         setClaimInfo((claimInfo) => {
           return {
@@ -364,4 +365,84 @@ function _hasNoInputOrInputIsGreaterThanClaimAmount(
   claim: UserClaimData
 ): input is Required<ClaimInput> {
   return !input.amount || JSBI.greaterThan(JSBI.BigInt(input.amount), JSBI.BigInt(claim.amount))
+}
+
+type LastAddress = string
+type ClaimAddressMapping = { [firstAddress: string]: LastAddress }
+const FETCH_CLAIM_MAPPING_PROMISES: Record<number, Promise<ClaimAddressMapping> | null> = {}
+
+/**
+ * Customized fetchClaimMapping function
+ */
+function fetchClaimsMapping(chainId: number): Promise<ClaimAddressMapping> {
+  return (
+    FETCH_CLAIM_MAPPING_PROMISES[chainId] ??
+    (FETCH_CLAIM_MAPPING_PROMISES[chainId] = fetch(`${getClaimsRepoPath(chainId)}mapping.json`)
+      .then((res) => res.json())
+      .catch((error) => {
+        console.error('Failed to get claims mapping', error)
+        FETCH_CLAIM_MAPPING_PROMISES[chainId] = null
+      }))
+  )
+}
+
+const FETCH_CLAIM_FILE_PROMISES: { [startingAddress: string]: Promise<{ [address: string]: RepoClaims }> } = {}
+
+/**
+ * Customized fetchClaimFile function
+ */
+function fetchClaimsFile(address: string, chainId: number): Promise<{ [address: string]: RepoClaims }> {
+  console.log(`fetching key`, address)
+  const key = getClaimKey(address, chainId)
+  return (
+    FETCH_CLAIM_FILE_PROMISES[key] ??
+    (FETCH_CLAIM_FILE_PROMISES[key] = fetch(`${getClaimsRepoPath(chainId)}chunks/${address}.json`) // mod
+      .then((res) => res.json())
+      .catch((error) => {
+        console.error(`Failed to get claim file mapping for starting address ${address}`, error)
+        delete FETCH_CLAIM_FILE_PROMISES[key]
+      }))
+  )
+}
+
+const FETCH_CLAIM_PROMISES: { [key: string]: Promise<UserClaims> } = {}
+
+/**
+ * Customized fetchClaim function
+ * Returns the claim for the given address, or null if not valid
+ */
+function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
+  const formatted = isAddress(account)
+  if (!formatted) return Promise.reject(new Error('Invalid address'))
+
+  const claimKey = getClaimKey(account, chainId)
+
+  return (
+    FETCH_CLAIM_PROMISES[claimKey] ??
+    (FETCH_CLAIM_PROMISES[claimKey] = fetchClaimsMapping(chainId)
+      .then((mapping) => {
+        const sorted = Object.keys(mapping).sort((a, b) => (a.toLowerCase() < b.toLowerCase() ? -1 : 1))
+
+        for (const startingAddress of sorted) {
+          const lastAddress = mapping[startingAddress]
+          if (startingAddress.toLowerCase() <= formatted.toLowerCase()) {
+            if (formatted.toLowerCase() <= lastAddress.toLowerCase()) {
+              return startingAddress
+            }
+          } else {
+            throw new Error(`Claim for ${formatted} was not found in partial search`)
+          }
+        }
+        throw new Error(`Claim for ${formatted} was not found after searching all mappings`)
+      })
+      .then((address) => fetchClaimsFile(address, chainId))
+      .then((result) => {
+        if (result[formatted]) return transformRepoClaimsToUserClaims(result[formatted]) // mod
+        throw new Error(`Claim for ${formatted} was not found in claim file!`)
+      })
+      .catch((error) => {
+        console.debug('Claim fetch failed', error)
+        throw error
+      }))
+  )
 }

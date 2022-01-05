@@ -40,6 +40,15 @@ import {
   Steps,
   TokenLogo,
 } from './styled'
+import {
+  // ClaimInput,
+  // useClaimCallback,
+  useUserAvailableClaims,
+  useUserHasAvailableClaim,
+  useUserUnclaimedAmount,
+} from 'state/claim/hooks'
+import { formatSmart } from 'utils/format'
+import { hasFreeClaim, hasPaidClaim } from 'state/claim/hooks/utils'
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
@@ -52,21 +61,34 @@ export default function Claim() {
   const [inputAddress, setInputAddress] = useState('')
   const [isInputAddressValid, setIsInputAddressValid] = useState(false)
   const [activeClaimAccount, setActiveClaimAccount] = useState('')
-  const [isAirdropOnly, setIsAirdropOnly] = useState(false)
-  const [hasClaims, setHasClaims] = useState(false)
+  // const [isAirdropOnly, setIsAirdropOnly] = useState(false)
+  // const [hasClaims, setHasClaims] = useState(false)
   const [isInvestFlowActive, setIsInvestFlowActive] = useState(false)
   const [isInvestFlowStep, setIsInvestFlowStep] = useState(0)
   const [claimConfirmed, setClaimConfirmed] = useState(false)
   const [claimAttempting, setClaimAttempting] = useState(false)
   const [claimSubmitted, setClaimSubmitted] = useState(false)
-  const [unclaimedAmount, setUnclaimedAmount] = useState(0)
+  // const [unclaimedAmount, setUnclaimedAmount] = useState(0)
   const activeClaimAccountENS = 'TestAccount.eth'
   // =========================================
 
+  const userClaims = useUserAvailableClaims(activeClaimAccount || account)
+  const isAirdropOnly = hasFreeClaim(userClaims) && !hasPaidClaim(userClaims)
+  const unclaimedAmount = useUserUnclaimedAmount(activeClaimAccount || account)
+  const hasClaims = useUserHasAvailableClaim(activeClaimAccount || account)
+  // const { claimCallback } = useClaimCallback(activeClaimAccount || account)
+  // const claimInput = userClaims.map<ClaimInput>(({ index }) => ({ index }))
+
+  console.log(
+    `Claim/index::[unclaimedAmount ${unclaimedAmount?.toFixed(
+      2
+    )}] [hasClaims ${hasClaims}] [activeClaimAccount ${activeClaimAccount}] [isAirdropOnly ${isAirdropOnly}]`
+  )
+
   useEffect(() => {
     setIsInputAddressValid(isAddress(inputAddress))
-    setHasClaims(unclaimedAmount > 0 ? true : false)
-  }, [inputAddress, unclaimedAmount, claimConfirmed])
+    // setHasClaims(unclaimedAmount > 0 ? true : false)
+  }, [inputAddress])
 
   return (
     <PageWrapper>
@@ -106,20 +128,20 @@ export default function Claim() {
                 <td>activeClaimAccountENS</td>
                 <td>{activeClaimAccountENS}</td>
               </tr>
-              <tr>
-                <td>hasClaims</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setHasClaims(!hasClaims)}>Toggle ({String(hasClaims)})</button>
-                </td>
-              </tr>
-              <tr>
-                <td>isAirdropOnly</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setIsAirdropOnly(!isAirdropOnly)}>Toggle ({String(isAirdropOnly)})</button>
-                </td>
-              </tr>
+              {/*<tr>*/}
+              {/*  <td>hasClaims</td>*/}
+              {/*  <td>*/}
+              {/*    {' '}*/}
+              {/*    <button onClick={() => setHasClaims(!hasClaims)}>Toggle ({String(hasClaims)})</button>*/}
+              {/*  </td>*/}
+              {/*</tr>*/}
+              {/*<tr>*/}
+              {/*  <td>isAirdropOnly</td>*/}
+              {/*  <td>*/}
+              {/*    {' '}*/}
+              {/*    <button onClick={() => setIsAirdropOnly(!isAirdropOnly)}>Toggle ({String(isAirdropOnly)})</button>*/}
+              {/*  </td>*/}
+              {/*</tr>*/}
               <tr>
                 <td>isInvestFlowActive</td>
                 <td>
@@ -156,15 +178,15 @@ export default function Claim() {
                   <button onClick={() => setClaimSubmitted(!claimSubmitted)}>Toggle ({String(claimSubmitted)})</button>
                 </td>
               </tr>
-              <tr>
-                <td>unclaimedAmount</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setUnclaimedAmount(unclaimedAmount < 1 ? 39234238586 : 0)}>
-                    Toggle ({String(unclaimedAmount)})
-                  </button>
-                </td>
-              </tr>
+              {/*<tr>*/}
+              {/*  <td>unclaimedAmount</td>*/}
+              {/*  <td>*/}
+              {/*    {' '}*/}
+              {/*    <button onClick={() => setUnclaimedAmount(unclaimedAmount < 1 ? 39234238586 : 0)}>*/}
+              {/*      Toggle ({String(unclaimedAmount)})*/}
+              {/*    </button>*/}
+              {/*  </td>*/}
+              {/*</tr>*/}
             </tbody>
           </table>
         </Demo>
@@ -209,7 +231,7 @@ export default function Claim() {
             <div>
               <ClaimTotal>
                 <b>Total available to claim</b>
-                <p>{unclaimedAmount} vCOW</p>
+                <p>{formatSmart(unclaimedAmount)} vCOW</p>
               </ClaimTotal>
             </div>
           )}
@@ -278,7 +300,7 @@ export default function Claim() {
           <h3>{claimConfirmed ? 'Claimed!' : 'Claiming'}</h3>
           {!claimConfirmed && (
             <p>
-              <Trans>{unclaimedAmount} vCOW</Trans>
+              <Trans>{formatSmart(unclaimedAmount)} vCOW</Trans>
             </p>
           )}
 
