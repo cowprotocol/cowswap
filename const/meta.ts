@@ -12,6 +12,7 @@ export const siteConfig = {
     api: API_BASE_URL + "/mainnet",
     apiDocs: API_BASE_URL + "/mainnet/",
     analytics: "https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2",
+    explorer: "https://explorer.cow.fi"
   },
   social: {
     twitter: { label: 'Twitter', account: '@MEVprotection', url: 'https://twitter.com/mevprotection' },

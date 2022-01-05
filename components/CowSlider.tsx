@@ -148,6 +148,10 @@ export const CowVisual = styled.div`
   > img {
     width: 100%;
     object-fit: contain;
+    
+    // TODO: Some help to style things 🙏
+    max-height: 300px;
+
     height: auto;
     padding: 2.4rem 0;
   }
@@ -211,75 +215,77 @@ function getNetworkConfig(networkID) {
     case 'BAL':
       return { label: 'Balancer', color: "#772CF5" }
       break;
+    case 'CURVE':
+      // https://logotyp.us/logo/curve-dao/
+      return { label: 'Curve', color: "#c40000" }
+      break;
+    case 'SUSHI':
+      // https://logotyp.us/logo/sushiswap/
+      return { label: 'Sushiswap', color: "#03b8ff" }
+      break;
     case 'COW':
       return { label: 'CoW Protocol (P2P)', color: Color.orange }
       break;
     default:
-      return { label: 'Unkown network', color: Color.grey }
+      return { label: 'Unkown Source', color: Color.grey }
   }
 }
 
 export default function CowSlider() {
   const [activeBatch, setActiveBatch] = useState(1);
-  const activeBatchData = batches.length > 0 && Array(batches.find(b => b.id === activeBatch))
+  const { summary, description, metrics, visual, link, bars } = batches.find(b => b.id === activeBatch)
 
   return (
     <Wrapper>
       <CowTop>
         <span>
           <b>Batch Settlement Example</b>
-          {activeBatchData.map(({ orders, gasPerOrder, batchURL }, index) =>
-            <span key={index}>
-              <ol >
-                <li>Orders: <i>{orders}</i></li>
-                <li>Gas per order: <i>~${gasPerOrder}</i></li>
-              </ol>
-              <ExternalLink href={batchURL} target="_blank" rel="noopener nofollow">View on Etherscan</ExternalLink>
-            </span>
-          )
-          }
+          <span key={activeBatch}>
+            <ol >
+              {metrics.map(({ label, value }, index) => (
+                <li key={index}>{label}: <i>{value}</i></li>
+              ))}
+            </ol>
+            <ExternalLink href={link.url} target="_blank" rel="noopener nofollow">
+              {link.label}
+            </ExternalLink>
+          </span>
         </span>
 
-        {
-          batches.length > 0 && <CowTabs>
-            {batches.map((item) =>
-              <CowTabItem
-                key={item.id || 0}
-                position={item.id || 0}
-                active={item.id === activeBatch || false}
-                onClick={() => { setActiveBatch(item.id) }}
-              >
-                {item.label}
-              </CowTabItem>
-            )}
-          </CowTabs>
-        }
+        <CowTabs>
+          {batches.map((item) =>
+            <CowTabItem
+              key={item.id || 0}
+              position={item.id || 0}
+              active={item.id === activeBatch || false}
+              onClick={() => { setActiveBatch(item.id) }}
+            >
+              {item.label}
+            </CowTabItem>
+          )}
+        </CowTabs>
       </CowTop>
 
-      {activeBatchData.map(({ description }, index) =>
-        <CowSliderDescription key={index}>{description}</CowSliderDescription>
-      )
-      }
+      <CowSliderDescription>
+        <p><strong>{summary}</strong></p>
+        <p>{description}</p>
+      </CowSliderDescription>
 
       <CowVisual>
-        <img src="images/cow-graph-partialCow.png" alt="Partial CoW" />
+        <img src={visual} alt="Partial CoW" />
       </CowVisual>
 
-      {
-        batches.length > 0 && <CowBarWrapper>
-          {Array(batches.find(b => b.id === activeBatch)).map(batch => {
-            return (batch.bars).map(({ id, network, percent }) => {
-              return network && <CowBar
-                key={id || 0}
-                position={id}
-                percent={percent}
-                network={getNetworkConfig(network)}
-                data-label={getNetworkConfig(network).label}
-              />
-            })
-          })}
-        </CowBarWrapper>
-      }
+      <CowBarWrapper>
+        {bars.map(({ id, network, percent }) => {
+          return network && <CowBar
+            key={id || 0}
+            position={id}
+            percent={percent}
+            network={getNetworkConfig(network)}
+            data-label={getNetworkConfig(network).label}
+          />
+        })}
+      </CowBarWrapper>
 
     </Wrapper >
   )
