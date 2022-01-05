@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { ButtonPrimary, ButtonSecondary } from 'components/Button'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState, useEffect, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
-import { ExternalLink, CustomLightSpinner } from 'theme'
-import { isAddress } from 'ethers/lib/utils'
-import Circle from 'assets/images/blue-loader.svg'
-// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { useActiveWeb3React } from 'hooks/web3'
-import Confetti from 'components/Confetti'
+import { ExternalLink, CustomLightSpinner } from 'theme'
 import {
-  Demo,
-  DemoToggle,
+  useUserAvailableClaims,
+  useUserUnclaimedAmount,
+  FREE_CLAIM_TYPES,
+  ClaimType,
+  useClaimCallback,
+} from 'state/claim/hooks'
+import { ButtonPrimary, ButtonSecondary } from 'components/Button'
+import Circle from 'assets/images/blue-loader.svg'
+import {
   PageWrapper,
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,
@@ -23,7 +25,6 @@ import {
   ClaimAccount,
   EligibleBanner,
   InputField,
-  InputError,
   CheckAddress,
   ClaimBreakdown,
   FooterNavButtons,
@@ -39,193 +40,239 @@ import {
   StepIndicator,
   Steps,
   TokenLogo,
-} from './styled'
+  ClaimSummaryTitle,
+  InputErrorText,
+  InputFieldTitle,
+  ClaimAccountButtons,
+} from 'pages/Claim/styled'
 import {
-  // ClaimInput,
-  // useClaimCallback,
-  useUserAvailableClaims,
-  useUserHasAvailableClaim,
-  useUserUnclaimedAmount,
-} from 'state/claim/hooks'
+  getTypeToCurrencyMap,
+  getTypeToPriceMap,
+  isFreeClaim,
+  getFreeClaims,
+  hasPaidClaim,
+  parseClaimAmount,
+  getIndexes,
+  getPaidClaims,
+} from 'state/claim/hooks/utils'
+import { useWalletModalToggle } from 'state/application/hooks'
+import CowProtocolLogo from 'components/CowProtocolLogo'
+import Confetti from 'components/Confetti'
+import { shortenAddress } from 'utils'
+import { isAddress } from 'web3-utils'
+import useENS from 'hooks/useENS'
+import { TYPE } from 'theme'
 import { formatSmart } from 'utils/format'
-import { hasFreeClaim, hasPaidClaim } from 'state/claim/hooks/utils'
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
 
+  // address/ens address
+  const [inputAddress, setInputAddress] = useState<string>('')
+
+  const { loading, address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
+  const isInputAddressValid = useMemo(() => isAddress(resolvedAddress || ''), [resolvedAddress])
+
+  // Show input error
+  const showInputError = useMemo(
+    () => Boolean(inputAddress.length > 0 && !loading && !resolvedAddress),
+    [resolvedAddress, inputAddress, loading]
+  )
+
+  // account
+  const [activeClaimAccount, setActiveClaimAccount] = useState<string>('')
+  const [activeClaimAccountENS, setActiveClaimAccountENS] = useState<string>('')
+
+  // check address
+  const [isSearchUsed, setIsSearchUsed] = useState<boolean>(false)
+
+  // claiming
+  const [claimConfirmed, setClaimConfirmed] = useState<boolean>(false)
+  const [claimAttempting, setClaimAttempting] = useState<boolean>(false)
+  const [claimSubmitted, setClaimSubmitted] = useState<boolean>(false)
+  const [claimedAmmount, setClaimedAmmount] = useState<number>(0)
+
+  // investment
+  const [isInvestFlowActive, setIsInvestFlowActive] = useState<boolean>(false)
+  const [isInvestFlowStep, setIsInvestFlowStep] = useState<number>(0)
+
+  // should be updated
   const dummyIdenticon =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAA4ZJREFUeF7t3b1xFUEQReF5Jpj4BCC5CoIgiIFoSEAOyoEsZJEAPiaYojAxtWerWlvzye/96T5zb8/MW83t8enuZQ3+fb2/Dd59/tZffoymf90AMAsBACjAKIEUYDT9a1EACjCKIAUYTT8FWGYBZgHDY3D29noAPcAogXqA0fTrAfQAVgItBU+KEAuYzP5iASyABbCASRFiAZPZfwsW8PB8P7sUNVyA3W9/A8DeCABg7/ovAABAD7AzAxRg5+qvxQI2rz8AAGAdYGsG9ABbl18PsHn5AQAAS8F7M6AH2Lv+poGb1x8AAIjrAPXDhm8//6QafP74LsXX4Onnr19W5R4AALMAA4ACJBGjACl9a7GA+LPm6QTG+gNAD6AHSIOIArRZjCZQE5gGoCYwpU8TmP/LFQtgAWkMWgls31aygIQfC2ABw3sZZgFmAUnDWEBKHwtgAbtbQBxAGaB6/+n46uH1+bMF1Aeoewn1/tPxAIi7idMFrPcHAAAqQymeBaT09WAKQAE6ReEKFCAk74xQCkABzuDo8DUowOHUnRNIASjAOSQdvAoFOJi4s8IoAAU4i6VD16EAh9J2XhAFoADn0XTgShTgQNLODKEAFOBMnl59rawA09u50yPo6u8PgFePmf8DADAs4RTg4t8FxAE4fuoYBaAAleEUXxVQD5DSP3/wIwCGTx9nASwgakgLpwAUIBGkB0jp0wOMf9lTJTDW//LvTwEiAZpATWBEqIVXBaQALf8s4OoSGOsPAAC8VIZSfLaAx6e70TeoL3B1AKef/waANADzbiQA4kredAKvrmAUoAkABYj5u3wCKUAk4OoJvPrzs4DNAQYAAKwDFAZYQMneWprA4c00FrA5wAAAgB6gMKAHKNnTA4xvJ7OAzQEGAABaD1CPfYv5X1c/NWz6/bMCAKCdHQyAmAEK0A6epAARwKsrIAAAoAksDFCAeGxaSf6/WD2AHqAylOIpAAVIANXgqoCawFgBCkABIkItnAJc/PTwVv7eBLOAWAEWwAIiQi2cBbCARBALSOlb6/IW8PB8n/4/QP06tybw16f3sYQt/MP33+kCVcLrbxLH/0cQANpSLgAoQFIgCpDStxYLiJ82sQAWkMagJvDiR8ZQAApAAUIGzALMAgI+a5kFpPSZBeSPG/UAeoA0Bs0CzAISQDXYQpCFoMSQzaD4gxIWwALSCKzBV7eAv6T9ww6D8p2HAAAAAElFTkSuQmCC'
 
-  // Fake states ============================
-  const [showDemo, setShowDemo] = useState(false)
-  const [inputAddress, setInputAddress] = useState('')
-  const [isInputAddressValid, setIsInputAddressValid] = useState(false)
-  const [activeClaimAccount, setActiveClaimAccount] = useState('')
-  // const [isAirdropOnly, setIsAirdropOnly] = useState(false)
-  // const [hasClaims, setHasClaims] = useState(false)
-  const [isInvestFlowActive, setIsInvestFlowActive] = useState(false)
-  const [isInvestFlowStep, setIsInvestFlowStep] = useState(0)
-  const [claimConfirmed, setClaimConfirmed] = useState(false)
-  const [claimAttempting, setClaimAttempting] = useState(false)
-  const [claimSubmitted, setClaimSubmitted] = useState(false)
-  // const [unclaimedAmount, setUnclaimedAmount] = useState(0)
-  const activeClaimAccountENS = 'TestAccount.eth'
-  // =========================================
+  // toggle wallet when disconnected
+  const toggleWalletModal = useWalletModalToggle()
 
-  const userClaims = useUserAvailableClaims(activeClaimAccount || account)
-  const isAirdropOnly = hasFreeClaim(userClaims) && !hasPaidClaim(userClaims)
-  const unclaimedAmount = useUserUnclaimedAmount(activeClaimAccount || account)
-  const hasClaims = useUserHasAvailableClaim(activeClaimAccount || account)
-  // const { claimCallback } = useClaimCallback(activeClaimAccount || account)
-  // const claimInput = userClaims.map<ClaimInput>(({ index }) => ({ index }))
-
-  console.log(
-    `Claim/index::[unclaimedAmount ${unclaimedAmount?.toFixed(
-      2
-    )}] [hasClaims ${hasClaims}] [activeClaimAccount ${activeClaimAccount}] [isAirdropOnly ${isAirdropOnly}]`
+  // get user claim data
+  const userClaimData = useUserAvailableClaims(activeClaimAccount)
+  const sortedClaimData = useMemo(
+    () => userClaimData.sort((a, b) => +FREE_CLAIM_TYPES.includes(b.type) - +FREE_CLAIM_TYPES.includes(a.type)),
+    [userClaimData]
   )
 
+  // get total unclaimed ammount
+  const unclaimedAmount = useUserUnclaimedAmount(activeClaimAccount)
+
+  const hasClaims = useMemo(() => userClaimData.length, [userClaimData])
+  const isAirdropOnly = useMemo(() => !hasPaidClaim(userClaimData), [userClaimData])
+
+  // handle table select change
+  const [selected, setSelected] = useState<number[]>([])
+  const [selectedAll, setSelectedAll] = useState<boolean>(false)
+
+  // claim type to currency and price map
+  const typeToCurrencyMap = useMemo(() => getTypeToCurrencyMap(chainId), [chainId])
+  const typeToPriceMap = useMemo(() => getTypeToPriceMap(), [])
+
+  // claim callback
+  const { claimCallback } = useClaimCallback(activeClaimAccount)
+
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const checked = event.target.checked
+    const output = [...selected]
+    checked ? output.push(index) : output.splice(output.indexOf(index), 1)
+    setSelected(output)
+
+    if (!checked) {
+      setSelectedAll(false)
+    }
+  }
+
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked
+    const paid = getIndexes(getPaidClaims(userClaimData))
+    setSelected(checked ? paid : [])
+    setSelectedAll(checked)
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value
+    const withoutSpaces = input.replace(/\s+/g, '')
+    setInputAddress(withoutSpaces)
+  }
+
+  // handle change account
+  const handleChangeAccount = () => {
+    setActiveClaimAccount('')
+    setSelected([])
+    setClaimSubmitted(false)
+    setClaimConfirmed(false)
+    setIsSearchUsed(true)
+  }
+
+  // check claim
+  const handleCheckClaim = () => {
+    setActiveClaimAccount(resolvedAddress || '')
+    setActiveClaimAccountENS(resolvedENS || '')
+    setInputAddress('')
+  }
+
+  // handle submit claim
+  const handleSubmitClaim = () => {
+    // just to be sure
+    if (!activeClaimAccount) return
+
+    const freeClaims = getFreeClaims(userClaimData)
+
+    // check if there are any selected (paid) claims
+    if (!selected.length) {
+      const inputData = freeClaims.map(({ index }) => ({ index }))
+
+      console.log('starting claiming with', inputData)
+
+      setClaimAttempting(true)
+
+      claimCallback(inputData)
+        .then((res) => {
+          // this is not right currently
+          setClaimSubmitted(true)
+          setClaimConfirmed(true)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+        .finally(() => {
+          setClaimAttempting(false)
+        })
+    } else {
+      const inputData = [...getIndexes(freeClaims), ...selected].map((idx: number) => {
+        return userClaimData.find(({ index }) => idx === index)
+      })
+      console.log('starting investment flow', inputData)
+      setIsInvestFlowActive(true)
+    }
+  }
+
+  // on account change
   useEffect(() => {
-    setIsInputAddressValid(isAddress(inputAddress))
-    // setHasClaims(unclaimedAmount > 0 ? true : false)
-  }, [inputAddress])
+    if (!isSearchUsed) {
+      setActiveClaimAccount(account || '')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account])
+
+  // if wallet is disconnected
+  useEffect(() => {
+    if (!account && !isSearchUsed) {
+      setActiveClaimAccount('')
+    }
+
+    if (!account) {
+      setIsInvestFlowActive(false)
+      setIsInvestFlowStep(0)
+    }
+  }, [account, isSearchUsed])
 
   return (
     <PageWrapper>
-      {/* DEMO ONLY */}
-      <DemoToggle onClick={() => setShowDemo(!showDemo)}>Toggle DEMO Panel ({String(showDemo)})</DemoToggle>
-      {showDemo && (
-        <Demo>
-          <table>
-            <tbody>
-              <tr>
-                <td>inputAddress</td>
-                <td>{String(inputAddress)}</td>
-              </tr>
-              <tr>
-                <td>isInputAddressValid</td>
-                <td>{String(isInputAddressValid)}</td>
-              </tr>
-              <tr>
-                <td>web3 connected account</td>
-                <td>{String(account)}</td>
-              </tr>
-              <tr>
-                <td>web3 connected chainId</td>
-                <td>{String(chainId)}</td>
-              </tr>
-              <tr>
-                <td>activeClaimAccount</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setActiveClaimAccount(activeClaimAccount ? '' : '0x343200043040')}>
-                    Toggle ({String(activeClaimAccount)})
-                  </button>
-                </td>
-              </tr>
-
-              <tr>
-                <td>activeClaimAccountENS</td>
-                <td>{activeClaimAccountENS}</td>
-              </tr>
-              {/*<tr>*/}
-              {/*  <td>hasClaims</td>*/}
-              {/*  <td>*/}
-              {/*    {' '}*/}
-              {/*    <button onClick={() => setHasClaims(!hasClaims)}>Toggle ({String(hasClaims)})</button>*/}
-              {/*  </td>*/}
-              {/*</tr>*/}
-              {/*<tr>*/}
-              {/*  <td>isAirdropOnly</td>*/}
-              {/*  <td>*/}
-              {/*    {' '}*/}
-              {/*    <button onClick={() => setIsAirdropOnly(!isAirdropOnly)}>Toggle ({String(isAirdropOnly)})</button>*/}
-              {/*  </td>*/}
-              {/*</tr>*/}
-              <tr>
-                <td>isInvestFlowActive</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setIsInvestFlowActive(!isInvestFlowActive)}>
-                    Toggle ({String(isInvestFlowActive)})
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>isInvestFlowStep</td>
-                <td>{String(isInvestFlowStep)}</td>
-              </tr>
-              <tr>
-                <td>claimConfirmed</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setClaimConfirmed(!claimConfirmed)}>Toggle ({String(claimConfirmed)})</button>
-                </td>
-              </tr>
-              <tr>
-                <td>claimAttempting</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setClaimAttempting(!claimAttempting)}>
-                    Toggle ({String(claimAttempting)})
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>claimSubmitted</td>
-                <td>
-                  {' '}
-                  <button onClick={() => setClaimSubmitted(!claimSubmitted)}>Toggle ({String(claimSubmitted)})</button>
-                </td>
-              </tr>
-              {/*<tr>*/}
-              {/*  <td>unclaimedAmount</td>*/}
-              {/*  <td>*/}
-              {/*    {' '}*/}
-              {/*    <button onClick={() => setUnclaimedAmount(unclaimedAmount < 1 ? 39234238586 : 0)}>*/}
-              {/*      Toggle ({String(unclaimedAmount)})*/}
-              {/*    </button>*/}
-              {/*  </td>*/}
-              {/*</tr>*/}
-            </tbody>
-          </table>
-        </Demo>
-      )}
-      {/* DEMO ONLY */}
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimConfirmed} />
       {/* START -- Top nav buttons */}
-      {activeClaimAccount && (
+      {!!activeClaimAccount && (
         <TopNav>
           <ClaimAccount>
             <div>
               <img src={dummyIdenticon} alt={activeClaimAccount} />
-              <p>{activeClaimAccountENS ? activeClaimAccountENS : activeClaimAccount}</p>
+              <p>{activeClaimAccountENS ? activeClaimAccountENS : shortenAddress(activeClaimAccount)}</p>
             </div>
-            <ButtonSecondary onClick={() => setActiveClaimAccount('')}>Change account</ButtonSecondary>
+
+            <ClaimAccountButtons>
+              {!!account && account !== activeClaimAccount && (
+                <ButtonSecondary disabled={claimAttempting} onClick={() => setActiveClaimAccount(account)}>
+                  Your claims
+                </ButtonSecondary>
+              )}
+
+              <ButtonSecondary disabled={claimAttempting} onClick={handleChangeAccount}>
+                Change account
+              </ButtonSecondary>
+            </ClaimAccountButtons>
           </ClaimAccount>
         </TopNav>
       )}
       {/* END -- Top nav buttons */}
+
       {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-      {(!claimAttempting || !claimConfirmed || !claimSubmitted) &&
-        activeClaimAccount &&
-        hasClaims &&
+      {!claimAttempting &&
+        !claimConfirmed &&
+        !claimSubmitted &&
+        !!activeClaimAccount &&
+        !!hasClaims &&
         !isInvestFlowActive && (
           <EligibleBanner>
             <CheckIcon />
             <Trans>This account is eligible for vCOW token claims!</Trans>
           </EligibleBanner>
         )}
-      {(!claimAttempting || !claimConfirmed || !claimSubmitted) && !isInvestFlowActive && (
+      {!claimAttempting && !claimConfirmed && !claimSubmitted && !isInvestFlowActive && (
         <ClaimSummary>
           <CowProtocolLogo size={100} />
           {!activeClaimAccount && !hasClaims && (
-            <h1>
+            <ClaimSummaryTitle>
               <Trans>
                 Claim <b>vCOW</b> token
               </Trans>
-            </h1>
+            </ClaimSummaryTitle>
           )}
           {activeClaimAccount && (
             <div>
@@ -238,30 +285,41 @@ export default function Claim() {
         </ClaimSummary>
       )}
       {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
+
       {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
       {!activeClaimAccount && !claimConfirmed && (
         <CheckAddress>
           <p>
             Enter an address to check for any eligible vCOW claims. <br />
             <i>Note: It is possible to claim for an account, using any wallet/account.</i>
-            <ButtonSecondary onClick={() => setActiveClaimAccount('0x0000000000000000000000000000')}>
-              <Trans>or connect a wallet</Trans>
-            </ButtonSecondary>
+            {!account && (
+              <ButtonSecondary onClick={toggleWalletModal}>
+                <Trans>or connect a wallet</Trans>
+              </ButtonSecondary>
+            )}
           </p>
+
           <InputField>
-            <b>Input address</b>
-            <input
-              placeholder="Address or ENS name"
-              value={inputAddress}
-              onChange={(e) => setInputAddress(e.currentTarget.value)}
-            />
+            <InputFieldTitle>
+              <b>Input address</b>
+              {loading && <CustomLightSpinner src={Circle} alt="loader" size={'10px'} />}
+            </InputFieldTitle>
+            <input placeholder="Address or ENS name" value={inputAddress} onChange={handleInputChange} />
           </InputField>
-          {!isInputAddressValid && <InputError>Incorrect address</InputError>}
+
+          {showInputError && (
+            <InputErrorText>
+              <TYPE.error error={true}>
+                <Trans>Enter valid token address or ENS</Trans>
+              </TYPE.error>
+            </InputErrorText>
+          )}
         </CheckAddress>
       )}
       {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
+
       {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
-      {activeClaimAccount && hasClaims && isAirdropOnly && !claimAttempting && !claimConfirmed && (
+      {!!activeClaimAccount && !!hasClaims && !!isAirdropOnly && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
           <p>
             <Trans>
@@ -276,7 +334,7 @@ export default function Claim() {
       {/* END -- IS Airdrop only (simple)  ---------------------------------------- */}
 
       {/* START -- NO CLAIMS  ----------------------------------------------------- */}
-      {activeClaimAccount && !hasClaims && !claimAttempting && !claimConfirmed && (
+      {!!activeClaimAccount && !hasClaims && !claimAttempting && !claimConfirmed && (
         <IntroDescription>
           <Trans>
             Unfortunately this account is not eligible for any vCOW claims.{' '}
@@ -310,7 +368,7 @@ export default function Claim() {
                 <h3>You have successfully claimed</h3>
               </Trans>
               <Trans>
-                <p>[CLAIMED AMOUNT] vCOW</p>
+                <p>{claimedAmmount} vCOW</p>
               </Trans>
               <Trans>
                 <span role="img" aria-label="party-hat">
@@ -345,64 +403,72 @@ export default function Claim() {
       {/* END -- Try claiming or inform succesfull claim  ----------------------------------------------------- */}
 
       {/* START -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
-      {activeClaimAccount && !isAirdropOnly && hasClaims && !isInvestFlowActive && (
-        <ClaimBreakdown>
-          <h2>vCOW claim breakdown</h2>
-          <ClaimTable>
-            <table>
-              <thead>
-                <tr>
-                  <th>Select</th>
-                  <th>Type of Claim</th>
-                  <th>Amount</th>
-                  <th>Price</th>
-                  <th>Cost</th>
-                  <th>Vesting</th>
-                  <th>Ends in</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    {' '}
-                    <label className="checkAll">
-                      <input type="checkbox" name="check" checked disabled />
-                    </label>
-                  </td>
-                  <td>Airdrop</td>
-                  <td>
-                    <CowProtocolLogo size={16} /> 13,120.50 vCOW
-                  </td>
-                  <td>-</td>
-                  <td>
-                    <span className="green">Free!</span>
-                  </td>
-                  <td>No</td>
-                  <td>28 days, 10h, 50m</td>
-                </tr>
-                <tr>
-                  <td>
-                    {' '}
-                    <label className="checkAll">
-                      <input type="checkbox" name="check" />
-                    </label>
-                  </td>
-                  <td>Investment opportunity: Buy vCOW with GNO</td>
-                  <td>41,650.78 vCOW</td>
-                  <td>16.66 vCoW per GNO</td>
-                  <td>2,500.04 GNO</td>
-                  <td>4 Years (linear)</td>
-                  <td>28 days, 10h, 50m</td>
-                </tr>
-              </tbody>
-            </table>
-          </ClaimTable>
-        </ClaimBreakdown>
-      )}
+      {!!activeClaimAccount &&
+        !isAirdropOnly &&
+        !!hasClaims &&
+        !isInvestFlowActive &&
+        !(claimAttempting || claimConfirmed) && (
+          <ClaimBreakdown>
+            <h2>vCOW claim breakdown</h2>
+            <ClaimTable>
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <label className="checkAll">
+                        <input checked={selectedAll} onChange={handleSelectAll} type="checkbox" name="check" />
+                      </label>
+                    </th>
+                    <th>Type of Claim</th>
+                    <th>Amount</th>
+                    <th>Price</th>
+                    <th>Cost</th>
+                    <th>Vesting</th>
+                    <th>Ends in</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedClaimData.map(({ index, type, amount }) => {
+                    const isFree = isFreeClaim(type)
+                    const currency = typeToCurrencyMap[type] || ''
+                    const vCowPrice = typeToPriceMap[type]
+                    const parsedAmount = parseClaimAmount(amount, chainId)
+                    const cost = vCowPrice * Number(parsedAmount?.toSignificant(6))
+
+                    return (
+                      <tr key={index}>
+                        <td>
+                          {' '}
+                          <label className="checkAll">
+                            <input
+                              onChange={(event) => handleSelect(event, index)}
+                              type="checkbox"
+                              name="check"
+                              checked={isFree || selected.includes(index)}
+                              disabled={isFree}
+                            />
+                          </label>
+                        </td>
+                        <td>{isFree ? type : `Buy vCOW with ${currency}`}</td>
+                        <td width="150px">
+                          <CowProtocolLogo size={16} /> {parsedAmount?.toFixed(0, { groupSeparator: ',' })} vCOW
+                        </td>
+                        <td>{isFree ? '-' : `${vCowPrice} vCoW per ${currency}`}</td>
+                        <td>{isFree ? <span className="green">Free!</span> : `${cost} ${currency}`}</td>
+                        <td>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</td>
+                        <td>28 days, 10h, 50m</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </ClaimTable>
+          </ClaimBreakdown>
+        )}
       {/* END -- IS Airdrop + investing (advanced)  ----------------------------------------------------- */}
 
       {/* START -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
-      {activeClaimAccount && hasClaims && !claimConfirmed && !isAirdropOnly && isInvestFlowActive && (
+      {!!activeClaimAccount && !!hasClaims && !claimConfirmed && !isAirdropOnly && !!isInvestFlowActive && (
         <InvestFlow>
           <StepIndicator>
             <h1>
@@ -419,7 +485,7 @@ export default function Claim() {
           </StepIndicator>
 
           {/* Invest flow: Step 1 > Set allowances and investment amounts */}
-          {isInvestFlowStep === 1 && (
+          {isInvestFlowStep === 1 ? (
             <InvestContent>
               <p>
                 Your account can participate in the investment of vCOW. Each investment opportunity will allow you to
@@ -524,10 +590,10 @@ export default function Claim() {
 
               <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
             </InvestContent>
-          )}
+          ) : null}
 
           {/* Invest flow: Step 2 > Review summary */}
-          {isInvestFlowStep === 2 && (
+          {isInvestFlowStep === 2 ? (
             <InvestContent>
               1. Claim airdrop: {activeClaimAccount} receives 13,120.50 vCOW (Note: please make sure you intend to claim
               and send vCOW to the mentioned account)
@@ -553,34 +619,34 @@ export default function Claim() {
                 once.
               </p>
             </InvestContent>
-          )}
+          ) : null}
         </InvestFlow>
       )}
       {/* END -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
 
-      {/* START -- CLAIM button OR other actions */}
       <FooterNavButtons>
         {/* General claim vCOW button  (no invest) */}
-        {activeClaimAccount &&
-          hasClaims &&
-          (!claimConfirmed || !claimAttempting || !claimSubmitted) &&
-          !isInvestFlowActive && (
-            <ButtonPrimary onClick={() => (!isAirdropOnly ? setIsInvestFlowActive(true) : setClaimAttempting(true))}>
+        {!!activeClaimAccount && !!hasClaims && !isInvestFlowActive && !claimAttempting && !claimConfirmed ? (
+          account ? (
+            <ButtonPrimary onClick={handleSubmitClaim}>
               <Trans>Claim vCOW</Trans>
             </ButtonPrimary>
-          )}
+          ) : (
+            <ButtonPrimary onClick={toggleWalletModal}>
+              <Trans>Connect a wallet</Trans>
+            </ButtonPrimary>
+          )
+        ) : null}
+
         {/* Check for claims button */}
-        {!activeClaimAccount && !hasClaims && (
-          <ButtonPrimary
-            disabled={!isInputAddressValid}
-            type="text"
-            onClick={() => setActiveClaimAccount(inputAddress)}
-          >
+        {(!activeClaimAccount || !hasClaims) && (
+          <ButtonPrimary disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
             <Trans>Check claimable vCOW</Trans>
           </ButtonPrimary>
         )}
+
         {/* Invest flow button */}
-        {activeClaimAccount && hasClaims && !claimConfirmed && !isAirdropOnly && isInvestFlowActive && (
+        {!!activeClaimAccount && !!hasClaims && !claimConfirmed && !isAirdropOnly && !!isInvestFlowActive && (
           <>
             {isInvestFlowStep === 0 ? (
               <ButtonPrimary onClick={() => setIsInvestFlowStep(1)}>
@@ -606,15 +672,6 @@ export default function Claim() {
           </>
         )}
       </FooterNavButtons>
-      {/* END -- CLAIM button OR other actions */}
     </PageWrapper>
   )
 }
-
-// For yourself or other accounts > Can toggle on/off investing
-// Airdrop not uncheckable
-
-// 1. Not connected > Insert address or connect wallet
-// 2. Connected > Show claims for connect wallet by default
-// 3. Succesful claim > Keep state? Always offer option "Check for another account"
-// 4.
