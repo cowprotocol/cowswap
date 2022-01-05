@@ -29,7 +29,7 @@ const Content = styled.main`
   display: flex;
   flex-flow: column wrap;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     margin: 10rem 0 0;
   }
 `

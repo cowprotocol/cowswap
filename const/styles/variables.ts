@@ -28,10 +28,10 @@ export const Media = {
   xSmallScreen: '430px',
   smallScreen: '736px',
   smallScreenUp: '737px',
-  mediumScreenSmall: '850px',
+  mediumScreenSmall: '992px',
   mediumEnd: '1024px',
-  desktopScreen: '1025px',
-  desktopScreenLarge: '1366px',
+  desktopScreen: '1200px',
+  desktopScreenLarge: '1400px',
   get tinyDown(): string {
     return `@media only screen and (max-width : ${this.tinyScreen})`
   },
@@ -41,8 +41,11 @@ export const Media = {
   get mobile(): string {
     return `@media only screen and (max-width : ${this.smallScreen})`
   },
+  get smallUp(): string {
+    return `@media only screen and (min-width : ${this.smallScreen})`
+  },
   get mediumUp(): string {
-    return `@media only screen and (min-width : ${this.smallScreenUp})`
+    return `@media only screen and (min-width : ${this.mediumScreenSmall})`
   },
   get mediumDown(): string {
     return `@media only screen and (max-width : ${this.mediumEnd})`
@@ -50,11 +53,20 @@ export const Media = {
   get mediumOnly(): string {
     return `@media only screen and (min-width : ${this.smallScreenUp}) and (max-width : ${this.mediumEnd})`
   },
+  get desktopOnly(): string {
+    return `@media only screen and (min-width : ${this.mediumEnd}) and (max-width : ${this.desktopScreen})`
+  },
+  get desktopDown(): string {
+    return `@media only screen and (max-width : ${this.desktopScreen})`
+  },
   get desktop(): string {
     return `@media only screen and (min-width : ${this.desktopScreen})`
   },
   get desktopLarge(): string {
     return `@media only screen and (min-width: ${this.desktopScreenLarge})`
+  },
+  get desktopLargeDown(): string {
+    return `@media only screen and (max-width: ${this.desktopScreenLarge})`
   },
   get tabletPortrait(): string {
     return `@media (min-device-width: ${this.smallScreenUp}) and (max-device-width: ${this.mediumEnd}) and (orientation: portrait)`

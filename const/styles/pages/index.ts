@@ -3,10 +3,9 @@ import { transparentize } from 'polished'
 import { Color, Font, Media } from 'const/styles/variables'
 
 
-export const Section = styled.section<{ hero?: boolean, colorVariant?: string, flow?: string, fullWidth?: boolean, mobileSwitchOrder?: boolean }>`
+export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, colorVariant?: string, flow?: string, fullWidth?: boolean, mediumSwitchOrder?: boolean, mobileSwitchOrder?: boolean }>`
   display: flex;
   width: 100%;
-  max-width: ${({ fullWidth }) => fullWidth ? '100vw' : '148rem'};
   min-height: 100vh;
   flex-flow: ${({ flow }) => flow === 'column' ? 'column wrap' : 'row'};
   gap: 8rem;
@@ -29,9 +28,16 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
   }
 
   // Hero specific styling
-  ${({ hero }) => hero && `
+  ${({ hero, breakMedium }) => (hero || breakMedium) && `
     margin: 0 auto;
     min-height: calc(100vh - 8.1rem);
+    padding-top: 3.6rem;
+
+    ${Media.mediumDown} {
+      padding: 3.2rem 0;
+      min-height: initial;
+      flex-flow: column wrap;
+    }
 
     ${Media.mobile} {
       min-height: initial;
@@ -70,6 +76,22 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
     }
   `}
 
+  ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
+  > div:first-child {
+    ${Media.mediumDown} {
+      order: 2;
+    }
+  }
+`}
+
+${({ mediumSwitchOrder }) => mediumSwitchOrder && `
+  > div:last-child {
+    ${Media.mediumDown} {
+      order: 1;
+    }
+  }
+`}
+
   }
 
    h1, h2, h3 {
@@ -80,9 +102,21 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
     margin: 0;
     z-index: 1;
 
-    ${Media.mobile} {
+    ${Media.mediumDown} {
       font-size: 4rem;
       text-align: center;
+    }
+  }
+
+  h1, h2 {
+    ${Media.desktopLargeDown} {
+      font-size: 4.8rem;
+    }
+  }
+
+  h3 {
+    ${Media.desktopDown} {
+      font-size: 3.8rem;
     }
   }
 `
@@ -123,7 +157,7 @@ export const SubTitle = styled.p<{ maxWidth?: number, align?: string, lineHeight
   max-width: ${({ maxWidth }) => maxWidth && `${maxWidth}rem`};
   z-index: 1;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     font-size: 1.6rem;
     text-align: ${({ align }) => align ? align : "center"};
   }
@@ -140,7 +174,7 @@ export const SectionImage = styled.div<{ centerMobile?: boolean, margin?: string
   position: relative;
   z-index: 0;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     height: initial;
 
     ${({ centerMobile }) => centerMobile && `
@@ -216,6 +250,10 @@ export const Metrics = styled.div`
   > div > b {
     font-size: 7.4rem;
     font-weight: ${Font.weightNormal};
+
+    ${Media.mediumOnly} {
+      font-size: 5rem;
+    }
 
     ${Media.mobile} {
       font-size: 4rem;
@@ -330,6 +368,11 @@ export const ApiTool = styled.div`
   // max-height: 64rem;
   padding: 2.4rem 4.8rem;
   font-size: ${Font.sizeDefault};
+
+  ${Media.desktopOnly} {
+    border-radius: 3rem;
+    padding: 0 2.4rem 2.4rem;
+  }
 
   ${Media.mobile} {
     // max-height: initial;

@@ -101,6 +101,11 @@ const Menu = styled.ol`
     font-size: inherit;
     color: inherit;
     text-decoration: none;
+    line-height: 1.2;
+
+    ${Media.mediumDown} {
+      font-size: 1.2rem;
+    }
 
     &:hover {
       color: ${Color.white};

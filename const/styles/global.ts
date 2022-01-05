@@ -165,18 +165,44 @@ const GlobalStyles = createGlobalStyle`
       display: none;
     }
   }
+
+  .container {
+    margin: 0 auto;
+
+    ${Media.smallUp} {
+      max-width: 720px;
+    }
+    
+    ${Media.mediumUp} {
+      max-width: 960px;
+    }
+
+    ${Media.mediumOnly} {
+      max-width: 720px;
+    }
+
+    ${Media.desktop} {
+      max-width: 1140px;
+    }
+
+    ${Media.desktopLarge} {
+      max-width: 1320px;
+    }
+  }
 `
 
 export const ExternalLink = styled.a`
   display: inline-block;
   color: ${Color.orange};
   font-size: 1.4rem;
+  white-space: nowrap;
 
   &::after {
     content: "↗";
     color: inherit;
     font-size: ${Font.sizeDefault};
     display: inline-block;
+    margin-left: 5px;
   }
 `
 

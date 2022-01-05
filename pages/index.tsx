@@ -34,7 +34,7 @@ export default function Home({ metricsData, siteConfigData }) {
       </Head>
 
       {/* Hero/1st section */}
-      <Section hero>
+      <Section className='container' hero>
         <div>
           <h1>Batch Settlement layer for
             MEV protected trades</h1>
@@ -69,12 +69,14 @@ export default function Home({ metricsData, siteConfigData }) {
       </Section>
 
       {/* 3rd section */}
-      <Section flow={'column'} fullWidth id="about">
+      <Section  flow={'column'} fullWidth id="about">
         <div>
           <SectionImage margin={'0 auto -6rem'}><img loading="lazy" src="/images/barn.jpg" alt="Meta DEX Aggregator" /></SectionImage>
+        </div>
+
+        <div className='container'>
           <h3>More than a meta DEX aggregator</h3>
           <IconList>
-
             <IconListItem icon="images/icons/equal.svg">
               <span>
                 <b>Uniform clearing prices</b>
@@ -122,7 +124,7 @@ export default function Home({ metricsData, siteConfigData }) {
       </Section >
 
       {/* 4th section */}
-      < Section flow={'column'} >
+      < Section className='container' flow={'column'} >
         <div>
           <h3>The life cycle of a CoW order</h3>
           <SubTitle align='center'>The protocol improves prices for users by batching trades, finding coincidence of wants (CoWs) <br className='hideMobile' />and tapping into all on chain liquidity - including aggregators.
@@ -135,7 +137,7 @@ export default function Home({ metricsData, siteConfigData }) {
       </Section >
 
       {/* 5th section */}
-      < Section mobileSwitchOrder id="developers" >
+      <Section className='container' breakMedium mediumSwitchOrder mobileSwitchOrder id="developers">
         <ApiWrapper>
           <ApiTool>
             <h4>Get a price quote</h4>
@@ -183,7 +185,7 @@ export default function Home({ metricsData, siteConfigData }) {
           </SectionImage >
         </div >
 
-        <div>
+        <div className='container'>
           <h3>Your guardian in the dark forest</h3>
 
           <IconList>

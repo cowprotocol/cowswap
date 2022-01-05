@@ -21,6 +21,11 @@ export const Wrapper = styled.div`
   color: ${Color.grey};
   position: relative;
 
+  ${Media.desktopLargeDown} {
+    padding: 2.8rem;
+    border-radius: 3rem;
+  }
+
   ${Media.mobile} {
     max-height: initial;
     border-radius: 2rem;
@@ -29,7 +34,7 @@ export const Wrapper = styled.div`
 `
 
 export const CowSliderWrapper = styled.div`
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     width: 100%;
   }
 `
@@ -38,6 +43,10 @@ export const CowTop = styled.div`
   width: 100%;
   display: flex;
   flex-flow: row;
+
+  ${Media.desktopLargeDown} {
+    flex-direction: column;
+  }
 
   ${Media.mobile} {
     flex-flow: column wrap;
@@ -95,7 +104,6 @@ export const CowTabs = styled.div`
   flex: 1 1 50%;
   display: flex;
   font-size: 1.4rem;
-  align-items: center;
   justify-content: center;
   border: 0.1rem solid ${Color.border};
   color: ${Color.grey};
@@ -103,8 +111,10 @@ export const CowTabs = styled.div`
   border-radius: 4rem;
   gap: 0;
   max-height: 50px;
+  min-width: 250px;
 
-  ${Media.mobile} {
+  ${Media.desktopLargeDown} {
+    min-height: 45px;
     flex: 1 1 100%;
     border-radius: 2rem;
     order: -1;
@@ -124,7 +134,11 @@ export const CowTabItem = styled.div<{ active?: boolean, position?: number }>`
   line-height: 1;
   transition: background 0.2 ease-in-out, color 0.2 ease-in-out;
   flex: 1 1 auto;
-  height: 100%;
+  padding: 5px;
+
+  ${Media.desktopDown} {
+    font-size: 1.2rem;
+  }
 
   ${Media.mobile} {
     text-align: center;
@@ -244,7 +258,6 @@ function getNetworkConfig(networkID) {
 export default function CowSlider() {
   const [activeBatch, setActiveBatch] = useState(1);
   const { summary, description, metrics, visual, link, bars } = batches.find(b => b.id === activeBatch)
-  
 
   return (
     <Wrapper>
