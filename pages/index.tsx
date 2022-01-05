@@ -19,11 +19,11 @@ import { default as dark } from 'react-syntax-highlighter/dist/esm/styles/prism/
 
 export default function Home({ metricsData, siteConfigData }) {
   const { title, descriptionShort, social, url } = siteConfigData
-  
+
   const scrollToElRef = useRef(null);
 
   const handleScrollDown = () => {
-    scrollToElRef.current.scrollIntoView({behavior: 'smooth'})
+    scrollToElRef.current.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -36,9 +36,9 @@ export default function Home({ metricsData, siteConfigData }) {
       {/* Hero/1st section */}
       <Section hero>
         <div>
-          <h1>DeFi liquidity protocol with
-            MEV protection</h1>
-          <SubTitle lineHeight={2}>COW Protocol enables top DeFi rates with MEV protection by settling orders using batch settlements and leverages P2P (CoW) orders in combination with fallback liquidity from AMMs and DEX aggregators.</SubTitle>
+          <h1>Batch Settlement layer for
+            MEV protected trades</h1>
+          <SubTitle lineHeight={2}>COW Protocol offers top DeFi rates with MEV protection by leveraging its Batch Settlement layer built on top of AMMs & DEX Aggregators. This layer allows Solvers (tx executors) to create CoWs (aka Coincidence of Wants) settlements without the need of liquidity pools, or use the pools as fallback mechanism when CoWs cannot be found.</SubTitle>
 
           <ButtonWrapper>
             <Button href={url.docs} target="_blank" label="Documentation" />
@@ -55,8 +55,8 @@ export default function Home({ metricsData, siteConfigData }) {
       <Section ref={scrollToElRef} flow={'column'}>
         <div>
           <SectionImage margin={'0 auto -18rem'} height={'68rem'}><img loading="lazy" src="/images/cowBelt.jpg" alt="A fast growing protocol" /></SectionImage>
-          <h2>A fast growing protocol</h2>
-          <SubTitle align="center">Getting you better prices, zero revert rates, <br />MEV protection and gas costs savings. <ExternalLink href="#">View analytics</ExternalLink></SubTitle>
+          <h2>A fast-growing trading protocol</h2>
+          <SubTitle align="center">Getting you better prices, MEV Protection, <br />no failed txs and gas costs savings through the batch settlemebt execution model. <ExternalLink href="#">View analytics</ExternalLink></SubTitle>
           <Metrics>
             {metricsData.map(({ label, value }, i) =>
               <div key={i}>
@@ -78,21 +78,21 @@ export default function Home({ metricsData, siteConfigData }) {
             <IconListItem icon="images/icons/equal.svg">
               <span>
                 <b>Uniform clearing prices</b>
-                <p>Using <a href="https://docs.cowswap.exchange/overview-1/batch-auctions" target="_blank" rel="noreferrer">batch auctions</a>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
-              </span>
-            </IconListItem>
+                <p>By using <a href="https://docs.cowswap.exchange/overview-1/batch-auctions" target="_blank" rel="noreferrer">batch auctions</a>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
+              </span >
+            </IconListItem >
 
             <IconListItem icon="images/icons/puzzle.svg">
               <span>
                 <b>Superior on-chain DeFi liquidity</b>
-                <p>All on-chain liquidity sources are continiously integrated which allows for getting the best on-chain prices.</p>
+                <p>In order to give the best trading prices, existing and new liquidity sources are continuously being integrated.</p>
               </span>
             </IconListItem>
 
             <IconListItem icon="images/icons/relation.svg">
               <span>
-                <b>P2P Trades (CoW)</b>
-                <p>Direct P2P liquidity matching improves prices while adding fairness for the users.</p>
+                <b>Coincidence of Wants, CoWs (P2P trades)</b>
+                <p>Direct P2P order liquidity matching improves the prices by reducing the need on liquidity pools.</p>
               </span>
             </IconListItem>
 
@@ -105,19 +105,19 @@ export default function Home({ metricsData, siteConfigData }) {
 
             <IconListItem icon="images/icons/trading.svg">
               <span>
-                <b>Professional trading experience</b>
-                <p>Avoid gas overhead and failed transactions with signed meta transactions.  Free signed order cancellations. </p>
+                <b>Professional Trading Execution Model</b>
+                <p>Avoid any complexities related to gas estimations, failed transactions, or MEV attacks. Simply sign a message to submit a trading order.</p>
               </span>
             </IconListItem>
 
             <IconListItem icon="images/icons/gas.svg">
               <span>
-                <b>Gas efficient batch orders</b>
+                <b>Gas efficient trades</b>
                 <p>By using batch auctions, trades are bundled together making them much more gas efficient.</p>
               </span>
             </IconListItem>
 
-          </IconList>
+          </IconList >
         </div >
       </Section >
 
@@ -135,7 +135,7 @@ export default function Home({ metricsData, siteConfigData }) {
       </Section >
 
       {/* 5th section */}
-      <Section mobileSwitchOrder id="developers">
+      < Section mobileSwitchOrder id="developers" >
         <ApiWrapper>
           <ApiTool>
             <h4>Get a price quote</h4>
@@ -189,33 +189,33 @@ export default function Home({ metricsData, siteConfigData }) {
           <IconList>
             <IconListItem icon="images/icons/equal.svg">
               <span>
-                <b>Uniform clearing prices</b>
-                <p>Using <a href="https://docs.cowswap.exchange/overview-1/batch-auctions" target="_blank" rel="noreferrer">batch auctions</a>, all trades within the same block are guaranteed to receive the same price regardless of their execution order.</p>
-              </span>
-            </IconListItem>
+                <b>MEV Protection </b>
+                <p>All CoW Protocol trades are protected from MEV (Miner/Maximal Extractable Value) as the risk is completely absorbed by the solver.</p>
+              </span >
+            </IconListItem >
 
             <IconListItem icon="images/icons/puzzle.svg">
               <span>
-                <b>Superior on-chain DeFi liquidity</b>
-                <p>All on-chain liquidity sources are continiously integrated which allows for getting the best on-chain prices.</p>
+                <b>Superior on-chain prices</b>
+                <p>Users have full control of the trade slippage. Solvers will respect the slippage you set and will not charge you for failed transactions.</p>
               </span>
             </IconListItem>
 
             <IconListItem icon="images/icons/relation.svg">
               <span>
-                <b>P2P Trades (CoW)</b>
-                <p>Direct P2P liquidity matching improves prices while adding fairness for the users.</p>
+                <b>CoW Trades (P2P)</b>
+                <p>By using batch auctions, solvers can directly match different counterparties with each other. </p>
               </span>
             </IconListItem>
 
             <IconListItem icon="images/icons/relation.svg">
               <span>
-                <b>P2P Trades (CoW)</b>
-                <p>Direct P2P liquidity matching improves prices while adding fairness for the users.</p>
+                <b>Private Mempools</b>
+                <p> Solvers leverage private mempools to avoid getting the batch settlement transactions caught in the dark forest.</p>
               </span>
             </IconListItem>
-          </IconList>
-        </div>
+          </IconList >
+        </div >
       </Section >
 
       {/* 7th section */}
