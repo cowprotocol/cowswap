@@ -172,12 +172,9 @@ export const CowVisual = styled.div`
   > img {
     width: 100%;
     object-fit: contain;
-    
-    // TODO: Some help to style things 🙏
     max-height: 300px;
-
     height: auto;
-    padding: 2.4rem 0;
+    padding: 0 0 1rem 0;
   }
 `
 

@@ -10,7 +10,7 @@ import { GET_QUOTE } from '@/const/api'
 import Layout from '@/components/Layout'
 import { ButtonWrapper } from '@/components/Button'
 import CowSlider, { CowSliderWrapper } from '@/components/CowSlider'
-import { Section, SubTitle, ScrollDownButton, SectionImage, IconList, IconListItem, Metrics, CheckList, ApiWrapper, ApiTool, ApiCurlCommand, ApiParams } from '../const/styles/pages/index'
+import { Section, SubTitle, SectionImage, IconList, IconListItem, Metrics, CheckList, ApiWrapper, ApiTool, ApiCurlCommand, ApiParams } from '../const/styles/pages/index'
 import SocialList from '@/components/SocialList'
 import Button from '@/components/Button'
 
@@ -48,7 +48,6 @@ export default function Home({ metricsData, siteConfigData }) {
         <CowSliderWrapper>
           <CowSlider />
         </CowSliderWrapper>
-        <ScrollDownButton onClick={handleScrollDown}>Scroll down</ScrollDownButton>
       </Section>
 
       {/* 2nd section */}

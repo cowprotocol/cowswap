@@ -191,42 +191,6 @@ export const SectionImage = styled.div<{ centerMobile?: boolean, margin?: string
   }
 `
 
-export const ScrollDownButton = styled.button`
-  display: flex;
-  width: 14rem;
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-  flex: 0;
-  position: absolute;
-  bottom: 3.2rem;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  border: 0;
-  color: ${Color.grey};
-  gap: 1rem;
-  font-size: ${Font.sizeDefault};
-  /* animation: floating 2s linear 1s infinite alternate; */
-
-  ${Media.mobile} {
-    display: none;
-  }
-
-  &::before {
-    content: "";
-    display: block;
-    width: 2rem;
-    height: 2rem;
-    background: url('images/icons/handDown.svg') no-repeat center/contain;
-  }
-
-  /* @keyframes floating {
-    from {transform: translateY(0)}
-    to {transform: translateY(-1rem)}
-  } */
-`
-
 export const Metrics = styled.div`
   display: flex;
   flex-flow: row wrap;
