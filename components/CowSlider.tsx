@@ -28,6 +28,12 @@ export const Wrapper = styled.div`
   }
 `
 
+export const CowSliderWrapper = styled.div`
+  ${Media.mobile} {
+    width: 100%;
+  }
+`
+
 export const CowTop = styled.div`
   width: 100%;
   display: flex;
@@ -44,7 +50,7 @@ export const CowTop = styled.div`
 
     ${Media.mobile} {
       gap: 1rem;
-      align-content: center;
+      align-content: flex-start;
     }
   }
 
@@ -96,6 +102,7 @@ export const CowTabs = styled.div`
   padding: 0;
   border-radius: 4rem;
   gap: 0;
+  max-height: 50px;
 
   ${Media.mobile} {
     flex: 1 1 100%;
@@ -109,7 +116,6 @@ export const CowTabItem = styled.div<{ active?: boolean, position?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.6rem;
   cursor: pointer;
   border-radius: 4rem;
   background: ${({ active }) => active ? transparentize(0.8, Color.orange) : 'transparent'};
@@ -117,8 +123,8 @@ export const CowTabItem = styled.div<{ active?: boolean, position?: number }>`
   order: ${({ position }) => position ? position : '0'};
   line-height: 1;
   transition: background 0.2 ease-in-out, color 0.2 ease-in-out;
-  border: 0.5rem solid transparent;
   flex: 1 1 auto;
+  height: 100%;
 
   ${Media.mobile} {
     text-align: center;
@@ -131,12 +137,16 @@ export const CowTabItem = styled.div<{ active?: boolean, position?: number }>`
 export const CowSliderDescription = styled.div`
   width: 100%;
   display: block;
-  line-height: 1.2;
   font-size: 1.3rem;
-  margin: 2.4rem 0 1.2rem;
+  margin: 2.8rem 0 1.2rem;
 
   > a {
     display: inline;
+  }
+
+  > p {
+    line-height: 1.2;
+    margin-bottom: 5px;
   }
 `
 
@@ -234,6 +244,7 @@ function getNetworkConfig(networkID) {
 export default function CowSlider() {
   const [activeBatch, setActiveBatch] = useState(1);
   const { summary, description, metrics, visual, link, bars } = batches.find(b => b.id === activeBatch)
+  
 
   return (
     <Wrapper>

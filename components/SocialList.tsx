@@ -18,6 +18,7 @@ const Wrapper = styled.ol<Pick<SocialListProps, "iconSize" | "gap" | "innerPaddi
   ${Media.mobile} {
     justify-content: center;
     flex-flow: row wrap;
+    gap: ${({ gap }) => gap ? `${gap}rem` : '2rem'};
   }
 
   > li > a {
@@ -35,6 +36,10 @@ const Wrapper = styled.ol<Pick<SocialListProps, "iconSize" | "gap" | "innerPaddi
     border: 0.1rem solid transparent;
     transition: color 0.2s ease-in-out, background 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
+    ${Media.mobile} {
+      padding: 1rem;
+    }
+
     &:hover {
       background: ${transparentize(0.9, Color.orange)};
       border: 0.1rem solid ${Color.orange};
@@ -46,6 +51,11 @@ const Wrapper = styled.ol<Pick<SocialListProps, "iconSize" | "gap" | "innerPaddi
     width: ${({ iconSize }) => iconSize ? `${iconSize}rem` : '5.6rem'};
     height: ${({ iconSize }) => iconSize ? `${iconSize}rem` : '5.6rem'};
     object-fit: contain;
+
+    ${Media.mobile} {
+      width: 4.6rem;
+      height: 4.6rem;
+    }
   }
 
   > li > a > b {

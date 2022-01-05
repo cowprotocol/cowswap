@@ -159,11 +159,18 @@ const GlobalStyles = createGlobalStyle`
       display: block !important;
     }
   }
+
+  .hideMobile {
+    ${Media.mobile} {
+      display: none;
+    }
+  }
 `
 
 export const ExternalLink = styled.a`
   display: inline-block;
   color: ${Color.orange};
+  font-size: 1.4rem;
 
   &::after {
     content: "↗";

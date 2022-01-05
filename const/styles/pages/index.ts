@@ -13,6 +13,7 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
   margin: 10rem auto;
   position: relative;
   z-index: 1;
+  align-items: ${({ hero }) => hero ? 'center' : 'normal'};
 
   ${({ colorVariant }) => colorVariant === 'orange' && `
     background: ${Color.orange};
@@ -385,7 +386,13 @@ export const ApiCurlCommand = styled.div`
   ${Media.mobile} {
     flex-flow: column wrap;
     align-items: flex-start;
+    border: none;
+    padding: 0;
     gap: 1rem;
+
+    pre {
+      margin: 0 !important;
+    }
   }
 
   > p {

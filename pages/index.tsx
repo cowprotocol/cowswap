@@ -9,7 +9,7 @@ import { GET_QUOTE } from '@/const/api'
 
 import Layout from '@/components/Layout'
 import { ButtonWrapper } from '@/components/Button'
-import CowSlider from '@/components/CowSlider'
+import CowSlider, { CowSliderWrapper } from '@/components/CowSlider'
 import { Section, SubTitle, ScrollDownButton, SectionImage, IconList, IconListItem, Metrics, CheckList, ApiWrapper, ApiTool, ApiCurlCommand, ApiParams } from '../const/styles/pages/index'
 import SocialList from '@/components/SocialList'
 import Button from '@/components/Button'
@@ -45,9 +45,9 @@ export default function Home({ metricsData, siteConfigData }) {
             <Button variant='white' href={url.analytics} label='Analytics' target="_blank" rel="noopener nofollow" />
           </ButtonWrapper>
         </div>
-        <div>
+        <CowSliderWrapper>
           <CowSlider />
-        </div>
+        </CowSliderWrapper>
         <ScrollDownButton onClick={handleScrollDown}>Scroll down</ScrollDownButton>
       </Section>
 
@@ -125,7 +125,7 @@ export default function Home({ metricsData, siteConfigData }) {
       < Section flow={'column'} >
         <div>
           <h3>The life cycle of a CoW order</h3>
-          <SubTitle align='center'>The protocol improves prices for users by batching trades, finding coincidence of wants (CoWs) <br />and tapping into all on chain liquidity - including aggregators.
+          <SubTitle align='center'>The protocol improves prices for users by batching trades, finding coincidence of wants (CoWs) <br className='hideMobile' />and tapping into all on chain liquidity - including aggregators.
             {' '}<a href="https://docs.cowswap.exchange/overview-1/coincidence-of-wants" target="_blank" rel="noreferrer">Read More</a></SubTitle>
           <SectionImage margin={'0'}>
             <a href="/images/how-it-works.jpg" target="_blank" rel="nofollow noopener"><img loading="lazy" src="/images/how-it-works.jpg" alt="How it works" /></a>
