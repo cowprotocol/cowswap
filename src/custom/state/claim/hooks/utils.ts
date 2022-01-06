@@ -80,17 +80,17 @@ export function getTypeToCurrencyMap(chainId: number | undefined): TypeToCurrenc
   if (!chainId) return {}
 
   const map: TypeToCurrencyMapper = {
-    GnoOption: 'GNO',
-    Investor: 'USDC',
-    UserOption: '',
+    [ClaimType.GnoOption]: 'GNO',
+    [ClaimType.Investor]: 'USDC',
+    [ClaimType.UserOption]: '',
   }
 
   if ([SupportedChainId.MAINNET, SupportedChainId.RINKEBY].includes(chainId)) {
-    map.UserOption = 'ETH'
+    map[ClaimType.UserOption] = 'ETH'
   }
 
   if (chainId === SupportedChainId.XDAI) {
-    map.UserOption = 'XDAI'
+    map[ClaimType.UserOption] = 'XDAI'
   }
 
   return map
@@ -108,9 +108,9 @@ export type TypeToPriceMapper = {
 export function getTypeToPriceMap(): TypeToPriceMapper {
   // Hardcoded values
   const map: TypeToPriceMapper = {
-    GnoOption: 16.66,
-    Investor: 26.66,
-    UserOption: 36.66,
+    [ClaimType.GnoOption]: 16.66,
+    [ClaimType.Investor]: 26.66,
+    [ClaimType.UserOption]: 36.66,
   }
 
   return map

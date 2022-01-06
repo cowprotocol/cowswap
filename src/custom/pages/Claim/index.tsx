@@ -356,11 +356,7 @@ export default function Claim() {
             )}
           </ConfirmedIcon>
           <h3>{claimConfirmed ? 'Claimed!' : 'Claiming'}</h3>
-          {!claimConfirmed && (
-            <p>
-              <Trans>{formatSmart(unclaimedAmount)} vCOW</Trans>
-            </p>
-          )}
+          {!claimConfirmed && <Trans>{formatSmart(unclaimedAmount)} vCOW</Trans>}
 
           {claimConfirmed && (
             <>
@@ -381,7 +377,7 @@ export default function Claim() {
               </Trans>
             </>
           )}
-          {claimAttempting && !claimSubmitted && (
+          {claimAttempting && !claimSubmitted && !claimConfirmed && (
             <AttemptFooter>
               <p>
                 <Trans>Confirm this transaction in your wallet</Trans>
