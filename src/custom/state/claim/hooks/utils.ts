@@ -137,17 +137,17 @@ export function getIndexes(data: UserClaims): number[] {
  * Helper function to get the repo path for the corresponding network id
  * Throws when passed an unknown network id
  */
-export function getClaimsRepoPath(id: number): string {
+export function getClaimsRepoPath(id: SupportedChainId): string {
   return `${CLAIMS_REPO}${_repoNetworkIdMapping(id)}/`
 }
 
-function _repoNetworkIdMapping(id: number): string {
+function _repoNetworkIdMapping(id: SupportedChainId): string {
   switch (id) {
-    case 1:
+    case SupportedChainId.MAINNET:
       return 'mainnet'
-    case 4:
+    case SupportedChainId.RINKEBY:
       return 'rinkeby'
-    case 100:
+    case SupportedChainId.XDAI:
       return 'gnosis-chain'
     default:
       throw new Error('Network not supported')
