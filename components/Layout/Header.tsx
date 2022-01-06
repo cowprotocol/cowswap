@@ -52,6 +52,10 @@ const Menu = styled.ol`
   padding: 0;
   margin: 0;
 
+  ${Media.mediumOnly} {
+    font-size: 1.4rem;
+  }
+
   ${Media.mobile} {
     display: none;
   }
@@ -77,7 +81,7 @@ const Logo = styled.div`
   background: url(${LogoImage}) no-repeat center/contain;
   cursor: pointer;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     width: 5.5rem;
     background-size: 14rem 100%;
     background-position: left;

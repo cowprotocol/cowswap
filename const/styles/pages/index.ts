@@ -3,16 +3,16 @@ import { transparentize } from 'polished'
 import { Color, Font, Media } from 'const/styles/variables'
 
 
-export const Section = styled.section<{ hero?: boolean, colorVariant?: string, flow?: string, fullWidth?: boolean, mobileSwitchOrder?: boolean }>`
+export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, colorVariant?: string, flow?: string, fullWidth?: boolean, mediumSwitchOrder?: boolean, mobileSwitchOrder?: boolean }>`
   display: flex;
   width: 100%;
-  max-width: ${({ fullWidth }) => fullWidth ? '100vw' : '148rem'};
   min-height: 100vh;
   flex-flow: ${({ flow }) => flow === 'column' ? 'column wrap' : 'row'};
   gap: 8rem;
   margin: 10rem auto;
   position: relative;
   z-index: 1;
+  align-items: ${({ hero }) => hero ? 'center' : 'normal'};
 
   ${({ colorVariant }) => colorVariant === 'orange' && `
     background: ${Color.orange};
@@ -28,9 +28,16 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
   }
 
   // Hero specific styling
-  ${({ hero }) => hero && `
+  ${({ hero, breakMedium }) => (hero || breakMedium) && `
     margin: 0 auto;
     min-height: calc(100vh - 8.1rem);
+    padding-top: 3.6rem;
+
+    ${Media.mediumDown} {
+      padding: 3.2rem 0;
+      min-height: initial;
+      flex-flow: column wrap;
+    }
 
     ${Media.mobile} {
       min-height: initial;
@@ -69,6 +76,22 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
     }
   `}
 
+  ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
+  > div:first-child {
+    ${Media.mediumDown} {
+      order: 2;
+    }
+  }
+`}
+
+${({ mediumSwitchOrder }) => mediumSwitchOrder && `
+  > div:last-child {
+    ${Media.mediumDown} {
+      order: 1;
+    }
+  }
+`}
+
   }
 
    h1, h2, h3 {
@@ -79,9 +102,21 @@ export const Section = styled.section<{ hero?: boolean, colorVariant?: string, f
     margin: 0;
     z-index: 1;
 
-    ${Media.mobile} {
+    ${Media.mediumDown} {
       font-size: 4rem;
       text-align: center;
+    }
+  }
+
+  h1, h2 {
+    ${Media.desktopLargeDown} {
+      font-size: 4.8rem;
+    }
+  }
+
+  h3 {
+    ${Media.desktopDown} {
+      font-size: 3.8rem;
     }
   }
 `
@@ -122,13 +157,13 @@ export const SubTitle = styled.p<{ maxWidth?: number, align?: string, lineHeight
   max-width: ${({ maxWidth }) => maxWidth && `${maxWidth}rem`};
   z-index: 1;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     font-size: 1.6rem;
     text-align: ${({ align }) => align ? align : "center"};
   }
 `
 
-export const SectionImage = styled.div<{ margin?: string, height?: string, width?: string }>`
+export const SectionImage = styled.div<{ centerMobile?: boolean, margin?: string, height?: string, width?: string }>`
   width: ${({ width }) => width ? width : '100%'};
   height: ${({ height }) => height ? height : '100%'};
   margin: ${({ margin }) => margin ? margin : '0'};
@@ -139,8 +174,13 @@ export const SectionImage = styled.div<{ margin?: string, height?: string, width
   position: relative;
   z-index: 0;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     height: initial;
+
+    ${({ centerMobile }) => centerMobile && `
+      margin-left: auto;
+      margin-right: auto;
+    `}
   }
 
   > a > img,
@@ -149,42 +189,6 @@ export const SectionImage = styled.div<{ margin?: string, height?: string, width
     width: 100%;
     height: inherit;
   }
-`
-
-export const ScrollDownButton = styled.button`
-  display: flex;
-  width: 14rem;
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-  flex: 0;
-  position: absolute;
-  bottom: 3.2rem;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  border: 0;
-  color: ${Color.grey};
-  gap: 1rem;
-  font-size: ${Font.sizeDefault};
-  /* animation: floating 2s linear 1s infinite alternate; */
-
-  ${Media.mobile} {
-    display: none;
-  }
-
-  &::before {
-    content: "";
-    display: block;
-    width: 2rem;
-    height: 2rem;
-    background: url('images/icons/handDown.svg') no-repeat center/contain;
-  }
-
-  /* @keyframes floating {
-    from {transform: translateY(0)}
-    to {transform: translateY(-1rem)}
-  } */
 `
 
 export const Metrics = styled.div`
@@ -210,6 +214,10 @@ export const Metrics = styled.div`
   > div > b {
     font-size: 7.4rem;
     font-weight: ${Font.weightNormal};
+
+    ${Media.mediumOnly} {
+      font-size: 5rem;
+    }
 
     ${Media.mobile} {
       font-size: 4rem;
@@ -308,21 +316,30 @@ export const CheckList = styled.ol`
   }
 `
 
+export const ApiWrapper = styled.div`
+  overflow: hidden;
+  max-width: 100%;
+`
+
 export const ApiTool = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
   flex-flow: column wrap;
   background: black;
   border: 0.1rem solid ${Color.border};
   backdrop-filter: blur(6rem);
   border-radius: 7rem;
-  max-height: 64rem;
+  // max-height: 64rem;
   padding: 2.4rem 4.8rem;
   font-size: ${Font.sizeDefault};
 
+  ${Media.desktopOnly} {
+    border-radius: 3rem;
+    padding: 0 2.4rem 2.4rem;
+  }
+
   ${Media.mobile} {
-    max-height: initial;
+    // max-height: initial;
     border-radius: 2rem;
     padding: 0 2.4rem 2.4rem;
   }
@@ -332,6 +349,10 @@ export const ApiTool = styled.div`
     font-size: 2.4rem;
     line-height: 1;
     color: ${Color.white}
+  }
+
+  pre {
+    max-width: 100%;
   }
 `
 
@@ -359,7 +380,7 @@ export const ApiParams = styled.div`
   }
 `
 
-export const ApiUrl = styled.div`
+export const ApiCurlCommand = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -372,14 +393,13 @@ export const ApiUrl = styled.div`
   ${Media.mobile} {
     flex-flow: column wrap;
     align-items: flex-start;
-    gap: 1rem;
-  }
-
-  > b {
-    margin: 0 0.6rem 0 0;
+    border: none;
     padding: 0;
-    display: inline-block;
-    color: ${Color.orange};
+    gap: 1rem;
+
+    pre {
+      margin: 0 !important;
+    }
   }
 
   > p {
@@ -388,36 +408,6 @@ export const ApiUrl = styled.div`
   }
 
   > p > span {
-    color: ${Color.orange};
-  }
-`
-
-export const ApiOutput = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  margin: 4rem 0 0;
-
-  > b {
-    margin: 0 0 1.6rem 0;
-    font-weight: ${Font.weightNormal};
-  }
-
-  > div {
-    border: 0.1rem solid ${Color.border};
-    color: ${Color.grey};
-    padding: 2.1rem;
-    border-radius: 1.2rem;
-    line-height: 1.4;
-    overflow-y: auto;
-    font-size: 1.4rem;
-    height: 23rem;
-    word-break: break-all;
-  }
-
-  > div > span {
     color: ${Color.orange};
   }
 `

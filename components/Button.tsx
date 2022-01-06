@@ -49,7 +49,7 @@ export const ButtonWrapper = styled.div`
   gap: 1.6rem;
   width: 100%;
 
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     justify-content: center;
     flex-flow: column wrap;
 
