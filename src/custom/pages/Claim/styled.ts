@@ -266,6 +266,9 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   padding: 24px;
   color: white;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
   /* background: ${({ activeBG }) =>
     activeBG &&

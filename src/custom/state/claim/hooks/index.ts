@@ -24,12 +24,12 @@ const CLAIMS_REPO_BRANCH = 'main'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 export const enum ClaimType {
-  Airdrop = 'Airdrop', // free, no vesting, can be available on both mainnet and gchain
-  GnoOption = 'GnoOption', // paid, with vesting, must use GNO, can be available on both mainnet and gchain
-  UserOption = 'UserOption', // paid, with vesting, must use Native currency, can be available on both mainnet and gchain
-  Investor = 'Investor', // paid, with vesting, must use USDC, only on mainnet
-  Team = 'Team', // free, with vesting, only on mainnet
-  Advisor = 'Advisor', // free, with vesting, only on mainnet
+  Airdrop, // free, no vesting, can be available on both mainnet and gchain
+  GnoOption, // paid, with vesting, must use GNO, can be available on both mainnet and gchain
+  UserOption, // paid, with vesting, must use Native currency, can be available on both mainnet and gchain
+  Investor, // paid, with vesting, must use USDC, only on mainnet
+  Team, // free, with vesting, only on mainnet
+  Advisor, // free, with vesting, only on mainnet
 }
 
 type RepoClaimType = keyof typeof ClaimType
