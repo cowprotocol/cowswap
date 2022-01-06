@@ -7,7 +7,6 @@ import {
   FREE_CLAIM_TYPES,
   PAID_CLAIM_TYPES,
   RepoClaims,
-  REVERSE_CLAIM_TYPE_MAPPING,
   UserClaims,
 } from 'state/claim/hooks/index'
 
@@ -36,7 +35,7 @@ export function hasFreeClaim(claims: UserClaims | null): boolean {
  * Airdrop -> 0
  */
 export function transformRepoClaimsToUserClaims(repoClaims: RepoClaims): UserClaims {
-  return repoClaims.map((claim) => ({ ...claim, type: REVERSE_CLAIM_TYPE_MAPPING[claim.type] }))
+  return repoClaims.map((claim) => ({ ...claim, type: ClaimType[claim.type] }))
 }
 
 /**

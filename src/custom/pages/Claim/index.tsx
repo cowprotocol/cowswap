@@ -9,6 +9,8 @@ import {
   FREE_CLAIM_TYPES,
   ClaimType,
   useClaimCallback,
+  useInvestmentStillAvailable,
+  useAirdropStillAvailable,
 } from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import Circle from 'assets/images/blue-loader.svg'
@@ -90,7 +92,7 @@ export default function Claim() {
   const [claimConfirmed, setClaimConfirmed] = useState<boolean>(false)
   const [claimAttempting, setClaimAttempting] = useState<boolean>(false)
   const [claimSubmitted, setClaimSubmitted] = useState<boolean>(false)
-  const [claimedAmmount, setClaimedAmmount] = useState<number>(0)
+  const [claimedAmount, setClaimedAmount] = useState<number>(0)
 
   // investment
   const [isInvestFlowActive, setIsInvestFlowActive] = useState<boolean>(false)
@@ -113,7 +115,7 @@ export default function Claim() {
   // get total unclaimed ammount
   const unclaimedAmount = useUserUnclaimedAmount(activeClaimAccount)
 
-  const hasClaims = useMemo(() => userClaimData.length, [userClaimData])
+  const hasClaims = useMemo(() => userClaimData.length > 0, [userClaimData])
   const isAirdropOnly = useMemo(() => !hasPaidClaim(userClaimData), [userClaimData])
 
   // handle table select change
@@ -123,6 +125,10 @@ export default function Claim() {
   // claim type to currency and price map
   const typeToCurrencyMap = useMemo(() => getTypeToCurrencyMap(chainId), [chainId])
   const typeToPriceMap = useMemo(() => getTypeToPriceMap(), [])
+
+  // checks regarding investment time window
+  const isInvestmentStillAvailable = useInvestmentStillAvailable()
+  const isAirdropStillAvailable = useAirdropStillAvailable()
 
   // claim callback
   const { claimCallback } = useClaimCallback(activeClaimAccount)
@@ -202,6 +208,15 @@ export default function Claim() {
       setIsInvestFlowActive(true)
     }
   }
+  console.log(
+    `Claim/index::`,
+    `[unclaimedAmount ${unclaimedAmount?.toFixed(2)}]`,
+    `[hasClaims ${hasClaims}]`,
+    `[activeClaimAccount ${activeClaimAccount}]`,
+    `[isAirdropOnly ${isAirdropOnly}]`,
+    `[isInvestmentStillAvailable ${isInvestmentStillAvailable}]`,
+    `[isAirdropStillAvailable ${isAirdropStillAvailable}]`
+  )
 
   // on account change
   useEffect(() => {
@@ -320,16 +335,21 @@ export default function Claim() {
 
       {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
       {!!activeClaimAccount && !!hasClaims && !!isAirdropOnly && !claimAttempting && !claimConfirmed && (
-        <IntroDescription>
-          <p>
-            <Trans>
-              Thank you for being a supporter of CowSwap and the CoW protocol. As an important member of the CowSwap
-              Community you may claim vCOW to be used for voting and governance. You can claim your tokens until{' '}
-              <i>[XX-XX-XXXX - XX:XX GMT]</i>
-              <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
-            </Trans>
-          </p>
-        </IntroDescription>
+        <>
+          <IntroDescription>
+            <p>
+              <Trans>
+                Thank you for being a supporter of CowSwap and the CoW protocol. As an important member of the CowSwap
+                Community you may claim vCOW to be used for voting and governance. You can claim your tokens until{' '}
+                <i>[XX-XX-XXXX - XX:XX GMT]</i>
+                <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
+              </Trans>
+            </p>
+          </IntroDescription>
+
+          {/* TODO: this is temporary to show the flag, find a better way to show it */}
+          {!isAirdropStillAvailable && <h3>WARNING: investment window is over!!!</h3>}
+        </>
       )}
       {/* END -- IS Airdrop only (simple)  ---------------------------------------- */}
 
@@ -364,7 +384,7 @@ export default function Claim() {
                 <h3>You have successfully claimed</h3>
               </Trans>
               <Trans>
-                <p>{claimedAmmount} vCOW</p>
+                <p>{claimedAmount} vCOW</p>
               </Trans>
               <Trans>
                 <span role="img" aria-label="party-hat">
@@ -406,6 +426,10 @@ export default function Claim() {
         !(claimAttempting || claimConfirmed) && (
           <ClaimBreakdown>
             <h2>vCOW claim breakdown</h2>
+
+            {/* TODO: this is temporary to show the flag, find a better way to show it */}
+            {!isInvestmentStillAvailable && <h3>WARNING: investment window is over!!!</h3>}
+
             <ClaimTable>
               <table>
                 <thead>
@@ -620,6 +644,7 @@ export default function Claim() {
       )}
       {/* END -- Investing vCOW flow (advanced) ----------------------------------------------------- */}
 
+      {/* START -- CLAIM button OR other actions */}
       <FooterNavButtons>
         {/* General claim vCOW button  (no invest) */}
         {!!activeClaimAccount && !!hasClaims && !isInvestFlowActive && !claimAttempting && !claimConfirmed ? (
@@ -668,6 +693,7 @@ export default function Claim() {
           </>
         )}
       </FooterNavButtons>
+      {/* END -- CLAIM button OR other actions */}
     </PageWrapper>
   )
 }

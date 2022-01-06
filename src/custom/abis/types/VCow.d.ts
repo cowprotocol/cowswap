@@ -25,6 +25,10 @@ interface VCowInterface extends ethers.utils.Interface {
     "claimMany(uint256[],uint8[],address[],uint256[],uint256[],bytes32[][],uint256[])": FunctionFragment;
     "isClaimed(uint256)": FunctionFragment;
     "merkleRoot()": FunctionFragment;
+    "deploymentTimestamp()": FunctionFragment;
+    "gnoPrice()": FunctionFragment;
+    "usdcPrice()": FunctionFragment;
+    "wethPrice()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -58,11 +62,25 @@ interface VCowInterface extends ethers.utils.Interface {
     functionFragment: "merkleRoot",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "deploymentTimestamp",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "gnoPrice", values?: undefined): string;
+  encodeFunctionData(functionFragment: "usdcPrice", values?: undefined): string;
+  encodeFunctionData(functionFragment: "wethPrice", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimMany", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isClaimed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "merkleRoot", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "deploymentTimestamp",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "gnoPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "usdcPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "wethPrice", data: BytesLike): Result;
 
   events: {
     "Claimed(uint256,uint8,address,uint256,uint256)": EventFragment;
@@ -152,6 +170,14 @@ export class VCow extends BaseContract {
     ): Promise<[boolean]>;
 
     merkleRoot(overrides?: CallOverrides): Promise<[string]>;
+
+    deploymentTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    gnoPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    usdcPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    wethPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   claim(
@@ -179,6 +205,14 @@ export class VCow extends BaseContract {
 
   merkleRoot(overrides?: CallOverrides): Promise<string>;
 
+  deploymentTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+  gnoPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+  usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+  wethPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
     claim(
       index: BigNumberish,
@@ -204,6 +238,14 @@ export class VCow extends BaseContract {
     isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     merkleRoot(overrides?: CallOverrides): Promise<string>;
+
+    deploymentTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    gnoPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    wethPrice(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -270,6 +312,14 @@ export class VCow extends BaseContract {
     ): Promise<BigNumber>;
 
     merkleRoot(overrides?: CallOverrides): Promise<BigNumber>;
+
+    deploymentTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    gnoPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    wethPrice(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -300,5 +350,15 @@ export class VCow extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     merkleRoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    deploymentTimestamp(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    gnoPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    usdcPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    wethPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
