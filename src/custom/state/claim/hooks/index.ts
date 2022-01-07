@@ -83,39 +83,70 @@ type Account = string | null | undefined
 export type UserClaims = UserClaimData[]
 export type RepoClaims = RepoClaimData[]
 
+type ClassifiedUserClaims = {
+  available: UserClaims
+  expired: UserClaims
+  claimed: UserClaims
+}
+
 /**
- * Gets an array of available claim
+ * Gets all user claims, classified
+ *
+ * @param account
+ */
+export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims {
+  const userClaims = useUserClaims(account)
+  const contract = useVCowContract()
+
+  const isInvestmentStillAvailable = useInvestmentStillAvailable()
+  const isAirdropStillAvailable = useAirdropStillAvailable()
+
+  // build list of parameters, with the claim index
+  // we check for all claims because expired now might have been claimed before
+  const claimIndexes = useMemo(() => userClaims?.map(({ index }) => [index]) || [], [userClaims])
+
+  const results = useSingleContractMultipleData(contract, 'isClaimed', claimIndexes)
+
+  return useMemo(() => {
+    const available: UserClaims = []
+    const expired: UserClaims = []
+    const claimed: UserClaims = []
+
+    if (!userClaims || userClaims.length === 0) {
+      return { available, expired, claimed }
+    }
+
+    results.forEach((result, index) => {
+      const claim = userClaims[index]
+
+      if (
+        result.valid && // result is valid
+        !result.loading && // result is not loading
+        result.result?.[0] === true // result true means claimed
+      ) {
+        claimed.push(claim)
+      } else if (!isAirdropStillAvailable || (!isInvestmentStillAvailable && PAID_CLAIM_TYPES.includes(claim.type))) {
+        expired.push(claim)
+      } else {
+        available.push(claim)
+      }
+    })
+
+    return { available, expired, claimed }
+  }, [isAirdropStillAvailable, isInvestmentStillAvailable, results, userClaims])
+}
+
+/**
+ * Gets an array of available claims
+ *
+ * Syntactic sugar on top of `useClassifiedUserClaims`
  *
  * @param account
  */
 export function useUserAvailableClaims(account: Account): UserClaims {
-  const userClaims = useUserClaims(account)
-  const contract = useVCowContract()
+  const { available } = useClassifiedUserClaims(account)
 
-  // build list of parameters, with the claim index
-  const claimIndexes = useMemo(() => userClaims?.map(({ index }) => [index]) || [], [userClaims])
-
-  // just a note, this line returns an empty array on Mainet but works on Rinkeby
-  // So not sure if this is in plan to be implemented or it doesn't work currently
-  const results = useSingleContractMultipleData(contract, 'isClaimed', claimIndexes)
-
-  return useMemo(() => {
-    if (!userClaims || userClaims.length === 0) {
-      // user has no claims
-      return []
-    }
-
-    return results.reduce<UserClaims>((acc, result, index) => {
-      if (
-        result.valid && // result is valid
-        !result.loading && // result is not loading
-        result.result?.[0] === false // result is false, meaning not claimed
-      ) {
-        acc.push(userClaims[index]) // get the claim not yet claimed
-      }
-      return acc
-    }, [])
-  }, [results, userClaims])
+  return available
 }
 
 /**
