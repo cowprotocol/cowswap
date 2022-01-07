@@ -46,5 +46,6 @@
     "prettier": "2.5.1",
     "typescript": "^4.4.4"
   },
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "license": "(MIT OR Apache-2.0)"
 }
