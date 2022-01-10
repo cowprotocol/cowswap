@@ -77,22 +77,20 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
   `}
 
   ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
-  > div:first-child {
-    ${Media.mediumDown} {
-      order: 2;
+    > div:first-child {
+      ${Media.mediumDown} {
+        order: 2;
+      }
     }
-  }
-`}
+  `}
 
-${({ mediumSwitchOrder }) => mediumSwitchOrder && `
-  > div:last-child {
-    ${Media.mediumDown} {
-      order: 1;
+  ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
+    > div:last-child {
+      ${Media.mediumDown} {
+        order: 1;
+      }
     }
-  }
-`}
-
-  }
+  `}
 
    h1, h2, h3 {
     font-size: 5rem;
@@ -104,12 +102,6 @@ ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
     ${Media.mediumDown} {
       font-size: 4rem;
       text-align: center;
-    }
-  }
-
-  h1, h2 {
-    ${Media.desktopLargeDown} {
-      font-size: 4.6rem;
     }
   }
 

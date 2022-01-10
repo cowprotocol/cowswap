@@ -28,10 +28,6 @@ const Content = styled.main`
   width: 100%;
   display: flex;
   flex-flow: column wrap;
-
-  ${Media.mediumDown} {
-    margin: 10rem 0 0;
-  }
 `
 
 export default function Layout({ children }: LayoutProps) {
