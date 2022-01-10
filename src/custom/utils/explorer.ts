@@ -9,10 +9,10 @@ function _getExplorerUrlByEnvironment() {
   } else if (isStaging) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://protocol-explorer.staging.gnosisdev.com'
   } else if (isBarn) {
-    baseUrl = process.env.REACT_APP_EXPLORER_URL_BARN || 'https://barn.gnosis-protocol.io'
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_BARN || 'https://barn.explorer.cow.fi'
   } else {
     // Production by default
-    baseUrl = process.env.REACT_APP_EXPLORER_URL_PROD || 'https://gnosis-protocol.io'
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_PROD || 'https://explorer.cow.fi'
   }
 
   return {

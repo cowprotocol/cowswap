@@ -8,7 +8,7 @@ const DEFAULT_SELL_TOKEN = WETH[4]
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://protocol-rinkeby.dev.gnosisdev.com/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.fi/rinkeby/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,
