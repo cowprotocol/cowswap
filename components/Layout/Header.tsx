@@ -52,11 +52,7 @@ const Menu = styled.ol`
   padding: 0;
   margin: 0;
 
-  ${Media.mediumOnly} {
-    font-size: 1.4rem;
-  }
-
-  ${Media.mobile} {
+  ${Media.mediumDown} {
     display: none;
   }
 
