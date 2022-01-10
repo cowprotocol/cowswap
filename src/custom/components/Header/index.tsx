@@ -34,10 +34,6 @@ import { formatSmart } from 'utils/format'
 import NetworkCard, { NetworkInfo } from './NetworkCard'
 import SVG from 'react-inlinesvg'
 
-// Winter edition
-import SantaHat from 'assets/cow-swap/santa.png'
-import Snowfall from 'react-snowfall'
-
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   // [ChainId.ROPSTEN]: 'Ropsten',
@@ -161,48 +157,20 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 `
 
-export const LogoImage = styled.div<{ darkMode: boolean }>`
+export const LogoImage = styled.div`
   width: 190px;
   height: 48px;
   background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
   margin: 0 32px 0 0;
   position: relative;
 
-  // Winter edition
-  ${({ darkMode }) =>
-    darkMode &&
-    `&::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -22px;
-    left: 0;
-    height: 50px;
-    width: 40px;
-    background: url(${SantaHat}) no-repeat center/contain;
-  }`}
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 160px;
-
-      &::before {
-        top: -16px;
-        left: 0;
-        height: 42px;
-        width: 35px;
-      }
   `}
 
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
     height: 34px;
-
-    &::before {
-      top: -19px;
-      left: 0;
-      height: 42px;
-      width: 29px;
-    }
   `}
 
   > svg {
@@ -248,7 +216,7 @@ export default function Header() {
         <HeaderRow marginRight="0">
           <Title href=".">
             <UniIcon>
-              <LogoImage darkMode={darkMode} />
+              <LogoImage />
             </UniIcon>
           </Title>
           <HeaderLinks>
@@ -282,9 +250,6 @@ export default function Header() {
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>
-
-      {/* // mod */}
-      {darkMode && <Snowfall snowflakeCount={100} />}
     </Wrapper>
   )
 }
