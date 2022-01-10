@@ -15,7 +15,7 @@ import SocialList from '@/components/SocialList'
 import Button from '@/components/Button'
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { default as dark } from 'react-syntax-highlighter/dist/esm/styles/prism/coldark-dark';
+import { default as dark } from 'react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus';
 
 export default function Home({ metricsData, siteConfigData }) {
   const { title, descriptionShort, social, url } = siteConfigData
@@ -150,7 +150,7 @@ export default function Home({ metricsData, siteConfigData }) {
             </ApiParams>
 
             <ApiCurlCommand>
-              <SyntaxHighlighter language="json" style={dark}>
+              <SyntaxHighlighter language="json" style={dark} customStyle={{margin: 0, borderRadius: '1.2rem'}}>
                 {GET_QUOTE}
               </SyntaxHighlighter>
             </ApiCurlCommand>

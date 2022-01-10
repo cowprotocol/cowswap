@@ -327,6 +327,10 @@ export const ApiTool = styled.div`
     color: ${Color.white}
   }
 
+  > p {
+    line-height: 1.4;
+  }
+
   pre {
     max-width: 100%;
   }
@@ -362,9 +366,10 @@ export const ApiCurlCommand = styled.div`
   justify-content: flex-start;
   width: 100%;
   border: 0.1rem solid ${Color.border};
-  padding: 1.6rem;
+  padding: 0;
   border-radius: 1.2rem;
   gap: 0;
+  margin: 0 0 2.4rem;
 
   ${Media.mobile} {
     flex-flow: column wrap;
