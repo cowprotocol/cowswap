@@ -31,7 +31,7 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
   ${({ hero, breakMedium }) => (hero || breakMedium) && `
     margin: 0 auto;
     min-height: calc(100vh - 8.1rem);
-    padding-top: 150px;
+    padding-top: 15rem;
 
     ${Media.mediumDown} {
       padding: 3.2rem 0;
