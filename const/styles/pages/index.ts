@@ -31,7 +31,7 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
   ${({ hero, breakMedium }) => (hero || breakMedium) && `
     margin: 0 auto;
     min-height: 100%;
-    padding-top: 3.6rem;
+    padding-top: 10rem;
 
     ${Media.mediumDown} {
       padding: 3.2rem 0;
@@ -43,6 +43,13 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
       min-height: initial;
       padding: 5.6rem 3.2rem 0;
     }
+
+    ${Media.desktopOnly} {
+      > div > h1 {
+        font-size: 4rem;
+      }
+    }
+    
   `}
 
   > div {
