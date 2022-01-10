@@ -194,7 +194,7 @@ const GlobalStyles = createGlobalStyle`
 export const ExternalLink = styled.a`
   display: inline-block;
   color: ${Color.orange};
-  font-size: 1.4rem;
+  font-size: inherit;
   white-space: nowrap;
 
   &::after {

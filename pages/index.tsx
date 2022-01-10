@@ -68,7 +68,7 @@ export default function Home({ metricsData, siteConfigData }) {
       </Section>
 
       {/* 3rd section */}
-      <Section  flow={'column'} fullWidth id="about">
+      <Section flow={'column'} fullWidth id="about">
         <div>
           <SectionImage margin={'0 auto -6rem'}><img loading="lazy" src="/images/barn.jpg" alt="Meta DEX Aggregator" /></SectionImage>
         </div>
