@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components/macro'
 import Page, { GdocsListStyle, Title } from 'components/Page'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
+import { ExternalLink } from 'theme'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -29,6 +30,13 @@ export const Wrapper = styled(Page)`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 30px;
     `}
+  }
+`
+
+export const ExtLink = styled(ExternalLink)`
+  &:hover,
+  &:focus {
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -73,17 +81,12 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
 
 export const CardHead = styled.div`
   display: flex;
-  align-items: center;
   flex-grow: 1;
-  flex-direction: row;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-direction: column;
-  `}
+  flex-direction: column;
 `
 
 export const StyledTitle = styled(Title)`
   display: flex;
-  flex-grow: 1;
   justify-content: flex-start;
   margin: 0;
   line-height: 1.21;
@@ -134,6 +137,18 @@ export const FlexWrap = styled.div`
   `}
 `
 
+export const StyledContainer = styled.div`
+  display: flex;
+  flex:1;
+  align-items:center;
+  justify-content: space-between;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-wrap: wrap;
+    flex-direction: column;
+  `}
+`
+
 export const FlexCol = styled.div`
   display: flex;
   flex-grow: 1;
@@ -157,6 +172,8 @@ export const FlexCol = styled.div`
   }
 `
 export const Loader = styled.div<{ isLoading: boolean }>`
+  display: flex;
+  flex: 1;
   ${({ theme, isLoading }) =>
     isLoading &&
     css`

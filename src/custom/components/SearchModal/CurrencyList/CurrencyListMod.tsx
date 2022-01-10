@@ -1,28 +1,29 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { LightGreyCard } from 'components/Card'
+import QuestionHelper from 'components/QuestionHelper'
+import useTheme from 'hooks/useTheme'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
+
+import TokenListLogo from 'assets/svg/tokenlist.svg'
+import { useIsUserAddedToken } from 'hooks/Tokens'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useCombinedActiveList } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { TYPE } from 'theme'
-import { useIsUserAddedToken } from 'hooks/Tokens'
+import { isTokenOnList } from 'utils'
 import Column from 'components/Column'
-import { RowFixed, RowBetween } from 'components/Row'
 import CurrencyLogo from 'components/CurrencyLogo'
+import Loader from 'components/Loader'
+import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltip } from 'components/Tooltip'
 // import { MenuItem } from 'components/SearchModal/styleds'
-import { MenuItem } from '.' // mod
-import Loader from 'components/Loader'
-import { isTokenOnList } from 'utils'
 import ImportRow from 'components/SearchModal/ImportRow'
-import { LightGreyCard } from 'components/Card'
-import TokenListLogo from 'assets/svg/tokenlist.svg'
-import QuestionHelper from 'components/QuestionHelper'
-import useTheme from 'hooks/useTheme'
+import { MenuItem } from '.' // mod
 import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -283,8 +284,8 @@ export default function CurrencyList({
       otherCurrency,
       selectedCurrency,
       setImportToken,
-      showCurrencyAmount,
       showImportView,
+      showCurrencyAmount,
       checkIsUnsupported,
       BalanceComponent,
       TokenTagsComponent,

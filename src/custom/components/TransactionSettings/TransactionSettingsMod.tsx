@@ -1,16 +1,16 @@
-import { t, Trans } from '@lingui/macro'
-import { useState, useContext } from 'react'
+import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
+import { useContext, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import QuestionHelper from '../QuestionHelper'
 import { TYPE } from 'theme'
 import { AutoColumn } from 'components/Column'
+import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
 import { darken } from 'polished'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
-import { L2_CHAIN_IDS } from 'constants/chains'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ORDER_VALID_TO_TIME_SECONDS } from 'constants/index'
 
@@ -245,7 +245,12 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <QuestionHelper
               bgColor={theme.bg3}
               color={theme.text1}
-              text={t`Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
+              text={
+                <Trans>
+                  Your swap expires and will not execute if it is pending for longer than the selected duration.
+                  {INPUT_OUTPUT_EXPLANATION}
+                </Trans>
+              }
             />
           </RowFixed>
           <RowFixed>

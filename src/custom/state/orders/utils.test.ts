@@ -1,3 +1,7 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
+
 import { PriceInformation } from 'utils/price'
 import { OrderKind } from 'state/orders/actions'
 

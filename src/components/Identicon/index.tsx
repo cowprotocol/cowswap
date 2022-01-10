@@ -1,9 +1,8 @@
-import { useEffect, useRef } from 'react'
-
+import Davatar, { Image } from '@davatar/react'
+import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 
 import { useActiveWeb3React } from '../../hooks/web3'
-import Jazzicon from '@metamask/jazzicon'
 
 const StyledIdenticonContainer = styled.div`
   height: 1rem;
@@ -13,17 +12,21 @@ const StyledIdenticonContainer = styled.div`
 `
 
 export default function Identicon() {
-  const ref = useRef<HTMLDivElement>()
+  const { account, library } = useActiveWeb3React()
 
-  const { account } = useActiveWeb3React()
+  // restrict usage of Davatar until it stops sending 3p requests
+  // see https://github.com/metaphor-xyz/davatar-helpers/issues/18
+  const supportsENS = useMemo(() => {
+    return ([1, 3, 4, 5] as Array<number | undefined>).includes(library?.network?.chainId)
+  }, [library])
 
-  useEffect(() => {
-    if (account && ref.current) {
-      ref.current.innerHTML = ''
-      ref.current.appendChild(Jazzicon(16, parseInt(account.slice(2, 10), 16)))
-    }
-  }, [account])
-
-  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
-  return <StyledIdenticonContainer ref={ref as any} />
+  return (
+    <StyledIdenticonContainer>
+      {account && supportsENS ? (
+        <Davatar address={account} size={16} provider={library} />
+      ) : (
+        <Image address={account} size={16} />
+      )}
+    </StyledIdenticonContainer>
+  )
 }

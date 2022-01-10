@@ -1,29 +1,31 @@
-import { Currency, Token } from '@uniswap/sdk-core'
-import { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import ReactGA from 'react-ga'
+// eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
+import { Currency, Token } from '@uniswap/sdk-core'
+import useDebounce from 'hooks/useDebounce'
+import { useOnClickOutside } from 'hooks/useOnClickOutside'
+import useTheme from 'hooks/useTheme'
+import useToggle from 'hooks/useToggle'
+import { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+// import { Edit } from 'react-feather'
+import ReactGA from 'react-ga'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
+import styled, { DefaultTheme } from 'styled-components/macro'
+
 import { GpEther as ExtendedEther } from 'constants/tokens'
+import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useAllTokens, useToken, useIsUserAddedToken, useSearchInactiveTokenLists } from 'hooks/Tokens'
-import { CloseIcon, TYPE, ButtonText /* , IconWrapper */ } from 'theme'
+import { ButtonText, CloseIcon, /* , IconWrapper, */ TYPE } from 'theme'
 import { isAddress } from 'utils'
 import Column from 'components/Column'
 import Row, { RowBetween /* , RowFixed */ } from 'components/Row'
 import CommonBases from 'components/SearchModal/CommonBases'
 import CurrencyList from 'components/SearchModal/CurrencyList'
 import { filterTokens, useSortedTokensByQuery } from 'components/SearchModal/filtering'
+import ImportRow from 'components/SearchModal/ImportRow'
 import { useTokenComparator } from 'components/SearchModal/sorting'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import styled, { DefaultTheme } from 'styled-components/macro'
-import useToggle from 'hooks/useToggle'
-import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import useTheme from 'hooks/useTheme'
-import ImportRow from 'components/SearchModal/ImportRow'
-// import { Edit } from 'react-feather'
-import useDebounce from 'hooks/useDebounce'
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.' //mod
 
@@ -50,10 +52,10 @@ export interface CurrencySearchProps {
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
-  showManageView: () => void
-  showImportView: () => void
   showCurrencyAmount?: boolean
   disableNonToken?: boolean
+  showManageView: () => void
+  showImportView: () => void
   setImportToken: (token: Token) => void
   FooterButtonTextComponent: (props: { theme: DefaultTheme }) => JSX.Element // MOD
 }
@@ -63,11 +65,12 @@ export function CurrencySearch({
   onCurrencySelect,
   otherSelectedCurrency,
   showCommonBases,
+  showCurrencyAmount,
+  disableNonToken,
   onDismiss,
   isOpen,
   showManageView,
   showImportView,
-  showCurrencyAmount,
   setImportToken,
   FooterButtonTextComponent, // MOD
 }: CurrencySearchProps) {
@@ -212,7 +215,7 @@ export function CurrencySearch({
             {({ height }) => (
               <CurrencyList
                 height={height}
-                currencies={filteredSortedTokensWithETH}
+                currencies={disableNonToken ? filteredSortedTokens : filteredSortedTokensWithETH}
                 otherListTokens={filteredInactiveTokens}
                 onCurrencySelect={handleCurrencySelect}
                 otherCurrency={otherSelectedCurrency}

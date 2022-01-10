@@ -1,9 +1,10 @@
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
-// import { SupportedChainId } from '@src/constants/chains'
+import { supportedChainId } from 'utils/supportedChainId'
 import { /* ARBITRUM_LIST, OPTIMISM_LIST, */ DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useCallback, useEffect } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { useAllLists } from 'state/lists/hooks'
+
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import useInterval from 'hooks/useInterval'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
@@ -13,7 +14,6 @@ import { useActiveListUrls } from 'state/lists/hooks'
 
 // MOD: add updateVersion for chainId change init
 import { updateVersion } from 'state/global/actions'
-import { supportedChainId } from 'utils/supportedChainId'
 
 export default function Updater(): null {
   const { chainId: connectedChainId, library } = useActiveWeb3React() // MOD: chainId

@@ -6,7 +6,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/styleds'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
-import { AuxInformationContainer } from '../CurrencyInputPanel'
+import { AuxInformationContainer } from 'components/CurrencyInputPanel'
 import { darken } from 'polished'
 import useDebounce from 'hooks/useDebounce'
 

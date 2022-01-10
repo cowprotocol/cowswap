@@ -1,12 +1,14 @@
 import { Trans } from '@lingui/macro'
 import { ButtonGray, ButtonOutlined, ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
+import DowntimeWarning from 'components/DowntimeWarning'
 import { FlyoutAlignment, NewMenu } from 'components/Menu'
 import { SwapPoolTabs } from 'components/NavigationTabs'
+import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import PositionList from 'components/PositionList'
 import { RowBetween, RowFixed } from 'components/Row'
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { L2_CHAIN_IDS } from 'constants/chains'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useContext } from 'react'
@@ -221,6 +223,8 @@ export default function Pool() {
             </TitleRow>
 
             <HideSmall>
+              <NetworkAlert thin />
+              <DowntimeWarning />
               <CTACards />
             </HideSmall>
 

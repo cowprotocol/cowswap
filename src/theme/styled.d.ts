@@ -2,6 +2,8 @@
 
 export type Color = string
 export interface Colors {
+  darkMode: boolean
+
   // base
   white: Color
   black: Color
@@ -23,7 +25,6 @@ export interface Colors {
   bg5: Color
   bg6: Color
   bg7: Color
-  bg8: Color
 
   modalBG: Color
   advancedBG: Color
@@ -59,8 +60,8 @@ export interface Colors {
   warning: Color
 }
 
-/* declare module 'styled-components' {
-  interface DefaultTheme extends Colors {
+/*declare module 'styled-components/macro' {
+  export interface DefaultTheme extends Colors {
     grids: Grids
 
     // shadows

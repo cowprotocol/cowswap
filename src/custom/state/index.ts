@@ -1,7 +1,7 @@
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 
-import application from '@src/state/application/reducer'
+import application from 'state/application/reducer'
 // import { updateVersion } from '@src/state/global/actions'
 import user from '@src/state/user/reducer'
 import swap from '@src/state/swap/reducer'
