@@ -8,13 +8,13 @@ import { InView } from 'react-intersection-observer';
 const LogoImage = 'images/logo.svg'
 
 const Pixel = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1px;
-    height: 1px;
-    display:block;
-    background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  display:block;
+  background: transparent;
 `
 
 const Wrapper = styled.header`
@@ -28,7 +28,7 @@ const Wrapper = styled.header`
   background: transparent;
   padding: 2.4rem 5.6rem;
   margin: 0 auto;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   transition: background 0.5s ease-in-out;
@@ -38,7 +38,6 @@ const Wrapper = styled.header`
   }
 
   &.sticky {
-
     background: ${transparentize(0.4, Color.black)};
     backdrop-filter: blur(60px);
   }
