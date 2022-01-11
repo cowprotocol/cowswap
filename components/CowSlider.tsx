@@ -242,6 +242,11 @@ function getNetworkConfig(networkID) {
       // https://logotyp.us/logo/sushiswap/
       return { label: 'Sushiswap', color: "#03b8ff" }
       break;
+    case 'PARASWAP':
+      // https://logotyp.us/logo/sushiswap/
+      return { label: 'ParaSwap', color: "#025dde" }
+      break;
+
     case 'COW':
       return { label: 'CoW Protocol (P2P)', color: Color.orange }
       break;

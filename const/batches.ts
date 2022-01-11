@@ -1,6 +1,6 @@
 import { siteConfig } from '@/const/meta'
 
-// const { url } = siteConfig
+const { url } = siteConfig
 
 export const batches = [
   /*
@@ -38,7 +38,7 @@ export const batches = [
       label: 'View on Etherscan',
       url: 'https://etherscan.io/tx/0x691d1a8ba39c036e841b6e2ed970f9068ac4a27b61955afb852f11019f2ff4d8'
     },
-    visual: 'images/cow-graph-fullCow-64.png',
+    visual: 'images/cow-graph-fullCow.png',
     bars: [
 
       { id: 4, network: 'COW', percent: 100 },
@@ -113,7 +113,7 @@ export const batches = [
       label: 'Gas cost',
       value: '34% cheaper'
     }],
-    visual: 'images/cow-graph-partialCow-64.png',
+    visual: 'images/cow-graph-partialCow.png',
     bars: [
       { id: 1, network: 'UNIV2', percent: 27.36 },
       { id: 2, network: 'SUSHI', percent: 12.81 },
@@ -122,29 +122,29 @@ export const batches = [
   },
 
 
-  // /*
-  // CASE: No CoW
-  //   This case is simpler to analyze. Only one trader, big volume, there's surplus 
-  // */
-  // {
-  //   id: 3,
-  //   label: 'No CoW',
-  //   summary: "Even if you trade alone, you are protected",
-  //   description: "This 8.2M trade had some slippage tolerance that could have been MEV extracted. In case of extraction, it is paid by the solvers, same applies for the fees in case the transaction reverts.",    
-  //   link: {
-  //     label: 'View on CoW Explorer',
-  //     url: url.explorer + '/orders/0xe264084cb8fd111f0af766548d934444d5740602a9bcc4aa0689a7016307ff9ca0f75491720835b36edc92d06ddc468d201e9b7361877c8d',
-  //   },
-  //   metrics: [{
-  //     label: 'Volume',
-  //     value: '8.2M'
-  //   }, {
-  //     label: 'Surplus',
-  //     value: '$3,176.63'
-  //   }],
-  //   visual: 'images/cow-graph-noCow-64.png',
-  //   bars: [
-  //     { id: 1, network: 'CURVE', percent: 100 }
-  //   ]
-  // }
+  /*
+  CASE: No CoW
+    This case is simpler to analyze. Only one trader, big volume, there's surplus 
+  */
+  {
+    id: 3,
+    label: 'No CoW',
+    summary: "Even if you trade alone, you are protected",
+    description: "A trader submitted a $6M trade with a high slippage tolerance, which is easy money for MEV extractors. By using CoW Protocol, the MEV protected trade was settled via a DEX Agg. Solvers reduced the slippage tolerance to make it less vulnerable to MEV and leveraged Flashbots API to hide the trade from the dark forest.",    
+    link: {
+      label: 'View on CoW Explorer',
+      url: url.explorer + '/orders/0xa626323afbe1641b9cbff455d8808e5d75961373fa44258621a08220789fba83e30ed74c6633a1b0d34a71c50889f9f0fdb7d68a61859cfb',
+    },
+    metrics: [{
+      label: 'Volume',
+      value: '6M'
+    }, {
+      label: 'Surplus',
+      value: '$182,640'
+    }],
+    visual: 'images/cow-graph-full-blue.png',
+    bars: [
+      { id: 1, network: 'PARASWAP', percent: 100 }
+    ]
+  }
 ]
