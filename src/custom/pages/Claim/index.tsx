@@ -18,16 +18,9 @@ import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,
   AttemptFooter,
-  ClaimSummary,
-  ClaimTotal,
-  IntroDescription,
   ClaimTable,
-  ClaimAccount,
-  InputField,
-  CheckAddress,
   ClaimBreakdown,
   FooterNavButtons,
-  TopNav,
   InvestFlow,
   InvestContent,
   InvestTokenGroup,
@@ -39,10 +32,6 @@ import {
   StepIndicator,
   Steps,
   TokenLogo,
-  ClaimSummaryTitle,
-  InputErrorText,
-  InputFieldTitle,
-  ClaimAccountButtons,
 } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
 import {
@@ -58,12 +47,14 @@ import {
 import { useWalletModalToggle } from 'state/application/hooks'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import Confetti from 'components/Confetti'
-import { shortenAddress } from 'utils'
 import { isAddress } from 'web3-utils'
 import useENS from 'hooks/useENS'
-import { TYPE } from 'theme'
 import { formatSmart } from 'utils/format'
 import { useClaimReducer, ClaimContext } from './state'
+import ClaimNav from './ClaimNav'
+import ClaimSummary from './ClaimSummary'
+import ClaimAddress from './ClaimAddress'
+import CanUserClaimMessage from './CanUserClaimMessage'
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
@@ -76,7 +67,6 @@ export default function Claim() {
     inputAddress,
     // account
     activeClaimAccount,
-    activeClaimAccountENS,
     // check address
     isSearchUsed,
     // claiming
@@ -112,18 +102,8 @@ export default function Claim() {
     setSelectedAll,
   } = dispatchers
 
-  const { loading, address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
+  const { address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
   const isInputAddressValid = useMemo(() => isAddress(resolvedAddress || ''), [resolvedAddress])
-
-  // Show input error
-  const showInputError = useMemo(
-    () => Boolean(inputAddress.length > 0 && !loading && !resolvedAddress),
-    [resolvedAddress, inputAddress, loading]
-  )
-
-  // should be updated
-  const dummyIdenticon =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAA4ZJREFUeF7t3b1xFUEQReF5Jpj4BCC5CoIgiIFoSEAOyoEsZJEAPiaYojAxtWerWlvzye/96T5zb8/MW83t8enuZQ3+fb2/Dd59/tZffoymf90AMAsBACjAKIEUYDT9a1EACjCKIAUYTT8FWGYBZgHDY3D29noAPcAogXqA0fTrAfQAVgItBU+KEAuYzP5iASyABbCASRFiAZPZfwsW8PB8P7sUNVyA3W9/A8DeCABg7/ovAABAD7AzAxRg5+qvxQI2rz8AAGAdYGsG9ABbl18PsHn5AQAAS8F7M6AH2Lv+poGb1x8AAIjrAPXDhm8//6QafP74LsXX4Onnr19W5R4AALMAA4ACJBGjACl9a7GA+LPm6QTG+gNAD6AHSIOIArRZjCZQE5gGoCYwpU8TmP/LFQtgAWkMWgls31aygIQfC2ABw3sZZgFmAUnDWEBKHwtgAbtbQBxAGaB6/+n46uH1+bMF1Aeoewn1/tPxAIi7idMFrPcHAAAqQymeBaT09WAKQAE6ReEKFCAk74xQCkABzuDo8DUowOHUnRNIASjAOSQdvAoFOJi4s8IoAAU4i6VD16EAh9J2XhAFoADn0XTgShTgQNLODKEAFOBMnl59rawA09u50yPo6u8PgFePmf8DADAs4RTg4t8FxAE4fuoYBaAAleEUXxVQD5DSP3/wIwCGTx9nASwgakgLpwAUIBGkB0jp0wOMf9lTJTDW//LvTwEiAZpATWBEqIVXBaQALf8s4OoSGOsPAAC8VIZSfLaAx6e70TeoL3B1AKef/waANADzbiQA4kredAKvrmAUoAkABYj5u3wCKUAk4OoJvPrzs4DNAQYAAKwDFAZYQMneWprA4c00FrA5wAAAgB6gMKAHKNnTA4xvJ7OAzQEGAABaD1CPfYv5X1c/NWz6/bMCAKCdHQyAmAEK0A6epAARwKsrIAAAoAksDFCAeGxaSf6/WD2AHqAylOIpAAVIANXgqoCawFgBCkABIkItnAJc/PTwVv7eBLOAWAEWwAIiQi2cBbCARBALSOlb6/IW8PB8n/4/QP06tybw16f3sYQt/MP33+kCVcLrbxLH/0cQANpSLgAoQFIgCpDStxYLiJ82sQAWkMagJvDiR8ZQAApAAUIGzALMAgI+a5kFpPSZBeSPG/UAeoA0Bs0CzAISQDXYQpCFoMSQzaD4gxIWwALSCKzBV7eAv6T9ww6D8p2HAAAAAElFTkSuQmCC'
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
@@ -168,12 +148,6 @@ export default function Claim() {
     const paid = getIndexes(getPaidClaims(userClaimData))
     setSelected(checked ? paid : [])
     setSelectedAll(checked)
-  }
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const input = event.target.value
-    const withoutSpaces = input.replace(/\s+/g, '')
-    setInputAddress(withoutSpaces)
   }
 
   // handle change account
@@ -263,114 +237,17 @@ export default function Claim() {
       <PageWrapper>
         {/* If claim is confirmed > trigger confetti effect */}
         <Confetti start={claimConfirmed} />
-        {/* START -- Top nav buttons */}
-        {!!activeClaimAccount && (
-          <TopNav>
-            <ClaimAccount>
-              <div>
-                <img src={dummyIdenticon} alt={activeClaimAccount} />
-                <p>{activeClaimAccountENS ? activeClaimAccountENS : shortenAddress(activeClaimAccount)}</p>
-              </div>
 
-              <ClaimAccountButtons>
-                {!!account && account !== activeClaimAccount && (
-                  <ButtonSecondary disabled={claimAttempting} onClick={() => setActiveClaimAccount(account)}>
-                    Your claims
-                  </ButtonSecondary>
-                )}
-
-                <ButtonSecondary disabled={claimAttempting} onClick={handleChangeAccount}>
-                  Change account
-                </ButtonSecondary>
-              </ClaimAccountButtons>
-            </ClaimAccount>
-          </TopNav>
-        )}
-        {/* END -- Top nav buttons */}
-
-        {/* START - Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
+        {/* Top nav buttons */}
+        <ClaimNav account={account} handleChangeAccount={handleChangeAccount} />
+        {/* Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
         <EligibleBanner hasClaims={hasClaims} />
-
-        {!claimAttempting && !claimConfirmed && !claimSubmitted && !isInvestFlowActive && (
-          <ClaimSummary>
-            <CowProtocolLogo size={100} />
-            {!activeClaimAccount && !hasClaims && (
-              <ClaimSummaryTitle>
-                <Trans>
-                  Claim <b>vCOW</b> token
-                </Trans>
-              </ClaimSummaryTitle>
-            )}
-            {activeClaimAccount && (
-              <div>
-                <ClaimTotal>
-                  <b>Total available to claim</b>
-                  <p>{formatSmart(unclaimedAmount)} vCOW</p>
-                </ClaimTotal>
-              </div>
-            )}
-          </ClaimSummary>
-        )}
-        {/* END - Show total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-
-        {/* START - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
-        {!activeClaimAccount && !claimConfirmed && (
-          <CheckAddress>
-            <p>
-              Enter an address to check for any eligible vCOW claims. <br />
-              <i>Note: It is possible to claim for an account, using any wallet/account.</i>
-              {!account && (
-                <ButtonSecondary onClick={toggleWalletModal}>
-                  <Trans>or connect a wallet</Trans>
-                </ButtonSecondary>
-              )}
-            </p>
-
-            <InputField>
-              <InputFieldTitle>
-                <b>Input address</b>
-                {loading && <CustomLightSpinner src={Circle} alt="loader" size={'10px'} />}
-              </InputFieldTitle>
-              <input placeholder="Address or ENS name" value={inputAddress} onChange={handleInputChange} />
-            </InputField>
-
-            {showInputError && (
-              <InputErrorText>
-                <TYPE.error error={true}>
-                  <Trans>Enter valid token address or ENS</Trans>
-                </TYPE.error>
-              </InputErrorText>
-            )}
-          </CheckAddress>
-        )}
-        {/* END - Get address/ENS (user not connected yet or opted for checking 'another' account) */}
-
-        {/* START -- IS Airdrop only (simple)  ----------------------------------------------------- */}
-        {!!activeClaimAccount && !!hasClaims && !!isAirdropOnly && !claimAttempting && !claimConfirmed && (
-          <IntroDescription>
-            <p>
-              <Trans>
-                Thank you for being a supporter of CowSwap and the CoW protocol. As an important member of the CowSwap
-                Community you may claim vCOW to be used for voting and governance. You can claim your tokens until{' '}
-                <i>[XX-XX-XXXX - XX:XX GMT]</i>
-                <ExternalLink href="https://cow.fi/">Read more about vCOW</ExternalLink>
-              </Trans>
-            </p>
-          </IntroDescription>
-        )}
-        {/* END -- IS Airdrop only (simple)  ---------------------------------------- */}
-
-        {/* START -- NO CLAIMS  ----------------------------------------------------- */}
-        {!!activeClaimAccount && !hasClaims && !claimAttempting && !claimConfirmed && (
-          <IntroDescription>
-            <Trans>
-              Unfortunately this account is not eligible for any vCOW claims.{' '}
-              <ButtonSecondary onClick={() => setActiveClaimAccount('')}>Try another account</ButtonSecondary> or
-              <ExternalLink href="https://cow.fi/">read more about vCOW</ExternalLink>
-            </Trans>
-          </IntroDescription>
-        )}
-        {/* END ---- NO CLAIMS  ----------------------------------------------------- */}
+        {/* Show total to claim (user has airdrop or airdrop+investment) */}
+        <ClaimSummary hasClaims={hasClaims} unclaimedAmount={unclaimedAmount} />
+        {/* Get address/ENS (user not connected yet or opted for checking 'another' account) */}
+        <ClaimAddress account={account} toggleWalletModal={toggleWalletModal} />
+        {/* Is Airdrop only (simple) - does user have claims? Show messages dependent on claim state */}
+        <CanUserClaimMessage hasClaims={hasClaims} isAirdropOnly={isAirdropOnly} />
 
         {/* START - Try claiming or inform succesfull claim  ---------------------- */}
         {activeClaimAccount && (claimAttempting || claimConfirmed) && (
