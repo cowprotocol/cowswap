@@ -46,7 +46,8 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
-      [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
+      [ChainId.MAINNET]:
+        process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/affiliate/api',
     }
   }
 
