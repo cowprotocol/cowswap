@@ -1,7 +1,14 @@
+import "inter-ui/inter.css";
 import styled, { createGlobalStyle } from 'styled-components'
 import { Color, Font, Media } from 'const/styles/variables'
 
 const GlobalStyles = createGlobalStyle`
+  html { font-family: "Inter", "system-ui"; }
+
+  @supports (font-variation-settings: normal) {
+    html { font-family: "Inter var", "system-ui"; }
+  }
+
   html, body {  
     width: 100%;
     min-height: 100vh;
