@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import Link from 'next/link'
-// import { transparentize } from 'polished'
 import { Color, Font, Media } from 'const/styles/variables'
 import SocialList from 'components/SocialList'
 
@@ -162,11 +161,12 @@ export default function Footer({ siteConfig, menu }) {
 
 
       <LogoSection>
-        <Logo />
+        <Link passHref href='/'>
+          <Logo />
+        </Link>
         <SocialList social={social} labels={false} iconSize={2.8} gap={0.7} innerPadding={1} alignItems={'right'} />
         <CopyrightLinks>
           <li>©{siteConfig.title} - {currentYear}</li>
-          {/* TODO: <li>ENS: <a href={siteConfig.url.rootETH} target="_blank" rel="nofollow noopener noreferrer">{siteConfig.url.rootETH}</a></li> */}
         </CopyrightLinks>
       </LogoSection>
 
