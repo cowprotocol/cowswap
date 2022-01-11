@@ -1,6 +1,6 @@
 import { siteConfig } from './meta'
 
-export const GET_QUOTE = `curl '${siteConfig.url.api}/v1/quote' \
+export const GET_QUOTE = `curl '${siteConfig.url.api}/api/v1/quote' \
 -H 'Content-Type: application/json' \
 -d '{
  "kind": "sell",

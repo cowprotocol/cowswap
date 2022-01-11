@@ -6,7 +6,7 @@ import { Color, Font, Media } from 'const/styles/variables'
 export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, colorVariant?: string, flow?: string, fullWidth?: boolean, mediumSwitchOrder?: boolean, mobileSwitchOrder?: boolean }>`
   display: flex;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   flex-flow: ${({ flow }) => flow === 'column' ? 'column wrap' : 'row'};
   gap: 8rem;
   margin: 10rem auto;
@@ -30,8 +30,8 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
   // Hero specific styling
   ${({ hero, breakMedium }) => (hero || breakMedium) && `
     margin: 0 auto;
-    min-height: calc(100vh - 8.1rem);
-    padding-top: 3.6rem;
+    min-height: 100%;
+    padding-top: 10rem;
 
     ${Media.mediumDown} {
       padding: 3.2rem 0;
@@ -43,6 +43,13 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
       min-height: initial;
       padding: 5.6rem 3.2rem 0;
     }
+
+    ${Media.desktopOnly} {
+      > div > h1 {
+        font-size: 4rem;
+      }
+    }
+    
   `}
 
   > div {
@@ -77,27 +84,24 @@ export const Section = styled.section<{ hero?: boolean, breakMedium?: boolean, c
   `}
 
   ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
-  > div:first-child {
-    ${Media.mediumDown} {
-      order: 2;
+    > div:first-child {
+      ${Media.mediumDown} {
+        order: 2;
+      }
     }
-  }
-`}
+  `}
 
-${({ mediumSwitchOrder }) => mediumSwitchOrder && `
-  > div:last-child {
-    ${Media.mediumDown} {
-      order: 1;
+  ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
+    > div:last-child {
+      ${Media.mediumDown} {
+        order: 1;
+      }
     }
-  }
-`}
-
-  }
+  `}
 
    h1, h2, h3 {
-    font-size: ${({ hero }) => hero ? "6.8rem" : "5.4rem"};
+    font-size: 5rem;
     line-height: 1.2;
-    /* font-weight: ${({ hero }) => hero ? Font.weightNormal : Font.weightBold}; */
     font-weight: ${Font.weightBold};
     margin: 0;
     z-index: 1;
@@ -105,12 +109,6 @@ ${({ mediumSwitchOrder }) => mediumSwitchOrder && `
     ${Media.mediumDown} {
       font-size: 4rem;
       text-align: center;
-    }
-  }
-
-  h1, h2 {
-    ${Media.desktopLargeDown} {
-      font-size: 4.8rem;
     }
   }
 
@@ -132,19 +130,6 @@ export const TopGradient = styled.div`
   top: 0;
   z-index: 0;
   opacity: 0.5;
-
-  /* &::after {
-    content: "";
-    background: url('images/noise.svg') repeat center/cover;
-    filter: contrast(170%) brightness(1000%);
-    mix-blend-mode: screen;
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-  } */
 `
 
 export const SubTitle = styled.p<{ maxWidth?: number, align?: string, lineHeight?: number }>`
@@ -329,7 +314,6 @@ export const ApiTool = styled.div`
   border: 0.1rem solid ${Color.border};
   backdrop-filter: blur(6rem);
   border-radius: 7rem;
-  // max-height: 64rem;
   padding: 2.4rem 4.8rem;
   font-size: ${Font.sizeDefault};
 
@@ -339,7 +323,6 @@ export const ApiTool = styled.div`
   }
 
   ${Media.mobile} {
-    // max-height: initial;
     border-radius: 2rem;
     padding: 0 2.4rem 2.4rem;
   }
@@ -349,6 +332,10 @@ export const ApiTool = styled.div`
     font-size: 2.4rem;
     line-height: 1;
     color: ${Color.white}
+  }
+
+  > p {
+    line-height: 1.4;
   }
 
   pre {
@@ -386,9 +373,10 @@ export const ApiCurlCommand = styled.div`
   justify-content: flex-start;
   width: 100%;
   border: 0.1rem solid ${Color.border};
-  padding: 1.6rem;
+  padding: 0;
   border-radius: 1.2rem;
   gap: 0;
+  margin: 0 0 2.4rem;
 
   ${Media.mobile} {
     flex-flow: column wrap;

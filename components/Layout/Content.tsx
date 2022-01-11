@@ -52,10 +52,6 @@ const Content = styled.main`
   section {
     margin: 0 0 6rem;
   }
-
-  ${Media.mobile} {
-    margin: 10rem 0 0;
-  }
 `
 
 export default function Layout({ children }: LayoutProps) {
