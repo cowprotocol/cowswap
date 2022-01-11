@@ -296,6 +296,7 @@ export const CheckList = styled.ol`
     display: inline-block;
     height: 2.4rem;
     width: 2.4rem;
+    min-width: 2.4rem;
     background: url('images/icons/check.svg') no-repeat center/contain;
     margin: 0 1rem 0 0;
   }
