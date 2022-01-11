@@ -38,7 +38,7 @@ export default function Home({ metricsData, siteConfigData }) {
         <div>
           <h1>The Settlement Layer for
             Decentralized Trading</h1>
-          <SubTitle lineHeight={2}>COW Protocol offers top DeFi rates with MEV protection by leveraging its Batch Settlement layer built on top of AMMs & DEX Aggregators. This layer allows Solvers (tx executors) to create CoWs (aka Coincidence of Wants) settlements without the need of liquidity pools, or use the pools as a fallback mechanism when CoWs cannot be found.</SubTitle>
+          <SubTitle lineHeight={2}>CoW Protocol lets people swap assets MEV protected at the best exchange rate  by leveraging its batch settlement layer built on top of DeFi’s favorite AMMs and DEX Aggregators. Instead of directly executing trades on-chain, users only sign their swap intention and delegate the execution to so-called solvers (aka relayers in other protocols). Solvers bid on the best possible exchange rate in order to win the right to settle trades. By batching multiple trades together in order to create CoWs (Coincidence of Wants), solvers can save on gas costs, AMM fees and execution risk. Therefore CoWs lead to structurally better prices than on any existing DEX aggregator. In the absence of CoWs solvers fall back to using the best possible on-chain route, by comparing quotes from leading aggregators.</SubTitle>
 
           <ButtonWrapper>
             <Button href={url.docs} target="_blank" label="Documentation" />
@@ -79,7 +79,7 @@ export default function Home({ metricsData, siteConfigData }) {
             
             <IconListItem icon="images/icons/puzzle.svg">
               <span>
-                <b>Best On-chain Prices</b>
+                <b>Best On-Chain Prices</b>
                 <p>By leveraging any on-chain liquidity sources we are able to provide the best on-chain prices.</p>
               </span>
             </IconListItem>
@@ -87,21 +87,21 @@ export default function Home({ metricsData, siteConfigData }) {
             <IconListItem icon="images/icons/trading.svg">
               <span>
                 <b>Professional Transaction Execution</b>
-                <p>Meta-transactions ensure that users don’t pay for failed transactions. They also facilitate automatic resubmission of failed orders.</p>
+                <p>Meta-transactions ensure that traders do not pay for failed transactions. They also facilitate automatic resubmission of failed orders.</p>
               </span>
             </IconListItem>
 
             <IconListItem icon="images/icons/relation.svg">
               <span>
                 <b>Coincidence of Wants (CoWs)</b>
-                <p>CoWs, simply put as peer-to-peer trades, improve the prices by reducing the need for liquidity pools. This saves the users money spent on protocol fees, slippage, and gas fees.</p>
+                <p>CoWs, simply put as peer-to-peer trades, improve the prices by reducing the need for liquidity pools. This saves the traders money spent on protocol fees, slippage, and gas fees.</p>
               </span>
             </IconListItem>
 
             <IconListItem icon="images/icons/shield.svg">
               <span>
                 <b>MEV Mitigation</b>
-                <p>Trades are protected against MEV in multiple layers: via Coincidence of Wants and leveraging both Flashbots Protect RPC and the Eden Network.</p>
+                <p>Trades are protected against MEV in multiple layers: via Coincidence of Wants (CoWs) and leveraging both Flashbots Protect RPC and the Eden Network.</p>
               </span>
             </IconListItem>
 
@@ -115,7 +115,7 @@ export default function Home({ metricsData, siteConfigData }) {
             <IconListItem icon="images/icons/gas.svg">
               <span>
                 <b>ETH-less Trading Experience</b>
-                <p>Users pay fees in their sell or buy token. No need to spend your precious ETH.</p>
+                <p>Traders pay fees in their sell tokens. No need to spend your precious ETH.</p>
               </span>
             </IconListItem>
 
@@ -127,7 +127,7 @@ export default function Home({ metricsData, siteConfigData }) {
       < Section className='container' flow={'column'} >
         <div>
           <h3>The life cycle of a CoW order</h3>
-          <SubTitle align='center'>The protocol improves prices for users by batching trades, finding Coincidence of Wants (CoWs) <br className='hideMobile' />and tapping into all on chain liquidity - including aggregators.
+          <SubTitle align='center'>The protocol improves prices for traders by batching trades, finding Coincidence of Wants (CoWs) <br className='hideMobile' />and tapping into all on-chain liquidity, including aggregators.
             {' '}<a href="https://docs.cowswap.exchange/overview-1/coincidence-of-wants" target="_blank" rel="noreferrer">Read More</a></SubTitle>
           <SectionImage margin={'0'}>
             <a href="/images/how-it-works.jpg" target="_blank" rel="nofollow noopener"><img loading="lazy" src="/images/how-it-works.jpg" alt="How it works" /></a>
@@ -165,8 +165,8 @@ export default function Home({ metricsData, siteConfigData }) {
           <SubTitle>Directly interact with the CoW protocol to place, manage and settle your orders through a documented API interface.</SubTitle>
 
           <CheckList>
-            <li>Fetch Quotes</li>
-            <li>Create and cancel limit orders</li>
+            <li>Fetch Quotes.</li>
+            <li>Create and cancel limit orders.</li>
             <li>Manage orders across Ethereum, Rinkeby and Gnosis Chain.</li>
           </CheckList>
 
@@ -193,7 +193,7 @@ export default function Home({ metricsData, siteConfigData }) {
       {/* 7th section */}
       < Section flow={'column'} id="community" >
         <div>
-          <h3>Join the community</h3>
+          <h3>Join the CoWmunity</h3>
           <SubTitle align={'center'} maxWidth={62}>Learn more about CoW Protocol, chat with the team, others in the community, and have your say in shaping the future of decentralized finance.</SubTitle>
           <SocialList social={social} />
         </div>
