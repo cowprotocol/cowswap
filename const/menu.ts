@@ -3,7 +3,7 @@ const {url, social} = siteConfig
 
 export const mainMenu = [
   { id: 0, title: 'Documentation', url: url.docs, target: "_blank", rel: "noopener nofollow" },
-  { id: 1, title: 'Developers', url: '/#developers'},
+  { id: 1, title: 'API Docs', url: url.apiDocs},
   // { id: 1, title: 'About', url: '/#about' },
   { id: 2, title: 'Community', url: social.discord.url, target: "_blank", rel: "noopener nofollow" },
   { id: 3, title: 'Analytics', url: url.analytics, target: "_blank", rel: "noopener nofollow" },
