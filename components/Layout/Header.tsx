@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { transparentize } from 'polished'
 import Button from 'components/Button'
 import { Defaults, Color, Font, Media } from 'const/styles/variables'
-import { InView } from 'react-intersection-observer';
+import { InView } from 'react-intersection-observer'
+import useMediaQuery from 'lib/hooks/useMediaQuery';
 
 const LogoImage = 'images/logo.svg'
 const MenuImage = 'images/icons/menu.svg'
@@ -185,13 +186,16 @@ const Logo = styled.div`
 
 export default function Header({ siteConfig, menu }) {
   const swapURL = siteConfig.url.swap
+  const isTouch = useMediaQuery(`(max-width: ${Media.mediumEnd})`);
   const [menuVisible, setIsMenuVisible] = useState(false)
   const toggleBodyScroll = () => {
     !menuVisible ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
   }
   const handleClick = () => {
-    setIsMenuVisible(!menuVisible)
-    toggleBodyScroll()
+    if (isTouch) {
+      setIsMenuVisible(!menuVisible)
+      toggleBodyScroll()
+    }
   }
 
   return (
