@@ -2,11 +2,10 @@ const API_BASE_URL = "https://api.cow.fi"
 
 export const siteConfig = {
   title: 'CoW Protocol',
-  description: 'Ethereums MetaDEX Aggregator built by Gnosis. It allows users to trade tokens with MEV protection while using ETH-less orders that are settled p2p among users or into the best on-chain liquidity pool.',
+  description: 'CoW Protocol lets you swap assets MEV protected at the best exchange rate by leveraging its batch settlement layer built on top of AMMs and DEX Aggregators.',
   descriptionShort: 'Ethereums MetaDEX Aggregator',
   url: {
     root: "https://cow.fi",
-    rootETH: "cow.eth",
     swap: "https://cowswap.exchange",
     docs: "https://docs.cow.fi",
     api: API_BASE_URL + "/mainnet",
