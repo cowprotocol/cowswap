@@ -63,8 +63,8 @@ const Menu = styled.ol`
     display: none;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: ${Color.black};
     justify-content: flex-start;
     align-items: flex-start;
@@ -208,7 +208,7 @@ export default function Header({ siteConfig, menu }) {
             <Menu className={menuVisible ? 'visible' : ""}>
               {menu.map(({ id, title, url, target, rel }) => (
                 <li key={id}>
-                  <a href={url} target={target} rel={rel}>{title}</a>
+                  <a onClick={handleClick} href={url} target={target} rel={rel}>{title}</a>
                 </li>
               ))}
               <CloseIcon onClick={handleClick} />
