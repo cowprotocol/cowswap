@@ -1,6 +1,6 @@
 import { siteConfig } from '@/const/meta'
 
-const { url } = siteConfig
+// const { url } = siteConfig
 
 export const batches = [
   /*
@@ -32,8 +32,8 @@ export const batches = [
   {
     id: 1,
     label: 'Full CoW',
-    summary: "The users traded 99.39% peer-to-peer, the remainder was executed on Sushiswap",
-    description: "Traders would have paid $1,396 in liquidity fees in Sushiswap, instead they paid 8$",
+    summary: "Traders swapped  99.39% peer-to-peer, while the remainder was executed on Sushiswap",
+    description: "If they had traded by themselves, they would have paid $1,396 in liquidity fees in Sushiswap; instead they paid 8$.",
     link: {
       label: 'View on Etherscan',
       url: 'https://etherscan.io/tx/0x691d1a8ba39c036e841b6e2ed970f9068ac4a27b61955afb852f11019f2ff4d8'
@@ -100,8 +100,8 @@ export const batches = [
   {
     id: 2,
     label: 'Partial CoW',
-    summary: "The more traders, the more savings",
-    description: "The batch costed 2,297,936 gas, but it was split among 26 traders. This reduced the gas from 134K to 88K per trade.",
+    summary: "The more traders, the cheaper the execution",
+    description: "The batch cost 2.3M gas units split among 26 traders. By only touching involved AMMs once, it  reduced the execution cost from 134K (individual settlement) to 88K (batch settlement) gas per trade",
     link: {
       label: 'View on Etherscan',
       url: 'https://etherscan.io/tx/0x172bddae0015331f4b357905ff7995389597a38294a00b4b13e90c1d70884785'
