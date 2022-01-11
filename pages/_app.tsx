@@ -3,6 +3,7 @@ import GlobalStyles from 'const/styles/global'
 import Head from 'next/head'
 
 import { siteConfig } from '@/const/meta'
+import { Analytics } from '@/components/Analytics'
 
 // import { i18n } from '@lingui/core'
 // import { I18nProvider } from "@lingui/react";
@@ -64,6 +65,7 @@ export default function App(props: AppProps) {
       </Head>
       {/* <I18nProvider i18n={i18n}> */}
       <GlobalStyles />
+      <Analytics />
       <Component {...pageProps} />
       {/* </I18nProvider> */}
     </>
