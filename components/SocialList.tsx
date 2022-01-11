@@ -8,7 +8,7 @@ const Wrapper = styled.ol<Pick<SocialListProps, "iconSize" | "gap" | "innerPaddi
   align-items: center;
   max-width: 110rem;
   width: 100%;
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
   gap: ${({ gap }) => gap ? `${gap}rem` : '7rem'};
   list-style-type: none;
