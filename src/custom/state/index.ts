@@ -23,6 +23,7 @@ import profile from 'state/profile/reducer'
 import { updateVersion } from 'state/global/actions'
 import affiliate from 'state/affiliate/reducer'
 import enhancedTransactions from 'state/enhancedTransactions/reducer'
+import claim from 'state/claim/reducer'
 
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
@@ -51,6 +52,7 @@ const reducers = {
   gas,
   affiliate,
   profile,
+  claim,
 }
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile']

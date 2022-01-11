@@ -23,6 +23,24 @@ import { SupportedChainId } from 'constants/chains'
 
 export { useUserClaimData } from '@src/state/claim/hooks'
 
+import { AppDispatch } from 'state'
+import { useSelector, useDispatch } from 'react-redux'
+import { AppState } from 'state'
+
+import {
+  setInputAddress,
+  setActiveClaimAccount,
+  setActiveClaimAccountENS,
+  setIsSearchUsed,
+  setClaimStatus,
+  setClaimedAmount,
+  setIsInvestFlowActive,
+  setInvestFlowStep,
+  setSelected,
+  setSelectedAll,
+  ClaimStatus,
+} from '../actions'
+
 const CLAIMS_REPO_BRANCH = 'main'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
@@ -604,4 +622,33 @@ function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
         throw error
       }))
   )
+}
+
+export function useClaimDispatchers() {
+  const dispatch = useDispatch<AppDispatch>()
+
+  return useMemo(() => {
+    const dispatchers = {
+      // account
+      setInputAddress: (payload: string) => dispatch(setInputAddress(payload)),
+      setActiveClaimAccount: (payload: string) => dispatch(setActiveClaimAccount(payload)),
+      setActiveClaimAccountENS: (payload: string) => dispatch(setActiveClaimAccountENS(payload)),
+      // search
+      setIsSearchUsed: (payload: boolean) => dispatch(setIsSearchUsed(payload)),
+      // claiming
+      setClaimStatus: (payload: ClaimStatus) => dispatch(setClaimStatus(payload)),
+      setClaimedAmount: (payload: number) => dispatch(setClaimedAmount(payload)),
+      // investing
+      setIsInvestFlowActive: (payload: boolean) => dispatch(setIsInvestFlowActive(payload)),
+      setInvestFlowStep: (payload: number) => dispatch(setInvestFlowStep(payload)),
+      // claim row selection
+      setSelected: (payload: number[]) => dispatch(setSelected(payload)),
+      setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),
+    }
+    return dispatchers
+  }, [dispatch])
+}
+
+export function useClaimState() {
+  return useSelector((state: AppState) => state.claim)
 }

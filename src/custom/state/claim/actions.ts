@@ -1,5 +1,12 @@
 import { createAction } from '@reduxjs/toolkit'
 
+export enum ClaimStatus {
+  DEFAULT = 'DEFAULT',
+  ATTEMPTING = 'ATTEMPTING',
+  SUBMITTED = 'SUBMITTED',
+  CONFIRMED = 'CONFIRMED',
+}
+
 export type ClaimActions = {
   // account
   setInputAddress: (payload: string) => void
@@ -8,9 +15,7 @@ export type ClaimActions = {
   // search
   setIsSearchUsed: (payload: boolean) => void
   // claiming
-  setClaimConfirmed: (payload: boolean) => void
-  setClaimAttempting: (payload: boolean) => void
-  setClaimSubmitted: (payload: boolean) => void
+  setClaimStatus: (payload: ClaimStatus) => void
   setClaimedAmount: (payload: number) => void
   // investing
   setIsInvestFlowActive: (payload: boolean) => void
@@ -29,10 +34,8 @@ export const setActiveClaimAccountENS = createAction<string>('claim/setActiveCla
 export const setIsSearchUsed = createAction<boolean>('claim/setIsSearchUsed')
 
 // claiming
-export const setClaimConfirmed = createAction<boolean>('claim/setClaimConfirmed')
-export const setClaimAttempting = createAction<boolean>('claim/setClaimAttempting')
-export const setClaimSubmitted = createAction<boolean>('claim/setClaimSubmitted')
 export const setClaimedAmount = createAction<number>('claim/setClaimedAmount')
+export const setClaimStatus = createAction<ClaimStatus>('claim/setClaimStatus')
 
 // investing
 export const setIsInvestFlowActive = createAction<boolean>('claim/setIsInvestFlowActive')

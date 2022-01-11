@@ -1,26 +1,23 @@
 import { Trans } from '@lingui/macro'
 import { ButtonSecondary } from 'components/Button'
 import { ExternalLink } from 'theme'
-import useClaimState from './state'
 import { IntroDescription } from './styled'
 import { ClaimCommonTypes } from './types'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
+import { ClaimStatus } from 'state/claim/actions'
 
 type ClaimIntroductionProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
   isAirdropOnly: boolean
 }
 
 export default function CanUserClaimMessage({ hasClaims, isAirdropOnly }: ClaimIntroductionProps) {
-  const {
-    state: { activeClaimAccount, claimAttempting, claimConfirmed },
-    dispatchers,
-  } = useClaimState()
-
-  const canClaim = !claimAttempting && !claimConfirmed && hasClaims && isAirdropOnly
+  const { activeClaimAccount, claimStatus } = useClaimState()
+  const { setActiveClaimAccount } = useClaimDispatchers()
 
   // only show when active claim account
-  if (!activeClaimAccount) return null
+  if (!activeClaimAccount || claimStatus !== ClaimStatus.DEFAULT) return null
 
-  if (canClaim) {
+  if (isAirdropOnly && hasClaims) {
     return (
       <IntroDescription>
         <p>
@@ -33,12 +30,14 @@ export default function CanUserClaimMessage({ hasClaims, isAirdropOnly }: ClaimI
         </p>
       </IntroDescription>
     )
-  } else {
+  }
+
+  if (!hasClaims) {
     return (
-      <IntroDescription>
+      <IntroDescription center>
         <Trans>
-          Unfortunately this account is not eligible for any vCOW claims.{' '}
-          <ButtonSecondary onClick={() => dispatchers?.setActiveClaimAccount('')} padding="0">
+          Unfortunately this account is not eligible for any vCOW claims. <br />
+          <ButtonSecondary onClick={() => setActiveClaimAccount('')} padding="0">
             Try another account
           </ButtonSecondary>{' '}
           or <ExternalLink href="https://cow.fi/">read more about vCOW</ExternalLink>
@@ -46,4 +45,6 @@ export default function CanUserClaimMessage({ hasClaims, isAirdropOnly }: ClaimI
       </IntroDescription>
     )
   }
+
+  return null
 }

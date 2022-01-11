@@ -135,10 +135,13 @@ export const ClaimSummaryTitle = styled.h1`
   margin-left: 15px;
 `
 
-export const IntroDescription = styled.div`
+export const IntroDescription = styled.div<{ center?: boolean }>`
   display: block;
   width: 100%;
   margin: 0 0 24px;
+  line-height: 1.6;
+
+  text-align: ${({ center }) => (center ? 'center' : 'initial')};
 
   > p {
     margin: 8px auto 24px;

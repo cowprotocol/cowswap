@@ -2,16 +2,15 @@ import { createReducer } from '@reduxjs/toolkit'
 import {
   setActiveClaimAccount,
   setActiveClaimAccountENS,
-  setClaimAttempting,
-  setClaimConfirmed,
+  setClaimStatus,
   setClaimedAmount,
-  setClaimSubmitted,
   setInputAddress,
   setInvestFlowStep,
   setIsInvestFlowActive,
   setIsSearchUsed,
   setSelected,
   setSelectedAll,
+  ClaimStatus,
 } from './actions'
 
 export const initialState: ClaimState = {
@@ -23,9 +22,7 @@ export const initialState: ClaimState = {
   // check address
   isSearchUsed: false,
   // claiming
-  claimConfirmed: false,
-  claimAttempting: false,
-  claimSubmitted: false,
+  claimStatus: ClaimStatus.DEFAULT,
   claimedAmount: 0,
   // investment
   isInvestFlowActive: false,
@@ -44,9 +41,7 @@ export type ClaimState = {
   // check address
   isSearchUsed: boolean
   // claiming
-  claimConfirmed: boolean
-  claimAttempting: boolean
-  claimSubmitted: boolean
+  claimStatus: ClaimStatus
   claimedAmount: number
   // investment
   isInvestFlowActive: boolean
@@ -70,14 +65,8 @@ export default createReducer(initialState, (builder) =>
     .addCase(setIsSearchUsed, (state, { payload }) => {
       state.isSearchUsed = payload
     })
-    .addCase(setClaimConfirmed, (state, { payload }) => {
-      state.claimConfirmed = payload
-    })
-    .addCase(setClaimAttempting, (state, { payload }) => {
-      state.claimAttempting = payload
-    })
-    .addCase(setClaimSubmitted, (state, { payload }) => {
-      state.claimSubmitted = payload
+    .addCase(setClaimStatus, (state, { payload }) => {
+      state.claimStatus = payload
     })
     .addCase(setClaimedAmount, (state, { payload }) => {
       state.claimedAmount = payload

@@ -1,8 +1,10 @@
+import { useMemo } from 'react'
 import { ButtonSecondary } from 'components/Button'
 import { shortenAddress } from 'utils'
-import useClaimState from './state'
 import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
 import { ClaimCommonTypes } from './types'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
+import { ClaimStatus } from 'state/claim/actions'
 
 // should be updated
 const DUMMY_IDENTICON =
@@ -11,10 +13,10 @@ const DUMMY_IDENTICON =
 type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>
 
 export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps) {
-  const {
-    state: { activeClaimAccount, activeClaimAccountENS, claimAttempting },
-    dispatchers,
-  } = useClaimState()
+  const { activeClaimAccount, activeClaimAccountENS, claimStatus } = useClaimState()
+  const { setActiveClaimAccount } = useClaimDispatchers()
+
+  const isAttempting = useMemo(() => claimStatus === ClaimStatus.ATTEMPTING, [claimStatus])
 
   if (!activeClaimAccount) return null
 
@@ -28,12 +30,12 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
 
         <ClaimAccountButtons>
           {!!account && account !== activeClaimAccount && (
-            <ButtonSecondary disabled={claimAttempting} onClick={() => dispatchers?.setActiveClaimAccount(account)}>
+            <ButtonSecondary disabled={isAttempting} onClick={() => setActiveClaimAccount(account)}>
               Your claims
             </ButtonSecondary>
           )}
 
-          <ButtonSecondary disabled={claimAttempting} onClick={handleChangeAccount}>
+          <ButtonSecondary disabled={isAttempting} onClick={handleChangeAccount}>
             Change account
           </ButtonSecondary>
         </ClaimAccountButtons>
