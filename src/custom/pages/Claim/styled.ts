@@ -17,13 +17,15 @@ export const PageWrapper = styled.div`
   flex-flow: column wrap;
   max-width: 760px;
   width: 100%;
-  background: linear-gradient(315deg, #000000 0%, #000000 55%, #2a2a2a 100%);
-  color: white;
+  color: ${({ theme }) => theme.text1};
   border-radius: var(--border-radius);
   padding: 30px;
+  border: ${({ theme }) => theme.appBody.border};
+  box-shadow: ${({ theme }) => theme.appBody.boxShadow};
+  background: ${({ theme }) => theme.bg1};
 
   a {
-    color: var(--color-orange);
+    color: ${({ theme }) => theme.primary1};
   }
 
   p {
@@ -36,7 +38,7 @@ export const PageWrapper = styled.div`
   }
 
   p > i {
-    color: var(--color-orange);
+    color: ${({ theme }) => theme.primary1};
   }
 
   p > a {
@@ -45,10 +47,6 @@ export const PageWrapper = styled.div`
   }
 
   ${ButtonPrimary} {
-    background: var(--color-orange);
-    border: 0;
-    box-shadow: none;
-    color: black;
     border-radius: var(--border-radius);
     width: 100%;
     font-size: 21px;
@@ -58,16 +56,7 @@ export const PageWrapper = styled.div`
       margin: 0 auto 24px;
     `};
 
-    &:hover {
-      border: 0;
-      box-shadow: none;
-      transform: none;
-      background: rgb(247 127 80);
-      color: black;
-    }
-
     &[disabled] {
-      background: rgba(151, 151, 151, 0.6);
       cursor: not-allowed;
       pointer-events: all;
     }
@@ -75,7 +64,7 @@ export const PageWrapper = styled.div`
 
   ${ButtonSecondary} {
     background: 0;
-    color: var(--color-orange);
+    color: ${({ theme }) => theme.primary1};
     border: none;
 
     &:hover {
@@ -94,26 +83,13 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
+  background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+  border: ${({ theme }) =>
+    theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
-  /* background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%); */
   position: relative;
-  color: #bbbbbb;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    /* filter: blur(75px); */
-    /* background: conic-gradient(var(--color-tr) 25%, var(--color-tl) 0 28%, var(--color-tr) 0 30%, var(--color-tl) 0); */
-    background: var(--color-container-bg);
-    opacity: 1;
-  }
 
   h1,
   div {
@@ -185,7 +161,7 @@ export const ClaimTable = styled.div`
     text-align: left;
     font-weight: normal;
     font-size: 13px;
-    color: white;
+    color: ${({ theme }) => theme.text1};
     position: relative;
   }
 
@@ -196,7 +172,7 @@ export const ClaimTable = styled.div`
   td {
     padding-top: 10px;
     padding-bottom: 10px;
-    color: white;
+    color: ${({ theme }) => theme.text1};
     word-break: break-word;
   }
 
@@ -238,7 +214,6 @@ export const ClaimAccount = styled.div`
   > div > p {
     margin: 0 0 0 10px;
     font-size: 18px;
-    color: white;
     font-weight: normal;
   }
 `
@@ -259,7 +234,6 @@ export const ClaimTotal = styled.div`
   > p {
     margin: 0;
     font-size: 24px;
-    color: white;
     font-weight: bold;
   }
 `
@@ -267,15 +241,12 @@ export const ClaimTotal = styled.div`
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
   padding: 24px;
-  color: white;
+  color: ${({ theme }) => theme.text1};
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
-  /* background: ${({ activeBG }) =>
-    activeBG &&
-    'radial-gradient(76.02% 75.41% at 1.84% 0%, rgba(255, 0, 122, 0.2) 0%, rgba(33, 114, 229, 0.2) 100%), #FFFFFF;'}; */
 
   h3 {
     font-size: 26px;
@@ -283,7 +254,7 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     line-height: 1.2;
     text-align: center;
     margin: 0 0 24px;
-    color: white;
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -302,59 +273,18 @@ export const ConfirmedIcon = styled.div`
   padding: 60px 0;
 `
 
-// export const ContentWrapper = styled.div`
-//   background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
-//   padding: 32px;
-//   min-height: 500px;
-//   height: 100%;
-//   width: 100%;
-//   position: relative;
-//   color: #bbbbbb;
-
-//   ${({ theme }) => theme.mediaWidth.upToSmall`
-//     padding: 20px;
-//     min-height: initial;
-//   `};
-
-//   > button {
-//     background: var(--color-orange);
-//     border: 0;
-//     box-shadow: none;
-//     color: black;
-
-//     ${({ theme }) => theme.mediaWidth.upToSmall`
-//       margin: 0 auto 24px;
-//     `};
-
-//   }
-
-//   h3 {
-//     font-size: 26px;
-//     font-weight: 300;
-//     line-height: 1.2;
-//     text-align: center;
-//     margin: 0 0 24px;
-//     color: white;
-
-//     > b {
-//       font-weight: 600;
-//     }
-//   }
-
-// `
-
 export const CheckIcon = styled(CheckCircle)`
   height: 16px;
   width: 16px;
   margin-right: 6px;
-  stroke: var(--color-orange);
+  stroke: color: ${({ theme }) => theme.primary1};
 `
 
 export const NegativeIcon = styled(Frown)`
   height: 16px;
   width: 16px;
   margin-right: 6px;
-  stroke: var(--color-orange);
+  stroke: color: ${({ theme }) => theme.primary1};
 `
 
 export const EligibleBanner = styled.div`
@@ -366,18 +296,10 @@ export const EligibleBanner = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(237, 104, 52, 0.1);
-  color: var(--color-orange);
+  color: color: ${({ theme }) => theme.primary1};
   text-align: center;
   margin: 0 auto 16px;
 `
-
-// export const TopTitle = styled.div`
-//   width: 100%;
-//   display: flex;
-//   align-items: center;
-//   justify-content: flex-start;
-//   padding: 30px 0;
-// `
 
 export const InputField = styled.div`
   padding: 18px;
@@ -391,7 +313,7 @@ export const InputField = styled.div`
     background: transparent;
     border: 0;
     font-size: 24px;
-    color: white;
+    color: ${({ theme }) => theme.text1};
     outline: 0;
     width: 100%;
   }
@@ -419,7 +341,7 @@ export const InputField = styled.div`
     padding: 0;
     font-size: 22px;
     font-weight: 600;
-    color: white;
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -486,7 +408,7 @@ export const FooterNavButtons = styled.div`
     transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: var(--color-orange);
+      color: color: ${({ theme }) => theme.primary1};
       text-decoration: underline;
     }
 
@@ -508,7 +430,7 @@ export const TopNav = styled.div`
 
   ${ButtonSecondary} {
     margin: 0;
-    color: var(--color-grey);
+    color: ${({ theme }) => theme.text1};
     font-size: 15px;
     width: auto;
   }
@@ -526,15 +448,6 @@ export const Demo = styled(ClaimTable)`
   > table tr td:last-of-type {
     font-weight: bold;
   }
-`
-
-export const DemoToggle = styled.button`
-  background: rgb(255 255 255 / 17%);
-  color: white;
-  border: 0;
-  margin: 0 0 16px;
-  font-size: 12px;
-  padding: 5px 0;
 `
 
 export const InvestFlow = styled.div`
@@ -657,8 +570,7 @@ export const InvestInput = styled.span`
   }
 
   > div > label > input {
-    background: black;
-    color: white;
+    color: ${({ theme }) => theme.text1};
     border: 1px solid grey;
     border-radius: 12px;
     padding: 12px 70px 12px 12px;
@@ -685,7 +597,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   &::before {
     content: '';
     display: block;
-    background: var(--color-orange);
+    background: color: ${({ theme }) => theme.primary1};
     height: 100%;
     border-radius: 24px;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
@@ -695,7 +607,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: inline-block;
     font-size: 13px;
-    color: var(--color-orange);
+    color: color: ${({ theme }) => theme.primary1};
   }
 `
 
@@ -731,7 +643,7 @@ export const InvestTokenSubtotal = styled.div`
   padding: 56px;
   margin: 0 0 24px;
   background: var(--color-container-bg3);
-  color: white;
+  color: ${({ theme }) => theme.text1};
   border-radius: var(--border-radius);
   font-size: 21px;
 `
