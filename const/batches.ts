@@ -48,7 +48,7 @@ export const batches = [
       value: '4'
     }, {
       label: 'Saved fees',
-      value: '$1,392.0854'
+      value: '$1,392'
     }]
   },
 
