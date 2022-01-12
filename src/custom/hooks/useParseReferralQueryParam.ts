@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { isAddress } from 'ethers/lib/utils'
+import { isAddress } from '@ethersproject/address'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { REFERRAL_QUERY_PARAM } from 'hooks/useReferralLink'
 

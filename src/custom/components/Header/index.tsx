@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
 
 import HeaderMod, {
@@ -26,12 +25,13 @@ import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import { useModalOpen } from 'state/application/hooks'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import NetworkCard, { NetworkInfo } from './NetworkCard'
+import Web3Status from 'components/Web3Status'
+import NetworkSelector from 'components/Header/NetworkSelector'
 import SVG from 'react-inlinesvg'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -82,7 +82,6 @@ const HeaderControls = styled(HeaderControlsUni)`
     width: 100%;
   `};
 `
-
 export const Wrapper = styled.div`
   width: 100%;
 
@@ -100,10 +99,6 @@ export const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 100%;
     `};
-  }
-
-  ${NetworkInfo} {
-    height: 38px;
   }
 
   ${StyledMenuButton} {
@@ -224,8 +219,11 @@ export default function Header() {
             <StyledNavLink to="/profile">Profile</StyledNavLink>
           </HeaderLinks>
         </HeaderRow>
+
         <HeaderControls>
-          <NetworkCard />
+          <HeaderElement>
+            <NetworkSelector />
+          </HeaderElement>
           <HeaderElement>
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (

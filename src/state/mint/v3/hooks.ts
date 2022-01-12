@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { BIG_INT_ZERO } from '../../../constants/misc'
 import { getTickToPrice } from 'utils/getTickToPrice'
@@ -13,7 +14,7 @@ import {
   TICK_SPACINGS,
   encodeSqrtRatioX96,
   nearestUsableTick,
-} from '@uniswap/v3-sdk/dist/'
+} from '@uniswap/v3-sdk/'
 import { Currency, Token, CurrencyAmount, Price, Rounding } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
 import { useActiveWeb3React } from '../../../hooks/web3'

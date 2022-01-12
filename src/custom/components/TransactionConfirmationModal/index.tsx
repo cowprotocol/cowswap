@@ -8,6 +8,7 @@ import {
   CloseIcon,
   // CustomLightSpinner
 } from 'theme'
+// eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import { RowBetween, RowFixed } from 'components/Row'

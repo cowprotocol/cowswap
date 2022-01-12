@@ -22,6 +22,8 @@ export interface CardComponentProps extends Pick<ImportProps, 'list'> {
 }
 
 const Wrapper = styled.div`
+  width: 100%;
+
   > div {
     height: 100%;
   }

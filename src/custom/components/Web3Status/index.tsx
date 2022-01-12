@@ -50,7 +50,7 @@ export const Wrapper = styled.div`
   ${Text} {
     ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       font-size: 13px;
-      margin: 1px 3px;
+      margin: 0 0.5rem 0 0.25rem;
     `}
   }
 `

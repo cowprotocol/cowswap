@@ -6,7 +6,7 @@ import Page, { Title } from 'components/Page'
 import { AutoColumn } from 'components/Column'
 import styled from 'styled-components/macro'
 import ReactGA from 'react-ga'
-import { getUserAgent } from 'utils/getUserAgent'
+import { userAgent } from '@src/utils/userAgent'
 import { AutoRow } from 'components/Row'
 import { MEDIA_WIDTHS } from '@src/theme'
 import CowError from 'assets/cow-swap/CowError.png'
@@ -215,7 +215,7 @@ function getRelevantState(): null | keyof AppState {
 
 function issueBody(error: Error): string {
   const relevantState = getRelevantState()
-  const deviceData = getUserAgent()
+  const deviceData = userAgent
   return `## URL
   
 ${window.location.href}
