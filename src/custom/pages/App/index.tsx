@@ -81,7 +81,7 @@ export default function App() {
         <Route exact strict path="/cookie-policy" component={CookiePolicy} />
         <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
         <Route exact strict path="/chat" component={createRedirectExternal('https://chat.cowswap.exchange')} />
-        <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cowswap.exchange')} />
+        <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cow.fi')} />
         <Route
           exact
           strict

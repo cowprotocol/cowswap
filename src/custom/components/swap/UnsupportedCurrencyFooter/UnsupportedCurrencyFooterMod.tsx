@@ -1,17 +1,17 @@
-import { ReactNode, useState } from 'react'
-import styled from 'styled-components/macro'
-import { TYPE, CloseIcon, ExternalLink } from 'theme'
+import { Trans } from '@lingui/macro'
+import { Currency } from '@uniswap/sdk-core'
 import { ButtonEmpty } from 'components/Button'
-import Modal from 'components/Modal'
 import Card, { OutlineCard } from 'components/Card'
-import { RowBetween, AutoRow } from 'components/Row'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
+import Modal from 'components/Modal'
+import { AutoRow, RowBetween } from 'components/Row'
 import { useActiveWeb3React } from 'hooks/web3'
-import { Currency /* , Token */ } from '@uniswap/sdk-core'
+import { ReactNode, useState } from 'react'
+import styled from 'styled-components/macro'
+import { CloseIcon, ExternalLink, TYPE, Z_INDEX } from 'theme'
 import { useIsUnsupportedToken } from 'state/lists/hooks'
 // import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { Trans } from '@lingui/macro'
 
 // MOD
 import { getEtherscanLink } from 'utils'
@@ -19,6 +19,8 @@ import { getEtherscanLink } from 'utils'
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
   padding-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: -2rem;
   width: 100%;
   max-width: 400px;
@@ -26,11 +28,15 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
   border-bottom-right-radius: 20px;
   color: ${({ theme }) => theme.text2};
   background-color: ${({ theme }) => theme.advancedBG};
-  z-index: -1;
+  z-index: ${Z_INDEX.deprecated_zero};
 
   transform: ${({ show }) => (show ? 'translateY(0%)' : 'translateY(-100%)')};
   transition: transform 300ms ease-in-out;
   text-align: center;
+`
+
+const StyledButtonEmpty = styled(ButtonEmpty)`
+  text-decoration: none;
 `
 
 export const AddressText = styled(TYPE.blue)`
@@ -130,12 +136,14 @@ UnsupportedCurrencyFooterParams) {
           </AutoColumn>
         </Card>
       </Modal>
-      <ButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
-        {/* <TYPE.blue>Read more about unsupported assets</TYPE.blue> */}
+      <StyledButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
+        {/* <TYPE.blue>
+          <Trans>Read more about unsupported assets</Trans>
+        </TYPE.blue> */}
         <TYPE.error error={!!showDetailsText}>
           <Trans>{showDetailsText}</Trans>
         </TYPE.error>
-      </ButtonEmpty>
+      </StyledButtonEmpty>
     </DetailsFooter>
   )
 }

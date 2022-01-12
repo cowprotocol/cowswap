@@ -2,12 +2,11 @@ import { CurrencyAmount, Currency, Price, Token } from '@uniswap/sdk-core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SupportedChainId } from 'constants/chains'
 /* import { DAI_OPTIMISM, USDC, USDC_ARBITRUM } from '../constants/tokens'
-import { useV2TradeExactOut } from './useV2Trade'
-import { useBestV3TradeExactOut } from './useBestV3Trade' */
+import { useBestV2Trade } from './useBestV2Trade'
+import { useClientSideV3Trade } from './useClientSideV3Trade' */
 import { useActiveWeb3React } from 'hooks/web3'
 
 import { supportedChainId } from 'utils/supportedChainId'
-import { getBestPrice } from 'utils/price'
 import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSDCPrice'
 import { stringToCurrency } from 'state/swap/extension'
 import { USDC_XDAI } from 'utils/xdai/constants'
@@ -18,14 +17,22 @@ import { tryParseAmount } from 'state/swap/hooks'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
 import { USDC } from 'constants/tokens'
-import { useBlockNumber } from '@src/state/application/hooks'
+import { useBlockNumber } from 'state/application/hooks'
+import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
+import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
+import { useIsQuoteLoading } from 'state/price/hooks'
+import { onlyResolvesLast } from 'utils/async'
+import { getGpUsdcPrice } from 'utils/price'
 
 export * from '@src/hooks/useUSDCPrice'
 
-const STABLECOIN_AMOUNT_OUT: { [chainId: number]: CurrencyAmount<Token> } = {
+const getGpUsdcPriceResolveOnlyLastCall = onlyResolvesLast(getGpUsdcPrice)
+
+const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
   // MOD: lowers threshold from 100k to 100
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC, 100e6),
+  [SupportedChainId.RINKEBY]: CurrencyAmount.fromRawAmount(USDC, 100e6),
   [SupportedChainId.XDAI]: CurrencyAmount.fromRawAmount(USDC_XDAI, 10_000e6),
 }
 
@@ -38,16 +45,18 @@ export default function useUSDCPrice(currency?: Currency) {
   const [error, setError] = useState<Error | null>(null)
 
   const { chainId, account } = useActiveWeb3React()
-  const blockNumber = useBlockNumber()
+  // use quote loading as a price update dependency
+  const isQuoteLoading = useIsQuoteLoading()
+  const strategy = useGetGpPriceStrategy()
 
-  const amountOut = chainId ? STABLECOIN_AMOUNT_OUT[chainId] : undefined
-  const stablecoin = amountOut?.currency
+  const sellTokenAddress = currency?.wrapped.address
+  const sellTokenDecimals = currency?.wrapped.decimals
 
   /* 
-  const v2USDCTrade = useV2TradeExactOut(currency, amountOut, {
+  const v2USDCTrade = useBestV2Trade(TradeType.EXACT_OUTPUT, amountOut, currency, {
     maxHops: 2,
   })
-  const v3USDCTrade = useBestV3TradeExactOut(currency, amountOut)
+  const v3USDCTrade = useClientSideV3Trade(TradeType.EXACT_OUTPUT, amountOut, currency)
 
   return useMemo(() => {
     if (!currency || !stablecoin) {
@@ -73,38 +82,46 @@ export default function useUSDCPrice(currency?: Currency) {
   */
 
   useEffect(() => {
-    const isSupportedChain = supportedChainId(chainId)
-    if (!isSupportedChain || !currency || !amountOut || !stablecoin) return
+    const supportedChain = supportedChainId(chainId)
+    if (!isQuoteLoading || !supportedChain || !sellTokenAddress || !sellTokenDecimals) return
 
-    const params = {
-      baseToken: stablecoin.address,
-      quoteToken: currency.wrapped.address,
+    const baseAmount = STABLECOIN_AMOUNT_OUT[supportedChain]
+    const stablecoin = baseAmount.currency
+
+    const quoteParams = {
+      buyToken: stablecoin.address,
+      sellToken: sellTokenAddress,
       kind: OrderKind.BUY,
-      amount: amountOut.quotient.toString(),
-      chainId: isSupportedChain,
-      fromDecimals: currency.decimals,
+      amount: baseAmount.quotient.toString(),
+      chainId: supportedChain,
+      fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
+      // we dont care about validTo here, just use max
+      validTo: MAX_VALID_TO_EPOCH,
     }
 
-    if (currency.wrapped.equals(stablecoin)) {
+    // tokens are the same, it's 1:1
+    if (sellTokenAddress === stablecoin.address) {
       const price = new Price(stablecoin, stablecoin, '1', '1')
       return setBestUsdPrice(price)
     } else {
-      getBestPrice(params)
-        .then((winningPrice) => {
+      getGpUsdcPriceResolveOnlyLastCall({ strategy, quoteParams })
+        .then(({ cancelled, data: quote }) => {
+          if (cancelled) return
+
           // reset the error
           setError(null)
 
           let price: Price<Token, Currency> | null
           // Response can include a null price amount
           // e.g fee > input error
-          if (!winningPrice.amount) {
+          if (!quote) {
             price = null
           } else {
             price = new Price({
-              baseAmount: amountOut,
-              quoteAmount: stringToCurrency(winningPrice.amount, currency),
+              baseAmount,
+              quoteAmount: stringToCurrency(quote, stablecoin),
             })
             console.debug(
               '[useBestUSDCPrice] Best USDC price amount',
@@ -123,7 +140,7 @@ export default function useUSDCPrice(currency?: Currency) {
           })
         })
     }
-  }, [amountOut, chainId, currency, stablecoin, account, blockNumber])
+  }, [account, isQuoteLoading, chainId, strategy, sellTokenAddress, sellTokenDecimals])
 
   return { price: bestUsdPrice, error }
 }

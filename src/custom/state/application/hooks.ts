@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import { useToggleModal } from '@src/state/application/hooks'
 export * from '@src/state/application/hooks'
 

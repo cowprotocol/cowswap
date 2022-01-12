@@ -16,16 +16,16 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { signAndPostOrder } from 'utils/trade'
 import TradeGp from 'state/swap/TradeGp'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
-import { BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
 import { Web3Provider } from '@ethersproject/providers'
 import { useAppDataHash } from 'state/affiliate/hooks'
 
-const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
+export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
-function calculateValidTo(deadline: number): number {
+export function calculateValidTo(deadline: number): number {
   // Need the timestamp in seconds
   const now = Date.now() / 1000
   // Must be an integer

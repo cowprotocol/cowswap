@@ -1,0 +1,7 @@
+{
+  "staticPath": "public",
+  "watchDirs": ["src"],
+  "webpack": {
+    "configPath": "./cosmos.webpack.config"
+  }
+}

@@ -17,7 +17,7 @@ import { Separator as SeparatorBase } from 'components/SearchModal/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 

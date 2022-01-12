@@ -3,6 +3,7 @@ type ApiActionType = 'get' | 'create' | 'delete'
 export interface ApiErrorObject {
   errorType: ApiErrorCodes
   description: string
+  data?: any
 }
 
 // Conforms to backend API
@@ -14,7 +15,8 @@ export enum ApiErrorCodes {
   InvalidSignature = 'InvalidSignature',
   MissingOrderData = 'MissingOrderData',
   InsufficientValidTo = 'InsufficientValidTo',
-  InsufficientFunds = 'InsufficientFunds',
+  InsufficientAllowance = 'InsufficientAllowance',
+  InsufficientBalance = 'InsufficientBalance',
   InsufficientFee = 'InsufficientFee',
   WrongOwner = 'WrongOwner',
   NotFound = 'NotFound',
@@ -38,7 +40,8 @@ export enum ApiErrorCodeDetails {
   InvalidSignature = 'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
   MissingOrderData = 'The order has missing information',
   InsufficientValidTo = 'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
-  InsufficientFunds = "The account doesn't have enough funds",
+  InsufficientAllowance = "The account doesn't have enough funds",
+  InsufficientBalance = 'The account needs to approve the selling token in order to trade',
   WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
   NotFound = 'Token pair selected has insufficient liquidity',
   OrderNotFound = 'The order you are trying to cancel does not exist',
@@ -49,7 +52,7 @@ export enum ApiErrorCodeDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   AmountIsZero = 'Amount is zero',
   SellAmountDoesNotCoverFee = 'Sell amount does not sufficiently cover the current fee',
-  TransferEthToContract = 'Sending Ether to smart contract wallets is not currently supported',
+  TransferEthToContract = 'Sending the native currency to smart contract wallets is not currently supported',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network',

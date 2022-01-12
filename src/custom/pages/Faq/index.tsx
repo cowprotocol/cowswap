@@ -171,7 +171,7 @@ export default function Faq() {
         <Content>
           <h2 id="general">General</h2>
           <h3 id="what-is-cowswap">What is CowSwap?</h3>
-          <p>CowSwap is the first trading interface built on top of Gnosis Protocol v2.</p>
+          <p>CowSwap is the first trading interface built on top of CoW Protocol.</p>
           <p>
             CowSwap is a Meta DEX aggregator that allows you to buy and sell tokens using gasless orders that are
             settled peer-to-peer among its users, or into any on-chain liquidity source while providing MEV protection.
@@ -179,7 +179,7 @@ export default function Faq() {
 
           <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CowSwap a &quot;Meta&quot; DEX aggregator?</h3>
           <p>
-            Cowswap is built on top of the Gnosis protocol which matches trades via batch auctions for a variety of
+            Cowswap is built on top of the CoW Protocol which matches trades via batch auctions for a variety of
             on-chain liquidity sources.
           </p>
           <p>
@@ -187,7 +187,7 @@ export default function Faq() {
             pool/path offers the best price. It is thus essentially acting as a DexAggregator of the DexAggregators.
           </p>
           <p>
-            In addition to that, before finding the best price for a trade from available on-chain liquidity, Gnosis
+            In addition to that, before finding the best price for a trade from available on-chain liquidity, CoW
             Protocol first seeks a coincidence of wants within the existing batch to offer an even better price than any
             pool can.
           </p>
@@ -290,7 +290,7 @@ export default function Faq() {
 
           <p>
             As of August 11th, 2021, CowSwap is no longer in alpha and moves to a final, stable version. The underlying
-            Gnosis Protocol Smart contracts have been upgraded to integrate tightly with Balancer v2.
+            CoW Protocol Smart contracts have been upgraded to integrate tightly with Balancer v2.
           </p>
 
           <p>
@@ -357,9 +357,9 @@ export default function Faq() {
           <p>CowSwap can connect to all on-chain liquidity.</p>
           <p>
             When CowSwap does not have enough CoWs (Coincidence of Wants) among the orders available for a batch, it
-            taps other AMMs’ liquidity to be able to settle the traders’ orders. Gnosis Protocol v2 can be connected to
-            any on-chain liquidity sources and can therefore enjoy the benefits of concentrating the fragmented
-            liquidity across decentralized finance.
+            taps other AMMs’ liquidity to be able to settle the traders’ orders. CoW Protocol can be connected to any
+            on-chain liquidity sources and can therefore enjoy the benefits of concentrating the fragmented liquidity
+            across decentralized finance.
           </p>
           <h3 id="how-is-cowswap-able-to-offer-better-prices-than-aggregators-themselves">
             How is CowSwap able to offer better prices?
@@ -415,9 +415,9 @@ export default function Faq() {
             <LinkScrollable href={'#smart-contract-support'}>Smart Contract support</LinkScrollable> for more
             information.
           </p>
-          <h3 id="what-are-gnosis-protocol-v2-solvers">What are Gnosis Protocol v2 Solvers?</h3>
+          <h3 id="what-are-gnosis-protocol-v2-solvers">What are CoW Protocol&apos;s Solvers?</h3>
           <p>
-            In GPv2, instead of using a central operator or a constant function market maker to determine trade
+            In CoW Protocol, instead of using a central operator or a constant function market maker to determine trade
             settlements, the protocol uses a party called a &quot;solver&quot;, who is the party in charge of providing
             the settlement solution to the batch auctions. Solvers compete against each other to submit the best
             possible batch settlement solution. Each time a solver submits a successful batch settlement solution, the
@@ -427,16 +427,16 @@ export default function Faq() {
           <ol>
             <li>
               To become a solver, an Ethereum address needs to deposit a bond in the form of tokens. Asset type and
-              amounts are pending to be defined by the GnosisDAO or GnosisProtocolDAO.
+              amounts are pending to be defined by the CowDAO.
             </li>
             <li>
-              Once the tokens have been staked (locked up), GnosisDAO/GnosisProtocolDAO must vote to approve or reject
-              the Ethereum address that will identify the solver. If the vote is successful, the solver Ethereum address
-              will be included in the allowlist (verification) solvers contract.
+              Once the tokens have been staked (locked up), CowDAO must vote to approve or reject the Ethereum address
+              that will identify the solver. If the vote is successful, the solver Ethereum address will be included in
+              the allowlist (verification) solvers contract.
             </li>
             <li>
               Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
-              solutions, or take the risk of being slashed by the GnosisDAO/GnosisProtocolDAO for wrongdoing.
+              solutions, or take the risk of being slashed by the CowDAO for wrongdoing.
             </li>
           </ol>
           <h3 id="what-interactions-can-i-encounter-when-using-Cowswap">
@@ -683,7 +683,7 @@ export default function Faq() {
 
           <p>
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
-            via the GPv2 Vault Relayer (for more information read{' '}
+            via the CoW Protocol Vault Relayer (for more information read{' '}
             <ExternalLink
               href="https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2VaultRelayer.sol"
               target="_blank"
@@ -691,9 +691,9 @@ export default function Faq() {
             >
               Smart Contract Architecture
             </ExternalLink>
-            ). In order to allow that to happen, the trader must first approve the GPv2 Vault Relayer contract to spend
-            tokens on their behalf. The smart contract logic ensures that no token can be spent without deliberately
-            signing an order for it.
+            ). In order to allow that to happen, the trader must first approve the CoW Protocol Vault Relayer contract
+            to spend tokens on their behalf. The smart contract logic ensures that no token can be spent without
+            deliberately signing an order for it.
           </p>
 
           <h3 id="why-do-i-sign-a-message-instead-of-sending-a-transaction-to-place-an-order">

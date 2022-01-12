@@ -2,9 +2,11 @@ import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
-import { useReferralAddress, useResetReferralAddress, useUploadReferralDocAndSetDataHash } from 'state/affiliate/hooks'
+import { useReferralAddress, useResetReferralAddress } from 'state/affiliate/hooks'
+import { updateAppDataHash } from 'state/affiliate/actions'
 import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
+import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
 import useParseReferralQueryParam from 'hooks/useParseReferralQueryParam'
@@ -28,7 +30,6 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export default function AffiliateStatusCheck() {
   const appDispatch = useAppDispatch()
   const resetReferralAddress = useResetReferralAddress()
-  const uploadReferralDocAndSetDataHash = useUploadReferralDocAndSetDataHash()
   const history = useHistory()
   const location = useLocation()
   const { account, chainId } = useActiveWeb3React()
@@ -52,7 +53,7 @@ export default function AffiliateStatusCheck() {
     return `wallet-${account}:referral-${referralAddress.value}:chain-${chainId}`
   }, [account, chainId, referralAddress?.value])
 
-  const uploadDataDoc = useCallback(async () => {
+  const handleAffiliateState = useCallback(async () => {
     if (!chainId || !account || !referralAddress) {
       return
     }
@@ -64,8 +65,9 @@ export default function AffiliateStatusCheck() {
 
     if (fulfilledActivity.length >= 1 && isFirstTrade.current) {
       setAffiliateState(null)
-      resetReferralAddress()
       isFirstTrade.current = false
+      history.replace({ search: '' })
+      resetReferralAddress()
       return
     }
 
@@ -81,24 +83,23 @@ export default function AffiliateStatusCheck() {
       setError('There was an error validating existing trades. Please try again later.')
       return
     }
+    setAffiliateState('ACTIVE')
+    isFirstTrade.current = true
+  }, [referralAddress, chainId, account, fulfilledActivity.length, history, resetReferralAddress])
 
-    try {
-      await retry(() => uploadReferralDocAndSetDataHash(referralAddress.value), DEFAULT_RETRY_OPTIONS).promise
-
-      setAffiliateState('ACTIVE')
-      isFirstTrade.current = true
-    } catch (error) {
-      console.error(error)
-      setError('There was an error while uploading the referral document to IPFS. Please try again later.')
+  useEffect(() => {
+    async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
+      if (!referralAddress?.value) return
+      try {
+        const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress.value))
+        appDispatch(updateAppDataHash(appDataHash))
+      } catch (e) {
+        console.error(e)
+        setError('There was an error while uploading the referral document to IPFS. Please try again later.')
+      }
     }
-  }, [
-    chainId,
-    account,
-    referralAddress,
-    resetReferralAddress,
-    uploadReferralDocAndSetDataHash,
-    fulfilledActivity.length,
-  ])
+    if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
+  }, [referralAddress, affiliateState, appDispatch])
 
   useEffect(() => {
     if (!referralAddress) {
@@ -128,18 +129,8 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    uploadDataDoc()
-  }, [
-    referralAddress,
-    account,
-    history,
-    chainId,
-    appDispatch,
-    uploadDataDoc,
-    resetReferralAddress,
-    location.search,
-    referralAddressQueryParam,
-  ])
+    handleAffiliateState()
+  }, [referralAddress, account, history, chainId, handleAffiliateState, location.search, referralAddressQueryParam])
 
   if (error) {
     return (
