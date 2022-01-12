@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
 import Card from 'components/Card'
@@ -7,9 +8,10 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
 import ReactGA from 'react-ga'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 import { usePopper } from 'react-popper'
+import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 import styled from 'styled-components/macro'
+
 import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useTheme from '../../hooks/useTheme'

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 // import JSBI from 'jsbi'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
@@ -26,7 +27,7 @@ import { SwapState } from 'state/swap/reducer'
 import { useAppDispatch /* , useAppSelector */ } from 'state/hooks'
 
 // MOD
-import { tryParseAmount, useSwapState } from 'state/swap/hooks'
+import { tryParseAmount, useSwapState, BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
@@ -37,7 +38,6 @@ import TradeGp from './TradeGp'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
 
-import { BAD_RECIPIENT_ADDRESSES } from 'state/swap/hooks'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { isWrappingTrade } from './utils'
@@ -95,7 +95,7 @@ interface DerivedSwapInfo {
     onSwitchTokens,
     onCurrencySelection,
     onUserInput,
-    onChangeRecipient
+    onChangeRecipient,
   }
 } */
 
@@ -105,7 +105,9 @@ interface DerivedSwapInfo {
     return undefined
   }
   try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString()
+    // Here we drop everything after given token decimals to avoid parsing issues
+    const truncatedValue = currency.decimals ? truncateOnMaxDecimals(value, currency.decimals) : value
+    const typedValueParsed = parseUnits(truncatedValue, currency.decimals).toString()
     if (typedValueParsed !== '0') {
       return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
     }
@@ -134,9 +136,9 @@ interface DerivedSwapInfo {
 ): boolean {
   const path = trade instanceof V2Trade ? trade.route.path : trade.route.tokenPath
   return (
-    path.some(token => token.address === checksummedAddress) ||
+    path.some((token) => token.address === checksummedAddress) ||
     (trade instanceof V2Trade
-      ? trade.route.pairs.some(pair => pair.liquidityToken.address === checksummedAddress)
+      ? trade.route.pairs.some((pair) => pair.liquidityToken.address === checksummedAddress)
       : false)
   )
 } */
@@ -239,13 +241,16 @@ export function useHighFeeWarning(trade?: TradeGp) {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): /* {
-  currencies: { [field in Field]?: Currency }
+  currencies: { [field in Field]?: Currency | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
-  inputError?: string
+  inputError?: ReactNode
   v2Trade: V2Trade<Currency, Currency, TradeType> | undefined
-  v3TradeState: { trade: V3Trade<Currency, Currency, TradeType> | null; state: V3TradeState }
-  toggledTrade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined
+  v3Trade: {
+    trade: V3Trade<Currency, Currency, TradeType> | null
+    state: V3TradeState
+  }
+  bestTrade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined
   allowedSlippage: Percent
 } */ DerivedSwapInfo {
   const { account, chainId } = useActiveWeb3React()
@@ -422,10 +427,10 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurre
 
   return {
     [Field.INPUT]: {
-      currencyId: inputCurrency,
+      currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
     [Field.OUTPUT]: {
-      currencyId: outputCurrency,
+      currencyId: outputCurrency === '' ? null : outputCurrency ?? null,
     },
     typedValue: parseTokenAmountURLParameter(parsedQs.exactAmount),
     independentField: parseIndependentFieldURLParameter(parsedQs.exactField),

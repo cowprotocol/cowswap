@@ -49,6 +49,16 @@ declare namespace Cypress {
      *
      * @example cy.stubResponse({ url: '/api/v1/someEndpoint/', alias: 'endpoint', body: { foo: 'foo' } })
      */
-    stubResponse({ url, alias, body }: { url: string; alias?: string; body?: any }): Chainable<Subject>
+    stubResponse({
+      method,
+      url,
+      alias,
+      body,
+    }: {
+      method: 'GET' | 'POST' | 'DELETE'
+      url: string
+      alias?: string
+      body?: any
+    }): Chainable<Subject>
   }
 }

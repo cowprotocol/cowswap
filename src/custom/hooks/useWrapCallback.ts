@@ -1,25 +1,26 @@
+// eslint-disable-next-line no-restricted-imports
+import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
+import { WETH9_EXTENDED } from 'constants/tokens'
+import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'
-import { Contract } from 'ethers'
+import { Contract } from '@ethersproject/contracts'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useWETHContract } from 'hooks/useContract'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
-import { WETH9_EXTENDED } from 'constants/tokens'
-import { t } from '@lingui/macro'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { useWalletInfo } from './useWalletInfo'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { OperationType } from '../components/TransactionConfirmationModal'
-import { ethers } from 'ethers'
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = ethers.BigNumber.from('180000')
+const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
 
 export enum WrapType {
   NOT_APPLICABLE,

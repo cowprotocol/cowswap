@@ -4,23 +4,25 @@ import { SupportedChainId } from 'constants/chains'
 import {
   // AMPL,
   DAI,
-  // GpEther as ExtendedEther,
+  // DAI_ARBITRUM_ONE,
+  // DAI_OPTIMISM,
+  // ETH2X_FLI,
+  // ExtendedEther,
   // FEI,
   // FRAX,
   // FXS,
   // renBTC,
   // TRIBE,
-  // UMA,
-  // UNI,
   USDC,
+  // USDC_ARBITRUM,
+  // USDC_OPTIMISM,
   USDT,
-  // UST,
-  WBTC,
-  // ETH2X_FLI,
-  WETH9_EXTENDED,
-  // DAI_OPTIMISM,
+  // USDT_ARBITRUM_ONE,
   // USDT_OPTIMISM,
+  WBTC,
+  // WBTC_ARBITRUM_ONE,
   // WBTC_OPTIMISM,
+  WETH9_EXTENDED,
 } from 'constants/tokens'
 
 import { USDC_XDAI, /* USDT_XDAI, */ WBTC_XDAI, WETH_XDAI } from 'utils/xdai/constants'
@@ -43,6 +45,12 @@ type ChainCurrencyList = {
   ...WETH_ONLY,
   [SupportedChainId.MAINNET]: [...WETH_ONLY[SupportedChainId.MAINNET], DAI, USDC, USDT, WBTC],
   [SupportedChainId.OPTIMISM]: [...WETH_ONLY[SupportedChainId.OPTIMISM], DAI_OPTIMISM, USDT_OPTIMISM, WBTC_OPTIMISM],
+    [SupportedChainId.ARBITRUM_ONE]: [
+    ...WETH_ONLY[SupportedChainId.ARBITRUM_ONE],
+    DAI_ARBITRUM_ONE,
+    USDT_ARBITRUM_ONE,
+    WBTC_ARBITRUM_ONE,
+  ],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -88,11 +96,26 @@ export const COMMON_BASES: ChainCurrencyList = {
     USDC_RINKEBY,
     USDT_RINKEBY,
   ],
-  // [SupportedChainId.GOERLI]: [
-  //   /* ExtendedEther.onChain(SupportedChainId.GOERLI),  */ WETH9_EXTENDED[SupportedChainId.GOERLI],
+  // [SupportedChainId.GOERLI]: [ExtendedEther.onChain(SupportedChainId.GOERLI), WETH9_EXTENDED[SupportedChainId.GOERLI]],
+  // [SupportedChainId.KOVAN]: [ExtendedEther.onChain(SupportedChainId.KOVAN), WETH9_EXTENDED[SupportedChainId.KOVAN]],
+  // [SupportedChainId.ARBITRUM_ONE]: [
+  //   ExtendedEther.onChain(SupportedChainId.ARBITRUM_ONE),
+  //   DAI_ARBITRUM_ONE,
+  //   USDC_ARBITRUM,
+  //   USDT_ARBITRUM_ONE,
+  //   WBTC_ARBITRUM_ONE,
+  //   WETH9_EXTENDED[SupportedChainId.ARBITRUM_ONE],
   // ],
-  // [SupportedChainId.KOVAN]: [
-  //   /* ExtendedEther.onChain(SupportedChainId.KOVAN),  */ WETH9_EXTENDED[SupportedChainId.KOVAN],
+  // [SupportedChainId.ARBITRUM_RINKEBY]: [
+  //   ExtendedEther.onChain(SupportedChainId.ARBITRUM_RINKEBY),
+  //   WETH9_EXTENDED[SupportedChainId.ARBITRUM_RINKEBY],
+  // ],
+  // [SupportedChainId.OPTIMISM]: [
+  //   ExtendedEther.onChain(SupportedChainId.OPTIMISM),
+  //   DAI_OPTIMISM,
+  //   USDC_OPTIMISM,
+  //   USDT_OPTIMISM,
+  //   WBTC_OPTIMISM,
   // ],
   [SupportedChainId.XDAI]: [
     // ExtendedEther.onChain(SupportedChainId.XDA),

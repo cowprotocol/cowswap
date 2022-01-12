@@ -26,32 +26,30 @@ if (SENTRY_AUTH_TOKEN) {
   )
 }
 
-module.exports = function () {
-  return {
-    babel: {
-      plugins: [
-        '@babel/plugin-proposal-nullish-coalescing-operator',
-        [
-          '@simbathesailor/babel-plugin-use-what-changed',
-          {
-            active: process.env.NODE_ENV === 'development', // boolean
-          },
-        ],
-      ],
-    },
-    webpack: {
-      plugins,
-      alias: {
-        '@src': path.resolve(__dirname, 'src'),
-      },
-      // https://webpack.js.org/configuration
-      configure: (webpackConfig) => ({
-        ...webpackConfig,
-        resolve: {
-          ...webpackConfig.resolve,
-          modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
+module.exports = {
+  babel: {
+    plugins: [
+      '@babel/plugin-proposal-nullish-coalescing-operator',
+      [
+        '@simbathesailor/babel-plugin-use-what-changed',
+        {
+          active: process.env.NODE_ENV === 'development', // boolean
         },
-      }),
+      ],
+    ],
+  },
+  webpack: {
+    plugins,
+    alias: {
+      '@src': path.resolve(__dirname, 'src'),
     },
-  }
+    // https://webpack.js.org/configuration
+    configure: (webpackConfig) => ({
+      ...webpackConfig,
+      resolve: {
+        ...webpackConfig.resolve,
+        modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
+      },
+    }),
+  },
 }

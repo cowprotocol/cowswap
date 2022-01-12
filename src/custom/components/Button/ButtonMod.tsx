@@ -1,15 +1,15 @@
-import styled from 'styled-components/macro'
+import useTheme from 'hooks/useTheme'
 import { darken } from 'polished'
+import { Check, ChevronDown } from 'react-feather'
+import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
+import styled from 'styled-components/macro'
 
 import { RowBetween } from 'components/Row'
-import { ChevronDown, Check } from 'react-feather'
-import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
-import useTheme from 'hooks/useTheme'
 import { ButtonSize } from 'theme'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 
-const Base = styled(RebassButton)<
+export const BaseButton = styled(RebassButton)<
   {
     padding?: string
     width?: string
@@ -57,7 +57,7 @@ const Base = styled(RebassButton)<
   }
 `
 
-export const ButtonPrimary = styled(Base)`
+export const ButtonPrimary = styled(BaseButton)`
   ${({ theme }) => theme.buttonPrimary.background}
   font-size: 16px;
   &:focus,
@@ -77,7 +77,7 @@ export const ButtonPrimary = styled(Base)`
   }
 `
 
-export const ButtonLight = styled(Base)`
+export const ButtonLight = styled(BaseButton)`
   background-color: ${({ theme }) => theme.primary5};
   color: ${({ theme }) => theme.primaryText1};
   font-size: 16px;
@@ -105,7 +105,7 @@ export const ButtonLight = styled(Base)`
   }
 `
 
-export const ButtonGray = styled(Base)`
+export const ButtonGray = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text2};
   font-size: 16px;
@@ -123,7 +123,7 @@ export const ButtonGray = styled(Base)`
   }
 `
 
-export const ButtonSecondary = styled(Base)`
+export const ButtonSecondary = styled(BaseButton)`
   border: 1px solid ${({ theme }) => theme.primary4};
   color: ${({ theme }) => theme.primary1};
   background-color: transparent;
@@ -151,7 +151,7 @@ export const ButtonSecondary = styled(Base)`
   }
 `
 
-export const ButtonOutlined = styled(Base)`
+export const ButtonOutlined = styled(BaseButton)`
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: transparent;
   color: ${({ theme }) => theme.text1};
@@ -170,7 +170,7 @@ export const ButtonOutlined = styled(Base)`
   }
 `
 
-export const ButtonYellow = styled(Base)`
+export const ButtonYellow = styled(BaseButton)`
   background-color: ${({ theme }) => theme.yellow3};
   color: white;
   &:focus {
@@ -191,7 +191,7 @@ export const ButtonYellow = styled(Base)`
   }
 `
 
-export const ButtonPink = styled(Base)`
+export const ButtonPink = styled(BaseButton)`
   background-color: ${({ theme }) => theme.primary1};
   color: white;
 
@@ -213,7 +213,7 @@ export const ButtonPink = styled(Base)`
   }
 `
 
-export const ButtonEmpty = styled(Base)`
+export const ButtonEmpty = styled(BaseButton)`
   background-color: transparent;
   color: ${({ theme }) => theme.primary1};
   display: flex;
@@ -235,7 +235,7 @@ export const ButtonEmpty = styled(Base)`
   }
 `
 
-export const ButtonText = styled(Base)`
+export const ButtonText = styled(BaseButton)`
   padding: 0;
   width: fit-content;
   background: none;
@@ -257,7 +257,7 @@ export const ButtonText = styled(Base)`
   }
 `
 
-export const ButtonConfirmedStyle = styled(Base)`
+export const ButtonConfirmedStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text1};
   /* border: 1px solid ${({ theme }) => theme.green1}; */
@@ -270,7 +270,7 @@ export const ButtonConfirmedStyle = styled(Base)`
   }
 `
 
-export const ButtonWhite = styled(Base)`
+export const ButtonWhite = styled(BaseButton)`
   border: 1px solid #edeef2;
   background-color: ${({ theme }) => theme.bg1};
   color: black;
@@ -291,7 +291,7 @@ export const ButtonWhite = styled(Base)`
   }
 `
 
-export const ButtonErrorStyle = styled(Base)`
+export const ButtonErrorStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
 
@@ -397,13 +397,13 @@ export function ButtonRadioChecked({ active = false, children, ...rest }: { acti
 
   if (!active) {
     return (
-      <ButtonOutlined borderRadius="12px" padding="12px 8px" {...rest}>
+      <ButtonOutlined $borderRadius="12px" padding="12px 8px" {...rest}>
         {<RowBetween>{children}</RowBetween>}
       </ButtonOutlined>
     )
   } else {
     return (
-      <ActiveOutlined {...rest} padding="12px 8px" borderRadius="12px">
+      <ActiveOutlined {...rest} padding="12px 8px" $borderRadius="12px">
         {
           <RowBetween>
             {children}
