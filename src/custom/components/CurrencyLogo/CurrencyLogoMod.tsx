@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 
 import EthereumLogo from 'assets/images/ethereum-logo.png'
+import xDaiLogo from 'assets/images/xdai.png'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import Logo from 'components/Logo'
@@ -85,7 +86,11 @@ export default function CurrencyLogo({
   }, [currency, uriLocations])
 
   if (currency?.isNative) {
-    return <StyledEthereumLogo src={EthereumLogo} alt="ethereum logo" size={size} style={style} {...rest} />
+    return chainIdToNetworkName(currency.chainId) === 'ethereum' ? (
+      <StyledEthereumLogo src={EthereumLogo} alt="ethereum logo" size={size} style={style} {...rest} />
+    ) : (
+      <StyledLogo srcs={[xDaiLogo]} alt="xdai logo" size={size} style={style} {...rest} />
+    )
   }
 
   return <StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} {...rest} />
