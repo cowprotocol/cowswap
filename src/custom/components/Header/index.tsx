@@ -4,7 +4,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Dots } from 'components/swap/styleds'
 import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import HeaderMod, {
   Title,
@@ -23,7 +23,7 @@ import HeaderMod, {
 } from './HeaderMod'
 import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -205,16 +205,77 @@ const UniIcon = styled.div`
   }
 `
 
-const VCowAmount = styled(UNIAmountMod)`
-  ${({ theme }) => theme.cowToken.background};
-  ${({ theme }) => theme.cowToken.boxShadow};
-  color: white;
-  padding: 0 16px;
+const VCowAmount = styled(UNIAmountMod)<{ isClaimPage: boolean }>`
+  ${({ theme }) => theme.card.boxShadow};
+  color: ${({ theme }) => theme.text1};
+  padding: 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  height: 38px;
   display: flex;
   align-items: center;
+  position: relative;
+  border-radius: 12px;
+
+  > b {
+    margin: 0 0 0 5px;
+    color: inherit;
+    font-weight: inherit;
+  }
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    background: ${({ theme }) =>
+      `linear-gradient(45deg, ${theme.primary1}, ${theme.primary2}, ${theme.primary3}, ${theme.bg4}, ${theme.primary1}, ${theme.primary2})`};
+    background-size: 800%;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    z-index: -1;
+    animation: glow 50s linear infinite;
+    transition: background-position 0.3s ease-in-out;
+    border-radius: 12px;
+  }
+
+  &::after {
+    filter: blur(8px);
+  }
+
+  &:hover::before,
+  &:hover::after {
+    animation: glow 12s linear infinite;
+  }
+
+  // Stop glowing effect on claim page
+  ${({ isClaimPage }) =>
+    isClaimPage &&
+    css`
+      &::before,
+      &::after {
+        content: none;
+      }
+    `};
+
+  @keyframes glow {
+    0% {
+      background-position: 0 0;
+    }
+    50% {
+      background-position: 300% 0;
+    }
+    100% {
+      background-position: 0 0;
+    }
+  }
 `
 
 export default function Header() {
+  const location = useLocation()
+  const isClaimPage = location.pathname === '/claim'
+
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
@@ -265,7 +326,7 @@ export default function Header() {
           <NetworkCard />
           <HeaderElement>
             <UNIWrapper onClick={handleOnClickClaim}>
-              <VCowAmount active={!!account} style={{ pointerEvents: 'auto' }}>
+              <VCowAmount isClaimPage={isClaimPage} active={!!account} style={{ pointerEvents: 'auto' }}>
                 {claimTxn && !claimTxn?.receipt ? (
                   <Dots>
                     <Trans>Claiming vCOW...</Trans>
@@ -273,11 +334,14 @@ export default function Header() {
                 ) : (
                   <>
                     <CowProtocolLogo />
-                    <Trans>vCOW</Trans>
+                    <b>
+                      <Trans>Claim vCOW</Trans>
+                    </b>
                   </>
                 )}
               </VCowAmount>
             </UNIWrapper>
+
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
                 <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>

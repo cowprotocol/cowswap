@@ -85,6 +85,7 @@ declare module 'styled-components' {
       background: FlattenSimpleInterpolation
       boxShadow: FlattenSimpleInterpolation
     },
+    iconGradientBorder: FlattenSimpleInterpolation
     card: {
       background: FlattenSimpleInterpolation
       background2: string

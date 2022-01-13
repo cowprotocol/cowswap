@@ -205,8 +205,6 @@ const StepsIconWrapper = styled.div`
   --circle-size: 65px;
   --border-radius: 100%;
   --border-size: 2px;
-  --border-bg: conic-gradient(${({ theme }) => theme.bg3} 40grad, 80grad, ${({ theme }) => theme.primary1} 360grad);
-
   border-radius: var(--circle-size);
   height: var(--circle-size);
   width: var(--circle-size);
@@ -265,8 +263,8 @@ const StepsWrapper = styled.div`
     ${StepsIconWrapper} {
       &::before {
         content: '';
+        ${({ theme }) => theme.iconGradientBorder};
         display: block;
-        background: var(--border-bg);
         width: var(--circle-size);
         padding: 0;
         position: absolute;

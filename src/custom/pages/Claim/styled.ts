@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
+import { transparentize } from 'polished'
 
 export const PageWrapper = styled.div`
   --color-tl: #141722;
@@ -12,6 +13,7 @@ export const PageWrapper = styled.div`
   --color-container-bg2: rgb(255 255 255 / 12%);
   --color-container-bg3: rgb(255 255 255 / 25%);
   --border-radius: 56px;
+  --border-radius-small: 16px;
 
   display: flex;
   flex-flow: column wrap;
@@ -24,8 +26,12 @@ export const PageWrapper = styled.div`
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
   background: ${({ theme }) => theme.bg1};
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    border-radius: var(--border-radius-small);
+  `};
+
   a {
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.primary4};
   }
 
   p {
@@ -64,7 +70,7 @@ export const PageWrapper = styled.div`
 
   ${ButtonSecondary} {
     background: 0;
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.primary4};
     border: none;
 
     &:hover {
@@ -72,7 +78,8 @@ export const PageWrapper = styled.div`
       box-shadow: none;
       transform: none;
       background: 0;
-      color: inherit;
+      color: ${({ theme }) => theme.primary4};
+      text-decoration: underline;
     }
   }
 `
@@ -121,6 +128,12 @@ export const IntroDescription = styled.div<{ center?: boolean }>`
 
   > p {
     margin: 8px auto 24px;
+  }
+
+  > p > i {
+    color: ${({ theme }) => theme.text1};
+    font-weight: 600;
+    font-style: normal;
   }
 
   > button {
@@ -229,6 +242,7 @@ export const ClaimTotal = styled.div`
     font-size: 14px;
     font-weight: normal;
     margin: 0 0 2px;
+    opacity: 0.7;
   }
 
   > p {
@@ -246,7 +260,8 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(315deg, #000000 0%, #000000 55%, #202020 100%);
+  font-size: 26px;
+  font-weight: 300;
 
   h3 {
     font-size: 26px;
@@ -266,6 +281,7 @@ export const AttemptFooter = styled.div`
 
   > p {
     font-size: 14px;
+    opacity: 0.7;
   }
 `
 
@@ -295,10 +311,11 @@ export const EligibleBanner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(237, 104, 52, 0.1);
-  color: color: ${({ theme }) => theme.primary1};
+  background: ${({ theme }) => transparentize(0.9, theme.attention)};
+  color: ${({ theme }) => theme.attention};
   text-align: center;
   margin: 0 auto 16px;
+  font-weight: 600;
 `
 
 export const InputField = styled.div`
@@ -408,7 +425,7 @@ export const FooterNavButtons = styled.div`
     transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: color: ${({ theme }) => theme.primary1};
+      color: ${({ theme }) => theme.primary1};
       text-decoration: underline;
     }
 
@@ -497,8 +514,6 @@ export const InvestTokenGroup = styled.div`
   display: flex;
   flex-flow: row;
   width: 100%;
-  background: var(--color-container-bg);
-  border-radius: var(--border-radius);
   padding: 24px;
   margin: 0 0 24px;
   border: 1px solid #3a3a3a;
@@ -607,7 +622,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: inline-block;
     font-size: 13px;
-    color: color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.primary1};
   }
 `
 
