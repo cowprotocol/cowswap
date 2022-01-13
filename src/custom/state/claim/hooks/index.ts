@@ -286,27 +286,41 @@ function useDeploymentTimestamp(): number | null {
 }
 
 /**
+ * Returns the timestamp of when the investment window closes
+ */
+export function useInvestmentDeadline(): number | null {
+  const deploymentTimestamp = useDeploymentTimestamp()
+
+  return deploymentTimestamp && deploymentTimestamp + TWO_WEEKS
+}
+
+/**
  * Returns whether vCOW contract is still open for investments
- * Null when not applicable
- *
  * That is, there has been less than 2 weeks since it was deployed
  */
 export function useInvestmentStillAvailable(): boolean {
+  const investmentDeadline = useInvestmentDeadline()
+
+  return Boolean(investmentDeadline && investmentDeadline > Date.now())
+}
+
+/**
+ * Returns the timestamp of when the airdrop window closes
+ */
+export function useAirdropDeadline(): number | null {
   const deploymentTimestamp = useDeploymentTimestamp()
 
-  return Boolean(deploymentTimestamp && deploymentTimestamp + TWO_WEEKS > Date.now())
+  return deploymentTimestamp && deploymentTimestamp + SIX_WEEKS
 }
 
 /**
  * Returns whether vCOW contract is still open for airdrops
- * Null when not applicable
- *
  * That is, there has been less than 6 weeks since it was deployed
  */
 export function useAirdropStillAvailable(): boolean {
-  const deploymentTimestamp = useDeploymentTimestamp()
+  const airdropDeadline = useAirdropDeadline()
 
-  return Boolean(deploymentTimestamp && deploymentTimestamp + SIX_WEEKS > Date.now())
+  return Boolean(airdropDeadline && airdropDeadline > Date.now())
 }
 
 /**
