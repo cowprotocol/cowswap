@@ -179,6 +179,11 @@ export const ClaimTable = styled.div`
   }
 
   th {
+    &:first-child {
+      display: flex;
+      align-items: center;
+    }
+
     position: sticky;
     top: 0;
     background: transparent;
@@ -194,15 +199,32 @@ export const ClaimTable = styled.div`
   }
 
   td {
+    display: flex;
+    align-items: center;
+
     padding-top: 10px;
     padding-bottom: 10px;
     color: white;
     word-break: break-word;
+    background: var(--color-container-bg);
   }
 
   tr > td {
-    background: var(--color-container-bg);
     margin: 0 0 12px;
+  }
+`
+
+export const ClaimRow = styled.tr<{ isPending?: boolean }>`
+  > td {
+    background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
+    cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};
+
+    &:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+    &:last-child {
+      border-radius: 0 8px 8px 0;
+    }
   }
 `
 

@@ -20,6 +20,10 @@ import { isAddress } from 'utils'
 
 import { getClaimKey, getClaimsRepoPath, transformRepoClaimsToUserClaims } from 'state/claim/hooks/utils'
 import { SupportedChainId } from 'constants/chains'
+import { registerOnWindow } from 'utils/misc'
+import mockData, { MOCK_INDICES } from './mocks/claimData'
+import { getIndexes } from './utils'
+import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 export { useUserClaimData } from '@src/state/claim/hooks'
 
@@ -67,6 +71,15 @@ export enum ClaimType {
   Team, // free, with vesting, only on mainnet
   Advisor, // free, with vesting, only on mainnet
 }
+
+export type TypeToPriceMapper = Map<ClaimType, number>
+
+// Hardcoded values
+export const ClaimTypePriceMap: TypeToPriceMapper = new Map([
+  [ClaimType.GnoOption, 16.66],
+  [ClaimType.Investor, 26.66],
+  [ClaimType.UserOption, 36.66],
+])
 
 type RepoClaimType = keyof typeof ClaimType
 
@@ -182,13 +195,18 @@ export function useUserHasAvailableClaim(account: Account): boolean {
 export function useUserUnclaimedAmount(account: string | null | undefined): CurrencyAmount<Token> | undefined {
   const { chainId } = useActiveWeb3React()
   const claims = useUserAvailableClaims(account)
+  const pendingIndices = useAllClaimingTransactionIndices()
 
   const vCow = chainId ? V_COW[chainId] : undefined
   if (!vCow) return undefined
   if (!claims || claims.length === 0) {
     return CurrencyAmount.fromRawAmount(vCow, JSBI.BigInt(0))
   }
+
   const totalAmount = claims.reduce((acc, claim) => {
+    // don't add pending
+    if (pendingIndices.has(claim.index)) return acc
+
     return JSBI.add(acc, JSBI.BigInt(claim.amount))
   }, JSBI.BigInt('0'))
 
@@ -234,6 +252,14 @@ export function useUserClaims(account: Account): UserClaims | null {
 
   return claimKey ? claimInfo[claimKey] : null
 }
+
+// TODO: remove
+const createMockTx = (data: number[]) => ({
+  hash: '0x' + Math.round(Math.random() * 10).toString() + 'AxAFjAhG89G89AfnLK3CCxAfnLKQffQ782G89AfnLK3CCxxx123FF',
+  summary: `Claimed ${Math.random() * 3337} vCOW`,
+  claim: { recipient: '0x97EC4fcD5F78cA6f6E4E1EAC6c0Ec8421bA518B7' },
+  data, // add the claim indices to state
+})
 
 /**
  * Fetches from contract the deployment timestamp in ms
@@ -330,6 +356,20 @@ export function useClaimCallback(account: string | null | undefined): {
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
 
+  // TODO: remove
+  registerOnWindow({
+    addMockClaimTransactions: (data?: number[]) => {
+      let finalData: number[] | undefined = data
+
+      if (!finalData) {
+        const mockDataIndices = connectedAccount ? getIndexes(mockData[connectedAccount] || []) : []
+        finalData = mockDataIndices?.length > 0 ? mockDataIndices : MOCK_INDICES
+      }
+
+      return addTransaction(createMockTx(finalData))
+    },
+  })
+
   const claimCallback = useCallback(
     async function (claimInput: ClaimInput[]) {
       if (
@@ -356,17 +396,17 @@ export function useClaimCallback(account: string | null | undefined): {
 
       return vCowContract.estimateGas['claimMany'](...args).then((estimatedGas) => {
         // Last item in the array contains the call overrides
-        args[args.length - 1] = {
-          ...args[args.length - 1], // add back whatever is already there
+        const extendedArgs = _extendFinalArg(args, {
           from: connectedAccount, // add the `from` as the connected account
           gasLimit: calculateGasMargin(chainId, estimatedGas), // add the estimated gas limit
-        }
+        })
 
-        return vCowContract.claimMany(...args).then((response: TransactionResponse) => {
+        return vCowContract.claimMany(...extendedArgs).then((response: TransactionResponse) => {
           addTransaction({
             hash: response.hash,
             summary: `Claimed ${formatSmart(vCowAmount)} vCOW`,
             claim: { recipient: account },
+            data: args[0], // add the claim indices to state
           })
           return response.hash
         })
@@ -651,4 +691,17 @@ export function useClaimDispatchers() {
 
 export function useClaimState() {
   return useSelector((state: AppState) => state.claim)
+}
+
+/**
+ * Extend the Payable optional param
+ */
+function _extendFinalArg(args: ClaimManyFnArgs, extendedArg: Record<any, any>) {
+  const lastArg = args.pop()
+  args.push({
+    ...lastArg, // add back whatever is already there
+    ...extendedArg,
+  })
+
+  return args
 }

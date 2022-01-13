@@ -32,6 +32,7 @@ import {
   StepIndicator,
   Steps,
   TokenLogo,
+  ClaimRow,
 } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
 import {
@@ -56,6 +57,7 @@ import ClaimAddress from './ClaimAddress'
 import CanUserClaimMessage from './CanUserClaimMessage'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
+import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
@@ -116,6 +118,9 @@ export default function Claim() {
 
   const hasClaims = useMemo(() => userClaimData.length > 0, [userClaimData])
   const isAirdropOnly = useMemo(() => !hasPaidClaim(userClaimData), [userClaimData])
+
+  // get current pending claims set in activities
+  const indicesSet = useAllClaimingTransactionIndices()
 
   // claim type to currency and price map
   const typeToCurrencyMap = useMemo(() => getTypeToCurrencyMap(chainId), [chainId])
@@ -332,33 +337,43 @@ export default function Claim() {
                   {sortedClaimData.map(({ index, type, amount }) => {
                     const isFree = isFreeClaim(type)
                     const currency = typeToCurrencyMap[type] || ''
-                    const vCowPrice = typeToPriceMap[type]
+                    const vCowPrice = typeToPriceMap.get(type)
                     const parsedAmount = parseClaimAmount(amount, chainId)
-                    const cost = vCowPrice * Number(parsedAmount?.toSignificant(6))
+                    const cost = vCowPrice && vCowPrice * Number(parsedAmount?.toSignificant(6))
+                    const isPendingClaim = indicesSet.has(index)
 
                     return (
-                      <tr key={index}>
+                      <ClaimRow
+                        key={index}
+                        isPending={isPendingClaim}
+                        onClick={isPendingClaim ? () => console.log('Claim::Opening Orders panel') : undefined}
+                      >
                         <td>
                           {' '}
-                          <label className="checkAll">
-                            <input
-                              onChange={(event) => handleSelect(event, index)}
-                              type="checkbox"
-                              name="check"
-                              checked={isFree || selected.includes(index)}
-                              disabled={isFree}
-                            />
-                          </label>
+                          {/* User has on going pending claiming transactions? Show the loader */}
+                          {isPendingClaim ? (
+                            <CustomLightSpinner src={Circle} title="Claiming in progress..." alt="loader" size="20px" />
+                          ) : (
+                            <label className="checkAll">
+                              <input
+                                onChange={(event) => handleSelect(event, index)}
+                                type="checkbox"
+                                name="check"
+                                checked={isFree || selected.includes(index)}
+                                disabled={isFree}
+                              />
+                            </label>
+                          )}
                         </td>
-                        <td>{isFree ? type : `Buy vCOW with ${currency}`}</td>
+                        <td>{isFree ? ClaimType[type] : `Buy vCOW with ${currency}`}</td>
                         <td width="150px">
                           <CowProtocolLogo size={16} /> {parsedAmount?.toFixed(0, { groupSeparator: ',' })} vCOW
                         </td>
-                        <td>{isFree ? '-' : `${vCowPrice} vCoW per ${currency}`}</td>
+                        <td>{isFree || !vCowPrice ? '-' : `${vCowPrice} vCoW per ${currency}`}</td>
                         <td>{isFree ? <span className="green">Free!</span> : `${cost} ${currency}`}</td>
                         <td>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</td>
                         <td>28 days, 10h, 50m</td>
-                      </tr>
+                      </ClaimRow>
                     )
                   })}
                 </tbody>

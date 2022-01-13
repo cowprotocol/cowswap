@@ -31,7 +31,7 @@ export default function ClaimSummary({ hasClaims, unclaimedAmount }: ClaimSummar
         <div>
           <ClaimTotal>
             <b>Total available to claim</b>
-            <p>{formatSmart(unclaimedAmount)} vCOW</p>
+            <p>{formatSmart(unclaimedAmount) ?? 0} vCOW</p>
           </ClaimTotal>
         </div>
       )}
