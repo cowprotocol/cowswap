@@ -65,12 +65,9 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 
 import { GNO } from 'constants/tokens'
 import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
-import { SupportedChainId } from 'constants/chains'
 import { CheckCircle } from 'react-feather'
 import Row from 'components/Row'
 
-// Max approve amount
-const MAX_GNO_UINT256 = CurrencyAmount.fromRawAmount(GNO[SupportedChainId.RINKEBY], MaxUint256)
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
 
 export default function Claim() {
@@ -260,7 +257,7 @@ export default function Claim() {
     () => openModal(GNO_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
     closeModal,
     // approve max unit256 amount
-    MAX_GNO_UINT256
+    chainId ? CurrencyAmount.fromRawAmount(GNO[chainId], MaxUint256) : undefined
   )
 
   const handleApproveGno = () => approveCallback()
