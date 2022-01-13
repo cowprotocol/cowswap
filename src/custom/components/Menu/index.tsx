@@ -1,5 +1,4 @@
 import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User, ExternalLink } from 'react-feather'
-import { Trans } from '@lingui/macro'
 
 import MenuMod, {
   MenuItem,
@@ -7,7 +6,6 @@ import MenuMod, {
   MenuFlyout as MenuFlyoutUni,
   MenuItemBase,
   StyledMenuButton,
-  UNIbutton,
 } from './MenuMod'
 import { useToggleModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
@@ -20,6 +18,8 @@ import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/actions'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useHistory } from 'react-router-dom'
+import CowClaimButton, { Wrapper as ClaimButtonWrapper } from 'components/CowClaimButton'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -31,7 +31,7 @@ const ResponsiveInternalMenuItem = styled(InternalMenuItem)`
   display: none;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: flex;   
+      display: flex;
   `};
 `
 
@@ -97,6 +97,25 @@ export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
     padding: 0 6px 0 0;
   }
 
+  ${ClaimButtonWrapper} {
+    margin: 0 0 12px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 12px 12px;
+      width: 100%;
+      height: 56px;
+      justify-content: center;
+      font-size: 19px;
+
+      > span {
+        height: 30px;
+        width: 30px;
+        border-radius: 30px;
+        margin: 0 5px 0 0;
+      }
+    `}
+  }
+
   ${StyledMenuButton} {
     height: 38px;
     border-radius: 12px;
@@ -153,10 +172,9 @@ const MenuFlyout = styled(MenuFlyoutUni)`
     width: 100%;
     border-radius: 0;
     box-shadow: none;
-    padding: 0;
     overflow-y: auto;
     flex-flow: row wrap;
-    padding: 0 0 56px;
+    padding: 12px 0 100px;
     align-items: flex-start;
     align-content: flex-start;
   `};
@@ -223,14 +241,16 @@ export const CloseMenu = styled.button`
   border-radius: 6px;
   justify-content: center;
   padding: 0;
-  margin: 0 0 8px;
+  margin: 8px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 56px;
     border-radius: 0;
-    justify-content: flex-end;
     margin: 0;
     width: 100%;
+    position: fixed;
+    bottom: 0;
+    top: initial;
   `};
 
   &::after {
@@ -250,20 +270,25 @@ interface MenuProps {
   darkMode: boolean
   toggleDarkMode: () => void
   isClaimPage: boolean
-  handleOnClickClaim: () => void
 }
 
-export function Menu({ darkMode, toggleDarkMode, isClaimPage, handleOnClickClaim }: MenuProps) {
-  const close = useToggleModal(ApplicationModal.MENU)
+export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
   const { account, chainId } = useActiveWeb3React()
   const hasOrders = useHasOrders(account)
   const showOrdersLink = account && hasOrders
-  const showVCOWClaimOption = Boolean(!!account && !!chainId)
+  /* const showVCOWClaimOption = Boolean(!!account && !!chainId) */
+  const close = useToggleModal(ApplicationModal.MENU)
+  const history = useHistory()
+  const handleOnClickClaim = () => {
+    close()
+    history.push('/claim')
+  }
 
   return (
     <StyledMenu isClaimPage={isClaimPage}>
       <MenuFlyout>
-        <CloseMenu onClick={close} />
+        <CowClaimButton isClaimPage={isClaimPage} handleOnClickClaim={handleOnClickClaim} />
+
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap
         </ResponsiveInternalMenuItem>
@@ -296,6 +321,9 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage, handleOnClickClaim
             Code
           </span>
         </MenuItem>
+
+        <Separator />
+
         <MenuItem id="link" href={DISCORD_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
             <SVG src={discordImage} description="Find CowSwap on Discord!" />
@@ -308,6 +336,8 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage, handleOnClickClaim
             <SVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
           </span>
         </MenuItem>
+
+        <Separator />
 
         <InternalMenuItem to="/play/mev-slicer" onClick={close}>
           <span role="img" aria-label="Play CowGame">
@@ -343,8 +373,6 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage, handleOnClickClaim
           )}
         </MenuItemResponsive>
 
-        <Separator />
-
         <Policy to="/terms-and-conditions" onClick={close} onKeyDown={close}>
           Terms and conditions
         </Policy>
@@ -352,11 +380,8 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage, handleOnClickClaim
         <Policy to="/privacy-policy">Privacy policy</Policy>
         <Policy to="/cookie-policy">Cookie policy</Policy> 
         */}
-        {showVCOWClaimOption && (
-          <UNIbutton onClick={handleOnClickClaim}>
-            <Trans>Claim vCOW</Trans>
-          </UNIbutton>
-        )}
+
+        <CloseMenu onClick={close} />
       </MenuFlyout>
     </StyledMenu>
   )

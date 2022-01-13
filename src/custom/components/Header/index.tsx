@@ -1,7 +1,5 @@
-import { Trans } from '@lingui/macro'
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { Dots } from 'components/swap/styleds'
 import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -18,12 +16,11 @@ import HeaderMod, {
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
-  UNIAmount as UNIAmountMod,
   UNIWrapper,
 } from './HeaderMod'
 import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useETHBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -43,13 +40,11 @@ import {
   // useToggleSelfClaimModal
 } from 'state/application/hooks'
 //import { useUserHasAvailableClaim } from 'state/claim/hooks'
-import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 
 import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { useToggleModal } from 'state/application/hooks'
+import CowClaimButton from 'components/CowClaimButton'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -212,72 +207,6 @@ const VCowWrapper = styled(UNIWrapper)`
   `}
 `
 
-const VCowAmount = styled(UNIAmountMod)<{ isClaimPage: boolean }>`
-  ${({ theme }) => theme.card.boxShadow};
-  color: ${({ theme }) => theme.text1};
-  padding: 0 12px;
-  font-size: 15px;
-  font-weight: 500;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  position: relative;
-  border-radius: 12px;
-
-  > b {
-    margin: 0 0 0 5px;
-    color: inherit;
-    font-weight: inherit;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    left: -1px;
-    top: -1px;
-    background: ${({ theme }) =>
-      `linear-gradient(45deg, ${theme.primary1}, ${theme.primary2}, ${theme.primary3}, ${theme.bg4}, ${theme.primary1}, ${theme.primary2})`};
-    background-size: 800%;
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
-    z-index: -1;
-    animation: glow 50s linear infinite;
-    transition: background-position 0.3s ease-in-out;
-    border-radius: 12px;
-  }
-
-  &::after {
-    filter: blur(8px);
-  }
-
-  &:hover::before,
-  &:hover::after {
-    animation: glow 12s linear infinite;
-  }
-
-  // Stop glowing effect on claim page
-  ${({ isClaimPage }) =>
-    isClaimPage &&
-    css`
-      &::before,
-      &::after {
-        content: none;
-      }
-    `};
-
-  @keyframes glow {
-    0% {
-      background-position: 0 0;
-    }
-    50% {
-      background-position: 300% 0;
-    }
-    100% {
-      background-position: 0 0;
-    }
-  }
-`
-
 export default function Header() {
   const location = useLocation()
   const isClaimPage = location.pathname === '/claim'
@@ -291,7 +220,6 @@ export default function Header() {
 
   // const toggleClaimModal = useToggleSelfClaimModal()
   // const availableClaim: boolean = useUserHasAvailableClaim(account)
-  const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
   // const showClaimPopup = useShowClaimPopup()
 
@@ -299,13 +227,9 @@ export default function Header() {
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
-  const close = useToggleModal(ApplicationModal.MENU)
 
   const history = useHistory()
-  const handleOnClickClaim = () => {
-    close()
-    history.push('/claim')
-  }
+  const handleOnClickClaim = () => history.push('/claim')
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -335,21 +259,8 @@ export default function Header() {
         <HeaderControls>
           <NetworkCard />
           <HeaderElement>
-            <VCowWrapper onClick={handleOnClickClaim}>
-              <VCowAmount isClaimPage={isClaimPage} active={!!account} style={{ pointerEvents: 'auto' }}>
-                {claimTxn && !claimTxn?.receipt ? (
-                  <Dots>
-                    <Trans>Claiming vCOW...</Trans>
-                  </Dots>
-                ) : (
-                  <>
-                    <CowProtocolLogo />
-                    <b>
-                      <Trans>Claim vCOW</Trans>
-                    </b>
-                  </>
-                )}
-              </VCowAmount>
+            <VCowWrapper>
+              <CowClaimButton isClaimPage={isClaimPage} account={account} handleOnClickClaim={handleOnClickClaim} />
             </VCowWrapper>
 
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
@@ -371,12 +282,7 @@ export default function Header() {
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>
           </HeaderElementWrap>
-          <Menu
-            handleOnClickClaim={handleOnClickClaim}
-            isClaimPage={isClaimPage}
-            darkMode={darkMode}
-            toggleDarkMode={toggleDarkMode}
-          />
+          <Menu isClaimPage={isClaimPage} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>
