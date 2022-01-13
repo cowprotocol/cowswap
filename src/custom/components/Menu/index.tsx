@@ -57,7 +57,7 @@ const MenuItemResponsive = styled(MenuItemResponsiveBase)`
   }
 `
 
-export const StyledMenu = styled(MenuMod)`
+export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
   hr {
     margin: 15px 0;
   }
@@ -99,7 +99,37 @@ export const StyledMenu = styled(MenuMod)`
 
   ${StyledMenuButton} {
     height: 38px;
+    border-radius: 12px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+          &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      background: ${({ theme }) =>
+        `linear-gradient(45deg, ${theme.primary1}, ${theme.primary2}, ${theme.primary3}, ${theme.bg4}, ${theme.primary1}, ${theme.primary2})`};
+      background-size: 800%;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      z-index: -1;
+      animation: glow 50s linear infinite;
+      transition: background-position 0.3s ease-in-out;
+      border-radius: 12px;
+    }
+
+    &::after {
+      filter: blur(8px);
+    }
+
+    &:hover::before,
+    &:hover::after {
+      animation: glow 12s linear infinite;
+    }
   }
+
+  `};
 `
 
 const Policy = styled(InternalMenuItem).attrs((attrs) => ({
@@ -219,19 +249,19 @@ export const CloseMenu = styled.button`
 interface MenuProps {
   darkMode: boolean
   toggleDarkMode: () => void
+  isClaimPage: boolean
+  handleOnClickClaim: () => void
 }
 
-export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
+export function Menu({ darkMode, toggleDarkMode, isClaimPage, handleOnClickClaim }: MenuProps) {
   const close = useToggleModal(ApplicationModal.MENU)
   const { account, chainId } = useActiveWeb3React()
   const hasOrders = useHasOrders(account)
   const showOrdersLink = account && hasOrders
-
-  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
-  const showUNIClaimOption = Boolean(!!account && !!chainId)
+  const showVCOWClaimOption = Boolean(!!account && !!chainId)
 
   return (
-    <StyledMenu>
+    <StyledMenu isClaimPage={isClaimPage}>
       <MenuFlyout>
         <CloseMenu onClick={close} />
         <ResponsiveInternalMenuItem to="/" onClick={close}>
@@ -322,8 +352,8 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <Policy to="/privacy-policy">Privacy policy</Policy>
         <Policy to="/cookie-policy">Cookie policy</Policy> 
         */}
-        {showUNIClaimOption && (
-          <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" $borderRadius="12px" mt="0.5rem">
+        {showVCOWClaimOption && (
+          <UNIbutton onClick={handleOnClickClaim}>
             <Trans>Claim vCOW</Trans>
           </UNIbutton>
         )}

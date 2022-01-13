@@ -49,6 +49,7 @@ import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
 import CowProtocolLogo from 'components/CowProtocolLogo'
+import { useToggleModal } from 'state/application/hooks'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -205,6 +206,12 @@ const UniIcon = styled.div`
   }
 `
 
+const VCowWrapper = styled(UNIWrapper)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
+
 const VCowAmount = styled(UNIAmountMod)<{ isClaimPage: boolean }>`
   ${({ theme }) => theme.card.boxShadow};
   color: ${({ theme }) => theme.text1};
@@ -221,7 +228,6 @@ const VCowAmount = styled(UNIAmountMod)<{ isClaimPage: boolean }>`
     margin: 0 0 0 5px;
     color: inherit;
     font-weight: inherit;
-  }
 
   &::before,
   &::after {
@@ -293,9 +299,13 @@ export default function Header() {
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
+  const close = useToggleModal(ApplicationModal.MENU)
 
   const history = useHistory()
-  const handleOnClickClaim = () => history.push('/claim')
+  const handleOnClickClaim = () => {
+    close()
+    history.push('/claim')
+  }
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -325,7 +335,7 @@ export default function Header() {
         <HeaderControls>
           <NetworkCard />
           <HeaderElement>
-            <UNIWrapper onClick={handleOnClickClaim}>
+            <VCowWrapper onClick={handleOnClickClaim}>
               <VCowAmount isClaimPage={isClaimPage} active={!!account} style={{ pointerEvents: 'auto' }}>
                 {claimTxn && !claimTxn?.receipt ? (
                   <Dots>
@@ -340,7 +350,7 @@ export default function Header() {
                   </>
                 )}
               </VCowAmount>
-            </UNIWrapper>
+            </VCowWrapper>
 
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
@@ -361,7 +371,12 @@ export default function Header() {
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>
           </HeaderElementWrap>
-          <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <Menu
+            handleOnClickClaim={handleOnClickClaim}
+            isClaimPage={isClaimPage}
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+          />
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>
