@@ -91,7 +91,7 @@ export default function CowClaimButton({ isClaimPage, account, handleOnClickClai
         <>
           <CowProtocolLogo />
           <b>
-            <Trans>Claim vCOW</Trans>
+            <Trans>vCOW</Trans>
           </b>
         </>
       )}
