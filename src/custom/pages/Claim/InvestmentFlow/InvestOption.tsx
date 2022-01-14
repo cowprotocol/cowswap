@@ -91,7 +91,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
             <b>Token approval</b>
             {approveData ? (
               <i>
-                {approveData.approveState === ApprovalState.NOT_APPROVED ? (
+                {approveData.approveState !== ApprovalState.APPROVED ? (
                   `${currencyAmount?.currency?.symbol} not approved`
                 ) : (
                   <Row>
@@ -107,7 +107,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
                 </Row>
               </i>
             )}
-            {approveData?.approveState === ApprovalState.NOT_APPROVED && (
+            {approveData && approveData.approveState !== ApprovalState.APPROVED && (
               <button onClick={approveData.approveCallback}>Approve {currencyAmount?.currency?.symbol}</button>
             )}
           </span>
