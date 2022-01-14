@@ -14,11 +14,11 @@ Please read these Terms carefully before using our Platform. By using our Platfo
     GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
 2.  We use open source products and developer materials from Gnosis
     Limited and affiliated persons and entities (“**Affiliates**”) as
-    well as other third parties to provide a Platform to Gnosis Protocol
+    well as other third parties to provide a Platform to CoW Protocol
     version 2 (the “**Protocol**”). The provision of the Platform and
     the Protocol is based solely on our independent actions.
 
-**2. WE PROVIDE A PLATFORM TO INTERACTING WITH THE GNOSIS PROTOCOL**
+**2. WE PROVIDE A PLATFORM TO INTERACTING WITH THE COW PROTOCOL**
 
 1.  We provide a graphical user interface (the “**Platform**”) to
     facilitate you interacting with the Protocol.

@@ -1,6 +1,6 @@
 {
   "name": "@gnosis/cowswap",
-  "description": "CowSwap - Gnosis Protocol",
+  "description": "CowSwap - CoW Protocol",
   "homepage": ".",
   "main": "dist/interface.js",
   "module": "dist/interface.esm.js",
