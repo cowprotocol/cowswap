@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
+import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
 import {
   useUserEnhancedClaimData,
@@ -33,7 +34,6 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 
 import { GNO } from 'constants/tokens'
-import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
 
