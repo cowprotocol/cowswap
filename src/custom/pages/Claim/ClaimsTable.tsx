@@ -46,19 +46,32 @@ const ClaimsTableRow = ({
         </label>
       </td>
       <td>{isFree ? ClaimType[type] : `Buy vCOW with ${currencyAmount?.currency?.symbol}`}</td>
-      <td width="150px">
+      <td>
         <CowProtocolLogo size={16} /> {formatSmart(claimAmount) || 0} vCOW
       </td>
-      <td>{isFree || !price ? '-' : `${formatSmart(price) || 0} vCoW per ${currencyAmount?.currency?.symbol}`}</td>
       <td>
-        {isFree ? (
-          <span className="green">Free!</span>
-        ) : (
-          `${formatSmart(cost) || 0} ${currencyAmount?.currency?.symbol}`
-        )}
+        <span>
+          Price:{' '}
+          <b>{isFree || !price ? '-' : `${formatSmart(price) || 0} vCoW per ${currencyAmount?.currency?.symbol}`}</b>
+        </span>
+        <span>
+          Cost:{' '}
+          <b>
+            {' '}
+            {isFree ? (
+              <span className="green">Free!</span>
+            ) : (
+              `${formatSmart(cost) || 0} ${currencyAmount?.currency?.symbol}`
+            )}
+          </b>
+        </span>
+        <span>
+          Vesting: <b>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</b>
+        </span>
+        <span>
+          Ends in: <b>28 days, 10h, 50m</b>
+        </span>
       </td>
-      <td>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</td>
-      <td>28 days, 10h, 50m</td>
     </tr>
   )
 }
@@ -91,10 +104,7 @@ export default function ClaimsTable({
               </th>
               <th>Type of Claim</th>
               <th>Amount</th>
-              <th>Price</th>
-              <th>Cost</th>
-              <th>Vesting</th>
-              <th>Ends in</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>

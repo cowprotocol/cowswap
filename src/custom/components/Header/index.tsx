@@ -1,9 +1,7 @@
-import { Trans } from '@lingui/macro'
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { Dots } from 'components/swap/styleds'
 import { ExternalLink } from 'theme'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import HeaderMod, {
   Title,
@@ -17,7 +15,6 @@ import HeaderMod, {
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
-  UNIAmount as UNIAmountMod,
   UNIWrapper,
 } from './HeaderMod'
 import Menu from 'components/Menu'
@@ -43,12 +40,11 @@ import {
   // useToggleSelfClaimModal
 } from 'state/application/hooks'
 //import { useUserHasAvailableClaim } from 'state/claim/hooks'
-import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 
 import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
-import CowProtocolLogo from 'components/CowProtocolLogo'
+import CowClaimButton from 'components/CowClaimButton'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -201,16 +197,16 @@ const UniIcon = styled.div`
   }
 `
 
-const VCowAmount = styled(UNIAmountMod)`
-  ${({ theme }) => theme.cowToken.background};
-  ${({ theme }) => theme.cowToken.boxShadow};
-  color: white;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
+const VCowWrapper = styled(UNIWrapper)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
 `
 
 export default function Header() {
+  const location = useLocation()
+  const isClaimPage = location.pathname === '/claim'
+
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
@@ -220,7 +216,6 @@ export default function Header() {
 
   // const toggleClaimModal = useToggleSelfClaimModal()
   // const availableClaim: boolean = useUserHasAvailableClaim(account)
-  const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
   // const showClaimPopup = useShowClaimPopup()
 
@@ -263,20 +258,10 @@ export default function Header() {
             <NetworkSelector />
           </HeaderElement>
           <HeaderElement>
-            <UNIWrapper onClick={handleOnClickClaim}>
-              <VCowAmount active={!!account} style={{ pointerEvents: 'auto' }}>
-                {claimTxn && !claimTxn?.receipt ? (
-                  <Dots>
-                    <Trans>Claiming vCOW...</Trans>
-                  </Dots>
-                ) : (
-                  <>
-                    <CowProtocolLogo />
-                    <Trans>vCOW</Trans>
-                  </>
-                )}
-              </VCowAmount>
-            </UNIWrapper>
+            <VCowWrapper>
+              <CowClaimButton isClaimPage={isClaimPage} account={account} handleOnClickClaim={handleOnClickClaim} />
+            </VCowWrapper>
+
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
                 <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
@@ -296,7 +281,7 @@ export default function Header() {
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>
           </HeaderElementWrap>
-          <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <Menu isClaimPage={isClaimPage} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>

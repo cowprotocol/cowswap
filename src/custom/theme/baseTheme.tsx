@@ -180,6 +180,9 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
+    iconGradientBorder: css`
+      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.primary1} 360grad);
+    `,
     header: {
       border: 'none',
       menuFlyout: {

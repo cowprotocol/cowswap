@@ -1,5 +1,4 @@
 import { Code, HelpCircle, BookOpen, PieChart, Moon, Sun, Repeat, Star, User, ExternalLink } from 'react-feather'
-import { Trans } from '@lingui/macro'
 
 import MenuMod, {
   MenuItem,
@@ -7,7 +6,6 @@ import MenuMod, {
   MenuFlyout as MenuFlyoutUni,
   MenuItemBase,
   StyledMenuButton,
-  UNIbutton,
 } from './MenuMod'
 import { useToggleModal } from 'state/application/hooks'
 import styled from 'styled-components/macro'
@@ -20,6 +18,8 @@ import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
 import { ApplicationModal } from 'state/application/reducer'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useHistory } from 'react-router-dom'
+import CowClaimButton, { Wrapper as ClaimButtonWrapper } from 'components/CowClaimButton'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -31,7 +31,7 @@ const ResponsiveInternalMenuItem = styled(InternalMenuItem)`
   display: none;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: flex;   
+      display: flex;
   `};
 `
 
@@ -57,7 +57,7 @@ const MenuItemResponsive = styled(MenuItemResponsiveBase)`
   }
 `
 
-export const StyledMenu = styled(MenuMod)`
+export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
   hr {
     margin: 15px 0;
   }
@@ -97,9 +97,58 @@ export const StyledMenu = styled(MenuMod)`
     padding: 0 6px 0 0;
   }
 
+  ${ClaimButtonWrapper} {
+    margin: 0 0 12px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 12px 12px;
+      width: 100%;
+      height: 56px;
+      justify-content: center;
+      font-size: 19px;
+
+      > span {
+        height: 30px;
+        width: 30px;
+        border-radius: 30px;
+        margin: 0 5px 0 0;
+      }
+    `}
+  }
+
   ${StyledMenuButton} {
     height: 38px;
+    border-radius: 12px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+          &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      background: ${({ theme }) =>
+        `linear-gradient(45deg, ${theme.primary1}, ${theme.primary2}, ${theme.primary3}, ${theme.bg4}, ${theme.primary1}, ${theme.primary2})`};
+      background-size: 800%;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      z-index: -1;
+      animation: glow 50s linear infinite;
+      transition: background-position 0.3s ease-in-out;
+      border-radius: 12px;
+    }
+
+    &::after {
+      filter: blur(8px);
+    }
+
+    &:hover::before,
+    &:hover::after {
+      animation: glow 12s linear infinite;
+    }
   }
+
+  `};
 `
 
 const Policy = styled(InternalMenuItem).attrs((attrs) => ({
@@ -123,10 +172,9 @@ const MenuFlyout = styled(MenuFlyoutUni)`
     width: 100%;
     border-radius: 0;
     box-shadow: none;
-    padding: 0;
     overflow-y: auto;
     flex-flow: row wrap;
-    padding: 0 0 56px;
+    padding: 12px 0 100px;
     align-items: flex-start;
     align-content: flex-start;
   `};
@@ -193,14 +241,16 @@ export const CloseMenu = styled.button`
   border-radius: 6px;
   justify-content: center;
   padding: 0;
-  margin: 0 0 8px;
+  margin: 8px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 56px;
     border-radius: 0;
-    justify-content: flex-end;
     margin: 0;
     width: 100%;
+    position: fixed;
+    bottom: 0;
+    top: initial;
   `};
 
   &::after {
@@ -219,21 +269,26 @@ export const CloseMenu = styled.button`
 interface MenuProps {
   darkMode: boolean
   toggleDarkMode: () => void
+  isClaimPage: boolean
 }
 
-export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
-  const close = useToggleModal(ApplicationModal.MENU)
+export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
   const { account, chainId } = useActiveWeb3React()
   const hasOrders = useHasOrders(account)
   const showOrdersLink = account && hasOrders
-
-  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
-  const showUNIClaimOption = Boolean(!!account && !!chainId)
+  /* const showVCOWClaimOption = Boolean(!!account && !!chainId) */
+  const close = useToggleModal(ApplicationModal.MENU)
+  const history = useHistory()
+  const handleOnClickClaim = () => {
+    close()
+    history.push('/claim')
+  }
 
   return (
-    <StyledMenu>
+    <StyledMenu isClaimPage={isClaimPage}>
       <MenuFlyout>
-        <CloseMenu onClick={close} />
+        <CowClaimButton isClaimPage={isClaimPage} handleOnClickClaim={handleOnClickClaim} />
+
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap
         </ResponsiveInternalMenuItem>
@@ -266,6 +321,9 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
             Code
           </span>
         </MenuItem>
+
+        <Separator />
+
         <MenuItem id="link" href={DISCORD_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
             <SVG src={discordImage} description="Find CowSwap on Discord!" />
@@ -278,6 +336,8 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
             <SVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
           </span>
         </MenuItem>
+
+        <Separator />
 
         <InternalMenuItem to="/play/mev-slicer" onClick={close}>
           <span role="img" aria-label="Play CowGame">
@@ -313,8 +373,6 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           )}
         </MenuItemResponsive>
 
-        <Separator />
-
         <Policy to="/terms-and-conditions" onClick={close} onKeyDown={close}>
           Terms and conditions
         </Policy>
@@ -322,11 +380,8 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <Policy to="/privacy-policy">Privacy policy</Policy>
         <Policy to="/cookie-policy">Cookie policy</Policy> 
         */}
-        {showUNIClaimOption && (
-          <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" $borderRadius="12px" mt="0.5rem">
-            <Trans>Claim vCOW</Trans>
-          </UNIbutton>
-        )}
+
+        <CloseMenu onClick={close} />
       </MenuFlyout>
     </StyledMenu>
   )
