@@ -11,7 +11,7 @@ import { ClaimType, useClaimState, useUserEnhancedClaimData } from 'state/claim/
 import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
 import { ClaimStatus } from 'state/claim/actions'
 import { useActiveWeb3React } from 'hooks/web3'
-import { ApprovalState } from 'hooks/useApproveCallback'
+import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
 import InvestOption from './InvestOption'
 
 export type InvestmentClaimProps = EnhancedUserClaimData & {
@@ -21,7 +21,9 @@ export type InvestmentClaimProps = EnhancedUserClaimData & {
 export type InvestOptionProps = {
   claim: InvestmentClaimProps
   updateInvestAmount: (idx: number, investAmount: string) => void
-  approveData: { approveState: ApprovalState; approveCallback: () => void } | undefined
+  approveData:
+    | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
+    | undefined
 }
 
 type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims'> & {

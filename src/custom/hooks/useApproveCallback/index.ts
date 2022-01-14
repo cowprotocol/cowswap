@@ -32,6 +32,10 @@ export function useApproveCallbackFromTrade(
   return useApproveCallback(openTransactionConfirmationModal, closeModals, amountToApprove, vaultRelayer)
 }
 
+export type OptionalApproveCallbackParams = {
+  transactionSummary: string
+}
+
 export function useApproveCallbackFromClaim(
   openTransactionConfirmationModal: (message: string) => void,
   closeModals: () => void,
