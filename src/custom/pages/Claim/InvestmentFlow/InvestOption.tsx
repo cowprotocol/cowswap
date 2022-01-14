@@ -75,13 +75,13 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
     try {
       // for pending state pre-BC
       setApproving(true)
-      await approveCallback()
+      await approveCallback({ transactionSummary: `Approve ${token?.symbol || 'token'} for investing in vCOW` })
     } catch (error) {
       console.error('[InvestOption]: Issue approving.', error)
     } finally {
       setApproving(false)
     }
-  }, [approveCallback])
+  }, [approveCallback, token?.symbol])
 
   const vCowAmount = useMemo(() => {
     if (!token || !price) {
