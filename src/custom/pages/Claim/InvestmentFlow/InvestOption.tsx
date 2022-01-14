@@ -131,23 +131,22 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               </i>
             )}
             {/* Approve button - @biocom styles for this found in ./styled > InputSummary > ${ButtonPrimary}*/}
-            <ButtonConfirmed
-              buttonSize={ButtonSize.SMALL}
-              onClick={handleApprove}
-              disabled={
-                approving || approveState === ApprovalState.PENDING || approveState !== ApprovalState.NOT_APPROVED
-              }
-              altDisabledStyle={approveState === ApprovalState.PENDING} // show solid button while waiting
-              confirmed={approveState === ApprovalState.APPROVED}
-            >
-              {approving || approveState === ApprovalState.PENDING ? (
-                <Loader stroke="white" />
-              ) : approveState === ApprovalState.APPROVED ? (
-                <CheckCircle size="20" color="lightgreen" />
-              ) : (
-                <span>Approve {currencyAmount?.currency?.symbol}</span>
-              )}
-            </ButtonConfirmed>
+            {approveState !== ApprovalState.APPROVED && (
+              <ButtonConfirmed
+                buttonSize={ButtonSize.SMALL}
+                onClick={handleApprove}
+                disabled={
+                  approving || approveState === ApprovalState.PENDING || approveState !== ApprovalState.NOT_APPROVED
+                }
+                altDisabledStyle={approveState === ApprovalState.PENDING} // show solid button while waiting
+              >
+                {approving || approveState === ApprovalState.PENDING ? (
+                  <Loader stroke="white" />
+                ) : (
+                  <span>Approve {currencyAmount?.currency?.symbol}</span>
+                )}
+              </ButtonConfirmed>
+            )}
           </span>
           <span>
             <b>Max. investment available</b>{' '}
