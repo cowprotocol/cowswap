@@ -73,9 +73,6 @@ export const NATIVE_TOKEN_PRICE: { [chain in SupportedChainId]: string } = {
 export const GNO_PRICE = '375000000000000' // '0.000375' GNO (18 decimals) per vCOW, in atoms
 export const USDC_PRICE = '150000' // '0.15' USDC (6 decimals) per vCOW, in atoms
 
-export const GNO_SYMBOL = 'GNO'
-export const USDC_SYMBOL = 'USDC'
-
 // Constants regarding investment time windows
 const TWO_WEEKS = ms`2 weeks`
 const SIX_WEEKS = ms`6 weeks`
@@ -748,9 +745,7 @@ export function useUserEnhancedClaimData(account: Account): EnhancedUserClaimDat
   const { available } = useClassifiedUserClaims(account)
   const { chainId: preCheckChainId } = useActiveWeb3React()
 
-  const checkType = useCallback((type) => Number(FREE_CLAIM_TYPES.includes(type)), [])
-
-  const sorted = useMemo(() => available.sort((a, b) => checkType(b.type) - checkType(a.type)), [available, checkType])
+  const sorted = useMemo(() => available.sort(_sortTypes), [available])
 
   return useMemo(() => {
     const chainId = supportedChainId(preCheckChainId)
@@ -767,7 +762,7 @@ export function useUserEnhancedClaimData(account: Account): EnhancedUserClaimDat
       }).invert()
 
       // get the currency amount using the price base currency (remember price was inverted) and claim amount
-      const currencyAmount = CurrencyAmount.fromRawAmount(price.baseCurrency.wrapped, claim.amount)
+      const currencyAmount = CurrencyAmount.fromRawAmount(price.baseCurrency, claim.amount)
       const claimAmount = CurrencyAmount.fromRawAmount(ONE_VCOW.currency, claim.amount)
 
       // e.g 1000 vCow / 20 GNO = 50 GNO cost
@@ -785,4 +780,8 @@ export function useUserEnhancedClaimData(account: Account): EnhancedUserClaimDat
       return acc
     }, [])
   }, [preCheckChainId, sorted])
+}
+
+function _sortTypes(a: UserClaimData, b: UserClaimData): number {
+  return Number(isFreeClaim(a.type)) - Number(isFreeClaim(b.type))
 }
