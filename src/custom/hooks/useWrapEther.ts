@@ -4,7 +4,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { useWETHContract } from 'hooks/useContract'
-import { ContractTransaction } from 'ethers'
+import { ContractTransaction } from '@ethersproject/contracts'
 import { formatSmart } from '../utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 

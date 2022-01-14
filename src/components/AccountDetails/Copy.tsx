@@ -1,9 +1,10 @@
-import styled from 'styled-components/macro'
-import useCopyClipboard from '../../hooks/useCopyClipboard'
-
-import { LinkStyledButton } from '../../theme'
-import { CheckCircle, Copy } from 'react-feather'
 import { Trans } from '@lingui/macro'
+import React from 'react'
+import { CheckCircle, Copy } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import useCopyClipboard from '../../hooks/useCopyClipboard'
+import { LinkStyledButton } from '../../theme'
 
 const CopyIcon = styled(LinkStyledButton)`
   color: ${({ theme }) => theme.text3};

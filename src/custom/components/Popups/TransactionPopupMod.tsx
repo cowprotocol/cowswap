@@ -1,7 +1,9 @@
 import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
+
 import { useActiveWeb3React } from 'hooks/web3'
+// import { useTransaction } from 'state/transactions/hooks'
 import { TYPE } from 'theme'
 // import { ExternalLink } from 'theme'
 // import { getEtherscanLink } from 'utils'

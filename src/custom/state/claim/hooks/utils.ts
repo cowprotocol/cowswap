@@ -1,12 +1,17 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
-import { V_COW } from 'constants/tokens'
+import { GNO, USDC, V_COW, WETH9_EXTENDED } from 'constants/tokens'
 import {
   CLAIMS_REPO,
   ClaimType,
+  ClaimTypePriceMap,
   FREE_CLAIM_TYPES,
+  GNO_PRICE,
+  NATIVE_TOKEN_PRICE,
   PAID_CLAIM_TYPES,
   RepoClaims,
+  TypeToPriceMapper,
+  USDC_PRICE,
   UserClaims,
 } from 'state/claim/hooks/index'
 
@@ -95,24 +100,13 @@ export function getTypeToCurrencyMap(chainId: number | undefined): TypeToCurrenc
   return map
 }
 
-export type TypeToPriceMapper = {
-  [key: string]: number
-}
-
 /**
  * Helper function to get vCow price based on claim type and chainId
  *
  * @param type
  */
 export function getTypeToPriceMap(): TypeToPriceMapper {
-  // Hardcoded values
-  const map: TypeToPriceMapper = {
-    [ClaimType.GnoOption]: 16.66,
-    [ClaimType.Investor]: 26.66,
-    [ClaimType.UserOption]: 36.66,
-  }
-
-  return map
+  return ClaimTypePriceMap
 }
 
 /**
@@ -129,7 +123,7 @@ export function isFreeClaim(type: ClaimType): boolean {
  *
  * @param type
  */
-export function getIndexes(data: UserClaims): number[] {
+export function getIndexes(data: RepoClaims | UserClaims): number[] {
   return data.map(({ index }) => index)
 }
 
@@ -159,4 +153,26 @@ function _repoNetworkIdMapping(id: SupportedChainId): string {
  */
 export function getClaimKey(account: string, chainId: number): string {
   return `${chainId}:${account}`
+}
+
+export type PaidClaimTypeToPriceMap = {
+  [type in ClaimType]: { token: Token; amount: string } | undefined
+}
+
+/**
+ * Helper function to get vCow price based on claim type and chainId
+ *
+ * @param type
+ */
+export function claimTypeToTokenAmount(type: ClaimType, chainId: SupportedChainId) {
+  switch (type) {
+    case ClaimType.GnoOption:
+      return { token: GNO[chainId], amount: GNO_PRICE }
+    case ClaimType.Investor:
+      return { token: USDC, amount: USDC_PRICE }
+    case ClaimType.UserOption:
+      return { token: WETH9_EXTENDED[chainId], amount: NATIVE_TOKEN_PRICE[chainId] }
+    default:
+      return undefined
+  }
 }

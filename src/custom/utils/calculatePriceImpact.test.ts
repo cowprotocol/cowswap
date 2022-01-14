@@ -1,7 +1,7 @@
 import { ChainId, WETH } from '@uniswap/sdk'
 import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from '@ethersproject/units'
 
 function _calculateAbaPriceImpact(initialValue: string, finalValue: string) {
   const initialValueBn = new BigNumber(initialValue)

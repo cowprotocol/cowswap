@@ -4,8 +4,10 @@ import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
 import { EnhancedTransactionDetails } from './reducer'
 
 type WithChainId = { chainId: number }
+type WithData = { data?: any }
 
 export type AddTransactionParams = WithChainId &
+  WithData &
   Pick<
     EnhancedTransactionDetails,
     'hash' | 'hashType' | 'from' | 'approval' | 'presign' | 'claim' | 'summary' | 'safeTransaction'

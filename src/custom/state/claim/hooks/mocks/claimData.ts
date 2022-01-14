@@ -1,4 +1,6 @@
-const mockData: any = {
+import { RepoClaimData } from '..'
+
+const mockData: Record<string, RepoClaimData[]> = {
   // airdrops + investments
   '0xf17aFe5237D982868B8A97424dD79a4A50c36412': [
     {
@@ -145,5 +147,7 @@ const mockData: any = {
   // no claims
   '0x7C842Bf74359911aEe49bA021014B05265f951c6': [],
 }
+const mockKeys = Object.keys(mockData)
+export const MOCK_INDICES = mockData[mockKeys[0]].map(({ index }) => index)
 
 export default mockData

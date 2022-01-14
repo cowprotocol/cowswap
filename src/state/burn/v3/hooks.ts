@@ -11,6 +11,7 @@ import { AppState } from '../../index'
 import { selectPercent } from './actions'
 import { unwrappedToken } from 'utils/unwrappedToken'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
+// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 
 export function useBurnV3State(): AppState['burnV3'] {

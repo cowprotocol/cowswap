@@ -17,7 +17,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
   - ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
   - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/gnosis/gp-swap-ui/releases) section.
 
-- Docs: <https://docs.cowswap.exchange>
+- Docs: <https://docs.cow.fi>
 - Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
@@ -70,6 +70,14 @@ If we want to use the Cypress UI, and live reloading on the web app:
 ```bash
 yarn start:default
 yarn cypress
+```
+
+### Run cosmos
+
+This will start a server on the `http://localhost:5000/`
+
+```bash
+yarn run cosmos
 ```
 
 ## Configuring the environment (optional)

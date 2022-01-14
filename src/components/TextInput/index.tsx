@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from 'react'
+import React, { memo, useCallback, useRef } from 'react'
 import styled from 'styled-components/macro'
 
 const Input = styled.input<{ error?: boolean; fontSize?: string }>`

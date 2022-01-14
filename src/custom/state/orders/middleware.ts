@@ -1,6 +1,6 @@
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
 
-import { addPopup } from 'state/application/actions'
+import { addPopup } from 'state/application/reducer'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
 

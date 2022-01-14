@@ -63,7 +63,7 @@ import {
   useHighFeeWarning,
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
-import { useExpertModeManager, useUserSingleHopOnly } from 'state/user/hooks'
+import { useExpertModeManager } from 'state/user/hooks'
 import { /* HideSmall, */ LinkStyledButton, TYPE, ButtonSize } from 'theme'
 // import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 // import { getTradeVersion } from 'utils/getTradeVersion'
@@ -85,7 +85,7 @@ import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
@@ -393,8 +393,6 @@ export default function Swap({
     closeModals,
   })
 
-  const [singleHopOnly] = useUserSingleHopOnly()
-
   const handleSwap = useCallback(() => {
     if (!swapCallback) {
       return
@@ -418,7 +416,7 @@ export default function Swap({
             trade?.inputAmount?.currency?.symbol,
             trade?.outputAmount?.currency?.symbol,
             // getTradeVersion(trade),
-            singleHopOnly ? 'SH' : 'MH',
+            'MH',
           ].join('/'),
         })
       })
@@ -432,17 +430,7 @@ export default function Swap({
           txHash: undefined,
         })
       })
-  }, [
-    swapCallback,
-    priceImpact,
-    tradeToConfirm,
-    showConfirm,
-    recipient,
-    recipientAddress,
-    account,
-    trade,
-    singleHopOnly,
-  ])
+  }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)

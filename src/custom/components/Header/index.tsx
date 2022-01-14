@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import Web3Status from 'components/Web3Status'
 import { ExternalLink } from 'theme'
 import { useHistory, useLocation } from 'react-router-dom'
 
@@ -28,11 +27,12 @@ import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import NetworkCard, { NetworkInfo } from './NetworkCard'
+import Web3Status from 'components/Web3Status'
+import NetworkSelector from 'components/Header/NetworkSelector'
 import SVG from 'react-inlinesvg'
 import {
   useModalOpen,
@@ -51,7 +51,7 @@ export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.ROPSTEN]: 'Ropsten',
   // [ChainId.GOERLI]: 'Görli',
   // [ChainId.KOVAN]: 'Kovan',
-  [ChainId.XDAI]: 'xDAI',
+  [ChainId.XDAI]: 'Gnosis Chain',
 }
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
@@ -94,7 +94,6 @@ const HeaderControls = styled(HeaderControlsUni)`
     width: 100%;
   `};
 `
-
 export const Wrapper = styled.div`
   width: 100%;
 
@@ -112,10 +111,6 @@ export const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 100%;
     `};
-  }
-
-  ${NetworkInfo} {
-    height: 38px;
   }
 
   ${StyledMenuButton} {
@@ -174,6 +169,7 @@ export const LogoImage = styled.div`
   height: 48px;
   background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
   margin: 0 32px 0 0;
+  position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 160px;
@@ -256,8 +252,11 @@ export default function Header() {
             <StyledNavLink to="/profile">Profile</StyledNavLink>
           </HeaderLinks>
         </HeaderRow>
+
         <HeaderControls>
-          <NetworkCard />
+          <HeaderElement>
+            <NetworkSelector />
+          </HeaderElement>
           <HeaderElement>
             <VCowWrapper>
               <CowClaimButton isClaimPage={isClaimPage} account={account} handleOnClickClaim={handleOnClickClaim} />

@@ -14,7 +14,7 @@ import { useIsTransactionPending } from 'state/enhancedTransactions/hooks'
 import Modal from 'components/Modal'
 import { useGasPrices } from 'state/gas/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
-import { BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber'
 import {
   DEFAULT_GAS_FEE,
   MINIMUM_TXS,
@@ -23,7 +23,7 @@ import {
   _setNativeLowBalanceError,
   _getAvailableTransactions,
 } from './helpers'
-import { t, Trans } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -259,7 +259,7 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
               <Trans>Cancel</Trans>
             </ButtonSecondary>
             <ButtonPrimary disabled={loading} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
-              {loading ? <Loader /> : t`Wrap my ${nativeSymbol} anyways`}
+              {loading ? <Loader /> : <Trans>Wrap my {nativeSymbol} anyways</Trans>}
             </ButtonPrimary>
           </ButtonWrapper>
         </ModalWrapper>
@@ -284,7 +284,7 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
       />
       {/* Wrap CTA */}
       <ButtonPrimary disabled={loading} padding="0.5rem" onClick={handlePrimaryAction}>
-        {loading ? <Loader /> : t`Wrap my ${nativeSymbol}`}
+        {loading ? <Loader /> : <Trans>Wrap my {nativeSymbol}</Trans>}
       </ButtonPrimary>
     </Wrapper>
   )

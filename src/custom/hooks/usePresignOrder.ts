@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 
 import { useGP2SettlementContract } from 'hooks/useContract'
-import { ContractTransaction, ethers } from 'ethers'
+import { ContractTransaction } from '@ethersproject/contracts'
+import { BigNumber } from '@ethersproject/bignumber'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useActiveWeb3React } from 'hooks/web3'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const PRESIGN_GAS_LIMIT_DEFAULT = ethers.BigNumber.from('150000')
+const PRESIGN_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 
 export type PresignOrder = (orderId: string) => Promise<ContractTransaction>
 

@@ -13,7 +13,7 @@ import {
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
-import { TypedDataDomain, Signer } from 'ethers'
+import { TypedDataDomain, Signer } from '@ethersproject/abstract-signer'
 import { registerOnWindow } from 'utils/misc'
 
 // For error codes, see:

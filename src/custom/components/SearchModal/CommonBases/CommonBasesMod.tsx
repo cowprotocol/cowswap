@@ -1,14 +1,13 @@
 import { Trans } from '@lingui/macro'
-import { Text } from 'rebass'
 import { Currency } from '@uniswap/sdk-core'
-import styled from 'styled-components/macro'
-
-import { COMMON_BASES } from 'constants/routing'
-import { currencyId } from 'utils/currencyId'
+import CurrencyLogo from 'components/CurrencyLogo'
 import QuestionHelper from 'components/QuestionHelper'
 import { AutoRow } from 'components/Row'
-import CurrencyLogo from 'components/CurrencyLogo'
+import { COMMON_BASES } from 'constants/routing'
 import { BaseWrapper, CommonBasesRow, CommonBasesProps, MobileWrapper } from '.' // mod
+import { Text } from 'rebass'
+import styled from 'styled-components/macro'
+import { currencyId } from 'utils/currencyId'
 
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   // mod

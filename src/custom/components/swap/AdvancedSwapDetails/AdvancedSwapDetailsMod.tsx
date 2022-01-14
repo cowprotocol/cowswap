@@ -2,14 +2,16 @@
 import { Percent /*, Currency, TradeType */ } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
+// import { LoadingRows } from 'components/Loader/styled'
 // import { useContext, useMemo } from 'react'
 // import { ThemeContext } from 'styled-components/macro'
+
 // import { TYPE } from 'theme'
 // import { computeRealizedLPFeePercent } from 'utils/prices'
 // import { AutoColumn } from 'components/Column'
 // import { RowBetween, RowFixed } from 'components/Row'
 // import FormattedPriceImpact from 'components/swap/FormattedPriceImpact'
-// import SwapRoute from 'components/swap/SwapRoute'
+// import { TransactionDetailsLabel } from './styleds'
 
 import TradeGp from 'state/swap/TradeGp'
 import TradeSummary from '../TradeSummary'
@@ -21,6 +23,24 @@ export interface AdvancedSwapDetailsProps {
   showHelpers?: boolean
   showFee?: boolean
 }
+
+// function TextWithLoadingPlaceholder({
+//   syncing,
+//   width,
+//   children,
+// }: {
+//   syncing: boolean
+//   width: number
+//   children: JSX.Element
+// }) {
+//   return syncing ? (
+//     <LoadingRows>
+//       <div style={{ height: '15px', width: `${width}px` }} />
+//     </LoadingRows>
+//   ) : (
+//     children
+//   )
+// }
 
 export function AdvancedSwapDetails({
   trade,
@@ -46,61 +66,61 @@ export function AdvancedSwapDetails({
   return <TradeSummary trade={trade} allowedSlippage={allowedSlippage} showHelpers={showHelpers} showFee={showFee} />
   /* 
     <AutoColumn gap="8px">
+      <TransactionDetailsLabel fontWeight={500} fontSize={14}>
+        <Trans>Transaction Details</Trans>
+      </TransactionDetailsLabel>
       <RowBetween>
         <RowFixed>
-          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+          <TYPE.subHeader color={theme.text1}>
             <Trans>Liquidity Provider Fee</Trans>
-          </TYPE.black>
+          </TYPE.subHeader>
         </RowFixed>
-        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${realizedLPFee.currency.symbol}` : '-'}
-        </TYPE.black>
+        <TextWithLoadingPlaceholder syncing={syncing} width={65}>
+          <TYPE.black textAlign="right" fontSize={14}>
+            {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${realizedLPFee.currency.symbol}` : '-'}
+          </TYPE.black>
+        </TextWithLoadingPlaceholder>
       </RowBetween>
 
       <RowBetween>
         <RowFixed>
-          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-            <Trans>Route</Trans>
-          </TYPE.black>
-        </RowFixed>
-        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          <SwapRoute trade={trade} />
-        </TYPE.black>
-      </RowBetween>
-
-      <RowBetween>
-        <RowFixed>
-          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+          <TYPE.subHeader color={theme.text1}>
             <Trans>Price Impact</Trans>
-          </TYPE.black>
+          </TYPE.subHeader>
         </RowFixed>
-        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          <FormattedPriceImpact priceImpact={priceImpact} />
-        </TYPE.black>
+        <TextWithLoadingPlaceholder syncing={syncing} width={50}>
+          <TYPE.black textAlign="right" fontSize={14}>
+            <FormattedPriceImpact priceImpact={priceImpact} />
+          </TYPE.black>
+        </TextWithLoadingPlaceholder>
       </RowBetween>
 
       <RowBetween>
         <RowFixed>
-          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+          <TYPE.subHeader color={theme.text1}>
+            <Trans>Allowed Slippage</Trans>
+          </TYPE.subHeader>
+        </RowFixed>
+        <TextWithLoadingPlaceholder syncing={syncing} width={45}>
+          <TYPE.black textAlign="right" fontSize={14}>
+            {allowedSlippage.toFixed(2)}%
+          </TYPE.black>
+        </TextWithLoadingPlaceholder>
+      </RowBetween>
+
+      <RowBetween>
+        <RowFixed>
+          <TYPE.subHeader color={theme.text1}>
             {trade.tradeType === TradeType.EXACT_INPUT ? <Trans>Minimum received</Trans> : <Trans>Maximum sent</Trans>}
-          </TYPE.black>
+          </TYPE.subHeader>
         </RowFixed>
-        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          {trade.tradeType === TradeType.EXACT_INPUT
-            ? `${trade.minimumAmountOut(allowedSlippage).toSignificant(6)} ${trade.outputAmount.currency.symbol}`
-            : `${trade.maximumAmountIn(allowedSlippage).toSignificant(6)} ${trade.inputAmount.currency.symbol}`}
-        </TYPE.black>
-      </RowBetween>
-
-      <RowBetween>
-        <RowFixed>
-          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-            <Trans>Slippage tolerance</Trans>
+        <TextWithLoadingPlaceholder syncing={syncing} width={70}>
+          <TYPE.black textAlign="right" fontSize={14}>
+            {trade.tradeType === TradeType.EXACT_INPUT
+              ? `${trade.minimumAmountOut(allowedSlippage).toSignificant(6)} ${trade.outputAmount.currency.symbol}`
+              : `${trade.maximumAmountIn(allowedSlippage).toSignificant(6)} ${trade.inputAmount.currency.symbol}`}
           </TYPE.black>
-        </RowFixed>
-        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          {allowedSlippage.toFixed(2)}%
-        </TYPE.black>
+        </TextWithLoadingPlaceholder>
       </RowBetween>
     </AutoColumn>
   */
