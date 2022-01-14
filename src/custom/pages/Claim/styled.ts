@@ -152,8 +152,8 @@ export const ClaimTable = styled.div`
     display: grid;
     border-collapse: collapse;
     min-width: 100%;
-    font-size: 14px;
-    grid-template-columns: repeat(7, auto);
+    font-size: 16px;
+    grid-template-columns: repeat(4, auto);
   }
 
   thead,
@@ -192,6 +192,28 @@ export const ClaimTable = styled.div`
   tr > td {
     background: var(--color-container-bg);
     margin: 0 0 12px;
+  }
+
+  /* 3rd row - amount */
+  tr > td:nth-of-type(2) {
+    font-size: 21px;
+    font-weight: 500;
+  }
+
+  tr > td:nth-of-type(3) {
+    font-size: 13px;
+    display: flex;
+    flex-flow: column wrap;
+  }
+
+  tr > td:first-of-type {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  tr > td:last-of-type {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
   }
 `
 
@@ -320,9 +342,10 @@ export const EligibleBanner = styled.div`
 
 export const InputField = styled.div`
   padding: 18px;
-  border-radius: 16px;
-  border: 1px solid rgba(151, 151, 151, 0.4);
-  background: rgba(151, 151, 151, 0.1);
+  border-radius: var(--border-radius);
+  ${({ theme }) => theme.currencyInput?.color};
+  color: ${({ theme }) => theme.text1};
+  background: ${({ theme }) => theme.currencyInput?.background};
   width: 100%;
   margin: 0 0 24px;
 
@@ -330,20 +353,21 @@ export const InputField = styled.div`
     background: transparent;
     border: 0;
     font-size: 24px;
-    color: ${({ theme }) => theme.text1};
+    color: inherit
     outline: 0;
+    color: ${({ theme }) => theme.text1};
     width: 100%;
   }
 
   > input::placeholder {
-    color: rgba(151, 151, 151, 0.4);
+    color: inherit;
+    opacity: 0.7;
   }
 
   > b {
     display: block;
     margin: 0 0 12px;
     font-weight: normal;
-    color: #979797;
   }
 
   > div {
@@ -375,7 +399,8 @@ export const InputFieldTitle = styled.div`
   align-items: center;
   margin: 0 0 12px;
   font-weight: normal;
-  color: #979797;
+  color: inherit;
+
   > b {
     margin-right: 10px;
   }

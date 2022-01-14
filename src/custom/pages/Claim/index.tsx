@@ -322,10 +322,7 @@ export default function Claim() {
                     </th>
                     <th>Type of Claim</th>
                     <th>Amount</th>
-                    <th>Price</th>
-                    <th>Cost</th>
-                    <th>Vesting</th>
-                    <th>Ends in</th>
+                    <th>Details</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -354,10 +351,21 @@ export default function Claim() {
                         <td width="150px">
                           <CowProtocolLogo size={16} /> {parsedAmount?.toFixed(0, { groupSeparator: ',' })} vCOW
                         </td>
-                        <td>{isFree ? '-' : `${vCowPrice} vCoW per ${currency}`}</td>
-                        <td>{isFree ? <span className="green">Free!</span> : `${cost} ${currency}`}</td>
-                        <td>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</td>
-                        <td>28 days, 10h, 50m</td>
+
+                        <td>
+                          <span>
+                            Price: <b>{isFree ? '-' : `${vCowPrice} vCoW per ${currency}`}</b>
+                          </span>
+                          <span>
+                            Cost: <b>{isFree ? <span className="green">Free!</span> : `${cost} ${currency}`}</b>
+                          </span>
+                          <span>
+                            Vesting: <b>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</b>
+                          </span>
+                          <span>
+                            Ends in: <b>28 days, 10h, 50m</b>
+                          </span>
+                        </td>
                       </tr>
                     )
                   })}
