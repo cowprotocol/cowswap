@@ -33,9 +33,11 @@ import { useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 
-import { GNO } from 'constants/tokens'
+import { GNO, USDC_BY_CHAIN } from 'constants/tokens'
+import { isSupportedChain } from 'utils/supportedChainId'
 
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
+const USDC_CLAIM_APPROVE_MESSAGE = 'Approving USDC for investing in vCOW'
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
@@ -202,12 +204,18 @@ export default function Claim() {
     OperationType.APPROVE_TOKEN
   )
 
-  const [approveState, approveCallback] = useApproveCallbackFromClaim(
+  const [gnoApproveState, gnoApproveCallback] = useApproveCallbackFromClaim(
     () => openModal(GNO_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
     closeModal,
-    // TODO: this will break switching to Mainnet as GNO is not set to work outside rinkeby right now
     // approve max unit256 amount
-    chainId && GNO[chainId] ? CurrencyAmount.fromRawAmount(GNO[chainId], MaxUint256) : undefined
+    isSupportedChain(chainId) ? CurrencyAmount.fromRawAmount(GNO[chainId], MaxUint256) : undefined
+  )
+
+  const [usdcApproveState, usdcApproveCallback] = useApproveCallbackFromClaim(
+    () => openModal(USDC_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
+    closeModal,
+    // approve max unit256 amount
+    isSupportedChain(chainId) ? CurrencyAmount.fromRawAmount(USDC_BY_CHAIN[chainId], MaxUint256) : undefined
   )
 
   return (
@@ -242,8 +250,14 @@ export default function Claim() {
       <InvestmentFlow
         isAirdropOnly={isAirdropOnly}
         hasClaims={hasClaims}
-        approveCallback={approveCallback}
-        approveState={approveState}
+        gnoApproveData={{
+          approveCallback: gnoApproveCallback,
+          approveState: gnoApproveState,
+        }}
+        usdcApproveData={{
+          approveCallback: usdcApproveCallback,
+          approveState: usdcApproveState,
+        }}
       />
 
       <FooterNavButtons>

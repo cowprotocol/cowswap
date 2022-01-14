@@ -1,7 +1,7 @@
 import { ChainId } from '@uniswap/sdk'
 import { WETH9, Token } from '@uniswap/sdk-core'
 import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rinkeby/constants'
-import { DAI, USDC, USDT, WBTC } from 'constants/tokens'
+import { DAI, USDC as USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
 import { USDC_XDAI, /*USDT_XDAI,*/ WBTC_XDAI, WETH_XDAI, WXDAI } from 'utils/xdai/constants'
 import { SupportedChainId } from 'constants/chains'
 import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
@@ -17,13 +17,13 @@ const WETH_ADDRESS_MAINNET = WETH9[ChainId.MAINNET].address
 export const ADDRESS_IMAGE_OVERRIDE = {
   // Rinkeby
   [DAI_RINKEBY.address]: getTrustImage(DAI.address),
-  [USDC_RINKEBY.address]: getTrustImage(USDC.address),
+  [USDC_RINKEBY.address]: getTrustImage(USDC_MAINNET.address),
   [USDT_RINKEBY.address]: getTrustImage(USDT.address),
   [WBTC_RINKEBY.address]: getTrustImage(WBTC.address),
   [WETH9[ChainId.RINKEBY].address]: getTrustImage(WETH_ADDRESS_MAINNET),
 
   // xDai
-  [USDC_XDAI.address]: getTrustImage(USDC.address),
+  [USDC_XDAI.address]: getTrustImage(USDC_MAINNET.address),
   // [USDT_XDAI.address]: getTrustImage(USDT.address),
   [WBTC_XDAI.address]: getTrustImage(WBTC.address),
   [WXDAI.address]:
@@ -56,7 +56,7 @@ export const V_COW: Record<number, Token> = {
   ),
 }
 
-export const GNO: Record<number, Token> = {
+export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.MAINNET]: new Token(
     SupportedChainId.MAINNET,
     '0x6810e776880c02933d47db1b9fc05908e5386b96',
@@ -78,4 +78,10 @@ export const GNO: Record<number, Token> = {
     'GNO',
     'Gnosis'
   ),
+}
+
+export const USDC_BY_CHAIN: Record<SupportedChainId, Token> = {
+  [SupportedChainId.MAINNET]: USDC_MAINNET,
+  [SupportedChainId.XDAI]: USDC_XDAI,
+  [SupportedChainId.RINKEBY]: USDC_RINKEBY,
 }

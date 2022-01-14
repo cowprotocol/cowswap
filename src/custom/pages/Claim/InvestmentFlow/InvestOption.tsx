@@ -31,7 +31,7 @@ const RangeStep = styled.button`
 
 const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
 
-export default function InvestOption({ approveState, approveCallback, updateInvestAmount, claim }: InvestOptionProps) {
+export default function InvestOption({ approveData, updateInvestAmount, claim }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost, investedAmount } = claim
 
   const { account } = useActiveWeb3React()
@@ -89,18 +89,26 @@ export default function InvestOption({ approveState, approveCallback, updateInve
           </span>
           <span>
             <b>Token approval</b>
-            <i>
-              {approveState === ApprovalState.NOT_APPROVED ? (
-                `${currencyAmount?.currency?.symbol} not approved`
-              ) : (
+            {approveData ? (
+              <i>
+                {approveData.approveState !== ApprovalState.APPROVED ? (
+                  `${currencyAmount?.currency?.symbol} not approved`
+                ) : (
+                  <Row>
+                    {currencyAmount?.currency?.symbol} approved{' '}
+                    <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
+                  </Row>
+                )}
+              </i>
+            ) : (
+              <i>
                 <Row>
-                  {currencyAmount?.currency?.symbol} approved{' '}
-                  <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
+                  Approval not required! <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
                 </Row>
-              )}
-            </i>
-            {approveState === ApprovalState.NOT_APPROVED && (
-              <button onClick={approveCallback}>Approve {currencyAmount?.currency?.symbol}</button>
+              </i>
+            )}
+            {approveData && approveData.approveState !== ApprovalState.APPROVED && (
+              <button onClick={approveData.approveCallback}>Approve {currencyAmount?.currency?.symbol}</button>
             )}
           </span>
           <span>
