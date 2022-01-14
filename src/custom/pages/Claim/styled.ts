@@ -212,6 +212,7 @@ export const ClaimTable = styled.div`
     font-size: 13px;
     display: flex;
     flex-flow: column wrap;
+    align-items: flex-start;
   }
 
   tr > td:first-of-type {
