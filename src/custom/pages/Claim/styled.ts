@@ -195,12 +195,12 @@ export const ClaimTable = styled.div`
   }
 
   /* 3rd row - amount */
-  tr > td:nth-of-type(2) {
+  tr > td:nth-of-type(3) {
     font-size: 21px;
     font-weight: 500;
   }
 
-  tr > td:nth-of-type(3) {
+  tr > td:nth-of-type(4) {
     font-size: 13px;
     display: flex;
     flex-flow: column wrap;
@@ -481,7 +481,7 @@ export const TopNav = styled.div`
 export const Demo = styled(ClaimTable)`
   background: #3e0c46;
   > table {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: min-content auto max-content auto;
   }
 
   > table tr td:first-of-type {
