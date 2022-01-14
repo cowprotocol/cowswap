@@ -684,6 +684,12 @@ export const InvestSummary = styled.div`
     display: flex;
     flex-flow: column wrap;
     margin: 0 0 12px;
+
+    > ${ButtonPrimary} {
+      font-size: 16px;
+      padding: 8px;
+      margin: 8px 0;
+    }
   }
 `
 

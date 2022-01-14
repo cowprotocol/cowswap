@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatUnits, parseUnits } from '@ethersproject/units'
@@ -12,6 +12,10 @@ import { InvestOptionProps } from '.'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
+
+import { ButtonConfirmed } from 'components/Button'
+import { ButtonSize } from 'theme'
+import Loader from 'components/Loader'
 
 const RangeSteps = styled.div`
   display: flex;
@@ -60,6 +64,25 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
     updateInvestAmount(claim.index, investAmount)
   }, [balance, claim.index, maxCost, updateInvestAmount])
 
+  // Cache approveData methods
+  const approveCallback = approveData?.approveCallback
+  const approveState = approveData?.approveState
+  // Save "local" approving state (pre-BC) for rendering spinners etc
+  const [approving, setApproving] = useState(false)
+  const handleApprove = useCallback(async () => {
+    if (!approveCallback) return
+
+    try {
+      // for pending state pre-BC
+      setApproving(true)
+      await approveCallback({ transactionSummary: `Approve ${token?.symbol || 'token'} for investing in vCOW` })
+    } catch (error) {
+      console.error('[InvestOption]: Issue approving.', error)
+    } finally {
+      setApproving(false)
+    }
+  }, [approveCallback, token?.symbol])
+
   const vCowAmount = useMemo(() => {
     if (!token || !price) {
       return
@@ -107,8 +130,22 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
                 </Row>
               </i>
             )}
-            {approveData && approveData.approveState !== ApprovalState.APPROVED && (
-              <button onClick={approveData.approveCallback}>Approve {currencyAmount?.currency?.symbol}</button>
+            {/* Approve button - @biocom styles for this found in ./styled > InputSummary > ${ButtonPrimary}*/}
+            {approveState !== ApprovalState.APPROVED && (
+              <ButtonConfirmed
+                buttonSize={ButtonSize.SMALL}
+                onClick={handleApprove}
+                disabled={
+                  approving || approveState === ApprovalState.PENDING || approveState !== ApprovalState.NOT_APPROVED
+                }
+                altDisabledStyle={approveState === ApprovalState.PENDING} // show solid button while waiting
+              >
+                {approving || approveState === ApprovalState.PENDING ? (
+                  <Loader stroke="white" />
+                ) : (
+                  <span>Approve {currencyAmount?.currency?.symbol}</span>
+                )}
+              </ButtonConfirmed>
             )}
           </span>
           <span>
