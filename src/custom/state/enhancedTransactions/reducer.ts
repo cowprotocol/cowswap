@@ -35,7 +35,7 @@ export interface EnhancedTransactionDetails {
   // Operations
   approval?: { tokenAddress: string; spender: string }
   presign?: { orderId: string }
-  claim?: { recipient: string; cowAmountRaw?: string }
+  claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
 
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info

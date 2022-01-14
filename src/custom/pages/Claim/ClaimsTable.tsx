@@ -1,3 +1,4 @@
+import styled from 'styled-components/macro'
 import { ClaimType, useClaimState } from 'state/claim/hooks'
 import { ClaimTable, ClaimBreakdown } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
@@ -5,6 +6,7 @@ import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
 import { formatSmart } from 'utils/format'
 import { EnhancedUserClaimData } from './types'
+import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 type ClaimsTableProps = {
   handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -18,12 +20,28 @@ type ClaimsTableProps = {
 type ClaimsTableRowProps = EnhancedUserClaimData &
   Pick<ClaimsTableProps, 'handleSelect'> & {
     selected: number[]
+    isPendingClaim: boolean
   }
+
+const ClaimTr = styled.tr<{ isPending?: boolean }>`
+  > td {
+    background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
+    cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};
+
+    &:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+    &:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+  }
+`
 
 const ClaimsTableRow = ({
   index,
   type,
   isFree,
+  isPendingClaim,
   claimAmount,
   currencyAmount,
   price,
@@ -32,7 +50,7 @@ const ClaimsTableRow = ({
   selected,
 }: ClaimsTableRowProps) => {
   return (
-    <tr key={index}>
+    <ClaimTr key={index} isPending={isPendingClaim}>
       <td>
         {' '}
         <label className="checkAll">
@@ -59,7 +77,7 @@ const ClaimsTableRow = ({
       </td>
       <td>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</td>
       <td>28 days, 10h, 50m</td>
-    </tr>
+    </ClaimTr>
   )
 }
 
@@ -71,6 +89,7 @@ export default function ClaimsTable({
   hasClaims,
 }: ClaimsTableProps) {
   const { selectedAll, selected, activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
+  const pendingClaimsSet = useAllClaimingTransactionIndices()
 
   const hideTable =
     isAirdropOnly || !hasClaims || !activeClaimAccount || claimStatus !== ClaimStatus.DEFAULT || isInvestFlowActive
@@ -99,7 +118,13 @@ export default function ClaimsTable({
           </thead>
           <tbody>
             {userClaimData.map((claim: EnhancedUserClaimData) => (
-              <ClaimsTableRow key={claim.index} {...claim} selected={selected} handleSelect={handleSelect} />
+              <ClaimsTableRow
+                key={claim.index}
+                {...claim}
+                isPendingClaim={pendingClaimsSet.has(claim.index)}
+                selected={selected}
+                handleSelect={handleSelect}
+              />
             ))}
           </tbody>
         </table>

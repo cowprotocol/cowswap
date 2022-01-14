@@ -271,8 +271,7 @@ export function useUserClaims(account: Account): UserClaims | null {
 const createMockTx = (data: number[]) => ({
   hash: '0x' + Math.round(Math.random() * 10).toString() + 'AxAFjAhG89G89AfnLK3CCxAfnLKQffQ782G89AfnLK3CCxxx123FF',
   summary: `Claimed ${Math.random() * 3337} vCOW`,
-  claim: { recipient: '0x97EC4fcD5F78cA6f6E4E1EAC6c0Ec8421bA518B7' },
-  data, // add the claim indices to state
+  claim: { recipient: '0x97EC4fcD5F78cA6f6E4E1EAC6c0Ec8421bA518B7', indices: data },
 })
 
 /**
@@ -446,8 +445,7 @@ export function useClaimCallback(account: string | null | undefined): {
           addTransaction({
             hash: response.hash,
             summary: `Claimed ${formatSmart(vCowAmount)} vCOW`,
-            claim: { recipient: account },
-            data: args[0], // add the claim indices to state
+            claim: { recipient: account, indices: args[0] as number[] },
           })
           return response.hash
         })
