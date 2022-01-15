@@ -12,6 +12,7 @@ import { InvestOptionProps } from '.'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
+import { useClaimDispatchers } from 'state/claim/hooks'
 
 import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
@@ -35,8 +36,9 @@ const RangeStep = styled.button`
 
 const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
 
-export default function InvestOption({ approveData, updateInvestAmount, claim }: InvestOptionProps) {
+export default function InvestOption({ approveData, claim }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost, investedAmount } = claim
+  const { updateInvestAmount } = useClaimDispatchers()
 
   const { account } = useActiveWeb3React()
 
@@ -61,7 +63,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
     // store the value as a string to prevent unnecessary re-renders
     const investAmount = formatUnits(amount.quotient.toString(), balance.currency.decimals)
 
-    updateInvestAmount(claim.index, investAmount)
+    updateInvestAmount({ index: claim.index, amount: investAmount })
   }, [balance, claim.index, maxCost, updateInvestAmount])
 
   // Cache approveData methods

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect } from 'react'
 import {
   InvestFlow,
   InvestContent,
@@ -7,7 +7,7 @@ import {
   StepIndicator,
   Steps,
 } from 'pages/Claim/styled'
-import { ClaimType, useClaimState, useUserEnhancedClaimData } from 'state/claim/hooks'
+import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
 import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
 import { ClaimStatus } from 'state/claim/actions'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -20,7 +20,6 @@ export type InvestmentClaimProps = EnhancedUserClaimData & {
 
 export type InvestOptionProps = {
   claim: InvestmentClaimProps
-  updateInvestAmount: (idx: number, investAmount: string) => void
   approveData:
     | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
     | undefined
@@ -51,33 +50,14 @@ function _claimToTokenApproveData(claimType: ClaimType, tokenApproveData: TokenA
 
 export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenApproveData }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
-  const { activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, selected } = useClaimState()
-
+  const { activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } = useClaimState()
+  const { initInvestFlowData } = useClaimDispatchers()
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
 
-  const [investData, setInvestData] = useState<InvestmentClaimProps[]>([])
-
   useEffect(() => {
-    if (claimData) {
-      const data = claimData.reduce<InvestmentClaimProps[]>((acc, claim) => {
-        if (selected.includes(claim.index)) {
-          acc.push({ ...claim, investedAmount: '0' })
-        }
-
-        return acc
-      }, [])
-
-      setInvestData(data)
-    }
-  }, [selected, claimData])
-
-  const updateInvestAmount = useCallback(
-    (idx: number, investedAmount: string) => {
-      const update = investData.map((claim) => (claim.index === idx ? { ...claim, investedAmount } : claim))
-      setInvestData(update)
-    },
-    [investData]
-  )
+    initInvestFlowData(isInvestFlowActive ? claimData : [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInvestFlowActive])
 
   if (
     !activeClaimAccount || // no connected account
@@ -113,11 +93,10 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             up to a predefined maximum amount of tokens{' '}
           </p>
 
-          {investData.map((claim) => (
+          {investFlowData.map((claim) => (
             <InvestOption
               key={claim.index}
               approveData={_claimToTokenApproveData(claim.type, tokenApproveData)}
-              updateInvestAmount={updateInvestAmount}
               claim={claim}
             />
           ))}

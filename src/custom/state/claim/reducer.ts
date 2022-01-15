@@ -1,4 +1,4 @@
-import { createReducer } from '@reduxjs/toolkit'
+import { createReducer, current } from '@reduxjs/toolkit'
 import {
   setActiveClaimAccount,
   setActiveClaimAccountENS,
@@ -7,11 +7,14 @@ import {
   setInputAddress,
   setInvestFlowStep,
   setIsInvestFlowActive,
+  initInvestFlowData,
+  updateInvestAmount,
   setIsSearchUsed,
   setSelected,
   setSelectedAll,
   ClaimStatus,
 } from './actions'
+import { InvestmentClaimProps } from 'pages/Claim/InvestmentFlow'
 
 export const initialState: ClaimState = {
   // address/ENS address
@@ -27,6 +30,7 @@ export const initialState: ClaimState = {
   // investment
   isInvestFlowActive: false,
   investFlowStep: 0,
+  investFlowData: [],
   // table select change
   selected: [],
   selectedAll: false,
@@ -46,6 +50,7 @@ export type ClaimState = {
   // investment
   isInvestFlowActive: boolean
   investFlowStep: number
+  investFlowData: InvestmentClaimProps[]
   // table select change
   selected: number[]
   selectedAll: boolean
@@ -76,6 +81,28 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setInvestFlowStep, (state, { payload }) => {
       state.investFlowStep = payload
+    })
+    .addCase(initInvestFlowData, (state, { payload }) => {
+      const { selected } = current(state)
+
+      const data = payload.reduce<InvestmentClaimProps[]>((acc, claim) => {
+        if (selected.includes(claim.index)) {
+          acc.push({ ...claim, investedAmount: '0' })
+        }
+
+        return acc
+      }, [])
+
+      state.investFlowData.push(...data)
+    })
+    .addCase(updateInvestAmount, (state, { payload: { index, amount } }) => {
+      const { investFlowData } = current(state)
+
+      const claimIndex = investFlowData.findIndex((claim) => claim.index === index)
+
+      if (claimIndex !== -1) {
+        state.investFlowData[claimIndex].investedAmount = amount
+      }
     })
     .addCase(setSelected, (state, { payload }) => {
       state.selected = payload
