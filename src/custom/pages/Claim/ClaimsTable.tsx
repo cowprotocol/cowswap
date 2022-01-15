@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { ClaimType, useClaimState } from 'state/claim/hooks'
-import { ClaimTable, ClaimBreakdown } from 'pages/Claim/styled'
+import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
@@ -63,10 +63,16 @@ const ClaimsTableRow = ({
           />
         </label>
       </td>
-      <td>{isFree ? ClaimType[type] : `Buy vCOW with ${currencyAmount?.currency?.symbol}`}</td>
       <td>
-        <CowProtocolLogo size={16} /> {formatSmart(claimAmount) || 0} vCOW
+        {' '}
+        <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={32} />
+        <CowProtocolLogo size={32} />
+        <span>
+          <b>Buy vCOW</b>
+          <i>{isFree ? ClaimType[type] : `with ${currencyAmount?.currency?.symbol}`}</i>
+        </span>
       </td>
+      <td>{formatSmart(claimAmount) || 0} vCOW</td>
       <td>
         <span>
           Price:{' '}
