@@ -90,8 +90,6 @@ const ClaimsTableRow = ({
           Ends in: <b>28 days, 10h, 50m</b>
         </span>
       </td>
-      <td>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</td>
-      <td>28 days, 10h, 50m</td>
     </ClaimTr>
   )
 }

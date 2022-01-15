@@ -749,37 +749,36 @@ export function useUserEnhancedClaimData(account: Account): EnhancedUserClaimDat
     const chainId = supportedChainId(preCheckChainId)
     if (!chainId) return []
 
-    return sorted.reduce<EnhancedUserClaimData[]>((acc, claim) => {
-      const tokenAndAmount = claimTypeToTokenAmount(claim.type, chainId)
-
-      if (!tokenAndAmount) return acc
-
-      const price = new Price({
-        baseAmount: ONE_VCOW,
-        quoteAmount: CurrencyAmount.fromRawAmount(tokenAndAmount.token, tokenAndAmount.amount),
-      }).invert()
-
-      // get the currency amount using the price base currency (remember price was inverted) and claim amount
-      const currencyAmount = CurrencyAmount.fromRawAmount(price.baseCurrency, claim.amount)
+    return sorted.map<EnhancedUserClaimData>((claim) => {
       const claimAmount = CurrencyAmount.fromRawAmount(ONE_VCOW.currency, claim.amount)
 
-      // e.g 1000 vCow / 20 GNO = 50 GNO cost
-      const cost = currencyAmount.divide(price)
+      const tokenAndAmount = claimTypeToTokenAmount(claim.type, chainId)
 
-      acc.push({
+      const data: EnhancedUserClaimData = {
         ...claim,
         isFree: isFreeClaim(claim.type),
-        currencyAmount,
         claimAmount,
-        price,
-        cost,
-      })
+      }
 
-      return acc
-    }, [])
+      if (!tokenAndAmount) {
+        return data
+      } else {
+        data.price = new Price({
+          baseAmount: ONE_VCOW,
+          quoteAmount: CurrencyAmount.fromRawAmount(tokenAndAmount.token, tokenAndAmount.amount),
+        }).invert()
+        // get the currency amount using the price base currency (remember price was inverted) and claim amount
+        data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
+
+        // e.g 1000 vCow / 20 GNO = 50 GNO cost
+        data.cost = data.currencyAmount.divide(data.price)
+
+        return data
+      }
+    })
   }, [preCheckChainId, sorted])
 }
 
 function _sortTypes(a: UserClaimData, b: UserClaimData): number {
-  return Number(isFreeClaim(a.type)) - Number(isFreeClaim(b.type))
+  return Number(isFreeClaim(b.type)) - Number(isFreeClaim(a.type))
 }
