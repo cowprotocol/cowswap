@@ -4,7 +4,7 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput } from '../styled'
+import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
 import Row from 'components/Row'
 import { CheckCircle } from 'react-feather'
@@ -30,8 +30,21 @@ const RangeStep = styled.button`
   border: none;
   font-size: 0.8rem;
   cursor: pointer;
-  color: blue;
+  color: ${({ theme }) => theme.primary1};
   padding: 0;
+`
+
+const InvestBalance = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const InvestMaxBalance = styled.button`
+  cursor: pointer;
+  color: ${({ theme }) => theme.primary1};
+  background: none;
+  border: none;
 `
 
 const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
@@ -40,19 +53,32 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
   const { currencyAmount, price, cost: maxCost, investedAmount } = claim
   const { updateInvestAmount } = useClaimDispatchers()
 
+  const [percentage, setPercentage] = useState<number>(0)
+
   const { account } = useActiveWeb3React()
 
   const token = currencyAmount?.currency
 
   const balance = useCurrencyBalance(account || undefined, token)
 
-  const handlePercentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
-  }
+  const scaleValue = useCallback((number: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
+    return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
+  }, [])
 
-  const handleStepChange = (value: number) => {
-    console.log(value)
-  }
+  const handleStepChange = useCallback(
+    (value: number) => {
+      if (!maxCost || !balance) {
+        return
+      }
+
+      const maxInvestAmount = formatUnits(maxCost.quotient.toString(), balance.currency.decimals)
+      const newInvestAmount = scaleValue(value, 0, 100, 0, Number(maxInvestAmount))
+
+      updateInvestAmount({ index: claim.index, amount: String(newInvestAmount) })
+      setPercentage(value)
+    },
+    [balance, claim.index, maxCost, scaleValue, updateInvestAmount]
+  )
 
   const onMaxClick = useCallback(() => {
     if (!maxCost || !balance) {
@@ -64,6 +90,7 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
     const investAmount = formatUnits(amount.quotient.toString(), balance.currency.decimals)
 
     updateInvestAmount({ index: claim.index, amount: investAmount })
+    setPercentage(100)
   }, [balance, claim.index, maxCost, updateInvestAmount])
 
   // Cache approveData methods
@@ -168,27 +195,22 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
                 ))}
               </RangeSteps>
 
-              <input
-                style={{ width: '100%' }}
-                onChange={handlePercentChange}
-                type="range"
-                min="0"
-                max="100"
-                value={0}
-              />
+              <InvestAvailableBar percentage={percentage} />
             </div>
           </span>
         </InvestSummary>
         <InvestInput>
           <div>
-            <span>
-              <b>Balance:</b>{' '}
-              <i>
-                {formatSmart(balance)} {currencyAmount?.currency?.symbol}
-              </i>
+            <InvestBalance>
+              <div>
+                <b>Balance:</b>{' '}
+                <i>
+                  {formatSmart(balance)} {currencyAmount?.currency?.symbol}
+                </i>
+              </div>
               {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <button onClick={onMaxClick}>Invest max. possible</button>
-            </span>
+              <InvestMaxBalance onClick={onMaxClick}>Invest max. possible</InvestMaxBalance>
+            </InvestBalance>
             <label>
               <b>{currencyAmount?.currency?.symbol}</b>
               <input disabled placeholder="0" value={investedAmount} max={formatSmart(currencyAmount)} />

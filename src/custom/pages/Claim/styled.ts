@@ -868,22 +868,28 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   height: 10px;
   border-radius: 24px;
   background: var(--color-container-bg2);
-  margin: 8px 0;
+  margin: 4px 0;
 
   &::before {
     content: '';
     display: block;
-    background: color: ${({ theme }) => theme.primary1};
+    background-color: ${({ theme }) => theme.primary1};
     height: 100%;
     border-radius: 24px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transition: width 0.3s ease-in;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
   }
 
   &::after {
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: inline-block;
-    font-size: 13px;
-    color: ${({ theme }) => theme.primary1};
+    font-size: 11px;
+    color: white;
+    transform: translate(-120%, -20%);
   }
 `
 

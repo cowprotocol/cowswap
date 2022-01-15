@@ -177,7 +177,7 @@ export default function Claim() {
   // on account change
   useEffect(() => {
     if (!isSearchUsed && account) {
-      setActiveClaimAccount(account)
+      setActiveClaimAccount('0xD5e900280Eb1aDe4E583c2bF2414be247E298435')
     }
 
     if (!account) {
