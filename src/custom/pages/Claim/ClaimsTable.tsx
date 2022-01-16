@@ -7,6 +7,8 @@ import { ClaimStatus } from 'state/claim/actions'
 import { formatSmart } from 'utils/format'
 import { EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
+import { CustomLightSpinner } from 'theme'
+import Circle from 'assets/images/blue-loader.svg'
 
 type ClaimsTableProps = {
   handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -54,13 +56,17 @@ const ClaimsTableRow = ({
       <td>
         {' '}
         <label className="checkAll">
-          <input
-            onChange={(event) => handleSelect(event, index)}
-            type="checkbox"
-            name="check"
-            checked={isFree || selected.includes(index)}
-            disabled={isFree}
-          />
+          {isPendingClaim ? (
+            <CustomLightSpinner src={Circle} title="Claiming in progress..." alt="loader" size="24px" />
+          ) : (
+            <input
+              onChange={(event) => handleSelect(event, index)}
+              type="checkbox"
+              name="check"
+              checked={isFree || selected.includes(index)}
+              disabled={isFree}
+            />
+          )}
         </label>
       </td>
       <td>

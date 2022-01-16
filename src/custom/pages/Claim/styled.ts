@@ -474,7 +474,7 @@ export const ClaimTotal = styled.div`
 
   > p {
     margin: 0;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
   }
 `
@@ -547,6 +547,7 @@ export const EligibleBanner = styled.div`
 
 export const InputField = styled.div`
   padding: 18px;
+  padding-left: 36px;
   border-radius: var(--border-radius);
   border: ${({ theme }) => theme.currencyInput?.border};
   color: ${({ theme }) => theme.text1};
