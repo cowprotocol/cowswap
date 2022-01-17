@@ -5,13 +5,6 @@ import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { transparentize, darken } from 'polished'
 
 export const PageWrapper = styled.div`
-  --color-tl: #141722;
-  --color-tr: #3b4052;
-  --color-grey: rgb(151, 151, 151);
-  --color-orange: rgb(237, 104, 52);
-  --color-container-bg: rgb(255 255 255 / 6%);
-  --color-container-bg2: rgb(255 255 255 / 12%);
-  --color-container-bg3: rgb(255 255 255 / 25%);
   --border-radius: 56px;
   --border-radius-small: 16px;
   display: flex;
@@ -47,7 +40,6 @@ export const PageWrapper = styled.div`
       cursor: pointer;
       border: 1px solid var(--bc, var(--border));
       background: var(--b, var(--background));
-      transition: background .2s, border-color .2s, box-shadow .2s;
 
       &:after {
         content: '';
@@ -55,18 +47,16 @@ export const PageWrapper = styled.div`
         left: 0;
         top: 0;
         position: absolute;
-        transition: transform var(.2s) var(--d-t-e, ease), opacity var(.2s);
       }
 
       &:checked {
         --b: var(--active);
         --bc: var(--active);
-        --d-t-e: cubic-bezier(.2, .85, .32, 1.2);
       }
 
       &:disabled {
         cursor: not-allowed;
-        opacity: .7;
+        opacity: .5;
 
         &:checked {
         }
@@ -166,10 +156,6 @@ export const PageWrapper = styled.div`
         background: var(--active-inner);
         opacity: 0;
         transform: scale(var(--s, .7));
-      }
-
-      &:checked {
-        --s: .5;
       }
     }
   }
@@ -448,7 +434,7 @@ export const ClaimAccount = styled.div`
     width: 46px;
     border-radius: 46px;
     object-fit: contain;
-    background-color: var(--color-grey);
+    background-color: grey;
   }
 
   > div > p {
@@ -753,7 +739,7 @@ export const StepIndicator = styled.div`
 export const Steps = styled.div<{ step: number | 0 }>`
   list-style-type: decimal;
   margin: 0 0 12px;
-  background: var(--color-container-bg);
+  background: grey;
   padding: 12px;
   border-radius: 12px;
   display: grid;
@@ -868,7 +854,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   position: relative;
   height: 10px;
   border-radius: 24px;
-  background: var(--color-container-bg2);
+  background: grey;
   margin: 8px 0;
 
   &::before {
@@ -937,7 +923,7 @@ export const InvestTokenSubtotal = styled.div`
   display: flex;
   padding: 56px;
   margin: 0 0 24px;
-  background: var(--color-container-bg3);
+  background: grey;
   color: ${({ theme }) => theme.text1};
   border-radius: var(--border-radius);
   font-size: 21px;
