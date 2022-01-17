@@ -296,7 +296,7 @@ export const ClaimTable = styled.div`
     border-collapse: collapse;
     min-width: 100%;
     font-size: 16px;
-    grid-template-columns: min-content auto max-content auto;
+    grid-template-columns: min-content auto auto auto;
   }
 
   thead,
@@ -666,6 +666,12 @@ export const ClaimBreakdown = styled.div`
   display: flex;
   width: 100%;
   flex-flow: column wrap;
+
+  > h2 {
+    font-size: 28px;
+    font-weight: 500;
+    text-align: center;
+  }
 `
 
 export const FooterNavButtons = styled.div`
@@ -724,6 +730,12 @@ export const Demo = styled(ClaimTable)`
 export const InvestFlow = styled.div`
   display: flex;
   flex-flow: column wrap;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    text-align: center;
+  }
 `
 
 export const InvestContent = styled.div`

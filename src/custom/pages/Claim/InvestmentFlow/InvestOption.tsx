@@ -131,7 +131,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               </i>
             )}
             {/* Approve button - @biocom styles for this found in ./styled > InputSummary > ${ButtonPrimary}*/}
-            {approveState !== ApprovalState.APPROVED && (
+            {approveData && approveState !== ApprovalState.APPROVED && (
               <ButtonConfirmed
                 buttonSize={ButtonSize.SMALL}
                 onClick={handleApprove}
@@ -142,9 +142,9 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               >
                 {approving || approveState === ApprovalState.PENDING ? (
                   <Loader stroke="white" />
-                ) : (
+                ) : approveData ? (
                   <span>Approve {currencyAmount?.currency?.symbol}</span>
-                )}
+                ) : null}
               </ButtonConfirmed>
             )}
           </span>
