@@ -169,7 +169,7 @@ export const PageWrapper = styled.div`
     display: block;
     line-height: 1.6;
     font-weight: 300;
-    margin: 24px auto;
+    margin: 0 0 24px;
     text-align: center;
   }
 
@@ -667,9 +667,11 @@ export const ClaimBreakdown = styled.div`
   width: 100%;
   flex-flow: column wrap;
 
-  > h2 {
-    font-size: 28px;
-    font-weight: 500;
+  > p {
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 300;
+    margin: 0 0 24px;
     text-align: center;
   }
 `
@@ -830,6 +832,15 @@ export const InvestInput = styled.span`
   > div > label {
     display: flex;
     position: relative;
+    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+    border: ${({ theme }) =>
+      theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+    border-radius: 12px;
+
+    &:hover {
+      border: ${({ theme }) =>
+        theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+    }
   }
 
   > div > label > b {
@@ -841,22 +852,58 @@ export const InvestInput = styled.span`
     top: 0;
     bottom: 0;
     margin: auto;
-    opacity: 0.5;
+    font-weight: normal;
+    opacity: 0.7;
+    color: ${({ theme }) => theme.text1};
   }
 
   > div > label > input {
     color: ${({ theme }) => theme.text1};
-    border: 1px solid grey;
+    border: none;
     border-radius: 12px;
     padding: 12px 70px 12px 12px;
     font-size: 26px;
     outline: 0;
+    background: transparent;
     width: 100%;
+
+    &::placeholder {
+      opacity: 0.5;
+    }
   }
 
   > div > small {
     color: red;
     margin: 12px 0;
+    font-size: 15px;
+  }
+
+  > div > i {
+    font-style: normal;
+  }
+
+  > div > span {
+    display: flex;
+  }
+
+  > div > span > b {
+    margin: 0 3px 0 0;
+  }
+
+  > div > span > i {
+    font-style: normal;
+  }
+
+  > div > span > button {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: ${({ theme }) => theme.primary4};
+    text-decoration: underline;
+
+    &:hover {
+      color: ${({ theme }) => theme.text1};
+    }
   }
 `
 
