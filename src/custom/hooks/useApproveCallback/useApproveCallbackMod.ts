@@ -1,12 +1,12 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
-import { Trade as V2Trade } from '@uniswap/v2-sdk'
-import { Trade as V3Trade } from '@uniswap/v3-sdk'
+import { Currency, CurrencyAmount /* , Percent, TradeType */ } from '@uniswap/sdk-core'
+// import { Trade as V2Trade } from '@uniswap/v2-sdk'
+// import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useCallback, useMemo } from 'react'
 
-import { SWAP_ROUTER_ADDRESSES, V2_ROUTER_ADDRESS } from 'constants/addresses'
+// import { SWAP_ROUTER_ADDRESSES, V2_ROUTER_ADDRESS } from 'constants/addresses'
 import { useHasPendingApproval, useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
@@ -24,13 +24,22 @@ export enum ApprovalState {
   APPROVED = 'APPROVED',
 }
 
-// returns a variable indicating the state of the approval and a function which approves if necessary or early returns
-export function useApproveCallback(
-  openTransactionConfirmationModal: (message: string) => void,
-  closeModals: () => void,
-  amountToApprove?: CurrencyAmount<Currency>,
+export interface ApproveCallbackParams {
+  openTransactionConfirmationModal: (message: string) => void
+  closeModals: () => void
+  amountToApprove?: CurrencyAmount<Currency>
   spender?: string
-): [ApprovalState, (optionalParams?: OptionalApproveCallbackParams) => Promise<void>] {
+  amountToCheckAgainstAllowance?: CurrencyAmount<Currency>
+}
+
+// returns a variable indicating the state of the approval and a function which approves if necessary or early returns
+export function useApproveCallback({
+  openTransactionConfirmationModal,
+  closeModals,
+  amountToApprove,
+  spender,
+  amountToCheckAgainstAllowance,
+}: ApproveCallbackParams): [ApprovalState, (optionalParams?: OptionalApproveCallbackParams) => Promise<void>] {
   const { account, chainId } = useActiveWeb3React()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -44,13 +53,13 @@ export function useApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
     // Return approval state
-    if (currentAllowance.lessThan(amountToApprove)) {
+    if ((amountToCheckAgainstAllowance || currentAllowance).lessThan(amountToApprove)) {
       return pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
     } else {
       // Enough allowance
       return ApprovalState.APPROVED
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, spender])
+  }, [amountToApprove, amountToCheckAgainstAllowance, currentAllowance, pendingApproval, spender])
 
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
@@ -138,29 +147,29 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(
-  openTransactionConfirmationModal: (message: string) => void,
-  closeModals: () => void,
-  trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined,
-  allowedSlippage: Percent
-) {
-  const { chainId } = useActiveWeb3React()
-  const v3SwapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
+// export function useApproveCallbackFromTrade(
+//   openTransactionConfirmationModal: (message: string) => void,
+//   closeModals: () => void,
+//   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined,
+//   allowedSlippage: Percent
+// ) {
+//   const { chainId } = useActiveWeb3React()
+//   const v3SwapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
 
-  const amountToApprove = useMemo(
-    () => (trade && trade.inputAmount.currency.isToken ? trade.maximumAmountIn(allowedSlippage) : undefined),
-    [trade, allowedSlippage]
-  )
-  return useApproveCallback(
-    openTransactionConfirmationModal,
-    closeModals,
-    amountToApprove,
-    chainId
-      ? trade instanceof V2Trade
-        ? V2_ROUTER_ADDRESS[chainId]
-        : trade instanceof V3Trade
-        ? v3SwapRouterAddress
-        : undefined
-      : undefined
-  )
-}
+//   const amountToApprove = useMemo(
+//     () => (trade && trade.inputAmount.currency.isToken ? trade.maximumAmountIn(allowedSlippage) : undefined),
+//     [trade, allowedSlippage]
+//   )
+//   return useApproveCallback(
+//     openTransactionConfirmationModal,
+//     closeModals,
+//     amountToApprove,
+//     chainId
+//       ? trade instanceof V2Trade
+//         ? V2_ROUTER_ADDRESS[chainId]
+//         : trade instanceof V3Trade
+//         ? v3SwapRouterAddress
+//         : undefined
+//       : undefined
+//   )
+// }
