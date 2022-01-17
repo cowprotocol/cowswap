@@ -73,7 +73,7 @@ const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
   'X-AppId': APP_DATA_HASH.toString(),
 }
-const API_NAME = 'Gnosis Protocol'
+const API_NAME = 'CoW Protocol'
 const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
 /**
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
