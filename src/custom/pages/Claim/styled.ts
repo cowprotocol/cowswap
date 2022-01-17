@@ -321,7 +321,7 @@ export const ClaimTable = styled.div`
     background: transparent;
     text-align: left;
     font-weight: normal;
-    font-size: 13px;
+    font-size: 15px;
     color: ${({ theme }) => theme.text1};
     position: relative;
   }
@@ -891,20 +891,20 @@ export const InvestSummary = styled.div`
   display: grid;
   grid-template-columns: auto auto;
   font-size: 15px;
-  gap: 12px;
+  gap: 16px 36px;
 
   > span {
     display: flex;
     flex-flow: column wrap;
     margin: 0 0 12px;
     color: ${({ theme }) => transparentize(0.1, theme.text1)};
+    gap: 3px;
   }
 
   > span > ${ButtonPrimary} {
-    margin: 12px 0;
+    margin: 12px 0 12px -9px;
     padding: 6px;
     font-size: 16px;
-    max-width: 154px;
   }
 
   > span > i {
