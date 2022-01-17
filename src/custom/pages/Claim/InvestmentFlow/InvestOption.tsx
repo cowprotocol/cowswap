@@ -95,11 +95,11 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
   return (
     <InvestTokenGroup>
       <div>
+        <h3>Buy vCOW with {currencyAmount?.currency?.symbol}</h3>
         <span>
           <TokenLogo symbol={currencyAmount?.currency?.symbol || '-'} size={72} />
           <CowProtocolLogo size={72} />
         </span>
-        <h3>Buy vCOW with {currencyAmount?.currency?.symbol}</h3>
       </div>
 
       <span>
@@ -110,6 +110,14 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               {formatSmart(price)} vCoW per {currencyAmount?.currency?.symbol}
             </i>
           </span>
+
+          <span>
+            <b>Max. investment available</b>{' '}
+            <i>
+              {formatSmart(maxCost) || '0'} {currencyAmount?.currency?.symbol}
+            </i>
+          </span>
+
           <span>
             <b>Token approval</b>
             {approveData ? (
@@ -131,7 +139,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               </i>
             )}
             {/* Approve button - @biocom styles for this found in ./styled > InputSummary > ${ButtonPrimary}*/}
-            {approveState !== ApprovalState.APPROVED && (
+            {approveData && approveState !== ApprovalState.APPROVED && (
               <ButtonConfirmed
                 buttonSize={ButtonSize.SMALL}
                 onClick={handleApprove}
@@ -142,18 +150,13 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               >
                 {approving || approveState === ApprovalState.PENDING ? (
                   <Loader stroke="white" />
-                ) : (
+                ) : approveData ? (
                   <span>Approve {currencyAmount?.currency?.symbol}</span>
-                )}
+                ) : null}
               </ButtonConfirmed>
             )}
           </span>
-          <span>
-            <b>Max. investment available</b>{' '}
-            <i>
-              {formatSmart(maxCost) || '0'} {currencyAmount?.currency?.symbol}
-            </i>
-          </span>
+
           <span>
             <b>Available investment used</b>
 
