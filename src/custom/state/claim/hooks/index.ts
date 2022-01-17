@@ -282,7 +282,7 @@ const createMockTx = (data: number[]) => ({
  *
  * Returns null if in there's no network or vCowContract doesn't exist
  */
-function useDeploymentTimestamp(): number | null {
+export function useDeploymentTimestamp(): number | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
   const [timestamp, setTimestamp] = useState<number | null>(null)

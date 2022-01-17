@@ -1,5 +1,11 @@
+import {
+  ClaimType,
+  useAirdropDeadline,
+  useClaimState,
+  useDeploymentTimestamp,
+  useInvestmentDeadline,
+} from 'state/claim/hooks'
 import styled from 'styled-components/macro'
-import { ClaimType, useClaimState } from 'state/claim/hooks'
 import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
@@ -9,6 +15,7 @@ import { EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 import { CustomLightSpinner } from 'theme'
 import Circle from 'assets/images/blue-loader.svg'
+import { Countdown } from 'pages/Claim/Countdown'
 
 type ClaimsTableProps = {
   handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -22,6 +29,8 @@ type ClaimsTableProps = {
 type ClaimsTableRowProps = EnhancedUserClaimData &
   Pick<ClaimsTableProps, 'handleSelect'> & {
     selected: number[]
+    start: number | null
+    end: number | null
     isPendingClaim: boolean
   }
 
@@ -50,6 +59,8 @@ const ClaimsTableRow = ({
   cost,
   handleSelect,
   selected,
+  start,
+  end,
 }: ClaimsTableRowProps) => {
   return (
     <ClaimTr key={index} isPending={isPendingClaim}>
@@ -99,7 +110,7 @@ const ClaimsTableRow = ({
           Vesting: <b>{type === ClaimType.Airdrop ? 'No' : '4 years (linear)'}</b>
         </span>
         <span>
-          Ends in: <b>28 days, 10h, 50m</b>
+          Ends in: <b>{start && end && <Countdown start={start} end={end} />}</b>
         </span>
       </td>
     </ClaimTr>
@@ -118,6 +129,10 @@ export default function ClaimsTable({
 
   const hideTable =
     isAirdropOnly || !hasClaims || !activeClaimAccount || claimStatus !== ClaimStatus.DEFAULT || isInvestFlowActive
+
+  const start = useDeploymentTimestamp()
+  const investmentEnd = useInvestmentDeadline()
+  const airdropEnd = useAirdropDeadline()
 
   if (hideTable) return null
 
@@ -146,6 +161,8 @@ export default function ClaimsTable({
                 isPendingClaim={pendingClaimsSet.has(claim.index)}
                 selected={selected}
                 handleSelect={handleSelect}
+                start={start}
+                end={claim.isFree ? airdropEnd : investmentEnd}
               />
             ))}
           </tbody>
