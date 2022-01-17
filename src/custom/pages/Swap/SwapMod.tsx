@@ -327,12 +327,13 @@ export default function Swap({
   const isLoadingRoute = toggledVersion === Version.v3 && V3TradeState.LOADING === v3TradeState */
 
   // check whether the user has approved the router on the input token
-  const [approvalState, approveCallback] = useApproveCallbackFromTrade(
-    (message: string) => openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
+  const [approvalState, approveCallback] = useApproveCallbackFromTrade({
+    openTransactionConfirmationModal: (message: string) =>
+      openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
     closeModals,
     trade,
-    allowedSlippage
-  )
+    allowedSlippage,
+  })
   const prevApprovalState = usePrevious(approvalState)
   const {
     state: signatureState,

@@ -184,19 +184,25 @@ export default function Claim() {
     OperationType.APPROVE_TOKEN
   )
 
-  const [gnoApproveState, gnoApproveCallback] = useApproveCallbackFromClaim(
-    () => openModal(GNO_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
-    closeModal,
+  const [gnoApproveState, gnoApproveCallback] = useApproveCallbackFromClaim({
+    openTransactionConfirmationModal: () => openModal(GNO_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
+    closeModals: closeModal,
     // approve max unit256 amount
-    isSupportedChain(chainId) ? CurrencyAmount.fromRawAmount(GNO[chainId], MaxUint256) : undefined
-  )
+    amountToApprove: isSupportedChain(chainId) ? CurrencyAmount.fromRawAmount(GNO[chainId], MaxUint256) : undefined,
+    // TODO: enable, fix this
+    // amountToCheckAgainstAllowance: investmentAmountAsCurrency,
+  })
 
-  const [usdcApproveState, usdcApproveCallback] = useApproveCallbackFromClaim(
-    () => openModal(USDC_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
-    closeModal,
+  const [usdcApproveState, usdcApproveCallback] = useApproveCallbackFromClaim({
+    openTransactionConfirmationModal: () => openModal(USDC_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
+    closeModals: closeModal,
     // approve max unit256 amount
-    isSupportedChain(chainId) ? CurrencyAmount.fromRawAmount(USDC_BY_CHAIN[chainId], MaxUint256) : undefined
-  )
+    amountToApprove: isSupportedChain(chainId)
+      ? CurrencyAmount.fromRawAmount(USDC_BY_CHAIN[chainId], MaxUint256)
+      : undefined,
+    // TODO: enable, fix this
+    // amountToCheckAgainstAllowance: investmentAmountAsCurrency,
+  })
 
   return (
     <PageWrapper>
