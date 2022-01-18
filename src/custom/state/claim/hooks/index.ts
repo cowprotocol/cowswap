@@ -79,6 +79,9 @@ export const USDC_PRICE = '150000' // '0.15' USDC (6 decimals) per vCOW, in atom
 const TWO_WEEKS = ms`2 weeks`
 const SIX_WEEKS = ms`6 weeks`
 
+// For native token price calculation
+const DENOMINATOR = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
+
 export enum ClaimType {
   Airdrop, // free, no vesting, can be available on both mainnet and gchain
   GnoOption, // paid, with vesting, must use GNO, can be available on both mainnet and gchain
@@ -281,7 +284,7 @@ const createMockTx = (data: number[]) => ({
  *
  * Returns null if in there's no network or vCowContract doesn't exist
  */
-function useDeploymentTimestamp(): number | null {
+export function useDeploymentTimestamp(): number | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
   const [timestamp, setTimestamp] = useState<number | null>(null)
@@ -436,7 +439,7 @@ export function useClaimCallback(account: string | null | undefined): {
 
       const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, totalClaimedAmount)
 
-      return vCowContract.estimateGas['claimMany'](...args).then((estimatedGas) => {
+      return vCowContract.estimateGas.claimMany(...args).then((estimatedGas) => {
         // Last item in the array contains the call overrides
         const extendedArgs = _extendFinalArg(args, {
           from: connectedAccount, // add the `from` as the connected account
@@ -543,6 +546,7 @@ function _getClaimManyArgs({
   })
 
   const value = totalValue.toString() === '0' ? undefined : totalValue.toString()
+
   const args: GetClaimManyArgsResult['args'] =
     indices.length > 0
       ? [indices, claimTypes, claimants, claimableAmounts, claimedAmounts, merkleProofs, sendEth, { value }]
@@ -621,9 +625,11 @@ function _getClaimValue(claim: UserClaimData, vCowAmount: string, chainId: Suppo
 
   const price = NATIVE_TOKEN_PRICE[chainId]
 
-  const claimValueInAtoms = JSBI.multiply(JSBI.BigInt(vCowAmount), JSBI.BigInt(price))
-
-  return parseUnits(claimValueInAtoms.toString(), 18).toString()
+  // Why InAtomsSquared? because we are multiplying vCowAmount (which is in atoms == * 10**18)
+  // by the price (which is also in atoms == * 10**18)
+  const claimValueInAtomsSquared = JSBI.multiply(JSBI.BigInt(vCowAmount), JSBI.BigInt(price))
+  // Then it's divided by 10**18 to return the value in the native currency atoms
+  return JSBI.divide(claimValueInAtomsSquared, DENOMINATOR).toString()
 }
 
 type LastAddress = string
