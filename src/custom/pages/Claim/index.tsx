@@ -69,6 +69,8 @@ export default function Claim() {
     // claim row selection
     setSelected,
     setSelectedAll,
+    // reset claim ui
+    resetClaimUi,
   } = useClaimDispatchers()
 
   const { address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
@@ -122,6 +124,7 @@ export default function Claim() {
     setInputAddress('')
   }
 
+  // TODO: useCallback
   // handle submit claim
   const handleSubmitClaim = () => {
     // just to be sure
@@ -167,38 +170,19 @@ export default function Claim() {
       setIsInvestFlowActive(true)
     }
   }
-  console.log(
-    `Claim/index::`,
-    `[unclaimedAmount ${unclaimedAmount?.toFixed(2)}]`,
-    `[hasClaims ${hasClaims}]`,
-    `[activeClaimAccount ${activeClaimAccount}]`,
-    `[isAirdropOnly ${isAirdropOnly}]`
-  )
 
-  // on account change
+  // on account/activeAccount/non-connected account (if claiming for someone else) change
   useEffect(() => {
-    if (!isSearchUsed && account) {
+    // disconnected wallet?
+    if (!account) {
+      setActiveClaimAccount('')
+    } else if (!isSearchUsed) {
       setActiveClaimAccount(account)
     }
 
-    if (!account) {
-      setActiveClaimAccount('')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account])
-
-  // if wallet is disconnected
-  useEffect(() => {
-    if (!account && !isSearchUsed) {
-      setActiveClaimAccount('')
-    }
-
-    if (!account) {
-      setIsInvestFlowActive(false)
-      setInvestFlowStep(0)
-    }
-    // setActiveClaimAccount and other dispatch fns are only here for TS. They are safe references.
-  }, [account, isSearchUsed, setActiveClaimAccount, setInvestFlowStep, setIsInvestFlowActive])
+    // properly reset the user to the claims table and initial investment flow
+    resetClaimUi()
+  }, [account, activeClaimAccount, resolvedAddress, isSearchUsed, setActiveClaimAccount, resetClaimUi])
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(

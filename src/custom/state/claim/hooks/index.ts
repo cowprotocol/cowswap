@@ -52,6 +52,7 @@ import {
   setSelected,
   setSelectedAll,
   ClaimStatus,
+  resetClaimUi,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -774,6 +775,8 @@ export function useClaimDispatchers() {
       // claim row selection
       setSelected: (payload: number[]) => dispatch(setSelected(payload)),
       setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),
+      // reset claim ui
+      resetClaimUi: () => dispatch(resetClaimUi()),
     }),
     [dispatch]
   )

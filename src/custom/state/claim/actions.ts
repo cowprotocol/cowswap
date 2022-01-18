@@ -55,3 +55,5 @@ export const updateInvestAmount = createAction<{
 // claim row selection
 export const setSelected = createAction<number[]>('claim/setSelected')
 export const setSelectedAll = createAction<boolean>('claim/setSelectedAll')
+// Claim UI reset sugar
+export const resetClaimUi = createAction('claims/resetClaimUi')
