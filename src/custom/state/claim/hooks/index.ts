@@ -74,8 +74,8 @@ export const GNO_PRICE = '375000000000000' // '0.000375' GNO (18 decimals) per v
 export const USDC_PRICE = '150000' // '0.15' USDC (6 decimals) per vCOW, in atoms
 
 // Constants regarding investment time windows
-const TWO_WEEKS = ms`2 weeks`
-const SIX_WEEKS = ms`6 weeks`
+const INVESTMENT_TIME = ms`2 weeks`
+const AIRDROP_TIME = ms`6 weeks`
 
 // For native token price calculation
 const DENOMINATOR = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
@@ -328,8 +328,8 @@ type ClaimTimeInfo = {
  */
 export function useClaimTimeInfo(): ClaimTimeInfo {
   const deployment = useDeploymentTimestamp()
-  const investmentDeadline = deployment && deployment + TWO_WEEKS
-  const airdropDeadline = deployment && deployment + SIX_WEEKS
+  const investmentDeadline = deployment && deployment + INVESTMENT_TIME
+  const airdropDeadline = deployment && deployment + AIRDROP_TIME
 
   const isInvestmentWindowOpen = Boolean(investmentDeadline && investmentDeadline > Date.now())
   const isAirdropWindowOpen = Boolean(airdropDeadline && airdropDeadline > Date.now())

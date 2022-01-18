@@ -14,16 +14,7 @@ export default function CanUserClaimMessage({ hasClaims, isAirdropOnly }: ClaimI
   const { activeClaimAccount, claimStatus } = useClaimState()
   const { setActiveClaimAccount } = useClaimDispatchers()
 
-  const { airdropDeadline, deployment, investmentDeadline, isAirdropWindowOpen, isInvestmentWindowOpen } =
-    useClaimTimeInfo()
-  // console.log('Deadlines', {
-  //   airdropDeadline: airdropDeadline && new Date(airdropDeadline).toISOString(),
-  //   deployment: deployment && new Date(deployment).toISOString(),
-  //   investmentDeadline: investmentDeadline && new Date(investmentDeadline).toISOString(),
-
-  //   isAirdropWindowOpen,
-  //   isInvestmentWindowOpen,
-  // })
+  const { airdropDeadline } = useClaimTimeInfo()
 
   // only show when active claim account
   if (!activeClaimAccount || claimStatus !== ClaimStatus.DEFAULT) return null
