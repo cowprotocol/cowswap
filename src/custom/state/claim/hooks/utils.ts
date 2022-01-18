@@ -8,13 +8,11 @@ import {
   CLAIMS_REPO,
   ClaimTypePriceMap,
   FREE_CLAIM_TYPES,
-  GNO_PRICE,
-  NATIVE_TOKEN_PRICE,
   PAID_CLAIM_TYPES,
   RepoClaims,
   TypeToPriceMapper,
-  USDC_PRICE,
   UserClaims,
+  VCowPrices,
 } from 'state/claim/hooks/index'
 
 /**
@@ -164,14 +162,14 @@ export type PaidClaimTypeToPriceMap = {
 /**
  * Helper function to get vCow price based on claim type and chainId
  */
-export function claimTypeToTokenAmount(type: ClaimType, chainId: SupportedChainId) {
+export function claimTypeToTokenAmount(type: ClaimType, chainId: SupportedChainId, prices: VCowPrices) {
   switch (type) {
     case ClaimType.GnoOption:
-      return { token: GNO[chainId], amount: GNO_PRICE }
+      return { token: GNO[chainId], amount: prices.gno }
     case ClaimType.Investor:
-      return { token: USDC_BY_CHAIN[chainId], amount: USDC_PRICE }
+      return { token: USDC_BY_CHAIN[chainId], amount: prices.usdc }
     case ClaimType.UserOption:
-      return { token: GpEther.onChain(chainId), amount: NATIVE_TOKEN_PRICE[chainId] }
+      return { token: GpEther.onChain(chainId), amount: prices.native }
     default:
       return undefined
   }
