@@ -738,7 +738,7 @@ export const InvestContent = styled.div`
 
       tr > td:nth-of-type(2) {
         flex-flow: column wrap;
-        justify-content: center;
+        justify-content: flex-start;
 
         > span {
           margin: 0;
@@ -753,7 +753,7 @@ export const InvestContent = styled.div`
       tr > td:nth-of-type(3) {
         font-weight: 300;
         font-size: 14px;
-        justify-content: center;
+        justify-content: flex-start;
       }
     }
   }

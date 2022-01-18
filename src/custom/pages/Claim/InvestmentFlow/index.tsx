@@ -181,10 +181,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
                       <b>Vesting:</b>
                       <i>No</i>
                     </span>
-                    <span>
-                      <b>Ends in:</b>
-                      <i>8 days, 19h, 40m, 06s</i>
-                    </span>
                   </td>
                 </tr>
 
@@ -228,10 +224,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
                     <span>
                       <b>Vesting:</b>
                       <i>4 years (linear)</i>
-                    </span>
-                    <span>
-                      <b>Ends in:</b>
-                      <i>8 days, 19h, 40m, 06s</i>
                     </span>
                   </td>
                 </tr>
