@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatUnits, parseUnits } from '@ethersproject/units'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { formatUnits } from '@ethersproject/units'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput } from '../styled'
+import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
 import Row from 'components/Row'
 import { CheckCircle } from 'react-feather'
@@ -12,6 +12,7 @@ import { InvestOptionProps } from '.'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 
 import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
@@ -29,14 +30,28 @@ const RangeStep = styled.button`
   border: none;
   font-size: 0.8rem;
   cursor: pointer;
-  color: blue;
+  color: ${({ theme }) => theme.primary1};
   padding: 0;
 `
 
-const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
+const INVESTMENT_STEPS = ['0', '25', '50', '75', '100']
 
-export default function InvestOption({ approveData, updateInvestAmount, claim }: InvestOptionProps) {
-  const { currencyAmount, price, cost: maxCost, investedAmount } = claim
+function _scaleValue(maxValue: CurrencyAmount<Currency>, value: string) {
+  // parse percent to string, example 25% -> 4 or 50% -> 2
+  const parsedValue = new Fraction(value, '100')
+
+  // divide maxValue with parsed value to get invest amount
+  return maxValue.multiply(parsedValue).asFraction
+}
+
+export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
+  const { currencyAmount, price, cost: maxCost } = claim
+  const { updateInvestAmount } = useClaimDispatchers()
+  const { investFlowData } = useClaimState()
+
+  const investedAmount = useMemo(() => investFlowData[optionIndex].investedAmount, [investFlowData, optionIndex])
+
+  const [percentage, setPercentage] = useState<string>(INVESTMENT_STEPS[0])
 
   const { account } = useActiveWeb3React()
 
@@ -44,17 +59,21 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
 
   const balance = useCurrencyBalance(account || undefined, token)
 
-  const handlePercentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
-  }
+  const decimals = balance?.currency?.decimals
 
-  const handleStepChange = (value: number) => {
-    console.log(value)
-  }
+  const handleStepChange = useCallback(
+    (value: string) => {
+      if (!maxCost || !balance) {
+        return
+      }
 
-  const handleInvestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateInvestAmount(claim.index, event.target.value)
-  }
+      const scaledCurrencyAmount = _scaleValue(maxCost, value)
+
+      updateInvestAmount({ index: optionIndex, amount: scaledCurrencyAmount.quotient.toString() })
+      setPercentage(value)
+    },
+    [balance, maxCost, optionIndex, updateInvestAmount]
+  )
 
   const onMaxClick = useCallback(() => {
     if (!maxCost || !balance) {
@@ -62,11 +81,10 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
     }
 
     const amount = maxCost.greaterThan(balance) ? balance : maxCost
-    // store the value as a string to prevent unnecessary re-renders
-    const investAmount = formatUnits(amount.quotient.toString(), balance.currency.decimals)
 
-    updateInvestAmount(claim.index, investAmount)
-  }, [balance, claim.index, maxCost, updateInvestAmount])
+    updateInvestAmount({ index: optionIndex, amount: amount.quotient.toString() })
+    setPercentage(INVESTMENT_STEPS[INVESTMENT_STEPS.length - 1])
+  }, [balance, maxCost, optionIndex, updateInvestAmount])
 
   // Cache approveData methods
   const approveCallback = approveData?.approveCallback
@@ -88,11 +106,11 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
   }, [approveCallback, token?.symbol])
 
   const vCowAmount = useMemo(() => {
-    if (!token || !price) {
+    if (!token || !price || !investedAmount) {
       return
     }
 
-    const investA = CurrencyAmount.fromRawAmount(token, parseUnits(investedAmount, token.decimals).toString())
+    const investA = CurrencyAmount.fromRawAmount(token, investedAmount)
     return investA.multiply(price)
   }, [investedAmount, price, token])
 
@@ -166,14 +184,14 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
 
             <div>
               <RangeSteps>
-                {INVESTMENT_STEPS.map((step: number) => (
+                {INVESTMENT_STEPS.map((step: string) => (
                   <RangeStep onClick={() => handleStepChange(step)} key={step}>
                     {step}%
                   </RangeStep>
                 ))}
               </RangeSteps>
 
-              <input onChange={handlePercentChange} type="range" min="0" max="100" value={0} />
+              <InvestAvailableBar percentage={Number(percentage)} />
             </div>
           </span>
         </InvestSummary>
@@ -191,8 +209,8 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               <input
                 // disabled
                 placeholder="0"
-                value={investedAmount === '0' ? '' : investedAmount}
-                onChange={(event) => handleInvestChange(event)}
+                value={investedAmount ? formatUnits(investedAmount, decimals) : '0'}
+                onChange={(event) => updateInvestAmount({ index: claim.index, amount: event.target.value })}
                 max={formatSmart(currencyAmount)}
               />
               <b>{currencyAmount?.currency?.symbol}</b>

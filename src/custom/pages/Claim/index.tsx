@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback } from 'state/claim/hooks'
+import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { PageWrapper, FooterNavButtons } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
@@ -29,6 +29,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 
 import { GNO, USDC_BY_CHAIN } from 'constants/tokens'
 import { isSupportedChain } from 'utils/supportedChainId'
+import { EnhancedUserClaimData } from './types'
 
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
 const USDC_CLAIM_APPROVE_MESSAGE = 'Approving USDC for investing in vCOW'
@@ -128,14 +129,8 @@ export default function Claim() {
 
     const freeClaims = getFreeClaims(userClaimData)
 
-    // check if there are any selected (paid) claims
-    if (!selected.length) {
-      const inputData = freeClaims.map(({ index }) => ({ index }))
-
-      console.log('starting claiming with', inputData)
-
+    const sendTransaction = (inputData: ClaimInput[]) => {
       setClaimStatus(ClaimStatus.ATTEMPTING)
-
       claimCallback(inputData)
         // this is not right currently
         .then((/* res */) => {
@@ -146,11 +141,29 @@ export default function Claim() {
           setClaimStatus(ClaimStatus.DEFAULT)
           console.log(error)
         })
+    }
+
+    // check if there are any selected (paid) claims
+    let inputData
+    if (!selected.length) {
+      inputData = freeClaims.map(({ index }) => ({ index }))
+      console.log('Starting claiming with', inputData)
+      sendTransaction(inputData)
+    } else if (investFlowStep == 2) {
+      // Free claimings + selected investment oportunities
+      const selectedIndex = [...getIndexes(freeClaims), ...selected]
+      inputData = selectedIndex.reduce<EnhancedUserClaimData[]>((acc, idx: number) => {
+        const claim = userClaimData.find(({ index }) => idx === index)
+        if (claim) {
+          // TODO: @nenadV91, here you can modify the amounts to use the partial investments
+          acc.push(claim)
+        }
+        return acc
+      }, [])
+
+      console.log('Starting Investment Flow', inputData)
+      sendTransaction(inputData)
     } else {
-      const inputData = [...getIndexes(freeClaims), ...selected].map((idx: number) => {
-        return userClaimData.find(({ index }) => idx === index)
-      })
-      console.log('starting investment flow', inputData)
       setIsInvestFlowActive(true)
     }
   }
@@ -285,7 +298,7 @@ export default function Claim() {
                   <Trans>Review</Trans>
                 </ButtonPrimary>
               ) : (
-                <ButtonPrimary onClick={() => setInvestFlowStep(3)}>
+                <ButtonPrimary onClick={handleSubmitClaim}>
                   <Trans>Claim and invest vCOW</Trans>
                 </ButtonPrimary>
               )}
