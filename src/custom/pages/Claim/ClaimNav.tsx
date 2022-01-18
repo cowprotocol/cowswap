@@ -33,7 +33,7 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
           )}
 
           <ButtonSecondary disabled={isAttempting} onClick={handleChangeAccount}>
-            Change account
+            Claim for another account
           </ButtonSecondary>
         </ClaimAccountButtons>
       </ClaimAccount>
