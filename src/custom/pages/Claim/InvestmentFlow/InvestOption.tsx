@@ -50,7 +50,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const { updateInvestAmount } = useClaimDispatchers()
   const { investFlowData } = useClaimState()
 
-  const { handleSetError, ErrorModal } = useErrorModal()
+  const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
   const investedAmount = useMemo(() => investFlowData[optionIndex].investedAmount, [investFlowData, optionIndex])
 
@@ -93,7 +93,9 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   // Save "local" approving state (pre-BC) for rendering spinners etc
   const [approving, setApproving] = useState(false)
   const handleApprove = useCallback(async () => {
-    handleSetError(undefined)
+    // reset errors and close any modals
+    handleCloseError()
+
     if (!approveCallback) return
 
     try {
@@ -106,7 +108,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     } finally {
       setApproving(false)
     }
-  }, [approveCallback, handleSetError, token?.symbol])
+  }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
 
   const vCowAmount = useMemo(() => {
     if (!token || !price || !investedAmount) {

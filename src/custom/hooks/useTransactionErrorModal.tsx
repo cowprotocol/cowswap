@@ -14,7 +14,7 @@ export default function useTransactionErrorModal() {
     closeModal,
     TransactionErrorModal: useCallback(
       ({ message, onDismiss }: { message?: string; onDismiss: () => void }) => (
-        <GpModal isOpen={showTransactionErrorModal} onDismiss={closeModal}>
+        <GpModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal}>
           <TransactionErrorContent onDismiss={onDismiss} message={message} />
         </GpModal>
       ),
