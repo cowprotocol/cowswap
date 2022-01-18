@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { parseUnits } from '@ethersproject/units'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
@@ -18,12 +17,14 @@ import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import { tryParseAmount } from 'state/swap/hooks'
+import { ZERO_PERCENT } from 'constants/misc'
 
 const INVESTMENT_STEPS = ['0', '25', '50', '75', '100']
 
 enum ErrorMsgs {
-  Balance = 'Insufficient balance to invest. Adjust the amount or go back to remove this investment option',
-  Input = 'Input amount is bigger then available investment amount',
+  Balance = 'Insufficient balance to cover input investment amount. Adjust the amount or go back to remove this investment option',
+  Input = 'Input amount is bigger than available investment amount',
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
@@ -67,27 +68,23 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       setTypedValue(value)
       setInputError('')
 
-      const input = parseFloat(value)
+      // parse to CurrencyAmount
+      const parsedAmount = tryParseAmount(value, token)
 
-      if (!value.length || isNaN(input)) {
+      // no amount/necessary params, return 0
+      if (!parsedAmount || !maxCost || !balance || !token) {
         updateInvestAmount({ index: optionIndex, amount: '0' })
         setPercentage('0')
         return
       }
 
-      if (!value || !maxCost || !balance || !token) {
-        return
-      }
-
-      // parse input to BitInt string
-      const parsed = CurrencyAmount.fromRawAmount(token, parseUnits(input.toString(), decimals).toString())
-
       // calculate percent
       const maxValue = maxCost.greaterThan(balance) ? balance : maxCost
-      const hundred = parseUnits('100', decimals).toString()
-      const percent = parsed.divide(maxValue).multiply(hundred)
+      const percent = maxValue.equalTo(ZERO_PERCENT)
+        ? ZERO_PERCENT
+        : new Percent(parsedAmount.quotient, maxValue.quotient)
 
-      if (percent.greaterThan(hundred)) {
+      if (parsedAmount.greaterThan(maxValue)) {
         setInputError(ErrorMsgs.Input)
         updateInvestAmount({ index: optionIndex, amount: '0' })
         setPercentage('0')
@@ -95,12 +92,12 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       }
 
       // update redux state with new investAmount value
-      updateInvestAmount({ index: optionIndex, amount: parsed.quotient.toString() })
+      updateInvestAmount({ index: optionIndex, amount: parsedAmount.quotient.toString() })
 
       // update the local state with percent value
       setPercentage(formatSmart(percent, 2) || '0')
     },
-    [balance, decimals, maxCost, optionIndex, token, updateInvestAmount]
+    [balance, maxCost, optionIndex, token, updateInvestAmount]
   )
 
   // Cache approveData methods
@@ -239,7 +236,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
             <label>
               <StyledNumericalInput
                 onUserInput={onInputChange}
-                disabled={!isSelfClaiming}
+                disabled={balance?.equalTo('0') || !isSelfClaiming}
                 placeholder="0"
                 $loading={false}
                 value={typedValue}
