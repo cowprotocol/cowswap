@@ -74,8 +74,8 @@ export const GNO_PRICE = '375000000000000' // '0.000375' GNO (18 decimals) per v
 export const USDC_PRICE = '150000' // '0.15' USDC (6 decimals) per vCOW, in atoms
 
 // Constants regarding investment time windows
-const INVESTMENT_TIME = ms`30 minutes`
-const AIRDROP_TIME = ms`40 minutes`
+const INVESTMENT_TIME = ms`2 weeks`
+const AIRDROP_TIME = ms`6 weeks`
 
 // For native token price calculation
 const DENOMINATOR = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
