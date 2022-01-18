@@ -32,6 +32,7 @@ export const PageWrapper = styled.div`
       --background: ${({ theme }) => theme.bg5};
       appearance: none;
       height: 21px;
+      width: 21px;
       outline: none;
       display: inline-block;
       vertical-align: top;
@@ -78,16 +79,13 @@ export const PageWrapper = styled.div`
         box-shadow: 0 0 0 var(--focus);
       }
 
-      &:not(.switch) {
-        width: 21px;
-        &:after {
-          opacity: var(--o, 0);
-        }
-        &:checked {
-          --o: 1;
-        }
+      &:after {
+        opacity: var(--o, 0);
       }
-
+      &:checked {
+        --o: 1;
+      }
+      
       & + label {
         font-size: 14px;
         line-height: 21px;
@@ -99,8 +97,7 @@ export const PageWrapper = styled.div`
     }
 
     input[type='checkbox'] {
-      &:not(.switch) {
-        border-radius: 7px;
+      border-radius: 7px;
 
         &:after {
           width: 5px;
@@ -112,38 +109,10 @@ export const PageWrapper = styled.div`
           top: 4px;
           transform: rotate(var(--r, 20deg));
         }
+
         &:checked {
           --r: 43deg;
         }
-      }
-
-      &.switch {
-        width: 38px;
-        border-radius: 11px;
-
-        &:after {
-          left: 2px;
-          top: 2px;
-          border-radius: 50%;
-          width: 15px;
-          height: 15px;
-          background: var(--ab, var(--border));
-          transform: translateX(var(--x, 0));
-        }
-
-        &:checked {
-          --ab: var(--active-inner);
-          --x: 17px;
-        }
-
-        &:disabled {
-          &:not(:checked) {
-            &:after {
-              opacity: .6;
-            }
-          }
-        }
-      }
     }
     
     input[type='radio'] {
@@ -888,6 +857,7 @@ export const InvestInput = styled.span`
 
   > div > span > b {
     margin: 0 3px 0 0;
+    font-weight: normal;
   }
 
   > div > span > i {

@@ -52,6 +52,10 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
     console.log(value)
   }
 
+  const handleInvestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateInvestAmount(claim.index, event.target.value)
+  }
+
   const onMaxClick = useCallback(() => {
     if (!maxCost || !balance) {
       return
@@ -169,14 +173,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
                 ))}
               </RangeSteps>
 
-              <input
-                style={{ width: '100%' }}
-                onChange={handlePercentChange}
-                type="range"
-                min="0"
-                max="100"
-                value={0}
-              />
+              <input onChange={handlePercentChange} type="range" min="0" max="100" value={0} />
             </div>
           </span>
         </InvestSummary>
@@ -194,7 +191,8 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
               <input
                 // disabled
                 placeholder="0"
-                value={investedAmount}
+                value={investedAmount === '0' ? '' : investedAmount}
+                onChange={(event) => handleInvestChange(event)}
                 max={formatSmart(currencyAmount)}
               />
               <b>{currencyAmount?.currency?.symbol}</b>
