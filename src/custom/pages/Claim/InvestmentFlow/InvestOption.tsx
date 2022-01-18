@@ -185,7 +185,7 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
                 {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
               </i>
               {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <button onClick={onMaxClick}>(invest max. possible)</button>
+              <button onClick={onMaxClick}>(invest max possible)</button>
             </span>
             <label>
               <input
