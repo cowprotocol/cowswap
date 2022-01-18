@@ -130,7 +130,11 @@ export default function ClaimsTable({
 
   return (
     <ClaimBreakdown>
-      <h2>vCOW claim breakdown</h2>
+      <p>
+        The table overview below represents your current vCow claiming opportunities. To move forward with one or all of
+        the options, simply select the row(s) you would like to engage with and move forward via the &apos;Claim
+        vCOW&apos; button.
+      </p>
       <ClaimTable>
         <table>
           <thead>

@@ -183,16 +183,21 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
         <InvestInput>
           <div>
             <span>
-              <b>Balance:</b>{' '}
+              <b>Balance:</b>
               <i>
-                {formatSmart(balance)} {currencyAmount?.currency?.symbol}
+                {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
               </i>
               {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <button onClick={onMaxClick}>Invest max. possible</button>
+              <button onClick={onMaxClick}>(invest max. possible)</button>
             </span>
             <label>
+              <input
+                // disabled
+                placeholder="0"
+                value={investedAmount}
+                max={formatSmart(currencyAmount)}
+              />
               <b>{currencyAmount?.currency?.symbol}</b>
-              <input disabled placeholder="0" value={investedAmount} max={formatSmart(currencyAmount)} />
             </label>
             <i>Receive: {formatSmart(vCowAmount) || 0} vCOW</i>
             {/* Insufficient balance validation error */}
