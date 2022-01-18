@@ -5,6 +5,8 @@ import ms from 'ms.macro'
 import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
+import { BigNumber } from '@ethersproject/bignumber'
+
 import { ClaimType } from '@gnosis.pm/cow-token'
 
 import { VCow as VCowType } from 'abis/types'
@@ -290,6 +292,53 @@ export function useDeploymentTimestamp(): number | null {
   }, [chainId, vCowContract])
 
   return timestamp
+}
+
+export function useNativeTokenPrice(): string | null {
+  return _useVCowPriceForToken('wethPrice')
+}
+
+export function useGnoPrice(): string | null {
+  return _useVCowPriceForToken('gnoPrice')
+}
+
+export function useUsdcPrice(): string | null {
+  return _useVCowPriceForToken('usdcPrice')
+}
+
+/**
+ * Generic hook for fetching contract value for the many prices
+ */
+function _useVCowPriceForToken(priceFnName: 'wethPrice' | 'gnoPrice' | 'usdcPrice'): string | null {
+  const { chainId } = useActiveWeb3React()
+  const vCowContract = useVCowContract()
+
+  const [price, setPrice] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!chainId || !vCowContract) {
+      return
+    }
+    console.debug(`_useVCowPriceForToken::fetching price for `, priceFnName)
+
+    vCowContract[priceFnName]().then((price: BigNumber) => setPrice(price.toString()))
+  }, [chainId, priceFnName, vCowContract])
+
+  return price
+}
+
+export type VCowPrices = {
+  native: string | null
+  gno: string | null
+  usdc: string | null
+}
+
+export function useVCowPrices(): VCowPrices {
+  const native = useNativeTokenPrice()
+  const gno = useGnoPrice()
+  const usdc = useUsdcPrice()
+
+  return useMemo(() => ({ native, gno, usdc }), [gno, native, usdc])
 }
 
 /**
