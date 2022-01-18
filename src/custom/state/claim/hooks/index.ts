@@ -12,7 +12,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { useSingleContractMultipleData } from 'state/multicall/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
-import { V_COW } from 'constants/tokens'
+import { GpEther, V_COW } from 'constants/tokens'
 
 import { formatSmart } from 'utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -76,8 +76,8 @@ export const GNO_PRICE = '375000000000000' // '0.000375' GNO (18 decimals) per v
 export const USDC_PRICE = '150000' // '0.15' USDC (6 decimals) per vCOW, in atoms
 
 // Constants regarding investment time windows
-const TWO_WEEKS = ms`2 weeks`
-const SIX_WEEKS = ms`6 weeks`
+const INVESTMENT_TIME = ms`2 weeks`
+const AIRDROP_TIME = ms`6 weeks`
 
 // For native token price calculation
 const DENOMINATOR = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
@@ -148,8 +148,7 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
   const userClaims = useUserClaims(account)
   const contract = useVCowContract()
 
-  const isInvestmentStillAvailable = useInvestmentStillAvailable()
-  const isAirdropStillAvailable = useAirdropStillAvailable()
+  const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
 
   // build list of parameters, with the claim index
   // we check for all claims because expired now might have been claimed before
@@ -175,7 +174,7 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
         result.result?.[0] === true // result true means claimed
       ) {
         claimed.push(claim)
-      } else if (!isAirdropStillAvailable || (!isInvestmentStillAvailable && PAID_CLAIM_TYPES.includes(claim.type))) {
+      } else if (!isAirdropWindowOpen || (!isInvestmentWindowOpen && PAID_CLAIM_TYPES.includes(claim.type))) {
         expired.push(claim)
       } else {
         available.push(claim)
@@ -183,7 +182,7 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
     })
 
     return { available, expired, claimed }
-  }, [isAirdropStillAvailable, isInvestmentStillAvailable, results, userClaims])
+  }, [isAirdropWindowOpen, isInvestmentWindowOpen, results, userClaims])
 }
 
 /**
@@ -284,7 +283,7 @@ const createMockTx = (data: number[]) => ({
  *
  * Returns null if in there's no network or vCowContract doesn't exist
  */
-export function useDeploymentTimestamp(): number | null {
+function useDeploymentTimestamp(): number | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
   const [timestamp, setTimestamp] = useState<number | null>(null)
@@ -303,42 +302,41 @@ export function useDeploymentTimestamp(): number | null {
   return timestamp
 }
 
-/**
- * Returns the timestamp of when the investment window closes
- */
-export function useInvestmentDeadline(): number | null {
-  const deploymentTimestamp = useDeploymentTimestamp()
-
-  return deploymentTimestamp && deploymentTimestamp + TWO_WEEKS
+type ClaimTimeInfo = {
+  /**
+   * Time when contract was deployed, fetched from chain
+   */
+  deployment: number | null
+  /**
+   * Time when investment window will close (2 weeks after contract deployment)
+   */
+  investmentDeadline: number | null
+  /**
+   * Time when airdrop window will close (6 weeks after contract deployment)
+   */
+  airdropDeadline: number | null
+  /**
+   * Whether investment window is still open, based on local time
+   */
+  isInvestmentWindowOpen: boolean
+  /**
+   * Whether airdrop window is still open, based on local time
+   */
+  isAirdropWindowOpen: boolean
 }
 
 /**
- * Returns whether vCOW contract is still open for investments
- * That is, there has been less than 2 weeks since it was deployed
+ * Overall Claim time related properties
  */
-export function useInvestmentStillAvailable(): boolean {
-  const investmentDeadline = useInvestmentDeadline()
+export function useClaimTimeInfo(): ClaimTimeInfo {
+  const deployment = useDeploymentTimestamp()
+  const investmentDeadline = deployment && deployment + INVESTMENT_TIME
+  const airdropDeadline = deployment && deployment + AIRDROP_TIME
 
-  return Boolean(investmentDeadline && investmentDeadline > Date.now())
-}
+  const isInvestmentWindowOpen = Boolean(investmentDeadline && investmentDeadline > Date.now())
+  const isAirdropWindowOpen = Boolean(airdropDeadline && airdropDeadline > Date.now())
 
-/**
- * Returns the timestamp of when the airdrop window closes
- */
-export function useAirdropDeadline(): number | null {
-  const deploymentTimestamp = useDeploymentTimestamp()
-
-  return deploymentTimestamp && deploymentTimestamp + SIX_WEEKS
-}
-
-/**
- * Returns whether vCOW contract is still open for airdrops
- * That is, there has been less than 6 weeks since it was deployed
- */
-export function useAirdropStillAvailable(): boolean {
-  const airdropDeadline = useAirdropDeadline()
-
-  return Boolean(airdropDeadline && airdropDeadline > Date.now())
+  return { deployment, investmentDeadline, airdropDeadline, isInvestmentWindowOpen, isAirdropWindowOpen }
 }
 
 /**
@@ -381,8 +379,7 @@ export function useClaimCallback(account: string | null | undefined): {
   const claims = useUserAvailableClaims(account)
   const vCowContract = useVCowContract()
 
-  const isInvestmentStillAvailable = useInvestmentStillAvailable()
-  const isAirdropStillAvailable = useAirdropStillAvailable()
+  const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
 
   // used for popup summary
   const addTransaction = useTransactionAdder()
@@ -429,7 +426,7 @@ export function useClaimCallback(account: string | null | undefined): {
         throw new Error("Not initialized, can't claim")
       }
 
-      _validateClaimable(claims, claimInput, isInvestmentStillAvailable, isAirdropStillAvailable)
+      _validateClaimable(claims, claimInput, isInvestmentWindowOpen, isAirdropWindowOpen)
 
       const { args, totalClaimedAmount } = _getClaimManyArgs({ claimInput, claims, account, connectedAccount, chainId })
 
@@ -462,8 +459,8 @@ export function useClaimCallback(account: string | null | undefined): {
       chainId,
       claims,
       connectedAccount,
-      isAirdropStillAvailable,
-      isInvestmentStillAvailable,
+      isAirdropWindowOpen,
+      isInvestmentWindowOpen,
       vCowContract,
       vCowToken,
     ]
@@ -759,36 +756,42 @@ export function useUserEnhancedClaimData(account: Account): EnhancedUserClaimDat
     const chainId = supportedChainId(preCheckChainId)
     if (!chainId) return []
 
-    return sorted.map<EnhancedUserClaimData>((claim) => {
-      const claimAmount = CurrencyAmount.fromRawAmount(ONE_VCOW.currency, claim.amount)
-
-      const tokenAndAmount = claimTypeToTokenAmount(claim.type, chainId)
-
-      const data: EnhancedUserClaimData = {
-        ...claim,
-        isFree: isFreeClaim(claim.type),
-        claimAmount,
-      }
-
-      if (!tokenAndAmount) {
-        return data
-      } else {
-        data.price = new Price({
-          baseAmount: ONE_VCOW,
-          quoteAmount: CurrencyAmount.fromRawAmount(tokenAndAmount.token, tokenAndAmount.amount),
-        }).invert()
-        // get the currency amount using the price base currency (remember price was inverted) and claim amount
-        data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
-
-        // e.g 1000 vCow / 20 GNO = 50 GNO cost
-        data.cost = data.currencyAmount.divide(data.price)
-
-        return data
-      }
-    })
+    return sorted.map((claim) => _enhanceClaimData(claim, chainId))
   }, [preCheckChainId, sorted])
 }
 
 function _sortTypes(a: UserClaimData, b: UserClaimData): number {
   return Number(isFreeClaim(b.type)) - Number(isFreeClaim(a.type))
+}
+
+function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId): EnhancedUserClaimData {
+  const claimAmount = CurrencyAmount.fromRawAmount(ONE_VCOW.currency, claim.amount)
+
+  const data: EnhancedUserClaimData = {
+    ...claim,
+    isFree: isFreeClaim(claim.type),
+    claimAmount,
+  }
+
+  const tokenAndAmount = claimTypeToTokenAmount(claim.type, chainId)
+
+  // Free claims will have tokenAndAmount === undefined
+  // If it's not a free claim, store the price and calculate cost in investment token
+  if (tokenAndAmount) {
+    data.price = _getPrice(tokenAndAmount)
+    // get the currency amount using the price base currency (remember price was inverted)
+    data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
+
+    // e.g 1000 vCow / 20 GNO = 50 GNO cost
+    data.cost = data.currencyAmount.divide(data.price)
+  }
+
+  return data
+}
+
+function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }) {
+  return new Price({
+    baseAmount: ONE_VCOW,
+    quoteAmount: CurrencyAmount.fromRawAmount(token, amount),
+  }).invert()
 }

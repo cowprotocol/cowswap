@@ -34,19 +34,6 @@ const RangeStep = styled.button`
   padding: 0;
 `
 
-const InvestBalance = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
-
-const InvestMaxBalance = styled.button`
-  cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
-  background: none;
-  border: none;
-`
-
 const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
@@ -224,19 +211,22 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
         </InvestSummary>
         <InvestInput>
           <div>
-            <InvestBalance>
-              <div>
-                <b>Balance:</b>{' '}
-                <i>
-                  {formatSmart(balance)} {currencyAmount?.currency?.symbol}
-                </i>
-              </div>
+            <span>
+              <b>Balance:</b>
+              <i>
+                {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
+              </i>
               {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <InvestMaxBalance onClick={onMaxClick}>Invest max. possible</InvestMaxBalance>
-            </InvestBalance>
+              <button onClick={onMaxClick}>(invest max. possible)</button>
+            </span>
             <label>
+              <input
+                // disabled
+                placeholder="0"
+                value={investedAmount}
+                max={formatSmart(currencyAmount)}
+              />
               <b>{currencyAmount?.currency?.symbol}</b>
-              <input disabled placeholder="0" value={investedAmount} max={formatSmart(currencyAmount)} />
             </label>
             <i>Receive: {formatSmart(vCowAmount) || 0} vCOW</i>
             {/* Insufficient balance validation error */}
