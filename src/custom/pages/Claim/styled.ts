@@ -1036,3 +1036,14 @@ export const ClaimAccountButtons = styled.div`
   display: flex;
   flex-direction: column;
 `
+
+export const AccountClaimSummary = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 12px;
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+  }
+`

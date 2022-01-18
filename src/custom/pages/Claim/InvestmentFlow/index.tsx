@@ -7,6 +7,7 @@ import {
   StepIndicator,
   Steps,
   ClaimTable,
+  AccountClaimSummary,
   TokenLogo,
 } from 'pages/Claim/styled'
 import { ClaimType, useClaimState, useUserEnhancedClaimData } from 'state/claim/hooks'
@@ -143,6 +144,17 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
       {/* Invest flow: Step 2 > Review summary */}
       {investFlowStep === 2 ? (
         <InvestContent>
+          <AccountClaimSummary>
+            <span>
+              <b>Claiming with account:</b>
+              <i>{account} (connected account)</i>
+            </span>
+            <span>
+              {' '}
+              <b>Receiving account:</b>
+              <i>{activeClaimAccount}</i>
+            </span>
+          </AccountClaimSummary>
           <ClaimTable>
             <table>
               <thead>
@@ -161,15 +173,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
                     <span>
                       <b>Amount to receive:</b>
                       <i>13,120.50 vCOW</i>
-                    </span>
-                    <span>
-                      <b>Claiming with account:</b>
-                      <i>{account} (connected account)</i>
-                    </span>
-                    <span>
-                      {' '}
-                      <b>Receiving account:</b>
-                      <i>{activeClaimAccount}</i>
                     </span>
                   </td>
 
@@ -202,15 +205,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
                     <span>
                       <b>Amount to receive:</b>
                       <i>13,120.50 vCOW</i>
-                    </span>
-                    <span>
-                      <b>Investing with account:</b>
-                      <i>{account} (connected account)</i>
-                    </span>
-                    <span>
-                      {' '}
-                      <b>Receiving account:</b>
-                      <i>{activeClaimAccount}</i>
                     </span>
                   </td>
 
