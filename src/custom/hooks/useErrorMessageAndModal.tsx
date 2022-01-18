@@ -29,17 +29,16 @@ export function useErrorMessage() {
 }
 
 export function useErrorModal() {
-  // Any async bc errors
-  const [internalError, setError] = useState<string | undefined>()
+  const [internalError, setInternalError] = useState<string | undefined>()
   const { openModal, closeModal, TransactionErrorModal } = useTransactionErrorModal()
 
   return useMemo(() => {
     const handleCloseError = () => {
       closeModal()
-      setError(undefined)
+      setInternalError(undefined)
     }
     const handleSetError = (error: string | undefined) => {
-      setError(error)
+      setInternalError(error)
 
       // IF error, open modal
       error && openModal()
@@ -53,5 +52,5 @@ export function useErrorModal() {
         <TransactionErrorModal onDismiss={handleCloseError} message={message} />
       ),
     }
-  }, [TransactionErrorModal, closeModal, internalError, openModal])
+  }, [internalError, closeModal, openModal, TransactionErrorModal])
 }
