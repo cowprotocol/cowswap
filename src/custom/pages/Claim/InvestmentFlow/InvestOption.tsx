@@ -1,8 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
-import styled from 'styled-components/macro'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { parseUnits } from '@ethersproject/units'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
@@ -13,79 +12,96 @@ import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
+import { StyledNumericalInput } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 
 import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 
-const RangeSteps = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
-`
-
-const RangeStep = styled.button`
-  background: none;
-  border: none;
-  font-size: 0.8rem;
-  cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
-  padding: 0;
-`
-
 const INVESTMENT_STEPS = ['0', '25', '50', '75', '100']
 
-function _scaleValue(maxValue: CurrencyAmount<Currency>, value: string) {
-  // parse percent to string, example 25% -> 4 or 50% -> 2
-  const parsedValue = new Fraction(value, '100')
-
-  // divide maxValue with parsed value to get invest amount
-  return maxValue.multiply(parsedValue).asFraction
+enum ErrorMsgs {
+  Balance = 'Insufficient balance to invest. Adjust the amount or go back to remove this investment option',
+  Input = 'Input amount is bigger then available investment amount',
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost } = claim
   const { updateInvestAmount } = useClaimDispatchers()
-  const { investFlowData } = useClaimState()
+  const { investFlowData, activeClaimAccount } = useClaimState()
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
-  const investedAmount = useMemo(() => investFlowData[optionIndex].investedAmount, [investFlowData, optionIndex])
+  const { account } = useActiveWeb3React()
 
   const [percentage, setPercentage] = useState<string>(INVESTMENT_STEPS[0])
+  const [typedValue, setTypedValue] = useState<string>('0')
+  const [inputError, setInputError] = useState<string>('')
 
-  const { account } = useActiveWeb3React()
+  const investedAmount = investFlowData[optionIndex].investedAmount
 
   const token = currencyAmount?.currency
   const decimals = token?.decimals
   const balance = useCurrencyBalance(account || undefined, token)
 
-  const handleStepChange = useCallback(
-    (value: string) => {
-      if (!maxCost || !balance) {
-        return
-      }
+  const isSelfClaiming = account === activeClaimAccount
 
-      const scaledCurrencyAmount = _scaleValue(maxCost, value)
-
-      updateInvestAmount({ index: optionIndex, amount: scaledCurrencyAmount.quotient.toString() })
-      setPercentage(value)
-    },
-    [balance, maxCost, optionIndex, updateInvestAmount]
-  )
-
-  const onMaxClick = useCallback(() => {
+  // on invest max amount click handler
+  const setMaxAmount = useCallback(() => {
     if (!maxCost || !balance) {
       return
     }
 
-    const amount = maxCost.greaterThan(balance) ? balance : maxCost
+    const value = maxCost.greaterThan(balance) ? balance : maxCost
+    const amount = value.quotient.toString()
 
-    updateInvestAmount({ index: optionIndex, amount: amount.quotient.toString() })
+    updateInvestAmount({ index: optionIndex, amount })
+    setTypedValue(formatSmart(value, decimals) || '')
     setPercentage(INVESTMENT_STEPS[INVESTMENT_STEPS.length - 1])
-  }, [balance, maxCost, optionIndex, updateInvestAmount])
+  }, [balance, decimals, maxCost, optionIndex, updateInvestAmount])
+
+  // on input field change handler
+  const onInputChange = useCallback(
+    (value: string) => {
+      setTypedValue(value)
+      setInputError('')
+
+      const input = parseFloat(value)
+
+      if (!value.length || isNaN(input)) {
+        updateInvestAmount({ index: optionIndex, amount: '0' })
+        setPercentage('0')
+        return
+      }
+
+      if (!value || !maxCost || !balance || !token) {
+        return
+      }
+
+      // parse input to BitInt string
+      const parsed = CurrencyAmount.fromRawAmount(token, parseUnits(input.toString(), decimals).toString())
+
+      // calculate percent
+      const maxValue = maxCost.greaterThan(balance) ? balance : maxCost
+      const hundred = parseUnits('100', decimals).toString()
+      const percent = parsed.divide(maxValue).multiply(hundred)
+
+      if (percent.greaterThan(hundred)) {
+        setInputError(ErrorMsgs.Input)
+        updateInvestAmount({ index: optionIndex, amount: '0' })
+        setPercentage('0')
+        return
+      }
+
+      // update redux state with new investAmount value
+      updateInvestAmount({ index: optionIndex, amount: parsed.quotient.toString() })
+
+      // update the local state with percent value
+      setPercentage(formatSmart(percent, 2) || '0')
+    },
+    [balance, decimals, maxCost, optionIndex, token, updateInvestAmount]
+  )
 
   // Cache approveData methods
   const approveCallback = approveData?.approveCallback
@@ -118,6 +134,22 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     const investA = CurrencyAmount.fromRawAmount(token, investedAmount)
     return investA.multiply(price)
   }, [investedAmount, price, token])
+
+  // if its claiming for someone else we will set values to max
+  // if there is not enough balance then we will set an error
+  useEffect(() => {
+    if (!isSelfClaiming) {
+      if (!balance || !maxCost) {
+        return
+      }
+
+      if (balance.lessThan(maxCost)) {
+        setInputError(ErrorMsgs.Balance)
+      } else {
+        setMaxAmount()
+      }
+    }
+  }, [balance, isSelfClaiming, maxCost, setMaxAmount])
 
   return (
     <InvestTokenGroup>
@@ -186,18 +218,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
           <span>
             <b>Available investment used</b>
-
-            <div>
-              <RangeSteps>
-                {INVESTMENT_STEPS.map((step: string) => (
-                  <RangeStep onClick={() => handleStepChange(step)} key={step}>
-                    {step}%
-                  </RangeStep>
-                ))}
-              </RangeSteps>
-
-              <InvestAvailableBar percentage={Number(percentage)} />
-            </div>
+            <InvestAvailableBar percentage={Number(percentage)} />
           </span>
         </InvestSummary>
         {/* Error modal */}
@@ -211,22 +232,23 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
                 {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
               </i>
               {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <button onClick={onMaxClick}>(invest max. possible)</button>
+              <button disabled={!isSelfClaiming} onClick={setMaxAmount}>
+                (invest max. possible)
+              </button>
             </span>
             <label>
-              <input
-                // disabled
+              <StyledNumericalInput
+                onUserInput={onInputChange}
+                disabled={!isSelfClaiming}
                 placeholder="0"
-                value={investedAmount ? formatUnits(investedAmount, decimals) : '0'}
-                max={formatSmart(currencyAmount)}
+                $loading={false}
+                value={typedValue}
               />
               <b>{currencyAmount?.currency?.symbol}</b>
             </label>
             <i>Receive: {formatSmart(vCowAmount) || 0} vCOW</i>
             {/* Insufficient balance validation error */}
-            <small>
-              Insufficient balance to invest. Adjust the amount or go back to remove this investment option.
-            </small>
+            {inputError ? <small>{inputError}</small> : ''}
           </div>
         </InvestInput>
       </span>
