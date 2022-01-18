@@ -12,7 +12,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { useSingleContractMultipleData } from 'state/multicall/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
-import { V_COW } from 'constants/tokens'
+import { GpEther, V_COW } from 'constants/tokens'
 
 import { formatSmart } from 'utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
@@ -755,36 +755,42 @@ export function useUserEnhancedClaimData(account: Account): EnhancedUserClaimDat
     const chainId = supportedChainId(preCheckChainId)
     if (!chainId) return []
 
-    return sorted.map<EnhancedUserClaimData>((claim) => {
-      const claimAmount = CurrencyAmount.fromRawAmount(ONE_VCOW.currency, claim.amount)
-
-      const tokenAndAmount = claimTypeToTokenAmount(claim.type, chainId)
-
-      const data: EnhancedUserClaimData = {
-        ...claim,
-        isFree: isFreeClaim(claim.type),
-        claimAmount,
-      }
-
-      if (!tokenAndAmount) {
-        return data
-      } else {
-        data.price = new Price({
-          baseAmount: ONE_VCOW,
-          quoteAmount: CurrencyAmount.fromRawAmount(tokenAndAmount.token, tokenAndAmount.amount),
-        }).invert()
-        // get the currency amount using the price base currency (remember price was inverted) and claim amount
-        data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
-
-        // e.g 1000 vCow / 20 GNO = 50 GNO cost
-        data.cost = data.currencyAmount.divide(data.price)
-
-        return data
-      }
-    })
+    return sorted.map((claim) => _enhanceClaimData(claim, chainId))
   }, [preCheckChainId, sorted])
 }
 
 function _sortTypes(a: UserClaimData, b: UserClaimData): number {
   return Number(isFreeClaim(b.type)) - Number(isFreeClaim(a.type))
+}
+
+function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId): EnhancedUserClaimData {
+  const claimAmount = CurrencyAmount.fromRawAmount(ONE_VCOW.currency, claim.amount)
+
+  const data: EnhancedUserClaimData = {
+    ...claim,
+    isFree: isFreeClaim(claim.type),
+    claimAmount,
+  }
+
+  const tokenAndAmount = claimTypeToTokenAmount(claim.type, chainId)
+
+  // Free claims will have tokenAndAmount === undefined
+  // If it's not a free claim, store the price and calculate cost in investment token
+  if (tokenAndAmount) {
+    data.price = _getPrice(tokenAndAmount)
+    // get the currency amount using the price base currency (remember price was inverted)
+    data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
+
+    // e.g 1000 vCow / 20 GNO = 50 GNO cost
+    data.cost = data.currencyAmount.divide(data.price)
+  }
+
+  return data
+}
+
+function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }) {
+  return new Price({
+    baseAmount: ONE_VCOW,
+    quoteAmount: CurrencyAmount.fromRawAmount(token, amount),
+  }).invert()
 }
