@@ -211,7 +211,6 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@gnosis.pm/cow-runner-game": "^0.2.9",
-    "@gnosis.pm/cow-token": "^1.0.1",
     "@gnosis.pm/dex-js": "^0.14.0",
     "@gnosis.pm/gp-v2-contracts": "^1.1.2",
     "@gnosis.pm/safe-service-client": "^0.1.1",

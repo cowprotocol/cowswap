@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { ClaimType } from '@gnosis.pm/cow-token'
+import { ClaimType } from 'pages/Claim/types'
 
 import {
   InvestFlow,

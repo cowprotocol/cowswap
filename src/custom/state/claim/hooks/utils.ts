@@ -1,4 +1,4 @@
-import { ClaimType } from '@gnosis.pm/cow-token'
+import { ClaimType } from 'pages/Claim/types'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from 'constants/chains'

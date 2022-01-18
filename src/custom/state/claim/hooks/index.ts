@@ -7,7 +7,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ClaimType } from '@gnosis.pm/cow-token'
+import { ClaimType } from 'pages/Claim/types'
 
 import { VCow as VCowType } from 'abis/types'
 

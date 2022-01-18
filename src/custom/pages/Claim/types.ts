@@ -18,3 +18,12 @@ export type EnhancedUserClaimData = UserClaimData & {
   cost?: CurrencyAmount<Currency> | undefined
   isFree: boolean
 }
+
+export enum ClaimType {
+  Airdrop = 0,
+  GnoOption = 1,
+  UserOption = 2,
+  Investor = 3,
+  Team = 4,
+  Advisor = 5,
+}
