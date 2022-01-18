@@ -284,6 +284,8 @@ export function useDeploymentTimestamp(): number | null {
 }
 
 export function useNativeTokenPrice(): string | null {
+  // TODO: rename fn to `nativeTokenPrice` and revert e7197dd27287ff1460a7d7af22734cae938b8c83
+  //  when there's a new deployment
   return _useVCowPriceForToken('wethPrice')
 }
 
