@@ -722,7 +722,7 @@ export function useClaimDispatchers() {
       // investing
       setIsInvestFlowActive: (payload: boolean) => dispatch(setIsInvestFlowActive(payload)),
       setInvestFlowStep: (payload: number) => dispatch(setInvestFlowStep(payload)),
-      initInvestFlowData: (payload: EnhancedUserClaimData[]) => dispatch(initInvestFlowData(payload)),
+      initInvestFlowData: () => dispatch(initInvestFlowData()),
       updateInvestAmount: (payload: { index: number; amount: string }) => dispatch(updateInvestAmount(payload)),
       // claim row selection
       setSelected: (payload: number[]) => dispatch(setSelected(payload)),

@@ -88,14 +88,16 @@ export default createReducer(initialState, (builder) =>
     .addCase(setInvestFlowStep, (state, { payload }) => {
       state.investFlowStep = payload
     })
-    .addCase(initInvestFlowData, (state, { payload }) => {
-      const { selected } = current(state)
+    .addCase(initInvestFlowData, (state) => {
+      const { selected, isInvestFlowActive } = current(state)
 
-      const data = payload
-        .filter(({ index }) => selected.includes(index))
-        .map(({ index }) => ({ index, investedAmount: '0' }))
+      const data = selected.map((index) => ({ index, investedAmount: '0' }))
 
-      state.investFlowData.push(...data)
+      if (isInvestFlowActive) {
+        state.investFlowData.push(...data)
+      } else {
+        state.investFlowData.length = 0
+      }
     })
     .addCase(updateInvestAmount, (state, { payload: { index, amount } }) => {
       state.investFlowData[index].investedAmount = amount

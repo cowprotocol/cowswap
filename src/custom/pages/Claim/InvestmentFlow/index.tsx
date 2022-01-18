@@ -56,7 +56,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
   }, [claimData, selected])
 
   useEffect(() => {
-    initInvestFlowData(isInvestFlowActive ? claimData : [])
+    initInvestFlowData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInvestFlowActive])
 

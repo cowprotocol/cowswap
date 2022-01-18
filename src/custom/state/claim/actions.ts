@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit'
-import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 export enum ClaimStatus {
   DEFAULT = 'DEFAULT',
@@ -24,7 +23,7 @@ export type ClaimActions = {
   // investing
   setIsInvestFlowActive: (payload: boolean) => void
   setInvestFlowStep: (payload: number) => void
-  initInvestFlowData: (payload: EnhancedUserClaimData[]) => void
+  initInvestFlowData: () => void
   updateInvestAmount: (payload: { index: number; amount: string }) => void
 
   // claim row selection
@@ -47,7 +46,7 @@ export const setClaimStatus = createAction<ClaimStatus>('claim/setClaimStatus')
 // investing
 export const setIsInvestFlowActive = createAction<boolean>('claim/setIsInvestFlowActive')
 export const setInvestFlowStep = createAction<number>('claim/setInvestFlowStep')
-export const initInvestFlowData = createAction<EnhancedUserClaimData[]>('claim/initInvestFlowData')
+export const initInvestFlowData = createAction('claim/initInvestFlowData')
 export const updateInvestAmount = createAction<{
   index: number
   amount: string
