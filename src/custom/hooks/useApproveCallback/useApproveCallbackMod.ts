@@ -52,8 +52,13 @@ export function useApproveCallback({
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
+    // is the optionally set check amount less than current set allowance?
+    const isOptionalAmountLessThanAllowance = !!amountToCheckAgainstAllowance?.lessThan(currentAllowance)
+    // is current set allowance less than actual approving amount?
+    const isApprovingAmountLessThanAllowance = currentAllowance.lessThan(amountToApprove)
+
     // Return approval state
-    if ((amountToCheckAgainstAllowance || currentAllowance).lessThan(amountToApprove)) {
+    if (isOptionalAmountLessThanAllowance || isApprovingAmountLessThanAllowance) {
       return pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
     } else {
       // Enough allowance
