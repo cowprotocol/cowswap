@@ -330,9 +330,7 @@ export function useClaimTimeInfo(): ClaimTimeInfo {
 }
 
 export function useNativeTokenPrice(): string | null {
-  // TODO: rename fn to `nativeTokenPrice` and revert e7197dd27287ff1460a7d7af22734cae938b8c83
-  //  when there's a new deployment
-  return _useVCowPriceForToken('wethPrice')
+  return _useVCowPriceForToken('nativeTokenPrice')
 }
 
 export function useGnoPrice(): string | null {
@@ -346,7 +344,7 @@ export function useUsdcPrice(): string | null {
 /**
  * Generic hook for fetching contract value for the many prices
  */
-function _useVCowPriceForToken(priceFnName: 'wethPrice' | 'gnoPrice' | 'usdcPrice'): string | null {
+function _useVCowPriceForToken(priceFnName: 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'): string | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
 
