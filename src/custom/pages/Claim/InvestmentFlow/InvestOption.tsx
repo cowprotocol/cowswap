@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatUnits, parseUnits } from '@ethersproject/units'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { formatUnits } from '@ethersproject/units'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
@@ -34,7 +34,15 @@ const RangeStep = styled.button`
   padding: 0;
 `
 
-const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
+const INVESTMENT_STEPS = ['0', '25', '50', '75', '100']
+
+function _scaleValue(maxValue: CurrencyAmount<Currency>, value: string) {
+  // parse percent to string, example 25% -> 4 or 50% -> 2
+  const parsedValue = new Fraction(value, '100')
+
+  // divide maxValue with parsed value to get invest amount
+  return maxValue.multiply(parsedValue).asFraction
+}
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost } = claim
@@ -43,7 +51,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
   const investedAmount = useMemo(() => investFlowData[optionIndex].investedAmount, [investFlowData, optionIndex])
 
-  const [percentage, setPercentage] = useState<number>(0)
+  const [percentage, setPercentage] = useState<string>(INVESTMENT_STEPS[0])
 
   const { account } = useActiveWeb3React()
 
@@ -53,37 +61,18 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
   const decimals = balance?.currency?.decimals
 
-  const scaleValue = useCallback(
-    (maxValue: string, value: number) => {
-      if (value === 0) {
-        return parseUnits('0', decimals)
-      }
-
-      // parse percent to string, example 25% -> 4 or 50% -> 2
-      const parsedValue = parseUnits((100 / value).toFixed(decimals), decimals)
-
-      // parse maxValue to string
-      const parsedMaxValue = parseUnits(maxValue, decimals)
-
-      // divide parsedMax with parsed value to get invest amount
-      return parsedMaxValue.div(parsedValue).toString()
-    },
-    [decimals]
-  )
-
   const handleStepChange = useCallback(
-    (value: number) => {
+    (value: string) => {
       if (!maxCost || !balance) {
         return
       }
 
-      const scaled = scaleValue(maxCost.quotient.toString(), value)
-      const amount = formatUnits(scaled, decimals)
+      const scaledCurrencyAmount = _scaleValue(maxCost, value)
 
-      updateInvestAmount({ index: optionIndex, amount })
+      updateInvestAmount({ index: optionIndex, amount: scaledCurrencyAmount.quotient.toString() })
       setPercentage(value)
     },
-    [balance, decimals, maxCost, optionIndex, scaleValue, updateInvestAmount]
+    [balance, maxCost, optionIndex, updateInvestAmount]
   )
 
   const onMaxClick = useCallback(() => {
@@ -92,12 +81,10 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     }
 
     const amount = maxCost.greaterThan(balance) ? balance : maxCost
-    // store the value as a string to prevent unnecessary re-renders
-    const investAmount = formatUnits(amount.quotient.toString(), decimals)
 
-    updateInvestAmount({ index: optionIndex, amount: investAmount })
-    setPercentage(100)
-  }, [balance, decimals, maxCost, optionIndex, updateInvestAmount])
+    updateInvestAmount({ index: optionIndex, amount: amount.quotient.toString() })
+    setPercentage(INVESTMENT_STEPS[INVESTMENT_STEPS.length - 1])
+  }, [balance, maxCost, optionIndex, updateInvestAmount])
 
   // Cache approveData methods
   const approveCallback = approveData?.approveCallback
@@ -123,8 +110,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       return
     }
 
-    const parsedA = parseUnits(investedAmount, token.decimals).toString()
-    const investA = CurrencyAmount.fromRawAmount(token, parsedA)
+    const investA = CurrencyAmount.fromRawAmount(token, investedAmount)
     return investA.multiply(price)
   }, [investedAmount, price, token])
 
@@ -198,14 +184,14 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
             <div>
               <RangeSteps>
-                {INVESTMENT_STEPS.map((step: number) => (
+                {INVESTMENT_STEPS.map((step: string) => (
                   <RangeStep onClick={() => handleStepChange(step)} key={step}>
                     {step}%
                   </RangeStep>
                 ))}
               </RangeSteps>
 
-              <InvestAvailableBar percentage={percentage} />
+              <InvestAvailableBar percentage={Number(percentage)} />
             </div>
           </span>
         </InvestSummary>
@@ -223,7 +209,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
               <input
                 // disabled
                 placeholder="0"
-                value={investedAmount}
+                value={investedAmount ? formatUnits(investedAmount, decimals) : '0'}
                 max={formatSmart(currencyAmount)}
               />
               <b>{currencyAmount?.currency?.symbol}</b>
