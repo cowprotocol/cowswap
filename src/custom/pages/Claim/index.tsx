@@ -29,6 +29,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 
 import { GNO, USDC_BY_CHAIN } from 'constants/tokens'
 import { isSupportedChain } from 'utils/supportedChainId'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { EnhancedUserClaimData } from './types'
 
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
@@ -73,11 +74,14 @@ export default function Claim() {
     resetClaimUi,
   } = useClaimDispatchers()
 
+  // addresses
   const { address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
   const isInputAddressValid = useMemo(() => isAddress(resolvedAddress || ''), [resolvedAddress])
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
+  // error handling modals
+  const { handleSetError, ErrorModal } = useErrorModal()
 
   // get user claim data
   const userClaimData = useUserEnhancedClaimData(activeClaimAccount)
@@ -127,6 +131,9 @@ export default function Claim() {
   // TODO: useCallback
   // handle submit claim
   const handleSubmitClaim = () => {
+    // Reset error handling
+    handleSetError(undefined)
+
     // just to be sure
     if (!activeClaimAccount) return
 
@@ -143,6 +150,7 @@ export default function Claim() {
         .catch((error) => {
           setClaimStatus(ClaimStatus.DEFAULT)
           console.log(error)
+          handleSetError(error?.message)
         })
     }
 
@@ -207,6 +215,8 @@ export default function Claim() {
     <PageWrapper>
       {/* Approve confirmation modal */}
       <TransactionConfirmationModal />
+      {/* Error modal */}
+      <ErrorModal />
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimStatus === ClaimStatus.CONFIRMED} />
 

@@ -17,6 +17,7 @@ import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 
 const RangeSteps = styled.div`
   display: flex;
@@ -49,6 +50,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const { updateInvestAmount } = useClaimDispatchers()
   const { investFlowData } = useClaimState()
 
+  const { handleSetError, ErrorModal } = useErrorModal()
+
   const investedAmount = useMemo(() => investFlowData[optionIndex].investedAmount, [investFlowData, optionIndex])
 
   const [percentage, setPercentage] = useState<string>(INVESTMENT_STEPS[0])
@@ -56,10 +59,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const { account } = useActiveWeb3React()
 
   const token = currencyAmount?.currency
-
+  const decimals = token?.decimals
   const balance = useCurrencyBalance(account || undefined, token)
-
-  const decimals = balance?.currency?.decimals
 
   const handleStepChange = useCallback(
     (value: string) => {
@@ -92,6 +93,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   // Save "local" approving state (pre-BC) for rendering spinners etc
   const [approving, setApproving] = useState(false)
   const handleApprove = useCallback(async () => {
+    handleSetError(undefined)
     if (!approveCallback) return
 
     try {
@@ -100,10 +102,11 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       await approveCallback({ transactionSummary: `Approve ${token?.symbol || 'token'} for investing in vCOW` })
     } catch (error) {
       console.error('[InvestOption]: Issue approving.', error)
+      handleSetError(error?.message)
     } finally {
       setApproving(false)
     }
-  }, [approveCallback, token?.symbol])
+  }, [approveCallback, handleSetError, token?.symbol])
 
   const vCowAmount = useMemo(() => {
     if (!token || !price || !investedAmount) {
@@ -195,6 +198,9 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
             </div>
           </span>
         </InvestSummary>
+        {/* Error modal */}
+        <ErrorModal />
+        {/* Investment inputs */}
         <InvestInput>
           <div>
             <span>

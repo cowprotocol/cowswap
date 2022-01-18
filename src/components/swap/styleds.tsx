@@ -1,7 +1,7 @@
 import { loadingOpacityMixin } from 'components/Loader/styled'
 import { TooltipContainer } from 'components/Tooltip'
 import { transparentize } from 'polished'
-import { ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
@@ -89,9 +89,10 @@ export const Dots = styled.span`
   }
 `
 
-const SwapCallbackErrorInner = styled.div`
+const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
   background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
   border-radius: 1rem;
+  position: relative;
   display: flex;
   align-items: center;
   font-size: 0.825rem;
@@ -105,6 +106,8 @@ const SwapCallbackErrorInner = styled.div`
     margin: 0;
     font-weight: 500;
   }
+
+  ${({ $css }) => $css}
 `
 
 const SwapCallbackErrorInnerAlertTriangle = styled.div`
@@ -118,9 +121,26 @@ const SwapCallbackErrorInnerAlertTriangle = styled.div`
   height: 48px;
 `
 
-export function SwapCallbackError({ error }: { error: ReactNode }) {
+const Closer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 7px 10px;
+  font-weight: bold;
+  cursor: pointer;
+`
+
+export type ErrorMessageProps = {
+  error?: ReactNode
+  handleClose?: MouseEventHandler<HTMLDivElement>
+  showClose?: boolean
+  $css?: string
+}
+
+export function SwapCallbackError({ error, handleClose, showClose, ...styleProps }: ErrorMessageProps) {
   return (
-    <SwapCallbackErrorInner>
+    <SwapCallbackErrorInner {...styleProps}>
+      {showClose && <Closer onClick={handleClose}>X</Closer>}
       <SwapCallbackErrorInnerAlertTriangle>
         <AlertTriangle size={24} />
       </SwapCallbackErrorInnerAlertTriangle>

@@ -40,6 +40,7 @@ export enum ApplicationModal {
   PRIVACY_POLICY,
   // -----------------      MOD: CowSwap specific modals      --------------------
   TRANSACTION_CONFIRMATION,
+  TRANSACTION_ERROR,
   ARBITRUM_OPTIONS,
   // ------------------------------------------------------------------------------
 }
