@@ -46,10 +46,11 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const balance = useCurrencyBalance(account || undefined, token)
 
   const isSelfClaiming = account === activeClaimAccount
+  const noBalance = !balance || balance.equalTo('0')
 
   // on invest max amount click handler
   const setMaxAmount = useCallback(() => {
-    if (!maxCost || !balance) {
+    if (!maxCost || noBalance) {
       return
     }
 
@@ -59,7 +60,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     updateInvestAmount({ index: optionIndex, amount })
     setTypedValue(formatSmart(value, decimals, { smallLimit: undefined }) || '')
     setPercentage('100')
-  }, [balance, decimals, maxCost, optionIndex, updateInvestAmount])
+  }, [balance, decimals, maxCost, noBalance, optionIndex, updateInvestAmount])
 
   // on input field change handler
   const onInputChange = useCallback(
@@ -228,14 +229,16 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
                 {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
               </i>
               {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <button disabled={!isSelfClaiming} onClick={setMaxAmount}>
-                (invest max. possible)
-              </button>
+              {!noBalance && (
+                <button disabled={!isSelfClaiming} onClick={setMaxAmount}>
+                  (invest max. possible)
+                </button>
+              )}
             </span>
             <label>
               <StyledNumericalInput
                 onUserInput={onInputChange}
-                disabled={balance?.equalTo('0') || !isSelfClaiming}
+                disabled={noBalance || !isSelfClaiming}
                 placeholder="0"
                 $loading={false}
                 value={typedValue}
