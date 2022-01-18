@@ -14,7 +14,6 @@ import {
   setSelectedAll,
   ClaimStatus,
 } from './actions'
-import { InvestmentClaimProps } from 'pages/Claim/InvestmentFlow'
 
 export const initialState: ClaimState = {
   // address/ENS address
@@ -36,6 +35,13 @@ export const initialState: ClaimState = {
   selectedAll: false,
 }
 
+export type InvestClaim = {
+  index: number
+  inputAmount?: string
+  investedAmount?: string
+  vCowAmount?: string
+}
+
 export type ClaimState = {
   // address/ENS address
   inputAddress: string
@@ -50,7 +56,7 @@ export type ClaimState = {
   // investment
   isInvestFlowActive: boolean
   investFlowStep: number
-  investFlowData: InvestmentClaimProps[]
+  investFlowData: InvestClaim[]
   // table select change
   selected: number[]
   selectedAll: boolean
@@ -85,24 +91,14 @@ export default createReducer(initialState, (builder) =>
     .addCase(initInvestFlowData, (state, { payload }) => {
       const { selected } = current(state)
 
-      const data = payload.reduce<InvestmentClaimProps[]>((acc, claim) => {
-        if (selected.includes(claim.index)) {
-          acc.push({ ...claim, investedAmount: '0' })
-        }
-
-        return acc
-      }, [])
+      const data = payload
+        .filter(({ index }) => selected.includes(index))
+        .map(({ index }) => ({ index, investedAmount: '0' }))
 
       state.investFlowData.push(...data)
     })
     .addCase(updateInvestAmount, (state, { payload: { index, amount } }) => {
-      const { investFlowData } = current(state)
-
-      const claimIndex = investFlowData.findIndex((claim) => claim.index === index)
-
-      if (claimIndex !== -1) {
-        state.investFlowData[claimIndex].investedAmount = amount
-      }
+      state.investFlowData[index].investedAmount = amount
     })
     .addCase(setSelected, (state, { payload }) => {
       state.selected = payload

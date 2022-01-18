@@ -12,7 +12,7 @@ import { InvestOptionProps } from '.'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useClaimDispatchers } from 'state/claim/hooks'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 
 import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
@@ -49,9 +49,12 @@ const InvestMaxBalance = styled.button`
 
 const INVESTMENT_STEPS = [0, 25, 50, 75, 100]
 
-export default function InvestOption({ approveData, claim }: InvestOptionProps) {
-  const { currencyAmount, price, cost: maxCost, investedAmount } = claim
+export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
+  const { currencyAmount, price, cost: maxCost } = claim
   const { updateInvestAmount } = useClaimDispatchers()
+  const { investFlowData } = useClaimState()
+
+  const investedAmount = useMemo(() => investFlowData[optionIndex].investedAmount, [investFlowData, optionIndex])
 
   const [percentage, setPercentage] = useState<number>(0)
 
@@ -61,9 +64,25 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
 
   const balance = useCurrencyBalance(account || undefined, token)
 
-  const scaleValue = useCallback((number: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
-    return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
-  }, [])
+  const decimals = balance?.currency?.decimals
+
+  const scaleValue = useCallback(
+    (maxValue: string, value: number) => {
+      if (value === 0) {
+        return parseUnits('0', decimals)
+      }
+
+      // parse percent to string, example 25% -> 4 or 50% -> 2
+      const parsedValue = parseUnits((100 / value).toFixed(decimals), decimals)
+
+      // parse maxValue to string
+      const parsedMaxValue = parseUnits(maxValue, decimals)
+
+      // divide parsedMax with parsed value to get invest amount
+      return parsedMaxValue.div(parsedValue).toString()
+    },
+    [decimals]
+  )
 
   const handleStepChange = useCallback(
     (value: number) => {
@@ -71,13 +90,13 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
         return
       }
 
-      const maxInvestAmount = formatUnits(maxCost.quotient.toString(), balance.currency.decimals)
-      const newInvestAmount = scaleValue(value, 0, 100, 0, Number(maxInvestAmount))
+      const scaled = scaleValue(maxCost.quotient.toString(), value)
+      const amount = formatUnits(scaled, decimals)
 
-      updateInvestAmount({ index: claim.index, amount: String(newInvestAmount) })
+      updateInvestAmount({ index: optionIndex, amount })
       setPercentage(value)
     },
-    [balance, claim.index, maxCost, scaleValue, updateInvestAmount]
+    [balance, decimals, maxCost, optionIndex, scaleValue, updateInvestAmount]
   )
 
   const onMaxClick = useCallback(() => {
@@ -87,11 +106,11 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
 
     const amount = maxCost.greaterThan(balance) ? balance : maxCost
     // store the value as a string to prevent unnecessary re-renders
-    const investAmount = formatUnits(amount.quotient.toString(), balance.currency.decimals)
+    const investAmount = formatUnits(amount.quotient.toString(), decimals)
 
-    updateInvestAmount({ index: claim.index, amount: investAmount })
+    updateInvestAmount({ index: optionIndex, amount: investAmount })
     setPercentage(100)
-  }, [balance, claim.index, maxCost, updateInvestAmount])
+  }, [balance, decimals, maxCost, optionIndex, updateInvestAmount])
 
   // Cache approveData methods
   const approveCallback = approveData?.approveCallback
@@ -113,11 +132,12 @@ export default function InvestOption({ approveData, claim }: InvestOptionProps) 
   }, [approveCallback, token?.symbol])
 
   const vCowAmount = useMemo(() => {
-    if (!token || !price) {
+    if (!token || !price || !investedAmount) {
       return
     }
 
-    const investA = CurrencyAmount.fromRawAmount(token, parseUnits(investedAmount, token.decimals).toString())
+    const parsedA = parseUnits(investedAmount, token.decimals).toString()
+    const investA = CurrencyAmount.fromRawAmount(token, parsedA)
     return investA.multiply(price)
   }, [investedAmount, price, token])
 

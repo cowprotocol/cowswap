@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import {
   InvestFlow,
   InvestContent,
@@ -14,12 +14,9 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
 import InvestOption from './InvestOption'
 
-export type InvestmentClaimProps = EnhancedUserClaimData & {
-  investedAmount: string
-}
-
 export type InvestOptionProps = {
-  claim: InvestmentClaimProps
+  claim: EnhancedUserClaimData
+  optionIndex: number
   approveData:
     | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
     | undefined
@@ -50,9 +47,13 @@ function _claimToTokenApproveData(claimType: ClaimType, tokenApproveData: TokenA
 
 export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenApproveData }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
-  const { activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } = useClaimState()
+  const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep } = useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
+
+  const selectedClaims = useMemo(() => {
+    return claimData.filter(({ index }) => selected.includes(index))
+  }, [claimData, selected])
 
   useEffect(() => {
     initInvestFlowData(isInvestFlowActive ? claimData : [])
@@ -93,9 +94,10 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             up to a predefined maximum amount of tokens{' '}
           </p>
 
-          {investFlowData.map((claim) => (
+          {selectedClaims.map((claim, index) => (
             <InvestOption
               key={claim.index}
+              optionIndex={index}
               approveData={_claimToTokenApproveData(claim.type, tokenApproveData)}
               claim={claim}
             />
