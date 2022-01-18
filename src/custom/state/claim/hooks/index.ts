@@ -146,8 +146,7 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
   const userClaims = useUserClaims(account)
   const contract = useVCowContract()
 
-  const isInvestmentStillAvailable = useInvestmentStillAvailable()
-  const isAirdropStillAvailable = useAirdropStillAvailable()
+  const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
 
   // build list of parameters, with the claim index
   // we check for all claims because expired now might have been claimed before
@@ -173,7 +172,7 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
         result.result?.[0] === true // result true means claimed
       ) {
         claimed.push(claim)
-      } else if (!isAirdropStillAvailable || (!isInvestmentStillAvailable && PAID_CLAIM_TYPES.includes(claim.type))) {
+      } else if (!isAirdropWindowOpen || (!isInvestmentWindowOpen && PAID_CLAIM_TYPES.includes(claim.type))) {
         expired.push(claim)
       } else {
         available.push(claim)
@@ -181,7 +180,7 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
     })
 
     return { available, expired, claimed }
-  }, [isAirdropStillAvailable, isInvestmentStillAvailable, results, userClaims])
+  }, [isAirdropWindowOpen, isInvestmentWindowOpen, results, userClaims])
 }
 
 /**
@@ -282,7 +281,7 @@ const createMockTx = (data: number[]) => ({
  *
  * Returns null if in there's no network or vCowContract doesn't exist
  */
-export function useDeploymentTimestamp(): number | null {
+function useDeploymentTimestamp(): number | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
   const [timestamp, setTimestamp] = useState<number | null>(null)
@@ -301,42 +300,41 @@ export function useDeploymentTimestamp(): number | null {
   return timestamp
 }
 
-/**
- * Returns the timestamp of when the investment window closes
- */
-export function useInvestmentDeadline(): number | null {
-  const deploymentTimestamp = useDeploymentTimestamp()
-
-  return deploymentTimestamp && deploymentTimestamp + TWO_WEEKS
+type ClaimTimeInfo = {
+  /**
+   * Time when contract was deployed, fetched from chain
+   */
+  deployment: number | null
+  /**
+   * Time when investment window will close (2 weeks after contract deployment)
+   */
+  investmentDeadline: number | null
+  /**
+   * Time when airdrop window will close (6 weeks after contract deployment)
+   */
+  airdropDeadline: number | null
+  /**
+   * Whether investment window is still open, based on local time
+   */
+  isInvestmentWindowOpen: boolean
+  /**
+   * Whether airdrop window is still open, based on local time
+   */
+  isAirdropWindowOpen: boolean
 }
 
 /**
- * Returns whether vCOW contract is still open for investments
- * That is, there has been less than 2 weeks since it was deployed
+ * Overall Claim time related properties
  */
-export function useInvestmentStillAvailable(): boolean {
-  const investmentDeadline = useInvestmentDeadline()
+export function useClaimTimeInfo(): ClaimTimeInfo {
+  const deployment = useDeploymentTimestamp()
+  const investmentDeadline = deployment && deployment + TWO_WEEKS
+  const airdropDeadline = deployment && deployment + SIX_WEEKS
 
-  return Boolean(investmentDeadline && investmentDeadline > Date.now())
-}
+  const isInvestmentWindowOpen = Boolean(investmentDeadline && investmentDeadline > Date.now())
+  const isAirdropWindowOpen = Boolean(airdropDeadline && airdropDeadline > Date.now())
 
-/**
- * Returns the timestamp of when the airdrop window closes
- */
-export function useAirdropDeadline(): number | null {
-  const deploymentTimestamp = useDeploymentTimestamp()
-
-  return deploymentTimestamp && deploymentTimestamp + SIX_WEEKS
-}
-
-/**
- * Returns whether vCOW contract is still open for airdrops
- * That is, there has been less than 6 weeks since it was deployed
- */
-export function useAirdropStillAvailable(): boolean {
-  const airdropDeadline = useAirdropDeadline()
-
-  return Boolean(airdropDeadline && airdropDeadline > Date.now())
+  return { deployment, investmentDeadline, airdropDeadline, isInvestmentWindowOpen, isAirdropWindowOpen }
 }
 
 /**
@@ -379,8 +377,7 @@ export function useClaimCallback(account: string | null | undefined): {
   const claims = useUserAvailableClaims(account)
   const vCowContract = useVCowContract()
 
-  const isInvestmentStillAvailable = useInvestmentStillAvailable()
-  const isAirdropStillAvailable = useAirdropStillAvailable()
+  const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
 
   // used for popup summary
   const addTransaction = useTransactionAdder()
@@ -427,7 +424,7 @@ export function useClaimCallback(account: string | null | undefined): {
         throw new Error("Not initialized, can't claim")
       }
 
-      _validateClaimable(claims, claimInput, isInvestmentStillAvailable, isAirdropStillAvailable)
+      _validateClaimable(claims, claimInput, isInvestmentWindowOpen, isAirdropWindowOpen)
 
       const { args, totalClaimedAmount } = _getClaimManyArgs({ claimInput, claims, account, connectedAccount, chainId })
 
@@ -460,8 +457,8 @@ export function useClaimCallback(account: string | null | undefined): {
       chainId,
       claims,
       connectedAccount,
-      isAirdropStillAvailable,
-      isInvestmentStillAvailable,
+      isAirdropWindowOpen,
+      isInvestmentWindowOpen,
       vCowContract,
       vCowToken,
     ]

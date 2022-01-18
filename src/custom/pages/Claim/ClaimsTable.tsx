@@ -1,10 +1,4 @@
-import {
-  ClaimType,
-  useAirdropDeadline,
-  useClaimState,
-  useDeploymentTimestamp,
-  useInvestmentDeadline,
-} from 'state/claim/hooks'
+import { ClaimType, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
 import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
@@ -130,9 +124,7 @@ export default function ClaimsTable({
   const hideTable =
     isAirdropOnly || !hasClaims || !activeClaimAccount || claimStatus !== ClaimStatus.DEFAULT || isInvestFlowActive
 
-  const start = useDeploymentTimestamp()
-  const investmentEnd = useInvestmentDeadline()
-  const airdropEnd = useAirdropDeadline()
+  const { deployment: start, investmentDeadline, airdropDeadline } = useClaimTimeInfo()
 
   if (hideTable) return null
 
@@ -162,7 +154,7 @@ export default function ClaimsTable({
                 selected={selected}
                 handleSelect={handleSelect}
                 start={start}
-                end={claim.isFree ? airdropEnd : investmentEnd}
+                end={claim.isFree ? airdropDeadline : investmentDeadline}
               />
             ))}
           </tbody>
