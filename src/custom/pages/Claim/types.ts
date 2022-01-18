@@ -12,9 +12,9 @@ export type ClaimCommonTypes = {
 
 // Enhanced UserClaimData with useful additional properties
 export type EnhancedUserClaimData = UserClaimData & {
+  claimAmount: CurrencyAmount<Token>
+  isFree: boolean
   currencyAmount?: CurrencyAmount<Token | GpEther> | undefined
-  claimAmount?: CurrencyAmount<Token> | undefined
   price?: Price<Currency, Currency> | undefined
   cost?: CurrencyAmount<Currency> | undefined
-  isFree: boolean
 }

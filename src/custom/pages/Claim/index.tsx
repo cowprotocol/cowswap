@@ -2,13 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
-import {
-  useUserEnhancedClaimData,
-  useUserUnclaimedAmount,
-  useClaimCallback,
-  useInvestmentStillAvailable,
-  useAirdropStillAvailable,
-} from 'state/claim/hooks'
+import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback } from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { PageWrapper, FooterNavButtons } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
@@ -91,10 +85,6 @@ export default function Claim() {
   const hasClaims = useMemo(() => userClaimData.length > 0, [userClaimData])
   const isAirdropOnly = useMemo(() => !hasPaidClaim(userClaimData), [userClaimData])
 
-  // checks regarding investment time window
-  const isInvestmentStillAvailable = useInvestmentStillAvailable()
-  const isAirdropStillAvailable = useAirdropStillAvailable()
-
   // claim callback
   const { claimCallback } = useClaimCallback(activeClaimAccount)
 
@@ -169,9 +159,7 @@ export default function Claim() {
     `[unclaimedAmount ${unclaimedAmount?.toFixed(2)}]`,
     `[hasClaims ${hasClaims}]`,
     `[activeClaimAccount ${activeClaimAccount}]`,
-    `[isAirdropOnly ${isAirdropOnly}]`,
-    `[isInvestmentStillAvailable ${isInvestmentStillAvailable}]`,
-    `[isAirdropStillAvailable ${isAirdropStillAvailable}]`
+    `[isAirdropOnly ${isAirdropOnly}]`
   )
 
   // on account change
