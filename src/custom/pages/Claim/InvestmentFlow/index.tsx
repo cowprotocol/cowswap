@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
+import { ClaimType } from '@gnosis.pm/cow-token'
+
 import {
   InvestFlow,
   InvestContent,
@@ -7,7 +9,7 @@ import {
   StepIndicator,
   Steps,
 } from 'pages/Claim/styled'
-import { ClaimType, useClaimState, useUserEnhancedClaimData } from 'state/claim/hooks'
+import { useClaimState, useUserEnhancedClaimData } from 'state/claim/hooks'
 import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
 import { ClaimStatus } from 'state/claim/actions'
 import { useActiveWeb3React } from 'hooks/web3'

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
@@ -12,6 +13,8 @@ import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useSingleContractMultipleData } from 'state/multicall/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { AppDispatch } from 'state'
+import { AppState } from 'state'
 
 import { V_COW } from 'constants/tokens'
 
@@ -33,10 +36,6 @@ import { getIndexes } from './utils'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 export { useUserClaimData } from '@src/state/claim/hooks'
-
-import { AppDispatch } from 'state'
-import { useSelector, useDispatch } from 'react-redux'
-import { AppState } from 'state'
 
 import {
   setInputAddress,

@@ -1,10 +1,6 @@
-import {
-  ClaimType,
-  useAirdropDeadline,
-  useClaimState,
-  useDeploymentTimestamp,
-  useInvestmentDeadline,
-} from 'state/claim/hooks'
+import { ClaimType } from '@gnosis.pm/cow-token'
+
+import { useAirdropDeadline, useClaimState, useDeploymentTimestamp, useInvestmentDeadline } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
 import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
