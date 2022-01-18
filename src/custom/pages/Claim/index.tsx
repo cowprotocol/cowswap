@@ -81,7 +81,7 @@ export default function Claim() {
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
   // error handling modals
-  const { handleSetError, ErrorModal } = useErrorModal()
+  const { handleCloseError, handleSetError, ErrorModal } = useErrorModal()
 
   // get user claim data
   const userClaimData = useUserEnhancedClaimData(activeClaimAccount)
@@ -132,7 +132,7 @@ export default function Claim() {
   // handle submit claim
   const handleSubmitClaim = () => {
     // Reset error handling
-    handleSetError(undefined)
+    handleCloseError()
 
     // just to be sure
     if (!activeClaimAccount) return
@@ -149,7 +149,7 @@ export default function Claim() {
         })
         .catch((error) => {
           setClaimStatus(ClaimStatus.DEFAULT)
-          console.log(error)
+          console.error('[Claim::index::handleSubmitClaim]::error', error)
           handleSetError(error?.message)
         })
     }
