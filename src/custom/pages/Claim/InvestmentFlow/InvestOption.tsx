@@ -19,8 +19,7 @@ import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { tryParseAmount } from 'state/swap/hooks'
 import { ZERO_PERCENT } from 'constants/misc'
-
-const INVESTMENT_STEPS = ['0', '25', '50', '75', '100']
+import { PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
   Balance = 'Insufficient balance to cover input investment amount. Adjust the amount or go back to remove this investment option',
@@ -36,7 +35,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
   const { account } = useActiveWeb3React()
 
-  const [percentage, setPercentage] = useState<string>(INVESTMENT_STEPS[0])
+  const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('0')
   const [inputError, setInputError] = useState<string>('')
 
@@ -58,8 +57,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     const amount = value.quotient.toString()
 
     updateInvestAmount({ index: optionIndex, amount })
-    setTypedValue(formatSmart(value, decimals) || '')
-    setPercentage(INVESTMENT_STEPS[INVESTMENT_STEPS.length - 1])
+    setTypedValue(formatSmart(value, decimals, { smallLimit: undefined }) || '')
+    setPercentage('100')
   }, [balance, decimals, maxCost, optionIndex, updateInvestAmount])
 
   // on input field change handler
@@ -95,7 +94,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       updateInvestAmount({ index: optionIndex, amount: parsedAmount.quotient.toString() })
 
       // update the local state with percent value
-      setPercentage(formatSmart(percent, 2) || '0')
+      setPercentage(formatSmart(percent, PERCENTAGE_PRECISION) || '0')
     },
     [balance, maxCost, optionIndex, token, updateInvestAmount]
   )
