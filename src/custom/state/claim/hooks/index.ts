@@ -342,10 +342,12 @@ export function useUsdcPrice(): string | null {
   return _useVCowPriceForToken('usdcPrice')
 }
 
+type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
+
 /**
  * Generic hook for fetching contract value for the many prices
  */
-function _useVCowPriceForToken(priceFnName: 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'): string | null {
+function _useVCowPriceForToken(priceFnName: VCowPriceFnNames): string | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
 
