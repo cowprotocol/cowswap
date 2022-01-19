@@ -1,0 +1,1 @@
+⚠️ **WARNING**: Beaware of the Multichain exploit that affects **Wrapping Ether** for users in  any platform [Read more](https://cointelegraph.com/news/multichain-asks-users-to-revoke-approvals-amid-critical-vulnerability).
