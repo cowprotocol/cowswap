@@ -10,6 +10,7 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
+// TODO: remove, this is duplicated with `import { ONE_HUNDRED_PERCENT } from 'constants/misc'`
 export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
 
 export const DEFAULT_DECIMALS = 18
