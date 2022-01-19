@@ -1,15 +1,13 @@
-import { useEffect, useMemo } from 'react'
-import { Trans } from '@lingui/macro'
+import { useCallback, useEffect, useMemo } from 'react'
 import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
-import { ButtonPrimary, ButtonSecondary } from 'components/Button'
-import { PageWrapper, FooterNavButtons } from 'pages/Claim/styled'
+import { PageWrapper } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
-import { getFreeClaims, hasPaidClaim, getIndexes, getPaidClaims } from 'state/claim/hooks/utils'
+import { getFreeClaims, hasPaidClaim, getIndexes, getPaidClaims, hasFreeClaim } from 'state/claim/hooks/utils'
 import { useWalletModalToggle } from 'state/application/hooks'
 import Confetti from 'components/Confetti'
-import { isAddress } from 'web3-utils'
+
 import useENS from 'hooks/useENS'
 
 import ClaimNav from './ClaimNav'
@@ -31,6 +29,7 @@ import { GNO, USDC_BY_CHAIN } from 'constants/tokens'
 import { isSupportedChain } from 'utils/supportedChainId'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { EnhancedUserClaimData } from './types'
+import FooterNavButtons from './FooterNavButtons'
 
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
 const USDC_CLAIM_APPROVE_MESSAGE = 'Approving USDC for investing in vCOW'
@@ -48,7 +47,6 @@ export default function Claim() {
     // claiming
     claimStatus,
     // investment
-    isInvestFlowActive,
     investFlowStep,
     // table select change
     selected,
@@ -66,7 +64,6 @@ export default function Claim() {
     // setClaimedAmount, // TODO: uncomment when used
     // investing
     setIsInvestFlowActive,
-    setInvestFlowStep,
     // claim row selection
     setSelected,
     setSelectedAll,
@@ -76,7 +73,6 @@ export default function Claim() {
 
   // addresses
   const { address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
-  const isInputAddressValid = useMemo(() => isAddress(resolvedAddress || ''), [resolvedAddress])
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
@@ -91,6 +87,7 @@ export default function Claim() {
 
   const hasClaims = useMemo(() => userClaimData.length > 0, [userClaimData])
   const isAirdropOnly = useMemo(() => !hasPaidClaim(userClaimData), [userClaimData])
+  const isPaidClaimsOnly = useMemo(() => hasPaidClaim(userClaimData) && !hasFreeClaim(userClaimData), [userClaimData])
 
   // claim callback
   const { claimCallback } = useClaimCallback(activeClaimAccount)
@@ -128,9 +125,8 @@ export default function Claim() {
     setInputAddress('')
   }
 
-  // TODO: useCallback
   // handle submit claim
-  const handleSubmitClaim = () => {
+  const handleSubmitClaim = useCallback(() => {
     // Reset error handling
     handleCloseError()
 
@@ -177,7 +173,17 @@ export default function Claim() {
     } else {
       setIsInvestFlowActive(true)
     }
-  }
+  }, [
+    activeClaimAccount,
+    investFlowStep,
+    selected,
+    userClaimData,
+    claimCallback,
+    handleCloseError,
+    handleSetError,
+    setClaimStatus,
+    setIsInvestFlowActive,
+  ])
 
   // on account/activeAccount/non-connected account (if claiming for someone else) change
   useEffect(() => {
@@ -259,58 +265,15 @@ export default function Claim() {
         }}
       />
 
-      <FooterNavButtons>
-        {/* General claim vCOW button  (no invest) */}
-        {!!activeClaimAccount && !!hasClaims && !isInvestFlowActive && claimStatus === ClaimStatus.DEFAULT ? (
-          account ? (
-            <ButtonPrimary onClick={handleSubmitClaim}>
-              <Trans>Claim vCOW</Trans>
-            </ButtonPrimary>
-          ) : (
-            <ButtonPrimary onClick={toggleWalletModal}>
-              <Trans>Connect a wallet</Trans>
-            </ButtonPrimary>
-          )
-        ) : null}
-
-        {/* Check for claims button */}
-        {(!activeClaimAccount || !hasClaims) && (
-          <ButtonPrimary disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
-            <Trans>Check claimable vCOW</Trans>
-          </ButtonPrimary>
-        )}
-
-        {/* Invest flow button */}
-        {!!activeClaimAccount &&
-          !!hasClaims &&
-          claimStatus === ClaimStatus.DEFAULT &&
-          !isAirdropOnly &&
-          !!isInvestFlowActive && (
-            <>
-              {investFlowStep === 0 ? (
-                <ButtonPrimary onClick={() => setInvestFlowStep(1)}>
-                  <Trans>Approve tokens</Trans>
-                </ButtonPrimary>
-              ) : investFlowStep === 1 ? (
-                <ButtonPrimary onClick={() => setInvestFlowStep(2)}>
-                  <Trans>Review</Trans>
-                </ButtonPrimary>
-              ) : (
-                <ButtonPrimary onClick={handleSubmitClaim}>
-                  <Trans>Claim and invest vCOW</Trans>
-                </ButtonPrimary>
-              )}
-
-              <ButtonSecondary
-                onClick={() =>
-                  investFlowStep === 0 ? setIsInvestFlowActive(false) : setInvestFlowStep(investFlowStep - 1)
-                }
-              >
-                <Trans>Go back</Trans>
-              </ButtonSecondary>
-            </>
-          )}
-      </FooterNavButtons>
+      <FooterNavButtons
+        handleCheckClaim={handleCheckClaim}
+        handleSubmitClaim={handleSubmitClaim}
+        toggleWalletModal={toggleWalletModal}
+        isAirdropOnly={isAirdropOnly}
+        isPaidClaimsOnly={isPaidClaimsOnly}
+        hasClaims={hasClaims}
+        resolvedAddress={resolvedAddress}
+      />
     </PageWrapper>
   )
 }
