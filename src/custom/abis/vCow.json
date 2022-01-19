@@ -190,7 +190,7 @@
   },
   {
     "inputs": [],
-    "name": "nativeTokenPrice",
+    "name": "wethPrice",
     "outputs": [
       {
         "internalType": "uint256",
