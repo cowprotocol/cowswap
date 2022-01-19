@@ -858,7 +858,6 @@ export function useTotalVCowAmount() {
 
   return claims.reduce<typeof zeroVCow>((acc, claim) => {
     const { price, currencyAmount } = claim
-    // is it a free claim? get vCow amount and return
     if (selected.includes(claim.index)) {
       const investClaim = investFlowData.find(({ index }) => index === claim.index)
       const investedAmount = investClaim?.investedAmount
