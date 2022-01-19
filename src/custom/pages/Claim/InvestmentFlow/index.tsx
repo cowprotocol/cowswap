@@ -1,12 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import {
-  InvestFlow,
-  InvestContent,
-  InvestFlowValidation,
-  InvestTokenSubtotal,
-  StepIndicator,
-  Steps,
-} from 'pages/Claim/styled'
+import { InvestFlow, InvestContent, InvestFlowValidation, StepIndicator, Steps } from 'pages/Claim/styled'
 import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
 import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
 import { ClaimStatus } from 'state/claim/actions'
