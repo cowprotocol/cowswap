@@ -52,6 +52,7 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
   [ChainId.XDAI]: GPv2VaultRelayer[ChainId.XDAI].address,
 }
 
+// vCow contract
 export const V_COW_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   // TODO: load addresses from contract package when available
   // [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
