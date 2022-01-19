@@ -3,16 +3,15 @@ import { ButtonSecondary } from 'components/Button'
 import { ExternalLink } from 'theme'
 import { IntroDescription } from './styled'
 import { ClaimCommonTypes } from './types'
-import { useClaimDispatchers, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
+import { useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 
-type ClaimIntroductionProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
+type ClaimIntroductionProps = Pick<ClaimCommonTypes, 'hasClaims' | 'handleChangeAccount'> & {
   isAirdropOnly: boolean
 }
 
-export default function CanUserClaimMessage({ hasClaims, isAirdropOnly }: ClaimIntroductionProps) {
+export default function CanUserClaimMessage({ hasClaims, isAirdropOnly, handleChangeAccount }: ClaimIntroductionProps) {
   const { activeClaimAccount, claimStatus } = useClaimState()
-  const { setActiveClaimAccount } = useClaimDispatchers()
 
   const { airdropDeadline } = useClaimTimeInfo()
 
@@ -39,7 +38,7 @@ export default function CanUserClaimMessage({ hasClaims, isAirdropOnly }: ClaimI
       <IntroDescription center>
         <Trans>
           Unfortunately this account is not eligible for any vCOW claims. <br />
-          <ButtonSecondary onClick={() => setActiveClaimAccount('')} padding="0">
+          <ButtonSecondary onClick={handleChangeAccount} padding="0">
             Try another account
           </ButtonSecondary>{' '}
           or <ExternalLink href="https://cow.fi/">read more about vCOW</ExternalLink>

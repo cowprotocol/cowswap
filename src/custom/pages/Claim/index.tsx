@@ -229,7 +229,11 @@ export default function Claim() {
       {/* Get address/ENS (user not connected yet or opted for checking 'another' account) */}
       <ClaimAddress account={account} toggleWalletModal={toggleWalletModal} />
       {/* Is Airdrop only (simple) - does user have claims? Show messages dependent on claim state */}
-      <CanUserClaimMessage hasClaims={hasClaims} isAirdropOnly={isAirdropOnly} />
+      <CanUserClaimMessage
+        hasClaims={hasClaims}
+        isAirdropOnly={isAirdropOnly}
+        handleChangeAccount={handleChangeAccount}
+      />
 
       {/* Try claiming or inform succesfull claim */}
       <ClaimingStatus />
