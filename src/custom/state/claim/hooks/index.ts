@@ -496,7 +496,7 @@ export function useClaimCallback(account: string | null | undefined): {
         return vCowContract.claimMany(...extendedArgs).then((response: TransactionResponse) => {
           addTransaction({
             hash: response.hash,
-            summary: `Claimed ${formatSmart(vCowAmount)} vCOW`,
+            summary: `Claim ${formatSmart(vCowAmount)} vCOW`,
             claim: { recipient: account, indices: args[0] as number[] },
           })
           return response.hash
