@@ -851,26 +851,34 @@ function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }
 }
 
 export function useTotalVCowAmount() {
+  const { chainId } = useActiveWeb3React()
   const { selected, activeClaimAccount, investFlowData } = useClaimState()
   const claims = useUserEnhancedClaimData(activeClaimAccount)
 
-  const zeroVCow = CurrencyAmount.fromRawAmount(V_COW[SupportedChainId.RINKEBY], '0')
+  if (!chainId) {
+    return undefined
+  }
 
-  return claims.reduce<typeof zeroVCow>((acc, claim) => {
+  const zeroVCow = CurrencyAmount.fromRawAmount(V_COW[chainId], '0')
+
+  return claims.reduce<typeof zeroVCow>((totalTokens, claim) => {
     const { price, currencyAmount } = claim
+    // if claim is included in selected invest option
     if (selected.includes(claim.index)) {
+      // get the current claim from the invested options state to get investedAmount
       const investClaim = investFlowData.find(({ index }) => index === claim.index)
       const investedAmount = investClaim?.investedAmount
 
       if (!investedAmount || !price || !currencyAmount) {
-        return acc
+        return totalTokens
       }
 
-      const investA = CurrencyAmount.fromRawAmount(currencyAmount.currency, investedAmount)
-      const vCowAmount = price.quote(investA)
-      return acc.add(vCowAmount as CurrencyAmount<Token>)
+      // parse that investedAmount to vCowAmount and add it to accumulator
+      const investedCurrencyAmount = CurrencyAmount.fromRawAmount(currencyAmount.currency, investedAmount)
+      const vCowAmount = price.quote(investedCurrencyAmount)
+      return totalTokens.add(vCowAmount.wrapped)
     } else {
-      return acc
+      return totalTokens
     }
   }, zeroVCow)
 }
