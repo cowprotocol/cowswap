@@ -85,10 +85,12 @@ const ClaimsTableRow = ({
       </td>
       <td>{formatSmart(claimAmount) || 0} vCOW</td>
       <td>
-        <span>
-          Price:{' '}
-          <b>{isFree || !price ? '-' : `${formatSmart(price) || 0} vCoW per ${currencyAmount?.currency?.symbol}`}</b>
-        </span>
+        {!isFree ||
+          (price && (
+            <span>
+              Price: <b>{`${formatSmart(price) || 0} vCoW per ${currencyAmount?.currency?.symbol}`}</b>
+            </span>
+          ))}
         <span>
           Cost:{' '}
           <b>
