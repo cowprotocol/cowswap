@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
 import Row from 'components/Row'
@@ -18,7 +18,7 @@ import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { tryParseAmount } from 'state/swap/hooks'
-import { ZERO_PERCENT } from 'constants/misc'
+import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
@@ -59,7 +59,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
     updateInvestAmount({ index: optionIndex, amount })
     setTypedValue(formatSmart(value, decimals, { smallLimit: undefined }) || '')
-    setPercentage('100')
+
+    setPercentage(_calculatePercentage(balance, maxCost))
   }, [balance, decimals, maxCost, noBalance, optionIndex, updateInvestAmount])
 
   // on input field change handler
@@ -78,11 +79,9 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
         return
       }
 
-      // calculate percent
+      // calculate percentage
+
       const maxValue = maxCost.greaterThan(balance) ? balance : maxCost
-      const percent = maxValue.equalTo(ZERO_PERCENT)
-        ? ZERO_PERCENT
-        : new Percent(parsedAmount.quotient, maxValue.quotient)
 
       if (parsedAmount.greaterThan(maxValue)) {
         setInputError(ErrorMsgs.Input)
@@ -94,8 +93,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       // update redux state with new investAmount value
       updateInvestAmount({ index: optionIndex, amount: parsedAmount.quotient.toString() })
 
-      // update the local state with percent value
-      setPercentage(formatSmart(percent, PERCENTAGE_PRECISION) || '0')
+      // update the local state with percentage value
+      setPercentage(_calculatePercentage(parsedAmount, maxCost))
     },
     [balance, maxCost, optionIndex, token, updateInvestAmount]
   )
@@ -253,4 +252,17 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       </span>
     </InvestTokenGroup>
   )
+}
+
+function _calculatePercentage<C1 extends Currency, C2 extends Currency>(
+  numerator: CurrencyAmount<C1>,
+  denominator: CurrencyAmount<C2>
+): string {
+  let percentage = denominator.equalTo(ZERO_PERCENT)
+    ? ZERO_PERCENT
+    : new Percent(numerator.quotient, denominator.quotient)
+  if (percentage.greaterThan(ONE_HUNDRED_PERCENT)) {
+    percentage = ONE_HUNDRED_PERCENT
+  }
+  return formatSmart(percentage, PERCENTAGE_PRECISION) || '0'
 }
