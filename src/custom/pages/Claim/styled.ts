@@ -3,6 +3,9 @@ import { CheckCircle, Frown } from 'react-feather'
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { transparentize, darken } from 'polished'
+import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
+import LogoGNO from 'assets/cow-swap/gno.png'
+import LogoUSDC from 'assets/cow-swap/usdc.png'
 
 export const PageWrapper = styled.div`
   --border-radius: 56px;
@@ -188,8 +191,10 @@ export const TokenLogo = styled.div<{ symbol: string; size: number }>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: ${({ size }) => `${size}px`};
-  /* background: ${({ symbol }) => `url(${symbol}.png) no-repeat center/contain`}; */
-  background: grey;
+  background: ${({ symbol, theme }) =>
+    `url(${
+      symbol === 'GNO' ? LogoGNO : symbol === 'ETH' ? LogoETH : symbol === 'USDC' ? LogoUSDC : theme.blueShade3
+    }) no-repeat center/contain`};
 `
 
 export const ClaimSummary = styled.div`
@@ -255,6 +260,11 @@ export const ClaimTable = styled.div`
   flex-flow: column wrap;
   width: 100%;
   margin: 0 0 24px;
+
+  ${TokenLogo},
+  ${Icon} {
+    border: 2px solid ${({ theme }) => theme.blueShade3};
+  }
 
   ${TokenLogo} {
     margin: 0 -26px 0 0;
@@ -703,6 +713,11 @@ export const InvestContent = styled.div`
   display: flex;
   flex-flow: column wrap;
 
+  ${TokenLogo},
+  ${Icon} {
+    border: 4px solid ${({ theme }) => theme.blueShade3};
+  }
+
   ${ClaimTable} {
     table {
       display: grid;
@@ -818,11 +833,6 @@ export const InvestTokenGroup = styled.div`
     font-size: 21px;
     font-weight: 600;
     margin: 0 0 18px;
-  }
-
-  ${TokenLogo},
-  ${Icon} {
-    border: 4px solid ${({ theme }) => theme.blueShade3};
   }
 
   ${TokenLogo} {
