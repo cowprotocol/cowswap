@@ -344,7 +344,7 @@ export function useUsdcPrice(): string | null {
   return _useVCowPriceForToken('usdcPrice')
 }
 
-type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
+type VCowPriceFnNames = 'wethPrice' | 'gnoPrice' | 'usdcPrice'
 
 /**
  * Generic hook for fetching contract value for the many prices
