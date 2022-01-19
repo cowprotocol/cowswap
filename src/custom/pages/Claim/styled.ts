@@ -29,7 +29,7 @@ export const PageWrapper = styled.div`
       --focus: 2px rgba(39, 94, 254, .3);
       --border: ${({ theme }) => theme.bg4};
       --border-hover: ${({ theme }) => theme.primary1};
-      --background: ${({ theme }) => theme.bg5};
+      --background: ${({ theme }) => theme.blueShade3};;
       appearance: none;
       height: 21px;
       width: 21px;
@@ -274,6 +274,10 @@ export const ClaimTable = styled.div`
     display: contents;
   }
 
+  tr > td {
+    background: ${({ theme }) => theme.blueShade3};
+  }
+
   th,
   td {
     padding: 15px;
@@ -304,7 +308,7 @@ export const ClaimTable = styled.div`
     align-items: center;
     color: ${({ theme }) => theme.text1};
     word-break: break-word;
-    background: ${({ theme }) => transparentize(0.7, theme.blueShade2)};
+    background: ${({ theme }) => theme.blueShade3};
   }
 
   td > b {
@@ -365,7 +369,7 @@ export const ClaimTable = styled.div`
 
 export const ClaimRow = styled.tr<{ isPending?: boolean }>`
   > td {
-    background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
+    background-color: ${({ theme, isPending }) => (isPending ? '#221954' : theme.bg5)};
     cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};
 
     &:first-child {
@@ -684,20 +688,6 @@ export const TopNav = styled.div`
   }
 `
 
-export const Demo = styled(ClaimTable)`
-  background: #3e0c46;
-  > table {
-    grid-template-columns: min-content auto max-content auto;
-  }
-
-  > table tr td:first-of-type {
-    opacity: 0.6;
-  }
-  > table tr td:last-of-type {
-    font-weight: bold;
-  }
-`
-
 export const InvestFlow = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -712,6 +702,68 @@ export const InvestFlow = styled.div`
 export const InvestContent = styled.div`
   display: flex;
   flex-flow: column wrap;
+
+  ${ClaimTable} {
+    table {
+      display: grid;
+      border-collapse: collapse;
+      min-width: 100%;
+      font-size: 14px;
+      grid-template-columns: repeat(3, auto);
+
+      tr > td {
+        flex-flow: column wrap;
+        align-content: center;
+        gap: 18px;
+        font-weight: 300;
+        font-size: 14px;
+      }
+
+      tr > td > span {
+        font-size: inherit;
+        display: flex;
+        flex-flow: column wrap;
+        gap: 3px;
+
+        &:last-child {
+          width: 100%;
+        }
+      }
+
+      tr > td:nth-of-type(1) {
+        flex-flow: row wrap;
+        align-content: center;
+
+        > b {
+          font-weight: bold;
+        }
+      }
+
+      tr > td:nth-of-type(2) {
+        flex-flow: column wrap;
+        justify-content: center;
+
+        > span {
+          margin: 0;
+        }
+
+        > span > i {
+          font-style: normal;
+          font-size: inherit;
+        }
+      }
+
+      tr > td:nth-of-type(3) {
+        font-weight: 300;
+        font-size: 14px;
+        justify-content: flex-start;
+
+        > span {
+          width: 100%;
+        }
+      }
+    }
+  }
 `
 
 export const StepIndicator = styled.div`
@@ -722,9 +774,9 @@ export const StepIndicator = styled.div`
 export const Steps = styled.div<{ step: number | 0 }>`
   list-style-type: decimal;
   margin: 0 0 12px;
-  background: grey;
   padding: 12px;
   border-radius: 12px;
+  background: ${({ theme }) => theme.blueShade3};
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 34px;
@@ -734,7 +786,7 @@ export const Steps = styled.div<{ step: number | 0 }>`
   }
 
   > li:nth-of-type(${({ step }) => step}) {
-    background: rgb(237 104 52 / 29%);
+    background: ${({ theme }) => transparentize(0.5, theme.primary1)};
   }
 `
 
@@ -745,7 +797,7 @@ export const InvestTokenGroup = styled.div`
   padding: 24px;
   margin: 0 0 24px;
   border-radius: 12px;
-  background: ${({ theme }) => transparentize(0.7, theme.blueShade2)};
+  background: ${({ theme }) => theme.blueShade3};
 
   > div {
     display: flex;
@@ -770,7 +822,7 @@ export const InvestTokenGroup = styled.div`
 
   ${TokenLogo},
   ${Icon} {
-    border: 4px solid ${({ theme }) => theme.blueShade2};
+    border: 4px solid ${({ theme }) => theme.blueShade3};
   }
 
   ${TokenLogo} {
@@ -800,6 +852,8 @@ export const InvestInput = styled.span`
 
   > div > label {
     display: flex;
+    flex-flow: row wrap;
+    padding: 12px;
     position: relative;
     background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
     border: ${({ theme }) =>
@@ -818,26 +872,31 @@ export const InvestInput = styled.span`
     align-items: center;
     position: absolute;
     right: 12px;
-    top: 0;
+    top: 28px;
     bottom: 0;
     margin: auto;
     font-weight: normal;
-    opacity: 0.7;
     color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 32px;
   }
 
   > div > label > input {
     color: ${({ theme }) => theme.text1};
     border: none;
     border-radius: 12px;
-    padding: 12px 70px 12px 12px;
+    padding: 12px 70px 0 0;
     font-size: 26px;
     outline: 0;
     background: transparent;
     width: 100%;
+    line-height: 1;
 
     &::placeholder {
       opacity: 0.5;
+      line-height: 1;
     }
   }
 
@@ -851,20 +910,22 @@ export const InvestInput = styled.span`
     font-style: normal;
   }
 
-  > div > span {
+  > div > label > span {
     display: flex;
+    width: 100%;
+    font-size: 14px;
   }
 
-  > div > span > b {
+  > div > label > span > b {
     margin: 0 3px 0 0;
     font-weight: normal;
   }
 
-  > div > span > i {
+  > div > Label > span > i {
     font-style: normal;
   }
 
-  > div > span > button {
+  > div > label > span > button {
     background: none;
     border: 0;
     cursor: pointer;
@@ -913,19 +974,23 @@ export const InvestSummary = styled.div`
   > span {
     display: flex;
     flex-flow: column wrap;
-    margin: 0 0 12px;
+    margin: 0 0 18px;
     color: ${({ theme }) => transparentize(0.1, theme.text1)};
-    gap: 3px;
+    gap: 6px;
   }
 
   > span > ${ButtonPrimary} {
-    margin: 12px 0 12px -9px;
+    margin: 3px 0 12px -9px;
     padding: 6px;
     font-size: 16px;
   }
 
   > span > i {
     font-style: normal;
+  }
+
+  > span > i > div > img {
+    margin: 0 0 0 4px;
   }
 
   > span > b {
@@ -950,15 +1015,53 @@ export const InvestFlowValidation = styled.div`
 
 export const InvestTokenSubtotal = styled.div`
   display: flex;
-  padding: 56px;
-  margin: 0 0 24px;
-  background: grey;
+  flex-flow: column wrap;
   color: ${({ theme }) => theme.text1};
-  border-radius: var(--border-radius);
-  font-size: 21px;
+  width: 100%;
+  padding: 24px;
+  margin: 0 0 24px;
+  border-radius: 12px;
+  background: ${({ theme }) => theme.blueShade3};
+  font-size: 15px;
+
+  > h3 {
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0 0 8px;
+  }
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    margin: 18px 0 0;
+
+    > b {
+      font-weight: 600;
+      margin: 0 0 3px;
+    }
+  }
 `
 
 export const ClaimAccountButtons = styled.div`
   display: flex;
   flex-direction: column;
+`
+
+export const AccountClaimSummary = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  gap: 12px;
+  margin: 24px 0;
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    white-space: wrap;
+    gap: 3px;
+  }
+
+  > span > i {
+    font-style: normal;
+    break-word: break-all;
+  }
 `

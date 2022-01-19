@@ -6,6 +6,9 @@ import {
   InvestTokenSubtotal,
   StepIndicator,
   Steps,
+  ClaimTable,
+  AccountClaimSummary,
+  TokenLogo,
 } from 'pages/Claim/styled'
 import { ClaimType, useClaimState, useUserEnhancedClaimData } from 'state/claim/hooks'
 import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
@@ -13,6 +16,7 @@ import { ClaimStatus } from 'state/claim/actions'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
 import InvestOption from './InvestOption'
+import CowProtocolLogo from 'components/CowProtocolLogo'
 
 export type InvestmentClaimProps = EnhancedUserClaimData & {
   investedAmount: string
@@ -92,6 +96,10 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
   return (
     <InvestFlow>
       <StepIndicator>
+        <Steps step={investFlowStep}>
+          <li>Allowances: Approve all tokens to be used for investment.</li>
+          <li>Submit and confirm the transaction to claim vCOW</li>
+        </Steps>
         <h1>
           {investFlowStep === 0
             ? 'Claiming vCOW is a two step process'
@@ -99,10 +107,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             ? 'Set allowance to Buy vCOW'
             : 'Confirm transaction to claim all vCOW'}
         </h1>
-        <Steps step={investFlowStep}>
-          <li>Allowances: Approve all tokens to be used for investment.</li>
-          <li>Submit and confirm the transaction to claim vCOW</li>
-        </Steps>
       </StepIndicator>
 
       {/* Invest flow: Step 1 > Set allowances and investment amounts */}
@@ -124,7 +128,13 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
 
           {/* TODO: Update this with real data */}
           <InvestTokenSubtotal>
-            {activeClaimAccount} will receive: 4,054,671.28 vCOW based on investment(s)
+            <h3>Investment summary</h3>
+            <span>
+              <b>Claim account:</b> {activeClaimAccount}
+            </span>
+            <span>
+              <b>vCOW to receive based on selected investment(s):</b> 4,054,671.28 vCOW
+            </span>
           </InvestTokenSubtotal>
 
           <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
@@ -134,18 +144,87 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
       {/* Invest flow: Step 2 > Review summary */}
       {investFlowStep === 2 ? (
         <InvestContent>
-          1. Claim airdrop: {activeClaimAccount} receives 13,120.50 vCOW (Note: please make sure you intend to claim and
-          send vCOW to the mentioned account)
-          <br />
-          <br />
-          2. Claim and invest: Investing with account: {account} (connected account). Investing: 1343 GNO (50% of
-          available investing opportunity) and 32 ETH (30% of available investing opportunity)
-          <br />
-          <br />
-          3. Receive vCOW claims on account {activeClaimAccount}: 23,947.6 vCOW - available NOW! and 120,567.12 vCOW -
-          Vested linearly 4 years <br />
-          <br />
-          <br />
+          <AccountClaimSummary>
+            <span>
+              <b>Claiming with account:</b>
+              <i>{account} (connected account)</i>
+            </span>
+            <span>
+              {' '}
+              <b>Receiving account:</b>
+              <i>{activeClaimAccount}</i>
+            </span>
+          </AccountClaimSummary>
+          <ClaimTable>
+            <table>
+              <thead>
+                <tr>
+                  <th>Claim type</th>
+                  <th>Account &amp; vCOW amount</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <b>Airdrop</b>
+                  </td>
+                  <td>
+                    <span>
+                      <b>Amount to receive:</b>
+                      <i>13,120.50 vCOW</i>
+                    </span>
+                  </td>
+
+                  <td>
+                    <span>
+                      <b>Cost:</b> <i>Free!</i>
+                    </span>
+                    <span>
+                      <b>Vesting:</b>
+                      <i>No</i>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    {' '}
+                    <TokenLogo symbol="GNO" size={32} />
+                    <CowProtocolLogo size={32} />
+                    <span>
+                      <b>Buy vCOW</b>
+                      <i>with GNO</i>
+                    </span>
+                  </td>
+
+                  <td>
+                    <span>
+                      <b>Investment amount:</b> <i>1343 GNO (50% of available investing opportunity)</i>
+                    </span>
+                    <span>
+                      <b>Amount to receive:</b>
+                      <i>13,120.50 vCOW</i>
+                    </span>
+                  </td>
+
+                  <td>
+                    <span>
+                      <b>Price:</b> <i>2666.6666 vCoW per GNO</i>
+                    </span>
+                    <span>
+                      <b>Cost:</b> <i>0.783375 GNO</i>
+                    </span>
+                    <span>
+                      <b>Vesting:</b>
+                      <i>4 years (linear)</i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </ClaimTable>
+
           <h4>Ready to claim your vCOW?</h4>
           <p>
             <b>What will happen?</b> By sending this Ethereum transaction, you will be investing tokens from the
@@ -155,6 +234,9 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
           <p>
             <b>Can I modify the invested amounts or invest partial amounts later?</b> No. Once you send the transaction,
             you cannot increase or reduce the investment. Investment oportunities can only be exercised once.
+          </p>
+          <p>
+            <b>Important!</b> Please make sure you intend to claim and send vCOW to the mentioned receiving account(s)
           </p>
         </InvestContent>
       ) : null}

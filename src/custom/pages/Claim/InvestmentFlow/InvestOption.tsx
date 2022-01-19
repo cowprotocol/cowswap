@@ -7,7 +7,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput } from '../styled'
 import { formatSmart } from 'utils/format'
 import Row from 'components/Row'
-import { CheckCircle } from 'react-feather'
+import CheckCircle from 'assets/cow-swap/check.svg'
 import { InvestOptionProps } from '.'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -130,15 +130,16 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
                   `${currencyAmount?.currency?.symbol} not approved`
                 ) : (
                   <Row>
-                    {currencyAmount?.currency?.symbol} approved{' '}
-                    <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
+                    <span>{currencyAmount?.currency?.symbol} approved</span>
+                    <img src={CheckCircle} alt="Approved" />
                   </Row>
                 )}
               </i>
             ) : (
               <i>
                 <Row>
-                  Approval not required! <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
+                  <span>Approval not required!</span>
+                  <img src={CheckCircle} alt="Approved" />
                 </Row>
               </i>
             )}
@@ -179,15 +180,15 @@ export default function InvestOption({ approveData, updateInvestAmount, claim }:
         </InvestSummary>
         <InvestInput>
           <div>
-            <span>
-              <b>Balance:</b>
-              <i>
-                {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
-              </i>
-              {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              <button onClick={onMaxClick}>(invest max possible)</button>
-            </span>
             <label>
+              <span>
+                <b>Balance:</b>
+                <i>
+                  {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
+                </i>
+                {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
+                <button onClick={onMaxClick}>(invest max possible)</button>
+              </span>
               <input
                 // disabled
                 placeholder="0"
