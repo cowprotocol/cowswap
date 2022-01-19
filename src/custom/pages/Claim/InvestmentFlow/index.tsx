@@ -103,11 +103,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             />
           ))}
 
-          {/* TODO: Update this with real data */}
-          <InvestTokenSubtotal>
-            {activeClaimAccount} will receive: 4,054,671.28 vCOW based on investment(s)
-          </InvestTokenSubtotal>
-
           <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
         </InvestContent>
       ) : null}
