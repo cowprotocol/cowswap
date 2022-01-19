@@ -870,6 +870,10 @@ export const InvestInput = styled.span`
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;
 
+    > span {
+      margin-left: 5px;
+    }
+
     &:hover {
       border: ${({ theme }) =>
         theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
@@ -897,12 +901,13 @@ export const InvestInput = styled.span`
     color: ${({ theme }) => theme.text1};
     border: none;
     border-radius: 12px;
-    padding: 12px 70px 0 0;
+    padding: 12px 70px 5px 5px;
     font-size: 26px;
     outline: 0;
     background: transparent;
     width: 100%;
     line-height: 1;
+    text-align: left;
 
     &::placeholder {
       opacity: 0.5;

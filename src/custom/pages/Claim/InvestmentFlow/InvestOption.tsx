@@ -226,19 +226,19 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
         {/* Investment inputs */}
         <InvestInput>
           <div>
-            <span>
-              <b>Balance:</b>
-              <i>
-                {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
-              </i>
-              {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
-              {!noBalance && isSelfClaiming && (
-                <button disabled={!isSelfClaiming} onClick={setMaxAmount}>
-                  (invest max. possible)
-                </button>
-              )}
-            </span>
             <label>
+              <span>
+                <b>Balance:</b>
+                <i>
+                  {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
+                </i>
+                {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
+                {!noBalance && isSelfClaiming && (
+                  <button disabled={!isSelfClaiming} onClick={setMaxAmount}>
+                    (invest max. possible)
+                  </button>
+                )}
+              </span>
               <StyledNumericalInput
                 onUserInput={onInputChange}
                 disabled={noBalance || !isSelfClaiming}
