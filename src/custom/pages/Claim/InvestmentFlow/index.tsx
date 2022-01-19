@@ -10,13 +10,20 @@ import {
   AccountClaimSummary,
   TokenLogo,
 } from 'pages/Claim/styled'
-import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
+import {
+  ClaimType,
+  useClaimState,
+  useUserEnhancedClaimData,
+  useClaimDispatchers,
+  useTotalVCowAmount,
+} from 'state/claim/hooks'
 import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
 import { ClaimStatus } from 'state/claim/actions'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
 import InvestOption from './InvestOption'
 import CowProtocolLogo from 'components/CowProtocolLogo'
+import { formatSmart } from 'utils/format'
 
 export type InvestOptionProps = {
   claim: EnhancedUserClaimData
@@ -54,6 +61,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep } = useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
+
+  const totalInvestedVCow = useTotalVCowAmount()
 
   const selectedClaims = useMemo(() => {
     return claimData.filter(({ index }) => selected.includes(index))
@@ -114,7 +123,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
               <b>Claim account:</b> {activeClaimAccount}
             </span>
             <span>
-              <b>vCOW to receive based on selected investment(s):</b> 4,054,671.28 vCOW
+              <b>vCOW to receive based on selected investment(s):</b> {formatSmart(totalInvestedVCow) || '0'} vCOW
             </span>
           </InvestTokenSubtotal>
 

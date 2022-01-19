@@ -849,3 +849,29 @@ function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }
     quoteAmount: CurrencyAmount.fromRawAmount(token, amount),
   }).invert()
 }
+
+export function useTotalVCowAmount() {
+  const { selected, activeClaimAccount, investFlowData } = useClaimState()
+  const claims = useUserEnhancedClaimData(activeClaimAccount)
+
+  const zeroVCow = CurrencyAmount.fromRawAmount(V_COW[SupportedChainId.RINKEBY], '0')
+
+  return claims.reduce<typeof zeroVCow>((acc, claim) => {
+    const { price, currencyAmount } = claim
+    // is it a free claim? get vCow amount and return
+    if (selected.includes(claim.index)) {
+      const investClaim = investFlowData.find(({ index }) => index === claim.index)
+      const investedAmount = investClaim?.investedAmount
+
+      if (!investedAmount || !price || !currencyAmount) {
+        return acc
+      }
+
+      const investA = CurrencyAmount.fromRawAmount(currencyAmount.currency, investedAmount)
+      const vCowAmount = price.quote(investA)
+      return acc.add(vCowAmount as CurrencyAmount<Token>)
+    } else {
+      return acc
+    }
+  }, zeroVCow)
+}
