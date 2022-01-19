@@ -129,7 +129,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     }
 
     const investA = CurrencyAmount.fromRawAmount(token, investedAmount)
-    return investA.multiply(price)
+    return price.quote(investA)
   }, [investedAmount, price, token])
 
   // if its claiming for someone else we will set values to max
