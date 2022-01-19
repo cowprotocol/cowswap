@@ -978,7 +978,6 @@ export const InvestFlowValidation = styled.div`
   align-items: center;
   background: rgb(255 0 0 / 25%);
   color: red;
-  text-align: center;
   margin: 0 auto 16px;
 `
 
