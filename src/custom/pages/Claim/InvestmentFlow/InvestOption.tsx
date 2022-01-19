@@ -76,10 +76,6 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     [balance, maxCost, optionIndex, updateInvestAmount]
   )
 
-  const handleInvestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateInvestAmount(claim.index, event.target.value)
-  }
-
   const onMaxClick = useCallback(() => {
     if (!maxCost || !balance) {
       return
