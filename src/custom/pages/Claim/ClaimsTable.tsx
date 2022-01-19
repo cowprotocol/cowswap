@@ -11,7 +11,7 @@ import { CustomLightSpinner } from 'theme'
 import Circle from 'assets/images/blue-loader.svg'
 import { Countdown } from 'pages/Claim/Countdown'
 
-type ClaimsTableProps = {
+export type ClaimsTableProps = {
   handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleSelect: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void
   userClaimData: EnhancedUserClaimData[]
