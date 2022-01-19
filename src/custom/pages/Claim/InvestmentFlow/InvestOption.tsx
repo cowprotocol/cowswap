@@ -22,9 +22,9 @@ import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
-  Initial = 'Insufficient balance to cover input investment amount. Adjust the amount or go back to remove this investment option',
-  Balance = 'Insufficient balance to cover input investment amount, please adjust the input amount',
-  MaxCost = 'Input amount is bigger than available investment amount, please adjust the input amount',
+  Initial = 'Insufficient balance to cover the selected investment amount. Either modify the investment amount or unselect the investment option to move forward',
+  Balance = 'Insufficient balance to cover the selected investment amount, please modify the selected amount to move forward',
+  MaxCost = 'Selected amount is higher than available investment amount, please modify the input amount to move forward',
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
