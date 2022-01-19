@@ -22,9 +22,8 @@ import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
-  Initial = 'Insufficient balance to cover the selected investment amount. Either modify the investment amount or unselect the investment option to move forward',
-  Balance = 'Insufficient balance to cover the selected investment amount, please modify the selected amount to move forward',
-  MaxCost = 'Selected amount is higher than available investment amount, please modify the input amount to move forward',
+  InsufficientBalance = 'Insufficient balance to cover the investment',
+  SurplusMaxInvestment = `Your investment amount can't be above the maximum investment allowed`,
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
@@ -82,8 +81,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
       let errorMsg = null
 
-      if (parsedAmount.greaterThan(maxCost)) errorMsg = ErrorMsgs.MaxCost
-      else if (parsedAmount.greaterThan(balance)) errorMsg = ErrorMsgs.Balance
+      if (parsedAmount.greaterThan(maxCost)) errorMsg = ErrorMsgs.SurplusMaxInvestment
+      else if (parsedAmount.greaterThan(balance)) errorMsg = ErrorMsgs.InsufficientBalance
 
       if (errorMsg) {
         setInputError(errorMsg)
@@ -142,7 +141,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       }
 
       if (balance.lessThan(maxCost)) {
-        setInputError(ErrorMsgs.Initial)
+        setInputError(ErrorMsgs.InsufficientBalance)
       } else {
         setMaxAmount()
       }
