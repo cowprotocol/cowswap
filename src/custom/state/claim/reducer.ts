@@ -1,4 +1,4 @@
-import { createReducer } from '@reduxjs/toolkit'
+import { createReducer, current } from '@reduxjs/toolkit'
 import {
   setActiveClaimAccount,
   setActiveClaimAccountENS,
@@ -7,9 +7,12 @@ import {
   setInputAddress,
   setInvestFlowStep,
   setIsInvestFlowActive,
+  initInvestFlowData,
+  updateInvestAmount,
   setIsSearchUsed,
   setSelected,
   setSelectedAll,
+  resetClaimUi,
   ClaimStatus,
 } from './actions'
 
@@ -27,9 +30,17 @@ export const initialState: ClaimState = {
   // investment
   isInvestFlowActive: false,
   investFlowStep: 0,
+  investFlowData: [],
   // table select change
   selected: [],
   selectedAll: false,
+}
+
+export type InvestClaim = {
+  index: number
+  inputAmount?: string
+  investedAmount?: string
+  vCowAmount?: string
 }
 
 export type ClaimState = {
@@ -46,6 +57,7 @@ export type ClaimState = {
   // investment
   isInvestFlowActive: boolean
   investFlowStep: number
+  investFlowData: InvestClaim[]
   // table select change
   selected: number[]
   selectedAll: boolean
@@ -77,10 +89,37 @@ export default createReducer(initialState, (builder) =>
     .addCase(setInvestFlowStep, (state, { payload }) => {
       state.investFlowStep = payload
     })
+    .addCase(initInvestFlowData, (state) => {
+      const { selected, isInvestFlowActive } = current(state)
+
+      const data = selected.map((index) => ({ index, investedAmount: '0' }))
+
+      if (isInvestFlowActive) {
+        state.investFlowData.push(...data)
+      } else {
+        state.investFlowData.length = 0
+      }
+    })
+    .addCase(updateInvestAmount, (state, { payload: { index, amount } }) => {
+      state.investFlowData[index].investedAmount = amount
+    })
     .addCase(setSelected, (state, { payload }) => {
       state.selected = payload
+
+      // toggle selected all if all indiv selected
+      if (state.selected.length === payload.length) {
+        state.selectedAll = true
+      } else {
+        state.selectedAll = false
+      }
     })
     .addCase(setSelectedAll, (state, { payload }) => {
       state.selectedAll = payload
+    })
+    .addCase(resetClaimUi, (state) => {
+      state.selected = initialState.selected
+      state.selectedAll = initialState.selectedAll
+      state.investFlowStep = initialState.investFlowStep
+      state.isInvestFlowActive = initialState.isInvestFlowActive
     })
 )

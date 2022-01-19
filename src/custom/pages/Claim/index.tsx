@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback } from 'state/claim/hooks'
+import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { PageWrapper, FooterNavButtons } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
@@ -29,6 +29,8 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 
 import { GNO, USDC_BY_CHAIN } from 'constants/tokens'
 import { isSupportedChain } from 'utils/supportedChainId'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import { EnhancedUserClaimData } from './types'
 
 const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
 const USDC_CLAIM_APPROVE_MESSAGE = 'Approving USDC for investing in vCOW'
@@ -68,13 +70,18 @@ export default function Claim() {
     // claim row selection
     setSelected,
     setSelectedAll,
+    // reset claim ui
+    resetClaimUi,
   } = useClaimDispatchers()
 
+  // addresses
   const { address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
   const isInputAddressValid = useMemo(() => isAddress(resolvedAddress || ''), [resolvedAddress])
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
+  // error handling modals
+  const { handleCloseError, handleSetError, ErrorModal } = useErrorModal()
 
   // get user claim data
   const userClaimData = useUserEnhancedClaimData(activeClaimAccount)
@@ -121,21 +128,19 @@ export default function Claim() {
     setInputAddress('')
   }
 
+  // TODO: useCallback
   // handle submit claim
   const handleSubmitClaim = () => {
+    // Reset error handling
+    handleCloseError()
+
     // just to be sure
     if (!activeClaimAccount) return
 
     const freeClaims = getFreeClaims(userClaimData)
 
-    // check if there are any selected (paid) claims
-    if (!selected.length) {
-      const inputData = freeClaims.map(({ index }) => ({ index }))
-
-      console.log('starting claiming with', inputData)
-
+    const sendTransaction = (inputData: ClaimInput[]) => {
       setClaimStatus(ClaimStatus.ATTEMPTING)
-
       claimCallback(inputData)
         // this is not right currently
         .then((/* res */) => {
@@ -144,48 +149,48 @@ export default function Claim() {
         })
         .catch((error) => {
           setClaimStatus(ClaimStatus.DEFAULT)
-          console.log(error)
+          console.error('[Claim::index::handleSubmitClaim]::error', error)
+          handleSetError(error?.message)
         })
+    }
+
+    // check if there are any selected (paid) claims
+    let inputData
+    if (!selected.length) {
+      inputData = freeClaims.map(({ index }) => ({ index }))
+      console.log('Starting claiming with', inputData)
+      sendTransaction(inputData)
+    } else if (investFlowStep == 2) {
+      // Free claimings + selected investment oportunities
+      const selectedIndex = [...getIndexes(freeClaims), ...selected]
+      inputData = selectedIndex.reduce<EnhancedUserClaimData[]>((acc, idx: number) => {
+        const claim = userClaimData.find(({ index }) => idx === index)
+        if (claim) {
+          // TODO: @nenadV91, here you can modify the amounts to use the partial investments
+          acc.push(claim)
+        }
+        return acc
+      }, [])
+
+      console.log('Starting Investment Flow', inputData)
+      sendTransaction(inputData)
     } else {
-      const inputData = [...getIndexes(freeClaims), ...selected].map((idx: number) => {
-        return userClaimData.find(({ index }) => idx === index)
-      })
-      console.log('starting investment flow', inputData)
       setIsInvestFlowActive(true)
     }
   }
-  console.log(
-    `Claim/index::`,
-    `[unclaimedAmount ${unclaimedAmount?.toFixed(2)}]`,
-    `[hasClaims ${hasClaims}]`,
-    `[activeClaimAccount ${activeClaimAccount}]`,
-    `[isAirdropOnly ${isAirdropOnly}]`
-  )
 
-  // on account change
+  // on account/activeAccount/non-connected account (if claiming for someone else) change
   useEffect(() => {
-    if (!isSearchUsed && account) {
+    // disconnected wallet?
+    if (!account) {
+      setActiveClaimAccount('')
+    } else if (!isSearchUsed) {
       setActiveClaimAccount(account)
     }
 
-    if (!account) {
-      setActiveClaimAccount('')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account])
-
-  // if wallet is disconnected
-  useEffect(() => {
-    if (!account && !isSearchUsed) {
-      setActiveClaimAccount('')
-    }
-
-    if (!account) {
-      setIsInvestFlowActive(false)
-      setInvestFlowStep(0)
-    }
-    // setActiveClaimAccount and other dispatch fns are only here for TS. They are safe references.
-  }, [account, isSearchUsed, setActiveClaimAccount, setInvestFlowStep, setIsInvestFlowActive])
+    // properly reset the user to the claims table and initial investment flow
+    resetClaimUi()
+  }, [account, activeClaimAccount, resolvedAddress, isSearchUsed, setActiveClaimAccount, resetClaimUi])
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
@@ -210,6 +215,8 @@ export default function Claim() {
     <PageWrapper>
       {/* Approve confirmation modal */}
       <TransactionConfirmationModal />
+      {/* Error modal */}
+      <ErrorModal />
       {/* If claim is confirmed > trigger confetti effect */}
       <Confetti start={claimStatus === ClaimStatus.CONFIRMED} />
 
@@ -285,7 +292,7 @@ export default function Claim() {
                   <Trans>Review</Trans>
                 </ButtonPrimary>
               ) : (
-                <ButtonPrimary onClick={() => setInvestFlowStep(3)}>
+                <ButtonPrimary onClick={handleSubmitClaim}>
                   <Trans>Claim and invest vCOW</Trans>
                 </ButtonPrimary>
               )}

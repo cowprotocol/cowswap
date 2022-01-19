@@ -122,12 +122,12 @@ export default function ClaimsTable({
   const { selectedAll, selected, activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
   const pendingClaimsSet = useAllClaimingTransactionIndices()
 
-  const hideTable =
-    isAirdropOnly || !hasClaims || !activeClaimAccount || claimStatus !== ClaimStatus.DEFAULT || isInvestFlowActive
-
   const { deployment: start, investmentDeadline, airdropDeadline } = useClaimTimeInfo()
 
-  if (hideTable) return null
+  const showTable =
+    !isAirdropOnly && hasClaims && activeClaimAccount && claimStatus === ClaimStatus.DEFAULT && !isInvestFlowActive
+
+  if (!showTable) return null
 
   return (
     <ClaimBreakdown>

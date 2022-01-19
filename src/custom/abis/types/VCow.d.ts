@@ -28,7 +28,7 @@ interface VCowInterface extends ethers.utils.Interface {
     "deploymentTimestamp()": FunctionFragment;
     "gnoPrice()": FunctionFragment;
     "usdcPrice()": FunctionFragment;
-    "wethPrice()": FunctionFragment;
+    "nativeTokenPrice()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -68,7 +68,10 @@ interface VCowInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "gnoPrice", values?: undefined): string;
   encodeFunctionData(functionFragment: "usdcPrice", values?: undefined): string;
-  encodeFunctionData(functionFragment: "wethPrice", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "nativeTokenPrice",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimMany", data: BytesLike): Result;
@@ -80,7 +83,10 @@ interface VCowInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "gnoPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "usdcPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "wethPrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nativeTokenPrice",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Claimed(uint256,uint8,address,uint256,uint256)": EventFragment;
@@ -177,7 +183,7 @@ export class VCow extends BaseContract {
 
     usdcPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    wethPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+    nativeTokenPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   claim(
@@ -211,7 +217,7 @@ export class VCow extends BaseContract {
 
   usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  wethPrice(overrides?: CallOverrides): Promise<BigNumber>;
+  nativeTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
     claim(
@@ -245,7 +251,7 @@ export class VCow extends BaseContract {
 
     usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    wethPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    nativeTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -319,7 +325,7 @@ export class VCow extends BaseContract {
 
     usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    wethPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    nativeTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -359,6 +365,6 @@ export class VCow extends BaseContract {
 
     usdcPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    wethPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    nativeTokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
