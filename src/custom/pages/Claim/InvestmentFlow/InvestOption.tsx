@@ -22,8 +22,9 @@ import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
-  Balance = 'Insufficient balance to cover input investment amount. Adjust the amount or go back to remove this investment option',
-  Input = 'Input amount is bigger than available investment amount',
+  Initial = 'Insufficient balance to cover input investment amount. Adjust the amount or go back to remove this investment option',
+  Balance = 'Insufficient balance to cover input investment amount, please adjust the input amount',
+  MaxCost = 'Input amount is bigger than available investment amount, please adjust the input amount',
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
@@ -59,6 +60,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
     updateInvestAmount({ index: optionIndex, amount })
     setTypedValue(formatSmart(value, decimals, { smallLimit: undefined }) || '')
+    setInputError('')
 
     setPercentage(_calculatePercentage(balance, maxCost))
   }, [balance, decimals, maxCost, noBalance, optionIndex, updateInvestAmount])
@@ -79,12 +81,13 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
         return
       }
 
-      // calculate percentage
+      let errorMsg = null
 
-      const maxValue = maxCost.greaterThan(balance) ? balance : maxCost
+      if (parsedAmount.greaterThan(maxCost)) errorMsg = ErrorMsgs.MaxCost
+      else if (parsedAmount.greaterThan(balance)) errorMsg = ErrorMsgs.Balance
 
-      if (parsedAmount.greaterThan(maxValue)) {
-        setInputError(ErrorMsgs.Input)
+      if (errorMsg) {
+        setInputError(errorMsg)
         updateInvestAmount({ index: optionIndex, amount: '0' })
         setPercentage('0')
         return
@@ -140,7 +143,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       }
 
       if (balance.lessThan(maxCost)) {
-        setInputError(ErrorMsgs.Balance)
+        setInputError(ErrorMsgs.Initial)
       } else {
         setMaxAmount()
       }
