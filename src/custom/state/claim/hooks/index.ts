@@ -67,8 +67,8 @@ const ONE_VCOW = CurrencyAmount.fromRawAmount(
 )
 
 // Constants regarding investment time windows
-const INVESTMENT_TIME = ms`2 weeks`
-const AIRDROP_TIME = ms`6 weeks`
+const INVESTMENT_TIME = ms`30 minutes`
+const AIRDROP_TIME = ms`40 minutes`
 
 // For native token price calculation
 const DENOMINATOR = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
