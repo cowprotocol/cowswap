@@ -1,4 +1,4 @@
-import { ClaimType, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
+import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
 import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
@@ -10,6 +10,8 @@ import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hoo
 import { CustomLightSpinner } from 'theme'
 import Circle from 'assets/images/blue-loader.svg'
 import { Countdown } from 'pages/Claim/Countdown'
+import { getPaidClaims } from 'state/claim/hooks/utils'
+import { useEffect } from 'react'
 
 export type ClaimsTableProps = {
   handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -122,8 +124,17 @@ export default function ClaimsTable({
 }: ClaimsTableProps) {
   const { selectedAll, selected, activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
   const pendingClaimsSet = useAllClaimingTransactionIndices()
+  const { setSelectedAll } = useClaimDispatchers()
 
   const { deployment: start, investmentDeadline, airdropDeadline } = useClaimTimeInfo()
+
+  const paidClaims = getPaidClaims(userClaimData)
+
+  useEffect(() => {
+    if (selected.length === paidClaims.length) {
+      setSelectedAll(true)
+    }
+  }, [paidClaims.length, selected.length, setSelectedAll])
 
   const showTable =
     !isAirdropOnly && hasClaims && activeClaimAccount && claimStatus === ClaimStatus.DEFAULT && !isInvestFlowActive
