@@ -721,10 +721,13 @@ export const InvestContent = styled.div`
 
       tr > td > span {
         font-size: inherit;
-        width: 100%;
         display: flex;
         flex-flow: column wrap;
         gap: 3px;
+
+        &:last-child {
+          width: 100%;
+        }
       }
 
       tr > td:nth-of-type(1) {
@@ -738,7 +741,7 @@ export const InvestContent = styled.div`
 
       tr > td:nth-of-type(2) {
         flex-flow: column wrap;
-        justify-content: flex-start;
+        justify-content: center;
 
         > span {
           margin: 0;
@@ -754,6 +757,10 @@ export const InvestContent = styled.div`
         font-weight: 300;
         font-size: 14px;
         justify-content: flex-start;
+
+        > span {
+          width: 100%;
+        }
       }
     }
   }
@@ -767,9 +774,9 @@ export const StepIndicator = styled.div`
 export const Steps = styled.div<{ step: number | 0 }>`
   list-style-type: decimal;
   margin: 0 0 12px;
-  background: grey;
   padding: 12px;
   border-radius: 12px;
+  background: ${({ theme }) => theme.blueShade3};
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 34px;
@@ -779,7 +786,7 @@ export const Steps = styled.div<{ step: number | 0 }>`
   }
 
   > li:nth-of-type(${({ step }) => step}) {
-    background: rgb(237 104 52 / 29%);
+    background: ${({ theme }) => transparentize(0.5, theme.primary1)};
   }
 `
 
@@ -869,8 +876,11 @@ export const InvestInput = styled.span`
     bottom: 0;
     margin: auto;
     font-weight: normal;
-    opacity: 0.7;
     color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 32px;
   }
 
   > div > label > input {
@@ -1038,12 +1048,20 @@ export const ClaimAccountButtons = styled.div`
 `
 
 export const AccountClaimSummary = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, auto);
+  display: flex;
+  flex-flow: row wrap;
   gap: 12px;
+  margin: 24px 0;
 
   > span {
     display: flex;
     flex-flow: column wrap;
+    white-space: wrap;
+    gap: 3px;
+  }
+
+  > span > i {
+    font-style: normal;
+    break-word: break-all;
   }
 `
