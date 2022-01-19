@@ -198,7 +198,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "nativeTokenPrice",
+    name: "wethPrice",
     outputs: [
       {
         internalType: "uint256",

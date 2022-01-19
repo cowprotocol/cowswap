@@ -5,7 +5,7 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
 import Row from 'components/Row'
-import { CheckCircle } from 'react-feather'
+import CheckCircle from 'assets/cow-swap/check.svg'
 import { InvestOptionProps } from '.'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -184,15 +184,16 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
                   `${currencyAmount?.currency?.symbol} not approved`
                 ) : (
                   <Row>
-                    {currencyAmount?.currency?.symbol} approved{' '}
-                    <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
+                    <span>{currencyAmount?.currency?.symbol} approved</span>
+                    <img src={CheckCircle} alt="Approved" />
                   </Row>
                 )}
               </i>
             ) : (
               <i>
                 <Row>
-                  Approval not required! <CheckCircle color="lightgreen" style={{ marginLeft: 5 }} />
+                  <span>Approval not required!</span>
+                  <img src={CheckCircle} alt="Approved" />
                 </Row>
               </i>
             )}
