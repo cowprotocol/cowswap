@@ -43,7 +43,6 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const investedAmount = investFlowData[optionIndex].investedAmount
 
   const token = currencyAmount?.currency
-  const decimals = token?.decimals
   const balance = useCurrencyBalance(account || undefined, token)
 
   const isSelfClaiming = account === activeClaimAccount
@@ -59,11 +58,11 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     const amount = value.quotient.toString()
 
     updateInvestAmount({ index: optionIndex, amount })
-    setTypedValue(formatSmart(value, decimals, { smallLimit: undefined }) || '')
+    setTypedValue(value.toExact() || '')
     setInputError('')
 
     setPercentage(_calculatePercentage(balance, maxCost))
-  }, [balance, decimals, maxCost, noBalance, optionIndex, updateInvestAmount])
+  }, [balance, maxCost, noBalance, optionIndex, updateInvestAmount])
 
   // on input field change handler
   const onInputChange = useCallback(
@@ -172,7 +171,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
           <span>
             <b>Max. investment available</b>{' '}
             <i>
-              {formatSmart(maxCost) || '0'} {currencyAmount?.currency?.symbol}
+              {maxCost?.toExact() || '0'} {currencyAmount?.currency?.symbol}
             </i>
           </span>
 
