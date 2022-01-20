@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
 import { PageWrapper } from 'pages/Claim/styled'
@@ -21,21 +20,15 @@ import InvestmentFlow from './InvestmentFlow'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 
-import { useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 
-import { GNO, USDC_BY_CHAIN } from 'constants/tokens'
-import { isSupportedChain } from 'utils/supportedChainId'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { EnhancedUserClaimData } from './types'
 import FooterNavButtons from './FooterNavButtons'
 
-const GNO_CLAIM_APPROVE_MESSAGE = 'Approving GNO for investing in vCOW'
-const USDC_CLAIM_APPROVE_MESSAGE = 'Approving USDC for investing in vCOW'
-
 export default function Claim() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
 
   const {
     // address/ENS address
@@ -184,26 +177,6 @@ export default function Claim() {
     OperationType.APPROVE_TOKEN
   )
 
-  const [gnoApproveState, gnoApproveCallback] = useApproveCallbackFromClaim({
-    openTransactionConfirmationModal: () => openModal(GNO_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
-    closeModals: closeModal,
-    // approve max unit256 amount
-    amountToApprove: isSupportedChain(chainId) ? CurrencyAmount.fromRawAmount(GNO[chainId], MaxUint256) : undefined,
-    // TODO: enable, fix this
-    // amountToCheckAgainstAllowance: investmentAmountAsCurrency,
-  })
-
-  const [usdcApproveState, usdcApproveCallback] = useApproveCallbackFromClaim({
-    openTransactionConfirmationModal: () => openModal(USDC_CLAIM_APPROVE_MESSAGE, OperationType.APPROVE_TOKEN),
-    closeModals: closeModal,
-    // approve max unit256 amount
-    amountToApprove: isSupportedChain(chainId)
-      ? CurrencyAmount.fromRawAmount(USDC_BY_CHAIN[chainId], MaxUint256)
-      : undefined,
-    // TODO: enable, fix this
-    // amountToCheckAgainstAllowance: investmentAmountAsCurrency,
-  })
-
   return (
     <PageWrapper>
       {/* Approve confirmation modal */}
@@ -229,18 +202,7 @@ export default function Claim() {
       {/* IS Airdrop + investing (advanced) */}
       <ClaimsTable isAirdropOnly={isAirdropOnly} hasClaims={hasClaims} />
       {/* Investing vCOW flow (advanced) */}
-      <InvestmentFlow
-        isAirdropOnly={isAirdropOnly}
-        hasClaims={hasClaims}
-        gnoApproveData={{
-          approveCallback: gnoApproveCallback,
-          approveState: gnoApproveState,
-        }}
-        usdcApproveData={{
-          approveCallback: usdcApproveCallback,
-          approveState: usdcApproveState,
-        }}
-      />
+      <InvestmentFlow isAirdropOnly={isAirdropOnly} hasClaims={hasClaims} modalCbs={{ openModal, closeModal }} />
 
       <FooterNavButtons
         handleCheckClaim={handleCheckClaim}

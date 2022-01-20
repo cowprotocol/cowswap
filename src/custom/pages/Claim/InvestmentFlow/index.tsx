@@ -11,45 +11,22 @@ import {
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 
-import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
+import { useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
 import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
 
-import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
 import { useActiveWeb3React } from 'hooks/web3'
 
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
+import { OperationType } from 'components/TransactionConfirmationModal'
 
-export type InvestOptionProps = {
-  claim: EnhancedUserClaimData
-  optionIndex: number
-  approveData:
-    | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
-    | undefined
-}
-
-type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
+export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
   isAirdropOnly: boolean
-  gnoApproveData: InvestOptionProps['approveData']
-  usdcApproveData: InvestOptionProps['approveData']
-}
-
-type TokenApproveName = 'gnoApproveData' | 'usdcApproveData'
-type TokenApproveData = {
-  [key in TokenApproveName]: InvestOptionProps['approveData'] | undefined
-}
-
-// map claim type to token approve data
-function _claimToTokenApproveData(claimType: ClaimType, tokenApproveData: TokenApproveData) {
-  switch (claimType) {
-    case ClaimType.GnoOption:
-      return tokenApproveData.gnoApproveData
-    case ClaimType.Investor:
-      return tokenApproveData.usdcApproveData
-    default:
-      return undefined
+  modalCbs: {
+    openModal: (message: string, operationType: OperationType) => void
+    closeModal: () => void
   }
 }
 
@@ -78,7 +55,7 @@ function _enhancedUserClaimToClaimWithInvestment(
   return { ...claim, ...calculateInvestmentAmounts(claim, investmentAmount) }
 }
 
-export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenApproveData }: InvestmentFlowProps) {
+export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
     useClaimState()
@@ -140,12 +117,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
           </p>
 
           {selectedClaims.map((claim, index) => (
-            <InvestOption
-              key={claim.index}
-              optionIndex={index}
-              approveData={_claimToTokenApproveData(claim.type, tokenApproveData)}
-              claim={claim}
-            />
+            <InvestOption key={claim.index} optionIndex={index} claim={claim} {...modalCbs} />
           ))}
 
           <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
