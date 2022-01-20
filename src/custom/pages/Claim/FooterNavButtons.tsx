@@ -62,7 +62,7 @@ export default function FooterNavButtons({
   }
 
   // User has no set active claim account and/or has claims, show claim account search
-  if (!activeClaimAccount || !hasClaims) {
+  if ((!activeClaimAccount || !hasClaims) && claimStatus === ClaimStatus.DEFAULT) {
     buttonContent = (
       <ButtonPrimary disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
         <Trans>Check claimable vCOW</Trans>
