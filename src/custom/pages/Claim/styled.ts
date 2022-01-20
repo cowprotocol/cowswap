@@ -30,9 +30,9 @@ export const PageWrapper = styled.div`
       --active: ${({ theme }) => theme.primary1};
       --active-inner: ${({ theme }) => theme.black};
       --focus: 2px rgba(39, 94, 254, .3);
-      --border: ${({ theme }) => theme.bg4};
+      --border: ${({ theme }) => theme.blueShade3};
       --border-hover: ${({ theme }) => theme.primary1};
-      --background: ${({ theme }) => theme.blueShade3};;
+      --background: ${({ theme }) => theme.white};
       appearance: none;
       height: 21px;
       width: 21px;
@@ -279,7 +279,7 @@ export const ClaimTable = styled.div`
   }
 
   ${TokenLogo} {
-    margin: 0 -26px 0 0;
+    margin: 0 -16px 0 0;
   }
 
   table {
@@ -287,7 +287,7 @@ export const ClaimTable = styled.div`
     border-collapse: collapse;
     min-width: 100%;
     font-size: 16px;
-    grid-template-columns: min-content auto auto auto;
+    grid-template-columns: min-content auto auto 240px;
   }
 
   thead,
@@ -343,7 +343,7 @@ export const ClaimTable = styled.div`
 
   tr > td:nth-of-type(2) {
     > span {
-      margin: 0 0 0 12px;
+      margin: 0 12px 0 0;
       display: flex;
       flex-flow: column wrap;
     }
@@ -524,6 +524,10 @@ export const EligibleBanner = styled.div`
   text-align: center;
   margin: 0 auto 16px;
   font-weight: 600;
+
+  > img {
+    margin: 0 4px 0 0;
+  }
 `
 
 export const InputField = styled.div`
@@ -752,6 +756,10 @@ export const InvestContent = styled.div`
         flex-flow: column wrap;
         gap: 3px;
 
+        > i {
+          font-style: normal;
+        }
+
         &:last-child {
           width: 100%;
         }
@@ -848,7 +856,7 @@ export const InvestTokenGroup = styled.div`
   }
 
   ${TokenLogo} {
-    margin: 0 -34px 0 0;
+    margin: 0 -36px 0 0;
   }
 
   > span {
@@ -903,7 +911,7 @@ export const InvestInput = styled.span`
     margin: auto;
     font-weight: normal;
     color: ${({ theme }) => theme.text1};
-    background: ${({ theme }) => theme.blueShade3};
+    background: ${({ theme }) => theme.bg5};
     border-radius: 12px;
     padding: 0 12px;
     height: 32px;
@@ -912,8 +920,7 @@ export const InvestInput = styled.span`
   > div > label > input {
     color: ${({ theme }) => theme.text1};
     border: none;
-    border-radius: 12px;
-    padding: 12px 70px 5px 5px;
+    padding: 12px 70px 0 0;
     font-size: 26px;
     outline: 0;
     background: transparent;
@@ -971,13 +978,14 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   position: relative;
   height: 10px;
   border-radius: 24px;
-  background: grey;
-  margin: 8px 0;
+  background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+  margin: 6px 0;
+  padding: 0 36px 0 0;
 
   &::before {
     content: '';
     display: block;
-    background-color: ${({ theme }) => theme.primary1};
+    background-color: ${({ theme }) => theme.primary4};
     height: 100%;
     border-radius: 24px;
     position: absolute;
@@ -991,16 +999,17 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   &::after {
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
     display: inline-block;
-    font-size: 11px;
-    color: white;
-    transform: translate(-120%, -20%);
+    position: absolute;
+    font-size: 13px;
+    color: ${({ theme }) => theme.primary1};
+    left: 100%;
   }
 `
 
 export const InvestSummary = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: repeat(2, 1fr);
   font-size: 15px;
   gap: 16px 36px;
 
@@ -1009,7 +1018,7 @@ export const InvestSummary = styled.div`
     flex-flow: column wrap;
     margin: 0 0 18px;
     color: ${({ theme }) => transparentize(0.1, theme.text1)};
-    gap: 6px;
+    gap: 4px;
   }
 
   > span > ${ButtonPrimary} {
@@ -1043,35 +1052,6 @@ export const InvestFlowValidation = styled.div`
   background: rgb(255 0 0 / 25%);
   color: red;
   margin: 0 auto 16px;
-`
-
-export const InvestTokenSubtotal = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  color: ${({ theme }) => theme.text1};
-  width: 100%;
-  padding: 24px;
-  margin: 0 0 24px;
-  border-radius: 12px;
-  background: ${({ theme }) => theme.blueShade3};
-  font-size: 15px;
-
-  > h3 {
-    font-weight: 600;
-    font-size: 21px;
-    margin: 0 0 8px;
-  }
-
-  > span {
-    display: flex;
-    flex-flow: column wrap;
-    margin: 18px 0 0;
-
-    > b {
-      font-weight: 600;
-      margin: 0 0 3px;
-    }
-  }
 `
 
 export const ClaimAccountButtons = styled.div`
