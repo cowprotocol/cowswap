@@ -18,3 +18,10 @@ export type EnhancedUserClaimData = UserClaimData & {
   price?: Price<Currency, Currency> | undefined
   cost?: CurrencyAmount<Currency> | undefined
 }
+
+export type InvestmentAmounts = {
+  vCowAmount?: CurrencyAmount<Currency>
+  investmentCost?: CurrencyAmount<Currency>
+}
+
+export type ClaimWithInvestmentData = EnhancedUserClaimData & InvestmentAmounts
