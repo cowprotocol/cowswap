@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useClaimState } from 'state/claim/hooks'
-import { CheckIcon, EligibleBanner as EligibleBannerWrapper } from './styled'
+import { EligibleBanner as EligibleBannerWrapper } from './styled'
+import CheckCircle from 'assets/cow-swap/check.svg'
 import { ClaimStatus } from 'state/claim/actions'
 
 export default function EligibleBanner({ hasClaims }: { hasClaims: boolean }) {
@@ -12,7 +13,7 @@ export default function EligibleBanner({ hasClaims }: { hasClaims: boolean }) {
 
   return (
     <EligibleBannerWrapper>
-      <CheckIcon />
+      <img src={CheckCircle} alt="eligible" />
       <Trans>This account is eligible for vCOW token claims!</Trans>
     </EligibleBannerWrapper>
   )

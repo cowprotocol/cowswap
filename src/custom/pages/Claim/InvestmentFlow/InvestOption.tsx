@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
-import styled from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import {
+  // Currency,
+  CurrencyAmount,
+  // Fraction
+} from '@uniswap/sdk-core'
 
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
 import { formatSmart } from 'utils/format'
@@ -19,31 +22,15 @@ import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 
-const RangeSteps = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
-`
-
-const RangeStep = styled.button`
-  background: none;
-  border: none;
-  font-size: 0.8rem;
-  cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
-  padding: 0;
-`
-
 const INVESTMENT_STEPS = ['0', '25', '50', '75', '100']
 
-function _scaleValue(maxValue: CurrencyAmount<Currency>, value: string) {
-  // parse percent to string, example 25% -> 4 or 50% -> 2
-  const parsedValue = new Fraction(value, '100')
+// function _scaleValue(maxValue: CurrencyAmount<Currency>, value: string) {
+//   // parse percent to string, example 25% -> 4 or 50% -> 2
+//   const parsedValue = new Fraction(value, '100')
 
-  // divide maxValue with parsed value to get invest amount
-  return maxValue.multiply(parsedValue).asFraction
-}
+//   // divide maxValue with parsed value to get invest amount
+//   return maxValue.multiply(parsedValue).asFraction
+// }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost } = claim
@@ -62,19 +49,19 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const decimals = token?.decimals
   const balance = useCurrencyBalance(account || undefined, token)
 
-  const handleStepChange = useCallback(
-    (value: string) => {
-      if (!maxCost || !balance) {
-        return
-      }
+  // const handleStepChange = useCallback(
+  //   (value: string) => {
+  //     if (!maxCost || !balance) {
+  //       return
+  //     }
 
-      const scaledCurrencyAmount = _scaleValue(maxCost, value)
+  //     const scaledCurrencyAmount = _scaleValue(maxCost, value)
 
-      updateInvestAmount({ index: optionIndex, amount: scaledCurrencyAmount.quotient.toString() })
-      setPercentage(value)
-    },
-    [balance, maxCost, optionIndex, updateInvestAmount]
-  )
+  //     updateInvestAmount({ index: optionIndex, amount: scaledCurrencyAmount.quotient.toString() })
+  //     setPercentage(value)
+  //   },
+  //   [balance, maxCost, optionIndex, updateInvestAmount]
+  // )
 
   const onMaxClick = useCallback(() => {
     if (!maxCost || !balance) {
@@ -187,17 +174,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
           <span>
             <b>Available investment used</b>
-
-            <div>
-              <RangeSteps>
-                {INVESTMENT_STEPS.map((step: string) => (
-                  <RangeStep onClick={() => handleStepChange(step)} key={step}>
-                    {step}%
-                  </RangeStep>
-                ))}
-              </RangeSteps>
-              <InvestAvailableBar percentage={Number(percentage)} />
-            </div>
+            <InvestAvailableBar percentage={Number(percentage)} />
           </span>
         </InvestSummary>
         {/* Error modal */}

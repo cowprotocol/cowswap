@@ -3,7 +3,6 @@ import {
   InvestFlow,
   InvestContent,
   InvestFlowValidation,
-  InvestTokenSubtotal,
   StepIndicator,
   Steps,
   ClaimTable,
@@ -107,17 +106,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             />
           ))}
 
-          {/* TODO: Update this with real data */}
-          <InvestTokenSubtotal>
-            <h3>Investment summary</h3>
-            <span>
-              <b>Claim account:</b> {activeClaimAccount}
-            </span>
-            <span>
-              <b>vCOW to receive based on selected investment(s):</b> 4,054,671.28 vCOW
-            </span>
-          </InvestTokenSubtotal>
-
           <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
         </InvestContent>
       ) : null}
@@ -148,7 +136,10 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
               <tbody>
                 <tr>
                   <td>
-                    <b>Airdrop</b>
+                    <CowProtocolLogo size={32} />
+                    <span>
+                      <b>Airdrop</b>
+                    </span>
                   </td>
                   <td>
                     <span>

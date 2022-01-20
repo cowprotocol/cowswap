@@ -76,7 +76,7 @@ const ClaimsTableRow = ({
       </td>
       <td>
         {' '}
-        <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={32} />
+        {!isFree && <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={32} />}
         <CowProtocolLogo size={32} />
         <span>
           <b>{isFree ? ClaimType[type] : 'Buy vCOW'}</b>
