@@ -1,4 +1,4 @@
-import { ClaimType, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
+import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
 import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
@@ -7,26 +7,27 @@ import { ClaimStatus } from 'state/claim/actions'
 import { formatSmart } from 'utils/format'
 import { EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
+import { useUserEnhancedClaimData } from 'state/claim/hooks'
+
 import { CustomLightSpinner } from 'theme'
 import Circle from 'assets/images/blue-loader.svg'
 import { Countdown } from 'pages/Claim/Countdown'
+import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
+import { useEffect } from 'react'
 
 export type ClaimsTableProps = {
-  handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void
-  handleSelect: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void
-  userClaimData: EnhancedUserClaimData[]
   isAirdropOnly: boolean
   hasClaims: boolean
 }
 
 // TODO: fix in other pr
-type ClaimsTableRowProps = EnhancedUserClaimData &
-  Pick<ClaimsTableProps, 'handleSelect'> & {
-    selected: number[]
-    start: number | null
-    end: number | null
-    isPendingClaim: boolean
-  }
+type ClaimsTableRowProps = EnhancedUserClaimData & {
+  handleSelect: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void
+  selected: number[]
+  start: number | null
+  end: number | null
+  isPendingClaim: boolean
+}
 
 const ClaimTr = styled.tr<{ isPending?: boolean }>`
   > td {
@@ -113,17 +114,36 @@ const ClaimsTableRow = ({
   )
 }
 
-export default function ClaimsTable({
-  handleSelectAll,
-  handleSelect,
-  userClaimData,
-  isAirdropOnly,
-  hasClaims,
-}: ClaimsTableProps) {
+export default function ClaimsTable({ isAirdropOnly, hasClaims }: ClaimsTableProps) {
   const { selectedAll, selected, activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
+
+  const { setSelectedAll, setSelected } = useClaimDispatchers()
+
   const pendingClaimsSet = useAllClaimingTransactionIndices()
 
+  const userClaimData = useUserEnhancedClaimData(activeClaimAccount)
+
   const { deployment: start, investmentDeadline, airdropDeadline } = useClaimTimeInfo()
+
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const checked = event.target.checked
+    const output = [...selected]
+    checked ? output.push(index) : output.splice(output.indexOf(index), 1)
+    setSelected(output)
+  }
+
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked
+    const paid = getIndexes(getPaidClaims(userClaimData))
+    setSelected(checked ? paid : [])
+    setSelectedAll(checked)
+  }
+
+  const paidClaims = getPaidClaims(userClaimData)
+
+  useEffect(() => {
+    setSelectedAll(selected.length === paidClaims.length)
+  }, [paidClaims.length, selected.length, setSelectedAll])
 
   const showTable =
     !isAirdropOnly && hasClaims && activeClaimAccount && claimStatus === ClaimStatus.DEFAULT && !isInvestFlowActive

@@ -4,7 +4,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
 import { PageWrapper } from 'pages/Claim/styled'
 import EligibleBanner from './EligibleBanner'
-import { getFreeClaims, hasPaidClaim, getIndexes, getPaidClaims, hasFreeClaim } from 'state/claim/hooks/utils'
+import { getFreeClaims, hasPaidClaim, getIndexes, hasFreeClaim } from 'state/claim/hooks/utils'
 import { useWalletModalToggle } from 'state/application/hooks'
 import Confetti from 'components/Confetti'
 
@@ -66,7 +66,6 @@ export default function Claim() {
     setIsInvestFlowActive,
     // claim row selection
     setSelected,
-    setSelectedAll,
     // reset claim ui
     resetClaimUi,
   } = useClaimDispatchers()
@@ -91,24 +90,6 @@ export default function Claim() {
 
   // claim callback
   const { claimCallback } = useClaimCallback(activeClaimAccount)
-
-  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const checked = event.target.checked
-    const output = [...selected]
-    checked ? output.push(index) : output.splice(output.indexOf(index), 1)
-    setSelected(output)
-
-    if (!checked) {
-      setSelectedAll(false)
-    }
-  }
-
-  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked
-    const paid = getIndexes(getPaidClaims(userClaimData))
-    setSelected(checked ? paid : [])
-    setSelectedAll(checked)
-  }
 
   // handle change account
   const handleChangeAccount = () => {
@@ -240,13 +221,7 @@ export default function Claim() {
       {/* Try claiming or inform succesfull claim */}
       <ClaimingStatus />
       {/* IS Airdrop + investing (advanced) */}
-      <ClaimsTable
-        isAirdropOnly={isAirdropOnly}
-        userClaimData={userClaimData}
-        handleSelect={handleSelect}
-        handleSelectAll={handleSelectAll}
-        hasClaims={hasClaims}
-      />
+      <ClaimsTable isAirdropOnly={isAirdropOnly} hasClaims={hasClaims} />
       {/* Investing vCOW flow (advanced) */}
       <InvestmentFlow
         isAirdropOnly={isAirdropOnly}
