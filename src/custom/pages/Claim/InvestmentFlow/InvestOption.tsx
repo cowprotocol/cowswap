@@ -58,7 +58,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const [approveState, approveCallback] = useApproveCallbackFromClaim({
     openTransactionConfirmationModal: () => openModal(_claimApproveMessageMap(claim.type), OperationType.APPROVE_TOKEN),
     closeModals: closeModal,
-    claimType: claim.type,
+    claim,
     investmentAmount,
   })
 

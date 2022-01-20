@@ -1,4 +1,4 @@
-import { CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, MaxUint256, Percent } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from '@src/hooks/web3'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -12,7 +12,7 @@ export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { tryAtomsToCurrency } from 'state/swap/extension'
-import { claimTypeToToken } from 'state/claim/hooks/utils'
+import { EnhancedUserClaimData } from '@src/custom/pages/Claim/types'
 
 type ApproveCallbackFromTradeParams = Pick<
   ApproveCallbackParams,
@@ -59,14 +59,14 @@ type ApproveCallbackFromClaimParams = Omit<
   ApproveCallbackParams,
   'spender' | 'amountToApprove' | 'amountToCheckAgainstAllowance'
 > & {
-  claimType: ClaimType
+  claim: EnhancedUserClaimData
   investmentAmount: string | undefined
 }
 
 export function useApproveCallbackFromClaim({
   openTransactionConfirmationModal,
   closeModals,
-  claimType,
+  claim,
   investmentAmount,
 }: ApproveCallbackFromClaimParams) {
   const { chainId } = useActiveWeb3React()
@@ -76,8 +76,8 @@ export function useApproveCallbackFromClaim({
 
   // Claim only approves GNO and USDC (GnoOption & Investor, respectively.)
   const approveAmounts = useMemo(() => {
-    if (supportedChain && (claimType === ClaimType.GnoOption || claimType === ClaimType.Investor)) {
-      const investmentCurrency = claimTypeToToken(claimType, supportedChain) as Token
+    if (supportedChain && (claim.type === ClaimType.GnoOption || claim.type === ClaimType.Investor)) {
+      const investmentCurrency = claim.currencyAmount?.currency as Currency
       const amountToCheckAgainstAllowance = tryAtomsToCurrency(investmentAmount, investmentCurrency)
       return {
         amountToApprove: CurrencyAmount.fromRawAmount(investmentCurrency, MaxUint256),
@@ -85,7 +85,7 @@ export function useApproveCallbackFromClaim({
       }
     }
     return undefined
-  }, [claimType, investmentAmount, supportedChain])
+  }, [claim, investmentAmount, supportedChain])
 
   // Params: modal cbs, amountToApprove: token user is investing e.g, spender: vcow token contract
   return useApproveCallback({
