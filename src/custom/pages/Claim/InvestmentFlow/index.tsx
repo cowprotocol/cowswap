@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+
 import {
   InvestFlow,
   InvestContent,
@@ -7,15 +8,19 @@ import {
   Steps,
   ClaimTable,
   AccountClaimSummary,
-  TokenLogo,
 } from 'pages/Claim/styled'
+import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
+
 import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
-import { ClaimCommonTypes, EnhancedUserClaimData } from '../types'
 import { ClaimStatus } from 'state/claim/actions'
-import { useActiveWeb3React } from 'hooks/web3'
+import { InvestClaim } from 'state/claim/reducer'
+import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
+
 import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
+import { useActiveWeb3React } from 'hooks/web3'
+
 import InvestOption from './InvestOption'
-import CowProtocolLogo from 'components/CowProtocolLogo'
+import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 
 export type InvestOptionProps = {
   claim: EnhancedUserClaimData
@@ -48,15 +53,52 @@ function _claimToTokenApproveData(claimType: ClaimType, tokenApproveData: TokenA
   }
 }
 
+function _classifyAndFilterClaimData(claimData: EnhancedUserClaimData[], selected: number[]) {
+  const paid: EnhancedUserClaimData[] = []
+  const free: EnhancedUserClaimData[] = []
+
+  claimData.forEach((claim) => {
+    if (claim.isFree) {
+      free.push(claim)
+    } else if (selected.includes(claim.index)) {
+      paid.push(claim)
+    }
+  })
+  return [free, paid]
+}
+
+function _enhancedUserClaimToClaimWithInvestment(
+  claim: EnhancedUserClaimData,
+  investFlowData: InvestClaim[]
+): ClaimWithInvestmentData {
+  const investmentAmount = claim.isFree
+    ? undefined
+    : investFlowData.find(({ index }) => index === claim.index)?.investedAmount
+
+  return { ...claim, ...calculateInvestmentAmounts(claim, investmentAmount) }
+}
+
 export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenApproveData }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
-  const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep } = useClaimState()
+  const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
+    useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
 
-  const selectedClaims = useMemo(() => {
-    return claimData.filter(({ index }) => selected.includes(index))
-  }, [claimData, selected])
+  // Filtering and splitting claims into free and selected paid claims
+  // `selectedClaims` are used on step 1 and 2
+  // `freeClaims` are used on step 2
+  const [freeClaims, selectedClaims] = useMemo(
+    () => _classifyAndFilterClaimData(claimData, selected),
+    [claimData, selected]
+  )
+
+  // Merge all claims together again, with their investment data for step 2
+  const allClaims: ClaimWithInvestmentData[] = useMemo(
+    () =>
+      freeClaims.concat(selectedClaims).map((claim) => _enhancedUserClaimToClaimWithInvestment(claim, investFlowData)),
+    [freeClaims, investFlowData, selectedClaims]
+  )
 
   useEffect(() => {
     initInvestFlowData()
@@ -134,65 +176,9 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <CowProtocolLogo size={32} />
-                    <span>
-                      <b>Airdrop</b>
-                    </span>
-                  </td>
-                  <td>
-                    <span>
-                      <b>Amount to receive:</b>
-                      <i>13,120.50 vCOW</i>
-                    </span>
-                  </td>
-
-                  <td>
-                    <span>
-                      <b>Cost:</b> <i>Free!</i>
-                    </span>
-                    <span>
-                      <b>Vesting:</b>
-                      <i>No</i>
-                    </span>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    {' '}
-                    <TokenLogo symbol="GNO" size={32} />
-                    <CowProtocolLogo size={32} />
-                    <span>
-                      <b>Buy vCOW</b>
-                      <i>with GNO</i>
-                    </span>
-                  </td>
-
-                  <td>
-                    <span>
-                      <b>Investment amount:</b> <i>1343 GNO (50% of available investing opportunity)</i>
-                    </span>
-                    <span>
-                      <b>Amount to receive:</b>
-                      <i>13,120.50 vCOW</i>
-                    </span>
-                  </td>
-
-                  <td>
-                    <span>
-                      <b>Price:</b> <i>2666.6666 vCoW per GNO</i>
-                    </span>
-                    <span>
-                      <b>Cost:</b> <i>0.783375 GNO</i>
-                    </span>
-                    <span>
-                      <b>Vesting:</b>
-                      <i>4 years (linear)</i>
-                    </span>
-                  </td>
-                </tr>
+                {allClaims.map((claim) => (
+                  <InvestSummaryRow claim={claim} key={claim.index} />
+                ))}
               </tbody>
             </table>
           </ClaimTable>
@@ -205,7 +191,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
           </p>
           <p>
             <b>Can I modify the invested amounts or invest partial amounts later?</b> No. Once you send the transaction,
-            you cannot increase or reduce the investment. Investment oportunities can only be exercised once.
+            you cannot increase or reduce the investment. Investment opportunities can only be exercised once.
           </p>
           <p>
             <b>Important!</b> Please make sure you intend to claim and send vCOW to the mentioned receiving account(s)

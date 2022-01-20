@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
@@ -18,8 +17,7 @@ import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { tryParseAmount } from 'state/swap/hooks'
-import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
-import { PERCENTAGE_PRECISION } from 'constants/index'
+import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
 
 enum ErrorMsgs {
   Initial = 'Insufficient balance to cover the selected investment amount. Either modify the investment amount or unselect the investment option to move forward',
@@ -61,7 +59,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     setTypedValue(value.toExact() || '')
     setInputError('')
 
-    setPercentage(_calculatePercentage(balance, maxCost))
+    setPercentage(calculatePercentage(balance, maxCost))
   }, [balance, maxCost, noBalance, optionIndex, updateInvestAmount])
 
   // on input field change handler
@@ -96,7 +94,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       updateInvestAmount({ index: optionIndex, amount: parsedAmount.quotient.toString() })
 
       // update the local state with percentage value
-      setPercentage(_calculatePercentage(parsedAmount, maxCost))
+      setPercentage(calculatePercentage(parsedAmount, maxCost))
     },
     [balance, maxCost, optionIndex, token, updateInvestAmount]
   )
@@ -124,14 +122,10 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     }
   }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
 
-  const vCowAmount = useMemo(() => {
-    if (!token || !price || !investedAmount) {
-      return
-    }
-
-    const investA = CurrencyAmount.fromRawAmount(token, investedAmount)
-    return price.quote(investA)
-  }, [investedAmount, price, token])
+  const vCowAmount = useMemo(
+    () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,
+    [claim, investedAmount]
+  )
 
   // if its claiming for someone else we will set values to max
   // if there is not enough balance then we will set an error
@@ -255,17 +249,4 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       </span>
     </InvestTokenGroup>
   )
-}
-
-function _calculatePercentage<C1 extends Currency, C2 extends Currency>(
-  numerator: CurrencyAmount<C1>,
-  denominator: CurrencyAmount<C2>
-): string {
-  let percentage = denominator.equalTo(ZERO_PERCENT)
-    ? ZERO_PERCENT
-    : new Percent(numerator.quotient, denominator.quotient)
-  if (percentage.greaterThan(ONE_HUNDRED_PERCENT)) {
-    percentage = ONE_HUNDRED_PERCENT
-  }
-  return formatSmart(percentage, PERCENTAGE_PRECISION) || '0'
 }

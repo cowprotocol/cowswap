@@ -1,7 +1,9 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from 'constants/chains'
 import { GNO, GpEther, USDC_BY_CHAIN, V_COW } from 'constants/tokens'
+import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
+import { PERCENTAGE_PRECISION } from 'constants/index'
 
 import {
   CLAIMS_REPO,
@@ -14,6 +16,9 @@ import {
   UserClaims,
   VCowPrices,
 } from 'state/claim/hooks/index'
+
+import { formatSmart } from 'utils/format'
+import { EnhancedUserClaimData, InvestmentAmounts } from 'pages/Claim/types'
 
 /**
  * Helper function to check whether any claim is an investment option
@@ -173,4 +178,40 @@ export function claimTypeToTokenAmount(type: ClaimType, chainId: SupportedChainI
     default:
       return undefined
   }
+}
+
+/**
+ * Helper function to calculate and return the percentage between 2 CurrencyAmount instances
+ */
+export function calculatePercentage<C1 extends Currency, C2 extends Currency>(
+  numerator: CurrencyAmount<C1>,
+  denominator: CurrencyAmount<C2>
+): string {
+  let percentage = denominator.equalTo(ZERO_PERCENT)
+    ? ZERO_PERCENT
+    : new Percent(numerator.quotient, denominator.quotient)
+  if (percentage.greaterThan(ONE_HUNDRED_PERCENT)) {
+    percentage = ONE_HUNDRED_PERCENT
+  }
+  return formatSmart(percentage, PERCENTAGE_PRECISION) || '0'
+}
+
+/**
+ * Helper function that calculates vCowAmount (in vCOW) and investedAmount (in investing token)
+ */
+export function calculateInvestmentAmounts(
+  claim: Pick<EnhancedUserClaimData, 'isFree' | 'price' | 'currencyAmount' | 'claimAmount'>,
+  investedAmount?: string
+): InvestmentAmounts {
+  const { isFree, price, currencyAmount, claimAmount } = claim
+
+  if (isFree || !investedAmount) {
+    // default to 100% when no investment amount is set
+    return { vCowAmount: claimAmount, investmentCost: currencyAmount }
+  } else if (!currencyAmount || !price) {
+    return {}
+  }
+
+  const amount = CurrencyAmount.fromRawAmount(currencyAmount.currency, investedAmount)
+  return { vCowAmount: price.quote(amount), investmentCost: amount }
 }

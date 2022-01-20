@@ -191,11 +191,23 @@ export const TokenLogo = styled.div<{ symbol: string; size: number }>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: ${({ size }) => `${size}px`};
-  background: ${({ symbol, theme }) =>
-    `url(${
-      symbol === 'GNO' ? LogoGNO : symbol === 'ETH' ? LogoETH : symbol === 'USDC' ? LogoUSDC : theme.blueShade3
-    }) no-repeat center/contain`};
+  background: ${({ symbol, theme }) => `url(${_getLogo(symbol) || theme.blueShade3}) no-repeat center/contain`};
 `
+
+function _getLogo(symbol: string) {
+  switch (symbol.toUpperCase()) {
+    case 'GNO':
+      return LogoGNO
+    case 'USDC':
+      return LogoUSDC
+    case 'ETH':
+      return LogoETH
+    // TODO: add xDai token logo after merging to develop
+    // case 'XDAI': return LogoXDAI
+    default:
+      return undefined
+  }
+}
 
 export const ClaimSummary = styled.div`
   display: flex;
