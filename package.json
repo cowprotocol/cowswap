@@ -155,7 +155,8 @@
     "workbox-routing": "^6.1.0"
   },
   "resolutions": {
-    "@walletconnect/ethereum-provider": "1.6.4"
+    "@walletconnect/ethereum-provider": "1.6.4",
+    "react-error-overlay": "6.0.9"
   },
   "scripts": {
     "start:default": "craco start",
