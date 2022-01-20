@@ -1,4 +1,4 @@
-import { Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from '@src/hooks/web3'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -8,6 +8,11 @@ import TradeGp from 'state/swap/TradeGp'
 
 import { ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
 export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
+
+import { ClaimType } from 'state/claim/hooks'
+import { supportedChainId } from 'utils/supportedChainId'
+import { tryAtomsToCurrency } from 'state/swap/extension'
+import { claimTypeToToken } from 'state/claim/hooks/utils'
 
 type ApproveCallbackFromTradeParams = Pick<
   ApproveCallbackParams,
@@ -50,24 +55,44 @@ export type OptionalApproveCallbackParams = {
   transactionSummary: string
 }
 
-type ApproveCallbackFromClaimParams = Omit<ApproveCallbackParams, 'spender'>
+type ApproveCallbackFromClaimParams = Omit<
+  ApproveCallbackParams,
+  'spender' | 'amountToApprove' | 'amountToCheckAgainstAllowance'
+> & {
+  claimType: ClaimType
+  investmentAmount: string | undefined
+}
 
 export function useApproveCallbackFromClaim({
   openTransactionConfirmationModal,
   closeModals,
-  amountToApprove,
-  amountToCheckAgainstAllowance,
+  claimType,
+  investmentAmount,
 }: ApproveCallbackFromClaimParams) {
   const { chainId } = useActiveWeb3React()
+  const supportedChain = supportedChainId(chainId)
 
   const vCowContract = chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined
+
+  // Claim only approves GNO and USDC (GnoOption & Investor, respectively.)
+  const approveAmounts = useMemo(() => {
+    if (supportedChain && (claimType === ClaimType.GnoOption || claimType === ClaimType.Investor)) {
+      const investmentCurrency = claimTypeToToken(claimType, supportedChain) as Token
+      const amountToCheckAgainstAllowance = tryAtomsToCurrency(investmentAmount, investmentCurrency)
+      return {
+        amountToApprove: CurrencyAmount.fromRawAmount(investmentCurrency, MaxUint256),
+        amountToCheckAgainstAllowance,
+      }
+    }
+    return undefined
+  }, [claimType, investmentAmount, supportedChain])
 
   // Params: modal cbs, amountToApprove: token user is investing e.g, spender: vcow token contract
   return useApproveCallback({
     openTransactionConfirmationModal,
     closeModals,
-    amountToApprove,
     spender: vCowContract,
-    amountToCheckAgainstAllowance,
+    amountToApprove: approveAmounts?.amountToApprove,
+    amountToCheckAgainstAllowance: approveAmounts?.amountToCheckAgainstAllowance,
   })
 }
