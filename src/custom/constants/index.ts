@@ -10,6 +10,7 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
+// TODO: remove, this is duplicated with `import { ONE_HUNDRED_PERCENT } from 'constants/misc'`
 export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
 
 export const DEFAULT_DECIMALS = 18
@@ -57,7 +58,7 @@ export const V_COW_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   // [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
   // [ChainId.RINKEBY]: GPv2Settlement[ChainId.RINKEBY].address,
   // [ChainId.XDAI]: GPv2Settlement[ChainId.XDAI].address,
-  [ChainId.RINKEBY]: '0x71A377EC0026A8E35AfD082d54E2f62d39AF075c',
+  [ChainId.RINKEBY]: '0xB26D8c5D3d0A67F419F7b314D462C8357Cd4b122',
 }
 
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13

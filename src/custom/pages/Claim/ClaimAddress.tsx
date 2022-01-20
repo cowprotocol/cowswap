@@ -9,7 +9,7 @@ import useENS from 'hooks/useENS'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 
-type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
+export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void
 }
 

@@ -331,9 +331,7 @@ export function useClaimTimeInfo(): ClaimTimeInfo {
 }
 
 export function useNativeTokenPrice(): string | null {
-  // TODO: rename fn to `nativeTokenPrice` and revert e7197dd27287ff1460a7d7af22734cae938b8c83
-  //  when there's a new deployment
-  return _useVCowPriceForToken('wethPrice')
+  return _useVCowPriceForToken('nativeTokenPrice')
 }
 
 export function useGnoPrice(): string | null {
@@ -344,7 +342,7 @@ export function useUsdcPrice(): string | null {
   return _useVCowPriceForToken('usdcPrice')
 }
 
-type VCowPriceFnNames = 'wethPrice' | 'gnoPrice' | 'usdcPrice'
+type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
 
 /**
  * Generic hook for fetching contract value for the many prices

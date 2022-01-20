@@ -878,6 +878,10 @@ export const InvestInput = styled.span`
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;
 
+    > span {
+      margin-left: 5px;
+    }
+
     &:hover {
       border: ${({ theme }) =>
         theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
@@ -910,6 +914,7 @@ export const InvestInput = styled.span`
     background: transparent;
     width: 100%;
     line-height: 1;
+    text-align: left;
 
     &::placeholder {
       opacity: 0.5;
@@ -1034,7 +1039,6 @@ export const InvestFlowValidation = styled.div`
   align-items: center;
   background: rgb(255 0 0 / 25%);
   color: red;
-  text-align: center;
   margin: 0 auto 16px;
 `
 
