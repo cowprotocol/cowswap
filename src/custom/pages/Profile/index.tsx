@@ -6,13 +6,16 @@ import {
   Container,
   GridWrap,
   CardHead,
-  StyledTitle,
   StyledContainer,
   StyledTime,
   ItemTitle,
   ChildWrapper,
   Loader,
   ExtLink,
+  VCOWBalance,
+  ProfileWrapper,
+  ProfileGridWrap,
+  ProfileFlexCol,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -20,7 +23,7 @@ import { HelpCircle, RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { numberFormatter } from 'utils/format'
+import { formatMax, formatSmart, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -28,6 +31,11 @@ import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import CowProtocolLogo from 'components/CowProtocolLogo'
+import { Title } from 'components/Page'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { V_COW } from 'constants/tokens'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -36,6 +44,8 @@ export default function Profile() {
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
+
+  const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
 
   const renderNotificationMessages = (
     <>
@@ -54,11 +64,33 @@ export default function Profile() {
 
   return (
     <Container>
+      <ProfileWrapper>
+        <ProfileGridWrap horizontal>
+          <CardHead>
+            <Title>Profile</Title>
+          </CardHead>
+          {vCowBalance && (
+            <VCOWBalance>
+              <CowProtocolLogo size={46} />
+              <ProfileFlexCol>
+                <Txt fs={14}>Balance</Txt>
+                <Txt fs={18} title={`${formatMax(vCowBalance)} vCOW`}>
+                  <strong>
+                    {formatSmart(vCowBalance, AMOUNT_PRECISION, { thousandSeparator: true, isLocaleAware: true }) ||
+                      '0'}{' '}
+                    vCOW
+                  </strong>
+                </Txt>
+              </ProfileFlexCol>
+            </VCOWBalance>
+          )}
+        </ProfileGridWrap>
+      </ProfileWrapper>
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <Wrapper>
         <GridWrap>
           <CardHead>
-            <StyledTitle>Profile overview</StyledTitle>
+            <Title>Affiliate Program</Title>
             {account && (
               <Loader isLoading={isLoading}>
                 <StyledContainer>

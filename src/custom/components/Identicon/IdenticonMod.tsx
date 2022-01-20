@@ -12,8 +12,9 @@ export const StyledIdenticonContainer = styled.div`
   background-color: ${({ theme }) => theme.bg4};
 `
 
-export default function Identicon({ size = 16 }: IdenticonProps) {
-  const { account, library } = useActiveWeb3React()
+export default function Identicon({ account: customAccount, size = 16 }: IdenticonProps) {
+  const { account: chainAccount, library } = useActiveWeb3React()
+  const account = customAccount || chainAccount
 
   // restrict usage of Davatar until it stops sending 3p requests
   // see https://github.com/metaphor-xyz/davatar-helpers/issues/18

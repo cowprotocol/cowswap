@@ -10,7 +10,7 @@ export default function Confetti({ start, variant }: { start: boolean; variant?:
 
   return start && width && height ? (
     <ReactConfetti
-      style={{ zIndex: 1401 }}
+      style={{ zIndex: 1401, maxWidth: '100%' }} // mod fix for horizontal slider
       numberOfPieces={400}
       recycle={false}
       run={true}

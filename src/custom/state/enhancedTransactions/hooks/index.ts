@@ -24,12 +24,25 @@ export function useTransactionAdder(): TransactionAdder {
     (addTransactionParams: AddTransactionHookParams) => {
       if (!account || !chainId) return
 
-      const { hash, summary, approval, presign, safeTransaction } = addTransactionParams
+      const { hash, summary, data, claim, approval, presign, safeTransaction } = addTransactionParams
       const hashType = isGnosisSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
       if (!hash) {
         throw Error('No transaction hash found')
       }
-      dispatch(addTransaction({ hash, hashType, from: account, chainId, approval, summary, presign, safeTransaction }))
+      dispatch(
+        addTransaction({
+          hash,
+          hashType,
+          from: account,
+          chainId,
+          approval,
+          summary,
+          claim,
+          data,
+          presign,
+          safeTransaction,
+        })
+      )
     },
     [dispatch, chainId, account, isGnosisSafeWallet]
   )
@@ -104,4 +117,27 @@ export function useTransactionsByHash({ hashes }: { hashes: string[] }): Enhance
       return acc
     }, {})
   }, [allTxs, hashes])
+}
+
+export function useAllClaimingTransactions() {
+  const transactionsMap = useAllTransactions()
+  const transactions = Object.values(transactionsMap)
+
+  return useMemo(() => {
+    return transactions.filter((tx) => !!tx.claim)
+  }, [transactions])
+}
+
+export function useAllClaimingTransactionIndices() {
+  const claimingTransactions = useAllClaimingTransactions()
+  return useMemo(() => {
+    const flattenedClaimingTransactions = claimingTransactions.reduce<number[]>((acc, { claim }) => {
+      if (claim && claim.indices) {
+        acc.push(...claim.indices)
+      }
+      return acc
+    }, [])
+
+    return new Set(flattenedClaimingTransactions)
+  }, [claimingTransactions])
 }

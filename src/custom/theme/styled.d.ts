@@ -10,6 +10,7 @@ export interface Colors extends ColorsUniswap {
   greenShade: Color
   blueShade: Color
   blueShade2: Color
+  blueShade3: Color
   success: Color
   danger: Color
   pending: Color
@@ -81,6 +82,11 @@ declare module 'styled-components' {
     neumorphism: {
       boxShadow: FlattenSimpleInterpolation
     }
+    cowToken: {
+      background: FlattenSimpleInterpolation
+      boxShadow: FlattenSimpleInterpolation
+    },
+    iconGradientBorder: FlattenSimpleInterpolation
     card: {
       background: FlattenSimpleInterpolation
       background2: string

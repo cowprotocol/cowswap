@@ -67,6 +67,7 @@ export function colors(darkMode: boolean): Colors {
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',
+    blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
 
     // states
     success: darkMode ? '#00d897' : '#00815a',
@@ -158,6 +159,14 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
           inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
       `,
     },
+    cowToken: {
+      background: css`
+        background: linear-gradient(70.89deg, #292a30 10.71%, #101015 33%, #0e0501 88.54%);
+      `,
+      boxShadow: css`
+        box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
+      `,
+    },
     card: {
       background: css`
         background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
@@ -172,6 +181,9 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
+    iconGradientBorder: css`
+      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.primary1} 360grad);
+    `,
     header: {
       border: 'none',
       menuFlyout: {

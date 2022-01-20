@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { ExternalLink } from 'theme'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import HeaderMod, {
   Title,
@@ -14,6 +15,7 @@ import HeaderMod, {
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
+  UNIWrapper,
 } from './HeaderMod'
 import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
@@ -26,13 +28,23 @@ import { darken } from 'polished'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
 import { ApplicationModal } from 'state/application/reducer'
-import { useModalOpen } from 'state/application/hooks'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import Web3Status from 'components/Web3Status'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import SVG from 'react-inlinesvg'
+import {
+  useModalOpen,
+  /*useShowClaimPopup,*/
+  // useToggleSelfClaimModal
+} from 'state/application/hooks'
+//import { useUserHasAvailableClaim } from 'state/claim/hooks'
+
+import Modal from 'components/Modal'
+// import ClaimModal from 'components/claim/ClaimModal'
+import UniBalanceContent from 'components/Header/UniBalanceContent'
+import CowClaimButton from 'components/CowClaimButton'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -185,17 +197,35 @@ const UniIcon = styled.div`
   }
 `
 
+const VCowWrapper = styled(UNIWrapper)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `}
+`
+
 export default function Header() {
+  const location = useLocation()
+  const isClaimPage = location.pathname === '/claim'
+
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+
+  // const toggleClaimModal = useToggleSelfClaimModal()
+  // const availableClaim: boolean = useUserHasAvailableClaim(account)
+  const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
+  // const showClaimPopup = useShowClaimPopup()
+
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
+
+  const history = useHistory()
+  const handleOnClickClaim = () => history.push('/claim')
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -209,6 +239,9 @@ export default function Header() {
     <Wrapper>
       <HeaderModWrapper>
         <HeaderRow marginRight="0">
+          <Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
+            <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
+          </Modal>
           <Title href=".">
             <UniIcon>
               <LogoImage />
@@ -225,6 +258,10 @@ export default function Header() {
             <NetworkSelector />
           </HeaderElement>
           <HeaderElement>
+            <VCowWrapper>
+              <CowClaimButton isClaimPage={isClaimPage} account={account} handleOnClickClaim={handleOnClickClaim} />
+            </VCowWrapper>
+
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
                 <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
@@ -244,7 +281,7 @@ export default function Header() {
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>
           </HeaderElementWrap>
-          <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <Menu isClaimPage={isClaimPage} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>
