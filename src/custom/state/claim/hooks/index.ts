@@ -57,7 +57,7 @@ import {
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 
-const CLAIMS_REPO_BRANCH = 'main'
+const CLAIMS_REPO_BRANCH = 'csv_data'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
