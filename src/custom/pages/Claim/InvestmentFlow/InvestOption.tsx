@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
