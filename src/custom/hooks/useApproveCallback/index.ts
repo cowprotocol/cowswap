@@ -12,7 +12,7 @@ export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { tryAtomsToCurrency } from 'state/swap/extension'
-import { EnhancedUserClaimData } from '@src/custom/pages/Claim/types'
+import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 type ApproveCallbackFromTradeParams = Pick<
   ApproveCallbackParams,
