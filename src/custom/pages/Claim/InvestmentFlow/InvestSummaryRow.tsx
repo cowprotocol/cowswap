@@ -1,6 +1,6 @@
 import { ClaimType } from 'state/claim/hooks'
 import { calculatePercentage } from 'state/claim/hooks/utils'
-import { TokenLogo } from 'pages/Claim/styled'
+import { TokenLogo, InvestAvailableBar } from 'pages/Claim/styled'
 import { ClaimWithInvestmentData } from 'pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatSmart } from 'utils/format'
@@ -23,11 +23,16 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
     <tr>
       <td>
         {isFree ? (
-          <b>{ClaimType[type]}</b>
+          <>
+            <CowProtocolLogo size={42} />
+            <span>
+              <b>{ClaimType[type]}</b>
+            </span>
+          </>
         ) : (
           <>
-            <TokenLogo symbol={symbol} size={32} />
-            <CowProtocolLogo size={32} />
+            <TokenLogo symbol={symbol} size={42} />
+            <CowProtocolLogo size={42} />
             <span>
               <b>Buy vCOW</b>
               <i>with {symbol}</i>
@@ -37,18 +42,22 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
       </td>
 
       <td>
+        <i>{formatSmart(vCowAmount) || '0'} vCOW</i>
+
         {!isFree && (
           <span>
             <b>Investment amount:</b>{' '}
             <i>
-              {formattedCost} {symbol} ({percentage}% of available investing opportunity)
+              {formattedCost} {symbol}
             </i>
+            <InvestAvailableBar percentage={Number(percentage)} />
+            {Number(percentage) > 0 && Number(percentage) < 100 && (
+              <small>
+                Note: You <b>will not be able</b> to invest the remaining {100 - Number(percentage)}% after claiming.
+              </small>
+            )}
           </span>
         )}
-        <span>
-          <b>Amount to receive:</b>
-          <i>{formatSmart(vCowAmount) || '0'} vCOW</i>
-        </span>
       </td>
 
       <td>

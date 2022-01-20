@@ -729,11 +729,6 @@ export const InvestContent = styled.div`
   display: flex;
   flex-flow: column wrap;
 
-  ${TokenLogo},
-  ${Icon} {
-    border: 4px solid ${({ theme }) => theme.blueShade3};
-  }
-
   ${ClaimTable} {
     table {
       display: grid;
@@ -754,7 +749,6 @@ export const InvestContent = styled.div`
         font-size: inherit;
         display: flex;
         flex-flow: column wrap;
-        gap: 3px;
 
         > i {
           font-style: normal;
@@ -768,23 +762,33 @@ export const InvestContent = styled.div`
       tr > td:nth-of-type(1) {
         flex-flow: row wrap;
         align-content: center;
+        gap: 6px;
 
+        > span > b,
         > b {
+          font-size: 16px;
           font-weight: bold;
+        }
+
+        > span > i {
+          font-size: 15px;
         }
       }
 
       tr > td:nth-of-type(2) {
         flex-flow: column wrap;
+        align-items: flex-start;
+        align-content: flex-start;
         justify-content: center;
 
         > span {
           margin: 0;
         }
 
-        > span > i {
+        > i {
           font-style: normal;
-          font-size: inherit;
+          font-size: 18px;
+          font-weight: 500;
         }
       }
 
@@ -798,6 +802,17 @@ export const InvestContent = styled.div`
         }
       }
     }
+  }
+`
+
+export const InvestSummaryTable = styled.table`
+  ${TokenLogo} {
+    margin: 0 -28px 0 0;
+  }
+
+  ${TokenLogo},
+  ${Icon} {
+    border: 2px solid ${({ theme }) => theme.blueShade3};
   }
 `
 
@@ -833,6 +848,11 @@ export const InvestTokenGroup = styled.div`
   margin: 0 0 24px;
   border-radius: 12px;
   background: ${({ theme }) => theme.blueShade3};
+
+  ${TokenLogo},
+  ${Icon} {
+    border: 4px solid ${({ theme }) => theme.blueShade3};
+  }
 
   > div {
     display: flex;
@@ -976,33 +996,45 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
   width: 100%;
   display: flex;
   position: relative;
-  height: 10px;
+  height: 17px;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
   border-radius: 24px;
-  background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+  background: ${({ theme }) => theme.bg1};
   margin: 6px 0;
-  padding: 0 36px 0 0;
+  padding: 0;
 
   &::before {
     content: '';
     display: block;
-    background-color: ${({ theme }) => theme.primary4};
+    background: ${({ theme }) =>
+      `linear-gradient(to right, ${transparentize(0.2, theme.primary5)}, ${theme.primary4})`};
     height: 100%;
     border-radius: 24px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    transition: width 0.3s ease-in;
+    transition: width 0.3s ease-in-out;
     width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
   }
 
   &::after {
     content: ${({ percentage }) => (percentage ? `'${percentage}%'` : '0%')};
-    display: inline-block;
-    position: absolute;
-    font-size: 13px;
-    color: ${({ theme }) => theme.primary1};
-    left: 100%;
+    display: block;
+    font-size: 12px;
+    color: ${({ theme }) => theme.text1};
+    z-index: 1;
+    height: 100%;
+    width: ${({ percentage }) => (percentage ? `${percentage}%` : '0%')};
+    transition: width 0.3s ease-in-out;
+    margin: 0;
+    padding: 1px 4px 0 4px;
+    min-width: max-content;
+    text-align: right;
   }
 `
 

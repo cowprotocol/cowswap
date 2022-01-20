@@ -4,6 +4,7 @@ import {
   InvestFlow,
   InvestContent,
   InvestFlowValidation,
+  InvestSummaryTable,
   StepIndicator,
   Steps,
   ClaimTable,
@@ -155,6 +156,23 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
       {/* Invest flow: Step 2 > Review summary */}
       {investFlowStep === 2 ? (
         <InvestContent>
+          <ClaimTable>
+            <InvestSummaryTable>
+              <thead>
+                <tr>
+                  <th>Claim type</th>
+                  <th>Amount to receive</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allClaims.map((claim) => (
+                  <InvestSummaryRow claim={claim} key={claim.index} />
+                ))}
+              </tbody>
+            </InvestSummaryTable>
+          </ClaimTable>
+
           <AccountClaimSummary>
             <span>
               <b>Claiming with account:</b>
@@ -166,22 +184,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
               <i>{activeClaimAccount}</i>
             </span>
           </AccountClaimSummary>
-          <ClaimTable>
-            <table>
-              <thead>
-                <tr>
-                  <th>Claim type</th>
-                  <th>Account &amp; vCOW amount</th>
-                  <th>Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allClaims.map((claim) => (
-                  <InvestSummaryRow claim={claim} key={claim.index} />
-                ))}
-              </tbody>
-            </table>
-          </ClaimTable>
 
           <h4>Ready to claim your vCOW?</h4>
           <p>
