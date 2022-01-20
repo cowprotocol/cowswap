@@ -4,6 +4,7 @@ import { TokenLogo, InvestAvailableBar } from 'pages/Claim/styled'
 import { ClaimWithInvestmentData } from 'pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatSmart } from 'utils/format'
+import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { AMOUNT_PRECISION } from 'constants/index'
 
 export type Props = { claim: ClaimWithInvestmentData }
@@ -17,6 +18,7 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
 
   const formattedCost =
     formatSmart(investmentCost, AMOUNT_PRECISION, { thousandSeparator: true, isLocaleAware: true }) || '0'
+
   const percentage = investmentCost && cost && calculatePercentage(investmentCost, cost)
 
   return (
@@ -50,10 +52,10 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
             <i>
               {formattedCost} {symbol}
             </i>
-            <InvestAvailableBar percentage={Number(percentage)} />
-            {Number(percentage) > 0 && Number(percentage) < 100 && (
+            <InvestAvailableBar percentage={Number(percentage?.toFixed(2))} />
+            {percentage?.lessThan(ONE_HUNDRED_PERCENT) && (
               <small>
-                Note: You <b>will not be able</b> to invest the remaining {100 - Number(percentage)}% after claiming.
+                Note: You will <b>not be able</b> to invest anymore after claiming.
               </small>
             )}
           </span>

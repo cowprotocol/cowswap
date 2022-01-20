@@ -6,6 +6,7 @@ import { transparentize, darken } from 'polished'
 import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'assets/cow-swap/gno.png'
 import LogoUSDC from 'assets/cow-swap/usdc.png'
+import LogoXDAI from 'assets/cow-swap/xdai.png'
 
 export const PageWrapper = styled.div`
   --border-radius: 56px;
@@ -202,8 +203,8 @@ function _getLogo(symbol: string) {
       return LogoUSDC
     case 'ETH':
       return LogoETH
-    // TODO: add xDai token logo after merging to develop
-    // case 'XDAI': return LogoXDAI
+    case 'XDAI':
+      return LogoXDAI
     default:
       return undefined
   }
@@ -311,8 +312,6 @@ export const ClaimTable = styled.div`
       align-items: center;
     }
 
-    position: sticky;
-    top: 0;
     background: transparent;
     text-align: left;
     font-weight: normal;
@@ -523,7 +522,6 @@ export const EligibleBanner = styled.div`
   align-items: center;
   background: ${({ theme }) => transparentize(0.9, theme.attention)};
   color: ${({ theme }) => theme.attention};
-  text-align: center;
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -561,7 +559,6 @@ export const InputField = styled.div`
   > b {
     display: flex;
     margin: 0 0 12px;
-    font-weight: normal;
     align-items: center;
     font-size: 18px;
     font-weight: 500;
@@ -579,8 +576,8 @@ export const InputField = styled.div`
     padding: 0 8px;
     justify-content: space-between;
 
-    :focus,
-    :hover {
+    &:focus,
+    &:hover {
       background-color: ${({ theme }) => darken(0.05, theme.bg5)};
     }
   }
@@ -703,7 +700,6 @@ export const TopNav = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   background: transparent;
   padding: 0;
   margin: 0 auto 24px;

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
+import { Percent } from '@uniswap/sdk-core'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
@@ -18,6 +19,7 @@ import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { tryParseAmount } from 'state/swap/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
+import { PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
   InsufficientBalance = 'Insufficient balance to cover investment amount',
@@ -58,7 +60,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     setTypedValue(value.toExact() || '')
     setInputError('')
 
-    setPercentage(calculatePercentage(balance, maxCost))
+    setPercentage(_formatPercentage(calculatePercentage(balance, maxCost)))
   }, [balance, maxCost, noBalance, optionIndex, updateInvestAmount])
 
   // on input field change handler
@@ -93,7 +95,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       updateInvestAmount({ index: optionIndex, amount: parsedAmount.quotient.toString() })
 
       // update the local state with percentage value
-      setPercentage(calculatePercentage(parsedAmount, maxCost))
+      setPercentage(_formatPercentage(calculatePercentage(parsedAmount, maxCost)))
     },
     [balance, maxCost, optionIndex, token, updateInvestAmount]
   )
@@ -248,4 +250,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       </span>
     </InvestTokenGroup>
   )
+}
+
+function _formatPercentage(percentage: Percent): string {
+  return formatSmart(percentage, PERCENTAGE_PRECISION) || '0'
 }
