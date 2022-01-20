@@ -855,11 +855,11 @@ export function useTotalVCowAmount() {
   const { selected, activeClaimAccount, investFlowData } = useClaimState()
   const claims = useUserEnhancedClaimData(activeClaimAccount)
 
-  if (!chainId) {
-    return undefined
-  }
+  const vCow = chainId ? V_COW[chainId] : undefined
 
-  const zeroVCow = CurrencyAmount.fromRawAmount(V_COW[chainId], '0')
+  if (!vCow) return undefined
+
+  const zeroVCow = CurrencyAmount.fromRawAmount(vCow, '0')
 
   return claims.reduce<typeof zeroVCow>((totalTokens, claim) => {
     const { price, currencyAmount } = claim
