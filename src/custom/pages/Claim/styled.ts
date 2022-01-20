@@ -476,7 +476,7 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     font-weight: 600;
     line-height: 1.2;
     text-align: center;
-    margin: 0 0 24px;
+    margin: 0 0 12px;
     color: ${({ theme }) => theme.text1};
   }
 `
@@ -486,10 +486,12 @@ export const AttemptFooter = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
+  margin: 24px 0 0;
 
   > p {
     font-size: 14px;
     opacity: 0.7;
+    margin: 0;
   }
 `
 
@@ -1107,5 +1109,66 @@ export const AccountClaimSummary = styled.div`
   > span > i {
     font-style: normal;
     break-word: break-all;
+  }
+`
+
+export const CowSpinner = styled.div`
+  --circle-size: 120px;
+  --border-radius: 100%;
+  --border-size: 2px;
+  border-radius: var(--circle-size);
+  height: var(--circle-size);
+  width: var(--circle-size);
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: var(--border-size);
+    right: var(--border-size);
+    bottom: var(--border-size);
+    left: var(--border-size);
+    z-index: 0;
+    border-radius: calc(var(--border-radius) - var(--border-size));
+    box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
+  }
+
+  &::before {
+    content: '';
+    ${({ theme }) => theme.iconGradientBorder};
+    display: block;
+    width: var(--circle-size);
+    padding: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    border-radius: 100%;
+    z-index: 0;
+    animation: spin 1.5s linear infinite;
+  }
+
+  > span {
+    height: 94%;
+    width: 94%;
+    padding: 0;
+    stroke: ${({ theme }) => theme.text1};
+    border-radius: var(--circle-size);
+    z-index: 1;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `
