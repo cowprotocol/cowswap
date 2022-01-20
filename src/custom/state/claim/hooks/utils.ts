@@ -164,17 +164,32 @@ export type PaidClaimTypeToPriceMap = {
   [type in ClaimType]: { token: Token; amount: string } | undefined
 }
 
+export function claimTypeToToken(type: ClaimType, chainId: SupportedChainId) {
+  switch (type) {
+    case ClaimType.GnoOption:
+      return GNO[chainId]
+    case ClaimType.Investor:
+      return USDC_BY_CHAIN[chainId]
+    case ClaimType.UserOption:
+      return GpEther.onChain(chainId)
+    case ClaimType.Advisor:
+    case ClaimType.Airdrop:
+    case ClaimType.Team:
+      return undefined
+  }
+}
+
 /**
  * Helper function to get vCow price based on claim type and chainId
  */
 export function claimTypeToTokenAmount(type: ClaimType, chainId: SupportedChainId, prices: VCowPrices) {
   switch (type) {
     case ClaimType.GnoOption:
-      return { token: GNO[chainId], amount: prices.gno as string }
+      return { token: claimTypeToToken(ClaimType.GnoOption, chainId) as Token, amount: prices.gno as string }
     case ClaimType.Investor:
-      return { token: USDC_BY_CHAIN[chainId], amount: prices.usdc as string }
+      return { token: claimTypeToToken(ClaimType.Investor, chainId) as Token, amount: prices.usdc as string }
     case ClaimType.UserOption:
-      return { token: GpEther.onChain(chainId), amount: prices.native as string }
+      return { token: claimTypeToToken(ClaimType.UserOption, chainId) as GpEther, amount: prices.native as string }
     default:
       return undefined
   }
