@@ -502,14 +502,14 @@ export const CheckIcon = styled(CheckCircle)`
   height: 16px;
   width: 16px;
   margin-right: 6px;
-  stroke: color: ${({ theme }) => theme.primary1};
+  stroke: ${({ theme }) => theme.primary1};
 `
 
 export const NegativeIcon = styled(Frown)`
   height: 16px;
   width: 16px;
   margin-right: 6px;
-  stroke: color: ${({ theme }) => theme.primary1};
+  stroke: ${({ theme }) => theme.primary1};
 `
 
 export const EligibleBanner = styled.div`
@@ -531,8 +531,7 @@ export const EligibleBanner = styled.div`
 `
 
 export const InputField = styled.div`
-  padding: 18px;
-  padding-left: 36px;
+  padding: 18px 18px 18px 36px;
   border-radius: var(--border-radius);
   border: ${({ theme }) => theme.currencyInput?.border};
   color: ${({ theme }) => theme.text1};
@@ -565,7 +564,7 @@ export const InputField = styled.div`
     background-color: ${({ theme }) => theme.bg5};
     color: ${({ theme }) => theme.white};
     border-radius: 16px;
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.075);
     outline: none;
     cursor: pointer;
     user-select: none;
@@ -1009,9 +1008,7 @@ export const InvestAvailableBar = styled.div<{ percentage?: number }>`
     background: ${({ theme }) =>
       `linear-gradient(to right, ${transparentize(0.2, theme.primary5)}, ${theme.primary4})`};
     height: 100%;
-    border-radius: 24px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-radius: 24px 0 0 24px;
     position: absolute;
     left: 0;
     top: 0;
@@ -1098,13 +1095,13 @@ export const AccountClaimSummary = styled.div`
   > span {
     display: flex;
     flex-flow: column wrap;
-    white-space: wrap;
+    white-space: pre-wrap;
     gap: 3px;
   }
 
   > span > i {
     font-style: normal;
-    break-word: break-all;
+    word-break: break-all;
   }
 `
 
