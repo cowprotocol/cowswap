@@ -57,7 +57,7 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
       {showInputError && (
         <InputErrorText>
           <TYPE.error error={true}>
-            <Trans>Enter valid token address or ENS</Trans>
+            <Trans>Enter valid address or ENS</Trans>
           </TYPE.error>
         </InputErrorText>
       )}
