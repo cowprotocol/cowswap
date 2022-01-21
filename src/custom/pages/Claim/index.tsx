@@ -11,7 +11,7 @@ import Confetti from 'components/Confetti'
 import useENS from 'hooks/useENS'
 
 import ClaimNav from './ClaimNav'
-import ClaimSummary from './ClaimSummary'
+import { ClaimSummary } from './ClaimSummary'
 import ClaimAddress from './ClaimAddress'
 import CanUserClaimMessage from './CanUserClaimMessage'
 import ClaimingStatus from './ClaimingStatus'

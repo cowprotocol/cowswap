@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
   InvestFlow,
@@ -11,6 +12,7 @@ import {
   AccountClaimSummary,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
+import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 
 import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
@@ -79,6 +81,21 @@ function _enhancedUserClaimToClaimWithInvestment(
   return { ...claim, ...calculateInvestmentAmounts(claim, investmentAmount) }
 }
 
+function _calculateTotalVCow(allClaims: ClaimWithInvestmentData[]) {
+  // Re-use the vCow instance, if there's any claim at all
+  const zeroVCow = allClaims[0] && CurrencyAmount.fromRawAmount(allClaims[0].claimAmount.currency, '0')
+
+  if (!zeroVCow) {
+    return
+  }
+
+  // Sum up all the vCowAmount being claimed
+  return allClaims.reduce<typeof zeroVCow>(
+    (total, { vCowAmount }) => total.add(vCowAmount?.wrapped || zeroVCow),
+    zeroVCow
+  )
+}
+
 export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenApproveData }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
@@ -100,6 +117,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
       freeClaims.concat(selectedClaims).map((claim) => _enhancedUserClaimToClaimWithInvestment(claim, investFlowData)),
     [freeClaims, investFlowData, selectedClaims]
   )
+  const totalVCow = useMemo(() => _calculateTotalVCow(allClaims), [allClaims])
 
   useEffect(() => {
     initInvestFlowData()
@@ -156,6 +174,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
       {/* Invest flow: Step 2 > Review summary */}
       {investFlowStep === 2 ? (
         <InvestContent>
+          <ClaimSummaryView totalAvailableAmount={totalVCow} totalAvailableText={'Total amount to claim'} />
           <ClaimTable>
             <InvestSummaryTable>
               <thead>
