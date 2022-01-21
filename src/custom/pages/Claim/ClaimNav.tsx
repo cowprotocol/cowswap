@@ -14,19 +14,21 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
   const { setActiveClaimAccount } = useClaimDispatchers()
 
   const isAttempting = useMemo(() => claimStatus === ClaimStatus.ATTEMPTING, [claimStatus])
-
-  if (!activeClaimAccount) return null
+  const hasActiveAccount = activeClaimAccount !== ''
 
   return (
     <TopNav>
       <ClaimAccount>
         <div>
-          <Identicon account={activeClaimAccount} size={46} />
-          <p>{activeClaimAccountENS ? activeClaimAccountENS : shortenAddress(activeClaimAccount)}</p>
+          {hasActiveAccount && (
+            <>
+              <Identicon account={activeClaimAccount} size={46} />
+              <p>{activeClaimAccountENS ? activeClaimAccountENS : shortenAddress(activeClaimAccount)}</p>
+            </>
+          )}
         </div>
-
         <ClaimAccountButtons>
-          {!!account && account !== activeClaimAccount && (
+          {!!account && (account !== activeClaimAccount || activeClaimAccount === '') && (
             <ButtonSecondary disabled={isAttempting} onClick={() => setActiveClaimAccount(account)}>
               Switch to connected account
             </ButtonSecondary>
@@ -36,7 +38,7 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
            * last investment step
            * attempted claim in progress
            */}
-          {(investFlowStep < 2 || !isAttempting) && (
+          {hasActiveAccount && (investFlowStep < 2 || !isAttempting) && (
             <ButtonSecondary disabled={isAttempting} onClick={handleChangeAccount}>
               Change account
             </ButtonSecondary>
