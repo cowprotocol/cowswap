@@ -45,13 +45,28 @@ export function useApproveCallback({
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
 
+  // TODO: Nice to have, can be deleted
+  {
+    process.env.NODE_ENV !== 'production' &&
+      console.debug(`
+    $$$$Approval metrics:
+    ====
+    CurrentAllowance: ${currentAllowance?.toExact()}
+    raw: ${currentAllowance?.quotient.toString()}
+    ====
+    amountToCheckAgainstApproval: ${amountToCheckAgainstAllowance?.toExact()}
+    raw: ${amountToCheckAgainstAllowance?.quotient.toString()}
+    ====
+    amountToApprove: ${amountToApprove?.toExact()}
+    raw: ${amountToApprove?.quotient.toString()}
+  `)
+  }
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
     if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
-
     // is amountToCheckAgainstAllowance < allowance
     // if TRUE = need to approve
     const optionalAmountNeedsApproval = !!amountToCheckAgainstAllowance?.greaterThan(currentAllowance)
@@ -60,7 +75,7 @@ export function useApproveCallback({
     const amountToApproveNeedsApproval = amountToApprove.greaterThan(currentAllowance)
 
     // Return approval state
-    if (optionalAmountNeedsApproval || amountToApproveNeedsApproval) {
+    if (optionalAmountNeedsApproval && amountToApproveNeedsApproval) {
       return pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
     } else {
       // Enough allowance
