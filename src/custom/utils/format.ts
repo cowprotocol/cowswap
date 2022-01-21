@@ -139,6 +139,11 @@ export function formatSmart(
   })
 }
 
+export function formatSmartLocaleAware(...params: Parameters<typeof formatSmart>): ReturnType<typeof formatSmart> {
+  const [value, decimalsToShow, options = {}] = params
+  return formatSmart(value, decimalsToShow, { ...options, isLocaleAware: true, thousandSeparator: true })
+}
+
 /**
  * Formats Fraction with max precision
  *

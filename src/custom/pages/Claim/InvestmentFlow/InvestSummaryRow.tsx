@@ -3,7 +3,7 @@ import { calculatePercentage } from 'state/claim/hooks/utils'
 import { TokenLogo, InvestAvailableBar } from 'pages/Claim/styled'
 import { ClaimWithInvestmentData } from 'pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatSmart } from 'utils/format'
+import { formatSmartLocaleAware } from 'utils/format'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { AMOUNT_PRECISION } from 'constants/index'
 
@@ -16,8 +16,7 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
 
   const symbol = isFree ? '' : (currencyAmount?.currency?.symbol as string)
 
-  const formattedCost =
-    formatSmart(investmentCost, AMOUNT_PRECISION, { thousandSeparator: true, isLocaleAware: true }) || '0'
+  const formattedCost = formatSmartLocaleAware(investmentCost, AMOUNT_PRECISION) || '0'
 
   const percentage = investmentCost && cost && calculatePercentage(investmentCost, cost)
 
@@ -44,7 +43,7 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
       </td>
 
       <td>
-        <i>{formatSmart(vCowAmount) || '0'} vCOW</i>
+        <i>{formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'} vCOW</i>
 
         {!isFree && (
           <span>
@@ -67,7 +66,7 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
           <span>
             <b>Price:</b>{' '}
             <i>
-              {formatSmart(price) || '0'} vCoW per {symbol}
+              {formatSmartLocaleAware(price) || '0'} vCoW per {symbol}
             </i>
           </span>
         )}

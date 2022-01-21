@@ -3,7 +3,7 @@ import { Percent } from '@uniswap/sdk-core'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
-import { formatSmart } from 'utils/format'
+import { formatSmartLocaleAware } from 'utils/format'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import { InvestOptionProps } from '.'
@@ -19,7 +19,7 @@ import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { tryParseAmount } from 'state/swap/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
-import { PERCENTAGE_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 
 enum ErrorMsgs {
   InsufficientBalance = 'Insufficient balance to cover investment amount',
@@ -169,14 +169,14 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
           <span>
             <b>Price</b>{' '}
             <i>
-              {formatSmart(price)} vCoW per {currencyAmount?.currency?.symbol}
+              {formatSmartLocaleAware(price) || '0'} vCoW per {currencyAmount?.currency?.symbol}
             </i>
           </span>
 
           <span>
             <b>Max. investment available</b>{' '}
             <i>
-              {maxCost?.toExact() || '0'} {currencyAmount?.currency?.symbol}
+              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {currencyAmount?.currency?.symbol}
             </i>
           </span>
 
@@ -234,7 +234,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
               <span>
                 <b>Balance:</b>
                 <i>
-                  {formatSmart(balance) || 0} {currencyAmount?.currency?.symbol}
+                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {currencyAmount?.currency?.symbol}
                 </i>
                 {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
                 {!noBalance && isSelfClaiming && (
@@ -252,7 +252,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
               />
               <b>{currencyAmount?.currency?.symbol}</b>
             </label>
-            <i>Receive: {formatSmart(vCowAmount) || 0} vCOW</i>
+            <i>Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW</i>
             {/* Insufficient balance validation error */}
             {inputError ? <small>{inputError}</small> : ''}
           </div>
@@ -263,5 +263,5 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 }
 
 function _formatPercentage(percentage: Percent): string {
-  return formatSmart(percentage, PERCENTAGE_PRECISION) || '0'
+  return formatSmartLocaleAware(percentage, PERCENTAGE_PRECISION) || '0'
 }
