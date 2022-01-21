@@ -53,6 +53,7 @@ import {
   setSelectedAll,
   ClaimStatus,
   resetClaimUi,
+  updateInvestError,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -767,6 +768,8 @@ export function useClaimDispatchers() {
       setInvestFlowStep: (payload: number) => dispatch(setInvestFlowStep(payload)),
       initInvestFlowData: () => dispatch(initInvestFlowData()),
       updateInvestAmount: (payload: { index: number; amount: string }) => dispatch(updateInvestAmount(payload)),
+      updateInvestError: (payload: { index: number; error: string | undefined }) =>
+        dispatch(updateInvestError(payload)),
       // claim row selection
       setSelected: (payload: number[]) => dispatch(setSelected(payload)),
       setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),

@@ -28,7 +28,7 @@ enum ErrorMsgs {
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost } = claim
-  const { updateInvestAmount } = useClaimDispatchers()
+  const { updateInvestAmount, updateInvestError } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount } = useClaimState()
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -37,9 +37,23 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
   const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('0')
-  const [inputError, setInputError] = useState<string>('')
 
   const investedAmount = investFlowData[optionIndex].investedAmount
+  const inputError = investFlowData[optionIndex].error
+
+  // Syntactic sugar fns for setting/resetting global state
+  const setInvestedAmount = useCallback(
+    (amount: string) => updateInvestAmount({ index: optionIndex, amount }),
+    [optionIndex, updateInvestAmount]
+  )
+  const setInputError = useCallback(
+    (error: string) => updateInvestError({ index: optionIndex, error }),
+    [optionIndex, updateInvestError]
+  )
+  const resetInputError = useCallback(
+    () => updateInvestError({ index: optionIndex, error: undefined }),
+    [optionIndex, updateInvestError]
+  )
 
   const token = currencyAmount?.currency
   const balance = useCurrencyBalance(account || undefined, token)
@@ -56,25 +70,25 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     const value = maxCost.greaterThan(balance) ? balance : maxCost
     const amount = value.quotient.toString()
 
-    updateInvestAmount({ index: optionIndex, amount })
+    setInvestedAmount(amount)
     setTypedValue(value.toExact() || '')
-    setInputError('')
+    resetInputError()
 
     setPercentage(_formatPercentage(calculatePercentage(balance, maxCost)))
-  }, [balance, maxCost, noBalance, optionIndex, updateInvestAmount])
+  }, [balance, maxCost, noBalance, resetInputError, setInvestedAmount])
 
   // on input field change handler
   const onInputChange = useCallback(
     (value: string) => {
       setTypedValue(value)
-      setInputError('')
+      resetInputError()
 
       // parse to CurrencyAmount
       const parsedAmount = tryParseAmount(value, token)
 
       // no amount/necessary params, return 0
       if (!parsedAmount || !maxCost || !balance || !token) {
-        updateInvestAmount({ index: optionIndex, amount: '0' })
+        setInvestedAmount('0')
         setPercentage('0')
         return
       }
@@ -86,18 +100,18 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
       if (errorMsg) {
         setInputError(errorMsg)
-        updateInvestAmount({ index: optionIndex, amount: '0' })
+        setInvestedAmount('0')
         setPercentage('0')
         return
       }
 
       // update redux state with new investAmount value
-      updateInvestAmount({ index: optionIndex, amount: parsedAmount.quotient.toString() })
+      setInvestedAmount(parsedAmount.quotient.toString())
 
       // update the local state with percentage value
       setPercentage(_formatPercentage(calculatePercentage(parsedAmount, maxCost)))
     },
-    [balance, maxCost, optionIndex, token, updateInvestAmount]
+    [balance, maxCost, resetInputError, setInputError, setInvestedAmount, token]
   )
 
   // Cache approveData methods
@@ -142,7 +156,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
         setMaxAmount()
       }
     }
-  }, [balance, isSelfClaiming, maxCost, setMaxAmount])
+  }, [balance, isSelfClaiming, maxCost, optionIndex, setInputError, setMaxAmount])
 
   // this will set input and percentage value if you go back from the review page
   useEffect(() => {

@@ -14,6 +14,7 @@ import {
   setSelectedAll,
   resetClaimUi,
   ClaimStatus,
+  updateInvestError,
 } from './actions'
 
 export const initialState: ClaimState = {
@@ -39,6 +40,7 @@ export const initialState: ClaimState = {
 export type InvestClaim = {
   index: number
   investedAmount: string
+  error?: string
 }
 
 export type ClaimState = {
@@ -100,6 +102,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateInvestAmount, (state, { payload: { index, amount } }) => {
       state.investFlowData[index].investedAmount = amount
+    })
+    .addCase(updateInvestError, (state, { payload: { index, error } }) => {
+      state.investFlowData[index].error = error
     })
     .addCase(setSelected, (state, { payload }) => {
       state.selected = payload

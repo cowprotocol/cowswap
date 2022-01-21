@@ -25,6 +25,7 @@ export type ClaimActions = {
   setInvestFlowStep: (payload: number) => void
   initInvestFlowData: () => void
   updateInvestAmount: (payload: { index: number; amount: string }) => void
+  updateInvestError: (payload: { index: number; error: string | undefined }) => void
 
   // claim row selection
   setSelected: (payload: number[]) => void
@@ -51,7 +52,10 @@ export const updateInvestAmount = createAction<{
   index: number
   amount: string
 }>('claim/updateInvestAmount')
-
+export const updateInvestError = createAction<{
+  index: number
+  error: string | undefined
+}>('claim/updateInvestError')
 // claim row selection
 export const setSelected = createAction<number[]>('claim/setSelected')
 export const setSelectedAll = createAction<boolean>('claim/setSelectedAll')
