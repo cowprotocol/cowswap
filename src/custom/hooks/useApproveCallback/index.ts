@@ -11,7 +11,6 @@ export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
 import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { tryAtomsToCurrency } from 'state/swap/extension'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 type ApproveCallbackFromTradeParams = Pick<
@@ -60,7 +59,7 @@ type ApproveCallbackFromClaimParams = Omit<
   'spender' | 'amountToApprove' | 'amountToCheckAgainstAllowance'
 > & {
   claim: EnhancedUserClaimData
-  investmentAmount: string | undefined
+  investmentAmount?: CurrencyAmount<Currency>
 }
 
 export function useApproveCallbackFromClaim({
@@ -78,14 +77,14 @@ export function useApproveCallbackFromClaim({
   const approveAmounts = useMemo(() => {
     if (supportedChain && (claim.type === ClaimType.GnoOption || claim.type === ClaimType.Investor)) {
       const investmentCurrency = claim.currencyAmount?.currency as Currency
-      const amountToCheckAgainstAllowance = tryAtomsToCurrency(investmentAmount, investmentCurrency)
       return {
         amountToApprove: CurrencyAmount.fromRawAmount(investmentCurrency, MaxUint256),
-        amountToCheckAgainstAllowance,
+        // pass in a custom investmentAmount or just use the maxCost
+        amountToCheckAgainstAllowance: investmentAmount || claim.cost,
       }
     }
     return undefined
-  }, [claim, investmentAmount, supportedChain])
+  }, [claim.cost, claim.currencyAmount?.currency, claim.type, investmentAmount, supportedChain])
 
   // Params: modal cbs, amountToApprove: token user is investing e.g, spender: vcow token contract
   return useApproveCallback({
