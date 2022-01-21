@@ -17,6 +17,8 @@ import {
 } from 'state/claim/hooks/index'
 
 import { EnhancedUserClaimData, InvestmentAmounts } from 'pages/Claim/types'
+import { InvestClaim } from 'state/claim/reducer'
+import { ClaimInput } from 'state/claim/hooks/index'
 
 /**
  * Helper function to check whether any claim is an investment option
@@ -212,4 +214,21 @@ export function calculateInvestmentAmounts(
 
   const amount = CurrencyAmount.fromRawAmount(currencyAmount.currency, investedAmount)
   return { vCowAmount: price.quote(amount), investmentCost: amount }
+}
+
+/**
+ * Helper function that prepares investFlowData for claiming by calculating vCowAmount from investedAmounts
+ */
+export function prepareInvestClaims(investFlowData: InvestClaim[], userClaimData: EnhancedUserClaimData[]) {
+  return investFlowData.reduce<ClaimInput[]>((acc, { index, investedAmount }) => {
+    const claim = userClaimData.find(({ index: idx }) => idx === index)
+
+    if (claim) {
+      const { vCowAmount } = calculateInvestmentAmounts(claim, investedAmount)
+
+      acc.push({ index, amount: vCowAmount?.quotient.toString() })
+    }
+
+    return acc
+  }, [])
 }

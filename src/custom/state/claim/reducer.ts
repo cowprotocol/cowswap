@@ -38,9 +38,7 @@ export const initialState: ClaimState = {
 
 export type InvestClaim = {
   index: number
-  inputAmount?: string
-  investedAmount?: string
-  vCowAmount?: string
+  investedAmount: string
 }
 
 export type ClaimState = {

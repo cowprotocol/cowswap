@@ -616,7 +616,7 @@ type GetClaimedAmountParams = Pick<GetClaimManyArgsParams, 'account' | 'connecte
 function _getClaimedAmount({ claim, input, account, connectedAccount }: GetClaimedAmountParams): string {
   if (
     _isClaimForOther(account, connectedAccount, claim) ||
-    _isFreeClaim(claim) ||
+    isFreeClaim(claim.type) ||
     _hasNoInputOrInputIsGreaterThanClaimAmount(input, claim) ||
     // had to duplicate this check because I can't get TS to understand input.amount is not undefined in the else clause
     !input.amount
@@ -633,14 +633,7 @@ function _getClaimedAmount({ claim, input, account, connectedAccount }: GetClaim
  * Claim 100% when claiming investment for someone else
  */
 function _isClaimForOther(account: string, connectedAccount: string, claim: UserClaimData) {
-  return account !== connectedAccount && claim.type in PAID_CLAIM_TYPES
-}
-
-/**
- * Claim 100% when it's a free claim
- */
-function _isFreeClaim(claim: UserClaimData) {
-  return claim.type in FREE_CLAIM_TYPES
+  return account !== connectedAccount && !isFreeClaim(claim.type)
 }
 
 /**
