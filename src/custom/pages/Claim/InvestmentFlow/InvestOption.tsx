@@ -59,7 +59,6 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     openTransactionConfirmationModal: () => openModal(_claimApproveMessageMap(claim.type), OperationType.APPROVE_TOKEN),
     closeModals: closeModal,
     claim,
-    investmentAmount,
   })
 
   const isEtherApproveState = approveState === ApprovalState.UNKNOWN
