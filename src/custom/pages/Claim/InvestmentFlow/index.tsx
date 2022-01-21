@@ -6,13 +6,13 @@ import {
   InvestContent,
   InvestFlowValidation,
   InvestSummaryTable,
-  StepIndicator,
-  Steps,
   ClaimTable,
   AccountClaimSummary,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
+
+import { Stepper } from 'components/Stepper'
 
 import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
@@ -24,6 +24,20 @@ import { useActiveWeb3React } from 'hooks/web3'
 
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
+
+const STEPS_DATA = [
+  {
+    title: 'Start',
+  },
+  {
+    title: 'Set allowances',
+    subtitle: 'Approve all tokens to be used for investment.',
+  },
+  {
+    title: 'Submit claim',
+    subtitle: 'Submit and confirm the transaction to claim vCOW.',
+  },
+]
 
 export type InvestOptionProps = {
   claim: EnhancedUserClaimData
@@ -127,7 +141,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
   if (
     !activeClaimAccount || // no connected account
     !hasClaims || // no claims
-    !isInvestFlowActive || // not on correct step (account change in mid step)
+    !isInvestFlowActive || // not on correct step (account change in mid-step)
     claimStatus !== ClaimStatus.DEFAULT || // not in default claim state
     isAirdropOnly // is only for airdrop
   ) {
@@ -136,19 +150,42 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
 
   return (
     <InvestFlow>
-      <StepIndicator>
-        <Steps step={investFlowStep}>
-          <li>Allowances: Approve all tokens to be used for investment.</li>
-          <li>Submit and confirm the transaction to claim vCOW</li>
-        </Steps>
-        <h1>
-          {investFlowStep === 0
-            ? 'Claiming vCOW is a two step process'
-            : investFlowStep === 1
-            ? 'Set allowance to Buy vCOW'
-            : 'Confirm transaction to claim all vCOW'}
-        </h1>
-      </StepIndicator>
+      <Stepper steps={STEPS_DATA} activeStep={investFlowStep} />
+
+      <h1>
+        {investFlowStep === 0
+          ? 'Claim and invest'
+          : investFlowStep === 1
+          ? 'Set allowance to Buy vCOW'
+          : 'Confirm transaction to claim all vCOW'}
+      </h1>
+
+      {investFlowStep === 0 && (
+        <p>
+          You have chosen to exercise one or more investment opportunities alongside claiming your airdrop. Exercising
+          your investment options will give you the chance to acquire vCOW tokens at at fixed price. This process
+          consists of two steps.
+          <br />
+          <br />
+          The first step allows you to define the investment amounts and set the required allowances for the tokens you
+          will use to invest with.
+          <br />
+          <br />
+          The last step executes all claiming opportunities on-chain. Additionally, it sends the tokens you will use to
+          invest with, to the smart contract. In return, the smart contract will send the vCOW tokens for the Airdrop
+          and your 4 years linear vesting of the investment amount will start.
+          <br />
+          <br />
+          For more details around the token, please read{' '}
+          <a href="https://cow.fi" target="_blank" rel="noreferrer">
+            the blog post
+          </a>
+          .<br /> For more details about the claiming process, please read the{' '}
+          <a href="https://cow.fi" target="_blank" rel="noreferrer">
+            step by step guide
+          </a>
+        </p>
+      )}
 
       {/* Invest flow: Step 1 > Set allowances and investment amounts */}
       {investFlowStep === 1 ? (
@@ -170,7 +207,6 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
           <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
         </InvestContent>
       ) : null}
-
       {/* Invest flow: Step 2 > Review summary */}
       {investFlowStep === 2 ? (
         <InvestContent>
