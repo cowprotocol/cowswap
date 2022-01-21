@@ -144,6 +144,16 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     }
   }, [balance, isSelfClaiming, maxCost, setMaxAmount])
 
+  // this will set input and percentage value if you go back from the review page
+  useEffect(() => {
+    const { investmentCost } = calculateInvestmentAmounts(claim, investedAmount)
+
+    if (investmentCost) {
+      onInputChange(investmentCost?.toExact())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <InvestTokenGroup>
       <div>
