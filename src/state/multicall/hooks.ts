@@ -42,7 +42,7 @@ export const NEVER_RELOAD: ListenerOptions = {
 }
 
 // the lowest level call for subscribing to contract data
-function useCallsData(
+export function useCallsData(
   calls: (Call | undefined)[],
   { blocksPerFetch }: ListenerOptions = { blocksPerFetch: 1 }
 ): CallResult[] {

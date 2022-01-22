@@ -10,14 +10,16 @@ import TermsAndConditions from 'pages/TermsAndConditions'
 import About from 'pages/About'
 import Profile from 'pages/Profile'
 import Faq from 'pages/Faq'
-import NotFound from 'pages/NotFound'
-import CowRunner from '@src/custom/pages/games/CowRunner'
-import MevSlicer from '@src/custom/pages/games/MevSlicer'
+import NotFound from 'pages/error/NotFound'
+import CowRunner from 'pages/games/CowRunner'
+import MevSlicer from 'pages/games/MevSlicer'
+import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { version } from '@src/../package.json'
 import { environmentName } from 'utils/environments'
 import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
+import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -66,32 +68,36 @@ export default function App() {
   useFilterEmptyQueryParams()
 
   return (
-    <Wrapper>
-      <Switch>
-        <Route exact strict path="/swap" component={Swap} />
-        <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-        <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-        <Route exact strict path="/claim" component={Claim} />
-        <Route exact strict path="/about" component={About} />
-        <Route exact strict path="/profile" component={Profile} />
-        <Route exact strict path="/faq" component={Faq} />
-        <Route exact strict path="/play/cow-runner" component={CowRunner} />
-        <Route exact strict path="/play/mev-slicer" component={MevSlicer} />
-        <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
-        <Route exact strict path="/cookie-policy" component={CookiePolicy} />
-        <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
-        <Route exact strict path="/chat" component={createRedirectExternal('https://chat.cowswap.exchange')} />
-        <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cow.fi')} />
-        <Route
-          exact
-          strict
-          path="/stats"
-          component={createRedirectExternal('https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2')}
-        />
-        <Route exact strict path="/twitter" component={createRedirectExternal('https://twitter.com/MEVprotection')} />
-        <Route exact strict path="/" component={RedirectPathToSwapOnly} />
-        <Route component={NotFound} />
-      </Switch>
-    </Wrapper>
+    <>
+      <RedirectAnySwapAffectedUsers />
+      <Wrapper>
+        <Switch>
+          <Route exact strict path="/swap" component={Swap} />
+          <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
+          <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
+          <Route exact strict path="/claim" component={Claim} />
+          <Route exact strict path="/about" component={About} />
+          <Route exact strict path="/profile" component={Profile} />
+          <Route exact strict path="/faq" component={Faq} />
+          <Route exact strict path="/play/cow-runner" component={CowRunner} />
+          <Route exact strict path="/play/mev-slicer" component={MevSlicer} />
+          <Route exact strict path="/anyswap-affected-users" component={AnySwapAffectedUsers} />
+          <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
+          <Route exact strict path="/cookie-policy" component={CookiePolicy} />
+          <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
+          <Route exact strict path="/chat" component={createRedirectExternal('https://chat.cowswap.exchange')} />
+          <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cow.fi')} />
+          <Route
+            exact
+            strict
+            path="/stats"
+            component={createRedirectExternal('https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2')}
+          />
+          <Route exact strict path="/twitter" component={createRedirectExternal('https://twitter.com/MEVprotection')} />
+          <Route exact strict path="/" component={RedirectPathToSwapOnly} />
+          <Route component={NotFound} />
+        </Switch>
+      </Wrapper>
+    </>
   )
 }
