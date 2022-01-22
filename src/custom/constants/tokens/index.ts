@@ -37,21 +37,21 @@ export const V_COW: Record<number, Token> = {
     V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
     18,
     'vCOW',
-    'Virtual CowSwap Token'
+    'CoW Protocol Virtual Token'
   ),
   [SupportedChainId.XDAI]: new Token(
     SupportedChainId.XDAI,
     V_COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
     18,
     'vCOW',
-    'Virtual CowSwap Token'
+    'CoW Protocol Virtual Token'
   ),
   [SupportedChainId.RINKEBY]: new Token(
     SupportedChainId.RINKEBY,
     V_COW_CONTRACT_ADDRESS[SupportedChainId.RINKEBY] || '',
     18,
     'vCOW',
-    'Virtual CowSwap Token'
+    'CoW Protocol Virtual Token'
   ),
 }
 
