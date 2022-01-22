@@ -1,7 +1,6 @@
-import { useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import { isAddress } from '@ethersproject/address'
-import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
+import { useClaimDispatchers, useClaimState, useHasClaimInvestmentFlowError } from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { ClaimStatus } from 'state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper } from 'pages/Claim/styled'
@@ -34,7 +33,6 @@ export default function FooterNavButtons({
     // claiming
     claimStatus,
     // investment
-    investFlowData,
     investFlowStep,
     isInvestFlowActive,
     // table select change
@@ -47,9 +45,7 @@ export default function FooterNavButtons({
     setIsInvestFlowActive,
   } = useClaimDispatchers()
 
-  const hasError = useMemo(() => {
-    return investFlowData.some(({ error }) => Boolean(error))
-  }, [investFlowData])
+  const hasError = useHasClaimInvestmentFlowError()
 
   const isInputAddressValid = isAddress(resolvedAddress || '')
 

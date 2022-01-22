@@ -14,7 +14,13 @@ import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 
 import { Stepper } from 'components/Stepper'
 
-import { ClaimType, useClaimState, useUserEnhancedClaimData, useClaimDispatchers } from 'state/claim/hooks'
+import {
+  ClaimType,
+  useClaimState,
+  useUserEnhancedClaimData,
+  useClaimDispatchers,
+  useHasClaimInvestmentFlowError,
+} from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
 import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
@@ -119,6 +125,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
   const { initInvestFlowData } = useClaimDispatchers()
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
 
+  const hasError = useHasClaimInvestmentFlowError()
+
   // Filtering and splitting claims into free and selected paid claims
   // `selectedClaims` are used on step 1 and 2
   // `freeClaims` are used on step 2
@@ -202,7 +210,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             />
           ))}
 
-          <InvestFlowValidation>Approve all investment tokens before continuing</InvestFlowValidation>
+          {hasError && <InvestFlowValidation>Fix the errors before continuing</InvestFlowValidation>}
         </InvestContent>
       ) : null}
       {/* Invest flow: Step 2 > Review summary */}

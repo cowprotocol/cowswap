@@ -785,6 +785,17 @@ export function useClaimState() {
 }
 
 /**
+ * Returns a boolean indicating whehter there's an error on claim investment flow
+ */
+export function useHasClaimInvestmentFlowError(): boolean {
+  const { investFlowData } = useClaimState()
+
+  return useMemo(() => {
+    return investFlowData.some(({ error }) => Boolean(error))
+  }, [investFlowData])
+}
+
+/**
  * Gets an array of available claims parsed and sorted for the UI
  *
  * Syntactic sugar on top of `useUserClaims`
