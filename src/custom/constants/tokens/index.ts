@@ -32,27 +32,26 @@ export const ADDRESS_IMAGE_OVERRIDE = {
 }
 
 export const V_COW: Record<number, Token> = {
-  // TODO: enable once contract addresses are added
-  // [SupportedChainId.MAINNET]: new Token(
-  //   SupportedChainId.MAINNET,
-  //   V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
-  //   18,
-  //   'vCOW',
-  //   'Virtual CowSwap Token'
-  // ),
-  // [SupportedChainId.XDAI]: new Token(
-  //   SupportedChainId.XDAI,
-  //   V_COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
-  //   18,
-  //   'vCOW',
-  //   'Virtual CowSwap Token'
-  // ),
+  [SupportedChainId.MAINNET]: new Token(
+    SupportedChainId.MAINNET,
+    V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
+    18,
+    'vCOW',
+    'CoW Protocol Virtual Token'
+  ),
+  [SupportedChainId.XDAI]: new Token(
+    SupportedChainId.XDAI,
+    V_COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
+    18,
+    'vCOW',
+    'CoW Protocol Virtual Token'
+  ),
   [SupportedChainId.RINKEBY]: new Token(
     SupportedChainId.RINKEBY,
     V_COW_CONTRACT_ADDRESS[SupportedChainId.RINKEBY] || '',
     18,
     'vCOW',
-    'Virtual CowSwap Token'
+    'CoW Protocol Virtual Token'
   ),
 }
 
