@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
+import BadgeOriginal from 'components/Badge'
+
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { transparentize, darken } from 'polished'
@@ -1089,6 +1091,10 @@ export const AccountClaimSummary = styled.div`
     font-style: normal;
     word-break: break-all;
   }
+`
+
+export const Badge = styled(BadgeOriginal)`
+  font-size: 11px;
 `
 
 export const CowSpinner = styled.div`
