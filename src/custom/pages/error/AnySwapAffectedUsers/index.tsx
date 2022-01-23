@@ -73,14 +73,14 @@ const Container = styled.div`
 export default function AnySwapAffectedUsers() {
   return (
     <Wrapper>
-      <Title>Your account is affected by AnySwap Hack</Title>
+      <Title>Your account is affected by the AnySwap Hack</Title>
       <Content>
         <Container>
           <img src={cow404IMG} alt="CowSwap 404 not found" />
-          <h2>Read how to prevent loosing funds</h2>
+          <h2>Read how to prevent losing funds</h2>
         </Container>
         <p>
-          Your user has given an allowance to <pre>AnyswapV4Router</pre> which is affected by a critical vulnerability.
+          You have given an allowance to <pre>AnyswapV4Router</pre> which is affected by a critical vulnerability.
         </p>
         <p>In order to protect your funds, you will need to remove the approval on this contract.</p>
         <p>
