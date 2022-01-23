@@ -5,9 +5,10 @@ import { ClaimStatus } from 'state/claim/actions'
 import { useClaimState } from 'state/claim/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
+import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerDataType } from 'utils/getExplorerLink'
 // import { formatSmartLocationAware } from 'utils/format'
 
 export default function ClaimingStatus() {
@@ -70,12 +71,7 @@ export default function ClaimingStatus() {
         </AttemptFooter>
       )}
       {isSubmitted && chainId && lastClaimTx?.hash && (
-        <ExternalLink
-          href={getExplorerLink(chainId, lastClaimTx.hash, ExplorerDataType.TRANSACTION)}
-          style={{ zIndex: 99, marginTop: '20px' }}
-        >
-          <Trans>View transaction on Explorer</Trans>
-        </ExternalLink>
+        <ExplorerLink id={lastClaimTx.hash} type={ExplorerDataType.TRANSACTION} />
       )}
     </ConfirmOrLoadingWrapper>
   )
