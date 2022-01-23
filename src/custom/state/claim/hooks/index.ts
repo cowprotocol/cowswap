@@ -58,7 +58,7 @@ import {
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 
-const CLAIMS_REPO_BRANCH = 'test-deployment-all-networks'
+const CLAIMS_REPO_BRANCH = '2022-01-22-test-deployment-all-networks'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
@@ -714,21 +714,25 @@ const FETCH_CLAIM_PROMISES: { [key: string]: Promise<UserClaims> } = {}
  * Returns the claim for the given address, or null if not valid
  */
 function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
+  // Validate it's a, well, valid address
   const formatted = isAddress(account)
   if (!formatted) return Promise.reject(new Error('Invalid address'))
 
-  const claimKey = getClaimKey(formatted, chainId)
+  // To be sure, let's lowercase the hashed address and work with it instead
+  const lowerCasedAddress = formatted.toLowerCase()
+
+  const claimKey = getClaimKey(lowerCasedAddress, chainId)
 
   return (
     FETCH_CLAIM_PROMISES[claimKey] ??
     (FETCH_CLAIM_PROMISES[claimKey] = fetchClaimsMapping(chainId)
       .then((mapping) => {
-        const sorted = Object.keys(mapping).sort((a, b) => (a.toLowerCase() < b.toLowerCase() ? -1 : 1))
+        const sorted = Object.keys(mapping).sort((a, b) => (a < b ? -1 : 1))
 
         for (const startingAddress of sorted) {
           const lastAddress = mapping[startingAddress]
-          if (startingAddress.toLowerCase() <= formatted.toLowerCase()) {
-            if (formatted.toLowerCase() <= lastAddress.toLowerCase()) {
+          if (startingAddress <= lowerCasedAddress) {
+            if (lowerCasedAddress <= lastAddress) {
               return startingAddress
             }
           } else {
@@ -739,7 +743,7 @@ function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
       })
       .then((address) => fetchClaimsFile(address, chainId))
       .then((result) => {
-        if (result[formatted]) return transformRepoClaimsToUserClaims(result[formatted]) // mod
+        if (result[lowerCasedAddress]) return transformRepoClaimsToUserClaims(result[lowerCasedAddress]) // mod
         throw new Error(`Claim for ${claimKey} was not found in claim file!`)
       })
       .catch((error) => {
