@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { ConfirmOrLoadingWrapper, ConfirmedIcon, AttemptFooter, CowSpinner } from 'pages/Claim/styled'
-import { ExternalLink } from 'theme'
 import { ClaimStatus } from 'state/claim/actions'
 import { useClaimState } from 'state/claim/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
