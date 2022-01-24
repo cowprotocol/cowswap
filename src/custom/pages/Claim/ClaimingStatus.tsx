@@ -6,10 +6,13 @@ import { useActiveWeb3React } from 'hooks/web3'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import { ExplorerLink } from 'components/ExplorerLink'
 import { EnhancedTransactionLink } from 'components/EnhancedTransactionLink'
+import { ExplorerDataType } from 'utils/getExplorerLink'
 
 export default function ClaimingStatus() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
 
   const allClaimTxs = useAllClaimingTransactions()
@@ -22,8 +25,9 @@ export default function ClaimingStatus() {
   const isConfirmed = claimStatus === ClaimStatus.CONFIRMED
   const isAttempting = claimStatus === ClaimStatus.ATTEMPTING
   const isSubmitted = claimStatus === ClaimStatus.SUBMITTED
+  const isSelfClaiming = account === activeClaimAccount
 
-  if (!activeClaimAccount || claimStatus === ClaimStatus.DEFAULT) return null
+  if (!account || !activeClaimAccount || claimStatus === ClaimStatus.DEFAULT) return null
 
   return (
     <ConfirmOrLoadingWrapper activeBG={true}>
@@ -56,6 +60,16 @@ export default function ClaimingStatus() {
               🐄🎉
             </span>
           </Trans>
+          {isSelfClaiming ? (
+            <Trans>
+              You can see your vCOW balance in the <Link to="/profile">Profile</Link>
+            </Trans>
+          ) : (
+            <Trans>
+              You have just claimed on behalf of{' '}
+              <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />
+            </Trans>
+          )}
         </>
       )}
       {isAttempting && (
