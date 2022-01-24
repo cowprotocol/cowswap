@@ -20,12 +20,17 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { tryParseAmount } from 'state/swap/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
 import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
+import { useGasPrices } from 'state/gas/hooks'
+import { _estimateTxCost } from 'components/swap/EthWethWrap/helpers'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 const ErrorMsgs = {
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
+  InsufficientNativeBalance: (symbol = '', action = "won't") =>
+    `You ${action} have enough ${symbol} to pay the network transaction fee`,
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
@@ -35,10 +40,12 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
+  const { isSmartContractWallet } = useWalletInfo()
 
   const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('0')
+  const [inputWarning, setInputWarning] = useState<string>('')
 
   const investedAmount = investFlowData[optionIndex].investedAmount
   const inputError = investFlowData[optionIndex].error
@@ -59,6 +66,12 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
   const token = currencyAmount?.currency
   const balance = useCurrencyBalance(account || undefined, token)
+
+  const gasPrice = useGasPrices(chainId)
+  const { singleTxCost } = useMemo(
+    () => _estimateTxCost(gasPrice, token?.isNative ? token : undefined),
+    [gasPrice, token]
+  )
 
   const isSelfClaiming = account === activeClaimAccount
   const noBalance = !balance || balance.equalTo('0')
@@ -132,6 +145,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   // handle input value change
   useEffect(() => {
     let error = null
+    let warning
 
     const parsedAmount = tryParseAmount(typedValue, token)
 
@@ -150,7 +164,14 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       error = ErrorMsgs.OverMaxInvestment
     } else if (parsedAmount.greaterThan(balance)) {
       error = ErrorMsgs.InsufficientBalance(token?.symbol)
+    } else if (isNative && parsedAmount && singleTxCost?.add(parsedAmount).greaterThan(balance)) {
+      if (isSmartContractWallet) {
+        warning = ErrorMsgs.InsufficientNativeBalance(token?.symbol, 'might not')
+      } else {
+        error = ErrorMsgs.InsufficientNativeBalance(token?.symbol)
+      }
     }
+    setInputWarning(warning || '')
 
     if (error) {
       // if there is error set it in redux
@@ -162,7 +183,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       }
       // basically the magic happens in this block
 
-      // update redux state to remove errro for this field
+      // update redux state to remove error for this field
       resetInputError()
 
       // update redux state with new investAmount value
@@ -182,6 +203,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     setInputError,
     resetInputError,
     setInvestedAmount,
+    isSmartContractWallet,
+    singleTxCost,
   ])
 
   return (
@@ -284,7 +307,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
             </label>
             <i>Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW</i>
             {/* Insufficient balance validation error */}
-            {inputError ? <small>{inputError}</small> : ''}
+            {inputError && <small>{inputError}</small>}
+            {inputWarning && <small className="warn">{inputWarning}</small>}
           </div>
         </InvestInput>
       </span>

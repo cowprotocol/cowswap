@@ -935,6 +935,10 @@ export const InvestInput = styled.span`
     color: red;
     margin: 12px 0;
     font-size: 15px;
+
+    &.warn {
+      color: orange;
+    }
   }
 
   > div > i {
