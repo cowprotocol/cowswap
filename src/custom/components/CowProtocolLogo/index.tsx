@@ -2,14 +2,22 @@ import styled from 'styled-components/macro'
 import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
 
 export const Icon = styled.span<Props>`
+  --defaultSize: 24px;
+  --smallSize: ${({ size }) => (size ? `calc(${size}px / 2)` : 'calc(var(--defaultSize) / 2)')};
   ${({ theme }) => theme.cowToken.background};
   ${({ theme }) => theme.cowToken.boxShadow};
-  height: ${({ size }) => (size ? `${size}px` : '24px')};
-  width: ${({ size }) => (size ? `${size}px` : '24px')};
+  height: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  width: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
   display: inline-block;
   margin: 0;
-  border-radius: ${({ size }) => (size ? `${size}px` : '24px')};
+  border-radius: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
   position: relative;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: var(--smallSize);
+    height: var(--smallSize);
+    border-radius: var(--smallSize);
+  `};
 
   &::after {
     content: '';

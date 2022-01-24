@@ -25,6 +25,7 @@ export const PageWrapper = styled.div`
   background: ${({ theme }) => theme.bg1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 16px;
     border-radius: var(--border-radius-small);
   `};
 
@@ -164,8 +165,8 @@ ${ButtonPrimary} {
   padding: 24px 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-      margin: 0 auto 24px;
-    `};
+    margin: 0 auto 24px;
+  `};
 
   &[disabled] {
     cursor: not-allowed;
@@ -460,6 +461,10 @@ export const ClaimTotal = styled.div`
     margin: 0;
     font-size: 30px;
     font-weight: bold;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 16px;
+    `};
   }
 `
 
@@ -529,10 +534,18 @@ export const EligibleBanner = styled.div`
   margin: 0 auto 16px;
   font-weight: 600;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: left;
+    padding: 18px;
+  `}
   > img {
     margin: 0 6px 0 0;
     width: 21px;
     height: 21px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 12px 0 6px;
+   `}
   }
 `
 
@@ -645,24 +658,26 @@ export const CheckAddress = styled.div`
 
   ${Icon} {
     margin: 0 auto;
-  }
 
-  > h1 {
-    font-size: 32px;
-    font-weight: 300;
-    text-align: center;
-  }
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 0 6px;
+   `}
+    > h1 {
+      font-size: 32px;
+      font-weight: 300;
+      text-align: center;
+    }
 
-  > h1 > b {
-    font-weight: bold;
-  }
+    > h1 > b {
+      font-weight: bold;
+    }
 
-  > p {
-    text-align: center;
-    font-size: 18px;
-    line-height: 1.2;
-    margin: 0 0 24px;
-  }
+    > p {
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.2;
+      margin: 0 0 24px;
+    }
 `
 
 export const ClaimBreakdown = styled.div`
