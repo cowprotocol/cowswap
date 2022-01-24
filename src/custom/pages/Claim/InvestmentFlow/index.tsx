@@ -205,23 +205,22 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
       {investFlowStep === 0 && (
         <p>
           You have chosen to exercise one or more investment opportunities alongside claiming your airdrop. Exercising
-          your investment options will give you the chance to acquire vCOW tokens at at fixed price. This process
-          consists of two steps.
+          your investment options will give you the chance to acquire vCOW tokens at a fixed price. This process
+          consists of two steps:
           <br />
           <br />
-          The first step allows you to define the investment amounts and set the required allowances for the tokens you
-          will use to invest with.
+          1) Define the amount you would like to invest and set the required allowances for the token you are purchasing
+          vCOW with.
           <br />
           <br />
-          The last step executes all claiming opportunities on-chain. Additionally, it sends the tokens you will use to
-          invest with, to the smart contract. In return, the smart contract will send the vCOW tokens for the Airdrop
-          and your 4 years linear vesting of the investment amount will start.
+          2) Claim your vCOW tokens for the Airdrop (available immediately) and for your investment (vesting linearly
+          over 4 years).
           <br />
           <br />
           For more details around the token, please read{' '}
           <ExternalLink href={COW_LINKS.vCowPost}>the blog post</ExternalLink>
-          .<br /> For more details about the claiming process, please read the{' '}
-          <ExternalLink href={COW_LINKS.stepGuide}>step by step guide</ExternalLink>
+          .<br /> For more details about the claiming process, please read{' '}
+          <ExternalLink href={COW_LINKS.stepGuide}>step by step guide</ExternalLink>.
         </p>
       )}
 
