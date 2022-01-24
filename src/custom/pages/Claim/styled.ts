@@ -680,6 +680,7 @@ export const ClaimBreakdown = styled.div`
 `
 
 export const FooterNavButtons = styled.div`
+  margin-top: 20px;
   display: flex;
   width: 100%;
   flex-flow: column wrap;
@@ -698,6 +699,12 @@ export const FooterNavButtons = styled.div`
       margin: 0 6px 0 0;
     }
   }
+`
+
+export const ReadMoreText = styled.div`
+  margin: 18px 0;
+  text-align: center;
+  font-size: 15px;
 `
 
 export const TopNav = styled.div`

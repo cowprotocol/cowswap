@@ -3,11 +3,13 @@ import { isAddress } from '@ethersproject/address'
 import { useClaimDispatchers, useClaimState, useHasClaimInvestmentFlowError } from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { ClaimStatus } from 'state/claim/actions'
-import { FooterNavButtons as FooterNavButtonsWrapper } from 'pages/Claim/styled'
+import { FooterNavButtons as FooterNavButtonsWrapper, ReadMoreText } from './styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ClaimsTableProps } from './ClaimsTable'
 import { ClaimAddressProps } from './ClaimAddress'
 import { ReactNode } from 'react'
+import { ExternalLink } from 'theme/index'
+import { COW_LINKS } from '.'
 
 type FooterNavButtonsProps = Pick<ClaimsTableProps, 'hasClaims' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
@@ -16,6 +18,14 @@ type FooterNavButtonsProps = Pick<ClaimsTableProps, 'hasClaims' | 'isAirdropOnly
     handleSubmitClaim: () => void
     handleCheckClaim: () => void
   }
+
+function ReadMore() {
+  return (
+    <ReadMoreText>
+      <ExternalLink href={COW_LINKS.vCowPost}>Read more about vCOW</ExternalLink>
+    </ReadMoreText>
+  )
+}
 
 export default function FooterNavButtons({
   hasClaims,
@@ -66,9 +76,12 @@ export default function FooterNavButtons({
   // User has no set active claim account and/or has claims, show claim account search
   if ((!activeClaimAccount || !hasClaims) && claimStatus === ClaimStatus.DEFAULT) {
     buttonContent = (
-      <ButtonPrimary disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
-        <Trans>Check claimable vCOW</Trans>
-      </ButtonPrimary>
+      <>
+        <ButtonPrimary disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
+          <Trans>Check claimable vCOW</Trans>
+        </ButtonPrimary>
+        <ReadMore />
+      </>
     )
   }
 
@@ -76,9 +89,12 @@ export default function FooterNavButtons({
   if (isConnectedAndHasClaims) {
     if (!isInvestFlowActive) {
       buttonContent = (
-        <ButtonPrimary onClick={handleSubmitClaim} disabled={isPaidClaimsOnly && noPaidClaimsSelected}>
-          <Trans>Claim vCOW</Trans>
-        </ButtonPrimary>
+        <>
+          <ButtonPrimary onClick={handleSubmitClaim} disabled={isPaidClaimsOnly && noPaidClaimsSelected}>
+            <Trans>Claim vCOW</Trans>
+          </ButtonPrimary>
+          <ReadMore />
+        </>
       )
     } else if (!isAirdropOnly) {
       buttonContent = (
