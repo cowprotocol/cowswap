@@ -59,17 +59,21 @@ export default function ClaimingStatus() {
             <span role="img" aria-label="party-hat">
               🎉🐮{' '}
             </span>
-            Welcome to the COWmunnity! :)
+            <p>Welcome to the COWmunnity! :)</p>
           </Trans>
           {isSelfClaiming ? (
             <Trans>
-              You can see your vCOW balance in the <Link to="/profile">Profile</Link>
+              <p>
+                You can see your vCOW balance in the <Link to="/profile">Profile</Link>
+              </p>
               <AddToMetamask currency={currency} />
             </Trans>
           ) : (
             <Trans>
-              You have just claimed on behalf of{' '}
-              <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />
+              <p>
+                You have just claimed on behalf of{' '}
+                <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />
+              </p>
             </Trans>
           )}
         </>
