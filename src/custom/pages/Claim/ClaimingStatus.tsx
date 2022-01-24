@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom'
 import { ExplorerLink } from 'components/ExplorerLink'
 import { EnhancedTransactionLink } from 'components/EnhancedTransactionLink'
 import { ExplorerDataType } from 'utils/getExplorerLink'
+import { V_COW } from 'constants/tokens'
+import AddToMetamask from 'components/AddToMetamask'
 
 export default function ClaimingStatus() {
   const { chainId, account } = useActiveWeb3React()
@@ -27,7 +29,9 @@ export default function ClaimingStatus() {
   const isSubmitted = claimStatus === ClaimStatus.SUBMITTED
   const isSelfClaiming = account === activeClaimAccount
 
-  if (!account || !activeClaimAccount || claimStatus === ClaimStatus.DEFAULT) return null
+  if (!account || !chainId || !activeClaimAccount || claimStatus === ClaimStatus.DEFAULT) return null
+
+  const currency = chainId ? V_COW[chainId] : undefined
 
   return (
     <ConfirmOrLoadingWrapper activeBG={true}>
@@ -55,14 +59,12 @@ export default function ClaimingStatus() {
             <span role="img" aria-label="party-hat">
               🎉🐮{' '}
             </span>
-            Welcome to the COWmunnity! :){' '}
-            <span role="img" aria-label="party-hat">
-              🐄🎉
-            </span>
+            Welcome to the COWmunnity! :)
           </Trans>
           {isSelfClaiming ? (
             <Trans>
               You can see your vCOW balance in the <Link to="/profile">Profile</Link>
+              <AddToMetamask currency={currency} />
             </Trans>
           ) : (
             <Trans>

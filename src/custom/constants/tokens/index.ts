@@ -31,28 +31,34 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   [WETH_XDAI.address]: getTrustImage(WETH_ADDRESS_MAINNET),
 }
 
+const V_COW_TOKEN_MAINNET = new Token(
+  SupportedChainId.MAINNET,
+  V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
+  18,
+  'vCOW',
+  'CoW Protocol Virtual Token'
+)
+
+const V_COW_TOKEN_XDAI = new Token(
+  SupportedChainId.XDAI,
+  V_COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
+  18,
+  'vCOW',
+  'CoW Protocol Virtual Token'
+)
+
+const V_COW_TOKEN_RINKEBY = new Token(
+  SupportedChainId.RINKEBY,
+  V_COW_CONTRACT_ADDRESS[SupportedChainId.RINKEBY] || '',
+  18,
+  'vCOW',
+  'CoW Protocol Virtual Token'
+)
+
 export const V_COW: Record<number, Token> = {
-  [SupportedChainId.MAINNET]: new Token(
-    SupportedChainId.MAINNET,
-    V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
-    18,
-    'vCOW',
-    'CoW Protocol Virtual Token'
-  ),
-  [SupportedChainId.XDAI]: new Token(
-    SupportedChainId.XDAI,
-    V_COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
-    18,
-    'vCOW',
-    'CoW Protocol Virtual Token'
-  ),
-  [SupportedChainId.RINKEBY]: new Token(
-    SupportedChainId.RINKEBY,
-    V_COW_CONTRACT_ADDRESS[SupportedChainId.RINKEBY] || '',
-    18,
-    'vCOW',
-    'CoW Protocol Virtual Token'
-  ),
+  [SupportedChainId.MAINNET]: V_COW_TOKEN_MAINNET,
+  [SupportedChainId.XDAI]: V_COW_TOKEN_XDAI,
+  [SupportedChainId.RINKEBY]: V_COW_TOKEN_RINKEBY,
 }
 
 export const GNO: Record<SupportedChainId, Token> = {
