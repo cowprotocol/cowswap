@@ -10,8 +10,8 @@ import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
+import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { /* useClientSideRouter, */ useExpertModeManager } from 'state/user/hooks'
 import { TYPE } from 'theme'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
@@ -127,6 +127,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const theme = useContext(ThemeContext)
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
+  const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
 
   // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
@@ -244,13 +245,36 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                   expertMode
                     ? () => {
                         toggleExpertMode()
+                        toggleRecipientVisibility(false)
                         setShowConfirmation(false)
                       }
                     : () => {
                         toggle()
+                        toggleRecipientVisibility(true)
                         setShowConfirmation(true)
                       }
                 }
+              />
+            </RowBetween>
+
+            <RowBetween>
+              <RowFixed>
+                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                  <Trans>Toggle Recipient</Trans>
+                </TYPE.black>
+                <QuestionHelper
+                  bgColor={theme.bg3}
+                  color={theme.text1}
+                  text={
+                    <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>
+                  }
+                />
+              </RowFixed>
+              <Toggle
+                id="toggle-recipient-mode-button"
+                isActive={recipientToggleVisible || expertMode}
+                toggle={() => (expertMode ? null : toggleRecipientVisibility())}
+                className={expertMode ? 'disabled' : ''}
               />
             </RowBetween>
           </AutoColumn>

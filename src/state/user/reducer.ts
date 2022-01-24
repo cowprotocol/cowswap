@@ -10,17 +10,18 @@ import {
   removeSerializedToken,
   SerializedPair,
   SerializedToken,
-  updateArbitrumAlphaAcknowledged,
-  updateHideClosedPositions,
   updateMatchesDarkMode,
   updateOptimismAlphaAcknowledged,
   updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
-  updateUserLocale,
   updateUserSlippageTolerance,
   toggleURLWarning,
+  updateHideClosedPositions,
+  updateUserLocale,
+  updateArbitrumAlphaAcknowledged,
+  updateRecipientToggleVisible,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -39,6 +40,8 @@ export interface UserState {
   userLocale: SupportedLocale | null
 
   userExpertMode: boolean
+
+  recipientToggleVisible: boolean
 
   userClientSideRouter: boolean // whether routes should be calculated with the client side router only
 
@@ -79,6 +82,7 @@ export const initialState: UserState = {
   optimismAlphaAcknowledged: false,
   userDarkMode: null,
   userExpertMode: false,
+  recipientToggleVisible: false,
   userLocale: null,
   userClientSideRouter: false,
   userHideClosedPositions: false,
@@ -142,6 +146,10 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateRecipientToggleVisible, (state, action) => {
+      state.recipientToggleVisible = action.payload.recipientToggleVisible
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserLocale, (state, action) => {
