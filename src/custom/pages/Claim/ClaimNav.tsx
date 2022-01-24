@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { ButtonSecondary } from 'components/Button'
 import { shortenAddress } from 'utils'
 import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
@@ -13,8 +12,10 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
   const { activeClaimAccount, activeClaimAccountENS, claimStatus, investFlowStep } = useClaimState()
   const { setActiveClaimAccount } = useClaimDispatchers()
 
-  const isAttempting = useMemo(() => claimStatus === ClaimStatus.ATTEMPTING, [claimStatus])
+  const isDefaultStatus = claimStatus === ClaimStatus.DEFAULT
+  const isConfirmed = claimStatus === ClaimStatus.CONFIRMED
   const hasActiveAccount = activeClaimAccount !== ''
+  const allowToChangeAccount = investFlowStep < 2 && (isDefaultStatus || isConfirmed)
 
   return (
     <TopNav>
@@ -28,20 +29,15 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
           )}
         </div>
         <ClaimAccountButtons>
-          {!!account && (account !== activeClaimAccount || activeClaimAccount === '') && (
-            <ButtonSecondary disabled={isAttempting} onClick={() => setActiveClaimAccount(account)}>
-              Switch to connected account
-            </ButtonSecondary>
-          )}
-
-          {/* Hide account changing action on:
-           * last investment step
-           * attempted claim in progress
-           */}
-          {hasActiveAccount && (investFlowStep < 2 || !isAttempting) && (
-            <ButtonSecondary disabled={isAttempting} onClick={handleChangeAccount}>
-              Change account
-            </ButtonSecondary>
+          {allowToChangeAccount && hasActiveAccount ? (
+            <ButtonSecondary onClick={handleChangeAccount}>Change account</ButtonSecondary>
+          ) : (
+            !!account &&
+            allowToChangeAccount && (
+              <ButtonSecondary onClick={() => setActiveClaimAccount(account)}>
+                Switch to connected account
+              </ButtonSecondary>
+            )
           )}
         </ClaimAccountButtons>
       </ClaimAccount>
