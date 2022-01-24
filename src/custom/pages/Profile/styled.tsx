@@ -76,7 +76,7 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
       grid-column-start: 1;
       grid-column-end: 2;
     }
-  `};
+  `}
 `
 
 export const CardHead = styled.div`
@@ -197,20 +197,14 @@ export const Loader = styled.div<{ isLoading: boolean }>`
 `
 
 export const ProfileWrapper = styled(Wrapper)`
-  margin: 0 0 16px 0;
+  margin: 16px 0 16px 0;
   padding: 16px 24px;
+  z-index: 2;
+  ${({ theme }) => theme.mediaWidth.upToVerySmall`
+    padding: 0 16px 16px;
+  `};
 `
 
-export const ProfileFlexCol = styled.div`
-  display: flex;
-  flex-grow: 1;
-  align-items: flex-start;
-  flex-direction: column;
-
-  span {
-    padding: 0 8px;
-  }
-`
 export const ProfileGridWrap = styled(GridWrap)`
   grid-template-columns: 1fr auto;
   justify-content: space-between;
@@ -228,19 +222,6 @@ export const ProfileGridWrap = styled(GridWrap)`
       grid-column-start: 1;
       grid-column-end: 1;
     }
+    grid-row-gap: 0px;
   `};
-`
-
-export const VCOWBalance = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-grow: 1;
-  min-width: 215px;
-  height: 56px;
-  justify-content: center;
-  border-radius: 12px;
-  padding: 8px;
-  ${({ theme }) => theme.neumorphism.boxShadow};
-  background-color: ${({ theme }) => theme.bg7};
 `
