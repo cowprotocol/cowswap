@@ -6,8 +6,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
-import { ExplorerLink } from 'components/ExplorerLink'
-import { ExplorerDataType } from 'utils/getExplorerLink'
+import { EnhancedTransactionLink } from 'components/EnhancedTransactionLink'
 
 export default function ClaimingStatus() {
   const { chainId } = useActiveWeb3React()
@@ -66,9 +65,7 @@ export default function ClaimingStatus() {
           </p>
         </AttemptFooter>
       )}
-      {isSubmitted && chainId && lastClaimTx?.hash && (
-        <ExplorerLink id={lastClaimTx.hash} type={ExplorerDataType.TRANSACTION} />
-      )}
+      {isSubmitted && chainId && lastClaimTx?.hash && <EnhancedTransactionLink tx={lastClaimTx} />}
     </ConfirmOrLoadingWrapper>
   )
 }
