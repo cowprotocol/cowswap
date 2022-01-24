@@ -8,11 +8,10 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
-// import { formatSmartLocationAware } from 'utils/format'
 
 export default function ClaimingStatus() {
   const { chainId } = useActiveWeb3React()
-  const { activeClaimAccount, claimStatus /* , claimedAmount */ } = useClaimState()
+  const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
 
   const allClaimTxs = useAllClaimingTransactions()
   const lastClaimTx = useMemo(() => {
@@ -39,8 +38,7 @@ export default function ClaimingStatus() {
         )}
       </ConfirmedIcon>
       <h3>{isConfirmed ? 'Claimed!' : 'Claiming'}</h3>
-      {/* TODO: fix this in new pr */}
-      {!isConfirmed && <Trans>{/* formatSmartLocationAware(claimedAmount) || '0' */} vCOW</Trans>}
+      {!isConfirmed && <Trans>{claimedAmount} vCOW</Trans>}
 
       {isConfirmed && (
         <>
@@ -48,8 +46,7 @@ export default function ClaimingStatus() {
             <h3>You have successfully claimed</h3>
           </Trans>
           <Trans>
-            {/* TODO: fix this in new pr */}
-            <p>{/* formatSmartLocationAware(claimedAmount) || '0' */} vCOW</p>
+            <p>{claimedAmount} vCOW</p>
           </Trans>
           <Trans>
             <span role="img" aria-label="party-hat">

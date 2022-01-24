@@ -18,7 +18,7 @@ export type ClaimActions = {
 
   // claiming
   setClaimStatus: (payload: ClaimStatus) => void
-  setClaimedAmount: (payload: number) => void
+  setClaimedAmount: (payload: string) => void
 
   // investing
   setIsInvestFlowActive: (payload: boolean) => void
@@ -41,7 +41,7 @@ export const setActiveClaimAccountENS = createAction<string>('claim/setActiveCla
 export const setIsSearchUsed = createAction<boolean>('claim/setIsSearchUsed')
 
 // claiming
-export const setClaimedAmount = createAction<number>('claim/setClaimedAmount')
+export const setClaimedAmount = createAction<string>('claim/setClaimedAmount')
 export const setClaimStatus = createAction<ClaimStatus>('claim/setClaimStatus')
 
 // investing

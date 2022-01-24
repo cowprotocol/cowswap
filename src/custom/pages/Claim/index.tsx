@@ -68,7 +68,7 @@ export default function Claim() {
     setIsSearchUsed,
     // claiming
     setClaimStatus,
-    // setClaimedAmount, // TODO: uncomment when used
+    setClaimedAmount,
     // investing
     setIsInvestFlowActive,
     // claim row selection
@@ -126,8 +126,9 @@ export default function Claim() {
     const sendTransaction = (inputData: ClaimInput[]) => {
       setClaimStatus(ClaimStatus.ATTEMPTING)
       claimCallback(inputData)
-        .then((/* res */) => {
+        .then((vCowAmount) => {
           setClaimStatus(ClaimStatus.SUBMITTED)
+          setClaimedAmount(vCowAmount)
         })
         .catch((error) => {
           setClaimStatus(ClaimStatus.DEFAULT)
@@ -159,6 +160,7 @@ export default function Claim() {
     investFlowStep,
     setClaimStatus,
     claimCallback,
+    setClaimedAmount,
     handleSetError,
     investFlowData,
     setIsInvestFlowActive,

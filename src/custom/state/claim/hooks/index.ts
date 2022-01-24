@@ -15,7 +15,7 @@ import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
 
-import { formatSmart } from 'utils/format'
+import { formatSmartLocaleAware } from 'utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isAddress } from 'utils'
 
@@ -57,6 +57,7 @@ import {
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 const CLAIMS_REPO_BRANCH = '2022-01-22-test-deployment-all-networks'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -413,7 +414,7 @@ function _validateClaimable(
  * @param account
  */
 export function useClaimCallback(account: string | null | undefined): {
-  claimCallback: (claimInputs: ClaimInput[]) => Promise<string | undefined>
+  claimCallback: (claimInputs: ClaimInput[]) => Promise<string>
 } {
   // get claim data for given account
   const { chainId, account: connectedAccount } = useActiveWeb3React()
@@ -441,21 +442,13 @@ export function useClaimCallback(account: string | null | undefined): {
     },
   })
 
-  /**
-   * Extend the Payable optional param
-   */
-  function _extendFinalArg(args: ClaimManyFnArgs, extendedArg: Record<any, any>) {
-    const lastArg = args.pop()
-    args.push({
-      ...lastArg, // add back whatever is already there
-      ...extendedArg,
-    })
-
-    return args
-  }
-
   const claimCallback = useCallback(
-    async function (claimInput: ClaimInput[]) {
+    /**
+     * Claim callback that sends tx to wallet to claim whatever user selected
+     *
+     * Returns a string with the formatted vCow amount being claimed
+     */
+    async function (claimInput: ClaimInput[]): Promise<string> {
       if (
         claims.length === 0 ||
         claimInput.length === 0 ||
@@ -484,6 +477,7 @@ export function useClaimCallback(account: string | null | undefined): {
       }
 
       const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, totalClaimedAmount)
+      const formattedVCowAmount = formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'
 
       return vCowContract.estimateGas.claimMany(...args).then((estimatedGas) => {
         // Last item in the array contains the call overrides
@@ -495,10 +489,10 @@ export function useClaimCallback(account: string | null | undefined): {
         return vCowContract.claimMany(...extendedArgs).then((response: TransactionResponse) => {
           addTransaction({
             hash: response.hash,
-            summary: `Claim ${formatSmart(vCowAmount)} vCOW`,
+            summary: `Claim ${formattedVCowAmount} vCOW`,
             claim: { recipient: account, indices: args[0] as number[] },
           })
-          return response.hash
+          return formattedVCowAmount
         })
       })
     },
@@ -670,6 +664,19 @@ function _getClaimValue(claim: UserClaimData, vCowAmount: string, nativeTokenPri
   return JSBI.divide(claimValueInAtomsSquared, DENOMINATOR).toString()
 }
 
+/**
+ * Extend the Payable optional param
+ */
+function _extendFinalArg(args: ClaimManyFnArgs, extendedArg: Record<any, any>) {
+  const lastArg = args.pop()
+  args.push({
+    ...lastArg, // add back whatever is already there
+    ...extendedArg,
+  })
+
+  return args
+}
+
 type LastAddress = string
 type ClaimAddressMapping = { [firstAddress: string]: LastAddress }
 const FETCH_CLAIM_MAPPING_PROMISES: Record<number, Promise<ClaimAddressMapping> | null> = {}
@@ -766,7 +773,7 @@ export function useClaimDispatchers() {
       setIsSearchUsed: (payload: boolean) => dispatch(setIsSearchUsed(payload)),
       // claiming
       setClaimStatus: (payload: ClaimStatus) => dispatch(setClaimStatus(payload)),
-      setClaimedAmount: (payload: number) => dispatch(setClaimedAmount(payload)),
+      setClaimedAmount: (payload: string) => dispatch(setClaimedAmount(payload)),
       // investing
       setIsInvestFlowActive: (payload: boolean) => dispatch(setIsInvestFlowActive(payload)),
       setInvestFlowStep: (payload: number) => dispatch(setInvestFlowStep(payload)),

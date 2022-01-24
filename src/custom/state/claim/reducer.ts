@@ -27,7 +27,7 @@ export const initialState: ClaimState = {
   isSearchUsed: false,
   // claiming
   claimStatus: ClaimStatus.DEFAULT,
-  claimedAmount: 0,
+  claimedAmount: '',
   // investment
   isInvestFlowActive: false,
   investFlowStep: 0,
@@ -53,7 +53,7 @@ export type ClaimState = {
   isSearchUsed: boolean
   // claiming
   claimStatus: ClaimStatus
-  claimedAmount: number
+  claimedAmount: string
   // investment
   isInvestFlowActive: boolean
   investFlowStep: number
@@ -117,5 +117,6 @@ export default createReducer(initialState, (builder) =>
       state.selectedAll = initialState.selectedAll
       state.investFlowStep = initialState.investFlowStep
       state.isInvestFlowActive = initialState.isInvestFlowActive
+      state.claimedAmount = initialState.claimedAmount
     })
 )
