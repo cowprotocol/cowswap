@@ -33,8 +33,8 @@ import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 import { COW_LINKS } from 'pages/Claim'
 import { ExternalLink } from 'theme'
-import { ExplorerLink } from '@src/custom/components/ExplorerLink'
-import { ExplorerDataType } from '@src/utils/getExplorerLink'
+import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerDataType } from 'utils/getExplorerLink'
 
 import { BadgeVariant } from 'components/Badge'
 import { DollarSign, Icon, Send } from 'react-feather'
@@ -57,8 +57,8 @@ export type InvestOptionProps = {
   claim: EnhancedUserClaimData
   optionIndex: number
   approveData:
-    | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
-    | undefined
+  | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
+  | undefined
 }
 
 type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
@@ -198,8 +198,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
         {investFlowStep === 0
           ? 'Claim and invest'
           : investFlowStep === 1
-          ? 'Set allowance to Buy vCOW'
-          : 'Confirm transaction to claim all vCOW'}
+            ? 'Set allowance to Buy vCOW'
+            : 'Confirm transaction to claim all vCOW'}
       </h1>
 
       {investFlowStep === 0 && (
