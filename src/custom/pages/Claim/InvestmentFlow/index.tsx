@@ -8,6 +8,7 @@ import {
   InvestSummaryTable,
   ClaimTable,
   AccountClaimSummary,
+  Badge,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
@@ -32,6 +33,11 @@ import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 import { COW_LINKS } from 'pages/Claim'
 import { ExternalLink } from 'theme'
+import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerDataType } from 'utils/getExplorerLink'
+
+import { BadgeVariant } from 'components/Badge'
+import { DollarSign, Icon, Send } from 'react-feather'
 
 const STEPS_DATA = [
   {
@@ -51,8 +57,8 @@ export type InvestOptionProps = {
   claim: EnhancedUserClaimData
   optionIndex: number
   approveData:
-    | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
-    | undefined
+  | { approveState: ApprovalState; approveCallback: (optionalParams?: OptionalApproveCallbackParams) => void }
+  | undefined
 }
 
 type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
@@ -118,6 +124,31 @@ function _calculateTotalVCow(allClaims: ClaimWithInvestmentData[]) {
   )
 }
 
+type AccountDetailsProps = {
+  label: string
+  account: string
+  connectedAccount: string
+  Icon: Icon
+}
+
+function AccountDetails({ label, account, connectedAccount, Icon }: AccountDetailsProps) {
+  return (
+    <span>
+      <b>
+        <Icon width={14} height={14} /> {label}:
+      </b>
+      <i>
+        <ExplorerLink id={account} label={account} type={ExplorerDataType.ADDRESS} />{' '}
+        {account === connectedAccount ? (
+          <Badge variant={BadgeVariant.POSITIVE}>&nbsp; Connected account</Badge>
+        ) : (
+          <Badge variant={BadgeVariant.WARNING}>&nbsp; External account</Badge>
+        )}
+      </i>
+    </span>
+  )
+}
+
 export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenApproveData }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
@@ -149,7 +180,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
   }, [isInvestFlowActive])
 
   if (
-    !activeClaimAccount || // no connected account
+    !account || // no connected account
+    !activeClaimAccount || // no selected account for claiming
     !hasClaims || // no claims
     !isInvestFlowActive || // not on correct step (account change in mid-step)
     claimStatus !== ClaimStatus.DEFAULT || // not in default claim state
@@ -166,8 +198,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
         {investFlowStep === 0
           ? 'Claim and invest'
           : investFlowStep === 1
-          ? 'Set allowance to Buy vCOW'
-          : 'Confirm transaction to claim all vCOW'}
+            ? 'Set allowance to Buy vCOW'
+            : 'Confirm transaction to claim all vCOW'}
       </h1>
 
       {investFlowStep === 0 && (
@@ -235,15 +267,18 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
           </ClaimTable>
 
           <AccountClaimSummary>
-            <span>
-              <b>Claiming with account:</b>
-              <i>{account} (connected account)</i>
-            </span>
-            <span>
-              {' '}
-              <b>Receiving account:</b>
-              <i>{activeClaimAccount}</i>
-            </span>
+            <AccountDetails
+              label="Claiming with account"
+              account={account}
+              connectedAccount={account}
+              Icon={DollarSign}
+            />
+            <AccountDetails
+              label="Receiving account"
+              account={activeClaimAccount}
+              connectedAccount={account}
+              Icon={Send}
+            />
           </AccountClaimSummary>
 
           <h4>Ready to claim your vCOW?</h4>
