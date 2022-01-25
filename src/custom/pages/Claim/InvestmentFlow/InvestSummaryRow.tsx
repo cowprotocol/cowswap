@@ -66,7 +66,7 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
           <span>
             <b>Price:</b>{' '}
             <i>
-              {formatSmartLocaleAware(price) || '0'} vCoW per {symbol}
+              {formatSmartLocaleAware(price) || '0'} vCOW per {symbol}
             </i>
           </span>
         )}
