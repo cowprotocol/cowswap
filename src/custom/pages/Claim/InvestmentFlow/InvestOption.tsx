@@ -44,7 +44,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   const { isSmartContractWallet } = useWalletInfo()
 
   const [percentage, setPercentage] = useState<string>('0')
-  const [typedValue, setTypedValue] = useState<string>('0')
+  const [typedValue, setTypedValue] = useState<string>('')
   const [inputWarning, setInputWarning] = useState<string>('')
 
   const investedAmount = investFlowData[optionIndex].investedAmount
