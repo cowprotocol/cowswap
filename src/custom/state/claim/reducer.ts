@@ -21,7 +21,7 @@ import {
 const FAKE_SUCCESS_PAGE = {
   activeClaimAccount: '0x424a46612794dbb8000194937834250Dc723fFa5',
   claimStatus: ClaimStatus.CONFIRMED,
-  claimedAmount: 1500,
+  claimedAmount: '1500',
 }
 
 export const initialState: ClaimState = {
