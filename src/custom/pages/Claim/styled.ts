@@ -1198,7 +1198,7 @@ export const StepExplainer = styled.div`
   }
 
   > span::before {
-    content: 'Step ' attr(data-step);
+    content: attr(data-step);
     display: flex;
     align-items: center;
     justify-content: center;

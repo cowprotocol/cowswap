@@ -211,13 +211,13 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, ...tokenAppro
             consists of two steps.
           </p>
           <StepExplainer>
-            <span data-step="1">
+            <span data-step="Step 1">
               <p>
                 Define the amount you would like to invest and set the required allowances for the token you are
                 purchasing vCOW with.
               </p>
             </span>
-            <span data-step="2">
+            <span data-step="Step 2">
               <p>
                 Claim your vCOW tokens for the Airdrop (available immediately) and for your investment (vesting linearly
                 over 4 years).
