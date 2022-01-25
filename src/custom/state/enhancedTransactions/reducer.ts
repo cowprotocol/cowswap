@@ -30,10 +30,12 @@ export interface EnhancedTransactionDetails {
   summary?: string
   confirmedTime?: number
   receipt?: SerializableTransactionReceipt // Ethereum transaction receipt
+  data?: any // any attached data type
 
   // Operations
   approval?: { tokenAddress: string; spender: string }
   presign?: { orderId: string }
+  claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
 
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
@@ -62,7 +64,10 @@ export default createReducer(initialState, (builder) =>
   builder
     .addCase(
       addTransaction,
-      (transactions, { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction } }) => {
+      (
+        transactions,
+        { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction, claim, data } }
+      ) => {
         if (transactions[chainId]?.[hash]) {
           console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
           // Unknown transaction. Do nothing!
@@ -76,11 +81,13 @@ export default createReducer(initialState, (builder) =>
           addedTime: now(),
           from,
           summary,
+          data,
 
           // Operations
           approval,
           presign,
           safeTransaction,
+          claim,
         }
         transactions[chainId] = txs
       }

@@ -21,6 +21,7 @@ import {
   SerializedToken,
   updateArbitrumAlphaAcknowledged,
   updateHideClosedPositions,
+  updateRecipientToggleVisible,
   updateOptimismAlphaAcknowledged,
   updateUserClientSideRouter,
   updateUserDarkMode,
@@ -29,6 +30,7 @@ import {
   updateUserLocale,
   updateUserSlippageTolerance,
 } from './actions'
+import { useSwapActionHandlers } from '../swap/hooks'
 
 export function serializeToken(token: Token): SerializedToken {
   return {
@@ -104,6 +106,29 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+export function useIsRecipientToggleVisible(): boolean {
+  return useAppSelector((state) => state.user.recipientToggleVisible)
+}
+
+export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
+  const dispatch = useAppDispatch()
+  const recipientToggleVisible = useIsRecipientToggleVisible()
+  const { onChangeRecipient } = useSwapActionHandlers()
+
+  const toggleRecipientVisibility = useCallback(
+    (value?: boolean) => {
+      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
+      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newRecipientToggleVisibilityValue }))
+      if (!newRecipientToggleVisibilityValue) {
+        onChangeRecipient(null)
+      }
+    },
+    [recipientToggleVisible, dispatch, onChangeRecipient]
+  )
+
+  return [recipientToggleVisible, toggleRecipientVisibility]
 }
 
 export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean) => void] {

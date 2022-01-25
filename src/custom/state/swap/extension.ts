@@ -15,6 +15,12 @@ interface TradeParams {
 export const stringToCurrency = (amount: string, currency: Currency) =>
   CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(amount))
 
+export const tryAtomsToCurrency = (atoms: string | undefined, currency: Currency | undefined) => {
+  if (!atoms || !currency) return undefined
+
+  return stringToCurrency(atoms, currency)
+}
+
 /**
  * useTradeExactInWithFee
  * @description wraps useTradeExactIn and returns an extended trade object with the fee adjusted values

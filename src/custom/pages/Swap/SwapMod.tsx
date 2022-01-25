@@ -30,7 +30,7 @@ import { /* Row, */ AutoRow /*, RowFixed */ } from 'components/Row'
 // import BetterTradeLink from 'components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
-import { /* ArrowWrapper, Dots, */ SwapCallbackError, Wrapper } from 'components/swap/styleds'
+import { /* ArrowWrapper, Dots, */ /* SwapCallbackError, */ Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import TradePrice from 'components/swap/TradePrice'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
@@ -63,7 +63,7 @@ import {
   useHighFeeWarning,
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
-import { useExpertModeManager } from 'state/user/hooks'
+import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { /* HideSmall, */ LinkStyledButton, TYPE, ButtonSize } from 'theme'
 // import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 // import { getTradeVersion } from 'utils/getTradeVersion'
@@ -89,6 +89,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
+import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -168,6 +169,8 @@ export default function Swap({
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
+
+  const [recipientToggleVisible] = useRecipientToggleManager()
 
   // get version from the url
   // const toggledVersion = useToggledVersion()
@@ -326,12 +329,13 @@ export default function Swap({
   const isLoadingRoute = toggledVersion === Version.v3 && V3TradeState.LOADING === v3TradeState */
 
   // check whether the user has approved the router on the input token
-  const [approvalState, approveCallback] = useApproveCallbackFromTrade(
-    (message: string) => openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
+  const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
+    openTransactionConfirmationModal: (message: string) =>
+      openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
     closeModals,
     trade,
-    allowedSlippage
-  )
+    allowedSlippage,
+  })
   const prevApprovalState = usePrevious(approvalState)
   const {
     state: signatureState,
@@ -507,6 +511,8 @@ export default function Swap({
     }
   }
 
+  const { ErrorMessage } = useErrorMessage()
+
   return (
     <>
       <TokenWarningModal
@@ -527,7 +533,7 @@ export default function Swap({
       <AffiliateStatusCheck />
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
-        <Wrapper id="swap-page" className={isExpertMode ? 'expertMode' : ''}>
+        <Wrapper id="swap-page" className={isExpertMode || recipientToggleVisible ? 'expertMode' : ''}>
           <ConfirmSwapModal
             isOpen={showConfirm}
             trade={trade}
@@ -589,13 +595,16 @@ export default function Swap({
               </ArrowWrapper>
               */}
               {/* GP ARROW SWITCHER */}
-              <AutoColumn justify="space-between" style={{ margin: `${isExpertMode ? 10 : 3}px 0` }}>
+              <AutoColumn
+                justify="space-between"
+                style={{ margin: `${isExpertMode || recipientToggleVisible ? 10 : 3}px 0` }}
+              >
                 <AutoRow
-                  justify={isExpertMode ? 'space-between' : 'center'}
+                  justify={isExpertMode || recipientToggleVisible ? 'space-between' : 'center'}
                   // style={{ padding: '0 1rem' }}
                 >
                   <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} setApprovalSubmitted={setApprovalSubmitted} />
-                  {recipient === null && !showWrap && isExpertMode ? (
+                  {recipient === null && !showWrap && (isExpertMode || recipientToggleVisible) ? (
                     <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                       <Trans>+ Add a send (optional)</Trans>
                     </LinkStyledButton>
@@ -960,7 +969,7 @@ export default function Swap({
                   </Text> */}
               </ButtonError>
             )}
-            {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
+            {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>

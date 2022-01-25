@@ -16,9 +16,17 @@ const WrappedToggle = styled(ToggleUni)`
       border: 2px solid ${({ theme }) => theme.text1};
     }
   }
-  .disabled {
-    background: ${({ theme }) => theme.primary1};
-    color: ${({ theme }) => theme.text2};
+
+  &.disabled {
+    cursor: default;
+
+    ${ToggleElement} {
+      opacity: 0.5;
+
+      &:hover {
+        border: 2px solid transparent;
+      }
+    }
   }
 `
 

@@ -10,6 +10,7 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
+// TODO: remove, this is duplicated with `import { ONE_HUNDRED_PERCENT } from 'constants/misc'`
 export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
 
 export const DEFAULT_DECIMALS = 18
@@ -52,6 +53,12 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
   [ChainId.XDAI]: GPv2VaultRelayer[ChainId.XDAI].address,
 }
 
+export const V_COW_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
+  [ChainId.MAINNET]: '0x6d04B3ad33594978D0D4B01CdB7c3bA4a90a7DFe',
+  [ChainId.XDAI]: '0xA3A674a40709A837A5E742C2866eda7d3b35a7c0',
+  [ChainId.RINKEBY]: '0xD7Dd9397Fb942565959c77f8e112ec5aa7D8C92c',
+}
+
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token } = {
@@ -77,8 +84,6 @@ export const WETH_LOGO_URI =
 export const XDAI_LOGO_URI =
   'https://raw.githubusercontent.com/1Hive/default-token-list/master/src/assets/xdai/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d/logo.png'
 
-// 0.1 balance threshold
-export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
 export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'

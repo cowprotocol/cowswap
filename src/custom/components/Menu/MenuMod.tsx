@@ -29,7 +29,13 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useModalOpen, useToggleModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { ExternalLink } from 'theme'
-// import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'components/Button'
+/* import { useDarkModeManager } from 'state/user/hooks'
+
+import { L2_CHAIN_IDS, CHAIN_INFO, SupportedChainId } from 'constants/chains'
+import { LOCALE_LABEL, SupportedLocale, SUPPORTED_LOCALES } from 'constants/locales'
+import { useLocationLinkProps } from 'hooks/useLocationLinkProps'
+import { useActiveLocale } from 'hooks/useActiveLocale' */
 import { WithClassName } from 'types'
 
 export enum FlyoutAlignment {
@@ -68,11 +74,11 @@ export const StyledMenuButton = styled.button`
   }
 `
 
-/* const UNIbutton = styled(ButtonPrimary)`
+export const UNIbutton = styled(ButtonPrimary)`
   background-color: ${({ theme }) => theme.bg3};
   background: radial-gradient(174.47% 188.91% at 1.84% 0%, #ff007a 0%, #2172e5 100%), #edeef2;
   border: none;
-` */
+`
 
 export const StyledMenu = styled.div`
   margin-left: 0.5rem;

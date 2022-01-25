@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components/macro'
-import Page, { GdocsListStyle, Title } from 'components/Page'
+import Page, { GdocsListStyle } from 'components/Page'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
@@ -76,25 +76,13 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
       grid-column-start: 1;
       grid-column-end: 2;
     }
-  `};
+  `}
 `
 
 export const CardHead = styled.div`
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-`
-
-export const StyledTitle = styled(Title)`
-  display: flex;
-  justify-content: flex-start;
-  margin: 0;
-  line-height: 1.21;
-  font-size: 26px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-content: center;
-    font-size: 24px;
-  `}
 `
 
 export const StyledTime = styled.p`
@@ -165,12 +153,13 @@ export const FlexCol = styled.div`
   span:not([role='img']) {
     font-size: 14px;
     color: ${({ theme }) => theme.text6};
-    min-height: 32px;
     text-align: center;
     display: flex;
     align-items: center;
+    padding: 8px 0 0 0;
   }
 `
+
 export const Loader = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex: 1;
@@ -205,4 +194,34 @@ export const Loader = styled.div<{ isLoading: boolean }>`
         }
       }
     `}
+`
+
+export const ProfileWrapper = styled(Wrapper)`
+  margin: 16px 0 16px 0;
+  padding: 16px 24px;
+  z-index: 2;
+  ${({ theme }) => theme.mediaWidth.upToVerySmall`
+    padding: 0 16px 16px;
+  `};
+`
+
+export const ProfileGridWrap = styled(GridWrap)`
+  grid-template-columns: 1fr auto;
+  justify-content: space-between;
+  align-items: center;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    > :first-child,
+    > :nth-child(2) {
+      grid-column-start: auto;
+      grid-column-end: auto;
+    }
+  `};
+  ${({ theme }) => theme.mediaWidth.upToVerySmall`
+    > :first-child,
+    > :nth-child(2) {
+      grid-column-start: 1;
+      grid-column-end: 1;
+    }
+    grid-row-gap: 0px;
+  `};
 `

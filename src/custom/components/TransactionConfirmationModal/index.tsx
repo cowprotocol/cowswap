@@ -206,8 +206,6 @@ const StepsIconWrapper = styled.div`
   --circle-size: 65px;
   --border-radius: 100%;
   --border-size: 2px;
-  --border-bg: conic-gradient(${({ theme }) => theme.bg3} 40grad, 80grad, ${({ theme }) => theme.primary1} 360grad);
-
   border-radius: var(--circle-size);
   height: var(--circle-size);
   width: var(--circle-size);
@@ -266,8 +264,8 @@ const StepsWrapper = styled.div`
     ${StepsIconWrapper} {
       &::before {
         content: '';
+        ${({ theme }) => theme.iconGradientBorder};
         display: block;
-        background: var(--border-bg);
         width: var(--circle-size);
         padding: 0;
         position: absolute;
@@ -357,6 +355,7 @@ export enum OperationType {
   WRAP_ETHER,
   UNWRAP_WETH,
   APPROVE_TOKEN,
+  REVOKE_APPROVE_TOKEN,
   ORDER_SIGN,
   ORDER_CANCEL,
 }
@@ -384,6 +383,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Approving token'
     case OperationType.ORDER_CANCEL:
       return 'Soft canceling your order'
+    case OperationType.REVOKE_APPROVE_TOKEN:
+      return 'Revoking token approval'
 
     default:
       return 'Almost there!'
@@ -398,6 +399,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`unwrapping`
     case OperationType.APPROVE_TOKEN:
       return t`token approval`
+    case OperationType.REVOKE_APPROVE_TOKEN:
+      return t`revoking token approval`
     case OperationType.ORDER_SIGN:
       return t`order`
     case OperationType.ORDER_CANCEL:

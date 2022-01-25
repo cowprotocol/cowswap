@@ -6,13 +6,14 @@ import {
   Container,
   GridWrap,
   CardHead,
-  StyledTitle,
   StyledContainer,
   StyledTime,
   ItemTitle,
   ChildWrapper,
   Loader,
   ExtLink,
+  ProfileWrapper,
+  ProfileGridWrap,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -28,6 +29,12 @@ import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { Title } from 'components/Page'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { V_COW } from 'constants/tokens'
+import VCOWDropdown from './VCOWDropdown'
+
+import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -36,6 +43,8 @@ export default function Profile() {
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
+
+  const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
 
   const renderNotificationMessages = (
     <>
@@ -54,11 +63,19 @@ export default function Profile() {
 
   return (
     <Container>
+      <ProfileWrapper>
+        <ProfileGridWrap horizontal>
+          <CardHead>
+            <Title>Profile</Title>
+          </CardHead>
+          {IS_CLAIMING_ENABLED && vCowBalance && <VCOWDropdown balance={vCowBalance} />}
+        </ProfileGridWrap>
+      </ProfileWrapper>
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <Wrapper>
         <GridWrap>
           <CardHead>
-            <StyledTitle>Profile overview</StyledTitle>
+            <Title>Affiliate Program</Title>
             {account && (
               <Loader isLoading={isLoading}>
                 <StyledContainer>
