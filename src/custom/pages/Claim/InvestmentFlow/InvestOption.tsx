@@ -23,6 +23,7 @@ import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hoo
 import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { useGasPrices } from 'state/gas/hooks'
 import { AVG_APPROVE_COST_GWEI } from 'components/swap/EthWethWrap/helpers'
+import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 
 const Messages = {
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
@@ -175,7 +176,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       error = Messages.InsufficientBalance(token?.symbol)
     } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
       warning = Messages.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
-    } else if (percentage !== '100') {
+    } else if (calculatePercentage(parsedAmount, maxCost).lessThan(ONE_HUNDRED_PERCENT)) {
       warning = Messages.NotMaxInvested
     }
 
