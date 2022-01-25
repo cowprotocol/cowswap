@@ -49,6 +49,7 @@ const MenuItemResponsive = styled(MenuItemResponsiveBase)`
   flex: 0 1 auto;
   padding: 16px;
   font-size: 18px;
+
   svg {
     width: 18px;
     height: 18px;
@@ -99,8 +100,10 @@ export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
 
   ${ClaimButtonWrapper} {
     margin: 0 0 12px;
+    display: none;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: flex;
       margin: 0 12px 12px;
       width: 100%;
       height: 56px;
@@ -199,6 +202,7 @@ const MenuFlyout = styled(MenuFlyoutUni)`
       align-items: center;
     }
   }
+
   > a:hover {
     background: ${({ theme }) => theme.disabled};
     border-radius: 6px;
