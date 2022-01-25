@@ -3,7 +3,15 @@ import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar, UnderlineButton } from '../styled'
+import {
+  InvestTokenGroup,
+  TokenLogo,
+  InvestSummary,
+  InvestInput,
+  InvestAvailableBar,
+  UnderlineButton,
+  WarningWrapper,
+} from '../styled'
 import { formatSmartLocaleAware } from 'utils/format'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
@@ -27,11 +35,14 @@ import { EnhancedUserClaimData } from '../types'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 
-const Messages = {
+const ErrorMessages = {
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
+}
+
+const WarningMessages = {
   InsufficientNativeBalance: (symbol = '', amount = '') =>
     `You might not have enough ${symbol} to pay for the network transaction fee (estimated ${amount} ${symbol})`,
   NotMaxInvested: `Beware you won't be able to increase this amount after executing your transaction`,
@@ -72,7 +83,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
   const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('')
-  const [inputWarning, setInputWarning] = useState<string>('')
+  const [inputWarnings, setInputWarnings] = useState<string[]>([])
 
   const investedAmount = investFlowData[optionIndex].investedAmount
   const inputError = investFlowData[optionIndex].error
@@ -198,10 +209,9 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     }
   }, [balance, isSelfClaiming, maxCost, setMaxAmount])
 
-  // handle input value change
+  // handle input value change and errors
   useEffect(() => {
     let error = null
-    let warning
 
     const parsedAmount = tryParseAmount(typedValue, token)
 
@@ -211,22 +221,16 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
     // set different errors in order of importance
     if (balance.lessThan(maxCost) && !isSelfClaiming) {
-      error = Messages.InsufficientBalance(token?.symbol)
+      error = ErrorMessages.InsufficientBalance(token?.symbol)
     } else if (!isNative && !isApproved) {
-      error = Messages.NotApproved(token?.symbol)
+      error = ErrorMessages.NotApproved(token?.symbol)
     } else if (!parsedAmount) {
-      error = Messages.InvestmentIsZero
+      error = ErrorMessages.InvestmentIsZero
     } else if (parsedAmount.greaterThan(maxCost)) {
-      error = Messages.OverMaxInvestment
+      error = ErrorMessages.OverMaxInvestment
     } else if (parsedAmount.greaterThan(balance)) {
-      error = Messages.InsufficientBalance(token?.symbol)
-    } else if (calculatePercentage(parsedAmount, maxCost).lessThan(ONE_HUNDRED_PERCENT)) {
-      warning = Messages.NotMaxInvested
-    } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
-      warning = Messages.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
+      error = ErrorMessages.InsufficientBalance(token?.symbol)
     }
-
-    setInputWarning(warning || '')
 
     if (error) {
       // if there is error set it in redux
@@ -261,6 +265,28 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     percentage,
     gasCost,
   ])
+
+  useEffect(() => {
+    const warnings = []
+
+    const parsedAmount = tryParseAmount(typedValue, token)
+
+    if (!parsedAmount || !maxCost || !balance || inputError) {
+      setInputWarnings([])
+      return
+    }
+
+    if (calculatePercentage(parsedAmount, maxCost).lessThan(ONE_HUNDRED_PERCENT)) {
+      warnings.push(WarningMessages.NotMaxInvested)
+    }
+
+    if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
+      warnings.push(WarningMessages.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost)))
+    }
+
+    setInputWarnings(warnings.length ? warnings : [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gasCost, isNative, maxCost, token, typedValue, inputError])
 
   return (
     <InvestTokenGroup>
@@ -372,7 +398,15 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
             <i>Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW</i>
             {/* Insufficient balance validation error */}
             {inputError && <small>{inputError}</small>}
-            {inputWarning && <small className="warn">{inputWarning}</small>}
+            {inputWarnings.length ? (
+              <WarningWrapper>
+                {inputWarnings.map((warning) => (
+                  <small key={warning} className="warn">
+                    {warning}
+                  </small>
+                ))}
+              </WarningWrapper>
+            ) : null}
           </div>
         </InvestInput>
       </span>

@@ -1195,3 +1195,18 @@ export const CowSpinner = styled.div`
     }
   }
 `
+
+export const WarningWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > small {
+    color: red;
+    margin: 12px 0;
+    font-size: 15px;
+
+    &.warn {
+      color: blue;
+    }
+  }
+`
