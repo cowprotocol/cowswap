@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, /* useMemo, */ useRef, useState } from 'react'
 import styled from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ChevronDown } from 'react-feather'
@@ -18,7 +18,9 @@ export default function VCOWDropdown({ balance }: VCOWDropdownProps) {
   const node = useRef<HTMLDivElement>(null)
   useOnClickOutside(node, open ? toggle : undefined)
 
-  const hasBalance = useMemo(() => balance?.greaterThan(0), [balance])
+  // Disabled dropdown for now
+  // const hasBalance = useMemo(() => balance?.greaterThan(0), [balance])
+  const hasBalance = false
 
   return (
     <Wrapper ref={node}>
