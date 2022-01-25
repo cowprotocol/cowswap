@@ -143,7 +143,6 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const handleApprove = useCallback(async () => {
     // reset errors and close any modals
     handleCloseError()
-    setInputTouched(true)
 
     if (!approveCallback) return
 
@@ -157,7 +156,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } finally {
       setApproving(false)
     }
-  }, [approveCallback, handleCloseError, handleSetError, setInputTouched, token?.symbol])
+  }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
 
   const vCowAmount = useMemo(
     () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,
@@ -208,7 +207,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } else if (noBalance) {
       error = ErrorMsgs.InsufficientBalance(token?.symbol)
     } else if (!parsedAmount && !isTouched) {
-      error = undefined
+      error = ''
     } else if (!parsedAmount) {
       error = ErrorMsgs.InvestmentIsZero
     } else if (parsedAmount.greaterThan(maxCost)) {
@@ -220,7 +219,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     }
     setInputWarning(warning || '')
 
-    if (error) {
+    if (error !== null) {
       // if there is error set it in redux
       setInputError(error)
       setPercentage('0')
