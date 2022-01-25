@@ -174,10 +174,10 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       error = Messages.OverMaxInvestment
     } else if (parsedAmount.greaterThan(balance)) {
       error = Messages.InsufficientBalance(token?.symbol)
-    } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
-      warning = Messages.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
     } else if (calculatePercentage(parsedAmount, maxCost).lessThan(ONE_HUNDRED_PERCENT)) {
       warning = Messages.NotMaxInvested
+    } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
+      warning = Messages.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
     }
 
     setInputWarning(warning || '')
