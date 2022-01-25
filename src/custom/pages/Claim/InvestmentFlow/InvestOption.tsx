@@ -24,13 +24,14 @@ import { useGasPrices } from 'state/gas/hooks'
 import { _estimateTxCost } from 'components/swap/EthWethWrap/helpers'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
-const ErrorMsgs = {
+const Messages = {
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
   InsufficientNativeBalance: (symbol = '', action = "won't") =>
     `You ${action} have enough ${symbol} to pay the network transaction fee`,
+  NotMaxInvested: `Beware you won't be able to increase this amount after executing your transaction`,
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
@@ -155,22 +156,25 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
 
     // set different errors in order of importance
     if (balance.lessThan(maxCost) && !isSelfClaiming) {
-      error = ErrorMsgs.InsufficientBalance(token?.symbol)
+      error = Messages.InsufficientBalance(token?.symbol)
     } else if (!isNative && !isApproved) {
-      error = ErrorMsgs.NotApproved(token?.symbol)
+      error = Messages.NotApproved(token?.symbol)
     } else if (!parsedAmount) {
-      error = ErrorMsgs.InvestmentIsZero
+      error = Messages.InvestmentIsZero
     } else if (parsedAmount.greaterThan(maxCost)) {
-      error = ErrorMsgs.OverMaxInvestment
+      error = Messages.OverMaxInvestment
     } else if (parsedAmount.greaterThan(balance)) {
-      error = ErrorMsgs.InsufficientBalance(token?.symbol)
+      error = Messages.InsufficientBalance(token?.symbol)
     } else if (isNative && parsedAmount && singleTxCost?.add(parsedAmount).greaterThan(balance)) {
       if (isSmartContractWallet) {
-        warning = ErrorMsgs.InsufficientNativeBalance(token?.symbol, 'might not')
+        warning = Messages.InsufficientNativeBalance(token?.symbol, 'might not')
       } else {
-        error = ErrorMsgs.InsufficientNativeBalance(token?.symbol)
+        error = Messages.InsufficientNativeBalance(token?.symbol)
       }
+    } else if (!parsedAmount.equalTo(maxCost)) {
+      warning = Messages.NotMaxInvested
     }
+
     setInputWarning(warning || '')
 
     if (error) {
