@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar, UnderlineButton } from '../styled'
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import { InvestmentFlowProps } from '.'
@@ -163,7 +163,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } finally {
       setApproving(false)
     }
-  }, [handleCloseError, handleSetError, revokeApprovalCallback, token?.symbol]) 
+  }, [handleCloseError, handleSetError, revokeApprovalCallback, token?.symbol])
   */
 
   const vCowAmount = useMemo(
@@ -270,15 +270,15 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
         <InvestSummary>
           <span>
             <b>Price</b>{' '}
-            <i>
+            <i title={formatMax(price)}>
               {formatSmartLocaleAware(price) || '0'} vCOW per {currencyAmount?.currency?.symbol}
             </i>
           </span>
 
           <span>
             <b>Max. investment available</b>{' '}
-            <i>
-              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {currencyAmount?.currency?.symbol}
+            <i title={maxCost && `${formatMax(maxCost, maxCost.currency.decimals)} ${maxCost.currency.symbol}`}>
+              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {maxCost?.currency?.symbol}
             </i>
           </span>
 
@@ -320,7 +320,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
                 )}
               </ButtonConfirmed>
             )}
-            {/* 
+            {/*
               // CURRENTLY TEST ONLY
               approveState === ApprovalState.APPROVED && (
                 <UnderlineButton disabled={approving || isPendingApproval} onClick={handleRevokeApproval}>
@@ -343,8 +343,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
             <label>
               <span>
                 <b>Balance:</b>
-                <i>
-                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {currencyAmount?.currency?.symbol}
+                <i title={balance && `${formatMax(balance, balance.currency.decimals)} ${balance.currency.symbol}`}>
+                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {balance?.currency?.symbol}
                 </i>
                 {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
                 {!noBalance && isSelfClaiming && (
@@ -363,7 +363,9 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
               />
               <b>{currencyAmount?.currency?.symbol}</b>
             </label>
-            <i>Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW</i>
+            <i title={vCowAmount && `${formatMax(vCowAmount, vCowAmount.currency.decimals)} vCOW`}>
+              Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW
+            </i>
             {/* Insufficient balance validation error */}
             {inputError && <small>{inputError}</small>}
             {inputWarning && <small className="warn">{inputWarning}</small>}

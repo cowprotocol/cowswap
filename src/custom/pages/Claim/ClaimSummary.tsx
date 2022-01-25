@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { useClaimState } from 'state/claim/hooks'
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 import { ClaimCommonTypes } from './types'
@@ -49,7 +49,10 @@ export function ClaimSummaryView({ showClaimText, totalAvailableText, totalAvail
         <div>
           <ClaimTotal>
             {totalAvailableText && <b>{totalAvailableText}</b>}
-            <p> {formatSmartLocaleAware(totalAvailableAmount, AMOUNT_PRECISION) || '0'} vCOW</p>
+            <p title={`${formatMax(totalAvailableAmount, totalAvailableAmount.currency.decimals)} vCOW`}>
+              {' '}
+              {formatSmartLocaleAware(totalAvailableAmount, AMOUNT_PRECISION) || '0'} vCOW
+            </p>
           </ClaimTotal>
         </div>
       )}
