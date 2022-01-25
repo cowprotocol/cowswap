@@ -1,6 +1,11 @@
 import { Trans } from '@lingui/macro'
 import { isAddress } from '@ethersproject/address'
-import { useClaimDispatchers, useClaimState, useHasClaimInvestmentFlowError } from 'state/claim/hooks'
+import {
+  useClaimDispatchers,
+  useClaimState,
+  useHasClaimInvestmentFlowError,
+  useHasZeroInvested,
+} from 'state/claim/hooks'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { ClaimStatus } from 'state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper, ReadMoreText } from './styled'
@@ -56,6 +61,7 @@ export default function FooterNavButtons({
   } = useClaimDispatchers()
 
   const hasError = useHasClaimInvestmentFlowError()
+  const hasZeroInvested = useHasZeroInvested()
 
   const isInputAddressValid = isAddress(resolvedAddress || '')
 
@@ -104,7 +110,7 @@ export default function FooterNavButtons({
               <Trans>Continue</Trans>
             </ButtonPrimary>
           ) : investFlowStep === 1 ? (
-            <ButtonPrimary onClick={() => setInvestFlowStep(2)} disabled={hasError}>
+            <ButtonPrimary onClick={() => setInvestFlowStep(2)} disabled={hasError || hasZeroInvested}>
               <Trans>Review</Trans>
             </ButtonPrimary>
           ) : (

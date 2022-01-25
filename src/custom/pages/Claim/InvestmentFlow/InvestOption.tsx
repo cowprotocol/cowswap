@@ -58,10 +58,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const { currencyAmount, price, cost: maxCost } = claim
 
   const { account, chainId } = useActiveWeb3React()
-  const { updateInvestAmount, updateInvestError } = useClaimDispatchers()
+  const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
-
-  const investmentAmount = investFlowData[optionIndex].investedAmount
 
   // Approve hooks
   const [approveState, approveCallback] = useApproveCallbackFromClaim({
@@ -80,6 +78,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
   const investedAmount = investFlowData[optionIndex].investedAmount
   const inputError = investFlowData[optionIndex].error
+  const isTouched = investFlowData[optionIndex].isTouched
 
   // Syntactic sugar fns for setting/resetting global state
   const setInvestedAmount = useCallback(
@@ -94,6 +93,10 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     () => updateInvestError({ index: optionIndex, error: undefined }),
     [optionIndex, updateInvestError]
   )
+  const setInputTouched = useCallback(
+    (value: boolean) => setIsTouched({ index: optionIndex, isTouched: value }),
+    [optionIndex, setIsTouched]
+  )
 
   const token = currencyAmount?.currency
   const isNative = token?.isNative
@@ -105,6 +108,11 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const noBalance = !balance || balance.equalTo('0')
 
   const isApproved = approveState === ApprovalState.APPROVED
+
+  const onUserInput = (input: string) => {
+    setTypedValue(input)
+    setInputTouched(true)
+  }
 
   const gasCost = useMemo(() => {
     if (!estimatedGas || !isNative) {
@@ -127,13 +135,15 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
     const value = maxCost.greaterThan(balance) ? balance : maxCost
     setTypedValue(value.toExact() || '')
-  }, [balance, maxCost, noBalance])
+    setInputTouched(true)
+  }, [balance, maxCost, noBalance, setInputTouched])
 
   // Save "local" approving state (pre-BC) for rendering spinners etc
   const [approving, setApproving] = useState(false)
   const handleApprove = useCallback(async () => {
     // reset errors and close any modals
     handleCloseError()
+    setInputTouched(true)
 
     if (!approveCallback) return
 
@@ -147,11 +157,11 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } finally {
       setApproving(false)
     }
-  }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
+  }, [approveCallback, handleCloseError, handleSetError, setInputTouched, token?.symbol])
 
   const vCowAmount = useMemo(
-    () => calculateInvestmentAmounts(claim, investmentAmount)?.vCowAmount,
-    [claim, investmentAmount]
+    () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,
+    [claim, investedAmount]
   )
 
   // if there is investmentAmount in redux state for this option set it as typedValue
@@ -195,6 +205,10 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       error = ErrorMsgs.InsufficientBalance(token?.symbol)
     } else if (!isNative && !isApproved) {
       error = ErrorMsgs.NotApproved(token?.symbol)
+    } else if (noBalance) {
+      error = ErrorMsgs.InsufficientBalance(token?.symbol)
+    } else if (!parsedAmount && !isTouched) {
+      error = undefined
     } else if (!parsedAmount) {
       error = ErrorMsgs.InvestmentIsZero
     } else if (parsedAmount.greaterThan(maxCost)) {
@@ -237,6 +251,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     resetInputError,
     setInvestedAmount,
     gasCost,
+    isTouched,
+    noBalance,
   ])
 
   return (
@@ -329,7 +345,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
                 )}
               </span>
               <StyledNumericalInput
-                onUserInput={setTypedValue}
+                onUserInput={onUserInput}
                 disabled={noBalance || !isSelfClaiming}
                 placeholder="0"
                 $loading={false}
