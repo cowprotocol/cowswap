@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
@@ -21,27 +22,25 @@ import { tryParseAmount } from 'state/swap/hooks'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
 import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { useGasPrices } from 'state/gas/hooks'
-import { _estimateTxCost } from 'components/swap/EthWethWrap/helpers'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { AVG_APPROVE_COST_GWEI } from 'components/swap/EthWethWrap/helpers'
 
 const ErrorMsgs = {
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
-  InsufficientNativeBalance: (symbol = '', action = "won't") =>
-    `You ${action} have enough ${symbol} to pay the network transaction fee`,
+  InsufficientNativeBalance: (symbol = '', amount = '') =>
+    `You might not have enough ${symbol} to pay for the network transaction fee (estimated ${amount} ${symbol})`,
 }
 
 export default function InvestOption({ approveData, claim, optionIndex }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost } = claim
   const { updateInvestAmount, updateInvestError } = useClaimDispatchers()
-  const { investFlowData, activeClaimAccount } = useClaimState()
+  const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
   const { account, chainId } = useActiveWeb3React()
-  const { isSmartContractWallet } = useWalletInfo()
 
   const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('')
@@ -65,19 +64,28 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
   )
 
   const token = currencyAmount?.currency
+  const isNative = token?.isNative
   const balance = useCurrencyBalance(account || undefined, token)
 
-  const gasPrice = useGasPrices(chainId)
-  const { singleTxCost } = useMemo(
-    () => _estimateTxCost(gasPrice, token?.isNative ? token : undefined),
-    [gasPrice, token]
-  )
+  const gasPrice = useGasPrices(isNative ? chainId : undefined)
 
   const isSelfClaiming = account === activeClaimAccount
   const noBalance = !balance || balance.equalTo('0')
 
   const isApproved = approveData?.approveState === ApprovalState.APPROVED
-  const isNative = token?.isNative
+
+  const gasCost = useMemo(() => {
+    if (!estimatedGas || !isNative) {
+      return
+    }
+
+    // Based on how much gas will be used (estimatedGas) and current gas prices (if available)
+    // calculate how much that would cost in native currency.
+    // We pick `fast` to be conservative. Also, it's non-blocking, so the user is aware but can proceed
+    const amount = BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI)
+
+    return CurrencyAmount.fromRawAmount(token, amount.toString())
+  }, [estimatedGas, gasPrice?.fast, isNative, token])
 
   // on invest max amount click handler
   const setMaxAmount = useCallback(() => {
@@ -164,12 +172,8 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       error = ErrorMsgs.OverMaxInvestment
     } else if (parsedAmount.greaterThan(balance)) {
       error = ErrorMsgs.InsufficientBalance(token?.symbol)
-    } else if (isNative && parsedAmount && singleTxCost?.add(parsedAmount).greaterThan(balance)) {
-      if (isSmartContractWallet) {
-        warning = ErrorMsgs.InsufficientNativeBalance(token?.symbol, 'might not')
-      } else {
-        error = ErrorMsgs.InsufficientNativeBalance(token?.symbol)
-      }
+    } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
+      warning = ErrorMsgs.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
     }
     setInputWarning(warning || '')
 
@@ -203,8 +207,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     setInputError,
     resetInputError,
     setInvestedAmount,
-    isSmartContractWallet,
-    singleTxCost,
+    gasCost,
   ])
 
   return (

@@ -69,6 +69,7 @@ export default function Claim() {
     // claiming
     setClaimStatus,
     setClaimedAmount,
+    setEstimatedGas,
     // investing
     setIsInvestFlowActive,
     // claim row selection
@@ -96,7 +97,7 @@ export default function Claim() {
   const isPaidClaimsOnly = useMemo(() => hasPaidClaim(userClaimData) && !hasFreeClaim(userClaimData), [userClaimData])
 
   // claim callback
-  const { claimCallback } = useClaimCallback(activeClaimAccount)
+  const { claimCallback, estimateGasCallback } = useClaimCallback(activeClaimAccount)
 
   // handle change account
   const handleChangeAccount = () => {
@@ -113,6 +114,20 @@ export default function Claim() {
     setInputAddress('')
   }
 
+  // aggregate the input for claim callback
+  const claimInputData = useMemo(() => {
+    const freeClaims = getFreeClaims(userClaimData)
+    const paidClaims = prepareInvestClaims(investFlowData, userClaimData)
+
+    const inputData = freeClaims.map(({ index }) => ({ index }))
+    return inputData.concat(paidClaims)
+  }, [investFlowData, userClaimData])
+
+  // track gas price estimation for given input data
+  useEffect(() => {
+    estimateGasCallback(claimInputData).then((gas) => setEstimatedGas(gas?.toString() || ''))
+  }, [claimInputData, estimateGasCallback, setEstimatedGas])
+
   // handle submit claim
   const handleSubmitClaim = useCallback(() => {
     // Reset error handling
@@ -120,8 +135,6 @@ export default function Claim() {
 
     // just to be sure
     if (!activeClaimAccount) return
-
-    const freeClaims = getFreeClaims(userClaimData)
 
     const sendTransaction = (inputData: ClaimInput[]) => {
       setClaimStatus(ClaimStatus.ATTEMPTING)
@@ -137,32 +150,26 @@ export default function Claim() {
         })
     }
 
-    const inputData = freeClaims.map(({ index }) => ({ index }))
-
     // check if there are any selected (paid) claims
     if (!selected.length) {
-      console.log('Starting claiming with', inputData)
-      sendTransaction(inputData)
+      console.log('Starting claiming with', claimInputData)
+      sendTransaction(claimInputData)
     } else if (investFlowStep == 2) {
-      // Free claims + selected investment opportunities
-      const investClaims = prepareInvestClaims(investFlowData, userClaimData)
-      inputData.push(...investClaims)
-      console.log('Starting claiming with', inputData)
-      sendTransaction(inputData)
+      console.log('Starting claiming with', claimInputData)
+      sendTransaction(claimInputData)
     } else {
       setIsInvestFlowActive(true)
     }
   }, [
     handleCloseError,
     activeClaimAccount,
-    userClaimData,
     selected.length,
     investFlowStep,
     setClaimStatus,
     claimCallback,
     setClaimedAmount,
     handleSetError,
-    investFlowData,
+    claimInputData,
     setIsInvestFlowActive,
   ])
 
