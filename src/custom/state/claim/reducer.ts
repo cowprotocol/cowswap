@@ -15,6 +15,7 @@ import {
   resetClaimUi,
   ClaimStatus,
   updateInvestError,
+  setEstimatedGas,
 } from './actions'
 
 export const initialState: ClaimState = {
@@ -28,6 +29,7 @@ export const initialState: ClaimState = {
   // claiming
   claimStatus: ClaimStatus.DEFAULT,
   claimedAmount: '',
+  estimatedGas: '',
   // investment
   isInvestFlowActive: false,
   investFlowStep: 0,
@@ -54,6 +56,7 @@ export type ClaimState = {
   // claiming
   claimStatus: ClaimStatus
   claimedAmount: string
+  estimatedGas: string
   // investment
   isInvestFlowActive: boolean
   investFlowStep: number
@@ -82,6 +85,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setClaimedAmount, (state, { payload }) => {
       state.claimedAmount = payload
+    })
+    .addCase(setEstimatedGas, (state, { payload }) => {
+      state.estimatedGas = payload
     })
     .addCase(setIsInvestFlowActive, (state, { payload }) => {
       state.isInvestFlowActive = payload
@@ -118,5 +124,6 @@ export default createReducer(initialState, (builder) =>
       state.investFlowStep = initialState.investFlowStep
       state.isInvestFlowActive = initialState.isInvestFlowActive
       state.claimedAmount = initialState.claimedAmount
+      state.estimatedGas = initialState.estimatedGas
     })
 )
