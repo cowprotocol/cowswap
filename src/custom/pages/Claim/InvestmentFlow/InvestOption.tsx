@@ -171,7 +171,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
       } else {
         error = Messages.InsufficientNativeBalance(token?.symbol)
       }
-    } else if (!parsedAmount.equalTo(maxCost)) {
+    } else if (percentage !== '100') {
       warning = Messages.NotMaxInvested
     }
 
@@ -209,6 +209,7 @@ export default function InvestOption({ approveData, claim, optionIndex }: Invest
     setInvestedAmount,
     isSmartContractWallet,
     singleTxCost,
+    percentage,
   ])
 
   return (
