@@ -60,7 +60,7 @@ export default function FooterNavButtons({
   const isInputAddressValid = isAddress(resolvedAddress || '')
 
   // User is connected and has some unclaimed claims
-  const isConnectedAndHasClaims = !!activeClaimAccount && !!hasClaims && claimStatus === ClaimStatus.DEFAULT
+  const isConnectedAndHasClaims = account && activeClaimAccount && hasClaims && claimStatus === ClaimStatus.DEFAULT
   const noPaidClaimsSelected = !selected.length
 
   let buttonContent: ReactNode = null
