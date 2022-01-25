@@ -26,11 +26,15 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import FooterNavButtons from './FooterNavButtons'
 
+import { isProd, isEns, isBarn } from 'utils/environments'
+
 /* TODO: Replace URLs with the actual final URL destinations */
 export const COW_LINKS = {
   vCowPost: 'https://cow.fi/',
   stepGuide: 'https://cow.fi/',
 }
+
+export const IS_CLAIMING_ENABLED = !isProd && !isEns && !isBarn
 
 export default function Claim() {
   const { account } = useActiveWeb3React()
