@@ -1,3 +1,4 @@
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { ConfirmOrLoadingWrapper, ConfirmedIcon, AttemptFooter, CowSpinner } from 'pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
@@ -12,6 +13,8 @@ import { EnhancedTransactionLink } from 'components/EnhancedTransactionLink'
 import { ExplorerDataType } from 'utils/getExplorerLink'
 import { V_COW } from 'constants/tokens'
 import AddToMetamask from 'components/AddToMetamask'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export default function ClaimingStatus() {
   const { chainId, account } = useActiveWeb3React()
@@ -33,6 +36,11 @@ export default function ClaimingStatus() {
 
   const currency = chainId ? V_COW[chainId] : undefined
 
+  const vCowAmount = currency && CurrencyAmount.fromRawAmount(currency, claimedAmount)
+
+  const formattedVCowAmount = formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION)
+  const formattedMaxVCowAmount = vCowAmount?.greaterThan('0') ? formatMax(vCowAmount, currency?.decimals) : ''
+
   return (
     <ConfirmOrLoadingWrapper activeBG={true}>
       <ConfirmedIcon>
@@ -45,7 +53,11 @@ export default function ClaimingStatus() {
         )}
       </ConfirmedIcon>
       <h3>{isConfirmed ? 'Claimed!' : 'Claiming'}</h3>
-      {!isConfirmed && <Trans>{claimedAmount} vCOW</Trans>}
+      {!isConfirmed && (
+        <Trans>
+          <span title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</span>
+        </Trans>
+      )}
 
       {isConfirmed && (
         <>
@@ -53,7 +65,7 @@ export default function ClaimingStatus() {
             <h3>You have successfully claimed</h3>
           </Trans>
           <Trans>
-            <p>{claimedAmount} vCOW</p>
+            <p title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</p>
           </Trans>
           <Trans>
             <span role="img" aria-label="party-hat">

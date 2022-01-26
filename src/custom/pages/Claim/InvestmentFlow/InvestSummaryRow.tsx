@@ -3,7 +3,7 @@ import { calculatePercentage } from 'state/claim/hooks/utils'
 import { TokenLogo, InvestAvailableBar } from 'pages/Claim/styled'
 import { ClaimWithInvestmentData } from 'pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { AMOUNT_PRECISION } from 'constants/index'
 
@@ -17,6 +17,9 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
   const symbol = isFree ? '' : (currencyAmount?.currency?.symbol as string)
 
   const formattedCost = formatSmartLocaleAware(investmentCost, AMOUNT_PRECISION) || '0'
+  const formattedCostMaxPrecision = investmentCost
+    ? `${formatMax(investmentCost, currencyAmount?.currency?.decimals)} ${symbol}`
+    : ''
 
   const percentage = investmentCost && cost && calculatePercentage(investmentCost, cost)
 
@@ -43,12 +46,14 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
       </td>
 
       <td>
-        <i>{formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'} vCOW</i>
+        <i title={`${formatMax(vCowAmount, vCowAmount?.currency.decimals)} vCOW`}>
+          {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'} vCOW
+        </i>
 
         {!isFree && (
           <span>
             <b>Investment amount:</b>{' '}
-            <i>
+            <i title={formattedCostMaxPrecision}>
               {formattedCost} {symbol}
             </i>
             <InvestAvailableBar percentage={Number(percentage?.toFixed(2))} />
@@ -65,13 +70,13 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
         {!isFree && (
           <span>
             <b>Price:</b>{' '}
-            <i>
+            <i title={formatMax(price)}>
               {formatSmartLocaleAware(price) || '0'} vCOW per {symbol}
             </i>
           </span>
         )}
         <span>
-          <b>Cost:</b> <i>{isFree ? 'Free!' : `${formattedCost} ${symbol}`}</i>
+          <b>Cost:</b> <i title={formattedCostMaxPrecision}>{isFree ? 'Free!' : `${formattedCost} ${symbol}`}</i>
         </span>
         <span>
           <b>Vesting:</b>

@@ -4,7 +4,7 @@ import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 import { useUserEnhancedClaimData } from 'state/claim/hooks'
@@ -85,22 +85,27 @@ const ClaimsTableRow = ({
           {!isFree && <i>with {currencyAmount?.currency?.symbol}</i>}
         </span>
       </td>
-      <td>{formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW</td>
+      <td title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
+        {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
+      </td>
       <td>
         {!isFree ||
           (price && (
             <span>
-              Price: <b>{`${formatSmartLocaleAware(price) || 0} vCOW per ${currencyAmount?.currency?.symbol}`}</b>
+              Price:{' '}
+              <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
+                currencyAmount?.currency?.symbol
+              }`}</b>
             </span>
           ))}
         <span>
           Cost:{' '}
-          <b>
+          <b title={cost && `${formatMax(cost, cost.currency.decimals)} ${cost.currency.symbol}`}>
             {' '}
             {isFree ? (
               <span className="green">Free!</span>
             ) : (
-              `${formatSmartLocaleAware(cost, AMOUNT_PRECISION) || 0} ${currencyAmount?.currency?.symbol}`
+              `${formatSmartLocaleAware(cost, AMOUNT_PRECISION) || 0} ${cost?.currency?.symbol}`
             )}
           </b>
         </span>
