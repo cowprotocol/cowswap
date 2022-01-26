@@ -224,7 +224,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
 
           {hasError && <InvestFlowValidation>Fix the errors before continuing</InvestFlowValidation>}
           {!hasError && someNotTouched && (
-            <InvestFlowValidation>Invest some amount of tokens for each option</InvestFlowValidation>
+            <InvestFlowValidation>Investment Amount is required to continue</InvestFlowValidation>
           )}
         </InvestContent>
       ) : null}
