@@ -175,8 +175,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
         {investFlowStep === 0
           ? 'Claim and invest'
           : investFlowStep === 1
-          ? 'Set allowance to Buy vCOW'
-          : 'Confirm transaction to claim all vCOW'}
+            ? 'Set allowance to Buy vCOW'
+            : 'Confirm transaction to claim all vCOW'}
       </h1>
 
       {investFlowStep === 0 && (
@@ -270,7 +270,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
             you cannot increase or reduce the investment. Investment opportunities can only be exercised once.
           </p>
           <p>
-            <b>Important!</b> Please make sure you intend to claim and send vCOW to the mentioned receiving account(s)
+            <b>Important!</b> Please make sure you intend to claim and send vCOW to the mentioned receiving account(s).
           </p>
         </InvestContent>
       ) : null}
