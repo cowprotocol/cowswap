@@ -1195,3 +1195,37 @@ export const CowSpinner = styled.div`
     }
   }
 `
+
+export const StepExplainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  margin: 0 0 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+    gap: 16px 0;
+  `}
+  > span {
+    padding: 24px;
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    position: relative;
+  }
+
+  > span::before {
+    content: attr(data-step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    flex: 1 1 min-content;
+    padding: 0 0 12px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  > span > p {
+    margin: 0;
+  }
+`
