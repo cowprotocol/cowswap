@@ -1442,6 +1442,21 @@ export const CowSpinner = styled.div`
   }
 `
 
+export const WarningWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > small {
+    color: red;
+    margin: 12px 0;
+    font-size: 15px;
+
+    &.warn {
+      color: ${({ theme }) => (theme.darkMode ? theme.yellow1 : theme.yellow2)};
+    }
+  }
+`
+
 const SuccessBannerColors = {
   opacity: 0.8,
   darken: 0.1,
