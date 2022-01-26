@@ -888,7 +888,7 @@ export const InvestTokenGroup = styled.div`
   }
 `
 
-export const InvestInput = styled.span`
+export const InvestInput = styled.span<{ disabled: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 15px;
@@ -906,7 +906,8 @@ export const InvestInput = styled.span`
     flex-flow: row wrap;
     padding: 12px;
     position: relative;
-    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+    background: ${({ theme, disabled }) =>
+      disabled ? theme.bg5 : theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1};
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;

@@ -328,7 +328,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
         {/* Error modal */}
         <ErrorModal />
         {/* Investment inputs */}
-        <InvestInput>
+        <InvestInput disabled={noBalance || !isSelfClaiming}>
           <div>
             <label>
               <span>
