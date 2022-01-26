@@ -1,8 +1,6 @@
 import { Trans } from '@lingui/macro'
-import { Dots } from 'components/swap/styleds'
 import styled, { css } from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 
 export const Wrapper = styled.div<{ isClaimPage?: boolean | null }>`
   ${({ theme }) => theme.card.boxShadow};
@@ -78,23 +76,13 @@ interface CowClaimButtonProps {
   handleOnClickClaim?: () => void
 }
 
-export default function CowClaimButton({ isClaimPage, account, handleOnClickClaim }: CowClaimButtonProps) {
-  const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
-
+export default function CowClaimButton({ isClaimPage, handleOnClickClaim }: CowClaimButtonProps) {
   return (
     <Wrapper isClaimPage={isClaimPage} onClick={handleOnClickClaim}>
-      {claimTxn && !claimTxn?.receipt ? (
-        <Dots>
-          <Trans>Claiming vCOW...</Trans>
-        </Dots>
-      ) : (
-        <>
-          <CowProtocolLogo />
-          <b>
-            <Trans>vCOW</Trans>
-          </b>
-        </>
-      )}
+      <CowProtocolLogo />
+      <b>
+        <Trans>vCOW</Trans>
+      </b>
     </Wrapper>
   )
 }
