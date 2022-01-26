@@ -13,11 +13,10 @@ import { useClaimState } from 'state/claim/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ExplorerLink } from 'components/ExplorerLink'
 import { EnhancedTransactionLink } from 'components/EnhancedTransactionLink'
-import { ExplorerDataType } from 'utils/getExplorerLink'
 import { V_COW } from 'constants/tokens'
 import AddToMetamask from 'components/AddToMetamask'
 import SVG from 'react-inlinesvg'
@@ -88,7 +87,7 @@ export default function ClaimingStatus() {
                     You have just claimed on behalf of{' '}
                     <b>
                       {activeClaimAccount} (
-                      <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
+                      <ExplorerLink id={activeClaimAccount} type="token-transfer" />)
                     </b>
                   </p>
                 </div>

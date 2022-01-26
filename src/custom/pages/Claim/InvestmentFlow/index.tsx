@@ -33,7 +33,6 @@ import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from
 import { COW_LINKS } from 'pages/Claim'
 import { ExternalLink } from 'theme'
 import { ExplorerLink } from 'components/ExplorerLink'
-import { ExplorerDataType } from 'utils/getExplorerLink'
 
 import { BadgeVariant } from 'components/Badge'
 import { DollarSign, Icon, Send } from 'react-feather'
@@ -115,7 +114,7 @@ function AccountDetails({ label, account, connectedAccount, Icon }: AccountDetai
         <Icon width={14} height={14} /> {label}:
       </b>
       <i>
-        <ExplorerLink id={account} label={account} type={ExplorerDataType.ADDRESS} />{' '}
+        <ExplorerLink id={account} label={account} type="address" />{' '}
         {account === connectedAccount ? (
           <Badge variant={BadgeVariant.POSITIVE}>&nbsp; Connected account</Badge>
         ) : (

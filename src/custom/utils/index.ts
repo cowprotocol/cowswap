@@ -26,7 +26,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   100: 'xdai.',
 }
 
-export type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block'
+export type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
   const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
@@ -40,6 +40,9 @@ function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLink
     }
     case 'block': {
       return `${prefix}/block/${data}`
+    }
+    case 'token-transfer': {
+      return `${prefix}/address/${data}#tokentxns`
     }
     case 'address':
     default: {
@@ -66,6 +69,8 @@ function getBlockscoutUrlSuffix(type: BlockExplorerLinkType, data: string): stri
       return `blocks/${data}/transactions`
     case 'address':
       return `address/${data}/transactions`
+    case 'token-transfer':
+      return `address/${data}/token-transfers`
     case 'token':
       return `tokens/${data}/token-transfers`
   }
