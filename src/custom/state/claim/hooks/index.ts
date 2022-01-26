@@ -866,6 +866,17 @@ export function useHasClaimInvestmentFlowError(): boolean {
 }
 
 /**
+ * Returns a boolean indicating whether there's "touched" field on claim investment flow
+ */
+export function useSomeNotTouched(): boolean {
+  const { investFlowData } = useClaimState()
+
+  return useMemo(() => {
+    return investFlowData.some(({ isTouched }) => !isTouched)
+  }, [investFlowData])
+}
+
+/**
  * Returns a boolean indicating whether there's an zero invested amount on some invest option
  */
 export function useHasZeroInvested(): boolean {
