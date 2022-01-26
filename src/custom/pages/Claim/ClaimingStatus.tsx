@@ -67,7 +67,7 @@ export default function ClaimingStatus() {
           <CowProtocolLogo size={100} />
         )}
       </ConfirmedIcon>
-      <h3>{isConfirmed ? 'Claimed!' : 'Claiming'}</h3>
+      <h3>{isConfirmed ? 'Claim successful!' : 'Claiming'}</h3>
       {!isConfirmed && (
         <Trans>
           <span title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</span>
@@ -77,10 +77,30 @@ export default function ClaimingStatus() {
       {isConfirmed && (
         <>
           <Trans>
-            <h3>You have successfully claimed</h3>
-          </Trans>
-          <Trans>
-            <p title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</p>
+            <h4>
+              Congratulations on claiming{' '}
+              <b title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW!</b>
+              {isSelfClaiming ? (
+                <AddToMetamask currency={currency} />
+              ) : (
+                <div>
+                  <p>
+                    You have just claimed on behalf of{' '}
+                    <b>
+                      {activeClaimAccount} (
+                      <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
+                    </b>
+                  </p>
+                </div>
+              )}
+            </h4>
+            <p>
+              <span role="img" aria-label="party-hat">
+                🎉🐮{' '}
+              </span>
+              Welcome to the COWmunity! We encourage you to share on Twitter and join the community on Discord to get
+              involved in governance.
+            </p>
           </Trans>
 
           <BannersWrapper>
@@ -100,43 +120,15 @@ export default function ClaimingStatus() {
                 <SVG src={discordImage} description="Discord" />
               </SuccessBanner>
             </ExternalLink>
-            {/* 
-            {isSelfClaiming ? (
-              <AddToMetamask currency={currency} />
-            ) : (
-              <div>
-                <p>
-                  You have just claimed on behalf of{' '}
-                  <b>
-                    {activeClaimAccount} (
-                    <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
-                  </b>
-                </p>
-              </div>
-            )} 
-            */}
-            {isSelfClaiming ? (
-              <>
-                <Link to="/profile">
-                  <SuccessBanner type={'Profile'}>
-                    <span>
-                      <Trans>View vCOW balance</Trans>
-                    </span>
-                    <SVG src={CowProtocolIcon} description="Profile" />
-                  </SuccessBanner>
-                </Link>
-                <AddToMetamask currency={currency} />
-              </>
-            ) : (
-              <div>
-                <p>
-                  You have just claimed on behalf of{' '}
-                  <b>
-                    {activeClaimAccount} (
-                    <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
-                  </b>
-                </p>
-              </div>
+            {isSelfClaiming && (
+              <Link to="/profile">
+                <SuccessBanner type={'Profile'}>
+                  <span>
+                    <Trans>View vCOW balance</Trans>
+                  </span>
+                  <SVG src={CowProtocolIcon} description="Profile" />
+                </SuccessBanner>
+              </Link>
             )}
           </BannersWrapper>
         </>
