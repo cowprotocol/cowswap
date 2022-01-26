@@ -18,34 +18,25 @@ import {
   setEstimatedGas,
 } from './actions'
 
-const FAKE_SUCCESS_PAGE = {
-  activeClaimAccount: '0x424a46612794dbb8000194937834250Dc723fFa5',
-  claimStatus: ClaimStatus.CONFIRMED,
-  claimedAmount: '1500',
-}
-
 export const initialState: ClaimState = {
-  ...{
-    // address/ENS address
-    inputAddress: '',
-    // account
-    activeClaimAccount: '',
-    activeClaimAccountENS: '',
-    // check address
-    isSearchUsed: false,
-    // claiming
-    claimStatus: ClaimStatus.DEFAULT,
-    claimedAmount: '',
-    estimatedGas: '',
-    // investment
-    isInvestFlowActive: false,
-    investFlowStep: 0,
-    investFlowData: [],
-    // table select change
-    selected: [],
-    selectedAll: false,
-  },
-  ...FAKE_SUCCESS_PAGE,
+  // address/ENS address
+  inputAddress: '',
+  // account
+  activeClaimAccount: '',
+  activeClaimAccountENS: '',
+  // check address
+  isSearchUsed: false,
+  // claiming
+  claimStatus: ClaimStatus.DEFAULT,
+  claimedAmount: '',
+  estimatedGas: '',
+  // investment
+  isInvestFlowActive: false,
+  investFlowStep: 0,
+  investFlowData: [],
+  // table select change
+  selected: [],
+  selectedAll: false,
 }
 
 export type InvestClaim = {
