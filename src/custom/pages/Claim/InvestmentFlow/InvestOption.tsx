@@ -27,6 +27,7 @@ import { EnhancedUserClaimData } from '../types'
 import { OperationType } from 'components/TransactionConfirmationModal'
 
 const ErrorMsgs = {
+  InputUntouched: 'Please input a value',
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
@@ -71,6 +72,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('')
   const [inputWarning, setInputWarning] = useState<string>('')
+  const [inputTouched, setInputTouched] = useState(false)
 
   const investedAmount = investFlowData[optionIndex].investedAmount
   const inputError = investFlowData[optionIndex].error
@@ -196,51 +198,64 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     }
   }, [balance, isSelfClaiming, maxCost, setMaxAmount])
 
+  // set inputs touched on typed value change (and non undefined state)
+  useEffect(() => {
+    if (typedValue) {
+      setInputTouched(true)
+    }
+  }, [typedValue])
+
   // handle input value change
   useEffect(() => {
     let error = null
     let warning
 
-    const parsedAmount = tryParseAmount(typedValue, token)
+    // only run validation on inputs that have been touched
+    if (inputTouched) {
+      const parsedAmount = tryParseAmount(typedValue, token)
 
-    if (!maxCost || !balance) {
-      return
-    }
-
-    // set different errors in order of importance
-    if (balance.lessThan(maxCost) && !isSelfClaiming) {
-      error = ErrorMsgs.InsufficientBalance(token?.symbol)
-    } else if (!isNative && !isApproved) {
-      error = ErrorMsgs.NotApproved(token?.symbol)
-    } else if (!parsedAmount) {
-      error = ErrorMsgs.InvestmentIsZero
-    } else if (parsedAmount.greaterThan(maxCost)) {
-      error = ErrorMsgs.OverMaxInvestment
-    } else if (parsedAmount.greaterThan(balance)) {
-      error = ErrorMsgs.InsufficientBalance(token?.symbol)
-    } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
-      warning = ErrorMsgs.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
-    }
-    setInputWarning(warning || '')
-
-    if (error) {
-      // if there is error set it in redux
-      setInputError(error)
-      setPercentage('0')
-    } else {
-      if (!parsedAmount) {
+      if (!maxCost || !balance) {
         return
       }
-      // basically the magic happens in this block
 
-      // update redux state to remove error for this field
-      resetInputError()
+      // set different errors in order of importance
+      if (balance.lessThan(maxCost) && !isSelfClaiming) {
+        error = ErrorMsgs.InsufficientBalance(token?.symbol)
+      } else if (!isNative && !isApproved) {
+        error = ErrorMsgs.NotApproved(token?.symbol)
+      } else if (!parsedAmount) {
+        error = ErrorMsgs.InvestmentIsZero
+      } else if (parsedAmount.greaterThan(maxCost)) {
+        error = ErrorMsgs.OverMaxInvestment
+      } else if (parsedAmount.greaterThan(balance)) {
+        error = ErrorMsgs.InsufficientBalance(token?.symbol)
+      } else if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
+        warning = ErrorMsgs.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost))
+      }
+      setInputWarning(warning || '')
 
-      // update redux state with new investAmount value
-      setInvestedAmount(parsedAmount.quotient.toString())
+      if (error) {
+        // if there is error set it in redux
+        setInputError(error)
+        setPercentage('0')
+      } else {
+        if (!parsedAmount) {
+          return
+        }
+        // basically the magic happens in this block
 
-      // update the local state with percentage value
-      setPercentage(_formatPercentage(calculatePercentage(parsedAmount, maxCost)))
+        // update redux state to remove error for this field
+        resetInputError()
+
+        // update redux state with new investAmount value
+        setInvestedAmount(parsedAmount.quotient.toString())
+
+        // update the local state with percentage value
+        setPercentage(_formatPercentage(calculatePercentage(parsedAmount, maxCost)))
+      }
+    } else if (balance?.greaterThan('0')) {
+      // only do this if there is a balance
+      setInputError(ErrorMsgs.InputUntouched)
     }
   }, [
     balance,
@@ -254,6 +269,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     resetInputError,
     setInvestedAmount,
     gasCost,
+    inputTouched,
   ])
 
   return (
