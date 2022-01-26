@@ -82,9 +82,10 @@ export const Step = styled.div<{
     color: ${({ isActiveStep, completedStep, theme }) =>
       completedStep ? theme.text1 : isActiveStep ? theme.text1 : transparentize(0.4, theme.text1)};
     font-weight: ${({ isActiveStep, completedStep }) => (completedStep ? '300' : isActiveStep ? 'bold' : '300')};
+    text-align: center;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      font-size: 15px;
+      font-size: 14px;
     `}
   }
 
