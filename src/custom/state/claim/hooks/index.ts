@@ -55,6 +55,7 @@ import {
   resetClaimUi,
   updateInvestError,
   setEstimatedGas,
+  setIsTouched,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -838,6 +839,7 @@ export function useClaimDispatchers() {
       updateInvestAmount: (payload: { index: number; amount: string }) => dispatch(updateInvestAmount(payload)),
       updateInvestError: (payload: { index: number; error: string | undefined }) =>
         dispatch(updateInvestError(payload)),
+      setIsTouched: (payload: { index: number; isTouched: boolean }) => dispatch(setIsTouched(payload)),
       // claim row selection
       setSelected: (payload: number[]) => dispatch(setSelected(payload)),
       setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),
