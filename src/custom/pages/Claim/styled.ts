@@ -1452,7 +1452,7 @@ export const WarningWrapper = styled.div`
     font-size: 15px;
 
     &.warn {
-      color: blue;
+      color: ${({ theme }) => (theme.darkMode ? theme.yellow1 : theme.yellow2)};
     }
   }
 `
