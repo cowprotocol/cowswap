@@ -36,6 +36,7 @@ export const initialState: ClaimState = {
     // claiming
     claimStatus: ClaimStatus.DEFAULT,
     claimedAmount: '',
+    estimatedGas: '',
     // investment
     isInvestFlowActive: false,
     investFlowStep: 0,

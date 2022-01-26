@@ -470,7 +470,7 @@ export const ClaimTotal = styled.div`
 
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
-  padding: 24px;
+  padding: 24px 24px 0;
   color: ${({ theme }) => theme.text1};
   position: relative;
   display: flex;
@@ -479,13 +479,50 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   font-size: 26px;
   font-weight: 300;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 16px 8px 0;
+  `};
+
   h3 {
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 42px;
+    font-weight: bold;
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
     color: ${({ theme }) => theme.text1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 26px;
+    `};
+  }
+
+  > h4 {
+    font-size: 18px;
+    line-height: 1.5;
+    font-weight: normal;
+    margin: 0 0 24px;
+    text-align: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+    `};
+  }
+
+  > h4 > div > p {
+    margin: 24px auto 0;
+  }
+
+  > h4 > div > p > b {
+    word-break: break-all;
+    display: block;
+  }
+
+  > h4 > button {
+    margin: 32px auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 20px auto;
+    `};
   }
 `
 
@@ -503,8 +540,8 @@ export const AttemptFooter = styled.div`
   }
 `
 
-export const ConfirmedIcon = styled.div`
-  padding: 60px 0;
+export const ConfirmedIcon = styled.div<{ isConfirmed: boolean }>`
+  padding: ${({ isConfirmed }) => (isConfirmed ? '12px 0' : '60px 0')};
 `
 
 export const CheckIcon = styled(CheckCircle)`
@@ -1192,6 +1229,90 @@ export const CowSpinner = styled.div`
     }
     to {
       transform: rotate(360deg);
+    }
+  }
+`
+
+const SuccessBannerColors = {
+  opacity: 0.8,
+  darken: 0.1,
+  twitter: '#17a7ff',
+  discord: '#4e72ef',
+}
+
+export const BannersWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 12px 0 0;
+  flex-flow: column wrap;
+
+  > a,
+  > a:hover,
+  > a:focus {
+    text-decoration: none;
+  }
+`
+
+export const SuccessBanner = styled.div<{ type: string }>`
+  width: 100%;
+  height: 86px;
+  padding: 0 24px;
+  border-radius: 24px;
+  margin: 0 0 12px;
+  font-weight: bold;
+  font-size: 21px;
+  justify-content: space-between;
+  align-items: center;
+  transition: border 0.3s ease-in-out;
+  border: 2px solid transparent;
+  color: ${({ type, theme }) =>
+    type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.text1};
+  display: flex;
+  background: ${({ type, theme }) =>
+    type === 'Twitter'
+      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.twitter)
+      : type === 'Discord'
+      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.discord)
+      : theme.blueShade3};
+
+  &:hover {
+    border: 2px solid
+      ${({ type, theme }) =>
+        type === 'Twitter'
+          ? darken(SuccessBannerColors.darken, SuccessBannerColors.twitter)
+          : type === 'Discord'
+          ? darken(SuccessBannerColors.darken, SuccessBannerColors.discord)
+          : darken(SuccessBannerColors.darken, theme.blueShade3)};
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 16px;
+  `};
+
+  > svg {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    stroke: none;
+    fill: ${({ type, theme }) =>
+      type === 'Twitter'
+        ? SuccessBannerColors.twitter
+        : type === 'Discord'
+        ? SuccessBannerColors.discord
+        : theme.primary1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 32px;
+      height: 32px;
+    `};
+
+    > path {
+      fill: ${({ type, theme }) =>
+        type === 'Twitter'
+          ? SuccessBannerColors.twitter
+          : type === 'Discord'
+          ? SuccessBannerColors.discord
+          : theme.text1};
     }
   }
 `
