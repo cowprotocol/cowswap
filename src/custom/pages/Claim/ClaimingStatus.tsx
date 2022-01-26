@@ -1,3 +1,4 @@
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import {
   ConfirmOrLoadingWrapper,
@@ -24,6 +25,8 @@ import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
 import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 COWmmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
@@ -48,6 +51,11 @@ export default function ClaimingStatus() {
 
   const currency = chainId ? V_COW[chainId] : undefined
 
+  const vCowAmount = currency && CurrencyAmount.fromRawAmount(currency, claimedAmount)
+
+  const formattedVCowAmount = formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION)
+  const formattedMaxVCowAmount = vCowAmount?.greaterThan('0') ? formatMax(vCowAmount, currency?.decimals) : ''
+
   return (
     <ConfirmOrLoadingWrapper activeBG={true}>
       <ConfirmedIcon isConfirmed={isConfirmed}>
@@ -59,36 +67,20 @@ export default function ClaimingStatus() {
           <CowProtocolLogo size={100} />
         )}
       </ConfirmedIcon>
-
-      <h3>{isConfirmed ? 'Claim successful!' : 'Claiming'}</h3>
-      {!isConfirmed && <Trans>{claimedAmount} vCOW</Trans>}
+      <h3>{isConfirmed ? 'Claimed!' : 'Claiming'}</h3>
+      {!isConfirmed && (
+        <Trans>
+          <span title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</span>
+        </Trans>
+      )}
 
       {isConfirmed && (
         <>
           <Trans>
-            <h4>
-              Congratulations on claiming <b>{claimedAmount} vCOW!</b>
-              {isSelfClaiming ? (
-                <AddToMetamask currency={currency} />
-              ) : (
-                <div>
-                  <p>
-                    You have just claimed on behalf of{' '}
-                    <b>
-                      {activeClaimAccount} (
-                      <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
-                    </b>
-                  </p>
-                </div>
-              )}
-            </h4>
-            <p>
-              <span role="img" aria-label="party-hat">
-                🎉🐮{' '}
-              </span>
-              Welcome to the COWmunity! We encourage you to share on Twitter and join the community on Discord to get
-              involved in governance.
-            </p>
+            <h3>You have successfully claimed</h3>
+          </Trans>
+          <Trans>
+            <p title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</p>
           </Trans>
 
           <BannersWrapper>
@@ -108,15 +100,43 @@ export default function ClaimingStatus() {
                 <SVG src={discordImage} description="Discord" />
               </SuccessBanner>
             </ExternalLink>
-            {isSelfClaiming && (
-              <Link to="/profile">
-                <SuccessBanner type={'Profile'}>
-                  <span>
-                    <Trans>View vCOW balance</Trans>
-                  </span>
-                  <SVG src={CowProtocolIcon} description="Profile" />
-                </SuccessBanner>
-              </Link>
+            {/* 
+            {isSelfClaiming ? (
+              <AddToMetamask currency={currency} />
+            ) : (
+              <div>
+                <p>
+                  You have just claimed on behalf of{' '}
+                  <b>
+                    {activeClaimAccount} (
+                    <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
+                  </b>
+                </p>
+              </div>
+            )} 
+            */}
+            {isSelfClaiming ? (
+              <>
+                <Link to="/profile">
+                  <SuccessBanner type={'Profile'}>
+                    <span>
+                      <Trans>View vCOW balance</Trans>
+                    </span>
+                    <SVG src={CowProtocolIcon} description="Profile" />
+                  </SuccessBanner>
+                </Link>
+                <AddToMetamask currency={currency} />
+              </>
+            ) : (
+              <div>
+                <p>
+                  You have just claimed on behalf of{' '}
+                  <b>
+                    {activeClaimAccount} (
+                    <ExplorerLink id={activeClaimAccount} type={ExplorerDataType.ADDRESS} />)
+                  </b>
+                </p>
+              </div>
             )}
           </BannersWrapper>
         </>
