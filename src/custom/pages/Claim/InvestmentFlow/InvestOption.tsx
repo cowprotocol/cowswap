@@ -224,6 +224,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } else if (noBalance) {
       error = ErrorMsgs.InsufficientBalance(token?.symbol)
     } else if (!parsedAmount && !isTouched) {
+      // this is to remove initial zero balance error message until user touches the input
       error = ''
     } else if (!parsedAmount) {
       error = ErrorMsgs.InvestmentIsZero
