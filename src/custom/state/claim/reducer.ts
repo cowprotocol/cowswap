@@ -16,7 +16,6 @@ import {
   ClaimStatus,
   updateInvestError,
   setEstimatedGas,
-  setIsTouched,
 } from './actions'
 
 export const initialState: ClaimState = {
@@ -44,7 +43,6 @@ export type InvestClaim = {
   index: number
   investedAmount: string
   error?: string
-  isTouched?: boolean
 }
 
 export type ClaimState = {
@@ -127,8 +125,5 @@ export default createReducer(initialState, (builder) =>
       state.isInvestFlowActive = initialState.isInvestFlowActive
       state.claimedAmount = initialState.claimedAmount
       state.estimatedGas = initialState.estimatedGas
-    })
-    .addCase(setIsTouched, (state, { payload: { index, isTouched } }) => {
-      state.investFlowData[index].isTouched = isTouched
     })
 )

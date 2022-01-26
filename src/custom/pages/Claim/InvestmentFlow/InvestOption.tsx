@@ -58,7 +58,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const { currencyAmount, price, cost: maxCost } = claim
 
   const { account, chainId } = useActiveWeb3React()
-  const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
+  const { updateInvestAmount, updateInvestError } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
 
   // Approve hooks
@@ -75,10 +75,10 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const [percentage, setPercentage] = useState<string>('0')
   const [typedValue, setTypedValue] = useState<string>('')
   const [inputWarning, setInputWarning] = useState<string>('')
+  const [isTouched, setIsTouched] = useState<boolean>(false)
 
   const investedAmount = investFlowData[optionIndex].investedAmount
   const inputError = investFlowData[optionIndex].error
-  const isTouched = investFlowData[optionIndex].isTouched
 
   // Syntactic sugar fns for setting/resetting global state
   const setInvestedAmount = useCallback(
@@ -92,10 +92,6 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const resetInputError = useCallback(
     () => updateInvestError({ index: optionIndex, error: undefined }),
     [optionIndex, updateInvestError]
-  )
-  const setInputTouched = useCallback(
-    (value: boolean) => setIsTouched({ index: optionIndex, isTouched: value }),
-    [optionIndex, setIsTouched]
   )
 
   const token = currencyAmount?.currency
@@ -111,7 +107,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
   const onUserInput = (input: string) => {
     setTypedValue(input)
-    setInputTouched(true)
+    setIsTouched(true)
   }
 
   const gasCost = useMemo(() => {
@@ -135,8 +131,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
     const value = maxCost.greaterThan(balance) ? balance : maxCost
     setTypedValue(value.toExact() || '')
-    setInputTouched(true)
-  }, [balance, maxCost, noBalance, setInputTouched])
+    setIsTouched(true)
+  }, [balance, maxCost, noBalance, setIsTouched])
 
   // Save "local" approving state (pre-BC) for rendering spinners etc
   const [approving, setApproving] = useState(false)
@@ -207,6 +203,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } else if (noBalance) {
       error = ErrorMsgs.InsufficientBalance(token?.symbol)
     } else if (!parsedAmount && !isTouched) {
+      // this is to remove initial zero balance error message until user touches the input
       error = ''
     } else if (!parsedAmount) {
       error = ErrorMsgs.InvestmentIsZero
