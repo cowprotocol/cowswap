@@ -1136,6 +1136,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;
+    opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
 
     > span {
       margin-left: 5px;
