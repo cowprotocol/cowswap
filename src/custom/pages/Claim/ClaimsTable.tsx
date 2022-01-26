@@ -34,13 +34,6 @@ const ClaimTr = styled.tr<{ isPending?: boolean }>`
   > td {
     background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
     cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};
-
-    &:first-child {
-      border-radius: 8px 0 0 8px;
-    }
-    &:last-child {
-      border-radius: 0 8px 8px 0;
-    }
   }
 `
 
@@ -60,7 +53,7 @@ const ClaimsTableRow = ({
 }: ClaimsTableRowProps) => {
   return (
     <ClaimTr key={index} isPending={isPendingClaim}>
-      <td>
+      <td data-title="Select">
         {' '}
         <label className="checkAll">
           {isPendingClaim ? (
@@ -76,7 +69,7 @@ const ClaimsTableRow = ({
           )}
         </label>
       </td>
-      <td>
+      <td data-title="Type of Claim">
         {' '}
         {!isFree && <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={34} />}
         <CowProtocolLogo size={34} />
@@ -85,10 +78,10 @@ const ClaimsTableRow = ({
           {!isFree && <i>with {currencyAmount?.currency?.symbol}</i>}
         </span>
       </td>
-      <td title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
+      <td data-title="Amount" title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
         {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
       </td>
-      <td>
+      <td data-title="Details">
         {!isFree ||
           (price && (
             <span>

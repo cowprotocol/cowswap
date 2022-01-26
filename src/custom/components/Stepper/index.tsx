@@ -22,6 +22,9 @@ export const Step = styled.div<{
   position: relative;
   flex: 1 1 ${({ totalSteps }) => `calc(100% / ${totalSteps})`};
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    --circleSize: 26px;
+  `}
   &::before,
   &::after {
     content: '';
