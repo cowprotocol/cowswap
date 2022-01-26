@@ -55,6 +55,7 @@ import {
   resetClaimUi,
   updateInvestError,
   setEstimatedGas,
+  setIsTouched,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -838,6 +839,7 @@ export function useClaimDispatchers() {
       updateInvestAmount: (payload: { index: number; amount: string }) => dispatch(updateInvestAmount(payload)),
       updateInvestError: (payload: { index: number; error: string | undefined }) =>
         dispatch(updateInvestError(payload)),
+      setIsTouched: (payload: { index: number; isTouched: boolean }) => dispatch(setIsTouched(payload)),
       // claim row selection
       setSelected: (payload: number[]) => dispatch(setSelected(payload)),
       setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),
@@ -853,13 +855,35 @@ export function useClaimState() {
 }
 
 /**
- * Returns a boolean indicating whehter there's an error on claim investment flow
+ * Returns a boolean indicating whether there's an error on claim investment flow
  */
 export function useHasClaimInvestmentFlowError(): boolean {
   const { investFlowData } = useClaimState()
 
   return useMemo(() => {
     return investFlowData.some(({ error }) => Boolean(error))
+  }, [investFlowData])
+}
+
+/**
+ * Returns a boolean indicating whether there's "touched" field on claim investment flow
+ */
+export function useSomeNotTouched(): boolean {
+  const { investFlowData } = useClaimState()
+
+  return useMemo(() => {
+    return investFlowData.some(({ isTouched }) => !isTouched)
+  }, [investFlowData])
+}
+
+/**
+ * Returns a boolean indicating whether there's an zero invested amount on some invest option
+ */
+export function useHasZeroInvested(): boolean {
+  const { investFlowData } = useClaimState()
+
+  return useMemo(() => {
+    return investFlowData.some(({ investedAmount }) => investedAmount === '0')
   }, [investFlowData])
 }
 

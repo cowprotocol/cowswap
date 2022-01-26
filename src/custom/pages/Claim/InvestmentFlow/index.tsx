@@ -21,6 +21,7 @@ import {
   useUserEnhancedClaimData,
   useClaimDispatchers,
   useHasClaimInvestmentFlowError,
+  useSomeNotTouched,
 } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
@@ -133,6 +134,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
 
   const hasError = useHasClaimInvestmentFlowError()
+  const someNotTouched = useSomeNotTouched()
 
   // Filtering and splitting claims into free and selected paid claims
   // `selectedClaims` are used on step 1 and 2
@@ -220,6 +222,9 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
           ))}
 
           {hasError && <InvestFlowValidation>Fix the errors before continuing</InvestFlowValidation>}
+          {!hasError && someNotTouched && (
+            <InvestFlowValidation>Investment Amount is required to continue</InvestFlowValidation>
+          )}
         </InvestContent>
       ) : null}
       {/* Invest flow: Step 2 > Review summary */}

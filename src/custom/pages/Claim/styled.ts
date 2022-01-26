@@ -1113,7 +1113,7 @@ export const UnderlineButton = styled.button`
   }
 `
 
-export const InvestInput = styled.span`
+export const InvestInput = styled.span<{ disabled: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 15px;
@@ -1131,10 +1131,12 @@ export const InvestInput = styled.span`
     flex-flow: row wrap;
     padding: 12px;
     position: relative;
-    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+    background: ${({ theme, disabled }) =>
+      disabled ? theme.bg5 : theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1};
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;
+    opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
 
     > span {
       margin-left: 5px;
@@ -1248,11 +1250,11 @@ export const InvestInput = styled.span`
     &:hover {
       color: ${({ theme }) => theme.text1};
     }
+  }
 
-    > div > label > span > ${UnderlineButton} {
-      margin-left: 4px;
-
-    }
+  > div > label > span > ${UnderlineButton} {
+    margin-left: 4px;
+  }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`

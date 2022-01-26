@@ -59,10 +59,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const { currencyAmount, price, cost: maxCost } = claim
 
   const { account, chainId } = useActiveWeb3React()
-  const { updateInvestAmount, updateInvestError } = useClaimDispatchers()
+  const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
-
-  const investmentAmount = investFlowData[optionIndex].investedAmount
 
   // Approve hooks
   const {
@@ -87,6 +85,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
   const investedAmount = investFlowData[optionIndex].investedAmount
   const inputError = investFlowData[optionIndex].error
+  const isTouched = investFlowData[optionIndex].isTouched
 
   // Syntactic sugar fns for setting/resetting global state
   const setInvestedAmount = useCallback(
@@ -101,6 +100,10 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     () => updateInvestError({ index: optionIndex, error: undefined }),
     [optionIndex, updateInvestError]
   )
+  const setInputTouched = useCallback(
+    (value: boolean) => setIsTouched({ index: optionIndex, isTouched: value }),
+    [optionIndex, setIsTouched]
+  )
 
   const token = currencyAmount?.currency
   const isNative = token?.isNative
@@ -112,6 +115,11 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const noBalance = !balance || balance.equalTo('0')
 
   const isApproved = approveState === ApprovalState.APPROVED
+
+  const onUserInput = (input: string) => {
+    setTypedValue(input)
+    setInputTouched(true)
+  }
 
   const gasCost = useMemo(() => {
     if (!estimatedGas || !isNative) {
@@ -134,7 +142,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
     const value = maxCost.greaterThan(balance) ? balance : maxCost
     setTypedValue(value.toExact() || '')
-  }, [balance, maxCost, noBalance])
+    setInputTouched(true)
+  }, [balance, maxCost, noBalance, setInputTouched])
 
   // Save "local" approving state (pre-BC) for rendering spinners etc
   const [approving, setApproving] = useState(false)
@@ -180,8 +189,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   */
 
   const vCowAmount = useMemo(
-    () => calculateInvestmentAmounts(claim, investmentAmount)?.vCowAmount,
-    [claim, investmentAmount]
+    () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,
+    [claim, investedAmount]
   )
 
   // if there is investmentAmount in redux state for this option set it as typedValue
@@ -224,6 +233,11 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       error = ErrorMessages.InsufficientBalance(token?.symbol)
     } else if (!isNative && !isApproved) {
       error = ErrorMessages.NotApproved(token?.symbol)
+    } else if (noBalance) {
+      error = ErrorMessages.InsufficientBalance(token?.symbol)
+    } else if (!parsedAmount && !isTouched) {
+      // this is to remove initial zero balance error message until user touches the input
+      error = ''
     } else if (!parsedAmount) {
       error = ErrorMessages.InvestmentIsZero
     } else if (parsedAmount.greaterThan(maxCost)) {
@@ -232,7 +246,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       error = ErrorMessages.InsufficientBalance(token?.symbol)
     }
 
-    if (error) {
+    if (error !== null) {
       // if there is error set it in redux
       setInputError(error)
       setPercentage('0')
@@ -264,6 +278,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     setInvestedAmount,
     percentage,
     gasCost,
+    isTouched,
+    noBalance,
   ])
 
   useEffect(() => {
@@ -370,7 +386,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
         {/* Error modal */}
         <ErrorModal />
         {/* Investment inputs */}
-        <InvestInput>
+        <InvestInput disabled={noBalance || !isSelfClaiming}>
           <div>
             <label>
               <span>
@@ -387,7 +403,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
                 )}
               </span>
               <StyledNumericalInput
-                onUserInput={setTypedValue}
+                onUserInput={onUserInput}
                 disabled={noBalance || !isSelfClaiming}
                 placeholder="0"
                 $loading={false}
