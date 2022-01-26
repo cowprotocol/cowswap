@@ -82,15 +82,14 @@ const ClaimsTableRow = ({
         {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
       </td>
       <td data-title="Details">
-        {!isFree ||
-          (price && (
-            <span>
-              Price:{' '}
-              <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
-                currencyAmount?.currency?.symbol
-              }`}</b>
-            </span>
-          ))}
+        {price && (
+          <span>
+            Price:{' '}
+            <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
+              currencyAmount?.currency?.symbol
+            }`}</b>
+          </span>
+        )}
         <span>
           Cost:{' '}
           <b title={cost && `${formatMax(cost, cost.currency.decimals)} ${cost.currency.symbol}`}>
