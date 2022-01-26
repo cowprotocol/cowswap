@@ -29,7 +29,7 @@ import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 
 const COW_TWEET_TEMPLATE =
-  'I just joined the 🐮 COWmmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
+  'I just joined the 🐮 CoWmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
 
 export default function ClaimingStatus() {
   const { chainId, account } = useActiveWeb3React()
@@ -98,7 +98,7 @@ export default function ClaimingStatus() {
               <span role="img" aria-label="party-hat">
                 🎉🐮{' '}
               </span>
-              Welcome to the COWmunity! We encourage you to share on Twitter and join the community on Discord to get
+              Welcome to the CoWmunity! We encourage you to share on Twitter and join the community on Discord to get
               involved in governance.
             </p>
           </Trans>
