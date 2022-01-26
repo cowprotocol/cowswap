@@ -561,7 +561,7 @@ export function useClaimCallback(account: string | null | undefined): {
           summary: `Claim ${formattedVCowAmount} vCOW`,
           claim: { recipient: account, indices: args[0] as number[] },
         })
-        return formattedVCowAmount
+        return vCowAmount.quotient.toString()
       })
     },
     [account, addTransaction, chainId, connectedAccount, estimateGasCallback, getClaimArgs, vCowContract, vCowToken]

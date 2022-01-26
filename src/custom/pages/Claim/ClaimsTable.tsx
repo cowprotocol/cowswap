@@ -4,7 +4,7 @@ import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 import { useUserEnhancedClaimData } from 'state/claim/hooks'
@@ -34,13 +34,6 @@ const ClaimTr = styled.tr<{ isPending?: boolean }>`
   > td {
     background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
     cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};
-
-    &:first-child {
-      border-radius: 8px 0 0 8px;
-    }
-    &:last-child {
-      border-radius: 0 8px 8px 0;
-    }
   }
 `
 
@@ -60,7 +53,7 @@ const ClaimsTableRow = ({
 }: ClaimsTableRowProps) => {
   return (
     <ClaimTr key={index} isPending={isPendingClaim}>
-      <td>
+      <td data-title="Select">
         {' '}
         <label className="checkAll">
           {isPendingClaim ? (
@@ -76,7 +69,7 @@ const ClaimsTableRow = ({
           )}
         </label>
       </td>
-      <td>
+      <td data-title="Type of Claim">
         {' '}
         {!isFree && <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={34} />}
         <CowProtocolLogo size={34} />
@@ -85,22 +78,27 @@ const ClaimsTableRow = ({
           {!isFree && <i>with {currencyAmount?.currency?.symbol}</i>}
         </span>
       </td>
-      <td>{formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW</td>
-      <td>
+      <td data-title="Amount" title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
+        {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
+      </td>
+      <td data-title="Details">
         {!isFree ||
           (price && (
             <span>
-              Price: <b>{`${formatSmartLocaleAware(price) || 0} vCOW per ${currencyAmount?.currency?.symbol}`}</b>
+              Price:{' '}
+              <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
+                currencyAmount?.currency?.symbol
+              }`}</b>
             </span>
           ))}
         <span>
           Cost:{' '}
-          <b>
+          <b title={cost && `${formatMax(cost, cost.currency.decimals)} ${cost.currency.symbol}`}>
             {' '}
             {isFree ? (
               <span className="green">Free!</span>
             ) : (
-              `${formatSmartLocaleAware(cost, AMOUNT_PRECISION) || 0} ${currencyAmount?.currency?.symbol}`
+              `${formatSmartLocaleAware(cost, AMOUNT_PRECISION) || 0} ${cost?.currency?.symbol}`
             )}
           </b>
         </span>

@@ -3,15 +3,15 @@ import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar } from '../styled'
-import { formatSmartLocaleAware } from 'utils/format'
+import { InvestTokenGroup, TokenLogo, InvestSummary, InvestInput, InvestAvailableBar, UnderlineButton } from '../styled'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import { InvestmentFlowProps } from '.'
 import { ApprovalState, useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
-import { ClaimType, useClaimDispatchers, useClaimState } from 'state/claim/hooks'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { StyledNumericalInput } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 
 import { ButtonConfirmed } from 'components/Button'
@@ -42,18 +42,6 @@ type InvestOptionProps = {
   closeModal: InvestmentFlowProps['modalCbs']['closeModal']
 }
 
-const _claimApproveMessageMap = (type: ClaimType) => {
-  switch (type) {
-    case ClaimType.GnoOption:
-      return 'Approving GNO for investing in vCOW'
-    case ClaimType.Investor:
-      return 'Approving USDC for investing in vCOW'
-    // Shouldn't happen, type safe
-    default:
-      return 'Unknown token approval. Please check configuration.'
-  }
-}
-
 export default function InvestOption({ claim, optionIndex, openModal, closeModal }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost } = claim
 
@@ -62,8 +50,14 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
 
   // Approve hooks
-  const [approveState, approveCallback] = useApproveCallbackFromClaim({
-    openTransactionConfirmationModal: () => openModal(_claimApproveMessageMap(claim.type), OperationType.APPROVE_TOKEN),
+  const {
+    approvalState: approveState,
+    approve: approveCallback,
+    // revokeApprove: revokeApprovalCallback, // CURRENTLY TEST ONLY
+    // isPendingApproval, // CURRENTLY TEST ONLY
+  } = useApproveCallbackFromClaim({
+    openTransactionConfirmationModal: (message: string, operationType: OperationType) =>
+      openModal(message, operationType),
     closeModals: closeModal,
     claim,
   })
@@ -147,9 +141,9 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     if (!approveCallback) return
 
     try {
-      // for pending state pre-BC
       setApproving(true)
-      await approveCallback({ transactionSummary: `Approve ${token?.symbol || 'token'} for investing in vCOW` })
+      const summary = `Approve ${token?.symbol || 'token'} for investing in vCOW`
+      await approveCallback({ modalMessage: summary, transactionSummary: summary })
     } catch (error) {
       console.error('[InvestOption]: Issue approving.', error)
       handleSetError(error?.message)
@@ -157,6 +151,29 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       setApproving(false)
     }
   }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
+
+  /* // CURRENTLY TEST ONLY
+  const handleRevokeApproval = useCallback(async () => {
+    // reset errors and close any modals
+    handleCloseError()
+
+    if (!revokeApprovalCallback) return
+
+    try {
+      setApproving(true)
+      const summary = `Revoke ${token?.symbol || 'token'} approval for vCOW contract`
+      await revokeApprovalCallback({
+        modalMessage: summary,
+        transactionSummary: summary,
+      })
+    } catch (error) {
+      console.error('[InvestOption]: Issue revoking approval.', error)
+      handleSetError(error?.message)
+    } finally {
+      setApproving(false)
+    }
+  }, [handleCloseError, handleSetError, revokeApprovalCallback, token?.symbol])
+  */
 
   const vCowAmount = useMemo(
     () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,
@@ -268,15 +285,15 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
         <InvestSummary>
           <span>
             <b>Price</b>{' '}
-            <i>
+            <i title={formatMax(price)}>
               {formatSmartLocaleAware(price) || '0'} vCOW per {currencyAmount?.currency?.symbol}
             </i>
           </span>
 
           <span>
             <b>Max. investment available</b>{' '}
-            <i>
-              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {currencyAmount?.currency?.symbol}
+            <i title={maxCost && `${formatMax(maxCost, maxCost.currency.decimals)} ${maxCost.currency.symbol}`}>
+              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {maxCost?.currency?.symbol}
             </i>
           </span>
 
@@ -288,16 +305,16 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
                   `${currencyAmount?.currency?.symbol} not approved`
                 ) : (
                   <Row>
-                    <span>{currencyAmount?.currency?.symbol} approved</span>
                     <img src={CheckCircle} alt="Approved" />
+                    <span>{currencyAmount?.currency?.symbol} approved</span>
                   </Row>
                 )}
               </i>
             ) : (
               <i>
                 <Row>
-                  <span>Approval not required!</span>
                   <img src={CheckCircle} alt="Approved" />
+                  <span>Approval not required!</span>
                 </Row>
               </i>
             )}
@@ -318,6 +335,14 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
                 )}
               </ButtonConfirmed>
             )}
+            {/*
+              // CURRENTLY TEST ONLY
+              approveState === ApprovalState.APPROVED && (
+                <UnderlineButton disabled={approving || isPendingApproval} onClick={handleRevokeApproval}>
+                  Revoke approval {approving || (isPendingApproval && <Loader size="12px" stroke="white" />)}
+                </UnderlineButton>
+              )
+             */}
           </span>
 
           <span>
@@ -333,14 +358,15 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
             <label>
               <span>
                 <b>Balance:</b>
-                <i>
-                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {currencyAmount?.currency?.symbol}
+                <i title={balance && `${formatMax(balance, balance.currency.decimals)} ${balance.currency.symbol}`}>
+                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {balance?.currency?.symbol}
                 </i>
                 {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
                 {!noBalance && isSelfClaiming && (
-                  <button disabled={!isSelfClaiming} onClick={setMaxAmount}>
+                  <UnderlineButton disabled={!isSelfClaiming} onClick={setMaxAmount}>
+                    {' '}
                     (invest max. possible)
-                  </button>
+                  </UnderlineButton>
                 )}
               </span>
               <StyledNumericalInput
@@ -352,7 +378,9 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
               />
               <b>{currencyAmount?.currency?.symbol}</b>
             </label>
-            <i>Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW</i>
+            <i title={vCowAmount && `${formatMax(vCowAmount, vCowAmount.currency.decimals)} vCOW`}>
+              Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW
+            </i>
             {/* Insufficient balance validation error */}
             {inputError && <small>{inputError}</small>}
             {inputWarning && <small className="warn">{inputWarning}</small>}

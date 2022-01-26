@@ -3,7 +3,7 @@ import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
 
 export const Icon = styled.span<Props>`
   --defaultSize: 24px;
-  --smallSize: ${({ size }) => (size ? `calc(${size}px / 2)` : 'calc(var(--defaultSize) / 2)')};
+  --smallSize: ${({ size }) => (size ? `calc(${size}px / 1.5)` : 'calc(var(--defaultSize) / 1.5)')};
   ${({ theme }) => theme.cowToken.background};
   ${({ theme }) => theme.cowToken.boxShadow};
   height: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};

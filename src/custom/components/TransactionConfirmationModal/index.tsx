@@ -355,6 +355,7 @@ export enum OperationType {
   WRAP_ETHER,
   UNWRAP_WETH,
   APPROVE_TOKEN,
+  REVOKE_APPROVE_TOKEN,
   ORDER_SIGN,
   ORDER_CANCEL,
 }
@@ -382,6 +383,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Approving token'
     case OperationType.ORDER_CANCEL:
       return 'Soft canceling your order'
+    case OperationType.REVOKE_APPROVE_TOKEN:
+      return 'Revoking token approval'
 
     default:
       return 'Almost there!'
@@ -396,6 +399,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`unwrapping`
     case OperationType.APPROVE_TOKEN:
       return t`token approval`
+    case OperationType.REVOKE_APPROVE_TOKEN:
+      return t`revoking token approval`
     case OperationType.ORDER_SIGN:
       return t`order`
     case OperationType.ORDER_CANCEL:

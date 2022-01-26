@@ -8,6 +8,7 @@ import {
   InvestSummaryTable,
   ClaimTable,
   AccountClaimSummary,
+  StepExplainer,
   Badge,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
@@ -181,25 +182,32 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
       </h1>
 
       {investFlowStep === 0 && (
-        <p>
-          You have chosen to exercise one or more investment opportunities alongside claiming your airdrop. Exercising
-          your investment options will give you the chance to acquire vCOW tokens at a fixed price. This process
-          consists of two steps:
-          <br />
-          <br />
-          1) Define the amount you would like to invest and set the required allowances for the token you are purchasing
-          vCOW with.
-          <br />
-          <br />
-          2) Claim your vCOW tokens for the Airdrop (available immediately) and for your investment (vesting linearly
-          over 4 years).
-          <br />
-          <br />
-          For more details around the token, please read{' '}
-          <ExternalLink href={COW_LINKS.vCowPost}>the blog post</ExternalLink>
-          .<br /> For more details about the claiming process, please read{' '}
-          <ExternalLink href={COW_LINKS.stepGuide}>step by step guide</ExternalLink>.
-        </p>
+        <>
+          <p>
+            You have chosen to exercise one or more investment opportunities alongside claiming your airdrop. Exercising
+            your investment options will give you the chance to acquire vCOW tokens at a fixed price. This process
+            consists of two steps.
+          </p>
+          <StepExplainer>
+            <span data-step="Step 1">
+              <p>
+                Define the amount you would like to invest and set the required allowances for the token you are
+                purchasing vCOW with.
+              </p>
+            </span>
+            <span data-step="Step 2">
+              <p>
+                Claim your vCOW tokens for the Airdrop (available immediately) and for your investment (vesting linearly
+                over 4 years).
+              </p>
+            </span>
+          </StepExplainer>
+          <p>
+            For more details around the token, please read{' '}
+            <ExternalLink href={COW_LINKS.vCowPost}>the blog post</ExternalLink>. For more details about the claiming
+            process, please read <ExternalLink href={COW_LINKS.stepGuide}>step by step guide</ExternalLink>.
+          </p>
+        </>
       )}
 
       {/* Invest flow: Step 1 > Set allowances and investment amounts */}
