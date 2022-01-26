@@ -4,6 +4,7 @@ import BadgeOriginal from 'components/Badge'
 
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
+import { Step } from 'components/Stepper'
 import { transparentize, darken } from 'polished'
 import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'assets/cow-swap/gno.png'
@@ -188,14 +189,36 @@ ${ButtonSecondary} {
     text-decoration: underline;
   }
 }
+
+${Step} {
+  > b {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 13px;
+    `};
+  }
+
+  > i {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `};
+  }
+
+}
 `
 
 export const TokenLogo = styled.div<{ symbol: string; size: number }>`
+  --smallSize: ${({ size }) => (size ? `calc(${size}px / 1.5)` : 'calc(var(--defaultSize) / 1.5)')};
   display: flex;
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
-  border-radius: ${({ size }) => `${size}px`};
+  height: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  width: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  border-radius: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
   background: ${({ symbol, theme }) => `url(${_getLogo(symbol) || theme.blueShade3}) no-repeat center/contain`};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: var(--smallSize);
+    height: var(--smallSize);
+    border-radius: var(--smallSize);
+  `};
 `
 
 function _getLogo(symbol: string) {
@@ -284,6 +307,10 @@ export const ClaimTable = styled.div`
 
   ${TokenLogo} {
     margin: 0 -16px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 -6px 0 0;
+    `};
   }
 
   table {
@@ -292,6 +319,29 @@ export const ClaimTable = styled.div`
     min-width: 100%;
     font-size: 16px;
     grid-template-columns: min-content auto auto 240px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: block;
+    `};
+
+    input[type='checkbox'] {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 42px;
+      height: 42px;
+      
+      &::after {
+        width: 15px;
+        height: 24px;
+        border: 4px solid var(--active-inner);
+        border-top: 0;
+        border-left: 0;
+        left: 0;
+        right: 0;
+        top: -6px;
+        bottom: 0;
+        margin: auto;
+      `};
+    }
   }
 
   thead,
@@ -300,8 +350,49 @@ export const ClaimTable = styled.div`
     display: contents;
   }
 
-  tr > td {
-    background: ${({ theme }) => theme.blueShade3};
+  thead {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `};
+  }
+
+  tr {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: block;
+      background: ${({ theme }) => theme.blueShade3};
+      border-radius: 12px;
+      margin: 0 0 12px;
+    `};
+
+    > td {
+      background: ${({ theme }) => theme.blueShade3};
+      margin: 0 0 12px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        background: none;
+        flex-flow: row wrap;
+        align-items: flex-start;
+        gap: 4px 0;
+        margin: 0;
+        
+        &::before {
+          font-size: 16px;
+          font-weight: normal;
+          content: attr(data-title);
+          display: block;
+          flex: 1 1 100%;
+          margin: 0 0 4px;
+        }
+      `};
+
+      &:first-child {
+        border-radius: 8px 0 0 8px;
+      }
+
+      &:last-child {
+        border-radius: 0 8px 8px 0;
+      }
+    }
   }
 
   th,
@@ -339,20 +430,27 @@ export const ClaimTable = styled.div`
     font-weight: 300;
   }
 
-  tr > td {
-    margin: 0 0 12px;
-  }
-
   tr > td:nth-of-type(2) {
     > span {
       margin: 0 12px 0 0;
       display: flex;
       flex-flow: column wrap;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        margin: 0 4px 0 0;
+        font-size: 20px;
+        flex-flow: row wrap;
+      `};
     }
 
     > span > i {
       font-style: normal;
       font-size: 15px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        font-size: 20px;
+        margin: 0 0 0 3px;
+      `};
     }
   }
 
@@ -361,6 +459,11 @@ export const ClaimTable = styled.div`
   tr > td:nth-of-type(3) {
     font-size: 18px;
     font-weight: 500;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 20px;
+      font-weight: bold;
+    `};
   }
 
   tr > td:nth-of-type(4) {
@@ -369,6 +472,10 @@ export const ClaimTable = styled.div`
     flex-flow: column wrap;
     align-items: flex-start;
     gap: 4px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 16px;
+    `};
 
     > span {
       color: ${({ theme }) => transparentize(0.1, theme.text1)};
@@ -455,6 +562,10 @@ export const ClaimTotal = styled.div`
     font-weight: normal;
     margin: 0 0 2px;
     opacity: 0.7;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 3px;
+    `};
   }
 
   > p {
@@ -464,13 +575,14 @@ export const ClaimTotal = styled.div`
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 16px;
+      line-height: 1;
     `};
   }
 `
 
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
-  padding: 24px;
+  padding: 24px 24px 0;
   color: ${({ theme }) => theme.text1};
   position: relative;
   display: flex;
@@ -479,13 +591,50 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   font-size: 26px;
   font-weight: 300;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 16px 8px 0;
+  `};
+
   h3 {
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 42px;
+    font-weight: bold;
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
     color: ${({ theme }) => theme.text1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 26px;
+    `};
+  }
+
+  > h4 {
+    font-size: 18px;
+    line-height: 1.5;
+    font-weight: normal;
+    margin: 0 0 24px;
+    text-align: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+    `};
+  }
+
+  > h4 > div > p {
+    margin: 24px auto 0;
+  }
+
+  > h4 > div > p > b {
+    word-break: break-all;
+    display: block;
+  }
+
+  > h4 > button {
+    margin: 32px auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 20px auto;
+    `};
   }
 `
 
@@ -503,8 +652,8 @@ export const AttemptFooter = styled.div`
   }
 `
 
-export const ConfirmedIcon = styled.div`
-  padding: 60px 0;
+export const ConfirmedIcon = styled.div<{ isConfirmed: boolean }>`
+  padding: ${({ isConfirmed }) => (isConfirmed ? '12px 0' : '60px 0')};
 `
 
 export const CheckIcon = styled(CheckCircle)`
@@ -762,12 +911,20 @@ export const InvestContent = styled.div`
       font-size: 14px;
       grid-template-columns: repeat(3, auto);
 
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        grid-template-columns: 1fr;
+      `}
       tr > td {
         flex-flow: column wrap;
         align-content: center;
         gap: 18px;
         font-weight: 300;
         font-size: 14px;
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          gap: 4px 0;
+          margin: 0;
+        `};
       }
 
       tr > td > span {
@@ -781,6 +938,10 @@ export const InvestContent = styled.div`
 
         &:last-child {
           width: 100%;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            width: auto;
+          `};
         }
       }
 
@@ -788,6 +949,10 @@ export const InvestContent = styled.div`
         flex-flow: row wrap;
         align-content: center;
         gap: 6px;
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          align-items: center;
+        `};
 
         > span > b,
         > b {
@@ -808,12 +973,21 @@ export const InvestContent = styled.div`
 
         > span {
           margin: 0;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            margin: 24px 0 0;
+          `};
         }
 
         > i {
           font-style: normal;
           font-size: 18px;
           font-weight: 500;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            font-size: 16px;
+            font-weight: bold;
+          `};
         }
       }
 
@@ -824,6 +998,11 @@ export const InvestContent = styled.div`
 
         > span {
           width: 100%;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            flex-flow: row wrap;
+            gap: 0 3px;
+          `};
         }
       }
     }
@@ -850,6 +1029,11 @@ export const InvestTokenGroup = styled.div`
   border-radius: 12px;
   background: ${({ theme }) => theme.blueShade3};
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-flow: row wrap;
+    padding: 16px;
+   `};
+
   ${TokenLogo},
   ${Icon} {
     border: 4px solid ${({ theme }) => theme.blueShade3};
@@ -860,6 +1044,10 @@ export const InvestTokenGroup = styled.div`
     flex-flow: column wrap;
     flex: 0 1 auto;
     padding: 0 32px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      padding: 0;
+    `};
   }
 
   > div > span {
@@ -868,16 +1056,29 @@ export const InvestTokenGroup = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     margin: 0 25px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      order: 1;
+    `};
   }
 
   > div > h3 {
     font-size: 21px;
     font-weight: 600;
     margin: 0 0 18px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      order: 2;
+      margin: 8px 0 24px;
+    `};
   }
 
   ${TokenLogo} {
     margin: 0 -36px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 -17px 0 0;
+    `};
   }
 
   > span {
@@ -960,6 +1161,11 @@ export const InvestInput = styled.span`
     border-radius: 12px;
     padding: 0 12px;
     height: 32px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      top: initial;
+      bottom: 12px;
+    `};
   }
 
   > div > label > input {
@@ -972,6 +1178,10 @@ export const InvestInput = styled.span`
     width: 100%;
     line-height: 1;
     text-align: left;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 21px;
+    `};
 
     &::placeholder {
       opacity: 0.5;
@@ -997,20 +1207,52 @@ export const InvestInput = styled.span`
     display: flex;
     width: 100%;
     font-size: 14px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+  `};
   }
 
   > div > label > span > b {
     margin: 0 3px 0 0;
     font-weight: normal;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      bottom: 12px;
+      top: initial;
+    `};
   }
 
   > div > Label > span > i {
     font-style: normal;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 5px 0 0;
+    `};
   }
 
-  > div > label > span > ${UnderlineButton} {
-    margin-left: 4px;
-  }
+  > div > label > span > button {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: ${({ theme }) => theme.primary4};
+    text-decoration: underline;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0;
+      padding: 0;
+    `};
+
+    &:hover {
+      color: ${({ theme }) => theme.text1};
+    }
+
+    > div > label > span > ${UnderlineButton} {
+      margin-left: 4px;
+
+    }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
@@ -1064,6 +1306,10 @@ export const InvestSummary = styled.div`
   font-size: 15px;
   gap: 16px 36px;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 16px 8px;
+  `};
+
   > span {
     display: flex;
     flex-flow: column wrap;
@@ -1083,7 +1329,7 @@ export const InvestSummary = styled.div`
   }
 
   > span > i > div > img {
-    margin: 0 0 0 4px;
+    margin: 0 4px 0 0;
     height: 21px;
     width: 21px;
   }
@@ -1193,5 +1439,123 @@ export const CowSpinner = styled.div`
     to {
       transform: rotate(360deg);
     }
+  }
+`
+
+const SuccessBannerColors = {
+  opacity: 0.8,
+  darken: 0.1,
+  twitter: '#17a7ff',
+  discord: '#4e72ef',
+}
+
+export const BannersWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 12px 0 0;
+  flex-flow: column wrap;
+
+  > a,
+  > a:hover,
+  > a:focus {
+    text-decoration: none;
+  }
+`
+
+export const SuccessBanner = styled.div<{ type: string }>`
+  width: 100%;
+  height: 86px;
+  padding: 0 24px;
+  border-radius: 24px;
+  margin: 0 0 12px;
+  font-weight: bold;
+  font-size: 21px;
+  justify-content: space-between;
+  align-items: center;
+  transition: border 0.3s ease-in-out;
+  border: 2px solid transparent;
+  color: ${({ type, theme }) =>
+    type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.text1};
+  display: flex;
+  background: ${({ type, theme }) =>
+    type === 'Twitter'
+      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.twitter)
+      : type === 'Discord'
+      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.discord)
+      : theme.blueShade3};
+
+  &:hover {
+    border: 2px solid
+      ${({ type, theme }) =>
+        type === 'Twitter'
+          ? darken(SuccessBannerColors.darken, SuccessBannerColors.twitter)
+          : type === 'Discord'
+          ? darken(SuccessBannerColors.darken, SuccessBannerColors.discord)
+          : darken(SuccessBannerColors.darken, theme.blueShade3)};
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 16px;
+  `};
+
+  > svg {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    stroke: none;
+    fill: ${({ type, theme }) =>
+      type === 'Twitter'
+        ? SuccessBannerColors.twitter
+        : type === 'Discord'
+        ? SuccessBannerColors.discord
+        : theme.primary1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 32px;
+      height: 32px;
+    `};
+
+    > path {
+      fill: ${({ type, theme }) =>
+        type === 'Twitter'
+          ? SuccessBannerColors.twitter
+          : type === 'Discord'
+          ? SuccessBannerColors.discord
+          : theme.text1};
+    }
+
+`
+
+export const StepExplainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  margin: 0 0 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+    gap: 16px 0;
+  `}
+  > span {
+    padding: 24px;
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    position: relative;
+  }
+
+  > span::before {
+    content: attr(data-step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    flex: 1 1 min-content;
+    padding: 0 0 12px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  > span > p {
+    margin: 0;
   }
 `
