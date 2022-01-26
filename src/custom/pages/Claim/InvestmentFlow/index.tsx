@@ -175,8 +175,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
         {investFlowStep === 0
           ? 'Claim and invest'
           : investFlowStep === 1
-            ? 'Set allowance to Buy vCOW'
-            : 'Confirm transaction to claim all vCOW'}
+          ? 'Set allowance to Buy vCOW'
+          : 'Confirm transaction to claim all vCOW'}
       </h1>
 
       {investFlowStep === 0 && (
