@@ -1250,11 +1250,11 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     &:hover {
       color: ${({ theme }) => theme.text1};
     }
+  }
 
-    > div > label > span > ${UnderlineButton} {
-      margin-left: 4px;
-
-    }
+  > div > label > span > ${UnderlineButton} {
+    margin-left: 4px;
+  }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
