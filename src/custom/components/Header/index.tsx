@@ -261,7 +261,12 @@ export default function Header() {
           <HeaderElement>
             {IS_CLAIMING_ENABLED && (
               <VCowWrapper>
-                <CowClaimButton isClaimPage={isClaimPage} account={account} handleOnClickClaim={handleOnClickClaim} />
+                <CowClaimButton
+                  isClaimPage={isClaimPage}
+                  account={account}
+                  chainId={chainId}
+                  handleOnClickClaim={handleOnClickClaim}
+                />
               </VCowWrapper>
             )}
 

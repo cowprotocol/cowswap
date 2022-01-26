@@ -5,7 +5,7 @@ import { ChevronDown } from 'react-feather'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { Txt } from 'assets/styles/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from '@src/custom/constants'
 
 type VCOWDropdownProps = {
@@ -30,10 +30,8 @@ export default function VCOWDropdown({ balance }: VCOWDropdownProps) {
             <CowProtocolLogo size={46} />
             <ProfileFlexCol>
               <Txt fs={14}>Balance</Txt>
-              <Txt fs={18} title={`${formatMax(balance)} vCOW`}>
-                <strong>
-                  {formatSmart(balance, AMOUNT_PRECISION, { thousandSeparator: true, isLocaleAware: true }) ?? '0'} vCOW
-                </strong>
+              <Txt fs={18} title={`${formatMax(balance, balance?.currency.decimals)} vCOW`}>
+                <strong>{formatSmartLocaleAware(balance, AMOUNT_PRECISION) || '0'} vCOW</strong>
               </Txt>
             </ProfileFlexCol>
           </VCOWBalance>

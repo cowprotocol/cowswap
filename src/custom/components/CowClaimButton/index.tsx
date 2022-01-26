@@ -1,6 +1,11 @@
 import { Trans } from '@lingui/macro'
 import styled, { css } from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { V_COW } from 'constants/tokens'
+import { ChainId } from 'state/lists/actions/actionsMod'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export const Wrapper = styled.div<{ isClaimPage?: boolean | null }>`
   ${({ theme }) => theme.card.boxShadow};
@@ -73,15 +78,22 @@ export const Wrapper = styled.div<{ isClaimPage?: boolean | null }>`
 interface CowClaimButtonProps {
   isClaimPage?: boolean | null | undefined
   account?: string | null | undefined
+  chainId: ChainId | undefined
   handleOnClickClaim?: () => void
 }
 
-export default function CowClaimButton({ isClaimPage, handleOnClickClaim }: CowClaimButtonProps) {
+export default function CowClaimButton({ isClaimPage, account, chainId, handleOnClickClaim }: CowClaimButtonProps) {
+  const vCowToken = chainId ? V_COW[chainId] : undefined
+  const vCowBalance = useTokenBalance(account || undefined, vCowToken)
+
+  const formattedVCowBalance = formatSmartLocaleAware(vCowBalance, AMOUNT_PRECISION)
+  const formattedMaxVCowBalance = formatMax(vCowBalance, vCowToken?.decimals)
+
   return (
     <Wrapper isClaimPage={isClaimPage} onClick={handleOnClickClaim}>
       <CowProtocolLogo />
-      <b>
-        <Trans>vCOW</Trans>
+      <b title={formattedMaxVCowBalance && `${formattedMaxVCowBalance} vCOW`}>
+        <Trans>{formattedVCowBalance} vCOW</Trans>
       </b>
     </Wrapper>
   )
