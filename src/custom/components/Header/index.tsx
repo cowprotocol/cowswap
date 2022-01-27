@@ -188,7 +188,7 @@ export const LogoImage = styled.div`
   }
 `
 
-const UniIcon = styled.div`
+export const UniIcon = styled.div`
   display: flex;
   position: relative;
   transition: transform 0.3s ease;
