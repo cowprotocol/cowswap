@@ -291,7 +291,12 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
   return (
     <StyledMenu isClaimPage={isClaimPage}>
       <MenuFlyout>
-        <CowClaimButton isClaimPage={isClaimPage} handleOnClickClaim={handleOnClickClaim} />
+        <CowClaimButton
+          isClaimPage={isClaimPage}
+          handleOnClickClaim={handleOnClickClaim}
+          account={account}
+          chainId={chainId}
+        />
 
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap

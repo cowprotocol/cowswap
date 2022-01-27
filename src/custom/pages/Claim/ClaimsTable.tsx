@@ -1,6 +1,6 @@
 import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
-import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
+import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
@@ -15,6 +15,10 @@ import { Countdown } from 'pages/Claim/Countdown'
 import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
 import { useEffect } from 'react'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { ExternalLink } from 'theme/index'
+import { COW_LINKS } from '.'
+import SVG from 'react-inlinesvg'
+import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 
 export type ClaimsTableProps = {
   isAirdropOnly: boolean
@@ -34,13 +38,6 @@ const ClaimTr = styled.tr<{ isPending?: boolean }>`
   > td {
     background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
     cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};
-
-    &:first-child {
-      border-radius: 8px 0 0 8px;
-    }
-    &:last-child {
-      border-radius: 0 8px 8px 0;
-    }
   }
 `
 
@@ -60,7 +57,7 @@ const ClaimsTableRow = ({
 }: ClaimsTableRowProps) => {
   return (
     <ClaimTr key={index} isPending={isPendingClaim}>
-      <td>
+      <td data-title="Select">
         {' '}
         <label className="checkAll">
           {isPendingClaim ? (
@@ -76,7 +73,7 @@ const ClaimsTableRow = ({
           )}
         </label>
       </td>
-      <td>
+      <td data-title="Type of Claim">
         {' '}
         {!isFree && <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={34} />}
         <CowProtocolLogo size={34} />
@@ -85,19 +82,18 @@ const ClaimsTableRow = ({
           {!isFree && <i>with {currencyAmount?.currency?.symbol}</i>}
         </span>
       </td>
-      <td title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
+      <td data-title="Amount" title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
         {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
       </td>
-      <td>
-        {!isFree ||
-          (price && (
-            <span>
-              Price:{' '}
-              <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
-                currencyAmount?.currency?.symbol
-              }`}</b>
-            </span>
-          ))}
+      <td data-title="Details">
+        {price && (
+          <span>
+            Price:{' '}
+            <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
+              currencyAmount?.currency?.symbol
+            }`}</b>
+          </span>
+        )}
         <span>
           Cost:{' '}
           <b title={cost && `${formatMax(cost, cost.currency.decimals)} ${cost.currency.symbol}`}>
@@ -192,6 +188,15 @@ export default function ClaimsTable({ isAirdropOnly, hasClaims }: ClaimsTablePro
           </tbody>
         </table>
       </ClaimTable>
+      <ExternalLink href={COW_LINKS.vCowPost}>
+        <BannerExplainer>
+          <SVG src={CowProtocolImage} description="Questions? Read More." />
+          <span>
+            <b>vCOW the governance token.</b>
+            <small>Find out more about the protocol ↗</small>
+          </span>
+        </BannerExplainer>
+      </ExternalLink>
     </ClaimBreakdown>
   )
 }

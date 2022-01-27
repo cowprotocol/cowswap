@@ -4,21 +4,21 @@ import BadgeOriginal from 'components/Badge'
 
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
-import { transparentize, darken } from 'polished'
+import { Step } from 'components/Stepper'
+import { transparentize, darken, lighten } from 'polished'
 import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'assets/cow-swap/gno.png'
 import LogoUSDC from 'assets/cow-swap/usdc.png'
 import LogoXDAI from 'assets/cow-swap/xdai.png'
+import { CopyIcon } from 'components/Copy'
+import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 
-export const PageWrapper = styled.div`
+export const InnerPageWrapper = styled.div`
   --border-radius: 56px;
   --border-radius-small: 16px;
   display: flex;
   flex-flow: column wrap;
-  max-width: 760px;
-  width: 100%;
   color: ${({ theme }) => theme.text1};
-  border-radius: var(--border-radius);
   padding: 30px;
   border: ${({ theme }) => theme.appBody.border};
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
@@ -28,12 +28,193 @@ export const PageWrapper = styled.div`
     padding: 16px;
     border-radius: var(--border-radius-small);
   `};
+}
+
+a {
+  color: ${({ theme }) => theme.primary4};
+}
+
+p {
+  font-size: 16px;
+  display: block;
+  line-height: 1.6;
+  font-weight: 300;
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+p > i {
+  color: ${({ theme }) => theme.primary1};
+}
+
+p > a {
+  display: inline;
+  color: ${({ theme }) => darken(0.1, theme.primary1)};
+}
+
+${ButtonPrimary} {
+  border-radius: var(--border-radius);
+  width: 100%;
+  font-size: 21px;
+  padding: 24px 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0 auto 24px;
+  `};
+
+  &[disabled] {
+    cursor: not-allowed;
+    pointer-events: all;
+  }
+}
+
+${ButtonSecondary} {
+  background: 0;
+  color: ${({ theme }) => theme.primary4};
+  border: none;
+
+  &:hover {
+    border: 0;
+    box-shadow: none;
+    transform: none;
+    background: 0;
+    color: ${({ theme }) => theme.primary4};
+    text-decoration: underline;
+  }
+}
+
+${Step} {
+  > b {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 13px;
+    `};
+  }
+
+  > i {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `};
+  }
+
+}
+`
+
+export const PageWrapper = styled.div`
+  --border-radius: 56px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  width: 100%;
+
+  > ${InnerPageWrapper}, > ${ClaimsOnOtherChainsBanner} {
+    max-width: 760px;
+    width: 100%;
+    border-radius: var(--border-radius);
+  }
+
+  > ${ClaimsOnOtherChainsBanner} {
+    padding: 8px 25px;
+  }
+`
+
+export const TokenLogo = styled.div<{ symbol: string; size: number }>`
+  --smallSize: ${({ size }) => (size ? `calc(${size}px / 1.5)` : 'calc(var(--defaultSize) / 1.5)')};
+  display: flex;
+  height: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  width: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  border-radius: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  background: ${({ symbol, theme }) => `url(${_getLogo(symbol) || theme.blueShade3}) no-repeat center/contain`};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: var(--smallSize);
+    height: var(--smallSize);
+    border-radius: var(--smallSize);
+  `};
+`
+
+function _getLogo(symbol: string) {
+  switch (symbol.toUpperCase()) {
+    case 'GNO':
+      return LogoGNO
+    case 'USDC':
+      return LogoUSDC
+    case 'ETH':
+      return LogoETH
+    case 'XDAI':
+      return LogoXDAI
+    default:
+      return undefined
+  }
+}
+
+export const ClaimSummary = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
+  background: ${({ theme }) => theme.currencyInput?.background};
+  border: ${({ theme }) => theme.currencyInput?.border};
+  border-radius: var(--border-radius);
+  margin: 0 auto 24px;
+  position: relative;
+  overflow: hidden;
+
+  h1,
+  div {
+    z-index: 1;
+  }
+
+  p {
+    margin: 0;
+    display: block;
+  }
+
+  > div {
+    margin: 0 0 0 18px;
+  }
+`
+
+export const ClaimSummaryTitle = styled.h1`
+  font-size: 1.6rem;
+  margin-left: 15px;
+`
+
+export const IntroDescription = styled.div<{ center?: boolean }>`
+  display: block;
+  width: 100%;
+  margin: 0 0 24px;
+  line-height: 1.6;
+
+  text-align: ${({ center }) => (center ? 'center' : 'initial')};
+
+  > p {
+    margin: 8px auto 24px;
+  }
+
+  > p > i {
+    color: ${({ theme }) => theme.text1};
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  > button {
+    width: auto;
+    display: inline;
+  }
+`
+
+export const ClaimTable = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  margin: 0;
 
   input[type='checkbox'],
   input[type='radio'] {
     --active: ${({ theme }) => theme.primary1};
     --active-inner: ${({ theme }) => theme.black};
-    --focus: 2px rgba(39, 94, 254, .3);
+    --focus: 2px rgba(39, 94, 254, 0.3);
     --border: ${({ theme }) => theme.blueShade3};
     --border-hover: ${({ theme }) => theme.primary1};
     --background: ${({ theme }) => theme.white};
@@ -64,7 +245,7 @@ export const PageWrapper = styled.div`
 
     &:disabled {
       cursor: not-allowed;
-      opacity: .5;
+      opacity: 0.5;
 
       &:checked {
       }
@@ -132,150 +313,9 @@ export const PageWrapper = styled.div`
       border-radius: 50%;
       background: var(--active-inner);
       opacity: 0;
-      transform: scale(var(--s, .7));
+      transform: scale(var(--s, 0.7));
     }
   }
-}
-
-a {
-  color: ${({ theme }) => theme.primary4};
-}
-
-p {
-  font-size: 16px;
-  display: block;
-  line-height: 1.6;
-  font-weight: 300;
-  margin: 0 0 24px;
-  text-align: center;
-}
-
-p > i {
-  color: ${({ theme }) => theme.primary1};
-}
-
-p > a {
-  display: inline;
-}
-
-${ButtonPrimary} {
-  border-radius: var(--border-radius);
-  width: 100%;
-  font-size: 21px;
-  padding: 24px 16px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 0 auto 24px;
-  `};
-
-  &[disabled] {
-    cursor: not-allowed;
-    pointer-events: all;
-  }
-}
-
-${ButtonSecondary} {
-  background: 0;
-  color: ${({ theme }) => theme.primary4};
-  border: none;
-
-  &:hover {
-    border: 0;
-    box-shadow: none;
-    transform: none;
-    background: 0;
-    color: ${({ theme }) => theme.primary4};
-    text-decoration: underline;
-  }
-}
-`
-
-export const TokenLogo = styled.div<{ symbol: string; size: number }>`
-  display: flex;
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
-  border-radius: ${({ size }) => `${size}px`};
-  background: ${({ symbol, theme }) => `url(${_getLogo(symbol) || theme.blueShade3}) no-repeat center/contain`};
-`
-
-function _getLogo(symbol: string) {
-  switch (symbol.toUpperCase()) {
-    case 'GNO':
-      return LogoGNO
-    case 'USDC':
-      return LogoUSDC
-    case 'ETH':
-      return LogoETH
-    case 'XDAI':
-      return LogoXDAI
-    default:
-      return undefined
-  }
-}
-
-export const ClaimSummary = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 8px;
-  background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
-  border: ${({ theme }) =>
-    theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
-  border-radius: var(--border-radius);
-  margin: 0 auto 24px;
-  position: relative;
-  overflow: hidden;
-
-  h1,
-  div {
-    z-index: 1;
-  }
-
-  p {
-    margin: 0;
-    display: block;
-  }
-
-  > div {
-    margin: 0 0 0 18px;
-  }
-`
-
-export const ClaimSummaryTitle = styled.h1`
-  font-size: 1.6rem;
-  margin-left: 15px;
-`
-
-export const IntroDescription = styled.div<{ center?: boolean }>`
-  display: block;
-  width: 100%;
-  margin: 0 0 24px;
-  line-height: 1.6;
-
-  text-align: ${({ center }) => (center ? 'center' : 'initial')};
-
-  > p {
-    margin: 8px auto 24px;
-  }
-
-  > p > i {
-    color: ${({ theme }) => theme.text1};
-    font-weight: 600;
-    font-style: normal;
-  }
-
-  > button {
-    width: auto;
-    display: inline;
-  }
-`
-
-export const ClaimTable = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  width: 100%;
-  margin: 0 0 24px;
 
   ${TokenLogo},
   ${Icon} {
@@ -284,6 +324,10 @@ export const ClaimTable = styled.div`
 
   ${TokenLogo} {
     margin: 0 -16px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 -6px 0 0;
+    `};
   }
 
   table {
@@ -292,6 +336,29 @@ export const ClaimTable = styled.div`
     min-width: 100%;
     font-size: 16px;
     grid-template-columns: min-content auto auto 240px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: block;
+    `};
+
+    input[type='checkbox'] {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 42px;
+      height: 42px;
+      
+      &::after {
+        width: 15px;
+        height: 24px;
+        border: 4px solid var(--active-inner);
+        border-top: 0;
+        border-left: 0;
+        left: 0;
+        right: 0;
+        top: -6px;
+        bottom: 0;
+        margin: auto;
+      `};
+    }
   }
 
   thead,
@@ -300,8 +367,49 @@ export const ClaimTable = styled.div`
     display: contents;
   }
 
-  tr > td {
-    background: ${({ theme }) => theme.blueShade3};
+  thead {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `};
+  }
+
+  tr {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: block;
+      background: ${({ theme }) => theme.blueShade3};
+      border-radius: 12px;
+      margin: 0 0 12px;
+    `};
+
+    > td {
+      background: ${({ theme }) => theme.blueShade3};
+      margin: 0 0 12px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        background: none;
+        flex-flow: row wrap;
+        align-items: flex-start;
+        gap: 4px 0;
+        margin: 0;
+        
+        &::before {
+          font-size: 16px;
+          font-weight: normal;
+          content: attr(data-title);
+          display: block;
+          flex: 1 1 100%;
+          margin: 0 0 4px;
+        }
+      `};
+
+      &:first-child {
+        border-radius: 8px 0 0 8px;
+      }
+
+      &:last-child {
+        border-radius: 0 8px 8px 0;
+      }
+    }
   }
 
   th,
@@ -339,20 +447,27 @@ export const ClaimTable = styled.div`
     font-weight: 300;
   }
 
-  tr > td {
-    margin: 0 0 12px;
-  }
-
   tr > td:nth-of-type(2) {
     > span {
       margin: 0 12px 0 0;
       display: flex;
       flex-flow: column wrap;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        margin: 0 4px 0 0;
+        font-size: 20px;
+        flex-flow: row wrap;
+      `};
     }
 
     > span > i {
       font-style: normal;
       font-size: 15px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        font-size: 20px;
+        margin: 0 0 0 3px;
+      `};
     }
   }
 
@@ -361,6 +476,11 @@ export const ClaimTable = styled.div`
   tr > td:nth-of-type(3) {
     font-size: 18px;
     font-weight: 500;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 20px;
+      font-weight: bold;
+    `};
   }
 
   tr > td:nth-of-type(4) {
@@ -369,6 +489,10 @@ export const ClaimTable = styled.div`
     flex-flow: column wrap;
     align-items: flex-start;
     gap: 4px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 16px;
+    `};
 
     > span {
       color: ${({ theme }) => transparentize(0.1, theme.text1)};
@@ -426,6 +550,10 @@ export const ClaimAccount = styled.div`
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+
+    button {
+      align-self: center;
+    }
   }
 
   > div > img {
@@ -455,6 +583,10 @@ export const ClaimTotal = styled.div`
     font-weight: normal;
     margin: 0 0 2px;
     opacity: 0.7;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 0 3px;
+    `};
   }
 
   > p {
@@ -464,13 +596,14 @@ export const ClaimTotal = styled.div`
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 16px;
+      line-height: 1;
     `};
   }
 `
 
 export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   width: 100%;
-  padding: 24px;
+  padding: 24px 24px 0;
   color: ${({ theme }) => theme.text1};
   position: relative;
   display: flex;
@@ -479,13 +612,54 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
   font-size: 26px;
   font-weight: 300;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 16px 8px 0;
+  `};
+
   h3 {
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 42px;
+    font-weight: bold;
     line-height: 1.2;
     text-align: center;
     margin: 0 0 12px;
     color: ${({ theme }) => theme.text1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 26px;
+    `};
+  }
+
+  > h4 {
+    font-size: 18px;
+    line-height: 1.5;
+    font-weight: normal;
+    margin: 0 0 24px;
+    text-align: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+    `};
+  }
+
+  > h4 > div > p {
+    margin: 24px auto 0;
+  }
+
+  > h4 > button {
+    margin: 32px auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 20px auto;
+    `};
+  }
+
+  ${CopyIcon} {
+    display: inline;
+    min-width: 6em;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      min-width: 0;
+    `};
   }
 `
 
@@ -503,8 +677,8 @@ export const AttemptFooter = styled.div`
   }
 `
 
-export const ConfirmedIcon = styled.div`
-  padding: 60px 0;
+export const ConfirmedIcon = styled.div<{ isConfirmed: boolean }>`
+  padding: ${({ isConfirmed }) => (isConfirmed ? '12px 0' : '60px 0')};
 `
 
 export const CheckIcon = styled(CheckCircle)`
@@ -530,7 +704,7 @@ export const EligibleBanner = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => theme.attention};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -538,10 +712,15 @@ export const EligibleBanner = styled.div`
     text-align: left;
     padding: 18px;
   `}
-  > img {
+
+  > svg {
     margin: 0 6px 0 0;
     width: 21px;
     height: 21px;
+
+    > path {
+      fill: ${({ theme }) => darken(0.1, theme.attention)};
+    }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 12px 0 6px;
@@ -692,6 +871,12 @@ export const ClaimBreakdown = styled.div`
     margin: 0 0 24px;
     text-align: center;
   }
+
+  > a,
+  > a:hover,
+  > a:focus {
+    text-decoration: none;
+  }
 `
 
 export const FooterNavButtons = styled.div`
@@ -714,12 +899,6 @@ export const FooterNavButtons = styled.div`
       margin: 0 6px 0 0;
     }
   }
-`
-
-export const ReadMoreText = styled.div`
-  margin: 18px 0;
-  text-align: center;
-  font-size: 15px;
 `
 
 export const TopNav = styled.div`
@@ -748,11 +927,23 @@ export const InvestFlow = styled.div`
     font-weight: 500;
     text-align: center;
   }
+
+  > a,
+  > a:hover,
+  > a:visited,
+  > a:focus {
+    text-decoration: none;
+  }
 `
 
 export const InvestContent = styled.div`
   display: flex;
   flex-flow: column wrap;
+
+  > h4 {
+    font-size: 28px;
+    text-align: center;
+  }
 
   ${ClaimTable} {
     table {
@@ -762,12 +953,20 @@ export const InvestContent = styled.div`
       font-size: 14px;
       grid-template-columns: repeat(3, auto);
 
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        grid-template-columns: 1fr;
+      `}
       tr > td {
         flex-flow: column wrap;
         align-content: center;
         gap: 18px;
         font-weight: 300;
         font-size: 14px;
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          gap: 4px 0;
+          margin: 0;
+        `};
       }
 
       tr > td > span {
@@ -781,6 +980,10 @@ export const InvestContent = styled.div`
 
         &:last-child {
           width: 100%;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            width: auto;
+          `};
         }
       }
 
@@ -788,6 +991,10 @@ export const InvestContent = styled.div`
         flex-flow: row wrap;
         align-content: center;
         gap: 6px;
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          align-items: center;
+        `};
 
         > span > b,
         > b {
@@ -808,12 +1015,21 @@ export const InvestContent = styled.div`
 
         > span {
           margin: 0;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            margin: 24px 0 0;
+          `};
         }
 
         > i {
           font-style: normal;
           font-size: 18px;
           font-weight: 500;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            font-size: 16px;
+            font-weight: bold;
+          `};
         }
       }
 
@@ -824,6 +1040,11 @@ export const InvestContent = styled.div`
 
         > span {
           width: 100%;
+
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            flex-flow: row wrap;
+            gap: 0 3px;
+          `};
         }
       }
     }
@@ -850,6 +1071,11 @@ export const InvestTokenGroup = styled.div`
   border-radius: 12px;
   background: ${({ theme }) => theme.blueShade3};
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-flow: row wrap;
+    padding: 16px;
+   `};
+
   ${TokenLogo},
   ${Icon} {
     border: 4px solid ${({ theme }) => theme.blueShade3};
@@ -860,6 +1086,10 @@ export const InvestTokenGroup = styled.div`
     flex-flow: column wrap;
     flex: 0 1 auto;
     padding: 0 32px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      padding: 0;
+    `};
   }
 
   > div > span {
@@ -868,16 +1098,29 @@ export const InvestTokenGroup = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     margin: 0 25px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      order: 1;
+    `};
   }
 
   > div > h3 {
     font-size: 21px;
     font-weight: 600;
     margin: 0 0 18px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      order: 2;
+      margin: 8px 0 24px;
+    `};
   }
 
   ${TokenLogo} {
     margin: 0 -36px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 -17px 0 0;
+    `};
   }
 
   > span {
@@ -901,18 +1144,23 @@ export const UnderlineButton = styled.button`
   text-align: left;
   padding: 0;
 
+  > svg {
+    margin-left: 3px;
+  }
+
   &:hover {
     color: ${({ theme }) => theme.text1};
   }
 
   &:disabled {
     text-decoration: none;
-    color: ${({ theme }) => theme.disabled};
+    color: ${({ theme }) => transparentize(0.35, theme.primary4)};
     cursor: auto;
+    font-style: italic;
   }
 `
 
-export const InvestInput = styled.span`
+export const InvestInput = styled.span<{ disabled: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 15px;
@@ -930,10 +1178,12 @@ export const InvestInput = styled.span`
     flex-flow: row wrap;
     padding: 12px;
     position: relative;
-    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+    background: ${({ theme, disabled }) =>
+      disabled ? theme.bg5 : theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1};
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;
+    opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
 
     > span {
       margin-left: 5px;
@@ -960,6 +1210,11 @@ export const InvestInput = styled.span`
     border-radius: 12px;
     padding: 0 12px;
     height: 32px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      top: initial;
+      bottom: 12px;
+    `};
   }
 
   > div > label > input {
@@ -972,6 +1227,10 @@ export const InvestInput = styled.span`
     width: 100%;
     line-height: 1;
     text-align: left;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 21px;
+    `};
 
     &::placeholder {
       opacity: 0.5;
@@ -997,20 +1256,39 @@ export const InvestInput = styled.span`
     display: flex;
     width: 100%;
     font-size: 14px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+  `};
   }
 
   > div > label > span > b {
     margin: 0 3px 0 0;
     font-weight: normal;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      bottom: 12px;
+      top: initial;
+    `};
   }
 
   > div > Label > span > i {
     font-style: normal;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0 5px 0 0;
+    `};
   }
 
   > div > label > span > ${UnderlineButton} {
     margin-left: 4px;
-  }
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 0;
+      padding: 0;
+    `};
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
@@ -1064,6 +1342,10 @@ export const InvestSummary = styled.div`
   font-size: 15px;
   gap: 16px 36px;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 16px 8px;
+  `};
+
   > span {
     display: flex;
     flex-flow: column wrap;
@@ -1083,9 +1365,9 @@ export const InvestSummary = styled.div`
   }
 
   > span > i > div > img {
-    margin: 0 0 0 4px;
-    height: 21px;
-    width: 21px;
+    margin: 0 5px 0 0;
+    height: 19px;
+    width: 19px;
   }
 
   > span > b {
@@ -1114,25 +1396,111 @@ export const ClaimAccountButtons = styled.div`
 
 export const AccountClaimSummary = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   gap: 12px;
-  margin: 24px 0;
+  margin: 0 0 12px;
+  position: relative;
 
-  > span {
-    display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
+  `};
+
+  > div {
+    display: flex;
     white-space: pre-wrap;
     gap: 3px;
+    padding: 24px;
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    flex: 0 1 50%;
+    color: inherit;
+
+    &:first-of-type {
+      padding-right: 32px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 24px 24px 32px 24px;
+      `};
+    }
+
+    &:last-of-type {
+      padding-left: 32px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 32px 24px 24px 24px;
+      `};
+    }
   }
 
-  > span > i {
+  > div > span {
+    display: flex;
+    flex-flow: column wrap;
+    color: inherit;
+    gap: 9px 0;
+  }
+
+  > div > span > b {
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  > div > span > i {
     font-style: normal;
     word-break: break-all;
+    font-size: 18px;
+    color: inherit;
+    margin: 0 0 5px;
+
+    > a {
+      color: inherit;
+    }
+
+    > a::after {
+      content: '↗';
+      display: inline;
+      margin: 0 0 0 3px;
+      font-size: 14px;
+    }
+  }
+
+  > div > div {
+    --iconSize: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: var(--iconSize);
+    width: var(--iconSize);
+    height: var(--iconSize);
+    background: ${({ theme }) => theme.bg1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: rotate(90deg);
+    `};
+
+    > svg {
+      width: 100%;
+      height: 100%;
+      padding: 8px;
+    }
+
+    > svg > path {
+      fill: ${({ theme }) => theme.text1};
+    }
   }
 `
 
 export const Badge = styled(BadgeOriginal)`
-  font-size: 11px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 12px;
 `
 
 export const CowSpinner = styled.div`
@@ -1194,4 +1562,268 @@ export const CowSpinner = styled.div`
       transform: rotate(360deg);
     }
   }
+`
+
+export const WarningWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > small {
+    color: red;
+    margin: 12px 0;
+    font-size: 15px;
+
+    &.warn {
+      color: ${({ theme }) => (theme.darkMode ? theme.yellow1 : theme.yellow2)};
+    }
+  }
+`
+
+const SuccessBannerColors = {
+  opacity: 0.8,
+  darken: 0.1,
+  twitter: '#17a7ff',
+  discord: '#4e72ef',
+}
+
+export const BannersWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 12px 0 0;
+  flex-flow: column wrap;
+
+  > a,
+  > a:hover,
+  > a:focus {
+    text-decoration: none;
+  }
+`
+
+export const SuccessBanner = styled.div<{ type: string }>`
+  width: 100%;
+  height: 86px;
+  padding: 0 24px;
+  border-radius: 24px;
+  margin: 0 0 12px;
+  font-weight: bold;
+  font-size: 21px;
+  justify-content: space-between;
+  align-items: center;
+  transition: border 0.3s ease-in-out;
+  border: 2px solid transparent;
+  color: ${({ type, theme }) =>
+    type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.text1};
+  display: flex;
+  background: ${({ type, theme }) =>
+    type === 'Twitter'
+      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.twitter)
+      : type === 'Discord'
+      ? transparentize(SuccessBannerColors.opacity, SuccessBannerColors.discord)
+      : theme.blueShade3};
+
+  &:hover {
+    border: 2px solid
+      ${({ type, theme }) =>
+        type === 'Twitter'
+          ? darken(SuccessBannerColors.darken, SuccessBannerColors.twitter)
+          : type === 'Discord'
+          ? darken(SuccessBannerColors.darken, SuccessBannerColors.discord)
+          : darken(SuccessBannerColors.darken, theme.blueShade3)};
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 16px;
+  `};
+
+  > svg {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    stroke: none;
+    fill: ${({ type, theme }) =>
+      type === 'Twitter'
+        ? SuccessBannerColors.twitter
+        : type === 'Discord'
+        ? SuccessBannerColors.discord
+        : theme.primary1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 32px;
+      height: 32px;
+    `};
+
+    > path {
+      fill: ${({ type, theme }) =>
+        type === 'Twitter'
+          ? SuccessBannerColors.twitter
+          : type === 'Discord'
+          ? SuccessBannerColors.discord
+          : theme.text1};
+    }
+
+`
+
+export const StepExplainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  margin: 0 0 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+    gap: 16px 0;
+  `}
+  > span {
+    padding: 24px;
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    position: relative;
+  }
+
+  > span::before {
+    content: attr(data-step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    flex: 1 1 min-content;
+    padding: 0 0 12px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  > span > p {
+    margin: 0;
+  }
+`
+
+export const UserMessage = styled.div`
+  width: 100%;
+  border-radius: var(--border-radius);
+  padding: 24px 40px;
+  text-align: left;
+  display: flex;
+  background: ${({ theme }) => transparentize(0.9, theme.attention)};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
+  margin: 0 auto;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+  `}
+
+  > svg {
+    height: 36px;
+    width: auto;
+    margin: 0 12px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      height: 28px;
+    `}
+  }
+
+  > svg > path {
+    fill: ${({ theme }) => darken(0.1, theme.attention)};
+  }
+
+  > span {
+    flex: 1 1 100%;
+  }
+`
+
+export const BannerExplainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 130px;
+  border-radius: 12px;
+  padding: 0 24px 0 20%;
+  background: ${({ theme }) => theme.bg8};
+  position: relative;
+  overflow: hidden;
+  border: 4px solid transparent;
+  transition: border 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+    height: auto;
+  `}
+
+  &:hover {
+    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
+  }
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    height: 100%;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    justify-content: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      align-items: center;
+    `}
+  }
+
+  > span > b {
+    @supports (-webkit-background-clip: text) {
+      background: ${({ theme }) =>
+        `linear-gradient(80deg, ${theme.primary1}, ${lighten(0.2, theme.primary1)}, ${theme.white}, #5ea2fb)`};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @supports not (-webkit-background-clip: text) {
+      color: ${({ theme }) => theme.white};
+    }
+
+    text-align: right;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 6px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 19px;
+      text-align: center;
+    `}
+  }
+
+  > span > small {
+    color: ${({ theme }) => theme.white};
+    font-size: 16px;
+    font-weight: 400;
+    text-align: right;
+    padding: 0 0 0 20%;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+      padding: 0;
+    `}
+  }
+
+  > span > small > a {
+    color: inherit;
+  }
+
+  > svg {
+    width: auto;
+    height: 168%;
+    position: absolute;
+    left: -16%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    mix-blend-mode: hard-light;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `}
+  }
+
+  > svg {
+    .stop1 { stop-color: ${({ theme }) => theme.white}}
+    .stop2 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0.8;}
+    .stop3 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0;}
 `
