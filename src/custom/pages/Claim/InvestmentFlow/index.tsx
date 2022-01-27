@@ -10,6 +10,7 @@ import {
   AccountClaimSummary,
   StepExplainer,
   Badge,
+  BannerExplainer,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
@@ -39,6 +40,7 @@ import { ExplorerDataType } from 'utils/getExplorerLink'
 import { BadgeVariant } from 'components/Badge'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import RoundArrow from 'assets/cow-swap/round-arrow.svg'
+import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import SVG from 'react-inlinesvg'
 
 const STEPS_DATA = [
@@ -191,8 +193,9 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
         <>
           <p>
             You have chosen to exercise one or more investment opportunities alongside claiming your airdrop. Exercising
-            your investment options will give you the chance to acquire vCOW tokens at a fixed price. This process
-            consists of two steps.
+            your investment options will give you the chance to acquire vCOW tokens at a fixed price. Read{' '}
+            <ExternalLink href={COW_LINKS.stepGuide}> the step by step guide</ExternalLink> for more details on the
+            claiming process.
           </p>
           <StepExplainer>
             <span data-step="Step 1">
@@ -208,11 +211,18 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
               </p>
             </span>
           </StepExplainer>
-          <p>
-            For more details around the token, please read{' '}
-            <ExternalLink href={COW_LINKS.vCowPost}>the blog post</ExternalLink>. For more details about the claiming
-            process, please read <ExternalLink href={COW_LINKS.stepGuide}>step by step guide</ExternalLink>.
-          </p>
+          <ExternalLink href={COW_LINKS.vCowPost}>
+            <BannerExplainer>
+              <SVG src={CowProtocolImage} description="Read more" />
+              <span>
+                <b>What is linear vesting?</b>
+                <small>
+                  When you buy vCOW tokens you will receive them gradually over a period of 4 years.{' '}
+                  <strong>Learn More ↗</strong>
+                </small>
+              </span>
+            </BannerExplainer>
+          </ExternalLink>
         </>
       )}
 

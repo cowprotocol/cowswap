@@ -896,6 +896,12 @@ export const InvestFlow = styled.div`
     font-weight: 500;
     text-align: center;
   }
+
+  > a,
+  > a:hover,
+  > a:visited {
+    text-decoration: none;
+  }
 `
 
 export const InvestContent = styled.div`
@@ -1668,9 +1674,9 @@ export const BannerExplainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 120px;
+  height: 130px;
   border-radius: 12px;
-  padding: 0 24px;
+  padding: 0 24px 0 20%;
   background: ${({ theme }) => theme.bg8};
   position: relative;
   overflow: hidden;
@@ -1678,7 +1684,7 @@ export const BannerExplainer = styled.div`
   transition: border 0.2s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 12px;
+    padding: 24px;
     height: auto;
   `}
 
@@ -1725,9 +1731,13 @@ export const BannerExplainer = styled.div`
   > span > small {
     color: ${({ theme }) => theme.white};
     font-size: 16px;
+    font-weight: 400;
+    text-align: right;
+    padding: 0 0 0 20%;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       text-align: center;
+      padding: 0;
     `}
   }
 
