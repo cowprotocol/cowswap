@@ -34,10 +34,12 @@ import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from
 import { COW_LINKS } from 'pages/Claim'
 import { ExternalLink } from 'theme'
 import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerDataType } from 'utils/getExplorerLink'
 
 import { BadgeVariant } from 'components/Badge'
-import { DollarSign, Icon, Send } from 'react-feather'
 import { OperationType } from 'components/TransactionConfirmationModal'
+import RoundArrow from 'assets/cow-swap/round-arrow.svg'
+import SVG from 'react-inlinesvg'
 
 const STEPS_DATA = [
   {
@@ -102,27 +104,32 @@ function _calculateTotalVCow(allClaims: ClaimWithInvestmentData[]) {
 }
 
 type AccountDetailsProps = {
+  isClaimer?: boolean
   label: string
   account: string
   connectedAccount: string
-  Icon: Icon
 }
 
-function AccountDetails({ label, account, connectedAccount, Icon }: AccountDetailsProps) {
+function AccountDetails({ isClaimer, label, account, connectedAccount }: AccountDetailsProps) {
   return (
-    <span>
-      <b>
-        <Icon width={14} height={14} /> {label}:
-      </b>
-      <i>
-        <ExplorerLink id={account} label={account} type="address" />{' '}
+    <div>
+      {isClaimer && (
+        <div>
+          <SVG src={RoundArrow} description="Arrow" />
+        </div>
+      )}
+      <span>
+        <b>{label}</b>
+        <i>
+          <ExplorerLink id={account} label={account} type={ExplorerDataType.ADDRESS} />
+        </i>
         {account === connectedAccount ? (
           <Badge variant={BadgeVariant.POSITIVE}>&nbsp; Connected account</Badge>
         ) : (
           <Badge variant={BadgeVariant.WARNING}>&nbsp; External account</Badge>
         )}
-      </i>
-    </span>
+      </span>
+    </div>
   )
 }
 
@@ -249,18 +256,8 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
           </ClaimTable>
 
           <AccountClaimSummary>
-            <AccountDetails
-              label="Claiming with account"
-              account={account}
-              connectedAccount={account}
-              Icon={DollarSign}
-            />
-            <AccountDetails
-              label="Receiving account"
-              account={activeClaimAccount}
-              connectedAccount={account}
-              Icon={Send}
-            />
+            <AccountDetails isClaimer label="Claiming with" account={account} connectedAccount={account} />
+            <AccountDetails label="Receiving on" account={activeClaimAccount} connectedAccount={account} />
           </AccountClaimSummary>
 
           <h4>Ready to claim your vCOW?</h4>

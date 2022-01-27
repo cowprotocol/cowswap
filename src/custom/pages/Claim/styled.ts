@@ -298,7 +298,7 @@ export const ClaimTable = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  margin: 0 0 24px;
+  margin: 0;
 
   ${TokenLogo},
   ${Icon} {
@@ -1241,6 +1241,7 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     cursor: pointer;
     color: ${({ theme }) => theme.primary4};
     text-decoration: underline;
+    margin: 0 0 0 5px;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0;
@@ -1362,25 +1363,111 @@ export const ClaimAccountButtons = styled.div`
 
 export const AccountClaimSummary = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   gap: 12px;
-  margin: 24px 0;
+  margin: 0 0 12px;
+  position: relative;
 
-  > span {
-    display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
+  `};
+
+  > div {
+    display: flex;
     white-space: pre-wrap;
     gap: 3px;
+    padding: 24px;
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    flex: 0 1 50%;
+    color: inherit;
+
+    &:first-of-type {
+      padding-right: 32px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 24px 24px 32px 24px;
+      `};
+    }
+
+    &:last-of-type {
+      padding-left: 32px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 32px 24px 24px 24px;
+      `};
+    }
   }
 
-  > span > i {
+  > div > span {
+    display: flex;
+    flex-flow: column wrap;
+    color: inherit;
+    gap: 9px 0;
+  }
+
+  > div > span > b {
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  > div > span > i {
     font-style: normal;
     word-break: break-all;
+    font-size: 18px;
+    color: inherit;
+    margin: 0 0 5px;
+
+    > a {
+      color: inherit;
+    }
+
+    > a::after {
+      content: '↗';
+      display: inline;
+      margin: 0 0 0 3px;
+      font-size: 14px;
+    }
+  }
+
+  > div > div {
+    --iconSize: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: var(--iconSize);
+    width: var(--iconSize);
+    height: var(--iconSize);
+    background: ${({ theme }) => theme.bg1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: rotate(90deg);
+    `};
+
+    > svg {
+      width: 100%;
+      height: 100%;
+      padding: 8px;
+    }
+
+    > svg > path {
+      fill: ${({ theme }) => theme.text1};
+    }
   }
 `
 
 export const Badge = styled(BadgeOriginal)`
-  font-size: 11px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 12px;
 `
 
 export const CowSpinner = styled.div`
