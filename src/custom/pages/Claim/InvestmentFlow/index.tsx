@@ -10,12 +10,14 @@ import {
   AccountClaimSummary,
   StepExplainer,
   Badge,
+  UserMessage,
   BannerExplainer,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 
 import { Stepper } from 'components/Stepper'
+import { FaqDrawer } from 'components/FaqDrawer'
 
 import {
   useClaimState,
@@ -40,6 +42,7 @@ import { ExplorerDataType } from 'utils/getExplorerLink'
 import { BadgeVariant } from 'components/Badge'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import RoundArrow from 'assets/cow-swap/round-arrow.svg'
+import ImportantIcon from 'assets/cow-swap/important.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import SVG from 'react-inlinesvg'
 
@@ -52,6 +55,19 @@ const STEPS_DATA = [
   },
   {
     title: 'Review & submit',
+  },
+]
+
+const FAQ_DATA = [
+  {
+    title: 'What will happen?',
+    content:
+      'By sending this Ethereum transaction, you will be investing tokens from the connected account and exchanging them for vCOW tokens that will be received by the claiming account specified above.',
+  },
+  {
+    title: 'Can I modify (partially) invested amounts later?',
+    content:
+      'No. Once you send the transaction, you cannot increase or reduce the investment. Investment opportunities can only be exercised once.',
   },
 ]
 
@@ -269,18 +285,14 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
           </AccountClaimSummary>
 
           <h4>Ready to claim your vCOW?</h4>
-          <p>
-            <b>What will happen?</b> By sending this Ethereum transaction, you will be investing tokens from the
-            connected account and exchanging them for vCOW tokens that will be received by the claiming account
-            specified above.
-          </p>
-          <p>
-            <b>Can I modify the invested amounts or invest partial amounts later?</b> No. Once you send the transaction,
-            you cannot increase or reduce the investment. Investment opportunities can only be exercised once.
-          </p>
-          <p>
-            <b>Important!</b> Please make sure you intend to claim and send vCOW to the mentioned receiving account(s).
-          </p>
+          <FaqDrawer items={FAQ_DATA} />
+          <UserMessage>
+            <SVG src={ImportantIcon} description="Important!" />
+            <span>
+              <b>Important!</b> Please make sure you intend to claim and send vCOW to the above mentioned receiving
+              account.
+            </span>
+          </UserMessage>
         </InvestContent>
       ) : null}
     </InvestFlow>

@@ -28,120 +28,6 @@ export const InnerPageWrapper = styled.div`
     padding: 16px;
     border-radius: var(--border-radius-small);
   `};
-
-  > a,
-  > a:hover,
-  > a:visited,
-  > a:focus {
-    text-decoration: none;
-  }
-
-  input[type='checkbox'],
-  input[type='radio'] {
-    --active: ${({ theme }) => theme.primary1};
-    --active-inner: ${({ theme }) => theme.black};
-    --focus: 2px rgba(39, 94, 254, .3);
-    --border: ${({ theme }) => theme.blueShade3};
-    --border-hover: ${({ theme }) => theme.primary1};
-    --background: ${({ theme }) => theme.white};
-    appearance: none;
-    height: 21px;
-    width: 21px;
-    outline: none;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    margin: 0;
-    cursor: pointer;
-    border: 1px solid var(--bc, var(--border));
-    background: var(--b, var(--background));
-
-    &:after {
-      content: '';
-      display: block;
-      left: 0;
-      top: 0;
-      position: absolute;
-    }
-
-    &:checked {
-      --b: var(--active);
-      --bc: var(--active);
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: .5;
-
-      &:checked {
-      }
-
-      & + label {
-        cursor: not-allowed;
-      }
-    }
-
-    &:hover {
-      &:not(:checked) {
-        &:not(:disabled) {
-          --bc: var(--border-hover);
-        }
-      }
-    }
-
-    &:focus {
-      box-shadow: 0 0 0 var(--focus);
-    }
-
-    &:after {
-      opacity: var(--o, 0);
-    }
-
-    &:checked {
-      --o: 1;
-    }
-
-    & + label {
-      font-size: 14px;
-      line-height: 21px;
-      display: inline-block;
-      vertical-align: top;
-      cursor: pointer;
-      margin-left: 4px;
-    }
-  }
-
-  input[type='checkbox'] {
-    border-radius: 7px;
-
-    &:after {
-      width: 5px;
-      height: 9px;
-      border: 2px solid var(--active-inner);
-      border-top: 0;
-      border-left: 0;
-      left: 7px;
-      top: 4px;
-      transform: rotate(var(--r, 20deg));
-    }
-
-    &:checked {
-      --r: 43deg;
-    }
-  }
-
-  input[type='radio'] {
-    border-radius: 50%;
-
-    &:after {
-      width: 19px;
-      height: 19px;
-      border-radius: 50%;
-      background: var(--active-inner);
-      opacity: 0;
-      transform: scale(var(--s, .7));
-    }
-  }
 }
 
 a {
@@ -323,6 +209,113 @@ export const ClaimTable = styled.div`
   flex-flow: column wrap;
   width: 100%;
   margin: 0;
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    --active: ${({ theme }) => theme.primary1};
+    --active-inner: ${({ theme }) => theme.black};
+    --focus: 2px rgba(39, 94, 254, 0.3);
+    --border: ${({ theme }) => theme.blueShade3};
+    --border-hover: ${({ theme }) => theme.primary1};
+    --background: ${({ theme }) => theme.white};
+    appearance: none;
+    height: 21px;
+    width: 21px;
+    outline: none;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    border: 1px solid var(--bc, var(--border));
+    background: var(--b, var(--background));
+
+    &:after {
+      content: '';
+      display: block;
+      left: 0;
+      top: 0;
+      position: absolute;
+    }
+
+    &:checked {
+      --b: var(--active);
+      --bc: var(--active);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+
+      &:checked {
+      }
+
+      & + label {
+        cursor: not-allowed;
+      }
+    }
+
+    &:hover {
+      &:not(:checked) {
+        &:not(:disabled) {
+          --bc: var(--border-hover);
+        }
+      }
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 var(--focus);
+    }
+
+    &:after {
+      opacity: var(--o, 0);
+    }
+
+    &:checked {
+      --o: 1;
+    }
+
+    & + label {
+      font-size: 14px;
+      line-height: 21px;
+      display: inline-block;
+      vertical-align: top;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+  }
+
+  input[type='checkbox'] {
+    border-radius: 7px;
+
+    &:after {
+      width: 5px;
+      height: 9px;
+      border: 2px solid var(--active-inner);
+      border-top: 0;
+      border-left: 0;
+      left: 7px;
+      top: 4px;
+      transform: rotate(var(--r, 20deg));
+    }
+
+    &:checked {
+      --r: 43deg;
+    }
+  }
+
+  input[type='radio'] {
+    border-radius: 50%;
+
+    &:after {
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: var(--active-inner);
+      opacity: 0;
+      transform: scale(var(--s, 0.7));
+    }
+  }
 
   ${TokenLogo},
   ${Icon} {
@@ -946,6 +939,11 @@ export const InvestFlow = styled.div`
 export const InvestContent = styled.div`
   display: flex;
   flex-flow: column wrap;
+
+  > h4 {
+    font-size: 28px;
+    text-align: center;
+  }
 
   ${ClaimTable} {
     table {
@@ -1696,6 +1694,40 @@ export const StepExplainer = styled.div`
 
   > span > p {
     margin: 0;
+  }
+`
+
+export const UserMessage = styled.div`
+  width: 100%;
+  border-radius: var(--border-radius);
+  padding: 24px 40px;
+  text-align: left;
+  display: flex;
+  background: ${({ theme }) => transparentize(0.9, theme.attention)};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
+  margin: 0 auto;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+  `}
+
+  > svg {
+    height: 36px;
+    width: auto;
+    margin: 0 12px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      height: 28px;
+    `}
+  }
+
+  > svg > path {
+    fill: ${({ theme }) => darken(0.1, theme.attention)};
+  }
+
+  > span {
+    flex: 1 1 100%;
   }
 `
 
