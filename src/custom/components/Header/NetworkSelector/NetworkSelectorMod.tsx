@@ -6,19 +6,12 @@ import // ARBITRUM_HELP_CENTER_LINK,
 // SupportedL2ChainId,
 // SupportedChainId
 '@src/constants/chains'
-import { supportedChainId } from 'utils/supportedChainId'
-import { SupportedChainId, CHAIN_INFO, ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
-import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { useActiveWeb3React } from 'hooks/web3'
-import { useCallback, useRef, useEffect, useState, useMemo } from 'react'
+import { CHAIN_INFO, ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
 import { /* ArrowDownCircle, */ ChevronDown } from 'react-feather'
-import { useModalOpen, useToggleModal, useWalletModalToggle } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
-import { useAppSelector } from 'state/hooks'
 import styled from 'styled-components/macro'
 import { /* ExternalLink, */ MEDIA_WIDTHS } from 'theme'
-import { switchToNetwork } from 'utils/switchToNetwork'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import useChangeNetworks from 'hooks/useChangeNetworks'
+import { useActiveWeb3React } from 'hooks/web3'
 
 // const ActiveRowLinkList = styled.div`
 //   display: flex;
@@ -174,63 +167,17 @@ const StyledChevronDown = styled(ChevronDown)`
 // }
 
 export default function NetworkSelector() {
-  const { chainId: preChainId, library, account } = useActiveWeb3React()
-  const { error } = useWeb3React() // MOD: check unsupported network
-  const node = useRef<HTMLDivElement>()
-  const open = useModalOpen(ApplicationModal.NETWORK_SELECTOR)
-  const toggle = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
-  const toggleWalletModal = useWalletModalToggle() // MOD
-  useOnClickOutside(node, open ? toggle : undefined)
-  const implements3085 = useAppSelector((state) => state.application.implements3085)
-
-  // MOD: checks if a requested network switch was sent
-  // used for when user disconnected and selects a network internally
-  // if 3085 supported, will connect wallet and change network
-  const [queuedNetworkSwitch, setQueuedNetworkSwitch] = useState<null | number>(null)
-
-  // MOD: get supported chain and check unsupported
-  const [chainId, isUnsupportedChain] = useMemo(() => {
-    const chainId = supportedChainId(preChainId)
-
-    return [chainId, error instanceof UnsupportedChainIdError] // Mod - return if chainId is unsupported
-  }, [preChainId, error])
-
-  const info = chainId ? CHAIN_INFO[chainId] : undefined
-
-  // const isOnL2 = chainId ? L2_CHAIN_IDS.includes(chainId) : false
-  // const showSelector = Boolean(!account || implements3085 || isOnL2)
-  const showSelector = Boolean(!account || implements3085)
-  const mainnetInfo = CHAIN_INFO[SupportedChainId.MAINNET]
-
-  const conditionalToggle = useCallback(() => {
-    if (showSelector) {
-      toggle()
-    }
-  }, [showSelector, toggle])
-
-  const networkCallback = useCallback(
-    (supportedChainId) => {
-      if (!account) {
-        toggleWalletModal()
-        return setQueuedNetworkSwitch(supportedChainId)
-      } else if (implements3085 && library && supportedChainId) {
-        switchToNetwork({ library, chainId: supportedChainId })
-        return open && toggle()
-      }
-
-      return
-    },
-    [account, implements3085, library, open, toggle, toggleWalletModal]
-  )
-
-  // MOD: used with mod hook - used to connect disconnected wallet to selected network
-  // if wallet supports 3085
-  useEffect(() => {
-    if (queuedNetworkSwitch && account && chainId && implements3085) {
-      networkCallback(queuedNetworkSwitch)
-      setQueuedNetworkSwitch(null)
-    }
-  }, [networkCallback, queuedNetworkSwitch, chainId, account, implements3085])
+  const { account, chainId, library } = useActiveWeb3React()
+  const {
+    callback: networkCallback,
+    conditionalToggle,
+    chainInfo: info,
+    mainnetInfo,
+    isUnsupportedChain,
+    showSelector,
+    nodeRef: node,
+    isModalOpen: open,
+  } = useChangeNetworks({ account, chainId, library })
 
   if (!chainId || !info || !library || isUnsupportedChain) {
     return null

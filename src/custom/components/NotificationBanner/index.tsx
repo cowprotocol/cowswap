@@ -11,6 +11,7 @@ type Level = 'info' | 'warning' | 'error'
 
 export interface BannerProps {
   children: React.ReactNode
+  className?: string
   level: Level
   isVisible: boolean
   id?: string

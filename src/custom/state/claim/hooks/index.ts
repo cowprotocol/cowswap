@@ -53,6 +53,7 @@ import {
   updateInvestError,
   setEstimatedGas,
   setIsTouched,
+  setHasClaimsOnOtherChains,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -136,8 +137,8 @@ type ClassifiedUserClaims = {
  *
  * @param account
  */
-export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims {
-  const userClaims = useUserClaims(account)
+export function useClassifiedUserClaims(account: Account, optionalChainId?: SupportedChainId): ClassifiedUserClaims {
+  const userClaims = useUserClaims(account, optionalChainId)
   const contract = useVCowContract()
 
   const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
@@ -184,8 +185,8 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
  *
  * @param account
  */
-export function useUserAvailableClaims(account: Account): UserClaims {
-  const { available } = useClassifiedUserClaims(account)
+export function useUserAvailableClaims(account: Account, optionalChainId?: SupportedChainId): UserClaims {
+  const { available } = useClassifiedUserClaims(account, optionalChainId)
 
   return available
 }
@@ -229,8 +230,10 @@ export function useUserUnclaimedAmount(account: string | null | undefined): Curr
  *
  * @param account
  */
-export function useUserClaims(account: Account): UserClaims | null {
-  const { chainId } = useActiveWeb3React()
+export function useUserClaims(account: Account, optionalChainId?: SupportedChainId): UserClaims | null {
+  const { chainId: connectedChain } = useActiveWeb3React()
+  const chainId = optionalChainId || connectedChain
+
   const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaims | null }>({})
 
   // We'll have claims on multiple networks
@@ -753,7 +756,7 @@ const FETCH_CLAIM_PROMISES: { [key: string]: Promise<UserClaims> } = {}
  * Customized fetchClaim function
  * Returns the claim for the given address, or null if not valid
  */
-function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
+export function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
   // Validate it's a, well, valid address
   const formatted = isAddress(account)
   if (!formatted) return Promise.reject(new Error('Invalid address'))
@@ -821,6 +824,9 @@ export function useClaimDispatchers() {
       setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),
       // reset claim ui
       resetClaimUi: () => dispatch(resetClaimUi()),
+      // has claims on other chains
+      setHasClaimsOnOtherChains: (payload: { chain: SupportedChainId; hasClaims: boolean }) =>
+        dispatch(setHasClaimsOnOtherChains(payload)),
     }),
     [dispatch]
   )
