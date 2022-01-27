@@ -533,6 +533,10 @@ export const ClaimAccount = styled.div`
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+
+    button {
+      align-self: center;
+    }
   }
 
   > div > img {
