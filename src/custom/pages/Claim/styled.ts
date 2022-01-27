@@ -1698,18 +1698,26 @@ export const UserMessage = styled.div`
   text-align: left;
   display: flex;
   background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => darken(0.2, theme.attention)};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
   margin: 0 auto;
   align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+  `}
 
   > svg {
     height: 36px;
     width: auto;
     margin: 0 12px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      height: 28px;
+    `}
   }
 
   > svg > path {
-    fill: ${({ theme }) => darken(0.2, theme.attention)};
+    fill: ${({ theme }) => darken(0.1, theme.attention)};
   }
 
   > span {
