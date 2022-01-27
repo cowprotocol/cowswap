@@ -146,6 +146,7 @@ export default createReducer(initialState, (builder) =>
       state.isInvestFlowActive = initialState.isInvestFlowActive
       state.claimedAmount = initialState.claimedAmount
       state.estimatedGas = initialState.estimatedGas
+      state.claimStatus = initialState.claimStatus
     })
     .addCase(setIsTouched, (state, { payload: { index, isTouched } }) => {
       state.investFlowData[index].isTouched = isTouched
