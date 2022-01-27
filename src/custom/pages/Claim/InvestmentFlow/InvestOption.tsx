@@ -37,7 +37,12 @@ import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { IS_TESTING_ENV } from '../const'
 
 const ErrorMessages = {
-  InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
+  NoBalance: (symbol = '') => `You don't have ${symbol} balance to invest`,
+
+  InsufficientBalanceSelf: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
+  InsufficientBalanceBehalf: (symbol = '') =>
+    `Your ${symbol} balance is not enough to cover 100% of the investment amount.`,
+
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
@@ -218,7 +223,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       return
     }
 
-    if (!isSelfClaiming && !balance.lessThan(maxCost)) {
+    if (!isSelfClaiming) {
       setMaxAmount()
     }
   }, [balance, isSelfClaiming, maxCost, setMaxAmount])
@@ -234,14 +239,14 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     }
 
     // set different errors in order of importance
-    if (balance.lessThan(maxCost) && !isSelfClaiming) {
-      error = ErrorMessages.InsufficientBalance(token?.symbol)
+    if (noBalance) {
+      error = ErrorMessages.NoBalance(token?.symbol)
+    } else if (balance.lessThan(maxCost) && !isSelfClaiming) {
+      error = ErrorMessages.InsufficientBalanceBehalf(token?.symbol)
     } else if (isPendingOnchainApprove) {
       error = ErrorMessages.WaitForApproval(token?.symbol)
     } else if (!isNative && !isApproved) {
       error = ErrorMessages.NotApproved(token?.symbol)
-    } else if (noBalance) {
-      error = ErrorMessages.InsufficientBalance(token?.symbol)
     } else if (!parsedAmount && !isTouched) {
       // this is to remove initial zero balance error message until user touches the input
       error = ''
@@ -250,27 +255,31 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     } else if (parsedAmount.greaterThan(maxCost)) {
       error = ErrorMessages.OverMaxInvestment
     } else if (parsedAmount.greaterThan(balance)) {
-      error = ErrorMessages.InsufficientBalance(token?.symbol)
+      error = ErrorMessages.InsufficientBalanceSelf(token?.symbol)
     }
 
+    // Set percentage
+    let percentageValue
+    if (noBalance || !parsedAmount) {
+      percentageValue = '0'
+    } else {
+      percentageValue = _formatPercentage(calculatePercentage(parsedAmount, maxCost))
+    }
+    setPercentage(percentageValue)
+
+    // Set invested amount and error/warnings
     if (error !== null) {
-      // if there is error set it in redux
       setInputError(error)
-      setPercentage('0')
     } else {
       if (!parsedAmount) {
         return
       }
-      // basically the magic happens in this block
 
       // update redux state to remove error for this field
       resetInputError()
 
       // update redux state with new investAmount value
       setInvestedAmount(parsedAmount.quotient.toString())
-
-      // update the local state with percentage value
-      setPercentage(_formatPercentage(calculatePercentage(parsedAmount, maxCost)))
     }
   }, [
     balance,
