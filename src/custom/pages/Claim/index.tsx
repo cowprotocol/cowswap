@@ -34,7 +34,7 @@ export const COW_LINKS = {
 }
 
 export default function Claim() {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
 
   const {
     // address/ENS address
@@ -175,7 +175,8 @@ export default function Claim() {
 
     // properly reset the user to the claims table and initial investment flow
     resetClaimUi()
-  }, [account, activeClaimAccount, resolvedAddress, isSearchUsed, setActiveClaimAccount, resetClaimUi])
+    // Depending on chainId even though it's not used because we want to reset the state on network change
+  }, [account, activeClaimAccount, chainId, resolvedAddress, isSearchUsed, setActiveClaimAccount, resetClaimUi])
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
