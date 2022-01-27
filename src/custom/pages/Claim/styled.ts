@@ -163,6 +163,7 @@ p > i {
 
 p > a {
   display: inline;
+  color: ${({ theme }) => darken(0.1, theme.primary1)};
 }
 
 ${ButtonPrimary} {
@@ -710,7 +711,7 @@ export const EligibleBanner = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => theme.attention};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -718,10 +719,15 @@ export const EligibleBanner = styled.div`
     text-align: left;
     padding: 18px;
   `}
-  > img {
+
+  > svg {
     margin: 0 6px 0 0;
     width: 21px;
     height: 21px;
+
+    > path {
+      fill: ${({ theme }) => darken(0.1, theme.attention)};
+    }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 12px 0 6px;

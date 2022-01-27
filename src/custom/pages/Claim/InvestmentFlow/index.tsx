@@ -48,12 +48,10 @@ const STEPS_DATA = [
     title: 'Start',
   },
   {
-    title: 'Set allowances',
-    subtitle: 'Approve all tokens to be used for investment.',
+    title: 'Select amount(s)',
   },
   {
-    title: 'Submit claim',
-    subtitle: 'Submit and confirm the transaction to claim vCOW.',
+    title: 'Review & submit',
   },
 ]
 
