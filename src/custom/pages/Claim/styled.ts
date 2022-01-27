@@ -899,7 +899,8 @@ export const InvestFlow = styled.div`
 
   > a,
   > a:hover,
-  > a:visited {
+  > a:visited,
+  > a:focus {
     text-decoration: none;
   }
 `
