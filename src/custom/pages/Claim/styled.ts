@@ -5,21 +5,20 @@ import BadgeOriginal from 'components/Badge'
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { Step } from 'components/Stepper'
-import { transparentize, darken } from 'polished'
+import { transparentize, darken, lighten } from 'polished'
 import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'assets/cow-swap/gno.png'
 import LogoUSDC from 'assets/cow-swap/usdc.png'
 import LogoXDAI from 'assets/cow-swap/xdai.png'
+import { CopyIcon } from 'components/Copy'
+import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 
-export const PageWrapper = styled.div`
+export const InnerPageWrapper = styled.div`
   --border-radius: 56px;
   --border-radius-small: 16px;
   display: flex;
   flex-flow: column wrap;
-  max-width: 760px;
-  width: 100%;
   color: ${({ theme }) => theme.text1};
-  border-radius: var(--border-radius);
   padding: 30px;
   border: ${({ theme }) => theme.appBody.border};
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
@@ -29,12 +28,193 @@ export const PageWrapper = styled.div`
     padding: 16px;
     border-radius: var(--border-radius-small);
   `};
+}
+
+a {
+  color: ${({ theme }) => theme.primary4};
+}
+
+p {
+  font-size: 16px;
+  display: block;
+  line-height: 1.6;
+  font-weight: 300;
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+p > i {
+  color: ${({ theme }) => theme.primary1};
+}
+
+p > a {
+  display: inline;
+  color: ${({ theme }) => darken(0.1, theme.primary1)};
+}
+
+${ButtonPrimary} {
+  border-radius: var(--border-radius);
+  width: 100%;
+  font-size: 21px;
+  padding: 24px 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0 auto 24px;
+  `};
+
+  &[disabled] {
+    cursor: not-allowed;
+    pointer-events: all;
+  }
+}
+
+${ButtonSecondary} {
+  background: 0;
+  color: ${({ theme }) => theme.primary4};
+  border: none;
+
+  &:hover {
+    border: 0;
+    box-shadow: none;
+    transform: none;
+    background: 0;
+    color: ${({ theme }) => theme.primary4};
+    text-decoration: underline;
+  }
+}
+
+${Step} {
+  > b {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 13px;
+    `};
+  }
+
+  > i {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `};
+  }
+
+}
+`
+
+export const PageWrapper = styled.div`
+  --border-radius: 56px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  width: 100%;
+
+  > ${InnerPageWrapper}, > ${ClaimsOnOtherChainsBanner} {
+    max-width: 760px;
+    width: 100%;
+    border-radius: var(--border-radius);
+  }
+
+  > ${ClaimsOnOtherChainsBanner} {
+    padding: 8px 25px;
+  }
+`
+
+export const TokenLogo = styled.div<{ symbol: string; size: number }>`
+  --smallSize: ${({ size }) => (size ? `calc(${size}px / 1.5)` : 'calc(var(--defaultSize) / 1.5)')};
+  display: flex;
+  height: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  width: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  border-radius: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
+  background: ${({ symbol, theme }) => `url(${_getLogo(symbol) || theme.blueShade3}) no-repeat center/contain`};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: var(--smallSize);
+    height: var(--smallSize);
+    border-radius: var(--smallSize);
+  `};
+`
+
+function _getLogo(symbol: string) {
+  switch (symbol.toUpperCase()) {
+    case 'GNO':
+      return LogoGNO
+    case 'USDC':
+      return LogoUSDC
+    case 'ETH':
+      return LogoETH
+    case 'XDAI':
+      return LogoXDAI
+    default:
+      return undefined
+  }
+}
+
+export const ClaimSummary = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
+  background: ${({ theme }) => theme.currencyInput?.background};
+  border: ${({ theme }) => theme.currencyInput?.border};
+  border-radius: var(--border-radius);
+  margin: 0 auto 24px;
+  position: relative;
+  overflow: hidden;
+
+  h1,
+  div {
+    z-index: 1;
+  }
+
+  p {
+    margin: 0;
+    display: block;
+  }
+
+  > div {
+    margin: 0 0 0 18px;
+  }
+`
+
+export const ClaimSummaryTitle = styled.h1`
+  font-size: 1.6rem;
+  margin-left: 15px;
+`
+
+export const IntroDescription = styled.div<{ center?: boolean }>`
+  display: block;
+  width: 100%;
+  margin: 0 0 24px;
+  line-height: 1.6;
+
+  text-align: ${({ center }) => (center ? 'center' : 'initial')};
+
+  > p {
+    margin: 8px auto 24px;
+  }
+
+  > p > i {
+    color: ${({ theme }) => theme.text1};
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  > button {
+    width: auto;
+    display: inline;
+  }
+`
+
+export const ClaimTable = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  margin: 0;
 
   input[type='checkbox'],
   input[type='radio'] {
     --active: ${({ theme }) => theme.primary1};
     --active-inner: ${({ theme }) => theme.black};
-    --focus: 2px rgba(39, 94, 254, .3);
+    --focus: 2px rgba(39, 94, 254, 0.3);
     --border: ${({ theme }) => theme.blueShade3};
     --border-hover: ${({ theme }) => theme.primary1};
     --background: ${({ theme }) => theme.white};
@@ -65,7 +245,7 @@ export const PageWrapper = styled.div`
 
     &:disabled {
       cursor: not-allowed;
-      opacity: .5;
+      opacity: 0.5;
 
       &:checked {
       }
@@ -133,172 +313,9 @@ export const PageWrapper = styled.div`
       border-radius: 50%;
       background: var(--active-inner);
       opacity: 0;
-      transform: scale(var(--s, .7));
+      transform: scale(var(--s, 0.7));
     }
   }
-}
-
-a {
-  color: ${({ theme }) => theme.primary4};
-}
-
-p {
-  font-size: 16px;
-  display: block;
-  line-height: 1.6;
-  font-weight: 300;
-  margin: 0 0 24px;
-  text-align: center;
-}
-
-p > i {
-  color: ${({ theme }) => theme.primary1};
-}
-
-p > a {
-  display: inline;
-}
-
-${ButtonPrimary} {
-  border-radius: var(--border-radius);
-  width: 100%;
-  font-size: 21px;
-  padding: 24px 16px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 0 auto 24px;
-  `};
-
-  &[disabled] {
-    cursor: not-allowed;
-    pointer-events: all;
-  }
-}
-
-${ButtonSecondary} {
-  background: 0;
-  color: ${({ theme }) => theme.primary4};
-  border: none;
-
-  &:hover {
-    border: 0;
-    box-shadow: none;
-    transform: none;
-    background: 0;
-    color: ${({ theme }) => theme.primary4};
-    text-decoration: underline;
-  }
-}
-
-${Step} {
-  > b {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      font-size: 13px;
-    `};
-  }
-
-  > i {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: none;
-    `};
-  }
-
-}
-`
-
-export const TokenLogo = styled.div<{ symbol: string; size: number }>`
-  --smallSize: ${({ size }) => (size ? `calc(${size}px / 1.5)` : 'calc(var(--defaultSize) / 1.5)')};
-  display: flex;
-  height: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
-  width: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
-  border-radius: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
-  background: ${({ symbol, theme }) => `url(${_getLogo(symbol) || theme.blueShade3}) no-repeat center/contain`};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: var(--smallSize);
-    height: var(--smallSize);
-    border-radius: var(--smallSize);
-  `};
-`
-
-function _getLogo(symbol: string) {
-  switch (symbol.toUpperCase()) {
-    case 'GNO':
-      return LogoGNO
-    case 'USDC':
-      return LogoUSDC
-    case 'ETH':
-      return LogoETH
-    case 'XDAI':
-      return LogoXDAI
-    default:
-      return undefined
-  }
-}
-
-export const ClaimSummary = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 8px;
-  background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
-  border: ${({ theme }) =>
-    theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
-  border-radius: var(--border-radius);
-  margin: 0 auto 24px;
-  position: relative;
-  overflow: hidden;
-
-  h1,
-  div {
-    z-index: 1;
-  }
-
-  p {
-    margin: 0;
-    display: block;
-  }
-
-  > div {
-    margin: 0 0 0 18px;
-  }
-`
-
-export const ClaimSummaryTitle = styled.h1`
-  font-size: 1.6rem;
-  margin-left: 15px;
-`
-
-export const IntroDescription = styled.div<{ center?: boolean }>`
-  display: block;
-  width: 100%;
-  margin: 0 0 24px;
-  line-height: 1.6;
-
-  text-align: ${({ center }) => (center ? 'center' : 'initial')};
-
-  > p {
-    margin: 8px auto 24px;
-  }
-
-  > p > i {
-    color: ${({ theme }) => theme.text1};
-    font-weight: 600;
-    font-style: normal;
-  }
-
-  > button {
-    width: auto;
-    display: inline;
-  }
-`
-
-export const ClaimTable = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  width: 100%;
-  margin: 0 0 24px;
 
   ${TokenLogo},
   ${Icon} {
@@ -533,6 +550,10 @@ export const ClaimAccount = styled.div`
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+
+    button {
+      align-self: center;
+    }
   }
 
   > div > img {
@@ -624,16 +645,20 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     margin: 24px auto 0;
   }
 
-  > h4 > div > p > b {
-    word-break: break-all;
-    display: block;
-  }
-
   > h4 > button {
     margin: 32px auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 20px auto;
+    `};
+  }
+
+  ${CopyIcon} {
+    display: inline;
+    min-width: 6em;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      min-width: 0;
     `};
   }
 `
@@ -679,7 +704,7 @@ export const EligibleBanner = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => theme.attention};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -687,10 +712,15 @@ export const EligibleBanner = styled.div`
     text-align: left;
     padding: 18px;
   `}
-  > img {
+
+  > svg {
     margin: 0 6px 0 0;
     width: 21px;
     height: 21px;
+
+    > path {
+      fill: ${({ theme }) => darken(0.1, theme.attention)};
+    }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 12px 0 6px;
@@ -841,6 +871,12 @@ export const ClaimBreakdown = styled.div`
     margin: 0 0 24px;
     text-align: center;
   }
+
+  > a,
+  > a:hover,
+  > a:focus {
+    text-decoration: none;
+  }
 `
 
 export const FooterNavButtons = styled.div`
@@ -863,12 +899,6 @@ export const FooterNavButtons = styled.div`
       margin: 0 6px 0 0;
     }
   }
-`
-
-export const ReadMoreText = styled.div`
-  margin: 18px 0;
-  text-align: center;
-  font-size: 15px;
 `
 
 export const TopNav = styled.div`
@@ -897,11 +927,23 @@ export const InvestFlow = styled.div`
     font-weight: 500;
     text-align: center;
   }
+
+  > a,
+  > a:hover,
+  > a:visited,
+  > a:focus {
+    text-decoration: none;
+  }
 `
 
 export const InvestContent = styled.div`
   display: flex;
   flex-flow: column wrap;
+
+  > h4 {
+    font-size: 28px;
+    text-align: center;
+  }
 
   ${ClaimTable} {
     table {
@@ -1102,18 +1144,23 @@ export const UnderlineButton = styled.button`
   text-align: left;
   padding: 0;
 
+  > svg {
+    margin-left: 3px;
+  }
+
   &:hover {
     color: ${({ theme }) => theme.text1};
   }
 
   &:disabled {
     text-decoration: none;
-    color: ${({ theme }) => theme.disabled};
+    color: ${({ theme }) => transparentize(0.35, theme.primary4)};
     cursor: auto;
+    font-style: italic;
   }
 `
 
-export const InvestInput = styled.span`
+export const InvestInput = styled.span<{ disabled: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 15px;
@@ -1131,10 +1178,12 @@ export const InvestInput = styled.span`
     flex-flow: row wrap;
     padding: 12px;
     position: relative;
-    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
+    background: ${({ theme, disabled }) =>
+      disabled ? theme.bg5 : theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1};
     border: ${({ theme }) =>
       theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     border-radius: 12px;
+    opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
 
     > span {
       margin-left: 5px;
@@ -1233,26 +1282,13 @@ export const InvestInput = styled.span`
     `};
   }
 
-  > div > label > span > button {
-    background: none;
-    border: 0;
-    cursor: pointer;
-    color: ${({ theme }) => theme.primary4};
-    text-decoration: underline;
+  > div > label > span > ${UnderlineButton} {
+    margin-left: 4px;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0;
       padding: 0;
     `};
-
-    &:hover {
-      color: ${({ theme }) => theme.text1};
-    }
-
-    > div > label > span > ${UnderlineButton} {
-      margin-left: 4px;
-
-    }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
@@ -1329,9 +1365,9 @@ export const InvestSummary = styled.div`
   }
 
   > span > i > div > img {
-    margin: 0 4px 0 0;
-    height: 21px;
-    width: 21px;
+    margin: 0 5px 0 0;
+    height: 19px;
+    width: 19px;
   }
 
   > span > b {
@@ -1360,25 +1396,111 @@ export const ClaimAccountButtons = styled.div`
 
 export const AccountClaimSummary = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   gap: 12px;
-  margin: 24px 0;
+  margin: 0 0 12px;
+  position: relative;
 
-  > span {
-    display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
+  `};
+
+  > div {
+    display: flex;
     white-space: pre-wrap;
     gap: 3px;
+    padding: 24px;
+    background: ${({ theme }) => theme.blueShade3};
+    border-radius: 12px;
+    flex: 0 1 50%;
+    color: inherit;
+
+    &:first-of-type {
+      padding-right: 32px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 24px 24px 32px 24px;
+      `};
+    }
+
+    &:last-of-type {
+      padding-left: 32px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 32px 24px 24px 24px;
+      `};
+    }
   }
 
-  > span > i {
+  > div > span {
+    display: flex;
+    flex-flow: column wrap;
+    color: inherit;
+    gap: 9px 0;
+  }
+
+  > div > span > b {
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  > div > span > i {
     font-style: normal;
     word-break: break-all;
+    font-size: 18px;
+    color: inherit;
+    margin: 0 0 5px;
+
+    > a {
+      color: inherit;
+    }
+
+    > a::after {
+      content: '↗';
+      display: inline;
+      margin: 0 0 0 3px;
+      font-size: 14px;
+    }
+  }
+
+  > div > div {
+    --iconSize: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: var(--iconSize);
+    width: var(--iconSize);
+    height: var(--iconSize);
+    background: ${({ theme }) => theme.bg1};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: rotate(90deg);
+    `};
+
+    > svg {
+      width: 100%;
+      height: 100%;
+      padding: 8px;
+    }
+
+    > svg > path {
+      fill: ${({ theme }) => theme.text1};
+    }
   }
 `
 
 export const Badge = styled(BadgeOriginal)`
-  font-size: 11px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 12px;
 `
 
 export const CowSpinner = styled.div`
@@ -1438,6 +1560,21 @@ export const CowSpinner = styled.div`
     }
     to {
       transform: rotate(360deg);
+    }
+  }
+`
+
+export const WarningWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > small {
+    color: red;
+    margin: 12px 0;
+    font-size: 15px;
+
+    &.warn {
+      color: ${({ theme }) => (theme.darkMode ? theme.yellow1 : theme.yellow2)};
     }
   }
 `
@@ -1558,4 +1695,135 @@ export const StepExplainer = styled.div`
   > span > p {
     margin: 0;
   }
+`
+
+export const UserMessage = styled.div`
+  width: 100%;
+  border-radius: var(--border-radius);
+  padding: 24px 40px;
+  text-align: left;
+  display: flex;
+  background: ${({ theme }) => transparentize(0.9, theme.attention)};
+  color: ${({ theme }) => darken(0.1, theme.attention)};
+  margin: 0 auto;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+  `}
+
+  > svg {
+    height: 36px;
+    width: auto;
+    margin: 0 12px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      height: 28px;
+    `}
+  }
+
+  > svg > path {
+    fill: ${({ theme }) => darken(0.1, theme.attention)};
+  }
+
+  > span {
+    flex: 1 1 100%;
+  }
+`
+
+export const BannerExplainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 130px;
+  border-radius: 12px;
+  padding: 0 24px 0 20%;
+  background: ${({ theme }) => theme.bg8};
+  position: relative;
+  overflow: hidden;
+  border: 4px solid transparent;
+  transition: border 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+    height: auto;
+  `}
+
+  &:hover {
+    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
+  }
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    height: 100%;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    justify-content: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      align-items: center;
+    `}
+  }
+
+  > span > b {
+    @supports (-webkit-background-clip: text) {
+      background: ${({ theme }) =>
+        `linear-gradient(80deg, ${theme.primary1}, ${lighten(0.2, theme.primary1)}, ${theme.white}, #5ea2fb)`};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @supports not (-webkit-background-clip: text) {
+      color: ${({ theme }) => theme.white};
+    }
+
+    text-align: right;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 6px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 19px;
+      text-align: center;
+    `}
+  }
+
+  > span > small {
+    color: ${({ theme }) => theme.white};
+    font-size: 16px;
+    font-weight: 400;
+    text-align: right;
+    padding: 0 0 0 20%;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+      padding: 0;
+    `}
+  }
+
+  > span > small > a {
+    color: inherit;
+  }
+
+  > svg {
+    width: auto;
+    height: 168%;
+    position: absolute;
+    left: -16%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    mix-blend-mode: hard-light;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `}
+  }
+
+  > svg {
+    .stop1 { stop-color: ${({ theme }) => theme.white}}
+    .stop2 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0.8;}
+    .stop3 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0;}
 `

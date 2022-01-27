@@ -1,6 +1,6 @@
 import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
-import { ClaimTable, ClaimBreakdown, TokenLogo } from 'pages/Claim/styled'
+import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
@@ -15,6 +15,10 @@ import { Countdown } from 'pages/Claim/Countdown'
 import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
 import { useEffect } from 'react'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { ExternalLink } from 'theme/index'
+import { COW_LINKS } from '.'
+import SVG from 'react-inlinesvg'
+import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 
 export type ClaimsTableProps = {
   isAirdropOnly: boolean
@@ -82,15 +86,14 @@ const ClaimsTableRow = ({
         {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
       </td>
       <td data-title="Details">
-        {!isFree ||
-          (price && (
-            <span>
-              Price:{' '}
-              <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
-                currencyAmount?.currency?.symbol
-              }`}</b>
-            </span>
-          ))}
+        {price && (
+          <span>
+            Price:{' '}
+            <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
+              currencyAmount?.currency?.symbol
+            }`}</b>
+          </span>
+        )}
         <span>
           Cost:{' '}
           <b title={cost && `${formatMax(cost, cost.currency.decimals)} ${cost.currency.symbol}`}>
@@ -185,6 +188,15 @@ export default function ClaimsTable({ isAirdropOnly, hasClaims }: ClaimsTablePro
           </tbody>
         </table>
       </ClaimTable>
+      <ExternalLink href={COW_LINKS.vCowPost}>
+        <BannerExplainer>
+          <SVG src={CowProtocolImage} description="Questions? Read More." />
+          <span>
+            <b>vCOW the governance token.</b>
+            <small>Find out more about the protocol ↗</small>
+          </span>
+        </BannerExplainer>
+      </ExternalLink>
     </ClaimBreakdown>
   )
 }

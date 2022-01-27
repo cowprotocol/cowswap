@@ -10,17 +10,21 @@ import {
   AccountClaimSummary,
   StepExplainer,
   Badge,
+  UserMessage,
+  BannerExplainer,
 } from 'pages/Claim/styled'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 
 import { Stepper } from 'components/Stepper'
+import { FaqDrawer } from 'components/FaqDrawer'
 
 import {
   useClaimState,
   useUserEnhancedClaimData,
   useClaimDispatchers,
   useHasClaimInvestmentFlowError,
+  useSomeNotTouched,
 } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
@@ -36,20 +40,34 @@ import { ExplorerLink } from 'components/ExplorerLink'
 import { ExplorerDataType } from 'utils/getExplorerLink'
 
 import { BadgeVariant } from 'components/Badge'
-import { DollarSign, Icon, Send } from 'react-feather'
 import { OperationType } from 'components/TransactionConfirmationModal'
+import RoundArrow from 'assets/cow-swap/round-arrow.svg'
+import ImportantIcon from 'assets/cow-swap/important.svg'
+import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
+import SVG from 'react-inlinesvg'
 
 const STEPS_DATA = [
   {
     title: 'Start',
   },
   {
-    title: 'Set allowances',
-    subtitle: 'Approve all tokens to be used for investment.',
+    title: 'Select amount(s)',
   },
   {
-    title: 'Submit claim',
-    subtitle: 'Submit and confirm the transaction to claim vCOW.',
+    title: 'Review & submit',
+  },
+]
+
+const FAQ_DATA = [
+  {
+    title: 'What will happen?',
+    content:
+      'By sending this Ethereum transaction, you will be investing tokens from the connected account and exchanging them for vCOW tokens that will be received by the claiming account specified above.',
+  },
+  {
+    title: 'Can I modify (partially) invested amounts later?',
+    content:
+      'No. Once you send the transaction, you cannot increase or reduce the investment. Investment opportunities can only be exercised once.',
   },
 ]
 
@@ -102,27 +120,32 @@ function _calculateTotalVCow(allClaims: ClaimWithInvestmentData[]) {
 }
 
 type AccountDetailsProps = {
+  isClaimer?: boolean
   label: string
   account: string
   connectedAccount: string
-  Icon: Icon
 }
 
-function AccountDetails({ label, account, connectedAccount, Icon }: AccountDetailsProps) {
+function AccountDetails({ isClaimer, label, account, connectedAccount }: AccountDetailsProps) {
   return (
-    <span>
-      <b>
-        <Icon width={14} height={14} /> {label}:
-      </b>
-      <i>
-        <ExplorerLink id={account} label={account} type={ExplorerDataType.ADDRESS} />{' '}
+    <div>
+      {isClaimer && (
+        <div>
+          <SVG src={RoundArrow} description="Arrow" />
+        </div>
+      )}
+      <span>
+        <b>{label}</b>
+        <i>
+          <ExplorerLink id={account} label={account} type={ExplorerDataType.ADDRESS} />
+        </i>
         {account === connectedAccount ? (
           <Badge variant={BadgeVariant.POSITIVE}>&nbsp; Connected account</Badge>
         ) : (
           <Badge variant={BadgeVariant.WARNING}>&nbsp; External account</Badge>
         )}
-      </i>
-    </span>
+      </span>
+    </div>
   )
 }
 
@@ -134,6 +157,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
   const claimData = useUserEnhancedClaimData(activeClaimAccount)
 
   const hasError = useHasClaimInvestmentFlowError()
+  const someNotTouched = useSomeNotTouched()
 
   // Filtering and splitting claims into free and selected paid claims
   // `selectedClaims` are used on step 1 and 2
@@ -183,8 +207,9 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
         <>
           <p>
             You have chosen to exercise one or more investment opportunities alongside claiming your airdrop. Exercising
-            your investment options will give you the chance to acquire vCOW tokens at a fixed price. This process
-            consists of two steps.
+            your investment options will give you the chance to acquire vCOW tokens at a fixed price. Read{' '}
+            <ExternalLink href={COW_LINKS.stepGuide}> the step by step guide</ExternalLink> for more details on the
+            claiming process.
           </p>
           <StepExplainer>
             <span data-step="Step 1">
@@ -200,11 +225,18 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
               </p>
             </span>
           </StepExplainer>
-          <p>
-            For more details around the token, please read{' '}
-            <ExternalLink href={COW_LINKS.vCowPost}>the blog post</ExternalLink>. For more details about the claiming
-            process, please read <ExternalLink href={COW_LINKS.stepGuide}>step by step guide</ExternalLink>.
-          </p>
+          <ExternalLink href={COW_LINKS.vCowPost}>
+            <BannerExplainer>
+              <SVG src={CowProtocolImage} description="Read more" />
+              <span>
+                <b>What is linear vesting?</b>
+                <small>
+                  When you buy vCOW tokens you will receive them gradually over a period of 4 years.{' '}
+                  <strong>Learn More ↗</strong>
+                </small>
+              </span>
+            </BannerExplainer>
+          </ExternalLink>
         </>
       )}
 
@@ -221,6 +253,9 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
           ))}
 
           {hasError && <InvestFlowValidation>Fix the errors before continuing</InvestFlowValidation>}
+          {!hasError && someNotTouched && (
+            <InvestFlowValidation>Investment Amount is required to continue</InvestFlowValidation>
+          )}
         </InvestContent>
       ) : null}
       {/* Invest flow: Step 2 > Review summary */}
@@ -245,33 +280,19 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
           </ClaimTable>
 
           <AccountClaimSummary>
-            <AccountDetails
-              label="Claiming with account"
-              account={account}
-              connectedAccount={account}
-              Icon={DollarSign}
-            />
-            <AccountDetails
-              label="Receiving account"
-              account={activeClaimAccount}
-              connectedAccount={account}
-              Icon={Send}
-            />
+            <AccountDetails isClaimer label="Claiming with" account={account} connectedAccount={account} />
+            <AccountDetails label="Receiving on" account={activeClaimAccount} connectedAccount={account} />
           </AccountClaimSummary>
 
           <h4>Ready to claim your vCOW?</h4>
-          <p>
-            <b>What will happen?</b> By sending this Ethereum transaction, you will be investing tokens from the
-            connected account and exchanging them for vCOW tokens that will be received by the claiming account
-            specified above.
-          </p>
-          <p>
-            <b>Can I modify the invested amounts or invest partial amounts later?</b> No. Once you send the transaction,
-            you cannot increase or reduce the investment. Investment opportunities can only be exercised once.
-          </p>
-          <p>
-            <b>Important!</b> Please make sure you intend to claim and send vCOW to the mentioned receiving account(s)
-          </p>
+          <FaqDrawer items={FAQ_DATA} />
+          <UserMessage>
+            <SVG src={ImportantIcon} description="Important!" />
+            <span>
+              <b>Important!</b> Please make sure you intend to claim and send vCOW to the above mentioned receiving
+              account.
+            </span>
+          </UserMessage>
         </InvestContent>
       ) : null}
     </InvestFlow>

@@ -1,5 +1,3 @@
-import { ExplorerDataType } from 'utils/getExplorerLink'
-
 import { ExplorerLink } from 'components/ExplorerLink'
 import { GnosisSafeLink } from 'components/AccountDetails/Transaction/StatusDetails'
 
@@ -27,6 +25,6 @@ export function EnhancedTransactionLink(props: Props) {
 
     return <GnosisSafeLink chainId={chainId} safeTransaction={safeTx} gnosisSafeThreshold={gnosisSafeInfo.threshold} />
   } else {
-    return <ExplorerLink id={tx.hash} type={ExplorerDataType.TRANSACTION} />
+    return <ExplorerLink id={tx.hash} type="transaction" />
   }
 }

@@ -5,6 +5,7 @@ import { ClaimCommonTypes } from './types'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 import Identicon from 'components/Identicon'
+import CopyHelper from 'components/Copy'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>
 
@@ -24,7 +25,8 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
           {hasActiveAccount && (
             <>
               <Identicon account={activeClaimAccount} size={46} />
-              <p>{activeClaimAccountENS ? activeClaimAccountENS : shortenAddress(activeClaimAccount)}</p>
+              <p>{activeClaimAccountENS ? activeClaimAccountENS : shortenAddress(activeClaimAccount)} </p>
+              <CopyHelper toCopy={activeClaimAccount} />
             </>
           )}
         </div>

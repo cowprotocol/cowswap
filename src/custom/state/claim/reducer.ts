@@ -1,4 +1,5 @@
 import { createReducer, current } from '@reduxjs/toolkit'
+import { SupportedChainId } from '@src/custom/constants/chains'
 import {
   setActiveClaimAccount,
   setActiveClaimAccountENS,
@@ -16,7 +17,19 @@ import {
   ClaimStatus,
   updateInvestError,
   setEstimatedGas,
+  setIsTouched,
+  setHasClaimsOnOtherChains,
 } from './actions'
+
+export type ClaimsOnOtherChains = {
+  [chain in SupportedChainId]: boolean
+}
+
+const DEFAULT_CLAIMS_ON_OTHER_CHAINS_STATE = {
+  [SupportedChainId.MAINNET]: false,
+  [SupportedChainId.RINKEBY]: false,
+  [SupportedChainId.XDAI]: false,
+}
 
 export const initialState: ClaimState = {
   // address/ENS address
@@ -37,12 +50,15 @@ export const initialState: ClaimState = {
   // table select change
   selected: [],
   selectedAll: false,
+  // claims on other networks
+  hasClaimsOnOtherChains: DEFAULT_CLAIMS_ON_OTHER_CHAINS_STATE,
 }
 
 export type InvestClaim = {
   index: number
   investedAmount: string
   error?: string
+  isTouched?: boolean
 }
 
 export type ClaimState = {
@@ -64,10 +80,15 @@ export type ClaimState = {
   // table select change
   selected: number[]
   selectedAll: boolean
+  // claims on other chains
+  hasClaimsOnOtherChains: ClaimsOnOtherChains
 }
 
 export default createReducer(initialState, (builder) =>
   builder
+    .addCase(setHasClaimsOnOtherChains, (state, { payload }) => {
+      state.hasClaimsOnOtherChains[payload.chain] = payload.hasClaims
+    })
     .addCase(setInputAddress, (state, { payload }) => {
       state.inputAddress = payload
     })
@@ -125,5 +146,9 @@ export default createReducer(initialState, (builder) =>
       state.isInvestFlowActive = initialState.isInvestFlowActive
       state.claimedAmount = initialState.claimedAmount
       state.estimatedGas = initialState.estimatedGas
+      state.claimStatus = initialState.claimStatus
+    })
+    .addCase(setIsTouched, (state, { payload: { index, isTouched } }) => {
+      state.investFlowData[index].isTouched = isTouched
     })
 )
