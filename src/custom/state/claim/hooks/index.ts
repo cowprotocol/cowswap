@@ -27,9 +27,6 @@ import {
   transformRepoClaimsToUserClaims,
 } from 'state/claim/hooks/utils'
 import { SupportedChainId } from 'constants/chains'
-import { registerOnWindow } from 'utils/misc'
-import mockData, { MOCK_INDICES } from './mocks/claimData'
-import { getIndexes } from './utils'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 export { useUserClaimData } from '@src/state/claim/hooks'
@@ -266,13 +263,6 @@ export function useUserClaims(account: Account): UserClaims | null {
   return claimKey ? claimInfo[claimKey] : null
 }
 
-// TODO: remove
-const createMockTx = (data: number[]) => ({
-  hash: '0x' + Math.round(Math.random() * 10).toString() + 'AxAFjAhG89G89AfnLK3CCxAfnLKQffQ782G89AfnLK3CCxxx123FF',
-  summary: `Claimed ${Math.random() * 3337} vCOW`,
-  claim: { recipient: '0x97EC4fcD5F78cA6f6E4E1EAC6c0Ec8421bA518B7', indices: data },
-})
-
 /**
  * Fetches from contract the deployment timestamp in ms
  *
@@ -430,20 +420,6 @@ export function useClaimCallback(account: string | null | undefined): {
   // used for popup summary
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
-
-  // TODO: remove
-  registerOnWindow({
-    addMockClaimTransactions: (data?: number[]) => {
-      let finalData: number[] | undefined = data
-
-      if (!finalData) {
-        const mockDataIndices = connectedAccount ? getIndexes(mockData[connectedAccount] || []) : []
-        finalData = mockDataIndices?.length > 0 ? mockDataIndices : MOCK_INDICES
-      }
-
-      return addTransaction(createMockTx(finalData))
-    },
-  })
 
   const getClaimArgs = useCallback(
     async function (claimInput: ClaimInput[]): Promise<GetClaimManyArgsResult> {

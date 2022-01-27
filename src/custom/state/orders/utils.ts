@@ -1,7 +1,8 @@
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { Price } from '@uniswap/sdk-core'
 
-import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER } from 'constants/index'
+import { ONE_HUNDRED_PERCENT } from 'constants/misc'
+import { PENDING_ORDERS_BUFFER } from 'constants/index'
 import { OrderMetaData } from 'api/gnosisProtocol'
 import { Order } from 'state/orders/actions'
 import { PriceInformation } from 'utils/price'
