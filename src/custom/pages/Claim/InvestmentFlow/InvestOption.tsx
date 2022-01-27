@@ -258,28 +258,28 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       error = ErrorMessages.InsufficientBalance(isSelfClaiming, token?.symbol)
     }
 
+    // Set percentage
+    let percentageValue
+    if (noBalance || !parsedAmount) {
+      percentageValue = '0'
+    } else {
+      percentageValue = _formatPercentage(calculatePercentage(parsedAmount, maxCost))
+    }
+    setPercentage(percentageValue)
+
+    // Set invested amount and error/warnings
     if (error !== null) {
-      // if there is error set it in redux
       setInputError(error)
-      if (noBalance) {
-        setPercentage('0')
-      } else {
-        setPercentage(_formatPercentage(calculatePercentage(balance, maxCost)))
-      }
     } else {
       if (!parsedAmount) {
         return
       }
-      // basically the magic happens in this block
 
       // update redux state to remove error for this field
       resetInputError()
 
       // update redux state with new investAmount value
       setInvestedAmount(parsedAmount.quotient.toString())
-
-      // update the local state with percentage value
-      setPercentage(_formatPercentage(calculatePercentage(parsedAmount, maxCost)))
     }
   }, [
     balance,
