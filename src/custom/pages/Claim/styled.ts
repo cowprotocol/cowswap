@@ -1111,14 +1111,19 @@ export const UnderlineButton = styled.button`
   text-align: left;
   padding: 0;
 
+  > svg {
+    margin-left: 3px;
+  }
+
   &:hover {
     color: ${({ theme }) => theme.text1};
   }
 
   &:disabled {
     text-decoration: none;
-    color: ${({ theme }) => theme.disabled};
+    color: ${({ theme }) => transparentize(0.35, theme.primary4)};
     cursor: auto;
+    font-style: italic;
   }
 `
 
@@ -1244,27 +1249,13 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
     `};
   }
 
-  > div > label > span > button {
-    background: none;
-    border: 0;
-    cursor: pointer;
-    color: ${({ theme }) => theme.primary4};
-    text-decoration: underline;
-    margin: 0 0 0 5px;
+  > div > label > span > ${UnderlineButton} {
+    margin-left: 4px;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0;
       padding: 0;
     `};
-
-    &:hover {
-      color: ${({ theme }) => theme.text1};
-    }
-  }
-
-  > div > label > span > ${UnderlineButton} {
-    margin-left: 4px;
-  }
 `
 
 export const InvestAvailableBar = styled.div<{ percentage?: number }>`
@@ -1341,9 +1332,9 @@ export const InvestSummary = styled.div`
   }
 
   > span > i > div > img {
-    margin: 0 4px 0 0;
-    height: 21px;
-    width: 21px;
+    margin: 0 5px 0 0;
+    height: 19px;
+    width: 19px;
   }
 
   > span > b {

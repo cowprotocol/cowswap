@@ -34,12 +34,14 @@ import { AVG_APPROVE_COST_GWEI } from 'components/swap/EthWethWrap/helpers'
 import { EnhancedUserClaimData } from '../types'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
+import { IS_TESTING_ENV } from '../const'
 
 const ErrorMessages = {
   InsufficientBalance: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can't be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
+  WaitForApproval: (symbol = '') => `Approving ${symbol}. Please wait until the transaction is mined`,
 }
 
 const WarningMessages = {
@@ -66,16 +68,14 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const {
     approvalState: approveState,
     approve: approveCallback,
-    // revokeApprove: revokeApprovalCallback, // CURRENTLY TEST ONLY
-    // isPendingApproval, // CURRENTLY TEST ONLY
+    revokeApprove: revokeApprovalCallback, // CURRENTLY TEST ONLY (not on prod, barn or ens)
+    isPendingApproval: isPendingRevoke, // CURRENTLY TEST ONLY (not on prod, barn or ens)
   } = useApproveCallbackFromClaim({
     openTransactionConfirmationModal: (message: string, operationType: OperationType) =>
       openModal(message, operationType),
     closeModals: closeModal,
     claim,
   })
-
-  const isEtherApproveState = approveState === ApprovalState.UNKNOWN
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
@@ -114,8 +114,6 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const isSelfClaiming = account === activeClaimAccount
   const noBalance = !balance || balance.equalTo('0')
 
-  const isApproved = approveState === ApprovalState.APPROVED
-
   const onUserInput = (input: string) => {
     setTypedValue(input)
     setInputTouched(true)
@@ -145,8 +143,16 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     setInputTouched(true)
   }, [balance, maxCost, noBalance, setInputTouched])
 
-  // Save "local" approving state (pre-BC) for rendering spinners etc
+  // Save "local" approving state for rendering spinners etc
   const [approving, setApproving] = useState(false)
+  const isApproved = approveState === ApprovalState.APPROVED
+  const notApproved = !isApproved
+  // on chain tx mining pending
+  const isPendingOnchainApprove = approveState === ApprovalState.PENDING
+  // local pending or on chain mining wait for approval
+  // "notApproved" here is for weeding out revoking approval pending
+  const isPendingApprove = notApproved && (approving || isPendingOnchainApprove)
+
   const handleApprove = useCallback(async () => {
     // reset errors and close any modals
     handleCloseError()
@@ -165,7 +171,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     }
   }, [approveCallback, handleCloseError, handleSetError, token?.symbol])
 
-  /* // CURRENTLY TEST ONLY
+  // CURRENTLY TEST ONLY (not on prod, barn or ens)
   const handleRevokeApproval = useCallback(async () => {
     // reset errors and close any modals
     handleCloseError()
@@ -186,7 +192,6 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
       setApproving(false)
     }
   }, [handleCloseError, handleSetError, revokeApprovalCallback, token?.symbol])
-  */
 
   const vCowAmount = useMemo(
     () => calculateInvestmentAmounts(claim, investedAmount)?.vCowAmount,
@@ -231,6 +236,8 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     // set different errors in order of importance
     if (balance.lessThan(maxCost) && !isSelfClaiming) {
       error = ErrorMessages.InsufficientBalance(token?.symbol)
+    } else if (isPendingOnchainApprove) {
+      error = ErrorMessages.WaitForApproval(token?.symbol)
     } else if (!isNative && !isApproved) {
       error = ErrorMessages.NotApproved(token?.symbol)
     } else if (noBalance) {
@@ -272,6 +279,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
     token,
     isNative,
     isApproved,
+    isPendingOnchainApprove,
     maxCost,
     setInputError,
     resetInputError,
@@ -332,10 +340,12 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
 
           <span>
             <b>Token approval</b>
-            {!isEtherApproveState ? (
+            {!isNative ? (
               <i>
-                {approveState !== ApprovalState.APPROVED ? (
-                  `${currencyAmount?.currency?.symbol} not approved`
+                {isPendingApprove ? (
+                  <span style={{ fontStyle: 'italic' }}>{`Approving ${currencyAmount?.currency?.symbol}...`}</span>
+                ) : notApproved ? (
+                  <span>{`${currencyAmount?.currency?.symbol} not approved!`}</span>
                 ) : (
                   <Row>
                     <img src={CheckCircle} alt="Approved" />
@@ -344,6 +354,7 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
                 )}
               </i>
             ) : (
+              // Native token does not need approval
               <i>
                 <Row>
                   <img src={CheckCircle} alt="Approved" />
@@ -352,30 +363,25 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
               </i>
             )}
             {/* Token Approve buton - not shown for ETH */}
-            {!isEtherApproveState && approveState !== ApprovalState.APPROVED && (
+            {!isNative && notApproved && (
               <ButtonConfirmed
                 buttonSize={ButtonSize.SMALL}
                 onClick={handleApprove}
-                disabled={
-                  approving || approveState === ApprovalState.PENDING || approveState !== ApprovalState.NOT_APPROVED
-                }
-                altDisabledStyle={approveState === ApprovalState.PENDING} // show solid button while waiting
+                disabled={isPendingApprove}
+                altDisabledStyle={isPendingApprove} // show solid button while waiting
               >
-                {approving || approveState === ApprovalState.PENDING ? (
-                  <Loader stroke="white" />
-                ) : (
-                  <span>Approve {currencyAmount?.currency?.symbol}</span>
-                )}
+                {isPendingApprove ? <Loader stroke="white" /> : <span>Approve {currencyAmount?.currency?.symbol}</span>}
               </ButtonConfirmed>
             )}
-            {/*
-              // CURRENTLY TEST ONLY
-              approveState === ApprovalState.APPROVED && (
-                <UnderlineButton disabled={approving || isPendingApproval} onClick={handleRevokeApproval}>
-                  Revoke approval {approving || (isPendingApproval && <Loader size="12px" stroke="white" />)}
+            {
+              // CURRENTLY TEST ONLY (not on prod, barn or ens)
+              IS_TESTING_ENV && isApproved && (
+                <UnderlineButton disabled={approving || isPendingRevoke} onClick={handleRevokeApproval}>
+                  {(approving || isPendingRevoke) && <Loader size="12px" />}
+                  {approving || isPendingRevoke ? 'Revoking approval...' : 'Revoke approval'}{' '}
                 </UnderlineButton>
               )
-             */}
+            }
           </span>
 
           <span>
