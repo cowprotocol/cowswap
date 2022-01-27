@@ -27,9 +27,6 @@ import {
   transformRepoClaimsToUserClaims,
 } from 'state/claim/hooks/utils'
 import { SupportedChainId } from 'constants/chains'
-import { registerOnWindow } from 'utils/misc'
-import mockData, { MOCK_INDICES } from './mocks/claimData'
-import { getIndexes } from './utils'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 export { useUserClaimData } from '@src/state/claim/hooks'
@@ -56,6 +53,7 @@ import {
   updateInvestError,
   setEstimatedGas,
   setIsTouched,
+  setHasClaimsOnOtherChains,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -139,8 +137,8 @@ type ClassifiedUserClaims = {
  *
  * @param account
  */
-export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims {
-  const userClaims = useUserClaims(account)
+export function useClassifiedUserClaims(account: Account, optionalChainId?: SupportedChainId): ClassifiedUserClaims {
+  const userClaims = useUserClaims(account, optionalChainId)
   const contract = useVCowContract()
 
   const { isInvestmentWindowOpen, isAirdropWindowOpen } = useClaimTimeInfo()
@@ -187,8 +185,8 @@ export function useClassifiedUserClaims(account: Account): ClassifiedUserClaims 
  *
  * @param account
  */
-export function useUserAvailableClaims(account: Account): UserClaims {
-  const { available } = useClassifiedUserClaims(account)
+export function useUserAvailableClaims(account: Account, optionalChainId?: SupportedChainId): UserClaims {
+  const { available } = useClassifiedUserClaims(account, optionalChainId)
 
   return available
 }
@@ -232,8 +230,10 @@ export function useUserUnclaimedAmount(account: string | null | undefined): Curr
  *
  * @param account
  */
-export function useUserClaims(account: Account): UserClaims | null {
-  const { chainId } = useActiveWeb3React()
+export function useUserClaims(account: Account, optionalChainId?: SupportedChainId): UserClaims | null {
+  const { chainId: connectedChain } = useActiveWeb3React()
+  const chainId = optionalChainId || connectedChain
+
   const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaims | null }>({})
 
   // We'll have claims on multiple networks
@@ -265,13 +265,6 @@ export function useUserClaims(account: Account): UserClaims | null {
 
   return claimKey ? claimInfo[claimKey] : null
 }
-
-// TODO: remove
-const createMockTx = (data: number[]) => ({
-  hash: '0x' + Math.round(Math.random() * 10).toString() + 'AxAFjAhG89G89AfnLK3CCxAfnLKQffQ782G89AfnLK3CCxxx123FF',
-  summary: `Claimed ${Math.random() * 3337} vCOW`,
-  claim: { recipient: '0x97EC4fcD5F78cA6f6E4E1EAC6c0Ec8421bA518B7', indices: data },
-})
 
 /**
  * Fetches from contract the deployment timestamp in ms
@@ -430,20 +423,6 @@ export function useClaimCallback(account: string | null | undefined): {
   // used for popup summary
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
-
-  // TODO: remove
-  registerOnWindow({
-    addMockClaimTransactions: (data?: number[]) => {
-      let finalData: number[] | undefined = data
-
-      if (!finalData) {
-        const mockDataIndices = connectedAccount ? getIndexes(mockData[connectedAccount] || []) : []
-        finalData = mockDataIndices?.length > 0 ? mockDataIndices : MOCK_INDICES
-      }
-
-      return addTransaction(createMockTx(finalData))
-    },
-  })
 
   const getClaimArgs = useCallback(
     async function (claimInput: ClaimInput[]): Promise<GetClaimManyArgsResult> {
@@ -777,7 +756,7 @@ const FETCH_CLAIM_PROMISES: { [key: string]: Promise<UserClaims> } = {}
  * Customized fetchClaim function
  * Returns the claim for the given address, or null if not valid
  */
-function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
+export function fetchClaims(account: string, chainId: number): Promise<UserClaims> {
   // Validate it's a, well, valid address
   const formatted = isAddress(account)
   if (!formatted) return Promise.reject(new Error('Invalid address'))
@@ -845,6 +824,9 @@ export function useClaimDispatchers() {
       setSelectedAll: (payload: boolean) => dispatch(setSelectedAll(payload)),
       // reset claim ui
       resetClaimUi: () => dispatch(resetClaimUi()),
+      // has claims on other chains
+      setHasClaimsOnOtherChains: (payload: { chain: SupportedChainId; hasClaims: boolean }) =>
+        dispatch(setHasClaimsOnOtherChains(payload)),
     }),
     [dispatch]
   )
