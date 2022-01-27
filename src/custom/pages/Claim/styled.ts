@@ -1702,8 +1702,4 @@ export const UserMessage = styled.div`
   > span {
     flex: 1 1 100%;
   }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    
-  `}
 `
