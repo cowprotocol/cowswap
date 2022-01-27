@@ -10,6 +10,7 @@ import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'assets/cow-swap/gno.png'
 import LogoUSDC from 'assets/cow-swap/usdc.png'
 import LogoXDAI from 'assets/cow-swap/xdai.png'
+import { CopyIcon } from 'components/Copy'
 
 export const PageWrapper = styled.div`
   --border-radius: 56px;
@@ -628,16 +629,20 @@ export const ConfirmOrLoadingWrapper = styled.div<{ activeBG: boolean }>`
     margin: 24px auto 0;
   }
 
-  > h4 > div > p > b {
-    word-break: break-all;
-    display: block;
-  }
-
   > h4 > button {
     margin: 32px auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 20px auto;
+    `};
+  }
+
+  ${CopyIcon} {
+    display: inline;
+    min-width: 6em;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      min-width: 0;
     `};
   }
 `

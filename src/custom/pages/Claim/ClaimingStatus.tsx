@@ -26,6 +26,8 @@ import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { shortenAddress } from 'utils'
+import CopyHelper from 'components/Copy'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
@@ -86,8 +88,12 @@ export default function ClaimingStatus() {
                   <p>
                     You have just claimed on behalf of{' '}
                     <b>
-                      {activeClaimAccount} (
-                      <ExplorerLink id={activeClaimAccount} type="token-transfer" />)
+                      <ExplorerLink
+                        id={activeClaimAccount}
+                        label={shortenAddress(activeClaimAccount)}
+                        type="token-transfer"
+                      />
+                      <CopyHelper toCopy={activeClaimAccount} />
                     </b>
                   </p>
                 </div>
