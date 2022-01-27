@@ -67,7 +67,7 @@ const FAQ_DATA = [
       'By sending this Ethereum transaction, you will be investing tokens from the connected account and exchanging them for vCOW tokens that will be received by the claiming account specified above.',
   },
   {
-    title: 'Can I modify (partial) invested amounts later?',
+    title: 'Can I modify (partially) invested amounts later?',
     content:
       'No. Once you send the transaction, you cannot increase or reduce the investment. Investment opportunities can only be exercised once.',
   },
