@@ -5,7 +5,7 @@ import BadgeOriginal from 'components/Badge'
 import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { Step } from 'components/Stepper'
-import { transparentize, darken } from 'polished'
+import { transparentize, darken, lighten } from 'polished'
 import LogoETH from 'assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'assets/cow-swap/gno.png'
 import LogoUSDC from 'assets/cow-swap/usdc.png'
@@ -242,9 +242,8 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
-  border: ${({ theme }) =>
-    theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+  background: ${({ theme }) => theme.currencyInput?.background};
+  border: ${({ theme }) => theme.currencyInput?.border};
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
   position: relative;
@@ -841,6 +840,12 @@ export const ClaimBreakdown = styled.div`
     margin: 0 0 24px;
     text-align: center;
   }
+
+  > a,
+  > a:hover,
+  > a:focus {
+    text-decoration: none;
+  }
 `
 
 export const FooterNavButtons = styled.div`
@@ -863,12 +868,6 @@ export const FooterNavButtons = styled.div`
       margin: 0 6px 0 0;
     }
   }
-`
-
-export const ReadMoreText = styled.div`
-  margin: 18px 0;
-  text-align: center;
-  font-size: 15px;
 `
 
 export const TopNav = styled.div`
@@ -1662,4 +1661,97 @@ export const StepExplainer = styled.div`
   > span > p {
     margin: 0;
   }
+`
+
+export const BannerExplainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  padding: 0 24px;
+  background: ${({ theme }) => theme.bg8};
+  position: relative;
+  overflow: hidden;
+  border: 4px solid transparent;
+  transition: border 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 12px;
+    height: auto;
+  `}
+
+  &:hover {
+    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
+  }
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    height: 100%;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    justify-content: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      align-items: center;
+    `}
+  }
+
+  > span > b {
+    @supports (-webkit-background-clip: text) {
+      background: ${({ theme }) =>
+        `linear-gradient(80deg, ${theme.primary1}, ${lighten(0.2, theme.primary1)}, ${theme.white}, #5ea2fb)`};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @supports not (-webkit-background-clip: text) {
+      color: ${({ theme }) => theme.white};
+    }
+
+    text-align: right;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 6px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 19px;
+      text-align: center;
+    `}
+  }
+
+  > span > small {
+    color: ${({ theme }) => theme.white};
+    font-size: 16px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+    `}
+  }
+
+  > span > small > a {
+    color: inherit;
+  }
+
+  > svg {
+    width: auto;
+    height: 168%;
+    position: absolute;
+    left: -16%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    mix-blend-mode: hard-light;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `}
+  }
+
+  > svg {
+    .stop1 { stop-color: ${({ theme }) => theme.white}}
+    .stop2 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0.8;}
+    .stop3 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0;}
 `

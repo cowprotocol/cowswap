@@ -3,6 +3,7 @@ import { ButtonSize } from 'theme'
 
 // Override colors
 export interface Colors extends ColorsUniswap {
+  bg8: Color
   purple: Color
   yellow: Color
   redShade: Color
