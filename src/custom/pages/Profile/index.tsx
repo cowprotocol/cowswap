@@ -63,6 +63,7 @@ export default function Profile() {
 
   return (
     <Container>
+      {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <ProfileWrapper>
         <ProfileGridWrap horizontal>
           <CardHead>
@@ -71,7 +72,6 @@ export default function Profile() {
           {IS_CLAIMING_ENABLED && vCowBalance && <VCOWDropdown balance={vCowBalance} />}
         </ProfileGridWrap>
       </ProfileWrapper>
-      {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <Wrapper>
         <GridWrap>
           <CardHead>
