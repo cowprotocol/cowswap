@@ -107,7 +107,7 @@ const NetworkLabel = styled.div`
   flex: 1 1 auto;
   margin: 0px auto 0px 8px;
 `
-const SelectorLabel = styled(NetworkLabel)`
+export const SelectorLabel = styled(NetworkLabel)`
   display: none;
   margin-left: 0;
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
