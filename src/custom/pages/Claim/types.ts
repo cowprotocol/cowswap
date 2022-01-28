@@ -6,6 +6,8 @@ import { GpEther } from 'constants/tokens'
 export type ClaimCommonTypes = {
   account: string | null | undefined
   hasClaims: boolean
+  claims: EnhancedUserClaimData[]
+  isAirdropOnly: boolean
   tokenCurrencyAmount: CurrencyAmount<Token>
   handleChangeAccount: (e: SyntheticEvent<HTMLButtonElement>) => void
 }

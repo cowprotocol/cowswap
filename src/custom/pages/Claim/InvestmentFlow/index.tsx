@@ -21,7 +21,6 @@ import { FaqDrawer } from 'components/FaqDrawer'
 
 import {
   useClaimState,
-  useUserEnhancedClaimData,
   useClaimDispatchers,
   useHasClaimInvestmentFlowError,
   useSomeNotTouched,
@@ -71,8 +70,7 @@ const FAQ_DATA = [
   },
 ]
 
-export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
-  isAirdropOnly: boolean
+export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims' | 'claims' | 'isAirdropOnly'> & {
   modalCbs: {
     openModal: (message: string, operationType: OperationType) => void
     closeModal: () => void
@@ -149,12 +147,11 @@ function AccountDetails({ isClaimer, label, account, connectedAccount }: Account
   )
 }
 
-export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: InvestmentFlowProps) {
+export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modalCbs }: InvestmentFlowProps) {
   const { account } = useActiveWeb3React()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
     useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()
-  const claimData = useUserEnhancedClaimData(activeClaimAccount)
 
   const hasError = useHasClaimInvestmentFlowError()
   const someNotTouched = useSomeNotTouched()
@@ -162,10 +159,7 @@ export default function InvestmentFlow({ hasClaims, isAirdropOnly, modalCbs }: I
   // Filtering and splitting claims into free and selected paid claims
   // `selectedClaims` are used on step 1 and 2
   // `freeClaims` are used on step 2
-  const [freeClaims, selectedClaims] = useMemo(
-    () => _classifyAndFilterClaimData(claimData, selected),
-    [claimData, selected]
-  )
+  const [freeClaims, selectedClaims] = useMemo(() => _classifyAndFilterClaimData(claims, selected), [claims, selected])
 
   // Merge all claims together again, with their investment data for step 2
   const allClaims: ClaimWithInvestmentData[] = useMemo(

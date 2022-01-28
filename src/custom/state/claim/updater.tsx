@@ -6,13 +6,19 @@ export default function Updater() {
   const { activeClaimAccount } = useClaimState()
   const { setHasClaimsOnOtherChains } = useClaimDispatchers()
 
-  const mainnetAvailable = useUserAvailableClaims(activeClaimAccount, SupportedChainId.MAINNET)
-  const gnosisAvailable = useUserAvailableClaims(activeClaimAccount, SupportedChainId.XDAI)
+  const { claims: mainnetAvailable } = useUserAvailableClaims(activeClaimAccount, SupportedChainId.MAINNET)
+  const { claims: gnosisAvailable } = useUserAvailableClaims(activeClaimAccount, SupportedChainId.XDAI)
 
   useEffect(() => {
-    setHasClaimsOnOtherChains({ chain: SupportedChainId.MAINNET, hasClaims: mainnetAvailable.length > 0 })
-    setHasClaimsOnOtherChains({ chain: SupportedChainId.XDAI, hasClaims: gnosisAvailable.length > 0 })
-  }, [mainnetAvailable.length, gnosisAvailable.length, setHasClaimsOnOtherChains])
+    setHasClaimsOnOtherChains({
+      chain: SupportedChainId.MAINNET,
+      hasClaims: Boolean(mainnetAvailable && mainnetAvailable.length > 0),
+    })
+    setHasClaimsOnOtherChains({
+      chain: SupportedChainId.XDAI,
+      hasClaims: Boolean(gnosisAvailable && gnosisAvailable.length > 0),
+    })
+  }, [setHasClaimsOnOtherChains, mainnetAvailable, gnosisAvailable])
 
   return null
 }

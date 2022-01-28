@@ -1,3 +1,5 @@
+import { ReactNode, useEffect, useRef } from 'react'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { Trans } from '@lingui/macro'
 import { isAddress } from '@ethersproject/address'
 import {
@@ -10,12 +12,10 @@ import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { ClaimStatus } from 'state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
 import { useActiveWeb3React } from 'hooks/web3'
-import { ClaimsTableProps } from './ClaimsTable'
 import { ClaimAddressProps } from './ClaimAddress'
-import { ReactNode, useEffect, useRef } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import { ClaimCommonTypes } from 'pages/Claim/types'
 
-type FooterNavButtonsProps = Pick<ClaimsTableProps, 'hasClaims' | 'isAirdropOnly'> &
+type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
     isPaidClaimsOnly: boolean
     resolvedAddress: string | null
