@@ -26,6 +26,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import FooterNavButtons from './FooterNavButtons'
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 
 /* TODO: Replace URLs with the actual final URL destinations */
 export const COW_LINKS = {
@@ -35,6 +36,7 @@ export const COW_LINKS = {
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
+  const { error } = useWeb3React()
 
   const {
     // address/ENS address
@@ -93,11 +95,16 @@ export default function Claim() {
   // claim callback
   const { claimCallback, estimateGasCallback } = useClaimCallback(activeClaimAccount)
 
-  // handle change account
-  const handleChangeAccount = () => {
+  // reset claim state
+  const resetClaimState = useCallback(() => {
+    setClaimStatus(ClaimStatus.DEFAULT)
     setActiveClaimAccount('')
     setSelected([])
-    setClaimStatus(ClaimStatus.DEFAULT)
+  }, [setActiveClaimAccount, setClaimStatus, setSelected])
+
+  // handle change account
+  const handleChangeAccount = () => {
+    resetClaimState()
     setIsSearchUsed(true)
   }
 
@@ -173,10 +180,25 @@ export default function Claim() {
       setActiveClaimAccount(account)
     }
 
+    // handle unsupported network
+    if (error instanceof UnsupportedChainIdError) {
+      resetClaimState()
+    }
+
     // properly reset the user to the claims table and initial investment flow
     resetClaimUi()
     // Depending on chainId even though it's not used because we want to reset the state on network change
-  }, [account, activeClaimAccount, chainId, resolvedAddress, isSearchUsed, setActiveClaimAccount, resetClaimUi])
+  }, [
+    account,
+    activeClaimAccount,
+    chainId,
+    resolvedAddress,
+    isSearchUsed,
+    setActiveClaimAccount,
+    resetClaimUi,
+    error,
+    resetClaimState,
+  ])
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(

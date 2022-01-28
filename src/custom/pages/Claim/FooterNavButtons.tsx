@@ -12,7 +12,8 @@ import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ClaimsTableProps } from './ClaimsTable'
 import { ClaimAddressProps } from './ClaimAddress'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 
 type FooterNavButtonsProps = Pick<ClaimsTableProps, 'hasClaims' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
@@ -53,28 +54,44 @@ export default function FooterNavButtons({
   const hasError = useHasClaimInvestmentFlowError()
   const hasZeroInvested = useHasZeroInvested()
 
+  const { error } = useWeb3React()
+
   const isInputAddressValid = isAddress(resolvedAddress || '')
+
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   // User is connected and has some unclaimed claims
   const isConnectedAndHasClaims = account && activeClaimAccount && hasClaims && claimStatus === ClaimStatus.DEFAULT
   const noPaidClaimsSelected = !selected.length
 
+  useEffect(() => {
+    buttonRef?.current?.blur()
+  }, [activeClaimAccount])
+
   let buttonContent: ReactNode = null
   // Disconnected, show wallet connect
-  if (!account) {
+  if (!account && activeClaimAccount) {
     buttonContent = (
-      <ButtonPrimary onClick={toggleWalletModal}>
+      <ButtonPrimary ref={buttonRef} onClick={toggleWalletModal}>
         <Trans>Connect a wallet</Trans>
       </ButtonPrimary>
     )
   }
-
   // User has no set active claim account and/or has claims, show claim account search
-  if ((!activeClaimAccount || !hasClaims) && claimStatus === ClaimStatus.DEFAULT) {
+  else if (!hasClaims && claimStatus === ClaimStatus.DEFAULT) {
     buttonContent = (
       <>
-        <ButtonPrimary disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
-          <Trans>Check claimable vCOW</Trans>
+        <ButtonPrimary
+          ref={buttonRef}
+          disabled={!isInputAddressValid || error instanceof UnsupportedChainIdError}
+          type="text"
+          onClick={handleCheckClaim}
+        >
+          {error instanceof UnsupportedChainIdError ? (
+            <Trans>Wrong Network</Trans>
+          ) : (
+            <Trans>Check claimable vCOW</Trans>
+          )}
         </ButtonPrimary>
       </>
     )
