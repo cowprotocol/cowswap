@@ -703,8 +703,8 @@ export const EligibleBanner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => darken(0.1, theme.attention)};
+  background: ${({ theme }) => transparentize(0.9, theme.success)};
+  color: ${({ theme }) => theme.success};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -719,7 +719,7 @@ export const EligibleBanner = styled.div`
     height: 21px;
 
     > path {
-      fill: ${({ theme }) => darken(0.1, theme.attention)};
+      fill: ${({ theme }) => theme.success};
     }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
