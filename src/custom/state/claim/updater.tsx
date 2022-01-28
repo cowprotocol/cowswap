@@ -1,14 +1,13 @@
 import { useEffect } from 'react'
 import { SupportedChainId } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
-import { useClaimDispatchers, useUserAvailableClaims } from './hooks'
+import { useClaimDispatchers, useClaimState, useUserAvailableClaims } from './hooks'
 
 export default function Updater() {
-  const { account } = useActiveWeb3React()
+  const { activeClaimAccount } = useClaimState()
   const { setHasClaimsOnOtherChains } = useClaimDispatchers()
 
-  const mainnetAvailable = useUserAvailableClaims(account, SupportedChainId.MAINNET)
-  const gnosisAvailable = useUserAvailableClaims(account, SupportedChainId.XDAI)
+  const mainnetAvailable = useUserAvailableClaims(activeClaimAccount, SupportedChainId.MAINNET)
+  const gnosisAvailable = useUserAvailableClaims(activeClaimAccount, SupportedChainId.XDAI)
 
   useEffect(() => {
     setHasClaimsOnOtherChains({ chain: SupportedChainId.MAINNET, hasClaims: mainnetAvailable.length > 0 })
