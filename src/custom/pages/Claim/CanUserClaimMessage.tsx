@@ -11,9 +11,7 @@ import { COW_LINKS } from '.'
 import SVG from 'react-inlinesvg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 
-type ClaimIntroductionProps = Pick<ClaimCommonTypes, 'hasClaims' | 'handleChangeAccount'> & {
-  isAirdropOnly: boolean
-}
+type ClaimIntroductionProps = Pick<ClaimCommonTypes, 'hasClaims' | 'handleChangeAccount' | 'isAirdropOnly'>
 
 export default function CanUserClaimMessage({ hasClaims, isAirdropOnly, handleChangeAccount }: ClaimIntroductionProps) {
   const { activeClaimAccount, claimStatus } = useClaimState()
