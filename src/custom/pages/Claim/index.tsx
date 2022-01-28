@@ -99,6 +99,7 @@ export default function Claim() {
   const resetClaimState = useCallback(() => {
     setClaimStatus(ClaimStatus.DEFAULT)
     setActiveClaimAccount('')
+    setActiveClaimAccountENS('')
     setSelected([])
   }, [setActiveClaimAccount, setClaimStatus, setSelected])
 
