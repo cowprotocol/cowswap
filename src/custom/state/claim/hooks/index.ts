@@ -59,7 +59,7 @@ import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 
-const CLAIMS_REPO_BRANCH = '2022-01-27-rinkeby-test'
+const CLAIMS_REPO_BRANCH = '2022-01-28-kaffeekranzchen'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
