@@ -737,7 +737,7 @@ export const InputField = styled.div`
   flex-flow: row wrap;
   background: ${({ theme }) => theme.currencyInput?.background};
   width: 100%;
-  margin: 0 0 24px;
+  margin: 0 0 15px;
 
   > input {
     background: transparent;
