@@ -11,7 +11,7 @@ type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>
 
 export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps) {
   const { activeClaimAccount, activeClaimAccountENS, claimStatus, investFlowStep } = useClaimState()
-  const { setActiveClaimAccount } = useClaimDispatchers()
+  const { setActiveClaimAccount, setIsSearchUsed } = useClaimDispatchers()
 
   const isDefaultStatus = claimStatus === ClaimStatus.DEFAULT
   const isConfirmed = claimStatus === ClaimStatus.CONFIRMED
@@ -36,7 +36,12 @@ export default function ClaimNav({ account, handleChangeAccount }: ClaimNavProps
           ) : (
             !!account &&
             allowToChangeAccount && (
-              <ButtonSecondary onClick={() => setActiveClaimAccount(account)}>
+              <ButtonSecondary
+                onClick={() => {
+                  setActiveClaimAccount(account)
+                  setIsSearchUsed(false)
+                }}
+              >
                 Switch to connected account
               </ButtonSecondary>
             )
