@@ -27,6 +27,8 @@ import FooterNavButtons from './FooterNavButtons'
 import InvestmentFlow from './InvestmentFlow'
 import { ClaimSummary } from './ClaimSummary'
 
+import usePrevious from 'hooks/usePrevious'
+
 /* TODO: Replace URLs with the actual final URL destinations */
 export const COW_LINKS = {
   vCowPost: 'https://cow.fi/',
@@ -36,6 +38,9 @@ export const COW_LINKS = {
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
   const { error } = useWeb3React()
+
+  // get previous account
+  const previousAccount = usePrevious(account)
 
   const {
     // address/ENS address
@@ -95,20 +100,32 @@ export default function Claim() {
   const { claimCallback, estimateGasCallback } = useClaimCallback(activeClaimAccount)
 
   // reset claim state
-  const resetClaimState = useCallback(() => {
-    setClaimStatus(ClaimStatus.DEFAULT)
-    setActiveClaimAccount('')
-    setActiveClaimAccountENS('')
-    setSelected([])
-  }, [setActiveClaimAccount, setActiveClaimAccountENS, setClaimStatus, setSelected])
+  const resetClaimState = useCallback(
+    (account = '', ens = '') => {
+      setClaimStatus(ClaimStatus.DEFAULT)
+      setActiveClaimAccount(account)
+      setActiveClaimAccountENS(ens)
+      setSelected([])
+    },
+    [setActiveClaimAccount, setActiveClaimAccountENS, setClaimStatus, setSelected]
+  )
 
-  // handle change account
-  const handleChangeAccount = () => {
+  // handle account change
+  const handleAccountChange = useCallback(
+    (account = '') => {
+      resetClaimState(account)
+      setIsSearchUsed(false)
+    },
+    [resetClaimState, setIsSearchUsed]
+  )
+
+  // handle change account click
+  const handleChangeClick = useCallback(() => {
     resetClaimState()
     setIsSearchUsed(true)
-  }
+  }, [resetClaimState, setIsSearchUsed])
 
-  // check claim
+  // handle
   const handleCheckClaim = () => {
     setActiveClaimAccount(resolvedAddress || '')
     setActiveClaimAccountENS(resolvedENS || '')
@@ -182,7 +199,7 @@ export default function Claim() {
 
     // handle unsupported network
     if (error instanceof UnsupportedChainIdError) {
-      resetClaimState()
+      handleAccountChange()
     }
 
     // properly reset the user to the claims table and initial investment flow
@@ -197,8 +214,15 @@ export default function Claim() {
     setActiveClaimAccount,
     resetClaimUi,
     error,
-    resetClaimState,
+    handleAccountChange,
   ])
+
+  // handle account disconnect or account change after claim is confirmed
+  useEffect(() => {
+    if (!account || (account !== previousAccount && claimStatus === ClaimStatus.CONFIRMED)) {
+      handleAccountChange(account || '')
+    }
+  }, [account, claimStatus, previousAccount, handleAccountChange])
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
@@ -222,7 +246,7 @@ export default function Claim() {
             {/* If claim is confirmed > trigger confetti effect */}
             <Confetti start={claimStatus === ClaimStatus.CONFIRMED} />
             {/* Top nav buttons */}
-            <ClaimNav account={account} handleChangeAccount={handleChangeAccount} />
+            <ClaimNav account={account} handleChangeAccount={handleChangeClick} />
             {/* Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
             <EligibleBanner hasClaims={hasClaims} />
             {/* Show total to claim (user has airdrop or airdrop+investment) */}
@@ -233,7 +257,7 @@ export default function Claim() {
             <CanUserClaimMessage
               hasClaims={hasClaims}
               isAirdropOnly={isAirdropOnly}
-              handleChangeAccount={handleChangeAccount}
+              handleChangeAccount={handleChangeClick}
             />
 
             {/* Try claiming or inform successful claim */}
