@@ -7,7 +7,7 @@ import { SupportedChainId } from 'constants/chains'
 import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
 
 import wxDaiLogo from 'assets/cow-swap/wxdai.png'
-import vCowLogo from 'assets/cow-swap/cowprotocol.svg'
+import vCowLogo from 'assets/cow-swap/cow.svg'
 import gnoLogo from 'assets/cow-swap/gno.png'
 import usdcLogo from 'assets/cow-swap/usdc.png'
 
