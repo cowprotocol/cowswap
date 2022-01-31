@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 
 import EthereumLogo from 'assets/images/ethereum-logo.png'
-import xDaiLogo from 'assets/images/xdai.png'
+import xDaiLogo from 'assets/cow-swap/xdai.png'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import Logo from 'components/Logo'
