@@ -237,7 +237,7 @@ export default function Claim() {
             />
 
             {/* Try claiming or inform successful claim */}
-            <ClaimingStatus />
+            <ClaimingStatus handleChangeAccount={handleChangeAccount} />
             {/* IS Airdrop + investing (advanced) */}
             <ClaimsTable isAirdropOnly={isAirdropOnly} claims={userClaimData} hasClaims={hasClaims} />
             {/* Investing vCOW flow (advanced) */}

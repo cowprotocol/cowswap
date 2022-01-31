@@ -29,11 +29,14 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { shortenAddress } from 'utils'
 import CopyHelper from 'components/Copy'
 import { ButtonSecondary } from 'components/Button'
+import { ClaimCommonTypes } from './types'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
 
-export default function ClaimingStatus() {
+type ClaimNavProps = Pick<ClaimCommonTypes, 'handleChangeAccount'>
+
+export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
   const { chainId, account } = useActiveWeb3React()
   const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
 
@@ -159,9 +162,14 @@ export default function ClaimingStatus() {
           </AttemptFooter>
         </>
       )}
-      {(isConfirmed || isFailure) && (
+      {isFailure && (
         <ButtonSecondary onClick={() => setClaimStatus(ClaimStatus.DEFAULT)}>
           <Trans>Go back</Trans>
+        </ButtonSecondary>
+      )}
+      {isConfirmed && (
+        <ButtonSecondary onClick={handleChangeAccount}>
+          <Trans>Claim for another account</Trans>
         </ButtonSecondary>
       )}
     </ConfirmOrLoadingWrapper>
