@@ -1,8 +1,8 @@
-import { Middleware, isAnyOf } from '@reduxjs/toolkit'
-import { getCowSoundSuccess, getCowSoundSend } from 'utils/sound'
+import { isAnyOf, Middleware } from '@reduxjs/toolkit'
+import { getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 import { AppState } from 'state'
-import { finalizeTransaction, addTransaction } from '../enhancedTransactions/actions'
-import { setClaimStatus, ClaimStatus } from './actions'
+import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
+import { ClaimStatus, setClaimStatus } from './actions'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 const isAddTransaction = isAnyOf(addTransaction)
@@ -25,9 +25,20 @@ export const claimMinedMiddleware: Middleware<Record<string, unknown>, AppState>
     const transaction = store.getState().transactions[chainId][hash]
 
     if (transaction.claim) {
-      console.debug('[stat:claim:middleware] Claim transaction finalized', transaction.hash, transaction.claim)
-      store.dispatch(setClaimStatus(ClaimStatus.CONFIRMED))
-      cowSound = getCowSoundSuccess()
+      const status = transaction.receipt?.status
+      console.debug(
+        `[stat:claim:middleware] Claim transaction finalized withs status ${status}`,
+        transaction.hash,
+        transaction.claim
+      )
+      if (status === 1) {
+        // success
+        store.dispatch(setClaimStatus(ClaimStatus.CONFIRMED))
+        cowSound = getCowSoundSuccess()
+      } else {
+        // not success...
+        store.dispatch(setClaimStatus(ClaimStatus.FAILED))
+      }
     }
   }
 
