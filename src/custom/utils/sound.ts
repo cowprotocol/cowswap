@@ -2,9 +2,9 @@ type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
 
 const COW_SOUNDS: Sounds = {
-  SEND: '/audio/mooooo-send__lower-90.mp3',
-  SUCCESS: '/audio/mooooo-success__ben__lower-90.mp3',
-  ERROR: '/audio/mooooo-error__lower-90.mp3',
+  SEND: '/audio/send.mp3',
+  SUCCESS: '/audio/success.mp3',
+  ERROR: '/audio/error.mp3',
 }
 
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
