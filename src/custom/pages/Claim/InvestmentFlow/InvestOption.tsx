@@ -10,6 +10,7 @@ import {
   InvestInput,
   InvestAvailableBar,
   UnderlineButton,
+  UserMessage,
   WarningWrapper,
 } from '../styled'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
@@ -35,24 +36,27 @@ import { EnhancedUserClaimData } from '../types'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { IS_TESTING_ENV } from '../const'
+import ImportantIcon from 'assets/cow-swap/important.svg'
+import SVG from 'react-inlinesvg'
 
 const ErrorMessages = {
-  NoBalance: (symbol = '') => `You don't have ${symbol} balance to invest`,
+  NoBalance: (symbol = '') =>
+    `You don't have ${symbol} balance to invest. Add sufficient ${symbol} balance or go back and uncheck ${symbol} as an investment option.`,
 
   InsufficientBalanceSelf: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
   InsufficientBalanceBehalf: (symbol = '') =>
     `Your ${symbol} balance is not enough to cover 100% of the investment amount.`,
 
-  OverMaxInvestment: `Your investment amount can't be above the maximum investment allowed`,
-  InvestmentIsZero: `Your investment amount can't be zero`,
+  OverMaxInvestment: `Your investment amount can not be above the maximum investment allowed`,
+  InvestmentIsZero: `Your investment amount can not be zero`,
   NotApproved: (symbol = '') => `Please approve ${symbol} token`,
-  WaitForApproval: (symbol = '') => `Approving ${symbol}. Please wait until the transaction is mined`,
+  WaitForApproval: (symbol = '') => `Approving ${symbol}. Please wait until the transaction is mined.`,
 }
 
 const WarningMessages = {
   InsufficientNativeBalance: (symbol = '', amount = '') =>
     `You might not have enough ${symbol} to pay for the network transaction fee (estimated ${amount} ${symbol})`,
-  NotMaxInvested: `Beware you won't be able to increase this amount after executing your transaction`,
+  NotMaxInvested: `Please note: after executing the transaction in the last step, you will not be able to invest anymore.`,
 }
 
 type InvestOptionProps = {
@@ -430,13 +434,19 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
               Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW
             </i>
             {/* Insufficient balance validation error */}
-            {inputError && <small>{inputError}</small>}
+            {inputError && (
+              <UserMessage variant="danger">
+                <SVG src={ImportantIcon} description="Warning" />
+                <span>{inputError}</span>
+              </UserMessage>
+            )}
             {inputWarnings.length ? (
               <WarningWrapper>
                 {inputWarnings.map((warning) => (
-                  <small key={warning} className="warn">
-                    {warning}
-                  </small>
+                  <UserMessage key={warning} variant="info">
+                    <SVG src={ImportantIcon} description="Information" />
+                    <span>{warning}</span>
+                  </UserMessage>
                 ))}
               </WarningWrapper>
             ) : null}

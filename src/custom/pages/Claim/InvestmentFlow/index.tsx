@@ -4,7 +4,6 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import {
   InvestFlow,
   InvestContent,
-  InvestFlowValidation,
   InvestSummaryTable,
   ClaimTable,
   AccountClaimSummary,
@@ -246,9 +245,17 @@ export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modal
             <InvestOption key={claim.index} optionIndex={index} claim={claim} {...modalCbs} />
           ))}
 
-          {hasError && <InvestFlowValidation>Fix the errors before continuing</InvestFlowValidation>}
+          {hasError && (
+            <UserMessage variant={'danger'}>
+              <SVG src={ImportantIcon} description="Important!" />
+              <span>Please first resolve all errors shown above to continue.</span>
+            </UserMessage>
+          )}
           {!hasError && someNotTouched && (
-            <InvestFlowValidation>Investment Amount is required to continue</InvestFlowValidation>
+            <UserMessage variant={'danger'}>
+              <SVG src={ImportantIcon} description="Important!" />
+              <span>Investment Amount is required to continue.</span>
+            </UserMessage>
           )}
         </InvestContent>
       ) : null}
@@ -280,8 +287,8 @@ export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modal
 
           <h4>Ready to claim your vCOW?</h4>
           <FaqDrawer items={FAQ_DATA} />
-          <UserMessage>
-            <SVG src={ImportantIcon} description="Important!" />
+          <UserMessage variant={'info'}>
+            <SVG src={ImportantIcon} description="Information" />
             <span>
               <b>Important!</b> Please make sure you intend to claim and send vCOW to the above mentioned receiving
               account.
