@@ -6,6 +6,7 @@ export enum ClaimStatus {
   ATTEMPTING = 'ATTEMPTING',
   SUBMITTED = 'SUBMITTED',
   CONFIRMED = 'CONFIRMED',
+  FAILED = 'FAILED',
 }
 
 export type ClaimActions = {

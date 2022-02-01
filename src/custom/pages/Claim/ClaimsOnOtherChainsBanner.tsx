@@ -72,7 +72,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
     <NotificationBanner className={className} isVisible id={account ?? undefined} level="info">
       <Wrapper>
         <AlertTriangle />
-        <div>You have other available claims on</div>
+        <div>This account has available claims on</div>
         <div>
           {chainsWithClaims.map((chainId, index, array) => {
             const changeNetworksCallback = () => callback(chainId)

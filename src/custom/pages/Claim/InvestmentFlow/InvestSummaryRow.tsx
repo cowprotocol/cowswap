@@ -1,11 +1,13 @@
 import { ClaimType } from 'state/claim/hooks'
 import { calculatePercentage } from 'state/claim/hooks/utils'
-import { TokenLogo, InvestAvailableBar } from 'pages/Claim/styled'
+import { TokenLogo, InvestAvailableBar, UserMessage } from 'pages/Claim/styled'
 import { ClaimWithInvestmentData } from 'pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { AMOUNT_PRECISION } from 'constants/index'
+import ImportantIcon from 'assets/cow-swap/important.svg'
+import SVG from 'react-inlinesvg'
 
 export type Props = { claim: ClaimWithInvestmentData }
 
@@ -58,9 +60,12 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
             </i>
             <InvestAvailableBar percentage={Number(percentage?.toFixed(2))} />
             {percentage?.lessThan(ONE_HUNDRED_PERCENT) && (
-              <small>
-                Note: You will <b>not be able</b> to invest anymore after claiming.
-              </small>
+              <UserMessage variant="info">
+                <SVG src={ImportantIcon} description="Information" />
+                <span>
+                  Note: You will <b>not be able</b> to invest anymore after claiming.
+                </span>
+              </UserMessage>
             )}
           </span>
         )}

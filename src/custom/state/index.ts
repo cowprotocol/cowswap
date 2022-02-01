@@ -5,15 +5,15 @@ import application from 'state/application/reducer'
 // import { updateVersion } from '@src/state/global/actions'
 import user from '@src/state/user/reducer'
 import swap from '@src/state/swap/reducer'
-import mint from '@src/state/mint/reducer'
-import mintV3 from '@src/state/mint/v3/reducer'
+// import mint from '@src/state/mint/reducer'
+// import mintV3 from '@src/state/mint/v3/reducer'
 // import lists from '@src/state/lists/reducer'
-import burn from '@src/state/burn/reducer'
-import burnV3 from '@src/state/burn/v3/reducer'
+// import burn from '@src/state/burn/reducer'
+// import burnV3 from '@src/state/burn/v3/reducer'
 import logs from '@src/state/logs/slice'
 import multicall from '@src/state/multicall/reducer'
-import { api as dataApi } from '@src/state/data/slice'
-import { routingApi } from '@src/state/routing/slice'
+// import { api as dataApi } from '@src/state/data/slice'
+// import { routingApi } from '@src/state/routing/slice'
 // CUSTOM REDUCERS
 import lists from 'state/lists/reducer'
 import orders from 'state/orders/reducer'
@@ -33,15 +33,15 @@ const UNISWAP_REDUCERS = {
   application,
   user,
   swap,
-  mint,
-  mintV3,
-  burn,
-  burnV3,
+  // mint,
+  // mintV3,
+  // burn,
+  // burnV3,
   multicall,
   // lists,
   logs,
-  [dataApi.reducerPath]: dataApi.reducer,
-  [routingApi.reducerPath]: routingApi.reducer,
+  // [dataApi.reducerPath]: dataApi.reducer,
+  // [routingApi.reducerPath]: routingApi.reducer,
 }
 
 const reducers = {
@@ -62,8 +62,8 @@ const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
-      .concat(dataApi.middleware)
-      .concat(routingApi.middleware)
+      // .concat(dataApi.middleware)
+      // .concat(routingApi.middleware)
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
       .concat(claimMinedMiddleware)

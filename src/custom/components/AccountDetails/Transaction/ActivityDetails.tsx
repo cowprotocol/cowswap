@@ -17,7 +17,7 @@ import {
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
-import { DEFAULT_PRECISION } from 'constants/index'
+import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -160,7 +160,9 @@ export function ActivityDetails(props: {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
     activityDerivedState
-  const approvalToken = useToken(enhancedTransaction?.approval?.tokenAddress) || null
+  const tokenAddress =
+    enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
+  const singleToken = useToken(tokenAddress) || null
 
   if (!order && !enhancedTransaction) return null
 
@@ -235,9 +237,9 @@ export function ActivityDetails(props: {
         {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
 
         {/* Token Approval Currency Logo */}
-        {!isOrder && approvalToken && (
+        {!isOrder && singleToken && (
           <ActivityVisual>
-            <CurrencyLogo currency={approvalToken} size={'24px'} />
+            <CurrencyLogo currency={singleToken} size={'24px'} />
           </ActivityVisual>
         )}
 

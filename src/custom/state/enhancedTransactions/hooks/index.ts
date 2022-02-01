@@ -131,8 +131,8 @@ export function useAllClaimingTransactions() {
 export function useAllClaimingTransactionIndices() {
   const claimingTransactions = useAllClaimingTransactions()
   return useMemo(() => {
-    const flattenedClaimingTransactions = claimingTransactions.reduce<number[]>((acc, { claim }) => {
-      if (claim && claim.indices) {
+    const flattenedClaimingTransactions = claimingTransactions.reduce<number[]>((acc, { claim, receipt }) => {
+      if (claim && claim.indices && !receipt) {
         acc.push(...claim.indices)
       }
       return acc

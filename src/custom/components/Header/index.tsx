@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { ExternalLink } from 'theme'
+// import { ExternalLink } from 'theme'
 import { useHistory, useLocation } from 'react-router-dom'
 
 import HeaderMod, {
@@ -25,15 +25,15 @@ import { useETHBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
-import TwitterImage from 'assets/cow-swap/twitter.svg'
+// import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
 import { ApplicationModal } from 'state/application/reducer'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import Web3Status from 'components/Web3Status'
-import NetworkSelector from 'components/Header/NetworkSelector'
-import SVG from 'react-inlinesvg'
+import NetworkSelector, { SelectorLabel } from 'components/Header/NetworkSelector'
+// import SVG from 'react-inlinesvg'
 import {
   useModalOpen,
   /*useShowClaimPopup,*/
@@ -112,6 +112,11 @@ export const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 100%;
     `};
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      flex-direction: initial;
+      align-items: inherit;
+    `};
   }
 
   ${StyledMenuButton} {
@@ -119,6 +124,12 @@ export const Wrapper = styled.div`
     padding: 0;
     height: 38px;
     width: 38px;
+  }
+
+  ${SelectorLabel} {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      display: none;
+    `};
   }
 `
 
@@ -172,11 +183,7 @@ export const LogoImage = styled.div`
   margin: 0 32px 0 0;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 160px;
-  `}
-
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
     height: 34px;
   `}
@@ -188,7 +195,7 @@ export const LogoImage = styled.div`
   }
 `
 
-const UniIcon = styled.div`
+export const UniIcon = styled.div`
   display: flex;
   position: relative;
   transition: transform 0.3s ease;
@@ -280,11 +287,11 @@ export default function Header() {
             </AccountElement>
           </HeaderElement>
           <HeaderElementWrap>
-            <TwitterLink>
+            {/* <TwitterLink>
               <ExternalLink href="https://twitter.com/mevprotection">
                 <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" />
               </ExternalLink>
-            </TwitterLink>
+            </TwitterLink> */}
             <StyledMenuButton onClick={() => toggleDarkMode()}>
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>

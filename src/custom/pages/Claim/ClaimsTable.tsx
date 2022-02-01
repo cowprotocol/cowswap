@@ -5,9 +5,8 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
-import { EnhancedUserClaimData } from './types'
+import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
-import { useUserEnhancedClaimData } from 'state/claim/hooks'
 
 import { CustomLightSpinner } from 'theme'
 import Circle from 'assets/images/blue-loader.svg'
@@ -20,10 +19,7 @@ import { COW_LINKS } from '.'
 import SVG from 'react-inlinesvg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 
-export type ClaimsTableProps = {
-  isAirdropOnly: boolean
-  hasClaims: boolean
-}
+export type ClaimsTableProps = Pick<ClaimCommonTypes, 'claims' | 'hasClaims' | 'isAirdropOnly'>
 
 // TODO: fix in other pr
 type ClaimsTableRowProps = EnhancedUserClaimData & {
@@ -116,14 +112,12 @@ const ClaimsTableRow = ({
   )
 }
 
-export default function ClaimsTable({ isAirdropOnly, hasClaims }: ClaimsTableProps) {
+export default function ClaimsTable({ isAirdropOnly, claims, hasClaims }: ClaimsTableProps) {
   const { selectedAll, selected, activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
 
   const { setSelectedAll, setSelected } = useClaimDispatchers()
 
   const pendingClaimsSet = useAllClaimingTransactionIndices()
-
-  const userClaimData = useUserEnhancedClaimData(activeClaimAccount)
 
   const { deployment: start, investmentDeadline, airdropDeadline } = useClaimTimeInfo()
 
@@ -136,12 +130,12 @@ export default function ClaimsTable({ isAirdropOnly, hasClaims }: ClaimsTablePro
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked
-    const paid = getIndexes(getPaidClaims(userClaimData))
+    const paid = getIndexes(getPaidClaims(claims))
     setSelected(checked ? paid : [])
     setSelectedAll(checked)
   }
 
-  const paidClaims = getPaidClaims(userClaimData)
+  const paidClaims = getPaidClaims(claims)
 
   useEffect(() => {
     setSelectedAll(selected.length === paidClaims.length)
@@ -174,7 +168,7 @@ export default function ClaimsTable({ isAirdropOnly, hasClaims }: ClaimsTablePro
             </tr>
           </thead>
           <tbody>
-            {userClaimData.map((claim: EnhancedUserClaimData) => (
+            {claims.map((claim: EnhancedUserClaimData) => (
               <ClaimsTableRow
                 key={claim.index}
                 {...claim}

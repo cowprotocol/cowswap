@@ -8,12 +8,14 @@ import { ClaimCommonTypes } from './types'
 import useENS from 'hooks/useENS'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void
 }
 
 export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddressProps) {
+  const { error } = useWeb3React()
   const { activeClaimAccount, claimStatus, inputAddress } = useClaimState()
   const { setInputAddress } = useClaimDispatchers()
 
@@ -32,6 +34,9 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
     setInputAddress(withoutSpaces)
   }
 
+  const buttonLabel =
+    error instanceof UnsupportedChainIdError ? 'or connect a wallet in a supported network' : 'or connect a wallet'
+
   if (activeClaimAccount || claimStatus === ClaimStatus.CONFIRMED) return null
 
   return (
@@ -39,11 +44,6 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
       <p>
         Enter an address to check for any eligible vCOW claims. <br />
         <i>Note: It is possible to claim for an account, using any wallet/account.</i>
-        {!account && (
-          <ButtonSecondary onClick={toggleWalletModal}>
-            <Trans>or connect a wallet</Trans>
-          </ButtonSecondary>
-        )}
       </p>
 
       <InputField>
@@ -53,6 +53,12 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
         </InputFieldTitle>
         <input placeholder="Address or ENS name" value={inputAddress} onChange={handleInputChange} />
       </InputField>
+
+      {!account && (
+        <ButtonSecondary onClick={toggleWalletModal}>
+          <Trans>{buttonLabel}</Trans>
+        </ButtonSecondary>
+      )}
 
       {showInputError && (
         <InputErrorText>

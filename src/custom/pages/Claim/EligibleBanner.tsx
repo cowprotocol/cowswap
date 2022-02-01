@@ -4,8 +4,9 @@ import { EligibleBanner as EligibleBannerWrapper } from './styled'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import { ClaimStatus } from 'state/claim/actions'
 import SVG from 'react-inlinesvg'
+import { ClaimCommonTypes } from 'pages/Claim/types'
 
-export default function EligibleBanner({ hasClaims }: { hasClaims: boolean }) {
+export default function EligibleBanner({ hasClaims }: Pick<ClaimCommonTypes, 'hasClaims'>) {
   const { claimStatus, activeClaimAccount, isInvestFlowActive } = useClaimState()
 
   const isEligible = claimStatus === ClaimStatus.DEFAULT && !!activeClaimAccount && !isInvestFlowActive && hasClaims

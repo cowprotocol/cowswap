@@ -32,7 +32,7 @@ import {
 } from './actions'
 import { tryParseTick } from './utils'
 import { usePool } from 'hooks/usePools'
-import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 
 export function useV3MintState(): AppState['mintV3'] {
   return useAppSelector((state) => state.mintV3)

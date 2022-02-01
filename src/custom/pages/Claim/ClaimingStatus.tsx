@@ -9,7 +9,7 @@ import {
   SuccessBanner,
 } from 'pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
-import { useClaimState } from 'state/claim/hooks'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
@@ -28,13 +28,19 @@ import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { shortenAddress } from 'utils'
 import CopyHelper from 'components/Copy'
+import { ButtonSecondary } from 'components/Button'
+import { ClaimCommonTypes } from './types'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
 
-export default function ClaimingStatus() {
+type ClaimNavProps = Pick<ClaimCommonTypes, 'handleChangeAccount'>
+
+export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
   const { chainId, account } = useActiveWeb3React()
   const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
+
+  const { setClaimStatus } = useClaimDispatchers()
 
   const allClaimTxs = useAllClaimingTransactions()
   const lastClaimTx = useMemo(() => {
@@ -46,6 +52,7 @@ export default function ClaimingStatus() {
   const isConfirmed = claimStatus === ClaimStatus.CONFIRMED
   const isAttempting = claimStatus === ClaimStatus.ATTEMPTING
   const isSubmitted = claimStatus === ClaimStatus.SUBMITTED
+  const isFailure = claimStatus === ClaimStatus.FAILED
   const isSelfClaiming = account === activeClaimAccount
 
   if (!account || !chainId || !activeClaimAccount || claimStatus === ClaimStatus.DEFAULT) return null
@@ -60,7 +67,7 @@ export default function ClaimingStatus() {
   return (
     <ConfirmOrLoadingWrapper activeBG={true}>
       <ConfirmedIcon isConfirmed={isConfirmed}>
-        {!isConfirmed ? (
+        {!isConfirmed && !isFailure ? (
           <CowSpinner>
             <CowProtocolLogo />
           </CowSpinner>
@@ -68,7 +75,7 @@ export default function ClaimingStatus() {
           <CowProtocolLogo size={100} />
         )}
       </ConfirmedIcon>
-      <h3>{isConfirmed ? 'Claim successful!' : 'Claiming'}</h3>
+      <h3>{isConfirmed ? 'Claim successful!' : isFailure ? 'Failed to claim' : 'Claiming'}</h3>
       {!isConfirmed && (
         <Trans>
           <span title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</span>
@@ -146,6 +153,25 @@ export default function ClaimingStatus() {
         </AttemptFooter>
       )}
       {isSubmitted && chainId && lastClaimTx?.hash && <EnhancedTransactionLink tx={lastClaimTx} />}
+
+      {isFailure && (
+        <>
+          {chainId && lastClaimTx?.hash && <EnhancedTransactionLink tx={lastClaimTx} />}
+          <AttemptFooter>
+            <p>The claim transaction failed. Please check the network parameters and try again.</p>
+          </AttemptFooter>
+        </>
+      )}
+      {isFailure && (
+        <ButtonSecondary onClick={() => setClaimStatus(ClaimStatus.DEFAULT)}>
+          <Trans>Go back</Trans>
+        </ButtonSecondary>
+      )}
+      {isConfirmed && (
+        <ButtonSecondary onClick={handleChangeAccount}>
+          <Trans>Claim for another account</Trans>
+        </ButtonSecondary>
+      )}
     </ConfirmOrLoadingWrapper>
   )
 }

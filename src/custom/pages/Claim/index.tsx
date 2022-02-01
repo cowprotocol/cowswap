@@ -1,31 +1,33 @@
 import { useCallback, useEffect, useMemo } from 'react'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+
 import { useActiveWeb3React } from 'hooks/web3'
-import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
-import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
-import EligibleBanner from './EligibleBanner'
-import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'state/claim/hooks/utils'
-import { useWalletModalToggle } from 'state/application/hooks'
-import Confetti from 'components/Confetti'
-
 import useENS from 'hooks/useENS'
-
-import ClaimNav from './ClaimNav'
-import { ClaimSummary } from './ClaimSummary'
-import ClaimAddress from './ClaimAddress'
-import CanUserClaimMessage from './CanUserClaimMessage'
-import ClaimingStatus from './ClaimingStatus'
-import ClaimsTable from './ClaimsTable'
-import InvestmentFlow from './InvestmentFlow'
-
+import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
+import { useWalletModalToggle } from 'state/application/hooks'
+import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'state/claim/hooks/utils'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
 
 import { OperationType } from 'components/TransactionConfirmationModal'
-import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import Confetti from 'components/Confetti'
+import Loader from 'components/Loader'
 
-import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import FooterNavButtons from './FooterNavButtons'
+import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
+import CanUserClaimMessage from './CanUserClaimMessage'
+import ClaimAddress from './ClaimAddress'
+import ClaimNav from './ClaimNav'
+import ClaimingStatus from './ClaimingStatus'
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
+import ClaimsTable from './ClaimsTable'
+import EligibleBanner from './EligibleBanner'
+import FooterNavButtons from './FooterNavButtons'
+import InvestmentFlow from './InvestmentFlow'
+import { ClaimSummary } from './ClaimSummary'
+
+import usePrevious from 'hooks/usePrevious'
 
 /* TODO: Replace URLs with the actual final URL destinations */
 export const COW_LINKS = {
@@ -35,6 +37,10 @@ export const COW_LINKS = {
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
+  const { error } = useWeb3React()
+
+  // get previous account
+  const previousAccount = usePrevious(account)
 
   const {
     // address/ENS address
@@ -81,7 +87,7 @@ export default function Claim() {
   const { handleCloseError, handleSetError, ErrorModal } = useErrorModal()
 
   // get user claim data
-  const userClaimData = useUserEnhancedClaimData(activeClaimAccount)
+  const { claims: userClaimData, isLoading: isClaimDataLoading } = useUserEnhancedClaimData(activeClaimAccount)
 
   // get total unclaimed amount
   const unclaimedAmount = useUserUnclaimedAmount(activeClaimAccount)
@@ -93,15 +99,33 @@ export default function Claim() {
   // claim callback
   const { claimCallback, estimateGasCallback } = useClaimCallback(activeClaimAccount)
 
-  // handle change account
-  const handleChangeAccount = () => {
-    setActiveClaimAccount('')
-    setSelected([])
-    setClaimStatus(ClaimStatus.DEFAULT)
-    setIsSearchUsed(true)
-  }
+  // reset claim state
+  const resetClaimState = useCallback(
+    (account = '', ens = '') => {
+      setClaimStatus(ClaimStatus.DEFAULT)
+      setActiveClaimAccount(account)
+      setActiveClaimAccountENS(ens)
+      setSelected([])
+    },
+    [setActiveClaimAccount, setActiveClaimAccountENS, setClaimStatus, setSelected]
+  )
 
-  // check claim
+  // handle account change
+  const handleAccountChange = useCallback(
+    (account = '') => {
+      resetClaimState(account)
+      setIsSearchUsed(false)
+    },
+    [resetClaimState, setIsSearchUsed]
+  )
+
+  // handle change account click
+  const handleChangeClick = useCallback(() => {
+    resetClaimState()
+    setIsSearchUsed(true)
+  }, [resetClaimState, setIsSearchUsed])
+
+  // handle
   const handleCheckClaim = () => {
     setActiveClaimAccount(resolvedAddress || '')
     setActiveClaimAccountENS(resolvedENS || '')
@@ -173,10 +197,32 @@ export default function Claim() {
       setActiveClaimAccount(account)
     }
 
+    // handle unsupported network
+    if (error instanceof UnsupportedChainIdError) {
+      handleAccountChange()
+    }
+
     // properly reset the user to the claims table and initial investment flow
     resetClaimUi()
     // Depending on chainId even though it's not used because we want to reset the state on network change
-  }, [account, activeClaimAccount, chainId, resolvedAddress, isSearchUsed, setActiveClaimAccount, resetClaimUi])
+  }, [
+    account,
+    activeClaimAccount,
+    chainId,
+    resolvedAddress,
+    isSearchUsed,
+    setActiveClaimAccount,
+    resetClaimUi,
+    error,
+    handleAccountChange,
+  ])
+
+  // handle account disconnect or account change after claim is confirmed
+  useEffect(() => {
+    if (!account || (account !== previousAccount && claimStatus === ClaimStatus.CONFIRMED)) {
+      handleAccountChange(account || '')
+    }
+  }, [account, claimStatus, previousAccount, handleAccountChange])
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
@@ -189,43 +235,54 @@ export default function Claim() {
       <ClaimsOnOtherChainsBanner />
       {/* Claiming content */}
       <InnerPageWrapper>
-        {/* Approve confirmation modal */}
-        <TransactionConfirmationModal />
-        {/* Error modal */}
-        <ErrorModal />
-        {/* If claim is confirmed > trigger confetti effect */}
-        <Confetti start={claimStatus === ClaimStatus.CONFIRMED} />
-        {/* Top nav buttons */}
-        <ClaimNav account={account} handleChangeAccount={handleChangeAccount} />
-        {/* Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-        <EligibleBanner hasClaims={hasClaims} />
-        {/* Show total to claim (user has airdrop or airdrop+investment) */}
-        <ClaimSummary hasClaims={hasClaims} unclaimedAmount={unclaimedAmount} />
-        {/* Get address/ENS (user not connected yet or opted for checking 'another' account) */}
-        <ClaimAddress account={account} toggleWalletModal={toggleWalletModal} />
-        {/* Is Airdrop only (simple) - does user have claims? Show messages dependent on claim state */}
-        <CanUserClaimMessage
-          hasClaims={hasClaims}
-          isAirdropOnly={isAirdropOnly}
-          handleChangeAccount={handleChangeAccount}
-        />
+        {isClaimDataLoading ? (
+          <Loader />
+        ) : (
+          <>
+            {/* Approve confirmation modal */}
+            <TransactionConfirmationModal />
+            {/* Error modal */}
+            <ErrorModal />
+            {/* If claim is confirmed > trigger confetti effect */}
+            <Confetti start={claimStatus === ClaimStatus.CONFIRMED} />
+            {/* Top nav buttons */}
+            <ClaimNav account={account} handleChangeAccount={handleChangeClick} />
+            {/* Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
+            <EligibleBanner hasClaims={hasClaims} />
+            {/* Show total to claim (user has airdrop or airdrop+investment) */}
+            <ClaimSummary hasClaims={hasClaims} unclaimedAmount={unclaimedAmount} />
+            {/* Get address/ENS (user not connected yet or opted for checking 'another' account) */}
+            <ClaimAddress account={account} toggleWalletModal={toggleWalletModal} />
+            {/* Is Airdrop only (simple) - does user have claims? Show messages dependent on claim state */}
+            <CanUserClaimMessage
+              hasClaims={hasClaims}
+              isAirdropOnly={isAirdropOnly}
+              handleChangeAccount={handleChangeClick}
+            />
 
-        {/* Try claiming or inform successful claim */}
-        <ClaimingStatus />
-        {/* IS Airdrop + investing (advanced) */}
-        <ClaimsTable isAirdropOnly={isAirdropOnly} hasClaims={hasClaims} />
-        {/* Investing vCOW flow (advanced) */}
-        <InvestmentFlow isAirdropOnly={isAirdropOnly} hasClaims={hasClaims} modalCbs={{ openModal, closeModal }} />
+            {/* Try claiming or inform successful claim */}
+            <ClaimingStatus handleChangeAccount={handleChangeClick} />
+            {/* IS Airdrop + investing (advanced) */}
+            <ClaimsTable isAirdropOnly={isAirdropOnly} claims={userClaimData} hasClaims={hasClaims} />
+            {/* Investing vCOW flow (advanced) */}
+            <InvestmentFlow
+              isAirdropOnly={isAirdropOnly}
+              claims={userClaimData}
+              hasClaims={hasClaims}
+              modalCbs={{ openModal, closeModal }}
+            />
 
-        <FooterNavButtons
-          handleCheckClaim={handleCheckClaim}
-          handleSubmitClaim={handleSubmitClaim}
-          toggleWalletModal={toggleWalletModal}
-          isAirdropOnly={isAirdropOnly}
-          isPaidClaimsOnly={isPaidClaimsOnly}
-          hasClaims={hasClaims}
-          resolvedAddress={resolvedAddress}
-        />
+            <FooterNavButtons
+              handleCheckClaim={handleCheckClaim}
+              handleSubmitClaim={handleSubmitClaim}
+              toggleWalletModal={toggleWalletModal}
+              isAirdropOnly={isAirdropOnly}
+              isPaidClaimsOnly={isPaidClaimsOnly}
+              hasClaims={hasClaims}
+              resolvedAddress={resolvedAddress}
+            />
+          </>
+        )}
       </InnerPageWrapper>
     </PageWrapper>
   )

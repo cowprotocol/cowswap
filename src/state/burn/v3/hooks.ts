@@ -10,7 +10,7 @@ import { PositionDetails } from 'types/position'
 import { AppState } from '../../index'
 import { selectPercent } from './actions'
 import { unwrappedToken } from 'utils/unwrappedToken'
-import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 

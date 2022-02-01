@@ -531,6 +531,50 @@ export const ClaimRow = styled.tr<{ isPending?: boolean }>`
   }
 `
 
+export const UserMessage = styled.div<{ variant?: string }>`
+  width: 100%;
+  border-radius: var(--border-radius);
+  padding: 12px 16px;
+  text-align: left;
+  display: flex;
+  background: ${({ variant, theme }) =>
+    variant === 'danger'
+      ? transparentize(0.9, theme.danger)
+      : variant === 'info'
+      ? transparentize(0.9, theme.blue2)
+      : transparentize(0.9, theme.attention)};
+  color: ${({ variant, theme }) =>
+    variant === 'danger' ? theme.danger : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+  margin: 0 auto;
+  align-items: center;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 500;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+  `}
+
+  > svg {
+    height: 36px;
+    width: auto;
+    margin: 0 12px 0 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      height: 28px;
+    `}
+  }
+
+  > svg > path {
+    fill: ${({ variant, theme }) =>
+      variant === 'danger' ? theme.danger : variant === 'info' ? theme.blue2 : darken(0.1, theme.attention)};
+  }
+
+  > span {
+    flex: 1 1 100%;
+  }
+`
+
 export const ClaimAccount = styled.div`
   display: flex;
   flex-flow: row nowrap;
@@ -703,8 +747,8 @@ export const EligibleBanner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => darken(0.1, theme.attention)};
+  background: ${({ theme }) => transparentize(0.9, theme.success)};
+  color: ${({ theme }) => theme.success};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -719,7 +763,7 @@ export const EligibleBanner = styled.div`
     height: 21px;
 
     > path {
-      fill: ${({ theme }) => darken(0.1, theme.attention)};
+      fill: ${({ theme }) => theme.success};
     }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -737,7 +781,7 @@ export const InputField = styled.div`
   flex-flow: row wrap;
   background: ${({ theme }) => theme.currencyInput?.background};
   width: 100%;
-  margin: 0 0 24px;
+  margin: 0 0 15px;
 
   > input {
     background: transparent;
@@ -1166,6 +1210,10 @@ export const InvestInput = styled.span<{ disabled: boolean }>`
   font-size: 15px;
   width: 100%;
 
+  ${UserMessage} {
+    margin: 12px 0 0;
+  }
+
   > div {
     display: flex;
     flex-flow: column wrap;
@@ -1374,19 +1422,6 @@ export const InvestSummary = styled.div`
     font-weight: 600;
     color: ${({ theme }) => theme.text1};
   }
-`
-
-export const InvestFlowValidation = styled.div`
-  width: 100%;
-  border-radius: var(--border-radius);
-  padding: 12px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgb(255 0 0 / 25%);
-  color: red;
-  margin: 0 auto 16px;
 `
 
 export const ClaimAccountButtons = styled.div`
@@ -1694,40 +1729,6 @@ export const StepExplainer = styled.div`
 
   > span > p {
     margin: 0;
-  }
-`
-
-export const UserMessage = styled.div`
-  width: 100%;
-  border-radius: var(--border-radius);
-  padding: 24px 40px;
-  text-align: left;
-  display: flex;
-  background: ${({ theme }) => transparentize(0.9, theme.attention)};
-  color: ${({ theme }) => darken(0.1, theme.attention)};
-  margin: 0 auto;
-  align-items: center;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 24px;
-  `}
-
-  > svg {
-    height: 36px;
-    width: auto;
-    margin: 0 12px 0 0;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      height: 28px;
-    `}
-  }
-
-  > svg > path {
-    fill: ${({ theme }) => darken(0.1, theme.attention)};
-  }
-
-  > span {
-    flex: 1 1 100%;
   }
 `
 
