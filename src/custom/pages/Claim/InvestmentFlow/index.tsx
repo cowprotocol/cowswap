@@ -43,6 +43,7 @@ import RoundArrow from 'assets/cow-swap/round-arrow.svg'
 import ImportantIcon from 'assets/cow-swap/important.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import SVG from 'react-inlinesvg'
+import { SupportedChainId } from 'constants/chains'
 
 const STEPS_DATA = [
   {
@@ -56,11 +57,12 @@ const STEPS_DATA = [
   },
 ]
 
-const FAQ_DATA = [
+const FAQ_DATA = (chainId: number | undefined) => [
   {
     title: 'What will happen?',
-    content:
-      'By sending this Ethereum transaction, you will be investing tokens from the connected account and exchanging them for vCOW tokens that will be received by the claiming account specified above.',
+    content: `By sending this ${
+      chainId !== SupportedChainId.XDAI ? 'Ethereum' : ''
+    } transaction, you will be investing tokens from the connected account and exchanging them for vCOW tokens that will be received by the claiming account specified above.`,
   },
   {
     title: 'Can I modify (partially) invested amounts later?',
@@ -147,7 +149,7 @@ function AccountDetails({ isClaimer, label, account, connectedAccount }: Account
 }
 
 export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modalCbs }: InvestmentFlowProps) {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
     useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()
@@ -286,7 +288,7 @@ export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modal
           </AccountClaimSummary>
 
           <h4>Ready to claim your vCOW?</h4>
-          <FaqDrawer items={FAQ_DATA} />
+          <FaqDrawer items={FAQ_DATA(chainId)} />
           <UserMessage variant={'info'}>
             <SVG src={ImportantIcon} description="Information" />
             <span>
