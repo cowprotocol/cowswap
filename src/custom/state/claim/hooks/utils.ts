@@ -1,17 +1,15 @@
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from 'constants/chains'
-import { GNO, GpEther, USDC_BY_CHAIN, V_COW } from 'constants/tokens'
+import { GNO, GpEther, USDC_BY_CHAIN } from 'constants/tokens'
 import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 
 import {
   CLAIMS_REPO,
   ClaimType,
-  ClaimTypePriceMap,
   FREE_CLAIM_TYPES,
   PAID_CLAIM_TYPES,
   RepoClaims,
-  TypeToPriceMapper,
   UserClaims,
   VCowPrices,
 } from 'state/claim/hooks/index'
@@ -64,54 +62,6 @@ export function getPaidClaims(claims: UserClaims): UserClaims {
  */
 export function getFreeClaims(claims: UserClaims): UserClaims {
   return claims?.filter((claim) => FREE_CLAIM_TYPES.includes(claim.type))
-}
-
-/**
- * Helper function to transform claim data amount to CurrencyAmount
- *
- */
-export function parseClaimAmount(value: string, chainId: number | undefined): CurrencyAmount<Token> | undefined {
-  const vCow = chainId ? V_COW[chainId || 4] : undefined
-  if (!vCow || !value) return undefined
-  return CurrencyAmount.fromRawAmount(vCow, value)
-}
-
-export type TypeToCurrencyMapper = {
-  [key: string]: string
-}
-
-/**
- * Helper function to transform claim data type to coin name that can be displayed in the UI
- *
- * @param chainId
- */
-export function getTypeToCurrencyMap(chainId: number | undefined): TypeToCurrencyMapper {
-  if (!chainId) return {}
-
-  const map: TypeToCurrencyMapper = {
-    [ClaimType.GnoOption]: 'GNO',
-    [ClaimType.Investor]: 'USDC',
-    [ClaimType.UserOption]: '',
-  }
-
-  if ([SupportedChainId.MAINNET, SupportedChainId.RINKEBY].includes(chainId)) {
-    map[ClaimType.UserOption] = 'ETH'
-  }
-
-  if (chainId === SupportedChainId.XDAI) {
-    map[ClaimType.UserOption] = 'XDAI'
-  }
-
-  return map
-}
-
-/**
- * Helper function to get vCow price based on claim type and chainId
- *
- * @param type
- */
-export function getTypeToPriceMap(): TypeToPriceMapper {
-  return ClaimTypePriceMap
 }
 
 /**
