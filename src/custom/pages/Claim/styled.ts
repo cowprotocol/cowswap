@@ -866,7 +866,8 @@ export const InputError = styled.div`
 `
 
 export const InputErrorText = styled.div`
-  margin: 0 0 24px;
+  margin: 0 0 15px;
+  text-align: center;
 `
 
 export const InputFieldTitle = styled.div`

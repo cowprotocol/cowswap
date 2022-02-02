@@ -54,18 +54,18 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
         <input placeholder="Address or ENS name" value={inputAddress} onChange={handleInputChange} />
       </InputField>
 
-      {!account && (
-        <ButtonSecondary onClick={toggleWalletModal}>
-          <Trans>{buttonLabel}</Trans>
-        </ButtonSecondary>
-      )}
-
       {showInputError && (
         <InputErrorText>
           <TYPE.error error={true}>
             <Trans>Enter valid address or ENS</Trans>
           </TYPE.error>
         </InputErrorText>
+      )}
+
+      {!account && (
+        <ButtonSecondary onClick={toggleWalletModal}>
+          <Trans>{buttonLabel}</Trans>
+        </ButtonSecondary>
       )}
     </CheckAddress>
   )
