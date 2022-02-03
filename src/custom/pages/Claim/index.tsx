@@ -236,7 +236,7 @@ export default function Claim() {
       {/* Claiming content */}
       <InnerPageWrapper>
         {isClaimDataLoading ? (
-          <Loader />
+          <Loader size="5rem" />
         ) : (
           <>
             {/* Approve confirmation modal */}
