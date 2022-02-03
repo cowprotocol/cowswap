@@ -23,6 +23,9 @@ export const InnerPageWrapper = styled.div`
   border: ${({ theme }) => theme.appBody.border};
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
   background: ${({ theme }) => theme.bg1};
+  min-height: 450px;
+  justify-content: center;
+  align-items: center;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px;
@@ -32,6 +35,10 @@ export const InnerPageWrapper = styled.div`
 
 a {
   color: ${({ theme }) => theme.primary4};
+}
+
+> a {
+  width: 100%;
 }
 
 p {
@@ -859,7 +866,8 @@ export const InputError = styled.div`
 `
 
 export const InputErrorText = styled.div`
-  margin: 0 0 24px;
+  margin: 0 0 15px;
+  text-align: center;
 `
 
 export const InputFieldTitle = styled.div`

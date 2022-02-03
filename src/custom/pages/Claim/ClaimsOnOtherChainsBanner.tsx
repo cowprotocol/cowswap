@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, Fragment } from 'react'
 import styled from 'styled-components/macro'
 import { NETWORK_LABELS, SupportedChainId } from 'constants/chains'
 import { useClaimState } from 'state/claim/hooks'
@@ -78,12 +78,10 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
             const changeNetworksCallback = () => callback(chainId)
             const isLastInMultiple = index === array.length - 1 && array.length > 1
             return (
-              <>
+              <Fragment key={chainId}>
                 {isLastInMultiple && ' and'}
-                <ChainSpan key={chainId} onClick={changeNetworksCallback}>
-                  {NETWORK_LABELS[chainId]}
-                </ChainSpan>
-              </>
+                <ChainSpan onClick={changeNetworksCallback}>{NETWORK_LABELS[chainId]}</ChainSpan>
+              </Fragment>
             )
           })}
         </div>
