@@ -58,6 +58,7 @@ import {
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
+import useIsMounted from 'hooks/useIsMounted'
 
 const CLAIMS_REPO_BRANCH = '2022-01-22-test-deployment-all-networks'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -244,12 +245,16 @@ export function useUserClaims(account: Account, optionalChainId?: SupportedChain
   const chainId = optionalChainId || connectedChain
 
   const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaims | null }>({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   // We'll have claims on multiple networks
   const claimKey = chainId && account && `${chainId}:${account}`
 
   useEffect(() => {
+    if (chainId && !account) {
+      setIsLoading(false)
+    }
+
     if (!claimKey) {
       return
     }
@@ -279,6 +284,18 @@ export function useUserClaims(account: Account, optionalChainId?: SupportedChain
   return { claims: claimKey ? claimInfo[claimKey] : null, isLoading }
 }
 
+let fetch_deployment_timestamp_promise: Promise<number> | null = null
+function fetchDeploymentTimestamp(vCowContract: VCowType) {
+  if (!fetch_deployment_timestamp_promise) {
+    fetch_deployment_timestamp_promise = vCowContract.deploymentTimestamp().then((ts) => {
+      console.log(`Deployment timestamp in seconds: ${ts.toString()}`)
+      return ts.mul('1000').toNumber()
+    })
+  }
+
+  return fetch_deployment_timestamp_promise
+}
+
 /**
  * Fetches from contract the deployment timestamp in ms
  *
@@ -287,6 +304,8 @@ export function useUserClaims(account: Account, optionalChainId?: SupportedChain
 function useDeploymentTimestamp(): number | null {
   const { chainId } = useActiveWeb3React()
   const vCowContract = useVCowContract()
+  const isMounted = useIsMounted()
+
   const [timestamp, setTimestamp] = useState<number | null>(null)
 
   useEffect(() => {
@@ -294,11 +313,19 @@ function useDeploymentTimestamp(): number | null {
       return
     }
 
-    vCowContract.deploymentTimestamp().then((ts) => {
-      console.log(`Deployment timestamp in seconds: ${ts.toString()}`)
-      setTimestamp(ts.mul('1000').toNumber())
-    })
-  }, [chainId, vCowContract])
+    fetchDeploymentTimestamp(vCowContract)
+      .then((timestamp) => {
+        if (isMounted.current) {
+          setTimestamp(timestamp)
+        }
+      })
+      .catch((err) => {
+        if (isMounted.current) {
+          setTimestamp(null)
+          console.error('vCowContract Deployment Timestamp fetch failed', err)
+        }
+      })
+  }, [chainId, isMounted, vCowContract])
 
   return timestamp
 }
