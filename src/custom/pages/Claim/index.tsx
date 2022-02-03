@@ -10,6 +10,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'state/claim/hooks/utils'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
+import ClaimsOnOtherChainsUpdater from 'state/claim/updater'
 
 import { OperationType } from 'components/TransactionConfirmationModal'
 import Confetti from 'components/Confetti'
@@ -231,6 +232,8 @@ export default function Claim() {
 
   return (
     <PageWrapper>
+      {/* State Updater */}
+      <ClaimsOnOtherChainsUpdater />
       {/* Cross chain claim banner */}
       <ClaimsOnOtherChainsBanner />
       {/* Claiming content */}

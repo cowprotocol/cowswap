@@ -28,7 +28,6 @@ import {
   PendingOrdersUpdater,
   UnfillableOrdersUpdater,
 } from 'state/orders/updaters'
-import ClaimsOnOtherChainsUpdater from 'state/claim/updater'
 // import { EventUpdater } from 'state/orders/mocks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import getLibrary from 'utils/getLibrary'
@@ -63,7 +62,6 @@ function Updaters() {
       <GpOrdersUpdater />
       <GasUpdater />
       <LogsUpdater />
-      <ClaimsOnOtherChainsUpdater />
     </>
   )
 }
