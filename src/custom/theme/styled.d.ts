@@ -81,6 +81,11 @@ declare module 'styled-components' {
         content: string
       }
     }
+    transaction: {
+      tokenBackground: string
+      tokenColor: string
+      tokenBorder: string
+    }
     neumorphism: {
       boxShadow: FlattenSimpleInterpolation
     }

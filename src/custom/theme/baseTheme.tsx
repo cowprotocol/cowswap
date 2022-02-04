@@ -155,6 +155,11 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         content: '680px',
       },
     },
+    transaction: {
+      tokenBackground: colorsTheme.bg2,
+      tokenColor: '#1d4373',
+      tokenBorder: darkMode ? '#01182a' : colorsTheme.bg3,
+    },
     neumorphism: {
       boxShadow: css`
         box-shadow: inset 2px -2px 4px ${darkMode ? '#1d4373' : '#ffffff'},
