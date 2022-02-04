@@ -1,5 +1,5 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
-import { getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
+import { getCowSoundSend, getCowSoundSuccessClaim } from 'utils/sound'
 import { AppState } from 'state'
 import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
 import { ClaimStatus, setClaimStatus } from './actions'
@@ -34,7 +34,7 @@ export const claimMinedMiddleware: Middleware<Record<string, unknown>, AppState>
       if (status === 1) {
         // success
         store.dispatch(setClaimStatus(ClaimStatus.CONFIRMED))
-        cowSound = getCowSoundSuccess()
+        cowSound = getCowSoundSuccessClaim()
       } else {
         // not success...
         store.dispatch(setClaimStatus(ClaimStatus.FAILED))
