@@ -31,7 +31,7 @@ export * from './MenuMod'
 const ResponsiveInternalMenuItem = styled(InternalMenuItem)`
   display: none;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
       display: flex;
   `};
 `
