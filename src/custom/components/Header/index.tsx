@@ -4,8 +4,8 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { useHistory, useLocation } from 'react-router-dom'
 
 import HeaderMod, {
-  Title,
-  HeaderLinks,
+  Title as TitleMod,
+  HeaderLinks as HeaderLinksMod,
   HeaderRow,
   HeaderControls as HeaderControlsUni,
   BalanceText as BalanceTextUni,
@@ -80,6 +80,12 @@ const StyledNavLink = styled(StyledNavLinkUni)`
 `
 
 const BalanceText = styled(BalanceTextUni)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    overflow: hidden;
+    max-width: 100px;
+    text-overflow: ellipsis;
+  `};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
@@ -133,16 +139,20 @@ export const Wrapper = styled.div`
   }
 `
 
-export const HeaderModWrapper = styled(HeaderMod)`
-  ${Title} {
-    margin: 0;
-    text-decoration: none;
-    color: ${({ theme }) => theme.text1};
-  }
+export const HeaderModWrapper = styled(HeaderMod)``
 
-  ${HeaderLinks} {
-    margin: 5px 0 0 0;
-  }
+const Title = styled(TitleMod)`
+  margin: 0;
+  text-decoration: none;
+  color: ${({ theme }) => theme.text1};
+`
+
+export const HeaderLinks = styled(HeaderLinksMod)`
+  margin: 5px 0 0 0;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    display: none;
+  `};
 `
 
 export const TwitterLink = styled(StyledMenuButton)`
