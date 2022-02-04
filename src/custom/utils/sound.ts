@@ -1,9 +1,10 @@
-type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
+type SoundType = 'SEND' | 'SUCCESS' | 'SUCCESS_CLAIM' | 'ERROR'
 type Sounds = Record<SoundType, string>
 
 const COW_SOUNDS: Sounds = {
   SEND: '/audio/send.mp3',
   SUCCESS: '/audio/success.mp3',
+  SUCCESS_CLAIM: '/audio/success-claim.mp3',
   ERROR: '/audio/error.mp3',
 }
 
@@ -27,6 +28,10 @@ export function getCowSoundSend(): HTMLAudioElement {
 
 export function getCowSoundSuccess(): HTMLAudioElement {
   return getAudio('SUCCESS')
+}
+
+export function getCowSoundSuccessClaim(): HTMLAudioElement {
+  return getAudio('SUCCESS_CLAIM')
 }
 
 export function getCowSoundError(): HTMLAudioElement {
