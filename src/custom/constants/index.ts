@@ -98,8 +98,7 @@ export const GAS_FEE_ENDPOINTS = {
   // [ChainId.GOERLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
   // no kovan = main
   // [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
-  // TODO: xdai? = main
-  [ChainId.XDAI]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  [ChainId.XDAI]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq#what-token-pairs-does-cowswap-allow-to-trade'
