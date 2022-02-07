@@ -19,8 +19,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           path-to-signatures: 'signatures/version1/cla.json'
-          path-to-cla-document: 'https://github.com/gnosis/cowswap/blob/main/GNOSIS_CLA.md'
+          path-to-cla-document: 'https://github.com/gnosis/cowswap/blob/develop/docs/GNOSIS_CLA.md'
           branch: 'cla-signatures'
-          allowlist: alfetopito,anxolin,W3stside,nenadV91,biocom
+          allowlist: dependabot,mergify,alfetopito,anxolin,W3stside,nenadV91,biocom,annamsgeorge,avsavsavs,biocom,c3rnst,cmagan,josojo,davidalbela,fedgiac,fleupold,giacomolicari,GabrielCamba,nlordell,alongoni,elena-zh,henrypalacios,matextrem,ramirotw
           empty-commit-flag: false
           blockchain-storage-flag: false
