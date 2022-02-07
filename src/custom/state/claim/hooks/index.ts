@@ -60,7 +60,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 
-const CLAIMS_REPO_BRANCH = 'gip-13'
+const CLAIMS_REPO_BRANCH = 'gip-13-rinkeby-as-gc'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
