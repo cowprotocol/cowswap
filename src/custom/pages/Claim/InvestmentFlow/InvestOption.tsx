@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
+import SVG from 'react-inlinesvg'
 
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import {
@@ -14,9 +15,10 @@ import {
   WarningWrapper,
 } from '../styled'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
-import { InvestmentFlowProps } from '.'
+import ImportantIcon from 'assets/cow-swap/important.svg'
 import { ApprovalState, useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -36,8 +38,7 @@ import { EnhancedUserClaimData } from '../types'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { IS_TESTING_ENV } from '../const'
-import ImportantIcon from 'assets/cow-swap/important.svg'
-import SVG from 'react-inlinesvg'
+import { InvestmentFlowProps } from '.'
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>
@@ -129,17 +130,20 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   }
 
   const gasCost = useMemo(() => {
-    if (!estimatedGas || !isNative) {
+    if (!estimatedGas || !isNative || !chainId) {
       return
     }
 
     // Based on how much gas will be used (estimatedGas) and current gas prices (if available)
     // calculate how much that would cost in native currency.
     // We pick `fast` to be conservative. Also, it's non-blocking, so the user is aware but can proceed
-    const amount = BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI)
+    const amount = calculateGasMargin(
+      chainId,
+      BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI)
+    )
 
     return CurrencyAmount.fromRawAmount(token, amount.toString())
-  }, [estimatedGas, gasPrice?.fast, isNative, token])
+  }, [chainId, estimatedGas, gasPrice?.fast, isNative, token])
 
   // on invest max amount click handler
   const setMaxAmount = useCallback(() => {

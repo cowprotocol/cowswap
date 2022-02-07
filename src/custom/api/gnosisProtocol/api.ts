@@ -1,10 +1,10 @@
 import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
 import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
 import { stringify } from 'qs'
-import { getSigningSchemeApiValue, OrderCreation, OrderCancellation, SigningSchemeValue } from 'utils/signatures'
-import { APP_DATA_HASH } from 'constants/index'
+import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, SigningSchemeValue } from 'utils/signatures'
+import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
-import { isLocal, isDev, isPr, isBarn } from '../../utils/environments'
+import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
   ApiErrorCodes,
@@ -12,15 +12,14 @@ import OperatorError, {
 } from 'api/gnosisProtocol/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
+  GpQuoteErrorDetails,
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
-  GpQuoteErrorDetails,
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address } from 'utils/tokens'
 import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { GAS_FEE_ENDPOINTS } from 'constants/index'
 import * as Sentry from '@sentry/browser'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
@@ -472,18 +471,42 @@ export async function getPriceStrategy(chainId: ChainId): Promise<PriceStrategy>
   }
 }
 
+// Reference https://www.xdaichain.com/for-developers/developer-resources/gas-price-oracle
+export interface GChainFeeEndpointResponse {
+  average: number
+  fast: number
+  slow: number
+}
+// Values are returned as floats in gwei
+const ONE_GWEI = 1_000_000_000
+
 export interface GasFeeEndpointResponse {
   lastUpdate: string
   lowest: string
-  safeLow: string
+  safeLow?: string
   standard: string
   fast: string
-  fastest: string
+  fastest?: string
 }
 
 export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
   const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
-  return response.json()
+  const json = await response.json()
+
+  if (chainId === SupportedChainId.XDAI) {
+    // Different endpoint for GChain with a different format. Need to transform it
+    return _transformGChainGasPrices(json)
+  }
+  return json
+}
+
+function _transformGChainGasPrices({ slow, average, fast }: GChainFeeEndpointResponse): GasFeeEndpointResponse {
+  return {
+    lastUpdate: new Date().toISOString(),
+    lowest: Math.floor(slow * ONE_GWEI).toString(),
+    standard: Math.floor(average * ONE_GWEI).toString(),
+    fast: Math.floor(fast * ONE_GWEI).toString(),
+  }
 }
 
 // Register some globals for convenience
