@@ -222,7 +222,7 @@ export default function AccountDetails({
             <h5>
               Recent Activity <span>{`(${activityTotalCount})`}</span>
             </h5>
-            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders</ExternalLink>}
+            {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
           </span>
 
           <div>
