@@ -53,7 +53,7 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
 export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0x6d04B3ad33594978D0D4B01CdB7c3bA4a90a7DFe',
   [ChainId.XDAI]: '0xA3A674a40709A837A5E742C2866eda7d3b35a7c0',
-  [ChainId.RINKEBY]: '0x5Bf4d1f8d1cB35E0aeA69B220beb97b8807504eA',
+  [ChainId.RINKEBY]: '0xa46ad7f6669fAF6E80572Cc68c8A0148Cd3ac389',
 }
 
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
