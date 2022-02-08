@@ -214,11 +214,10 @@ const MenuFlyout = styled(MenuFlyoutUni)`
     height: 18px;
     object-fit: contain;
     margin: 0 8px 0 0;
-
-    > path {
-      fill: ${({ theme }) => theme.text1};
-    }
   }
+`
+export const StyledSVG = styled(SVG)`
+  fill: ${({ theme }) => theme.text1};
 `
 
 export const Separator = styled(SeparatorBase)`
@@ -333,19 +332,27 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
             Code
           </span>
         </MenuItem>
+        {showOrdersLink && (
+          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
+            <span aria-hidden="true" onClick={close} onKeyDown={close}>
+              <ExternalLink size={14} />
+              View all orders
+            </span>
+          </MenuItem>
+        )}
 
         <Separator />
 
         <MenuItem id="link" href={DISCORD_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
-            <SVG src={discordImage} description="Find CowSwap on Discord!" />
+            <StyledSVG src={discordImage} description="Find CowSwap on Discord!" />
             Discord
           </span>
         </MenuItem>
 
         <MenuItem id="link" href={TWITTER_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
-            <SVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
+            <StyledSVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
           </span>
         </MenuItem>
 
@@ -364,14 +371,6 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
           </span>{' '}
           Cow Runner
         </InternalMenuItem>
-        {showOrdersLink && (
-          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
-            <span aria-hidden="true" onClick={close} onKeyDown={close}>
-              <ExternalLink size={14} />
-              View all orders
-            </span>
-          </MenuItem>
-        )}
         <MenuItemResponsive onClick={() => toggleDarkMode()}>
           {darkMode ? (
             <>
