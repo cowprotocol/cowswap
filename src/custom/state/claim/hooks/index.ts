@@ -285,6 +285,7 @@ function fetchDeploymentTimestamp(vCowContract: VCowType, chainId: ChainId): Pro
       console.log(`Deployment timestamp in seconds: ${ts.toString()}`)
       return ts.mul('1000').toNumber()
     })
+    FETCH_DEPLOYMENT_TIME_PROMISES.set(chainId, deploymentTimePromise)
   }
 
   return deploymentTimePromise
