@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
@@ -59,6 +59,7 @@ import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
+import { ChainId } from '@uniswap/sdk'
 
 const CLAIMS_REPO_BRANCH = '2022-01-22-test-deployment-all-networks'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -275,16 +276,19 @@ export function useUserClaims(account: Account, optionalChainId?: SupportedChain
   return { claims: claimKey ? claimInfo[claimKey] : null, isLoading }
 }
 
-let fetch_deployment_timestamp_promise: Promise<number> | null = null
-function fetchDeploymentTimestamp(vCowContract: VCowType) {
-  if (!fetch_deployment_timestamp_promise) {
-    fetch_deployment_timestamp_promise = vCowContract.deploymentTimestamp().then((ts) => {
+const FETCH_DEPLOYMENT_TIME_PROMISES: Map<ChainId, Promise<number>> = new Map()
+function fetchDeploymentTimestamp(vCowContract: VCowType, chainId: ChainId): Promise<number> {
+  let deploymentTimePromise = FETCH_DEPLOYMENT_TIME_PROMISES.get(chainId)
+
+  if (!deploymentTimePromise) {
+    deploymentTimePromise = vCowContract.deploymentTimestamp().then((ts) => {
       console.log(`Deployment timestamp in seconds: ${ts.toString()}`)
       return ts.mul('1000').toNumber()
     })
+    FETCH_DEPLOYMENT_TIME_PROMISES.set(chainId, deploymentTimePromise)
   }
 
-  return fetch_deployment_timestamp_promise
+  return deploymentTimePromise
 }
 
 /**
@@ -298,13 +302,21 @@ function useDeploymentTimestamp(): number | null {
   const isMounted = useIsMounted()
 
   const [timestamp, setTimestamp] = useState<number | null>(null)
+  const oldChainId = useRef(chainId)
 
   useEffect(() => {
     if (!chainId || !vCowContract) {
       return
     }
 
-    fetchDeploymentTimestamp(vCowContract)
+    // Invalidate timestamp
+    if (chainId != oldChainId.current) {
+      setTimestamp(null)
+      oldChainId.current = chainId
+    }
+
+    // Fetch timestamp
+    fetchDeploymentTimestamp(vCowContract, chainId)
       .then((timestamp) => {
         if (isMounted.current) {
           setTimestamp(timestamp)
