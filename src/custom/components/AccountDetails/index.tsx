@@ -17,7 +17,6 @@ import Identicon from 'components/Identicon'
 import { NETWORK_LABELS } from 'components/Header'
 import {
   WalletName,
-  MainWalletAction,
   WalletAction,
   AccountControl,
   AddressLink,
@@ -118,13 +117,6 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
       <>
         <IconWrapper size={16}>
           <img src={PortisIcon} alt={'portis logo'} />
-          <MainWalletAction
-            onClick={() => {
-              portis.portis.showPortis()
-            }}
-          >
-            Show Portis
-          </MainWalletAction>
         </IconWrapper>
       </>
     )

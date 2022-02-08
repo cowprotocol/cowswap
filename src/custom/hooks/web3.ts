@@ -1,7 +1,8 @@
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useEffect, useState, useCallback } from 'react'
 import { isMobile } from 'react-device-detect'
-import { injected, walletconnect, getProviderType, WalletProvider } from 'connectors'
+import { injected, walletconnect, getProviderType, WalletProvider, portis } from 'connectors'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 // exports from the original file
@@ -41,11 +42,14 @@ export function useEagerConnect() {
     })
   }, [activate, setTried])
 
-  const connectWalletConnect = useCallback(() => {
-    activate(walletconnect, undefined, true).catch(() => {
-      setTried(true)
-    })
-  }, [activate, setTried])
+  const reconnectUninjectedProvider = useCallback(
+    (provider: AbstractConnector): void => {
+      activate(provider, undefined, true).catch(() => {
+        setTried(true)
+      })
+    },
+    [activate, setTried]
+  )
 
   useEffect(() => {
     if (!active) {
@@ -60,10 +64,13 @@ export function useEagerConnect() {
         connectInjected()
       } else if (latestProvider === WalletProvider.WALLET_CONNECT) {
         // WC is last provider
-        connectWalletConnect()
+        reconnectUninjectedProvider(walletconnect)
+      } else if (latestProvider === WalletProvider.PORTIS) {
+        // WC is last provider
+        reconnectUninjectedProvider(portis)
       }
     }
-  }, [connectInjected, connectWalletConnect, active]) // intentionally only running on mount (make sure it's only mounted once :))
+  }, [connectInjected, active, reconnectUninjectedProvider]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
