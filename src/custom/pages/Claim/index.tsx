@@ -29,12 +29,6 @@ import { ClaimSummary } from './ClaimSummary'
 
 import usePrevious from 'hooks/usePrevious'
 
-/* TODO: Replace URLs with the actual final URL destinations */
-export const COW_LINKS = {
-  vCowPost: 'https://cow.fi/',
-  stepGuide: 'https://cow.fi/',
-}
-
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
   const { error } = useWeb3React()
