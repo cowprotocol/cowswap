@@ -915,6 +915,7 @@ export function useHasZeroInvested(): boolean {
 type UseUserEnhancedClaimDataResult = {
   claims: EnhancedUserClaimData[]
   isLoading: boolean
+  isClaimed: boolean
 }
 
 /**
@@ -925,7 +926,7 @@ type UseUserEnhancedClaimDataResult = {
  * @param account
  */
 export function useUserEnhancedClaimData(account: Account): UseUserEnhancedClaimDataResult {
-  const { available, isLoading } = useClassifiedUserClaims(account)
+  const { available, claimed, isLoading } = useClassifiedUserClaims(account)
   const { chainId: preCheckChainId } = useActiveWeb3React()
   const native = useNativeTokenPrice()
   const gno = useGnoPrice()
@@ -940,7 +941,11 @@ export function useUserEnhancedClaimData(account: Account): UseUserEnhancedClaim
     return sorted.map((claim) => _enhanceClaimData(claim, chainId, { native, gno, usdc }))
   }, [available, gno, native, preCheckChainId, usdc])
 
-  return { claims, isLoading }
+  const isClaimed = useMemo(() => {
+    return Boolean(!available.length && claimed.length)
+  }, [available.length, claimed.length])
+
+  return { claims, isClaimed, isLoading }
 }
 
 function _sortTypes(a: UserClaimData, b: UserClaimData): number {

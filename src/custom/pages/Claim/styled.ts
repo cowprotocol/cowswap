@@ -746,7 +746,7 @@ export const NegativeIcon = styled(Frown)`
   stroke: ${({ theme }) => theme.primary1};
 `
 
-export const EligibleBanner = styled.div`
+export const ClaimBanner = styled.div<{ isClaimed: boolean }>`
   width: 100%;
   border-radius: var(--border-radius);
   padding: 12px;
@@ -754,8 +754,8 @@ export const EligibleBanner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme }) => transparentize(0.9, theme.success)};
-  color: ${({ theme }) => theme.success};
+  background: ${({ theme, isClaimed }) => transparentize(0.9, !isClaimed ? theme.success : theme.blue2)};
+  color: ${({ theme, isClaimed }) => (!isClaimed ? theme.success : theme.blue2)};
   margin: 0 auto 16px;
   font-weight: 600;
 
@@ -770,7 +770,7 @@ export const EligibleBanner = styled.div`
     height: 21px;
 
     > path {
-      fill: ${({ theme }) => theme.success};
+      fill: ${({ theme, isClaimed }) => (!isClaimed ? theme.success : theme.blue2)};
     }
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
