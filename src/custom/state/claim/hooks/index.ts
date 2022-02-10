@@ -53,12 +53,13 @@ import {
   updateInvestError,
   setEstimatedGas,
   setIsTouched,
-  setHasClaimsOnOtherChains,
+  setClaimsCount,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
+import { ClaimInfo } from 'state/claim/reducer'
 
 const CLAIMS_REPO_BRANCH = '2022-01-22-test-deployment-all-networks'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -118,7 +119,7 @@ type Account = string | null | undefined
 export type UserClaims = UserClaimData[]
 export type RepoClaims = RepoClaimData[]
 
-type ClassifiedUserClaims = {
+export type ClassifiedUserClaims = {
   available: UserClaims
   expired: UserClaims
   claimed: UserClaims
@@ -856,8 +857,8 @@ export function useClaimDispatchers() {
       // reset claim ui
       resetClaimUi: () => dispatch(resetClaimUi()),
       // has claims on other chains
-      setHasClaimsOnOtherChains: (payload: { chain: SupportedChainId; hasClaims: boolean }) =>
-        dispatch(setHasClaimsOnOtherChains(payload)),
+      setClaimsCount: (payload: { chain: SupportedChainId; claimInfo: ClaimInfo; account: string }) =>
+        dispatch(setClaimsCount(payload)),
     }),
     [dispatch]
   )
