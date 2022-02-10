@@ -6,6 +6,7 @@ import useChangeNetworks from 'hooks/useChangeNetworks'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from '@src/custom/components/NotificationBanner'
 import { AlertTriangle } from 'react-feather'
+import { ClaimInfo } from 'state/claim/reducer'
 
 const ChainSpan = styled.span``
 const Wrapper = styled.div`
@@ -46,23 +47,50 @@ const Wrapper = styled.div`
   }
 `
 
+/**
+ * Returns true when you shouldn't display the banner for the checkedChain
+ */
+function _shouldNotDisplayBannerForChain(
+  checkedChain: SupportedChainId,
+  chainId: number | undefined,
+  claimInfo: ClaimInfo
+) {
+  const { available, total } = claimInfo
+  return (
+    // If this is the same network
+    // Important, the double equal comparison is intentional!
+    // Don't be dumb like me and change to triple equal and spend awhile figuring out why it doesn't work...
+    checkedChain == chainId ||
+    // If total claims is 0
+    total === 0 ||
+    // If there are no available
+    available === 0
+  )
+}
+
 function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
   const { account, library, chainId } = useActiveWeb3React()
   const { callback } = useChangeNetworks({ account, library, chainId })
 
-  const { hasClaimsOnOtherChains } = useClaimState()
-  const chainsWithClaims: SupportedChainId[] = useMemo(
-    () =>
-      Object.keys(hasClaimsOnOtherChains).reduce((acc, chain) => {
-        const checkedChain = chain as unknown as SupportedChainId
-        const chainHasClaim = hasClaimsOnOtherChains[checkedChain]
-        if (!chainHasClaim || checkedChain == chainId) return acc
+  const { claimInfoPerAccount, activeClaimAccount } = useClaimState()
 
-        acc.push(checkedChain)
+  const chainsWithClaims: SupportedChainId[] = useMemo(() => {
+    const claimInfoPerChain = claimInfoPerAccount[activeClaimAccount]
+
+    if (!claimInfoPerChain) return []
+
+    return Object.keys(claimInfoPerChain).reduce<SupportedChainId[]>((acc, chain) => {
+      const checkedChain = chain as unknown as SupportedChainId
+      const claimsCountOnChain = claimInfoPerChain[checkedChain]
+
+      if (_shouldNotDisplayBannerForChain(checkedChain, chainId, claimsCountOnChain)) {
         return acc
-      }, [] as SupportedChainId[]),
-    [chainId, hasClaimsOnOtherChains]
-  )
+      }
+
+      acc.push(checkedChain)
+      return acc
+    }, [])
+  }, [activeClaimAccount, chainId, claimInfoPerAccount])
 
   if (chainsWithClaims.length === 0) {
     return null
