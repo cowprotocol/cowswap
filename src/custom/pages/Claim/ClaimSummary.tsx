@@ -7,23 +7,31 @@ import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } fr
 import { ClaimCommonTypes } from './types'
 import { ClaimStatus } from 'state/claim/actions'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { V_COW } from 'constants/tokens'
+import { useActiveWeb3React } from 'hooks'
 
-type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
+type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined
 }
 
-export function ClaimSummary({ hasClaims, unclaimedAmount }: ClaimSummaryProps) {
+export function ClaimSummary({ hasClaims, isClaimed, unclaimedAmount }: ClaimSummaryProps) {
+  const { chainId } = useActiveWeb3React()
   const { activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
+
+  const vCowBalance = useTokenBalance(activeClaimAccount || undefined, chainId ? V_COW[chainId] : undefined)
 
   const hasClaimSummary = claimStatus === ClaimStatus.DEFAULT && !isInvestFlowActive
 
   if (!hasClaimSummary) return null
 
+  const totalAvailableAmount = hasClaims && activeClaimAccount && unclaimedAmount ? unclaimedAmount : vCowBalance
+
   return (
     <ClaimSummaryView
       showClaimText={!activeClaimAccount && !hasClaims}
-      totalAvailableAmount={(activeClaimAccount && unclaimedAmount) || undefined}
-      totalAvailableText={'Total available to claim'}
+      totalAvailableAmount={totalAvailableAmount}
+      totalAvailableText={isClaimed ? 'Total claimed' : 'Total available to claim'}
     />
   )
 }

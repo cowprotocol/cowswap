@@ -10,9 +10,17 @@ import { ExternalLink } from 'theme/index'
 import SVG from 'react-inlinesvg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 
-type ClaimIntroductionProps = Pick<ClaimCommonTypes, 'hasClaims' | 'handleChangeAccount' | 'isAirdropOnly'>
+type ClaimIntroductionProps = Pick<
+  ClaimCommonTypes,
+  'hasClaims' | 'isClaimed' | 'handleChangeAccount' | 'isAirdropOnly'
+>
 
-export default function CanUserClaimMessage({ hasClaims, isAirdropOnly, handleChangeAccount }: ClaimIntroductionProps) {
+export default function CanUserClaimMessage({
+  hasClaims,
+  isClaimed,
+  isAirdropOnly,
+  handleChangeAccount,
+}: ClaimIntroductionProps) {
   const { activeClaimAccount, claimStatus } = useClaimState()
   const network = useNetworkName()
 
@@ -48,11 +56,17 @@ export default function CanUserClaimMessage({ hasClaims, isAirdropOnly, handleCh
     )
   }
 
-  if (!hasClaims) {
+  if (!hasClaims || isClaimed) {
     return (
       <IntroDescription center>
         <Trans>
-          Unfortunately this account is not eligible for any vCOW claims in {network}. <br />
+          {isClaimed ? (
+            ''
+          ) : (
+            <>
+              Unfortunately this account is not eligible for any vCOW claims in {network}. <br />
+            </>
+          )}
           <ButtonSecondary onClick={handleChangeAccount} padding="0">
             Try another account
           </ButtonSecondary>{' '}
