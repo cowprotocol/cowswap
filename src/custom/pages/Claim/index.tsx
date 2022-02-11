@@ -22,18 +22,12 @@ import ClaimNav from './ClaimNav'
 import ClaimingStatus from './ClaimingStatus'
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 import ClaimsTable from './ClaimsTable'
-import EligibleBanner from './EligibleBanner'
+import ClaimBanner from './ClaimBanner'
 import FooterNavButtons from './FooterNavButtons'
 import InvestmentFlow from './InvestmentFlow'
 import { ClaimSummary } from './ClaimSummary'
 
 import usePrevious from 'hooks/usePrevious'
-
-/* TODO: Replace URLs with the actual final URL destinations */
-export const COW_LINKS = {
-  vCowPost: 'https://cow.fi/',
-  stepGuide: 'https://cow.fi/',
-}
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
@@ -87,7 +81,11 @@ export default function Claim() {
   const { handleCloseError, handleSetError, ErrorModal } = useErrorModal()
 
   // get user claim data
-  const { claims: userClaimData, isLoading: isClaimDataLoading } = useUserEnhancedClaimData(activeClaimAccount)
+  const {
+    isClaimed,
+    claims: userClaimData,
+    isLoading: isClaimDataLoading,
+  } = useUserEnhancedClaimData(activeClaimAccount)
 
   // get total unclaimed amount
   const unclaimedAmount = useUserUnclaimedAmount(activeClaimAccount)
@@ -247,15 +245,16 @@ export default function Claim() {
             <Confetti start={claimStatus === ClaimStatus.CONFIRMED} />
             {/* Top nav buttons */}
             <ClaimNav account={account} handleChangeAccount={handleChangeClick} />
-            {/* Show general title OR total to claim (user has airdrop or airdrop+investment) --------------------------- */}
-            <EligibleBanner hasClaims={hasClaims} />
+            {/* Show banner that tells if user has available claims or has already claimed all */}
+            <ClaimBanner isClaimed={isClaimed} hasClaims={hasClaims} />
             {/* Show total to claim (user has airdrop or airdrop+investment) */}
-            <ClaimSummary hasClaims={hasClaims} unclaimedAmount={unclaimedAmount} />
+            <ClaimSummary hasClaims={hasClaims} unclaimedAmount={unclaimedAmount} isClaimed={isClaimed} />
             {/* Get address/ENS (user not connected yet or opted for checking 'another' account) */}
             <ClaimAddress account={account} toggleWalletModal={toggleWalletModal} />
             {/* Is Airdrop only (simple) - does user have claims? Show messages dependent on claim state */}
             <CanUserClaimMessage
               hasClaims={hasClaims}
+              isClaimed={isClaimed}
               isAirdropOnly={isAirdropOnly}
               handleChangeAccount={handleChangeClick}
             />
@@ -279,6 +278,7 @@ export default function Claim() {
               isAirdropOnly={isAirdropOnly}
               isPaidClaimsOnly={isPaidClaimsOnly}
               hasClaims={hasClaims}
+              isClaimed={isClaimed}
               resolvedAddress={resolvedAddress}
             />
           </>

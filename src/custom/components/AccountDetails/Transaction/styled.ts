@@ -481,13 +481,14 @@ export const ActivityVisual = styled.div`
     padding: 2px;
     box-sizing: content-box;
     box-shadow: none;
-    background: ${({ theme }) => theme.card.background2};
+    background: ${({ theme }) => theme.transaction.tokenBackground};
     color: ${({ theme }) =>
-      theme.text1}!important; // Todo: Re-factor StyledLogo to prevent inline style and needing to use !important here
+      theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
+    border: 2px solid ${({ theme }) => theme.transaction.tokenBorder};
   }
 
   ${StyledLogo}:not(:first-child):last-child {
-    margin: 0 0 0 -8px;
+    margin: 0 0 0 -9px;
   }
 
   &:hover ${StyledLogo} {
