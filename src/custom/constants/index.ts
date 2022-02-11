@@ -51,8 +51,8 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
-  [ChainId.MAINNET]: '0x6d04B3ad33594978D0D4B01CdB7c3bA4a90a7DFe',
-  [ChainId.XDAI]: '0xA3A674a40709A837A5E742C2866eda7d3b35a7c0',
+  [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
+  [ChainId.XDAI]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
   [ChainId.RINKEBY]: '0x5Bf4d1f8d1cB35E0aeA69B220beb97b8807504eA',
 }
 
