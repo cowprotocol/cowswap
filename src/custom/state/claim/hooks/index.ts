@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
@@ -59,9 +59,10 @@ import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
+import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 
-const CLAIMS_REPO_BRANCH = '2022-01-22-test-deployment-all-networks'
+const CLAIMS_REPO_BRANCH = 'gip-13'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
@@ -276,16 +277,19 @@ export function useUserClaims(account: Account, optionalChainId?: SupportedChain
   return { claims: claimKey ? claimInfo[claimKey] : null, isLoading }
 }
 
-let fetch_deployment_timestamp_promise: Promise<number> | null = null
-function fetchDeploymentTimestamp(vCowContract: VCowType) {
-  if (!fetch_deployment_timestamp_promise) {
-    fetch_deployment_timestamp_promise = vCowContract.deploymentTimestamp().then((ts) => {
+const FETCH_DEPLOYMENT_TIME_PROMISES: Map<ChainId, Promise<number>> = new Map()
+function fetchDeploymentTimestamp(vCowContract: VCowType, chainId: ChainId): Promise<number> {
+  let deploymentTimePromise = FETCH_DEPLOYMENT_TIME_PROMISES.get(chainId)
+
+  if (!deploymentTimePromise) {
+    deploymentTimePromise = vCowContract.deploymentTimestamp().then((ts) => {
       console.log(`Deployment timestamp in seconds: ${ts.toString()}`)
       return ts.mul('1000').toNumber()
     })
+    FETCH_DEPLOYMENT_TIME_PROMISES.set(chainId, deploymentTimePromise)
   }
 
-  return fetch_deployment_timestamp_promise
+  return deploymentTimePromise
 }
 
 /**
@@ -299,13 +303,21 @@ function useDeploymentTimestamp(): number | null {
   const isMounted = useIsMounted()
 
   const [timestamp, setTimestamp] = useState<number | null>(null)
+  const oldChainId = useRef(chainId)
 
   useEffect(() => {
     if (!chainId || !vCowContract) {
       return
     }
 
-    fetchDeploymentTimestamp(vCowContract)
+    // Invalidate timestamp
+    if (chainId != oldChainId.current) {
+      setTimestamp(null)
+      oldChainId.current = chainId
+    }
+
+    // Fetch timestamp
+    fetchDeploymentTimestamp(vCowContract, chainId)
       .then((timestamp) => {
         if (isMounted.current) {
           setTimestamp(timestamp)
@@ -971,4 +983,20 @@ function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }
     baseAmount: ONE_VCOW,
     quoteAmount: CurrencyAmount.fromRawAmount(token, amount),
   }).invert()
+}
+
+/**
+ * Returns vCow claim blog posts based on chainId
+ */
+const COW_BLOG_LINKS_ROOT = 'https://cow-protocol.medium.com'
+export const useClaimLinks = () => {
+  const { chainId } = useActiveWeb3React()
+
+  return useMemo(
+    () => ({
+      vCowPost: `${COW_BLOG_LINKS_ROOT}/7689c4391373`,
+      stepGuide: `${COW_BLOG_LINKS_ROOT}/${chainId === SupportedChainId.XDAI ? 'b1a1442a3454' : '33ae0910d53f'}`,
+    }),
+    [chainId]
+  )
 }

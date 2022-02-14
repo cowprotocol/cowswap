@@ -15,7 +15,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { ClaimAddressProps } from './ClaimAddress'
 import { ClaimCommonTypes } from 'pages/Claim/types'
 
-type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isAirdropOnly'> &
+type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
     isPaidClaimsOnly: boolean
     resolvedAddress: string | null
@@ -25,6 +25,7 @@ type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isAirdropOnly
 
 export default function FooterNavButtons({
   hasClaims,
+  isClaimed,
   isAirdropOnly,
   isPaidClaimsOnly,
   resolvedAddress,
@@ -69,11 +70,20 @@ export default function FooterNavButtons({
   }, [activeClaimAccount])
 
   let buttonContent: ReactNode = null
+
   // Disconnected, show wallet connect
   if (!account && activeClaimAccount) {
     buttonContent = (
       <ButtonPrimary ref={buttonRef} onClick={toggleWalletModal}>
         <Trans>Connect a wallet</Trans>
+      </ButtonPrimary>
+    )
+  }
+  // Already claimed
+  else if (isClaimed) {
+    buttonContent = (
+      <ButtonPrimary ref={buttonRef} onClick={toggleWalletModal} disabled>
+        <Trans>Already claimed</Trans>
       </ButtonPrimary>
     )
   }
