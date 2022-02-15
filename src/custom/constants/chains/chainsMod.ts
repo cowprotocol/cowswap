@@ -168,9 +168,10 @@ export const CHAIN_INFO: ChainInfo = {
   }, */
   [SupportedChainId.XDAI]: {
     docs: 'https://docs.uniswap.org/',
-    explorer: 'https://blockscout.com/xdai/mainnet/  ',
+    explorer: 'https://blockscout.com/xdai/mainnet/',
     infoLink: '',
     label: 'Gnosis Chain',
+    rpcUrls: ['https://rpc.gnosischain.com/'],
     logoUrl: GnosisChainLogo, // mod
     nativeCurrency: { name: 'xDai', symbol: 'XDAI', decimals: 18 },
   },
