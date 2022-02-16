@@ -887,7 +887,7 @@ export function useHasClaimInvestmentFlowError(): boolean {
   const { investFlowData } = useClaimState()
 
   return useMemo(() => {
-    return investFlowData.some(({ error }) => Boolean(error))
+    return Object.values(investFlowData).some(({ error }) => Boolean(error))
   }, [investFlowData])
 }
 
@@ -898,7 +898,7 @@ export function useSomeNotTouched(): boolean {
   const { investFlowData } = useClaimState()
 
   return useMemo(() => {
-    return investFlowData.some(({ isTouched }) => !isTouched)
+    return Object.values(investFlowData).some(({ isTouched }) => !isTouched)
   }, [investFlowData])
 }
 
@@ -909,7 +909,7 @@ export function useHasZeroInvested(): boolean {
   const { investFlowData } = useClaimState()
 
   return useMemo(() => {
-    return investFlowData.some(({ investedAmount }) => investedAmount === '0')
+    return Object.values(investFlowData).some(({ investedAmount }) => investedAmount === '0')
   }, [investFlowData])
 }
 

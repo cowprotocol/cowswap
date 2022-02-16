@@ -184,8 +184,11 @@ export function calculateInvestmentAmounts(
 /**
  * Helper function that prepares investFlowData for claiming by calculating vCowAmount from investedAmounts
  */
-export function prepareInvestClaims(investFlowData: InvestClaim[], userClaimData: EnhancedUserClaimData[]) {
-  return investFlowData.reduce<ClaimInput[]>((acc, { index, investedAmount }) => {
+export function prepareInvestClaims(
+  investFlowData: Record<number, InvestClaim>,
+  userClaimData: EnhancedUserClaimData[]
+) {
+  return Object.values(investFlowData).reduce<ClaimInput[]>((acc, { index, investedAmount }) => {
     const claim = userClaimData.find(({ index: idx }) => idx === index)
 
     if (claim) {
