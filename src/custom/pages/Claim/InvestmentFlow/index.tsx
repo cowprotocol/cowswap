@@ -94,11 +94,9 @@ function _classifyAndFilterClaimData(claimData: EnhancedUserClaimData[], selecte
 
 function _enhancedUserClaimToClaimWithInvestment(
   claim: EnhancedUserClaimData,
-  investFlowData: InvestClaim[]
+  investFlowData: Record<number, InvestClaim>
 ): ClaimWithInvestmentData {
-  const investmentAmount = claim.isFree
-    ? undefined
-    : investFlowData.find(({ index }) => index === claim.index)?.investedAmount
+  const investmentAmount = claim.isFree ? undefined : investFlowData[claim.index]?.investedAmount
 
   return { ...claim, ...calculateInvestmentAmounts(claim, investmentAmount) }
 }
@@ -244,8 +242,8 @@ export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modal
             up to a predefined maximum amount of tokens{' '}
           </p>
 
-          {selectedClaims.map((claim, index) => (
-            <InvestOption key={claim.index} optionIndex={index} claim={claim} {...modalCbs} />
+          {selectedClaims.map((claim) => (
+            <InvestOption key={claim.index} claim={claim} {...modalCbs} />
           ))}
 
           {hasError && (

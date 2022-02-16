@@ -58,7 +58,7 @@ export const initialState: ClaimState = {
   // investment
   isInvestFlowActive: false,
   investFlowStep: 0,
-  investFlowData: [],
+  investFlowData: {},
   // table select change
   selected: [],
   selectedAll: false,
@@ -88,7 +88,7 @@ export type ClaimState = {
   // investment
   isInvestFlowActive: boolean
   investFlowStep: number
-  investFlowData: InvestClaim[]
+  investFlowData: Record<number, InvestClaim>
   // table select change
   selected: number[]
   selectedAll: boolean
@@ -147,12 +147,13 @@ export default createReducer(initialState, (builder) =>
     .addCase(initInvestFlowData, (state) => {
       const { selected, isInvestFlowActive } = current(state)
 
-      const data = selected.map((index) => ({ index, investedAmount: '0' }))
-
       if (isInvestFlowActive) {
-        state.investFlowData.push(...data)
+        state.investFlowData = selected.reduce<Record<number, InvestClaim>>((acc, index) => {
+          acc[index] = { index, investedAmount: '0' }
+          return acc
+        }, {})
       } else {
-        state.investFlowData.length = 0
+        state.investFlowData = {}
       }
     })
     .addCase(updateInvestAmount, (state, { payload: { index, amount } }) => {

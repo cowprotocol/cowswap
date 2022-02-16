@@ -62,13 +62,12 @@ const WarningMessages = {
 
 type InvestOptionProps = {
   claim: EnhancedUserClaimData
-  optionIndex: number
   openModal: InvestmentFlowProps['modalCbs']['openModal']
   closeModal: InvestmentFlowProps['modalCbs']['closeModal']
 }
 
-export default function InvestOption({ claim, optionIndex, openModal, closeModal }: InvestOptionProps) {
-  const { currencyAmount, price, cost: maxCost } = claim
+export default function InvestOption({ claim, openModal, closeModal }: InvestOptionProps) {
+  const { currencyAmount, price, cost: maxCost, index } = claim
 
   const { account, chainId } = useActiveWeb3React()
   const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
@@ -93,26 +92,20 @@ export default function InvestOption({ claim, optionIndex, openModal, closeModal
   const [typedValue, setTypedValue] = useState<string>('')
   const [inputWarnings, setInputWarnings] = useState<string[]>([])
 
-  const investedAmount = investFlowData[optionIndex].investedAmount
-  const inputError = investFlowData[optionIndex].error
-  const isTouched = investFlowData[optionIndex].isTouched
+  const investedAmount = investFlowData[index].investedAmount
+  const inputError = investFlowData[index].error
+  const isTouched = investFlowData[index].isTouched
 
   // Syntactic sugar fns for setting/resetting global state
   const setInvestedAmount = useCallback(
-    (amount: string) => updateInvestAmount({ index: optionIndex, amount }),
-    [optionIndex, updateInvestAmount]
+    (amount: string) => updateInvestAmount({ index, amount }),
+    [index, updateInvestAmount]
   )
-  const setInputError = useCallback(
-    (error: string) => updateInvestError({ index: optionIndex, error }),
-    [optionIndex, updateInvestError]
-  )
-  const resetInputError = useCallback(
-    () => updateInvestError({ index: optionIndex, error: undefined }),
-    [optionIndex, updateInvestError]
-  )
+  const setInputError = useCallback((error: string) => updateInvestError({ index, error }), [index, updateInvestError])
+  const resetInputError = useCallback(() => updateInvestError({ index, error: undefined }), [index, updateInvestError])
   const setInputTouched = useCallback(
-    (value: boolean) => setIsTouched({ index: optionIndex, isTouched: value }),
-    [optionIndex, setIsTouched]
+    (value: boolean) => setIsTouched({ index, isTouched: value }),
+    [index, setIsTouched]
   )
 
   const token = currencyAmount?.currency
