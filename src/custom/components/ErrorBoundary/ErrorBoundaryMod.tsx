@@ -6,10 +6,13 @@ import Page, { Title } from 'components/Page'
 import { AutoColumn } from 'components/Column'
 import styled from 'styled-components/macro'
 import ReactGA from 'react-ga'
-import { getUserAgent } from 'utils/getUserAgent'
+import { userAgent } from '@src/utils/userAgent'
 import { AutoRow } from 'components/Row'
 import { MEDIA_WIDTHS } from '@src/theme'
 import CowError from 'assets/cow-swap/CowError.png'
+import { UniIcon, LogoImage } from '../Header'
+import { HeaderRow } from 'components/Header/HeaderMod'
+import Footer from 'components/Footer'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -17,6 +20,19 @@ const AppWrapper = styled.div`
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
+  &:after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    filter: blur(20px);
+    backdrop-filter: blur(20px);
+    background-image: ${({ theme }) => theme.body.background};
+    transition: 0.5s;
+    z-index: -1;
+  }
 `
 
 const Wrapper = styled(Page)`
@@ -56,33 +72,19 @@ const HeaderWrapper = styled.div`
   position: fixed;
   top: 0;
   z-index: 2;
+  padding: 16px;
   @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
     position: relative;
   }
 `
-
-export const LogoImage = styled.img.attrs((props) => ({
-  src: props.theme.logo.src,
-  // alt: props.theme.logo.alt,
-  // width: props.theme.logo.width,
-  // height: props.theme.logo.height,
-}))`
-  object-fit: contain;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 150px;
-  `};
+const FooterWrapper = styled(HeaderWrapper)`
+  z-index: 1;
+  flex-grow: 1;
+  width: 100%;
+  position: relative;
+  top: auto;
 `
 
-const CowLogo = styled.div`
-  display: flex;
-  margin: 1rem;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: rotate(-5deg);
-  }
-`
 const CodeBlockWrapper = styled.div`
   background: ${({ theme }) => theme.bg4};
   overflow: auto;
@@ -135,17 +137,20 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
   }
 
   render() {
+    document.body.classList.remove('noScroll')
     const { error } = this.state
     if (error !== null) {
       const encodedBody = encodeURIComponent(issueBody(error))
       return (
         <AppWrapper>
           <HeaderWrapper>
-            <a href=".">
-              <CowLogo>
-                <LogoImage />
-              </CowLogo>
-            </a>
+            <HeaderRow marginRight="0">
+              <a href=".">
+                <UniIcon>
+                  <LogoImage />
+                </UniIcon>
+              </a>
+            </HeaderRow>
           </HeaderWrapper>
           <Wrapper>
             <FlexContainer>
@@ -187,6 +192,9 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
               </AutoRow>
             </AutoColumn>
           </Wrapper>
+          <FooterWrapper>
+            <Footer />
+          </FooterWrapper>
         </AppWrapper>
       )
     }
@@ -203,19 +211,19 @@ function getRelevantState(): null | keyof AppState {
   switch (pieces[0]) {
     case 'swap':
       return 'swap'
-    case 'add':
-      if (pieces[1] === 'v2') return 'mint'
-      else return 'mintV3'
-    case 'remove':
-      if (pieces[1] === 'v2') return 'burn'
-      else return 'burnV3'
+    // case 'add':
+    //   if (pieces[1] === 'v2') return 'mint'
+    //   else return 'mintV3'
+    // case 'remove':
+    //   if (pieces[1] === 'v2') return 'burn'
+    //   else return 'burnV3'
   }
   return null
 }
 
 function issueBody(error: Error): string {
   const relevantState = getRelevantState()
-  const deviceData = getUserAgent()
+  const deviceData = userAgent
   return `## URL
   
 ${window.location.href}

@@ -7,7 +7,7 @@ import {
 } from 'constants/lists'
 import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
-import { TokenList } from '@uniswap/token-lists/dist/types'
+import { TokenList } from '@uniswap/token-lists'
 // import { DEFAULT_LIST_OF_LISTS } from '@src/constants/lists'
 import { updateVersion } from 'state/global/actions'
 import {

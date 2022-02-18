@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
-import { FeeQuoteParams } from 'utils/price'
+import { FeeQuoteParams as FeeQuoteParamsFull } from 'utils/price'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 import { useSwapState, tryParseAmount } from 'state/swap/hooks'
@@ -19,12 +19,15 @@ import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
 import { isWrappingTrade } from 'state/swap/utils'
+import { useOrderValidTo } from 'state/user/hooks'
 
-const DEBOUNCE_TIME = 350
+export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
 const UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL = 10 * 60 * 1000 // if unsupported token was added > 10min ago, re-try
+
+type FeeQuoteParams = Omit<FeeQuoteParamsFull, 'validTo'>
 
 /**
  * Returns if the quote has been recently checked
@@ -35,9 +38,9 @@ function wasQuoteCheckedRecently(lastQuoteCheck: number): boolean {
 /**
  * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
  */
-function isFeeExpiringSoon(quoteExpirationIsoDate: string): boolean {
+function isExpiringSoon(quoteExpirationIsoDate: string, threshold: number): boolean {
   const feeExpirationDate = Date.parse(quoteExpirationIsoDate)
-  const needRefetch = feeExpirationDate <= Date.now() + RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME
+  const needRefetch = feeExpirationDate <= Date.now() + threshold
 
   // const secondsLeft = (feeExpirationDate.valueOf() - Date.now()) / 1000
   // console.log(`[state:price:updater] Fee isExpiring in ${secondsLeft}. Refetch?`, needRefetch)
@@ -95,7 +98,7 @@ function isRefetchQuoteRequired(
     return false
   } else if (quoteInformation.fee) {
     // Re-fetch if the fee is expiring soon
-    return isFeeExpiringSoon(quoteInformation.fee.expirationDate)
+    return isExpiringSoon(quoteInformation.fee.expirationDate, RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME)
   }
 
   return false
@@ -122,11 +125,12 @@ export default function FeesUpdater(): null {
     OUTPUT: { currencyId: buyToken },
     independentField,
     typedValue: rawTypedValue,
+    recipient: receiver,
   } = useSwapState()
 
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
-  const typedValue = useDebounce(rawTypedValue, DEBOUNCE_TIME)
+  const typedValue = useDebounce(rawTypedValue, TYPED_VALUE_DEBOUNCE_TIME)
 
   const sellCurrency = useCurrency(sellToken)
   const buyCurrency = useCurrency(buyToken)
@@ -141,6 +145,7 @@ export default function FeesUpdater(): null {
 
   const windowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
+  const { validTo } = useOrderValidTo()
 
   // Update if any parameter is changing
   useEffect(() => {
@@ -160,6 +165,7 @@ export default function FeesUpdater(): null {
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS
     const toDecimals = buyCurrency?.decimals ?? DEFAULT_DECIMALS
+
     const quoteParams = {
       chainId,
       sellToken,
@@ -168,7 +174,9 @@ export default function FeesUpdater(): null {
       toDecimals,
       kind,
       amount: amount.quotient.toString(),
+      receiver,
       userAddress: account,
+      validTo,
     }
 
     // Don't refetch if offline.
@@ -246,6 +254,8 @@ export default function FeesUpdater(): null {
     setQuoteError,
     account,
     lastUnsupportedCheck,
+    receiver,
+    validTo,
   ])
 
   return null

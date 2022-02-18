@@ -43,6 +43,7 @@ export function colors(darkMode: boolean): Colors {
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
     bg6: darkMode ? '#163861' : '#b0dfee',
     bg7: darkMode ? '#1F4471' : '#CEE7EF',
+    bg8: darkMode ? '#021E34' : '#152943',
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
@@ -62,15 +63,17 @@ export function colors(darkMode: boolean): Colors {
 
     // ****** other ******
     blue1: '#3F77FF',
+    blue2: darkMode ? '#a3beff' : '#0c40bf',
     purple: '#8958FF',
     yellow: '#fff6dc',
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',
+    blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
 
     // states
     success: darkMode ? '#00d897' : '#00815a',
-    danger: '#f1356e',
+    danger: darkMode ? '#f7a7a7' : '#8f0000',
     pending: '#43758C',
     attention: '#ff5722',
 
@@ -152,10 +155,23 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         content: '680px',
       },
     },
+    transaction: {
+      tokenBackground: colorsTheme.bg2,
+      tokenColor: '#1d4373',
+      tokenBorder: darkMode ? '#01182a' : colorsTheme.bg3,
+    },
     neumorphism: {
       boxShadow: css`
         box-shadow: inset 2px -2px 4px ${darkMode ? '#1d4373' : '#ffffff'},
           inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
+      `,
+    },
+    cowToken: {
+      background: css`
+        background: linear-gradient(70.89deg, #292a30 10.71%, #101015 33%, #0e0501 88.54%);
+      `,
+      boxShadow: css`
+        box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
       `,
     },
     card: {
@@ -172,6 +188,9 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
+    iconGradientBorder: css`
+      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.primary1} 360grad);
+    `,
     header: {
       border: 'none',
       menuFlyout: {

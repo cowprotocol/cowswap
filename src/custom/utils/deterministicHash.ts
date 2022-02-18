@@ -1,10 +1,11 @@
 import safeStringify from 'fast-safe-stringify'
-import { utils } from 'ethers'
+import { sha256 } from '@ethersproject/sha2'
+import { toUtf8Bytes } from '@ethersproject/strings'
 
 /* Generates a sha256 hash of a given value deterministically */
 export default function deterministicHash(value: any): string {
   const s = safeStringify.stableStringify(value)
-  const bytes = utils.toUtf8Bytes(s)
+  const bytes = toUtf8Bytes(s)
 
-  return utils.sha256(bytes)
+  return sha256(bytes)
 }

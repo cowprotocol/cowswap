@@ -1,10 +1,14 @@
+import { loadingOpacityMixin } from 'components/Loader/styled'
+import { TooltipContainer } from 'components/Tooltip'
 import { transparentize } from 'polished'
-import { ReactNode } from 'react'
-
+import { MouseEventHandler, ReactNode } from 'react'
 import { AlertTriangle } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
 import { Text } from 'rebass'
+import styled, { css } from 'styled-components/macro'
+import { TYPE } from 'theme'
+
 import { AutoColumn } from '../Column'
+import TradePrice from './TradePrice'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -85,9 +89,10 @@ export const Dots = styled.span`
   }
 `
 
-const SwapCallbackErrorInner = styled.div`
+const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
   background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
   border-radius: 1rem;
+  position: relative;
   display: flex;
   align-items: center;
   font-size: 0.825rem;
@@ -101,6 +106,8 @@ const SwapCallbackErrorInner = styled.div`
     margin: 0;
     font-weight: 500;
   }
+
+  ${({ $css }) => $css}
 `
 
 const SwapCallbackErrorInnerAlertTriangle = styled.div`
@@ -114,9 +121,26 @@ const SwapCallbackErrorInnerAlertTriangle = styled.div`
   height: 48px;
 `
 
-export function SwapCallbackError({ error }: { error: ReactNode }) {
+const Closer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 7px 10px;
+  font-weight: bold;
+  cursor: pointer;
+`
+
+export type ErrorMessageProps = {
+  error?: ReactNode
+  handleClose?: MouseEventHandler<HTMLDivElement>
+  showClose?: boolean
+  $css?: string
+}
+
+export function SwapCallbackError({ error, handleClose, showClose, ...styleProps }: ErrorMessageProps) {
   return (
-    <SwapCallbackErrorInner>
+    <SwapCallbackErrorInner {...styleProps}>
+      {showClose && <Closer onClick={handleClose}>X</Closer>}
       <SwapCallbackErrorInnerAlertTriangle>
         <AlertTriangle size={24} />
       </SwapCallbackErrorInnerAlertTriangle>
@@ -131,4 +155,25 @@ export const SwapShowAcceptChanges = styled(AutoColumn)`
   padding: 0.5rem;
   border-radius: 12px;
   margin-top: 8px;
+`
+
+export const TransactionDetailsLabel = styled(TYPE.black)`
+  border-bottom: 1px solid ${({ theme }) => theme.bg2};
+  padding-bottom: 0.5rem;
+`
+
+export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: string; width?: string }>`
+  background-color: ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.bg2};
+  padding: 1rem;
+  width: ${({ width }) => width ?? 'auto'};
+
+  ${({ theme, origin }) => theme.mediaWidth.upToExtraSmall`
+    transform: scale(0.8);
+    transform-origin: ${origin ?? 'top left'};
+  `}
+`
+
+export const StyledTradePrice = styled(TradePrice)<{ $loading: boolean }>`
+  ${loadingOpacityMixin}
 `

@@ -10,8 +10,6 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
-export const ONE_HUNDRED_PERCENT = new Percent(1, 1)
-
 export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
 export const DEFAULT_SMALL_LIMIT = '0.000001'
@@ -52,6 +50,12 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
   [ChainId.XDAI]: GPv2VaultRelayer[ChainId.XDAI].address,
 }
 
+export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
+  [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
+  [ChainId.XDAI]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
+  [ChainId.RINKEBY]: '0x5Bf4d1f8d1cB35E0aeA69B220beb97b8807504eA',
+}
+
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token } = {
@@ -70,15 +74,14 @@ export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
 export const PRICE_API_TIMEOUT_MS = 10000 // 10s
 export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
+export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
 export const XDAI_LOGO_URI =
   'https://raw.githubusercontent.com/1Hive/default-token-list/master/src/assets/xdai/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d/logo.png'
 
-// 0.1 balance threshold
-export const LOW_NATIVE_BALANCE_THRESHOLD = new Fraction('1', '10')
-export const DOCS_LINK = 'https://docs.cowswap.exchange'
+export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/gnosis/gp-v2-contracts'
 export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
 export const DISCORD_LINK = 'https://chat.cowswap.exchange'
@@ -95,8 +98,7 @@ export const GAS_FEE_ENDPOINTS = {
   // [ChainId.GOERLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
   // no kovan = main
   // [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
-  // TODO: xdai? = main
-  [ChainId.XDAI]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  [ChainId.XDAI]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq#what-token-pairs-does-cowswap-allow-to-trade'
@@ -112,3 +114,8 @@ export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 
 // last wallet provider key used in local storage
 export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
+
+// Default price strategy to use for getting app prices
+// COWSWAP = new quote endpoint
+// LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
+export const DEFAULT_GP_PRICE_STRATEGY = 'COWSWAP'

@@ -22,7 +22,7 @@ import Modal from '../Modal' */
 import Row, { RowFixed } from 'components/Row'
 /* import { Dots } from '../swap/styleds'
 import Web3Status from '../Web3Status'
-import NetworkCard from './NetworkCard'
+import NetworkSelector from './NetworkSelector'
 import UniBalanceContent from './UniBalanceContent' */
 
 export const HeaderFrame = styled.div<{ showBackground: boolean }>`
@@ -69,6 +69,10 @@ export const HeaderControls = styled.div`
 export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
+
+  &:not(:first-child) {
+    margin-left: 0.5em;
+  }
 
   /* addresses safari's lack of support for "gap" */
   & > *:not(:first-child) {
@@ -121,8 +125,7 @@ export const AccountElement = styled.div<{ active: boolean }>`
   }
 `
 
-/*
-const UNIAmount = styled(AccountElement)`
+export const UNIAmount = styled(AccountElement)`
   color: white;
   padding: 4px 8px;
   height: 36px;
@@ -131,7 +134,7 @@ const UNIAmount = styled(AccountElement)`
   background: radial-gradient(174.47% 188.91% at 1.84% 0%, #ff007a 0%, #2172e5 100%), #edeef2;
 `
 
-const UNIWrapper = styled.span`
+export const UNIWrapper = styled.span`
   width: fit-content;
   position: relative;
   cursor: pointer;
@@ -144,7 +147,6 @@ const UNIWrapper = styled.span`
     opacity: 0.9;
   }
 `
-*/
 
 export const HideSmall = styled.span`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -328,7 +330,9 @@ export default function Header({ children }: PropsWithChildren<void>) {
         </StyledExternalLink>
       </HeaderLinks>
       <HeaderControls>
-        // <NetworkCard />
+        <HeaderElement>
+          <NetworkSelector />
+        </HeaderElement>
         <HeaderElement>
           {availableClaim && !showClaimPopup && (
             <UNIWrapper onClick={toggleClaimModal}>

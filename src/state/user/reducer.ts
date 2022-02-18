@@ -1,5 +1,7 @@
-import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
 import { createReducer } from '@reduxjs/toolkit'
+import { SupportedLocale } from 'constants/locales'
+
+import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
 import { updateVersion } from '../global/actions'
 import {
   addSerializedPair,
@@ -9,17 +11,18 @@ import {
   SerializedPair,
   SerializedToken,
   updateMatchesDarkMode,
+  updateOptimismAlphaAcknowledged,
+  updateUserClientSideRouter,
   updateUserDarkMode,
+  updateUserDeadline,
   updateUserExpertMode,
   updateUserSlippageTolerance,
-  updateUserDeadline,
   toggleURLWarning,
-  updateUserSingleHopOnly,
   updateHideClosedPositions,
   updateUserLocale,
   updateArbitrumAlphaAcknowledged,
+  updateRecipientToggleVisible,
 } from './actions'
-import { SupportedLocale } from 'constants/locales'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -29,14 +32,18 @@ export interface UserState {
   // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number
 
-  userDarkMode: boolean | null // the user's choice for dark mode or light mode
   matchesDarkMode: boolean // whether the dark mode media query matches
+  optimismAlphaAcknowledged: boolean
+
+  userDarkMode: boolean | null // the user's choice for dark mode or light mode
 
   userLocale: SupportedLocale | null
 
   userExpertMode: boolean
 
-  userSingleHopOnly: boolean // only allow swaps on direct pairs
+  recipientToggleVisible: boolean
+
+  userClientSideRouter: boolean // whether routes should be calculated with the client side router only
 
   // hides closed (inactive) positions across the app
   userHideClosedPositions: boolean
@@ -71,11 +78,13 @@ function pairKey(token0Address: string, token1Address: string) {
 
 export const initialState: UserState = {
   arbitrumAlphaAcknowledged: false,
-  userDarkMode: null,
   matchesDarkMode: false,
+  optimismAlphaAcknowledged: false,
+  userDarkMode: null,
   userExpertMode: false,
+  recipientToggleVisible: false,
   userLocale: null,
-  userSingleHopOnly: false,
+  userClientSideRouter: false,
   userHideClosedPositions: false,
   userSlippageTolerance: 'auto',
   userSlippageToleranceHasBeenMigratedToAuto: true,
@@ -132,8 +141,15 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateArbitrumAlphaAcknowledged, (state, action) => {
       state.arbitrumAlphaAcknowledged = action.payload.arbitrumAlphaAcknowledged
     })
+    .addCase(updateOptimismAlphaAcknowledged, (state, action) => {
+      state.optimismAlphaAcknowledged = action.payload.optimismAlphaAcknowledged
+    })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateRecipientToggleVisible, (state, action) => {
+      state.recipientToggleVisible = action.payload.recipientToggleVisible
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserLocale, (state, action) => {
@@ -148,8 +164,8 @@ export default createReducer(initialState, (builder) =>
       state.userDeadline = action.payload.userDeadline
       state.timestamp = currentTimestamp()
     })
-    .addCase(updateUserSingleHopOnly, (state, action) => {
-      state.userSingleHopOnly = action.payload.userSingleHopOnly
+    .addCase(updateUserClientSideRouter, (state, action) => {
+      state.userClientSideRouter = action.payload.userClientSideRouter
     })
     .addCase(updateHideClosedPositions, (state, action) => {
       state.userHideClosedPositions = action.payload.userHideClosedPositions

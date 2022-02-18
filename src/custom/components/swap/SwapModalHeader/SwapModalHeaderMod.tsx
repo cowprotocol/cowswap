@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
@@ -7,15 +8,14 @@ import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
 import { TYPE } from 'theme'
-import { ButtonPrimary } from 'components/Button'
 import { isAddress, shortenAddress } from 'utils'
+import { ButtonPrimary } from 'components/Button'
 // import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 import { AutoColumn } from 'components/Column'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RowBetween, RowFixed } from 'components/Row'
 import { TruncatedText, SwapShowAcceptChanges } from 'components/swap/styleds'
-import { Trans } from '@lingui/macro'
 
 import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
 // import { LightCard } from '../Card'
@@ -280,8 +280,8 @@ SwapModalHeaderProps) {
         )}
       </AutoColumn>
       {recipient !== null ? (
-        <AutoColumn justify="flex-start" gap="sm" style={{ padding: '12px 0 0 0px' }}>
-          <TYPE.main>
+        <AutoColumn justify="flex-start" gap="sm">
+          <TYPE.main style={{ padding: '0.75rem 1rem' }}>
             <Trans>
               Output will be sent to{' '}
               <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>

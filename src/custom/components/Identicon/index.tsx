@@ -12,12 +12,13 @@ const Wrapper = styled.div<{ size?: number }>`
 
 export interface IdenticonProps {
   size?: number
+  account?: string
 }
 
-export default function Identicon({ size }: IdenticonProps) {
+export default function Identicon({ account, size }: IdenticonProps) {
   return (
     <Wrapper size={size}>
-      <IdenticonMod size={size} />
+      <IdenticonMod size={size} account={account} />
     </Wrapper>
   )
 }

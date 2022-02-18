@@ -8,7 +8,7 @@
 [![Tests](https://github.com/gnosis/dex-swap/workflows/Tests/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ATests)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
-CowSwap is the first trading interface built on top of Gnosis Protocol v2.
+CowSwap is the first trading interface built on top of CoW Protocol v2.
 
 It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
@@ -17,7 +17,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
   - ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
   - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/gnosis/gp-swap-ui/releases) section.
 
-- Docs: <https://docs.cowswap.exchange>
+- Docs: <https://docs.cow.fi>
 - Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
@@ -25,8 +25,8 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 
 Please see the:
 
-- [Gnosis Protocol: Smart contracts](https://github.com/gnosis/gp-v2-contracts)
-- [Gnosis Protocol: Services](https://github.com/gnosis/gp-v2-services)
+- [CoW Protocol: Smart contracts](https://github.com/gnosis/gp-v2-contracts)
+- [CoW Protocol: Services](https://github.com/gnosis/gp-v2-services)
 
 You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
 
@@ -72,6 +72,14 @@ yarn start:default
 yarn cypress
 ```
 
+### Run cosmos
+
+This will start a server on the `http://localhost:5000/`
+
+```bash
+yarn run cosmos
+```
+
 ## Configuring the environment (optional)
 
 The app has some default configuration, but it's highly encouraged to define your own.
@@ -90,12 +98,12 @@ CowSwap tries to find the best price available onchain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
-| Name                | Environment variable                     | Type                         | Description                                                                                                        |
-| ------------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **Gnosis Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [Gnosis Protocol](https://docs.cowswap.exchange/) price estimation. Used for all price estimation.                 |
-| **Paraswap**        | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
-| **0x**              | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
-| **Coingecko**       | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
+| Name             | Environment variable                     | Type                         | Description                                                                                                        |
+| ---------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cowswap.exchange/) price estimation. Used for all price estimation.                    |
+| **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
+| **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
+| **Coingecko**    | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
 
 ### Metadata attached to orders (AppData)
 
@@ -103,7 +111,7 @@ The app will attach some metadata to all orders.
 
 This metadata will be sent to the smart contract as an hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade.
 
-Any web app or client using Gnosis Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that
+Any web app or client using CoW Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that
 information to the order.
 
 For example, CowSwap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ

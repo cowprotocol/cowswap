@@ -8,9 +8,10 @@ export function isWrappingTrade(
   buyCurrency: Currency | null | undefined,
   chainId?: SupportedChainId
 ): boolean {
+  const wethByChain = WETH9_EXTENDED[chainId || SupportedChainId.MAINNET]
   return Boolean(
-    (sellCurrency?.isNative && buyCurrency?.wrapped.equals(WETH9_EXTENDED[chainId || SupportedChainId.MAINNET])) ||
-      (sellCurrency?.wrapped.equals(WETH9_EXTENDED[chainId || SupportedChainId.MAINNET]) && buyCurrency?.isNative)
+    (sellCurrency?.isNative && buyCurrency?.wrapped.equals(wethByChain)) ||
+      (buyCurrency?.isNative && sellCurrency?.wrapped.equals(wethByChain))
   )
 }
 

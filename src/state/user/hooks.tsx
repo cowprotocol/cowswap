@@ -1,12 +1,13 @@
 import { Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
-import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { L2_CHAIN_IDS, SupportedChainId } from '@src/constants/chains'
 import { SupportedLocale } from '@src/constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual } from 'react-redux'
 import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
 import { useAllTokens } from '../../hooks/Tokens'
@@ -20,13 +21,16 @@ import {
   SerializedToken,
   updateArbitrumAlphaAcknowledged,
   updateHideClosedPositions,
+  updateRecipientToggleVisible,
+  updateOptimismAlphaAcknowledged,
+  updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
   updateUserLocale,
-  updateUserSingleHopOnly,
   updateUserSlippageTolerance,
 } from './actions'
+import { useSwapActionHandlers } from '../swap/hooks'
 
 export function serializeToken(token: Token): SerializedToken {
   return {
@@ -104,19 +108,49 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
-export function useUserSingleHopOnly(): [boolean, (newSingleHopOnly: boolean) => void] {
+export function useIsRecipientToggleVisible(): boolean {
+  return useAppSelector((state) => state.user.recipientToggleVisible)
+}
+
+export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
+  const dispatch = useAppDispatch()
+  const recipientToggleVisible = useIsRecipientToggleVisible()
+  const { onChangeRecipient } = useSwapActionHandlers()
+
+  const toggleRecipientVisibility = useCallback(
+    (value?: boolean) => {
+      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
+      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newRecipientToggleVisibilityValue }))
+      if (!newRecipientToggleVisibilityValue) {
+        onChangeRecipient(null)
+      }
+    },
+    [recipientToggleVisible, dispatch, onChangeRecipient]
+  )
+
+  return [recipientToggleVisible, toggleRecipientVisibility]
+}
+
+export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean) => void] {
   const dispatch = useAppDispatch()
 
-  const singleHopOnly = useAppSelector((state) => state.user.userSingleHopOnly)
+  const clientSideRouter = useAppSelector((state) => Boolean(state.user.userClientSideRouter))
 
-  const setSingleHopOnly = useCallback(
-    (newSingleHopOnly: boolean) => {
-      dispatch(updateUserSingleHopOnly({ userSingleHopOnly: newSingleHopOnly }))
+  const setClientSideRouter = useCallback(
+    (newClientSideRouter: boolean) => {
+      dispatch(updateUserClientSideRouter({ userClientSideRouter: newClientSideRouter }))
     },
     [dispatch]
   )
 
-  return [singleHopOnly, setSingleHopOnly]
+  return [clientSideRouter, setClientSideRouter]
+}
+
+export function useRoutingAPIEnabled(): boolean {
+  const { chainId } = useActiveWeb3React()
+  const [clientSideRouter] = useClientSideRouter()
+
+  return chainId === SupportedChainId.MAINNET && !clientSideRouter
 }
 
 export function useSetUserSlippageTolerance(): (slippageTolerance: Percent | 'auto') => void {
@@ -345,4 +379,14 @@ export function useArbitrumAlphaAlert(): [boolean, (arbitrumAlphaAcknowledged: b
   }
 
   return [arbitrumAlphaAcknowledged, setArbitrumAlphaAcknowledged]
+}
+
+export function useOptimismAlphaAlert(): [boolean, (optimismAlphaAcknowledged: boolean) => void] {
+  const dispatch = useAppDispatch()
+  const optimismAlphaAcknowledged = useAppSelector(({ user }) => user.optimismAlphaAcknowledged)
+  const setOptimismAlphaAcknowledged = (optimismAlphaAcknowledged: boolean) => {
+    dispatch(updateOptimismAlphaAcknowledged({ optimismAlphaAcknowledged }))
+  }
+
+  return [optimismAlphaAcknowledged, setOptimismAlphaAcknowledged]
 }

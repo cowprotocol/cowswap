@@ -3,6 +3,7 @@ import { ButtonSize } from 'theme'
 
 // Override colors
 export interface Colors extends ColorsUniswap {
+  bg8: Color
   purple: Color
   yellow: Color
   redShade: Color
@@ -10,6 +11,8 @@ export interface Colors extends ColorsUniswap {
   greenShade: Color
   blueShade: Color
   blueShade2: Color
+  blueShade3: Color
+  blue2: Color
   success: Color
   danger: Color
   pending: Color
@@ -78,9 +81,19 @@ declare module 'styled-components' {
         content: string
       }
     }
+    transaction: {
+      tokenBackground: string
+      tokenColor: string
+      tokenBorder: string
+    }
     neumorphism: {
       boxShadow: FlattenSimpleInterpolation
     }
+    cowToken: {
+      background: FlattenSimpleInterpolation
+      boxShadow: FlattenSimpleInterpolation
+    },
+    iconGradientBorder: FlattenSimpleInterpolation
     card: {
       background: FlattenSimpleInterpolation
       background2: string

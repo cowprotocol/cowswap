@@ -220,7 +220,7 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            * **🔭 [GP Swap](${{ env.REVIEW_FEATURE_URL }})**: Gnosis Protocol v2 Swap UI
+            * **🔭 [GP Swap](${{ env.REVIEW_FEATURE_URL }})**: CoW Protocol v2 Swap UI
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         if: env.PR_NUMBER

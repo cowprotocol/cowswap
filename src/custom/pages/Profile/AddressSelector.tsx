@@ -14,7 +14,7 @@ type AddressSelectorProps = {
 }
 
 export default function AddressSelector(props: AddressSelectorProps) {
-  const { address } = { address: '0x72ba1965320ab5352fd6d68235cc3c5306a6ffa2' } //props
+  const { address } = props
   const dispatch = useAppDispatch()
   const selectedAddress = useAddress()
   const { chainId, library } = useActiveWeb3React()
@@ -25,15 +25,18 @@ export default function AddressSelector(props: AddressSelectorProps) {
   const node = useRef<HTMLDivElement>(null)
   useOnClickOutside(node, open ? toggle : undefined)
 
-  const handleSelectItem = useCallback((item: string) => {
-    dispatch(updateAddress(item))
-    toggle()
-  }, [])
+  const handleSelectItem = useCallback(
+    (item: string) => {
+      dispatch(updateAddress(item))
+      toggle()
+    },
+    [dispatch, toggle]
+  )
 
   const lookup = useCallback(async () => {
     try {
       const ensName = await library?.lookupAddress(address)
-      setPrimaryEnsName(ensName)
+      setPrimaryEnsName(ensName ?? undefined)
     } catch (error) {
       console.log(error)
     }
@@ -45,14 +48,16 @@ export default function AddressSelector(props: AddressSelectorProps) {
     if (!chainId) {
       return
     }
+
     ensNames(chainId, address).then((response) => {
       if ('error' in response) {
         console.info(response.error)
+        setItems([address])
         return
       }
       setItems([...response, address])
     })
-  }, [address, chainId])
+  }, [address, chainId, lookup])
 
   useEffect(() => {
     if (selectedAddress) {
@@ -62,7 +67,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
     if (primaryEnsName) {
       dispatch(updateAddress(primaryEnsName))
     }
-  }, [selectedAddress, primaryEnsName])
+  }, [selectedAddress, primaryEnsName, dispatch])
 
   return (
     <Wrapper ref={node}>

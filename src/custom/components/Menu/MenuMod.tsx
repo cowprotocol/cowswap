@@ -1,16 +1,35 @@
+// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
+// import { PrivacyPolicyModal } from 'components/PrivacyPolicy'
+// import { L2_CHAIN_IDS, CHAIN_INFO, SupportedChainId } from 'constants/chains'
+// import { LOCALE_LABEL, SupportedLocale, SUPPORTED_LOCALES } from 'constants/locales'
+// import { useLocationLinkProps } from 'hooks/useLocationLinkProps'
+// import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useRef } from 'react'
-// import { BookOpen, Code, Info, MessageCircle, PieChart, Moon, Sun, Globe, ChevronLeft, Check } from 'react-feather'
+// import {
+//   BookOpen,
+//   Check,
+//   ChevronLeft,
+//   Code,
+//   FileText,
+//   Globe,
+//   Info,
+//   MessageCircle,
+//   Moon,
+//   PieChart,
+//   Sun,
+// } from 'react-feather'
 import { Link } from 'react-router-dom'
+// import { useDarkModeManager } from 'state/user/hooks'
 import styled, { css } from 'styled-components/macro'
+
 import { ReactComponent as MenuIcon } from 'assets/images/menu.svg'
-// import { useActiveWeb3React } from 'hooks/web3'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { ApplicationModal } from 'state/application/actions'
+// import { useActiveWeb3React } from 'hooks/web3'
 import { useModalOpen, useToggleModal } from 'state/application/hooks'
-// import { Trans } from '@lingui/macro'
+import { ApplicationModal } from 'state/application/reducer'
 import { ExternalLink } from 'theme'
-// import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'components/Button'
 /* import { useDarkModeManager } from 'state/user/hooks'
 
 import { L2_CHAIN_IDS, CHAIN_INFO, SupportedChainId } from 'constants/chains'
@@ -55,11 +74,11 @@ export const StyledMenuButton = styled.button`
   }
 `
 
-/* const UNIbutton = styled(ButtonPrimary)`
+export const UNIbutton = styled(ButtonPrimary)`
   background-color: ${({ theme }) => theme.bg3};
   background: radial-gradient(174.47% 188.91% at 1.84% 0%, #ff007a 0%, #2172e5 100%), #edeef2;
   border: none;
-` */
+`
 
 export const StyledMenu = styled.div`
   margin-left: 0.5rem;
@@ -204,9 +223,10 @@ export default function Menu(props: { children?: React.ReactNode } & WithClassNa
 
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.MENU)
-  const toggle = useToggleModal(ApplicationModal.MENU)
-  useOnClickOutside(node, open ? toggle : undefined)
-  /* const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
+  const toggleMenu = useToggleModal(ApplicationModal.MENU)
+  useOnClickOutside(node, open ? toggleMenu : undefined)
+  /* const togglePrivacyPolicy = useToggleModal(ApplicationModal.PRIVACY_POLICY)
+  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
   const showUNIClaimOption = Boolean(!!account && !!chainId && !L2_CHAIN_IDS.includes(chainId))
   const { infoLink } = CHAIN_INFO[chainId ? chainId : SupportedChainId.MAINNET]
 
@@ -219,14 +239,15 @@ export default function Menu(props: { children?: React.ReactNode } & WithClassNa
   }, [open])
  */
   return (
-    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
-    <StyledMenu ref={node as any} className={props?.className}>
-      <StyledMenuButton onClick={toggle} aria-label={t`Menu`}>
-        <StyledMenuIcon />
-      </StyledMenuButton>
+    <>
+      {/* // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
+      <StyledMenu ref={node as any} className={props?.className}>
+        <StyledMenuButton onClick={toggleMenu} aria-label={t`Menu`}>
+          <StyledMenuIcon />
+        </StyledMenuButton>
 
-      {open &&
-        /* (() => {
+        {open &&
+          /* (() => {
           switch (menu) {
             case 'lang':
               return <LanguageMenu close={() => setMenu('main')} />
@@ -274,6 +295,12 @@ export default function Menu(props: { children?: React.ReactNode } & WithClassNa
                     <div>{darkMode ? <Trans>Light Theme</Trans> : <Trans>Dark Theme</Trans>}</div>
                     {darkMode ? <Moon opacity={0.6} size={16} /> : <Sun opacity={0.6} size={16} />}
                   </ToggleMenuItem>
+                  <ToggleMenuItem onClick={() => togglePrivacyPolicy()}>
+                    <div>
+                      <Trans>Legal & Privacy</Trans>
+                    </div>
+                    <FileText opacity={0.6} size={16} />
+                  </ToggleMenuItem>
                   {showUNIClaimOption && (
                     <UNIbutton
                       onClick={openClaimModal}
@@ -289,8 +316,10 @@ export default function Menu(props: { children?: React.ReactNode } & WithClassNa
                 )
           }
         })()} */
-        props?.children}
-    </StyledMenu>
+          props?.children}
+      </StyledMenu>
+      {/* <PrivacyPolicyModal />  */}
+    </>
   )
 }
 

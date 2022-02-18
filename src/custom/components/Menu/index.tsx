@@ -15,9 +15,12 @@ import { Separator as SeparatorBase } from 'components/SearchModal/styleds'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import cowRunnerImage from 'assets/cow-swap/game.gif'
 import ninjaCowImage from 'assets/cow-swap/ninja-cow.png'
-import { ApplicationModal } from 'state/application/actions'
+import { ApplicationModal } from 'state/application/reducer'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useHistory } from 'react-router-dom'
+import CowClaimButton, { Wrapper as ClaimButtonWrapper } from 'components/CowClaimButton'
+import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -28,8 +31,8 @@ export * from './MenuMod'
 const ResponsiveInternalMenuItem = styled(InternalMenuItem)`
   display: none;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: flex;   
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+      display: flex;
   `};
 `
 
@@ -47,6 +50,7 @@ const MenuItemResponsive = styled(MenuItemResponsiveBase)`
   flex: 0 1 auto;
   padding: 16px;
   font-size: 18px;
+
   svg {
     width: 18px;
     height: 18px;
@@ -55,7 +59,7 @@ const MenuItemResponsive = styled(MenuItemResponsiveBase)`
   }
 `
 
-export const StyledMenu = styled(MenuMod)`
+export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
   hr {
     margin: 15px 0;
   }
@@ -95,9 +99,60 @@ export const StyledMenu = styled(MenuMod)`
     padding: 0 6px 0 0;
   }
 
+  ${ClaimButtonWrapper} {
+    margin: 0 0 12px;
+    display: none;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: flex;
+      margin: 0 12px 12px;
+      width: 100%;
+      height: 56px;
+      justify-content: center;
+      font-size: 19px;
+
+      > span {
+        height: 30px;
+        width: 30px;
+        border-radius: 30px;
+        margin: 0 5px 0 0;
+      }
+    `}
+  }
+
   ${StyledMenuButton} {
     height: 38px;
+    border-radius: 12px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+          &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      background: ${({ theme }) =>
+        `linear-gradient(45deg, ${theme.primary1}, ${theme.primary2}, ${theme.primary3}, ${theme.bg4}, ${theme.primary1}, ${theme.primary2})`};
+      background-size: 800%;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      z-index: -1;
+      animation: glow 50s linear infinite;
+      transition: background-position 0.3s ease-in-out;
+      border-radius: 12px;
+    }
+
+    &::after {
+      filter: blur(8px);
+    }
+
+    &:hover::before,
+    &:hover::after {
+      animation: glow 12s linear infinite;
+    }
   }
+
+  `};
 `
 
 const Policy = styled(InternalMenuItem).attrs((attrs) => ({
@@ -121,10 +176,9 @@ const MenuFlyout = styled(MenuFlyoutUni)`
     width: 100%;
     border-radius: 0;
     box-shadow: none;
-    padding: 0;
     overflow-y: auto;
     flex-flow: row wrap;
-    padding: 0 0 56px;
+    padding: 12px 0 100px;
     align-items: flex-start;
     align-content: flex-start;
   `};
@@ -149,6 +203,7 @@ const MenuFlyout = styled(MenuFlyoutUni)`
       align-items: center;
     }
   }
+
   > a:hover {
     background: ${({ theme }) => theme.disabled};
     border-radius: 6px;
@@ -159,11 +214,10 @@ const MenuFlyout = styled(MenuFlyoutUni)`
     height: 18px;
     object-fit: contain;
     margin: 0 8px 0 0;
-
-    > path {
-      fill: ${({ theme }) => theme.text1};
-    }
   }
+`
+export const StyledSVG = styled(SVG)`
+  fill: ${({ theme }) => theme.text1};
 `
 
 export const Separator = styled(SeparatorBase)`
@@ -191,14 +245,16 @@ export const CloseMenu = styled.button`
   border-radius: 6px;
   justify-content: center;
   padding: 0;
-  margin: 0 0 8px;
+  margin: 8px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 56px;
     border-radius: 0;
-    justify-content: flex-end;
     margin: 0;
     width: 100%;
+    position: fixed;
+    bottom: 0;
+    top: initial;
   `};
 
   &::after {
@@ -217,18 +273,33 @@ export const CloseMenu = styled.button`
 interface MenuProps {
   darkMode: boolean
   toggleDarkMode: () => void
+  isClaimPage: boolean
 }
 
-export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
-  const close = useToggleModal(ApplicationModal.MENU)
+export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
   const { account, chainId } = useActiveWeb3React()
   const hasOrders = useHasOrders(account)
   const showOrdersLink = account && hasOrders
+  /* const showVCOWClaimOption = Boolean(!!account && !!chainId) */
+  const close = useToggleModal(ApplicationModal.MENU)
+  const history = useHistory()
+  const handleOnClickClaim = () => {
+    close()
+    history.push('/claim')
+  }
 
   return (
-    <StyledMenu>
+    <StyledMenu isClaimPage={isClaimPage}>
       <MenuFlyout>
-        <CloseMenu onClick={close} />
+        {IS_CLAIMING_ENABLED && (
+          <CowClaimButton
+            isClaimPage={isClaimPage}
+            handleOnClickClaim={handleOnClickClaim}
+            account={account}
+            chainId={chainId}
+          />
+        )}
+
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap
         </ResponsiveInternalMenuItem>
@@ -261,18 +332,31 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
             Code
           </span>
         </MenuItem>
+        {showOrdersLink && (
+          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
+            <span aria-hidden="true" onClick={close} onKeyDown={close}>
+              <ExternalLink size={14} />
+              View all orders
+            </span>
+          </MenuItem>
+        )}
+
+        <Separator />
+
         <MenuItem id="link" href={DISCORD_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
-            <SVG src={discordImage} description="Find CowSwap on Discord!" />
+            <StyledSVG src={discordImage} description="Find CowSwap on Discord!" />
             Discord
           </span>
         </MenuItem>
 
         <MenuItem id="link" href={TWITTER_LINK}>
           <span aria-hidden="true" onClick={close} onKeyDown={close}>
-            <SVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
+            <StyledSVG src={twitterImage} description="Follow CowSwap on Twitter!" /> Twitter
           </span>
         </MenuItem>
+
+        <Separator />
 
         <InternalMenuItem to="/play/mev-slicer" onClick={close}>
           <span role="img" aria-label="Play CowGame">
@@ -287,14 +371,6 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           </span>{' '}
           Cow Runner
         </InternalMenuItem>
-        {showOrdersLink && (
-          <MenuItem id="link" href={getExplorerAddressLink(chainId || 1, account)}>
-            <span aria-hidden="true" onClick={close} onKeyDown={close}>
-              <ExternalLink size={14} />
-              View all orders
-            </span>
-          </MenuItem>
-        )}
         <MenuItemResponsive onClick={() => toggleDarkMode()}>
           {darkMode ? (
             <>
@@ -308,8 +384,6 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
           )}
         </MenuItemResponsive>
 
-        <Separator />
-
         <Policy to="/terms-and-conditions" onClick={close} onKeyDown={close}>
           Terms and conditions
         </Policy>
@@ -317,6 +391,8 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <Policy to="/privacy-policy">Privacy policy</Policy>
         <Policy to="/cookie-policy">Cookie policy</Policy> 
         */}
+
+        <CloseMenu onClick={close} />
       </MenuFlyout>
     </StyledMenu>
   )

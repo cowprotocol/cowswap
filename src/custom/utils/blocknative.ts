@@ -1,8 +1,14 @@
 import BlocknativeSdk from 'bnc-sdk'
-import { SDKError } from 'bnc-sdk/dist/types/src/interfaces'
 import { getSupportedChainIds } from 'connectors'
 
 const BLOCKNATIVE_API_KEY = process.env.REACT_APP_BLOCKNATIVE_API_KEY
+
+interface SDKError {
+  message: string
+  error?: any
+  account?: string
+  transaction?: string
+}
 
 export const sdk = !BLOCKNATIVE_API_KEY
   ? {}
