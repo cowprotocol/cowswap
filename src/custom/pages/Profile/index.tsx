@@ -119,10 +119,20 @@ export default function Profile() {
                 <>
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
-                    <AddressSelector address={referralLink.address} />
+                    {chainId === ChainId.MAINNET ? (
+                      <AddressSelector address={referralLink.address} />
+                    ) : (
+                      <strong>{referralLink.address}</strong>
+                    )}
 
                     <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
-                      <Copy toCopy={selectedAddress ? `${referralLink.prefix}${selectedAddress}` : referralLink.link} />
+                      <Copy
+                        toCopy={
+                          selectedAddress && chainId === ChainId.MAINNET
+                            ? `${referralLink.prefix}${selectedAddress}`
+                            : referralLink.link
+                        }
+                      />
                     </span>
                   </span>
                 </>
