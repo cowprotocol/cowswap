@@ -1,3 +1,12 @@
 {
-  "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "fadomire",
+      "id": 1186197,
+      "comment_id": 1046313555,
+      "created_at": "2022-02-20T20:21:29Z",
+      "repoId": 192335743,
+      "pullRequestNo": 2481
+    }
+  ]
 }
