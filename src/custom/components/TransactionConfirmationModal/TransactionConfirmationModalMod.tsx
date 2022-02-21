@@ -47,6 +47,26 @@ const Wrapper = styled.div`
   display: flex; /* MOD */
   flex-flow: column nowrap; /* MOD */
   overflow-y: auto; /* MOD */
+  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 14px;
+    background: ${({ theme }) => `${theme.card.background2}`};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => `${theme.card.border}`};
+    border: 3px solid transparent;
+    border-radius: 14px;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-resizer,
+  &::-webkit-scrollbar-button,
+  &::-webkit-scrollbar-corner {
+    height: 6px;
+  }
 `
 const Section = styled(AutoColumn)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '0' : '0')};

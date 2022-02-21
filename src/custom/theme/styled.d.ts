@@ -22,6 +22,8 @@ export interface Colors extends ColorsUniswap {
   disabled: Color
   shimmer1: Color
   shimmer2: color
+  scrollbarBg: Color
+  scrollbarThumb: Color
   tableHeadBG: Color
   tableRowBG: Color
   info: Color

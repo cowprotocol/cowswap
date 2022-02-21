@@ -78,6 +78,24 @@ export const TokenListLogoWrapper = styled.img`
   height: 20px;
 `
 
+export const StyledScrollarea = styled.div`
+  div:first-of-type {
+    overflow-y: auto;
+    scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      background: ${({ theme }) => `${theme.card.background2}`} !important;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: ${({ theme }) => `${theme.card.border}`} !important;
+      border: 3px solid transparent;
+      border-radius: 14px;
+      background-clip: padding-box;
+  }
+`
+
 function TokenTags({ currency }: { currency: Currency }) {
   if (!(currency instanceof WrappedTokenInfo)) {
     return <span />
@@ -299,16 +317,18 @@ export default function CurrencyList({
   }, [])
 
   return (
-    <FixedSizeList
-      height={height}
-      ref={fixedListRef as any}
-      width="100%"
-      itemData={itemData}
-      itemCount={itemData.length}
-      itemSize={56}
-      itemKey={itemKey}
-    >
-      {Row}
-    </FixedSizeList>
+    <StyledScrollarea>
+      <FixedSizeList
+        height={height}
+        ref={fixedListRef as any}
+        width="100%"
+        itemData={itemData}
+        itemCount={itemData.length}
+        itemSize={56}
+        itemKey={itemKey}
+      >
+        {Row}
+      </FixedSizeList>
+    </StyledScrollarea>
   )
 }

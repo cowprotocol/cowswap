@@ -247,8 +247,21 @@ ListRowProps & { listUrl: string }) {
 export const ListContainer = styled.div`
   padding: 1rem;
   height: 100%;
-  overflow: auto;
   padding-bottom: 80px;
+  overflow-y: auto;
+  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    background: ${({ theme }) => `${theme.card.background2}`} !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => `${theme.card.border}`} !important;
+    border: 3px solid transparent;
+    border-radius: 14px;
+    background-clip: padding-box;
+  }
 `
 
 export function ManageLists({
