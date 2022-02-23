@@ -12,6 +12,7 @@ import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 
 import MetamaskIcon from 'assets/images/metamask.png'
+import TallyIcon from 'assets/images/tally.svg'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { injected, portis } from 'connectors'
 // import { OVERLAY_READY } from 'connectors/Fortmatic'
@@ -264,6 +265,7 @@ export default function WalletModal({
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask
+    const isTally = window.ethereum && window.ethereum.isTally
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
@@ -309,6 +311,18 @@ export default function WalletModal({
                 icon={MetamaskIcon}
               />
             )
+          } else if (option.name === 'Tally') {
+            return (
+              <Option
+                id={`connect-${key}`}
+                key={key}
+                color={'#D59B4B'}
+                header={<Trans>Install Tally</Trans>}
+                subheader={null}
+                link={'https://tally.cash/'}
+                icon={TallyIcon}
+              />
+            )
           } else {
             return null //dont want to return install twice
           }
@@ -318,7 +332,7 @@ export default function WalletModal({
           return null
         }
         // likewise for generic
-        else if (option.name === 'Injected' && isMetamask) {
+        else if (option.name === 'Injected' && (isMetamask || isTally)) {
           return null
         }
       }

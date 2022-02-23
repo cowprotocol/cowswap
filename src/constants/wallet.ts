@@ -4,6 +4,7 @@ import COINBASE_ICON_URL from '../assets/images/coinbaseWalletIcon.svg'
 import FORTMATIC_ICON_URL from '../assets/images/fortmaticIcon.png'
 import METAMASK_ICON_URL from '../assets/images/metamask.png'
 import PORTIS_ICON_URL from '../assets/images/portisIcon.png'
+import TALLY_ICON_URL from '../assets/images/tally.svg'
 import WALLETCONNECT_ICON_URL from '../assets/images/walletConnectIcon.svg'
 import { fortmatic, injected, portis, walletconnect, walletlink } from 'connectors'
 
@@ -28,6 +29,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#010101',
     primary: true,
+  },
+  TALLY: {
+    connector: injected,
+    name: 'Tally',
+    iconURL: TALLY_ICON_URL,
+    description: 'Connect with Tally Wallet',
+    href: null,
+    color: '#D59B4B',
   },
   METAMASK: {
     connector: injected,
