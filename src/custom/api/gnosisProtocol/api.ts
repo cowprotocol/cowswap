@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
 import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
 import { stringify } from 'qs'
 import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, SigningSchemeValue } from 'utils/signatures'
-import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
+import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
@@ -24,6 +24,8 @@ import * as Sentry from '@sentry/browser'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+
+import { WETH9_EXTENDED } from 'constants/tokens'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -337,9 +339,21 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
   return finalParams
 }
 
+function _returnNativeBuyAddress(address: string, chainId: any) {
+  if (address.toLowerCase() === WETH9_EXTENDED[chainId].address.toLowerCase()) {
+    return NATIVE_CURRENCY_BUY_ADDRESS
+  }
+
+  return address
+}
+
 export async function getQuote(params: FeeQuoteParams) {
-  const { chainId } = params
-  const quoteParams = _mapNewToLegacyParams(params)
+  const { chainId, buyToken } = params
+  // we need to check buy/sellToken for native
+  const checkedBuyToken = _returnNativeBuyAddress(buyToken, chainId)
+  const extendedParams = { ...params, buyToken: checkedBuyToken }
+
+  const quoteParams = _mapNewToLegacyParams(extendedParams)
   const response = await _post(chainId, '/quote', quoteParams)
 
   return _handleQuoteResponse<SimpleGetQuoteResponse>(response)
