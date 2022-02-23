@@ -7,6 +7,9 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
 
+import { injected } from 'connectors'
+import TALLY_ICON_URL from 'assets/external/tally.svg'
+
 export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
@@ -35,13 +38,27 @@ SUPPORTED_WALLETS_UNISWAP.WALLET_LINK = {
 }
 const DISABLED_WALLETS = /^(?:Portis|COINBASE_LINK)$/i
 
+const ADDED_WALLETS: { [key: string]: WalletInfo } = {
+  TALLY: {
+    connector: injected,
+    name: 'Tally',
+    iconURL: TALLY_ICON_URL,
+    description: 'Connect with Tally Wallet',
+    href: null,
+    color: '#D59B4B',
+  },
+}
+
 // Re-export only the supported wallets
-export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
-  if (!DISABLED_WALLETS.test(key)) {
-    acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
-  }
-  return acc
-}, {} as { [key: string]: WalletInfo })
+export const SUPPORTED_WALLETS = {
+  ...ADDED_WALLETS,
+  ...Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
+    if (!(DISABLED_WALLETS.test(key) || key in ADDED_WALLETS)) {
+      acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
+    }
+    return acc
+  }, {} as { [key: string]: WalletInfo }),
+}
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])

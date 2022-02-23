@@ -12,7 +12,7 @@ import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 
 import MetamaskIcon from 'assets/images/metamask.png'
-import TallyIcon from 'assets/images/tally.svg'
+import TallyIcon from 'assets/external/tally.svg'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { injected, portis } from 'connectors'
 // import { OVERLAY_READY } from 'connectors/Fortmatic'
@@ -326,6 +326,20 @@ export default function WalletModal({
           } else {
             return null //dont want to return install twice
           }
+        }
+        // show Tally install if not detected, to avoid confusion with MetaMask
+        else if (option.name === 'Tally' && !isTally) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={'#D59B4B'}
+              header={<Trans>Install Tally</Trans>}
+              subheader={<Trans>Tally was not detected. If installed, enable as default in Tally settings.</Trans>}
+              link={'https://tally.cash/'}
+              icon={TallyIcon}
+            />
+          )
         }
         // don't return metamask if injected provider isn't metamask
         else if (option.name === 'MetaMask' && !isMetamask) {
