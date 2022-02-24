@@ -31,7 +31,7 @@ export const claimMinedMiddleware: Middleware<Record<string, unknown>, AppState>
         transaction.hash,
         transaction.claim
       )
-      if (status === 1) {
+      if (status === 1 && transaction.replacementType !== 'cancel') {
         // success
         store.dispatch(setClaimStatus(ClaimStatus.CONFIRMED))
         cowSound = getCowSoundSuccessClaim()
