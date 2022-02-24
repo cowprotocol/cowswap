@@ -80,7 +80,7 @@ export default function FooterNavButtons({
     )
   }
   // Already claimed
-  else if (isClaimed) {
+  else if (isClaimed && claimStatus !== ClaimStatus.CONFIRMED) {
     buttonContent = (
       <ButtonPrimary ref={buttonRef} onClick={toggleWalletModal} disabled>
         <Trans>Already claimed</Trans>
