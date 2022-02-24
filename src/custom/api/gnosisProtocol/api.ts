@@ -16,7 +16,7 @@ import QuoteError, {
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
-import { toErc20Address } from 'utils/tokens'
+import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
@@ -313,7 +313,8 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
 
   const baseParams = {
     sellToken: toErc20Address(sellToken, chainId),
-    buyToken: toErc20Address(buyToken, chainId),
+    // check buy token, if native, use native address
+    buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
     appData: getAppDataHash(),
