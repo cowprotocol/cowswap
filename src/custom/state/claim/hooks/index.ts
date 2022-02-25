@@ -966,7 +966,7 @@ function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId, pric
 
   // Free claims will have tokenAndAmount === undefined
   // If it's not a free claim, store the price and calculate cost in investment token
-  if (tokenAndAmount?.amount) {
+  if (tokenAndAmount?.amount && Number(tokenAndAmount.amount) > 0) {
     data.price = _getPrice(tokenAndAmount)
     // get the currency amount using the price base currency (remember price was inverted)
     data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
