@@ -240,9 +240,14 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     }
 
     // set different errors in order of importance
+    console.log('maxCost / balance', maxCost.quotient.toString(), balance.quotient.toString())
+    console.log(
+      `maxCost / balance: ${maxCost.numerator}/${maxCost.denominator} ${balance.numerator}/${balance.denominator}`
+    )
+    console.log('balance.lessThan(maxCost)', balance.lessThan(maxCost))
     if (noBalance) {
       error = ErrorMessages.NoBalance(token?.symbol)
-    } else if (balance.lessThan(maxCost) && !isSelfClaiming) {
+    } else if (balance.quotient < maxCost.quotient && !isSelfClaiming) {
       error = ErrorMessages.InsufficientBalanceBehalf(token?.symbol)
     } else if (isPendingOnchainApprove) {
       error = ErrorMessages.WaitForApproval(token?.symbol)
