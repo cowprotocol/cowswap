@@ -62,7 +62,7 @@ import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 
-const CLAIMS_REPO_BRANCH = 'gip-13'
+const CLAIMS_REPO_BRANCH = 'gip-13-rinkeby-as-mainnet'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
