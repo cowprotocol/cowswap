@@ -42,7 +42,7 @@ const ClaimsTableRow = ({
   isFree,
   isPendingClaim,
   claimAmount,
-  currencyAmount,
+  investCurrency,
   price,
   cost,
   handleSelect,
@@ -70,11 +70,11 @@ const ClaimsTableRow = ({
       </td>
       <td data-title="Type of Claim">
         {' '}
-        {!isFree && <TokenLogo symbol={`${currencyAmount?.currency?.symbol}`} size={34} />}
+        {!isFree && <TokenLogo symbol={`${investCurrency?.symbol}`} size={34} />}
         <CowProtocolLogo size={34} />
         <span>
           <b>{isFree ? ClaimType[type] : 'Buy vCOW'}</b>
-          {!isFree && <i>with {currencyAmount?.currency?.symbol}</i>}
+          {!isFree && <i>with {investCurrency?.symbol}</i>}
         </span>
       </td>
       <td data-title="Amount" title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
@@ -85,7 +85,7 @@ const ClaimsTableRow = ({
           <span>
             Price:{' '}
             <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
-              currencyAmount?.currency?.symbol
+              investCurrency?.symbol
             }`}</b>
           </span>
         )}

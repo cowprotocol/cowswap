@@ -17,7 +17,7 @@ export type ClaimCommonTypes = {
 export type EnhancedUserClaimData = UserClaimData & {
   claimAmount: CurrencyAmount<Token>
   isFree: boolean
-  currencyAmount?: CurrencyAmount<Token | GpEther> | undefined
+  investCurrency?: Token | GpEther | undefined
   price?: Price<Currency, Currency> | undefined
   cost?: CurrencyAmount<Currency> | undefined
 }

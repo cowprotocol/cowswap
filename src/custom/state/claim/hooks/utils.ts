@@ -165,20 +165,20 @@ export function calculatePercentage<C1 extends Currency, C2 extends Currency>(
  * Helper function that calculates vCowAmount (in vCOW) and investedAmount (in investing token)
  */
 export function calculateInvestmentAmounts(
-  claim: Pick<EnhancedUserClaimData, 'isFree' | 'price' | 'currencyAmount' | 'claimAmount'>,
+  claim: Pick<EnhancedUserClaimData, 'isFree' | 'price' | 'investCurrency' | 'claimAmount'>,
   investedAmount?: string
 ): InvestmentAmounts {
-  const { isFree, price, currencyAmount, claimAmount } = claim
+  const { isFree, price, investCurrency, claimAmount } = claim
 
   if (isFree || !investedAmount) {
     // default to 100% when no investment amount is set
-    return { vCowAmount: claimAmount, investmentCost: currencyAmount }
-  } else if (!currencyAmount || !price) {
+    return { vCowAmount: claimAmount, investmentCost: claimAmount }
+  } else if (!investCurrency || !price) {
     return {}
   }
 
-  const amount = CurrencyAmount.fromRawAmount(currencyAmount.currency, investedAmount)
   return { vCowAmount: price.quote(amount), investmentCost: amount }
+  const amount = CurrencyAmount.fromRawAmount(investCurrency, investedAmount)
 }
 
 /**

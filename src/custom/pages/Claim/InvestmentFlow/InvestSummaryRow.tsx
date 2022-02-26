@@ -14,13 +14,13 @@ export type Props = { claim: ClaimWithInvestmentData }
 export function InvestSummaryRow(props: Props): JSX.Element | null {
   const { claim } = props
 
-  const { isFree, type, price, currencyAmount, vCowAmount, cost, investmentCost } = claim
+  const { isFree, type, price, investCurrency, vCowAmount, cost, investmentCost } = claim
 
-  const symbol = isFree ? '' : (currencyAmount?.currency?.symbol as string)
+  const symbol = isFree ? '' : (investCurrency?.symbol as string)
 
   const formattedCost = formatSmartLocaleAware(investmentCost, AMOUNT_PRECISION) || '0'
   const formattedCostMaxPrecision = investmentCost
-    ? `${formatMax(investmentCost, currencyAmount?.currency?.decimals)} ${symbol}`
+    ? `${formatMax(investmentCost, investCurrency?.decimals)} ${symbol}`
     : ''
 
   const percentage = investmentCost && cost && calculatePercentage(investmentCost, cost)

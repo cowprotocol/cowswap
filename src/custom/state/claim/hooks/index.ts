@@ -969,7 +969,7 @@ function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId, pric
   if (tokenAndAmount?.amount && Number(tokenAndAmount.amount) > 0) {
     data.price = _getPrice(tokenAndAmount)
     // get the currency amount using the price base currency (remember price was inverted)
-    data.currencyAmount = CurrencyAmount.fromRawAmount(data.price.baseCurrency, claim.amount)
+    data.investCurrency = data.price.quoteCurrency
 
     // e.g 1000 vCow / 20 GNO = 50 GNO cost
     data.cost = data.currencyAmount.divide(data.price)

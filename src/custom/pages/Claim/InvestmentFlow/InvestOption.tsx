@@ -67,7 +67,7 @@ type InvestOptionProps = {
 }
 
 export default function InvestOption({ claim, openModal, closeModal }: InvestOptionProps) {
-  const { currencyAmount, price, cost: maxCost, index } = claim
+  const { investCurrency, price, cost: maxCost, index } = claim
 
   const { account, chainId } = useActiveWeb3React()
   const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
@@ -108,7 +108,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     [index, setIsTouched]
   )
 
-  const token = currencyAmount?.currency
+  const token = investCurrency
   const isNative = token?.isNative
   const balance = useCurrencyBalance(account || undefined, token)
 
@@ -330,9 +330,9 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   return (
     <InvestTokenGroup>
       <div>
-        <h3>Buy vCOW with {currencyAmount?.currency?.symbol}</h3>
+        <h3>Buy vCOW with {investCurrency?.symbol}</h3>
         <span>
-          <TokenLogo symbol={currencyAmount?.currency?.symbol || '-'} size={72} />
+          <TokenLogo symbol={investCurrency?.symbol || '-'} size={72} />
           <CowProtocolLogo size={72} />
         </span>
       </div>
@@ -342,14 +342,14 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
           <span>
             <b>Price</b>{' '}
             <i title={formatMax(price)}>
-              {formatSmartLocaleAware(price) || '0'} vCOW per {currencyAmount?.currency?.symbol}
+              {formatSmartLocaleAware(price?.invert()) || '0'} vCOW per {investCurrency?.symbol}
             </i>
           </span>
 
           <span>
             <b>Max. investment available</b>{' '}
             <i title={maxCost && `${formatMax(maxCost, maxCost.currency.decimals)} ${maxCost.currency.symbol}`}>
-              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {maxCost?.currency?.symbol}
+              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {investCurrency?.symbol}
             </i>
           </span>
 
@@ -358,13 +358,13 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
             {!isNative ? (
               <i>
                 {isPendingApprove ? (
-                  <span style={{ fontStyle: 'italic' }}>{`Approving ${currencyAmount?.currency?.symbol}...`}</span>
+                  <span style={{ fontStyle: 'italic' }}>{`Approving ${investCurrency?.symbol}...`}</span>
                 ) : notApproved ? (
-                  <span>{`${currencyAmount?.currency?.symbol} not approved!`}</span>
+                  <span>{`${investCurrency?.symbol} not approved!`}</span>
                 ) : (
                   <Row>
                     <img src={CheckCircle} alt="Approved" />
-                    <span>{currencyAmount?.currency?.symbol} approved</span>
+                    <span>{investCurrency?.symbol} approved</span>
                   </Row>
                 )}
               </i>
@@ -385,7 +385,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
                 disabled={isPendingApprove}
                 altDisabledStyle={isPendingApprove} // show solid button while waiting
               >
-                {isPendingApprove ? <Loader stroke="white" /> : <span>Approve {currencyAmount?.currency?.symbol}</span>}
+                {isPendingApprove ? <Loader stroke="white" /> : <span>Approve {investCurrency?.symbol}</span>}
               </ButtonConfirmed>
             )}
             {
@@ -412,12 +412,8 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
             <label>
               <span>
                 <b>Balance:</b>
-                <i
-                  title={
-                    balance && `${formatMax(balance, balance.currency.decimals)} ${currencyAmount?.currency?.symbol}`
-                  }
-                >
-                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {currencyAmount?.currency?.symbol}
+                <i title={balance && `${formatMax(balance, balance.currency.decimals)} ${investCurrency?.symbol}`}>
+                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {investCurrency?.symbol}
                 </i>
                 {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
                 {!noBalance && isSelfClaiming && (
@@ -434,7 +430,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
                 $loading={false}
                 value={typedValue}
               />
-              <b>{currencyAmount?.currency?.symbol}</b>
+              <b>{investCurrency?.symbol}</b>
             </label>
             <i title={vCowAmount && `${formatMax(vCowAmount, vCowAmount.currency.decimals)} vCOW`}>
               Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW

@@ -77,7 +77,7 @@ export function useApproveCallbackFromClaim({
   // Claim only approves GNO and USDC (GnoOption & Investor, respectively.)
   const approveAmounts = useMemo(() => {
     if (supportedChain && (claim.type === ClaimType.GnoOption || claim.type === ClaimType.Investor)) {
-      const investmentCurrency = claim.currencyAmount?.currency as Currency
+      const investmentCurrency = claim.investCurrency as Currency
       return {
         amountToApprove: CurrencyAmount.fromRawAmount(investmentCurrency, MaxUint256),
         // pass in a custom investmentAmount or just use the maxCost
@@ -85,7 +85,7 @@ export function useApproveCallbackFromClaim({
       }
     }
     return undefined
-  }, [claim.cost, claim.currencyAmount?.currency, claim.type, investmentAmount, supportedChain])
+  }, [claim.cost, claim.investCurrency, claim.type, investmentAmount, supportedChain])
 
   // Params: modal cbs, amountToApprove: token user is investing e.g, spender: vcow token contract
   return useApproveCallback({
