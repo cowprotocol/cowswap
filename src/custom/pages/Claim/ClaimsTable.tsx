@@ -84,7 +84,7 @@ const ClaimsTableRow = ({
         {price && (
           <span>
             Price:{' '}
-            <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
+            <b title={formatMax(price.invert())}>{`${formatSmartLocaleAware(price.invert()) || 0} vCOW per ${
               investCurrency?.symbol
             }`}</b>
           </span>

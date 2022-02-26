@@ -177,8 +177,8 @@ export function calculateInvestmentAmounts(
     return {}
   }
 
-  return { vCowAmount: price.quote(amount), investmentCost: amount }
   const amount = CurrencyAmount.fromRawAmount(investCurrency, investedAmount)
+  return { vCowAmount: price.invert().quote(amount), investmentCost: amount }
 }
 
 /**

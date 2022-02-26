@@ -75,8 +75,8 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
         {!isFree && (
           <span>
             <b>Price:</b>{' '}
-            <i title={formatMax(price)}>
-              {formatSmartLocaleAware(price) || '0'} vCOW per {symbol}
+            <i title={formatMax(price?.invert())}>
+              {formatSmartLocaleAware(price?.invert()) || '0'} vCOW per {symbol}
             </i>
           </span>
         )}

@@ -341,7 +341,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
         <InvestSummary>
           <span>
             <b>Price</b>{' '}
-            <i title={formatMax(price)}>
+            <i title={formatMax(price?.invert())}>
               {formatSmartLocaleAware(price?.invert()) || '0'} vCOW per {investCurrency?.symbol}
             </i>
           </span>

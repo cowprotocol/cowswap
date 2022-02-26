@@ -972,7 +972,7 @@ function _enhanceClaimData(claim: UserClaimData, chainId: SupportedChainId, pric
     data.investCurrency = data.price.quoteCurrency
 
     // e.g 1000 vCow / 20 GNO = 50 GNO cost
-    data.cost = data.currencyAmount.divide(data.price)
+    data.cost = data.price.quote(claimAmount)
   }
 
   return data
@@ -982,7 +982,7 @@ function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }
   return new Price({
     baseAmount: ONE_VCOW,
     quoteAmount: CurrencyAmount.fromRawAmount(token, amount),
-  }).invert()
+  })
 }
 
 /**
