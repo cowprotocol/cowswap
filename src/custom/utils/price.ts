@@ -77,6 +77,8 @@ export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kin
   userAddress?: string | null
   receiver?: string | null
   validTo: number
+  priceQuality?: string
+  isBestQuote?: boolean
 }
 
 export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
@@ -369,6 +371,12 @@ export async function getBestQuote({
 
     return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
   }
+}
+
+export async function getFastQuote({ quoteParams }: QuoteParams): Promise<QuoteResult> {
+  console.debug('[GP PRICE::API] getFastQuote - Attempting fast quote retrieval, hang tight.')
+
+  return getFullQuote({ quoteParams })
 }
 
 export function getValidParams(params: PriceQuoteParams) {

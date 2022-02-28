@@ -308,7 +308,7 @@ async function _handleQuoteResponse<T = any, P extends QuoteQuery = QuoteQuery>(
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
-  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId } = params
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
@@ -320,6 +320,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
     appData: getAppDataHash(),
     validTo,
     partiallyFillable: false,
+    priceQuality,
   }
 
   const finalParams: QuoteQuery =

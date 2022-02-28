@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { FeeQuoteParams, getBestQuote, QuoteParams, QuoteResult } from 'utils/price'
+import { FeeQuoteParams, getBestQuote, getFastQuote, QuoteParams, QuoteResult } from 'utils/price'
 import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, {
   GpQuoteErrorCodes,
@@ -19,7 +19,7 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
-import { onlyResolvesLast } from 'utils/async'
+import { CancelableResult, onlyResolvesLast } from 'utils/async'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { calculateValidTo } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL } from 'state/user/hooks'
@@ -109,6 +109,7 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
 }
 
 const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
+const getFastQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getFastQuote)
 
 /**
  * @returns callback that fetches a new quote and update the state
@@ -140,24 +141,10 @@ export function useRefetchQuoteCallback() {
 
       let quoteData: FeeQuoteParams | QuoteInformationObject = quoteParams
 
-      const { sellToken, buyToken, chainId } = quoteData
-      try {
-        // Start action: Either new quote or refreshing quote
-        if (isPriceRefresh) {
-          // Refresh the quote
-          refreshQuote({ sellToken, chainId })
-        } else {
-          // Get new quote
-          getNewQuote(quoteParams)
-        }
+      // price can be null if fee > price
+      const handleResponse = (response: CancelableResult<QuoteResult>, isBestQuote: boolean) => {
+        const { cancelled, data } = response
 
-        registerOnWindow({
-          getBestQuote: async () => getBestQuoteResolveOnlyLastCall({ ...params, strategy: priceStrategy }),
-        })
-
-        // Get the quote
-        // price can be null if fee > price
-        const { cancelled, data } = await getBestQuoteResolveOnlyLastCall({ ...params, strategy: priceStrategy })
         if (cancelled) {
           // Cancellation can happen if a new request is made, then any ongoing query is canceled
           console.debug('[useRefetchPriceCallback] Canceled get quote price for', params)
@@ -201,8 +188,10 @@ export function useRefetchQuoteCallback() {
         }
 
         // Update quote
-        updateQuote(quoteData)
-      } catch (error) {
+        updateQuote({ ...quoteData, isBestQuote })
+      }
+
+      const handleError = (error: Error) => {
         // handle any errors in quote fetch
         // we re-use the quoteData object in scope to save values into state
         const quoteError = handleQuoteError({
@@ -217,6 +206,38 @@ export function useRefetchQuoteCallback() {
           error: quoteError,
         })
       }
+
+      const { sellToken, buyToken, chainId } = quoteData
+      // Start action: Either new quote or refreshing quote
+      if (isPriceRefresh) {
+        // Refresh the quote
+        refreshQuote({ sellToken, chainId })
+      } else {
+        // Get new quote
+        getNewQuote(quoteParams)
+      }
+
+      // Init get quote methods params
+      const bestQuoteParams = { ...params, strategy: priceStrategy }
+      const fastQuoteParams = { quoteParams: { ...quoteParams, priceQuality: 'fast' } }
+
+      // Register get best and fast quote methods on window
+      registerOnWindow({
+        getBestQuote: async () => getBestQuoteResolveOnlyLastCall(bestQuoteParams),
+        getFastQuote: async () => getFastQuoteResolveOnlyLastCall(fastQuoteParams),
+      })
+
+      // Get the fast quote
+      if (!isPriceRefresh) {
+        getFastQuoteResolveOnlyLastCall(fastQuoteParams)
+          .then((res) => handleResponse(res, false))
+          .catch(handleError)
+      }
+
+      // Get the best quote
+      getBestQuoteResolveOnlyLastCall(bestQuoteParams)
+        .then((res) => handleResponse(res, true))
+        .catch(handleError)
     },
     [
       deadline,

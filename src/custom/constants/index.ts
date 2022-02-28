@@ -19,6 +19,7 @@ export const FULL_PRICE_PRECISION = 20
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2
 
+export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
