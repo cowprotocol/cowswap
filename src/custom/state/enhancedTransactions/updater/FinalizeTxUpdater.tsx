@@ -84,7 +84,7 @@ function finalizeEthereumTransaction(
     {
       txn: {
         hash: receipt.transactionHash,
-        success: receipt.status === 1,
+        success: receipt.status === 1 && transaction.replacementType !== 'cancel',
         summary: transaction.summary,
       },
     },
