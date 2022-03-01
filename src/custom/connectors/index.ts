@@ -4,7 +4,7 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 
-import { FortmaticConnector } from 'connectors/Fortmatic'
+import { FortmaticConnector, getFortmaticApiKey } from 'connectors/Fortmatic'
 import { NetworkConnector } from 'connectors/NetworkConnector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
@@ -91,7 +91,7 @@ export const walletconnect = new WalletConnectConnector({
 
 // mainnet only
 export const fortmatic = new FortmaticConnector({
-  apiKey: process.env.REACT_APP_FORTMATIC_KEY ?? '',
+  apiKey: getFortmaticApiKey() ?? '',
   chainId: NETWORK_CHAIN_ID,
 })
 
@@ -108,6 +108,7 @@ export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
   appName: 'CowSwap',
   appLogoUrl: 'https://raw.githubusercontent.com/gnosis/gp-swap-ui/develop/public/favicon.png',
+  supportedChainIds: getSupportedChainIds(),
 })
 
 export enum WalletProvider {

@@ -53,15 +53,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Use Coinbase Wallet app on mobile device',
     href: null,
     color: '#315CF5',
-  },
-  COINBASE_LINK: {
-    name: 'Open in Coinbase Wallet',
-    iconURL: COINBASE_ICON_URL,
-    description: 'Open in Coinbase Wallet app.',
-    href: 'https://go.cb-w.com/mtUDhEZPy1',
-    color: '#315CF5',
     mobile: true,
-    mobileOnly: true,
   },
   FORTMATIC: {
     connector: fortmatic,
