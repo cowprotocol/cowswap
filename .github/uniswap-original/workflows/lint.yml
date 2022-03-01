@@ -46,3 +46,7 @@ jobs:
           eslint: true
           eslint_extensions: js,jsx,ts,tsx,json
           auto_fix: true
+
+      - name: Run eslint
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login != github.repository_owner }}
+        run: yarn eslint .

@@ -4,7 +4,7 @@ import useUSDCPrice from '@src/hooks/useUSDCPrice'
 import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 
 interface TradePriceProps {
   price: Price<Currency, Currency>
@@ -13,16 +13,20 @@ interface TradePriceProps {
 }
 
 const StyledPriceContainer = styled.button`
-  align-items: center;
   background-color: transparent;
   border: none;
   cursor: pointer;
-  display: grid;
-  height: 24px;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
   padding: 0;
   grid-template-columns: 1fr auto;
   grid-gap: 0.25rem;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  user-select: text;
 `
 
 export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
@@ -44,14 +48,20 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
   const text = `${'1 ' + labelInverted + ' = ' + formattedPrice ?? '-'} ${label}`
 
   return (
-    <StyledPriceContainer onClick={flipPrice} title={text}>
-      <Text fontWeight={500} fontSize={14} color={theme.text1}>
+    <StyledPriceContainer
+      onClick={(e) => {
+        e.stopPropagation() // dont want this click to affect dropdowns / hovers
+        flipPrice()
+      }}
+      title={text}
+    >
+      <Text fontWeight={500} color={theme.text1}>
         {text}
       </Text>{' '}
       {usdcPrice && (
-        <TYPE.darkGray>
+        <ThemedText.DarkGray>
           <Trans>(${usdcPrice.toSignificant(6, { groupSeparator: ',' })})</Trans>
-        </TYPE.darkGray>
+        </ThemedText.DarkGray>
       )}
     </StyledPriceContainer>
   )

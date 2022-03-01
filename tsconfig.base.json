@@ -6,7 +6,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "strict": true,
@@ -26,5 +25,4 @@
     "types": ["react-spring", "jest"]
   },
   "exclude": ["node_modules", "cypress"],
-  "include": ["src/**/*"]
 }

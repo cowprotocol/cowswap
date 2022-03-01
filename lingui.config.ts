@@ -1,4 +1,4 @@
-export default {
+const linguiConfig = {
   catalogs: [
     {
       path: '<rootDir>/src/locales/{locale}',
@@ -40,14 +40,19 @@ export default {
     // 'ru-RU',
     // 'sr-SP',
     // 'sv-SE',
+    // 'sw-TZ',
     // 'tr-TR',
     // 'uk-UA',
     // 'vi-VN',
     // 'zh-CN',
     // 'zh-TW',
+    'pseudo',
   ],
   orderBy: 'messageId',
   rootDir: '.',
   runtimeConfigModule: ['@lingui/core', 'i18n'],
   sourceLocale: 'en-US',
+  pseudoLocale: 'pseudo',
 }
+
+export default linguiConfig

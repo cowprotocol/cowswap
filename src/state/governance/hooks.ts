@@ -6,27 +6,56 @@ import { toUtf8String, Utf8ErrorFuncs, Utf8ErrorReason } from '@ethersproject/st
 import { formatUnits } from '@ethersproject/units'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
-import { abi as GOV_ABI } from '@uniswap/governance/build/GovernorAlpha.json'
+import GovernorAlphaJson from '@uniswap/governance/build/GovernorAlpha.json'
+import UniJson from '@uniswap/governance/build/Uni.json'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { UNISWAP_GRANTS_PROPOSAL_DESCRIPTION } from 'constants/proposals/uniswap_grants_proposal_description'
+import GOVERNOR_BRAVO_ABI from 'abis/governor-bravo.json'
 import {
-  useGovernanceBravoContract,
-  useGovernanceV0Contract,
-  useGovernanceV1Contract,
-  useLatestGovernanceContract,
-  useUniContract,
-} from 'hooks/useContract'
-import { useActiveWeb3React } from 'hooks/web3'
+  GOVERNANCE_ALPHA_V0_ADDRESSES,
+  GOVERNANCE_ALPHA_V1_ADDRESSES,
+  GOVERNANCE_BRAVO_ADDRESSES,
+} from 'constants/addresses'
+import { POLYGON_PROPOSAL_TITLE } from 'constants/proposals/polygon_proposal_title'
+import { UNISWAP_GRANTS_PROPOSAL_DESCRIPTION } from 'constants/proposals/uniswap_grants_proposal_description'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useContract } from 'hooks/useContract'
+import { useSingleCallResult, useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useCallback, useMemo } from 'react'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { SupportedChainId } from '../../constants/chains'
-import { BRAVO_START_BLOCK, UNISWAP_GRANTS_START_BLOCK } from '../../constants/proposals'
+import {
+  BRAVO_START_BLOCK,
+  ONE_BIP_START_BLOCK,
+  POLYGON_START_BLOCK,
+  UNISWAP_GRANTS_START_BLOCK,
+} from '../../constants/proposals'
 import { UNI } from '../../constants/tokens'
 import { useLogs } from '../logs/hooks'
-import { useSingleCallResult, useSingleContractMultipleData } from '../multicall/hooks'
 import { TransactionType } from '../transactions/actions'
 import { useTransactionAdder } from '../transactions/hooks'
 import { VoteOption } from './types'
+
+const { abi: GOVERNANCE_ABI } = GovernorAlphaJson
+const { abi: UNI_ABI } = UniJson
+
+export function useGovernanceV0Contract(): Contract | null {
+  return useContract(GOVERNANCE_ALPHA_V0_ADDRESSES, GOVERNANCE_ABI, false)
+}
+
+export function useGovernanceV1Contract(): Contract | null {
+  return useContract(GOVERNANCE_ALPHA_V1_ADDRESSES, GOVERNANCE_ABI, false)
+}
+
+export function useGovernanceBravoContract(): Contract | null {
+  return useContract(GOVERNANCE_BRAVO_ADDRESSES, GOVERNOR_BRAVO_ABI, true)
+}
+
+export const useLatestGovernanceContract = useGovernanceBravoContract
+
+export function useUniContract() {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? UNI[chainId]?.address : undefined, UNI_ABI, true)
+}
 
 interface ProposalDetail {
   target: string
@@ -68,7 +97,7 @@ export enum ProposalState {
   EXECUTED,
 }
 
-const GovernanceInterface = new Interface(GOV_ABI)
+const GovernanceInterface = new Interface(GOVERNANCE_ABI)
 
 // get count of all proposals made in the latest governor contract
 function useProposalCount(contract: Contract | null): number | undefined {
@@ -103,6 +132,8 @@ function useFormattedProposalCreatedLogs(
       ?.filter((parsed) => indices.flat().some((i) => i === parsed.id.toNumber()))
       ?.map((parsed) => {
         let description!: string
+
+        const startBlock = parseInt(parsed.startBlock?.toString())
         try {
           description = parsed.description
         } catch (error) {
@@ -110,7 +141,6 @@ function useFormattedProposalCreatedLogs(
           let onError = Utf8ErrorFuncs.replace
 
           // Bravo proposal reverses the codepoints for U+2018 (‘) and U+2026 (…)
-          const startBlock = parseInt(parsed.startBlock?.toString())
           if (startBlock === BRAVO_START_BLOCK) {
             const U2018 = [0xe2, 0x80, 0x98].toString()
             const U2026 = [0xe2, 0x80, 0xa6].toString()
@@ -130,12 +160,13 @@ function useFormattedProposalCreatedLogs(
           }
 
           description = JSON.parse(toUtf8String(error.error.value, onError)) || ''
-
-          // Bravo proposal omits newlines
-          if (startBlock === BRAVO_START_BLOCK) {
-            description = description.replace(/  /g, '\n').replace(/\d\. /g, '\n$&')
-          }
         }
+
+        // Bravo and one bip proposals omit newlines
+        if (startBlock === BRAVO_START_BLOCK || startBlock === ONE_BIP_START_BLOCK) {
+          description = description.replace(/ {2}/g, '\n').replace(/\d\. /g, '\n$&')
+        }
+
         return {
           description,
           details: parsed.targets.map((target: string, i: number) => {
@@ -214,14 +245,21 @@ export function useAllProposalData(): { data: ProposalData[]; loading: boolean }
 
     return {
       data: proposalsCallData.map((proposal, i) => {
-        let description = formattedLogs[i]?.description
         const startBlock = parseInt(proposal?.result?.startBlock?.toString())
+
+        let description = formattedLogs[i]?.description
         if (startBlock === UNISWAP_GRANTS_START_BLOCK) {
           description = UNISWAP_GRANTS_PROPOSAL_DESCRIPTION
         }
+
+        let title = description?.split(/#+\s|\n/g)[1]
+        if (startBlock === POLYGON_START_BLOCK) {
+          title = POLYGON_PROPOSAL_TITLE
+        }
+
         return {
           id: proposal?.result?.id.toString(),
-          title: description?.split(/# |\n/g)[1] ?? t`Untitled`,
+          title: title ?? t`Untitled`,
           description: description ?? t`No description.`,
           proposer: proposal?.result?.proposer,
           status: proposalStatesCallData[i]?.result?.[0] ?? ProposalState.UNDETERMINED,
@@ -303,7 +341,7 @@ export function useDelegateCallback(): (delegatee: string | undefined) => undefi
       if (!uniContract) throw new Error('No UNI Contract!')
       return uniContract.estimateGas.delegate(...args, {}).then((estimatedGasLimit) => {
         return uniContract
-          .delegate(...args, { value: null, gasLimit: calculateGasMargin(chainId, estimatedGasLimit) })
+          .delegate(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
               type: TransactionType.DELEGATE,
@@ -332,7 +370,7 @@ export function useVoteCallback(): {
       const args = [proposalId, voteOption === VoteOption.Against ? 0 : voteOption === VoteOption.For ? 1 : 2]
       return latestGovernanceContract.estimateGas.castVote(...args, {}).then((estimatedGasLimit) => {
         return latestGovernanceContract
-          .castVote(...args, { value: null, gasLimit: calculateGasMargin(chainId, estimatedGasLimit) })
+          .castVote(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
               type: TransactionType.VOTE,
@@ -372,7 +410,7 @@ export function useCreateProposalCallback(): (
 
       return latestGovernanceContract.estimateGas.propose(...args).then((estimatedGasLimit) => {
         return latestGovernanceContract
-          .propose(...args, { gasLimit: calculateGasMargin(chainId, estimatedGasLimit) })
+          .propose(...args, { gasLimit: calculateGasMargin(estimatedGasLimit) })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
               type: TransactionType.SUBMIT_PROPOSAL,

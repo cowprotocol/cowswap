@@ -2,11 +2,15 @@ import '@reach/dialog/styles.css'
 import 'inter-ui'
 import 'polyfills'
 import 'components/analytics'
-import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
+
+import { BlockUpdater } from 'lib/hooks/useBlockNumber'
+import { MulticallUpdater } from 'lib/state/multicall'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
+import { createWeb3ReactRoot, Web3ReactProvider } from 'web3-react-core'
+
 import Blocklist from 'components/Blocklist'
 import { NetworkContextName } from 'constants/misc'
 import { LanguageProvider } from 'i18n'
@@ -16,10 +20,13 @@ import store from 'state'
 import ApplicationUpdater from 'state/application/updater'
 import ListsUpdater from 'state/lists/updater'
 import LogsUpdater from 'state/logs/updater'
-import MulticallUpdater from 'state/multicall/updater'
 import TransactionUpdater from 'state/transactions/updater'
-import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import UserUpdater from 'state/user/updater'
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
+import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
+import getLibrary from 'utils/getLibrary'
+
+import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import FeesUpdater from 'state/price/updater'
 import GasUpdater from 'state/gas/updater'
 import {
@@ -29,10 +36,7 @@ import {
   UnfillableOrdersUpdater,
 } from 'state/orders/updaters'
 // import { EventUpdater } from 'state/orders/mocks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
-import getLibrary from 'utils/getLibrary'
 import AppziButton from 'components/AppziButton'
-import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
 import { nodeRemoveChildFix } from 'utils/node'
 
 // Node removeChild hackaround
@@ -53,6 +57,7 @@ function Updaters() {
       <UserUpdater />
       <ApplicationUpdater />
       <TransactionUpdater />
+      <BlockUpdater />
       <EnhancedTransactionUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
@@ -91,6 +96,7 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
+// TODO: maybe re-enable service workers?
 // if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {
 //   serviceWorkerRegistration.register()
 // }
