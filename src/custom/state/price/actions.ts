@@ -20,6 +20,7 @@ export type QuoteError =
   | 'unsupported-token'
   | 'offline-browser'
   | 'zero-price'
+  | 'transfer-eth-to-smart-contract'
 
 export type SetQuoteErrorParams = UpdateQuoteParams & { error?: QuoteError }
 
