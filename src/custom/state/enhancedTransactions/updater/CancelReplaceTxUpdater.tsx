@@ -60,7 +60,7 @@ export default function CancelReplaceTxUpdater(): null {
   useEffect(() => {
     if (!chainId || !library) return
 
-    // Watch the mempool for cancelation/replacement of tx
+    // Watch the mempool for cancellation/replacement of tx
     watchTxChanges(pendingHashes, chainId, dispatch)
 
     return () => {
