@@ -55,7 +55,12 @@ export const BodyWrapper = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 0 10px 0;
-  `};
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToExtraLarge`
+    padding-top: 5vh;
+    align-items: flex-start;
+  `}
 `
 
 function createRedirectExternal(url: string) {
