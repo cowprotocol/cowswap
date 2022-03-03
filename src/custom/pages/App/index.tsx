@@ -49,8 +49,6 @@ export const BodyWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex: auto;
-  overflow-y: auto;
-  overflow-x: hidden;
   z-index: 1;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
