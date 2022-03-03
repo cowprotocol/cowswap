@@ -18,8 +18,12 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   justify-content: space-evenly;
-  margin: auto 16px;
+  margin: auto 96px 0 32px;
   width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 auto 65px;
+  `}
 `
 
 const FooterWrapper = styled.div`

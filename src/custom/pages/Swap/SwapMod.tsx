@@ -90,6 +90,8 @@ import TransactionConfirmationModal, { OperationType } from 'components/Transact
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
+import { GpEther } from 'constants/tokens'
+import { SupportedChainId } from 'constants/chains'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -827,6 +829,16 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">
                   <Trans>Invalid price. Try increasing input/output amount.</Trans>
+                </TYPE.main>
+                {/* {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>} */}
+              </GreyCard>
+            ) : quote?.error === 'transfer-eth-to-smart-contract' ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <TYPE.main mb="4px">
+                  <Trans>
+                    Buying {GpEther.onChain(chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is
+                    not currently supported
+                  </Trans>
                 </TYPE.main>
                 {/* {singleHopOnly && <TYPE.main mb="4px">Try enabling multi-hop trades.</TYPE.main>} */}
               </GreyCard>

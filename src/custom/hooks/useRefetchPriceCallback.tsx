@@ -89,6 +89,10 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
         return 'unsupported-token'
       }
 
+      case GpQuoteErrorCodes.TransferEthToContract: {
+        return 'transfer-eth-to-smart-contract'
+      }
+
       default: {
         // Some other operator error occurred, log it
         console.error('Error quoting price/fee. Unhandled operator error: ' + error.type, error)
