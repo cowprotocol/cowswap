@@ -7,11 +7,14 @@ declare module '@metamask/jazzicon' {
 declare module 'fortmatic'
 
 interface Window {
+  walletLinkExtension?: any
   ethereum?: {
     isMetaMask?: true
     on?: (...args: any[]) => void
     removeListener?: (...args: any[]) => void
     autoRefreshOnNetworkChange?: boolean
+    setSelectedProvider: (any) => void
+    providers: [any]
   }
   web3?: Record<string, unknown>
 }

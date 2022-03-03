@@ -7,9 +7,9 @@ export interface ApiErrorObject {
 }
 
 // Conforms to backend API
-// https://github.com/gnosis/gp-v2-services/blob/d932e11c9a2125fdba239530be7684799f694909/crates/orderbook/openapi.yml#L801
+// https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml#L801
 // and
-// https://github.com/gnosis/gp-v2-services/blob/d932e11c9a2125fdba239530be7684799f694909/crates/orderbook/openapi.yml#L740
+// https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml#L740
 export enum ApiErrorCodes {
   DuplicateOrder = 'DuplicateOrder',
   InvalidSignature = 'InvalidSignature',
@@ -29,6 +29,12 @@ export enum ApiErrorCodes {
   AmountIsZero = 'AmountIsZero',
   SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
   TransferEthToContract = 'TransferEthToContract',
+  TransferSimulationFailed = 'TransferSimulationFailed',
+  SameBuyAndSellToken = 'SameBuyAndSellToken',
+  ZeroAmount = 'ZeroAmount',
+  UnsupportedBuyTokenDestination = 'UnsupportedBuyTokenDestination',
+  UnsupportedSellTokenSource = 'UnsupportedSellTokenSource',
+  UnsupportedOrderType = 'UnsupportedOrderType',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
@@ -38,24 +44,30 @@ export enum ApiErrorCodeDetails {
   DuplicateOrder = 'There was another identical order already submitted. Please try again.',
   InsufficientFee = "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
   InvalidSignature = 'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
-  MissingOrderData = 'The order has missing information',
+  MissingOrderData = 'The order has missing information.',
   InsufficientValidTo = 'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
-  InsufficientAllowance = "The account doesn't have enough funds",
-  InsufficientBalance = 'The account needs to approve the selling token in order to trade',
+  InsufficientAllowance = "The account doesn't have enough funds.",
+  InsufficientBalance = 'The account needs to approve the selling token in order to trade.',
   WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CowSwap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
-  NotFound = 'Token pair selected has insufficient liquidity',
-  OrderNotFound = 'The order you are trying to cancel does not exist',
-  AlreadyCancelled = 'Order is already cancelled',
-  OrderFullyExecuted = 'Order is already filled',
-  OrderExpired = 'Order is expired',
-  NoLiquidity = 'Token pair selected has insufficient liquidity',
+  NotFound = 'Token pair selected has insufficient liquidity.',
+  OrderNotFound = 'The order you are trying to cancel does not exist.',
+  AlreadyCancelled = 'Order is already cancelled.',
+  OrderFullyExecuted = 'Order is already filled.',
+  OrderExpired = 'Order is expired.',
+  NoLiquidity = 'Token pair selected has insufficient liquidity.',
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  AmountIsZero = 'Amount is zero',
-  SellAmountDoesNotCoverFee = 'Sell amount does not sufficiently cover the current fee',
-  TransferEthToContract = 'Sending the native currency to smart contract wallets is not currently supported',
+  AmountIsZero = 'Amount is zero.',
+  SellAmountDoesNotCoverFee = 'Sell amount does not sufficiently cover the current fee.',
+  TransferEthToContract = 'Sending native currency to smart contract wallets is not currently supported.',
+  TransferSimulationFailed = 'Transfer simulation of native currency failed. This is likely due to the current unsupported state of smart contract wallets.',
+  SameBuyAndSellToken = 'Sell and buy token can not be the same.',
+  ZeroAmount = 'Order amount cannot be zero.',
+  UnsupportedBuyTokenDestination = 'Buy token destination is unsupported. Please try again with a different destination.',
+  UnsupportedSellTokenSource = 'Sell token source is unsupported. Please try again with a different source.',
+  UnsupportedOrderType = 'Order type unsupported. Please try again with a different order type.',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
-  UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network',
-  UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network',
+  UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network.',
+  UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.',
 }
 
 function _mapActionToErrorDetail(action?: ApiActionType) {

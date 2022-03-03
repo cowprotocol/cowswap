@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { useClaimState } from 'state/claim/hooks'
@@ -10,6 +10,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { V_COW } from 'constants/tokens'
 import { useActiveWeb3React } from 'hooks'
+import { JSBI } from '@uniswap/sdk'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined
@@ -19,16 +20,25 @@ export function ClaimSummary({ hasClaims, isClaimed, unclaimedAmount }: ClaimSum
   const { chainId } = useActiveWeb3React()
   const { activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
 
-  const vCowBalance = useTokenBalance(activeClaimAccount || undefined, chainId ? V_COW[chainId] : undefined)
+  const vCow = chainId ? V_COW[chainId] : undefined
+
+  const vCowBalance = useTokenBalance(activeClaimAccount || undefined, vCow)
 
   const hasClaimSummary = claimStatus === ClaimStatus.DEFAULT && !isInvestFlowActive
 
-  if (!hasClaimSummary) return null
+  if (!hasClaimSummary || !vCow) return null
 
-  const totalAvailableAmount = hasClaims && activeClaimAccount && unclaimedAmount ? unclaimedAmount : vCowBalance
+  let totalAvailableAmount: CurrencyAmount<Token> | undefined = CurrencyAmount.fromRawAmount(vCow, JSBI.BigInt(0))
+
+  if (hasClaims && activeClaimAccount && unclaimedAmount) {
+    totalAvailableAmount = unclaimedAmount
+  } else if (isClaimed) {
+    totalAvailableAmount = vCowBalance
+  }
 
   return (
     <ClaimSummaryView
+      activeClaimAccount={activeClaimAccount}
       showClaimText={!activeClaimAccount && !hasClaims}
       totalAvailableAmount={totalAvailableAmount}
       totalAvailableText={isClaimed ? 'Total claimed' : 'Total available to claim'}
@@ -40,9 +50,15 @@ type ClaimSummaryViewProps = {
   showClaimText?: boolean
   totalAvailableAmount?: CurrencyAmount<Currency>
   totalAvailableText?: string
+  activeClaimAccount: string
 }
 
-export function ClaimSummaryView({ showClaimText, totalAvailableText, totalAvailableAmount }: ClaimSummaryViewProps) {
+export function ClaimSummaryView({
+  showClaimText,
+  totalAvailableText,
+  totalAvailableAmount,
+  activeClaimAccount,
+}: ClaimSummaryViewProps) {
   return (
     <ClaimSummaryWrapper>
       <CowProtocolLogo size={100} />
@@ -53,7 +69,7 @@ export function ClaimSummaryView({ showClaimText, totalAvailableText, totalAvail
           </Trans>
         </ClaimSummaryTitle>
       )}
-      {totalAvailableAmount && (
+      {totalAvailableAmount && activeClaimAccount && (
         <div>
           <ClaimTotal>
             {totalAvailableText && <b>{totalAvailableText}</b>}
