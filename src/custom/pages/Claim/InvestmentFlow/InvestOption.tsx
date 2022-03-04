@@ -29,7 +29,7 @@ import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import { tryParseAmount } from 'state/swap/hooks'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
 import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { useGasPrices } from 'state/gas/hooks'
@@ -233,7 +233,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   useEffect(() => {
     let error = null
 
-    const parsedAmount = tryParseAmount(typedValue, token)
+    const parsedAmount = tryParseCurrencyAmount(typedValue, token)
 
     if (!maxCost || !balance) {
       return
@@ -303,7 +303,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   useEffect(() => {
     const warnings = []
 
-    const parsedAmount = tryParseAmount(typedValue, token)
+    const parsedAmount = tryParseCurrencyAmount(typedValue, token)
 
     if (!parsedAmount || !maxCost || !balance || inputError) {
       setInputWarnings([])

@@ -7,11 +7,12 @@ import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import TradeGp from 'state/swap/TradeGp'
 
 import { ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
-export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
 import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
+
+export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
 type ApproveCallbackFromTradeParams = Pick<
   ApproveCallbackParams,

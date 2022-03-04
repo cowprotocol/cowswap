@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
 import { useActiveWeb3React } from 'hooks/web3'
 import useENS from 'hooks/useENS'
