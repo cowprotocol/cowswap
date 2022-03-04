@@ -32,22 +32,15 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErr
         errorType: GpQuoteErrorCodes.InsufficientLiquidity,
         description: GpQuoteErrorDetails.InsufficientLiquidity,
       }
-
     case ApiErrorCodes.SellAmountDoesNotCoverFee:
       return {
         errorType: GpQuoteErrorCodes.FeeExceedsFrom,
         description: GpQuoteErrorDetails.FeeExceedsFrom,
         data: error?.data,
       }
-
     case ApiErrorCodes.UnsupportedToken:
       return {
         errorType: GpQuoteErrorCodes.UnsupportedToken,
-        description: error.description,
-      }
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
-      return {
-        errorType: GpQuoteErrorCodes.FeeExceedsFrom,
         description: error.description,
       }
     default:
