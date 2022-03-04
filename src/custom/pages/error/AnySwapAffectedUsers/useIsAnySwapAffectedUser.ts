@@ -1,5 +1,5 @@
-import { useMultipleContractSingleData } from 'state/multicall/hooks'
-import { WETH9_EXTENDED as WETH } from 'constants/tokens'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { Interface } from '@ethersproject/abi'
 import ERC20_ABI from 'abis/erc20.json'
 import { Erc20Interface } from '@src/abis/types/Erc20'

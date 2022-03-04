@@ -1,7 +1,7 @@
 import { ChainId } from '@uniswap/sdk'
 import { WETH9, Token } from '@uniswap/sdk-core'
 import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rinkeby/constants'
-import { DAI, USDC as USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
+import { DAI, USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
 import { USDC_XDAI, /*USDT_XDAI,*/ WBTC_XDAI, WETH_XDAI, WXDAI } from 'utils/xdai/constants'
 import { SupportedChainId } from 'constants/chains'
 import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
@@ -69,12 +69,6 @@ export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.MAINNET]: GNO_MAINNET,
   [SupportedChainId.XDAI]: GNO_XDAI,
   [SupportedChainId.RINKEBY]: GNO_RINKEBY,
-}
-
-export const USDC_BY_CHAIN: Record<SupportedChainId, Token> = {
-  [SupportedChainId.MAINNET]: USDC_MAINNET,
-  [SupportedChainId.XDAI]: USDC_XDAI,
-  [SupportedChainId.RINKEBY]: USDC_RINKEBY,
 }
 
 export const ADDRESS_IMAGE_OVERRIDE = {

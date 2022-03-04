@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { GpEther as ETHER, WETH9_EXTENDED as WETH } from 'constants/tokens'
+import { GpEther as ETHER, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from '../constants'
 
 export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
