@@ -550,15 +550,6 @@ export function TransactionSubmittedContent({
               Play the Cow Runner Game!
             </InternalLink>
           </ButtonCustom>
-
-          {/* 
-          <ButtonCustom>
-            <InternalLink to="/play/mev-slicer" onClick={onDismiss}>
-              <StyledIcon src={GameIcon} alt="Play Cow Slicer Game" />
-              Play the Cow Slicer Game!
-            </InternalLink>
-          </ButtonCustom>
-          */}
         </ButtonGroup>
 
         <CloseLink onClick={onDismiss}>Close</CloseLink>
