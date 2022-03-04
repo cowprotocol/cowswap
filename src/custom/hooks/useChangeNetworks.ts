@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useAppSelector } from 'state/hooks'
-import { CHAIN_INFO, SupportedChainId } from 'constants/chains'
+// import { useAppSelector } from 'state/hooks'
+import { SupportedChainId } from 'constants/chains'
 import { switchToNetwork } from 'utils/switchToNetwork'
 import { supportedChainId } from 'utils/supportedChainId'
 import { useWalletModalToggle } from '../state/application/hooks'
+import { CHAIN_INFO } from 'constants/chainInfo'
 
 type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'account' | 'chainId' | 'library'>
 
@@ -30,7 +31,8 @@ export default function useChangeNetworks({ account, chainId: preChainId, librar
 
   useOnClickOutside(nodeRef, isModalOpen ? closeModal : undefined)
 
-  const implements3085 = useAppSelector((state) => state.application.implements3085)
+  // TODO: use new method from uni as `implements3085` flag is no longer set
+  // const implements3085 = useAppSelector((state) => state.application.implements3085)
 
   // MOD: get supported chain and check unsupported
   const [chainId, isUnsupportedChain] = useMemo(() => {
@@ -41,7 +43,8 @@ export default function useChangeNetworks({ account, chainId: preChainId, librar
 
   const info = chainId ? CHAIN_INFO[chainId] : undefined
 
-  const showSelector = Boolean(!account || implements3085)
+  // const showSelector = Boolean(!account || implements3085)
+  const showSelector = Boolean(!account)
   const mainnetInfo = CHAIN_INFO[SupportedChainId.MAINNET]
 
   const conditionalToggle = useCallback(() => {
@@ -60,7 +63,8 @@ export default function useChangeNetworks({ account, chainId: preChainId, librar
       if (!account) {
         toggleWalletModal()
         return setQueuedNetworkSwitch(supportedChainId)
-      } else if (implements3085 && library && supportedChainId) {
+        // } else if (implements3085 && library && supportedChainId) {
+      } else if (library && supportedChainId) {
         switchToNetwork({ library, chainId: supportedChainId })
 
         return isModalOpen && closeModal()
@@ -68,16 +72,18 @@ export default function useChangeNetworks({ account, chainId: preChainId, librar
 
       return
     },
-    [account, implements3085, library, toggleWalletModal, isModalOpen, closeModal]
+    [account, library, toggleWalletModal, isModalOpen, closeModal]
   )
 
   // if wallet supports 3085
   useEffect(() => {
-    if (queuedNetworkSwitch && account && chainId && implements3085) {
+    // if (queuedNetworkSwitch && account && chainId && implements3085) {
+    if (queuedNetworkSwitch && account && chainId) {
       networkCallback(queuedNetworkSwitch)
       setQueuedNetworkSwitch(null)
     }
-  }, [networkCallback, queuedNetworkSwitch, chainId, account, implements3085])
+    // }, [networkCallback, queuedNetworkSwitch, chainId, account, implements3085])
+  }, [networkCallback, queuedNetworkSwitch, chainId, account])
 
   return {
     callback: networkCallback,

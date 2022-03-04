@@ -1,12 +1,20 @@
-import { MaxUint256 } from '@ethersproject/constants'
-import { TransactionResponse } from '@ethersproject/providers'
-import { BigNumber } from '@ethersproject/bignumber'
+// import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount /* , Percent, TradeType */ } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
+// import useSwapApproval, { useSwapApprovalOptimizedTrade } from 'lib/hooks/swap/useSwapApproval'
+// import { ApprovalState, useApproval } from 'lib/hooks/useApproval'
 import { useCallback, useMemo } from 'react'
 
-// import { SWAP_ROUTER_ADDRESSES, V2_ROUTER_ADDRESS } from 'constants/addresses'
+// import { TransactionType } from '../state/transactions/actions'
+// import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
+// export { ApprovalState } from 'lib/hooks/useApproval'
+
+// MOD imports
+import { MaxUint256 } from '@ethersproject/constants'
+import { TransactionResponse } from '@ethersproject/providers'
+import { BigNumber } from '@ethersproject/bignumber'
+
 import { useHasPendingApproval, useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
@@ -34,6 +42,18 @@ export interface ApproveCallbackParams {
   amountToCheckAgainstAllowance?: CurrencyAmount<Currency>
 }
 
+/* function useGetAndTrackApproval(getApproval: ReturnType<typeof useApproval>[1]) {
+  const addTransaction = useTransactionAdder()
+  return useCallback(() => {
+    return getApproval().then((pending) => {
+      if (pending) {
+        const { response, tokenAddress, spenderAddress: spender } = pending
+        addTransaction(response, { type: TransactionType.APPROVAL, tokenAddress, spender })
+      }
+    })
+  }, [addTransaction, getApproval])
+} */
+
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback({
   openTransactionConfirmationModal,
@@ -49,6 +69,7 @@ export function useApproveCallback({
   const spenderCurrency = useCurrency(spender)
 
   // TODO: Nice to have, can be deleted
+  // eslint-disable-next-line no-lone-blocks
   {
     process.env.NODE_ENV !== 'production' &&
       console.debug(`
@@ -143,7 +164,7 @@ export function useApproveCallback({
       return (
         tokenContract
           .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
-            gasLimit: calculateGasMargin(chainId, estimatedGas),
+            gasLimit: calculateGasMargin(estimatedGas),
           })
           .then((response: TransactionResponse) => {
             addTransaction({
@@ -217,7 +238,7 @@ export function useApproveCallback({
       return (
         tokenContract
           .approve(spender, '0', {
-            gasLimit: calculateGasMargin(chainId, estimatedGas),
+            gasLimit: calculateGasMargin(estimatedGas),
           })
           .then((response: TransactionResponse) => {
             addTransaction({
@@ -249,30 +270,21 @@ export function useApproveCallback({
   return { approvalState, approve, revokeApprove, isPendingApproval: pendingApproval }
 }
 
-// wraps useApproveCallback in the context of a swap
-// export function useApproveCallbackFromTrade(
-//   openTransactionConfirmationModal: (message: string) => void,
-//   closeModals: () => void,
-//   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined,
-//   allowedSlippage: Percent
-// ) {
-//   const { chainId } = useActiveWeb3React()
-//   const v3SwapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
+/* export function useApprovalOptimizedTrade(
+  trade: Trade<Currency, Currency, TradeType> | undefined,
+  allowedSlippage: Percent
+) {
+  return useSwapApprovalOptimizedTrade(trade, allowedSlippage, useHasPendingApproval)
+}
 
-//   const amountToApprove = useMemo(
-//     () => (trade && trade.inputAmount.currency.isToken ? trade.maximumAmountIn(allowedSlippage) : undefined),
-//     [trade, allowedSlippage]
-//   )
-//   return useApproveCallback(
-//     openTransactionConfirmationModal,
-//     closeModals,
-//     amountToApprove,
-//     chainId
-//       ? trade instanceof V2Trade
-//         ? V2_ROUTER_ADDRESS[chainId]
-//         : trade instanceof V3Trade
-//         ? v3SwapRouterAddress
-//         : undefined
-//       : undefined
-//   )
-// }
+export function useApproveCallbackFromTrade(
+  trade:
+    | V2Trade<Currency, Currency, TradeType>
+    | V3Trade<Currency, Currency, TradeType>
+    | Trade<Currency, Currency, TradeType>
+    | undefined,
+  allowedSlippage: Percent
+): [ApprovalState, () => Promise<void>] {
+  const [approval, getApproval] = useSwapApproval(trade, allowedSlippage, useHasPendingApproval)
+  return [approval, useGetAndTrackApproval(getApproval)]
+} */

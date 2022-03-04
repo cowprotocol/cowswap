@@ -21,7 +21,7 @@ import Menu from 'components/Menu'
 import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useETHBalances } from 'state/wallet/hooks'
+import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
@@ -41,9 +41,9 @@ import {
 } from 'state/application/hooks'
 //import { useUserHasAvailableClaim } from 'state/claim/hooks'
 
-import Modal from 'components/Modal'
+// import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
-import UniBalanceContent from 'components/Header/UniBalanceContent'
+// import UniBalanceContent from 'components/Header/UniBalanceContent' // TODO: no longer exists, should probably remove
 import CowClaimButton from 'components/CowClaimButton'
 import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
@@ -228,13 +228,13 @@ export default function Header() {
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
-  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
   // const toggleClaimModal = useToggleSelfClaimModal()
   // const availableClaim: boolean = useUserHasAvailableClaim(account)
-  const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
+  // const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
   // const showClaimPopup = useShowClaimPopup()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
@@ -257,9 +257,9 @@ export default function Header() {
     <Wrapper>
       <HeaderModWrapper>
         <HeaderRow marginRight="0">
-          <Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
+          {/*<Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
             <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
-          </Modal>
+          </Modal>*/}
           <Title href=".">
             <UniIcon>
               <LogoImage />

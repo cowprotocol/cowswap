@@ -1,59 +1,75 @@
-// import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
-// import arbitrumLogoUrl from 'assets/svg/arbitrum_logo.svg'
-// import optimismLogoUrl from 'assets/svg/optimistic_ethereum.svg'
-// import ms from 'ms.macro'
+/**
+ * List of all the networks supported by the CowSwap Interface
+ */
 
-import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg' // mod
-import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg' // mod
-import GnosisChainLogo from 'assets/cow-swap/network-gnosis-chain-logo.svg' // mod
+import { CHAIN_IDS_TO_NAMES as UNI_CHAIN_IDS_TO_NAMES } from '@src/constants/chains'
+
 export * from '@src/constants/chains'
 
 export enum SupportedChainId {
   MAINNET = 1,
   // ROPSTEN = 3,
   RINKEBY = 4,
-  // GOERLI = 5,
-  // KOVAN = 42,
+  /* GOERLI = 5,
+  KOVAN = 42,
 
-  // ARBITRUM_ONE = 42161,
-  // ARBITRUM_RINKEBY = 421611,
-  // OPTIMISM = 10,
-  // OPTIMISTIC_KOVAN = 69,
+  ARBITRUM_ONE = 42161,
+  ARBITRUM_RINKEBY = 421611,
+
+  OPTIMISM = 10,
+  OPTIMISTIC_KOVAN = 69,
+
+  POLYGON = 137,
+  POLYGON_MUMBAI = 80001, */
 
   XDAI = 100,
 }
 
-export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
-  SupportedChainId.MAINNET,
-  // SupportedChainId.ROPSTEN,
-  SupportedChainId.RINKEBY,
-  // SupportedChainId.GOERLI,
-  // SupportedChainId.KOVAN,
+export const CHAIN_IDS_TO_NAMES = {
+  ...UNI_CHAIN_IDS_TO_NAMES,
+  [SupportedChainId.XDAI]: 'gnosis_chain',
+  /* [SupportedChainId.MAINNET]: 'mainnet',
+  [SupportedChainId.ROPSTEN]: 'ropsten',
+  [SupportedChainId.RINKEBY]: 'rinkeby',
+  [SupportedChainId.GOERLI]: 'goerli',
+  [SupportedChainId.KOVAN]: 'kovan',
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
+  [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
+  [SupportedChainId.ARBITRUM_RINKEBY]: 'arbitrum_rinkeby',
+  [SupportedChainId.OPTIMISM]: 'optimism',
+  [SupportedChainId.OPTIMISTIC_KOVAN]: 'optimistic_kovan', */
+}
 
-  // SupportedChainId.ARBITRUM_ONE,
-  // SupportedChainId.ARBITRUM_RINKEBY,
-  // SupportedChainId.OPTIMISM,
-  // SupportedChainId.OPTIMISTIC_KOVAN,
-
-  SupportedChainId.XDAI,
-]
+/**
+ * Array of all the supported chain IDs
+ */
+export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
+  (id) => typeof id === 'number'
+) as SupportedChainId[]
 
 export const L1_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.ROPSTEN,
   SupportedChainId.RINKEBY,
-  // SupportedChainId.GOERLI,
-  // SupportedChainId.KOVAN,
+  /* SupportedChainId.GOERLI,
+  SupportedChainId.KOVAN,
+  SupportedChainId.POLYGON,
+  SupportedChainId.POLYGON_MUMBAI, */
   SupportedChainId.XDAI,
 ] as const
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]
 
+/**
+ * Controls some L2 specific behavior, e.g. slippage tolerance, special UI behavior.
+ * The expectation is that all of these networks have immediate transaction confirmation.
+ */
 export const L2_CHAIN_IDS = [
-  // SupportedChainId.ARBITRUM_ONE,
-  // SupportedChainId.ARBITRUM_RINKEBY,
-  // SupportedChainId.OPTIMISM,
-  // SupportedChainId.OPTIMISTIC_KOVAN,
+  /* SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.ARBITRUM_RINKEBY,
+  SupportedChainId.OPTIMISM,
+  SupportedChainId.OPTIMISTIC_KOVAN, */
 ] as const
 
 export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number]

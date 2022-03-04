@@ -3,8 +3,10 @@ import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
 // import Card from 'components/Card'
 // import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useListColor } from 'hooks/useColor'
-import { useActiveWeb3React } from 'hooks/web3'
+import parseENSAddress from 'lib/utils/parseENSAddress'
+import uriToHttp from 'lib/utils/uriToHttp'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -17,19 +19,18 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import useToggle from 'hooks/useToggle'
 // import { acceptListUpdate, disableList, enableList, removeList } from 'state/lists/actions'
-import { useActiveListUrls, useIsListActive, useAllLists } from 'state/lists/hooks'
-import { ExternalLink, IconWrapper, LinkStyledButton, TYPE } from 'theme'
+import { useActiveListUrls, useAllLists, useIsListActive } from 'state/lists/hooks'
+import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'theme'
 import listVersionLabel from 'utils/listVersionLabel'
-import { parseENSAddress } from 'utils/parseENSAddress'
-import uriToHttp from 'utils/uriToHttp'
 import { ButtonEmpty, ButtonPrimary } from 'components/Button'
 import Column, { AutoColumn } from 'components/Column'
 import ListLogo from 'components/ListLogo'
-import Row, { RowFixed, RowBetween } from 'components/Row'
+import Row, { RowBetween, RowFixed } from 'components/Row'
 import ListToggle from 'components/Toggle/ListToggle'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/SearchModal/styleds'
-// Mod:
+
+// Mod imports
 import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -80,7 +81,7 @@ const StyledTitleText = styled.div<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.white : theme.text2)};
 `
 
-const StyledListUrlText = styled(TYPE.main)<{ active: boolean }>`
+const StyledListUrlText = styled(ThemedText.Main)<{ active: boolean }>`
   font-size: 12px;
   color: ${({ theme, active }) => (active ? theme.white : theme.text2)};
 `
@@ -245,10 +246,10 @@ ListRowProps & { listUrl: string }) {
 })
 
 export const ListContainer = styled.div`
-  padding: 1rem;
-  height: 100%;
   padding-bottom: 80px;
+  height: 100%;
   overflow-y: auto;
+  /* MOD */
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
 
@@ -268,6 +269,7 @@ export function ManageLists({
   setModalView,
   setImportList,
   setListUrl,
+  // MOD
   unsupportedListUrls,
   listRowProps,
 }: {
@@ -402,9 +404,9 @@ export function ManageLists({
           />
         </Row>
         {addError ? (
-          <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
+          <ThemedText.Error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
             {addError}
-          </TYPE.error>
+          </ThemedText.Error>
         ) : null}
       </PaddedColumn>
       {tempList && (
@@ -414,10 +416,10 @@ export function ManageLists({
               <RowFixed>
                 {tempList.logoURI && <ListLogo logoURI={tempList.logoURI} size="40px" />}
                 <AutoColumn gap="4px" style={{ marginLeft: '20px' }}>
-                  <TYPE.body fontWeight={600}>{tempList.name}</TYPE.body>
-                  <TYPE.main fontSize={'12px'}>
+                  <ThemedText.Body fontWeight={600}>{tempList.name}</ThemedText.Body>
+                  <ThemedText.Main fontSize={'12px'}>
                     <Trans>{tempList.tokens.length} tokens</Trans>
-                  </TYPE.main>
+                  </ThemedText.Main>
                 </AutoColumn>
               </RowFixed>
               {isImported ? (
@@ -425,9 +427,9 @@ export function ManageLists({
                   <IconWrapper stroke={theme.text2} size="16px" marginRight={'10px'}>
                     <CheckCircle />
                   </IconWrapper>
-                  <TYPE.body color={theme.text2}>
+                  <ThemedText.Body color={theme.text2}>
                     <Trans>Loaded</Trans>
-                  </TYPE.body>
+                  </ThemedText.Body>
                 </RowFixed>
               ) : (
                 <ButtonPrimary

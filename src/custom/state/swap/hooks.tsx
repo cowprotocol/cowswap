@@ -1,21 +1,21 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
-import { useBestTrade } from 'hooks/useBestTrade'
+// import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
+// import { useBestTrade } from 'hooks/useBestTrade'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAppDispatch /* , useAppSelector */ } from 'state/hooks'
-import { InterfaceTrade, TradeState } from 'state/routing/types'
-import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+// import { InterfaceTrade, TradeState } from 'state/routing/types'
+import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 
-import { TOKEN_SHORTHANDS } from '../../constants/tokens'
+// import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useCurrency } from 'hooks/Tokens'
 import useENS from 'hooks/useENS'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isAddress } from 'utils'
-import { AppState } from 'state'
+// import { AppState } from 'state'
 import { useCurrencyBalances } from 'state/wallet/hooks'
 import {
   Field,
@@ -24,34 +24,39 @@ import {
 import { SwapState } from 'state/swap/reducer'
 
 // MOD
-import { tryParseAmount, useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
+import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
-import { /* DEFAULT_LIST_OF_LISTS, */ DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import TradeGp from './TradeGp'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { WETH9_EXTENDED as WETH, GpEther as ETHER } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
 
-import { useIsExpertMode, useUserSlippageToleranceWithDefault } from '@src/state/user/hooks'
-import { PriceImpact } from 'hooks/usePriceImpact'
 import { isWrappingTrade } from './utils'
+
+import {
+  parseCurrencyFromURLParameter,
+  parseTokenAmountURLParameter,
+  parseIndependentFieldURLParameter,
+  validatedRecipient,
+} from '@src/state/swap/hooks'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 export * from '@src/state/swap/hooks'
 
-export function useSwapState(): AppState['swap'] {
+/* export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
-}
+} */
 
 interface DerivedSwapInfo {
-  currencies: { [field in Field]?: Currency }
+  currencies: { [field in Field]?: Currency | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
-  inputError?: string
+  inputError?: ReactNode
   v2Trade: TradeGp | undefined
-  toggledTrade: TradeGp | null
   allowedSlippage: Percent
 }
 
@@ -106,6 +111,102 @@ interface DerivedSwapInfo {
   '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D': true, // v2 router 02
 } */
 
+/**
+ * useHighFeeWarning
+ * @description checks whether fee vs trade inputAmount = high fee warning
+ * @description returns params related to high fee and a cb for checking/unchecking fee acceptance
+ * @param trade TradeGp param
+ */
+export function useHighFeeWarning(trade?: TradeGp) {
+  const isExpertMode = useIsExpertMode()
+  const { INPUT, OUTPUT, independentField } = useSwapState()
+
+  const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false) // mod - high fee warning disable state
+
+  // only considers inputAmount vs fee (fee is in input token)
+  const [isHighFee, feePercentage] = useMemo(() => {
+    if (!trade) return [false, undefined]
+
+    const { inputAmount, fee } = trade
+    const feePercentage = fee.feeAsCurrency.divide(inputAmount).asFraction
+    return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage.multiply('100')]
+  }, [trade])
+
+  // reset the state when users change swap params
+  useEffect(() => {
+    setFeeWarningAccepted(false)
+  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
+
+  return {
+    isHighFee,
+    feePercentage,
+    // we only care/check about feeWarning being accepted if the fee is actually high..
+    feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee, isExpertMode }),
+    setFeeWarningAccepted,
+  }
+}
+
+function _computeFeeWarningAcceptedState({
+  feeWarningAccepted,
+  isHighFee,
+  isExpertMode,
+}: {
+  feeWarningAccepted: boolean
+  isHighFee: boolean
+  isExpertMode: boolean
+}) {
+  // in expert mode there is no fee warning thus it's true
+  if (isExpertMode || feeWarningAccepted) return true
+  else {
+    // not expert mode? is the fee high? that's only when we care
+    if (isHighFee) {
+      return feeWarningAccepted
+    } else {
+      return true
+    }
+  }
+}
+
+export function useUnknownImpactWarning(priceImpactParams?: PriceImpact) {
+  const isExpertMode = useIsExpertMode()
+  const { INPUT, OUTPUT, independentField } = useSwapState()
+
+  const [impactWarningAccepted, setImpactWarningAccepted] = useState<boolean>(false)
+
+  // reset the state when users change swap params
+  useEffect(() => {
+    setImpactWarningAccepted(false)
+  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
+
+  return {
+    impactWarningAccepted: _computeUnknownPriceImpactAcceptedState({
+      priceImpactParams,
+      impactWarningAccepted,
+      isExpertMode,
+    }),
+    setImpactWarningAccepted,
+  }
+}
+
+function _computeUnknownPriceImpactAcceptedState({
+  impactWarningAccepted,
+  priceImpactParams,
+  isExpertMode,
+}: {
+  impactWarningAccepted: boolean
+  priceImpactParams?: PriceImpact
+  isExpertMode: boolean
+}) {
+  if (isExpertMode || impactWarningAccepted) return true
+  else {
+    if (priceImpactParams?.error) {
+      return impactWarningAccepted
+    }
+  }
+
+  return true
+}
+
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): /* {
   currencies: { [field in Field]?: Currency | null }
@@ -118,8 +219,7 @@ export function useDerivedSwapInfo(): /* {
   }
   allowedSlippage: Percent
 } */ DerivedSwapInfo {
-  // MOD: chainId
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React() // MOD: chainId
 
   const {
     independentField,
@@ -151,6 +251,7 @@ export function useDerivedSwapInfo(): /* {
     (isExactIn ? outputCurrency : inputCurrency) ?? undefined
   ) */
 
+  // -- MOD --
   const { quote } = useGetQuoteAndStatus({
     token: inputCurrencyId,
     chainId,
@@ -181,6 +282,7 @@ export function useDerivedSwapInfo(): /* {
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
   registerOnWindow({ trade: v2Trade })
+  // -- MOD --
 
   const currencyBalances = useMemo(
     () => ({
@@ -199,8 +301,10 @@ export function useDerivedSwapInfo(): /* {
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
-  const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)
-  const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance)
+  // TODO: check whether we want to enable auto slippage tolerance
+  // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
+  // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
+  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT) // mod
 
   const inputError = useMemo(() => {
     let inputError: ReactNode | undefined
@@ -227,70 +331,36 @@ export function useDerivedSwapInfo(): /* {
     }
 
     // compare input balance to max input based on version
-    const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)]
+    // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
+    const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)] // mod
 
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
       inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
     }
 
-  let inputError: string | undefined
-  if (!account) {
-    inputError = t`Connect Wallet`
-  }
+    return inputError
+  }, [account, allowedSlippage, currencies, currencyBalances, parsedAmount, to, v2Trade]) // mod
 
-  if (!parsedAmount) {
-    inputError = inputError ?? t`Enter an amount`
-  }
-
-  if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? t`Select a token`
-  }
-
-  const formattedTo = isAddress(to)
-  if (!to || !formattedTo) {
-    inputError = inputError ?? t`Enter a recipient`
-  } else {
-    if (
-      BAD_RECIPIENT_ADDRESSES[formattedTo]
-      // TODO: review if we need this:
-      /*
-      (bestV2TradeExactIn && involvesAddress(bestV2TradeExactIn, formattedTo)) ||
-      (bestV2TradeExactOut && involvesAddress(bestV2TradeExactOut, formattedTo)) */
-    ) {
-      inputError = inputError ?? t`Invalid recipient`
-    }
-  }
-
-  // TODO: we don't use toggled Trades
-  const toggledTrade = v2Trade /* (toggledVersion === Version.v2 ? v2Trade : v3Trade.trade) ?? undefined */
-  // const allowedSlippage = useSwapSlippageTolerance(toggledTrade)
-
-  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
-
-  // compare input balance to max input based on version
-  const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)]
-
-  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = t`Insufficient ${amountIn.currency.symbol} balance`
-  }
-
-  return {
-    currencies,
-    currencyBalances,
-    parsedAmount,
-    inputError,
-    v2Trade: v2Trade ?? undefined,
-    // v3TradeState: v3Trade,
-    toggledTrade,
-    allowedSlippage,
-  }
+  return useMemo(
+    () => ({
+      currencies,
+      currencyBalances,
+      parsedAmount,
+      inputError,
+      v2Trade: v2Trade ?? undefined, // mod
+      allowedSlippage,
+    }),
+    [allowedSlippage, currencies, currencyBalances, inputError, parsedAmount, v2Trade] // mod
+  )
 }
 
-export function parseCurrencyFromURLParameter(urlParam: any): string {
+/* export function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam)
     if (valid) return valid
-    if (urlParam.toUpperCase() === 'ETH') return 'ETH'
+    const upper = urlParam.toUpperCase()
+    if (upper === 'ETH') return 'ETH'
+    if (upper in TOKEN_SHORTHANDS) return upper
   }
   return ''
 }
@@ -312,14 +382,20 @@ export function validatedRecipient(recipient: any): string | null {
   if (ENS_NAME_REGEX.test(recipient)) return recipient
   if (ADDRESS_REGEX.test(recipient)) return recipient
   return null
-}
+} */
 
+// mod: defaultInputCurrency parameter
 export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurrency = ''): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
-  if (inputCurrency === '' && outputCurrency === '') {
-    // default to ETH input
-    inputCurrency = defaultInputCurrency
+  let typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
+  const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
+
+  if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
+    // Defaults to 1 ETH -> USDC
+    inputCurrency = defaultInputCurrency // 'ETH' // mod
+    outputCurrency = 'USDC'
+    typedValue = '1'
   } else if (inputCurrency === outputCurrency) {
     // clear output if identical
     outputCurrency = ''
@@ -334,42 +410,46 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurre
     [Field.OUTPUT]: {
       currencyId: outputCurrency === '' ? null : outputCurrency ?? null,
     },
-    typedValue: parseTokenAmountURLParameter(parsedQs.exactAmount),
-    independentField: parseIndependentFieldURLParameter(parsedQs.exactField),
+    typedValue,
+    independentField,
     recipient,
   }
 }
 
-type DefaultFromUrlSearch = { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
 // updates the swap state to use the defaults for a given network
-export function useDefaultsFromURLSearch(): DefaultFromUrlSearch {
+export function useDefaultsFromURLSearch(): SwapState {
   const { chainId } = useActiveWeb3React()
-  const replaceSwapState = useReplaceSwapState()
+  const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
-  const [result, setResult] = useState<DefaultFromUrlSearch>()
+
+  // TODO: check whether we can use the new function for native currency
+  // This is not a great fix for setting a default token
+  // but it is better and easiest considering updating default files
+  const defaultInputToken = WETH[chainId || 1].address // mod
+
+  const parsedSwapState = useMemo(() => {
+    return queryParametersToSwapState(parsedQs, defaultInputToken) // mod
+  }, [defaultInputToken, parsedQs]) // mod
 
   useEffect(() => {
     if (!chainId) return
-    // This is not a great fix for setting a default token
-    // but it is better and easiest considering updating default files
-    const defaultInputToken = WETH[chainId].address
-    const parsed = queryParametersToSwapState(parsedQs, defaultInputToken)
-    const inputCurrencyId = parsed[Field.INPUT].currencyId ?? undefined
-    const outputCurrencyId = parsed[Field.OUTPUT].currencyId ?? undefined
+    const inputCurrencyId = parsedSwapState[Field.INPUT].currencyId ?? undefined
+    const outputCurrencyId = parsedSwapState[Field.OUTPUT].currencyId ?? undefined
 
-    replaceSwapState({
-      typedValue: parsed.typedValue,
-      field: parsed.independentField,
-      inputCurrencyId,
-      outputCurrencyId,
-      recipient: parsed.recipient,
-    })
+    dispatch(
+      replaceSwapState({
+        typedValue: parsedSwapState.typedValue,
+        field: parsedSwapState.independentField,
+        inputCurrencyId,
+        outputCurrencyId,
+        recipient: parsedSwapState.recipient,
+      })
+    )
 
-    setResult({ inputCurrencyId, outputCurrencyId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId])
+  }, [dispatch, chainId])
 
-  return result
+  return parsedSwapState
 }
 
 // MODS
@@ -388,7 +468,7 @@ export function useReplaceSwapState() {
 }
 
 interface CurrencyWithAddress {
-  currency?: Currency
+  currency?: Currency | null
   address?: string | null
 }
 
@@ -401,6 +481,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
       }
     )
 
+    // TODO: check the new native currency function
     const native = ETHER.onChain(chainId || DEFAULT_NETWORK_FOR_LISTS)
 
     const [isNativeIn, isNativeOut] = [input?.currency?.isNative, output?.currency?.isNative]

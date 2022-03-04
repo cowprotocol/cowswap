@@ -1,15 +1,21 @@
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+// import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useMemo } from 'react'
-import { WETH9_EXTENDED } from 'constants/tokens'
-import { BigNumber } from '@ethersproject/bignumber'
-import { TransactionResponse } from '@ethersproject/providers'
-import { getChainCurrencySymbols } from 'utils/xdai/hack'
-import { Contract } from '@ethersproject/contracts'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+// import { TransactionType } from '../state/transactions/actions'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useWETHContract } from 'hooks/useContract'
+
+// MOD imports
+import { BigNumber } from '@ethersproject/bignumber'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Contract } from '@ethersproject/contracts'
+import { getChainCurrencySymbols } from 'utils/xdai/hack'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -49,6 +55,14 @@ interface GetWrapUnwrapCallback {
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
+
+/* enum WrapInputError {
+  NO_ERROR, // must be equal to 0 so all other errors are truthy
+  ENTER_NATIVE_AMOUNT,
+  ENTER_WRAPPED_AMOUNT,
+  INSUFFICIENT_NATIVE_BALANCE,
+  INSUFFICIENT_WRAPPED_BALANCE,
+} */
 
 function _handleGasEstimateError(error: any) {
   console.log(
@@ -96,7 +110,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       operationType = OperationType.WRAP_ETHER
       wrapUnwrap = async () => {
         const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
-        const gasLimit = calculateGasMargin(chainId, estimatedGas)
+        const gasLimit = calculateGasMargin(estimatedGas)
 
         return wethContract.deposit({ value: amountHex, gasLimit })
       }
@@ -107,7 +121,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       operationType = OperationType.UNWRAP_WETH
       wrapUnwrap = async () => {
         const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
-        const gasLimit = calculateGasMargin(chainId, estimatedGas)
+        const gasLimit = calculateGasMargin(estimatedGas)
         return wethContract.withdraw(amountHex, { gasLimit })
       }
       const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${wrapped} to ${native}`
@@ -143,6 +157,25 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   }
 }
 
+/* export function WrapErrorText({ wrapInputError }: { wrapInputError: WrapInputError }) {
+  const native = useNativeCurrency()
+  const wrapped = native?.wrapped
+
+  switch (wrapInputError) {
+    case WrapInputError.NO_ERROR:
+      return null
+    case WrapInputError.ENTER_NATIVE_AMOUNT:
+      return <Trans>Enter {native?.symbol} amount</Trans>
+    case WrapInputError.ENTER_WRAPPED_AMOUNT:
+      return <Trans>Enter {wrapped?.symbol} amount</Trans>
+
+    case WrapInputError.INSUFFICIENT_NATIVE_BALANCE:
+      return <Trans>Insufficient {native?.symbol} balance</Trans>
+    case WrapInputError.INSUFFICIENT_WRAPPED_BALANCE:
+      return <Trans>Insufficient {wrapped?.symbol} balance</Trans>
+  }
+} */
+
 /**
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
@@ -152,8 +185,8 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 export default function useWrapCallback(
   openTransactionConfirmationModal: (message: string, operationType: OperationType) => void,
   closeModals: () => void,
-  inputCurrency?: Currency,
-  outputCurrency?: Currency,
+  inputCurrency?: Currency | null,
+  outputCurrency?: Currency | null,
   inputAmount?: CurrencyAmount<Currency>,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
@@ -162,11 +195,15 @@ export default function useWrapCallback(
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
+  /* const inputAmount = useMemo(
+    () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),
+    [inputCurrency, typedValue]
+  ) */
   const addTransaction = useTransactionAdder()
 
   return useMemo(() => {
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
-    const weth = WETH9_EXTENDED[chainId]
+    const weth = WRAPPED_NATIVE_CURRENCY[chainId]
     if (!weth) return NOT_APPLICABLE
 
     const isWrappingEther = inputCurrency.isNative && (isEthTradeOverride || weth.equals(outputCurrency))

@@ -130,10 +130,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     // Based on how much gas will be used (estimatedGas) and current gas prices (if available)
     // calculate how much that would cost in native currency.
     // We pick `fast` to be conservative. Also, it's non-blocking, so the user is aware but can proceed
-    const amount = calculateGasMargin(
-      chainId,
-      BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI)
-    )
+    const amount = calculateGasMargin(BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI))
 
     return CurrencyAmount.fromRawAmount(token, amount.toString())
   }, [chainId, estimatedGas, gasPrice?.fast, isNative, token])

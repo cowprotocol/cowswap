@@ -1,50 +1,51 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+// import { Connector } from '@web3-react/types'
 import { darken, lighten } from 'polished'
 // import { useMemo } from 'react'
 import { Activity } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled /*, { css }*/ from 'styled-components/macro'
+import { AbstractConnector } from 'web3-react-abstract-connector'
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
-// import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
-// import FortmaticIcon from 'assets/images/fortmaticIcon.png'
-// import PortisIcon from 'assets/images/portisIcon.png'
-// import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
-// import { fortmatic, injected, portis, walletconnect, walletlink } from 'connectors'
-// import { NetworkContextName } from 'constants/index'
+// import { NetworkContextName } from '../../constants/misc'
 import useENSName from 'hooks/useENSName'
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useWalletModalToggle } from 'state/application/hooks'
-// import { isTransactionRecent, useAllTransactions } from 'state/enhancedTransactions/hooks'
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
+// import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
+// import { TransactionDetails } from '../../state/transactions/reducer'
 import { shortenAddress } from 'utils'
-import { ButtonSecondary } from 'components/Button'
-
-// import Identicon from 'components/Identicon'
+// import { ButtonSecondary } from 'components/Button'
+// import StatusIcon from '../Identicon/StatusIcon'
 import Loader from 'components/Loader'
-
 import { RowBetween } from 'components/Row'
-// import WalletModal from 'components/WalletModal'
+// import WalletModal from '../WalletModal'
 
-// const IconWrapper = styled.div<{ size?: number }>`
-//   ${({ theme }) => theme.flexColumnNoWrap};
-//   align-items: center;
-//   justify-content: center;
-//   & > * {
-//     height: ${({ size }) => (size ? size + 'px' : '32px')};
-//     width: ${({ size }) => (size ? size + 'px' : '32px')};
-//   }
-// `
+// MOD imports
+import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
+import { Web3StatusGeneric, Web3StatusError, Web3StatusConnect, WrappedStatusIcon } from '@src/components/Web3Status'
+
+/* const IconWrapper = styled.div<{ size?: number }>`
+  ${({ theme }) => theme.flexColumnNoWrap};
+  align-items: center;
+  justify-content: center;
+  & > * {
+    height: ${({ size }) => (size ? size + 'px' : '32px')};
+    width: ${({ size }) => (size ? size + 'px' : '32px')};
+  }
+`
 
 const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
   align-items: center;
   padding: 0.5rem;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
   user-select: none;
+  height: 36px;
+  margin-right: 2px;
+  margin-left: 1px;
   :focus {
     outline: none;
   }
@@ -86,11 +87,11 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
         color: ${({ theme }) => darken(0.05, theme.primaryText1)};
       }
     `}
-`
+` */
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
-  background-color: ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg2)};
-  border: 1px solid ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg3)};
+  background-color: ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg2 /*bg1*/)};
+  border: 1px solid ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg3 /*bg1*/)};
   color: ${({ pending, theme }) => (pending ? theme.white : theme.text1)};
   font-weight: 500;
   :hover,
@@ -98,7 +99,8 @@ export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean
     background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.primary1) : lighten(0.05, theme.bg2))};
 
     :focus {
-      border: 1px solid ${({ pending, theme }) => (pending ? darken(0.1, theme.primary1) : darken(0.1, theme.bg3))};
+      border: 1px solid
+        ${({ pending, theme }) => (pending ? darken(0.1, theme.primary1) : darken(0.1, theme.bg3 /*bg2*/))};
     }
   }
 `
@@ -134,39 +136,13 @@ function Sock() {
   )
 }
 
-// eslint-disable-next-line react/prop-types
-/* 
-function StatusIcon({ connector }: { connector: AbstractConnector }) {
-  if (connector === injected) {
-    return <Identicon />
-  } else if (connector === walletconnect) {
-    return (
-      <IconWrapper size={16}>
-        <img src={WalletConnectIcon} alt={'WalletConnect'} />
-      </IconWrapper>
-    )
-  } else if (connector === walletlink) {
-    return (
-      <IconWrapper size={16}>
-        <img src={CoinbaseWalletIcon} alt={'CoinbaseWallet'} />
-      </IconWrapper>
-    )
-  } else if (connector === fortmatic) {
-    return (
-      <IconWrapper size={16}>
-        <img src={FortmaticIcon} alt={'Fortmatic'} />
-      </IconWrapper>
-    )
-  } else if (connector === portis) {
-    return (
-      <IconWrapper size={16}>
-        <img src={PortisIcon} alt={'Portis'} />
-      </IconWrapper>
-    )
-  }
-  return null
-}
-*/
+/* function WrappedStatusIcon({ connector }: { connector: AbstractConnector | Connector }) {
+  return (
+    <IconWrapper size={16}>
+      <StatusIcon connector={connector} />
+    </IconWrapper>
+  )
+} */
 
 export function Web3StatusInner({
   pendingCount,
@@ -181,8 +157,7 @@ export function Web3StatusInner({
 
   const { ENSName } = useENSName(account ?? undefined)
 
-  /* 
-  const allTransactions = useAllTransactions()
+  /* const allTransactions = useAllTransactions()
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -191,8 +166,7 @@ export function Web3StatusInner({
 
   const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
 
-  const hasPendingTransactions = !!pending.length 
-  */
+  const hasPendingTransactions = !!pending.length */
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
@@ -219,8 +193,8 @@ export function Web3StatusInner({
             <Text>{ENSName || shortenAddress(account)}</Text>
           </>
         )}
-        {/* {!hasPendingTransactions && connector && <StatusIcon connector={connector} />} */}
-        {!hasPendingTransactions && connector && <StatusIconComponent connector={connector} />}
+        {/* {!hasPendingTransactions && connector && <WrappedStatusIcon connector={connector} />} */}
+        {!hasPendingTransactions && connector && <WrappedStatusIcon connector={connector} />}
       </Web3StatusConnected>
     )
   } else if (error) {
@@ -260,7 +234,9 @@ export function Web3StatusInner({
   return (
     <>
       <Web3StatusInner />
-      <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      {(contextNetwork.active || active) && (
+        <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      )}
     </>
   )
 } */

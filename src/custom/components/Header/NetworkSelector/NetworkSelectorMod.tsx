@@ -1,51 +1,64 @@
-// import { Trans } from '@lingui/macro'
-import // ARBITRUM_HELP_CENTER_LINK,
-// CHAIN_INFO,
-// L2_CHAIN_IDS,
-// OPTIMISM_HELP_CENTER_LINK,
-// SupportedL2ChainId,
-// SupportedChainId
-'@src/constants/chains'
-import { CHAIN_INFO, ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
-import { /* ArrowDownCircle, */ ChevronDown } from 'react-feather'
+import { Trans } from '@lingui/macro'
+import { CHAIN_INFO } from 'constants/chainInfo'
+import { CHAIN_IDS_TO_NAMES, SupportedChainId } from 'constants/chains'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useOnClickOutside } from 'hooks/useOnClickOutside'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import usePrevious from 'hooks/usePrevious'
+import { ParsedQs } from 'qs'
+import { useCallback, useEffect, useRef } from 'react'
+import { ChevronDown } from 'react-feather'
+import { useHistory } from 'react-router-dom'
+import { useModalOpen, useToggleModal } from 'state/application/hooks'
+import { addPopup, ApplicationModal } from 'state/application/reducer'
 import styled from 'styled-components/macro'
-import { /* ExternalLink, */ MEDIA_WIDTHS } from 'theme'
-import useChangeNetworks from 'hooks/useChangeNetworks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { ExternalLink, MEDIA_WIDTHS } from 'theme'
+import { replaceURLParam } from 'utils/routes'
 
-// const ActiveRowLinkList = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   padding: 0 8px;
-//   & > a {
-//     align-items: center;
-//     color: ${({ theme }) => theme.text2};
-//     display: flex;
-//     flex-direction: row;
-//     font-size: 14px;
-//     font-weight: 500;
-//     justify-content: space-between;
-//     padding: 8px 0 4px;
-//     text-decoration: none;
-//   }
-//   & > a:first-child {
-//     border-top: 1px solid ${({ theme }) => theme.text2};
-//     margin: 0;
-//     margin-top: 6px;
-//     padding-top: 10px;
-//   }
-// `
-// const ActiveRowWrapper = styled.div`
-//   background-color: ${({ theme }) => theme.bg2};
-//   border-radius: 8px;
-//   cursor: pointer;
-//   padding: 8px 0 8px 0;
-//   width: 100%;
-// `
-// const FlyoutHeader = styled.div`
-//   color: ${({ theme }) => theme.text1};
-//   font-weight: 400;
-// `
+import { useAppDispatch } from 'state/hooks'
+import { switchToNetwork } from 'utils/switchToNetwork'
+
+// MOD imports
+import {
+  ActiveRowLinkList,
+  ActiveRowWrapper,
+  FlyoutHeader,
+  LinkOutCircle,
+} from '@src/components/Header/NetworkSelector'
+// import useChangeNetworks from 'hooks/useChangeNetworks'
+
+/* const ActiveRowLinkList = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px;
+  & > a {
+    align-items: center;
+    color: ${({ theme }) => theme.text2};
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+    font-weight: 500;
+    justify-content: space-between;
+    padding: 8px 0 4px;
+    text-decoration: none;
+  }
+  & > a:first-child {
+    margin: 0;
+    margin-top: 0px;
+    padding-top: 10px;
+  }
+`
+const ActiveRowWrapper = styled.div`
+  background-color: ${({ theme }) => theme.bg1};
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px;
+  width: 100%;
+`
+const FlyoutHeader = styled.div`
+  color: ${({ theme }) => theme.text2};
+  font-weight: 400;
+` */
 const FlyoutMenu = styled.div`
   align-items: flex-start;
   border: 1px solid ${({ theme }) => theme.bg0};
@@ -93,11 +106,11 @@ const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
   height: 9px;
   width: 9px;
 `
-// const LinkOutCircle = styled(ArrowDownCircle)`
-//   transform: rotate(230deg);
-//   width: 16px;
-//   height: 16px;
-// `
+/* const LinkOutCircle = styled(ArrowDownCircle)`
+  transform: rotate(230deg);
+  width: 16px;
+  height: 16px;
+` */
 const Logo = styled.img`
   height: 20px;
   width: 16px;
@@ -141,107 +154,204 @@ const SelectorWrapper = styled.div`
 const StyledChevronDown = styled(ChevronDown)`
   width: 12px;
 `
-// const BridgeText = ({ chainId }: { chainId: SupportedL2ChainId }) => {
-//   switch (chainId) {
-//     case SupportedChainId.ARBITRUM_ONE:
-//     case SupportedChainId.ARBITRUM_RINKEBY:
-//       return <Trans>Arbitrum Bridge</Trans>
-//     case SupportedChainId.OPTIMISM:
-//     case SupportedChainId.OPTIMISTIC_KOVAN:
-//       return <Trans>Optimism Gateway</Trans>
-//     default:
-//       return <Trans>Bridge</Trans>
-//   }
-// }
-// const ExplorerText = ({ chainId }: { chainId: SupportedL2ChainId }) => {
-//   switch (chainId) {
-//     case SupportedChainId.ARBITRUM_ONE:
-//     case SupportedChainId.ARBITRUM_RINKEBY:
-//       return <Trans>Arbiscan</Trans>
-//     case SupportedChainId.OPTIMISM:
-//     case SupportedChainId.OPTIMISTIC_KOVAN:
-//       return <Trans>Optimistic Etherscan</Trans>
-//     default:
-//       return <Trans>Explorer</Trans>
-//   }
-// }
+const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
+  switch (chainId) {
+    /* case SupportedChainId.ARBITRUM_ONE:
+    case SupportedChainId.ARBITRUM_RINKEBY:
+      return <Trans>Arbitrum Bridge</Trans>
+    case SupportedChainId.OPTIMISM:
+    case SupportedChainId.OPTIMISTIC_KOVAN:
+      return <Trans>Optimism Gateway</Trans>
+    case SupportedChainId.POLYGON:
+    case SupportedChainId.POLYGON_MUMBAI:
+      return <Trans>Polygon Bridge</Trans>*/
+    // TODO: add bridges, if any
+    default:
+      return <Trans>Bridge</Trans>
+  }
+}
+const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
+  switch (chainId) {
+    /* case SupportedChainId.ARBITRUM_ONE:
+    case SupportedChainId.ARBITRUM_RINKEBY:
+      return <Trans>Arbiscan</Trans>
+    case SupportedChainId.OPTIMISM:
+    case SupportedChainId.OPTIMISTIC_KOVAN:
+      return <Trans>Optimistic Etherscan</Trans>
+    case SupportedChainId.POLYGON:
+    case SupportedChainId.POLYGON_MUMBAI:
+      return <Trans>Polygonscan</Trans> */
+    case SupportedChainId.XDAI:
+      return <Trans>Blockscout</Trans>
+    default:
+      return <Trans>Etherscan</Trans>
+  }
+}
+
+function Row({
+  targetChain,
+  onSelectChain,
+}: {
+  targetChain: SupportedChainId
+  onSelectChain: (targetChain: number) => void
+}) {
+  const { library, chainId } = useActiveWeb3React()
+  if (!library || !chainId) {
+    return null
+  }
+  const active = chainId === targetChain
+  const { helpCenterUrl, explorer, bridge, label, logoUrl } = CHAIN_INFO[targetChain]
+
+  const rowContent = (
+    <FlyoutRow onClick={() => onSelectChain(targetChain)} active={active}>
+      <Logo src={logoUrl} />
+      <NetworkLabel>{label}</NetworkLabel>
+      {chainId === targetChain && <FlyoutRowActiveIndicator active />}
+    </FlyoutRow>
+  )
+
+  if (active) {
+    return (
+      <ActiveRowWrapper>
+        {rowContent}
+        <ActiveRowLinkList>
+          {bridge ? (
+            <ExternalLink href={bridge}>
+              <BridgeLabel chainId={chainId} /> <LinkOutCircle />
+            </ExternalLink>
+          ) : null}
+          {explorer ? (
+            <ExternalLink href={explorer}>
+              <ExplorerLabel chainId={chainId} /> <LinkOutCircle />
+            </ExternalLink>
+          ) : null}
+          {helpCenterUrl ? (
+            <ExternalLink href={helpCenterUrl}>
+              <Trans>Help Center</Trans> <LinkOutCircle />
+            </ExternalLink>
+          ) : null}
+        </ActiveRowLinkList>
+      </ActiveRowWrapper>
+    )
+  }
+  return rowContent
+}
+
+const getParsedChainId = (parsedQs?: ParsedQs) => {
+  const chain = parsedQs?.chain
+  if (!chain || typeof chain !== 'string') return { urlChain: undefined, urlChainId: undefined }
+
+  return { urlChain: chain.toLowerCase(), urlChainId: getChainIdFromName(chain) }
+}
+
+const getChainIdFromName = (name: string) => {
+  const entry = Object.entries(CHAIN_IDS_TO_NAMES).find(([_, n]) => n === name)
+  const chainId = entry?.[0]
+  return chainId ? parseInt(chainId) : undefined
+}
+
+const getChainNameFromId = (id: string | number) => {
+  // casting here may not be right but fine to return undefined if it's not a supported chain ID
+  return CHAIN_IDS_TO_NAMES[id as SupportedChainId] || ''
+}
 
 export default function NetworkSelector() {
-  const { account, chainId, library } = useActiveWeb3React()
-  const {
-    callback: networkCallback,
-    conditionalToggle,
-    chainInfo: info,
-    mainnetInfo,
-    isUnsupportedChain,
-    showSelector,
-    nodeRef: node,
-    isModalOpen: open,
-  } = useChangeNetworks({ account, chainId, library })
+  // const { account, chainId, library } = useActiveWeb3React()
+  // const {
+  //   callback: networkCallback,
+  //   conditionalToggle,
+  //   chainInfo: info,
+  //   mainnetInfo,
+  //   isUnsupportedChain,
+  //   showSelector,
+  //   nodeRef: node,
+  //   isModalOpen: open,
+  // } = useChangeNetworks({ account, chainId, library })
+  //
+  // if (!chainId || !info || !library || isUnsupportedChain) {
+  //   return null
+  // }
+  const { chainId, library } = useActiveWeb3React()
+  const parsedQs = useParsedQueryString()
+  const { urlChain, urlChainId } = getParsedChainId(parsedQs)
+  const prevChainId = usePrevious(chainId)
+  const node = useRef<HTMLDivElement>()
+  const open = useModalOpen(ApplicationModal.NETWORK_SELECTOR)
+  const toggle = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
+  useOnClickOutside(node, open ? toggle : undefined)
 
-  if (!chainId || !info || !library || isUnsupportedChain) {
+  const history = useHistory()
+
+  const info = chainId ? CHAIN_INFO[chainId] : undefined
+
+  const dispatch = useAppDispatch()
+
+  const handleChainSwitch = useCallback(
+    (targetChain: number, skipToggle?: boolean) => {
+      if (!library) return
+      switchToNetwork({ library, chainId: targetChain })
+        .then(() => {
+          if (!skipToggle) {
+            toggle()
+          }
+          history.replace({
+            search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(targetChain)),
+          })
+        })
+        .catch((error) => {
+          console.error('Failed to switch networks', error)
+
+          // we want app network <-> chainId param to be in sync, so if user changes the network by changing the URL
+          // but the request fails, revert the URL back to current chainId
+          if (chainId) {
+            history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+          }
+
+          if (!skipToggle) {
+            toggle()
+          }
+
+          dispatch(addPopup({ content: { failedSwitchNetwork: targetChain }, key: `failed-network-switch` }))
+        })
+    },
+    [dispatch, library, toggle, history, chainId]
+  )
+
+  useEffect(() => {
+    if (!chainId || !prevChainId) return
+
+    // when network change originates from wallet or dropdown selector, just update URL
+    if (chainId !== prevChainId) {
+      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+      // otherwise assume network change originates from URL
+    } else if (urlChainId && urlChainId !== chainId) {
+      handleChainSwitch(urlChainId, true)
+    }
+  }, [chainId, urlChainId, prevChainId, handleChainSwitch, history])
+
+  // set chain parameter on initial load if not there
+  useEffect(() => {
+    if (chainId && !urlChainId) {
+      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+    }
+  }, [chainId, history, urlChainId, urlChain])
+
+  if (!chainId || !info || !library) {
     return null
   }
 
-  /* function Row({ targetChain }: { targetChain: number }) {
-    if (!library || !chainId || (!implements3085 && targetChain !== chainId)) {
-      return null
-    }
-    const handleRowClick = () => {
-      switchToNetwork({ library, chainId: targetChain })
-      toggle()
-    }
-    const active = chainId === targetChain
-    const hasExtendedInfo = L2_CHAIN_IDS.includes(targetChain)
-    const isOptimism = targetChain === SupportedChainId.OPTIMISM
-    const rowText = `${CHAIN_INFO[targetChain].label}${isOptimism ? ' (Optimism)' : ''}`
-    const rowText = CHAIN_INFO[targetChain].label // mod
-    const RowContent = () => (
-      <FlyoutRow onClick={handleRowClick} active={active}>
-        <Logo src={CHAIN_INFO[targetChain].logoUrl} />
-        <NetworkLabel>{rowText}</NetworkLabel>
-        {chainId === targetChain && <FlyoutRowActiveIndicator />}
-        <FlyoutRowActiveIndicator active={chainId === targetChain} />
-      </FlyoutRow>
-    )
-    const helpCenterLink = isOptimism ? OPTIMISM_HELP_CENTER_LINK : ARBITRUM_HELP_CENTER_LINK
-    if (active && hasExtendedInfo) {
-      return (
-        <ActiveRowWrapper>
-          <RowContent />
-          <ActiveRowLinkList>
-            <ExternalLink href={CHAIN_INFO[targetChain as SupportedL2ChainId].bridge}>
-              <BridgeText chainId={chainId} /> <LinkOutCircle />
-            </ExternalLink>
-            <ExternalLink href={CHAIN_INFO[targetChain].explorer}>
-              <ExplorerText chainId={chainId} /> <LinkOutCircle />
-            </ExternalLink>
-            <ExternalLink href={helpCenterLink}>
-              <Trans>Help Center</Trans> <LinkOutCircle />
-            </ExternalLink>
-          </ActiveRowLinkList>
-        </ActiveRowWrapper>
-      )
-    }
-    return <RowContent />
-  } */
-
   return (
     <SelectorWrapper ref={node as any}>
-      <SelectorControls onClick={conditionalToggle} interactive={showSelector}>
-        <SelectorLogo interactive={showSelector} src={info.logoUrl || mainnetInfo.logoUrl} />
+      {/*<SelectorControls onClick={conditionalToggle} interactive={showSelector}>
+        <SelectorLogo interactive={showSelector} src={info.logoUrl || mainnetInfo.logoUrl} />*/}
+      <SelectorControls onClick={toggle} interactive>
+        <SelectorLogo interactive src={info.logoUrl} />
         <SelectorLabel>{info.label}</SelectorLabel>
-        {showSelector && <StyledChevronDown />}
+        {/*{showSelector && <StyledChevronDown />}*/}
+        <StyledChevronDown />
       </SelectorControls>
       {open && (
-        <FlyoutMenu>
-          {/* <FlyoutHeader>
-            <Trans>Select a network</Trans>
-          </FlyoutHeader>
-          <Row targetChain={SupportedChainId.MAINNET} />
-          <Row targetChain={SupportedChainId.RINKEBY} />
-          <Row targetChain={SupportedChainId.XDAI} /> */}
-
+        /*<FlyoutMenu>
           {ALL_SUPPORTED_CHAIN_IDS.map((targetChain) => {
             const active = !!account && chainId === targetChain
             const rowText = CHAIN_INFO[targetChain].label
@@ -255,6 +365,15 @@ export default function NetworkSelector() {
               </FlyoutRow>
             )
           })}
+        </FlyoutMenu>*/
+
+        <FlyoutMenu onMouseLeave={toggle}>
+          <FlyoutHeader>
+            <Trans>Select a network</Trans>
+          </FlyoutHeader>
+          <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
+          <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
+          <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
         </FlyoutMenu>
       )}
     </SelectorWrapper>

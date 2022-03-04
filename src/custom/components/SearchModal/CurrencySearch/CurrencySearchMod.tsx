@@ -1,39 +1,36 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import useToggle from 'hooks/useToggle'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
+import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 import { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 // import { Edit } from 'react-feather'
 import ReactGA from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
+import { useAllTokenBalances } from 'state/wallet/hooks'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { GpEther as ExtendedEther } from 'constants/tokens'
 import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
-import { useActiveWeb3React } from 'hooks/web3'
-import { ButtonText, CloseIcon, /* , IconWrapper, */ TYPE } from 'theme'
+import { ButtonText, CloseIcon, /* , IconWrapper, */ ThemedText } from 'theme'
 import { isAddress } from 'utils'
 import Column from 'components/Column'
 import Row, { RowBetween /* , RowFixed */ } from 'components/Row'
 import CommonBases from 'components/SearchModal/CommonBases'
 import CurrencyList from 'components/SearchModal/CurrencyList'
-import { filterTokens, useSortedTokensByQuery } from 'components/SearchModal/filtering'
 import ImportRow from 'components/SearchModal/ImportRow'
-import { useTokenComparator } from 'components/SearchModal/sorting'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
-import useNetworkName from 'hooks/useNetworkName'
-import { ContentWrapper } from '.' //mod
 
-// const ContentWrapper = styled(Column)`
-//   width: 100%;
-//   flex: 1 1;
-//   position: relative;
-// `
+// MOD imports
+import useNetworkName from 'hooks/useNetworkName'
+import { ContentWrapper } from '.'
 
 export const Footer = styled.div`
   width: 100%;
@@ -83,8 +80,6 @@ export function CurrencySearch({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
 
-  const [invertSearchOrder] = useState<boolean>(false)
-
   const allTokens = useAllTokens()
 
   // if they input an address, use it
@@ -94,7 +89,7 @@ export function CurrencySearch({
 
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
 
-  const network = useNetworkName()
+  const network = useNetworkName() // mod
 
   useEffect(() => {
     if (isAddressSearch) {
@@ -106,27 +101,28 @@ export function CurrencySearch({
     }
   }, [isAddressSearch])
 
-  const tokenComparator = useTokenComparator(invertSearchOrder)
-
   const filteredTokens: Token[] = useMemo(() => {
-    return filterTokens(Object.values(allTokens), debouncedQuery)
+    return Object.values(allTokens).filter(getTokenFilter(debouncedQuery))
   }, [allTokens, debouncedQuery])
 
+  const balances = useAllTokenBalances()
   const sortedTokens: Token[] = useMemo(() => {
-    return filteredTokens.sort(tokenComparator)
-  }, [filteredTokens, tokenComparator])
+    return filteredTokens.sort(tokenComparator.bind(null, balances))
+  }, [balances, filteredTokens])
 
-  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+  const filteredSortedTokens = useSortTokensByQuery(debouncedQuery, sortedTokens)
 
-  const ether = useMemo(() => chainId && ExtendedEther.onChain(chainId), [chainId])
+  const native = useNativeCurrency()
 
   const filteredSortedTokensWithETH: Currency[] = useMemo(() => {
+    if (!native) return filteredSortedTokens
+
     const s = debouncedQuery.toLowerCase().trim()
-    if (s === '' || s === 'e' || s === 'et' || s === 'eth') {
-      return ether ? [ether, ...filteredSortedTokens] : filteredSortedTokens
+    if (native.symbol?.toLowerCase()?.indexOf(s) !== -1) {
+      return native ? [native, ...filteredSortedTokens] : filteredSortedTokens
     }
     return filteredSortedTokens
-  }, [debouncedQuery, ether, filteredSortedTokens])
+  }, [debouncedQuery, native, filteredSortedTokens])
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -154,8 +150,8 @@ export function CurrencySearch({
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         const s = debouncedQuery.toLowerCase().trim()
-        if (s === 'eth' && ether) {
-          handleCurrencySelect(ether)
+        if (s === native?.symbol?.toLowerCase()) {
+          handleCurrencySelect(native)
         } else if (filteredSortedTokensWithETH.length > 0) {
           if (
             filteredSortedTokensWithETH[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
@@ -166,7 +162,7 @@ export function CurrencySearch({
         }
       }
     },
-    [debouncedQuery, ether, filteredSortedTokensWithETH, handleCurrencySelect]
+    [debouncedQuery, native, filteredSortedTokensWithETH, handleCurrencySelect]
   )
 
   // menu ui
@@ -230,15 +226,15 @@ export function CurrencySearch({
         </div>
       ) : isAddressSearch ? (
         <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+          <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
             <Trans>No tokens found with this address in {network} network</Trans>
-          </TYPE.main>
+          </ThemedText.Main>
         </Column>
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+          <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
             <Trans>Enter valid token name or address</Trans>
-          </TYPE.main>
+          </ThemedText.Main>
         </Column>
       )}
       <Footer>
@@ -249,9 +245,9 @@ export function CurrencySearch({
               <IconWrapper size="16px" marginRight="6px" stroke={theme.primaryText1}>
                 <Edit />
               </IconWrapper>
-              <TYPE.main color={theme.primaryText1}>
+              <ThemedText.Main color={theme.primaryText1}>
                 <Trans>Manage Token Lists</Trans>
-              </TYPE.main>
+              </ThemedText.Main>
             </RowFixed>
           */}
             <FooterButtonTextComponent theme={theme} />

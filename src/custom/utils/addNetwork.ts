@@ -1,7 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexStripZeros } from '@ethersproject/bytes'
 import { Web3Provider } from '@ethersproject/providers'
-import { L1ChainInfo, L2ChainInfo, SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from 'constants/chains'
+import { L1ChainInfo, L2ChainInfo } from 'constants/chainInfo'
+import { getRpcUrls } from 'utils/switchToNetwork'
 
 interface AddNetworkArguments {
   library: Web3Provider
@@ -23,7 +25,7 @@ export async function addNetwork({ library, chainId, info }: AddNetworkArguments
         {
           chainId: formattedChainId,
           chainName: info.label,
-          rpcUrls: info.rpcUrls,
+          rpcUrls: getRpcUrls(chainId),
           nativeCurrency: info.nativeCurrency,
           blockExplorerUrls: [info.explorer],
         },

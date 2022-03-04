@@ -1,17 +1,22 @@
-import { useMemo } from 'react'
-import { Currency, /* Ether as ETHER, */ Percent, TradeType, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+// eslint-disable-next-line no-restricted-imports
+import { Currency, Percent, TradeType, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { SwapCallbackState /*, useSwapCallback as useLibSwapCallBack */ } from 'lib/hooks/swap/useSwapCallback'
+import { /* ReactNode, */ useMemo } from 'react'
 
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
-
-import { AddOrderCallback, AddUnserialisedPendingOrderParams, useAddPendingOrder } from 'state/orders/hooks'
-
-import { SwapCallbackState } from '@src/hooks/useSwapCallback'
+// import { TransactionType } from '../state/transactions/actions'
+// import { useTransactionAdder } from '../state/transactions/hooks'
+// import { currencyId } from '../utils/currencyId'
 import useENS from '@src/hooks/useENS'
+// import { SignatureData } from './useERC20Permit'
+// import { AnyTrade } from './useSwapCallArguments'
+// import useTransactionDeadline from './useTransactionDeadline'
 
-import { useActiveWeb3React } from 'hooks/web3'
+// MOD
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { AddOrderCallback, AddUnserialisedPendingOrderParams, useAddPendingOrder } from 'state/orders/hooks'
 import { useWrapEther, Wrap } from 'hooks/useWrapEther'
-
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { signAndPostOrder } from 'utils/trade'
 import TradeGp from 'state/swap/TradeGp'
@@ -94,7 +99,7 @@ interface SwapParams {
 }
 
 /**
- * Internal swap function that does the actually swap logic.
+ * Internal swap function that does the actual swap logic.
  *
  * @param params All the required swap dependencies
  * @returns
@@ -249,7 +254,67 @@ async function _swap(params: SwapParams): Promise<string> {
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
+/* export function useSwapCallback(
+  trade: AnyTrade | undefined, // trade to execute, required
+  allowedSlippage: Percent, // in bips
+  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  signatureData: SignatureData | undefined | null
+): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: ReactNode | null } {
+  const { account } = useActiveWeb3React()
 
+  const deadline = useTransactionDeadline()
+
+  const addTransaction = useTransactionAdder()
+
+  const { address: recipientAddress } = useENS(recipientAddressOrName)
+  const recipient = recipientAddressOrName === null ? account : recipientAddress
+
+  const {
+    state,
+    callback: libCallback,
+    error,
+  } = useLibSwapCallBack({ trade, allowedSlippage, recipientAddressOrName: recipient, signatureData, deadline })
+
+  const callback = useMemo(() => {
+    if (!libCallback || !trade) {
+      return null
+    }
+    return () =>
+      libCallback().then((response) => {
+        addTransaction(
+          response,
+          trade.tradeType === TradeType.EXACT_INPUT
+            ? {
+                type: TransactionType.SWAP,
+                tradeType: TradeType.EXACT_INPUT,
+                inputCurrencyId: currencyId(trade.inputAmount.currency),
+                inputCurrencyAmountRaw: trade.inputAmount.quotient.toString(),
+                expectedOutputCurrencyAmountRaw: trade.outputAmount.quotient.toString(),
+                outputCurrencyId: currencyId(trade.outputAmount.currency),
+                minimumOutputCurrencyAmountRaw: trade.minimumAmountOut(allowedSlippage).quotient.toString(),
+              }
+            : {
+                type: TransactionType.SWAP,
+                tradeType: TradeType.EXACT_OUTPUT,
+                inputCurrencyId: currencyId(trade.inputAmount.currency),
+                maximumInputCurrencyAmountRaw: trade.maximumAmountIn(allowedSlippage).quotient.toString(),
+                outputCurrencyId: currencyId(trade.outputAmount.currency),
+                outputCurrencyAmountRaw: trade.outputAmount.quotient.toString(),
+                expectedInputCurrencyAmountRaw: trade.inputAmount.quotient.toString(),
+              }
+        )
+        return response.hash
+      })
+  }, [addTransaction, allowedSlippage, libCallback, trade])
+
+  return {
+    state,
+    callback,
+    error,
+  }
+} */
+
+// MOD
 /**
  * Returns a callback function that will execute the swap (or null if any required param is missing)
  *

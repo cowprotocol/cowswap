@@ -1,12 +1,13 @@
 import { useMemo, Fragment } from 'react'
 import styled from 'styled-components/macro'
-import { NETWORK_LABELS, SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from 'constants/chains'
 import { useClaimState } from 'state/claim/hooks'
 import useChangeNetworks from 'hooks/useChangeNetworks'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from '@src/custom/components/NotificationBanner'
 import { AlertTriangle } from 'react-feather'
 import { ClaimInfo } from 'state/claim/reducer'
+import { CHAIN_INFO } from 'constants/chainInfo'
 
 const ChainSpan = styled.span``
 const Wrapper = styled.div`
@@ -60,6 +61,7 @@ function _shouldNotDisplayBannerForChain(
     // If this is the same network
     // Important, the double equal comparison is intentional!
     // Don't be dumb like me and change to triple equal and spend awhile figuring out why it doesn't work...
+    // eslint-disable-next-line eqeqeq
     checkedChain == chainId ||
     // If total claims is 0
     total === 0 ||
@@ -92,6 +94,14 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
     }, [])
   }, [activeClaimAccount, chainId, claimInfoPerAccount])
 
+  const networkLabel = useMemo(() => {
+    if (!chainId) {
+      return ''
+    }
+    const { label } = CHAIN_INFO[chainId]
+    return label
+  }, [chainId])
+
   if (chainsWithClaims.length === 0) {
     return null
   }
@@ -108,7 +118,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
             return (
               <Fragment key={chainId}>
                 {isLastInMultiple && ' and'}
-                <ChainSpan onClick={changeNetworksCallback}>{NETWORK_LABELS[chainId]}</ChainSpan>
+                <ChainSpan onClick={changeNetworksCallback}>{networkLabel}</ChainSpan>
               </Fragment>
             )
           })}

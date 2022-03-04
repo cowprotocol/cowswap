@@ -1,18 +1,67 @@
 import { Trans } from '@lingui/macro'
-import { Component, ErrorInfo } from 'react'
-import store, { AppState } from 'state/index'
-import { ExternalLink, TYPE } from 'theme/index'
-import Page, { Title } from 'components/Page'
-import { AutoColumn } from 'components/Column'
-import styled from 'styled-components/macro'
+import React, { ErrorInfo, Component } from 'react'
 import ReactGA from 'react-ga'
+import styled from 'styled-components/macro'
+
+import store, { AppState } from 'state/index'
+import { ExternalLink, ThemedText } from 'theme/index'
 import { userAgent } from '@src/utils/userAgent'
+import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
+
+// MOD imports
+import Page, { Title } from 'components/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
 import CowError from 'assets/cow-swap/CowError.png'
 import { UniIcon, LogoImage } from '../Header'
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
+
+/* const FallbackWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  z-index: 1;
+`
+
+const BodyWrapper = styled.div<{ margin?: string }>`
+  padding: 1rem;
+  width: 100%;
+  white-space: ;
+` */
+
+const CodeBlockWrapper = styled.div`
+  background: ${({ theme }) => theme.bg4};
+  overflow: auto;
+  white-space: pre;
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
+    0px 24px 32px rgba(0, 0, 0, 0.01);
+  border-radius: 16px;
+  padding: 16px;
+  color: ${({ theme }) => theme.text2};
+
+  /* MOD */
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 12px;
+    width: auto;
+  `};
+`
+
+const LinkWrapper = styled.div`
+  color: ${({ theme }) => theme.blue1};
+  padding: 6px 24px;
+`
+
+/* const SomethingWentWrongWrapper = styled.div`
+  padding: 6px 24px;
+` */
+
+type ErrorBoundaryState = {
+  error: Error | null
+}
+
+// const IS_UNISWAP = window.location.hostname === 'app.uniswap.org'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -85,34 +134,9 @@ const FooterWrapper = styled(HeaderWrapper)`
   top: auto;
 `
 
-const CodeBlockWrapper = styled.div`
-  background: ${({ theme }) => theme.bg4};
-  overflow: auto;
-  white-space: pre;
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 16px;
-  padding: 16px;
-  color: ${({ theme }) => theme.text2};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 12px;
-    width: auto;
-  `};
-`
-
 const StyledParagraph = styled.p`
   overflow-x: auto;
 `
-
-const LinkWrapper = styled.div`
-  color: ${({ theme }) => theme.blue1};
-  padding: 6px 24px;
-`
-
-type ErrorBoundaryState = {
-  error: Error | null
-}
 
 function truncate(value?: string): string | undefined {
   return value ? value.slice(0, 1000) : undefined
@@ -137,11 +161,13 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
   }
 
   render() {
-    document.body.classList.remove('noScroll')
+    document.body.classList.remove('noScroll') // mod
     const { error } = this.state
+
     if (error !== null) {
       const encodedBody = encodeURIComponent(issueBody(error))
       return (
+        // TODO: the strcture changed in the original file. We might want to re-use some stuff
         <AppWrapper>
           <HeaderWrapper>
             <HeaderRow marginRight="0">
@@ -162,9 +188,9 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
             <AutoColumn gap={'md'}>
               <CodeBlockWrapper>
                 <code>
-                  <TYPE.main fontSize={10} color={'text1'}>
+                  <ThemedText.Main fontSize={10} color={'text1'}>
                     <StyledParagraph>{error.stack}</StyledParagraph>
-                  </TYPE.main>
+                  </ThemedText.Main>
                 </code>
               </CodeBlockWrapper>
               <AutoRow>
@@ -175,18 +201,18 @@ export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState
                       `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
                     )}`}
                   >
-                    <TYPE.link fontSize={16}>
+                    <ThemedText.Link fontSize={16}>
                       <Trans>Create an issue on GitHub</Trans>
                       <span>↗</span>
-                    </TYPE.link>
+                    </ThemedText.Link>
                   </ExternalLink>
                 </LinkWrapper>
                 <LinkWrapper>
                   <ExternalLink id="get-support-on-discord" href="https://chat.cowswap.exchange/">
-                    <TYPE.link fontSize={16}>
+                    <ThemedText.Link fontSize={16}>
                       <Trans>Get support on Discord</Trans>
                       <span>↗</span>
-                    </TYPE.link>
+                    </ThemedText.Link>
                   </ExternalLink>
                 </LinkWrapper>
               </AutoRow>
@@ -207,16 +233,16 @@ function getRelevantState(): null | keyof AppState {
   if (!path.startsWith('#/')) {
     return null
   }
-  const pieces = path.substring(2).split(/[\/\\?]/)
+  const pieces = path.substring(2).split(/[/\\?]/)
   switch (pieces[0]) {
     case 'swap':
       return 'swap'
-    // case 'add':
-    //   if (pieces[1] === 'v2') return 'mint'
-    //   else return 'mintV3'
-    // case 'remove':
-    //   if (pieces[1] === 'v2') return 'burn'
-    //   else return 'burnV3'
+    /* case 'add':
+      if (pieces[1] === 'v2') return 'mint'
+      else return 'mintV3'
+    case 'remove':
+      if (pieces[1] === 'v2') return 'burn'
+      else return 'burnV3' */
   }
   return null
 }

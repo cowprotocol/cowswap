@@ -20,7 +20,7 @@ export function useCloseAnnouncement(): (contentHash?: string) => void {
   return useCallback(
     (contentHash?: string) => {
       if (contentHash) {
-        dispatch(closeAnnouncement({ contentHash })), [dispatch, contentHash]
+        dispatch(closeAnnouncement({ contentHash }))
       }
     },
     [dispatch]

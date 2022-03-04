@@ -1,29 +1,32 @@
 // import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
-/* import { CHAIN_INFO, SupportedChainId } from 'constants/chains' */
+// import { CHAIN_INFO } from 'constants/chains'
+// import { SupportedChainId } from '@src/constants/chains'
+// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import useTheme from 'hooks/useTheme'
 import { darken } from 'polished'
-import { /* useState, */ PropsWithChildren } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Text } from 'rebass'
-/* import { useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
-import { useUserHasAvailableClaim } from 'state/claim/hooks'
-import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
-import { useDarkModeManager } from 'state/user/hooks'
-import { useETHBalances } from 'state/wallet/hooks' */
+// import { useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
+// import { useUserHasAvailableClaim } from 'state/claim/hooks'
+// import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
+// import { useDarkModeManager } from 'state/user/hooks'
+// import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import styled from 'styled-components/macro'
-/* import Logo from '../../assets/svg/logo.svg'
-import LogoDark from '../../assets/svg/logo_white.svg'
-import { useActiveWeb3React } from '../../hooks/web3' 
-import { ExternalLink, TYPE } from '../../theme'
-import ClaimModal from '../claim/ClaimModal'
-import { CardNoise } from '../earn/styled'
-import Menu from '../Menu'
-import Modal from '../Modal' */
+
+// import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
+// import { ExternalLink, ThemedText } from '../../theme'
+// import ClaimModal from '../claim/ClaimModal'
+// import { CardNoise } from '../earn/styled'
+// import Menu from '../Menu'
 import Row, { RowFixed } from 'components/Row'
-/* import { Dots } from '../swap/styleds'
-import Web3Status from '../Web3Status'
-import NetworkSelector from './NetworkSelector'
-import UniBalanceContent from './UniBalanceContent' */
+// import { Dots } from '../swap/styleds'
+// import Web3Status from '../Web3Status'
+// import HolidayOrnament from './HolidayOrnament'
+// import NetworkSelector from './NetworkSelector'
+
+// MOD imports
+import { PropsWithChildren } from 'react'
 
 export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;
@@ -179,6 +182,8 @@ export const Title = styled.a`
   :hover {
     transform: rotate(-5deg);
   }
+
+  position: relative;
 ` */
 
 const activeClassName = 'ACTIVE'
@@ -197,11 +202,16 @@ export const StyledNavLink = styled(NavLink).attrs({
   width: fit-content;
   margin: 0 12px;
   font-weight: 500;
-
+  /* padding: 8px 12px;
+  word-break: break-word;
+  overflow: hidden;
+  white-space: nowrap; */
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
+    /* justify-content: center; */
     color: ${({ theme }) => theme.text1};
+    /* background-color: ${({ theme }) => theme.bg1}; */
   }
 
   :hover,
@@ -226,7 +236,7 @@ export const StyledNavLink = styled(NavLink).attrs({
   font-weight: 500;
 
   &.${activeClassName} {
-    border-radius: 12px;
+    border-radius: 14px;
     font-weight: 600;
     color: ${({ theme }) => theme.text1};
   }
@@ -234,11 +244,8 @@ export const StyledNavLink = styled(NavLink).attrs({
   :hover,
   :focus {
     color: ${({ theme }) => darken(0.1, theme.text1)};
+    text-decoration: none;
   }
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      display: none;
-`}
 ` */
 
 export const StyledMenuButton = styled.button`
@@ -273,8 +280,9 @@ export const StyledMenuButton = styled.button`
 export default function Header({ children }: PropsWithChildren<void>) {
   /* const { account, chainId } = useActiveWeb3React()
 
-  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const [darkMode] = useDarkModeManager()
+  const { white, black } = useTheme()
 
   const toggleClaimModal = useToggleSelfClaimModal()
 
@@ -282,44 +290,44 @@ export default function Header({ children }: PropsWithChildren<void>) {
 
   const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
 
-  const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
-  const showClaimPopup = useShowClaimPopup()  */
+  const showClaimPopup = useShowClaimPopup() */
 
   const scrollY = useScrollPosition()
 
-  // const { infoLink } = CHAIN_INFO[chainId ? chainId : SupportedChainId.MAINNET]
+  /* const {
+    infoLink,
+    nativeCurrency: { symbol: nativeCurrencySymbol },
+  } = CHAIN_INFO[chainId ? chainId : SupportedChainId.MAINNET] */
 
   return (
     <HeaderFrame showBackground={scrollY > 45}>
       {children}
-      {/* 
+      {/*
       <ClaimModal />
-      <Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
-        <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
-      </Modal>
-        <Title href=".">
-          <UniIcon>
-            <img width={'24px'} src={darkMode ? LogoDark : Logo} alt="logo" />
-          </UniIcon>
-        </Title>
-        <HeaderLinks>
-          <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-            <Trans>Swap</Trans>
-          </StyledNavLink>
-          <StyledNavLink
-            id={`pool-nav-link`}
-            to={'/pool'}
-            isActive={(match, { pathname }) =>
-              Boolean(match) ||
-              pathname.startsWith('/add') ||
-              pathname.startsWith('/remove') ||
-              pathname.startsWith('/increase') ||
-              pathname.startsWith('/find')
-            }
-          >
-            <Trans>Pool</Trans>
+      <Title href=".">
+        <UniIcon>
+          <Logo fill={darkMode ? white : black} width="24px" height="100%" title="logo" />
+          <HolidayOrnament />
+        </UniIcon>
+      </Title>
+      <HeaderLinks>
+        <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+          <Trans>Swap</Trans>
         </StyledNavLink>
-        {chainId && chainId === SupportedChainId.MAINNET && (
+        <StyledNavLink
+          id={`pool-nav-link`}
+          to={'/pool'}
+          isActive={(match, { pathname }) =>
+            Boolean(match) ||
+            pathname.startsWith('/add') ||
+            pathname.startsWith('/remove') ||
+            pathname.startsWith('/increase') ||
+            pathname.startsWith('/find')
+          }
+        >
+          <Trans>Pool</Trans>
+        </StyledNavLink>
+        {(!chainId || chainId === SupportedChainId.MAINNET) && (
           <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
             <Trans>Vote</Trans>
           </StyledNavLink>
@@ -329,6 +337,7 @@ export default function Header({ children }: PropsWithChildren<void>) {
           <sup>↗</sup>
         </StyledExternalLink>
       </HeaderLinks>
+
       <HeaderControls>
         <HeaderElement>
           <NetworkSelector />
@@ -337,7 +346,7 @@ export default function Header({ children }: PropsWithChildren<void>) {
           {availableClaim && !showClaimPopup && (
             <UNIWrapper onClick={toggleClaimModal}>
               <UNIAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
-                <TYPE.white padding="0 2px">
+                <ThemedText.White padding="0 2px">
                   {claimTxn && !claimTxn?.receipt ? (
                     <Dots>
                       <Trans>Claiming UNI</Trans>
@@ -345,7 +354,7 @@ export default function Header({ children }: PropsWithChildren<void>) {
                   ) : (
                     <Trans>Claim UNI</Trans>
                   )}
-                </TYPE.white>
+                </ThemedText.White>
               </UNIAmount>
               <CardNoise />
             </UNIWrapper>
@@ -353,14 +362,18 @@ export default function Header({ children }: PropsWithChildren<void>) {
           <AccountElement active={!!account}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                <Trans>{userEthBalance?.toSignificant(3)} ETH</Trans>
+                <Trans>
+                  {userEthBalance?.toSignificant(3)} {nativeCurrencySymbol}
+                </Trans>
               </BalanceText>
             ) : null}
             <Web3Status />
           </AccountElement>
+        </HeaderElement>
+        <HeaderElement>
           <Menu />
         </HeaderElement>
-      </HeaderControls> 
+      </HeaderControls>
       */}
     </HeaderFrame>
   )
