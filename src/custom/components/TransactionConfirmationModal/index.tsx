@@ -544,20 +544,21 @@ export function TransactionSubmittedContent({
             </ButtonCustom>
           )}
 
-          {/* 
           <ButtonCustom>
             <InternalLink to="/play/cow-runner" onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
               Play the Cow Runner Game!
             </InternalLink>
-          </ButtonCustom> 
-          */}
+          </ButtonCustom>
+
+          {/* 
           <ButtonCustom>
             <InternalLink to="/play/mev-slicer" onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play Cow Slicer Game" />
               Play the Cow Slicer Game!
             </InternalLink>
           </ButtonCustom>
+          */}
         </ButtonGroup>
 
         <CloseLink onClick={onDismiss}>Close</CloseLink>
