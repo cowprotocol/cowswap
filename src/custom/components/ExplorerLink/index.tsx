@@ -1,5 +1,5 @@
 import { ExternalLink } from 'theme'
-import { useActiveWeb3React } from '@src/hooks/web3'
+import { useActiveWeb3React } from 'hooks/web3'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'utils'
 
 interface Props {

@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { getOrders, OrderMetaData } from 'api/gnosisProtocol/api'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'constants/index'
 

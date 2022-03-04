@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { SupportedChainId } from 'constants/chains'
 import { ClassifiedUserClaims, useClaimDispatchers, useClaimState, useClassifiedUserClaims } from './hooks'
-import { useActiveWeb3React } from 'hooks'
+import { useActiveWeb3React } from 'hooks/web3'
 import { ClaimInfo } from 'state/claim/reducer'
 
 export default function Updater() {

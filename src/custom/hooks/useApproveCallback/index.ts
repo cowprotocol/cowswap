@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, MaxUint256, Percent } from '@uniswap/sdk-core'
-import { useActiveWeb3React } from '@src/hooks/web3'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'

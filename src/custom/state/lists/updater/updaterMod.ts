@@ -1,6 +1,7 @@
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { supportedChainId } from 'utils/supportedChainId'
 import { /* ARBITRUM_LIST, OPTIMISM_LIST, */ DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCallback, useEffect } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { useAllLists } from 'state/lists/hooks'
