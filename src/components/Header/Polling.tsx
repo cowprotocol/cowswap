@@ -57,7 +57,7 @@ export const StyledPollingDot = styled.div<{ warning: boolean }>`
   transition: 250ms ease background-color;
 `
 
-const StyledGasDot = styled.div`
+export const StyledGasDot = styled.div`
   background-color: ${({ theme }) => theme.text3};
   border-radius: 50%;
   height: 4px;
@@ -77,7 +77,7 @@ const rotate360 = keyframes`
   }
 `
 
-const Spinner = styled.div<{ warning: boolean }>`
+export const Spinner = styled.div<{ warning: boolean }>`
   animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
   transform: translateZ(0);
 

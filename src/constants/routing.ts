@@ -9,7 +9,6 @@ import {
   DAI_OPTIMISM,
   DAI_POLYGON,
   ETH2X_FLI,
-  GpEther as ExtendedEther,
   FEI,
   FRAX,
   FXS,

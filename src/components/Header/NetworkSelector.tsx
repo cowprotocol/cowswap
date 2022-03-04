@@ -18,7 +18,7 @@ import { replaceURLParam } from 'utils/routes'
 import { useAppDispatch } from '../../state/hooks'
 import { switchToNetwork } from '../../utils/switchToNetwork'
 
-const ActiveRowLinkList = styled.div`
+export const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 8px;
@@ -39,14 +39,14 @@ const ActiveRowLinkList = styled.div`
     padding-top: 10px;
   }
 `
-const ActiveRowWrapper = styled.div`
+export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg1};
   border-radius: 8px;
   cursor: pointer;
   padding: 8px;
   width: 100%;
 `
-const FlyoutHeader = styled.div`
+export const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text2};
   font-weight: 400;
 `
@@ -90,7 +90,7 @@ const FlyoutRowActiveIndicator = styled.div`
   height: 9px;
   width: 9px;
 `
-const LinkOutCircle = styled(ArrowDownCircle)`
+export const LinkOutCircle = styled(ArrowDownCircle)`
   transform: rotate(230deg);
   width: 16px;
   height: 16px;

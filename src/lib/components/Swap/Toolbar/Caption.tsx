@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, TradeType } from '@uniswap/sdk-core'
-import useUSDCPrice from 'hooks/useUSDCPrice'
+import useUSDCPrice from '@src/hooks/useUSDCPrice'
 import Tooltip from 'lib/components/Tooltip'
 import { AlertTriangle, Icon, Info, Spinner } from 'lib/icons'
 import { ThemedText } from 'lib/theme'

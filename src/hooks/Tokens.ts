@@ -1,18 +1,18 @@
 import { Currency, Token } from '@uniswap/sdk-core'
-import { CHAIN_INFO } from 'constants/chainInfo'
-import { L2_CHAIN_IDS, SupportedChainId, SupportedL2ChainId } from 'constants/chains'
+import { CHAIN_INFO } from '@src/constants/chainInfo'
+import { L2_CHAIN_IDS, SupportedChainId, SupportedL2ChainId } from '@src/constants/chains'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
 
-import { useAllLists, useCombinedActiveList, useInactiveListUrls } from '../state/lists/hooks'
+import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'
-import { useUserAddedTokens } from '../state/user/hooks'
-import { TokenAddressMap, useUnsupportedTokenList } from 'state/lists/hooks'
+import { useUserAddedTokens } from 'state/user/hooks'
+import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
-function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
+export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
   const userAddedTokens = useUserAddedTokens()
 

@@ -16,7 +16,7 @@ import { usePool } from 'hooks/usePools'
 import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ReactNode, useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 import { getTickToPrice } from 'utils/getTickToPrice'
 
 import { BIG_INT_ZERO } from '../../../constants/misc'

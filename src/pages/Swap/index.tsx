@@ -8,7 +8,7 @@ import SwapDetailsDropdown from '@src/components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useSwapCallback } from 'hooks/useSwapCallback'
+import { useSwapCallback } from '@src/hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
@@ -72,10 +72,7 @@ export default function Swap({ history }: RouteComponentProps) {
     useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId),
     useCurrency(loadedUrlParams?.[Field.OUTPUT]?.currencyId),
   ]
-  // TODO: is this a mod?
-  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(
-    process.env.REACT_APP_DISABLE_TOKEN_WARNING === 'true'
-  )
+  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
     [loadedInputCurrency, loadedOutputCurrency]

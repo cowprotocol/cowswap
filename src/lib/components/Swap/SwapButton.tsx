@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
-import { useERC20PermitFromTrade } from 'hooks/useERC20Permit'
+import { useERC20PermitFromTrade } from '@src/hooks/useERC20Permit'
 import { useUpdateAtom } from 'jotai/utils'
 import { useSwapCurrencyAmount, useSwapInfo, useSwapTradeType } from 'lib/hooks/swap'
 import useSwapApproval, {

@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { L2_CHAIN_IDS } from 'constants/chains'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW, L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import { useAtom } from 'jotai'

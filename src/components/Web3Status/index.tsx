@@ -31,7 +31,7 @@ const IconWrapper = styled.div<{ size?: number }>`
   }
 `
 
-const Web3StatusGeneric = styled(ButtonSecondary)`
+export const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
   align-items: center;
@@ -46,7 +46,7 @@ const Web3StatusGeneric = styled(ButtonSecondary)`
     outline: none;
   }
 `
-const Web3StatusError = styled(Web3StatusGeneric)`
+export const Web3StatusError = styled(Web3StatusGeneric)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
   color: ${({ theme }) => theme.white};
@@ -57,7 +57,7 @@ const Web3StatusError = styled(Web3StatusGeneric)`
   }
 `
 
-const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
+export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   background-color: ${({ theme }) => theme.primary4};
   border: none;
 
@@ -131,7 +131,7 @@ function Sock() {
   )
 }
 
-function WrappedStatusIcon({ connector }: { connector: AbstractConnector | Connector }) {
+export function WrappedStatusIcon({ connector }: { connector: AbstractConnector | Connector }) {
   return (
     <IconWrapper size={16}>
       <StatusIcon connector={connector} />

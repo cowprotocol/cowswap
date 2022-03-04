@@ -5,7 +5,7 @@ import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useRemovePopup } from '../../state/application/hooks'
-import { PopupContent } from 'state/application/reducer'
+import { PopupContent } from '@src/state/application/reducer'
 import FailedNetworkSwitchPopup from './FailedNetworkSwitchPopup'
 import TransactionPopup from './TransactionPopup'
 
