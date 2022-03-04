@@ -4,7 +4,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useActiveWeb3React } from 'hooks/web3'
 // import { useTransaction } from 'state/transactions/hooks'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 // import { ExternalLink } from 'theme'
 // import { getEtherscanLink } from 'utils'
 import { AutoColumn } from 'components/Column'
@@ -35,9 +35,9 @@ export default function TransactionPopup({
       </div>
       <AutoColumn gap="8px">
         {!summary || typeof summary === 'string' ? (
-          <TYPE.body fontWeight={500} style={{ whiteSpace: 'pre-wrap' }}>
+          <ThemedText.Body fontWeight={500} style={{ whiteSpace: 'pre-wrap' }}>
             {summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}
-          </TYPE.body>
+          </ThemedText.Body>
         ) : (
           summary
         )}

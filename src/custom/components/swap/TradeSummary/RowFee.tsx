@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react'
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components/macro'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 
 import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
@@ -81,9 +81,9 @@ export function RowFee({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <TYPE.black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           Fees {includeGasMessage}
-        </TYPE.black>
+        </ThemedText.Black>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} bgColor={theme.bg1} color={theme.text1}>
             <StyledInfo />
@@ -91,9 +91,9 @@ export function RowFee({
         )}
       </RowFixed>
 
-      <TYPE.black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+      <ThemedText.Black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
         {feeToken} {feeUsd && <LightGreyText>{feeUsd}</LightGreyText>}
-      </TYPE.black>
+      </ThemedText.Black>
     </RowBetween>
   )
 }

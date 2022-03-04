@@ -12,7 +12,7 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
 import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import Modal from 'components/Modal'
@@ -204,9 +204,9 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
             {/* {chainId === SupportedChainId.MAINNET && (
               <RowBetween>
                 <RowFixed>
-                  <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                  <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
                     <Trans>Auto Router</Trans>
-                  </TYPE.black>
+                  </ThemedText.Black>
                   <QuestionHelper
                     text={<Trans>Use the Uniswap Labs API to get better pricing through a more efficient route.</Trans>}
                   />
@@ -227,9 +227,9 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
             <RowBetween>
               <RowFixed>
-                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
                   <Trans>Expert Mode</Trans>
-                </TYPE.black>
+                </ThemedText.Black>
                 <QuestionHelper
                   bgColor={theme.bg3}
                   color={theme.text1}
@@ -259,9 +259,9 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
             <RowBetween>
               <RowFixed>
-                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
                   <Trans>Toggle Recipient</Trans>
-                </TYPE.black>
+                </ThemedText.Black>
                 <QuestionHelper
                   bgColor={theme.bg3}
                   color={theme.text1}

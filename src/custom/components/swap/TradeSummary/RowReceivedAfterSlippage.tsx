@@ -2,7 +2,7 @@ import { useContext, useMemo } from 'react'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 
 import { Field } from 'state/swap/actions'
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
@@ -50,13 +50,13 @@ export function RowReceivedAfterSlippage({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <TYPE.black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           {trade.tradeType === TradeType.EXACT_INPUT ? (
             <Trans>Minimum received (incl. fee)</Trans>
           ) : (
             <Trans>Maximum sent (incl. fee)</Trans>
           )}
-        </TYPE.black>
+        </ThemedText.Black>
         {showHelpers && (
           <MouseoverTooltipContent
             content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)}
@@ -68,9 +68,9 @@ export function RowReceivedAfterSlippage({
         )}
       </RowFixed>
 
-      <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1} title={`${fullOutAmount} ${symbol}`}>
+      <ThemedText.Black textAlign="right" fontSize={fontSize} color={theme.text1} title={`${fullOutAmount} ${symbol}`}>
         {`${formatSmart(swapAmount, AMOUNT_PRECISION) || '-'} ${symbol}`}
-      </TYPE.black>
+      </ThemedText.Black>
     </RowBetween>
   )
 }

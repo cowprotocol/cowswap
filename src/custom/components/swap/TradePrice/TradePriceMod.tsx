@@ -4,7 +4,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
-// import { TYPE } from 'theme'
+// import { ThemedText } from 'theme'
 import { formatMax, formatSmart } from 'utils/format' // mod
 import { LightGreyText } from 'pages/Swap'
 
@@ -61,9 +61,9 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
         {fiatValue && <LightGreyText>{fiatText}</LightGreyText>}
       </Text>{' '}
       {/* {usdcPrice && (
-        <TYPE.darkGray>
+        <ThemedText.DarkGray>
           <Trans>(${usdcPrice.toSignificant(6, { groupSeparator: ',' })})</Trans>
-        </TYPE.darkGray>
+        </ThemedText.DarkGray>
       )} */}
     </StyledPriceContainer>
   )

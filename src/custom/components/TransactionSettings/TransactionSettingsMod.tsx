@@ -3,7 +3,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { useContext, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
@@ -160,9 +160,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     <AutoColumn gap="md">
       <AutoColumn gap="sm">
         <RowFixed>
-          <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+          <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
             <Trans>MEV protected slippage</Trans>
-          </TYPE.black>
+          </ThemedText.Black>
           <QuestionHelper
             bgColor={theme.bg3}
             color={theme.text1}
@@ -239,9 +239,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       {showCustomDeadlineRow && (
         <AutoColumn gap="sm">
           <RowFixed>
-            <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
+            <ThemedText.Black fontSize={14} fontWeight={400} color={theme.text2}>
               <Trans>Transaction deadline</Trans>
-            </TYPE.black>
+            </ThemedText.Black>
             <QuestionHelper
               bgColor={theme.bg3}
               color={theme.text1}
@@ -272,9 +272,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 color={deadlineError ? 'red' : ''}
               />
             </OptionCustom>
-            <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>
+            <ThemedText.Body style={{ paddingLeft: '8px' }} fontSize={14}>
               <Trans>minutes</Trans>
-            </TYPE.body>
+            </ThemedText.Body>
           </RowFixed>
         </AutoColumn>
       )}

@@ -4,7 +4,7 @@ import HoverInlineText from 'components/HoverInlineText'
 import { useMemo } from 'react'
 
 import useTheme from 'hooks/useTheme'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 import { warningSeverity } from 'utils/prices'
 
 import { FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index' // mod
@@ -33,7 +33,11 @@ export function FiatValue({
   }, [priceImpact, theme.green1, theme.red1, theme.text3, theme.yellow1])
 
   return (
-    <TYPE.body className={className} fontSize={14} color={fiatValue ? theme.text1 /* theme.text2 */ : theme.text4}>
+    <ThemedText.Body
+      className={className}
+      fontSize={14}
+      color={fiatValue ? theme.text1 /* theme.text2 */ : theme.text4}
+    >
       {fiatValue ? (
         <Trans>
           ≈ $
@@ -55,6 +59,6 @@ export function FiatValue({
         </span>
       ) : null}
       {priceImpactLoading && <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />}
-    </TYPE.body>
+    </ThemedText.Body>
   )
 }

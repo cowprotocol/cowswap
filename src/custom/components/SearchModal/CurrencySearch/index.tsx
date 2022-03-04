@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { RowFixed } from 'components/Row'
-import { IconWrapper, TYPE } from 'theme'
+import { IconWrapper, ThemedText } from 'theme'
 import styled from 'styled-components/macro'
 import { Edit } from 'react-feather'
 import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
@@ -49,12 +49,12 @@ const FooterButtonTextComponent = ({ theme }: { theme: DefaultTheme }) => (
     >
       <Edit />
     </IconWrapper>
-    <TYPE.main
+    <ThemedText.Main
       // color={theme.blue1}
       color={theme.text1}
     >
       <Trans>Manage Token Lists</Trans>
-    </TYPE.main>
+    </ThemedText.Main>
   </RowFixed>
 )
 

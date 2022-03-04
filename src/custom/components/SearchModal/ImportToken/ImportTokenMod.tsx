@@ -10,7 +10,7 @@ import useTheme from 'hooks/useTheme'
 import { AlertCircle, ArrowLeft } from 'react-feather'
 import { useAddUserToken } from 'state/user/hooks'
 import styled from 'styled-components/macro'
-import { CloseIcon, TYPE } from 'theme'
+import { CloseIcon, ThemedText } from 'theme'
 import { transparentize } from 'polished'
 
 // import BlockedToken from 'components/SearchModal/BlockedToken'
@@ -31,7 +31,7 @@ export const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
   width: fit-content;
 `
 
-export const AddressText = styled(TYPE.blue)`
+export const AddressText = styled(ThemedText.Blue)`
   font-size: 12px;
   word-break: break-all;
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -65,9 +65,9 @@ export function ImportToken(props: ImportProps) {
       <PaddedColumn gap="14px" style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
           {onBack ? <ArrowLeft style={{ cursor: 'pointer' }} onClick={onBack} /> : <div />}
-          <TYPE.mediumHeader>
+          <ThemedText.MediumHeader>
             <Plural value={tokens.length} one="Import token" other="Import tokens" />
-          </TYPE.mediumHeader>
+          </ThemedText.MediumHeader>
           {onDismiss ? <CloseIcon onClick={onDismiss} /> : <div />}
         </RowBetween>
       </PaddedColumn>
@@ -75,12 +75,12 @@ export function ImportToken(props: ImportProps) {
       <AutoColumn gap="md" style={{ marginBottom: '32px', padding: '1rem' }}>
         <AutoColumn justify="center" style={{ textAlign: 'center', gap: '16px', padding: '1rem' }}>
           <AlertCircle size={48} stroke={theme.text2} strokeWidth={1} />
-          <TYPE.body fontWeight={400} fontSize={16}>
+          <ThemedText.Body fontWeight={400} fontSize={16}>
             <Trans>
               This token doesn&apos;t appear on the active token list(s). Make sure this is the token that you want to
               trade.
             </Trans>
-          </TYPE.body>
+          </ThemedText.Body>
         </AutoColumn>
         {tokens.map((token) => (
           <TokenImportCard token={token} list={list} key={'import' + token.address} />

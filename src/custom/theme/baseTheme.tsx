@@ -18,7 +18,7 @@ import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { ModalContentWrapper } from 'components/Settings/SettingsMod'
 
-export { TYPE } from '@src/theme'
+export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {

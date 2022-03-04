@@ -7,7 +7,7 @@ import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 import { isAddress, shortenAddress } from 'utils'
 import { ButtonPrimary } from 'components/Button'
 // import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
@@ -124,9 +124,9 @@ SwapModalHeaderProps) {
       <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
         <AutoColumn gap={'8px'}>
           <RowBetween>
-            <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
+            <ThemedText.Body color={theme.text3} fontWeight={500} fontSize={14}>
               <Trans>From</Trans>
-            </TYPE.body>
+            </ThemedText.Body>
             <FiatValue fiatValue={fiatValueInput} />
           </RowBetween>
           <RowBetween align="center">
@@ -174,12 +174,12 @@ SwapModalHeaderProps) {
       >
         <AutoColumn gap={'8px'}>
           <RowBetween>
-            <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
+            <ThemedText.Body color={theme.text3} fontWeight={500} fontSize={14}>
               <Trans>To</Trans>
-            </TYPE.body>
-            <TYPE.body fontSize={14} color={theme.text3}>
+            </ThemedText.Body>
+            <ThemedText.Body fontSize={14} color={theme.text3}>
               <FiatValue fiatValue={fiatValueOutput} priceImpact={priceImpact} />
-            </TYPE.body>
+            </ThemedText.Body>
           </RowBetween>
           <RowBetween align="flex-end">
             <RowFixed gap={'0px'}>
@@ -224,9 +224,9 @@ SwapModalHeaderProps) {
         margin="auto"
       />
       {/* <RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
-        <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
+        <ThemedText.Body color={theme.text2} fontWeight={500} fontSize={14}>
           <Trans>Price</Trans>
-        </TYPE.body>
+        </ThemedText.Body>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween> */}
 
@@ -239,9 +239,9 @@ SwapModalHeaderProps) {
           <RowBetween>
             <RowFixed>
               <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <TYPE.main color={theme.primary1}>
+              <ThemedText.Main color={theme.primary1}>
                 <Trans>Price Updated</Trans>
-              </TYPE.main>
+              </ThemedText.Main>
             </RowFixed>
             <ButtonPrimary
               style={{ padding: '.5rem', width: 'fit-content', fontSize: '0.825rem', borderRadius: '12px' }}
@@ -255,7 +255,7 @@ SwapModalHeaderProps) {
 
       <AutoColumn justify="flex-start" gap="sm" style={{ padding: '.75rem 1rem' }}>
         {trade.tradeType === TradeType.EXACT_INPUT ? (
-          <TYPE.italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
+          <ThemedText.Italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
             <Trans>
               Output is estimated. You will receive at least{' '}
               <b>
@@ -264,9 +264,9 @@ SwapModalHeaderProps) {
               </b>{' '}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
-          </TYPE.italic>
+          </ThemedText.Italic>
         ) : (
-          <TYPE.italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
+          <ThemedText.Italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
             <Trans>
               Input is estimated. You will sell at most{' '}
               <b>
@@ -276,17 +276,17 @@ SwapModalHeaderProps) {
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
-          </TYPE.italic>
+          </ThemedText.Italic>
         )}
       </AutoColumn>
       {recipient !== null ? (
         <AutoColumn justify="flex-start" gap="sm">
-          <TYPE.main style={{ padding: '0.75rem 1rem' }}>
+          <ThemedText.Main style={{ padding: '0.75rem 1rem' }}>
             <Trans>
               Output will be sent to{' '}
               <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>
             </Trans>
-          </TYPE.main>
+          </ThemedText.Main>
         </AutoColumn>
       ) : null}
       {/* High Fee Warning */}

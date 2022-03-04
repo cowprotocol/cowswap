@@ -9,7 +9,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useRemoveUserAddedToken, useUserAddedTokens } from 'state/user/hooks'
 import styled from 'styled-components/macro'
-import { ButtonText, ExternalLink, ExternalLinkIcon, TrashIcon, TYPE } from 'theme'
+import { ButtonText, ExternalLink, ExternalLinkIcon, TrashIcon, ThemedText } from 'theme'
 import { isAddress } from 'utils'
 
 import useTheme from 'hooks/useTheme'
@@ -86,9 +86,9 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
           <RowFixed>
             <CurrencyLogo currency={token} size={'20px'} />
             <ExternalLink href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)}>
-              <TYPE.main ml={'10px'} fontWeight={600}>
+              <ThemedText.Main ml={'10px'} fontWeight={600}>
                 {token.symbol}
-              </TYPE.main>
+              </ThemedText.Main>
             </ExternalLink>
           </RowFixed>
           <RowFixed>
@@ -116,14 +116,14 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
             />
           </Row>
           {searchQuery !== '' && !isAddressSearch && (
-            <TYPE.error error={true}>
+            <ThemedText.Error error={true}>
               <Trans>Enter valid token address</Trans>
-            </TYPE.error>
+            </ThemedText.Error>
           )}
           {searchQuery !== '' && isAddressSearch && !searchToken && (
-            <TYPE.error error={true}>
+            <ThemedText.Error error={true}>
               <Trans>No tokens found with this address in {network} network</Trans>
-            </TYPE.error>
+            </ThemedText.Error>
           )}
           {searchToken && ( // MOD
             <ImportTokensRow
@@ -137,14 +137,14 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
         <Separator />
         <PaddedColumn gap="lg" style={{ overflow: 'auto', marginBottom: '10px' }}>
           <RowBetween>
-            <TYPE.main fontWeight={600}>
+            <ThemedText.Main fontWeight={600}>
               <Trans>{userAddedTokens?.length} Custom Tokens</Trans>
-            </TYPE.main>
+            </ThemedText.Main>
             {userAddedTokens.length > 0 && (
               <ButtonText onClick={handleRemoveAll}>
-                <TYPE.blue>
+                <ThemedText.Blue>
                   <Trans>Clear all</Trans>
-                </TYPE.blue>
+                </ThemedText.Blue>
               </ButtonText>
             )}
           </RowBetween>
@@ -152,9 +152,9 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
         </PaddedColumn>
       </Column>
       <Footer>
-        <TYPE.darkGray>
+        <ThemedText.DarkGray>
           <Trans>Tip: Custom tokens are stored locally in your browser</Trans>
-        </TYPE.darkGray>
+        </ThemedText.DarkGray>
       </Footer>
     </Wrapper>
   )

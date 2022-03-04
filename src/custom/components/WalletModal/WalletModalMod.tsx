@@ -18,7 +18,7 @@ import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import {
   // ExternalLink,
-  TYPE,
+  ThemedText,
 } from 'theme'
 import { isMobile } from 'react-device-detect'
 // import AccountDetails from 'components/AccountDetails'
@@ -381,7 +381,7 @@ export default function WalletModal({
         <ContentWrapper>
           <LightCard style={{ marginBottom: '16px' }}>
             <AutoRow style={{ flexWrap: 'nowrap' }}>
-              <TYPE.main fontSize={14}>
+              <ThemedText.Main fontSize={14}>
                 {/* <Trans>
                   By connecting a wallet, you agree to Uniswap Labs’{' '}
                   <ExternalLink href="https://uniswap.org/terms-of-service/">Terms of Service</ExternalLink> and
@@ -389,7 +389,7 @@ export default function WalletModal({
                   <ExternalLink href="https://uniswap.org/disclaimer/">Uniswap protocol disclaimer</ExternalLink>.
                 </Trans> */}
                 <CustomTerms />
-              </TYPE.main>
+              </ThemedText.Main>
             </AutoRow>
           </LightCard>
 
