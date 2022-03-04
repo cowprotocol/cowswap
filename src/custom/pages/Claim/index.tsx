@@ -171,7 +171,7 @@ export default function Claim() {
     if (!selected.length) {
       console.log('Starting claiming with', claimInputData)
       sendTransaction(claimInputData)
-    } else if (investFlowStep == 2) {
+    } else if (investFlowStep === 2) {
       console.log('Starting claiming with', claimInputData)
       sendTransaction(claimInputData)
     } else {

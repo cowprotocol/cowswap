@@ -26,7 +26,7 @@ import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { Title } from 'components/Page'
@@ -41,7 +41,7 @@ export default function Profile() {
   const { account, chainId } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
-  const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
+  const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
   const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)

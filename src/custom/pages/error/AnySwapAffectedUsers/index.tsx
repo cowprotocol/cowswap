@@ -7,7 +7,7 @@ import { ExternalLink as ExternalLinkTheme } from 'theme'
 const ExternalLink = styled(ExternalLinkTheme)``
 
 const Wrapper = styled(Page)`
-  ${GdocsListStyle}
+  ${GdocsListStyle};
   min-height: auto;
   padding-bottom: 32px;
   ${({ theme }) => theme.mediaWidth.upToSmall`

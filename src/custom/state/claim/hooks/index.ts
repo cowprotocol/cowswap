@@ -311,7 +311,7 @@ function useDeploymentTimestamp(): number | null {
     }
 
     // Invalidate timestamp
-    if (chainId != oldChainId.current) {
+    if (chainId !== oldChainId.current) {
       setTimestamp(null)
       oldChainId.current = chainId
     }

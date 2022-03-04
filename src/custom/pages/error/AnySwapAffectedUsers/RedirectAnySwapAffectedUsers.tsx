@@ -13,6 +13,7 @@ export default function RedirectAnySwapAffectedUsers() {
   const isAnySwapAffectedUser = useIsAnySwapAffectedUser()
 
   useEffect(() => {
+    // eslint-disable-next-line no-restricted-globals
     if (isAnySwapAffectedUser && location.pathname !== WARNING_PAGE) {
       // Redirect to warning page
       history.push(WARNING_PAGE)
