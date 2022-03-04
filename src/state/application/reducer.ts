@@ -1,21 +1,21 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 
-// import { SupportedChainId } from '../../constants/chains'
-//
-// export type PopupContent =
-//   | {
-//       txn: {
-//         hash: string
-//       }
-//     }
-// TODO: check whether this could be useful for us
-//   | {
-//       failedSwitchNetwork: SupportedChainId
-//     }
+import { SupportedChainId } from 'constants/chains'
+
+type BasePopupContent =
+  //   | {
+  //       txn: {
+  //         hash: string
+  //       }
+  //     }
+  //   | {
+  {
+    failedSwitchNetwork: SupportedChainId
+  }
 
 // MOD: Modified PopupContent. The mod happened directly in the src file, to avoid redefining the state/hoos/etc
-export type PopupContent = TxPopupContent | MetaTxPopupContent
+export type PopupContent = TxPopupContent | MetaTxPopupContent | BasePopupContent
 
 export type TxPopupContent = {
   txn: {
@@ -45,10 +45,10 @@ export enum ApplicationModal {
   POOL_OVERVIEW_OPTIONS,
   NETWORK_SELECTOR,
   PRIVACY_POLICY,
+  ARBITRUM_OPTIONS,
   // -----------------      MOD: CowSwap specific modals      --------------------
   TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
-  ARBITRUM_OPTIONS,
   // ------------------------------------------------------------------------------
 }
 
