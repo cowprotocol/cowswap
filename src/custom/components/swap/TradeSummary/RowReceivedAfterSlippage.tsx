@@ -13,6 +13,8 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from 'pages/Swap/styleds'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { useShowQuoteLoader } from 'state/price/hooks'
+import Shimmer from 'components/Shimmer'
 
 export interface RowReceivedAfterSlippageProps {
   trade: TradeGp
@@ -34,6 +36,7 @@ export function RowReceivedAfterSlippage({
 }: RowReceivedAfterSlippageProps) {
   const theme = useContext(ThemeContext)
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+  const showLoader = useShowQuoteLoader()
 
   const [slippageOut, slippageIn] = useMemo(
     () => [slippageAdjustedAmounts[Field.OUTPUT], slippageAdjustedAmounts[Field.INPUT]],
@@ -68,9 +71,13 @@ export function RowReceivedAfterSlippage({
         )}
       </RowFixed>
 
-      <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1} title={`${fullOutAmount} ${symbol}`}>
-        {`${formatSmart(swapAmount, AMOUNT_PRECISION) || '-'} ${symbol}`}
-      </TYPE.black>
+      {showLoader ? (
+        <Shimmer width={110} height={10} />
+      ) : (
+        <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1} title={`${fullOutAmount} ${symbol}`}>
+          {`${formatSmart(swapAmount, AMOUNT_PRECISION) || '-'} ${symbol}`}
+        </TYPE.black>
+      )}
     </RowBetween>
   )
 }

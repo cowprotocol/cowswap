@@ -10,6 +10,8 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { LightGreyText } from 'pages/Swap'
+import { useShowQuoteLoader } from 'state/price/hooks'
+import Shimmer from 'components/Shimmer'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CowSwap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -60,6 +62,7 @@ export function RowFee({
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
   const displayFee = realizedFee || fee
   const feeCurrencySymbol = displayFee?.currency.symbol || '-'
+  const showLoader = useShowQuoteLoader()
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const { feeToken, feeUsd, fullDisplayFee } = useMemo(() => {
@@ -91,9 +94,13 @@ export function RowFee({
         )}
       </RowFixed>
 
-      <TYPE.black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        {feeToken} {feeUsd && <LightGreyText>{feeUsd}</LightGreyText>}
-      </TYPE.black>
+      {showLoader ? (
+        <Shimmer height={10} width={110} />
+      ) : (
+        <TYPE.black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+          {feeToken} {feeUsd && <LightGreyText>{feeUsd}</LightGreyText>}
+        </TYPE.black>
+      )}
     </RowBetween>
   )
 }

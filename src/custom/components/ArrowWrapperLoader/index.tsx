@@ -2,9 +2,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 import { ArrowDown } from 'react-feather'
-import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
-import { useIsQuoteRefreshing, useIsBestQuoteLoading } from 'state/price/hooks'
-import { LONG_LOAD_THRESHOLD, SHORT_LOAD_THRESHOLD } from 'constants/index'
+import { useShowQuoteLoader } from 'state/price/hooks'
 
 interface ShowLoaderProp {
   showloader: boolean
@@ -120,21 +118,14 @@ export interface ArrowWrapperLoaderProps {
 }
 
 export function ArrowWrapperLoader({ onSwitchTokens, setApprovalSubmitted }: ArrowWrapperLoaderProps) {
-  const isRefreshingQuote = useIsQuoteRefreshing()
-  const isBestQuoteLoading = useIsBestQuoteLoading()
-
-  const showCowLoader = useLoadingWithTimeout(isRefreshingQuote, LONG_LOAD_THRESHOLD)
-  const showQuoteLoader = useLoadingWithTimeout(isBestQuoteLoading, SHORT_LOAD_THRESHOLD)
+  const showQuoteLoader = useShowQuoteLoader()
 
   const handleClick = () => {
     setApprovalSubmitted(false) // reset 2 step UI for approvals
     onSwitchTokens()
   }
 
-  const showLoader = useMemo(
-    () => Boolean(loadingCowGif) && (showCowLoader || showQuoteLoader),
-    [showCowLoader, showQuoteLoader]
-  )
+  const showLoader = useMemo(() => Boolean(loadingCowGif) && showQuoteLoader, [showQuoteLoader])
 
   return (
     <Wrapper showloader={showLoader} onClick={handleClick}>

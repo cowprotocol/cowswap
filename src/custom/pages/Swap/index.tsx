@@ -34,6 +34,8 @@ import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state
 import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
 import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useShowQuoteLoader } from 'state/price/hooks'
+import Shimmer from 'components/Shimmer'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
@@ -190,6 +192,8 @@ export const Price: React.FC<PriceProps> = ({
   setShowInverted,
   ...boxProps
 }: PriceProps) => {
+  const showQuoteLoader = useShowQuoteLoader()
+
   return (
     <LowerSectionWrapper {...boxProps}>
       <Text fontWeight={500} fontSize={14} color={theme.text2}>
@@ -198,9 +202,13 @@ export const Price: React.FC<PriceProps> = ({
           <Repeat size={20} onClick={() => setShowInverted((prev) => !prev)} />
         </PriceSwitcher>
       </Text>
-      <div className="price-container">
-        <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
-      </div>
+      {showQuoteLoader ? (
+        <Shimmer height={10} width={110} />
+      ) : (
+        <div className="price-container">
+          <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
+        </div>
+      )}
     </LowerSectionWrapper>
   )
 }

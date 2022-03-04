@@ -6,6 +6,8 @@ import { formatMax, formatSmart } from 'utils/format'
 import useTheme from 'hooks/useTheme'
 import { FIAT_PRECISION } from 'constants/index'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { useShowQuoteLoader } from 'state/price/hooks'
+import Shimmer from 'components/Shimmer'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -26,9 +28,11 @@ const WrappedQuestionHelper = styled(QuestionHelper)`
 
 export const FeeInformationTooltipWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   height: 60px;
+  margin: 0 16px;
+  padding: 0;
 `
 
 const FeeTooltipLine = styled.p`
@@ -90,6 +94,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
   } = props
 
   const theme = useTheme()
+  const showLoader = useShowQuoteLoader()
 
   const [symbol, fullFeeAmount] = useMemo(() => {
     const amount = trade?.[type === 'From' ? 'inputAmount' : 'outputAmount']
@@ -142,9 +147,14 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
           }
         />
       </span>
-      <FeeAmountAndFiat title={`${fullFeeAmount} ${symbol}`}>
-        {amountAfterFees} {showFiat && fiatValue && <small>≈ ${formatSmart(fiatValue, FIAT_PRECISION)}</small>}
-      </FeeAmountAndFiat>
+
+      {showLoader ? (
+        <Shimmer width={80} height={10} />
+      ) : (
+        <FeeAmountAndFiat title={`${fullFeeAmount} ${symbol}`}>
+          {amountAfterFees} {showFiat && fiatValue && <small>≈ ${formatSmart(fiatValue, FIAT_PRECISION)}</small>}
+        </FeeAmountAndFiat>
+      )}
     </FeeInformationTooltipWrapper>
   )
 }

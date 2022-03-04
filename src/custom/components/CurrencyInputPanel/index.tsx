@@ -2,8 +2,7 @@
 
 import styled, { css } from 'styled-components/macro'
 import { darken } from 'polished'
-import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
-import { useIsQuoteRefreshing } from 'state/price/hooks'
+import { useShowQuoteLoader } from 'state/price/hooks'
 
 import CurrencyInputPanelMod, {
   CurrencyInputPanelProps,
@@ -20,7 +19,6 @@ import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTool
 import { TextWrapper } from 'components/HoverInlineText'
 
 import { StyledLogo } from 'components/CurrencyLogo'
-import { LONG_LOAD_THRESHOLD } from 'constants/index'
 
 export const CurrencySearchModal = styled(CurrencySearchModalUni)`
   > [data-reach-dialog-content] {
@@ -294,8 +292,7 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const { currency } = props
-  const isRefreshingQuote = useIsQuoteRefreshing()
-  const showLoader = useLoadingWithTimeout(isRefreshingQuote, LONG_LOAD_THRESHOLD)
+  const showLoader = useShowQuoteLoader()
   return (
     <Wrapper selected={!!currency} showLoader={showLoader}>
       <CurrencyInputPanelMod {...props} />

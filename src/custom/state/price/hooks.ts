@@ -1,7 +1,9 @@
 import { useActiveWeb3React } from 'hooks/web3'
 import { useSwapState } from '@src/state/swap/hooks'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { LONG_LOAD_THRESHOLD, SHORT_LOAD_THRESHOLD } from 'constants/index'
+import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
 
 import { AppDispatch, AppState } from 'state'
 import {
@@ -81,6 +83,16 @@ export function useIsQuoteRefreshing() {
   } = useSwapState()
   const { isRefreshingQuote } = useGetQuoteAndStatus({ token: currencyId, chainId })
   return isRefreshingQuote
+}
+
+export const useShowQuoteLoader = () => {
+  const isRefreshingQuote = useIsQuoteRefreshing()
+  const isBestQuoteLoading = useIsBestQuoteLoading()
+
+  const showCowLoader = useLoadingWithTimeout(isRefreshingQuote, LONG_LOAD_THRESHOLD)
+  const showQuoteLoader = useLoadingWithTimeout(isBestQuoteLoading, SHORT_LOAD_THRESHOLD)
+
+  return useMemo(() => showCowLoader || showQuoteLoader, [showCowLoader, showQuoteLoader])
 }
 
 export const useGetNewQuote = (): GetNewQuoteCallback => {

@@ -19883,6 +19883,14 @@ react-scripts@^4.0.3:
   optionalDependencies:
     fsevents "^2.1.3"
 
+react-shimmer@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-shimmer/-/react-shimmer-3.2.0.tgz#f25e48dc3276822b2ed46a23c3c1c7e4bfd952f8"
+  integrity sha512-sLUYOulTt4Pf8/ezwRaDdVblEyrD0zkJEH1OsFvgNZbc0n5FTQa8anBrtAoCFCQthOOWgFmD89RPVeILyM9WjQ==
+  dependencies:
+    clsx "^1.1.0"
+    prop-types "^15.7.2"
+
 react-spring@^8.0.27:
   version "8.0.27"
   resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-8.0.27.tgz#97d4dee677f41e0b2adcb696f3839680a3aa356a"
