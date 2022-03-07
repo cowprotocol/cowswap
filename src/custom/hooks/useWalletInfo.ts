@@ -58,7 +58,8 @@ function checkIsSupportedWallet(params: {
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
   const provider = (await connector.getProvider()) as WalletConnectProvider
 
-  const meta = provider.walletMeta
+  // fix for this https://github.com/gnosis/cowswap/issues/1929
+  const meta = provider.walletMeta || provider.signer.connection.wc.peerMeta
   if (meta) {
     return {
       walletName: meta.name,
