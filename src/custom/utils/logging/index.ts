@@ -27,3 +27,13 @@ export function constructSentryError(
 
   return { baseError, sentryError: constructedError, tags }
 }
+
+// checks response for non json/application return type and throw appropriate error
+export function checkAndThrowIfJsonSerialisableError(response: Response) {
+  // don't attempt json parse if not json response...
+  if (response.headers.get('Content-Type') !== 'application/json') {
+    throw new Error(
+      `Non JSON serialisable error detected with status code ${response.status}. ${JSON.stringify(response.statusText)}`
+    )
+  }
+}
