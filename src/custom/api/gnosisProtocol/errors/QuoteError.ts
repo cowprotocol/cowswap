@@ -17,6 +17,8 @@ export enum GpQuoteErrorCodes {
   UNHANDLED_ERROR = 'UNHANDLED_ERROR',
 }
 
+export const SENTRY_IGNORED_GP_QUOTE_ERRORS = [GpQuoteErrorCodes.FeeExceedsFrom]
+
 export enum GpQuoteErrorDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   InsufficientLiquidity = 'Token pair selected has insufficient liquidity.',

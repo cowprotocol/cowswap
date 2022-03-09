@@ -21,6 +21,7 @@ import { environmentName } from 'utils/environments'
 import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
+import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -31,6 +32,7 @@ if (SENTRY_DSN) {
     integrations: [new Integrations.BrowserTracing()],
     release: 'CowSwap@v' + version,
     environment: environmentName,
+    ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS],
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
