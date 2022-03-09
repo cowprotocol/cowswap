@@ -26,7 +26,13 @@ export const APP_DATA_HASH = getAppDataHash()
 export const PRODUCTION_URL = 'cowswap.exchange'
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
-const DISABLED_WALLETS = /^(?:Portis)$/i
+// Allow WALLET_LINK to be activated on mobile
+// since COINBASE_LINK is limited to use only 1 deeplink on mobile
+SUPPORTED_WALLETS_UNISWAP.WALLET_LINK = {
+  ...SUPPORTED_WALLETS_UNISWAP.WALLET_LINK,
+  mobile: true,
+}
+const DISABLED_WALLETS = /^(?:Portis|COINBASE_LINK)$/i
 
 // Re-export only the supported wallets
 export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
@@ -115,6 +121,7 @@ export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 
 // last wallet provider key used in local storage
 export const STORAGE_KEY_LAST_PROVIDER = 'lastProvider'
+export const WAITING_TIME_RECONNECT_LAST_PROVIDER = 15000 // 15s
 
 // Default price strategy to use for getting app prices
 // COWSWAP = new quote endpoint
