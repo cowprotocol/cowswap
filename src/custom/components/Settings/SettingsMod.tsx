@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
-// import { SupportedChainId } from 'constants/chains'
-// import { useActiveWeb3React } from 'hooks/web3'
+// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
 // import ReactGA from 'react-ga'
@@ -10,8 +10,8 @@ import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
-import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ApplicationModal } from 'state/application/reducer'
+import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ThemedText } from 'theme'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
@@ -20,6 +20,8 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
+
+// MOD imports
 import { SettingsTabProp } from '.'
 
 export const StyledMenuIcon = styled(Settings)`
@@ -50,7 +52,6 @@ const StyledCloseIcon = styled(X)`
 export const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
-  height: 100%;
   border: none;
   background-color: transparent;
   margin: 0;
@@ -127,6 +128,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const theme = useContext(ThemeContext)
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
+  //mod
   const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
 
   // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()

@@ -2,6 +2,7 @@ import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { LightGreyCard } from 'components/Card'
 import QuestionHelper from 'components/QuestionHelper'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useTheme from 'hooks/useTheme'
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
@@ -10,7 +11,6 @@ import styled from 'styled-components/macro'
 
 import TokenListLogo from 'assets/svg/tokenlist.svg'
 import { useIsUserAddedToken } from 'hooks/Tokens'
-import { useActiveWeb3React } from 'hooks/web3'
 import { useCombinedActiveList } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -21,8 +21,10 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltip } from 'components/Tooltip'
-// import { MenuItem } from 'components/SearchModal/styleds'
 import ImportRow from 'components/SearchModal/ImportRow'
+// import { MenuItem } from './styleds'
+
+// MOD imports
 import { MenuItem } from '.' // mod
 import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 import { formatSmart } from 'utils/format'
@@ -62,11 +64,7 @@ export const FixedContentRow = styled.div`
 `
 
 function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
-  return (
-    <StyledBalanceText title={balance.toExact()}>
-      {formatSmart(balance, AMOUNT_PRECISION) /* balance.toSignificant(4) */}
-    </StyledBalanceText>
-  )
+  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, AMOUNT_PRECISION)}</StyledBalanceText>
 }
 
 export const TagContainer = styled.div`
@@ -132,7 +130,7 @@ function CurrencyRow({
   otherSelected,
   style,
   showCurrencyAmount,
-  isUnsupported,
+  isUnsupported, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
 }: {
@@ -142,9 +140,9 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
   showCurrencyAmount?: boolean
+  isUnsupported: boolean // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
-  isUnsupported: boolean // gp-added
 }) {
   const { account } = useActiveWeb3React()
   const key = currencyKey(currency)

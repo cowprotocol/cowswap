@@ -13,7 +13,6 @@ import { acceptListUpdate /* , enableList  */ } from 'state/lists/actions'
 import { useActiveListUrls } from 'state/lists/hooks'
 
 // MOD imports
-
 // MOD: add updateVersion for chainId change init
 import { updateVersion } from 'state/global/actions'
 

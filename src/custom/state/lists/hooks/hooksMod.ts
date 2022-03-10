@@ -1,15 +1,18 @@
-import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
-import { TokenList } from '@uniswap/token-lists'
+// import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 import { useMemo, useCallback } from 'react'
 import { useAppSelector, useAppDispatch } from 'state/hooks'
+
 import sortByListPriority from 'utils/listSort'
 
 import BROKEN_LIST from 'constants/tokenLists/broken.tokenlist.json'
 import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/unsupported.tokenlist.json'
 import { AppState } from 'state'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { UNSUPPORTED_LIST_URLS, DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-// MOD
+
+// MOD imports
+import { TokenList } from '@uniswap/token-lists'
+import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
+import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { useActiveWeb3React } from 'hooks/web3'
 import {
   addGpUnsupportedToken,
@@ -23,10 +26,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
 
-/* 
-export type TokenAddressMap = Readonly<{
-  [chainId: number]: Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList } }>
-}>
+/* export type TokenAddressMap = ChainTokenMap
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>
@@ -104,8 +104,7 @@ export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
  * @param map1 the base token map
  * @param map2 the map of additioanl tokens to add to the base map
  */
-/*
-export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
+/* export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
   const chainIds = Object.keys(
     Object.keys(map1)
       .concat(Object.keys(map2))
@@ -123,8 +122,7 @@ export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): Token
     }
     return memo
   }, {}) as TokenAddressMap
-} 
-*/
+} */
 
 // merge tokens contained within lists from urls
 export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {

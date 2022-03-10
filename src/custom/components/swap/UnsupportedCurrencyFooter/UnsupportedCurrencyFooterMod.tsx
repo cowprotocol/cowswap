@@ -6,14 +6,15 @@ import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Modal from 'components/Modal'
 import { AutoRow, RowBetween } from 'components/Row'
-import { useActiveWeb3React } from 'hooks/web3'
-import { ReactNode, useState } from 'react'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
+
 import { useIsUnsupportedToken } from 'state/lists/hooks'
 // import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 
-// MOD
+// MOD imports
 import { getEtherscanLink } from 'utils'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
@@ -41,7 +42,7 @@ const StyledButtonEmpty = styled(ButtonEmpty)`
 
 export const AddressText = styled(ThemedText.Blue)`
   font-size: 12px;
-  word-break: break-all;
+  word-break: break-all; // mod
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
@@ -52,9 +53,9 @@ export const AddressText = styled(ThemedText.Blue)`
 export interface UnsupportedCurrencyFooterParams {
   show: boolean
   currencies: (Currency | null | undefined)[]
-  detailsTitle?: ReactNode
-  detailsText?: ReactNode
-  showDetailsText?: ReactNode
+  detailsTitle?: React.ReactNode
+  detailsText?: React.ReactNode
+  showDetailsText?: React.ReactNode
 }
 
 export default function UnsupportedCurrencyFooter({
@@ -65,7 +66,7 @@ export default function UnsupportedCurrencyFooter({
   showDetailsText,
 }: /* {
   show: boolean
-  currencies: (Currency | undefined)[]
+  currencies: (Currency | undefined | null)[]
 } */
 UnsupportedCurrencyFooterParams) {
   const { chainId } = useActiveWeb3React()
@@ -78,7 +79,7 @@ UnsupportedCurrencyFooterParams) {
         })
       : []
 
-  // const unsupportedTokens: { [address: string]: Token } = useUnsupportedTokens()
+  // const unsupportedTokens = useUnsupportedTokens()
 
   const isUnsupportedToken = useIsUnsupportedToken()
 
@@ -88,8 +89,8 @@ UnsupportedCurrencyFooterParams) {
         <Card padding="2rem">
           <AutoColumn gap="lg">
             <RowBetween>
-              {/* <ThemedText.MediumHeader><Trans>Unsupported Assets</Trans> Assets</ThemedText.MediumHeader> */}
               <ThemedText.MediumHeader>
+                {/* <Trans>Unsupported Assets</Trans> */}
                 <Trans>{detailsTitle}</Trans>
               </ThemedText.MediumHeader>
               <CloseIcon onClick={() => setShowDetails(false)} />
@@ -107,7 +108,6 @@ UnsupportedCurrencyFooterParams) {
                         <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
                       </AutoRow>
                       {chainId && (
-                        // <Row flex="1 1 228px">
                         <ExternalLink
                           href={
                             getEtherscanLink(
@@ -119,7 +119,6 @@ UnsupportedCurrencyFooterParams) {
                         >
                           <AddressText>{token.address}</AddressText>
                         </ExternalLink>
-                        // </Row>
                       )}
                     </AutoColumn>
                   </OutlineCard>

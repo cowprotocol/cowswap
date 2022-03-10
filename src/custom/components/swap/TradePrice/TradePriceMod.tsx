@@ -5,6 +5,8 @@ import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 // import { ThemedText } from 'theme'
+
+// MOD imports
 import { formatMax, formatSmart } from 'utils/format' // mod
 import { LightGreyText } from 'pages/Swap'
 
@@ -26,6 +28,12 @@ const StyledPriceContainer = styled.button`
   padding: 0;
   grid-template-columns: 1fr auto;
   grid-gap: 0.25rem;
+  /* display: flex;
+  flex-direction: row;
+  text-align: left;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  user-select: text; */
 `
 
 export default function TradePrice({ price, showInverted, fiatValue, setShowInverted }: TradePriceProps) {
@@ -53,7 +61,13 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
   const fiatText = ` (≈$${fiatValue})`
 
   return (
-    <StyledPriceContainer onClick={flipPrice}>
+    <StyledPriceContainer
+      onClick={(e) => {
+        e.stopPropagation() // dont want this click to affect dropdowns / hovers
+        flipPrice()
+      }}
+      // title={text}
+    >
       <Text fontWeight={500} fontSize={14} color={theme.text1}>
         {/* {text} */}
         <LightGreyText>{baseText}</LightGreyText>

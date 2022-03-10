@@ -256,6 +256,7 @@ const getChainNameFromId = (id: string | number) => {
 }
 
 export default function NetworkSelector() {
+  // TODO: re-think about `useChangeNetworks` extracted hook
   // const { account, chainId, library } = useActiveWeb3React()
   // const {
   //   callback: networkCallback,

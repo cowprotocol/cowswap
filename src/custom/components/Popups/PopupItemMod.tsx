@@ -6,7 +6,10 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useRemovePopup } from 'state/application/hooks'
 import { PopupContent } from 'state/application/reducer'
+import FailedNetworkSwitchPopup from 'components/Popups/FailedNetworkSwitchPopup'
 import TransactionPopup from './TransactionPopupMod'
+
+// MOD imports
 import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
 
 export const StyledClose = styled(X)`
@@ -21,7 +24,7 @@ export const StyledClose = styled(X)`
 export const Popup = styled.div`
   display: inline-block;
   width: 100%;
-  padding: 1em;
+  //padding: 1em;
   background-color: ${({ theme }) => theme.bg1};
   position: relative;
   border-radius: 10px;
@@ -51,7 +54,7 @@ export default function PopupItem({
   removeAfterMs,
   content,
   popKey,
-  className,
+  className, // mod
 }: {
   removeAfterMs: number | null
   content: PopupContent
@@ -90,6 +93,8 @@ export default function PopupItem({
       metatxn: { id, success, summary },
     } = content
     popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
+  } else if ('failedSwitchNetwork' in content) {
+    popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} />
   }
 
   const faderStyle = useSpring({

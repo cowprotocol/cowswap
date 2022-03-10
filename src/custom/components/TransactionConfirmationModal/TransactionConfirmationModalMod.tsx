@@ -23,7 +23,7 @@ import { AutoColumn, ColumnCenter } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
-// MOD
+// MOD imports
 import { GpModal } from 'components/Modal'
 import {
   ConfirmationPendingContent,
@@ -120,9 +120,8 @@ const StyledLogo = styled.img`
       </AutoColumn>
     </Wrapper>
   )
-} */
-
-/* export function TransactionSubmittedContent({
+}
+export function TransactionSubmittedContent({
   onDismiss,
   chainId,
   hash,

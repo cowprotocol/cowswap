@@ -25,3 +25,6 @@ export default function AdvancedSwapDetailsDropdown({ trade, ...rest }: Advanced
     </AdvancedDetailsFooter>
   )
 }
+
+// TODO: file no longer exists at origin.
+// TODO: decide if we want to adapt to new code or make it a no longer "mod" file

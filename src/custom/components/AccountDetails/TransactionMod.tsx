@@ -1,12 +1,16 @@
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { CheckCircle, Triangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
 import { ExternalLink } from 'theme'
-import { getEtherscanLink } from 'utils'
+// import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import Loader from 'components/Loader'
 import { RowFixed } from 'components/Row'
+// import { TransactionSummary } from './TransactionSummary'
+
+// MOD imports
+import { getEtherscanLink } from 'utils'
 
 export const TransactionStatusText = styled.div`
   margin-right: 0.5rem;

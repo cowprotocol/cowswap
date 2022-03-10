@@ -1,8 +1,10 @@
 import { Trans } from '@lingui/macro'
+// import { Trade } from '@uniswap/router-sdk'
 import { /* Currency,  */ Percent /* , TradeType */ } from '@uniswap/sdk-core'
-// import { Trade as V2Trade } from '@uniswap/v2-sdk'
-// import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { ReactNode, useCallback, useMemo } from 'react'
+// import { InterfaceTrade } from 'state/routing/types'
+// import { tradeMeaningfullyDiffers } from 'utils/tradeMeaningFullyDiffer'
+
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   OperationType,
@@ -10,7 +12,8 @@ import TransactionConfirmationModal, {
 } from 'components/TransactionConfirmationModal'
 import SwapModalFooter from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
-// MOD
+
+// MOD imports
 import TradeGp from 'state/swap/TradeGp'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
@@ -45,7 +48,7 @@ export default function ConfirmSwapModal({
   onConfirm,
   onDismiss,
   recipient,
-  priceImpact,
+  priceImpact, // mod
   swapErrorMessage,
   isOpen,
   attemptingTxn,
@@ -53,8 +56,8 @@ export default function ConfirmSwapModal({
   PendingTextComponent, // mod
 }: {
   isOpen: boolean
-  //   trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined
-  // originalTrade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined
+  // trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
+  // originalTrade: Trade<Currency, Currency, TradeType> | undefined
   trade: TradeGp | undefined
   originalTrade: TradeGp | undefined
   attemptingTxn: boolean
@@ -70,17 +73,6 @@ export default function ConfirmSwapModal({
 }) {
   const { allowsOffchainSigning } = useWalletInfo()
   const showAcceptChanges = useMemo(
-    /* 
-    () =>
-      Boolean(
-        (trade instanceof V2Trade &&
-          originalTrade instanceof V2Trade &&
-          tradeMeaningfullyDiffers(trade, originalTrade)) ||
-          (trade instanceof V3Trade &&
-            originalTrade instanceof V3Trade &&
-            tradeMeaningfullyDiffers(trade, originalTrade))
-      ),
-    */
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
   )

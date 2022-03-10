@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 // import { TokenList } from '@uniswap/token-lists'
 import { ButtonPrimary } from 'components/Button'
-import { Card } from 'components/SearchModal/ManageLists' // mod
+// import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ListLogo from 'components/ListLogo'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
@@ -22,6 +22,8 @@ import { ExternalLink } from 'theme'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { Checkbox, PaddedColumn, TextDot } from 'components/SearchModal/styleds'
 
+// MOD imports
+import { Card } from 'components/SearchModal/ManageLists' // mod
 import { ImportProps } from '.'
 
 const Wrapper = styled.div`

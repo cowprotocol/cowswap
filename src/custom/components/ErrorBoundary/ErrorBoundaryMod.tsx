@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import React, { ErrorInfo, Component } from 'react'
+import React, { ErrorInfo } from 'react'
 import ReactGA from 'react-ga'
 import styled from 'styled-components/macro'
 
@@ -142,7 +142,7 @@ function truncate(value?: string): string | undefined {
   return value ? value.slice(0, 1000) : undefined
 }
 
-export default class ErrorBoundary extends Component<unknown, ErrorBoundaryState> {
+export default class ErrorBoundary extends React.Component<unknown, ErrorBoundaryState> {
   constructor(props: unknown) {
     super(props)
     this.state = { error: null }

@@ -54,28 +54,6 @@ const Wrapper = styled.div`
   }
 `
 
-// type SetRawSlippage = (rawSlippage: number) => void
-// type SetSlippageInput = (value: React.SetStateAction<string>) => void
-
-/* function parseCustomSlippage(value: string, setRawSlippage: SetRawSlippage, setSlippageInput: SetSlippageInput): void {
-  // we don't allow negative slippage to be input
-  if (isNaN(Number(value)) || Number(value) < 0) {
-    return batchedUpdates(() => {
-      setSlippageInput('0')
-      setRawSlippage(0)
-    })
-  }
-
-  setSlippageInput(value)
-
-  try {
-    const valueAsIntFromRoundedFloat = Number.parseInt((Number.parseFloat(value) * 100).toString())
-    if (!Number.isNaN(valueAsIntFromRoundedFloat) && valueAsIntFromRoundedFloat < 5000) {
-      setRawSlippage(valueAsIntFromRoundedFloat)
-    }
-  } catch {}
-} */
-
 export type TransactionSettingsProps = Omit<TransactionSettingsPropsMod, 'Option'>
 
 export default function SlippageTabs(params: TransactionSettingsProps) {

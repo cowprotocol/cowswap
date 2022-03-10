@@ -3,6 +3,7 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
@@ -11,7 +12,6 @@ import styled from 'styled-components/macro'
 
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 import useTheme from 'hooks/useTheme'
-import { useActiveWeb3React } from 'hooks/web3'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { ThemedText } from 'theme'
 import { ButtonGray } from 'components/Button'
@@ -19,14 +19,15 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { Input as NumericalInput } from 'components/NumericalInput'
 import { RowBetween, RowFixed } from 'components/Row'
-import { CurrencySearchModal } from '.' // mod
-// import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
+// import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 
+// MOD imports
 import { WithClassName } from 'types'
 import { formatMax, formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { AuxInformationContainer } from '.' // mod
+import { CurrencySearchModal } from '.' // mod
 
 export const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -35,6 +36,8 @@ export const InputPanel = styled.div<{ hideInput?: boolean }>`
   background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.bg2)};
   z-index: 1;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
+  transition: height 1s ease;
+  will-change: height;
 `
 
 const FixedContainer = styled.div`
@@ -62,18 +65,17 @@ export const Container = styled.div<{ hideInput: boolean; showAux?: boolean }>`
 `
 
 export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
   align-items: center;
-  font-size: 24px;
-  font-weight: 500;
   background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
-  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
-  border-radius: 16px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
-  outline: none;
+  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   cursor: pointer;
+  border-radius: 16px;
+  outline: none;
   user-select: none;
   border: none;
+  font-size: 24px;
+  font-weight: 500;
   height: ${({ hideInput }) => (hideInput ? '2.8rem' : '2.4rem')};
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   padding: 0 8px;
@@ -83,6 +85,7 @@ export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: b
   :hover {
     background-color: ${({ selected, theme }) => (selected ? theme.bg2 : darken(0.05, theme.primary1))};
   }
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
 
 export const InputRow = styled.div<{ selected: boolean }>`
@@ -135,13 +138,17 @@ export const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: none;
   border-radius: 12px;
+  color: ${({ theme }) => theme.primary5};
+  cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
-  color: ${({ theme }) => theme.primary5};
+  margin-left: 0.25rem;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   pointer-events: ${({ disabled }) => (!disabled ? 'initial' : 'none')};
-  margin-left: 0.25rem;
+
+  :hover {
+    opacity: ${({ disabled }) => (!disabled ? 0.8 : 0.4)};
+  }
 
   :focus {
     outline: none;
@@ -276,7 +283,7 @@ export default function CurrencyInputPanel({
               />
             )}
           </InputRow>
-          {!hideInput && !hideBalance && (
+          {!hideInput && !hideBalance && currency && (
             <FiatRow>
               <RowBetween>
                 {account ? (
@@ -285,13 +292,11 @@ export default function CurrencyInputPanel({
                   >
                     <ThemedText.Body
                       onClick={onMax}
-                      // color={theme.text2}
                       color={theme.text1}
                       fontWeight={400}
                       fontSize={14}
                       style={{
                         display: 'inline',
-                        // cursor: 'pointer'
                         cursor: showMaxButton ? 'pointer' : 'initial', // mod
                       }}
                       title={`${formatMax(selectedCurrencyBalance, currency?.decimals) || '-'} ${

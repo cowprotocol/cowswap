@@ -11,11 +11,13 @@ import { AlertCircle, ArrowLeft } from 'react-feather'
 import { useAddUserToken } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { CloseIcon, ThemedText } from 'theme'
-import { transparentize } from 'polished'
 
 // import BlockedToken from 'components/SearchModal/BlockedToken'
 import { PaddedColumn } from 'components/SearchModal/styleds'
 import TokenImportCard from 'components/SearchModal/TokenImportCard'
+
+// MOD imports
+import { transparentize } from 'polished'
 import Card from 'components/Card'
 import { CardComponentProps } from '.'
 
@@ -66,7 +68,7 @@ export function ImportToken(props: ImportProps) {
         <RowBetween>
           {onBack ? <ArrowLeft style={{ cursor: 'pointer' }} onClick={onBack} /> : <div />}
           <ThemedText.MediumHeader>
-            <Plural value={tokens.length} one="Import token" other="Import tokens" />
+            <Plural value={tokens.length} _1="Import token" other="Import tokens" />
           </ThemedText.MediumHeader>
           {onDismiss ? <CloseIcon onClick={onDismiss} /> : <div />}
         </RowBetween>

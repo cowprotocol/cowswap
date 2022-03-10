@@ -66,7 +66,7 @@ export default function CommonBases({
 }
 
 /** helper component to retrieve a base currency from the active token lists */
-function CurrencyLogoFromList({ currency }: { currency: Currency }) {
+export function CurrencyLogoFromList({ currency }: { currency: Currency }) {
   const token = useTokenInfoFromActiveList(currency)
 
   return <CurrencyLogo currency={token} style={{ marginRight: 8 }} />

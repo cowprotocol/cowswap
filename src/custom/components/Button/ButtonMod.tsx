@@ -5,6 +5,8 @@ import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'reba
 import styled from 'styled-components/macro'
 
 import { RowBetween } from 'components/Row'
+
+// MOD imports
 import { ButtonSize } from 'theme'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
@@ -15,7 +17,7 @@ export const BaseButton = styled(RebassButton)<
     width?: string
     $borderRadius?: string
     altDisabledStyle?: boolean
-    buttonSize?: ButtonSize
+    buttonSize?: ButtonSize // mod
   } & ButtonProps
 >`
   padding: ${({ padding }) => padding ?? '16px'};
@@ -36,6 +38,7 @@ export const BaseButton = styled(RebassButton)<
   position: relative;
   z-index: 1;
   &:disabled {
+    opacity: 50%;
     cursor: auto;
     pointer-events: none;
   }
@@ -44,6 +47,7 @@ export const BaseButton = styled(RebassButton)<
   transition: transform 450ms ease;
   transform: perspective(1px) translateZ(0);
 
+  // mod
   &:hover {
     transform: scale(0.99);
   }
@@ -81,7 +85,7 @@ export const ButtonLight = styled(BaseButton)`
   background-color: ${({ theme }) => theme.primary5};
   color: ${({ theme }) => theme.primaryText1};
   font-size: 16px;
-
+  // font-weight: 500;
   &:focus {
     box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(0.03, theme.primary5)};
     background-color: ${({ theme, disabled }) => !disabled && darken(0.03, theme.primary5)};
@@ -109,6 +113,7 @@ export const ButtonGray = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text2};
   font-size: 16px;
+  // font-weight: 500;
 
   &:focus {
     box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(0.05, theme.bg2)};
@@ -191,28 +196,6 @@ export const ButtonYellow = styled(BaseButton)`
   }
 `
 
-export const ButtonPink = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.primary1};
-  color: white;
-
-  &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.primary1)};
-    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
-  }
-  &:hover {
-    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
-  }
-  &:active {
-    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.primary1)};
-    background-color: ${({ theme }) => darken(0.1, theme.primary1)};
-  }
-  &:disabled {
-    background-color: ${({ theme }) => theme.primary1};
-    opacity: 50%;
-    cursor: auto;
-  }
-`
-
 export const ButtonEmpty = styled(BaseButton)`
   background-color: transparent;
   color: ${({ theme }) => theme.primary1};
@@ -266,27 +249,6 @@ export const ButtonConfirmedStyle = styled(BaseButton)`
     /* opacity: 50%; */
     background-color: ${({ theme }) => theme.bg2};
     color: ${({ theme }) => theme.text2};
-    cursor: auto;
-  }
-`
-
-export const ButtonWhite = styled(BaseButton)`
-  border: 1px solid #edeef2;
-  background-color: ${({ theme }) => theme.bg1};
-  color: black;
-
-  &:focus {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    box-shadow: 0 0 0 1pt ${darken(0.05, '#edeef2')};
-  }
-  &:hover {
-    box-shadow: 0 0 0 1pt ${darken(0.1, '#edeef2')};
-  }
-  &:active {
-    box-shadow: 0 0 0 1pt ${darken(0.1, '#edeef2')};
-  }
-  &:disabled {
-    opacity: 50%;
     cursor: auto;
   }
 `
@@ -355,14 +317,6 @@ export function ButtonDropdownLight({ disabled = false, children, ...rest }: { d
       </RowBetween>
     </ButtonOutlined>
   )
-}
-
-export function ButtonRadio({ active, ...rest }: { active?: boolean } & ButtonProps) {
-  if (!active) {
-    return <ButtonWhite {...rest} />
-  } else {
-    return <ButtonPrimary {...rest} />
-  }
 }
 
 const ActiveOutlined = styled(ButtonOutlined)`

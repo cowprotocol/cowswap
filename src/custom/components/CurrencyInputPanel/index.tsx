@@ -1,5 +1,3 @@
-// import { darken } from 'polished'
-
 import styled, { css } from 'styled-components/macro'
 import { darken } from 'polished'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'

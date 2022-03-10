@@ -76,6 +76,8 @@ export function formatConnectorName(connector?: AbstractConnector, walletInfo?: 
   )
 }
 
+// TODO: look into StatusIcon.tsx, could be re-used here
+
 export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo, size?: number) {
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */

@@ -1,17 +1,20 @@
 import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import ms from 'ms.macro'
+import { darken } from 'polished'
 import { useContext, useState } from 'react'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
-import { darken } from 'polished'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
-import { L2_CHAIN_IDS } from '@src/constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
+
+// MOD imports
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ORDER_VALID_TO_TIME_SECONDS } from 'constants/index'
 
 enum SlippageError {
@@ -85,13 +88,15 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
 const SlippageEmojiContainer = styled.span`
   color: #f3841e;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;  
+    display: none;
   `}
 `
 
 export interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
+
+// const THREE_DAYS_IN_SECONDS = ms`3 days` / 1000
 
 export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
   const { chainId } = useActiveWeb3React()

@@ -1,4 +1,6 @@
 import { Trans } from '@lingui/macro'
+// eslint-disable-next-line no-restricted-imports
+import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import HoverInlineText from 'components/HoverInlineText'
 import { useMemo } from 'react'
@@ -6,7 +8,9 @@ import { useMemo } from 'react'
 import useTheme from 'hooks/useTheme'
 import { ThemedText } from 'theme'
 import { warningSeverity } from 'utils/prices'
+import { MouseoverTooltip } from 'components/Tooltip'
 
+// MOD imports
 import { FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index' // mod
 import { formatSmart } from 'utils/format'
 import Loader from 'components/Loader'
@@ -33,21 +37,15 @@ export function FiatValue({
   }, [priceImpact, theme.green1, theme.red1, theme.text3, theme.yellow1])
 
   return (
-    <ThemedText.Body
-      className={className}
-      fontSize={14}
-      color={fiatValue ? theme.text1 /* theme.text2 */ : theme.text4}
-    >
+    <ThemedText.Body className={className} fontSize={14} color={fiatValue ? theme.text1 : theme.text4}>
       {fiatValue ? (
         <Trans>
           ≈ $
           <HoverInlineText
-            text={
-              formatSmart(fiatValue, FIAT_PRECISION, {
-                thousandSeparator: true,
-                isLocaleAware: true,
-              }) /* fiatValue?.toSignificant(6, { groupSeparator: ',' }) */
-            }
+            text={formatSmart(fiatValue, FIAT_PRECISION, {
+              thousandSeparator: true,
+              isLocaleAware: true,
+            })}
           />
         </Trans>
       ) : (
@@ -55,7 +53,10 @@ export function FiatValue({
       )}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}>
-          &nbsp;({formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%)
+          {' '}
+          <MouseoverTooltip text={t`The estimated difference between the USD values of input and output amounts.`}>
+            (<Trans>{formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%</Trans>)
+          </MouseoverTooltip>
         </span>
       ) : null}
       {priceImpactLoading && <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />}

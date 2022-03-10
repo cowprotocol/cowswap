@@ -13,7 +13,6 @@ export const QuestionWrapper = styled.div`
   width: 16px;
   height: 16px;
   border: none;
-  background: none;
   outline: none;
   cursor: default;
   border-radius: 16px;

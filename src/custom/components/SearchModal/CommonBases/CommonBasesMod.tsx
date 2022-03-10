@@ -1,13 +1,23 @@
 import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
+// import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
-import QuestionHelper from 'components/QuestionHelper'
 import { AutoRow } from 'components/Row'
 import { COMMON_BASES } from 'constants/routing'
-import { BaseWrapper, CommonBasesRow, CommonBasesProps, MobileWrapper } from '.' // mod
+import { useTokenInfoFromActiveList } from 'hooks/useTokenInfoFromActiveList'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import { currencyId } from 'utils/currencyId'
+
+// MOD imports
+import QuestionHelper from 'components/QuestionHelper'
+import { BaseWrapper, CommonBasesRow, CommonBasesProps, MobileWrapper } from '.' // mod
+
+/* const MobileWrapper = styled(AutoColumn)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
+` */
 
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   // mod
@@ -53,7 +63,7 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
               disable={isSelected}
               key={currencyId(currency)}
             >
-              <CurrencyLogo currency={currency} style={{ marginRight: 8 }} />
+              <CurrencyLogoFromList currency={currency} />
               <Text fontWeight={500} fontSize={16}>
                 {currency.symbol}
               </Text>
@@ -63,4 +73,11 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
       </CommonBasesRow>
     </MobileWrapper>
   ) : null
+}
+
+/** helper component to retrieve a base currency from the active token lists */
+function CurrencyLogoFromList({ currency }: { currency: Currency }) {
+  const token = useTokenInfoFromActiveList(currency)
+
+  return <CurrencyLogo currency={token} style={{ marginRight: 8 }} />
 }

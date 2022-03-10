@@ -233,7 +233,6 @@ export const Separator = styled(SeparatorBase)`
 
 export const CloseMenu = styled.button`
   display: grid;
-  justify-content: space-between;
   align-items: center;
   background: ${({ theme }) => theme.header.menuFlyout.closeButtonBg};
   border: 0;
