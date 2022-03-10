@@ -1,9 +1,9 @@
 import React from 'react'
-import IdenticonMod, { StyledIdenticonContainer } from './IdenticonMod'
+import IdenticonMod, { StyledIdenticon } from './IdenticonMod'
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div<{ size?: number }>`
-  ${StyledIdenticonContainer} {
+  ${StyledIdenticon} {
     height: ${({ size }) => (size ? `${size}px` : '1rem')};
     width: ${({ size }) => (size ? `${size}px` : '1rem')};
     border-radius: ${({ size }) => (size ? `${size}px` : '1rem')};
