@@ -5,8 +5,8 @@ import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
-import { fortmatic, injected, portis, walletconnect, walletlink } from '../../connectors'
-import Identicon from '../Identicon'
+import { fortmatic, injected, portis, walletconnect, walletlink } from 'connectors'
+import Identicon from 'components/Identicon'
 
 export default function StatusIcon({ connector }: { connector: AbstractConnector | Connector }) {
   switch (connector) {
