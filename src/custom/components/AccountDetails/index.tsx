@@ -43,6 +43,7 @@ import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useR
 import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
+import { gnosisSafe } from 'connectors'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -193,14 +194,16 @@ export default function AccountDetails({
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              {connector !== injected && connector !== walletlink && (
+              {connector !== injected && connector !== walletlink && connector !== gnosisSafe && (
                 <WalletAction onClick={handleDisconnectClick}>
                   <Trans>Disconnect</Trans>
                 </WalletAction>
               )}
-              <WalletAction onClick={toggleWalletModal}>
-                <Trans>Change Wallet</Trans>
-              </WalletAction>
+              {connector !== gnosisSafe && (
+                <WalletAction onClick={toggleWalletModal}>
+                  <Trans>Change Wallet</Trans>
+                </WalletAction>
+              )}
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}
