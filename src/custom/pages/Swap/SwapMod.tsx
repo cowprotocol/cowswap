@@ -949,6 +949,7 @@ export default function Swap({
           detailsTitle="This wallet is not yet supported"
         />
       ) : !swapIsUnsupported ? (
+        // TODO: I think this in unreachable, given that `swapIsUnsupported` returns null when false on line 936
         <AdvancedSwapDetailsDropdown trade={trade} allowedSlippage={allowedSlippage} />
       ) : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
