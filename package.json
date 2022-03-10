@@ -165,6 +165,7 @@
   "scripts": {
     "start:default": "craco start",
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
+    "start:ssl": "HTTPS=true yarn start",
     "start:service-worker": "yarn build && yarn serve",
     "mock": "REACT_APP_MOCK=true yarn start",
     "build": "yarn i18n:compile && craco build && yarn writeVersion",
