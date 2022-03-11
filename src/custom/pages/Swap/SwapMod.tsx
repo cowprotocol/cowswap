@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+// TODO: understand why and re-enable rules-of-hooks
 import { Trans } from '@lingui/macro'
 // import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
