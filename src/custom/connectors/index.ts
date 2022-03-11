@@ -1,10 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers'
+import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 
-import { FortmaticConnector } from 'connectors/Fortmatic'
+import { FortmaticConnector, getFortmaticApiKey } from 'connectors/Fortmatic'
 import { NetworkConnector } from 'connectors/NetworkConnector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
@@ -82,6 +83,8 @@ export function getNetworkLibrary(): Web3Provider {
 
 export const injected = new InjectedConnector({ supportedChainIds })
 
+export const gnosisSafe = new SafeAppConnector()
+
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
   rpc: rpcNetworks,
@@ -91,7 +94,7 @@ export const walletconnect = new WalletConnectConnector({
 
 // mainnet only
 export const fortmatic = new FortmaticConnector({
-  apiKey: process.env.REACT_APP_FORTMATIC_KEY ?? '',
+  apiKey: getFortmaticApiKey() ?? '',
   chainId: NETWORK_CHAIN_ID,
 })
 
@@ -108,10 +111,12 @@ export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
   appName: 'CowSwap',
   appLogoUrl: 'https://raw.githubusercontent.com/gnosis/gp-swap-ui/develop/public/favicon.png',
+  supportedChainIds: getSupportedChainIds(),
 })
 
 export enum WalletProvider {
   INJECTED = 'INJECTED',
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
   WALLET_CONNECT = 'WALLET_CONNECT',
   FORMATIC = 'FORMATIC',
   PORTIS = 'PORTIS',
@@ -129,6 +134,9 @@ export function getProviderType(connector: AbstractConnector | undefined): Walle
 
     case walletconnect:
       return WalletProvider.WALLET_CONNECT
+
+    case gnosisSafe:
+      return WalletProvider.GNOSIS_SAFE
 
     case fortmatic:
       return WalletProvider.FORMATIC

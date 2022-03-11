@@ -80,6 +80,8 @@ import TransactionConfirmationModal, { OperationType } from 'components/Transact
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
+import { GpEther } from 'constants/tokens'
+import { SupportedChainId } from 'constants/chains'
 
 const AlertWrapper = styled.div`
   max-width: 460px;
@@ -356,13 +358,12 @@ export default function Swap({
     }
 
     if (approveRequired) {
-      return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
-
       ReactGA.event({
         category: 'Swap',
         action: 'Approve',
         label: v2Trade?.inputAmount?.currency.symbol,
       })
+      return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
     }
   }, [approveCallback, gatherPermitSignature, signatureState, v2Trade?.inputAmount?.currency.symbol])
 
@@ -778,6 +779,16 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <ThemedText.Main mb="4px">
                   <Trans>Invalid price. Try increasing input/output amount.</Trans>
+                </ThemedText.Main>
+                {/* {singleHopOnly && <ThemedText.Main mb="4px">Try enabling multi-hop trades.</ThemedText.Main>} */}
+              </GreyCard>
+            ) : quote?.error === 'transfer-eth-to-smart-contract' ? (
+              <GreyCard style={{ textAlign: 'center' }}>
+                <ThemedText.Main mb="4px">
+                  <Trans>
+                    Buying {GpEther.onChain(chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is
+                    not currently supported
+                  </Trans>
                 </ThemedText.Main>
                 {/* {singleHopOnly && <ThemedText.Main mb="4px">Try enabling multi-hop trades.</ThemedText.Main>} */}
               </GreyCard>

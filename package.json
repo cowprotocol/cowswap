@@ -18,7 +18,8 @@
     }
   },
   "types": "./dist/widgets.d.ts",
-  "version": "1.10.4",
+  "version": "1.11.1",
+  "private": true,
   "engines": {
     "node": ">=14.0.0"
   },
@@ -127,6 +128,7 @@
   "scripts": {
     "start:default": "craco start",
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
+    "start:ssl": "HTTPS=true yarn start",
     "start:service-worker": "yarn build && yarn serve",
     "mock": "REACT_APP_MOCK=true yarn start",
     "build": "yarn i18n:compile && craco build && yarn writeVersion",
@@ -257,6 +259,7 @@
     "ethers": "^5.4.6",
     "fast-safe-stringify": "^2.0.8",
     "firebase": "^9.1.3",
+    "fortmatic": "^2.2.1",
     "immer": "^9.0.6",
     "ipfs-deploy": "^8.0.1",
     "ipfs-http-client": "^52.0.3",

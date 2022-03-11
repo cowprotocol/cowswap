@@ -4,7 +4,7 @@ import { t, Trans } from '@lingui/macro'
 import { darken, lighten } from 'polished'
 // import { useMemo } from 'react'
 import { Activity } from 'react-feather'
-import styled /*, { css }*/ from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { AbstractConnector } from 'web3-react-abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
@@ -89,19 +89,30 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
     `}
 ` */
 
-export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
+export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
   background-color: ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg2)};
   border: 1px solid ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg3)};
   color: ${({ pending, theme }) => (pending ? theme.white : theme.text1)};
   font-weight: 500;
-  :hover,
-  :focus {
-    background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.primary1) : lighten(0.05, theme.bg2))};
 
-    :focus {
-      border: 1px solid ${({ pending, theme }) => (pending ? darken(0.1, theme.primary1) : darken(0.1, theme.bg3))};
-    }
-  }
+  ${({ clickDisabled }) =>
+    clickDisabled &&
+    css`
+      cursor: not-allowed;
+    `}
+
+  ${({ clickDisabled, pending }) =>
+    !clickDisabled &&
+    css`
+      :hover,
+      :focus {
+        background-color: ${({ theme }) => (pending ? darken(0.05, theme.primary1) : lighten(0.05, theme.bg2))};
+
+        :focus {
+          border: 1px solid ${({ theme }) => (pending ? darken(0.1, theme.primary1) : darken(0.1, theme.bg3))};
+        }
+      }
+    `}
 `
 
 export const Text = styled.p`
@@ -147,10 +158,12 @@ export function Web3StatusInner({
   pendingCount,
   StatusIconComponent,
   openOrdersPanel, // mod
+  thereWasAProvider, //mod
 }: {
   pendingCount?: number
   StatusIconComponent: (props: { connector: AbstractConnector }) => JSX.Element | null
   openOrdersPanel: () => void // mod
+  thereWasAProvider: boolean //mod
 }) {
   const { account, connector, error } = useWeb3React()
 
@@ -202,6 +215,17 @@ export function Web3StatusInner({
         <NetworkIcon />
         <Text>{error instanceof UnsupportedChainIdError ? <Trans>Wrong Network</Trans> : <Trans>Error</Trans>}</Text>
       </Web3StatusError>
+    )
+  } else if (thereWasAProvider) {
+    return (
+      <Web3StatusConnected pending clickDisabled={true}>
+        <RowBetween>
+          <Text>
+            <Trans>Connecting</Trans>...
+          </Text>{' '}
+          <Loader stroke="white" />
+        </RowBetween>
+      </Web3StatusConnected>
     )
   } else {
     return (

@@ -116,7 +116,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
             ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
             : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
         background-attachment: fixed;
-        backdrop-filter: blur(40px);
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
       `,
     },

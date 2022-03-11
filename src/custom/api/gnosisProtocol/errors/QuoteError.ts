@@ -7,20 +7,22 @@ export interface GpQuoteErrorObject {
 }
 
 // Conforms to backend API
-// https://github.com/gnosis/gp-v2-services/blob/0bd5f7743bebaa5acd3be13e35ede2326a096f14/orderbook/openapi.yml#L562
+// https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml
 export enum GpQuoteErrorCodes {
   UnsupportedToken = 'UnsupportedToken',
   InsufficientLiquidity = 'InsufficientLiquidity',
   FeeExceedsFrom = 'FeeExceedsFrom',
   ZeroPrice = 'ZeroPrice',
+  TransferEthToContract = 'TransferEthToContract',
   UNHANDLED_ERROR = 'UNHANDLED_ERROR',
 }
 
 export enum GpQuoteErrorDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  InsufficientLiquidity = 'Token pair selected has insufficient liquidity',
-  FeeExceedsFrom = 'Current fee exceeds entered "from" amount',
+  InsufficientLiquidity = 'Token pair selected has insufficient liquidity.',
+  FeeExceedsFrom = 'Current fee exceeds entered "from" amount.',
   ZeroPrice = 'Quoted price is zero. This is likely due to a significant price difference between the two tokens. Please try increasing amounts.',
+  TransferEthToContract = 'Buying native currencies using smart contract wallets is not currently supported.',
   UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
@@ -32,15 +34,22 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErr
         errorType: GpQuoteErrorCodes.InsufficientLiquidity,
         description: GpQuoteErrorDetails.InsufficientLiquidity,
       }
+
     case ApiErrorCodes.SellAmountDoesNotCoverFee:
       return {
         errorType: GpQuoteErrorCodes.FeeExceedsFrom,
         description: GpQuoteErrorDetails.FeeExceedsFrom,
         data: error?.data,
       }
+
     case ApiErrorCodes.UnsupportedToken:
       return {
         errorType: GpQuoteErrorCodes.UnsupportedToken,
+        description: error.description,
+      }
+    case ApiErrorCodes.TransferEthToContract:
+      return {
+        errorType: GpQuoteErrorCodes.TransferEthToContract,
         description: error.description,
       }
     default:
