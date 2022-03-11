@@ -6,7 +6,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useRemovePopup } from 'state/application/hooks'
 import { PopupContent } from 'state/application/reducer'
-import FailedNetworkSwitchPopup from 'components/Popups/FailedNetworkSwitchPopup'
+import FailedNetworkSwitchPopup from './FailedNetworkSwitchPopupMod'
 import TransactionPopup from './TransactionPopupMod'
 
 // MOD imports
