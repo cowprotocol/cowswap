@@ -1,3 +1,6 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
 import fetchTokenList, { DEFAULT_TOKEN_LIST } from './fetchTokenList'
 
 describe('fetchTokenList', () => {
