@@ -32,8 +32,6 @@ export function constructSentryError(
 export function checkAndThrowIfJsonSerialisableError(response: Response) {
   // don't attempt json parse if not json response...
   if (response.headers.get('Content-Type') !== 'application/json') {
-    throw new Error(
-      `Non JSON serialisable error detected with status code ${response.status}. ${JSON.stringify(response.statusText)}`
-    )
+    throw new Error(`Error code ${response.status} occurred`)
   }
 }
