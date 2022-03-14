@@ -65,6 +65,7 @@ function _transformGpOrderToStoreOrder(
 
   const storeOrder: Order = {
     ...order,
+    sellAmountBeforeFee: order.executedSellAmountBeforeFees,
     inputToken,
     outputToken,
     id,

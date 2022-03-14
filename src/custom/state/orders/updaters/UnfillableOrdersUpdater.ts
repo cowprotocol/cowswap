@@ -13,6 +13,7 @@ import { getBestQuote, PriceInformation } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
+import { BigNumber } from '@ethersproject/bignumber'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -24,9 +25,22 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
-    amount = order.sellAmount.toString()
+    // this order sell amount is sellAmountAfterFees..
+    // this is an issue as it will be adjusted again in the backend
+    // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
+    // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
+    // e.g so here we need to pass the sellAmountBeforeFees
+    amount = order.sellAmountBeforeFee.toString()
     baseToken = order.sellToken
     quoteToken = order.buyToken
+
+    console.debug('[UNFILLABLES]::SELL AMOUNT', order.sellAmount.toString())
+    console.debug('[UNFILLABLES]::FEE AMOUNT', order.feeAmount.toString())
+    console.debug(
+      '[UNFILLABLES]::SELL AMOUNT + FEE AMOUNT',
+      BigNumber.from(order.sellAmount).add(BigNumber.from(order.feeAmount)).toString()
+    )
+    console.debug('[UNFILLABLES]::EXECUTED SELL AMOUNT BEFORE FEES', amount)
   } else {
     amount = order.buyAmount.toString()
     baseToken = order.buyToken
@@ -45,8 +59,15 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     toDecimals: order.outputToken.decimals,
     validTo: timestamp(order.validTo),
   }
-
+  // console.debug('[UNFILLABLE]::BEFORE PRICE::', quoteParams.amount)
   try {
+    // if (order.kind === 'sell') {
+    //   // we need to calculate the fee separately to add to the sellAmount here
+    //   const { quote } = await getQuote(quoteParams)
+    //   const { feeAmount } = quote
+    //   quoteParams.amount = BigNumber.from(quoteParams.amount).add(BigNumber.from(feeAmount)).toString()
+    //   console.debug('[UNFILLABLE]::AFTER PRICE::', quoteParams.amount)
+    // }
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e) {
     return null
