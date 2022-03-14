@@ -13,7 +13,6 @@ import { getBestQuote, PriceInformation } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
-import { BigNumber } from '@ethersproject/bignumber'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -33,14 +32,6 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     amount = order.sellAmountBeforeFee.toString()
     baseToken = order.sellToken
     quoteToken = order.buyToken
-
-    console.debug('[UNFILLABLES]::SELL AMOUNT', order.sellAmount.toString())
-    console.debug('[UNFILLABLES]::FEE AMOUNT', order.feeAmount.toString())
-    console.debug(
-      '[UNFILLABLES]::SELL AMOUNT + FEE AMOUNT',
-      BigNumber.from(order.sellAmount).add(BigNumber.from(order.feeAmount)).toString()
-    )
-    console.debug('[UNFILLABLES]::EXECUTED SELL AMOUNT BEFORE FEES', amount)
   } else {
     amount = order.buyAmount.toString()
     baseToken = order.buyToken
