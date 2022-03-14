@@ -31,6 +31,7 @@ import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'util
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { Context } from '@sentry/types'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -273,6 +274,28 @@ const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
   description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
 }
 
+function _handleError<P extends Context>(error: any, response: Response, params: P, operation: 'ORDER' | 'QUOTE') {
+  // Create a new sentry error OR
+  // use the previously created and rethrown error from the try block
+  const sentryError =
+    error?.sentryError ||
+    constructSentryError(error, response, {
+      message: `Potential backend error detected - status code: ${response.status}`,
+      name: `[${operation}-ERROR] - Unmapped ${operation} Error`,
+    })
+  // Create the error tags or use the previously constructed ones from the try block
+  const tags = error?.tags || { errorType: operation, backendErrorCode: response.status }
+
+  // report to sentry
+  Sentry.captureException(sentryError, {
+    tags,
+    // TODO: change/remove this in context update pr
+    contexts: { params: { ...params } },
+  })
+
+  return error?.baseError || error
+}
+
 async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedOrder>(
   response: Response,
   params: P
@@ -286,14 +309,14 @@ async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedO
         OperatorError.getErrorFromStatusCode(response, 'create'),
       ])
       // create the OperatorError from the constructed error message and the original error
-      const orderError = new OperatorError(Object.assign({}, errorObject, { description }))
+      const error = new OperatorError(Object.assign({}, errorObject, { description }))
 
       // we need to create a sentry error and keep the original mapped quote error
-      throw constructSentryError(orderError, response, {
-        message: `${orderError.description} [sellToken: ${params.sellToken}]//[buyToken: ${params.buyToken}]`,
-        name: `[${orderError.name}] - ${orderError.type}`,
+      throw constructSentryError(error, response, {
+        message: `${error.description}`,
+        name: `[${error.name}] - ${error.type}`,
         optionalTags: {
-          orderErrorType: orderError.type,
+          orderErrorType: error.type,
         },
       })
     } else {
@@ -302,24 +325,7 @@ async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedO
       return uid
     }
   } catch (error) {
-    // Create a new sentry error OR
-    // use the previously created and rethrown error from the try block
-    const sentryError =
-      error?.sentryError ||
-      constructSentryError(error, response, {
-        message: `Potential backend error detected - status code: ${response.status}`,
-        name: '[HandleOrderResponse] - Unhandled Order Error',
-      })
-    // Create the error tags or use the previously constructed ones from the try block
-    const tags = error?.tags || { errorType: 'handleOrderResponse', backendErrorCode: response.status }
-
-    // report to sentry
-    Sentry.captureException(sentryError, {
-      tags,
-      contexts: { params: { ...params } },
-    })
-
-    throw error?.baseError || error
+    throw _handleError(error, response, params, 'ORDER')
   }
 }
 
@@ -336,38 +342,21 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
 
       // we need to map the backend error codes to match our own for quotes
       const mappedError = mapOperatorErrorToQuoteError(errorObj)
-      const quoteError = new QuoteError(mappedError)
+      const error = new QuoteError(mappedError)
 
       // we need to create a sentry error and keep the original mapped quote error
-      throw constructSentryError(quoteError, response, {
-        message: `${quoteError.description} [sellToken: ${params.sellToken}]//[buyToken: ${params.buyToken}]`,
-        name: `[${quoteError.name}] - ${quoteError.type}`,
+      throw constructSentryError(error, response, {
+        message: `${error.description}`,
+        name: `[${error.name}] - ${error.type}`,
         optionalTags: {
-          quoteErrorType: quoteError.type,
+          quoteErrorType: error.type,
         },
       })
     } else {
       return response.json()
     }
   } catch (error) {
-    // Create a new sentry error OR
-    // use the previously created and rethrown error from the try block
-    const sentryError =
-      error?.sentryError ||
-      constructSentryError(error, response, {
-        message: `Potential backend error detected - status code: ${response.status}`,
-        name: '[HandleQuoteResponse] - Unmapped Quote Error',
-      })
-    // Create the error tags or use the previously constructed ones from the try block
-    const tags = error?.tags || { errorType: 'handleQuoteResponse', backendErrorCode: response.status }
-
-    // report to sentry
-    Sentry.captureException(sentryError, {
-      tags,
-      contexts: { params: { ...params } },
-    })
-
-    throw error?.baseError || error
+    throw _handleError(error, response, params, 'QUOTE')
   }
 }
 
