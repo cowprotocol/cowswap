@@ -50,15 +50,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     toDecimals: order.outputToken.decimals,
     validTo: timestamp(order.validTo),
   }
-  // console.debug('[UNFILLABLE]::BEFORE PRICE::', quoteParams.amount)
   try {
-    // if (order.kind === 'sell') {
-    //   // we need to calculate the fee separately to add to the sellAmount here
-    //   const { quote } = await getQuote(quoteParams)
-    //   const { feeAmount } = quote
-    //   quoteParams.amount = BigNumber.from(quoteParams.amount).add(BigNumber.from(feeAmount)).toString()
-    //   console.debug('[UNFILLABLE]::AFTER PRICE::', quoteParams.amount)
-    // }
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e) {
     return null
