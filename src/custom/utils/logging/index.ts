@@ -1,5 +1,5 @@
-import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
-import QuoteError from 'api/gnosisProtocol/errors/QuoteError'
+import OperatorError from 'api/cow/errors/OperatorError'
+import QuoteError from 'api/cow/errors/QuoteError'
 
 type SentryErrorOptions = {
   message: string

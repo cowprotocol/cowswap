@@ -4,13 +4,13 @@ import { OrderStatus, OrderKind, ChangeOrderStatusParams, Order } from 'state/or
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from 'api/gnosisProtocol'
+import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from 'api/cow'
 import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@gnosis.pm/gp-v2-contracts'
-import { getTrades, getProfileData } from 'api/gnosisProtocol/api'
+import { getTrades, getProfileData } from 'api/cow/api'
 
 export interface PostOrderParams {
   account: string

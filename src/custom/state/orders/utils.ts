@@ -3,7 +3,7 @@ import { Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER } from 'constants/index'
-import { OrderMetaData } from 'api/gnosisProtocol'
+import { OrderMetaData } from 'api/cow'
 import { Order } from 'state/orders/actions'
 import { PriceInformation } from 'utils/price'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'

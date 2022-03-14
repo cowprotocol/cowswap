@@ -1,7 +1,7 @@
 import ms from 'ms.macro'
 import { useState, useEffect, useCallback } from 'react'
 import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
-import { getPriceStrategy, PriceStrategy } from 'api/gnosisProtocol/api'
+import { getPriceStrategy, PriceStrategy } from 'api/cow/api'
 import { useActiveWeb3React } from 'hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { SupportedChainId } from 'constants/chains'

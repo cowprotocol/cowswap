@@ -21,7 +21,7 @@ import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { OrderID } from 'api/gnosisProtocol'
+import { OrderID } from 'api/cow'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'

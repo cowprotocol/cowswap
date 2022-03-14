@@ -1,5 +1,5 @@
 import { Order, OrderFulfillmentData, OrderKind, OrderStatus } from 'state/orders/actions'
-import { getOrder, OrderID, OrderMetaData } from 'api/gnosisProtocol'
+import { getOrder, OrderID, OrderMetaData } from 'api/cow'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'

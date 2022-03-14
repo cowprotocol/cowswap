@@ -38,7 +38,7 @@ import {
   V2OrderObject,
 } from './reducer'
 import { isTruthy } from 'utils/misc'
-import { OrderID } from 'api/gnosisProtocol'
+import { OrderID } from 'api/cow'
 import { ContractDeploymentBlocks } from './consts'
 import { deserializeToken, serializeToken } from '@src/state/user/hooks'
 

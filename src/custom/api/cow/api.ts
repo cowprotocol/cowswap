@@ -5,17 +5,13 @@ import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, SigningSche
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
-import OperatorError, {
-  ApiErrorCodeDetails,
-  ApiErrorCodes,
-  ApiErrorObject,
-} from 'api/gnosisProtocol/errors/OperatorError'
+import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'api/cow/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
   GpQuoteErrorDetails,
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
-} from 'api/gnosisProtocol/errors/QuoteError'
+} from 'api/cow/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
 
