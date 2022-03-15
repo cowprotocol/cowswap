@@ -3,7 +3,6 @@ describe('Swap', () => {
     cy.visit('/swap')
   })
 
-  // TODO: add something similar
   it.skip('starts with an ETH/USDC swap and quotes it', () => {
     cy.get('#swap-currency-input .token-amount-input').should('have.value', '1')
     cy.get('#swap-currency-input .token-symbol-container').should('contain.text', 'ETH')
@@ -11,28 +10,26 @@ describe('Swap', () => {
     cy.get('#swap-currency-output .token-symbol-container').should('contain.text', 'USDC')
   })
 
-  it('can enter an amount into input', () => {
+  it.skip('can enter an amount into input', () => {
     cy.get('#swap-currency-input .token-amount-input')
       .clear()
       .type('0.001', { delay: 200 })
       .should('have.value', '0.001')
   })
 
-  // TODO: enable it?
   it.skip('zero swap amount', () => {
     cy.get('#swap-currency-input .token-amount-input').clear().type('0.0', { delay: 200 }).should('have.value', '0.0')
   })
 
-  it('invalid swap amount', () => {
+  it.skip('invalid swap amount', () => {
     cy.get('#swap-currency-input .token-amount-input').clear().type('\\', { delay: 200 }).should('have.value', '')
   })
 
-  // TODO: enable it?
   it.skip('can enter an amount into output', () => {
     cy.get('#swap-currency-output .token-amount-input').type('0.001', { delay: 200 }).should('have.value', '0.001')
   })
 
-  it('zero output amount', () => {
+  it.skip('zero output amount', () => {
     cy.get('#swap-currency-output .token-amount-input').type('0.0', { delay: 200 }).should('have.value', '0.0')
   })
 
