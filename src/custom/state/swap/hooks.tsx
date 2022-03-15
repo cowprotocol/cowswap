@@ -32,8 +32,8 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import TradeGp from './TradeGp'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
-import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
+import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER, USDC } from 'constants/tokens'
 
 import { isWrappingTrade } from './utils'
 
@@ -384,8 +384,12 @@ export function validatedRecipient(recipient: any): string | null {
   return null
 } */
 
-// mod: defaultInputCurrency parameter
-export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurrency = ''): SwapState {
+// mod: defaultInputCurrency and chainId parameters
+export function queryParametersToSwapState(
+  parsedQs: ParsedQs,
+  defaultInputCurrency = '',
+  chainId: SupportedChainId | undefined = undefined
+): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   let typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
@@ -394,7 +398,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurre
   if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
     // Defaults to 1 ETH -> USDC
     inputCurrency = defaultInputCurrency // 'ETH' // mod
-    outputCurrency = 'USDC'
+    outputCurrency = chainId ? USDC[chainId].address : 'USDC' // mod
     typedValue = '1'
   } else if (inputCurrency === outputCurrency) {
     // clear output if identical
@@ -428,8 +432,8 @@ export function useDefaultsFromURLSearch(): SwapState {
   const defaultInputToken = WETH[chainId || 1].address // mod
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken) // mod
-  }, [defaultInputToken, parsedQs]) // mod
+    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId) // mod
+  }, [chainId, defaultInputToken, parsedQs]) // mod
 
   useEffect(() => {
     if (!chainId) return
