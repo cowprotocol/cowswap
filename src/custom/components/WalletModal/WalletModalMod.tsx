@@ -222,8 +222,8 @@ export default function WalletModal({
         //   logMonitoringEvent({ walletAddress })
         // })
         .then(() => {
-          // fix for this https://github.com/gnosis/cowswap/issues/1930
-          // manually set the WalletConnectConnector http.connection.url to currently connected network url
+          // Manually set the WalletConnectConnector http.connection.url to currently connected network url
+          // Fix for this https://github.com/gnosis/cowswap/issues/1930
           if (connector instanceof WalletConnectConnector) {
             const { http, rpc, signer } = connector.walletConnectProvider
             const chainId = signer.connection.chainId || SupportedChainId.MAINNET
