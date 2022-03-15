@@ -21,6 +21,9 @@ import { registerOnWindow } from 'utils/misc'
 // - https://www.jsonrpc.org/specification#error_object
 const METAMASK_SIGNATURE_ERROR_CODE = -32603
 const METHOD_NOT_FOUND_ERROR_CODE = -32601
+// Added the following because of 1Inch walet who doesn't send the error code
+// So we will check the actual error text
+const METHOD_NOT_FOUND_ERROR_MSG_REGEX = /Method not found/i
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i
@@ -159,7 +162,12 @@ async function _signPayload(
   try {
     signature = (await signFn({ ...payload, signer: _signer, signingScheme })) as EcdsaSignature // Only ECDSA signing supported for now
   } catch (e) {
-    if (e.code === METHOD_NOT_FOUND_ERROR_CODE || RPC_REQUEST_FAILED_REGEX.test(e.message)) {
+    const regexErrorCheck = [METHOD_NOT_FOUND_ERROR_MSG_REGEX, RPC_REQUEST_FAILED_REGEX].some((regex) =>
+      // for example 1Inch error doesn't have e.message so we will check the output of toString()
+      [e.message, e.toString()].some((msg) => regex.test(msg))
+    )
+
+    if (e.code === METHOD_NOT_FOUND_ERROR_CODE || regexErrorCheck) {
       // Maybe the wallet returns the proper error code? We can only hope 🤞
       // OR it failed with a generic message, there's no error code set, and we also hope it'll work
       // with other methods...
