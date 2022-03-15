@@ -11,7 +11,9 @@ import { useActiveWeb3Instance } from 'hooks/index'
 import { getSafeInfo } from 'api/gnosisSafe'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
-const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe']
+const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
+const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe', GNOSIS_SAFE_APP_NAME]
+const SAFE_ICON_URL = 'https://apps.gnosis-safe.io/wallet-connect/favicon.ico'
 
 export interface ConnectedWalletInfo {
   chainId?: number
@@ -92,11 +94,20 @@ export function useWalletInfo(): ConnectedWalletInfo {
     setIcon('')
 
     // If the connector is wallet connect, try to get the wallet name and icon
-    if (connector instanceof WalletConnectConnector) {
-      getWcPeerMetadata(connector).then(({ walletName, icon }) => {
-        setWalletName(walletName)
-        setIcon(icon)
-      })
+    const walletType = getProviderType(connector)
+    switch (walletType) {
+      case WalletProvider.WALLET_CONNECT:
+        if (connector instanceof WalletConnectConnector) {
+          getWcPeerMetadata(connector).then(({ walletName, icon }) => {
+            setWalletName(walletName)
+            setIcon(icon)
+          })
+        }
+        break
+      case WalletProvider.GNOSIS_SAFE:
+        setWalletName(GNOSIS_SAFE_APP_NAME)
+        setIcon(SAFE_ICON_URL)
+        break
     }
   }, [connector])
 
@@ -107,14 +118,16 @@ export function useWalletInfo(): ConnectedWalletInfo {
   }, [account, web3Instance])
 
   useEffect(() => {
-    if (!chainId || !account || !walletName || !GNOSIS_SAFE_WALLET_NAMES.includes(walletName)) {
-      setGnosisSafeInfo(undefined)
-    } else {
+    const isGnosisSafe = walletName && GNOSIS_SAFE_WALLET_NAMES.includes(walletName)
+
+    if (chainId && account && isGnosisSafe) {
       getSafeInfo(chainId, account)
         .then(setGnosisSafeInfo)
         .catch((error) => {
           console.error('[api/gnosisSafe] Error fetching GnosisSafe info', error)
         })
+    } else {
+      setGnosisSafeInfo(undefined)
     }
   }, [chainId, account, walletName])
 

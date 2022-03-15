@@ -59,4 +59,14 @@ module.exports = {
       },
     }),
   },
+  devServer: (config) => {
+    // Add CORS headers, to enable to add the local served website in Gnosis Safe
+    config.headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+    }
+
+    return config
+  },
 }

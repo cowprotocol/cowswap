@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers'
+import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
@@ -82,6 +83,8 @@ export function getNetworkLibrary(): Web3Provider {
 
 export const injected = new InjectedConnector({ supportedChainIds })
 
+export const gnosisSafe = new SafeAppConnector()
+
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
   rpc: rpcNetworks,
@@ -113,6 +116,7 @@ export const walletlink = new WalletLinkConnector({
 
 export enum WalletProvider {
   INJECTED = 'INJECTED',
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
   WALLET_CONNECT = 'WALLET_CONNECT',
   FORMATIC = 'FORMATIC',
   PORTIS = 'PORTIS',
@@ -130,6 +134,9 @@ export function getProviderType(connector: AbstractConnector | undefined): Walle
 
     case walletconnect:
       return WalletProvider.WALLET_CONNECT
+
+    case gnosisSafe:
+      return WalletProvider.GNOSIS_SAFE
 
     case fortmatic:
       return WalletProvider.FORMATIC

@@ -1,13 +1,16 @@
-import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
+import { IS_IN_IFRAME } from 'constants/misc'
+import { useWeb3React } from '@web3-react/core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useEffect, useState, useCallback } from 'react'
-import { isMobile } from 'react-device-detect'
-import { injected, walletconnect, getProviderType, WalletProvider, fortmatic, walletlink } from 'connectors'
-import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
+
+import { injected, gnosisSafe, walletconnect, getProviderType, WalletProvider, fortmatic, walletlink } from 'connectors'
+import { isMobile } from 'utils/userAgent'
+
+import { STORAGE_KEY_LAST_PROVIDER, WAITING_TIME_RECONNECT_LAST_PROVIDER } from 'constants/index'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 // exports from the original file
-export { useActiveWeb3React, useInactiveListener } from '@src/hooks/web3'
+export { useInactiveListener, useActiveWeb3React } from '@src/hooks/web3'
 
 enum DefaultProvidersInjected {
   METAMASK = WalletProvider.INJECTED,
@@ -15,8 +18,12 @@ enum DefaultProvidersInjected {
 }
 
 export function useEagerConnect() {
-  const { activate, active, connector } = useWeb3ReactCore()
+  const { activate, active, connector } = useWeb3React()
   const [tried, setTried] = useState(false)
+
+  // gnosisSafe.isSafeApp() races a timeout against postMessage, so it delays pageload if we are not in a safe app;
+  // if we are not embedded in an iframe, it is not worth checking
+  const [triedSafe, setTriedSafe] = useState(!IS_IN_IFRAME)
 
   // handle setting/removing wallet provider in local storage
   const handleBeforeUnload = useCallback(() => {
@@ -59,8 +66,20 @@ export function useEagerConnect() {
         setTried(true)
       })
     },
-    [activate, setTried]
+    [activate]
   )
+
+  const connectSafe = useCallback(() => {
+    gnosisSafe.isSafeApp().then((loadedInSafe) => {
+      if (loadedInSafe) {
+        activate(gnosisSafe, undefined, true).catch(() => {
+          setTriedSafe(true)
+        })
+      } else {
+        setTriedSafe(true)
+      }
+    })
+  }, [activate, setTriedSafe])
 
   useEffect(() => {
     if (!active) {
@@ -68,8 +87,15 @@ export function useEagerConnect() {
 
       // if there is no last saved provider set tried state to true
       if (!latestProvider) {
-        // Try to auto-connect to the injected wallet
-        connectInjected()
+        if (!triedSafe) {
+          // First try to connect using Gnosis Safe
+          connectSafe()
+        } else {
+          // Then try to connect using the injected wallet
+          connectInjected()
+        }
+      } else if (latestProvider === WalletProvider.GNOSIS_SAFE) {
+        connectSafe()
       } else if (latestProvider === WalletProvider.INJECTED) {
         // MM is last provider
         connectInjected()
@@ -82,13 +108,22 @@ export function useEagerConnect() {
         reconnectUninjectedProvider(fortmatic)
       }
     }
-  }, [connectInjected, active, reconnectUninjectedProvider]) // intentionally only running on mount (make sure it's only mounted once :))
+  }, [connectInjected, active, connectSafe, triedSafe, reconnectUninjectedProvider]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
+    let timeout: NodeJS.Timeout | undefined
+
     if (active) {
       setTried(true)
+    } else {
+      timeout = setTimeout(() => {
+        localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+        setTried(true)
+      }, WAITING_TIME_RECONNECT_LAST_PROVIDER)
     }
+
+    return () => timeout && clearTimeout(timeout)
   }, [active])
 
   useEffect(() => {

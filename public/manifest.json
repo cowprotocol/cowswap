@@ -2,6 +2,8 @@
   "background_color": "#fff",
   "display": "standalone",
   "homepage_url": "https://cowswap.exchange",
+  "description": "Gasless MetaDEX Aggregator with front-running and Peer-to-Peer trades",
+  "iconPath": "favicon.png",
   "icons": [
     {
       "src": "./favicon.png",

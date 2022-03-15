@@ -37,7 +37,9 @@ export default function AffiliateStatusCheck() {
   const [affiliateState, setAffiliateState] = useState<AffiliateStatus | null>()
   const [error, setError] = useState('')
   const isFirstTrade = useRef(false)
-  const fulfilledActivity = allRecentActivity.filter((data) => data.status === OrderStatus.FULFILLED)
+  const fulfilledOrders = allRecentActivity.filter((data) => {
+    return 'appData' in data && data.status === OrderStatus.FULFILLED
+  })
 
   const notificationBannerId = useMemo(() => {
     if (!referralAddress?.value) {
@@ -61,7 +63,7 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    if (fulfilledActivity.length >= 1 && isFirstTrade.current) {
+    if (fulfilledOrders.length >= 1 && isFirstTrade.current) {
       setAffiliateState(null)
       isFirstTrade.current = false
       history.replace({ search: '' })
@@ -83,7 +85,7 @@ export default function AffiliateStatusCheck() {
 
     setAffiliateState('ACTIVE')
     isFirstTrade.current = true
-  }, [referralAddress, chainId, account, fulfilledActivity.length, history, resetReferralAddress])
+  }, [referralAddress, chainId, account, fulfilledOrders.length, history, resetReferralAddress])
 
   useEffect(() => {
     async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
