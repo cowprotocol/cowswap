@@ -7,6 +7,7 @@ declare module '@metamask/jazzicon' {
 declare module 'fortmatic'
 
 interface Window {
+  console: Console & { force: Console }
   // walletLinkExtension is injected by the Coinbase Wallet extension
   walletLinkExtension?: any
   ethereum?: {
@@ -18,6 +19,10 @@ interface Window {
     providers: [any]
   }
   web3?: Record<string, unknown>
+}
+
+interface Console extends Node.Console {
+  force: Node.Console
 }
 
 declare module 'content-hash' {
