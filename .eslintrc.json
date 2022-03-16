@@ -43,6 +43,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "prettier/@typescript-eslint",
+    "plugin:cypress/recommended",
     "plugin:prettier/recommended",
     "plugin:jsx-a11y/recommended"
   ],
