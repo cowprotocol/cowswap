@@ -14,7 +14,8 @@
     }
   },
   "ignorePatterns": [
-    "node_modules/**/*",
+    "src/lib/",
+    "__fixtures__",
     ".github/*",
     "src/components/RateToggle/index.tsx",
     "src/types/v3",
