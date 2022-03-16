@@ -20,4 +20,5 @@ const proxiedConsole = new Proxy(window.console, {
 })
 
 window.console = Object.assign({}, proxiedConsole, { force: originalConsole })
+// eslint-disable-next-line no-native-reassign
 console = window.console
