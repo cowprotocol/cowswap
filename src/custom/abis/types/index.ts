@@ -6,5 +6,4 @@ export type { VCow } from "./VCow";
 
 export { GPv2Settlement__factory } from "./factories/GPv2Settlement__factory";
 export { VCow__factory } from "./factories/VCow__factory";
-
-export * from "@src/abis/types"
+export * from "@src/abis/types";
