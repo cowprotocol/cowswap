@@ -10,6 +10,7 @@ import EthereumLogo from 'assets/images/ethereum-logo.png'
 // MOD imports
 import XDaiLogo from 'assets/cow-swap/xdai.png'
 import { ADDRESS_IMAGE_OVERRIDE } from 'constants/tokens'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 
 type Network = 'ethereum' | /*'arbitrum' | 'optimism'*/ 'xdai' | 'rinkeby'
 
@@ -56,7 +57,8 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
   return useMemo(() => {
     const logoURIs = [...locations]
     if (currency) {
-      if (currency.isNative) {
+      // mod: CowSwap Native buy orders have address set to EeeEE... rather than `isNative` flag
+      if (currency.isNative || currency.address === NATIVE_CURRENCY_BUY_ADDRESS) {
         logoURIs.push(getNativeLogoURI(currency.chainId))
       } else if (currency.isToken) {
         // mod
