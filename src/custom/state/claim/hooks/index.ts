@@ -386,6 +386,61 @@ export function useUsdcPrice(): string | null {
 type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
 
 /**
+ * Hook that calls specific method on the vCow contract defined on the VCowMethods type
+ * and returns the value in the form of JSBI.BigInt
+ *
+ * @param method method that will be called on the vCowContract
+ */
+type VCowMethods = 'swappableBalanceOf' | 'balanceOf'
+
+export function _useFetchVCowValue(method: VCowMethods) {
+  const vCowContract = useVCowContract()
+  const { chainId, account } = useActiveWeb3React()
+
+  const [value, setValue] = useState<null | JSBI>(null)
+
+  useEffect(() => {
+    if (!chainId || !vCowContract || !account) {
+      return
+    }
+
+    vCowContract[method](account)
+      .then((result) => {
+        setValue(JSBI.BigInt(result))
+      })
+      .catch((error: Error) => {
+        console.log(`[vCowContract] ${method} fetch failed`, error)
+      })
+  }, [account, chainId, method, vCowContract])
+
+  return value
+}
+
+/**
+ * Hook that returns vCow data defined in the VCowData
+ */
+type VCowData = {
+  total: null | JSBI
+  unvested: null | JSBI
+  vested: null | JSBI
+}
+
+export function useVCowData(): VCowData {
+  const vested = _useFetchVCowValue('swappableBalanceOf')
+  const total = _useFetchVCowValue('balanceOf')
+
+  const unvested = useMemo(() => {
+    if (total === null || vested === null) {
+      return null
+    }
+
+    return JSBI.subtract(total, vested)
+  }, [total, vested])
+
+  return { vested, unvested, total }
+}
+
+/**
  * Generic hook for fetching contract value for the many prices
  */
 function _useVCowPriceForToken(priceFnName: VCowPriceFnNames): string | null {

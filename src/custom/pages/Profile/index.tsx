@@ -21,7 +21,7 @@ import { HelpCircle, RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { numberFormatter } from 'utils/format'
+import { formatMax, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -31,7 +31,8 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { Title } from 'components/Page'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { V_COW } from 'constants/tokens'
+import { useVCowData } from 'state/claim/hooks'
+import { V_COW, COW } from 'constants/tokens'
 import VCOWDropdown from './VCOWDropdown'
 
 import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
@@ -45,6 +46,15 @@ export default function Profile() {
   const hasOrders = useHasOrders(account)
 
   const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
+  const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+
+  const { vested, total, unvested } = useVCowData()
+
+  // SHOULD BE REMOVED BEFORE MERGE
+  console.log('vested', vested?.toString())
+  console.log('total', total?.toString())
+  console.log('unvested', unvested?.toString())
+  console.log('cowBalance', formatMax(cowBalance, cowBalance?.currency.decimals))
 
   const renderNotificationMessages = (
     <>
