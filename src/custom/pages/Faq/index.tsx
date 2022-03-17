@@ -573,8 +573,8 @@ export default function Faq() {
             whether making the token transferable complies with applicable laws.
           </p>
           <p>
-            The token's main purpose is to govern and curate essential infrastructure components of the CoW Protocol
-            ecosystem.
+            The token&apos;s main purpose is to govern and curate essential infrastructure components of the CoW
+            Protocol ecosystem.
           </p>
           <p>Be cautious, some people may create fake COW tokens, that are not affiliated with this project.</p>
           <p>
