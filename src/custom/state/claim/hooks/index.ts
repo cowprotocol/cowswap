@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -61,6 +61,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
+import { useBlockNumber } from 'state/application/hooks'
 
 const CLAIMS_REPO_BRANCH = 'gip-13'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -387,7 +388,7 @@ type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
 
 /**
  * Hook that calls specific method on the vCow contract defined on the VCowMethods type
- * and returns the value in the form of JSBI.BigInt
+ * and returns the value in the form of CurrencyAmount<Currency>
  *
  * @param method method that will be called on the vCowContract
  */
@@ -395,49 +396,69 @@ type VCowMethods = 'swappableBalanceOf' | 'balanceOf'
 
 export function _useFetchVCowValue(method: VCowMethods) {
   const vCowContract = useVCowContract()
+  const blockNumber = useBlockNumber()
   const { chainId, account } = useActiveWeb3React()
 
-  const [value, setValue] = useState<null | JSBI>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [value, setValue] = useState<CurrencyAmount<Currency> | null>(null)
+
+  const vCowToken = chainId ? V_COW[chainId] : undefined
 
   useEffect(() => {
-    if (!chainId || !vCowContract || !account) {
+    setIsLoading(true)
+  }, [account, chainId])
+
+  useEffect(() => {
+    if (!chainId || !vCowContract || !account || !vCowToken) {
       return
     }
 
     vCowContract[method](account)
       .then((result) => {
-        setValue(JSBI.BigInt(result))
+        setValue(CurrencyAmount.fromRawAmount(vCowToken, result.toString()))
       })
       .catch((error: Error) => {
         console.log(`[vCowContract] ${method} fetch failed`, error)
       })
-  }, [account, chainId, method, vCowContract])
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [account, chainId, method, vCowContract, blockNumber, vCowToken])
 
-  return value
+  return { value, isLoading }
 }
 
 /**
  * Hook that returns vCow data defined in the VCowData
  */
 type VCowData = {
-  total: null | JSBI
-  unvested: null | JSBI
-  vested: null | JSBI
+  total: CurrencyAmount<Currency> | null
+  unvested: CurrencyAmount<Currency> | null
+  vested: CurrencyAmount<Currency> | null
+  isLoading: boolean
 }
 
 export function useVCowData(): VCowData {
-  const vested = _useFetchVCowValue('swappableBalanceOf')
-  const total = _useFetchVCowValue('balanceOf')
+  const { value: vested, isLoading: isVestedLoading } = _useFetchVCowValue('swappableBalanceOf')
+  const { value: total, isLoading: isTotalLoading } = _useFetchVCowValue('balanceOf')
+
+  const isLoading = useMemo(() => {
+    return isVestedLoading || isTotalLoading
+  }, [isTotalLoading, isVestedLoading])
 
   const unvested = useMemo(() => {
     if (total === null || vested === null) {
       return null
     }
 
-    return JSBI.subtract(total, vested)
+    if (!total.currency.equals(vested.currency)) {
+      return null
+    }
+
+    return total.subtract(vested)
   }, [total, vested])
 
-  return { vested, unvested, total }
+  return { vested, unvested, total, isLoading }
 }
 
 /**

@@ -13,7 +13,6 @@ import {
   Loader,
   ExtLink,
   ProfileWrapper,
-  ProfileGridWrap,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -21,10 +20,10 @@ import { HelpCircle, RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { formatMax, numberFormatter } from 'utils/format'
+import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
-import { MouseoverTooltipContent } from 'components/Tooltip'
+import { MouseoverTooltip, MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -32,29 +31,19 @@ import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { Title } from 'components/Page'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData } from 'state/claim/hooks'
-import { V_COW, COW } from 'constants/tokens'
-import VCOWDropdown from './VCOWDropdown'
-
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
+import { COW } from 'constants/tokens'
 
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
+  const { vested, total, unvested, isLoading: isvCowDataloading } = useVCowData()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
-  const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
-
-  const { vested, total, unvested } = useVCowData()
-
-  // SHOULD BE REMOVED BEFORE MERGE
-  console.force.log('vested', vested?.toString())
-  console.force.log('total', total?.toString())
-  console.force.log('unvested', unvested?.toString())
-  console.force.log('cowBalance', formatMax(cowBalance, cowBalance?.currency.decimals))
+  const cowToken = chainId ? COW[chainId] : undefined
+  const cowBalance = useTokenBalance(account || undefined, cowToken)
 
   const renderNotificationMessages = (
     <>
@@ -71,16 +60,69 @@ export default function Profile() {
     </>
   )
 
+  const renderTooltipContent = () => (
+    <div>
+      <div>
+        <span>Unvested</span> <span>{formatSmartLocaleAware(unvested, unvested?.currency.decimals) || 0} vCOW</span>
+      </div>
+      <div>
+        <span>Vested</span> <span>{formatSmartLocaleAware(vested, vested?.currency.decimals) || 0} vCOW</span>
+      </div>
+    </div>
+  )
+
   return (
     <Container>
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <ProfileWrapper>
-        <ProfileGridWrap horizontal>
-          <CardHead>
-            <Title>Profile</Title>
-          </CardHead>
-          {IS_CLAIMING_ENABLED && vCowBalance && <VCOWDropdown balance={vCowBalance} />}
-        </ProfileGridWrap>
+        {!isvCowDataloading ? (
+          <div
+            style={{
+              display: 'flex',
+            }}
+          >
+            {!total?.equalTo(0) && (
+              <div style={{ flex: 1 }}>
+                <div>
+                  <div>
+                    <span>Total vCOW balance</span>
+                    <MouseoverTooltip text={renderTooltipContent()}>
+                      <HelpCircle size="15" color={'white'} />
+                    </MouseoverTooltip>
+                  </div>
+
+                  {<h3>{formatSmartLocaleAware(total, total?.currency.decimals)}</h3>}
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <p>Vested</p>
+                    <h5>{formatSmartLocaleAware(vested, vested?.currency.decimals)}</h5>
+                  </div>
+                  <div>
+                    <button disabled={vested?.equalTo(0)}>Covert to COW</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div
+              style={{
+                flexDirection: 'column',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 'auto',
+                flex: 1,
+              }}
+            >
+              <div>Available COW balance</div>
+              <h4>{formatSmartLocaleAware(cowBalance, cowBalance?.currency.decimals) || 0} COW</h4>
+            </div>
+          </div>
+        ) : (
+          <div>Loading...</div>
+        )}
       </ProfileWrapper>
       <Wrapper>
         <GridWrap>
