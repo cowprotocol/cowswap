@@ -11,7 +11,6 @@ import { version } from '@src/../package.json'
 import { environmentName } from 'utils/environments'
 import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -84,7 +83,7 @@ export default function App() {
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
             <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-            {IS_CLAIMING_ENABLED && <Route exact strict path="/claim" component={Claim} />}
+            <Route exact strict path="/claim" component={Claim} />}
             <Route exact strict path="/about" component={About} />
             <Route exact strict path="/profile" component={Profile} />
             <Route exact strict path="/faq" component={Faq} />

@@ -45,7 +45,6 @@ import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
 import UniBalanceContent from 'components/Header/UniBalanceContent'
 import CowClaimButton from 'components/CowClaimButton'
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -276,16 +275,14 @@ export default function Header() {
             <NetworkSelector />
           </HeaderElement>
           <HeaderElement>
-            {IS_CLAIMING_ENABLED && (
-              <VCowWrapper>
-                <CowClaimButton
-                  isClaimPage={isClaimPage}
-                  account={account}
-                  chainId={chainId}
-                  handleOnClickClaim={handleOnClickClaim}
-                />
-              </VCowWrapper>
-            )}
+            <VCowWrapper>
+              <CowClaimButton
+                isClaimPage={isClaimPage}
+                account={account}
+                chainId={chainId}
+                handleOnClickClaim={handleOnClickClaim}
+              />
+            </VCowWrapper>
 
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (

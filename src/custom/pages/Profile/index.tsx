@@ -34,8 +34,6 @@ import { useTokenBalance } from 'state/wallet/hooks'
 import { V_COW } from 'constants/tokens'
 import VCOWDropdown from './VCOWDropdown'
 
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
-
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
@@ -69,7 +67,7 @@ export default function Profile() {
           <CardHead>
             <Title>Profile</Title>
           </CardHead>
-          {IS_CLAIMING_ENABLED && vCowBalance && <VCOWDropdown balance={vCowBalance} />}
+          {vCowBalance && <VCOWDropdown balance={vCowBalance} />}
         </ProfileGridWrap>
       </ProfileWrapper>
       <Wrapper>
