@@ -51,10 +51,10 @@ export default function Profile() {
   const { vested, total, unvested } = useVCowData()
 
   // SHOULD BE REMOVED BEFORE MERGE
-  console.log('vested', vested?.toString())
-  console.log('total', total?.toString())
-  console.log('unvested', unvested?.toString())
-  console.log('cowBalance', formatMax(cowBalance, cowBalance?.currency.decimals))
+  console.force.log('vested', vested?.toString())
+  console.force.log('total', total?.toString())
+  console.force.log('unvested', unvested?.toString())
+  console.force.log('cowBalance', formatMax(cowBalance, cowBalance?.currency.decimals))
 
   const renderNotificationMessages = (
     <>
