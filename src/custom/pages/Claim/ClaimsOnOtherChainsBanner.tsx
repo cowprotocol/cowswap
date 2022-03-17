@@ -59,10 +59,7 @@ function _shouldNotDisplayBannerForChain(
   const { available, total } = claimInfo
   return (
     // If this is the same network
-    // Important, the double equal comparison is intentional!
-    // Don't be dumb like me and change to triple equal and spend awhile figuring out why it doesn't work...
-    // eslint-disable-next-line eqeqeq
-    checkedChain == chainId ||
+    Number(checkedChain) === chainId ||
     // If total claims is 0
     total === 0 ||
     // If there are no available
@@ -94,14 +91,6 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
     }, [])
   }, [activeClaimAccount, chainId, claimInfoPerAccount])
 
-  const networkLabel = useMemo(() => {
-    if (!chainId) {
-      return ''
-    }
-    const { label } = CHAIN_INFO[chainId]
-    return label
-  }, [chainId])
-
   if (chainsWithClaims.length === 0) {
     return null
   }
@@ -118,7 +107,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
             return (
               <Fragment key={chainId}>
                 {isLastInMultiple && ' and'}
-                <ChainSpan onClick={changeNetworksCallback}>{networkLabel}</ChainSpan>
+                <ChainSpan onClick={changeNetworksCallback}>{CHAIN_INFO[chainId].label}</ChainSpan>
               </Fragment>
             )
           })}
