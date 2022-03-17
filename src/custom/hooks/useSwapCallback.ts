@@ -197,6 +197,7 @@ async function _swap(params: SwapParams): Promise<string> {
     }),
     // unadjusted outputAmount
     outputAmount: outputAmountWithSlippage,
+    sellAmountBeforeFee: trade.inputAmountWithoutFee,
     // pass Trade feeAmount as raw string or give 0
     feeAmount: fee?.feeAsCurrency,
     sellToken,

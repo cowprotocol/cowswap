@@ -24,7 +24,12 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
-    amount = order.sellAmount.toString()
+    // this order sell amount is sellAmountAfterFees..
+    // this is an issue as it will be adjusted again in the backend
+    // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
+    // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
+    // e.g so here we need to pass the sellAmountBeforeFees
+    amount = order.sellAmountBeforeFee.toString()
     baseToken = order.sellToken
     quoteToken = order.buyToken
   } else {
@@ -45,7 +50,6 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     toDecimals: order.outputToken.decimals,
     validTo: timestamp(order.validTo),
   }
-
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e) {
