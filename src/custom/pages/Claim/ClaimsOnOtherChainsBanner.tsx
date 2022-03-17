@@ -69,7 +69,7 @@ function _shouldNotDisplayBannerForChain(
 
 function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
   const { account, library, chainId } = useActiveWeb3React()
-  const { callback } = useChangeNetworks({ account, library, chainId })
+  const { handleChainSwitch } = useChangeNetworks({ library, chainId })
 
   const { claimInfoPerAccount, activeClaimAccount } = useClaimState()
 
@@ -102,7 +102,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
         <div>This account has available claims on</div>
         <div>
           {chainsWithClaims.map((chainId, index, array) => {
-            const changeNetworksCallback = () => callback(chainId)
+            const changeNetworksCallback = () => handleChainSwitch(chainId, true) // true to avoid opening the dropdown
             const isLastInMultiple = index === array.length - 1 && array.length > 1
             return (
               <Fragment key={chainId}>

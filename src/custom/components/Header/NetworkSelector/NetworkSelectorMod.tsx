@@ -2,21 +2,21 @@ import { Trans } from '@lingui/macro'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES, SupportedChainId } from 'constants/chains'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import useParsedQueryString from 'hooks/useParsedQueryString'
-import usePrevious from 'hooks/usePrevious'
+// import { useOnClickOutside } from 'hooks/useOnClickOutside'
+// import useParsedQueryString from 'hooks/useParsedQueryString'
+// import usePrevious from 'hooks/usePrevious'
 import { ParsedQs } from 'qs'
-import { useCallback, useEffect, useRef } from 'react'
+// import { useCallback, useEffect, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
-import { useHistory } from 'react-router-dom'
-import { useModalOpen, useToggleModal } from 'state/application/hooks'
-import { addPopup, ApplicationModal } from 'state/application/reducer'
+// import { useHistory } from 'react-router-dom'
+// import { useModalOpen, useToggleModal } from 'state/application/hooks'
+// import { addPopup, ApplicationModal } from 'state/application/reducer'
 import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
-import { replaceURLParam } from 'utils/routes'
+// import { replaceURLParam } from 'utils/routes'
 
-import { useAppDispatch } from 'state/hooks'
-import { switchToNetwork } from 'utils/switchToNetwork'
+// import { useAppDispatch } from 'state/hooks'
+// import { switchToNetwork } from 'utils/switchToNetwork'
 
 // MOD imports
 import {
@@ -25,7 +25,7 @@ import {
   FlyoutHeader,
   LinkOutCircle,
 } from '@src/components/Header/NetworkSelector'
-// import useChangeNetworks from 'hooks/useChangeNetworks'
+import useChangeNetworks from 'hooks/useChangeNetworks'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -237,7 +237,7 @@ function Row({
   return rowContent
 }
 
-const getParsedChainId = (parsedQs?: ParsedQs) => {
+export const getParsedChainId = (parsedQs?: ParsedQs) => {
   const chain = parsedQs?.chain
   if (!chain || typeof chain !== 'string') return { urlChain: undefined, urlChainId: undefined }
 
@@ -250,30 +250,17 @@ const getChainIdFromName = (name: string) => {
   return chainId ? parseInt(chainId) : undefined
 }
 
-const getChainNameFromId = (id: string | number) => {
+export const getChainNameFromId = (id: string | number) => {
   // casting here may not be right but fine to return undefined if it's not a supported chain ID
   return CHAIN_IDS_TO_NAMES[id as SupportedChainId] || ''
 }
 
 export default function NetworkSelector() {
-  // TODO: re-think about `useChangeNetworks` extracted hook
-  // const { account, chainId, library } = useActiveWeb3React()
-  // const {
-  //   callback: networkCallback,
-  //   conditionalToggle,
-  //   chainInfo: info,
-  //   mainnetInfo,
-  //   isUnsupportedChain,
-  //   showSelector,
-  //   nodeRef: node,
-  //   isModalOpen: open,
-  // } = useChangeNetworks({ account, chainId, library })
-  //
-  // if (!chainId || !info || !library || isUnsupportedChain) {
-  //   return null
-  // }
   const { chainId, library } = useActiveWeb3React()
-  const parsedQs = useParsedQueryString()
+  // mod: refactored inner logic into useChangeNetworks hook
+  const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ chainId, library })
+
+  /* const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
   const prevChainId = usePrevious(chainId)
   const node = useRef<HTMLDivElement>()
@@ -335,7 +322,7 @@ export default function NetworkSelector() {
     if (chainId && !urlChainId) {
       history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
     }
-  }, [chainId, history, urlChainId, urlChain])
+  }, [chainId, history, urlChainId, urlChain]) */
 
   if (!chainId || !info || !library) {
     return null

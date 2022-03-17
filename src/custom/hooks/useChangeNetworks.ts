@@ -1,100 +1,88 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
+import { useCallback, useEffect, useRef } from 'react'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
-// import { useAppSelector } from 'state/hooks'
-import { SupportedChainId } from 'constants/chains'
 import { switchToNetwork } from 'utils/switchToNetwork'
-import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletModalToggle } from '../state/application/hooks'
+import { useModalOpen, useToggleModal } from '../state/application/hooks'
 import { CHAIN_INFO } from 'constants/chainInfo'
+import useParsedQueryString from '@src/hooks/useParsedQueryString'
+import usePrevious from '@src/hooks/usePrevious'
+import { addPopup, ApplicationModal } from '@src/state/application/reducer'
+import { useAppDispatch } from '@src/state/hooks'
+import { replaceURLParam } from '@src/utils/routes'
+import { getChainNameFromId, getParsedChainId } from 'components/Header/NetworkSelector'
+import { useHistory } from 'react-router-dom'
 
-type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'account' | 'chainId' | 'library'>
+type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'chainId' | 'library'>
 
-export default function useChangeNetworks({ account, chainId: preChainId, library }: ChangeNetworksParams) {
-  const { error } = useWeb3React() // MOD: check unsupported network
-  const nodeRef = useRef<HTMLDivElement>()
+/**
+ * Hook extracted from Header/NetworkSelector component pretty much verbatim
+ *
+ * @param chainId
+ * @param library
+ */
+export default function useChangeNetworks({ chainId, library }: ChangeNetworksParams) {
+  const parsedQs = useParsedQueryString()
+  const { urlChain, urlChainId } = getParsedChainId(parsedQs)
+  const prevChainId = usePrevious(chainId)
+  const node = useRef<HTMLDivElement>()
+  const open = useModalOpen(ApplicationModal.NETWORK_SELECTOR)
+  const toggle = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
+  useOnClickOutside(node, open ? toggle : undefined)
 
-  const [localOpen, setLocalOpen] = useState(false)
-  const isModalOpen = localOpen
-
-  const toggleWalletModal = useWalletModalToggle()
-  const closeModal = useCallback(() => setLocalOpen(false), [])
-  const openModal = useCallback(() => setLocalOpen(true), [])
-  const toggleModal = useCallback(() => {
-    if (isModalOpen) {
-      closeModal()
-    } else {
-      openModal()
-    }
-  }, [closeModal, isModalOpen, openModal])
-
-  useOnClickOutside(nodeRef, isModalOpen ? closeModal : undefined)
-
-  // TODO: use new method from uni as `implements3085` flag is no longer set
-  // const implements3085 = useAppSelector((state) => state.application.implements3085)
-
-  // MOD: get supported chain and check unsupported
-  const [chainId, isUnsupportedChain] = useMemo(() => {
-    const chainId = supportedChainId(preChainId)
-
-    return [chainId, error instanceof UnsupportedChainIdError] // Mod - return if chainId is unsupported
-  }, [preChainId, error])
+  const history = useHistory()
 
   const info = chainId ? CHAIN_INFO[chainId] : undefined
 
-  // const showSelector = Boolean(!account || implements3085)
-  const showSelector = Boolean(!account)
-  const mainnetInfo = CHAIN_INFO[SupportedChainId.MAINNET]
+  const dispatch = useAppDispatch()
 
-  const conditionalToggle = useCallback(() => {
-    if (showSelector) {
-      toggleModal()
-    }
-  }, [showSelector, toggleModal])
+  const handleChainSwitch = useCallback(
+    (targetChain: number, skipToggle?: boolean) => {
+      if (!library) return
+      switchToNetwork({ library, chainId: targetChain })
+        .then(() => {
+          if (!skipToggle) {
+            toggle()
+          }
+          history.replace({
+            search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(targetChain)),
+          })
+        })
+        .catch((error) => {
+          console.error('Failed to switch networks', error)
 
-  // MOD: checks if a requested network switch was sent
-  // used for when user disconnected and selects a network internally
-  // if 3085 supported, will connect wallet and change network
-  const [queuedNetworkSwitch, setQueuedNetworkSwitch] = useState<null | number>(null)
+          // we want app network <-> chainId param to be in sync, so if user changes the network by changing the URL
+          // but the request fails, revert the URL back to current chainId
+          if (chainId) {
+            history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+          }
 
-  const networkCallback = useCallback(
-    (supportedChainId) => {
-      if (!account) {
-        toggleWalletModal()
-        return setQueuedNetworkSwitch(supportedChainId)
-        // } else if (implements3085 && library && supportedChainId) {
-      } else if (library && supportedChainId) {
-        switchToNetwork({ library, chainId: supportedChainId })
+          if (!skipToggle) {
+            toggle()
+          }
 
-        return isModalOpen && closeModal()
-      }
-
-      return
+          dispatch(addPopup({ content: { failedSwitchNetwork: targetChain }, key: `failed-network-switch` }))
+        })
     },
-    [account, library, toggleWalletModal, isModalOpen, closeModal]
+    [dispatch, library, toggle, history, chainId]
   )
 
-  // if wallet supports 3085
   useEffect(() => {
-    // if (queuedNetworkSwitch && account && chainId && implements3085) {
-    if (queuedNetworkSwitch && account && chainId) {
-      networkCallback(queuedNetworkSwitch)
-      setQueuedNetworkSwitch(null)
-    }
-    // }, [networkCallback, queuedNetworkSwitch, chainId, account, implements3085])
-  }, [networkCallback, queuedNetworkSwitch, chainId, account])
+    if (!chainId || !prevChainId) return
 
-  return {
-    callback: networkCallback,
-    conditionalToggle,
-    openModal,
-    closeModal,
-    isModalOpen,
-    isUnsupportedChain,
-    chainInfo: info,
-    mainnetInfo,
-    showSelector,
-    nodeRef,
-  }
+    // when network change originates from wallet or dropdown selector, just update URL
+    if (chainId !== prevChainId) {
+      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+      // otherwise assume network change originates from URL
+    } else if (urlChainId && urlChainId !== chainId) {
+      handleChainSwitch(urlChainId, true)
+    }
+  }, [chainId, urlChainId, prevChainId, handleChainSwitch, history])
+
+  // set chain parameter on initial load if not there
+  useEffect(() => {
+    if (chainId && !urlChainId) {
+      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+    }
+  }, [chainId, history, urlChainId, urlChain])
+  return { chainId, library, node, open, toggle, info, handleChainSwitch }
 }
