@@ -60,6 +60,17 @@ const FlyoutHeader = styled.div`
   font-weight: 400;
 ` */
 const FlyoutMenu = styled.div`
+  position: absolute;
+  top: 54px;
+  width: 272px;
+  z-index: 99;
+  padding-top: 10px;
+  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    top: 38px;
+  }
+`
+// mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
+const FlyoutMenuContents = styled.div`
   align-items: flex-start;
   border: 1px solid ${({ theme }) => theme.bg0};
   background-color: ${({ theme }) => theme.bg1};
@@ -71,8 +82,8 @@ const FlyoutMenu = styled.div`
   font-size: 16px;
   overflow: auto;
   padding: 0.3rem;
-  position: absolute;
-  top: 64px;
+  //position: absolute;
+  //top: 54px;
   min-width: 175px;
   z-index: 99;
   & > *:not(:last-child) {
@@ -329,10 +340,10 @@ export default function NetworkSelector() {
   }
 
   return (
-    <SelectorWrapper ref={node as any}>
+    <SelectorWrapper ref={node as any} onMouseEnter={toggle} onMouseLeave={toggle}>
       {/*<SelectorControls onClick={conditionalToggle} interactive={showSelector}>
         <SelectorLogo interactive={showSelector} src={info.logoUrl || mainnetInfo.logoUrl} />*/}
-      <SelectorControls onClick={toggle} interactive>
+      <SelectorControls interactive>
         <SelectorLogo interactive src={info.logoUrl} />
         <SelectorLabel>{info.label}</SelectorLabel>
         {/*{showSelector && <StyledChevronDown />}*/}
@@ -355,13 +366,15 @@ export default function NetworkSelector() {
           })}
         </FlyoutMenu>*/
 
-        <FlyoutMenu onMouseLeave={toggle}>
-          <FlyoutHeader>
-            <Trans>Select a network</Trans>
-          </FlyoutHeader>
-          <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
-          <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
-          <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
+        <FlyoutMenu>
+          <FlyoutMenuContents>
+            <FlyoutHeader>
+              <Trans>Select a network</Trans>
+            </FlyoutHeader>
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
+          </FlyoutMenuContents>
         </FlyoutMenu>
       )}
     </SelectorWrapper>
