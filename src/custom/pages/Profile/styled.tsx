@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 import Page, { GdocsListStyle } from 'components/Page'
+import { ButtonPrimary } from 'custom/components/Button'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
@@ -8,6 +9,7 @@ export const Container = styled.div`
   max-width: 910px;
   width: 100%;
 `
+
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
 
@@ -19,14 +21,17 @@ export const Wrapper = styled(Page)`
   justify-content: flex-end;
   flex-direction: column;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.5, theme.bg1)};
+  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
   box-shadow: none;
   border: 1px solid ${({ theme }) => theme.cardBorder};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px;
   `}
+
   span[role='img'] {
     font-size: 55px;
+
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 30px;
     `}
@@ -196,15 +201,6 @@ export const Loader = styled.div<{ isLoading: boolean }>`
     `}
 `
 
-export const ProfileWrapper = styled(Wrapper)`
-  margin: 16px 0 16px 0;
-  padding: 16px 24px;
-  z-index: 2;
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
-    padding: 0 16px 16px;
-  `};
-`
-
 export const ProfileGridWrap = styled(GridWrap)`
   grid-template-columns: 1fr auto;
   justify-content: space-between;
@@ -223,5 +219,143 @@ export const ProfileGridWrap = styled(GridWrap)`
       grid-column-end: 1;
     }
     grid-row-gap: 0px;
+  `};
+`
+
+export const CardsWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 16px 0 16px 0;
+  padding: 0;
+  z-index: 2;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    flex-flow: column wrap;
+  `};
+`
+
+export const Card = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  min-height: 192px;
+  margin: 0;
+  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
+  box-shadow: none;
+  padding: 24px;
+  gap: 24px 0;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    min-height: 130px;
+    padding: 24px 16px;
+  `};
+
+  &:nth-of-type(3n) {
+    grid-column-end: span 2;
+  }
+
+  ${ButtonPrimary} {
+    height: 52px;
+
+    > svg {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      margin: 0 0 0 6px;
+      transform: translateX(0);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    &:hover > svg {
+      transform: translateX(2px);
+    }
+  }
+`
+
+export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolean; hAlign?: string }>`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  align-content: center;
+  justify-content: ${({ hAlign }) => (hAlign === 'left' ? 'flex-start' : 'center')};
+  gap: 3px 12px;
+  width: 100%;
+  font-size: 14px;
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    justify-content: center;
+  `};
+
+  > img {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      height: 56px;
+      width: 56px;
+      object-fit: contain;
+    `};
+  }
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 3px 0;
+  }
+
+  i {
+    display: flex;
+    align-items: center;
+    gap: 0 3px;
+    width: 100%;
+    font-style: normal;
+  }
+
+  b {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0 6px;
+    color: ${({ theme, altColor }) => (altColor ? theme.primary1 : theme.text1)};
+    font-size: ${({ titleSize }) => (titleSize ? `${titleSize}px` : '21px')};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 18px;
+    `};
+
+    > div {
+      cursor: pointer;
+    }
+
+    // Todo: Prevent requiring overriding tooltip padding with important!
+    > div > div {
+      padding: 0 !important;
+    }
+  }
+
+  svg {
+    opacity: 0.4;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+`
+
+export const ConvertWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  align-items: center;
+  background: ${({ theme }) => theme.blueShade};
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display: flex;
+    flex-flow: column wrap;
+    gap: 16px 0;
   `};
 `

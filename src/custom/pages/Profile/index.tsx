@@ -12,12 +12,14 @@ import {
   ChildWrapper,
   Loader,
   ExtLink,
-  ProfileWrapper,
-  ProfileGridWrap,
+  CardsWrapper,
+  Card,
+  BalanceDisplay,
+  ConvertWrapper,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
-import { HelpCircle, RefreshCcw } from 'react-feather'
+import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
@@ -29,12 +31,14 @@ import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
-import { Title } from 'components/Page'
-import { useTokenBalance } from 'state/wallet/hooks'
-import { V_COW } from 'constants/tokens'
-import VCOWDropdown from './VCOWDropdown'
-
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
+import { Title, SectionTitle, HelpCircle } from 'components/Page'
+import { ButtonPrimary } from 'custom/components/Button'
+import vCOWImage from 'assets/cow-swap/vCOW.png'
+import SVG from 'react-inlinesvg'
+import ArrowIcon from 'assets/cow-swap/arrow.svg'
+import CowImage from 'assets/cow-swap/cow_v2.svg'
+// import { useTokenBalance } from 'state/wallet/hooks'
+// import { V_COW } from 'constants/tokens'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -44,7 +48,31 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
+  // const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
+  const cowBalance = '10,240,800.32'
+  const vCowBalance = '10,240,800.32'
+  const vCowBalanceUnvested = '9,240,800.32'
+  const vCowBalanceVested = '1,240,800.32'
+
+  const tooltipText = {
+    balanceBreakdown: (
+      <div>
+        Unvested {vCowBalanceUnvested} vCOW Vested {vCowBalanceVested} vCOW
+      </div>
+    ),
+    vested: (
+      <div>
+        <p>
+          <strong>Vested vCOW</strong> is the portion of your vCOW token balance, which is fully available to convert to
+          COW token.
+        </p>
+        <p>
+          This includes any vCOW received through an <strong>airdrop.</strong>
+        </p>
+        <p>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</p>
+      </div>
+    ),
+  }
 
   const renderNotificationMessages = (
     <>
@@ -64,18 +92,59 @@ export default function Profile() {
   return (
     <Container>
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-      <ProfileWrapper>
-        <ProfileGridWrap horizontal>
-          <CardHead>
-            <Title>Profile</Title>
-          </CardHead>
-          {IS_CLAIMING_ENABLED && vCowBalance && <VCOWDropdown balance={vCowBalance} />}
-        </ProfileGridWrap>
-      </ProfileWrapper>
+      <Title>Profile</Title>
+
+      <CardsWrapper>
+        {vCowBalance && (
+          <Card>
+            <BalanceDisplay hAlign="left">
+              <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+              <span>
+                <i>Total vCOW balance</i>
+                <b>
+                  {vCowBalance} vCOW{' '}
+                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                </b>
+              </span>
+            </BalanceDisplay>
+            <ConvertWrapper>
+              <BalanceDisplay titleSize={18} altColor={true}>
+                <i>
+                  Vested{' '}
+                  <MouseoverTooltipContent content={tooltipText.vested}>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                </i>
+                <b>{vCowBalanceVested}</b>
+              </BalanceDisplay>
+              <ButtonPrimary>
+                Convert to COW <SVG src={ArrowIcon} />
+              </ButtonPrimary>
+            </ConvertWrapper>
+          </Card>
+        )}
+
+        {cowBalance && (
+          <Card>
+            <BalanceDisplay titleSize={26}>
+              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+              <span>
+                <i>Available COW balance</i>
+                <b>{cowBalance} COW</b>
+              </span>
+            </BalanceDisplay>
+          </Card>
+        )}
+
+        <Card>-Governance banner-</Card>
+      </CardsWrapper>
+
       <Wrapper>
         <GridWrap>
           <CardHead>
-            <Title>Affiliate Program</Title>
+            <SectionTitle>Affiliate Program</SectionTitle>
             {account && (
               <Loader isLoading={isLoading}>
                 <StyledContainer>
