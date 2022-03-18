@@ -55,7 +55,7 @@ export default function Profile() {
       )}
       {chainId && chainId !== ChainId.MAINNET && (
         <NotificationBanner isVisible level="info" canClose={false}>
-          Profile data is only available for mainnet. Please change the network to see it.
+          Affiliate data is only available for Ethereum. Please change the network to see it.
         </NotificationBanner>
       )}
     </>
