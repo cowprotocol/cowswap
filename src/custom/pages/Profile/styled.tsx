@@ -223,8 +223,8 @@ export const ProfileGridWrap = styled(GridWrap)`
 `
 
 export const CardsWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-flow: row wrap;
   gap: 16px;
   margin: 16px 0 16px 0;
   padding: 0;
@@ -239,6 +239,7 @@ export const CardsWrapper = styled.div`
 export const Card = styled.div`
   display: flex;
   flex-flow: row wrap;
+  flex: 1;
   min-height: 192px;
   margin: 0;
   background: ${({ theme }) => transparentize(0.3, theme.bg1)};
@@ -254,7 +255,7 @@ export const Card = styled.div`
   `};
 
   &:nth-of-type(3n) {
-    grid-column-end: span 2;
+    flex: 1 1 100%;
   }
 
   ${ButtonPrimary} {
@@ -348,7 +349,7 @@ export const ConvertWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
   align-items: center;
-  background: ${({ theme }) => theme.blueShade};
+  background: ${({ theme }) => theme.blueShade4};
   border-radius: 16px;
   padding: 16px;
   width: 100%;
