@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -10,7 +10,7 @@ import { VCow as VCowType } from 'abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useSingleContractMultipleData } from 'state/multicall/hooks'
+import { useSingleContractMultipleData, useSingleCallResult, Result } from 'state/multicall/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
@@ -386,58 +386,70 @@ export function useUsdcPrice(): string | null {
 type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
 
 /**
- * Hook that calls specific method on the vCow contract defined on the VCowMethods type
- * and returns the value in the form of JSBI.BigInt
- *
- * @param method method that will be called on the vCowContract
+ * Hook that parses the result input with BigNumber value to CurrencyAmount
  */
-type VCowMethods = 'swappableBalanceOf' | 'balanceOf'
+function useParseVCowResult(result: Result | undefined) {
+  const { chainId } = useActiveWeb3React()
 
-export function _useFetchVCowValue(method: VCowMethods) {
-  const vCowContract = useVCowContract()
-  const { chainId, account } = useActiveWeb3React()
+  const vCowToken = chainId ? V_COW[chainId] : undefined
 
-  const [value, setValue] = useState<null | JSBI>(null)
-
-  useEffect(() => {
-    if (!chainId || !vCowContract || !account) {
+  return useMemo(() => {
+    if (!chainId || !vCowToken || !result) {
       return
     }
 
-    vCowContract[method](account)
-      .then((result) => {
-        setValue(JSBI.BigInt(result))
-      })
-      .catch((error: Error) => {
-        console.log(`[vCowContract] ${method} fetch failed`, error)
-      })
-  }, [account, chainId, method, vCowContract])
-
-  return value
+    return CurrencyAmount.fromRawAmount(vCowToken, result[0].toString())
+  }, [chainId, result, vCowToken])
 }
 
 /**
- * Hook that returns vCow data defined in the VCowData
+ * Hook that fetches the needed vCow data and returns it in VCowData type
  */
 type VCowData = {
-  total: null | JSBI
-  unvested: null | JSBI
-  vested: null | JSBI
+  isLoading: boolean
+  total: CurrencyAmount<Currency> | undefined | null
+  unvested: CurrencyAmount<Currency> | undefined | null
+  vested: CurrencyAmount<Currency> | undefined | null
 }
 
 export function useVCowData(): VCowData {
-  const vested = _useFetchVCowValue('swappableBalanceOf')
-  const total = _useFetchVCowValue('balanceOf')
+  const vCowContract = useVCowContract()
+  const { account } = useActiveWeb3React()
+
+  const singleCallInput = useMemo(() => [account ?? undefined], [account])
+
+  const { loading: isVestedLoading, result: vestedResult } = useSingleCallResult(
+    vCowContract,
+    'swappableBalanceOf',
+    singleCallInput
+  )
+  const { loading: isTotalLoading, result: totalResult } = useSingleCallResult(
+    vCowContract,
+    'balanceOf',
+    singleCallInput
+  )
+
+  const vested = useParseVCowResult(vestedResult)
+  const total = useParseVCowResult(totalResult)
 
   const unvested = useMemo(() => {
-    if (total === null || vested === null) {
+    if (!total || !vested) {
       return null
     }
 
-    return JSBI.subtract(total, vested)
+    // Check if total < vested, if it is something is probably wrong and we return null
+    if (total.lessThan(vested)) {
+      return null
+    }
+
+    return total?.subtract(vested)
   }, [total, vested])
 
-  return { vested, unvested, total }
+  const isLoading = useMemo(() => {
+    return isVestedLoading || isTotalLoading
+  }, [isTotalLoading, isVestedLoading])
+
+  return { isLoading, vested, unvested, total }
 }
 
 /**

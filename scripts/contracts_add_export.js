@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* This script adds necessary export of Uniswap abis/types
+   to the end of auto-generated abis/types/index.ts file */
 const fs = require('fs')
 const path = require('path')
 
