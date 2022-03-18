@@ -14,6 +14,7 @@ import {
   ExtLink,
   CardsWrapper,
   Card,
+  BannerCard,
   BalanceDisplay,
   ConvertWrapper,
 } from 'pages/Profile/styled'
@@ -37,6 +38,7 @@ import vCOWImage from 'assets/cow-swap/vCOW.png'
 import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
+import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 // import { useTokenBalance } from 'state/wallet/hooks'
 // import { V_COW } from 'constants/tokens'
 
@@ -138,7 +140,18 @@ export default function Profile() {
           </Card>
         )}
 
-        <Card>-Governance banner-</Card>
+        <BannerCard>
+          <span>
+            <b>CoW DAO Governance</b>
+            <small>Use your (v)COW balance to vote on important proposals or participate in forum discussions.</small>
+            <span>
+              {' '}
+              <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
+              <ExtLink href={'https://forum.cow.fi/'}>CoW Forum ↗</ExtLink>
+            </span>
+          </span>
+          <SVG src={CowProtocolImage} description="CoWDAO Governance" />
+        </BannerCard>
       </CardsWrapper>
 
       <Wrapper>

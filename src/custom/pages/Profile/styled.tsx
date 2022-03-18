@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 import Page, { GdocsListStyle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
+import { BannerExplainer } from 'pages/Claim/styled'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
@@ -230,6 +231,10 @@ export const CardsWrapper = styled.div`
   padding: 0;
   z-index: 2;
 
+  > div:nth-of-type(3n) {
+    flex: 1 1 100%;
+  }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
@@ -254,10 +259,6 @@ export const Card = styled.div`
     padding: 24px 16px;
   `};
 
-  &:nth-of-type(3n) {
-    flex: 1 1 100%;
-  }
-
   ${ButtonPrimary} {
     height: 52px;
 
@@ -273,6 +274,83 @@ export const Card = styled.div`
     &:hover > svg {
       transform: translateX(2px);
     }
+  }
+`
+
+export const BannerCard = styled(BannerExplainer)`
+  min-height: 192px;
+  border-radius: 16px;
+  border: 0;
+  padding: 0 100px 0 24px;
+  flex: 1;
+  overflow: hidden;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+    padding: 24px 16px;
+  `}
+
+  &:hover {
+    border: 0;
+  }
+
+  > span {
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 100%;
+    padding: 24px 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      padding: 0;
+    `}
+
+    > b {
+      font-size: 24px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        text-align: center;
+        margin: 0 auto;
+      `};
+    }
+
+    > small {
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: left;
+      padding: 0;
+      margin: 8px 0 auto;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        text-align: center;
+        margin: 16px auto;
+      `}
+    }
+
+    > span {
+      display: flex;
+      margin: 8px 0 0;
+      gap: 0 16px;
+      width: 100%;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        flex-flow: column wrap;
+        gap: 16px 0;
+        justify-content: center;
+        margin: 24px 0 12px;
+      `}
+    }
+
+    > span > a {
+      font-size: 15px;
+      color: ${({ theme }) => theme.white};
+    }
+  }
+
+  > svg {
+    left: initial;
+    right: -190px;
+    transform: scale(-1, 1); // flip mirror
+    opacity: 0.25;
   }
 `
 
