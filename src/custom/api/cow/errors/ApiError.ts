@@ -1,7 +1,7 @@
 type ApiActionType = 'get' | 'create' | 'delete'
 
-export interface ApiErrorObject {
-  errorType: ApiErrorCodes
+export interface CowApiErrorObject {
+  errorType: CowApiErrorCodes
   description: string
   data?: any
 }
@@ -10,7 +10,7 @@ export interface ApiErrorObject {
 // https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml#L801
 // and
 // https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml#L740
-export enum ApiErrorCodes {
+export enum CowApiErrorCodes {
   DuplicateOrder = 'DuplicateOrder',
   InvalidSignature = 'InvalidSignature',
   MissingOrderData = 'MissingOrderData',
@@ -40,7 +40,7 @@ export enum ApiErrorCodes {
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
 }
 
-export enum ApiErrorCodeDetails {
+export enum CowApiErrorCodeDetails {
   DuplicateOrder = 'There was another identical order already submitted. Please try again.',
   InsufficientFee = "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
   InvalidSignature = 'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
@@ -73,34 +73,34 @@ export enum ApiErrorCodeDetails {
 function _mapActionToErrorDetail(action?: ApiActionType) {
   switch (action) {
     case 'get':
-      return ApiErrorCodeDetails.UNHANDLED_GET_ERROR
+      return CowApiErrorCodeDetails.UNHANDLED_GET_ERROR
     case 'create':
-      return ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
+      return CowApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
     case 'delete':
-      return ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
+      return CowApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
     default:
       console.error(
-        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
+        '[CowApiError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
       )
       return 'Something failed. Please try again later.'
   }
 }
 
-export default class OperatorError extends Error {
-  name = 'OperatorError'
-  type: ApiErrorCodes
-  description: ApiErrorObject['description']
+export default class CowApiError extends Error {
+  name = 'CowApiError'
+  type: CowApiErrorCodes
+  description: CowApiErrorObject['description']
 
   // Status 400 errors
   // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static apiErrorDetails = ApiErrorCodeDetails
+  static apiErrorDetails = CowApiErrorCodeDetails
 
   public static async getErrorMessage(response: Response, action: ApiActionType) {
     try {
-      const orderPostError: ApiErrorObject = await response.json()
+      const orderPostError: CowApiErrorObject = await response.json()
 
       if (orderPostError.errorType) {
-        const errorMessage = OperatorError.apiErrorDetails[orderPostError.errorType]
+        const errorMessage = CowApiError.apiErrorDetails[orderPostError.errorType]
         // shouldn't fall through as this error constructor expects the error code to exist but just in case
         return errorMessage || orderPostError.errorType
       } else {
@@ -129,7 +129,7 @@ export default class OperatorError extends Error {
       case 500:
       default:
         console.error(
-          `[OperatorError::getErrorFromStatusCode] Error ${
+          `[CowApiError::getErrorFromStatusCode] Error ${
             action === 'create' ? 'creating' : 'cancelling'
           } the order, status code:`,
           response.status || 'unknown'
@@ -137,15 +137,15 @@ export default class OperatorError extends Error {
         return `Error ${action === 'create' ? 'creating' : 'cancelling'} the order`
     }
   }
-  constructor(apiError: ApiErrorObject) {
+  constructor(apiError: CowApiErrorObject) {
     super(apiError.description)
 
     this.type = apiError.errorType
     this.description = apiError.description
-    this.message = ApiErrorCodeDetails[apiError.errorType]
+    this.message = CowApiErrorCodeDetails[apiError.errorType]
   }
 }
 
-export function isValidOperatorError(error: any): error is OperatorError {
-  return error instanceof OperatorError
+export function isValidOperatorError(error: any): error is CowApiError {
+  return error instanceof CowApiError
 }

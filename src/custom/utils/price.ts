@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/browser'
 import { Percent } from '@uniswap/sdk-core'
 
 import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp, OrderMetaData } from 'api/cow'
-import GpQuoteError, { GpQuoteErrorCodes } from 'api/cow/errors/QuoteError'
+import CowQuoteError, { CowQuoteErrorCodes } from 'api/cow/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
@@ -22,9 +22,9 @@ import { toErc20Address } from 'utils/tokens'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 
-const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
-  errorType: GpQuoteErrorCodes.FeeExceedsFrom,
-  description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom,
+const FEE_EXCEEDS_FROM_ERROR = new CowQuoteError({
+  errorType: CowQuoteErrorCodes.FeeExceedsFrom,
+  description: CowQuoteError.quoteErrorDetails.FeeExceedsFrom,
 })
 
 export interface QuoteParams {
@@ -275,7 +275,7 @@ export async function getFullQuote({ quoteParams }: { quoteParams: FeeQuoteParam
   return Promise.allSettled([price, fee])
 }
 
-function _checkFeeErrorForData(error: GpQuoteError) {
+function _checkFeeErrorForData(error: CowQuoteError) {
   console.warn('[getBestQuote:Legacy]::Fee error', error)
 
   // check if our error response has any fee data attached to it

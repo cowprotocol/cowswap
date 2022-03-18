@@ -1,14 +1,14 @@
-import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
+import { CowApiErrorCodes, CowApiErrorObject } from './ApiError'
 
-export interface GpQuoteErrorObject {
-  errorType: GpQuoteErrorCodes
+export interface CowQuoteErrorObject {
+  errorType: CowQuoteErrorCodes
   description: string
   data?: any
 }
 
 // Conforms to backend API
 // https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml
-export enum GpQuoteErrorCodes {
+export enum CowQuoteErrorCodes {
   UnsupportedToken = 'UnsupportedToken',
   InsufficientLiquidity = 'InsufficientLiquidity',
   FeeExceedsFrom = 'FeeExceedsFrom',
@@ -17,7 +17,7 @@ export enum GpQuoteErrorCodes {
   UNHANDLED_ERROR = 'UNHANDLED_ERROR',
 }
 
-export enum GpQuoteErrorDetails {
+export enum CowQuoteErrorDetails {
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
   InsufficientLiquidity = 'Token pair selected has insufficient liquidity.',
   FeeExceedsFrom = 'Current fee exceeds entered "from" amount.',
@@ -26,60 +26,60 @@ export enum GpQuoteErrorDetails {
   UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
-export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErrorObject {
+export function mapOperatorErrorToQuoteError(error?: CowApiErrorObject): CowQuoteErrorObject {
   switch (error?.errorType) {
-    case ApiErrorCodes.NotFound:
-    case ApiErrorCodes.NoLiquidity:
+    case CowApiErrorCodes.NotFound:
+    case CowApiErrorCodes.NoLiquidity:
       return {
-        errorType: GpQuoteErrorCodes.InsufficientLiquidity,
-        description: GpQuoteErrorDetails.InsufficientLiquidity,
+        errorType: CowQuoteErrorCodes.InsufficientLiquidity,
+        description: CowQuoteErrorDetails.InsufficientLiquidity,
       }
 
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
+    case CowApiErrorCodes.SellAmountDoesNotCoverFee:
       return {
-        errorType: GpQuoteErrorCodes.FeeExceedsFrom,
-        description: GpQuoteErrorDetails.FeeExceedsFrom,
+        errorType: CowQuoteErrorCodes.FeeExceedsFrom,
+        description: CowQuoteErrorDetails.FeeExceedsFrom,
         data: error?.data,
       }
 
-    case ApiErrorCodes.UnsupportedToken:
+    case CowApiErrorCodes.UnsupportedToken:
       return {
-        errorType: GpQuoteErrorCodes.UnsupportedToken,
+        errorType: CowQuoteErrorCodes.UnsupportedToken,
         description: error.description,
       }
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
+    case CowApiErrorCodes.SellAmountDoesNotCoverFee:
       return {
-        errorType: GpQuoteErrorCodes.FeeExceedsFrom,
+        errorType: CowQuoteErrorCodes.FeeExceedsFrom,
         description: error.description,
       }
 
-    case ApiErrorCodes.TransferEthToContract:
+    case CowApiErrorCodes.TransferEthToContract:
       return {
-        errorType: GpQuoteErrorCodes.TransferEthToContract,
+        errorType: CowQuoteErrorCodes.TransferEthToContract,
         description: error.description,
       }
     default:
-      return { errorType: GpQuoteErrorCodes.UNHANDLED_ERROR, description: GpQuoteErrorDetails.UNHANDLED_ERROR }
+      return { errorType: CowQuoteErrorCodes.UNHANDLED_ERROR, description: CowQuoteErrorDetails.UNHANDLED_ERROR }
   }
 }
 
-export default class GpQuoteError extends Error {
+export default class CowQuoteError extends Error {
   name = 'QuoteErrorObject'
-  type: GpQuoteErrorCodes
+  type: CowQuoteErrorCodes
   description: string
   // any data attached
   data?: any
 
   // Status 400 errors
   // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static quoteErrorDetails = GpQuoteErrorDetails
+  static quoteErrorDetails = CowQuoteErrorDetails
 
   public static async getErrorMessage(response: Response) {
     try {
-      const orderPostError: GpQuoteErrorObject = await response.json()
+      const orderPostError: CowQuoteErrorObject = await response.json()
 
       if (orderPostError.errorType) {
-        const errorMessage = GpQuoteError.quoteErrorDetails[orderPostError.errorType]
+        const errorMessage = CowQuoteError.quoteErrorDetails[orderPostError.errorType]
         // shouldn't fall through as this error constructor expects the error code to exist but just in case
         return errorMessage || orderPostError.errorType
       } else {
@@ -88,7 +88,7 @@ export default class GpQuoteError extends Error {
       }
     } catch (error) {
       console.error('Error handling 400/404 error. Likely a problem deserialising the JSON response')
-      return GpQuoteError.quoteErrorDetails.UNHANDLED_ERROR
+      return CowQuoteError.quoteErrorDetails.UNHANDLED_ERROR
     }
   }
 
@@ -107,16 +107,16 @@ export default class GpQuoteError extends Error {
         return 'Error fetching quote'
     }
   }
-  constructor(quoteError: GpQuoteErrorObject) {
+  constructor(quoteError: CowQuoteErrorObject) {
     super(quoteError.description)
 
     this.type = quoteError.errorType
     this.description = quoteError.description
-    this.message = GpQuoteError.quoteErrorDetails[quoteError.errorType]
+    this.message = CowQuoteError.quoteErrorDetails[quoteError.errorType]
     this.data = quoteError?.data
   }
 }
 
-export function isValidQuoteError(error: any): error is GpQuoteError {
-  return error instanceof GpQuoteError
+export function isValidQuoteError(error: any): error is CowQuoteError {
+  return error instanceof CowQuoteError
 }

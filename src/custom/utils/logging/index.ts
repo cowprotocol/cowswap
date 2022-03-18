@@ -1,4 +1,4 @@
-import OperatorError from 'api/cow/errors/OperatorError'
+import CowApiError from 'api/cow/errors/ApiError'
 import QuoteError from 'api/cow/errors/QuoteError'
 
 type SentryErrorOptions = {
@@ -10,7 +10,7 @@ type SentryErrorOptions = {
 }
 
 export function constructSentryError(
-  baseError: QuoteError | OperatorError | Error,
+  baseError: QuoteError | CowApiError | Error,
   response: any,
   { message, name, optionalTags = {} }: SentryErrorOptions
 ) {

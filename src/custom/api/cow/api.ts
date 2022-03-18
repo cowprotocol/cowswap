@@ -5,11 +5,11 @@ import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, SigningSche
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
-import OperatorError, { ApiErrorCodeDetails, ApiErrorCodes, ApiErrorObject } from 'api/cow/errors/OperatorError'
+import CowApiError, { CowApiErrorCodeDetails, CowApiErrorCodes, CowApiErrorObject } from 'api/cow/errors/ApiError'
 import QuoteError, {
-  GpQuoteErrorCodes,
-  GpQuoteErrorDetails,
-  GpQuoteErrorObject,
+  CowQuoteErrorCodes,
+  CowQuoteErrorDetails,
+  CowQuoteErrorObject,
   mapOperatorErrorToQuoteError,
 } from 'api/cow/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
@@ -226,7 +226,7 @@ export async function sendOrder(params: { chainId: ChainId; order: OrderCreation
   // Handle response
   if (!response.ok) {
     // Raise an exception
-    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'create')
+    const errorMessage = await CowApiError.getErrorFromStatusCode(response, 'create')
     throw new Error(errorMessage)
   }
 
@@ -254,21 +254,21 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
 
   if (!response.ok) {
     // Raise an exception
-    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'delete')
+    const errorMessage = await CowApiError.getErrorFromStatusCode(response, 'delete')
     throw new Error(errorMessage)
   }
 
   console.log(`[api:${API_NAME}] Cancelled order`, cancellation.orderUid, chainId)
 }
 
-const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
-  errorType: GpQuoteErrorCodes.UNHANDLED_ERROR,
-  description: GpQuoteErrorDetails.UNHANDLED_ERROR,
+const UNHANDLED_QUOTE_ERROR: CowQuoteErrorObject = {
+  errorType: CowQuoteErrorCodes.UNHANDLED_ERROR,
+  description: CowQuoteErrorDetails.UNHANDLED_ERROR,
 }
 
-const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
-  errorType: ApiErrorCodes.UNHANDLED_CREATE_ERROR,
-  description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
+const UNHANDLED_ORDER_ERROR: CowApiErrorObject = {
+  errorType: CowApiErrorCodes.UNHANDLED_CREATE_ERROR,
+  description: CowApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
 }
 
 async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuoteParams>(
@@ -281,7 +281,7 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
       if (response.headers.get('Content-Type') !== 'application/json') {
         throw new Error(`${response.status} error occurred. ${response.statusText}`)
       }
-      const errorObj: ApiErrorObject = await response.json()
+      const errorObj: CowApiErrorObject = await response.json()
 
       // we need to map the backend error codes to match our own for quotes
       const mappedError = mapOperatorErrorToQuoteError(errorObj)
@@ -389,14 +389,14 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
     const response = await _get(chainId, `/orders/${orderId}`)
 
     if (!response.ok) {
-      const errorResponse: ApiErrorObject = await response.json()
-      throw new OperatorError(errorResponse)
+      const errorResponse: CowApiErrorObject = await response.json()
+      throw new CowApiError(errorResponse)
     } else {
       return response.json()
     }
   } catch (error) {
     console.error('Error getting order information:', error)
-    throw new OperatorError(UNHANDLED_ORDER_ERROR)
+    throw new CowApiError(UNHANDLED_ORDER_ERROR)
   }
 }
 
@@ -409,14 +409,14 @@ export async function getOrders(chainId: ChainId, owner: string, limit = 1000, o
     const response = await _get(chainId, `/account/${owner}/orders/${queryString}`)
 
     if (!response.ok) {
-      const errorResponse: ApiErrorObject = await response.json()
-      throw new OperatorError(errorResponse)
+      const errorResponse: CowApiErrorObject = await response.json()
+      throw new CowApiError(errorResponse)
     } else {
       return response.json()
     }
   } catch (error) {
     console.error('Error getting orders information:', error)
-    throw new OperatorError(UNHANDLED_ORDER_ERROR)
+    throw new CowApiError(UNHANDLED_ORDER_ERROR)
   }
 }
 

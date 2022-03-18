@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
 import { FeeQuoteParams, getBestQuote, getFastQuote, QuoteParams, QuoteResult } from 'utils/price'
-import { isValidOperatorError, ApiErrorCodes } from 'api/cow/errors/OperatorError'
-import GpQuoteError, { GpQuoteErrorCodes, GpQuoteErrorDetails, isValidQuoteError } from 'api/cow/errors/QuoteError'
+import { isValidOperatorError, CowApiErrorCodes } from 'api/cow/errors/ApiError'
+import CowQuoteError, { CowQuoteErrorCodes, CowQuoteErrorDetails, isValidQuoteError } from 'api/cow/errors/QuoteError'
 import { registerOnWindow, getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 
 import { isOnline } from 'hooks/useIsOnline'
@@ -31,7 +31,7 @@ type QuoteParamsForFetching = Omit<QuoteParams, 'strategy'>
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
     switch (error.type) {
-      case ApiErrorCodes.UnsupportedToken: {
+      case CowApiErrorCodes.UnsupportedToken: {
         // TODO: will change with introduction of data prop in error responses
         const unsupportedTokenAddress = error.description.split(' ')[2]
         console.error(`${error.message}: ${error.description} - disabling.`)
@@ -57,20 +57,20 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
     switch (error.type) {
       // Fee/Price query returns error
       // e.g Insufficient Liquidity or Fee exceeds Price
-      case GpQuoteErrorCodes.FeeExceedsFrom: {
+      case CowQuoteErrorCodes.FeeExceedsFrom: {
         return 'fee-exceeds-sell-amount'
       }
 
-      case GpQuoteErrorCodes.ZeroPrice: {
+      case CowQuoteErrorCodes.ZeroPrice: {
         return 'zero-price'
       }
 
-      case GpQuoteErrorCodes.InsufficientLiquidity: {
+      case CowQuoteErrorCodes.InsufficientLiquidity: {
         console.error(`Insufficient liquidity ${error.message}: ${error.description}`)
         return 'insufficient-liquidity'
       }
 
-      case GpQuoteErrorCodes.UnsupportedToken: {
+      case CowQuoteErrorCodes.UnsupportedToken: {
         // TODO: will change with introduction of data prop in error responses
         const unsupportedTokenAddress = error.description.split(' ')[2]
         console.error(`${error.message}: ${error.description} - disabling.`)
@@ -85,7 +85,7 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
         return 'unsupported-token'
       }
 
-      case GpQuoteErrorCodes.TransferEthToContract: {
+      case CowQuoteErrorCodes.TransferEthToContract: {
         return 'transfer-eth-to-smart-contract'
       }
 
@@ -170,9 +170,9 @@ export function useRefetchQuoteCallback() {
         // we need to check if returned price is 0 - this is rare but can occur e.g DAI <> WBTC where price diff is huge
         // TODO: check if this should be handled differently by backend - maybe we return a new error like "ZERO_PRICE"
         if (price.value.amount === '0')
-          throw new GpQuoteError({
-            errorType: GpQuoteErrorCodes.ZeroPrice,
-            description: GpQuoteErrorDetails.ZeroPrice,
+          throw new CowQuoteError({
+            errorType: CowQuoteErrorCodes.ZeroPrice,
+            description: CowQuoteErrorDetails.ZeroPrice,
           })
 
         const previouslyUnsupportedToken = isUnsupportedTokenGp(sellToken) || isUnsupportedTokenGp(buyToken)
