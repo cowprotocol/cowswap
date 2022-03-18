@@ -72,7 +72,6 @@ import { HashLink } from 'react-router-hash-link'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
-import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
@@ -961,9 +960,6 @@ export default function Swap({
           }
           detailsTitle="This wallet is not yet supported"
         />
-      ) : !swapIsUnsupported ? (
-        // TODO: I think this in unreachable, given that `swapIsUnsupported` returns null when false on line 936
-        <AdvancedSwapDetailsDropdown trade={trade} allowedSlippage={allowedSlippage} />
       ) : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}
