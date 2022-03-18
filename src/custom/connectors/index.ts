@@ -1,17 +1,25 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
-import { InjectedConnector } from '@web3-react/injected-connector'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import { WalletLinkConnector } from '@web3-react/walletlink-connector'
-import { PortisConnector } from '@web3-react/portis-connector'
-
+import { ALL_SUPPORTED_CHAIN_IDS /*, SupportedChainId*/ } from 'constants/chains'
+// import { INFURA_NETWORK_URLS } from 'constants/infura'
+import { InjectedConnector } from 'web3-react-injected-connector'
+import { PortisConnector } from 'web3-react-portis-connector'
+import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
+import { WalletLinkConnector } from 'web3-react-walletlink-connector'
+// import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
+import getLibrary from '../utils/getLibrary'
 import { FortmaticConnector, getFortmaticApiKey } from 'connectors/Fortmatic'
 import { NetworkConnector } from 'connectors/NetworkConnector'
+
+// MOD imports
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 export * from '@src/connectors'
 
 export const WALLET_CONNECT_BRIDGE = process.env.WALLET_CONNECT_BRIDGE || 'wss://safe-walletconnect.gnosis.io'
+
+// const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
+const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 
 type RpcNetworks = { [chainId: number]: string }
 
@@ -72,21 +80,23 @@ const [rpcNetworks, supportedChainIds] = getRpcNetworks()
 export const NETWORK_CHAIN_ID = supportedChainIds[0]
 
 export const network = new NetworkConnector({
-  urls: rpcNetworks,
-  defaultChainId: NETWORK_CHAIN_ID,
+  urls: rpcNetworks, // INFURA_NETWORK_URLS
+  defaultChainId: NETWORK_CHAIN_ID, // 1
 })
 
 let networkLibrary: Web3Provider | undefined
 export function getNetworkLibrary(): Web3Provider {
-  return (networkLibrary = networkLibrary ?? new Web3Provider(network.provider as any))
+  return (networkLibrary = networkLibrary ?? getLibrary(network.provider))
 }
 
-export const injected = new InjectedConnector({ supportedChainIds })
+export const injected = new InjectedConnector({
+  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
+})
 
 export const gnosisSafe = new SafeAppConnector()
 
-// mainnet only
 export const walletconnect = new WalletConnectConnector({
+  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
   rpc: rpcNetworks,
   bridge: WALLET_CONNECT_BRIDGE,
   qrcode: true,
@@ -100,13 +110,12 @@ export const fortmatic = new FortmaticConnector({
 
 // mainnet only
 export const portis = new PortisConnector({
-  dAppId: process.env.REACT_APP_PORTIS_ID ?? '',
+  dAppId: PORTIS_ID ?? '',
   // TODO: Allow to configure multiple networks in portis
   // networks: supportedChainIds
   networks: [NETWORK_CHAIN_ID],
 })
 
-// mainnet only
 export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
   appName: 'CowSwap',
