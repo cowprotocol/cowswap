@@ -63,6 +63,12 @@ export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.RINKEBY]: '0x5Bf4d1f8d1cB35E0aeA69B220beb97b8807504eA',
 }
 
+export const COW_CONTRACT_ADDRESS: Record<number, string> = {
+  [ChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
+  [ChainId.XDAI]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
+  [ChainId.RINKEBY]: '0x263D0C7a63D25564cFDc299C97Fd92A61B5fc7d1',
+}
+
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token } = {

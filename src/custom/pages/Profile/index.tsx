@@ -21,7 +21,7 @@ import { HelpCircle, RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { numberFormatter } from 'utils/format'
+import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -31,9 +31,10 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { Title } from 'components/Page'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { V_COW } from 'constants/tokens'
+import { useVCowData } from 'state/claim/hooks'
+import { V_COW, COW } from 'constants/tokens'
 import VCOWDropdown from './VCOWDropdown'
-
+import { isPr, isLocal } from 'utils/environments'
 import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
 export default function Profile() {
@@ -45,6 +46,17 @@ export default function Profile() {
   const hasOrders = useHasOrders(account)
 
   const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
+  const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+
+  const { vested, total, unvested } = useVCowData()
+
+  // TODO: remove once this is not needed anymore
+  if (isPr || isLocal) {
+    console.force.log('vested', formatSmartLocaleAware(vested, vested?.currency.decimals))
+    console.force.log('total', formatSmartLocaleAware(total, total?.currency.decimals))
+    console.force.log('unvested', formatSmartLocaleAware(unvested, unvested?.currency.decimals))
+    console.force.log('cowBalance', formatSmartLocaleAware(cowBalance, cowBalance?.currency.decimals))
+  }
 
   const renderNotificationMessages = (
     <>
