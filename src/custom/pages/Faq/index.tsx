@@ -586,7 +586,7 @@ export default function Faq() {
             Yes! A CoWmunity member created a{' '}
             <ExternalLink href="https://forum.cow.fi/t/cip-draft-enable-swapping-of-vcow-to-cow/91/22">
               CoWDAO Proposal
-            </ExternalLink>
+            </ExternalLink>{' '}
             on the forum.
           </p>
           <h3 id="what-is-the-purpose-of-cow-token">What is the purpose of COW Token?</h3>
