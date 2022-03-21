@@ -3,6 +3,8 @@ import { PropsWithChildren } from 'react'
 import styled, { css } from 'styled-components/macro'
 import AppBody from 'pages/AppBody'
 import { WithClassName } from 'types'
+import SVG from 'react-inlinesvg'
+import QuestionIcon from 'assets/cow-swap/question.svg'
 
 export const PageWrapper = styled(AppBody)`
   padding: 0 24px 24px;
@@ -17,6 +19,11 @@ export const Title = styled.h1`
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     font-size: 24px;
   `}
+`
+
+export const SectionTitle = styled(Title)`
+  font-size: 21px;
+  margin: 12px 0 16px;
 `
 
 export const Content = styled.div`
@@ -118,6 +125,10 @@ export const Content = styled.div`
     display: list-item;
   }
 `
+
+export function HelpCircle({ size }: { size: number }) {
+  return <SVG width={size ? size : 14} height={size ? size : 14} src={QuestionIcon} />
+}
 
 export const GdocsListStyle = css`
   /* List styles */

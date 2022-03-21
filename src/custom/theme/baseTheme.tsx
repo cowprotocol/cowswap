@@ -70,6 +70,7 @@ export function colors(darkMode: boolean): Colors {
     blueShade: '#0f2644',
     blueShade2: '#011e34',
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
+    blueShade4: darkMode ? '#0f2644' : '#ffffff',
 
     // states
     success: darkMode ? '#00d897' : '#00815a',
