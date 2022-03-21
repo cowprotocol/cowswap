@@ -42,6 +42,7 @@ import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData } from 'state/claim/hooks'
 import { COW } from 'constants/tokens'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -55,10 +56,10 @@ export default function Profile() {
 
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
-  const cowBalance = formatSmartLocaleAware(cow, cow?.currency.decimals) || 0
-  const vCowBalanceVested = formatSmartLocaleAware(vested, vested?.currency.decimals)?.toString() || 0
-  const vCowBalanceUnvested = formatSmartLocaleAware(unvested, unvested?.currency.decimals)?.toString() || 0
-  const vCowBalance = formatSmartLocaleAware(total, total?.currency.decimals)?.toString() || 0
+  const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
+  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
+  const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
+  const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
 
   const hasCowBalance = cow && !cow.equalTo(0)
   const hasVCowBalance = total && !total.equalTo(0)
