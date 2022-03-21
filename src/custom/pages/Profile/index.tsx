@@ -24,7 +24,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { /* formatSmartLocaleAware, */ numberFormatter } from 'utils/format'
+import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -39,9 +39,9 @@ import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
-// import { useTokenBalance } from 'state/wallet/hooks'
-// import { useVCowData } from 'state/claim/hooks'
-// import { V_COW, COW } from 'constants/tokens'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { useVCowData } from 'state/claim/hooks'
+import { COW } from 'constants/tokens'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -51,19 +51,24 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  // const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+  const { unvested, vested, total } = useVCowData()
 
-  // const { vested, total, unvested } = useVCowData()
+  const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
-  const cowBalance = '10,240,800.32'
-  const vCowBalance = '10,240,800.32'
-  const vCowBalanceUnvested = '9,240,800.32'
-  const vCowBalanceVested = '1,240,800.32'
+  const cowBalance = formatSmartLocaleAware(cow, cow?.currency.decimals) || 0
+  const vCowBalanceVested = formatSmartLocaleAware(vested, vested?.currency.decimals)?.toString() || 0
+  const vCowBalanceUnvested = formatSmartLocaleAware(unvested, unvested?.currency.decimals)?.toString() || 0
+  const vCowBalance = formatSmartLocaleAware(total, total?.currency.decimals)?.toString() || 0
+
+  const hasCowBalance = cow && !cow.equalTo(0)
+  const hasVCowBalance = total && !total.equalTo(0)
+  const hasVested = vested && !vested.equalTo(0)
 
   const tooltipText = {
     balanceBreakdown: (
       <div>
-        Unvested {vCowBalanceUnvested} vCOW Vested {vCowBalanceVested} vCOW
+        <div>Unvested {vCowBalanceUnvested} vCOW</div>
+        <div>Vested {vCowBalanceVested} vCOW</div>
       </div>
     ),
     vested: (
@@ -101,7 +106,7 @@ export default function Profile() {
       <Title>Profile</Title>
 
       <CardsWrapper>
-        {vCowBalance && (
+        {hasVCowBalance && (
           <Card>
             <BalanceDisplay hAlign="left">
               <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
@@ -125,14 +130,14 @@ export default function Profile() {
                 </i>
                 <b>{vCowBalanceVested}</b>
               </BalanceDisplay>
-              <ButtonPrimary>
+              <ButtonPrimary disabled={!hasVested}>
                 Convert to COW <SVG src={ArrowIcon} />
               </ButtonPrimary>
             </ConvertWrapper>
           </Card>
         )}
 
-        {cowBalance && (
+        {hasCowBalance && (
           <Card>
             <BalanceDisplay titleSize={26}>
               <img src={CowImage} alt="Cow Balance" height="80" width="80" />
