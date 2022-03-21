@@ -21,7 +21,7 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
         if (networkLibrary && network.chainId === 1) {
           return resolveENSContentHash(ensName, networkLibrary)
         }
-        throw new Error('Could not construct mainnet ENS resolver')
+        throw new Error('Could not construct Ethereum ENS resolver')
       }
       return resolveENSContentHash(ensName, library)
     },

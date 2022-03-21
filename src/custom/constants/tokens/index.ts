@@ -4,7 +4,7 @@ import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rin
 import { DAI, USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
 import { USDC_XDAI, /*USDT_XDAI,*/ WBTC_XDAI, WETH_XDAI, WXDAI } from 'utils/xdai/constants'
 import { SupportedChainId } from 'constants/chains'
-import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 
 import wxDaiLogo from 'assets/cow-swap/wxdai.png'
 import vCowLogo from 'assets/cow-swap/cow.svg'
@@ -19,6 +19,9 @@ function getTrustImage(mainnetAddress: string): string {
 
 const WETH_ADDRESS_MAINNET = WETH9[ChainId.MAINNET].address
 
+/**
+ * vCow token
+ */
 const V_COW_TOKEN_MAINNET = new Token(
   SupportedChainId.MAINNET,
   V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
@@ -49,6 +52,42 @@ export const V_COW: Record<number, Token> = {
   [SupportedChainId.RINKEBY]: V_COW_TOKEN_RINKEBY,
 }
 
+/**
+ * Cow token
+ */
+const COW_TOKEN_MAINNET = new Token(
+  SupportedChainId.MAINNET,
+  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
+const COW_TOKEN_XDAI = new Token(
+  SupportedChainId.XDAI,
+  COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
+const COW_TOKEN_RINKEBY = new Token(
+  SupportedChainId.RINKEBY,
+  COW_CONTRACT_ADDRESS[SupportedChainId.RINKEBY] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
+export const COW: Record<number, Token> = {
+  [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
+  [SupportedChainId.XDAI]: COW_TOKEN_XDAI,
+  [SupportedChainId.RINKEBY]: COW_TOKEN_RINKEBY,
+}
+
+/**
+ * GNO token
+ */
 const GNO_MAINNET = new Token(
   SupportedChainId.MAINNET,
   '0x6810e776880c02933d47db1b9fc05908e5386b96',

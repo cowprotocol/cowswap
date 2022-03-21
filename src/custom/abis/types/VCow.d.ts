@@ -29,6 +29,8 @@ interface VCowInterface extends ethers.utils.Interface {
     "gnoPrice()": FunctionFragment;
     "usdcPrice()": FunctionFragment;
     "nativeTokenPrice()": FunctionFragment;
+    "swappableBalanceOf(address)": FunctionFragment;
+    "balanceOf(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -72,6 +74,11 @@ interface VCowInterface extends ethers.utils.Interface {
     functionFragment: "nativeTokenPrice",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "swappableBalanceOf",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimMany", data: BytesLike): Result;
@@ -87,6 +94,11 @@ interface VCowInterface extends ethers.utils.Interface {
     functionFragment: "nativeTokenPrice",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "swappableBalanceOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
 
   events: {
     "Claimed(uint256,uint8,address,uint256,uint256)": EventFragment;
@@ -184,6 +196,13 @@ export class VCow extends BaseContract {
     usdcPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     nativeTokenPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    swappableBalanceOf(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    balanceOf(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   claim(
@@ -219,6 +238,13 @@ export class VCow extends BaseContract {
 
   nativeTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+  swappableBalanceOf(
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  balanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
     claim(
       index: BigNumberish,
@@ -252,6 +278,13 @@ export class VCow extends BaseContract {
     usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     nativeTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    swappableBalanceOf(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    balanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -326,6 +359,13 @@ export class VCow extends BaseContract {
     usdcPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     nativeTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    swappableBalanceOf(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    balanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -366,5 +406,15 @@ export class VCow extends BaseContract {
     usdcPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     nativeTokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    swappableBalanceOf(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    balanceOf(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }
