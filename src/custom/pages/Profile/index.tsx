@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -26,6 +27,7 @@ import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
 import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
+import { useSwapVCowCallback } from 'state/claim/hooks'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
@@ -44,6 +46,14 @@ import { useVCowData } from 'state/claim/hooks'
 import { COW } from 'constants/tokens'
 import { AMOUNT_PRECISION } from 'constants/index'
 
+export enum SwapVCowStatus {
+  INITIAL = 'INITIAL',
+  ATTEMPTING = 'ATTEMPTING',
+  SUBMITTED = 'SUBMITTED',
+  CONFIRMED = 'CONFIRMED',
+  FAILED = 'FAILED',
+}
+
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
@@ -51,6 +61,8 @@ export default function Profile() {
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
+
+  const [swapVCowStatus, setSwapVCowStatus] = useState<SwapVCowStatus>(SwapVCowStatus.INITIAL)
 
   const { unvested, vested, total } = useVCowData()
 
@@ -63,7 +75,23 @@ export default function Profile() {
 
   const hasCowBalance = cow && !cow.equalTo(0)
   const hasVCowBalance = total && !total.equalTo(0)
-  const hasVested = vested && !vested.equalTo(0)
+  const hasVestedBalance = vested && !vested.equalTo(0)
+
+  const isSwapDisabled = Boolean(!hasVestedBalance || swapVCowStatus !== SwapVCowStatus.INITIAL)
+
+  const { swapCallback } = useSwapVCowCallback()
+
+  const handleVCowSwap = () => {
+    setSwapVCowStatus(SwapVCowStatus.ATTEMPTING)
+    swapCallback()
+      .then(() => {
+        setSwapVCowStatus(SwapVCowStatus.SUBMITTED)
+      })
+      .catch((error) => {
+        setSwapVCowStatus(SwapVCowStatus.INITIAL)
+        console.error('[Profile::index::swapVCowCallback]::error', error)
+      })
+  }
 
   const tooltipText = {
     balanceBreakdown: (
@@ -131,7 +159,7 @@ export default function Profile() {
                 </i>
                 <b>{vCowBalanceVested}</b>
               </BalanceDisplay>
-              <ButtonPrimary disabled={!hasVested}>
+              <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
                 Convert to COW <SVG src={ArrowIcon} />
               </ButtonPrimary>
             </ConvertWrapper>

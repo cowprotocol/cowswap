@@ -1059,3 +1059,59 @@ export function useVCowData(): VCowData {
 
   return { isLoading, vested, unvested, total }
 }
+
+/**
+ * Hook used to swap vCow to Cow token
+ */
+export function useSwapVCowCallback() {
+  const { chainId, account } = useActiveWeb3React()
+
+  const vCowContract = useVCowContract()
+
+  const addTransaction = useTransactionAdder()
+  const vCowToken = chainId ? V_COW[chainId] : undefined
+
+  const parseReturnValue = useCallback(
+    (swappedBalance: string) => {
+      if (!vCowToken) {
+        return '0'
+      }
+
+      const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, swappedBalance)
+      return formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'
+    },
+    [vCowToken]
+  )
+
+  const swapCallback = useCallback(async () => {
+    if (!account) {
+      throw new Error('Not connected')
+    }
+    if (!chainId) {
+      throw new Error('No chainId')
+    }
+    if (!vCowContract) {
+      throw new Error('vCOW contract not present')
+    }
+    if (!vCowToken) {
+      throw new Error('vCOW token not present')
+    }
+
+    const args = {
+      from: account,
+    }
+
+    return vCowContract.swapAll(args).then((swappedBalance: BigNumber) => {
+      const amount = parseReturnValue(swappedBalance?.toString())
+
+      addTransaction({
+        hash: 'foo', // <- how to get this hash
+        summary: `Swap ${amount} vCOW for COW`,
+      })
+    })
+  }, [account, addTransaction, chainId, parseReturnValue, vCowContract, vCowToken])
+
+  return {
+    swapCallback,
+  }
+}
