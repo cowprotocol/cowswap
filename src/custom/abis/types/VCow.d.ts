@@ -11,6 +11,7 @@ import {
   PopulatedTransaction,
   BaseContract,
   ContractTransaction,
+  Overrides,
   PayableOverrides,
   CallOverrides,
 } from "ethers";
@@ -207,7 +208,9 @@ export class VCow extends BaseContract {
 
     balanceOf(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    swapAll(overrides?: CallOverrides): Promise<[BigNumber]>;
+    swapAll(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   claim(
@@ -250,7 +253,9 @@ export class VCow extends BaseContract {
 
   balanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  swapAll(overrides?: CallOverrides): Promise<BigNumber>;
+  swapAll(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     claim(
@@ -376,7 +381,9 @@ export class VCow extends BaseContract {
 
     balanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    swapAll(overrides?: CallOverrides): Promise<BigNumber>;
+    swapAll(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -428,6 +435,8 @@ export class VCow extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    swapAll(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    swapAll(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

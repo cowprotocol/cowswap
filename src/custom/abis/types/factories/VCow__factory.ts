@@ -253,11 +253,11 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "swappedBalance",
         type: "uint256",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

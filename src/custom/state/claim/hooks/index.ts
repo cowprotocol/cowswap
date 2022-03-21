@@ -1071,17 +1071,17 @@ export function useSwapVCowCallback() {
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
 
-  const parseReturnValue = useCallback(
-    (swappedBalance: string) => {
-      if (!vCowToken) {
-        return '0'
-      }
+  // const parseReturnValue = useCallback(
+  //   (swappedBalance: string) => {
+  //     if (!vCowToken) {
+  //       return '0'
+  //     }
 
-      const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, swappedBalance)
-      return formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'
-    },
-    [vCowToken]
-  )
+  //     const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, swappedBalance)
+  //     return formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'
+  //   },
+  //   [vCowToken]
+  // )
 
   const swapCallback = useCallback(async () => {
     if (!account) {
@@ -1101,15 +1101,15 @@ export function useSwapVCowCallback() {
       from: account,
     }
 
-    return vCowContract.swapAll(args).then((swappedBalance: BigNumber) => {
-      const amount = parseReturnValue(swappedBalance?.toString())
+    return vCowContract.swapAll(args).then((tx: TransactionResponse) => {
+      const amount = 'amount'
 
       addTransaction({
-        hash: 'foo', // <- how to get this hash
+        hash: tx.hash,
         summary: `Swap ${amount} vCOW for COW`,
       })
     })
-  }, [account, addTransaction, chainId, parseReturnValue, vCowContract, vCowToken])
+  }, [account, addTransaction, chainId, vCowContract, vCowToken])
 
   return {
     swapCallback,
