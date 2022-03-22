@@ -10,6 +10,12 @@ export enum ClaimStatus {
   FAILED = 'FAILED',
 }
 
+export enum SwapVCowStatus {
+  INITIAL = 'INITIAL',
+  ATTEMPTING = 'ATTEMPTING',
+  SUBMITTED = 'SUBMITTED',
+}
+
 export type ClaimActions = {
   // account
   setInputAddress: (payload: string) => void
@@ -35,6 +41,9 @@ export type ClaimActions = {
   // claim row selection
   setSelected: (payload: number[]) => void
   setSelectedAll: (payload: boolean) => void
+
+  // swap vCow for Cow
+  setSwapVCowStatus: (payload: SwapVCowStatus) => void
 }
 
 // accounts
@@ -77,3 +86,4 @@ export const setClaimsCount = createAction<{
   claimInfo: Partial<ClaimInfo>
   account: string
 }>('claims/setClaimsCount')
+export const setSwapVCowStatus = createAction<SwapVCowStatus>('claim/setSwapVCowStatus')

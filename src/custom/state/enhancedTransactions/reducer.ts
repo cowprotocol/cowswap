@@ -36,6 +36,7 @@ export interface EnhancedTransactionDetails {
   approval?: { tokenAddress: string; spender: string }
   presign?: { orderId: string }
   claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
+  swapVCow?: boolean
 
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
@@ -69,7 +70,21 @@ export default createReducer(initialState, (builder) =>
       addTransaction,
       (
         transactions,
-        { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction, claim, data } }
+        {
+          payload: {
+            chainId,
+            from,
+            hash,
+            hashType,
+            approval,
+            summary,
+            presign,
+            safeTransaction,
+            claim,
+            data,
+            swapVCow,
+          },
+        }
       ) => {
         if (transactions[chainId]?.[hash]) {
           console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
@@ -91,6 +106,7 @@ export default createReducer(initialState, (builder) =>
           presign,
           safeTransaction,
           claim,
+          swapVCow,
         }
         transactions[chainId] = txs
       }

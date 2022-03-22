@@ -54,6 +54,8 @@ import {
   setEstimatedGas,
   setIsTouched,
   setClaimsCount,
+  setSwapVCowStatus,
+  SwapVCowStatus,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -62,6 +64,7 @@ import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 import { OperationType } from '@src/custom/components/TransactionConfirmationModal'
+import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 
 const CLAIMS_REPO_BRANCH = '2022-02-15_Rinkeby-full'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -872,6 +875,7 @@ export function useClaimDispatchers() {
       // has claims on other chains
       setClaimsCount: (payload: { chain: SupportedChainId; claimInfo: ClaimInfo; account: string }) =>
         dispatch(setClaimsCount(payload)),
+      setSwapVCowStatus: (payload: SwapVCowStatus) => dispatch(setSwapVCowStatus(payload)),
     }),
     [dispatch]
   )
@@ -1072,13 +1076,10 @@ interface SwapVCowCallbackParams {
 
 export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
   const { chainId, account } = useActiveWeb3React()
-  const { vested } = useVCowData()
-
   const vCowContract = useVCowContract()
 
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
-  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
 
   const swapCallback = useCallback(async () => {
     if (!account) {
@@ -1094,23 +1095,38 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
       throw new Error('vCOW token not present')
     }
 
-    const args = {
+    const args: { from: string; gasLimit?: BigNumber } = {
       from: account,
     }
 
-    const summary = `Swap ${vCowBalanceVested} vCOW for COW`
+    const estimatedGas = await vCowContract.estimateGas.swapAll(args).catch(() => {
+      // general fallback for tokens who restrict approval amounts
+      return vCowContract.estimateGas.swapAll().catch((error) => {
+        console.log(
+          '[useSwapVCowCallback] Error estimating gas for swapAll. Using default gas limit ' +
+            APPROVE_GAS_LIMIT_DEFAULT.toString(),
+          error
+        )
+        return APPROVE_GAS_LIMIT_DEFAULT
+      })
+    })
+
+    args.gasLimit = estimatedGas
+
+    const summary = `Swap vCOW for COW`
     openModal(summary, OperationType.ORDER_SIGN)
 
     return vCowContract
       .swapAll(args)
       .then((tx: TransactionResponse) => {
         addTransaction({
+          swapVCow: true,
           hash: tx.hash,
           summary,
         })
       })
       .finally(closeModal)
-  }, [account, addTransaction, chainId, closeModal, openModal, vCowBalanceVested, vCowContract, vCowToken])
+  }, [account, addTransaction, chainId, closeModal, openModal, vCowContract, vCowToken])
 
   return {
     swapCallback,

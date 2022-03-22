@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -48,6 +48,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 
 export enum SwapVCowStatus {
   INITIAL = 'INITIAL',
@@ -63,7 +64,8 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  const [swapVCowStatus, setSwapVCowStatus] = useState<SwapVCowStatus>(SwapVCowStatus.INITIAL)
+  const { setSwapVCowStatus } = useClaimDispatchers()
+  const { swapVCowStatus } = useClaimState()
 
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
@@ -87,7 +89,9 @@ export default function Profile() {
   )
 
   // Boolean flags
-  const isSwapDisabled = Boolean(!hasVestedBalance || swapVCowStatus !== SwapVCowStatus.INITIAL)
+  const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
+  const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
+  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending)
 
   // Handle swaping
   const { swapCallback } = useSwapVCowCallback({
@@ -113,7 +117,7 @@ export default function Profile() {
         setSwapVCowStatus(SwapVCowStatus.INITIAL)
         handleSetError(error?.message)
       })
-  }, [handleCloseError, handleSetError, swapCallback])
+  }, [handleCloseError, handleSetError, setSwapVCowStatus, swapCallback])
 
   const tooltipText = {
     balanceBreakdown: (
@@ -185,7 +189,13 @@ export default function Profile() {
                 <b>{vCowBalanceVested}</b>
               </BalanceDisplay>
               <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                Convert to COW <SVG src={ArrowIcon} />
+                {isSwapPending ? (
+                  'Swapping vCow...'
+                ) : (
+                  <>
+                    Convert to COW <SVG src={ArrowIcon} />
+                  </>
+                )}
               </ButtonPrimary>
             </ConvertWrapper>
           </Card>
