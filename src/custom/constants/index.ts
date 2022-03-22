@@ -60,13 +60,13 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
 export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
   [ChainId.XDAI]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
-  [ChainId.RINKEBY]: '0x9386177e95A853070076Df2403b9D547D653126D',
+  [ChainId.RINKEBY]: '0x9386177e95A853070076Df2403b9D547D653126D', // <- TODO: change these at some point after testing is done
 }
 
 export const COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [ChainId.XDAI]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
-  [ChainId.RINKEBY]: '0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91',
+  [ChainId.RINKEBY]: '0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91', // <- TODO: change these at some point after testing is done
 }
 
 // See https://github.com/gnosis/gp-v2-contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13

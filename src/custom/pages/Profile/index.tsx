@@ -63,8 +63,8 @@ export default function Profile() {
   const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
 
-  const hasCowBalance = cow && !cow.equalTo(0)
-  const hasVCowBalance = total && !total.equalTo(0)
+  const hasCowBalance = !cow?.equalTo(0)
+  const hasVCowBalance = !total?.equalTo(0)
 
   const tooltipText = {
     balanceBreakdown: (

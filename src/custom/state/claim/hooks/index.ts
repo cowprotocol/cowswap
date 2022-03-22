@@ -62,7 +62,7 @@ import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 
-// TODO: Revert this before it goes to production
+// TODO: Change back this to commented line before it goes to production
 // const CLAIMS_REPO_BRANCH = 'gip-13'
 const CLAIMS_REPO_BRANCH = '2022-02-15_Rinkeby-full'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
