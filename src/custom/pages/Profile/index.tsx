@@ -12,16 +12,22 @@ import {
   ChildWrapper,
   Loader,
   ExtLink,
-  ProfileWrapper,
-  ProfileGridWrap,
+  CardsWrapper,
+  Card,
+  BannerCard,
+  BalanceDisplay,
+  ConvertWrapper,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
-import { HelpCircle, RefreshCcw } from 'react-feather'
+import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
+import {
+  // formatSmartLocaleAware,
+  numberFormatter,
+} from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -29,13 +35,17 @@ import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
-import { Title } from 'components/Page'
-import { useTokenBalance } from 'state/wallet/hooks'
-import { useVCowData } from 'state/claim/hooks'
-import { V_COW, COW } from 'constants/tokens'
-import VCOWDropdown from './VCOWDropdown'
-import { isPr, isLocal } from 'utils/environments'
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
+import { Title, SectionTitle, HelpCircle } from 'components/Page'
+import { ButtonPrimary } from 'custom/components/Button'
+import vCOWImage from 'assets/cow-swap/vCOW.png'
+import SVG from 'react-inlinesvg'
+import ArrowIcon from 'assets/cow-swap/arrow.svg'
+import CowImage from 'assets/cow-swap/cow_v2.svg'
+import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
+// import { useTokenBalance } from 'state/wallet/hooks'
+// import { useVCowData } from 'state/claim/hooks'
+// import { V_COW, COW } from 'constants/tokens'
+// import { isPr, isLocal } from 'utils/environments'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -45,17 +55,41 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
-  const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+  // const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
+  const vCowBalance = '10,240,800.32'
+  // const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+  const cowBalance = '0'
 
-  const { vested, total, unvested } = useVCowData()
+  // const { vested, total, unvested } = useVCowData()
+  const unvested = '9,240,800.32'
+  const vested = '1,240,800.32'
 
   // TODO: remove once this is not needed anymore
-  if (isPr || isLocal) {
-    console.force.log('vested', formatSmartLocaleAware(vested, vested?.currency.decimals))
-    console.force.log('total', formatSmartLocaleAware(total, total?.currency.decimals))
-    console.force.log('unvested', formatSmartLocaleAware(unvested, unvested?.currency.decimals))
-    console.force.log('cowBalance', formatSmartLocaleAware(cowBalance, cowBalance?.currency.decimals))
+  // if (isPr || isLocal) {
+  //   console.force.log('vested', formatSmartLocaleAware(vested, vested?.currency.decimals))
+  //   console.force.log('total', formatSmartLocaleAware(total, total?.currency.decimals))
+  //   console.force.log('unvested', formatSmartLocaleAware(unvested, unvested?.currency.decimals))
+  //   console.force.log('cowBalance', formatSmartLocaleAware(cowBalance, cowBalance?.currency.decimals))
+  // }
+
+  const tooltipText = {
+    balanceBreakdown: (
+      <div>
+        Unvested {unvested} vCOW Vested {vested} vCOW
+      </div>
+    ),
+    vested: (
+      <div>
+        <p>
+          <strong>Vested vCOW</strong> is the portion of your vCOW token balance, which is fully available to convert to
+          COW token.
+        </p>
+        <p>
+          This includes any vCOW received through an <strong>airdrop.</strong>
+        </p>
+        <p>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</p>
+      </div>
+    ),
   }
 
   const renderNotificationMessages = (
@@ -76,18 +110,70 @@ export default function Profile() {
   return (
     <Container>
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-      <ProfileWrapper>
-        <ProfileGridWrap horizontal>
-          <CardHead>
-            <Title>Profile</Title>
-          </CardHead>
-          {IS_CLAIMING_ENABLED && vCowBalance && <VCOWDropdown balance={vCowBalance} />}
-        </ProfileGridWrap>
-      </ProfileWrapper>
+      <Title>Profile</Title>
+
+      <CardsWrapper>
+        {vCowBalance && (
+          <Card>
+            <BalanceDisplay hAlign="left">
+              <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+              <span>
+                <i>Total vCOW balance</i>
+                <b>
+                  {vCowBalance} vCOW{' '}
+                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                </b>
+              </span>
+            </BalanceDisplay>
+            <ConvertWrapper>
+              <BalanceDisplay titleSize={18} altColor={true}>
+                <i>
+                  Vested{' '}
+                  <MouseoverTooltipContent content={tooltipText.vested}>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                </i>
+                <b>{vested}</b>
+              </BalanceDisplay>
+              <ButtonPrimary>
+                Convert to COW <SVG src={ArrowIcon} />
+              </ButtonPrimary>
+            </ConvertWrapper>
+          </Card>
+        )}
+
+        {cowBalance && (
+          <Card>
+            <BalanceDisplay titleSize={26}>
+              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+              <span>
+                <i>Available COW balance</i>
+                <b>{cowBalance} COW</b>
+              </span>
+            </BalanceDisplay>
+          </Card>
+        )}
+
+        <BannerCard>
+          <span>
+            <b>CoW DAO Governance</b>
+            <small>Use your (v)COW balance to vote on important proposals or participate in forum discussions.</small>
+            <span>
+              {' '}
+              <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
+              <ExtLink href={'https://forum.cow.fi/'}>CoW Forum ↗</ExtLink>
+            </span>
+          </span>
+          <SVG src={CowProtocolImage} description="CoWDAO Governance" />
+        </BannerCard>
+      </CardsWrapper>
+
       <Wrapper>
         <GridWrap>
           <CardHead>
-            <Title>Affiliate Program</Title>
+            <SectionTitle>Affiliate Program</SectionTitle>
             {account && (
               <Loader isLoading={isLoading}>
                 <StyledContainer>
