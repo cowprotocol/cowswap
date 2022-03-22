@@ -41,7 +41,7 @@ import {
   OperationType,
 } from '.' // mod
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: 100%;
   padding: 1rem;
   display: flex; /* MOD */
@@ -361,7 +361,7 @@ function L2Content({
   )
 }
 
-interface ConfirmationModalProps {
+export interface ConfirmationModalProps {
   isOpen: boolean
   onDismiss: () => void
   hash?: string | undefined
