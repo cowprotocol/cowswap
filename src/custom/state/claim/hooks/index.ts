@@ -61,6 +61,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
+import { OperationType } from '@src/custom/components/TransactionConfirmationModal'
 
 const CLAIMS_REPO_BRANCH = '2022-02-15_Rinkeby-full'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -1063,25 +1064,21 @@ export function useVCowData(): VCowData {
 /**
  * Hook used to swap vCow to Cow token
  */
-export function useSwapVCowCallback() {
+
+interface SwapVCowCallbackParams {
+  openModal: (message: string, operationType: OperationType) => void
+  closeModal: () => void
+}
+
+export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
   const { chainId, account } = useActiveWeb3React()
+  const { vested } = useVCowData()
 
   const vCowContract = useVCowContract()
 
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
-
-  // const parseReturnValue = useCallback(
-  //   (swappedBalance: string) => {
-  //     if (!vCowToken) {
-  //       return '0'
-  //     }
-
-  //     const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, swappedBalance)
-  //     return formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'
-  //   },
-  //   [vCowToken]
-  // )
+  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
 
   const swapCallback = useCallback(async () => {
     if (!account) {
@@ -1101,15 +1098,19 @@ export function useSwapVCowCallback() {
       from: account,
     }
 
-    return vCowContract.swapAll(args).then((tx: TransactionResponse) => {
-      const amount = 'amount'
+    const summary = `Swap ${vCowBalanceVested} vCOW for COW`
+    openModal(summary, OperationType.ORDER_SIGN)
 
-      addTransaction({
-        hash: tx.hash,
-        summary: `Swap ${amount} vCOW for COW`,
+    return vCowContract
+      .swapAll(args)
+      .then((tx: TransactionResponse) => {
+        addTransaction({
+          hash: tx.hash,
+          summary,
+        })
       })
-    })
-  }, [account, addTransaction, chainId, vCowContract, vCowToken])
+      .finally(closeModal)
+  }, [account, addTransaction, chainId, closeModal, openModal, vCowBalanceVested, vCowContract, vCowToken])
 
   return {
     swapCallback,

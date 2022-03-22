@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -45,13 +45,14 @@ import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData } from 'state/claim/hooks'
 import { COW } from 'constants/tokens'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import { OperationType } from 'components/TransactionConfirmationModal'
+import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 
 export enum SwapVCowStatus {
   INITIAL = 'INITIAL',
   ATTEMPTING = 'ATTEMPTING',
   SUBMITTED = 'SUBMITTED',
-  CONFIRMED = 'CONFIRMED',
-  FAILED = 'FAILED',
 }
 
 export default function Profile() {
@@ -64,9 +65,11 @@ export default function Profile() {
 
   const [swapVCowStatus, setSwapVCowStatus] = useState<SwapVCowStatus>(SwapVCowStatus.INITIAL)
 
-  const { unvested, vested, total } = useVCowData()
-
+  // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+
+  // vCow balance values
+  const { unvested, vested, total } = useVCowData()
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
@@ -77,21 +80,40 @@ export default function Profile() {
   const hasVCowBalance = total && !total.equalTo(0)
   const hasVestedBalance = vested && !vested.equalTo(0)
 
+  // Init modal hooks
+  const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
+  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
+    OperationType.ORDER_SIGN
+  )
+
+  // Boolean flags
   const isSwapDisabled = Boolean(!hasVestedBalance || swapVCowStatus !== SwapVCowStatus.INITIAL)
 
-  const { swapCallback } = useSwapVCowCallback()
+  // Handle swaping
+  const { swapCallback } = useSwapVCowCallback({
+    openModal,
+    closeModal,
+  })
 
-  const handleVCowSwap = () => {
+  const handleVCowSwap = useCallback(async () => {
+    handleCloseError()
+
+    if (!swapCallback) {
+      return
+    }
+
     setSwapVCowStatus(SwapVCowStatus.ATTEMPTING)
+
     swapCallback()
       .then(() => {
         setSwapVCowStatus(SwapVCowStatus.SUBMITTED)
       })
       .catch((error) => {
-        setSwapVCowStatus(SwapVCowStatus.INITIAL)
         console.error('[Profile::index::swapVCowCallback]::error', error)
+        setSwapVCowStatus(SwapVCowStatus.INITIAL)
+        handleSetError(error?.message)
       })
-  }
+  }, [handleCloseError, handleSetError, swapCallback])
 
   const tooltipText = {
     balanceBreakdown: (
@@ -131,6 +153,9 @@ export default function Profile() {
 
   return (
     <Container>
+      <TransactionConfirmationModal />
+      <ErrorModal />
+
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <Title>Profile</Title>
 
