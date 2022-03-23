@@ -358,6 +358,7 @@ export enum OperationType {
   REVOKE_APPROVE_TOKEN,
   ORDER_SIGN,
   ORDER_CANCEL,
+  CONVERT_VCOW,
 }
 
 function getWalletNameLabel(walletType: WalletType): string {
@@ -385,6 +386,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Soft canceling your order'
     case OperationType.REVOKE_APPROVE_TOKEN:
       return 'Revoking token approval'
+    case OperationType.CONVERT_VCOW:
+      return 'Converting vCOW to COW'
 
     default:
       return 'Almost there!'
@@ -405,6 +408,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`order`
     case OperationType.ORDER_CANCEL:
       return t`cancellation`
+    case OperationType.CONVERT_VCOW:
+      return t`vCOW conversion`
   }
 }
 

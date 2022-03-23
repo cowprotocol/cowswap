@@ -24,7 +24,7 @@ export function useTransactionAdder(): TransactionAdder {
     (addTransactionParams: AddTransactionHookParams) => {
       if (!account || !chainId) return
 
-      const { hash, summary, data, claim, approval, presign, safeTransaction } = addTransactionParams
+      const { hash, summary, data, claim, approval, presign, safeTransaction, swapVCow } = addTransactionParams
       const hashType = isGnosisSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
       if (!hash) {
         throw Error('No transaction hash found')
@@ -41,6 +41,7 @@ export function useTransactionAdder(): TransactionAdder {
           data,
           presign,
           safeTransaction,
+          swapVCow,
         })
       )
     },
