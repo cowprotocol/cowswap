@@ -295,6 +295,7 @@ export const BannerCard = styled(BannerExplainer)`
   padding: 0 100px 0 24px;
   flex: 1;
   overflow: hidden;
+  height: auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     text-align: center;

@@ -25,10 +25,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import {
-  // formatSmartLocaleAware,
-  numberFormatter,
-} from 'utils/format'
+import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -43,10 +40,10 @@ import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
-// import { useTokenBalance } from 'state/wallet/hooks'
-// import { useVCowData } from 'state/claim/hooks'
-// import { V_COW, COW } from 'constants/tokens'
-// import { isPr, isLocal } from 'utils/environments'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { useVCowData } from 'state/claim/hooks'
+import { AMOUNT_PRECISION } from 'constants/index'
+import { COW } from 'constants/tokens'
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -56,31 +53,28 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  // const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
-  const vCowBalance = '10,240,800.32'
-  // const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
-  const cowBalance = '0'
+  // Cow balance
+  const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
-  // const { vested, total, unvested } = useVCowData()
-  const unvested = '9,240,800.32'
-  const vested = '1,240,800.32'
+  // vCow balance values
+  const { unvested, vested, total } = useVCowData()
 
-  // TODO: remove once this is not needed anymore
-  // if (isPr || isLocal) {
-  //   console.force.log('vested', formatSmartLocaleAware(vested, vested?.currency.decimals))
-  //   console.force.log('total', formatSmartLocaleAware(total, total?.currency.decimals))
-  //   console.force.log('unvested', formatSmartLocaleAware(unvested, unvested?.currency.decimals))
-  //   console.force.log('cowBalance', formatSmartLocaleAware(cowBalance, cowBalance?.currency.decimals))
-  // }
+  const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
+  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
+  const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
+  const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
+
+  const hasCowBalance = cow && !cow.equalTo(0)
+  const hasVCowBalance = total && !total.equalTo(0)
 
   const tooltipText = {
     balanceBreakdown: (
       <VestingBreakdown>
         <span>
-          <i>Unvested</i> <p>{unvested} vCOW</p>
+          <i>Unvested</i> <p>{vCowBalanceUnvested} vCOW</p>
         </span>
         <span>
-          <i>Vested</i> <p>{vested} vCOW</p>
+          <i>Vested</i> <p>{vCowBalanceVested} vCOW</p>
         </span>
       </VestingBreakdown>
     ),
@@ -119,7 +113,7 @@ export default function Profile() {
       <Title>Profile</Title>
 
       <CardsWrapper>
-        {vCowBalance && (
+        {hasVCowBalance && (
           <Card>
             <BalanceDisplay hAlign="left">
               <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
@@ -141,7 +135,7 @@ export default function Profile() {
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </i>
-                <b>{vested}</b>
+                <b>{vCowBalanceVested}</b>
               </BalanceDisplay>
               <ButtonPrimary>
                 Convert to COW <SVG src={ArrowIcon} />
@@ -150,7 +144,7 @@ export default function Profile() {
           </Card>
         )}
 
-        {cowBalance && (
+        {hasCowBalance && (
           <Card>
             <BalanceDisplay titleSize={26}>
               <img src={CowImage} alt="Cow Balance" height="80" width="80" />
