@@ -247,6 +247,19 @@ const _abi = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [],
+    name: "swapAll",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "swappedBalance",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
 
 export class VCow__factory {
