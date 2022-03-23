@@ -32,6 +32,7 @@ export interface Colors extends ColorsUniswap {
   infoText: Color
   warningText: Color
   errorText: Color
+  cardBackground: Color
   cardBorder: Color
   cardShadow1: Color
   cardShadow2: Color
