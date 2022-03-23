@@ -17,6 +17,7 @@ import {
   BannerCard,
   BalanceDisplay,
   ConvertWrapper,
+  VestingBreakdown,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -68,10 +69,14 @@ export default function Profile() {
 
   const tooltipText = {
     balanceBreakdown: (
-      <div>
-        <div>Unvested {vCowBalanceUnvested} vCOW</div>
-        <div>Vested {vCowBalanceVested} vCOW</div>
-      </div>
+      <VestingBreakdown>
+        <span>
+          <i>Unvested</i> <p>{vCowBalanceUnvested} vCOW</p>
+        </span>
+        <span>
+          <i>Vested</i> <p>{vCowBalanceVested} vCOW</p>
+        </span>
+      </VestingBreakdown>
     ),
     vested: (
       <div>

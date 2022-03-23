@@ -454,3 +454,34 @@ export const ConvertWrapper = styled.div`
     > div { gap: 6px 12px; }
   `};
 `
+
+export const VestingBreakdown = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  gap: 3px 0;
+
+  > span {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-items: center;
+    justify-content: space-between;
+    gap: 0 18px;
+    width: 100%;
+  }
+
+  > span > i {
+    font-style: normal;
+    opacity: 0.75;
+  }
+
+  > span > p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  > span:last-of-type > p {
+    color: ${({ theme }) => theme.primary1};
+  }
+`
