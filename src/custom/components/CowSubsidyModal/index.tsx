@@ -44,7 +44,6 @@ export default function CowSubsidyModal({
 }: Pick<ConfirmationModalProps, 'isOpen'> & Omit<ConfirmationModalContentProps, 'title' | 'topContent'>) {
   const { account, chainId } = useActiveWeb3React()
 
-  // TODO: update with latest code
   const { subsidy, balance } = useCowBalanceAndSubsidy()
 
   const TopContent = useCallback(
