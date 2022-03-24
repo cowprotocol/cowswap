@@ -11,6 +11,7 @@ import { SupportedChainId } from 'constants/chains'
 
 const StyledSubsidyTable = styled.table`
   width: 100%;
+  margin: 0 0 24px;
 
   thead,
   tbody {
@@ -38,7 +39,6 @@ const SubsidyTr = styled.tr<{ selected?: boolean }>`
   border: 1px solid transparent;
   gap: 0;
   background: transparent;
-  transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.4, theme.text2)};
 
   &:last-child {
@@ -46,7 +46,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean }>`
   }
 
   > th {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
   }
 
@@ -68,16 +68,16 @@ const SubsidyTr = styled.tr<{ selected?: boolean }>`
     selected &&
     `
     background: ${transparentize(0.85, theme.orange)};
-    border-radius: 6px;
+    border-radius: 3px;
     outline: 1px solid ${theme.orange};
     border-bottom: 0;
 
     &:first-child {
-      border-radius: 16px 16px 6px 6px;
+      border-radius: 16px 16px 3px 3px;
     }
 
     &:last-child {
-      border-radius: 6px 6px 16px 16px;
+      border-radius: 3px 3px 16px 16px;
     }
 
     &::before {

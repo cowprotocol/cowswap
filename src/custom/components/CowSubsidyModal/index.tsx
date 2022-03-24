@@ -7,7 +7,7 @@ import {
 } from 'components/TransactionConfirmationModal'
 import { useActiveWeb3React } from 'hooks/web3'
 import { GpModal } from 'components/Modal'
-import { AutoColumn } from 'components/SearchModal/CommonBases'
+import { AutoColumn } from 'components/Column'
 import { Text } from 'rebass'
 
 import Row from 'components/Row'
