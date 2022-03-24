@@ -68,7 +68,7 @@ import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCa
 
 // TODO: Change back this to commented line before it goes to production
 // const CLAIMS_REPO_BRANCH = 'gip-13'
-const CLAIMS_REPO_BRANCH = '2022-02-15_Rinkeby-full'
+const CLAIMS_REPO_BRANCH = '2022-03-23-mainnet-gc-test'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
