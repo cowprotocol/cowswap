@@ -58,14 +58,14 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
-  [ChainId.MAINNET]: '0xA4719763aDE1e7F981ce1135E1Becbc2F3ccB7c0',
-  [ChainId.XDAI]: '0x96a69f98f9312588de0080290890de109761e446',
+  [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
+  [ChainId.XDAI]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
   [ChainId.RINKEBY]: '0x9386177e95A853070076Df2403b9D547D653126D', // <- TODO: change these at some point after testing is done
 }
 
 export const COW_CONTRACT_ADDRESS: Record<number, string> = {
-  [ChainId.MAINNET]: '0x50917411a0A3a4F443A32B27f888fcc2a3aF4b74',
-  [ChainId.XDAI]: '0xf8d82a4722Ff2d012B0AE824cDDDf6d57F01a08b',
+  [ChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
+  [ChainId.XDAI]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [ChainId.RINKEBY]: '0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91', // <- TODO: change these at some point after testing is done
 }
 

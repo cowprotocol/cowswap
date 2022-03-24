@@ -8,6 +8,7 @@ import { BigNumber } from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
 import { V_COW } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
+import { useIsDarkMode } from 'state/user/hooks'
 
 const StyledSubsidyTable = styled.table`
   width: 100%;
@@ -31,7 +32,7 @@ const StyledSubsidyTable = styled.table`
   }
 `
 
-const SubsidyTr = styled.tr<{ selected?: boolean }>`
+const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   position: relative;
   width: 100%;
   display: grid;
@@ -64,10 +65,10 @@ const SubsidyTr = styled.tr<{ selected?: boolean }>`
     text-align: center;
   }
 
-  ${({ selected, theme }) =>
+  ${({ selected, theme, darkMode }) =>
     selected &&
     `
-    background: ${transparentize(0.85, theme.orange)};
+    background: ${darkMode ? transparentize(0.85, theme.orange) : transparentize(0.75, theme.orange)};
     border-radius: 3px;
     outline: 1px solid ${theme.orange};
     border-bottom: 0;
@@ -96,7 +97,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean }>`
     }
     
     > td {
-      color: ${theme.orange};
+      color: ${darkMode ? theme.orange : theme.text1};
       font-weight: 500;
 
       &:first-child {
@@ -129,6 +130,8 @@ const SubsidyTr = styled.tr<{ selected?: boolean }>`
 const COW_DECIMALS = V_COW[SupportedChainId.MAINNET].decimals
 
 function SubsidyTable({ discount }: CowSubsidy) {
+  const darkMode = useIsDarkMode()
+
   return (
     <StyledSubsidyTable>
       <thead>
@@ -144,7 +147,7 @@ function SubsidyTable({ discount }: CowSubsidy) {
           const formattedThreshold = new BigNumber(formatUnits(threshold, COW_DECIMALS))
 
           return (
-            <SubsidyTr key={i} selected={selected}>
+            <SubsidyTr key={i} selected={selected} darkMode={darkMode}>
               <td>
                 <span>{i && '>' + formatSmartLocaleAware(formattedThreshold)}</span>
               </td>
