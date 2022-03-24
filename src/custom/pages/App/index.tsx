@@ -83,7 +83,7 @@ export default function App() {
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
             <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-            <Route exact strict path="/claim" component={Claim} />}
+            <Route exact strict path="/claim" component={Claim} />
             <Route exact strict path="/about" component={About} />
             <Route exact strict path="/profile" component={Profile} />
             <Route exact strict path="/faq" component={Faq} />
