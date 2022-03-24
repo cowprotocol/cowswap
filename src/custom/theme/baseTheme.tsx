@@ -66,6 +66,7 @@ export function colors(darkMode: boolean): Colors {
     blue2: darkMode ? '#a3beff' : '#0c40bf',
     purple: '#8958FF',
     yellow: '#fff6dc',
+    orange: '#FF784A',
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',

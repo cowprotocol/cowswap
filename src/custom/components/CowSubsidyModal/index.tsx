@@ -28,7 +28,7 @@ export interface CowSubsidyInfoProps {
 
 const CowSubsidyInfo = ({ account, balance, subsidy }: CowSubsidyInfoProps) => (
   <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
-    <Text fontWeight={500} fontSize={16} style={{ textAlign: 'center', width: '85%', wordBreak: 'break-word' }}>
+    <Text fontWeight={400} fontSize={15} style={{ textAlign: 'center', width: '100%', wordBreak: 'break-word' }}>
       {SUBSIDY_INFO_MESSAGE}
     </Text>
     {/* VCOW LOGO */}
@@ -64,7 +64,7 @@ export default function CowSubsidyModal({
   if (!chainId) return null
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
+    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'0 0 18px'}>
       <ConfirmationModalContent
         {...restProps}
         title="CoWmunity fees discount"
