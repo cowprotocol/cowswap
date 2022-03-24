@@ -65,7 +65,7 @@ export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
 
 export const COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0x50917411a0A3a4F443A32B27f888fcc2a3aF4b74',
-  [ChainId.XDAI]: '0x2f23c351bc4a65b09c6F8bdDF2027b264fCa4951',
+  [ChainId.XDAI]: '0x96a69F98F9312588dE0080290890de109761E446',
   [ChainId.RINKEBY]: '0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91', // <- TODO: change these at some point after testing is done
 }
 
