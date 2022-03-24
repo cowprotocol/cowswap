@@ -20,7 +20,6 @@ import { getExplorerAddressLink } from 'utils/explorer'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { useHistory } from 'react-router-dom'
 import CowClaimButton, { Wrapper as ClaimButtonWrapper } from 'components/CowClaimButton'
-import { IS_CLAIMING_ENABLED } from 'pages/Claim/const'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -291,14 +290,12 @@ export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
   return (
     <StyledMenu isClaimPage={isClaimPage}>
       <MenuFlyout>
-        {IS_CLAIMING_ENABLED && (
-          <CowClaimButton
-            isClaimPage={isClaimPage}
-            handleOnClickClaim={handleOnClickClaim}
-            account={account}
-            chainId={chainId}
-          />
-        )}
+        <CowClaimButton
+          isClaimPage={isClaimPage}
+          handleOnClickClaim={handleOnClickClaim}
+          account={account}
+          chainId={chainId}
+        />
 
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap
