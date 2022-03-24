@@ -26,7 +26,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { formatSmartLocaleAware, numberFormatter } from 'utils/format'
+import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -52,6 +52,8 @@ import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { SwapVCowStatus } from 'state/claim/actions'
 import { useSwapVCowCallback } from 'state/claim/hooks'
 
+const COW_DECIMALS = COW[ChainId.MAINNET].decimals
+
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId } = useActiveWeb3React()
@@ -70,9 +72,12 @@ export default function Profile() {
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
+  const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
   const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || (!vested || isVCowLoading ? '-' : '0')
+  const vCowBalanceVestedMax = vested ? formatMax(vested, COW_DECIMALS) : '0'
   const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
+  const vCowBalanceMax = total ? formatMax(total, COW_DECIMALS) : '0'
 
   const hasVestedBalance = vested && !vested?.equalTo(0)
 
@@ -168,7 +173,7 @@ export default function Profile() {
             <span>
               <i>Total vCOW balance</i>
               <b>
-                {vCowBalance} vCOW{' '}
+                <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
                 <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
@@ -183,7 +188,7 @@ export default function Profile() {
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </i>
-              <b>{!isSwapPending ? vCowBalanceVested : '-'}</b>
+              <b title={`${vCowBalanceVestedMax} vCOW`}>{!isSwapPending ? vCowBalanceVested : '-'}</b>
             </BalanceDisplay>
             <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
               {isSwapPending ? (
@@ -202,7 +207,7 @@ export default function Profile() {
             <img src={CowImage} alt="Cow Balance" height="80" width="80" />
             <span>
               <i>Available COW balance</i>
-              <b>{cowBalance} COW</b>
+              <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
             </span>
           </BalanceDisplay>
         </Card>
