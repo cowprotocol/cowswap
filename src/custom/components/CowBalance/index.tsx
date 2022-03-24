@@ -9,6 +9,11 @@ import { CowSubsidyInfoProps } from 'components/CowSubsidyModal'
 
 const Wrapper = styled(ClaimSummaryWrapper)`
   border-radius: 100px;
+  margin: 0;
+
+  ${ClaimTotal} > p {
+    font-size: 26px;
+  }
 `
 
 type CowBalanceProps = Omit<CowSubsidyInfoProps, 'subsidy'> & {
