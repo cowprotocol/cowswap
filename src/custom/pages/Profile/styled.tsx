@@ -251,7 +251,7 @@ export const CardsWrapper = styled.div`
   `};
 `
 
-export const Card = styled.div`
+export const Card = styled.div<{ showLoader?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
@@ -263,6 +263,37 @@ export const Card = styled.div`
   gap: 24px 0;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.cardBorder};
+
+  ${({ showLoader, theme }) =>
+    showLoader &&
+    css`
+      position: relative;
+
+      overflow: hidden;
+      &::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0,
+          ${theme.shimmer1} 20%,
+          ${theme.shimmer2} 60%,
+          rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+        content: '';
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 130px;

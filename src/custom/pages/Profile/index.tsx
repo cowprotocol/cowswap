@@ -67,15 +67,13 @@ export default function Profile() {
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
   // vCow balance values
-  const { unvested, vested, total } = useVCowData()
+  const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
-  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
+  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || (!vested || isVCowLoading ? '-' : '0')
   const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
 
-  const hasCowBalance = cow && !cow?.equalTo(0)
-  const hasVCowBalance = total && !total?.equalTo(0)
   const hasVestedBalance = vested && !vested?.equalTo(0)
 
   // Init modal hooks
@@ -122,7 +120,7 @@ export default function Profile() {
           <i>Unvested</i> <p>{vCowBalanceUnvested} vCOW</p>
         </span>
         <span>
-          <i>Vested</i> <p>{!isSwapPending ? vCowBalanceVested : '0'} vCOW</p>
+          <i>Vested</i> <p>{!isSwapPending ? vCowBalanceVested : '-'} vCOW</p>
         </span>
       </VestingBreakdown>
     ),
@@ -164,54 +162,50 @@ export default function Profile() {
       <Title>Profile</Title>
 
       <CardsWrapper>
-        {hasVCowBalance && (
-          <Card>
-            <BalanceDisplay hAlign="left">
-              <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
-              <span>
-                <i>Total vCOW balance</i>
-                <b>
-                  {vCowBalance} vCOW{' '}
-                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
-                    <HelpCircle size={14} />
-                  </MouseoverTooltipContent>
-                </b>
-              </span>
+        <Card showLoader={isVCowLoading || isSwapPending}>
+          <BalanceDisplay hAlign="left">
+            <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+            <span>
+              <i>Total vCOW balance</i>
+              <b>
+                {vCowBalance} vCOW{' '}
+                <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                  <HelpCircle size={14} />
+                </MouseoverTooltipContent>
+              </b>
+            </span>
+          </BalanceDisplay>
+          <ConvertWrapper>
+            <BalanceDisplay titleSize={18} altColor={true}>
+              <i>
+                Vested{' '}
+                <MouseoverTooltipContent content={tooltipText.vested}>
+                  <HelpCircle size={14} />
+                </MouseoverTooltipContent>
+              </i>
+              <b>{!isSwapPending ? vCowBalanceVested : '-'}</b>
             </BalanceDisplay>
-            <ConvertWrapper>
-              <BalanceDisplay titleSize={18} altColor={true}>
-                <i>
-                  Vested{' '}
-                  <MouseoverTooltipContent content={tooltipText.vested}>
-                    <HelpCircle size={14} />
-                  </MouseoverTooltipContent>
-                </i>
-                <b>{!isSwapPending ? vCowBalanceVested : '0'}</b>
-              </BalanceDisplay>
-              <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                {isSwapPending ? (
-                  'Converting vCOW...'
-                ) : (
-                  <>
-                    Convert to COW <SVG src={ArrowIcon} />
-                  </>
-                )}
-              </ButtonPrimary>
-            </ConvertWrapper>
-          </Card>
-        )}
+            <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
+              {isSwapPending ? (
+                'Converting vCOW...'
+              ) : (
+                <>
+                  Convert to COW <SVG src={ArrowIcon} />
+                </>
+              )}
+            </ButtonPrimary>
+          </ConvertWrapper>
+        </Card>
 
-        {hasCowBalance && (
-          <Card>
-            <BalanceDisplay titleSize={26}>
-              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
-              <span>
-                <i>Available COW balance</i>
-                <b>{cowBalance} COW</b>
-              </span>
-            </BalanceDisplay>
-          </Card>
-        )}
+        <Card showLoader={isVCowLoading}>
+          <BalanceDisplay titleSize={26}>
+            <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+            <span>
+              <i>Available COW balance</i>
+              <b>{cowBalance} COW</b>
+            </span>
+          </BalanceDisplay>
+        </Card>
 
         <BannerCard>
           <span>
