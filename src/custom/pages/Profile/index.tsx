@@ -205,7 +205,7 @@ export default function Profile() {
           </Card>
         )}
 
-        <Card showLoader={isVCowLoading}>
+        <Card>
           <BalanceDisplay titleSize={26}>
             <img src={CowImage} alt="Cow Balance" height="80" width="80" />
             <span>
