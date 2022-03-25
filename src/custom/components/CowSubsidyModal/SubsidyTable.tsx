@@ -23,8 +23,7 @@ const StyledSubsidyTable = styled.table`
   tbody {
     border-radius: 16px;
     border: none;
-    outline: 1px solid ${({ theme }) => theme.text2};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.text2};
   }
 
   thead > tr {
@@ -69,17 +68,6 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     selected &&
     `
     background: ${darkMode ? transparentize(0.85, theme.orange) : transparentize(0.75, theme.orange)};
-    border-radius: 3px;
-    outline: 1px solid ${theme.orange};
-    border-bottom: 0;
-
-    &:first-child {
-      border-radius: 16px 16px 3px 3px;
-    }
-
-    &:last-child {
-      border-radius: 3px 3px 16px 16px;
-    }
 
     &::before {
       position: absolute;
@@ -95,13 +83,34 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
       animation: 2s ease-in-out infinite pulse;
       box-shadow: 0;
     }
+
+    &::after {
+      content: '';
+      height: calc(100% + 3px);
+      width:  calc(100% + 4px);
+      display: block;
+      top: -2px;
+      left: -2px;
+      position: absolute;
+      border-radius: 3px;
+      border: 2px solid ${theme.orange};
+    }
+
+    &:first-child,
+    &:first-child::after {
+      border-radius: 16px 16px 3px 3px;
+    }
+
+    &:last-child,
+    &:last-child::after {
+      border-radius: 3px 3px 16px 16px;
+    }
     
     > td {
       color: ${darkMode ? theme.orange : theme.text1};
       font-weight: 500;
 
       &:first-child {
-        border-right: none;
         display: flex;
         align-items: center; 
         justify-content: center;
