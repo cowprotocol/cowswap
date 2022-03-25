@@ -1109,7 +1109,7 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
       })
     })
 
-    const summary = `Converting vCOW to COW`
+    const summary = `Convert vCOW to COW`
     openModal(summary, OperationType.CONVERT_VCOW)
 
     return vCowContract

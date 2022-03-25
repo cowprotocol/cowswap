@@ -73,13 +73,14 @@ export default function Profile() {
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
-  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || (!vested || isVCowLoading ? '-' : '0')
+  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
   const vCowBalanceVestedMax = vested ? formatMax(vested, COW_DECIMALS) : '0'
   const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
   const vCowBalanceMax = total ? formatMax(total, COW_DECIMALS) : '0'
 
-  const hasVestedBalance = vested && !vested?.equalTo(0)
+  const hasVestedBalance = vested && !vested.equalTo(0)
+  const hasVCowBalance = total && !total.equalTo(0)
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -125,7 +126,7 @@ export default function Profile() {
           <i>Unvested</i> <p>{vCowBalanceUnvested} vCOW</p>
         </span>
         <span>
-          <i>Vested</i> <p>{!isSwapPending ? vCowBalanceVested : '-'} vCOW</p>
+          <i>Vested</i> <p>{vCowBalanceVested} vCOW</p>
         </span>
       </VestingBreakdown>
     ),
@@ -167,42 +168,44 @@ export default function Profile() {
       <Title>Profile</Title>
 
       <CardsWrapper>
-        <Card showLoader={isVCowLoading || isSwapPending}>
-          <BalanceDisplay hAlign="left">
-            <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
-            <span>
-              <i>Total vCOW balance</i>
-              <b>
-                <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
-                <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
-                  <HelpCircle size={14} />
-                </MouseoverTooltipContent>
-              </b>
-            </span>
-          </BalanceDisplay>
-          <ConvertWrapper>
-            <BalanceDisplay titleSize={18} altColor={true}>
-              <i>
-                Vested{' '}
-                <MouseoverTooltipContent content={tooltipText.vested}>
-                  <HelpCircle size={14} />
-                </MouseoverTooltipContent>
-              </i>
-              <b title={`${vCowBalanceVestedMax} vCOW`}>{!isSwapPending ? vCowBalanceVested : '-'}</b>
+        {hasVCowBalance && (
+          <Card showLoader={isVCowLoading || isSwapPending}>
+            <BalanceDisplay hAlign="left">
+              <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+              <span>
+                <i>Total vCOW balance</i>
+                <b>
+                  <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
+                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                </b>
+              </span>
             </BalanceDisplay>
-            <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-              {isSwapPending ? (
-                'Converting vCOW...'
-              ) : (
-                <>
-                  Convert to COW <SVG src={ArrowIcon} />
-                </>
-              )}
-            </ButtonPrimary>
-          </ConvertWrapper>
-        </Card>
+            <ConvertWrapper>
+              <BalanceDisplay titleSize={18} altColor={true}>
+                <i>
+                  Vested{' '}
+                  <MouseoverTooltipContent content={tooltipText.vested}>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
+                </i>
+                <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
+              </BalanceDisplay>
+              <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
+                {isSwapPending ? (
+                  'Converting vCOW...'
+                ) : (
+                  <>
+                    Convert to COW <SVG src={ArrowIcon} />
+                  </>
+                )}
+              </ButtonPrimary>
+            </ConvertWrapper>
+          </Card>
+        )}
 
-        <Card showLoader={isVCowLoading}>
+        <Card>
           <BalanceDisplay titleSize={26}>
             <img src={CowImage} alt="Cow Balance" height="80" width="80" />
             <span>
