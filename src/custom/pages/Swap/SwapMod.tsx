@@ -573,7 +573,7 @@ export default function Swap({
                       amountBeforeFees={amountBeforeFees}
                       amountAfterFees={formatSmart(trade?.inputAmountWithFee, AMOUNT_PRECISION)}
                       type="From"
-                      feeAmount={formatSmart(trade?.fee?.feeAsCurrency, AMOUNT_PRECISION)}
+                      feeAmount={trade?.fee?.feeAsCurrency}
                       allowsOffchainSigning={allowsOffchainSigning}
                       fiatValue={fiatValueInput}
                     />
@@ -633,10 +633,7 @@ export default function Swap({
                       amountBeforeFees={formatSmart(trade?.outputAmountWithoutFee, AMOUNT_PRECISION)}
                       amountAfterFees={formatSmart(trade?.outputAmount, AMOUNT_PRECISION)}
                       type="To"
-                      feeAmount={formatSmart(
-                        trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount),
-                        AMOUNT_PRECISION
-                      )}
+                      feeAmount={trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount)}
                       allowsOffchainSigning={allowsOffchainSigning}
                       fiatValue={fiatValueOutput}
                     />
