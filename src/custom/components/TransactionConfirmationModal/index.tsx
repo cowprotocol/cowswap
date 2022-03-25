@@ -359,6 +359,7 @@ export enum OperationType {
   ORDER_SIGN,
   ORDER_CANCEL,
   CONVERT_VCOW,
+  CLAIM_VESTED_COW,
 }
 
 function getWalletNameLabel(walletType: WalletType): string {
@@ -388,7 +389,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Revoking token approval'
     case OperationType.CONVERT_VCOW:
       return 'Converting vCOW to COW'
-
+    case OperationType.CLAIM_VESTED_COW:
+      return 'Claiming vested COW'
     default:
       return 'Almost there!'
   }
@@ -410,6 +412,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`cancellation`
     case OperationType.CONVERT_VCOW:
       return t`vCOW conversion`
+    case OperationType.CLAIM_VESTED_COW:
+      return t`vested COW claim`
   }
 }
 
