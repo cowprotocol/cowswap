@@ -5,9 +5,12 @@ import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from '@src/custom/abis/types'
 import { useContract } from '@src/custom/hooks/useContract'
-import { COW } from '@src/custom/constants/tokens'
+import { COW as COW_TOKENS } from '@src/custom/constants/tokens'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useSingleCallResult } from '@src/state/multicall/hooks'
+
+// we will just generally use the mainnet version, since we shouldn't need to read from contract anyways
+const COW = COW_TOKENS[1]
 
 const MERKLE_DROP_CONTRACT_ADDRESSES = {
   1: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
@@ -27,7 +30,7 @@ const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTR
 
 export const useAllocation = () => {
   const { chainId, account } = useActiveWeb3React()
-  const [allocation, setAllocation] = useState(CurrencyAmount.fromRawAmount(COW[chainId || 1], 0))
+  const [allocation, setAllocation] = useState(CurrencyAmount.fromRawAmount(COW, 0))
 
   const accountHasAllocation = account && chainId && hasAllocation(account, chainId)
 
@@ -36,7 +39,7 @@ export const useAllocation = () => {
     if (accountHasAllocation) {
       fetchClaim(account, chainId).then((claim) => {
         if (!canceled) {
-          setAllocation(CurrencyAmount.fromRawAmount(COW[chainId], claim.amount))
+          setAllocation(CurrencyAmount.fromRawAmount(COW, claim.amount))
         }
       })
     }
@@ -49,7 +52,7 @@ export const useAllocation = () => {
 }
 
 const START_TIME = 1644584715000
-const DURATION = 126144000
+const DURATION = 126144000000
 // const TOTAL_TOKENS: Record<number, CurrencyAmount<Token>> = {
 //   1: CurrencyAmount.fromRawAmount(COW[1], '41894957000000000000000000'),
 //   4: CurrencyAmount.fromRawAmount(COW[4], '0x0d3ba50f27f04d54b90800'),
@@ -57,20 +60,18 @@ const DURATION = 126144000
 // }
 
 export const useBalances = () => {
-  const allocation = useAllocation()
-  const vested = allocation.multiply(Date.now() - START_TIME).divide(DURATION)
+  const { chainId, account } = useActiveWeb3React()
+  const accountHasAllocation = account && chainId && hasAllocation(account, chainId)
+  const allocated = useAllocation()
+  const vested = allocated.multiply(Date.now() - START_TIME).divide(DURATION)
 
   const tokenDistro = useTokenDistroContract()
-  const { account, chainId } = useActiveWeb3React()
-  const { result } = useSingleCallResult(tokenDistro, 'balances', [account || undefined])
-  console.log({ result })
-  const claimed = useMemo(
-    () => CurrencyAmount.fromRawAmount(COW[chainId || 1], result ? result.claimed.toString() : 0),
-    [chainId, result]
-  )
+  const { result } = useSingleCallResult(accountHasAllocation ? tokenDistro : null, 'balances', [account || undefined])
+  console.log(result && result.claimed.toString())
+  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(COW, result ? result.claimed.toString() : 0), [result])
 
   return {
-    allocation,
+    allocated,
     vested,
     claimed,
   }
