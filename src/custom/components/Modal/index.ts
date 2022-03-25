@@ -17,6 +17,7 @@ export const GpModal = styled(Modal)<{
     border: ${({ border }) => (border ? border : 'inherit')};
     z-index: 100;
     padding: ${({ padding }) => (padding ? padding : 'none')};
+    margin: auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;
