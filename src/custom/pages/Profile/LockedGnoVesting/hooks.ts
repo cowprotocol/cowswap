@@ -1,11 +1,13 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from '@src/custom/hooks/web3'
 import { fetchClaim, hasAllocation } from './claimData'
 import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from '@src/custom/abis/types'
 import { useContract } from '@src/custom/hooks/useContract'
+import { COW } from '@src/custom/constants/tokens'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+import { useSingleCallResult } from '@src/state/multicall/hooks'
 
 const MERKLE_DROP_CONTRACT_ADDRESSES = {
   1: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
@@ -24,9 +26,9 @@ const TOKEN_DISTRO_CONTRACT_ADDRESSES = {
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
 
 export const useAllocation = () => {
-  const [allocation, setAllocation] = useState(BigNumber.from(0))
-
   const { chainId, account } = useActiveWeb3React()
+  const [allocation, setAllocation] = useState(CurrencyAmount.fromRawAmount(COW[chainId || 1], 0))
+
   const accountHasAllocation = account && chainId && hasAllocation(account, chainId)
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export const useAllocation = () => {
     if (accountHasAllocation) {
       fetchClaim(account, chainId).then((claim) => {
         if (!canceled) {
-          setAllocation(BigNumber.from(claim.amount))
+          setAllocation(CurrencyAmount.fromRawAmount(COW[chainId], claim.amount))
         }
       })
     }
@@ -46,7 +48,30 @@ export const useAllocation = () => {
   return allocation
 }
 
-const useBalances = () => {
-  const { account, chainId } = useActiveWeb3React()
+const START_TIME = 1644584715000
+const DURATION = 126144000
+// const TOTAL_TOKENS: Record<number, CurrencyAmount<Token>> = {
+//   1: CurrencyAmount.fromRawAmount(COW[1], '41894957000000000000000000'),
+//   4: CurrencyAmount.fromRawAmount(COW[4], '0x0d3ba50f27f04d54b90800'),
+//   100: CurrencyAmount.fromRawAmount(COW[100], '8105044000000000000000000'),
+// }
+
+export const useBalances = () => {
   const allocation = useAllocation()
+  const vested = allocation.multiply(Date.now() - START_TIME).divide(DURATION)
+
+  const tokenDistro = useTokenDistroContract()
+  const { account, chainId } = useActiveWeb3React()
+  const { result } = useSingleCallResult(tokenDistro, 'balances', [account || undefined])
+  console.log({ result })
+  const claimed = useMemo(
+    () => CurrencyAmount.fromRawAmount(COW[chainId || 1], result ? result.claimed.toString() : 0),
+    [chainId, result]
+  )
+
+  return {
+    allocation,
+    vested,
+    claimed,
+  }
 }
