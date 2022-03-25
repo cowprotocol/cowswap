@@ -210,12 +210,12 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
   const { subsidy } = useCowBalanceAndSubsidy()
 
   return (
-    <LowerSectionWrapper {...boxProps} onClick={onClick} style={{ cursor: 'pointer' }}>
+    <LowerSectionWrapper {...boxProps}>
       <TYPE.black fontSize={14} color={theme.text2} alignItems={'center'}>
         <AutoRow>
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
-            content={SUBSIDY_INFO_MESSAGE + ' Click for more info.'}
+            content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
             bgColor={theme.bg1}
             color={theme.text1}
           >
@@ -225,7 +225,9 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
       </TYPE.black>
 
       <div className="price-container">
-        <DarkSpan>{subsidy?.discount || 0}% discount</DarkSpan>
+        <DarkSpan onClick={onClick} style={{ cursor: 'pointer' }}>
+          {subsidy?.discount || 0}% discount
+        </DarkSpan>
       </div>
     </LowerSectionWrapper>
   )

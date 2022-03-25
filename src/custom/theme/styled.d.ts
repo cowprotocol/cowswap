@@ -13,6 +13,7 @@ export interface Colors extends ColorsUniswap {
   blueShade2: Color
   blueShade3: Color
   blue2: Color
+  orange: Color
   success: Color
   danger: Color
   pending: Color

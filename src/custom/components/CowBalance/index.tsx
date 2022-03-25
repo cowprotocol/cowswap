@@ -9,6 +9,21 @@ import { CowSubsidyInfoProps } from 'components/CowSubsidyModal'
 
 const Wrapper = styled(ClaimSummaryWrapper)`
   border-radius: 100px;
+  margin: 0;
+
+  ${ClaimTotal} {
+    > b {
+      margin: 0 0 4px;
+    }
+
+    > p {
+      font-size: 24px;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        font-size: 18px;
+      `};
+    }
+  }
 `
 
 type CowBalanceProps = Omit<CowSubsidyInfoProps, 'subsidy'> & {
@@ -18,7 +33,7 @@ type CowBalanceProps = Omit<CowSubsidyInfoProps, 'subsidy'> & {
 const CowBalance = ({ balance, title }: CowBalanceProps) => {
   return (
     <Wrapper>
-      <CowProtocolLogo size={100} />
+      <CowProtocolLogo size={80} />
 
       {title && (
         <ClaimSummaryTitle>

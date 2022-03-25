@@ -7,7 +7,7 @@ import {
 } from 'components/TransactionConfirmationModal'
 import { useActiveWeb3React } from 'hooks/web3'
 import { GpModal } from 'components/Modal'
-import { AutoColumn } from 'components/SearchModal/CommonBases'
+import { AutoColumn } from 'components/Column'
 import { Text } from 'rebass'
 
 import Row from 'components/Row'
@@ -27,8 +27,8 @@ export interface CowSubsidyInfoProps {
 }
 
 const CowSubsidyInfo = ({ account, balance, subsidy }: CowSubsidyInfoProps) => (
-  <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
-    <Text fontWeight={500} fontSize={16} style={{ textAlign: 'center', width: '85%', wordBreak: 'break-word' }}>
+  <AutoColumn style={{ marginTop: 32 }} gap="18px" justify="center">
+    <Text fontWeight={400} fontSize={15} style={{ textAlign: 'center', width: '100%', wordBreak: 'break-word' }}>
       {SUBSIDY_INFO_MESSAGE}
     </Text>
     {/* VCOW LOGO */}
@@ -64,10 +64,12 @@ export default function CowSubsidyModal({
   if (!chainId) return null
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
+    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
       <ConfirmationModalContent
         {...restProps}
         title="CoWmunity fees discount"
+        titleSize={21}
+        styles={{ textAlign: 'center', width: '100%' }}
         onDismiss={onDismiss}
         topContent={TopContent}
         bottomContent={BottomContent}
