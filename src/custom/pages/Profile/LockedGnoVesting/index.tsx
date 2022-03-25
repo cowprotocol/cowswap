@@ -1,31 +1,21 @@
-import {
-  FlexCol,
-  FlexWrap,
-  Wrapper,
-  Container,
-  GridWrap,
-  CardHead,
-  StyledContainer,
-  StyledTime,
-  ItemTitle,
-  ChildWrapper,
-  Loader,
-  ExtLink,
-  CardsWrapper,
-  BannerCard,
-  BalanceDisplay,
-  ConvertWrapper,
-  VestingBreakdown,
-} from 'pages/Profile/styled'
+import { BalanceDisplay, ConvertWrapper, VestingBreakdown } from 'pages/Profile/styled'
 import { Card } from './styled'
 import { ButtonPrimary } from 'custom/components/Button'
-import { SectionTitle, HelpCircle } from 'components/Page'
+import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import cowImage from 'assets/cow-swap/cow_v2.svg'
 import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
+import { AMOUNT_PRECISION } from 'constants/index'
+import { useBalances } from './hooks'
+import { formatSmartLocaleAware } from '@src/custom/utils/format'
 
 const LockedGnoVesting: React.FC = () => {
+  const { allocated, vested, claimed } = useBalances()
+  const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
+  const vestedFormatted = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
+  const unvestedFormatted = formatSmartLocaleAware(allocated.subtract(vested), AMOUNT_PRECISION) || '0'
+  const claimableFormatted = formatSmartLocaleAware(vested.subtract(claimed), AMOUNT_PRECISION) || '0'
   return (
     <Card>
       <BalanceDisplay hAlign="left">
@@ -33,15 +23,15 @@ const LockedGnoVesting: React.FC = () => {
         <span>
           <i>COW vesting from locked GNO</i>
           <b>
-            {0} COW{' '}
+            {allocatedFormatted} COW{' '}
             <MouseoverTooltipContent
               content={
                 <VestingBreakdown>
                   <span>
-                    <i>Unvested</i> <p>{0} vCOW</p>
+                    <i>Unvested</i> <p>{unvestedFormatted} COW</p>
                   </span>
                   <span>
-                    <i>Vested</i> <p>{0} vCOW</p>
+                    <i>Vested</i> <p>{vestedFormatted} COW</p>
                   </span>
                 </VestingBreakdown>
               }
@@ -69,7 +59,7 @@ const LockedGnoVesting: React.FC = () => {
               <HelpCircle size={14} />
             </MouseoverTooltipContent>
           </i>
-          <b>{0}</b>
+          <b>{claimableFormatted}</b>
         </BalanceDisplay>
         <ButtonPrimary>
           Claim COW <SVG src={ArrowIcon} />
