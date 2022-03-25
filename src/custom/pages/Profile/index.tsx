@@ -56,6 +56,9 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
+import { SwapVCowStatus } from 'state/claim/actions'
+import { useSwapVCowCallback } from 'state/claim/hooks'
+import LockedGnoVesting, { hasAllocation } from './LockedGnoVesting'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -87,6 +90,8 @@ export default function Profile() {
 
   const hasVestedBalance = vested && !vested.equalTo(0)
   const hasVCowBalance = total && !total.equalTo(0)
+
+  const hasVestingFromLockedGno = account && chainId && hasAllocation(account, chainId)
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -246,6 +251,8 @@ export default function Profile() {
             <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
           </CardActions>
         </Card>
+
+        {hasVestingFromLockedGno && <LockedGnoVesting />}
 
         <BannerCard>
           <span>
