@@ -14,6 +14,10 @@ import {
   TransactionState as ActivityLink,
   CreationTimeText,
   ActivityVisual,
+  ProgressBarWrapper,
+  ProgressBarInnerWrapper,
+  ProgressBarIndicator,
+  StatusMsg,
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
@@ -301,7 +305,12 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
-
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <ProgressBarIndicator></ProgressBarIndicator>
+          </ProgressBarInnerWrapper>
+          <StatusMsg>Looking for a CoW.</StatusMsg>
+        </ProgressBarWrapper>
         {isUnfillable && unfillableAlert()}
 
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />

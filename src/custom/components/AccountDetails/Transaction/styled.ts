@@ -439,6 +439,62 @@ export const TransactionInnerDetail = styled.div`
   }
 `
 
+export const ProgressBarWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 450px;
+  min-height: 60px;
+  margin: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column wrap;
+  border-radius: 12px;
+  padding: 20px;
+  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.bg4};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 24px auto 12px;
+    width: 100%;
+    max-width: 100%;
+    grid-column: 1 / -1;
+  `};
+`
+export const ProgressBarInnerWrapper = styled.div`
+  background-color: ${({ theme }) => theme.bg2};
+  border-radius: 8px;
+  overflow: hidden;
+  /* overflow: visible !important; */
+`
+
+export const ProgressBarIndicator = styled.div`
+  height: 18px;
+  background: rgb(233, 214, 37);
+  background: linear-gradient(270deg, #27ae5f 16.85%, #b6a82d 106.52%);
+  /* red background: linear-gradient(270deg, #DE3F3F 2.17%, #FF784A 106.52%); */
+  transform: translateX(0%);
+  transition: transform 0.5s;
+  border-radius: 12px;
+
+  ::after {
+    content: '';
+    position: absolute;
+    /* top: -4px; */
+    right: 0px;
+    height: 18px;
+    width: 18px;
+    border-radius: 100%;
+    background: url('https://cowswap.exchange/static/media/cowprotocol.c66150a8.svg') #222222 center center / 80%
+      no-repeat;
+  }
+`
+export const StatusMsg = styled.p`
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  color: ${({ theme }) => theme.text1};
+`
+
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`
   background: ${({ theme, isPending }) =>
     isPending ? transparentize(0.85, theme.attention) : transparentize(0.85, theme.success)};
