@@ -23,10 +23,16 @@ const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ '
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
 const Profile = lazy(() => import(/* webpackChunkName: "profile" */ 'pages/Profile'))
-const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
+
+const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
+const GeneralFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/GeneralFaq'))
+const ProtocolFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/ProtocolFaq'))
+const TokenFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TokenFaq'))
+const TradingFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TradingFaq'))
+const AffiliateFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/AffiliateFaq'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -88,6 +94,11 @@ export default function App() {
             <Route exact strict path="/about" component={About} />
             <Route exact strict path="/profile" component={Profile} />
             <Route exact strict path="/faq" component={Faq} />
+            <Route exact strict path="/faq/general" component={GeneralFaq} />
+            <Route exact strict path="/faq/protocol" component={ProtocolFaq} />
+            <Route exact strict path="/faq/token" component={TokenFaq} />
+            <Route exact strict path="/faq/trading" component={TradingFaq} />
+            <Route exact strict path="/faq/affiliate" component={AffiliateFaq} />
             <Route exact strict path="/play/cow-runner" component={CowRunner} />
             <Route exact strict path="/play/mev-slicer" component={MevSlicer} />
             <Route exact strict path="/anyswap-affected-users" component={AnySwapAffectedUsers} />
