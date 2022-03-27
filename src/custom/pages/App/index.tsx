@@ -64,12 +64,24 @@ export const BodyWrapper = styled.div`
   `}
 `
 
+export const LoadingWrapper = styled.div`
+  animation: blinker 2s linear infinite;
+
+  @keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
+`
+
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
     return null
   }
 }
+
+const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
 export default function App() {
   // Dealing with empty URL queryParameters
@@ -79,7 +91,7 @@ export default function App() {
     <>
       <RedirectAnySwapAffectedUsers />
       <Wrapper>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={Loading}>
           <Switch>
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
