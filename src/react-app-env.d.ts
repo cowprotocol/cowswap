@@ -19,6 +19,9 @@ interface Window {
     setSelectedProvider: (any) => void
     providers: [any]
   }
+  tally?: {
+    isTally?: true
+  }
   web3?: Record<string, unknown>
 }
 

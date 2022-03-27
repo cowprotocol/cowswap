@@ -266,6 +266,8 @@ export default function WalletModal({
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask
     const isTally = window.ethereum && window.ethereum.isTally
+    const tallyInstalled = window.tally && window.tally.isTally
+    const tallyIsDefault = isTally && tallyInstalled
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
@@ -311,14 +313,14 @@ export default function WalletModal({
                 icon={MetamaskIcon}
               />
             )
-          } else if (option.name === 'Tally') {
+          } else if (option.name === 'Tally Ho' && tallyInstalled && !tallyIsDefault) {
             return (
               <Option
                 id={`connect-${key}`}
                 key={key}
                 color={'#D59B4B'}
-                header={<Trans>Install Tally</Trans>}
-                subheader={null}
+                header={<Trans>Tally Ho</Trans>}
+                subheader={<Trans>To use Tally Ho, enable as default in Tally Ho settings and refresh the page.</Trans>}
                 link={'https://tally.cash/'}
                 icon={TallyIcon}
               />
@@ -327,19 +329,23 @@ export default function WalletModal({
             return null //dont want to return install twice
           }
         }
-        // show Tally install if not detected, to avoid confusion with MetaMask
-        else if (option.name === 'Tally' && !isTally) {
+        // show Tally hint if installed but not set to default, to avoid confusion with MetaMask
+        else if (option.name === 'Tally Ho' && tallyInstalled && !tallyIsDefault) {
           return (
             <Option
               id={`connect-${key}`}
               key={key}
               color={'#D59B4B'}
-              header={<Trans>Install Tally</Trans>}
-              subheader={<Trans>Tally was not detected. If installed, enable as default in Tally settings.</Trans>}
+              header={<Trans>Tally Ho</Trans>}
+              subheader={<Trans>To use Tally Ho, enable as default in Tally Ho settings and refresh the page.</Trans>}
               link={'https://tally.cash/'}
               icon={TallyIcon}
             />
           )
+        }
+        // don't return Tally if not installed
+        else if (option.name === 'Tally Ho' && !tallyInstalled) {
+          return null
         }
         // don't return metamask if injected provider isn't metamask
         else if (option.name === 'MetaMask' && !isMetamask) {

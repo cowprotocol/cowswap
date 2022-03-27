@@ -41,9 +41,9 @@ const DISABLED_WALLETS = /^(?:Portis|COINBASE_LINK)$/i
 const ADDED_WALLETS: { [key: string]: WalletInfo } = {
   TALLY: {
     connector: injected,
-    name: 'Tally',
+    name: 'Tally Ho',
     iconURL: TALLY_ICON_URL,
-    description: 'Connect with Tally Wallet',
+    description: 'Connect with Tally Ho Wallet',
     href: null,
     color: '#D59B4B',
   },
