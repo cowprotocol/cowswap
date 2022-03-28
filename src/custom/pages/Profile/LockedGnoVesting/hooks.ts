@@ -56,17 +56,12 @@ export const useAllocation = () => {
 
 const START_TIME = 1644584715000
 const DURATION = 126144000000
-// const TOTAL_TOKENS: Record<number, CurrencyAmount<Token>> = {
-//   1: CurrencyAmount.fromRawAmount(COW[1], '41894957000000000000000000'),
-//   4: CurrencyAmount.fromRawAmount(COW[4], '0x0d3ba50f27f04d54b90800'),
-//   100: CurrencyAmount.fromRawAmount(COW[100], '8105044000000000000000000'),
-// }
 
 export const useBalances = () => {
   const { chainId, account } = useActiveWeb3React()
   const accountHasAllocation = account && chainId && hasAllocation(account, chainId)
   const allocated = useAllocation()
-  const vested = allocated.multiply(Date.now() - START_TIME).divide(DURATION)
+  const vested = allocated.multiply(Math.min(Date.now() - START_TIME, DURATION)).divide(DURATION)
 
   const tokenDistro = useTokenDistroContract()
   const { result, loading } = useSingleCallResult(accountHasAllocation ? tokenDistro : null, 'balances', [
