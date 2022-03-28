@@ -7,7 +7,8 @@ export type NetworkLists = {
   [chain in ChainId]: string[]
 }
 
-const COW_DAO_LIST = 'https://gateway.pinata.cloud/ipfs/Qmduz54cxKspg37dR36q3zoXPPhDX6ioiS2hSfqcgQ7DVz'
+const COW_DAO_LIST = 'https://gnosis.mypinata.cloud/ipfs/QmXGS2P8cTAsra98xr3o4KXL5P4uwfWJuXa5aLwB1jdfH3'
+// const COW_DAO_LIST = 'https://gateway.pinata.cloud/ipfs/Qmduz54cxKspg37dR36q3zoXPPhDX6ioiS2hSfqcgQ7DVz'
 // const COW_DAO_LIST = 'token-list.cow.eth'
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
@@ -63,7 +64,7 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       CMC_STABLECOIN,
       KLEROS_LIST,
       GEMINI_LIST,
-      COW_DAO_LIST,
+      // COW_DAO_LIST,
     ],
   }),
   // [ChainId.KOVAN]: buildNetworkDefaultLists({
