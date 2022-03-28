@@ -6,13 +6,13 @@ import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from '@src/custom/abis/types'
 import { useContract } from '@src/custom/hooks/useContract'
 import { COW as COW_TOKENS } from '@src/custom/constants/tokens'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useSingleCallResult } from '@src/state/multicall/hooks'
 import { OperationType } from '@src/custom/components/TransactionConfirmationModal'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { ContractTransaction } from '@ethersproject/contracts'
 
-// we will just generally use the mainnet version, since we shouldn't need to read from contract anyways
+// We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[1]
 
 const MERKLE_DROP_CONTRACT_ADDRESSES = {
@@ -31,7 +31,7 @@ const TOKEN_DISTRO_CONTRACT_ADDRESSES = {
 
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
 
-export const useAllocation = () => {
+export const useAllocation = (): CurrencyAmount<Token> => {
   const { chainId, account } = useActiveWeb3React()
   const [allocation, setAllocation] = useState(CurrencyAmount.fromRawAmount(COW, 0))
 
@@ -101,7 +101,7 @@ export function useClaimCallback({
       throw new Error('No chainId')
     }
     if (!merkleDrop || !tokenDistro) {
-      throw new Error('contract not present')
+      throw new Error('Contract not present')
     }
 
     const { index, proof, amount } = await fetchClaim(account, chainId)
