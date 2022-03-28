@@ -7,6 +7,7 @@ export type NetworkLists = {
   [chain in ChainId]: string[]
 }
 
+const COW_DAO_LIST = 'token-list.cow.eth'
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
@@ -30,12 +31,12 @@ const RINKEBY_LIST =
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
 
 export const UNSUPPORTED_LIST_URLS: NetworkLists = {
-  [ChainId.MAINNET]: [BA_LIST],
+  [ChainId.MAINNET]: [COW_DAO_LIST, BA_LIST],
   // [ChainId.KOVAN]: [BA_LIST],
-  [ChainId.RINKEBY]: [BA_LIST],
+  [ChainId.RINKEBY]: [COW_DAO_LIST, BA_LIST],
   // [ChainId.ROPSTEN]: [BA_LIST],
   // [ChainId.GOERLI]: [BA_LIST],
-  [ChainId.XDAI]: [BA_LIST],
+  [ChainId.XDAI]: [COW_DAO_LIST, BA_LIST],
 }
 
 function buildNetworkDefaultLists({ networkLists, chainId }: { chainId: ChainId; networkLists: string[] }) {
