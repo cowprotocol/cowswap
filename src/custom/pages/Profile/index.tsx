@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -17,6 +18,7 @@ import {
   BannerCard,
   BalanceDisplay,
   ConvertWrapper,
+  VestingBreakdown,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -24,10 +26,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import {
-  // formatSmartLocaleAware,
-  numberFormatter,
-} from 'utils/format'
+import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -42,10 +41,18 @@ import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
-// import { useTokenBalance } from 'state/wallet/hooks'
-// import { useVCowData } from 'state/claim/hooks'
-// import { V_COW, COW } from 'constants/tokens'
-// import { isPr, isLocal } from 'utils/environments'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { useVCowData } from 'state/claim/hooks'
+import { AMOUNT_PRECISION } from 'constants/index'
+import { COW } from 'constants/tokens'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import { OperationType } from 'components/TransactionConfirmationModal'
+import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
+import { SwapVCowStatus } from 'state/claim/actions'
+import { useSwapVCowCallback } from 'state/claim/hooks'
+
+const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -55,28 +62,73 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  // const vCowBalance = useTokenBalance(account || undefined, chainId ? V_COW[chainId] : undefined)
-  const vCowBalance = '10,240,800.32'
-  // const cowBalance = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
-  const cowBalance = '0'
+  const { setSwapVCowStatus } = useClaimDispatchers()
+  const { swapVCowStatus } = useClaimState()
 
-  // const { vested, total, unvested } = useVCowData()
-  const unvested = '9,240,800.32'
-  const vested = '1,240,800.32'
+  // Cow balance
+  const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
-  // TODO: remove once this is not needed anymore
-  // if (isPr || isLocal) {
-  //   console.force.log('vested', formatSmartLocaleAware(vested, vested?.currency.decimals))
-  //   console.force.log('total', formatSmartLocaleAware(total, total?.currency.decimals))
-  //   console.force.log('unvested', formatSmartLocaleAware(unvested, unvested?.currency.decimals))
-  //   console.force.log('cowBalance', formatSmartLocaleAware(cowBalance, cowBalance?.currency.decimals))
-  // }
+  // vCow balance values
+  const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
+
+  const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
+  const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
+  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
+  const vCowBalanceVestedMax = vested ? formatMax(vested, COW_DECIMALS) : '0'
+  const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
+  const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
+  const vCowBalanceMax = total ? formatMax(total, COW_DECIMALS) : '0'
+
+  const hasVestedBalance = vested && !vested.equalTo(0)
+  const hasVCowBalance = total && !total.equalTo(0)
+
+  // Init modal hooks
+  const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
+  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
+    OperationType.CONVERT_VCOW
+  )
+
+  // Boolean flags
+  const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
+  const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
+  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending)
+
+  // Handle swaping
+  const { swapCallback } = useSwapVCowCallback({
+    openModal,
+    closeModal,
+  })
+
+  const handleVCowSwap = useCallback(async () => {
+    handleCloseError()
+
+    if (!swapCallback) {
+      return
+    }
+
+    setSwapVCowStatus(SwapVCowStatus.ATTEMPTING)
+
+    swapCallback()
+      .then(() => {
+        setSwapVCowStatus(SwapVCowStatus.SUBMITTED)
+      })
+      .catch((error) => {
+        console.error('[Profile::index::swapVCowCallback]::error', error)
+        setSwapVCowStatus(SwapVCowStatus.INITIAL)
+        handleSetError(error?.message)
+      })
+  }, [handleCloseError, handleSetError, setSwapVCowStatus, swapCallback])
 
   const tooltipText = {
     balanceBreakdown: (
-      <div>
-        Unvested {unvested} vCOW Vested {vested} vCOW
-      </div>
+      <VestingBreakdown>
+        <span>
+          <i>Unvested</i> <p>{vCowBalanceUnvested} vCOW</p>
+        </span>
+        <span>
+          <i>Vested</i> <p>{vCowBalanceVested} vCOW</p>
+        </span>
+      </VestingBreakdown>
     ),
     vested: (
       <div>
@@ -109,18 +161,21 @@ export default function Profile() {
 
   return (
     <Container>
+      <TransactionConfirmationModal />
+      <ErrorModal />
+
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
       <Title>Profile</Title>
 
       <CardsWrapper>
-        {vCowBalance && (
-          <Card>
+        {hasVCowBalance && (
+          <Card showLoader={isVCowLoading || isSwapPending}>
             <BalanceDisplay hAlign="left">
               <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
               <span>
                 <i>Total vCOW balance</i>
                 <b>
-                  {vCowBalance} vCOW{' '}
+                  <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
                   <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
@@ -135,26 +190,30 @@ export default function Profile() {
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </i>
-                <b>{vested}</b>
+                <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
               </BalanceDisplay>
-              <ButtonPrimary>
-                Convert to COW <SVG src={ArrowIcon} />
+              <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
+                {isSwapPending ? (
+                  'Converting vCOW...'
+                ) : (
+                  <>
+                    Convert to COW <SVG src={ArrowIcon} />
+                  </>
+                )}
               </ButtonPrimary>
             </ConvertWrapper>
           </Card>
         )}
 
-        {cowBalance && (
-          <Card>
-            <BalanceDisplay titleSize={26}>
-              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
-              <span>
-                <i>Available COW balance</i>
-                <b>{cowBalance} COW</b>
-              </span>
-            </BalanceDisplay>
-          </Card>
-        )}
+        <Card>
+          <BalanceDisplay titleSize={26}>
+            <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+            <span>
+              <i>Available COW balance</i>
+              <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
+            </span>
+          </BalanceDisplay>
+        </Card>
 
         <BannerCard>
           <span>

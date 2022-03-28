@@ -5,12 +5,19 @@ import { HeaderRow, ContentWrapper, CloseIcon, HoverText } from 'components/Wall
 export * from '@src/components/Modal'
 export { default } from '@src/components/Modal'
 
-export const GpModal = styled(Modal)<{ maxWidth?: number; backgroundColor?: string; border?: string }>`
+export const GpModal = styled(Modal)<{
+  maxWidth?: number
+  backgroundColor?: string
+  border?: string
+  padding?: string
+}>`
   > [data-reach-dialog-content] {
     background-color: ${({ backgroundColor, theme }) => (backgroundColor ? backgroundColor : theme.bg1)};
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '470px')};
     border: ${({ border }) => (border ? border : 'inherit')};
     z-index: 100;
+    padding: ${({ padding }) => (padding ? padding : 'none')};
+    margin: auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;

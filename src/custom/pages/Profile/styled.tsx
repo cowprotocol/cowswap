@@ -54,14 +54,15 @@ export const ChildWrapper = styled.div`
   justify-content: center;
   border-radius: 21px;
   padding: 20px;
-  ${({ theme }) => theme.neumorphism.boxShadow};
-  background-color: ${({ theme }) => theme.bg7};
+  background-color: ${({ theme }) => theme.cardBackground};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-column-start: 1;
     grid-column-end: 2;
     width: 100%;
     padding: 14px;
   `}
+
   > .item {
     width: 100%;
   }
@@ -72,16 +73,17 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
   grid-column-gap: 22px;
   grid-row-gap: 22px;
   grid-template-columns: ${(props) => (props.horizontal ? '1fr 1fr' : '1fr')};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
-  grid-template-columns: 1fr;
-  grid-column-gap: 16px;
-  grid-row-gap: 16px;
-    grid-column-gap: 0;
-    > :first-child,
-    > :nth-child(2) {
-      grid-column-start: 1;
-      grid-column-end: 2;
-    }
+    grid-template-columns: 1fr;
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
+      grid-column-gap: 0;
+      > :first-child,
+      > :nth-child(2) {
+        grid-column-start: 1;
+        grid-column-end: 2;
+      }
   `}
 `
 
@@ -115,12 +117,15 @@ export const FlexWrap = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: center;
+
   > div {
     width: auto;
   }
+
   button {
     max-width: 180px;
   }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
     > div {
@@ -134,8 +139,8 @@ export const FlexWrap = styled.div`
 
 export const StyledContainer = styled.div`
     display: flex;
-    flex:1;
-    align-items:center;
+    flex: 1;
+    align-items: center;
     justify-content: space-between;
   }
 
@@ -151,13 +156,16 @@ export const FlexCol = styled.div`
   align-items: center;
   flex-direction: column;
   justify-content: center;
+
   strong {
     font-size: 21px;
     margin-top: 6px;
+
     ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 14px;
-  `}
+      font-size: 14px;
+    `}
   }
+
   span:not([role='img']) {
     font-size: 14px;
     color: ${({ theme }) => theme.text6};
@@ -243,7 +251,7 @@ export const CardsWrapper = styled.div`
   `};
 `
 
-export const Card = styled.div`
+export const Card = styled.div<{ showLoader?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
@@ -255,6 +263,37 @@ export const Card = styled.div`
   gap: 24px 0;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.cardBorder};
+
+  ${({ showLoader, theme }) =>
+    showLoader &&
+    css`
+      position: relative;
+
+      overflow: hidden;
+      &::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0,
+          ${theme.shimmer1} 20%,
+          ${theme.shimmer2} 60%,
+          rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+        content: '';
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 130px;
@@ -282,10 +321,12 @@ export const Card = styled.div`
 export const BannerCard = styled(BannerExplainer)`
   min-height: 192px;
   border-radius: 16px;
-  border: 0;
+  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
+  border: 1px solid ${({ theme }) => theme.cardBorder};
   padding: 0 100px 0 24px;
   flex: 1;
   overflow: hidden;
+  height: auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     text-align: center;
@@ -293,7 +334,7 @@ export const BannerCard = styled(BannerExplainer)`
   `}
 
   &:hover {
-    border: 0;
+    border: 1px solid ${({ theme }) => theme.cardBorder};
   }
 
   > span {
@@ -301,6 +342,7 @@ export const BannerCard = styled(BannerExplainer)`
     justify-content: space-between;
     height: 100%;
     padding: 24px 0;
+    color: ${({ theme }) => theme.text1};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       padding: 0;
@@ -309,6 +351,16 @@ export const BannerCard = styled(BannerExplainer)`
     > b {
       font-size: 24px;
 
+      @supports (-webkit-background-clip: text) {
+        background: ${({ theme }) => `linear-gradient(80deg, ${theme.primary1}, ${theme.primary1}, #5ea2fb)`};
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @supports not (-webkit-background-clip: text) {
+        color: ${({ theme }) => theme.text1};
+      }
+
       ${({ theme }) => theme.mediaWidth.upToSmall`
         text-align: center;
         margin: 0 auto;
@@ -316,6 +368,7 @@ export const BannerCard = styled(BannerExplainer)`
     }
 
     > small {
+      color: ${({ theme }) => theme.text1};
       font-size: 14px;
       line-height: 1.5;
       text-align: left;
@@ -345,7 +398,7 @@ export const BannerCard = styled(BannerExplainer)`
     > span > a,
     > span > a:link {
       font-size: 15px;
-      color: ${({ theme }) => theme.white};
+      color: ${({ theme }) => theme.text1};
 
       &:hover {
         color: ${({ theme }) => theme.primary1};
@@ -359,6 +412,20 @@ export const BannerCard = styled(BannerExplainer)`
     transform: scale(-1, 1); // flip mirror
     opacity: 0.25;
     mix-blend-mode: initial;
+  }
+
+  > svg {
+    .stop1 {
+      stop-color: ${({ theme }) => theme.text1};
+    }
+    .stop2 {
+      stop-color: ${({ theme }) => theme.text1};
+      stop-opacity: 0.8;
+    }
+    .stop3 {
+      stop-color: ${({ theme }) => theme.text1};
+      stop-opacity: 0;
+    }
   }
 `
 
@@ -439,8 +506,7 @@ export const ConvertWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
   align-items: center;
-  ${({ theme }) => theme.neumorphism.boxShadow};
-  background: ${({ theme }) => theme.bg7};
+  background: ${({ theme }) => theme.cardBackground};
   border-radius: 16px;
   padding: 16px;
   width: 100%;
@@ -452,4 +518,35 @@ export const ConvertWrapper = styled.div`
 
     > div { gap: 6px 12px; }
   `};
+`
+
+export const VestingBreakdown = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  gap: 3px 0;
+
+  > span {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-items: center;
+    justify-content: space-between;
+    gap: 0 18px;
+    width: 100%;
+  }
+
+  > span > i {
+    font-style: normal;
+    opacity: 0.75;
+  }
+
+  > span > p {
+    font-weight: 500;
+    margin: 0;
+  }
+
+  > span:last-of-type > p {
+    color: ${({ theme }) => theme.primary1};
+  }
 `

@@ -2,7 +2,7 @@ import { isAnyOf, Middleware } from '@reduxjs/toolkit'
 import { getCowSoundSend, getCowSoundSuccessClaim } from 'utils/sound'
 import { AppState } from 'state'
 import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
-import { ClaimStatus, setClaimStatus } from './actions'
+import { ClaimStatus, setClaimStatus, setSwapVCowStatus, SwapVCowStatus } from './actions'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 const isAddTransaction = isAnyOf(addTransaction)
@@ -39,6 +39,15 @@ export const claimMinedMiddleware: Middleware<Record<string, unknown>, AppState>
         // not success...
         store.dispatch(setClaimStatus(ClaimStatus.FAILED))
       }
+    } else if (transaction.swapVCow) {
+      const status = transaction.receipt?.status
+
+      console.debug(
+        `[stat:claim:middleware] Convert vCOW to COW transaction finalized with status ${status}`,
+        transaction.hash
+      )
+
+      store.dispatch(setSwapVCowStatus(SwapVCowStatus.INITIAL))
     }
   }
 
