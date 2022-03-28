@@ -307,9 +307,16 @@ export function ActivityDetails(props: {
         )}
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
-            <ProgressBarIndicator></ProgressBarIndicator>
+            <ProgressBarIndicator state="success"></ProgressBarIndicator>
           </ProgressBarInnerWrapper>
           <StatusMsg>Looking for a CoW.</StatusMsg>
+        </ProgressBarWrapper>
+
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <ProgressBarIndicator state="warning"></ProgressBarIndicator>
+          </ProgressBarInnerWrapper>
+          <StatusMsg>Your order is taking longer than usual.</StatusMsg>
         </ProgressBarWrapper>
         {isUnfillable && unfillableAlert()}
 

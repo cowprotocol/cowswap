@@ -445,7 +445,7 @@ export const ProgressBarWrapper = styled.div`
   justify-content: center;
   width: 450px;
   min-height: 60px;
-  margin: 20px;
+  margin: 8px 0;
   overflow: hidden;
   display: flex;
   flex-flow: column wrap;
@@ -468,13 +468,14 @@ export const ProgressBarInnerWrapper = styled.div`
   /* overflow: visible !important; */
 `
 
-export const ProgressBarIndicator = styled.div`
+export const ProgressBarIndicator = styled.div<{ state?: string }>`
   height: 18px;
   background: rgb(233, 214, 37);
-  background: linear-gradient(270deg, #27ae5f 16.85%, #b6a82d 106.52%);
-  /* red background: linear-gradient(270deg, #DE3F3F 2.17%, #FF784A 106.52%); */
-  transform: translateX(0%);
-  transition: transform 0.5s;
+  background: ${({ state }) =>
+    state === 'warning'
+      ? 'linear-gradient(270deg, #DE3F3F 2.17%, #FF784A 106.52%);'
+      : 'linear-gradient(270deg, #27ae5f 16.85%, #b6a82d 106.52%);'};
+  transform: translateX(0%);green
   border-radius: 12px;
 
   ::after {
@@ -489,6 +490,7 @@ export const ProgressBarIndicator = styled.div`
       no-repeat;
   }
 `
+
 export const StatusMsg = styled.p`
   font-size: 0.85rem;
   margin: 0.5rem 0;
