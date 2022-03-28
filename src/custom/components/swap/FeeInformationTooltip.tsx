@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
-import { Currency, CurrencyAmount, Fraction, Percent, Token } from '@uniswap/sdk-core'
+import React, { useMemo } from 'react'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components/macro'
@@ -32,15 +32,13 @@ export const FeeInformationTooltipWrapper = styled.div`
   height: 60px;
 `
 
-const FeeTooltipLine = styled.p<{ discount?: boolean }>`
+const FeeTooltipLine = styled.p`
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
   margin: 0;
   gap: 0 8px;
-
-  ${({ discount = false }) => discount && 'text-decoration: line-through;'}
 
   font-size: small;
 
@@ -82,56 +80,23 @@ type FeeBreakdownProps = FeeInformationTooltipProps & {
   symbol: string | undefined
   discount: number
 }
-const ONE = new Fraction(1, 1)
 const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownProps) => {
   const typeString = type === 'From' ? '+' : '-'
 
-  const FeeAmount = useCallback(() => {
-    const discountAsPercent = new Percent(discount, 100)
-    // we need the fee BEFORE the discount as the backend will return us the adjusted fee with discount
-    const adjustedFee = feeAmount
-      ? formatSmart(feeAmount.multiply(ONE.add(discountAsPercent)), AMOUNT_PRECISION)
-      : undefined
+  const smartFee = formatSmart(feeAmount, AMOUNT_PRECISION)
 
-    return (
-      <>
-        <span>Fee</span>
-        {adjustedFee ? (
-          <span>
-            {typeString}
-            {adjustedFee} {symbol}
-          </span>
-        ) : (
-          <strong className="green">Free</strong>
-        )}
-      </>
-    )
-  }, [discount, feeAmount, symbol, typeString])
-
-  const FeeDiscountedAmount = useCallback(() => {
-    const smartFee = formatSmart(feeAmount, AMOUNT_PRECISION)
-    return (
-      <>
-        <strong className="green">Fee [-{discount}%]</strong>
+  return (
+    <FeeTooltipLine>
+      <span className={discount ? 'green' : ''}>Fee{smartFee && discount ? ` [-${discount}%]` : ''}</span>
+      {smartFee ? (
         <span>
           {typeString}
           {smartFee} {symbol}
         </span>
-      </>
-    )
-  }, [discount, feeAmount, symbol, typeString])
-
-  return (
-    <>
-      <FeeTooltipLine discount={!!feeAmount && !!discount}>
-        <FeeAmount />
-      </FeeTooltipLine>
-      {!!feeAmount && !!discount && (
-        <FeeTooltipLine>
-          <FeeDiscountedAmount />
-        </FeeTooltipLine>
+      ) : (
+        <strong className="green">Free</strong>
       )}
-    </>
+    </FeeTooltipLine>
   )
 }
 
