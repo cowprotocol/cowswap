@@ -54,8 +54,9 @@ export default function CowSubsidyModal({
   const BottomContent = useCallback(
     () => (
       <Row style={{ justifyContent: 'center' }}>
-        {/* TODO: incoming blogpost URL */}
-        <ExternalLink href="/#/">Read more about the tokenomics</ExternalLink>
+        <ExternalLink href="https://medium.com/@cow-protocol/cow-token-is-moving-forward-at-full-speed-d9f047a23b57">
+          Read more about the tokenomics
+        </ExternalLink>
       </Row>
     ),
     []
