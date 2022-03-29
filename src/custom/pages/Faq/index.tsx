@@ -68,6 +68,9 @@ export default function Faq() {
               <Link to="/faq/affiliate">Affiliate Program</Link>
             </li>
           </Sections>
+          <p>
+            <Footer />
+          </p>
         </Content>
       </Page>
     </Wrapper>
