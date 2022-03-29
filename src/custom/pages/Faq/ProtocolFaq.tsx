@@ -2,7 +2,7 @@ import Page, { Content } from 'components/Page'
 import { LinkScrollable } from 'components/Link'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
-import { BackButton } from '.'
+import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 
@@ -253,7 +253,7 @@ export default function ProtocolFaq() {
               </p>
             </li>
           </ul>
-          <BackButton />
+          <Footer />
         </Content>
       </Page>
     </Wrapper>

@@ -1,11 +1,8 @@
-import { Link } from 'react-router-dom'
-
-import { DISCORD_LINK } from 'constants/index'
 import Page, { Content } from 'components/Page'
 import { LinkScrollable } from 'components/Link'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
-import { BackButton } from '.'
+import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 
@@ -17,7 +14,6 @@ export default function AffiliateFaq() {
       <ToC toc={toc} name="Affiliate Program FAQ" />
       <Page>
         <Content>
-          <BackButton />
           <h2 id="affiliate">Affiliate program</h2>
 
           <h3 id="what-is-the-profile-page">What is the Profile page?</h3>
@@ -179,21 +175,7 @@ export default function AffiliateFaq() {
 
           <p>In the future, the data will be consolidated and this number will match your expectations.</p>
 
-          <hr />
-
-          <p>
-            Didn&#39;t find an answer? Join the{' '}
-            <ExternalLinkFaq href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
-              community on Discord
-            </ExternalLinkFaq>
-          </p>
-          <p>
-            We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
-            <span role="img" aria-label="glass of milk">
-              🥛
-            </span>
-          </p>
-          <BackButton />
+          <Footer />
         </Content>
       </Page>
     </Wrapper>

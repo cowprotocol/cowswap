@@ -2,7 +2,7 @@ import Page, { Content } from 'components/Page'
 
 import { LinkScrollable } from 'components/Link'
 import { Wrapper, ExternalLinkFaq } from './styled'
-import { BackButton } from '.'
+import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 
@@ -210,7 +210,7 @@ export default function TokenFaq() {
           </li>
         </ol>
         */}
-          <BackButton />
+          <Footer />
         </Content>
       </Page>
     </Wrapper>

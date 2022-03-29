@@ -1,7 +1,7 @@
 import Page, { Content } from 'components/Page'
 import { ExternalLinkFaq, Wrapper } from './styled'
 import { StyledInternalLink } from 'theme'
-import { BackButton } from '.'
+import { Footer } from '.'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
@@ -154,7 +154,7 @@ export default function GeneralFaq() {
               .
             </strong>
           </p>
-          <BackButton />
+          <Footer />
         </Content>
       </Page>
     </Wrapper>
