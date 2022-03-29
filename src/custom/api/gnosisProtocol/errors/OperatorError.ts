@@ -1,3 +1,5 @@
+import { checkAndThrowIfJsonSerialisableError } from 'utils/logging'
+
 type ApiActionType = 'get' | 'create' | 'delete'
 
 export interface ApiErrorObject {
@@ -97,7 +99,11 @@ export default class OperatorError extends Error {
 
   public static async getErrorMessage(response: Response, action: ApiActionType) {
     try {
-      const orderPostError: ApiErrorObject = await response.json()
+      // don't attempt json parse if not json response...
+      checkAndThrowIfJsonSerialisableError(response)
+      // clone response body
+      const clonedResponse = response.clone()
+      const orderPostError: ApiErrorObject = await clonedResponse.json()
 
       if (orderPostError.errorType) {
         const errorMessage = OperatorError.apiErrorDetails[orderPostError.errorType]
@@ -112,7 +118,7 @@ export default class OperatorError extends Error {
       return _mapActionToErrorDetail(action)
     }
   }
-  static async getErrorFromStatusCode(response: Response, action: 'create' | 'delete') {
+  static async getErrorFromStatusCode(response: Response, action: 'create' | 'delete'): Promise<string> {
     switch (response.status) {
       case 400:
       case 404:
