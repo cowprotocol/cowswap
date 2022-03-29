@@ -49,10 +49,10 @@ export default function GeneralFaq() {
           </p>
 
           <p>
-            Since January 2020 until now (July&#39;21), the total amount of value extracted by miners (etc.) on Ethereum
-            transactions has reached{' '}
+            Since January 2020 until now (March&#39;21), the total amount of value extracted by miners (etc.) on
+            Ethereum transactions has reached{' '}
             <ExternalLinkFaq href="https://explore.flashbots.net/">
-              $ 796.8 Million, including successful and failed transactions.
+              $ 605 Million, including successful and failed transactions.
             </ExternalLinkFaq>
           </p>
 
