@@ -38,10 +38,10 @@ const Section = styled.div`
   flex-flow: column wrap;
 `
 
-const CloseIconWrapper = styled(CloseIcon)`
+export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
-  margin: 16px 16px 0 auto;
-  opacity: 0.75;
+  margin: ${({ margin }) => margin ?? '0 0 0 auto'};
+  opacity: 0.5;
   transition: opacity 0.2s ease-in-out;
 
   &:hover {
@@ -171,7 +171,7 @@ const ConfirmedIcon = styled(ColumnCenter)`
 const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px 0;
+  padding: 16px;
 
   > div {
     padding: 0;
@@ -358,6 +358,7 @@ export enum OperationType {
   REVOKE_APPROVE_TOKEN,
   ORDER_SIGN,
   ORDER_CANCEL,
+  CONVERT_VCOW,
 }
 
 function getWalletNameLabel(walletType: WalletType): string {
@@ -385,6 +386,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Soft canceling your order'
     case OperationType.REVOKE_APPROVE_TOKEN:
       return 'Revoking token approval'
+    case OperationType.CONVERT_VCOW:
+      return 'Converting vCOW to COW'
 
     default:
       return 'Almost there!'
@@ -405,6 +408,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`order`
     case OperationType.ORDER_CANCEL:
       return t`cancellation`
+    case OperationType.CONVERT_VCOW:
+      return t`vCOW conversion`
   }
 }
 
@@ -560,6 +565,8 @@ export function TransactionSubmittedContent({
 
 export interface ConfirmationModalContentProps {
   title: ReactNode
+  titleSize?: number
+  styles?: React.CSSProperties
   onDismiss: () => void
   topContent: () => ReactNode
   bottomContent?: () => ReactNode | undefined

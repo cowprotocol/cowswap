@@ -38,10 +38,11 @@ import {
   ConfirmationModalContentProps,
   TransactionSubmittedContent,
   GPModalHeader,
+  CloseIconWrapper,
   OperationType,
 } from '.' // mod
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: 100%;
   padding: 1rem;
   display: flex; /* MOD */
@@ -201,6 +202,8 @@ const StyledLogo = styled.img`
 
 export function ConfirmationModalContent({
   title,
+  titleSize, // mod
+  styles, // mod
   bottomContent,
   onDismiss,
   topContent,
@@ -215,10 +218,15 @@ export function ConfirmationModalContent({
       <Section>
         {/* <RowBetween> */}
         <GPModalHeader>
-          <Text fontWeight={500} fontSize={16}>
+          <Text
+            fontWeight={500}
+            fontSize={titleSize || 16} // MOD
+            style={styles} //MOD
+          >
             {title}
           </Text>
-          <CloseIcon onClick={onDismiss} />
+          {/* <CloseIcon onClick={onDismiss} /> */}
+          <CloseIconWrapper onClick={onDismiss} /> {/* MOD */}
         </GPModalHeader>
         {/* </RowBetween> */}
         {topContent()}
@@ -361,7 +369,7 @@ function L2Content({
   )
 }
 
-interface ConfirmationModalProps {
+export interface ConfirmationModalProps {
   isOpen: boolean
   onDismiss: () => void
   hash?: string | undefined

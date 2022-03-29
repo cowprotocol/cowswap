@@ -67,6 +67,7 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     sellToken: sellToken.address.replace('0x', ''), // address, without '0x' prefix
     buyToken: buyToken.address.replace('0x', ''), // address, without '0x' prefix
     sellAmount: sellAmount.toString(RADIX_DECIMAL), // in atoms
+    sellAmountBeforeFee: sellAmount.toString(RADIX_DECIMAL), // in atoms
     buyAmount: buyAmount.toString(RADIX_DECIMAL), // in atoms
     // 20sec - 4min
     validTo: Date.now() / 1000 + randomIntInRangeExcept(20, 240), // uint32. unix timestamp, seconds, use new Date(validTo * 1000)

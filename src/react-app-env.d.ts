@@ -7,6 +7,7 @@ declare module '@metamask/jazzicon' {
 declare module 'fortmatic'
 
 interface Window {
+  console: Console & { force: Console }
   walletLinkExtension?: any
   ethereum?: {
     isMetaMask?: true
@@ -17,6 +18,10 @@ interface Window {
     providers: [any]
   }
   web3?: Record<string, unknown>
+}
+
+interface Console extends Node.Console {
+  force: Node.Console
 }
 
 declare module 'content-hash' {

@@ -3,6 +3,29 @@ import { PropsWithChildren } from 'react'
 import styled, { css } from 'styled-components/macro'
 import AppBody from 'pages/AppBody'
 import { WithClassName } from 'types'
+import { useIsDarkMode } from 'state/user/hooks'
+import SVG from 'react-inlinesvg'
+import { questionIcon } from 'assets/cow-swap/question'
+
+const HelpCircleWrapper = styled.div`
+  > svg {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+`
+
+export function HelpCircle({ size }: { size: number }) {
+  const darkMode = useIsDarkMode()
+  return (
+    <HelpCircleWrapper>
+      <SVG width={size ? size : 14} height={size ? size : 14} src={questionIcon(darkMode)} />
+    </HelpCircleWrapper>
+  )
+}
 
 export const PageWrapper = styled(AppBody)`
   padding: 0 24px 24px;
@@ -14,9 +37,15 @@ export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0 16px;
   color: ${({ theme }) => theme.text1};
+
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     font-size: 24px;
   `}
+`
+
+export const SectionTitle = styled(Title)`
+  font-size: 21px;
+  margin: 12px 0 16px;
 `
 
 export const Content = styled.div`

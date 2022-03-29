@@ -7,6 +7,7 @@ export type NetworkLists = {
   [chain in ChainId]: string[]
 }
 
+const COW_DAO_LIST = 'token-list.cow.eth'
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
@@ -61,6 +62,7 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       CMC_STABLECOIN,
       KLEROS_LIST,
       GEMINI_LIST,
+      COW_DAO_LIST,
     ],
   }),
   // [ChainId.KOVAN]: buildNetworkDefaultLists({
@@ -81,17 +83,17 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   // }),
   [ChainId.XDAI]: buildNetworkDefaultLists({
     chainId: ChainId.XDAI,
-    networkLists: [HONEY_SWAP_XDAI],
+    networkLists: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   }),
 }
 
 // default lists to be 'active' aka searched across
 export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
-  [ChainId.MAINNET]: [GEMINI_LIST],
+  [ChainId.MAINNET]: [COW_DAO_LIST, GEMINI_LIST],
   // [ChainId.KOVAN]: [GEMINI_LIST],
-  [ChainId.RINKEBY]: [RINKEBY_LIST],
+  [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
   // [ChainId.ROPSTEN]: [GEMINI_LIST],
-  [ChainId.XDAI]: [HONEY_SWAP_XDAI],
+  [ChainId.XDAI]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   // [ChainId.GOERLI]: [GEMINI_LIST],
 }
 

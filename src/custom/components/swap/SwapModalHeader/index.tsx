@@ -4,7 +4,7 @@ import { AutoColumn } from 'components/Column'
 import styled from 'styled-components/macro'
 import { LightCard as LightCardUni } from 'components/Card'
 import { darken, transparentize } from 'polished'
-import { AuxInformationContainer } from 'components/CurrencyInputPanel'
+import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { HighFeeWarning as HighFeeWarningBase, NoImpactWarning as NoImpactWarningBase } from 'components/SwapWarnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 

@@ -5,6 +5,7 @@ import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { SerializedToken } from '@src/state/user/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { BigNumberish } from '@ethersproject/bignumber'
 export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export enum OrderStatus {
@@ -20,6 +21,7 @@ export enum OrderStatus {
 //  - Additional information available in the API
 //  - Derived/additional information that is handy for this app
 // Doesn't have input/output tokens, these are declared in the subtypes of this base type
+// includes sellAmountBeforeFee as this is required for checking unfillable orders
 export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   id: OrderID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
@@ -39,6 +41,9 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   // Wallet specific
   presignGnosisSafeTxHash?: string // Gnosis Safe tx
   presignGnosisSafeTx?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
+
+  // Sell amount before the fee applied - necessary for later calculations (unfilled orders)
+  sellAmountBeforeFee: BigNumberish
 }
 
 /**
