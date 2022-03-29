@@ -44,6 +44,15 @@ export default function TokenFaq() {
             </ExternalLinkFaq>{' '}
             on the forum.
           </p>
+          <h3 id="where-can-you-swap-vcow-tokens-for-the-new-cow-tokens">
+            Where can you swap vCOW tokens for the new COW token?
+          </h3>
+          <p>
+            {' '}
+            Directly in the CowSwap UI. Simply click on the profile section at the top left of the page, or in the menu
+            if you are on mobile, and you will be redirected to a page where you can see your total combined balance for
+            COW and vCOW and convert them instantly.
+          </p>
           <h3 id="what-is-the-purpose-of-cow-token">What is the purpose of COW Token?</h3>
           <p>
             The COW token will entitle its holders to voting rights within the CowDAO. The main purpose of CowDAO is to
