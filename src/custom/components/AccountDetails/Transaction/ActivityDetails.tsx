@@ -306,6 +306,8 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
+        {isUnfillable && unfillableAlert()}
+        <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
             <ProgressBarIndicator state="success"></ProgressBarIndicator>
@@ -321,9 +323,6 @@ export function ActivityDetails(props: {
             <WarningIcon /> Your order is taking longer than usual.
           </StatusMsg>
         </ProgressBarWrapper>
-        {isUnfillable && unfillableAlert()}
-
-        <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
       </SummaryInner>
     </Summary>
   )
