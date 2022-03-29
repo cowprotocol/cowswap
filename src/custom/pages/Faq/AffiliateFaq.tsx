@@ -104,7 +104,9 @@ export default function AffiliateFaq() {
           <ol>
             <li>
               Your friend was trading tokens that do not have a price feed available (see FAQ entry{' '}
-              <LinkScrollable href={'#why-is-my-total-trade-referral-trade-volume-smaller-than-the-real-volume'}>
+              <LinkScrollable
+                href={'/faq/affiliate#why-is-my-total-trade-referral-trade-volume-smaller-than-the-real-volume'}
+              >
                 Why is the volume smaller than the real volume?
               </LinkScrollable>
               ).
@@ -113,7 +115,7 @@ export default function AffiliateFaq() {
             <li>
               Your friend had already traded with that account, which does not count towards referral volume (see FAQ
               entry{' '}
-              <LinkScrollable href={'#who-can-follow-the-referral-link'}>
+              <LinkScrollable href={'/faq/affiliate#who-can-follow-the-referral-link'}>
                 Who can follow the referral link?
               </LinkScrollable>
               ).
@@ -128,7 +130,7 @@ export default function AffiliateFaq() {
             Some tokens might not yet have a proper price feed linking them to a USD estimation at the date/time when
             your trade was executed. When that happens the trade volume is set to 0. Thus, your total volume can be
             smaller, or even be shown as 0 (see FAQ entry{' '}
-            <LinkScrollable href={'#what-is-the-source-of-truth-for-accounting-trade-volume'}>
+            <LinkScrollable href={'/faq/affiliate#what-is-the-source-of-truth-for-accounting-trade-volume'}>
               What is the source of truth for accounting trade volume?
             </LinkScrollable>
             ).

@@ -64,7 +64,7 @@ export default function ProtocolFaq() {
           <p>
             CowSwap uses offline signatures to offer gasless orders. Additionally, Smart Contract (SC) wallets are
             supported through an alternative signing method called{' '}
-            <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
+            <LinkScrollable href={'/faq/protocol#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
           <p>
             Regular, non Smart Contract wallets (called EOA) require the wallet to support off-chain signing (
@@ -95,8 +95,8 @@ export default function ProtocolFaq() {
           <p>
             It is an alternative way of signing orders offered by the protocol, that is especially interesting for smart
             contract integrations and Smart Contract wallets. See{' '}
-            <LinkScrollable href={'#smart-contract-support'}>Smart Contract support</LinkScrollable> for more
-            information.
+            <LinkScrollable href={'/faq/protocol#smart-contract-support'}>Smart Contract support</LinkScrollable> for
+            more information.
           </p>
           <h3 id="what-are-gnosis-protocol-v2-solvers">What are CoW Protocol&apos;s Solvers?</h3>
           <p>
@@ -213,7 +213,7 @@ export default function ProtocolFaq() {
                 Signature of a gasless off-chain cancellation request. This cancellation is considered
                 &ldquo;soft&rdquo; as it might not be placed with enough time for the solvers to take into
                 consideration. See more via{' '}
-                <LinkScrollable href={'#can-i-cancel-an-order'}>this FAQ entry</LinkScrollable>.
+                <LinkScrollable href={'/faq/protocol#can-i-cancel-an-order'}>this FAQ entry</LinkScrollable>.
               </p>
             </li>
           </ul>
@@ -248,8 +248,10 @@ export default function ProtocolFaq() {
               <p>
                 <strong>Pre-sign order</strong> <br />
                 Alternative signing method offered by the protocol to allow Smart Contract integration. See{' '}
-                <LinkScrollable href={'#smart-contract-support'}>Smart Contract support</LinkScrollable> for more
-                information.
+                <LinkScrollable href={'/faq/protocol#smart-contract-support'}>
+                  Smart Contract support
+                </LinkScrollable>{' '}
+                for more information.
               </p>
             </li>
           </ul>

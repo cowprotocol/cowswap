@@ -87,7 +87,7 @@ export default function TokenFaq() {
           </ol>
           <p>
             This workflow applies for normal Ethereum accounts (EOA). For smart contracts, instead of signing a meta-tx
-            you would need to do a <LinkScrollable href={'#what-is-presign'}>pre-sign</LinkScrollable>.
+            you would need to do a <LinkScrollable href={'/faq/protocol#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
 
           <h3 id="can-i-cancel-an-order">Can I cancel an order?</h3>
