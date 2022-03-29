@@ -1,6 +1,6 @@
 import Page, { Content } from 'components/Page'
 
-import { ExternalLinkFaqFaq, Wrapper } from './styled'
+import { ExternalLinkFaq, Wrapper } from './styled'
 import { BackButton } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
