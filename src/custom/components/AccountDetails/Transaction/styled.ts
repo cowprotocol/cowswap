@@ -5,7 +5,7 @@ import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
-import { AlertTriangle } from 'react-feather'
+import { AlertTriangle, CheckCircle } from 'react-feather'
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -464,9 +464,9 @@ export const ProgressBarWrapper = styled.div`
 `
 export const ProgressBarInnerWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg2};
-  border-radius: 8px;
-  overflow: hidden;
-  /* overflow: visible !important; */
+  border-radius: 18px;
+  /* overflow: hidden; */
+  overflow: visible !important;
 `
 
 export const ProgressBarIndicator = styled.div<{ state?: string }>`
@@ -482,18 +482,24 @@ export const ProgressBarIndicator = styled.div<{ state?: string }>`
   ::after {
     content: '';
     position: absolute;
-    /* top: -4px; */
+    top: -4px;
     right: 0px;
-    height: 18px;
-    width: 18px;
+    height: 24px;
+    width: 24px;
     border-radius: 100%;
     background: url('https://cowswap.exchange/static/media/cowprotocol.c66150a8.svg') #222222 center center / 80%
       no-repeat;
+    border: 1px solid ${({ theme }) => theme.bg1};
   }
 `
 export const WarningIcon = styled(AlertTriangle)`
   margin: 0.5rem 0.5rem 0 0;
   color: ${({ theme }) => theme.red1};
+`
+
+export const CheckIcon = styled(CheckCircle)`
+  margin: 0.5rem 0.5rem 0 0;
+  color: ${({ theme }) => theme.green1};
 `
 
 export const StatusMsg = styled.p`

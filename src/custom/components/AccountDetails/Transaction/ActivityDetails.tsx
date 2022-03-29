@@ -18,6 +18,7 @@ import {
   ProgressBarInnerWrapper,
   ProgressBarIndicator,
   StatusMsg,
+  CheckIcon,
   WarningIcon,
 } from './styled'
 
@@ -312,7 +313,9 @@ export function ActivityDetails(props: {
           <ProgressBarInnerWrapper>
             <ProgressBarIndicator state="success"></ProgressBarIndicator>
           </ProgressBarInnerWrapper>
-          <StatusMsg>Looking for a CoW.</StatusMsg>
+          <StatusMsg>
+            <CheckIcon size={16} /> Looking for a CoW.
+          </StatusMsg>
         </ProgressBarWrapper>
 
         <ProgressBarWrapper>
@@ -320,7 +323,7 @@ export function ActivityDetails(props: {
             <ProgressBarIndicator state="warning"></ProgressBarIndicator>
           </ProgressBarInnerWrapper>
           <StatusMsg>
-            <WarningIcon /> Your order is taking longer than usual.
+            <WarningIcon size={16} /> Your order is taking longer than usual.
           </StatusMsg>
         </ProgressBarWrapper>
       </SummaryInner>
