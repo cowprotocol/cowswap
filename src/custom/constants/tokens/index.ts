@@ -7,7 +7,9 @@ import { SupportedChainId } from 'constants/chains'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 
 import wxDaiLogo from 'assets/cow-swap/wxdai.png'
+// TODO: these are the same? why?
 import vCowLogo from 'assets/cow-swap/cow.svg'
+import cowLogo from 'assets/cow-swap/cow.svg'
 import gnoLogo from 'assets/cow-swap/gno.png'
 import usdcLogo from 'assets/cow-swap/usdc.png'
 
@@ -127,6 +129,7 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   [WBTC_RINKEBY.address]: getTrustImage(WBTC.address),
   [WETH9[ChainId.RINKEBY].address]: getTrustImage(WETH_ADDRESS_MAINNET),
   [V_COW_TOKEN_RINKEBY.address]: vCowLogo,
+  [COW_TOKEN_RINKEBY.address]: cowLogo,
   [GNO_RINKEBY.address]: gnoLogo,
   [USDC_RINKEBY.address]: usdcLogo,
   // xDai
@@ -136,8 +139,10 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   [WXDAI.address]: wxDaiLogo,
   [WETH_XDAI.address]: getTrustImage(WETH_ADDRESS_MAINNET),
   [V_COW_TOKEN_XDAI.address]: vCowLogo,
+  [COW_TOKEN_XDAI.address]: cowLogo,
   [GNO_XDAI.address]: gnoLogo,
   [USDC_XDAI.address]: usdcLogo,
   // Mainnet
   [V_COW_TOKEN_MAINNET.address]: vCowLogo,
+  [COW_TOKEN_MAINNET.address]: cowLogo,
 }
