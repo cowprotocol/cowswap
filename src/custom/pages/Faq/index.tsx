@@ -622,7 +622,7 @@ export default function Faq() {
           <p>
             Fees and Rewards - Traders, solvers, frontends, developers and other ecosystem participants should always
             remain sufficiently incentivized to continue contributing and maintaining a robust ecosystem. Incentives
-            could come in the form of batch solution rewards, trader incentives, ecosystem grants and more
+            could come in the form of batch solution rewards, trader incentives, ecosystem grants and more.
           </p>
           <h3 id="what-was-the-criteria-for-the-token-airdrop">What was the criteria for the token airdrop?</h3>
           <p>There are 4 categories in which you can qualify for the airdrop:</p>
@@ -640,14 +640,14 @@ export default function Faq() {
           <p>
             Traders: A trader is someone who has traded on either Ethereum mainnet (before block 13974427) or Gnosis
             Chain (block 20024195) at least once for a total of 1K USD or who has done at least 5 trades. Note that
-            stable to stable coin trades only by factor 0.1
+            stable to stable coin trades only by factor 0.1.
           </p>
           <p>
             GNO Holders: A GNO holder is someone who held at least 0.1 GNO on either Ethereum mainnet (before block
             13974427) or Gnosis Chain (block 20024195). They were eligible for holding GNO on Mainnet and/or
             GnosisChain, and for running GBC validators. In addition, all the following LP token holders were accounted
             for: Balancer v2 (mainnet), Uniswap v3 (mainnet), Honeyswap (gnosischain), Symetric (gnosischain), Sushiswap
-            (gnosischain), Elk (gnosischain), Swapr (Gnosischain)
+            (gnosischain), Elk (gnosischain), Swapr (Gnosischain).
           </p>
         </Content>
       </Page>
