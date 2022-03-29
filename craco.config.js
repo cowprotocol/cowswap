@@ -21,7 +21,7 @@ if (SENTRY_AUTH_TOKEN) {
       // sentry-cli configuration - can also be done directly through sentry-cli
       // see https://docs.sentry.io/product/cli/configuration/ for details
       authToken: SENTRY_AUTH_TOKEN,
-      org: 'gnosis-protocol',
+      org: 'cowprotocol',
       project: 'cowswap',
       release: SENTRY_RELEASE_VERSION,
 
