@@ -59,12 +59,15 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     sellToken: currentSellToken,
     buyToken: currentBuyToken,
     kind: currentKind,
+    userAddress: currentUserAddress,
   } = currentParams
-  const { amount, buyToken, sellToken, kind } = quoteInfo
-
-  return (
+  const { amount, buyToken, sellToken, kind, userAddress } = quoteInfo
+  // cache the base quote params without quoteInfo user address to check
+  const paramsWithoutAddress =
     sellToken === currentSellToken && buyToken === currentBuyToken && amount === currentAmount && kind === currentKind
-  )
+  // 2 checks: if there's a quoteInfo user address (meaning quote was already calculated once) and one without
+  // in case user is not connected
+  return userAddress ? currentUserAddress === userAddress && paramsWithoutAddress : paramsWithoutAddress
 }
 
 /**
