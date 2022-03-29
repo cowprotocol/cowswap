@@ -18,6 +18,7 @@ import {
   ProgressBarInnerWrapper,
   ProgressBarIndicator,
   StatusMsg,
+  WarningIcon,
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
@@ -316,7 +317,9 @@ export function ActivityDetails(props: {
           <ProgressBarInnerWrapper>
             <ProgressBarIndicator state="warning"></ProgressBarIndicator>
           </ProgressBarInnerWrapper>
-          <StatusMsg>Your order is taking longer than usual.</StatusMsg>
+          <StatusMsg>
+            <WarningIcon /> Your order is taking longer than usual.
+          </StatusMsg>
         </ProgressBarWrapper>
         {isUnfillable && unfillableAlert()}
 

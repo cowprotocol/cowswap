@@ -5,6 +5,7 @@ import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
+import { AlertTriangle } from 'react-feather'
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -489,6 +490,10 @@ export const ProgressBarIndicator = styled.div<{ state?: string }>`
     background: url('https://cowswap.exchange/static/media/cowprotocol.c66150a8.svg') #222222 center center / 80%
       no-repeat;
   }
+`
+export const WarningIcon = styled(AlertTriangle)`
+  margin: 0.5rem 0.5rem 0 0;
+  color: ${({ theme }) => theme.red1};
 `
 
 export const StatusMsg = styled.p`
