@@ -1,51 +1,18 @@
-import { Link } from 'react-router-dom'
-
-import { DISCORD_LINK } from 'constants/index'
 import Page, { Content } from 'components/Page'
-import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
-import { FaqMenu } from './Menu'
+import { ExternalLinkFaq, Wrapper } from './styled'
 import { StyledInternalLink } from 'theme'
+import { Footer } from '.'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
 
-export interface TocSection {
-  section: TocItem
-  items: TocItem[]
-}
-
-export interface TocItem {
-  label: string
-  id: string
-}
-
-export function Footer() {
-  return (
-    <FooterWrapper>
-      <p>
-        Didn&#39;t find an answer? Join the{' '}
-        <ExternalLinkFaq href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
-          community on Discord
-        </ExternalLinkFaq>{' '}
-        <br />
-        <br />
-        We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
-        <span role="img" aria-label="glass of milk">
-          🥛
-        </span>
-      </p>
-      <ButtonNav onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Back to top ↑</ButtonNav>
-    </FooterWrapper>
-  )
-}
-
-export default function Faq() {
+export default function GeneralFaq() {
   const { toc, faqRef } = useToC()
+
   return (
     <Wrapper ref={faqRef}>
-      <FaqMenu />
+      <ToC toc={toc} name="General FAQ" />
       <Page>
-        <ToC toc={toc} name="General FAQ" />
         <Content>
           <h2 id="general">General</h2>
           <h3 id="what-is-cowswap">What is CowSwap?</h3>
@@ -82,10 +49,10 @@ export default function Faq() {
           </p>
 
           <p>
-            Since January 2020 until now (July&#39;21), the total amount of value extracted by miners (etc.) on Ethereum
-            transactions has reached{' '}
+            Since January 2020 until now (March&#39;22), the total amount of value extracted by miners (etc.) on
+            Ethereum transactions has reached{' '}
             <ExternalLinkFaq href="https://explore.flashbots.net/">
-              $ 796.8 Million, including successful and failed transactions.
+              $ 605 Million, including successful and failed transactions.
             </ExternalLinkFaq>
           </p>
 
