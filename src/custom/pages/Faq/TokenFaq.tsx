@@ -4,14 +4,16 @@ import { ExternalLinkFaq, Wrapper } from './styled'
 import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
+import { FaqMenu } from './Menu'
 
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()
 
   return (
     <Wrapper ref={faqRef}>
-      <ToC toc={toc} name="Token FAQ" />
+      <FaqMenu />
       <Page>
+        <ToC toc={toc} name="Token FAQ" />
         <Content>
           <h2 id="Token">Token</h2>
           <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
@@ -109,9 +111,10 @@ export default function TokenFaq() {
               <li>
                 <strong>GNO Holders</strong>: A GNO holder is someone who held at least 0.1 GNO on either Ethereum
                 mainnet (before block 13974427) or Gnosis Chain (block 20024195). They were eligible for holding GNO on
-                Mainnet and/or GnosisChain, and for running GBC validators. In addition, all the following LP token
-                holders were accounted for: Balancer v2 (mainnet), Uniswap v3 (mainnet), Honeyswap (gnosischain),
-                Symetric (gnosischain), Sushiswap (gnosischain), Elk (gnosischain), Swapr (Gnosischain).
+                Ethereum mainnet and/or Gnosis Chain, and for running GBC validators. In addition, all the following LP
+                token holders were accounted for: Balancer v2 (Ethereum mainnet), Uniswap v3 (Ethereum mainnet),
+                Honeyswap (Gnosis Chain), Symetric (Gnosis Chain), Sushiswap (Gnosis Chain), Elk (Gnosis Chain), Swapr
+                (Gnosis Chain).
               </li>
             </ul>
           </p>

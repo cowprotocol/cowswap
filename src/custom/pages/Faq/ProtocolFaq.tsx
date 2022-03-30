@@ -5,14 +5,16 @@ import { ExternalLinkFaq, Wrapper } from './styled'
 import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
+import { FaqMenu } from './Menu'
 
 export default function ProtocolFaq() {
   const { toc, faqRef } = useToC()
 
   return (
     <Wrapper ref={faqRef}>
-      <ToC toc={toc} name="Protocol FAQ" />
+      <FaqMenu />
       <Page>
+        <ToC toc={toc} name="Protocol FAQ" />
         <Content>
           <h2 id="protocol">Protocol</h2>
           <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>

@@ -1,13 +1,12 @@
-import Page, { Content, Title } from 'components/Page'
+import { Content, Title } from 'components/Page'
 import { LinkScrollable } from 'components/Link'
 import { TocSection } from '.'
-import { BackButton } from '.'
+import { PageIndex } from './styled'
 
 export default function Toc(props: { toc: TocSection[]; name: string }) {
   const { toc, name } = props
   return (
-    <Page>
-      <BackButton />
+    <PageIndex>
       <Title id="cowswap-faq">{name}</Title>
       <Content>
         {toc.map(({ section, items }) => (
@@ -23,6 +22,6 @@ export default function Toc(props: { toc: TocSection[]; name: string }) {
           </div>
         ))}
       </Content>
-    </Page>
+    </PageIndex>
   )
 }

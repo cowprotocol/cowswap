@@ -5,14 +5,16 @@ import { ExternalLinkFaq, Wrapper } from './styled'
 import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
+import { FaqMenu } from './Menu'
 
 export default function AffiliateFaq() {
   const { toc, faqRef } = useToC()
 
   return (
     <Wrapper ref={faqRef}>
-      <ToC toc={toc} name="Affiliate Program FAQ" />
+      <FaqMenu />
       <Page>
+        <ToC toc={toc} name="Affiliate Program FAQ" />
         <Content>
           <h2 id="affiliate">Affiliate program</h2>
 
