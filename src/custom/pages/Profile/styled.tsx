@@ -243,7 +243,10 @@ export const CardsWrapper = styled.div`
   padding: 0;
   z-index: 2;
 
-  > div:nth-of-type(3n) {
+  > div {
+    flex: 1 1 300px;
+  }
+  > div:last-child:nth-child(odd) {
     flex: 1 1 100%;
   }
 
