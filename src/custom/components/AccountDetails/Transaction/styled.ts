@@ -5,7 +5,8 @@ import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
-import { AlertTriangle, CheckCircle } from 'react-feather'
+import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
+/* import vCowLogo from 'assets/cow-swap/cow.svg' */
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -445,7 +446,6 @@ export const ProgressBarWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 450px;
-  min-height: 60px;
   margin: 8px 0;
   overflow: hidden;
   display: flex;
@@ -469,14 +469,10 @@ export const ProgressBarInnerWrapper = styled.div`
   overflow: visible !important;
 `
 
-export const ProgressBarIndicator = styled.div<{ state?: string }>`
+export const ProgressBarIndicator = styled.div`
   height: 18px;
   background: rgb(233, 214, 37);
-  background: ${({ state }) =>
-    state === 'warning'
-      ? 'linear-gradient(270deg, #DE3F3F 2.17%, #FF784A 106.52%);'
-      : 'linear-gradient(270deg, #27ae5f 16.85%, #b6a82d 106.52%);'};
-  transform: translateX(0%);green
+  transform: translateX(0%);
   border-radius: 12px;
 
   ::after {
@@ -492,14 +488,31 @@ export const ProgressBarIndicator = styled.div<{ state?: string }>`
     border: 1px solid ${({ theme }) => theme.bg1};
   }
 `
-export const WarningIcon = styled(AlertTriangle)`
-  margin: 0.5rem 0.5rem 0 0;
-  color: ${({ theme }) => theme.red1};
+export const WarningProgress = styled(ProgressBarIndicator)`
+  background: linear-gradient(270deg, #de3f3f 2.17%, #ff784a 106.52%); ;
+`
+
+export const SuccessProgress = styled(ProgressBarIndicator)`
+  background: linear-gradient(270deg, #27ae5f 16.85%, #b6a82d 106.52%);
+`
+
+export const PendingProgress = styled(ProgressBarIndicator)`
+  background: linear-gradient(270deg, #b6a82d 16.85%, #ff784a 106.52%);
 `
 
 export const CheckIcon = styled(CheckCircle)`
   margin: 0.5rem 0.5rem 0 0;
-  color: ${({ theme }) => theme.green1};
+  color: ${({ theme }) => theme.success};
+`
+
+export const ClockIcon = styled(Clock)`
+  margin: 0.5rem 0.5rem 0 0;
+  color: ${({ theme }) => theme.danger};
+`
+
+export const WarningIcon = styled(AlertTriangle)`
+  margin: 0.5rem 0.5rem 0 0;
+  color: ${({ theme }) => theme.attention};
 `
 
 export const StatusMsg = styled.p`

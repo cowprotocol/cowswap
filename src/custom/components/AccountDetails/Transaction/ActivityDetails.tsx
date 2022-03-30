@@ -16,10 +16,13 @@ import {
   ActivityVisual,
   ProgressBarWrapper,
   ProgressBarInnerWrapper,
-  ProgressBarIndicator,
   StatusMsg,
   CheckIcon,
+  ClockIcon,
   WarningIcon,
+  WarningProgress,
+  PendingProgress,
+  SuccessProgress,
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
@@ -311,7 +314,7 @@ export function ActivityDetails(props: {
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
-            <ProgressBarIndicator state="success"></ProgressBarIndicator>
+            <SuccessProgress></SuccessProgress>
           </ProgressBarInnerWrapper>
           <StatusMsg>
             <CheckIcon size={16} /> Looking for a CoW.
@@ -320,7 +323,16 @@ export function ActivityDetails(props: {
 
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
-            <ProgressBarIndicator state="warning"></ProgressBarIndicator>
+            <PendingProgress />
+          </ProgressBarInnerWrapper>
+          <StatusMsg>
+            <ClockIcon size={16} /> Finding best onchain price.
+          </StatusMsg>
+        </ProgressBarWrapper>
+
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <WarningProgress />
           </ProgressBarInnerWrapper>
           <StatusMsg>
             <WarningIcon size={16} /> Your order is taking longer than usual.
