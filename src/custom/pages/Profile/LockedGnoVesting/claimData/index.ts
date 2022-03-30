@@ -34,24 +34,25 @@ interface Claim {
 //     return chunks
 //   }, [])
 // }
+
+const indexFiles = { 1: mainnetIndex, 4: rinkebyIndex, 100: gnosisChainIndex }
+const folderNames = { 1: 'mainnet', 4: 'rinkeby', 100: 'gnosisChain' }
 export const fetchClaim = async (address: string, chainId: number): Promise<Claim> => {
   const lowerCaseAddress = address.toLowerCase()
+  if (chainId !== 1 && chainId !== 4 && chainId !== 100) throw new Error('Invalid chainId')
+
+  const indexFile = indexFiles[chainId]
+  const folderName = folderNames[chainId]
+  const chunkIndex = lookupChunkIndex(indexFile, lowerCaseAddress)
   let json
   try {
-    switch (chainId) {
-      case 1:
-        json = await import(`./mainnet/chunk_${lookupChunkIndex(mainnetIndex, lowerCaseAddress)}.json`)
-        break
-      case 4:
-        json = await import(`./rinkeby/chunk_${lookupChunkIndex(rinkebyIndex, lowerCaseAddress)}.json`)
-        break
-      case 100:
-        json = await import(`./gnosisChain/chunk_${lookupChunkIndex(gnosisChainIndex, lowerCaseAddress)}.json`)
-    }
+    json = await import(`./${folderName}/chunk_${chunkIndex}.json`)
   } catch (e) {
     console.error(e)
   }
-  if (!json) throw new Error(`Could not fetch claim data for chain #${chainId} and address ${address}`)
+  if (!json) {
+    throw new Error(`Could not fetch claim data chunk ${chunkIndex} for chain #${chainId} and address ${address}`)
+  }
   return json[lowerCaseAddress]
 }
 
