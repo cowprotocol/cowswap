@@ -253,6 +253,13 @@ export const CardsWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
+
+    > div {
+      flex: 1 1 100%;
+    }
+    > div:last-child:nth-child(odd) {
+      flex: 1 1 100%;
+    }
   `};
 `
 
