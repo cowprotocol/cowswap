@@ -34,6 +34,7 @@ import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
 import SVG from 'react-inlinesvg'
 import { ActivityStatus } from '@src/custom/hooks/useRecentActivity'
+import { AMMsLogo } from 'components/AMMsLogo'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -338,6 +339,7 @@ export function ActivityDetails(props: {
             <WarningIcon size={16} /> Your order is taking longer than usual.
           </StatusMsg>
         </ProgressBarWrapper>
+        <AMMsLogo />
       </SummaryInner>
     </Summary>
   )

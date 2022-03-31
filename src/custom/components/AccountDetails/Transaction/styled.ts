@@ -6,7 +6,8 @@ import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
 import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
-/* import vCowLogo from 'assets/cow-swap/cow.svg' */
+import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
+import { AMMsLogo } from 'components/AMMsLogo'
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -483,9 +484,9 @@ export const ProgressBarIndicator = styled.div`
     height: 24px;
     width: 24px;
     border-radius: 100%;
-    background: url('https://cowswap.exchange/static/media/cowprotocol.c66150a8.svg') #222222 center center / 80%
-      no-repeat;
     border: 1px solid ${({ theme }) => theme.bg1};
+    background: url(${CowProtocolIcon}) ${({ theme }) => theme.black} no-repeat center/80%;
+    box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
   }
 `
 export const WarningProgress = styled(ProgressBarIndicator)`
