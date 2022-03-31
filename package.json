@@ -10,7 +10,7 @@
     "dist"
   ],
   "private": true,
-  "version": "1.12.4",
+  "version": "1.12.8",
   "engines": {
     "node": ">=14.0.0"
   },
