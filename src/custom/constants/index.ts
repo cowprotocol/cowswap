@@ -100,6 +100,14 @@ export const CODE_LINK = 'https://github.com/gnosis/gp-swap-ui'
 export const DISCORD_LINK = 'https://chat.cowswap.exchange'
 export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
 export const TWITTER_LINK = 'https://twitter.com/mevprotection'
+export const GPAUDIT_LINK = 'https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
+export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
+export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
+export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'
+
+// MEV Metrics from https://explore.flashbots.net/
+export const MEV_TOTAL = '606 Million'
+export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
 // 30 minutes
 export const GAS_PRICE_UPDATE_THRESHOLD = 30 * 60 * 1000

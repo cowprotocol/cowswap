@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom'
 
-import { DISCORD_LINK } from 'constants/index'
+import {
+  GPAUDIT_LINK,
+  COWWIKI_LINK,
+  GNOSIS_FORUM_ROADTODECENT_LINK,
+  FLASHBOYS_LINK,
+  DISCORD_LINK,
+  MEV_TOTAL,
+  FLASHBOTS_LINK,
+} from 'constants/index'
 import Page, { Content } from 'components/Page'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
@@ -76,17 +84,15 @@ export default function Faq() {
 
           <p>
             Defined by Phil Daian et al. in the{' '}
-            <ExternalLinkFaq href="https://arxiv.org/abs/1904.05234">paper Flash Boys 2.0 </ExternalLinkFaq>, MEV is a
-            measure of the profit a miner (or validator, sequencer, etc.) can make through their ability to arbitrarily
-            include, exclude, or re-order transactions within the blocks they produce.
+            <ExternalLinkFaq href={FLASHBOYS_LINK}>paper Flash Boys 2.0 </ExternalLinkFaq>, MEV is a measure of the
+            profit a miner (or validator, sequencer, etc.) can make through their ability to arbitrarily include,
+            exclude, or re-order transactions within the blocks they produce.
           </p>
 
           <p>
-            Since January 2020 until now (July&#39;21), the total amount of value extracted by miners (etc.) on Ethereum
-            transactions has reached{' '}
-            <ExternalLinkFaq href="https://explore.flashbots.net/">
-              $ 796.8 Million, including successful and failed transactions.
-            </ExternalLinkFaq>
+            As of today the total amount of value extracted by miners (etc.) on Ethereum transactions has reached{' '}
+            <ExternalLinkFaq href={FLASHBOTS_LINK}>USD {MEV_TOTAL}</ExternalLinkFaq>, including successful and failed
+            transactions.
           </p>
 
           <h3 id="to-what-does-the-term-coincidence-of-wants-cows-refer">
@@ -94,12 +100,10 @@ export default function Faq() {
           </h3>
 
           <p>
-            <ExternalLinkFaq href="https://en.wikipedia.org/wiki/Coincidence_of_wants">
-              Coincidence of Wants (CoWs)
-            </ExternalLinkFaq>{' '}
-            can be explained as “an economic phenomenon where two parties each hold an item the other wants, so they
-            exchange these items directly.” CowSwap facilitates CoWs among traders and their orders through using batch
-            auctions as a core mechanism.
+            <ExternalLinkFaq href={COWWIKI_LINK}>Coincidence of Wants (CoWs)</ExternalLinkFaq> can be explained as “an
+            economic phenomenon where two parties each hold an item the other wants, so they exchange these items
+            directly.” CowSwap facilitates CoWs among traders and their orders through using batch auctions as a core
+            mechanism.
           </p>
 
           <p>
@@ -122,8 +126,8 @@ export default function Faq() {
           <p>
             CowSwap leverages batch auctions with uniform clearing prices for all trades in the same batch. Because of
             the uniform clearing price, there is no need for ordering the transactions within a single batch. Because
-            everyone receives the same price across assets it’s not possible for <b>any</b> value to be extracted by
-            placing transactions in a certain order. This prevents the primary strategy used in MEV.
+            everyone receives the same price across assets it&apos;s not possible for <b>any</b> value to be extracted
+            by placing transactions in a certain order. This prevents the primary strategy used in MEV.
           </p>
 
           <p>
@@ -158,10 +162,7 @@ export default function Faq() {
 
           <p>
             Finding the best settlement for orders is a challenging task, which very soon may have its own{' '}
-            <ExternalLinkFaq href="https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245">
-              decentralized competition
-            </ExternalLinkFaq>
-            .
+            <ExternalLinkFaq href={GNOSIS_FORUM_ROADTODECENT_LINK}>decentralized competition</ExternalLinkFaq>.
           </p>
 
           <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
@@ -173,11 +174,8 @@ export default function Faq() {
 
           <p>
             With this upgrade, CowSwap evolves into its most stable, performant form: the code has been thoroughly and
-            carefully tested, peer-reviewed and fully{' '}
-            <ExternalLinkFaq href="https://github.com/gnosis/gp-v2-contracts/blob/main/audits/GnosisProtocolV2May2021.pdf">
-              audited
-            </ExternalLinkFaq>
-            . Whilst CowSwap has taken a major step forward in terms of security and stability, as with other crypto
+            carefully tested, peer-reviewed and fully <ExternalLinkFaq href={GPAUDIT_LINK}>audited</ExternalLinkFaq>.
+            Whilst CowSwap has taken a major step forward in terms of security and stability, as with other crypto
             protocols or dapps, your use is at your own risk.{' '}
             <strong>
               Please review our{' '}
