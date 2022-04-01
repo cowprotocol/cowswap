@@ -6,8 +6,7 @@ import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
 import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
-import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
-import { AMMsLogo } from 'components/AMMsLogo'
+import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -446,7 +445,7 @@ export const ProgressBarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 450px;
+  width: 575px;
   margin: 8px 0;
   overflow: hidden;
   display: flex;
@@ -466,8 +465,8 @@ export const ProgressBarWrapper = styled.div`
 export const ProgressBarInnerWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg2};
   border-radius: 18px;
-  /* overflow: hidden; */
   overflow: visible !important;
+  position: relative;
 `
 
 export const ProgressBarIndicator = styled.div`
@@ -475,20 +474,39 @@ export const ProgressBarIndicator = styled.div`
   background: rgb(233, 214, 37);
   transform: translateX(0%);
   border-radius: 12px;
+`
+export const CowProtocolIcon = styled.div`
+  position: absolute;
+  top: -4px;
+  right: 0px;
+  height: 24px;
+  width: 24px;
+  border-radius: 100%;
+  border: 1px solid ${({ theme }) => theme.bg4};
+  background: url(${CowProtocolLogo}) ${({ theme }) => theme.black} no-repeat center/75%;
+  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+`
 
-  ::after {
-    content: '';
-    position: absolute;
-    top: -4px;
-    right: 0px;
-    height: 24px;
-    width: 24px;
-    border-radius: 100%;
-    border: 1px solid ${({ theme }) => theme.bg1};
-    background: url(${CowProtocolIcon}) ${({ theme }) => theme.black} no-repeat center/80%;
-    box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+export const WarningLogo = styled.div`
+  position: absolute;
+  top: -4px;
+  right: 0px;
+  height: 24px;
+  width: 24px;
+  border-radius: 100%;
+  background-color: ${({ theme }) => theme.white};
+  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+  :after {
+    content: '!';
+    color: ${({ theme }) => theme.red1};
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 2px 0;
   }
 `
+
 export const WarningProgress = styled(ProgressBarIndicator)`
   background: linear-gradient(270deg, #de3f3f 2.17%, #ff784a 106.52%); ;
 `
@@ -502,24 +520,25 @@ export const PendingProgress = styled(ProgressBarIndicator)`
 `
 
 export const CheckIcon = styled(CheckCircle)`
-  margin: 0.5rem 0.5rem 0 0;
+  margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.success};
 `
 
 export const ClockIcon = styled(Clock)`
-  margin: 0.5rem 0.5rem 0 0;
-  color: ${({ theme }) => theme.danger};
+  margin: 0 0.5rem 0 0;
+  color: ${({ theme }) => theme.yellow1};
 `
 
 export const WarningIcon = styled(AlertTriangle)`
-  margin: 0.5rem 0.5rem 0 0;
+  margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.attention};
 `
 
 export const StatusMsg = styled.p`
   font-size: 0.85rem;
-  margin: 0.5rem 0;
+  margin: 0.8rem 0 0 0;
   color: ${({ theme }) => theme.text1};
+  display: inherit;
 `
 
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`

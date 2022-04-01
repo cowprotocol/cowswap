@@ -11,17 +11,17 @@ export const Wrapper = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 100%;
-  /* background-color: ${({ theme }) => theme.white}; */
-  padding: 0;
+  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.white};
   transform-style: preserve-3d;
-  transform-origin: center right;
-  transition: transform 0.25s;
-  color: ${({ theme }) => theme.blue1};
+  position: absolute;
+  top: -4px;
+  right: 0px;
 
   img {
     position: absolute;
     left: 0;
-    animation: FadeInOut 6s ease-in-out infinite;
+    animation: FadeInOut 6s infinite;
   }
   @keyframes FadeInOut {
     0% {

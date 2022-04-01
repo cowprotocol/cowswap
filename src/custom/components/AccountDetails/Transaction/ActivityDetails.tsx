@@ -16,6 +16,8 @@ import {
   ActivityVisual,
   ProgressBarWrapper,
   ProgressBarInnerWrapper,
+  CowProtocolIcon,
+  WarningLogo,
   StatusMsg,
   CheckIcon,
   ClockIcon,
@@ -36,6 +38,7 @@ import SVG from 'react-inlinesvg'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { V_COW, COW } from 'constants/tokens'
+import { LinkStyledButton } from '@src/theme/components'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -321,7 +324,8 @@ export function ActivityDetails(props: {
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
-            <SuccessProgress></SuccessProgress>
+            <SuccessProgress />
+            <CowProtocolIcon />
           </ProgressBarInnerWrapper>
           <StatusMsg>
             <CheckIcon size={16} /> Looking for a CoW.
@@ -331,6 +335,7 @@ export function ActivityDetails(props: {
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
             <PendingProgress />
+            <AMMsLogo />
           </ProgressBarInnerWrapper>
           <StatusMsg>
             <ClockIcon size={16} /> Finding best onchain price.
@@ -340,12 +345,23 @@ export function ActivityDetails(props: {
         <ProgressBarWrapper>
           <ProgressBarInnerWrapper>
             <WarningProgress />
+            <WarningLogo />
           </ProgressBarInnerWrapper>
           <StatusMsg>
             <WarningIcon size={16} /> Your order is taking longer than usual.
           </StatusMsg>
         </ProgressBarWrapper>
-        <AMMsLogo />
+
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <WarningProgress />
+            <WarningLogo />
+          </ProgressBarInnerWrapper>
+          <StatusMsg>
+            <WarningIcon size={16} /> Your limit price is out of market. You can wait or
+            <LinkStyledButton>Cancel order</LinkStyledButton>
+          </StatusMsg>
+        </ProgressBarWrapper>
       </SummaryInner>
     </Summary>
   )
