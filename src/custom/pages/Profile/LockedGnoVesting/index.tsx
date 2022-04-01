@@ -13,7 +13,6 @@ import useTransactionConfirmationModal from '@src/custom/hooks/useTransactionCon
 import { OperationType } from '@src/custom/components/TransactionConfirmationModal'
 import { useErrorModal } from '@src/custom/hooks/useErrorMessageAndModal'
 
-export { hasAllocation } from './claimData'
 import { useBalances, useClaimCallback } from './hooks'
 
 enum ClaimStatus {
@@ -67,6 +66,11 @@ const LockedGnoVesting: React.FC = () => {
         handleSetError(error?.message)
       })
   }, [handleCloseError, handleSetError, claimCallback])
+
+  if (allocated.equalTo(0)) {
+    // don't render anything until we know that the user is actually eligible to claim
+    return null
+  }
 
   return (
     <>
