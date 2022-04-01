@@ -216,7 +216,7 @@ export default function Profile() {
           </BalanceDisplay>
         </Card>
 
-        <LockedGnoVesting />
+        <LockedGnoVesting openModal={openModal} closeModal={closeModal} />
 
         <BannerCard>
           <span>
