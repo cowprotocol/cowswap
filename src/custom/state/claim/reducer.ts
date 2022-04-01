@@ -19,6 +19,8 @@ import {
   setEstimatedGas,
   setIsTouched,
   setClaimsCount,
+  SwapVCowStatus,
+  setSwapVCowStatus,
 } from './actions'
 
 export type ClaimInfo = {
@@ -64,6 +66,8 @@ export const initialState: ClaimState = {
   selectedAll: false,
   // claims on other networks
   claimInfoPerAccount: { ...DEFAULT_CLAIM_INFO_PER_ACCOUNT },
+  // swap VCow status
+  swapVCowStatus: SwapVCowStatus.INITIAL,
 }
 
 export type InvestClaim = {
@@ -94,6 +98,8 @@ export type ClaimState = {
   selectedAll: boolean
   // claims on other chains
   claimInfoPerAccount: ClaimInfoPerAccount
+  // swap VCow status
+  swapVCowStatus: SwapVCowStatus
 }
 
 export default createReducer(initialState, (builder) =>
@@ -179,5 +185,8 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setIsTouched, (state, { payload: { index, isTouched } }) => {
       state.investFlowData[index].isTouched = isTouched
+    })
+    .addCase(setSwapVCowStatus, (state, { payload }) => {
+      state.swapVCowStatus = payload
     })
 )

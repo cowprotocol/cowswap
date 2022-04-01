@@ -13,6 +13,7 @@ export interface Colors extends ColorsUniswap {
   blueShade2: Color
   blueShade3: Color
   blue2: Color
+  orange: Color
   success: Color
   danger: Color
   pending: Color
@@ -22,6 +23,8 @@ export interface Colors extends ColorsUniswap {
   disabled: Color
   shimmer1: Color
   shimmer2: color
+  scrollbarBg: Color
+  scrollbarThumb: Color
   tableHeadBG: Color
   tableRowBG: Color
   info: Color
@@ -30,6 +33,7 @@ export interface Colors extends ColorsUniswap {
   infoText: Color
   warningText: Color
   errorText: Color
+  cardBackground: Color
   cardBorder: Color
   cardShadow1: Color
   cardShadow2: Color
@@ -182,6 +186,7 @@ declare module 'styled-components' {
       upToSmall: ThemedCssFunction<DefaultTheme>
       upToMedium: ThemedCssFunction<DefaultTheme>
       upToLarge: ThemedCssFunction<DefaultTheme>
+      upToExtraLarge: ThemedCssFunction<DefaultTheme>
     }
   }
 }

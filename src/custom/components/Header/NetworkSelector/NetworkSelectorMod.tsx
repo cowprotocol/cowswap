@@ -87,7 +87,7 @@ const FlyoutRow = styled.div<{ active: boolean }>`
   }
   transition: background 0.13s ease-in-out;
 `
-const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
+export const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
   background-color: ${({ active, theme }) => (active ? theme.green1 : '#a7a7a7')};
   border-radius: 50%;
   height: 9px;

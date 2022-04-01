@@ -8,6 +8,7 @@ import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { ButtonSecondary } from 'components/Button'
 import { OrderStatus } from '@src/custom/state/orders/actions'
+import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
@@ -72,7 +73,7 @@ interface Web3StatusProps {
 
 export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
   const walletInfo = useWalletInfo()
-
+  const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()
 
@@ -88,7 +89,7 @@ export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
   }, [allRecentActivity])
 
   const { active, activeNetwork, ensName } = walletInfo
-  if (!activeNetwork && !active) {
+  if (!activeNetwork && !active && !latestProvider) {
     return null
   }
 
@@ -98,6 +99,7 @@ export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
         pendingCount={pendingActivity.length}
         StatusIconComponent={StatusIcon}
         openOrdersPanel={openOrdersPanel}
+        thereWasAProvider={!!latestProvider}
       />
       <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />
     </Wrapper>

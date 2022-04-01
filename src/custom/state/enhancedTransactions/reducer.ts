@@ -36,10 +36,14 @@ export interface EnhancedTransactionDetails {
   approval?: { tokenAddress: string; spender: string }
   presign?: { orderId: string }
   claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
+  swapVCow?: boolean
 
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
+
+  // Cancelling/Replacing
   replacementType?: ReplacementType // if the user cancelled or speedup the tx it will be reflected here
+  linkedTransactionHash?: string
 }
 
 export interface EnhancedTransactionState {
@@ -66,7 +70,21 @@ export default createReducer(initialState, (builder) =>
       addTransaction,
       (
         transactions,
-        { payload: { chainId, from, hash, hashType, approval, summary, presign, safeTransaction, claim, data } }
+        {
+          payload: {
+            chainId,
+            from,
+            hash,
+            hashType,
+            approval,
+            summary,
+            presign,
+            safeTransaction,
+            claim,
+            data,
+            swapVCow,
+          },
+        }
       ) => {
         if (transactions[chainId]?.[hash]) {
           console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
@@ -88,6 +106,7 @@ export default createReducer(initialState, (builder) =>
           presign,
           safeTransaction,
           claim,
+          swapVCow,
         }
         transactions[chainId] = txs
       }
@@ -113,22 +132,33 @@ export default createReducer(initialState, (builder) =>
       }
       tx.receipt = receipt
       tx.confirmedTime = now()
+
+      if (tx.linkedTransactionHash) {
+        delete transactions[chainId]?.[tx.linkedTransactionHash]
+      }
     })
 
     .addCase(replaceTransaction, (transactions, { payload: { chainId, oldHash, newHash, type } }) => {
-      if (!transactions[chainId]?.[oldHash]) {
+      const allTxs = transactions[chainId] ?? {}
+      if (!allTxs[oldHash]) {
         console.error('Attempted to replace an unknown transaction.')
         return
       }
-      const allTxs = transactions[chainId] ?? {}
+
+      if (allTxs[newHash]) {
+        return
+      }
+
       allTxs[newHash] = {
         ...allTxs[oldHash],
         hash: newHash,
         transactionHash: newHash,
         addedTime: new Date().getTime(),
         replacementType: type,
+        linkedTransactionHash: oldHash,
       }
-      delete allTxs[oldHash]
+
+      allTxs[oldHash].linkedTransactionHash = newHash
     })
 
     .addCase(updateSafeTransaction, (transactions, { payload: { chainId, safeTransaction, blockNumber } }) => {

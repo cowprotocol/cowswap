@@ -1,7 +1,13 @@
 import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
 import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
 import { stringify } from 'qs'
-import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, SigningSchemeValue } from 'utils/signatures'
+import {
+  getSigningSchemeApiValue,
+  OrderCancellation,
+  OrderCreation,
+  SigningSchemeValue,
+  UnsignedOrder,
+} from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
@@ -16,14 +22,16 @@ import QuoteError, {
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
-import { toErc20Address } from 'utils/tokens'
+import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import * as Sentry from '@sentry/browser'
+import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { Context } from '@sentry/types'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -219,23 +227,15 @@ export async function sendOrder(params: { chainId: ChainId; order: OrderCreation
   const { chainId, order, owner } = params
   console.log(`[api:${API_NAME}] Post signed order for network`, chainId, order)
 
-  // Call API
-  const response = await _post(chainId, `/orders`, {
+  const orderParams = {
     ...order,
     signingScheme: getSigningSchemeApiValue(order.signingScheme),
     from: owner,
-  })
-
-  // Handle response
-  if (!response.ok) {
-    // Raise an exception
-    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'create')
-    throw new Error(errorMessage)
   }
+  // Call API
+  const response = await _post(chainId, `/orders`, orderParams)
 
-  const uid = (await response.json()) as string
-  console.log(`[api:${API_NAME}] Success posting the signed order`, uid)
-  return uid
+  return _handleOrderResponse<string, typeof orderParams>(response, orderParams)
 }
 
 type OrderCancellationParams = {
@@ -274,51 +274,106 @@ const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
   description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
 }
 
-async function _handleQuoteResponse<T = any, P extends QuoteQuery = QuoteQuery>(
+function _handleError<P extends Context>(error: any, response: Response, params: P, operation: 'ORDER' | 'QUOTE') {
+  // Create a new sentry error OR
+  // use the previously created and rethrown error from the try block
+  const sentryError =
+    error?.sentryError ||
+    constructSentryError(error, response, {
+      message: error?.message || error,
+      name: `[${operation}-ERROR] - Unmapped ${operation} Error`,
+    })
+  // Create the error tags or use the previously constructed ones from the try block
+  const tags = error?.tags || { errorType: operation, backendErrorCode: response.status }
+
+  // report to sentry
+  Sentry.captureException(sentryError, {
+    tags,
+    // TODO: change/remove this in context update pr
+    contexts: { params: { ...params } },
+  })
+
+  return error?.baseError || error
+}
+
+async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedOrder>(
   response: Response,
-  params?: P
+  params: P
 ): Promise<T> {
-  if (!response.ok) {
-    const errorObj: ApiErrorObject = await response.json()
+  try {
+    // Handle response
+    if (!response.ok) {
+      // Raise an exception
+      const [errorObject, description] = await Promise.all<[Promise<ApiErrorObject>, Promise<string>]>([
+        response.json(),
+        OperatorError.getErrorFromStatusCode(response, 'create'),
+      ])
+      // create the OperatorError from the constructed error message and the original error
+      const error = new OperatorError(Object.assign({}, errorObject, { description }))
 
-    // we need to map the backend error codes to match our own for quotes
-    const mappedError = mapOperatorErrorToQuoteError(errorObj)
-    const quoteError = new QuoteError(mappedError)
-
-    if (params) {
-      const { sellToken, buyToken } = params
-
-      const sentryError = new Error()
-      Object.assign(sentryError, quoteError, {
-        message: `Error querying fee from API - sellToken: ${sellToken}, buyToken: ${buyToken}`,
-        name: 'FeeErrorObject',
+      // we need to create a sentry error and keep the original mapped quote error
+      throw constructSentryError(error, response, {
+        message: `${error.description}`,
+        name: `[${error.name}] - ${error.type}`,
+        optionalTags: {
+          orderErrorType: error.type,
+        },
       })
-
-      // report to sentry
-      Sentry.captureException(sentryError, {
-        tags: { errorType: 'getFeeQuote' },
-        contexts: { params: { ...params } },
-      })
+    } else {
+      const uid = await response.json()
+      console.log(`[api:${API_NAME}] Success posting the signed order`, JSON.stringify(uid))
+      return uid
     }
+  } catch (error) {
+    throw _handleError(error, response, params, 'ORDER')
+  }
+}
 
-    throw quoteError
-  } else {
-    return response.json()
+async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuoteParams>(
+  response: Response,
+  params: P
+): Promise<T> {
+  try {
+    if (!response.ok) {
+      // don't attempt json parse if not json response...
+      checkAndThrowIfJsonSerialisableError(response)
+
+      const errorObj: ApiErrorObject = await response.json()
+
+      // we need to map the backend error codes to match our own for quotes
+      const mappedError = mapOperatorErrorToQuoteError(errorObj)
+      const error = new QuoteError(mappedError)
+
+      // we need to create a sentry error and keep the original mapped quote error
+      throw constructSentryError(error, response, {
+        message: `${error.description}`,
+        name: `[${error.name}] - ${error.type}`,
+        optionalTags: {
+          quoteErrorType: error.type,
+        },
+      })
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    throw _handleError(error, response, params, 'QUOTE')
   }
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
-  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId } = params
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
     sellToken: toErc20Address(sellToken, chainId),
-    buyToken: toErc20Address(buyToken, chainId),
+    // check buy token, if native, use native address
+    buyToken: toNativeBuyAddress(buyToken, chainId),
     from: fallbackAddress,
     receiver: receiver || fallbackAddress,
     appData: getAppDataHash(),
     validTo,
     partiallyFillable: false,
+    priceQuality,
   }
 
   const finalParams: QuoteQuery =
@@ -342,7 +397,7 @@ export async function getQuote(params: FeeQuoteParams) {
   const quoteParams = _mapNewToLegacyParams(params)
   const response = await _post(chainId, '/quote', quoteParams)
 
-  return _handleQuoteResponse<SimpleGetQuoteResponse>(response)
+  return _handleQuoteResponse<SimpleGetQuoteResponse>(response, params)
 }
 
 export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<PriceInformation | null> {
@@ -361,7 +416,11 @@ export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<Pri
     throw new QuoteError(UNHANDLED_QUOTE_ERROR)
   })
 
-  return _handleQuoteResponse<PriceInformation | null>(response)
+  return _handleQuoteResponse<PriceInformation | null>(response, {
+    ...params,
+    buyToken: baseToken,
+    sellToken: quoteToken,
+  })
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {

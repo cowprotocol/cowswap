@@ -63,7 +63,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
     ERC 20 tokens by submitting orders into a batch auction running on the
     Protocol.
 
-2.  A detailed step-by-step guide on how to use the Platform may be found <a href="/#/faq#what-is-cowswap" target="_blank" rel="noopener nofollow">in the “FAQ” section on the Platform</a>.
+2.  A detailed step-by-step guide on how to use the Platform may be found <a href="/#/faq" target="_blank" rel="noopener nofollow">in the “FAQ” section on the Platform</a>.
 
 3.  To use the Platform you require:
     1. A wallet compatible with the Ethereum Blockchain or an Ethereum
@@ -74,7 +74,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
        with any other wallet.
     2. An ERC 20 token to trade
     3. Depending on whether you interact with the Protocol on Ethereum
-       mainnet or an Ethereum Virtual Machine compatible validation
+       Mainnet or an Ethereum Virtual Machine compatible validation
        mechanism, sufficient ETH or the networks native crypto asset in
        your Wallet, respectively, to pay for transactions fees, which are
        incurred through the Protocol on Ethereum or the Ethereum Virtual
@@ -225,7 +225,7 @@ professional advisors.
        mechanisms and intricacies associated with cryptographic assets,
        token storage facilities (including wallets), blockchain technology
        and blockchain-based software systems;
-    6. you understand that transactions on the Ethereum mainnet and
+    6. you understand that transactions on the Ethereum Mainnet and
        Ethereum Virtual Machine compatible validation mechanisms are
        irreversible and may not be erased and that your wallet address and
        any transaction is displayed permanently and publicly and that you
@@ -303,7 +303,7 @@ professional advisors.
     arises out of or in connection with
     the present Terms between you and us (a “**Dispute**”),
     you agree to seek to resolve the matter with us amicably by
-    referring the matter to GnosisDAO subcategory of gnosis.forum.io
+    referring the matter to GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>
     with a detailed description, the date and time the issue arose, your
     handle to contact you on and the outcome you are seeking.
 2.  Your right to take legal action remains unaffected by the existence

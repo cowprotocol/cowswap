@@ -30,7 +30,7 @@ export const AutoColumn = styled(AutoColumnUni)`
 
 export const MobileWrapper = styled(AutoColumn)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    isplay: none;
+    /* isplay: none; */
   `};
 `
 
@@ -45,6 +45,21 @@ export const CommonBasesRow = styled(AutoRow)`
     overflow-x: scroll;
     padding: 0 100px 0 0;
     position: relative;
+    scrollbar-color: ${({ theme }) => theme.scrollbarThumb} ${({ theme }) => theme.scrollbarBg};
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      height: 10px;
+      background: ${({ theme }) => theme.scrollbarBg};
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: ${({ theme }) => theme.scrollbarThumb};
+      border: 3px solid transparent;
+      border-radius: 10px;
+      background-clip: padding-box;
+    }
   `}
 `
 

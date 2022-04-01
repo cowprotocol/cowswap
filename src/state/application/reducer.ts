@@ -42,6 +42,7 @@ export enum ApplicationModal {
   TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
   ARBITRUM_OPTIONS,
+  COW_SUBSIDY,
   // ------------------------------------------------------------------------------
 }
 

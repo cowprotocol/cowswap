@@ -4,10 +4,12 @@ import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rin
 import { DAI, USDC as USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
 import { USDC_XDAI, /*USDT_XDAI,*/ WBTC_XDAI, WETH_XDAI, WXDAI } from 'utils/xdai/constants'
 import { SupportedChainId } from 'constants/chains'
-import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 
 import wxDaiLogo from 'assets/cow-swap/wxdai.png'
-import vCowLogo from 'assets/cow-swap/cow.svg'
+// TODO: these are the same? why?
+import vCowLogo from 'assets/cow-swap/vCOW.png'
+import cowLogo from 'assets/cow-swap/cow.svg'
 import gnoLogo from 'assets/cow-swap/gno.png'
 import usdcLogo from 'assets/cow-swap/usdc.png'
 
@@ -19,6 +21,9 @@ function getTrustImage(mainnetAddress: string): string {
 
 const WETH_ADDRESS_MAINNET = WETH9[ChainId.MAINNET].address
 
+/**
+ * vCow token
+ */
 const V_COW_TOKEN_MAINNET = new Token(
   SupportedChainId.MAINNET,
   V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
@@ -49,6 +54,42 @@ export const V_COW: Record<number, Token> = {
   [SupportedChainId.RINKEBY]: V_COW_TOKEN_RINKEBY,
 }
 
+/**
+ * Cow token
+ */
+const COW_TOKEN_MAINNET = new Token(
+  SupportedChainId.MAINNET,
+  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
+const COW_TOKEN_XDAI = new Token(
+  SupportedChainId.XDAI,
+  COW_CONTRACT_ADDRESS[SupportedChainId.XDAI] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
+const COW_TOKEN_RINKEBY = new Token(
+  SupportedChainId.RINKEBY,
+  COW_CONTRACT_ADDRESS[SupportedChainId.RINKEBY] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
+export const COW: Record<number, Token> = {
+  [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
+  [SupportedChainId.XDAI]: COW_TOKEN_XDAI,
+  [SupportedChainId.RINKEBY]: COW_TOKEN_RINKEBY,
+}
+
+/**
+ * GNO token
+ */
 const GNO_MAINNET = new Token(
   SupportedChainId.MAINNET,
   '0x6810e776880c02933d47db1b9fc05908e5386b96',
@@ -71,6 +112,9 @@ export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.RINKEBY]: GNO_RINKEBY,
 }
 
+/**
+ * USDC token
+ */
 export const USDC_BY_CHAIN: Record<SupportedChainId, Token> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.XDAI]: USDC_XDAI,
@@ -85,6 +129,7 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   [WBTC_RINKEBY.address]: getTrustImage(WBTC.address),
   [WETH9[ChainId.RINKEBY].address]: getTrustImage(WETH_ADDRESS_MAINNET),
   [V_COW_TOKEN_RINKEBY.address]: vCowLogo,
+  [COW_TOKEN_RINKEBY.address]: cowLogo,
   [GNO_RINKEBY.address]: gnoLogo,
   [USDC_RINKEBY.address]: usdcLogo,
   // xDai
@@ -94,8 +139,10 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   [WXDAI.address]: wxDaiLogo,
   [WETH_XDAI.address]: getTrustImage(WETH_ADDRESS_MAINNET),
   [V_COW_TOKEN_XDAI.address]: vCowLogo,
+  [COW_TOKEN_XDAI.address]: cowLogo,
   [GNO_XDAI.address]: gnoLogo,
   [USDC_XDAI.address]: usdcLogo,
   // Mainnet
   [V_COW_TOKEN_MAINNET.address]: vCowLogo,
+  [COW_TOKEN_MAINNET.address]: cowLogo,
 }

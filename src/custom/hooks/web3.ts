@@ -1,15 +1,28 @@
-import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
+import { IS_IN_IFRAME } from 'constants/misc'
+import { useWeb3React } from '@web3-react/core'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useEffect, useState, useCallback } from 'react'
-import { isMobile } from 'react-device-detect'
-import { injected, walletconnect, getProviderType, WalletProvider } from 'connectors'
-import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
+
+import { injected, gnosisSafe, walletconnect, getProviderType, WalletProvider, fortmatic, walletlink } from 'connectors'
+import { isMobile } from 'utils/userAgent'
+
+import { STORAGE_KEY_LAST_PROVIDER, WAITING_TIME_RECONNECT_LAST_PROVIDER } from 'constants/index'
 
 // exports from the original file
-export { useActiveWeb3React, useInactiveListener } from '@src/hooks/web3'
+export { useInactiveListener, useActiveWeb3React } from '@src/hooks/web3'
+
+enum DefaultProvidersInjected {
+  METAMASK = WalletProvider.INJECTED,
+  COINBASE_WALLET = WalletProvider.WALLET_LINK,
+}
 
 export function useEagerConnect() {
-  const { activate, active, connector } = useWeb3ReactCore()
+  const { activate, active, connector } = useWeb3React()
   const [tried, setTried] = useState(false)
+
+  // gnosisSafe.isSafeApp() races a timeout against postMessage, so it delays pageload if we are not in a safe app;
+  // if we are not embedded in an iframe, it is not worth checking
+  const [triedSafe, setTriedSafe] = useState(!IS_IN_IFRAME)
 
   // handle setting/removing wallet provider in local storage
   const handleBeforeUnload = useCallback(() => {
@@ -22,30 +35,50 @@ export function useEagerConnect() {
     }
   }, [connector, active])
 
-  const connectInjected = useCallback(() => {
-    // check if the our application is authorized/connected with Metamask
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else {
-        if (isMobile && window.ethereum) {
+  const connectInjected = useCallback(
+    (providerName = DefaultProvidersInjected.METAMASK) => {
+      // check if the our application is authorized/connected with Metamask
+      injected.isAuthorized().then((isAuthorized) => {
+        if (isAuthorized) {
+          setDefaultInjected(providerName)
           activate(injected, undefined, true).catch(() => {
             setTried(true)
           })
         } else {
-          setTried(true)
+          if (isMobile && window.ethereum) {
+            setDefaultInjected(providerName)
+            activate(injected, undefined, true).catch(() => {
+              setTried(true)
+            })
+          } else {
+            setTried(true)
+          }
         }
+      })
+    },
+    [activate, setTried]
+  )
+
+  const reconnectUninjectedProvider = useCallback(
+    (provider: AbstractConnector): void => {
+      activate(provider, undefined, true).catch(() => {
+        setTried(true)
+      })
+    },
+    [activate]
+  )
+
+  const connectSafe = useCallback(() => {
+    gnosisSafe.isSafeApp().then((loadedInSafe) => {
+      if (loadedInSafe) {
+        activate(gnosisSafe, undefined, true).catch(() => {
+          setTriedSafe(true)
+        })
+      } else {
+        setTriedSafe(true)
       }
     })
-  }, [activate, setTried])
-
-  const connectWalletConnect = useCallback(() => {
-    activate(walletconnect, undefined, true).catch(() => {
-      setTried(true)
-    })
-  }, [activate, setTried])
+  }, [activate, setTriedSafe])
 
   useEffect(() => {
     if (!active) {
@@ -53,23 +86,43 @@ export function useEagerConnect() {
 
       // if there is no last saved provider set tried state to true
       if (!latestProvider) {
-        // Try to auto-connect to the injected wallet
-        connectInjected()
+        if (!triedSafe) {
+          // First try to connect using Gnosis Safe
+          connectSafe()
+        } else {
+          // Then try to connect using the injected wallet
+          connectInjected()
+        }
+      } else if (latestProvider === WalletProvider.GNOSIS_SAFE) {
+        connectSafe()
       } else if (latestProvider === WalletProvider.INJECTED) {
         // MM is last provider
         connectInjected()
       } else if (latestProvider === WalletProvider.WALLET_CONNECT) {
         // WC is last provider
-        connectWalletConnect()
+        reconnectUninjectedProvider(walletconnect)
+      } else if (latestProvider === WalletProvider.WALLET_LINK) {
+        reconnectUninjectedProvider(walletlink)
+      } else if (latestProvider === WalletProvider.FORMATIC) {
+        reconnectUninjectedProvider(fortmatic)
       }
     }
-  }, [connectInjected, connectWalletConnect, active]) // intentionally only running on mount (make sure it's only mounted once :))
+  }, [connectInjected, active, connectSafe, triedSafe, reconnectUninjectedProvider]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
+    let timeout: NodeJS.Timeout | undefined
+
     if (active) {
       setTried(true)
+    } else {
+      timeout = setTimeout(() => {
+        localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+        setTried(true)
+      }, WAITING_TIME_RECONNECT_LAST_PROVIDER)
     }
+
+    return () => timeout && clearTimeout(timeout)
   }, [active])
 
   useEffect(() => {
@@ -83,4 +136,29 @@ export function useEagerConnect() {
   })
 
   return tried
+}
+
+/**
+ * Allows to select the default injected ethereum provider.
+ *
+ * It is assumed that metamask is the default injected Provider, however coinbaseWallet overrides this.
+ */
+export function setDefaultInjected(providerName: DefaultProvidersInjected) {
+  const { ethereum } = window
+
+  if (!ethereum?.providers) return
+
+  let provider
+  switch (providerName) {
+    case DefaultProvidersInjected.COINBASE_WALLET:
+      provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet)
+      break
+    case DefaultProvidersInjected.METAMASK:
+      provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask)
+      break
+  }
+
+  if (provider) {
+    ethereum.setSelectedProvider(provider)
+  }
 }

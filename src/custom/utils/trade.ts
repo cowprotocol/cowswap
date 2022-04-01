@@ -19,6 +19,7 @@ export interface PostOrderParams {
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
+  sellAmountBeforeFee: CurrencyAmount<Currency>
   feeAmount: CurrencyAmount<Currency> | undefined
   sellToken: Token
   buyToken: Token
@@ -70,6 +71,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     recipient,
     allowsOffchainSigning,
     appDataHash,
+    sellAmountBeforeFee,
   } = params
 
   // fee adjusted input amount
@@ -138,6 +140,9 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     // Additional API info
     apiAdditionalInfo: undefined,
+
+    // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
+    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
   }
 
   return {

@@ -48,7 +48,7 @@ function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Ele
               <p>
                 This means that a solver might already have included the order in a solution even if this cancellation
                 is successful. Read more in the{' '}
-                <a target="_blank" href="/#/faq#can-i-cancel-an-order">
+                <a target="_blank" href="/#/faq/trading#can-i-cancel-an-order">
                   FAQ
                 </a>
                 .

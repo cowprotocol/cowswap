@@ -52,6 +52,11 @@ export const useIsQuoteLoading = () =>
     return state.price.loading
   })
 
+export const useIsBestQuoteLoading = () =>
+  useSelector<AppState, boolean>((state) => {
+    return state.price.loadingBestQuote
+  })
+
 interface UseGetQuoteAndStatus {
   quote?: QuoteInformationObject
   isGettingNewQuote: boolean

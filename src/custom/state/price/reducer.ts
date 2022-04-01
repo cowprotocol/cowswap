@@ -1,4 +1,4 @@
-import { createReducer, PayloadAction } from '@reduxjs/toolkit'
+import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
@@ -27,9 +27,9 @@ export type QuoteInformationState = {
   readonly [chainId in ChainId]?: Partial<QuotesMap>
 }
 
-type InitialState = { loading: boolean; quotes: QuoteInformationState }
+type InitialState = { loading: boolean; loadingBestQuote: boolean; quotes: QuoteInformationState }
 
-const initialState: InitialState = { loading: false, quotes: {} }
+const initialState: InitialState = { loadingBestQuote: false, loading: false, quotes: {} }
 
 // Makes sure there stat is initialized
 function initializeState(
@@ -82,8 +82,9 @@ export default createReducer(initialState, (builder) =>
         validTo,
       }
 
-      // Activate loader
+      // Activate loaders
       state.loading = true
+      state.loadingBestQuote = true
     })
 
     /**
@@ -115,17 +116,30 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateQuote, (state, action) => {
       const quotes = state.quotes
       const payload = action.payload
-      const { sellToken, chainId } = payload
+      const { sellToken, chainId, isBestQuote } = payload
       initializeState(quotes, action)
 
       // Updates the new price
       const quoteInformation = quotes[chainId][sellToken]
-      if (quoteInformation) {
+      const quote = current(state).quotes[chainId]
+
+      // Flag to not update the quote when the there is already a quote price and the
+      // current quote in action is not the best quote, meaning the best quote for
+      // some reason was already loaded before fast quote and we want to keep best quote data
+      const hasPrice = !!quote && !!quote[sellToken]?.price?.amount
+      const shouldUpdate = !(!isBestQuote && hasPrice)
+
+      if (quoteInformation && shouldUpdate) {
         quotes[chainId][sellToken] = { ...quoteInformation, ...payload }
       }
 
       // Stop the loader
       state.loading = false
+
+      // Stop the quote loader when the "best" quote is fetched
+      if (isBestQuote) {
+        state.loadingBestQuote = false
+      }
     })
 
     /**
@@ -147,7 +161,8 @@ export default createReducer(initialState, (builder) =>
         }
       }
 
-      // Stop the loader
+      // Stop the loaders
       state.loading = false
+      state.loadingBestQuote = false
     })
 )
