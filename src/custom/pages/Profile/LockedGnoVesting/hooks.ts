@@ -14,7 +14,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
-const COW = COW_TOKENS[1]
+const COW = COW_TOKENS[SupportedChainId.MAINNET]
 
 const MERKLE_DROP_CONTRACT_ADDRESSES = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',

@@ -50,12 +50,10 @@ import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { SwapVCowStatus } from 'state/cowToken/actions'
 import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/claim/actions'
-import { useSwapVCowCallback } from 'state/claim/hooks'
 import LockedGnoVesting from './LockedGnoVesting'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
