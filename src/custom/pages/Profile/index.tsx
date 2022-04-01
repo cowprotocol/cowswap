@@ -250,7 +250,7 @@ export default function Profile() {
           </CardActions>
         </Card>
 
-        <LockedGnoVesting />
+        <LockedGnoVesting openModal={openModal} closeModal={closeModal} />
 
         <BannerCard>
           <span>

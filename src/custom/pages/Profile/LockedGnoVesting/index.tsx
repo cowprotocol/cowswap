@@ -22,7 +22,12 @@ enum ClaimStatus {
   CONFIRMED,
 }
 
-const LockedGnoVesting: React.FC = () => {
+interface Props {
+  openModal: (message: string, operationType: OperationType) => void
+  closeModal: () => void
+}
+
+const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const { allocated, vested, claimed, loading: loadingBalances } = useBalances()
   const unvested = allocated.subtract(vested)
@@ -35,9 +40,7 @@ const LockedGnoVesting: React.FC = () => {
   const isClaimPending = status === ClaimStatus.SUBMITTED
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
-  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    OperationType.CLAIM_VESTED_COW
-  )
+
   const claimCallback = useClaimCallback({
     openModal,
     closeModal,
@@ -136,7 +139,6 @@ const LockedGnoVesting: React.FC = () => {
         </ConvertWrapper>
       </Card>
 
-      <TransactionConfirmationModal />
       <ErrorModal />
     </>
   )
