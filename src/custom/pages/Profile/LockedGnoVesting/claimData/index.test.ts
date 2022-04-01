@@ -3,8 +3,8 @@ import { fetchClaim } from '.'
 describe('fetchClaim', () => {
   it('should fetch the correct amount and merkle proof for 0x01eda16f6a6c3b051ecc63b0d93c8c3a27491dc2 on mainnet', async () => {
     const claim = await fetchClaim('0x01eda16f6a6c3b051ecc63b0d93c8c3a27491dc2', 1)
-    expect(claim.amount).toEqual('0x03e7eed24f376724a0')
-    expect(claim.proof).toEqual([
+    expect(claim?.amount).toEqual('0x03e7eed24f376724a0')
+    expect(claim?.proof).toEqual([
       '0x60d453c5e23c77b881dd9ff7529fcf464edebd491d5ea8bf5e11e23cc6f47480',
       '0x0877e91858fac51a42947fbd26999874691a9e888cf34436fa66c0028ab7bbd3',
       '0xfe29bdb74e8f410a109fde3f458c927507e618808b8413ed1c5fd323c5c9a628',
@@ -20,8 +20,8 @@ describe('fetchClaim', () => {
 
   it('should fetch the correct amount and merkle proof for 0x00645dd21310882cc32399abcb54e0a05b3b5d1d on Gnosis Chain', async () => {
     const claim = await fetchClaim('0x00645dd21310882cc32399abcb54e0a05b3b5d1d', 100)
-    expect(claim.amount).toEqual('0x58b0138dc7e4ccd980')
-    expect(claim.proof).toEqual([
+    expect(claim?.amount).toEqual('0x58b0138dc7e4ccd980')
+    expect(claim?.proof).toEqual([
       '0x65675d39883f109dec07e3d7b4613c412c81ee3311fd093cff00359e52d739c1',
       '0x9638aa10de5885b599958cddae3f3ab119f11b61d32e03741198d15c9208e7fb',
       '0xf2b9715498991ab98a9e819889268409a351b9754fca9a1b05946f45829699d6',
@@ -34,5 +34,10 @@ describe('fetchClaim', () => {
       '0xd0c880019076ffcd06d15b98b049e82d349323a6da4871484964e2c5b4e446a2',
       '0x4b71fa3ace335c8703d193770bcef717053532750939e342c416afef044a3eba',
     ])
+  })
+
+  it('should return null for ineligible addresses', async () => {
+    const claim = await fetchClaim('0x0000000000000000000000000000000000000000', 4)
+    expect(claim).toBe(null)
   })
 })
