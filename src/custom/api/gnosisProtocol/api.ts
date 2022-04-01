@@ -34,13 +34,13 @@ import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { Context } from '@sentry/types'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
-  if (isLocal || isDev || isPr || isBarn) {
-    return {
-      [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
-      [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
-      [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
-    }
-  }
+  // if (isLocal || isDev || isPr || isBarn) {
+  //   return {
+  //     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
+  //     [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
+  //     [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
+  //   }
+  // }
 
   // Production, staging, ens, ...
   return {
