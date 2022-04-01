@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from '@src/custom/hooks/web3'
-import { fetchClaim, hasAllocation } from './claimData'
+import { fetchClaim } from './claimData'
 import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from '@src/custom/abis/types'
@@ -35,21 +35,19 @@ export const useAllocation = (): CurrencyAmount<Token> => {
   const { chainId, account } = useActiveWeb3React()
   const [allocation, setAllocation] = useState(CurrencyAmount.fromRawAmount(COW, 0))
 
-  const accountHasAllocation = account && chainId && hasAllocation(account, chainId)
-
   useEffect(() => {
     let canceled = false
-    if (accountHasAllocation) {
+    if (account && chainId) {
       fetchClaim(account, chainId).then((claim) => {
         if (!canceled) {
-          setAllocation(CurrencyAmount.fromRawAmount(COW, claim.amount))
+          setAllocation(CurrencyAmount.fromRawAmount(COW, claim?.amount ?? 0))
         }
       })
     }
     return () => {
       canceled = true
     }
-  }, [chainId, account, accountHasAllocation])
+  }, [chainId, account])
 
   return allocation
 }
@@ -58,13 +56,12 @@ const START_TIME = 1644584715000
 const DURATION = 126144000000
 
 export const useBalances = () => {
-  const { chainId, account } = useActiveWeb3React()
-  const accountHasAllocation = account && chainId && hasAllocation(account, chainId)
+  const { account } = useActiveWeb3React()
   const allocated = useAllocation()
   const vested = allocated.multiply(Math.min(Date.now() - START_TIME, DURATION)).divide(DURATION)
 
   const tokenDistro = useTokenDistroContract()
-  const { result, loading } = useSingleCallResult(accountHasAllocation ? tokenDistro : null, 'balances', [
+  const { result, loading } = useSingleCallResult(allocated.greaterThan(0) ? tokenDistro : null, 'balances', [
     account || undefined,
   ])
   const claimed = useMemo(() => CurrencyAmount.fromRawAmount(COW, result ? result.claimed.toString() : 0), [result])
@@ -73,7 +70,7 @@ export const useBalances = () => {
     allocated,
     vested,
     claimed,
-    loading: (accountHasAllocation && allocated.equalTo(0)) || loading,
+    loading,
   }
 }
 
@@ -104,7 +101,10 @@ export function useClaimCallback({
       throw new Error('Contract not present')
     }
 
-    const { index, proof, amount } = await fetchClaim(account, chainId)
+    const claim = await fetchClaim(account, chainId)
+    if (!claim) throw new Error('Trying to claim without claim data')
+
+    const { index, proof, amount } = claim
 
     // On the very first claim we need to provide the merkle proof.
     // Afterwards the allocation will be already in the tokenDistro contract and we can just claim it there.
