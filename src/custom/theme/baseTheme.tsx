@@ -66,6 +66,7 @@ export function colors(darkMode: boolean): Colors {
     blue2: darkMode ? '#a3beff' : '#0c40bf',
     purple: '#8958FF',
     yellow: '#fff6dc',
+    orange: '#FF784A',
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',
@@ -80,6 +81,7 @@ export function colors(darkMode: boolean): Colors {
     // ****** other ******
     border: darkMode ? '#021E34' : '#000000',
     border2: darkMode ? '#254F83' : '#afcbda',
+    cardBackground: darkMode ? '#142642' : 'rgb(255 255 255 / 85%)',
     cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
     cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
     cardShadow2: darkMode ? 'rgba(1, 10, 16, 0.15)' : 'rgba(11, 37, 53, 0.93)',

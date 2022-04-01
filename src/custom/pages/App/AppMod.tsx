@@ -48,7 +48,7 @@ const AppWrapper = styled.div<Partial<CSS.Properties & AppWrapProps>>`
   flex-flow: column;
   align-items: flex-start;
   min-height: 100vh;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */ // mod
   &:after {
     content: '';
     position: fixed;

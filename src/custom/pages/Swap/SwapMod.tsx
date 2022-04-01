@@ -92,6 +92,7 @@ import usePriceImpact from 'hooks/usePriceImpact'
 import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
+import CowSubsidyModal from 'components/CowSubsidyModal'
 
 // MOD - exported in ./styleds to avoid circ dep
 // export const StyledInfo = styled(Info)`
@@ -116,6 +117,7 @@ export default function Swap({
   Price,
   HighFeeWarning,
   NoImpactWarning,
+  FeesDiscount,
   className,
   allowsOffchainSigning,
 }: SwapProps) {
@@ -169,6 +171,9 @@ export default function Swap({
     [setTransactionConfirmationModalMsg, openTransactionConfirmationModalAux]
   )
 
+  // Cow subsidy modal
+  const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
+  const showCowSubsidyModal = useModalOpen(ApplicationModal.COW_SUBSIDY)
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
@@ -530,6 +535,8 @@ export default function Swap({
         onDismiss={closeModals}
         operationType={operationType}
       />
+      {/* CoWmunity Fees Discount Modal */}
+      <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
 
       <NetworkAlert />
       <AffiliateStatusCheck />
@@ -566,7 +573,7 @@ export default function Swap({
                       amountBeforeFees={amountBeforeFees}
                       amountAfterFees={formatSmart(trade?.inputAmountWithFee, AMOUNT_PRECISION)}
                       type="From"
-                      feeAmount={formatSmart(trade?.fee?.feeAsCurrency, AMOUNT_PRECISION)}
+                      feeAmount={trade?.fee?.feeAsCurrency}
                       allowsOffchainSigning={allowsOffchainSigning}
                       fiatValue={fiatValueInput}
                     />
@@ -626,10 +633,7 @@ export default function Swap({
                       amountBeforeFees={formatSmart(trade?.outputAmountWithoutFee, AMOUNT_PRECISION)}
                       amountAfterFees={formatSmart(trade?.outputAmount, AMOUNT_PRECISION)}
                       type="To"
-                      feeAmount={formatSmart(
-                        trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount),
-                        AMOUNT_PRECISION
-                      )}
+                      feeAmount={trade?.outputAmountWithoutFee?.subtract(trade?.outputAmount)}
                       allowsOffchainSigning={allowsOffchainSigning}
                       fiatValue={fiatValueOutput}
                     />
@@ -754,6 +758,9 @@ export default function Swap({
                     <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
                   )}
                   {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
+                  {/* FEES DISCOUNT */}
+                  {/* TODO: check cow balance and set here, else don't show */}
+                  <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
                 {isNativeIn && isSupportedWallet && onWrap && (
@@ -995,7 +1002,7 @@ export default function Swap({
             <>
               <p>CowSwap requires offline signatures, which is currently not supported by some wallets.</p>
               <p>
-                Read more in the <HashLink to="/faq#wallet-not-supported">FAQ</HashLink>.
+                Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
               </p>
             </>
           }
