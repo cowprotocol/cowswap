@@ -51,7 +51,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { SwapVCowStatus } from 'state/claim/actions'
 import { useSwapVCowCallback } from 'state/claim/hooks'
-import LockedGnoVesting, { hasAllocation } from './LockedGnoVesting'
+import LockedGnoVesting from './LockedGnoVesting'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -82,8 +82,6 @@ export default function Profile() {
 
   const hasVestedBalance = vested && !vested.equalTo(0)
   const hasVCowBalance = total && !total.equalTo(0)
-
-  const hasVestingFromLockedGno = account && chainId && hasAllocation(account, chainId)
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -218,7 +216,7 @@ export default function Profile() {
           </BalanceDisplay>
         </Card>
 
-        {hasVestingFromLockedGno && <LockedGnoVesting />}
+        <LockedGnoVesting />
 
         <BannerCard>
           <span>
