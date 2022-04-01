@@ -19,7 +19,6 @@ export default function AddressSelector(props: AddressSelectorProps) {
   const selectedAddress = useAddress()
   const { chainId, library } = useActiveWeb3React()
   const [open, setOpen] = useState(false)
-  const [primaryEnsName, setPrimaryEnsName] = useState<string>()
   const [items, setItems] = useState<string[]>([address])
   const toggle = useCallback(() => setOpen((open) => !open), [])
   const node = useRef<HTMLDivElement>(null)
@@ -33,18 +32,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
     [dispatch, toggle]
   )
 
-  const lookup = useCallback(async () => {
-    try {
-      const ensName = await library?.lookupAddress(address)
-      setPrimaryEnsName(ensName ?? undefined)
-    } catch (error) {
-      console.log(error)
-    }
-  }, [library, address])
-
   useEffect(() => {
-    lookup()
-
     if (!chainId) {
       return
     }
@@ -57,17 +45,37 @@ export default function AddressSelector(props: AddressSelectorProps) {
       }
       setItems([...response, address])
     })
-  }, [address, chainId, lookup])
+  }, [address, chainId])
 
   useEffect(() => {
     if (selectedAddress) {
       return
     }
 
-    if (primaryEnsName) {
-      dispatch(updateAddress(primaryEnsName))
+    dispatch(updateAddress(address))
+  }, [selectedAddress, address, dispatch])
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      return
     }
-  }, [selectedAddress, primaryEnsName, dispatch])
+
+    // if the user switches accounts, reset the selected address
+    if (isAddress(selectedAddress) && selectedAddress !== address) {
+      dispatch(updateAddress(address))
+      return
+    }
+
+    // the selected address is a ens name, verify that resolves to the correct address
+    const verify = async () => {
+      const resolvedAddress = await library?.resolveName(selectedAddress)
+      if (resolvedAddress !== address) {
+        dispatch(updateAddress(address))
+      }
+    }
+
+    verify()
+  }, [selectedAddress, address, dispatch, library])
 
   return (
     <Wrapper ref={node}>

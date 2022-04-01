@@ -38,7 +38,7 @@ export async function ensNames(
     }
 
     const data = await new GraphQLClient(subgraphUrl).request<EnsNamesQuery>(DOMAINS_BY_ADDRESS_QUERY, {
-      resolvedAddress: address,
+      resolvedAddress: address.toLocaleLowerCase(),
     })
 
     return data.domains
