@@ -9,7 +9,6 @@ import cowImage from 'assets/cow-swap/cow_v2.svg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { formatSmartLocaleAware } from 'utils/format'
-import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 
