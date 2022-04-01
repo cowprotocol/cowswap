@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 
 import { useAllTokenBalances } from 'state/wallet/hooks'
 
+const PRIORITISED_TOKENS = ['COW', 'GNO']
+
 // compare two token amounts with highest one coming first
 function balanceComparator(balanceA?: CurrencyAmount<Currency>, balanceB?: CurrencyAmount<Currency>) {
   if (balanceA && balanceB) {
@@ -29,9 +31,14 @@ function getTokenComparator(balances: {
     const balanceComp = balanceComparator(balanceA, balanceB)
     if (balanceComp !== 0) return balanceComp
 
-    // Mod: move COW up the token list
-    if (tokenA.symbol === 'COW' || tokenB.symbol === 'COW') {
-      return tokenB.symbol === 'COW' ? 1 : -1
+    // Mod: modify tokens list by prioritised list
+    const indexA = PRIORITISED_TOKENS.indexOf(tokenA.symbol || '')
+    const indexB = PRIORITISED_TOKENS.indexOf(tokenB.symbol || '')
+
+    if (indexA !== -1 && indexB !== -1) {
+      return indexB < indexA ? 1 : -1
+    } else if (indexA !== -1 || indexB !== -1) {
+      return indexB !== -1 ? 1 : -1
     }
 
     if (tokenA.symbol && tokenB.symbol) {
