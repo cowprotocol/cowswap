@@ -1,7 +1,7 @@
+import { SupportedChainId } from 'constants/chains'
 import mainnetIndex from './mainnet.json'
 import rinkebyIndex from './rinkeby.json'
 import gnosisChainIndex from './gnosisChain.json'
-import { SupportedChainId } from '@src/custom/constants/chains'
 
 interface Claim {
   index: number
