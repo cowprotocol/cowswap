@@ -1,32 +1,33 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useActiveWeb3React } from '@src/custom/hooks/web3'
-import { fetchClaim } from './claimData'
+import { ContractTransaction } from '@ethersproject/contracts'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { useActiveWeb3React } from 'hooks/web3'
 import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
-import { MerkleDrop, TokenDistro } from '@src/custom/abis/types'
-import { useContract } from '@src/custom/hooks/useContract'
-import { COW as COW_TOKENS } from '@src/custom/constants/tokens'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useSingleCallResult } from '@src/state/multicall/hooks'
-import { OperationType } from '@src/custom/components/TransactionConfirmationModal'
+import { MerkleDrop, TokenDistro } from 'abis/types'
+import { useSingleCallResult } from 'state/multicall/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
-import { ContractTransaction } from '@ethersproject/contracts'
+import { useContract } from 'hooks/useContract'
+import { COW as COW_TOKENS } from 'constants/tokens'
+import { SupportedChainId } from 'constants/chains'
+import { OperationType } from 'components/TransactionConfirmationModal'
+import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[1]
 
 const MERKLE_DROP_CONTRACT_ADDRESSES = {
-  1: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
-  4: '0xe354c570B77b02F1a568Ea28901184e12703960D',
-  100: '0x3d610e917130f9D036e85A030596807f57e11093',
+  [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
+  [SupportedChainId.RINKEBY]: '0xe354c570B77b02F1a568Ea28901184e12703960D',
+  [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
 }
 
 const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MERKLE_DROP_ABI, true)
 
 const TOKEN_DISTRO_CONTRACT_ADDRESSES = {
-  1: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
-  4: '0x31E7495e461Cf8147C7Bc0814a49aAbeA76B704b',
-  100: '0x3d610e917130f9D036e85A030596807f57e11093',
+  [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
+  [SupportedChainId.RINKEBY]: '0x31E7495e461Cf8147C7Bc0814a49aAbeA76B704b',
+  [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
 }
 
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
