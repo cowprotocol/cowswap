@@ -45,13 +45,13 @@ export const Wrapper = styled.div`
     animation-delay: 6s;
   }
   img:nth-of-type(2) {
-    animation-delay: 4s;
+    animation-delay: 4.5s;
   }
   img:nth-of-type(3) {
-    animation-delay: 2s;
+    animation-delay: 3s;
   }
   img:nth-of-type(4) {
-    animation-delay: 1s;
+    animation-delay: 1.5s;
   }
 `
 
