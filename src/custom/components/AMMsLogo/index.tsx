@@ -51,7 +51,7 @@ export const Wrapper = styled.div`
     animation-delay: 2s;
   }
   img:nth-of-type(4) {
-    animation-delay: 0s;
+    animation-delay: 1s;
   }
 `
 
