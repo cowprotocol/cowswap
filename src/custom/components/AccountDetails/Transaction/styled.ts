@@ -451,7 +451,7 @@ export const ProgressBarWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   border-radius: 12px;
-  padding: 20px;
+  padding: 20px 20px 4px;
   color: ${({ theme }) => theme.text1};
   background-color: ${({ theme }) => theme.bg4};
 
@@ -534,11 +534,21 @@ export const WarningIcon = styled(AlertTriangle)`
   color: ${({ theme }) => theme.attention};
 `
 
+export const StatusMsgContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+  justify-content: center;
+  gap: 0.2rem;
+  `};
+`
 export const StatusMsg = styled.p`
   font-size: 0.85rem;
-  margin: 0.8rem 0 0 0;
   color: ${({ theme }) => theme.text1};
-  display: inherit;
+  margin: 0;
 `
 
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`

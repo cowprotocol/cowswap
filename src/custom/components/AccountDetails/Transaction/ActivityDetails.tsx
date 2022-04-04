@@ -18,6 +18,7 @@ import {
   ProgressBarInnerWrapper,
   CowProtocolIcon,
   WarningLogo,
+  StatusMsgContainer,
   StatusMsg,
   CheckIcon,
   ClockIcon,
@@ -327,9 +328,10 @@ export function ActivityDetails(props: {
             <SuccessProgress />
             <CowProtocolIcon />
           </ProgressBarInnerWrapper>
-          <StatusMsg>
-            <CheckIcon size={16} /> Looking for a CoW.
-          </StatusMsg>
+          <StatusMsgContainer>
+            <CheckIcon size={16} />
+            <StatusMsg>Looking for a CoW.</StatusMsg>
+          </StatusMsgContainer>
         </ProgressBarWrapper>
 
         <ProgressBarWrapper>
@@ -337,9 +339,10 @@ export function ActivityDetails(props: {
             <PendingProgress />
             <AMMsLogo />
           </ProgressBarInnerWrapper>
-          <StatusMsg>
-            <ClockIcon size={16} /> Finding best onchain price.
-          </StatusMsg>
+          <StatusMsgContainer>
+            <ClockIcon size={16} />
+            <StatusMsg>Finding best onchain price.</StatusMsg>
+          </StatusMsgContainer>
         </ProgressBarWrapper>
 
         <ProgressBarWrapper>
@@ -347,9 +350,10 @@ export function ActivityDetails(props: {
             <WarningProgress />
             <WarningLogo />
           </ProgressBarInnerWrapper>
-          <StatusMsg>
-            <WarningIcon size={16} /> Your order is taking longer than usual.
-          </StatusMsg>
+          <StatusMsgContainer>
+            <WarningIcon size={16} />
+            <StatusMsg> Your order is taking longer than usual.</StatusMsg>
+          </StatusMsgContainer>
         </ProgressBarWrapper>
 
         <ProgressBarWrapper>
@@ -357,10 +361,11 @@ export function ActivityDetails(props: {
             <WarningProgress />
             <WarningLogo />
           </ProgressBarInnerWrapper>
-          <StatusMsg>
-            <WarningIcon size={16} /> Your limit price is out of market. You can wait or
+          <StatusMsgContainer>
+            <WarningIcon size={16} />
+            <StatusMsg>Your limit price is out of market. You can wait or:</StatusMsg>
             <LinkStyledButton>Cancel order</LinkStyledButton>
-          </StatusMsg>
+          </StatusMsgContainer>
         </ProgressBarWrapper>
       </SummaryInner>
     </Summary>
