@@ -81,7 +81,7 @@ const FlyoutMenuContents = styled.div`
   flex-direction: column;
   font-size: 16px;
   overflow: auto;
-  padding: 0.3rem;
+  padding: 10px 12px;
   //position: absolute;
   //top: 54px;
   min-width: 175px;
