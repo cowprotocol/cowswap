@@ -45,11 +45,7 @@ import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData } from 'state/claim/hooks'
-import {
-  // V_COW_CONTRACT_ADDRESS,
-  COW_CONTRACT_ADDRESS,
-  AMOUNT_PRECISION,
-} from 'constants/index'
+import { COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
