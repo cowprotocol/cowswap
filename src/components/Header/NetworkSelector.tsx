@@ -17,6 +17,7 @@ import { replaceURLParam } from 'utils/routes'
 
 import { useAppDispatch } from '../../state/hooks'
 import { switchToNetwork } from '../../utils/switchToNetwork'
+import { transparentize } from 'polished'
 
 export const ActiveRowLinkList = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ export const ActiveRowLinkList = styled.div`
     font-size: 14px;
     font-weight: 500;
     justify-content: space-between;
-    padding: 8px 0 4px;
+    padding: 8px 0 4px 6px;
     text-decoration: none;
   }
   & > a:first-child {
@@ -40,11 +41,11 @@ export const ActiveRowLinkList = styled.div`
   }
 `
 export const ActiveRowWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
   border-radius: 8px;
   cursor: pointer;
-  padding: 8px;
   width: 100%;
+  padding: 8px;
 `
 export const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text1};
