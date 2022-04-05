@@ -24,10 +24,10 @@ import { updateVersion } from 'state/global/actions'
 import affiliate from 'state/affiliate/reducer'
 import enhancedTransactions from 'state/enhancedTransactions/reducer'
 import claim from 'state/claim/reducer'
-import swapVCow from 'state/swapVCow/reducer'
+import cowToken from 'state/cowToken/reducer'
 
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
-import { swapVCowMiddleware } from './swapVCow/middleware'
+import { cowTokenMiddleware } from 'state/cowToken/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 
 const UNISWAP_REDUCERS = {
@@ -55,7 +55,7 @@ const reducers = {
   affiliate,
   profile,
   claim,
-  swapVCow,
+  cowToken,
 }
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile']
@@ -68,7 +68,7 @@ const store = configureStore({
       // .concat(routingApi.middleware)
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
-      .concat(swapVCowMiddleware)
+      .concat(cowTokenMiddleware)
       .concat(soundMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })

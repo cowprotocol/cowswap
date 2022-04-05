@@ -42,13 +42,13 @@ import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/swapVCow/hooks'
+import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { SwapVCowStatus } from 'state/swapVCow/actions'
+import { SwapVCowStatus } from 'state/cowToken/actions'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 

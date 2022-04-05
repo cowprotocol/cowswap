@@ -1,13 +1,13 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
 import { AppState } from 'state'
 import { finalizeTransaction } from '../enhancedTransactions/actions'
-import { setStatus, SwapVCowStatus } from './actions'
+import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { getCowSoundSuccess } from 'utils/sound'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 
 // Watch for swapVCow tx being finalized and triggers a change of status
-export const swapVCowMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
+export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
   let cowSound
@@ -24,7 +24,7 @@ export const swapVCowMiddleware: Middleware<Record<string, unknown>, AppState> =
         transaction.hash
       )
 
-      store.dispatch(setStatus(SwapVCowStatus.INITIAL))
+      store.dispatch(setSwapVCowStatus(SwapVCowStatus.INITIAL))
       cowSound = getCowSoundSuccess()
     }
   }

@@ -10,7 +10,7 @@ import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { V_COW } from 'constants/tokens'
 import { AppState } from 'state'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
-import { setStatus, SwapVCowStatus } from './actions'
+import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 
@@ -141,12 +141,12 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
  */
 export function useSetSwapVCowStatus(): SetSwapVCowStatusCallback {
   const dispatch = useAppDispatch()
-  return useCallback((payload: SwapVCowStatus) => dispatch(setStatus(payload)), [dispatch])
+  return useCallback((payload: SwapVCowStatus) => dispatch(setSwapVCowStatus(payload)), [dispatch])
 }
 
 /**
  * Hook that gets swap vCow->Cow status
  */
 export function useSwapVCowStatus() {
-  return useAppSelector((state: AppState) => state.swapVCow.status)
+  return useAppSelector((state: AppState) => state.cowToken.swapVCowStatus)
 }
