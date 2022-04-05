@@ -27,6 +27,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
+import { getBlockExplorerUrl } from 'utils'
 import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
@@ -44,7 +45,11 @@ import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData } from 'state/claim/hooks'
-import { AMOUNT_PRECISION } from 'constants/index'
+import {
+  // V_COW_CONTRACT_ADDRESS,
+  COW_CONTRACT_ADDRESS,
+  AMOUNT_PRECISION,
+} from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
@@ -53,6 +58,7 @@ import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { SwapVCowStatus } from 'state/claim/actions'
 import { useSwapVCowCallback } from 'state/claim/hooks'
 import MetamaskIcon from 'assets/images/metamask.png'
+import {} from 'constants/index'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -216,7 +222,9 @@ export default function Profile() {
             </span>
           </BalanceDisplay>
           <CardActions>
-            <ExtLink href={'#'}>Etherscan ↗</ExtLink>
+            <ExtLink href={getBlockExplorerUrl(chainId || 1, COW_CONTRACT_ADDRESS[chainId || 1], 'address')}>
+              {chainId === ChainId.XDAI ? 'Blockscout' : 'Etherscan'} ↗
+            </ExtLink>
             <ExtLink href={'#'}>
               <img src={MetamaskIcon} alt="MetaMask" width="15" height="14" /> Add to MetaMask
             </ExtLink>
