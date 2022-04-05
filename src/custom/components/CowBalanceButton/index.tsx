@@ -1,8 +1,7 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { useTokenBalance } from 'state/wallet/hooks'
-import { V_COW } from 'constants/tokens'
+import { useCombinedBalance } from 'state/cowToken/hooks'
 import { ChainId } from 'state/lists/actions/actionsMod'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -45,18 +44,17 @@ interface CowBalanceButtonProps {
   onClick?: () => void
 }
 
-export default function CowBalanceButton({ account, chainId, onClick }: CowBalanceButtonProps) {
-  const vCowToken = chainId ? V_COW[chainId] : undefined
-  const vCowBalance = useTokenBalance(account || undefined, vCowToken)
+export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
+  const combinedBalance = useCombinedBalance()
 
-  const formattedVCowBalance = formatSmartLocaleAware(vCowBalance, AMOUNT_PRECISION)
-  const formattedMaxVCowBalance = formatMax(vCowBalance, vCowToken?.decimals)
+  const formattedBalance = formatSmartLocaleAware(combinedBalance, AMOUNT_PRECISION)
+  const formattedMaxBalance = formatMax(combinedBalance, AMOUNT_PRECISION)
 
   return (
     <Wrapper onClick={onClick}>
       <CowProtocolLogo />
-      <b title={formattedMaxVCowBalance && `${formattedMaxVCowBalance} vCOW`}>
-        <Trans>{formattedVCowBalance} vCOW</Trans>
+      <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
+        <Trans>{formattedBalance} (v)COW</Trans>
       </b>
     </Wrapper>
   )
