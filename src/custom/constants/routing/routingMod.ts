@@ -23,6 +23,7 @@ import {
   // WBTC_ARBITRUM_ONE,
   // WBTC_OPTIMISM,
   WETH9_EXTENDED,
+  COW,
 } from 'constants/tokens'
 
 import { USDC_XDAI, /* USDT_XDAI, */ WBTC_XDAI, WETH_XDAI } from 'utils/xdai/constants'
@@ -80,6 +81,7 @@ export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.MAINNET]: [
     // ExtendedEther.onChain(SupportedChainId.MAINNET),
     DAI,
+    COW[SupportedChainId.MAINNET],
     USDC,
     USDT,
     WBTC,
@@ -92,6 +94,7 @@ export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.RINKEBY]: [
     // ExtendedEther.onChain(SupportedChainId.RINKEBY),
     WETH9_EXTENDED[SupportedChainId.RINKEBY],
+    COW[SupportedChainId.RINKEBY],
     DAI_RINKEBY,
     USDC_RINKEBY,
     USDT_RINKEBY,
@@ -120,6 +123,7 @@ export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.XDAI]: [
     // ExtendedEther.onChain(SupportedChainId.XDA),
     USDC_XDAI,
+    COW[SupportedChainId.XDAI],
     /*USDT_XDAI,*/ WBTC_XDAI,
     WETH9_EXTENDED[100],
     WETH_XDAI,

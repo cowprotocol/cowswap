@@ -43,15 +43,13 @@ import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { useVCowData } from 'state/claim/hooks'
+import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { SwapVCowStatus } from 'state/claim/actions'
-import { useSwapVCowCallback } from 'state/claim/hooks'
+import { SwapVCowStatus } from 'state/cowToken/actions'
 import MetamaskIcon from 'assets/images/metamask.png'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
@@ -64,8 +62,8 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
-  const { setSwapVCowStatus } = useClaimDispatchers()
-  const { swapVCowStatus } = useClaimState()
+  const setSwapVCowStatus = useSetSwapVCowStatus()
+  const swapVCowStatus = useSwapVCowStatus()
 
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
