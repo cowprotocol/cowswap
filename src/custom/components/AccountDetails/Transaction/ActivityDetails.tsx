@@ -363,8 +363,9 @@ export function ActivityDetails(props: {
           </ProgressBarInnerWrapper>
           <StatusMsgContainer>
             <WarningIcon size={16} />
-            <StatusMsg>Your limit price is out of market. You can wait or:</StatusMsg>
-            <LinkStyledButton>Cancel order</LinkStyledButton>
+            <StatusMsg>
+              Your limit price is out of market. You can wait or<LinkStyledButton>Cancel order</LinkStyledButton>
+            </StatusMsg>
           </StatusMsgContainer>
         </ProgressBarWrapper>
       </SummaryInner>

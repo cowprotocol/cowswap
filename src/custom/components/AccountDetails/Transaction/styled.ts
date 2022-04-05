@@ -446,7 +446,7 @@ export const ProgressBarWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 575px;
-  margin: 8px 0;
+  margin: 16px 0 8px 0;
   overflow: hidden;
   display: flex;
   flex-flow: column wrap;
@@ -463,7 +463,7 @@ export const ProgressBarWrapper = styled.div`
   `};
 `
 export const ProgressBarInnerWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.blue4};
   border-radius: 18px;
   overflow: visible !important;
   position: relative;
@@ -526,7 +526,7 @@ export const CheckIcon = styled(CheckCircle)`
 
 export const ClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
-  color: ${({ theme }) => theme.yellow1};
+  color: ${({ theme }) => theme.success};
 `
 
 export const WarningIcon = styled(AlertTriangle)`
@@ -537,12 +537,16 @@ export const WarningIcon = styled(AlertTriangle)`
 export const StatusMsgContainer = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   margin: 1rem 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-  justify-content: center;
-  gap: 0.2rem;
+    gap: 0.2rem;
+    display: flex;
+    align-items: center;
+  
+    svg {
+      flex-shrink: 0;
+    }
   `};
 `
 export const StatusMsg = styled.p`
