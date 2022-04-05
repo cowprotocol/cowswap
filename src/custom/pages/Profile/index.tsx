@@ -15,6 +15,7 @@ import {
   ExtLink,
   CardsWrapper,
   Card,
+  CardActions,
   BannerCard,
   BalanceDisplay,
   ConvertWrapper,
@@ -51,6 +52,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { SwapVCowStatus } from 'state/claim/actions'
 import { useSwapVCowCallback } from 'state/claim/hooks'
+import MetamaskIcon from 'assets/images/metamask.png'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -213,6 +215,13 @@ export default function Profile() {
               <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
             </span>
           </BalanceDisplay>
+          <CardActions>
+            <ExtLink href={'#'}>Etherscan ↗</ExtLink>
+            <ExtLink href={'#'}>
+              <img src={MetamaskIcon} alt="MetaMask" width="15" height="14" /> Add to MetaMask
+            </ExtLink>
+            <ExtLink href={'#'}>Buy COW ↗</ExtLink>
+          </CardActions>
         </Card>
 
         <BannerCard>

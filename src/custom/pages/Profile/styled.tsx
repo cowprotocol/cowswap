@@ -429,6 +429,25 @@ export const BannerCard = styled(BannerExplainer)`
   }
 `
 
+export const CardActions = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+
+  > a {
+    font-size: 14px;
+    line-height: 1;
+    color: ${({ theme }) => theme.text1};
+    display: flex;
+    align-items: flex-end;
+
+    > img {
+      margin: 0 3px 0 0;
+    }
+  }
+`
+
 export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolean; hAlign?: string }>`
   display: flex;
   flex-flow: row wrap;
