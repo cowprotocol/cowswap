@@ -53,6 +53,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { SwapVCowStatus } from 'state/cowToken/actions'
 import AddToMetamask from 'components/AddToMetamask'
+import { Link } from 'react-router-dom'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -228,7 +229,7 @@ export default function Profile() {
 
             <AddToMetamask currency={COW[chainId || 1] as Currency | undefined} />
 
-            <ExtLink href={'#'}>Buy COW ↗</ExtLink>
+            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW ↗</Link>
           </CardActions>
         </Card>
 
