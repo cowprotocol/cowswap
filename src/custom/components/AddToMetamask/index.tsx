@@ -12,7 +12,7 @@ export type AddToMetamaskProps = {
   currency: Currency | undefined
 }
 
-const ButtonCustom = styled.button`
+export const ButtonCustom = styled.button`
   display: flex;
   flex: 1 1 auto;
   align-self: center;

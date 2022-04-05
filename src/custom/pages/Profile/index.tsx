@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { Currency } from '@uniswap/sdk-core'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -45,14 +46,13 @@ import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
-import { COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { SwapVCowStatus } from 'state/cowToken/actions'
-import MetamaskIcon from 'assets/images/metamask.png'
-import {} from 'constants/index'
+import AddToMetamask from 'components/AddToMetamask'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -204,6 +204,12 @@ export default function Profile() {
                 )}
               </ButtonPrimary>
             </ConvertWrapper>
+
+            <CardActions>
+              <ExtLink href={getBlockExplorerUrl(chainId || 1, V_COW_CONTRACT_ADDRESS[chainId || 1], 'address')}>
+                Contract ↗
+              </ExtLink>
+            </CardActions>
           </Card>
         )}
 
@@ -217,11 +223,11 @@ export default function Profile() {
           </BalanceDisplay>
           <CardActions>
             <ExtLink href={getBlockExplorerUrl(chainId || 1, COW_CONTRACT_ADDRESS[chainId || 1], 'address')}>
-              {chainId === ChainId.XDAI ? 'Blockscout' : 'Etherscan'} ↗
+              Contract ↗
             </ExtLink>
-            <ExtLink href={'#'}>
-              <img src={MetamaskIcon} alt="MetaMask" width="15" height="14" /> Add to MetaMask
-            </ExtLink>
+
+            <AddToMetamask currency={COW[chainId || 1] as Currency | undefined} />
+
             <ExtLink href={'#'}>Buy COW ↗</ExtLink>
           </CardActions>
         </Card>

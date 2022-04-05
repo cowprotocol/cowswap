@@ -5,6 +5,7 @@ import { BannerExplainer } from 'pages/Claim/styled'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
+import { ButtonCustom as AddToMetaMask } from 'components/AddToMetamask'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -263,6 +264,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   gap: 24px 0;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.cardBorder};
+  align-items: flex-end;
 
   ${({ showLoader, theme }) =>
     showLoader &&
@@ -434,16 +436,37 @@ export const CardActions = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  margin: auto 0 0;
 
-  > a {
-    font-size: 14px;
+  > a,
+  ${AddToMetaMask} {
+    font-size: 13px;
+    height: 100%;
+    font-weight: 500;
     line-height: 1;
     color: ${({ theme }) => theme.text1};
     display: flex;
     align-items: flex-end;
+  }
 
-    > img {
-      margin: 0 3px 0 0;
+  ${AddToMetaMask} {
+    border: 0;
+    padding: 0;
+    min-height: initial;
+    margin: 0;
+    border-radius: initial;
+
+    &:hover {
+      background: transparent;
+
+      > div {
+        text-decoration: underline;
+      }
+    }
+
+    > div > img {
+      width: 15px;
+      margin: 0 6px 0 0;
     }
   }
 `
