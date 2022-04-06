@@ -472,7 +472,8 @@ export const CardActions = styled.div`
       }
     }
 
-    > div > img {
+    > div > img,
+    > div > svg {
       width: 15px;
       margin: 0 6px 0 0;
     }

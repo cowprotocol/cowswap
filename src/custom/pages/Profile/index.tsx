@@ -227,7 +227,7 @@ export default function Profile() {
               Contract ↗
             </ExtLink>
 
-            <AddToMetamask currency={COW[chainId || 1] as Currency | undefined} />
+            <AddToMetamask shortLabel={true} currency={COW[chainId || 1] as Currency | undefined} />
 
             <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW</Link>
           </CardActions>

@@ -10,7 +10,10 @@ import MetaMaskLogo from 'assets/images/metamask.png'
 
 export type AddToMetamaskProps = {
   currency: Currency | undefined
+  shortLabel?: boolean
 }
+
+const SHORT_LABEL = 'Add Token'
 
 export const ButtonCustom = styled.button`
   display: flex;
@@ -59,7 +62,7 @@ const CheckCircleCustom = styled(CheckCircle)`
 `
 
 export default function AddToMetamask(props: AddToMetamaskProps) {
-  const { currency } = props
+  const { currency, shortLabel } = props
   const theme = useContext(ThemeContext)
   const { library } = useActiveWeb3React()
   const { addToken, success } = useAddTokenToMetamask(currency)
@@ -72,7 +75,7 @@ export default function AddToMetamask(props: AddToMetamaskProps) {
     <ButtonCustom onClick={addToken}>
       {!success ? (
         <RowFixed>
-          <StyledIcon src={MetaMaskLogo} /> Add {currency.symbol} to Metamask
+          <StyledIcon src={MetaMaskLogo} /> {shortLabel ? SHORT_LABEL : `Add ${currency.symbol} to Metamask`}
         </RowFixed>
       ) : (
         <RowFixed>
