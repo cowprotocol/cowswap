@@ -54,7 +54,7 @@ export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
     <Wrapper onClick={onClick}>
       <CowProtocolLogo />
       <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
-        <Trans>{formattedBalance} (v)COW</Trans>
+        <Trans>{formattedBalance || 0}</Trans>
       </b>
     </Wrapper>
   )
