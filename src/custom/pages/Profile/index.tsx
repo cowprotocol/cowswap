@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { Currency } from '@uniswap/sdk-core'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -60,7 +59,7 @@ const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
 export default function Profile() {
   const referralLink = useReferralLink()
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
@@ -163,7 +162,7 @@ export default function Profile() {
     </>
   )
 
-  const currencyCOW = COW[chainId || ChainId.MAINNET]
+  const currencyCOW = COW[chainId]
 
   return (
     <Container>
@@ -210,16 +209,10 @@ export default function Profile() {
             </ConvertWrapper>
 
             <CardActions>
-              <ExtLink
-                href={getBlockExplorerUrl(
-                  chainId || ChainId.MAINNET,
-                  V_COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET],
-                  'address'
-                )}
-              >
+              <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'address')}>
                 Contract ↗
               </ExtLink>
-              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}>
+              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
                 <div title="Click to copy token contract address">Copy contract</div>
               </CopyHelper>
             </CardActions>
@@ -237,11 +230,7 @@ export default function Profile() {
           <CardActions>
             <ExtLink
               title="View contract"
-              href={getBlockExplorerUrl(
-                chainId || ChainId.MAINNET,
-                COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET],
-                'address'
-              )}
+              href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'address')}
             >
               Contract ↗
             </ExtLink>
@@ -249,12 +238,12 @@ export default function Profile() {
             {currencyCOW && library?.provider?.isMetaMask && <AddToMetamask shortLabel={true} currency={currencyCOW} />}
 
             {!library?.provider?.isMetaMask && (
-              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}>
+              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
                 <div title="Click to copy token contract address">Copy contract</div>
               </CopyHelper>
             )}
 
-            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}`}>Buy COW</Link>
+            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
           </CardActions>
         </Card>
 
@@ -298,7 +287,7 @@ export default function Profile() {
                     )}
                   </Txt>
                   {hasOrders && (
-                    <ExtLink href={getExplorerAddressLink(chainId || ChainId.MAINNET, account)}>
+                    <ExtLink href={getExplorerAddressLink(chainId, account)}>
                       <Txt secondary>View all orders ↗</Txt>
                     </ExtLink>
                   )}
