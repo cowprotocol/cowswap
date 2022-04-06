@@ -59,7 +59,7 @@ const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
 export default function Profile() {
   const referralLink = useReferralLink()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
@@ -227,7 +227,9 @@ export default function Profile() {
               Contract ↗
             </ExtLink>
 
-            <AddToMetamask shortLabel={true} currency={COW[chainId || 1] as Currency | undefined} />
+            {library?.provider?.isMetaMask && (
+              <AddToMetamask shortLabel={true} currency={COW[chainId || 1] as Currency | undefined} />
+            )}
 
             <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW</Link>
           </CardActions>
