@@ -49,6 +49,7 @@ export enum ApplicationModal {
   // -----------------      MOD: CowSwap specific modals      --------------------
   TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
+  COW_SUBSIDY,
   // ------------------------------------------------------------------------------
 }
 

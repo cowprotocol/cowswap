@@ -49,7 +49,7 @@ const AppWrapper = styled.div<Partial<CSS.Properties & AppWrapProps>>`
   align-items: flex-start;
   // MOD
   min-height: 100vh;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */ // mod
   &:after {
     content: '';
     position: fixed;

@@ -2,6 +2,7 @@ import Page, { Title, Content, GdocsListStyle } from 'components/Page'
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
+import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
 
 // Assets
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
@@ -44,7 +45,7 @@ export default function About() {
         <p>
           Every time you and another trader each hold an asset the other wants, your trade is settled directly without
           using an AMM (Automated Market Maker) and therefore without incurring any slippage + fees. Only amounts that
-          can’t be settled with other CowSwap traders are sent to the underlying AMMs.
+          can&apos;t be settled with other CowSwap traders are sent to the underlying AMMs.
           <br />
           <br />
           This economic phenomenon is known as <b>Coincidence Of Wants (CoW)</b>.
@@ -63,7 +64,7 @@ export default function About() {
             <p>You sign a trade message which is submitted to CowSwap’s off-chain service</p>
           </li>
           <li>
-            <p>CowSwap’s off-chain service optimizes your trade’s execution by considering:</p>
+            <p>CowSwap&apos;s off-chain service optimizes your trade&apos;s execution by considering:</p>
             <ul>
               <li>
                 <p>Coincidence Of Wants</p>
@@ -91,9 +92,9 @@ export default function About() {
           <img src={mevIMG} alt="CowSwap - Maximum Extractable Value" />
         </p>
         <p>
-          Heard about Maximum Extractable Value yet? It’s scary. To date more than{' '}
-          <ExternalLink href="https://explore.flashbots.net/">USD 797M</ExternalLink> in value has been extracted from
-          users by bots frontrunning transactions, exploiting the slippage users allow in a trade.
+          Heard about Maximum Extractable Value yet? It&apos;s scary. To date more than{' '}
+          <ExternalLink href={FLASHBOTS_LINK}>USD {MEV_TOTAL}</ExternalLink> in value has been extracted from users by
+          bots frontrunning transactions, exploiting the slippage users allow in a trade.
           <br />
           <br />
           CowSwap is the first DEX Aggregator offering some protection against it: COWs enable tight slippages and can

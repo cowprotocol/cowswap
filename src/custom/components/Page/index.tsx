@@ -6,6 +6,7 @@ import { WithClassName } from 'types'
 import { useIsDarkMode } from 'state/user/hooks'
 import SVG from 'react-inlinesvg'
 import { questionIcon } from 'assets/cow-swap/question'
+import { transparentize } from 'polished'
 
 const HelpCircleWrapper = styled.div`
   > svg {
@@ -37,6 +38,8 @@ export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0 16px;
   color: ${({ theme }) => theme.text1};
+  text-shadow: 0px 0px 42px ${({ theme }) => transparentize(0.9, theme.text1)},
+    0px 0px 28px ${({ theme }) => transparentize(0.8, theme.text1)};
 
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     font-size: 24px;
@@ -49,7 +52,7 @@ export const SectionTitle = styled(Title)`
 `
 
 export const Content = styled.div`
-  font-size: 15px;
+  font-size: 16px;
   margin: 0 0 28px;
   display: block;
 
@@ -82,7 +85,7 @@ export const Content = styled.div`
   }
 
   > p {
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   > p > img {
