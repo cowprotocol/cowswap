@@ -7,12 +7,13 @@ import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useSingleCallResult, Result } from 'state/multicall/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
-import { V_COW } from 'constants/tokens'
+import { V_COW, COW } from 'constants/tokens'
 import { AppState } from 'state'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
+import { useTokenBalance } from 'state/wallet/hooks'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -149,4 +150,30 @@ export function useSetSwapVCowStatus(): SetSwapVCowStatusCallback {
  */
 export function useSwapVCowStatus() {
   return useAppSelector((state: AppState) => state.cowToken.swapVCowStatus)
+}
+
+/**
+ * Hook that returns COW balance
+ */
+export function useCowBalance() {
+  const { chainId, account } = useActiveWeb3React()
+  const cowToken = chainId ? COW[chainId] : undefined
+  return useTokenBalance(account || undefined, cowToken)
+}
+
+/**
+ * Hook that returns combined vCOW + COW balance
+ */
+export function useCombinedBalance() {
+  const { total: vCowBalance } = useVCowData()
+  const cowBalance = useCowBalance()
+
+  return useMemo(() => {
+    if (!vCowBalance || !cowBalance) {
+      return
+    }
+
+    const sum = vCowBalance.asFraction.add(cowBalance.asFraction)
+    return CurrencyAmount.fromRawAmount(cowBalance.currency, sum.quotient)
+  }, [cowBalance, vCowBalance])
 }
