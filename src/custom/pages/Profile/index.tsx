@@ -229,7 +229,7 @@ export default function Profile() {
 
             <AddToMetamask currency={COW[chainId || 1] as Currency | undefined} />
 
-            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW ↗</Link>
+            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW</Link>
           </CardActions>
         </Card>
 

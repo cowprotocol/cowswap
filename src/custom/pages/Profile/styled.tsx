@@ -447,6 +447,14 @@ export const CardActions = styled.div`
     color: ${({ theme }) => theme.text1};
     display: flex;
     align-items: flex-end;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    &:hover {
+      text-decoration-color: ${({ theme }) => theme.primary1};
+      color: ${({ theme }) => theme.primary1};
+    }
   }
 
   ${AddToMetaMask} {
