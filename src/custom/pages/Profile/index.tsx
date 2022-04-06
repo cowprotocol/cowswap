@@ -208,10 +208,16 @@ export default function Profile() {
             </ConvertWrapper>
 
             <CardActions>
-              <ExtLink href={getBlockExplorerUrl(chainId || 1, V_COW_CONTRACT_ADDRESS[chainId || 1], 'address')}>
+              <ExtLink
+                href={getBlockExplorerUrl(
+                  chainId || ChainId.MAINNET,
+                  V_COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET],
+                  'address'
+                )}
+              >
                 Contract ↗
               </ExtLink>
-              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId || 1]}>
+              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}>
                 <div title="Click to copy token contract address">Copy contract</div>
               </CopyHelper>
             </CardActions>
@@ -229,22 +235,26 @@ export default function Profile() {
           <CardActions>
             <ExtLink
               title="View contract"
-              href={getBlockExplorerUrl(chainId || 1, COW_CONTRACT_ADDRESS[chainId || 1], 'address')}
+              href={getBlockExplorerUrl(
+                chainId || ChainId.MAINNET,
+                COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET],
+                'address'
+              )}
             >
               Contract ↗
             </ExtLink>
 
             {library?.provider?.isMetaMask && (
-              <AddToMetamask shortLabel={true} currency={COW[chainId || 1] as Currency | undefined} />
+              <AddToMetamask shortLabel={true} currency={COW[chainId || ChainId.MAINNET] as Currency | undefined} />
             )}
 
             {!library?.provider?.isMetaMask && (
-              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId || 1]}>
+              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}>
                 <div title="Click to copy token contract address">Copy contract</div>
               </CopyHelper>
             )}
 
-            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW</Link>
+            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}`}>Buy COW</Link>
           </CardActions>
         </Card>
 
@@ -288,7 +298,7 @@ export default function Profile() {
                     )}
                   </Txt>
                   {hasOrders && (
-                    <ExtLink href={getExplorerAddressLink(chainId || 1, account)}>
+                    <ExtLink href={getExplorerAddressLink(chainId || ChainId.MAINNET, account)}>
                       <Txt secondary>View all orders ↗</Txt>
                     </ExtLink>
                   )}
