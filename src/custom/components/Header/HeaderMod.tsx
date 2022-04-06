@@ -162,6 +162,7 @@ export const AccountElement = styled.div<{ active: boolean }>`
   flex-direction: row;
   align-items: center;
   border-radius: 12px;
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
   white-space: nowrap;
   width: 100%;
   cursor: pointer;
