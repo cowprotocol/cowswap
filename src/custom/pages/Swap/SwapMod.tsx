@@ -625,7 +625,7 @@ export default function Swap({
                   <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} setApprovalSubmitted={setApprovalSubmitted} />
                   {recipient === null && !showWrap && (isExpertMode || recipientToggleVisible) ? (
                     <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                      <Trans>+ Add a send (optional)</Trans>
+                      <Trans>+ Add a recipient (optional)</Trans>
                     </LinkStyledButton>
                   ) : null}
                 </AutoRow>
