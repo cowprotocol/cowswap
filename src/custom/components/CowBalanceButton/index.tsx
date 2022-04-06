@@ -5,6 +5,7 @@ import { useCombinedBalance } from 'state/cowToken/hooks'
 import { ChainId } from 'state/lists/actions/actionsMod'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { COW } from 'constants/tokens'
 
 export const Wrapper = styled.div`
   ${({ theme }) => theme.card.boxShadow};
@@ -44,11 +45,13 @@ interface CowBalanceButtonProps {
   onClick?: () => void
 }
 
+const COW_DECIMALS = COW[ChainId.MAINNET].decimals
+
 export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
   const combinedBalance = useCombinedBalance()
 
   const formattedBalance = formatSmartLocaleAware(combinedBalance, AMOUNT_PRECISION)
-  const formattedMaxBalance = formatMax(combinedBalance, AMOUNT_PRECISION)
+  const formattedMaxBalance = formatMax(combinedBalance, COW_DECIMALS)
 
   return (
     <Wrapper onClick={onClick}>
