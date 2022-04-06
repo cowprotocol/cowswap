@@ -464,6 +464,7 @@ export const CardActions = styled.div`
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       font-size: 15px;
+      margin: 0 auto;
     `};
 
     &:hover {

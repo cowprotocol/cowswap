@@ -211,6 +211,9 @@ export default function Profile() {
               <ExtLink href={getBlockExplorerUrl(chainId || 1, V_COW_CONTRACT_ADDRESS[chainId || 1], 'address')}>
                 Contract ↗
               </ExtLink>
+              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId || 1]}>
+                <div title="Click to copy token contract address">Copy contract</div>
+              </CopyHelper>
             </CardActions>
           </Card>
         )}
