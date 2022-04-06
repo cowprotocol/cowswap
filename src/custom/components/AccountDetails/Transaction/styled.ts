@@ -5,7 +5,7 @@ import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
-import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
+import { AlertTriangle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 
 export const TransactionWrapper = styled.div`
@@ -519,14 +519,14 @@ export const PendingProgress = styled(ProgressBarIndicator)`
   background: linear-gradient(270deg, #b6a82d 16.85%, #ff784a 106.52%);
 `
 
-export const CheckIcon = styled(CheckCircle)`
+export const GreenClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.success};
 `
 
-export const ClockIcon = styled(Clock)`
+export const OrangeClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
-  color: ${({ theme }) => theme.success};
+  color: ${({ theme }) => theme.yellow1};
 `
 
 export const WarningIcon = styled(AlertTriangle)`

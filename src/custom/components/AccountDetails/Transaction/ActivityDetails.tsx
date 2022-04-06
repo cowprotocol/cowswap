@@ -20,8 +20,8 @@ import {
   WarningLogo,
   StatusMsgContainer,
   StatusMsg,
-  CheckIcon,
-  ClockIcon,
+  GreenClockIcon,
+  OrangeClockIcon,
   WarningIcon,
   WarningProgress,
   PendingProgress,
@@ -329,7 +329,7 @@ export function ActivityDetails(props: {
             <CowProtocolIcon />
           </ProgressBarInnerWrapper>
           <StatusMsgContainer>
-            <CheckIcon size={16} />
+            <GreenClockIcon size={16} />
             <StatusMsg>Looking for a CoW.</StatusMsg>
           </StatusMsgContainer>
         </ProgressBarWrapper>
@@ -340,7 +340,7 @@ export function ActivityDetails(props: {
             <AMMsLogo />
           </ProgressBarInnerWrapper>
           <StatusMsgContainer>
-            <ClockIcon size={16} />
+            <OrangeClockIcon size={16} />
             <StatusMsg>Finding best onchain price.</StatusMsg>
           </StatusMsgContainer>
         </ProgressBarWrapper>
