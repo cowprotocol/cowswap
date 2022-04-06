@@ -54,6 +54,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { SwapVCowStatus } from 'state/cowToken/actions'
 import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
+import CopyHelper from 'components/Copy'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -223,12 +224,21 @@ export default function Profile() {
             </span>
           </BalanceDisplay>
           <CardActions>
-            <ExtLink href={getBlockExplorerUrl(chainId || 1, COW_CONTRACT_ADDRESS[chainId || 1], 'address')}>
+            <ExtLink
+              title="View contract"
+              href={getBlockExplorerUrl(chainId || 1, COW_CONTRACT_ADDRESS[chainId || 1], 'address')}
+            >
               Contract ↗
             </ExtLink>
 
             {library?.provider?.isMetaMask && (
               <AddToMetamask shortLabel={true} currency={COW[chainId || 1] as Currency | undefined} />
+            )}
+
+            {!library?.provider?.isMetaMask && (
+              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId || 1]}>
+                <div title="Click to copy token contract address">Copy contract</div>
+              </CopyHelper>
             )}
 
             <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId || 1]}`}>Buy COW</Link>

@@ -6,6 +6,7 @@ import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
 import { ButtonCustom as AddToMetaMask } from 'components/AddToMetamask'
+import { CopyIcon as ClickToCopy } from 'components/Copy'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -439,10 +440,12 @@ export const CardActions = styled.div`
   margin: auto 0 0;
 
   > a,
-  ${AddToMetaMask} {
+  ${AddToMetaMask}, > ${ClickToCopy} {
     font-size: 13px;
     height: 100%;
     font-weight: 500;
+    margin: auto 0 0;
+    padding: 0;
     line-height: 1;
     color: ${({ theme }) => theme.text1};
     display: flex;
@@ -459,9 +462,7 @@ export const CardActions = styled.div`
 
   ${AddToMetaMask} {
     border: 0;
-    padding: 0;
     min-height: initial;
-    margin: 0;
     border-radius: initial;
 
     &:hover {
@@ -477,6 +478,11 @@ export const CardActions = styled.div`
       width: 15px;
       margin: 0 6px 0 0;
     }
+  }
+
+  > ${ClickToCopy} svg {
+    width: 15px;
+    margin: 0 4px 0 0;
   }
 `
 
