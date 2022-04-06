@@ -620,7 +620,7 @@ export default function Swap({
               >
                 <AutoRow
                   justify={isExpertMode || recipientToggleVisible ? 'space-between' : 'center'}
-                  // style={{ padding: '0 1rem' }}
+                  style={{ padding: '0 1rem' }}
                 >
                   <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} setApprovalSubmitted={setApprovalSubmitted} />
                   {recipient === null && !showWrap && (isExpertMode || recipientToggleVisible) ? (
