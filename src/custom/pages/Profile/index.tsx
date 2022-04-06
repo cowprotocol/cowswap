@@ -163,6 +163,8 @@ export default function Profile() {
     </>
   )
 
+  const currencyCOW = COW[chainId || ChainId.MAINNET]
+
   return (
     <Container>
       <TransactionConfirmationModal />
@@ -244,9 +246,7 @@ export default function Profile() {
               Contract ↗
             </ExtLink>
 
-            {library?.provider?.isMetaMask && (
-              <AddToMetamask shortLabel={true} currency={COW[chainId || ChainId.MAINNET] as Currency | undefined} />
-            )}
+            {currencyCOW && library?.provider?.isMetaMask && <AddToMetamask shortLabel={true} currency={currencyCOW} />}
 
             {!library?.provider?.isMetaMask && (
               <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId || ChainId.MAINNET]}>
