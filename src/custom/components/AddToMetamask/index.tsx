@@ -13,8 +13,6 @@ export type AddToMetamaskProps = {
   shortLabel?: boolean
 }
 
-const SHORT_LABEL = 'Add Token'
-
 export const ButtonCustom = styled.button`
   display: flex;
   flex: 1 1 auto;
@@ -75,7 +73,7 @@ export default function AddToMetamask(props: AddToMetamaskProps) {
     <ButtonCustom onClick={addToken}>
       {!success ? (
         <RowFixed>
-          <StyledIcon src={MetaMaskLogo} /> {shortLabel ? SHORT_LABEL : `Add ${currency.symbol} to Metamask`}
+          <StyledIcon src={MetaMaskLogo} /> {shortLabel ? 'Add Token' : `Add ${currency.symbol} to Metamask`}
         </RowFixed>
       ) : (
         <RowFixed>
