@@ -29,7 +29,7 @@ type ClaimsTableRowProps = EnhancedUserClaimData & {
   isPendingClaim: boolean
 }
 
-const ClaimTr = styled.tr<{ isPending?: boolean }>`
+export const ClaimTr = styled.tr<{ isPending?: boolean }>`
   > td {
     background-color: ${({ isPending }) => (isPending ? '#221954' : 'rgb(255 255 255 / 6%)')};
     cursor: ${({ isPending }) => (isPending ? 'pointer' : 'initial')};

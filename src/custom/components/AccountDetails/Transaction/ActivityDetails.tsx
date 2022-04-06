@@ -24,7 +24,8 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
 import SVG from 'react-inlinesvg'
-import { ActivityStatus } from '@src/custom/hooks/useRecentActivity'
+import { ActivityStatus } from 'hooks/useRecentActivity'
+import { V_COW, COW } from 'constants/tokens'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -228,8 +229,13 @@ export function ActivityDetails(props: {
 
   const { kind, from, to, executionPrice, limitPrice, fulfillmentTime, validTo } = orderSummary
   const activityName = isOrder ? `${kind} order` : 'Transaction'
-  const inputToken = activityDerivedState?.order?.inputToken || null
-  const outputToken = activityDerivedState?.order?.outputToken || null
+  let inputToken = activityDerivedState?.order?.inputToken || null
+  let outputToken = activityDerivedState?.order?.outputToken || null
+
+  if (enhancedTransaction?.swapVCow) {
+    inputToken = V_COW[chainId]
+    outputToken = COW[chainId]
+  }
 
   return (
     <Summary>

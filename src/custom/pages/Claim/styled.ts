@@ -1832,7 +1832,16 @@ export const BannerExplainer = styled.div`
   }
 
   > svg {
-    .stop1 { stop-color: ${({ theme }) => theme.white}}
-    .stop2 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0.8;}
-    .stop3 { stop-color: ${({ theme }) => theme.white}; stop-opacity: 0;}
+    .stop1 {
+      stop-color: ${({ theme }) => theme.white};
+    }
+    .stop2 {
+      stop-color: ${({ theme }) => theme.white};
+      stop-opacity: 0.8;
+    }
+    .stop3 {
+      stop-color: ${({ theme }) => theme.white};
+      stop-opacity: 0;
+    }
+  }
 `

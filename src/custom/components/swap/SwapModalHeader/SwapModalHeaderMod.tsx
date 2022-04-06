@@ -162,7 +162,7 @@ SwapModalHeaderProps) {
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
-            feeAmount={formatSmart(trade.fee.feeAsCurrency, AMOUNT_PRECISION)}
+            feeAmount={trade.fee.feeAsCurrency}
             allowsOffchainSigning={allowsOffchainSigning}
             label={exactInLabel}
             showHelper
@@ -226,7 +226,7 @@ SwapModalHeaderProps) {
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.outputAmount, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.outputAmountWithoutFee, AMOUNT_PRECISION)}
-            feeAmount={formatSmart(trade.outputAmountWithoutFee?.subtract(trade.outputAmount), AMOUNT_PRECISION)}
+            feeAmount={trade.outputAmountWithoutFee?.subtract(trade.outputAmount)}
             label={exactOutLabel}
             allowsOffchainSigning={allowsOffchainSigning}
             showHelper

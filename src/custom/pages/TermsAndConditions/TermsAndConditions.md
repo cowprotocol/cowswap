@@ -63,7 +63,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
     ERC 20 tokens by submitting orders into a batch auction running on the
     Protocol.
 
-2.  A detailed step-by-step guide on how to use the Platform may be found <a href="/#/faq#what-is-cowswap" target="_blank" rel="noopener nofollow">in the “FAQ” section on the Platform</a>.
+2.  A detailed step-by-step guide on how to use the Platform may be found <a href="/#/faq" target="_blank" rel="noopener nofollow">in the “FAQ” section on the Platform</a>.
 
 3.  To use the Platform you require:
     1. A wallet compatible with the Ethereum Blockchain or an Ethereum
