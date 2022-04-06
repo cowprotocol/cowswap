@@ -2,7 +2,7 @@ import { isAnyOf, Middleware } from '@reduxjs/toolkit'
 import { AppState } from 'state'
 import { finalizeTransaction } from '../enhancedTransactions/actions'
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
-import { getCowSoundSuccess } from 'utils/sound'
+import { getCowSoundSuccess, getCowSoundError } from 'utils/sound'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 
@@ -25,7 +25,12 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
       )
 
       store.dispatch(setSwapVCowStatus(SwapVCowStatus.INITIAL))
-      cowSound = getCowSoundSuccess()
+
+      if (status === 1 && transaction.replacementType !== 'cancel') {
+        cowSound = getCowSoundSuccess()
+      } else {
+        cowSound = getCowSoundError()
+      }
     }
   }
 
