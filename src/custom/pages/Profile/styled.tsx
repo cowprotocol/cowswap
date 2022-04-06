@@ -439,6 +439,14 @@ export const CardActions = styled.div`
   justify-content: space-between;
   margin: auto 0 0;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    justify-content: center;
+    align-items: center;
+    flex-flow: column wrap;
+    gap: 32px 0;
+    margin: 12px 0;
+  `};
+
   > a,
   ${AddToMetaMask}, > ${ClickToCopy} {
     font-size: 13px;
@@ -453,6 +461,11 @@ export const CardActions = styled.div`
     text-decoration: underline;
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 15px;
+      margin: 0 auto;
+    `};
 
     &:hover {
       text-decoration-color: ${({ theme }) => theme.primary1};
