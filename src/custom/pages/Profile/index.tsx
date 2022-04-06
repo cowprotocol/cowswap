@@ -27,6 +27,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
+import { getBlockExplorerUrl } from 'utils'
 import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
@@ -44,19 +45,21 @@ import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
-import { AMOUNT_PRECISION } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { SwapVCowStatus } from 'state/cowToken/actions'
-import MetamaskIcon from 'assets/images/metamask.png'
+import AddToMetamask from 'components/AddToMetamask'
+import { Link } from 'react-router-dom'
+import CopyHelper from 'components/Copy'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
 export default function Profile() {
   const referralLink = useReferralLink()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
@@ -159,6 +162,8 @@ export default function Profile() {
     </>
   )
 
+  const currencyCOW = COW[chainId]
+
   return (
     <Container>
       <TransactionConfirmationModal />
@@ -202,6 +207,15 @@ export default function Profile() {
                 )}
               </ButtonPrimary>
             </ConvertWrapper>
+
+            <CardActions>
+              <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'address')}>
+                Contract ↗
+              </ExtLink>
+              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
+                <div title="Click to copy token contract address">Copy contract</div>
+              </CopyHelper>
+            </CardActions>
           </Card>
         )}
 
@@ -214,11 +228,22 @@ export default function Profile() {
             </span>
           </BalanceDisplay>
           <CardActions>
-            <ExtLink href={'#'}>Etherscan ↗</ExtLink>
-            <ExtLink href={'#'}>
-              <img src={MetamaskIcon} alt="MetaMask" width="15" height="14" /> Add to MetaMask
+            <ExtLink
+              title="View contract"
+              href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'address')}
+            >
+              Contract ↗
             </ExtLink>
-            <ExtLink href={'#'}>Buy COW ↗</ExtLink>
+
+            {library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
+
+            {!library?.provider?.isMetaMask && (
+              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                <div title="Click to copy token contract address">Copy contract</div>
+              </CopyHelper>
+            )}
+
+            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
           </CardActions>
         </Card>
 
@@ -262,7 +287,7 @@ export default function Profile() {
                     )}
                   </Txt>
                   {hasOrders && (
-                    <ExtLink href={getExplorerAddressLink(chainId || 1, account)}>
+                    <ExtLink href={getExplorerAddressLink(chainId, account)}>
                       <Txt secondary>View all orders ↗</Txt>
                     </ExtLink>
                   )}
