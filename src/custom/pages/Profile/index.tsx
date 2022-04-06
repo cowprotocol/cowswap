@@ -235,7 +235,7 @@ export default function Profile() {
               Contract ↗
             </ExtLink>
 
-            {currencyCOW && library?.provider?.isMetaMask && <AddToMetamask shortLabel={true} currency={currencyCOW} />}
+            {currencyCOW && library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
 
             {!library?.provider?.isMetaMask && (
               <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
