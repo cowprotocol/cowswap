@@ -62,6 +62,7 @@ export function RowReceivedAfterSlippage({
             content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)}
             bgColor={theme.bg1}
             color={theme.text1}
+            wrap
           >
             <StyledInfo />
           </MouseoverTooltipContent>

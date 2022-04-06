@@ -85,7 +85,7 @@ export function RowFee({
           Fees {includeGasMessage}
         </ThemedText.Black>
         {showHelpers && (
-          <MouseoverTooltipContent content={tooltip} bgColor={theme.bg1} color={theme.text1}>
+          <MouseoverTooltipContent content={tooltip} bgColor={theme.bg1} color={theme.text1} wrap>
             <StyledInfo />
           </MouseoverTooltipContent>
         )}
