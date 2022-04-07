@@ -437,9 +437,10 @@ export const CardActions = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  align-items: flex-end;
   margin: auto 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
     align-items: center;
     flex-flow: column wrap;
@@ -452,17 +453,19 @@ export const CardActions = styled.div`
     font-size: 13px;
     height: 100%;
     font-weight: 500;
-    margin: auto 0 0;
+    border-radius: 0;
+    min-height: initial;
+    margin: 0;
     padding: 0;
     line-height: 1;
     color: ${({ theme }) => theme.text1};
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     text-decoration: underline;
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       font-size: 15px;
       margin: 0 auto;
     `};
@@ -488,13 +491,16 @@ export const CardActions = styled.div`
 
     > div > img,
     > div > svg {
-      width: 15px;
+      height: 13px;
+      width: auto;
+      object-fit: contain;
       margin: 0 6px 0 0;
     }
   }
 
   > ${ClickToCopy} svg {
-    width: 15px;
+    height: 13px;
+    width: auto;
     margin: 0 4px 0 0;
   }
 `

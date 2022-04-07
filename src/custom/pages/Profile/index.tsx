@@ -251,7 +251,7 @@ export default function Profile() {
             <span>
               {' '}
               <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
-              <ExtLink href={'https://forum.cow.fi/'}>CoW Forum ↗</ExtLink>
+              <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
             </span>
           </span>
           <SVG src={CowProtocolImage} description="CoWDAO Governance" />
