@@ -23,7 +23,7 @@ export default function Updater(): null {
   useEffect(() => {
     if (windowVisible) {
       Sentry.setContext('user', {
-        userAddress: account || 'DISCONNECTED',
+        // userAddress: account || 'DISCONNECTED', // TODO: validate with legal
         wallet: walletName,
         network: chainId ? SupportedChainId[chainId] : chainId,
         sellToken: `${sellTokenAddress} <${sellCurrency?.symbol}>`,
