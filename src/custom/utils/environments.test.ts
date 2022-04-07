@@ -79,8 +79,8 @@ describe('Detect environments using host and path', () => {
   describe('Is PR', () => {
     const isPr = { ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true }
 
-    it('pr<NUMBER>--gpswapui.review.gnosisdev.com', () => {
-      expect(checkEnvironment('pr1291--gpswapui.review.gnosisdev.com', '')).toEqual(isPr)
+    it('pr<NUMBER>--cowswap.review.gnosisdev.com', () => {
+      expect(checkEnvironment('pr1291--cowswap.review.gnosisdev.com', '')).toEqual(isPr)
     })
   })
 
