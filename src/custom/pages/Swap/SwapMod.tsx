@@ -378,7 +378,7 @@ export default function Swap({
   // reset url query on network change
   useEffect(() => {
     if (chainId && previousChainId && chainId !== previousChainId) {
-      history.push(location.pathname)
+      history.replace(location.pathname)
     }
   }, [chainId, history, location.pathname, previousChainId])
 

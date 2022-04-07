@@ -465,7 +465,7 @@ export function useDefaultsFromURLSearch(): DefaultFromUrlSearch {
 
     setResult({ inputCurrencyId, outputCurrencyId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId])
+  }, [chainId, parsedQs])
 
   return result
 }
