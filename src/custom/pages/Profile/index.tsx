@@ -209,8 +209,8 @@ export default function Profile() {
             </ConvertWrapper>
 
             <CardActions>
-              <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'address')}>
-                Contract ↗
+              <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
+                View Contract ↗
               </ExtLink>
               <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
                 <div title="Click to copy token contract address">Copy contract</div>
@@ -228,11 +228,8 @@ export default function Profile() {
             </span>
           </BalanceDisplay>
           <CardActions>
-            <ExtLink
-              title="View contract"
-              href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'address')}
-            >
-              Contract ↗
+            <ExtLink title="View contract" href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}>
+              View Contract ↗
             </ExtLink>
 
             {library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
