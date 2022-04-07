@@ -28,5 +28,5 @@ export function getAppDataHash(): string {
     default:
       break
   }
-  return 'no'
+  return DEFAULT_APP_DATA
 }

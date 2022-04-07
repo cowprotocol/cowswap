@@ -2,7 +2,7 @@ import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
 import { Suspense, lazy } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
@@ -17,7 +17,6 @@ const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
 const Swap = lazy(() => import(/* webpackPrefetch: true,  webpackChunkName: "swap" */ 'pages/Swap'))
-const Claim = lazy(() => import(/* webpackChunkName: "claim" */ 'pages/Claim'))
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
@@ -99,10 +98,10 @@ export default function App() {
       <Wrapper>
         <Suspense fallback={Loading}>
           <Switch>
+            <Redirect from="/claim" to="/profile" />
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
             <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-            <Route exact strict path="/claim" component={Claim} />
             <Route exact strict path="/about" component={About} />
             <Route exact strict path="/profile" component={Profile} />
 
