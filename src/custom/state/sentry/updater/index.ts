@@ -25,11 +25,7 @@ export default function Updater(): null {
       Sentry.setContext('user', {
         userAddress: account || 'DISCONNECTED',
         wallet: walletName,
-        isWalletSupported: isSupportedWallet,
-        network:
-          account && chainId
-            ? SupportedChainId[chainId]
-            : `${chainId ? SupportedChainId[chainId] : 'MAINNET'} - DISCONNECTED`,
+        network: chainId ? SupportedChainId[chainId] : chainId,
         sellToken: `${sellTokenAddress} <${sellCurrency?.symbol}>`,
         buyToken: `${buyTokenAddress} <${buyCurrency?.symbol}>`,
       })
