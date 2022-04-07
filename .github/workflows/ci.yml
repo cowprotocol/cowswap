@@ -1,16 +1,16 @@
 name: CI
 
 on:
-  # build on PR creation/updates, also when pushing to master/develop, or create a release
+  # build on PR creation/updates, also when pushing to main/develop, or create a release
   pull_request:
     types: [opened, synchronize]
   push:
-    branches: [master, develop]
+    branches: [main, develop]
     tags: [v*]
 
 
 env:
-  REPO_NAME_SLUG: gpswapui
+  REPO_NAME_SLUG: cowswap
   PR_NUMBER: ${{ github.event.number }}
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
@@ -232,7 +232,7 @@ jobs:
         run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
 
       - name: 'Deploy to S3: Staging'
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
 
       - name: Get the version
