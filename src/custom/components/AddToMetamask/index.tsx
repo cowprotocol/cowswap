@@ -73,7 +73,7 @@ export default function AddToMetamask(props: AddToMetamaskProps) {
     <ButtonCustom onClick={addToken}>
       {!success ? (
         <RowFixed>
-          <StyledIcon src={MetaMaskLogo} /> {shortLabel ? 'Add Token' : `Add ${currency.symbol} to Metamask`}
+          <StyledIcon src={MetaMaskLogo} /> {shortLabel ? 'Add token' : `Add ${currency.symbol} to Metamask`}
         </RowFixed>
       ) : (
         <RowFixed>
