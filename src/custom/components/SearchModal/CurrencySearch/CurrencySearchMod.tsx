@@ -24,7 +24,7 @@ import CommonBases from 'components/SearchModal/CommonBases'
 import CurrencyList from 'components/SearchModal/CurrencyList'
 import { filterTokens, useSortedTokensByQuery } from 'components/SearchModal/filtering'
 import ImportRow from 'components/SearchModal/ImportRow'
-import { useTokenComparator } from 'components/SearchModal/sorting'
+import { useTokenComparator } from './sorting'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.' //mod

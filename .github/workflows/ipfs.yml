@@ -5,7 +5,7 @@ on:
     tags: [v*]
 
 env:
-  REPO_NAME_SLUG: gpswapui
+  REPO_NAME_SLUG: cowswap
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
 

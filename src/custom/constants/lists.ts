@@ -25,7 +25,7 @@ const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/se
 
 // Rinkeby Default
 const RINKEBY_LIST =
-  'https://raw.githubusercontent.com/gnosis/gp-swap-ui/master/src/custom/tokens/rinkeby-token-list.json'
+  'https://raw.githubusercontent.com/cowprotocol/cowswap/main/src/custom/tokens/rinkeby-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
