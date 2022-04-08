@@ -14,6 +14,18 @@ import {
   TransactionState as ActivityLink,
   CreationTimeText,
   ActivityVisual,
+  ProgressBarWrapper,
+  ProgressBarInnerWrapper,
+  CowProtocolIcon,
+  WarningLogo,
+  StatusMsgContainer,
+  StatusMsg,
+  GreenClockIcon,
+  OrangeClockIcon,
+  WarningIcon,
+  WarningProgress,
+  PendingProgress,
+  SuccessProgress,
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
@@ -24,8 +36,10 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
 import SVG from 'react-inlinesvg'
+import { AMMsLogo } from 'components/AMMsLogo'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { V_COW, COW } from 'constants/tokens'
+import { LinkStyledButton } from '@src/theme/components'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -307,10 +321,53 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
-
         {isUnfillable && unfillableAlert()}
-
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <SuccessProgress />
+            <CowProtocolIcon />
+          </ProgressBarInnerWrapper>
+          <StatusMsgContainer>
+            <GreenClockIcon size={16} />
+            <StatusMsg>Looking for a CoW.</StatusMsg>
+          </StatusMsgContainer>
+        </ProgressBarWrapper>
+
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <PendingProgress />
+            <AMMsLogo />
+          </ProgressBarInnerWrapper>
+          <StatusMsgContainer>
+            <OrangeClockIcon size={16} />
+            <StatusMsg>Finding best onchain price.</StatusMsg>
+          </StatusMsgContainer>
+        </ProgressBarWrapper>
+
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <WarningProgress />
+            <WarningLogo />
+          </ProgressBarInnerWrapper>
+          <StatusMsgContainer>
+            <WarningIcon size={16} />
+            <StatusMsg> Your order is taking longer than usual.</StatusMsg>
+          </StatusMsgContainer>
+        </ProgressBarWrapper>
+
+        <ProgressBarWrapper>
+          <ProgressBarInnerWrapper>
+            <WarningProgress />
+            <WarningLogo />
+          </ProgressBarInnerWrapper>
+          <StatusMsgContainer>
+            <WarningIcon size={16} />
+            <StatusMsg>
+              Your limit price is out of market. You can wait or<LinkStyledButton>Cancel order</LinkStyledButton>
+            </StatusMsg>
+          </StatusMsgContainer>
+        </ProgressBarWrapper>
       </SummaryInner>
     </Summary>
   )
