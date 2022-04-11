@@ -19,14 +19,14 @@ function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Disp
       const currentHash = hash
 
       emitter.on('txSpeedUp', (e) => {
-        if ('hash' in e && typeof e.hash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash, type: 'speedup' }))
+        if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'speedup' }))
         }
       })
 
       emitter.on('txCancel', (e) => {
-        if ('hash' in e && typeof e.hash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash, type: 'cancel' }))
+        if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
         }
       })
     } catch (error) {
