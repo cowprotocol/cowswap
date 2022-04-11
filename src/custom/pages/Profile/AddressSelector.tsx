@@ -88,7 +88,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
           {items.map((item) => (
             <ButtonMenuItem key={item} $selected={item === ''} onClick={() => handleSelectItem(item)}>
               <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} />{' '}
-              {isAddress(item) ? shortenAddress(item) : item}
+              {items.length > 1 && isAddress(item) ? shortenAddress(item) : item}
             </ButtonMenuItem>
           ))}
         </MenuFlyout>
