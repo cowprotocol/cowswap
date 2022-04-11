@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import JSBI from 'jsbi'
 import styled, { css } from 'lib/theme'
 import { forwardRef, HTMLProps, useCallback, useEffect, useState } from 'react'
