@@ -79,7 +79,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
 
   return (
     <Wrapper ref={node}>
-      <AddressInfo onClick={toggle}>
+      <AddressInfo onClick={toggle} disabled={items.length === 1}>
         <span style={{ marginRight: '2px' }}>{selectedAddress}</span>
         <ChevronDown size={16} style={{ marginTop: '2px' }} strokeWidth={2.5} />
       </AddressInfo>
@@ -88,7 +88,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
           {items.map((item) => (
             <ButtonMenuItem key={item} $selected={item === ''} onClick={() => handleSelectItem(item)}>
               <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} />{' '}
-              {items.length > 1 && isAddress(item) ? shortenAddress(item) : item}
+              {isAddress(item) ? shortenAddress(item) : item}
             </ButtonMenuItem>
           ))}
         </MenuFlyout>
@@ -173,6 +173,10 @@ export const AddressInfo = styled.button`
     cursor: pointer;
     outline: none;
     border: 1px solid ${({ theme }) => theme.bg3};
+  }
+
+  :disabled {
+    cursor: default;
   }
 `
 const ButtonMenuItem = styled.button<{ $selected?: boolean }>`
