@@ -2,9 +2,9 @@ import { SupportedChainId } from 'constants/chains'
 import { ClientError, gql, GraphQLClient } from 'graphql-request'
 import { EnsNamesQuery } from 'state/data/generated'
 
-// List of supported subgraphs. Note that the app currently only support one active subgraph at a time
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {
   [SupportedChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+  [SupportedChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
 }
 
 const DOMAINS_BY_ADDRESS_QUERY = gql`
