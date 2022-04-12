@@ -211,7 +211,7 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
 
   return (
     <LowerSectionWrapper {...boxProps}>
-      <TYPE.black fontSize={14} color={theme.text2} alignItems={'center'}>
+      <Text fontWeight={500} fontSize={14} color={theme.text2} alignItems={'center'}>
         <AutoRow>
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
@@ -222,7 +222,7 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
             <StyledInfo />
           </MouseoverTooltipContent>
         </AutoRow>
-      </TYPE.black>
+      </Text>
 
       <div className="price-container">
         <DarkSpan onClick={onClick} style={{ cursor: 'pointer' }}>

@@ -19,7 +19,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.12.10",
+  "version": "1.13.1",
   "engines": {
     "node": ">=14.0.0"
   },

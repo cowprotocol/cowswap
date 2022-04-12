@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 // import { ExternalLink } from 'theme'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import HeaderMod, {
   Title as TitleMod,
@@ -43,8 +43,7 @@ import {
 
 // import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
-// import UniBalanceContent from 'components/Header/UniBalanceContent' // TODO: no longer exists, should probably remove
-import CowClaimButton from 'components/CowClaimButton'
+import CowBalanceButton from 'components/CowBalanceButton'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -221,9 +220,6 @@ const VCowWrapper = styled(UNIWrapper)`
 `
 
 export default function Header() {
-  const location = useLocation()
-  const isClaimPage = location.pathname === '/claim'
-
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
@@ -242,7 +238,7 @@ export default function Header() {
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
 
   const history = useHistory()
-  const handleOnClickClaim = () => history.push('/claim')
+  const handleBalanceButtonClick = () => history.push('/profile')
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -276,12 +272,7 @@ export default function Header() {
           </HeaderElement>
           <HeaderElement>
             <VCowWrapper>
-              <CowClaimButton
-                isClaimPage={isClaimPage}
-                account={account}
-                chainId={chainId}
-                handleOnClickClaim={handleOnClickClaim}
-              />
+              <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
             </VCowWrapper>
 
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
@@ -303,7 +294,7 @@ export default function Header() {
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>
           </HeaderElementWrap>
-          <Menu isClaimPage={isClaimPage} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>

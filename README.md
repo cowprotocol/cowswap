@@ -1,7 +1,7 @@
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/gnosis/gp-swap-ui)
 
 <p align="center">
-  <img width="400" src="docs/images/logo-cow-swap.png">
+  <img height="120" src="https://bafybeig5h43icn326c45qmwl4mpimskfaqa3o2pnkuht5pqb6gfcfjzlxi.ipfs.dweb.link/">
 </p>
 
 [![Lint](https://github.com/gnosis/dex-swap/workflows/Lint/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ALint)
@@ -21,7 +21,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 - Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
 - Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
 - Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
-- Discord: <https://chat.cowswap.exchange>
+- Discord: <https://discord.com/invite/cowprotocol>
 
 Please see the:
 
