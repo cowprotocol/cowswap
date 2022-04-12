@@ -78,22 +78,28 @@ export default function AddressSelector(props: AddressSelectorProps) {
   }, [selectedAddress, address, dispatch, library])
 
   return (
-    <Wrapper ref={node}>
-      <AddressInfo onClick={toggle} disabled={items.length === 1}>
-        <span style={{ marginRight: '2px' }}>{selectedAddress}</span>
-        <ChevronDown size={16} style={{ marginTop: '2px' }} strokeWidth={2.5} />
-      </AddressInfo>
-      {open && (
-        <MenuFlyout>
-          {items.map((item) => (
-            <ButtonMenuItem key={item} $selected={item === ''} onClick={() => handleSelectItem(item)}>
-              <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} />{' '}
-              {isAddress(item) ? shortenAddress(item) : item}
-            </ButtonMenuItem>
-          ))}
-        </MenuFlyout>
+    <>
+      {items.length === 1 ? (
+        <strong>{address}</strong>
+      ) : (
+        <Wrapper ref={node}>
+          <AddressInfo onClick={toggle}>
+            <span style={{ marginRight: '2px' }}>{selectedAddress}</span>
+            <ChevronDown size={16} style={{ marginTop: '2px' }} strokeWidth={2.5} />
+          </AddressInfo>
+          {open && (
+            <MenuFlyout>
+              {items.map((item) => (
+                <ButtonMenuItem key={item} $selected={item === ''} onClick={() => handleSelectItem(item)}>
+                  <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} />{' '}
+                  {isAddress(item) ? shortenAddress(item) : item}
+                </ButtonMenuItem>
+              ))}
+            </MenuFlyout>
+          )}
+        </Wrapper>
       )}
-    </Wrapper>
+    </>
   )
 }
 
@@ -173,10 +179,6 @@ export const AddressInfo = styled.button`
     cursor: pointer;
     outline: none;
     border: 1px solid ${({ theme }) => theme.bg3};
-  }
-
-  :disabled {
-    cursor: default;
   }
 `
 const ButtonMenuItem = styled.button<{ $selected?: boolean }>`
