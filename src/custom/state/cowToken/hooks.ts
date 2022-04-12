@@ -5,7 +5,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useSingleCallResult, Result } from 'state/multicall/hooks'
+import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { V_COW, COW } from 'constants/tokens'
 import { AppState } from 'state'
