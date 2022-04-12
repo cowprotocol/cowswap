@@ -80,6 +80,18 @@ function getBlockscoutUrl(chainId: ChainId, data: string, type: BlockExplorerLin
   return `https://blockscout.com/${getBlockscoutUrlPrefix(chainId)}/${getBlockscoutUrlSuffix(type, data)}`
 }
 
+// Get the right block explorer URL by chainId
+export function getBlockExplorerUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
+  switch (chainId) {
+    // Check if chain is xDAI to use Blockscout
+    case ChainId.XDAI:
+      return getBlockscoutUrl(chainId, data, type)
+    // Otherwise always use Etherscan for other chains
+    default:
+      return getEtherscanUrl(chainId, data, type)
+  }
+}
+
 export function isGpOrder(data: string, type: BlockExplorerLinkType) {
   return type === 'transaction' && data.length === GP_ORDER_ID_LENGTH
 }

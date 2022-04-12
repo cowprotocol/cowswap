@@ -91,6 +91,7 @@ const AlertWrapper = styled.div`
 `
 export default function Swap({
   history,
+  location,
   TradeBasicDetails,
   EthWethWrapMessage,
   SwitchToWethBtn,
@@ -108,6 +109,7 @@ export default function Swap({
   const { account, chainId } = useActiveWeb3React()
   const { isSupportedWallet } = useWalletInfo()
   const loadedUrlParams = useDefaultsFromURLSearch()
+  const previousChainId = usePrevious(chainId)
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -375,6 +377,13 @@ export default function Swap({
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+
+  // reset url query on network change
+  useEffect(() => {
+    if (chainId && previousChainId && chainId !== previousChainId) {
+      history.replace(location.pathname)
+    }
+  }, [chainId, history, location.pathname, previousChainId])
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {

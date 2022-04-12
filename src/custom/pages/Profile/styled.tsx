@@ -5,6 +5,8 @@ import { BannerExplainer } from 'pages/Claim/styled'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
+import { ButtonCustom as AddToMetaMask } from 'components/AddToMetamask'
+import { CopyIcon as ClickToCopy } from 'components/Copy'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -263,6 +265,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   gap: 24px 0;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.cardBorder};
+  align-items: flex-end;
 
   ${({ showLoader, theme }) =>
     showLoader &&
@@ -426,6 +429,79 @@ export const BannerCard = styled(BannerExplainer)`
       stop-color: ${({ theme }) => theme.text1};
       stop-opacity: 0;
     }
+  }
+`
+
+export const CardActions = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: auto 0 0;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    justify-content: center;
+    align-items: center;
+    flex-flow: column wrap;
+    gap: 32px 0;
+    margin: 12px 0;
+  `};
+
+  > a,
+  ${AddToMetaMask}, > ${ClickToCopy} {
+    font-size: 13px;
+    height: 100%;
+    font-weight: 500;
+    border-radius: 0;
+    min-height: initial;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    color: ${({ theme }) => theme.text1};
+    display: flex;
+    align-items: center;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      font-size: 15px;
+      margin: 0 auto;
+    `};
+
+    &:hover {
+      text-decoration-color: ${({ theme }) => theme.primary1};
+      color: ${({ theme }) => theme.primary1};
+    }
+  }
+
+  ${AddToMetaMask} {
+    border: 0;
+    min-height: initial;
+    border-radius: initial;
+
+    &:hover {
+      background: transparent;
+
+      > div {
+        text-decoration: underline;
+      }
+    }
+
+    > div > img,
+    > div > svg {
+      height: 13px;
+      width: auto;
+      object-fit: contain;
+      margin: 0 6px 0 0;
+    }
+  }
+
+  > ${ClickToCopy} svg {
+    height: 13px;
+    width: auto;
+    margin: 0 4px 0 0;
   }
 `
 

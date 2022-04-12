@@ -29,6 +29,8 @@ import getLibrary from 'utils/getLibrary'
 import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import FeesUpdater from 'state/price/updater'
 import GasUpdater from 'state/gas/updater'
+import SentryUpdater from 'state/sentry/updater'
+
 import {
   GpOrdersUpdater,
   CancelledOrdersUpdater,
@@ -67,6 +69,7 @@ function Updaters() {
       <GpOrdersUpdater />
       <GasUpdater />
       <LogsUpdater />
+      <SentryUpdater />
     </>
   )
 }
