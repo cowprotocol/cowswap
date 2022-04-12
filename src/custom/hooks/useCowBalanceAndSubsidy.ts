@@ -4,7 +4,7 @@ import { JSBI } from '@uniswap/sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getDiscountFromBalance } from 'components/CowSubsidyModal/utils'
-import { useVCowData } from 'state/claim/hooks'
+import { useVCowData } from 'state/cowToken/hooks'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
 

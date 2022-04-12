@@ -19,7 +19,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { useHistory } from 'react-router-dom'
-import CowClaimButton, { Wrapper as ClaimButtonWrapper } from 'components/CowClaimButton'
+import CowBalanceButton, { Wrapper as BalanceButtonWrapper } from 'components/CowBalanceButton'
 
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -58,7 +58,7 @@ const MenuItemResponsive = styled(MenuItemResponsiveBase)`
   }
 `
 
-export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
+export const StyledMenu = styled(MenuMod)`
   hr {
     margin: 15px 0;
   }
@@ -98,7 +98,7 @@ export const StyledMenu = styled(MenuMod)<{ isClaimPage: boolean }>`
     padding: 0 6px 0 0;
   }
 
-  ${ClaimButtonWrapper} {
+  ${BalanceButtonWrapper} {
     margin: 0 0 12px;
     display: none;
 
@@ -271,30 +271,23 @@ export const CloseMenu = styled.button`
 interface MenuProps {
   darkMode: boolean
   toggleDarkMode: () => void
-  isClaimPage: boolean
 }
 
-export function Menu({ darkMode, toggleDarkMode, isClaimPage }: MenuProps) {
+export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
   const { account, chainId } = useActiveWeb3React()
   const hasOrders = useHasOrders(account)
   const showOrdersLink = account && hasOrders
-  /* const showVCOWClaimOption = Boolean(!!account && !!chainId) */
   const close = useToggleModal(ApplicationModal.MENU)
   const history = useHistory()
-  const handleOnClickClaim = () => {
+  const handleBalanceButtonClick = () => {
     close()
-    history.push('/claim')
+    history.push('/profile')
   }
 
   return (
-    <StyledMenu isClaimPage={isClaimPage}>
+    <StyledMenu>
       <MenuFlyout>
-        <CowClaimButton
-          isClaimPage={isClaimPage}
-          handleOnClickClaim={handleOnClickClaim}
-          account={account}
-          chainId={chainId}
-        />
+        <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
 
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap

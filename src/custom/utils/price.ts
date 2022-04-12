@@ -236,11 +236,9 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
       matcha0xPriceResult,
     ])
 
-    const { baseToken, quoteToken } = params
-
     const sentryError = new Error()
     Object.assign(sentryError, priceQuoteError, {
-      message: `Error querying best price from APIs - baseToken: ${baseToken}, quoteToken: ${quoteToken}`,
+      message: `Error querying best price from APIs`,
       name: 'PriceErrorObject',
     })
 

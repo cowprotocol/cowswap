@@ -5,21 +5,6 @@ import { SupportedChainId } from 'constants/chains'
 import {
   // AMPL,
   DAI,
-  /* DAI_ARBITRUM_ONE,
-  DAI_OPTIMISM,
-  DAI_POLYGON,
-  ETH2X_FLI,
-  FEI,
-  FRAX,
-  FXS,
-  nativeOnChain,
-  renBTC,
-  rETH2,
-  sETH2,
-  SWISE,
-  TRIBE,
-  USDC_ARBITRUM, */
-  USDC_MAINNET,
   // USDC_OPTIMISM,
   // USDC_POLYGON,
   USDT,
@@ -33,6 +18,8 @@ import {
   WETH_POLYGON,
   WETH_POLYGON_MUMBAI, */
   WRAPPED_NATIVE_CURRENCY,
+  COW,
+  USDC_MAINNET,
 } from 'constants/tokens'
 
 // MOD imports
@@ -111,6 +98,7 @@ export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.MAINNET]: [
     // nativeOnChain(SupportedChainId.MAINNET),
     DAI,
+    COW[SupportedChainId.MAINNET],
     USDC_MAINNET,
     USDT,
     WBTC,
@@ -121,11 +109,12 @@ export const COMMON_BASES: ChainCurrencyList = {
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.ROPSTEN],
   ], */
   [SupportedChainId.RINKEBY]: [
-    // nativeOnChain(SupportedChainId.RINKEBY),
+    // ExtendedEther.onChain(SupportedChainId.RINKEBY),
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.RINKEBY],
+    COW[SupportedChainId.RINKEBY],
     DAI_RINKEBY,
     USDC_RINKEBY,
     USDT_RINKEBY,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.RINKEBY],
   ],
   /* [SupportedChainId.GOERLI]: [nativeOnChain(SupportedChainId.GOERLI), WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI]],
   [SupportedChainId.KOVAN]: [nativeOnChain(SupportedChainId.KOVAN), WRAPPED_NATIVE_CURRENCY[SupportedChainId.KOVAN]],
@@ -166,6 +155,8 @@ export const COMMON_BASES: ChainCurrencyList = {
     // nativeOnChain(SupportedChainId.XDAI),
     USDC_XDAI,
     WBTC_XDAI,
+    COW[SupportedChainId.XDAI],
+    /*USDT_XDAI,*/ WBTC_XDAI,
     WETH_XDAI,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.XDAI],
   ], // mod
