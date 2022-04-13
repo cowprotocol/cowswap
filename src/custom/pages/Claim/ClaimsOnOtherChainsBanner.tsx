@@ -102,7 +102,8 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
         <div>This account has available claims on</div>
         <div>
           {chainsWithClaims.map((chainId, index, array) => {
-            const changeNetworksCallback = () => handleChainSwitch(chainId, true) // true to avoid opening the dropdown
+            const changeNetworksCallback = () =>
+              handleChainSwitch(chainId, { skipToggle: true, skipWalletToggle: false }) // true to avoid opening the dropdown
             const isLastInMultiple = index === array.length - 1 && array.length > 1
             return (
               <Fragment key={chainId}>

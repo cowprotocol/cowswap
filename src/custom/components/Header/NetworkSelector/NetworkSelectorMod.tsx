@@ -25,7 +25,8 @@ import {
   FlyoutHeader,
   LinkOutCircle,
 } from '@src/components/Header/NetworkSelector'
-import useChangeNetworks from 'hooks/useChangeNetworks'
+// mod
+import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -204,7 +205,7 @@ function Row({
   onSelectChain,
 }: {
   targetChain: SupportedChainId
-  onSelectChain: (targetChain: number) => void
+  onSelectChain: (targetChain: number, options: ChainSwitchCallbackOptions) => void
 }) {
   const { library, chainId } = useActiveWeb3React()
   if (!library || !chainId) {
@@ -214,7 +215,10 @@ function Row({
   const { helpCenterUrl, explorer, bridge, label, logoUrl } = CHAIN_INFO[targetChain]
 
   const rowContent = (
-    <FlyoutRow onClick={() => onSelectChain(targetChain)} active={active}>
+    <FlyoutRow
+      onClick={() => onSelectChain(targetChain, { skipToggle: false, skipWalletToggle: false })}
+      active={active}
+    >
       <Logo src={logoUrl} />
       <NetworkLabel>{label}</NetworkLabel>
       {chainId === targetChain && <FlyoutRowActiveIndicator active />}
@@ -267,9 +271,10 @@ export const getChainNameFromId = (id: string | number) => {
 }
 
 export default function NetworkSelector() {
-  const { chainId, library } = useActiveWeb3React()
+  // mod: add account
+  const { account, chainId, library } = useActiveWeb3React()
   // mod: refactored inner logic into useChangeNetworks hook
-  const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ chainId, library })
+  const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
 
   /* const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
