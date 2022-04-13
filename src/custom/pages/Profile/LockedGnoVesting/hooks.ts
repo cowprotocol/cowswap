@@ -116,6 +116,7 @@ export function useClaimCallback({
     return claimPromise
       .then((tx) => {
         addTransaction({
+          swapVCow: true,
           hash: tx.hash,
           summary,
         })
