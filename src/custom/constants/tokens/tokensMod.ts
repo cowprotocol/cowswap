@@ -290,19 +290,6 @@ class GnosisChainNativeCurrency extends NativeCurrency {
   }
 }
 
-export class GpEther extends Ether {
-  public get wrapped(): Token {
-    if (this.chainId in WRAPPED_NATIVE_CURRENCY) return WRAPPED_NATIVE_CURRENCY[this.chainId]
-    throw new Error('Unsupported chain ID')
-  }
-
-  private static _cachedExtendedEther: { [chainId: number]: NativeCurrency } = {}
-
-  public static onChain(chainId: number): ExtendedEther {
-    return this._cachedExtendedEther[chainId] ?? (this._cachedExtendedEther[chainId] = new ExtendedEther(chainId))
-  }
-}
-
 const cachedNativeCurrency: { [chainId: number]: NativeCurrency } = {}
 export function nativeOnChain(chainId: number): NativeCurrency {
   return (
@@ -311,6 +298,17 @@ export function nativeOnChain(chainId: number): NativeCurrency {
       ? new GnosisChainNativeCurrency(chainId)
       : ExtendedEther.onChain(chainId))
   )
+}
+
+export class GpEther extends Ether {
+  public get wrapped(): Token {
+    if (this.chainId in WRAPPED_NATIVE_CURRENCY) return WRAPPED_NATIVE_CURRENCY[this.chainId]
+    throw new Error('Unsupported chain ID')
+  }
+
+  private static _cachedExtendedEther: { [chainId: number]: NativeCurrency } = {}
+
+  public static onChain = nativeOnChain
 }
 
 export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedChainId]?: string } } = {
