@@ -14,6 +14,7 @@ import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 import { useTokenBalance } from 'state/wallet/hooks'
+import { useAllocation } from 'pages/Profile/LockedGnoVesting/hooks'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -162,18 +163,19 @@ export function useCowBalance() {
 }
 
 /**
- * Hook that returns combined vCOW + COW balance
+ * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
 export function useCombinedBalance() {
   const { total: vCowBalance } = useVCowData()
+  const lockedGnoBalance = useAllocation()
   const cowBalance = useCowBalance()
 
   return useMemo(() => {
-    if (!vCowBalance || !cowBalance) {
+    if (!vCowBalance || !cowBalance || !lockedGnoBalance) {
       return
     }
 
-    const sum = vCowBalance.asFraction.add(cowBalance.asFraction)
+    const sum = vCowBalance.asFraction.add(cowBalance.asFraction).add(lockedGnoBalance.asFraction)
     return CurrencyAmount.fromRawAmount(cowBalance.currency, sum.quotient)
-  }, [cowBalance, vCowBalance])
+  }, [cowBalance, vCowBalance, lockedGnoBalance])
 }
