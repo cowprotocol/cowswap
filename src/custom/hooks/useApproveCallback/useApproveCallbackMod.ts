@@ -68,31 +68,6 @@ export function useApproveCallback({
   const pendingApproval = useHasPendingApproval(token?.address, spender)
   const spenderCurrency = useCurrency(spender)
 
-  // TODO: Nice to have, can be deleted
-  // eslint-disable-next-line no-lone-blocks
-  {
-    process.env.NODE_ENV !== 'production' &&
-      console.debug(`
-    $$$$Approval metrics:
-    ====
-    CurrentAllowance: ${currentAllowance?.toExact()}
-    raw: ${currentAllowance?.quotient.toString()}
-    ====
-    amountToCheckAgainstApproval: ${amountToCheckAgainstAllowance?.toExact()}
-    raw: ${amountToCheckAgainstAllowance?.quotient.toString()}
-    ====
-    amountToApprove: ${amountToApprove?.toExact()}
-    raw: ${amountToApprove?.quotient.toString()}
-    ====
-    Needs approval?: ${
-      !amountToCheckAgainstAllowance && !amountToApprove
-        ? 'Unknown - no amounts'
-        : currentAllowance && amountToApprove
-        ? currentAllowance.lessThan(amountToCheckAgainstAllowance || amountToApprove)
-        : 'unknown no currentAllowance'
-    }
-  `)
-  }
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
