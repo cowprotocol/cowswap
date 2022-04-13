@@ -27,7 +27,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { getBlockExplorerUrl } from 'utils'
+import { getBlockExplorerUrl, shortenAddress } from 'utils'
 import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
@@ -306,7 +306,7 @@ export default function Profile() {
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
                     {chainId === ChainId.XDAI ? (
-                      <strong>{referralLink.address}</strong>
+                      <strong>{shortenAddress(referralLink.address)}</strong>
                     ) : (
                       <AddressSelector address={referralLink.address} />
                     )}

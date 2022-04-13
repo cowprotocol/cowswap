@@ -24,6 +24,18 @@ export default function AddressSelector(props: AddressSelectorProps) {
   const node = useRef<HTMLDivElement>(null)
   useOnClickOutside(node, open ? toggle : undefined)
 
+  const tryShortenAddress = useCallback((item?: string) => {
+    if (!item) {
+      return item
+    }
+
+    try {
+      return shortenAddress(item)
+    } catch (error) {
+      return item
+    }
+  }, [])
+
   const handleSelectItem = useCallback(
     (item: string) => {
       dispatch(updateAddress(item))
@@ -80,11 +92,11 @@ export default function AddressSelector(props: AddressSelectorProps) {
   return (
     <>
       {items.length === 1 ? (
-        <strong>{address}</strong>
+        <strong>{tryShortenAddress(address)}</strong>
       ) : (
         <Wrapper ref={node}>
           <AddressInfo onClick={toggle}>
-            <span style={{ marginRight: '2px' }}>{selectedAddress}</span>
+            <span style={{ marginRight: '2px' }}>{tryShortenAddress(selectedAddress)}</span>
             <ChevronDown size={16} style={{ marginTop: '2px' }} strokeWidth={2.5} />
           </AddressInfo>
           {open && (
@@ -92,7 +104,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
               {items.map((item) => (
                 <ButtonMenuItem key={item} $selected={item === ''} onClick={() => handleSelectItem(item)}>
                   <GreenCheck size={16} strokeWidth={2.5} $visible={item === selectedAddress} />{' '}
-                  {isAddress(item) ? shortenAddress(item) : item}
+                  {tryShortenAddress(item)}
                 </ButtonMenuItem>
               ))}
             </MenuFlyout>
