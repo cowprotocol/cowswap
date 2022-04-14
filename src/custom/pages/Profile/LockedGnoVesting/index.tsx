@@ -15,7 +15,7 @@ import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
-import { TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
+import { MERKLE_DROP_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
 import { useBalances, useClaimCallback } from './hooks'
 
 enum ClaimStatus {
@@ -143,10 +143,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         </ConvertWrapper>
 
         <CardActions>
-          <ExtLink href={getBlockExplorerUrl(chainId, TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId], 'token')}>
+          <ExtLink href={getBlockExplorerUrl(chainId, MERKLE_DROP_CONTRACT_ADDRESSES[chainId], 'token')}>
             View contract ↗
           </ExtLink>
-          <CopyHelper toCopy={TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]}>
+          <CopyHelper toCopy={MERKLE_DROP_CONTRACT_ADDRESSES[chainId]}>
             <div title="Click to copy token contract address">Copy contract</div>
           </CopyHelper>
         </CardActions>
