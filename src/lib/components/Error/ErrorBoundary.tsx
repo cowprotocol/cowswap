@@ -8,6 +8,7 @@ export type ErrorHandler = (error: Error, info: ErrorInfo) => void
 
 interface ErrorBoundaryProps {
   onError?: ErrorHandler
+  children?: any
 }
 
 type ErrorBoundaryState = {
