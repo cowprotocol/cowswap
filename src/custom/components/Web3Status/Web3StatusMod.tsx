@@ -23,7 +23,7 @@ import { RowBetween } from 'components/Row'
 
 // MOD imports
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { Web3StatusGeneric, Web3StatusError, Web3StatusConnect, WrappedStatusIcon } from '@src/components/Web3Status'
+import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
 
 /* const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -33,23 +33,14 @@ import { Web3StatusGeneric, Web3StatusError, Web3StatusConnect, WrappedStatusIco
     height: ${({ size }) => (size ? size + 'px' : '32px')};
     width: ${({ size }) => (size ? size + 'px' : '32px')};
   }
+`*/
+
+// mod
+export const Web3StatusGeneric = styled(Web3StatusGenericUni)`
+  margin-left: 0px;
+  margin-right: 0px;
 `
 
-const Web3StatusGeneric = styled(ButtonSecondary)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  width: 100%;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: 14px;
-  cursor: pointer;
-  user-select: none;
-  height: 36px;
-  margin-right: 2px;
-  margin-left: 1px;
-  :focus {
-    outline: none;
-  }
-`
 const Web3StatusError = styled(Web3StatusGeneric)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
@@ -87,7 +78,7 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
         color: ${({ theme }) => darken(0.05, theme.primaryText1)};
       }
     `}
-` */
+`
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
   background-color: ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg2)};
