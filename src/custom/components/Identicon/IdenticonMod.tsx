@@ -29,7 +29,7 @@ export default function Identicon({ account: customAccount, size = 16 }: Identic
   const { avatar } = useENSAvatar(account ?? undefined, false)
   const [fetchable, setFetchable] = useState(true)
 
-  const icon = useMemo(() => account && jazzicon(16, parseInt(account.slice(2, 10), 16)), [account])
+  const icon = useMemo(() => account && jazzicon(size, parseInt(account.slice(2, 10), 16)), [size, account])
   const iconRef = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
     const current = iconRef.current
@@ -46,7 +46,6 @@ export default function Identicon({ account: customAccount, size = 16 }: Identic
     return
   }, [icon, iconRef])
 
-  console.log(`identicon`, chainAccount, customAccount, account, avatar, fetchable)
   return (
     <StyledIdenticon>
       {avatar && fetchable ? (

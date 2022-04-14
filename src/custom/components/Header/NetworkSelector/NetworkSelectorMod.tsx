@@ -26,6 +26,7 @@ import {
   LinkOutCircle,
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks from 'hooks/useChangeNetworks'
+import { transparentize } from 'polished'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -68,6 +69,10 @@ const FlyoutMenu = styled.div`
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 38px;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    right: 20%;
+  `}
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
 const FlyoutMenuContents = styled.div`
@@ -81,11 +86,15 @@ const FlyoutMenuContents = styled.div`
   flex-direction: column;
   font-size: 16px;
   overflow: auto;
-  padding: 0.3rem;
+  padding: 10px 12px;
   //position: absolute;
   //top: 54px;
   min-width: 175px;
   z-index: 99;
+  // mod
+  ${ActiveRowWrapper} {
+    background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
+  }
   & > *:not(:last-child) {
     margin-bottom: 5px;
   }

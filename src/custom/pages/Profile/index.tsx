@@ -181,7 +181,7 @@ export default function Profile() {
                 <i>Total vCOW balance</i>
                 <b>
                   <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
-                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </b>
@@ -191,7 +191,7 @@ export default function Profile() {
               <BalanceDisplay titleSize={18} altColor={true}>
                 <i>
                   Vested{' '}
-                  <MouseoverTooltipContent content={tooltipText.vested}>
+                  <MouseoverTooltipContent content={tooltipText.vested} wrap>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </i>
@@ -270,7 +270,7 @@ export default function Profile() {
                     &nbsp;&nbsp;
                     <Txt secondary>
                       Last updated
-                      <MouseoverTooltipContent content="Data is updated on the background periodically.">
+                      <MouseoverTooltipContent content="Data is updated on the background periodically." wrap>
                         <HelpCircle size={14} />
                       </MouseoverTooltipContent>
                       :&nbsp;
@@ -278,7 +278,7 @@ export default function Profile() {
                     {!lastUpdated ? (
                       '-'
                     ) : (
-                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />} wrap>
                         <strong>{lastUpdated}</strong>
                       </MouseoverTooltipContent>
                     )}
@@ -317,7 +317,7 @@ export default function Profile() {
             <ChildWrapper>
               <ItemTitle>
                 Trades&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding your own trades.">
+                <MouseoverTooltipContent content="Statistics regarding your own trades." wrap>
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </ItemTitle>
@@ -333,7 +333,10 @@ export default function Profile() {
                     <span>
                       Total trades
                       {isTradesTooltipVisible && (
-                        <MouseoverTooltipContent content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ.">
+                        <MouseoverTooltipContent
+                          content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ."
+                          wrap
+                        >
                           <HelpCircle size={14} />
                         </MouseoverTooltipContent>
                       )}
@@ -356,7 +359,10 @@ export default function Profile() {
             <ChildWrapper>
               <ItemTitle>
                 Referrals&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding trades by people who used your referral link.">
+                <MouseoverTooltipContent
+                  content="Statistics regarding trades by people who used your referral link."
+                  wrap
+                >
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </ItemTitle>
