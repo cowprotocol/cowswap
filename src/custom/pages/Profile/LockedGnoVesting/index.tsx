@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useCallback, useState } from 'react'
 import SVG from 'react-inlinesvg'
-import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown } from 'pages/Profile/styled'
+import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Profile/styled'
 import { ButtonPrimary } from 'custom/components/Button'
 import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -11,7 +11,11 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { formatSmartLocaleAware } from 'utils/format'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-
+import CopyHelper from 'components/Copy'
+import { getBlockExplorerUrl } from 'utils'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { useActiveWeb3React } from 'hooks/web3'
+import { TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
 import { useBalances, useClaimCallback } from './hooks'
 
 enum ClaimStatus {
@@ -27,6 +31,7 @@ interface Props {
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
+  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const { allocated, vested, claimed, loading: loadingBalances } = useBalances()
   const unvested = allocated.subtract(vested)
@@ -136,6 +141,15 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
             </ButtonPrimary>
           )}
         </ConvertWrapper>
+
+        <CardActions>
+          <ExtLink href={getBlockExplorerUrl(chainId, TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId], 'token')}>
+            View contract ↗
+          </ExtLink>
+          <CopyHelper toCopy={TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]}>
+            <div title="Click to copy token contract address">Copy contract</div>
+          </CopyHelper>
+        </CardActions>
       </Card>
 
       <ErrorModal />
