@@ -16,7 +16,7 @@ import { fetchClaim } from './claimData'
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]
 
-const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
+export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
   [SupportedChainId.RINKEBY]: '0xe354c570B77b02F1a568Ea28901184e12703960D',
   [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
