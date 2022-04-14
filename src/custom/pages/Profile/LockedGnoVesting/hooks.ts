@@ -18,7 +18,7 @@ const COW = COW_TOKENS[SupportedChainId.MAINNET]
 
 export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
-  [SupportedChainId.RINKEBY]: '0xe354c570B77b02F1a568Ea28901184e12703960D',
+  [SupportedChainId.RINKEBY]: '0x5444c4AFb2ec7f7367C10F7732b8558650c5899F',
   [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
 }
 
@@ -26,7 +26,7 @@ const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT
 
 export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
-  [SupportedChainId.RINKEBY]: '0x31E7495e461Cf8147C7Bc0814a49aAbeA76B704b',
+  [SupportedChainId.RINKEBY]: '0xeBA8CE5b23c054f1511F8fF5114d848329B8258d',
   [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
 }
 
