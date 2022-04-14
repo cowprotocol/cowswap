@@ -69,6 +69,10 @@ const FlyoutMenu = styled.div`
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 38px;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    right: 20%;
+  `}
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
 const FlyoutMenuContents = styled.div`
