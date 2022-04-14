@@ -38,11 +38,7 @@ export default function useChangeNetworks({ account, chainId: preChainId, librar
   const toggleWalletModal = useWalletModalToggle() // MOD
   const [queuedNetworkSwitch, setQueuedNetworkSwitch] = useState<null | number>(null) // MOD
   // MOD: get supported chain and check unsupported
-  const chainId = useMemo(() => {
-    const chainId = supportedChainId(preChainId)
-
-    return chainId
-  }, [preChainId])
+  const chainId = useMemo(() => supportedChainId(preChainId), [preChainId])
 
   const info = chainId ? CHAIN_INFO[chainId] : undefined
 
