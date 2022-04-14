@@ -26,6 +26,7 @@ import {
   LinkOutCircle,
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks from 'hooks/useChangeNetworks'
+import { transparentize } from 'polished'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -86,6 +87,10 @@ const FlyoutMenuContents = styled.div`
   //top: 54px;
   min-width: 175px;
   z-index: 99;
+  // mod
+  ${ActiveRowWrapper} {
+    background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
+  }
   & > *:not(:last-child) {
     margin-bottom: 5px;
   }

@@ -17,7 +17,6 @@ import { replaceURLParam } from 'utils/routes'
 
 import { useAppDispatch } from '../../state/hooks'
 import { switchToNetwork } from '../../utils/switchToNetwork'
-import { transparentize } from 'polished'
 
 export const ActiveRowLinkList = styled.div`
   display: flex;
@@ -41,7 +40,7 @@ export const ActiveRowLinkList = styled.div`
   }
 `
 export const ActiveRowWrapper = styled.div`
-  background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
+  background-color: ${({ theme }) => theme.bg1};
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
