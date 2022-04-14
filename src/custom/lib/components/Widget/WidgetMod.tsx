@@ -125,7 +125,7 @@ export default function Widget(props: PropsWithChildren<WidgetProps>) {
             <DialogProvider value={userDialog || dialog}>
               <ErrorBoundary onError={onError}>
                 <WidgetPropValidator {...props}>
-                  {/* MOD (128) */}
+                  {/* MOD: pass custom store to redux provider */}
                   <ReduxProvider store={store}>
                     <AtomProvider>
                       <Web3Provider provider={eip1193} jsonRpcEndpoint={jsonRpcEndpoint}>
