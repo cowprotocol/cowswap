@@ -10,7 +10,7 @@ import { VCow as VCowType } from 'abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useSingleContractMultipleData, useSingleCallResult, Result } from 'state/multicall/hooks'
+import { useSingleContractMultipleData, useSingleCallResult, CallStateResult } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
@@ -28,8 +28,6 @@ import {
 } from 'state/claim/hooks/utils'
 import { SupportedChainId } from 'constants/chains'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
-
-export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
 import { AppDispatch } from 'state'
 import { useSelector, useDispatch } from 'react-redux'
@@ -65,6 +63,8 @@ import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 import { OperationType } from '@src/custom/components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
+
+export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
 const CLAIMS_REPO_BRANCH = 'gip-13'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -315,7 +315,7 @@ function useDeploymentTimestamp(): number | null {
     }
 
     // Invalidate timestamp
-    if (chainId != oldChainId.current) {
+    if (chainId !== oldChainId.current) {
       setTimestamp(null)
       oldChainId.current = chainId
     }
@@ -579,7 +579,7 @@ export function useClaimCallback(account: string | null | undefined): {
 
       const extendedArgs = _extendFinalArg(args, {
         from: connectedAccount, // add the `from` as the connected account
-        gasLimit: calculateGasMargin(chainId, gasLimit),
+        gasLimit: calculateGasMargin(gasLimit),
       })
 
       return vCowContract.claimMany(...extendedArgs).then((response: TransactionResponse) => {
@@ -1009,7 +1009,7 @@ export const useClaimLinks = () => {
 /**
  * Hook that parses the result input with BigNumber value to CurrencyAmount
  */
-function useParseVCowResult(result: Result | undefined) {
+function useParseVCowResult(result: CallStateResult | undefined) {
   const { chainId } = useActiveWeb3React()
 
   const vCowToken = chainId ? V_COW[chainId] : undefined

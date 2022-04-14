@@ -3,10 +3,14 @@
 # generated contract types
 /src/types/v3
 /src/abis/types
+/src/lib/locales/**/*.js
+/src/lib/locales/**/en-US.po
+/src/lib/locales/**/pseudo.po
 /src/locales/**/*.js
 /src/locales/**/*.ts
 /src/locales/**/*.json
 /src/locales/**/en-US.po
+/src/locales/**/pseudo.po
 /src/state/data/generated.ts
 
 # dependencies
@@ -15,11 +19,10 @@
 # testing
 /coverage
 
-# production
+# builds
 /build
-
-# bundle
 /dist
+/dts
 
 # misc
 .DS_Store

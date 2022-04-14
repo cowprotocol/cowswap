@@ -113,7 +113,7 @@ export const DropdownWrapper = styled.button<{ hasBalance?: boolean }>`
   :focus {
     cursor: ${({ hasBalance }) => (hasBalance ? 'pointer' : 'inherit')};
     outline: none;
-    border: ${({ hasBalance }) => (hasBalance ? '1px solid ${({ theme }) => theme.bg3}' : '1px solid transparent')};
+    border: ${({ hasBalance }) => (hasBalance ? `1px solid $\{({ theme }) => theme.bg3}` : '1px solid transparent')};
   }
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     min-width: 100%;

@@ -1,12 +1,15 @@
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import styled from 'styled-components/macro'
+import { MEDIA_WIDTHS } from 'theme'
+
 import { useActivePopups } from 'state/application/hooks'
-import { AutoColumn } from 'components/Column'
-import PopupItem from 'components/Popups/PopupItem'
-// import ClaimPopup from './ClaimPopup'
 import { useURLWarningVisible } from 'state/user/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { AutoColumn } from 'components/Column'
+// import ClaimPopup from './ClaimPopup'
+import PopupItem from 'components/Popups/PopupItem'
+
+// MOD imports
 import { SupportedChainId } from 'constants/chains'
-import { MEDIA_WIDTHS } from '@src/theme'
 import { MobilePopupWrapper } from '.'
 
 /* const MobilePopupWrapper = styled.div<{ height: string | number }>`

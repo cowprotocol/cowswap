@@ -33,7 +33,7 @@ import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { Title, SectionTitle, HelpCircle } from 'components/Page'
@@ -62,7 +62,7 @@ export default function Profile() {
   const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
-  const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
+  const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
   const setSwapVCowStatus = useSetSwapVCowStatus()

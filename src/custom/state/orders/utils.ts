@@ -59,7 +59,7 @@ function isPresignPending(order: Pick<OrderMetaData, 'status'>): boolean {
  * An order is considered presigned, when it transitions from "presignaturePending" to just "pending"
  */
 function isOrderPresigned(order: Pick<OrderMetaData, 'signingScheme' | 'status'>): boolean {
-  return order.signingScheme == 'presign' && order.status === 'open'
+  return order.signingScheme === 'presign' && order.status === 'open'
 }
 
 export function classifyOrder(

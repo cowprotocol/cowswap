@@ -35,7 +35,7 @@ export function usePresignOrder(): PresignOrder | null {
       })
 
       const txReceipt = await settlementContract.setPreSignature(orderId, true, {
-        gasLimit: calculateGasMargin(chainId, estimatedGas),
+        gasLimit: calculateGasMargin(estimatedGas),
       })
 
       console.log('Sent transaction for presigning', orderId, txReceipt)

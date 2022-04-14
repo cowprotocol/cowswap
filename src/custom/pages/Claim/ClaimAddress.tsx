@@ -2,13 +2,13 @@ import { useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSecondary } from 'components/Button'
 import Circle from 'assets/images/blue-loader.svg'
-import { CustomLightSpinner, TYPE } from 'theme'
+import { CustomLightSpinner, ThemedText } from 'theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 import { ClaimCommonTypes } from './types'
 import useENS from 'hooks/useENS'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void
@@ -56,9 +56,9 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
 
       {showInputError && (
         <InputErrorText>
-          <TYPE.error error={true}>
+          <ThemedText.Error error={true}>
             <Trans>Enter valid address or ENS</Trans>
-          </TYPE.error>
+          </ThemedText.Error>
         </InputErrorText>
       )}
 

@@ -86,7 +86,7 @@ function GnosisSafeTxDetails(props: {
     signaturesMessage = <span>Expired order</span>
   } else if (alreadySigned) {
     signaturesMessage = <span>Enough signatures</span>
-  } else if (numConfirmations == 0) {
+  } else if (numConfirmations === 0) {
     signaturesMessage = (
       <>
         <span>

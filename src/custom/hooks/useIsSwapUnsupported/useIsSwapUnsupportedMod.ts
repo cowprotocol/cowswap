@@ -1,5 +1,6 @@
 import { Currency /* , Token */ } from '@uniswap/sdk-core'
 // import { useMemo } from 'react'
+
 import { useIsUnsupportedToken } from 'state/lists/hooks'
 
 /**
@@ -7,24 +8,21 @@ import { useIsUnsupportedToken } from 'state/lists/hooks'
  * @param currencyIn the input currency to check
  * @param currencyOut the output currency to check
  */
-export function useIsSwapUnsupported(currencyIn?: Currency, currencyOut?: Currency): boolean {
+export function useIsSwapUnsupported(currencyIn?: Currency | null, currencyOut?: Currency | null): boolean {
   const isUnsupported = useIsUnsupportedToken()
 
   const tokenIn = currencyIn?.wrapped
   const tokenOut = currencyOut?.wrapped
 
-  /* 
-  const unsupportedTokens: { [address: string]: Token } = useUnsupportedTokens()
-
+  /* const unsupportedTokens = useUnsupportedTokens()
   return useMemo(() => {
-    // if unsupported list loaded & either token on list, mark as unsupported
-    return Boolean(
-      unsupportedTokens &&
-        ((currencyIn?.isToken && unsupportedTokens[currencyIn.address]) ||
-          (currencyOut?.isToken && unsupportedTokens[currencyOut.address]))
-    )
-  }, [currencyIn, currencyOut, unsupportedTokens])
-  */
+    if (!unsupportedTokens) {
+      return false
+    }
+    const currencyInUnsupported = Boolean(currencyIn?.isToken && unsupportedTokens[currencyIn.address])
+    const currencyOutUnsupported = Boolean(currencyOut?.isToken && unsupportedTokens[currencyOut.address])
+    return currencyInUnsupported || currencyOutUnsupported
+  }, [currencyIn, currencyOut, unsupportedTokens]) */
 
   return isUnsupported(tokenIn?.address) || isUnsupported(tokenOut?.address)
 }

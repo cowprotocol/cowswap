@@ -1,3 +1,5 @@
+import { createReducer } from '@reduxjs/toolkit'
+import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
 import {
   // DEFAULT_ACTIVE_LIST_URLS,
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
@@ -5,10 +7,10 @@ import {
   DEFAULT_NETWORK_FOR_LISTS,
   UNSUPPORTED_LIST_URLS,
 } from 'constants/lists'
-import { createReducer } from '@reduxjs/toolkit'
-import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
-import { TokenList } from '@uniswap/token-lists'
 // import { DEFAULT_LIST_OF_LISTS } from '@src/constants/lists'
+
+// MOD imports
+import { TokenList } from '@uniswap/token-lists'
 import { updateVersion } from 'state/global/actions'
 import {
   acceptListUpdate,

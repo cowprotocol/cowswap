@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from 'constants/chains'
-import { GNO, GpEther, USDC_BY_CHAIN } from 'constants/tokens'
+import { GNO, GpEther, USDC } from 'constants/tokens'
 import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 
 import {
@@ -119,7 +119,7 @@ export function claimTypeToToken(type: ClaimType, chainId: SupportedChainId) {
     case ClaimType.GnoOption:
       return GNO[chainId]
     case ClaimType.Investor:
-      return USDC_BY_CHAIN[chainId]
+      return USDC[chainId]
     case ClaimType.UserOption:
       return GpEther.onChain(chainId)
     case ClaimType.Advisor:

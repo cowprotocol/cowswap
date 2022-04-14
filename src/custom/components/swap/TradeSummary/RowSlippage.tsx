@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -33,7 +33,7 @@ export function RowSlippage({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <TYPE.black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           {showSettingOnClick ? (
             <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
               <Trans>Slippage tolerance</Trans>
@@ -41,7 +41,7 @@ export function RowSlippage({
           ) : (
             <Trans>Slippage tolerance</Trans>
           )}
-        </TYPE.black>
+        </ThemedText.Black>
         <MouseoverTooltipContent
           bgColor={theme.bg3}
           color={theme.text1}
@@ -58,13 +58,13 @@ export function RowSlippage({
           <StyledInfo />
         </MouseoverTooltipContent>
       </RowFixed>
-      <TYPE.black textAlign="right" fontSize={fontSize} color={theme.text1}>
+      <ThemedText.Black textAlign="right" fontSize={fontSize} color={theme.text1}>
         {showSettingOnClick ? (
           <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
         ) : (
           <span>{displaySlippage}</span>
         )}
-      </TYPE.black>
+      </ThemedText.Black>
     </RowBetween>
   )
 }

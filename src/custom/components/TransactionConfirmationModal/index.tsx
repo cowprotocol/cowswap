@@ -4,10 +4,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
-import {
-  CloseIcon,
-  // CustomLightSpinner
-} from 'theme'
+import { CloseIcon } from 'theme'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
@@ -21,7 +18,6 @@ import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
 import { ColumnCenter } from 'components/Column'
-// import { lighten } from 'polished'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'

@@ -1,8 +1,9 @@
 import { Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
-import { L2_CHAIN_IDS, SupportedChainId } from '@src/constants/chains'
+import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { SupportedLocale } from '@src/constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual } from 'react-redux'
@@ -11,7 +12,6 @@ import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
 import { useAllTokens } from '../../hooks/Tokens'
-import { useActiveWeb3React } from '../../hooks/web3'
 import { AppState } from '../index'
 import {
   addSerializedPair,
@@ -19,10 +19,10 @@ import {
   removeSerializedToken,
   SerializedPair,
   SerializedToken,
-  updateArbitrumAlphaAcknowledged,
   updateHideClosedPositions,
+  // TODO: mod, move to mod file
   updateRecipientToggleVisible,
-  updateOptimismAlphaAcknowledged,
+  updateShowSurveyPopup,
   updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
@@ -30,6 +30,7 @@ import {
   updateUserLocale,
   updateUserSlippageTolerance,
 } from './actions'
+// TODO: mod, move to mod file
 import { useSwapActionHandlers } from '../swap/hooks'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -108,10 +109,24 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
+export function useShowSurveyPopup(): [boolean | undefined, (showPopup: boolean) => void] {
+  const dispatch = useAppDispatch()
+  const showSurveyPopup = useAppSelector((state) => state.user.showSurveyPopup)
+  const toggleShowSurveyPopup = useCallback(
+    (showPopup: boolean) => {
+      dispatch(updateShowSurveyPopup({ showSurveyPopup: showPopup }))
+    },
+    [dispatch]
+  )
+  return [showSurveyPopup, toggleShowSurveyPopup]
+}
+
+// TODO: mod, move to mod file
 export function useIsRecipientToggleVisible(): boolean {
   return useAppSelector((state) => state.user.recipientToggleVisible)
 }
 
+// TODO: mod, move to mod file
 export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
   const dispatch = useAppDispatch()
   const recipientToggleVisible = useIsRecipientToggleVisible()
@@ -144,13 +159,6 @@ export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean)
   )
 
   return [clientSideRouter, setClientSideRouter]
-}
-
-export function useRoutingAPIEnabled(): boolean {
-  const { chainId } = useActiveWeb3React()
-  const [clientSideRouter] = useClientSideRouter()
-
-  return chainId === SupportedChainId.MAINNET && !clientSideRouter
 }
 
 export function useSetUserSlippageTolerance(): (slippageTolerance: Percent | 'auto') => void {
@@ -259,7 +267,10 @@ export function useUserAddedTokens(): Token[] {
 
   return useMemo(() => {
     if (!chainId) return []
-    return Object.values(serializedTokensMap?.[chainId] ?? {}).map(deserializeToken)
+    const tokenMap: Token[] = serializedTokensMap?.[chainId]
+      ? Object.values(serializedTokensMap[chainId]).map(deserializeToken)
+      : []
+    return tokenMap
   }, [serializedTokensMap, chainId])
 }
 
@@ -369,24 +380,4 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
     return Object.keys(keyed).map((key) => keyed[key])
   }, [combinedList])
-}
-
-export function useArbitrumAlphaAlert(): [boolean, (arbitrumAlphaAcknowledged: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const arbitrumAlphaAcknowledged = useAppSelector(({ user }) => user.arbitrumAlphaAcknowledged)
-  const setArbitrumAlphaAcknowledged = (arbitrumAlphaAcknowledged: boolean) => {
-    dispatch(updateArbitrumAlphaAcknowledged({ arbitrumAlphaAcknowledged }))
-  }
-
-  return [arbitrumAlphaAcknowledged, setArbitrumAlphaAcknowledged]
-}
-
-export function useOptimismAlphaAlert(): [boolean, (optimismAlphaAcknowledged: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const optimismAlphaAcknowledged = useAppSelector(({ user }) => user.optimismAlphaAcknowledged)
-  const setOptimismAlphaAcknowledged = (optimismAlphaAcknowledged: boolean) => {
-    dispatch(updateOptimismAlphaAcknowledged({ optimismAlphaAcknowledged }))
-  }
-
-  return [optimismAlphaAcknowledged, setOptimismAlphaAcknowledged]
 }

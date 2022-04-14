@@ -1,28 +1,26 @@
 import { Trans } from '@lingui/macro'
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
-// import { Trade as V2Trade } from '@uniswap/v2-sdk'
-// import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useContext, useState, useMemo } from 'react'
-import { ArrowDown, AlertTriangle } from 'react-feather'
+import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
+// import { InterfaceTrade } from 'state/routing/types'
 import styled, { ThemeContext } from 'styled-components/macro'
+
 import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 import { isAddress, shortenAddress } from 'utils'
-import { ButtonPrimary } from 'components/Button'
 // import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
+import { ButtonPrimary } from 'components/Button'
+// import { LightCard } from '../Card'
 import { AutoColumn } from 'components/Column'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RowBetween, RowFixed } from 'components/Row'
-import { TruncatedText, SwapShowAcceptChanges } from 'components/swap/styleds'
-
-import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
-// import { LightCard } from '../Card'
-
 // import TradePrice from 'components/swap/TradePrice'
+import { AdvancedSwapDetails } from 'components/swap/AdvancedSwapDetails'
+import { SwapShowAcceptChanges, TruncatedText } from 'components/swap/styleds'
 
-// MOD
+// MOD imports
 import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -73,15 +71,16 @@ export default function SwapModalHeader({
   allowedSlippage,
   recipient,
   showAcceptChanges,
-  priceImpact,
   onAcceptChanges,
+  // mod
+  priceImpact,
   LightCard,
   HighFeeWarning,
   NoImpactWarning,
   allowsOffchainSigning,
 }: /* 
 {
-  trade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType>
+  trade: InterfaceTrade<Currency, Currency, TradeType>
   allowedSlippage: Percent
   recipient: string | null
   showAcceptChanges: boolean
@@ -98,9 +97,9 @@ SwapModalHeaderProps) {
 
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
+  // const fiatValueInput = useUSDCValue(trade.inputAmount)
+  // const fiatValueOutput = useUSDCValue(trade.outputAmount)
   // show fiatValue for unadjusted trade amounts!
-  // const fiatValueInput = useUSDCValue(trade.inputAmountWithoutFee)
-  // const fiatValueOutput = useUSDCValue(trade.outputAmountWithoutFee)
   const fiatValueInput = useHigherUSDValue(trade.inputAmountWithoutFee)
   const fiatValueOutput = useHigherUSDValue(trade.outputAmountWithoutFee)
 
@@ -124,9 +123,9 @@ SwapModalHeaderProps) {
       <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
         <AutoColumn gap={'8px'}>
           <RowBetween>
-            <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
+            <ThemedText.Body color={theme.text3} fontWeight={500} fontSize={14}>
               <Trans>From</Trans>
-            </TYPE.body>
+            </ThemedText.Body>
             <FiatValue fiatValue={fiatValueInput} />
           </RowBetween>
           <RowBetween align="center">
@@ -146,6 +145,15 @@ SwapModalHeaderProps) {
                 {formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
               </TruncatedText>
             </RowFixed>
+            {/*<RowFixed gap={'0px'}>
+              <CurrencyLogo currency={trade.inputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
+              <Text fontSize={20} fontWeight={500}>
+                {trade.inputAmount.currency.symbol}
+              </Text>
+            </RowFixed>
+          </RowBetween>
+          <RowBetween>
+            <FiatValue fiatValue={fiatValueInput} />*/}
           </RowBetween>
         </AutoColumn>
       </LightCard>
@@ -174,14 +182,19 @@ SwapModalHeaderProps) {
       >
         <AutoColumn gap={'8px'}>
           <RowBetween>
-            <TYPE.body color={theme.text3} fontWeight={500} fontSize={14}>
+            <ThemedText.Body color={theme.text3} fontWeight={500} fontSize={14}>
               <Trans>To</Trans>
-            </TYPE.body>
-            <TYPE.body fontSize={14} color={theme.text3}>
+            </ThemedText.Body>
+            <ThemedText.Body fontSize={14} color={theme.text3}>
               <FiatValue fiatValue={fiatValueOutput} priceImpact={priceImpact} />
-            </TYPE.body>
+            </ThemedText.Body>
           </RowBetween>
           <RowBetween align="flex-end">
+            {/*<RowFixed gap={'0px'}>
+              <TruncatedText fontSize={24} fontWeight={500}>
+                {trade.outputAmount.toSignificant(6)}
+              </TruncatedText>
+            </RowFixed>*/}
             <RowFixed gap={'0px'}>
               <CurrencyLogo currency={trade.outputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
               <Text fontSize={20} fontWeight={500}>
@@ -198,6 +211,14 @@ SwapModalHeaderProps) {
               </TruncatedText>
             </RowFixed>
           </RowBetween>
+          {/*<RowBetween>
+            <ThemedText.Body fontSize={14} color={theme.text3}>
+              <FiatValue
+                fiatValue={fiatValueOutput}
+                priceImpact={computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)}
+              />
+            </ThemedText.Body>
+          </RowBetween>*/}
         </AutoColumn>
       </LightCard>
       {!!exactOutLabel && (
@@ -223,25 +244,20 @@ SwapModalHeaderProps) {
         width="90%"
         margin="auto"
       />
-      {/* <RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
-        <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
-          <Trans>Price</Trans>
-        </TYPE.body>
+      {/*<RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
-      </RowBetween> */}
-
+      </RowBetween>*/}
       <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}>
         <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
       </LightCard>
-
       {showAcceptChanges ? (
         <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
           <RowBetween>
             <RowFixed>
               <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <TYPE.main color={theme.primary1}>
+              <ThemedText.Main color={theme.primary1}>
                 <Trans>Price Updated</Trans>
-              </TYPE.main>
+              </ThemedText.Main>
             </RowFixed>
             <ButtonPrimary
               style={{ padding: '.5rem', width: 'fit-content', fontSize: '0.825rem', borderRadius: '12px' }}
@@ -255,7 +271,7 @@ SwapModalHeaderProps) {
 
       <AutoColumn justify="flex-start" gap="sm" style={{ padding: '.75rem 1rem' }}>
         {trade.tradeType === TradeType.EXACT_INPUT ? (
-          <TYPE.italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
+          <ThemedText.Italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
             <Trans>
               Output is estimated. You will receive at least{' '}
               <b>
@@ -264,9 +280,9 @@ SwapModalHeaderProps) {
               </b>{' '}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
-          </TYPE.italic>
+          </ThemedText.Italic>
         ) : (
-          <TYPE.italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
+          <ThemedText.Italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
             <Trans>
               Input is estimated. You will sell at most{' '}
               <b>
@@ -276,17 +292,17 @@ SwapModalHeaderProps) {
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
-          </TYPE.italic>
+          </ThemedText.Italic>
         )}
       </AutoColumn>
       {recipient !== null ? (
         <AutoColumn justify="flex-start" gap="sm">
-          <TYPE.main style={{ padding: '0.75rem 1rem' }}>
+          <ThemedText.Main style={{ padding: '0.75rem 1rem' }}>
             <Trans>
               Output will be sent to{' '}
               <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>
             </Trans>
-          </TYPE.main>
+          </ThemedText.Main>
         </AutoColumn>
       ) : null}
       {/* High Fee Warning */}

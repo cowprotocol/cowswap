@@ -1,8 +1,10 @@
-import { useActiveWeb3React } from 'hooks/web3'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useEffect } from 'react'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
+
+import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from './index'
 
 function reportWebVitals({ name, delta, id }: Metric) {
   ReactGA.timing({
@@ -24,11 +26,22 @@ export default function GoogleAnalyticsReporter({ location: { pathname, search }
 
   const { chainId } = useActiveWeb3React()
   useEffect(() => {
-    ReactGA.set({ ['Chain ID']: chainId ?? 0 })
+    // cd1 - custom dimension 1 - chainId
+    ReactGA.set({ cd1: chainId ?? 0 })
   }, [chainId])
 
   useEffect(() => {
     ReactGA.pageview(`${pathname}${search}`)
   }, [pathname, search])
+
+  useEffect(() => {
+    // typed as 'any' in react-ga -.-
+    ReactGA.ga((tracker: any) => {
+      if (!tracker) return
+
+      const clientId = tracker.get('clientId')
+      window.localStorage.setItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY, clientId)
+    })
+  }, [])
   return null
 }
