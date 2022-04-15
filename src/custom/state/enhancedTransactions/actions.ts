@@ -10,7 +10,16 @@ export type AddTransactionParams = WithChainId &
   WithData &
   Pick<
     EnhancedTransactionDetails,
-    'hash' | 'hashType' | 'from' | 'approval' | 'presign' | 'claim' | 'summary' | 'safeTransaction' | 'swapVCow'
+    | 'hash'
+    | 'hashType'
+    | 'from'
+    | 'approval'
+    | 'presign'
+    | 'claim'
+    | 'summary'
+    | 'safeTransaction'
+    | 'swapVCow'
+    | 'swapLockedGNOvCow'
   >
 
 export const addTransaction = createAction<AddTransactionParams>('enhancedTransactions/addTransaction')
