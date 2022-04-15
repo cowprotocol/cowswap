@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -98,7 +98,8 @@ export default function Profile() {
   // Boolean flags
   const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
   const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
-  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending)
+  const isSwapConfirmed = swapVCowStatus === SwapVCowStatus.CONFIRMED
+  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed)
 
   // Handle swaping
   const { swapCallback } = useSwapVCowCallback({
@@ -166,6 +167,32 @@ export default function Profile() {
     </>
   )
 
+  const renderConvertToCowContent = useCallback(() => {
+    let content = null
+
+    if (isSwapPending) {
+      content = <span>Converting vCOW...</span>
+    } else if (isSwapConfirmed) {
+      content = <span>Successfully converted!</span>
+    } else {
+      content = (
+        <>
+          Convert to COW <SVG src={ArrowIcon} />
+        </>
+      )
+    }
+
+    return content
+  }, [isSwapConfirmed, isSwapPending])
+
+  useEffect(() => {
+    if (isSwapConfirmed && hasVestedBalance) {
+      setTimeout(() => {
+        setSwapVCowStatus(SwapVCowStatus.INITIAL)
+      }, 5000)
+    }
+  }, [hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, vested])
+
   const currencyCOW = COW[chainId]
 
   return (
@@ -202,13 +229,7 @@ export default function Profile() {
                 <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
               </BalanceDisplay>
               <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                {isSwapPending ? (
-                  'Converting vCOW...'
-                ) : (
-                  <>
-                    Convert to COW <SVG src={ArrowIcon} />
-                  </>
-                )}
+                {renderConvertToCowContent()}
               </ButtonPrimary>
             </ConvertWrapper>
 
