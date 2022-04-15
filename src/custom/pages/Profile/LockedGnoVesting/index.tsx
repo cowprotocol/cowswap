@@ -93,6 +93,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
             <b>
               {allocatedFormatted} COW{' '}
               <MouseoverTooltipContent
+                wrap
                 content={
                   <VestingBreakdown>
                     <span>
@@ -114,6 +115,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
             <i>
               Vested{' '}
               <MouseoverTooltipContent
+                wrap
                 content={
                   <div>
                     <p>
