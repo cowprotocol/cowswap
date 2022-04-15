@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { Trans } from '@lingui/macro'
 import { isAddress } from '@ethersproject/address'
 import {

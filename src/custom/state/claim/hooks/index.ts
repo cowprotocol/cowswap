@@ -10,7 +10,7 @@ import { VCow as VCowType } from 'abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useSingleContractMultipleData } from 'state/multicall/hooks'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
@@ -28,8 +28,6 @@ import {
 } from 'state/claim/hooks/utils'
 import { SupportedChainId } from 'constants/chains'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
-
-export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
 import { AppDispatch } from 'state'
 import { useSelector, useDispatch } from 'react-redux'
@@ -61,6 +59,8 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
+
+export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
 const CLAIMS_REPO_BRANCH = 'gip-13'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
@@ -164,7 +164,7 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
 
     let isContractCallLoading = false
 
-    results.forEach((result, index) => {
+    results.forEach((result: any, index: number) => {
       const claim = userClaims[index]
 
       // Use the loading state from the multicall results
@@ -311,7 +311,7 @@ function useDeploymentTimestamp(): number | null {
     }
 
     // Invalidate timestamp
-    if (chainId != oldChainId.current) {
+    if (chainId !== oldChainId.current) {
       setTimestamp(null)
       oldChainId.current = chainId
     }
@@ -575,7 +575,7 @@ export function useClaimCallback(account: string | null | undefined): {
 
       const extendedArgs = _extendFinalArg(args, {
         from: connectedAccount, // add the `from` as the connected account
-        gasLimit: calculateGasMargin(chainId, gasLimit),
+        gasLimit: calculateGasMargin(gasLimit),
       })
 
       return vCowContract.claimMany(...extendedArgs).then((response: TransactionResponse) => {

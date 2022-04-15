@@ -1,23 +1,23 @@
-import { CurrencyAmount, Currency, Price, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { SupportedChainId } from 'constants/chains'
-/* import { DAI_OPTIMISM, USDC, USDC_ARBITRUM } from '../constants/tokens'
-import { useBestV2Trade } from './useBestV2Trade'
-import { useClientSideV3Trade } from './useClientSideV3Trade' */
-import { useActiveWeb3React } from 'hooks/web3'
 
+import { SupportedChainId } from 'constants/chains'
+import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ } from 'constants/tokens'
+// import { useBestV2Trade } from './useBestV2Trade'
+// import { useClientSideV3Trade } from './useClientSideV3Trade'
+
+// MOD imports
 import { supportedChainId } from 'utils/supportedChainId'
 import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSDCPrice'
 import { stringToCurrency } from 'state/swap/extension'
-import { USDC_XDAI } from 'utils/xdai/constants'
 import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { getUSDPriceQuote, toPriceInformation } from 'api/coingecko'
-import { tryParseAmount } from 'state/swap/hooks'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
-import { USDC } from 'constants/tokens'
-import { useBlockNumber } from 'state/application/hooks'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 import { useIsQuoteLoading } from 'state/price/hooks'
@@ -31,9 +31,13 @@ const getGpUsdcPriceResolveOnlyLastCall = onlyResolvesLast(getGpUsdcPrice)
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
   // MOD: lowers threshold from 100k to 100
-  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC, 100e6),
-  [SupportedChainId.RINKEBY]: CurrencyAmount.fromRawAmount(USDC, 100e6),
-  [SupportedChainId.XDAI]: CurrencyAmount.fromRawAmount(USDC_XDAI, 10_000e6),
+  // [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC_MAINNET, 100_000e6),
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 100e6),
+  [SupportedChainId.RINKEBY]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.RINKEBY], 100e6),
+  // [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC_ARBITRUM, 10_000e6),
+  // [SupportedChainId.OPTIMISM]: CurrencyAmount.fromRawAmount(DAI_OPTIMISM, 10_000e18),
+  // [SupportedChainId.POLYGON]: CurrencyAmount.fromRawAmount(USDC_POLYGON, 10_000e6),
+  [SupportedChainId.XDAI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.XDAI], 10_000e6),
 }
 
 /**
@@ -52,7 +56,7 @@ export default function useUSDCPrice(currency?: Currency) {
   const sellTokenAddress = currency?.wrapped.address
   const sellTokenDecimals = currency?.wrapped.decimals
 
-  /* 
+  /* // TODO(#2808): remove dependency on useBestV2Trade
   const v2USDCTrade = useBestV2Trade(TradeType.EXACT_OUTPUT, amountOut, currency, {
     maxHops: 2,
   })
@@ -73,13 +77,12 @@ export default function useUSDCPrice(currency?: Currency) {
       const { numerator, denominator } = v2USDCTrade.route.midPrice
       return new Price(currency, stablecoin, denominator, numerator)
     } else if (v3USDCTrade.trade) {
-      const { numerator, denominator } = v3USDCTrade.trade.route.midPrice
+      const { numerator, denominator } = v3USDCTrade.trade.routes[0].midPrice
       return new Price(currency, stablecoin, denominator, numerator)
     }
 
     return undefined
-  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) 
-  */
+  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) */
 
   useEffect(() => {
     const supportedChain = supportedChainId(chainId)
@@ -193,7 +196,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
 
   useEffect(() => {
     const isSupportedChainId = supportedChainId(chainId)
-    const baseAmount = tryParseAmount('1', currencyRef.current)
+    const baseAmount = tryParseCurrencyAmount('1', currencyRef.current)
 
     if (!isSupportedChainId || !tokenAddress || !baseAmount) return
 
@@ -212,7 +215,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
         // we need to parse all USD returned amounts
         // and convert to the same currencyRef.current for both sides (SDK math invariant)
         // in our case we stick to the USDC paradigm
-        const quoteAmount = tryParseAmount(apiUsdPrice.toString(), USDC)
+        const quoteAmount = tryParseCurrencyAmount(apiUsdPrice.toString(), USDC[isSupportedChainId])
         // parse failure is unlikely - type safe
         if (!quoteAmount) return
         // create a new Price object
@@ -261,3 +264,28 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
 
   return coingeckoUsdPrice || gpUsdPrice
 }
+
+/**
+ *
+ * @param fiatValue string representation of a USD amount
+ * @returns CurrencyAmount where currency is stablecoin on active chain
+ */
+// TODO: new function, check whether it's usueful anywhere
+/* export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
+  const { chainId } = useActiveWeb3React()
+  const stablecoin = chainId ? STABLECOIN_AMOUNT_OUT[chainId]?.currency : undefined
+
+  if (fiatValue === null || fiatValue === undefined || !chainId || !stablecoin) {
+    return undefined
+  }
+
+  // trim for decimal precision when parsing
+  const parsedForDecimals = parseFloat(fiatValue).toFixed(stablecoin.decimals).toString()
+
+  try {
+    // parse USD string into CurrencyAmount based on stablecoin decimals
+    return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
+  } catch (error) {
+    return undefined
+  }
+} */
