@@ -53,7 +53,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
-import { SwapVCowStatus } from 'state/claim/actions'
+import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
