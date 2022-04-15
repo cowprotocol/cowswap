@@ -66,6 +66,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
       })
       .then(() => {
         setStatus(ClaimStatus.CONFIRMED)
+
+        setTimeout(() => {
+          setStatus(ClaimStatus.INITIAL)
+        }, 5000)
       })
       .catch((error) => {
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', error)
