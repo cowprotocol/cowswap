@@ -16,12 +16,6 @@ import { supportedChainId } from 'utils/supportedChainId'
 type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'account' | 'chainId' | 'library'>
 export type ChainSwitchCallbackOptions = { skipWalletToggle: boolean; skipToggle: boolean }
 
-/**
- * Hook extracted from Header/NetworkSelector component pretty much verbatim
- *
- * @param chainId
- * @param library
- */
 export default function useChangeNetworks({ account, chainId: preChainId, library }: ChangeNetworksParams) {
   const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
