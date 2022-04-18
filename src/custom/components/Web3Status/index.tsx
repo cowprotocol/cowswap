@@ -6,7 +6,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { getStatusIcon } from 'components/AccountDetails'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { ButtonSecondary } from 'components/Button'
 import { OrderStatus } from '@src/custom/state/orders/actions'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
@@ -16,7 +15,7 @@ export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
 
-  ${ButtonSecondary} {
+  button {
     height: 38px;
     max-width: 180px;
     ${({ theme }) => theme.mediaWidth.upToVerySmall`

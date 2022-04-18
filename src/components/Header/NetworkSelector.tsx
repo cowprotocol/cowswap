@@ -24,13 +24,13 @@ export const ActiveRowLinkList = styled.div`
   padding: 0 8px;
   & > a {
     align-items: center;
-    color: ${({ theme }) => theme.text2};
+    color: ${({ theme }) => theme.text1};
     display: flex;
     flex-direction: row;
     font-size: 14px;
     font-weight: 500;
     justify-content: space-between;
-    padding: 8px 0 4px;
+    padding: 8px 0 4px 6px;
     text-decoration: none;
   }
   & > a:first-child {
@@ -43,11 +43,11 @@ export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg1};
   border-radius: 8px;
   cursor: pointer;
-  padding: 8px;
   width: 100%;
+  padding: 8px;
 `
 export const FlyoutHeader = styled.div`
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.text1};
   font-weight: 400;
 `
 const FlyoutMenu = styled.div`

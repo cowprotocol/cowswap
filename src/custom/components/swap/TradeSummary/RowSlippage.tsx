@@ -45,6 +45,7 @@ export function RowSlippage({
         <MouseoverTooltipContent
           bgColor={theme.bg3}
           color={theme.text1}
+          wrap
           content={
             <Trans>
               <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>

@@ -36,7 +36,7 @@ export const Web3StatusGeneric = styled(ButtonSecondary)`
   width: 100%;
   align-items: center;
   padding: 0.5rem;
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
   user-select: none;
   height: 36px;
