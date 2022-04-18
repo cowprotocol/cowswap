@@ -2,25 +2,20 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
 import { switchToNetwork } from 'utils/switchToNetwork'
-import { useModalOpen, useToggleModal } from '../state/application/hooks'
+import { useModalOpen, useToggleModal } from 'state/application/hooks'
 import { CHAIN_INFO } from 'constants/chainInfo'
-import useParsedQueryString from '@src/hooks/useParsedQueryString'
-import usePrevious from '@src/hooks/usePrevious'
-import { addPopup, ApplicationModal } from '@src/state/application/reducer'
-import { useAppDispatch } from '@src/state/hooks'
-import { replaceURLParam } from '@src/utils/routes'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import usePrevious from 'hooks/usePrevious'
+import { addPopup, ApplicationModal } from 'state/application/reducer'
+import { useAppDispatch } from 'state/hooks'
+import { replaceURLParam } from 'utils/routes'
 import { getChainNameFromId, getParsedChainId } from 'components/Header/NetworkSelector'
 import { useHistory } from 'react-router-dom'
 
-type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'chainId' | 'library'>
+type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'account' | 'chainId' | 'library'>
+export type ChainSwitchCallbackOptions = { skipWalletToggle: boolean; skipToggle: boolean }
 
-/**
- * Hook extracted from Header/NetworkSelector component pretty much verbatim
- *
- * @param chainId
- * @param library
- */
-export default function useChangeNetworks({ chainId, library }: ChangeNetworksParams) {
+export default function useChangeNetworks({ account, chainId, library }: ChangeNetworksParams) {
   const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
   const prevChainId = usePrevious(chainId)
@@ -31,16 +26,18 @@ export default function useChangeNetworks({ chainId, library }: ChangeNetworksPa
 
   const history = useHistory()
 
-  const info = chainId ? CHAIN_INFO[chainId] : undefined
-
   const dispatch = useAppDispatch()
 
+  const info = chainId ? CHAIN_INFO[chainId] : undefined
+
   const handleChainSwitch = useCallback(
-    (targetChain: number, skipToggle?: boolean) => {
+    (targetChain: number, options: ChainSwitchCallbackOptions) => {
       if (!library) return
+
       switchToNetwork({ library, chainId: targetChain })
         .then(() => {
-          if (!skipToggle) {
+          // mod
+          if (!options.skipToggle) {
             toggle()
           }
           history.replace({
@@ -53,17 +50,19 @@ export default function useChangeNetworks({ chainId, library }: ChangeNetworksPa
           // we want app network <-> chainId param to be in sync, so if user changes the network by changing the URL
           // but the request fails, revert the URL back to current chainId
           if (chainId) {
-            history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+            history.replace({
+              search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)),
+            })
           }
-
-          if (!skipToggle) {
+          // mod
+          if (!options.skipToggle) {
             toggle()
           }
 
           dispatch(addPopup({ content: { failedSwitchNetwork: targetChain }, key: `failed-network-switch` }))
         })
     },
-    [dispatch, library, toggle, history, chainId]
+    [chainId, dispatch, history, library, toggle]
   )
 
   useEffect(() => {
@@ -73,10 +72,12 @@ export default function useChangeNetworks({ chainId, library }: ChangeNetworksPa
     if (chainId !== prevChainId) {
       history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
       // otherwise assume network change originates from URL
+      // } else if (urlChainId && urlChainId !== chainId) {
     } else if (urlChainId && urlChainId !== chainId) {
-      handleChainSwitch(urlChainId, true)
+      // handleChainSwitch(urlChainId, true)
+      handleChainSwitch(urlChainId, { skipToggle: true, skipWalletToggle: false }) // MOD
     }
-  }, [chainId, urlChainId, prevChainId, handleChainSwitch, history])
+  }, [chainId, handleChainSwitch, history, prevChainId, urlChainId])
 
   // set chain parameter on initial load if not there
   useEffect(() => {

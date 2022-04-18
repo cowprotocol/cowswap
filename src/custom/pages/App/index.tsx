@@ -9,7 +9,6 @@ import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { version } from '@src/../package.json'
 import { environmentName } from 'utils/environments'
-import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
@@ -89,9 +88,6 @@ function createRedirectExternal(url: string) {
 const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
 export default function App() {
-  // Dealing with empty URL queryParameters
-  useFilterEmptyQueryParams()
-
   return (
     <>
       <RedirectAnySwapAffectedUsers />
