@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { REFERRAL_QUERY_PARAM } from 'hooks/useReferralLink'
 import useENS from 'hooks/useENS'
-import { isAddress } from 'hook/utils'
+import { isAddress } from 'utils'
 
 type ReferralQueryValue = {
   value: string
