@@ -60,20 +60,9 @@ export default function AddressSelector(props: AddressSelectorProps) {
   }, [address, chainId])
 
   useEffect(() => {
-    if (selectedAddress) {
-      return
-    }
-
-    dispatch(updateAddress(address))
-  }, [selectedAddress, address, dispatch])
-
-  useEffect(() => {
-    if (!selectedAddress) {
-      return
-    }
-
     // if the user switches accounts, reset the selected address
-    if (isAddress(selectedAddress) && selectedAddress !== address) {
+    const switchedAccounts = isAddress(selectedAddress) && selectedAddress !== address
+    if (switchedAccounts || !selectedAddress) {
       dispatch(updateAddress(address))
       return
     }
