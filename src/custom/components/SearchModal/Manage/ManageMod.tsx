@@ -12,21 +12,24 @@ import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchMod
 import { ManageLists } from 'components/SearchModal/ManageLists'
 import ManageTokens from 'components/SearchModal/ManageTokens'
 import { PaddedColumn, Separator } from '@src/components/SearchModal/styleds'
+
+// MOD imports
 import { ManageProps, Wrapper } from './index' // mod
 
 /* const Wrapper = styled.div`
   width: 100%;
   position: relative;
-  padding-bottom: 80px;
-` */
+  display: flex;
+  flex-flow: column;
+`
 
-/* const ToggleWrapper = styled(RowBetween)`
+const ToggleWrapper = styled(RowBetween)`
   background-color: ${({ theme }) => theme.bg3};
   border-radius: 12px;
   padding: 6px;
-` */
+`
 
-/* const ToggleOption = styled.div<{ active?: boolean }>`
+const ToggleOption = styled.div<{ active?: boolean }>`
   width: 48%;
   padding: 10px;
   display: flex;

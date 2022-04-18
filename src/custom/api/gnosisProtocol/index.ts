@@ -1,6 +1,7 @@
-export type { UnsupportedToken, OrderID, OrderMetaData } from './api'
 import * as realApi from './api'
 import * as mockApi from './mock'
+
+export type { UnsupportedToken, OrderID, OrderMetaData } from './api'
 
 const useMock = process.env.REACT_APP_MOCK === 'true'
 

@@ -49,12 +49,6 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErr
         errorType: GpQuoteErrorCodes.UnsupportedToken,
         description: error.description,
       }
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
-      return {
-        errorType: GpQuoteErrorCodes.FeeExceedsFrom,
-        description: error.description,
-      }
-
     case ApiErrorCodes.TransferEthToContract:
       return {
         errorType: GpQuoteErrorCodes.TransferEthToContract,

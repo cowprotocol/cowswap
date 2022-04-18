@@ -29,7 +29,7 @@ import { ButtonConfirmed } from 'components/Button'
 import { ButtonSize } from 'theme'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import { tryParseAmount } from 'state/swap/hooks'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
 import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { useGasPrices } from 'state/gas/hooks'
@@ -130,10 +130,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     // Based on how much gas will be used (estimatedGas) and current gas prices (if available)
     // calculate how much that would cost in native currency.
     // We pick `fast` to be conservative. Also, it's non-blocking, so the user is aware but can proceed
-    const amount = calculateGasMargin(
-      chainId,
-      BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI)
-    )
+    const amount = calculateGasMargin(BigNumber.from(estimatedGas).mul(gasPrice?.fast || AVG_APPROVE_COST_GWEI))
 
     return CurrencyAmount.fromRawAmount(token, amount.toString())
   }, [chainId, estimatedGas, gasPrice?.fast, isNative, token])
@@ -233,7 +230,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   useEffect(() => {
     let error = null
 
-    const parsedAmount = tryParseAmount(typedValue, token)
+    const parsedAmount = tryParseCurrencyAmount(typedValue, token)
 
     if (!maxCost || !balance) {
       return
@@ -303,7 +300,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
   useEffect(() => {
     const warnings = []
 
-    const parsedAmount = tryParseAmount(typedValue, token)
+    const parsedAmount = tryParseCurrencyAmount(typedValue, token)
 
     if (!parsedAmount || !maxCost || !balance || inputError) {
       setInputWarnings([])

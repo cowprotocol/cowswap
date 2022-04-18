@@ -1,21 +1,25 @@
-import { IS_IN_IFRAME } from 'constants/misc'
-import { useWeb3React } from '@web3-react/core'
-import { AbstractConnector } from '@web3-react/abstract-connector'
+// import { EthereumProvider } from '@src/lib/ethereum'
 import { useEffect, useState, useCallback } from 'react'
+import { useWeb3React } from 'web3-react-core'
 
 import { injected, gnosisSafe, walletconnect, getProviderType, WalletProvider, fortmatic, walletlink } from 'connectors'
+import { IS_IN_IFRAME } from 'constants/misc'
 import { isMobile } from 'utils/userAgent'
 
+// MOD imports
 import { STORAGE_KEY_LAST_PROVIDER, WAITING_TIME_RECONNECT_LAST_PROVIDER } from 'constants/index'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 
 // exports from the original file
-export { useInactiveListener, useActiveWeb3React } from '@src/hooks/web3'
+export { useInactiveListener } from '@src/hooks/web3'
+export { default as useActiveWeb3React } from 'hooks/useActiveWeb3React'
 
 enum DefaultProvidersInjected {
   METAMASK = WalletProvider.INJECTED,
   COINBASE_WALLET = WalletProvider.WALLET_LINK,
 }
 
+// TODO: original from uniswap has gnosis-safe connection details, could be re-used
 export function useEagerConnect() {
   const { activate, active, connector } = useWeb3React()
   const [tried, setTried] = useState(false)
@@ -109,7 +113,7 @@ export function useEagerConnect() {
     }
   }, [connectInjected, active, connectSafe, triedSafe, reconnectUninjectedProvider]) // intentionally only running on mount (make sure it's only mounted once :))
 
-  // if the connection worked, wait until we get confirmation of that to flip the flag
+  // wait until we get confirmation of a connection to flip the flag
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined
 
@@ -162,3 +166,45 @@ export function setDefaultInjected(providerName: DefaultProvidersInjected) {
     ethereum.setSelectedProvider(provider)
   }
 }
+
+// TODO: new funciton, checker whether we can use it
+/**
+ * Use for network and injected - logs user in
+ * and out after checking what network theyre on
+ */
+/* export function useInactiveListener(suppress = false) {
+  const { active, error, activate } = useWeb3React()
+
+  useEffect(() => {
+    const ethereum = window.ethereum as EthereumProvider | undefined
+
+    if (ethereum && ethereum.on && !active && !error && !suppress) {
+      const handleChainChanged = () => {
+        // eat errors
+        activate(injected, undefined, true).catch((error) => {
+          console.error('Failed to activate after chain changed', error)
+        })
+      }
+
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length > 0) {
+          // eat errors
+          activate(injected, undefined, true).catch((error) => {
+            console.error('Failed to activate after accounts changed', error)
+          })
+        }
+      }
+
+      ethereum.on('chainChanged', handleChainChanged)
+      ethereum.on('accountsChanged', handleAccountsChanged)
+
+      return () => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('chainChanged', handleChainChanged)
+          ethereum.removeListener('accountsChanged', handleAccountsChanged)
+        }
+      }
+    }
+    return undefined
+  }, [active, error, suppress, activate])
+} */

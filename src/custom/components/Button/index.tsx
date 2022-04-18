@@ -10,10 +10,8 @@ import {
   ButtonLight as ButtonLightMod,
   ButtonGray as ButtonGrayMod,
   ButtonSecondary as ButtonSecondaryMod,
-  ButtonPink as ButtonPinkMod,
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
-  ButtonWhite as ButtonWhiteMod,
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
   // ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
@@ -123,10 +121,6 @@ export const ButtonSecondary = styled(ButtonSecondaryMod)`
   }
 `
 
-export const ButtonPink = styled(ButtonPinkMod)`
-  // CSS overrides
-`
-
 export const ButtonOutlined = styled(ButtonOutlinedMod)`
   // CSS overrides
   ${({ theme }) => theme.buttonOutlined.background}
@@ -160,10 +154,6 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
     cursor: auto;
     animation: none;
   }
-`
-
-export const ButtonWhite = styled(ButtonWhiteMod)`
-  // CSS overrides
 `
 
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
@@ -244,12 +234,4 @@ export function ButtonDropdownLight({
       </RowBetween>
     </ButtonOutlined>
   )
-}
-
-export function ButtonRadio({ active, ...rest }: { active?: boolean } & ButtonCustomProps) {
-  if (!active) {
-    return <ButtonWhite {...rest} />
-  } else {
-    return <ButtonPrimary {...rest} />
-  }
 }

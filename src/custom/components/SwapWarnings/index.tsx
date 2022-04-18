@@ -145,6 +145,7 @@ export const HighFeeWarning = (props: WarningProps) => {
         <MouseoverTooltipContent
           bgColor={theme.bg1}
           color={theme.text1}
+          wrap
           content={<HighFeeWarningMessage feePercentage={feePercentage} />}
         >
           <ErrorStyledInfo />
@@ -175,7 +176,7 @@ export const NoImpactWarning = (props: WarningProps) => {
         <div>
           Price impact <strong>unknown</strong> - trade carefully
         </div>{' '}
-        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage}>
+        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage} wrap>
           <ErrorStyledInfo />
         </MouseoverTooltipContent>
         {acceptWarningCb && (

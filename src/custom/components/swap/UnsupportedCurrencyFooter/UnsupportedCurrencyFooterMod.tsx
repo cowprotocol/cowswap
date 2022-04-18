@@ -6,14 +6,15 @@ import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Modal from 'components/Modal'
 import { AutoRow, RowBetween } from 'components/Row'
-import { useActiveWeb3React } from 'hooks/web3'
-import { ReactNode, useState } from 'react'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useState } from 'react'
 import styled from 'styled-components/macro'
-import { CloseIcon, ExternalLink, TYPE, Z_INDEX } from 'theme'
+import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
+
 import { useIsUnsupportedToken } from 'state/lists/hooks'
 // import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 
-// MOD
+// MOD imports
 import { getEtherscanLink } from 'utils'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
@@ -39,9 +40,9 @@ const StyledButtonEmpty = styled(ButtonEmpty)`
   text-decoration: none;
 `
 
-export const AddressText = styled(TYPE.blue)`
+export const AddressText = styled(ThemedText.Blue)`
   font-size: 12px;
-  word-break: break-all;
+  word-break: break-all; // mod
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 10px;
@@ -52,9 +53,9 @@ export const AddressText = styled(TYPE.blue)`
 export interface UnsupportedCurrencyFooterParams {
   show: boolean
   currencies: (Currency | null | undefined)[]
-  detailsTitle?: ReactNode
-  detailsText?: ReactNode
-  showDetailsText?: ReactNode
+  detailsTitle?: React.ReactNode
+  detailsText?: React.ReactNode
+  showDetailsText?: React.ReactNode
 }
 
 export default function UnsupportedCurrencyFooter({
@@ -65,7 +66,7 @@ export default function UnsupportedCurrencyFooter({
   showDetailsText,
 }: /* {
   show: boolean
-  currencies: (Currency | undefined)[]
+  currencies: (Currency | undefined | null)[]
 } */
 UnsupportedCurrencyFooterParams) {
   const { chainId } = useActiveWeb3React()
@@ -78,7 +79,7 @@ UnsupportedCurrencyFooterParams) {
         })
       : []
 
-  // const unsupportedTokens: { [address: string]: Token } = useUnsupportedTokens()
+  // const unsupportedTokens = useUnsupportedTokens()
 
   const isUnsupportedToken = useIsUnsupportedToken()
 
@@ -88,10 +89,10 @@ UnsupportedCurrencyFooterParams) {
         <Card padding="2rem">
           <AutoColumn gap="lg">
             <RowBetween>
-              {/* <TYPE.mediumHeader><Trans>Unsupported Assets</Trans> Assets</TYPE.mediumHeader> */}
-              <TYPE.mediumHeader>
+              <ThemedText.MediumHeader>
+                {/* <Trans>Unsupported Assets</Trans> */}
                 <Trans>{detailsTitle}</Trans>
-              </TYPE.mediumHeader>
+              </ThemedText.MediumHeader>
               <CloseIcon onClick={() => setShowDetails(false)} />
             </RowBetween>
             {tokens.map((token) => {
@@ -104,10 +105,9 @@ UnsupportedCurrencyFooterParams) {
                     <AutoColumn gap="10px">
                       <AutoRow gap="5px" align="center">
                         <CurrencyLogo currency={token} size={'24px'} />
-                        <TYPE.body fontWeight={500}>{token.symbol}</TYPE.body>
+                        <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
                       </AutoRow>
                       {chainId && (
-                        // <Row flex="1 1 228px">
                         <ExternalLink
                           href={
                             getEtherscanLink(
@@ -119,7 +119,6 @@ UnsupportedCurrencyFooterParams) {
                         >
                           <AddressText>{token.address}</AddressText>
                         </ExternalLink>
-                        // </Row>
                       )}
                     </AutoColumn>
                   </OutlineCard>
@@ -127,22 +126,22 @@ UnsupportedCurrencyFooterParams) {
               )
             })}
             <AutoColumn gap="lg">
-              <TYPE.body fontWeight={500}>
+              <ThemedText.Body fontWeight={500}>
                 {/* Some assets are not available through this interface because they may not work well with our smart
                 contract or we are unable to allow trading for legal reasons. */}
                 <Trans>{detailsText}</Trans>
-              </TYPE.body>
+              </ThemedText.Body>
             </AutoColumn>
           </AutoColumn>
         </Card>
       </Modal>
       <StyledButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
-        {/* <TYPE.blue>
+        {/* <ThemedText.Blue>
           <Trans>Read more about unsupported assets</Trans>
-        </TYPE.blue> */}
-        <TYPE.error error={!!showDetailsText}>
+        </ThemedText.Blue> */}
+        <ThemedText.Error error={!!showDetailsText}>
           <Trans>{showDetailsText}</Trans>
-        </TYPE.error>
+        </ThemedText.Error>
       </StyledButtonEmpty>
     </DetailsFooter>
   )

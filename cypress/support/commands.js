@@ -75,7 +75,7 @@ class CustomizedBridge extends Eip1193Bridge {
         // If from is present on eth_sendTransaction it errors, removing it makes the library set
         // from as the connected wallet which works fine
         delete params[0].from
-        const req = ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0])
+        const req = JsonRpcProvider.hexlifyTransaction(params[0])
         // Hexlify sets the gasLimit property to be gas again and send transaction requires gasLimit
         req.gasLimit = req.gas
         delete req.gas
@@ -104,6 +104,7 @@ class CustomizedBridge extends Eip1193Bridge {
 }
 
 // sets up the injected provider to be a mock ethereum provider with the given mnemonic/index
+// eslint-disable-next-line no-undef
 Cypress.Commands.overwrite('visit', (original, url, options) => {
   return original(url.startsWith('/') && url.length > 2 && !url.startsWith('/#') ? `/#${url}` : url, {
     ...options,
