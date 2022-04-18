@@ -27,7 +27,7 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
-import { getBlockExplorerUrl } from 'utils'
+import { getBlockExplorerUrl, shortenAddress } from 'utils'
 import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
@@ -35,7 +35,9 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
 import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import AddressSelector from './AddressSelector'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useAddress } from 'state/affiliate/hooks'
 import { Title, SectionTitle, HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
@@ -64,6 +66,7 @@ export default function Profile() {
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
+  const selectedAddress = useAddress()
 
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
@@ -302,9 +305,20 @@ export default function Profile() {
                 <>
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
-                    <strong>{referralLink.address}</strong>
+                    {chainId === ChainId.XDAI ? (
+                      <strong>{shortenAddress(referralLink.address)}</strong>
+                    ) : (
+                      <AddressSelector address={referralLink.address} />
+                    )}
+
                     <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
-                      <Copy toCopy={referralLink.link} />
+                      <Copy
+                        toCopy={
+                          selectedAddress && chainId !== ChainId.XDAI
+                            ? `${referralLink.prefix}${selectedAddress}`
+                            : referralLink.link
+                        }
+                      />
                     </span>
                   </span>
                 </>

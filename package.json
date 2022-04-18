@@ -90,7 +90,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "graphql": "^15.5.0",
-    "graphql-request": "^3.4.0",
+    "graphql-request": "^4.2.0",
     "inter-ui": "^3.13.1",
     "jest-styled-components": "^7.0.5",
     "microbundle": "^0.13.3",
