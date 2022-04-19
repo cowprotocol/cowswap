@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { Web3Provider } from '@ethersproject/providers'
-import { useActiveWeb3React } from '@src/hooks/web3'
+import { useActiveWeb3React } from 'hooks/web3'
 
 export * from '@src/hooks/web3'
 
+// TODO: I think this might not be really necessary, consider removing it
 /**
  * Provides a Web3Provider instance for active web3 connection, if any
  * Contrary to `getNetworkLibrary` that returns it for the default chainId

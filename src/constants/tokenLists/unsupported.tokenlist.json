@@ -1080,6 +1080,27 @@
       "name": "Shatner",
       "symbol": "SHAT",
       "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x7277a44D1325D81Ac58893002a1B40a41bea43fe",
+      "name": "FAANG Index",
+      "symbol": "FAANG",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x76175599887730786bdA1545D0D7AcE8737fEBB1",
+      "name": "ENS DAO",
+      "symbol": "ENS",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xa82AA729AE2F0d78e961D66db53949e27a9E866d",
+      "name": "BMEX",
+      "symbol": "BMEX",
+      "decimals": 18
     }
   ]
 }

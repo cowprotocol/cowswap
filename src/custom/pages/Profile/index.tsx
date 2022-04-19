@@ -15,6 +15,7 @@ import {
   ExtLink,
   CardsWrapper,
   Card,
+  CardActions,
   BannerCard,
   BalanceDisplay,
   ConvertWrapper,
@@ -26,14 +27,17 @@ import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
 import useReferralLink from 'hooks/useReferralLink'
 import useFetchProfile from 'hooks/useFetchProfile'
+import { getBlockExplorerUrl, shortenAddress } from 'utils'
 import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
 import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import AddressSelector from './AddressSelector'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useAddress } from 'state/affiliate/hooks'
 import { Title, SectionTitle, HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
@@ -42,28 +46,30 @@ import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { useVCowData } from 'state/claim/hooks'
-import { AMOUNT_PRECISION } from 'constants/index'
+import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { SwapVCowStatus } from 'state/claim/actions'
-import { useSwapVCowCallback } from 'state/claim/hooks'
+import { SwapVCowStatus } from 'state/cowToken/actions'
+import AddToMetamask from 'components/AddToMetamask'
+import { Link } from 'react-router-dom'
+import CopyHelper from 'components/Copy'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
 export default function Profile() {
   const referralLink = useReferralLink()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
-  const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
+  const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
+  const selectedAddress = useAddress()
 
-  const { setSwapVCowStatus } = useClaimDispatchers()
-  const { swapVCowStatus } = useClaimState()
+  const setSwapVCowStatus = useSetSwapVCowStatus()
+  const swapVCowStatus = useSwapVCowStatus()
 
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
@@ -159,6 +165,8 @@ export default function Profile() {
     </>
   )
 
+  const currencyCOW = COW[chainId]
+
   return (
     <Container>
       <TransactionConfirmationModal />
@@ -176,7 +184,7 @@ export default function Profile() {
                 <i>Total vCOW balance</i>
                 <b>
                   <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
-                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </b>
@@ -186,7 +194,7 @@ export default function Profile() {
               <BalanceDisplay titleSize={18} altColor={true}>
                 <i>
                   Vested{' '}
-                  <MouseoverTooltipContent content={tooltipText.vested}>
+                  <MouseoverTooltipContent content={tooltipText.vested} wrap>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </i>
@@ -202,6 +210,15 @@ export default function Profile() {
                 )}
               </ButtonPrimary>
             </ConvertWrapper>
+
+            <CardActions>
+              <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
+                View contract ↗
+              </ExtLink>
+              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
+                <div title="Click to copy token contract address">Copy contract</div>
+              </CopyHelper>
+            </CardActions>
           </Card>
         )}
 
@@ -213,6 +230,21 @@ export default function Profile() {
               <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
             </span>
           </BalanceDisplay>
+          <CardActions>
+            <ExtLink title="View contract" href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}>
+              View contract ↗
+            </ExtLink>
+
+            {library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
+
+            {!library?.provider?.isMetaMask && (
+              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                <div title="Click to copy token contract address">Copy contract</div>
+              </CopyHelper>
+            )}
+
+            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+          </CardActions>
         </Card>
 
         <BannerCard>
@@ -222,7 +254,7 @@ export default function Profile() {
             <span>
               {' '}
               <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
-              <ExtLink href={'https://forum.cow.fi/'}>CoW Forum ↗</ExtLink>
+              <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
             </span>
           </span>
           <SVG src={CowProtocolImage} description="CoWDAO Governance" />
@@ -241,7 +273,7 @@ export default function Profile() {
                     &nbsp;&nbsp;
                     <Txt secondary>
                       Last updated
-                      <MouseoverTooltipContent content="Data is updated on the background periodically.">
+                      <MouseoverTooltipContent content="Data is updated on the background periodically." wrap>
                         <HelpCircle size={14} />
                       </MouseoverTooltipContent>
                       :&nbsp;
@@ -249,13 +281,13 @@ export default function Profile() {
                     {!lastUpdated ? (
                       '-'
                     ) : (
-                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />} wrap>
                         <strong>{lastUpdated}</strong>
                       </MouseoverTooltipContent>
                     )}
                   </Txt>
                   {hasOrders && (
-                    <ExtLink href={getExplorerAddressLink(chainId || 1, account)}>
+                    <ExtLink href={getExplorerAddressLink(chainId, account)}>
                       <Txt secondary>View all orders ↗</Txt>
                     </ExtLink>
                   )}
@@ -273,9 +305,20 @@ export default function Profile() {
                 <>
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
-                    <strong>{referralLink.address}</strong>
+                    {chainId === ChainId.XDAI ? (
+                      <strong>{shortenAddress(referralLink.address)}</strong>
+                    ) : (
+                      <AddressSelector address={referralLink.address} />
+                    )}
+
                     <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
-                      <Copy toCopy={referralLink.link} />
+                      <Copy
+                        toCopy={
+                          selectedAddress && chainId !== ChainId.XDAI
+                            ? `${referralLink.prefix}${selectedAddress}`
+                            : referralLink.link
+                        }
+                      />
                     </span>
                   </span>
                 </>
@@ -288,7 +331,7 @@ export default function Profile() {
             <ChildWrapper>
               <ItemTitle>
                 Trades&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding your own trades.">
+                <MouseoverTooltipContent content="Statistics regarding your own trades." wrap>
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </ItemTitle>
@@ -304,7 +347,10 @@ export default function Profile() {
                     <span>
                       Total trades
                       {isTradesTooltipVisible && (
-                        <MouseoverTooltipContent content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ.">
+                        <MouseoverTooltipContent
+                          content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ."
+                          wrap
+                        >
                           <HelpCircle size={14} />
                         </MouseoverTooltipContent>
                       )}
@@ -327,7 +373,10 @@ export default function Profile() {
             <ChildWrapper>
               <ItemTitle>
                 Referrals&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding trades by people who used your referral link.">
+                <MouseoverTooltipContent
+                  content="Statistics regarding trades by people who used your referral link."
+                  wrap
+                >
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </ItemTitle>

@@ -6,8 +6,8 @@ import { useEffect, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
-import { updateBlockNumber } from 'state/application/reducer'
-import { useAddPopup, useBlockNumber } from 'state/application/hooks'
+import { useAddPopup } from 'state/application/hooks'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
@@ -58,7 +58,7 @@ function finalizeEthereumTransaction(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions
 ) {
-  const { chainId, lastBlockNumber, addPopup, dispatch } = params
+  const { chainId, addPopup, dispatch } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
@@ -90,11 +90,6 @@ function finalizeEthereumTransaction(
     },
     hash
   )
-
-  // the receipt was fetched before the block, fast forward to that block to trigger balance updates
-  if (receipt.blockNumber > lastBlockNumber) {
-    dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
-  }
 }
 
 function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {

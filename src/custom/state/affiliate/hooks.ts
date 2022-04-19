@@ -24,6 +24,12 @@ export function useReferralAddress() {
   })
 }
 
+export function useAddress() {
+  return useSelector<AppState, string | undefined>((state) => {
+    return state.affiliate.address
+  })
+}
+
 export function useResetReferralAddress() {
   const dispatch = useAppDispatch()
 

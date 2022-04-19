@@ -1,10 +1,12 @@
 import { Options, Placement } from '@popperjs/core'
 import Portal from '@reach/portal'
+import useInterval from 'lib/hooks/useInterval'
 import React, { useCallback, useMemo, useState } from 'react'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
+
+// MOD imports
 import { transparentize } from 'polished'
-import useInterval from 'hooks/useInterval'
 import { PopoverContainerProps } from '.'
 
 export const PopoverContainer = styled.div<{ show: boolean }>`
@@ -12,10 +14,11 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
+  color: ${({ theme }) => theme.text2};
+  /* MOD */
   background: ${({ theme }) => theme.bg1};
   border: 1px solid ${({ theme }) => theme.bg3};
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};
-  color: ${({ theme }) => theme.text2};
   border-radius: 8px;
 `
 
@@ -79,6 +82,7 @@ export interface PopoverProps extends PopoverContainerProps {
   // show: boolean
   children: React.ReactNode
   placement?: Placement
+  // MOD
   PopoverContainer: StyledComponent<'div', DefaultTheme, PopoverContainerProps, never> // gp mod
   Arrow: StyledComponent<'div', DefaultTheme, Omit<PopoverContainerProps, 'color' | 'show'>, never> // gp mod
 }

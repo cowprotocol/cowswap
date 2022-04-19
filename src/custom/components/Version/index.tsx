@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ExternalLink, TYPE } from 'theme'
+import { ExternalLink, ThemedText } from 'theme'
 
 import { version as WEB_VERSION } from '@src/../package.json'
 import { version as CONTRACTS_VERSION } from '@gnosis.pm/gp-v2-contracts/package.json'
@@ -38,7 +38,7 @@ const VERSIONS: Record<
     href(chainId: ChainId) {
       return {
         etherscan: _getContractsUrls(chainId, GP_VAULT_RELAYER),
-        github: `https://github.com/gnosis/gp-v2-contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
+        github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
       }
     },
   },
@@ -47,7 +47,7 @@ const VERSIONS: Record<
     href(chainId: ChainId) {
       return {
         etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),
-        github: `https://github.com/gnosis/gp-v2-contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2Settlement.sol`,
+        github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2Settlement.sol`,
       }
     },
   },
@@ -83,7 +83,7 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   `}
 `
 
-const VersionsLinkWrapper = styled(TYPE.small)`
+const VersionsLinkWrapper = styled(ThemedText.Small)`
   display: flex;
   justify-content: center;
   align-items: center;

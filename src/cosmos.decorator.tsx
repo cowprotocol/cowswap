@@ -5,6 +5,7 @@ import store from 'state'
 import styled from 'styled-components/macro'
 import ThemeProvider from 'theme'
 import { LanguageProvider } from 'i18n'
+import { HashRouter } from 'react-router-dom'
 
 const Wrapper = styled(Flex)`
   padding: 1.2rem 0.6rem;
@@ -17,11 +18,13 @@ const Wrapper = styled(Flex)`
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <Provider store={store}>
-      <ThemeProvider>
-        <LanguageProvider>
-          <Wrapper>{children}</Wrapper>
-        </LanguageProvider>
-      </ThemeProvider>
+      <HashRouter>
+        <ThemeProvider>
+          <LanguageProvider>
+            <Wrapper>{children}</Wrapper>
+          </LanguageProvider>
+        </ThemeProvider>
+      </HashRouter>
     </Provider>
   )
 }

@@ -64,3 +64,5 @@ export default function URLWarning({ url, announcement }: { url: string; announc
     </PhishAlert>
   ) : null
 }
+// TODO: file delete from original
+// TODO: decide whether to keep it as is or not

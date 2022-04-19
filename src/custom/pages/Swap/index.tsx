@@ -4,7 +4,7 @@ import styled, { DefaultTheme } from 'styled-components/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
 
-import { ButtonSize, TYPE } from 'theme/index'
+import { ButtonSize, ThemedText } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { AutoRow, RowBetween } from 'components/Row'
@@ -211,18 +211,19 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
 
   return (
     <LowerSectionWrapper {...boxProps}>
-      <TYPE.black fontSize={14} color={theme.text2} alignItems={'center'}>
+      <Text fontWeight={500} fontSize={14} color={theme.text2} alignItems={'center'}>
         <AutoRow>
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
             content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
             bgColor={theme.bg1}
             color={theme.text1}
+            wrap
           >
             <StyledInfo />
           </MouseoverTooltipContent>
         </AutoRow>
-      </TYPE.black>
+      </Text>
 
       <div className="price-container">
         <DarkSpan onClick={onClick} style={{ cursor: 'pointer' }}>
@@ -308,7 +309,7 @@ function SwitchToWethBtn({ wrappedToken }: SwitchToWethBtnProps) {
         })
       }
     >
-      <TYPE.main mb="4px">Switch to {wrappedToken.symbol}</TYPE.main>
+      <ThemedText.Main mb="4px">Switch to {wrappedToken.symbol}</ThemedText.Main>
     </ButtonPrimary>
   )
 }
@@ -362,12 +363,12 @@ const TradeLoading = ({ showButton = false }: TradeLoadingProps) => {
 
   const InsideContent = useCallback(
     () => (
-      <TYPE.main display="flex" alignItems="center" maxHeight={20}>
+      <ThemedText.Main display="flex" alignItems="center" maxHeight={20}>
         <Text fontSize={isLongLoad ? 14 : 40} fontWeight={500}>
           {isLongLoad && <LongLoadText>Hang in there. Calculating best price </LongLoadText>}
           <CenteredDots smaller={isLongLoad} />
         </Text>
-      </TYPE.main>
+      </ThemedText.Main>
     ),
     [isLongLoad]
   )
