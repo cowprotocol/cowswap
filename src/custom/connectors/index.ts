@@ -3,7 +3,6 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { ALL_SUPPORTED_CHAIN_IDS /*, SupportedChainId*/ } from 'constants/chains'
 // import { INFURA_NETWORK_URLS } from 'constants/infura'
 import { InjectedConnector } from 'web3-react-injected-connector'
-import { PortisConnector } from 'web3-react-portis-connector'
 import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 import { WalletLinkConnector } from 'web3-react-walletlink-connector'
 // import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
@@ -19,7 +18,7 @@ export * from '@src/connectors'
 export const WALLET_CONNECT_BRIDGE = process.env.WALLET_CONNECT_BRIDGE || 'wss://safe-walletconnect.gnosis.io'
 
 // const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
-const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
+// const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 
 type RpcNetworks = { [chainId: number]: string }
 
@@ -108,13 +107,13 @@ export const fortmatic = new FortmaticConnector({
   chainId: NETWORK_CHAIN_ID,
 })
 
-// mainnet only
+/* // mainnet only
 export const portis = new PortisConnector({
   dAppId: PORTIS_ID ?? '',
   // TODO: Allow to configure multiple networks in portis
   // networks: supportedChainIds
   networks: [NETWORK_CHAIN_ID],
-})
+}) */
 
 export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
@@ -150,8 +149,8 @@ export function getProviderType(connector: AbstractConnector | undefined): Walle
     case fortmatic:
       return WalletProvider.FORMATIC
 
-    case portis:
-      return WalletProvider.PORTIS
+    // case portis:
+    //   return WalletProvider.PORTIS
 
     case walletlink:
       return WalletProvider.WALLET_LINK

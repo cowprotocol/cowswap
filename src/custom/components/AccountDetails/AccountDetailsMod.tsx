@@ -1,28 +1,27 @@
 // import { Trans } from '@lingui/macro'
 // import { Connector } from '@web3-react/types'
 // import useActiveWeb3React from 'hooks/useActiveWeb3React'
-// import Transaction from '@src/components/AccountDetails/Transaction'
-// import { injected, portis, walletlink } from 'connectors'
-// import { SUPPORTED_WALLETS } from 'constants/wallet'
 // import { useCallback, useContext } from 'react'
 // import { ExternalLink as LinkIcon } from 'react-feather'
 // import { useAppDispatch } from 'state/hooks'
 import styled /* , { ThemeContext } */ from 'styled-components/macro'
 // import { AbstractConnector } from 'web3-react-abstract-connector'
-// import { shortenAddress } from 'utils'
-// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 
 import { ReactComponent as Close } from 'assets/images/x.svg'
+// import { injected, portis, walletlink } from 'connectors'
+// import { SUPPORTED_WALLETS } from 'constants/wallet'
 // import { clearAllTransactions } from '../../state/transactions/actions'
 import { ExternalLink /* , LinkStyledButton, ThemedText */ } from 'theme'
+// import { shortenAddress } from 'utils'
+// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { ButtonSecondary } from 'components/Button'
 // import StatusIcon from '../Identicon/StatusIcon'
 // import { AutoRow } from '../Row'
 // import Copy from './Copy'
+// import Transaction from '@src/components/AccountDetails/Transaction'
 
-// MOD imports
-import Activity from 'components/AccountDetails/Transaction'
-import { ActivityDescriptors } from 'hooks/useRecentActivity'
+import Activity from 'components/AccountDetails/Transaction' // MOD
+import { ActivityDescriptors } from 'hooks/useRecentActivity' // MOD
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -191,15 +190,6 @@ export const IconWrapper = styled.div<{ size?: number }>`
   return (
     <IconWrapper size={16}>
       <StatusIcon connector={connector} />
-      {connector === portis && (
-        <MainWalletAction
-          onClick={() => {
-            portis.portis.showPortis()
-          }}
-        >
-          <Trans>Show Portis</Trans>
-        </MainWalletAction>
-      )}
     </IconWrapper>
   )
 } */
@@ -224,6 +214,7 @@ export const MainWalletAction = styled(WalletAction)`
   color: ${({ theme }) => theme.primary1};
 `
 
+// function renderTransactions(transactions: string[]) {
 export function renderActivities(activities: ActivityDescriptors[]) {
   return (
     <TransactionListWrapper>

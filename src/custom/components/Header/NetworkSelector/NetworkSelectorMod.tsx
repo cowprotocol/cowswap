@@ -7,7 +7,7 @@ import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import usePrevious from 'hooks/usePrevious'
 import { ParsedQs } from 'qs'
 // import { useCallback, useEffect, useRef } from 'react'
-import { ChevronDown } from 'react-feather'
+import { /* ArrowDownCircle,  */ ChevronDown } from 'react-feather'
 // import { useHistory } from 'react-router-dom'
 // import { useModalOpen, useToggleModal } from 'state/application/hooks'
 // import { addPopup, ApplicationModal } from 'state/application/reducer'
@@ -28,19 +28,19 @@ import {
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
 
-/* const ActiveRowLinkList = styled.div`
+/* export const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 8px;
   & > a {
     align-items: center;
-    color: ${({ theme }) => theme.text2};
+    color: ${({ theme }) => theme.text1};
     display: flex;
     flex-direction: row;
     font-size: 14px;
     font-weight: 500;
     justify-content: space-between;
-    padding: 8px 0 4px;
+    padding: 8px 0 4px 6px;
     text-decoration: none;
   }
   & > a:first-child {
@@ -49,15 +49,15 @@ import { transparentize } from 'polished'
     padding-top: 10px;
   }
 `
-const ActiveRowWrapper = styled.div`
+export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg1};
   border-radius: 8px;
   cursor: pointer;
-  padding: 8px;
   width: 100%;
+  padding: 8px;
 `
-const FlyoutHeader = styled.div`
-  color: ${({ theme }) => theme.text2};
+export const FlyoutHeader = styled.div`
+  color: ${({ theme }) => theme.text1};
   font-weight: 400;
 ` */
 const FlyoutMenu = styled.div`
@@ -67,9 +67,10 @@ const FlyoutMenu = styled.div`
   z-index: 99;
   padding-top: 10px;
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    top: 38px;
+    top: 40px;
   }
 
+  // mod
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     right: 20%;
   `}
@@ -77,8 +78,8 @@ const FlyoutMenu = styled.div`
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
 const FlyoutMenuContents = styled.div`
   align-items: flex-start;
-  border: 1px solid ${({ theme }) => theme.bg0};
   background-color: ${({ theme }) => theme.bg1};
+  border: 1px solid ${({ theme }) => theme.bg0};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 12px;
@@ -87,19 +88,18 @@ const FlyoutMenuContents = styled.div`
   font-size: 16px;
   overflow: auto;
   padding: 10px 12px;
-  //position: absolute;
-  //top: 54px;
-  min-width: 175px;
-  z-index: 99;
-  // mod
-  ${ActiveRowWrapper} {
-    background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
-  }
   & > *:not(:last-child) {
     margin-bottom: 5px;
   }
+
+  // mod
+  min-width: 175px;
+  z-index: 99;
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 50px;
+  }
+  ${ActiveRowWrapper} {
+    background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
   }
 `
 const FlyoutRow = styled.div<{ active: boolean }>`
@@ -133,16 +133,17 @@ export const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
 ` */
 const Logo = styled.img`
   height: 20px;
+  // width: 20px; // mod
   width: 16px;
   margin-right: 8px;
 `
 const NetworkLabel = styled.div`
   flex: 1 1 auto;
-  margin: 0px auto 0px 8px;
+  margin: 0px auto 0px 8px; // mod
 `
 export const SelectorLabel = styled(NetworkLabel)`
   display: none;
-  margin-left: 0;
+  margin-left: 0; // mod
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     display: block;
     margin-right: 8px;
@@ -213,7 +214,8 @@ function Row({
   onSelectChain,
 }: {
   targetChain: SupportedChainId
-  onSelectChain: (targetChain: number, options: ChainSwitchCallbackOptions) => void
+  // onSelectChain: (targetChain: number) => void
+  onSelectChain: (targetChain: number, options: ChainSwitchCallbackOptions) => void // mod
 }) {
   const { library, chainId } = useActiveWeb3React()
   if (!library || !chainId) {

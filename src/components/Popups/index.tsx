@@ -19,6 +19,7 @@ const MobilePopupWrapper = styled.div<{ height: string | number }>`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: block;
+    padding-top: 20px;
   `};
 `
 

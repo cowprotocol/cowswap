@@ -5,6 +5,21 @@ import { SupportedChainId } from 'constants/chains'
 import {
   // AMPL,
   DAI,
+  // DAI_ARBITRUM_ONE,
+  // DAI_OPTIMISM,
+  // DAI_POLYGON,
+  // ETH2X_FLI,
+  // FEI,
+  // FRAX,
+  // FXS,
+  // nativeOnChain,
+  // renBTC,
+  // rETH2,
+  // sETH2,
+  // SWISE,
+  // TRIBE,
+  // USDC_ARBITRUM,
+  // USDC_MAINNET,
   // USDC_OPTIMISM,
   // USDC_POLYGON,
   USDT,
@@ -35,7 +50,9 @@ type ChainCurrencyList = {
 }
 
 /* const WRAPPED_NATIVE_CURRENCIES_ONLY: ChainTokenList = Object.fromEntries(
-  Object.entries(WRAPPED_NATIVE_CURRENCY).map(([key, value]) => [key, [value]])
+  Object.entries(WRAPPED_NATIVE_CURRENCY)
+    .map(([key, value]) => [key, [value]])
+    .filter(Boolean)
 ) */
 
 // used to construct intermediary pairs for trading
