@@ -27,6 +27,7 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
+import { getExplorerBaseUrl } from 'utils/explorer'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -253,6 +254,10 @@ function Row({
               <Trans>Help Center</Trans> <LinkOutCircle />
             </ExternalLink>
           ) : null}
+
+          <ExternalLink href={getExplorerBaseUrl(chainId)}>
+            <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
+          </ExternalLink>
         </ActiveRowLinkList>
       </ActiveRowWrapper>
     )
