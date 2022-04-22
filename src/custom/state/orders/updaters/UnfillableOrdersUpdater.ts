@@ -106,19 +106,26 @@ export function UnfillableOrdersUpdater(): null {
       }
 
       pending.forEach((order, index) =>
-        _getOrderPrice(chainId, order, strategy).then((quote) => {
-          if (quote) {
-            const [promisedPrice] = quote
-            const price = getPromiseFulfilledValue(promisedPrice, null)
+        _getOrderPrice(chainId, order, strategy)
+          .then((quote) => {
+            if (quote) {
+              const [promisedPrice] = quote
+              const price = getPromiseFulfilledValue(promisedPrice, null)
+              console.debug(
+                `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
+                price ? price.amount : 'no :('
+              )
+              price?.amount && updateIsUnfillableFlag(chainId, order, price)
+            } else {
+              console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
+            }
+          })
+          .catch((e) => {
             console.debug(
-              `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-              price ? price.amount : 'no :('
+              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
+              e
             )
-            price?.amount && updateIsUnfillableFlag(chainId, order, price)
-          } else {
-            console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
-          }
-        })
+          })
       )
     } finally {
       isUpdating.current = false
