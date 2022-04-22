@@ -498,7 +498,7 @@ export default function CurrencyInputPanel({
         <Container hideInput={hideInput} showAux={!!label}>
           <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={!onCurrencySelect}>
             <CurrencySelect
-              visible={currency !== null}
+              visible={currency !== undefined}
               selected={!!currency}
               hideInput={hideInput}
               className="open-currency-select-button"
@@ -543,7 +543,7 @@ export default function CurrencyInputPanel({
               />
             )}
           </InputRow>
-          {!hideInput && !hideBalance && currency && (
+          {!hideInput && !hideBalance && currency !== undefined && (
             <FiatRow>
               <RowBetween>
                 {account ? (
