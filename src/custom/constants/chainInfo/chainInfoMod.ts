@@ -178,6 +178,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.XDAI]: {
     networkType: NetworkType.L1,
     docs: 'https://docs.gnosischain.com/',
+    bridge: 'https://omni.gnosischain.com/bridge',
     explorer: 'https://blockscout.com/xdai/mainnet/',
     infoLink: 'https://www.xdaichain.com/',
     label: 'Gnosis Chain',
