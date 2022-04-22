@@ -97,12 +97,10 @@ export function useWalletInfo(): ConnectedWalletInfo {
     const walletType = getProviderType(connector)
     switch (walletType) {
       case WalletProvider.WALLET_CONNECT:
-        if (connector instanceof WalletConnectConnector) {
-          getWcPeerMetadata(connector).then(({ walletName, icon }) => {
-            setWalletName(walletName)
-            setIcon(icon)
-          })
-        }
+        getWcPeerMetadata(connector as WalletConnectConnector).then(({ walletName, icon }) => {
+          setWalletName(walletName)
+          setIcon(icon)
+        })
         break
       case WalletProvider.GNOSIS_SAFE:
         setWalletName(GNOSIS_SAFE_APP_NAME)
