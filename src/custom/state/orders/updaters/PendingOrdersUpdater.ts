@@ -128,7 +128,15 @@ async function _updateOrders({
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+    pending.map(async (orderFromStore) =>
+      fetchOrderPopupData(orderFromStore, chainId).catch((e) => {
+        console.debug(
+          `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
+          e
+        )
+        return null
+      })
+    )
   )
 
   // Group resolved promises by status
@@ -136,8 +144,11 @@ async function _updateOrders({
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
     Record<OrderTransitionStatus, OrderLogPopupMixData[]>
   >(
-    (acc, { status, popupData }) => {
-      popupData && acc[status].push(popupData)
+    (acc, orderData) => {
+      if (orderData) {
+        const { status, popupData } = orderData
+        popupData && acc[status].push(popupData)
+      }
       return acc
     },
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] }
