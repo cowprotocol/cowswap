@@ -1,6 +1,6 @@
 import { Currency } from '@uniswap/sdk-core'
 import { FeeOptions } from '@uniswap/v3-sdk'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import { nativeOnChain } from 'constants/tokens'
 import { atom } from 'jotai'
 import { atomWithImmer } from 'jotai/immer'

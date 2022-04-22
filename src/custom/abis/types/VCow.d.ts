@@ -18,7 +18,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface VCowInterface extends ethers.utils.Interface {
   functions: {
@@ -110,16 +110,6 @@ interface VCowInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Claimed"): EventFragment;
 }
-
-export type ClaimedEvent = TypedEvent<
-  [BigNumber, number, string, BigNumber, BigNumber] & {
-    index: BigNumber;
-    claimType: number;
-    claimant: string;
-    claimableAmount: BigNumber;
-    claimedAmount: BigNumber;
-  }
->;
 
 export class VCow extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -302,23 +292,6 @@ export class VCow extends BaseContract {
   };
 
   filters: {
-    "Claimed(uint256,uint8,address,uint256,uint256)"(
-      index?: null,
-      claimType?: null,
-      claimant?: null,
-      claimableAmount?: null,
-      claimedAmount?: null
-    ): TypedEventFilter<
-      [BigNumber, number, string, BigNumber, BigNumber],
-      {
-        index: BigNumber;
-        claimType: number;
-        claimant: string;
-        claimableAmount: BigNumber;
-        claimedAmount: BigNumber;
-      }
-    >;
-
     Claimed(
       index?: null,
       claimType?: null,

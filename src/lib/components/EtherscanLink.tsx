@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import useActiveWeb3React from 'lib/hooks/useActiveWeb3React'
 import { Link } from 'lib/icons'
 import styled, { Color } from 'lib/theme'

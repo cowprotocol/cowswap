@@ -1,5 +1,5 @@
 import { tokens } from '@uniswap/default-token-list'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import { nativeOnChain } from 'constants/tokens'
 import { useUpdateAtom } from 'jotai/utils'
 import { useSwapInfo } from 'lib/hooks/swap'

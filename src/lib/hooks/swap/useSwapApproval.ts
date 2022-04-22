@@ -4,13 +4,13 @@ import { Pair, Route as V2Route, Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Pool, Route as V3Route, Trade as V3Trade } from '@uniswap/v3-sdk'
 import { SWAP_ROUTER_ADDRESSES, V2_ROUTER_ADDRESS, V3_ROUTER_ADDRESS } from 'constants/addresses'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
+import { useERC20PermitFromTrade, UseERC20PermitState } from '@src/hooks/useERC20Permit'
 import useTransactionDeadline from 'lib/hooks/useTransactionDeadline'
 import { useCallback, useMemo } from 'react'
 import { getTxOptimizedSwapRouter, SwapRouterVersion } from 'utils/getTxOptimizedSwapRouter'
 
-import { ApprovalState, useApproval, useApprovalStateForSpender } from '../useApproval'
-export { ApprovalState } from '../useApproval'
+import { ApprovalState, useApproval, useApprovalStateForSpender } from 'lib/hooks/useApproval'
+export { ApprovalState } from 'lib/hooks/useApproval'
 
 /** Returns approval state for all known swap routers */
 function useSwapApprovalStates(

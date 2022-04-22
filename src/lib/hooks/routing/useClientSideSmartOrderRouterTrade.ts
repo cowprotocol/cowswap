@@ -2,7 +2,7 @@ import 'setimmediate'
 
 import { Protocol } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import useDebounce from 'hooks/useDebounce'
 import { useStablecoinAmountFromFiatValue } from 'hooks/useUSDCPrice'
 import { useCallback, useMemo } from 'react'

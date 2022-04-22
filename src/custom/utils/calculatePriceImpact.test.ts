@@ -1,5 +1,5 @@
-import { ChainId, WETH } from '@uniswap/sdk'
-import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { CurrencyAmount, Percent, Token, WETH9 } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
 import { parseUnits } from '@ethersproject/units'
 
@@ -13,7 +13,7 @@ function _calculateAbaPriceImpact(initialValue: string, finalValue: string) {
   return new Percent(numerator.toString(), denominator.toString())
 }
 
-const WETH_MAINNET = new Token(ChainId.MAINNET, WETH[1].address, 18)
+const WETH_MAINNET = new Token(ChainId.MAINNET, WETH9[1].address, 18)
 const DAI_MAINNET = new Token(ChainId.MAINNET, '0x6b175474e89094c44da98b954eedeac495271d0f', 18)
 
 describe('A > B > A Price Impact', () => {

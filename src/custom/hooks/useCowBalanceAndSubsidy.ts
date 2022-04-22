@@ -1,6 +1,6 @@
+import JSBI from 'jsbi'
 import { useMemo } from 'react'
 import { BigNumber } from 'bignumber.js'
-import { JSBI } from '@uniswap/sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getDiscountFromBalance } from 'components/CowSubsidyModal/utils'

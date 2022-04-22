@@ -17,9 +17,8 @@ export interface SerializedPair {
 export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>('user/updateMatchesDarkMode')
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
-export const updateRecipientToggleVisible = createAction<{ recipientToggleVisible: boolean }>(
-  'user/recipientToggleVisible'
-)
+export const updateRecipientToggleVisible =
+  createAction<{ recipientToggleVisible: boolean }>('user/recipientToggleVisible')
 export const updateUserLocale = createAction<{ userLocale: SupportedLocale }>('user/updateUserLocale')
 export const updateShowSurveyPopup = createAction<{ showSurveyPopup: boolean }>('user/updateShowSurveyPopup')
 export const updateShowDonationLink = createAction<{ showDonationLink: boolean }>('user/updateShowDonationLink')
@@ -34,7 +33,6 @@ export const updateUserDeadline = createAction<{ userDeadline: number }>('user/u
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('user/removeSerializedToken')
 export const addSerializedPair = createAction<{ serializedPair: SerializedPair }>('user/addSerializedPair')
-export const removeSerializedPair = createAction<{ chainId: number; tokenAAddress: string; tokenBAddress: string }>(
-  'user/removeSerializedPair'
-)
+export const removeSerializedPair =
+  createAction<{ chainId: number; tokenAAddress: string; tokenBAddress: string }>('user/removeSerializedPair')
 export const toggleURLWarning = createAction<void>('app/toggleURLWarning') // MOD - legacy Uni we want to keep
