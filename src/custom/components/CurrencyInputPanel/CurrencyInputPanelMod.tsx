@@ -543,7 +543,7 @@ export default function CurrencyInputPanel({
               />
             )}
           </InputRow>
-          {!hideInput && !hideBalance && currency && (
+          {!hideInput && !hideBalance && currency !== undefined && (
             <FiatRow>
               <RowBetween>
                 {account ? (
