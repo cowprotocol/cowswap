@@ -1,6 +1,6 @@
 # Uniswap Labs Swap Widget
 
-The Swap Widget bundles the whole swapping experience into a single React component that developers can easily embed in their app with one line of code. 
+The Swap Widget bundles the whole swapping experience into a single React component that developers can easily embed in their app with one line of code.
 
 ![swap widget screenshot](https://raw.githubusercontent.com/Uniswap/interface/main/src/assets/images/widget-screenshot.png)
 
@@ -8,11 +8,12 @@ You can customize the theme (colors, fonts, border radius, and more) to match th
 
 ## Installation
 
-Install the widgets library via `npm` or `yarn`. If you do not already use the widget's peerDependencies `redux` and `react-redux`, then you'll need to add them as well. 
+Install the widgets library via `npm` or `yarn`. If you do not already use the widget's peerDependencies `redux` and `react-redux`, then you'll need to add them as well.
 
 ```js
 yarn add @uniswap/widgets redux react-redux
 ```
+
 ```js
 npm i --save @uniswap/widgets redux react-redux
 ```
