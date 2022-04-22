@@ -320,8 +320,12 @@ export default function WalletModal({
                 key={key}
                 color={'#D59B4B'}
                 header={<Trans>Tally Ho</Trans>}
-                subheader={<Trans>To use Tally Ho, enable as default in Tally Ho settings and refresh the page.</Trans>}
-                link={'https://tally.cash/'}
+                subheader={
+                  <Trans>
+                    To use Tally Ho, enable as default in Tally Ho settings and refresh the page. (click for details)
+                  </Trans>
+                }
+                link={'https://docs.tally.cash/tally/the-wallet/wallet-features#settings'}
                 icon={TallyIcon}
               />
             )
@@ -337,8 +341,12 @@ export default function WalletModal({
               key={key}
               color={'#D59B4B'}
               header={<Trans>Tally Ho</Trans>}
-              subheader={<Trans>To use Tally Ho, enable as default in Tally Ho settings and refresh the page.</Trans>}
-              link={'https://tally.cash/'}
+              subheader={
+                <Trans>
+                  To use Tally Ho, enable as default in Tally Ho settings and refresh the page. (click for details)
+                </Trans>
+              }
+              link={'https://docs.tally.cash/tally/the-wallet/wallet-features#settings'}
               icon={TallyIcon}
             />
           )
