@@ -9,6 +9,7 @@ import { isMobile } from 'utils/userAgent'
 // MOD imports
 import { STORAGE_KEY_LAST_PROVIDER, WAITING_TIME_RECONNECT_LAST_PROVIDER } from 'constants/index'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 // exports from the original file
 export { useInactiveListener } from '@src/hooks/web3'
@@ -19,7 +20,6 @@ enum DefaultProvidersInjected {
   COINBASE_WALLET = WalletProvider.WALLET_LINK,
 }
 
-// TODO: original from uniswap has gnosis-safe connection details, could be re-used
 export function useEagerConnect() {
   const { activate, active, connector } = useWeb3React()
   const [tried, setTried] = useState(false)
@@ -128,6 +128,25 @@ export function useEagerConnect() {
 
     return () => timeout && clearTimeout(timeout)
   }, [active])
+
+  useEffect(() => {
+    // fix for this https://github.com/gnosis/cowswap/issues/1923
+    // check if current connector is of type WalletConnect
+    if (connector instanceof WalletConnectConnector) {
+      const walletConnect = connector.walletConnectProvider.signer.connection.wc
+
+      // listen on disconnect events directly on WalletConnect client and close connection
+      // important if the connection is closed from the wallet side after page refresh
+      walletConnect.on('disconnect', (error: any) => {
+        connector.close()
+        localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+
+        if (error) {
+          throw error
+        }
+      })
+    }
+  }, [connector])
 
   useEffect(() => {
     // add beforeunload event listener on initial component mount

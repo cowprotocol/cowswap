@@ -30,6 +30,8 @@ import PendingView from 'components/WalletModal/PendingView'
 // MOD imports
 import ModalMod from '@src/components/Modal'
 
+import { SupportedChainId } from 'constants/chains'
+
 export const CloseIcon = styled.div`
   position: absolute;
   right: 1rem;
@@ -224,7 +226,7 @@ export default function WalletModal({
     setWalletView(WALLET_VIEWS.PENDING)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+    if (connector instanceof WalletConnectConnector) {
       connector.walletConnectProvider = undefined
     }
 
@@ -234,6 +236,15 @@ export default function WalletModal({
         //   const walletAddress = await connector.getAccount()
         //   logMonitoringEvent({ walletAddress })
         // })
+        .then(() => {
+          // fix for this https://github.com/gnosis/cowswap/issues/1930
+          // manually set the WalletConnectConnector http.connection.url to currently connected network url
+          if (connector instanceof WalletConnectConnector) {
+            const { http, rpc, signer } = connector.walletConnectProvider
+            const chainId = signer.connection.chainId || SupportedChainId.MAINNET
+            http.connection.url = rpc.custom[chainId]
+          }
+        })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
             activate(connector) // a little janky...can't use setError because the connector isn't set
