@@ -15,6 +15,8 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useAllocation } from 'pages/Profile/LockedGnoVesting/hooks'
+import { SupportedChainId } from 'constants/chains'
+import JSBI from 'jsbi'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -166,16 +168,26 @@ export function useCowBalance() {
  * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
 export function useCombinedBalance() {
+  const { chainId, account } = useActiveWeb3React()
   const { total: vCowBalance } = useVCowData()
   const lockedGnoBalance = useAllocation()
   const cowBalance = useCowBalance()
 
   return useMemo(() => {
-    if (!vCowBalance || !cowBalance || !lockedGnoBalance) {
-      return
+    let tmpBalance = JSBI.BigInt(0)
+
+    const isLoading = account && (!vCowBalance || !lockedGnoBalance || !cowBalance) ? true : false
+
+    const cow = COW[chainId || SupportedChainId.MAINNET]
+
+    if (account) {
+      if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
+      if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance.quotient)
+      if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
     }
 
-    const sum = vCowBalance.asFraction.add(cowBalance.asFraction).add(lockedGnoBalance.asFraction)
-    return CurrencyAmount.fromRawAmount(cowBalance.currency, sum.quotient)
-  }, [cowBalance, vCowBalance, lockedGnoBalance])
+    const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
+
+    return { balance, isLoading }
+  }, [vCowBalance, lockedGnoBalance, cowBalance, chainId, account])
 }
