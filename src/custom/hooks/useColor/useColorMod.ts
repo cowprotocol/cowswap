@@ -1,13 +1,18 @@
-import { Token } from '@uniswap/sdk-core'
+/* import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
 import uriToHttp from 'lib/utils/uriToHttp'
 import Vibrant from 'node-vibrant/lib/bundle.js'
-import { shade } from 'polished'
+import { shade } from 'polished' */
 import { useLayoutEffect, useState } from 'react'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
-import { hex } from 'wcag-contrast'
+/* import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { hex } from 'wcag-contrast' */
 
-function URIForEthToken(address: string) {
+// MOD imports
+import { getColorFromUriPath } from '@src/hooks/useColor'
+
+export * from '@src/hooks/useColor'
+
+/* function URIForEthToken(address: string) {
   return `https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/${address}/logo.png`
 }
 
@@ -43,7 +48,7 @@ async function getColorFromToken(token: Token): Promise<string | null> {
   return null
 }
 
-export async function getColorFromUriPath(uri: string): Promise<string | null> {
+async function getColorFromUriPath(uri: string): Promise<string | null> {
   const formattedPath = uriToHttp(uri)[0]
 
   const palette = await Vibrant.from(formattedPath).getPalette()
@@ -82,7 +87,7 @@ export function useColor(token?: Token) {
   }, [token])
 
   return color
-}
+} */
 
 export function useListColor(listImageUri?: string) {
   const [color, setColor] = useState('#2172E5')
@@ -91,11 +96,13 @@ export function useListColor(listImageUri?: string) {
     let stale = false
 
     if (listImageUri) {
-      getColorFromUriPath(listImageUri).then((color) => {
-        if (!stale && color !== null) {
-          setColor(color)
-        }
-      })
+      getColorFromUriPath(listImageUri)
+        .then((color) => {
+          if (!stale && color !== null) {
+            setColor(color)
+          }
+        })
+        .catch(console.warn) // mod: error handling
     }
 
     return () => {
