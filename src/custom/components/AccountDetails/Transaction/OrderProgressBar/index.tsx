@@ -34,11 +34,11 @@ type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, creationTime, validTo, chainId } = props
-  const { isConfirmed, isExpired, isCancelled, isCancellable, isUnfillable = false } = activityDerivedState
+  const { isConfirmed, isPending, isCancellable, isUnfillable = false } = activityDerivedState
 
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(1)
-  const fadeOutTransition = useTransition(!isConfirmed, null, {
+  const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
     leave: { opacity: 0 },
     trail: 3000,
@@ -47,7 +47,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const elapsedSeconds = (Date.now() - creationTime.getTime()) / 1000
 
   useEffect(() => {
-    if (isConfirmed) {
+    if (!isPending) {
       return
     }
 
@@ -58,7 +58,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     }, 1000)
 
     return () => clearInterval(id)
-  }, [creationTime, validTo, chainId, elapsedSeconds, isConfirmed])
+  }, [creationTime, validTo, chainId, elapsedSeconds, isPending])
 
   useEffect(() => {
     if (isConfirmed) {
@@ -174,9 +174,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     <>
       {fadeOutTransition.map(({ item, props, key }) => {
         return (
-          item &&
-          !isCancelled &&
-          !isExpired && (
+          item && (
             <ProgressBarWrapper key={key} style={props}>
               {progressBar()}
             </ProgressBarWrapper>
