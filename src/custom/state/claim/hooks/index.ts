@@ -59,6 +59,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
+import { CallState } from '@uniswap/redux-multicall'
 
 export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
@@ -164,7 +165,7 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
 
     let isContractCallLoading = false
 
-    results.forEach((result: any, index: number) => {
+    results.forEach((result: CallState, index: number) => {
       const claim = userClaims[index]
 
       // Use the loading state from the multicall results

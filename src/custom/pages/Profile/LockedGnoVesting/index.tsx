@@ -16,7 +16,7 @@ import { getBlockExplorerUrl } from 'utils'
 import { formatDateWithTimezone } from 'utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
-import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
+import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { useCowFromLockedGnoBalances, useClaimCowFromLockedGnoCallback } from './hooks'
 
 enum ClaimStatus {
