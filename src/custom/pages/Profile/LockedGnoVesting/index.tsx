@@ -13,6 +13,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
+import { formatDateWithTimezone } from 'utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import { MERKLE_DROP_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
@@ -113,8 +114,8 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
                 content={
                   <div>
                     <p>
-                      <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on Fri
-                      Feb 11 2022 at 13:05:15 GMT.
+                      <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on{' '}
+                      {formatDateWithTimezone(new Date('02-11-2022 13:05:15 GMT'))}.
                     </p>
                     <p>Each time you claim, you will receive the entire vested amount.</p>
                   </div>
