@@ -30,14 +30,16 @@ type OrderProgressBarProps = {
   chainId: SupportedChainId
 }
 
+type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
+
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, creationTime, validTo, chainId } = props
-  const { isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
+  const { isConfirmed, isCancelled, isCancellable, isUnfillable = false } = activityDerivedState
 
+  const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(1)
-  const transitions = useTransition(!isConfirmed, null, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
+  const fadeOutTransition = useTransition(!isConfirmed, null, {
+    from: { opacity: 1 },
     leave: { opacity: 0 },
     trail: 3000,
   })
@@ -64,96 +66,118 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     }
   }, [isConfirmed])
 
-  const progressBar = () => {
+  useEffect(() => {
     if (isConfirmed) {
-      return (
-        <>
-          <ProgressBarInnerWrapper>
-            <SuccessProgress percentage={100}>
-              <CowProtocolIcon />
-            </SuccessProgress>
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <GreenCheckIcon size={16} />
-            <StatusMsg>Transaction confirmed.</StatusMsg>
-          </StatusMsgContainer>
-        </>
-      )
-    }
-
-    if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * COW_STATE_PERCENTAGE) {
-      return (
-        <>
-          <ProgressBarInnerWrapper>
-            <SuccessProgress percentage={percentage}>
-              <CowProtocolIcon />
-            </SuccessProgress>
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <GreenClockIcon size={16} />
-            <StatusMsg>Looking for a CoW.</StatusMsg>
-          </StatusMsgContainer>
-        </>
-      )
+      setExecutionState('confirmed')
+    } else if (isUnfillable) {
+      setExecutionState('unfillable')
+    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * COW_STATE_PERCENTAGE) {
+      setExecutionState('cow')
     } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
-      return (
-        <>
-          <ProgressBarInnerWrapper>
-            <PendingProgress percentage={percentage}>
-              <AMMsLogo />
-            </PendingProgress>
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <OrangeClockIcon size={16} />
-            <StatusMsg>Finding best onchain price.</StatusMsg>
-          </StatusMsgContainer>
-        </>
-      )
+      setExecutionState('amm')
     } else {
-      return (
-        <>
-          <ProgressBarInnerWrapper>
-            <WarningProgress percentage={percentage}>
-              <WarningLogo />
-            </WarningProgress>
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <WarningIcon size={16} />
-            <StatusMsg> Your order is taking longer than usual.</StatusMsg>
-          </StatusMsgContainer>
-        </>
-      )
+      setExecutionState('delayed')
+    }
+  }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
+
+  const progressBar = () => {
+    switch (executionState) {
+      case 'cow': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <SuccessProgress percentage={percentage}>
+                <CowProtocolIcon />
+              </SuccessProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <GreenClockIcon size={16} />
+              <StatusMsg>Looking for a CoW.</StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'amm': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <PendingProgress percentage={percentage}>
+                <AMMsLogo />
+              </PendingProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <OrangeClockIcon size={16} />
+              <StatusMsg>Finding best onchain price.</StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'confirmed': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <SuccessProgress percentage={100}>
+                <CowProtocolIcon />
+              </SuccessProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <GreenCheckIcon size={16} />
+              <StatusMsg>Transaction confirmed.</StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'unfillable': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <WarningProgress percentage={percentage}>
+                <WarningLogo />
+              </WarningProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <WarningIcon size={16} />
+              <StatusMsg>
+                Your limit price is out of market.{' '}
+                {isCancellable ? (
+                  <>
+                    You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                  </>
+                ) : null}
+              </StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'delayed': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <WarningProgress percentage={percentage}>
+                <WarningLogo />
+              </WarningProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <WarningIcon size={16} />
+              <StatusMsg> Your order is taking longer than usual.</StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      default: {
+        return null
+      }
     }
   }
 
   return (
     <>
-      {transitions.map(({ item, props, key }) => {
+      {fadeOutTransition.map(({ item, props, key }) => {
         return (
-          item && (
+          item &&
+          !isCancelled && (
             <ProgressBarWrapper key={key} style={props}>
-              {isUnfillable ? (
-                <>
-                  <ProgressBarInnerWrapper>
-                    <WarningProgress percentage={percentage}>
-                      <WarningLogo />
-                    </WarningProgress>
-                  </ProgressBarInnerWrapper>
-                  <StatusMsgContainer>
-                    <WarningIcon size={16} />
-                    <StatusMsg>
-                      Your limit price is out of market.{' '}
-                      {isCancellable ? (
-                        <>
-                          You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
-                        </>
-                      ) : null}
-                    </StatusMsg>
-                  </StatusMsgContainer>
-                </>
-              ) : (
-                progressBar()
-              )}
+              {progressBar()}
             </ProgressBarWrapper>
           )
         )
