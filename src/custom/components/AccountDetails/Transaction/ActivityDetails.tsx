@@ -8,24 +8,11 @@ import {
   Summary,
   SummaryInner,
   SummaryInnerRow,
-  TransactionAlertMessage,
   TransactionInnerDetail,
   TextAlert,
   TransactionState as ActivityLink,
   CreationTimeText,
   ActivityVisual,
-  ProgressBarWrapper,
-  ProgressBarInnerWrapper,
-  CowProtocolIcon,
-  WarningLogo,
-  StatusMsgContainer,
-  StatusMsg,
-  GreenClockIcon,
-  OrangeClockIcon,
-  WarningIcon,
-  WarningProgress,
-  PendingProgress,
-  SuccessProgress,
 } from './styled'
 
 import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
@@ -33,30 +20,16 @@ import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
-import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
-import SVG from 'react-inlinesvg'
-import { AMMsLogo } from 'components/AMMsLogo'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { V_COW, COW } from 'constants/tokens'
-import { LinkStyledButton } from '@src/theme/components'
+import { OrderProgressBar } from './OrderProgressBar'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
   limitPrice: '',
   validTo: '',
-}
-
-function unfillableAlert(): JSX.Element {
-  return (
-    <>
-      <TransactionAlertMessage type="attention">
-        <SVG src={AttentionIcon} description="Limit Price Warning" />
-        <b>Limit price out of range:</b>&nbsp;Wait for a matching price or cancel your order.
-      </TransactionAlertMessage>
-    </>
-  )
 }
 
 function GnosisSafeTxDetails(props: {
@@ -173,8 +146,18 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
-    activityDerivedState
+  const {
+    id,
+    isOrder,
+    summary,
+    order,
+    enhancedTransaction,
+    isCancelled,
+    isExpired,
+    isConfirmed,
+    isUnfillable,
+    isCancellable,
+  } = activityDerivedState
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
@@ -321,53 +304,17 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
-        {isUnfillable && unfillableAlert()}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-        <ProgressBarWrapper>
-          <ProgressBarInnerWrapper>
-            <SuccessProgress />
-            <CowProtocolIcon />
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <GreenClockIcon size={16} />
-            <StatusMsg>Looking for a CoW.</StatusMsg>
-          </StatusMsgContainer>
-        </ProgressBarWrapper>
-
-        <ProgressBarWrapper>
-          <ProgressBarInnerWrapper>
-            <PendingProgress />
-            <AMMsLogo />
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <OrangeClockIcon size={16} />
-            <StatusMsg>Finding best onchain price.</StatusMsg>
-          </StatusMsgContainer>
-        </ProgressBarWrapper>
-
-        <ProgressBarWrapper>
-          <ProgressBarInnerWrapper>
-            <WarningProgress />
-            <WarningLogo />
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <WarningIcon size={16} />
-            <StatusMsg> Your order is taking longer than usual.</StatusMsg>
-          </StatusMsgContainer>
-        </ProgressBarWrapper>
-
-        <ProgressBarWrapper>
-          <ProgressBarInnerWrapper>
-            <WarningProgress />
-            <WarningLogo />
-          </ProgressBarInnerWrapper>
-          <StatusMsgContainer>
-            <WarningIcon size={16} />
-            <StatusMsg>
-              Your limit price is out of market. You can wait or<LinkStyledButton>Cancel order</LinkStyledButton>
-            </StatusMsg>
-          </StatusMsgContainer>
-        </ProgressBarWrapper>
+        {order && creationTime && validTo && (
+          <OrderProgressBar
+            creationTime={new Date(order.creationTime)}
+            isUnfillable={isUnfillable}
+            isCancellable={isCancellable}
+            isConfirmed={isConfirmed}
+            validTo={new Date((order.validTo as number) * 1000)}
+            chainId={chainId}
+          />
+        )}
       </SummaryInner>
     </Summary>
   )
