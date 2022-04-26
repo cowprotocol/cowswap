@@ -22,7 +22,6 @@ import { ActivityDerivedState } from '../index'
 import { CancelButton } from '../CancelButton'
 
 const COW_STATE_PERCENTAGE = 0.33 // 33% of the elapsed time based on the network's average is for the COW protocol
-const AMM_STATE_PERCENTAGE = 0.66 // 66% of the elapsed time based on the network's average is for finding an onchain best price
 
 type OrderProgressBarProps = {
   activityDerivedState: ActivityDerivedState
@@ -96,7 +95,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           </StatusMsgContainer>
         </>
       )
-    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * AMM_STATE_PERCENTAGE) {
+    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
       return (
         <>
           <ProgressBarInnerWrapper>
