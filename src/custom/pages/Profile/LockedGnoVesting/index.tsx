@@ -13,10 +13,11 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
+import { formatDateWithTimezone } from 'utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
-import { MERKLE_DROP_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
-import { useBalances, useClaimCallback } from './hooks'
+import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
+import { useCowFromLockedGnoBalances, useClaimCowFromLockedGnoCallback } from './hooks'
 
 enum ClaimStatus {
   INITIAL,
@@ -33,7 +34,7 @@ interface Props {
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
-  const { allocated, vested, claimed, loading: loadingBalances } = useBalances()
+  const { allocated, vested, claimed, loading: loadingBalances } = useCowFromLockedGnoBalances()
   const unvested = allocated.subtract(vested)
   const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
   const vestedFormatted = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
@@ -45,11 +46,17 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
-  const claimCallback = useClaimCallback({
+  const isFirstClaim = claimed.equalTo(0)
+
+  const claimCallback = useClaimCowFromLockedGnoCallback({
     openModal,
     closeModal,
-    isFirstClaim: claimed.equalTo(0),
+    isFirstClaim,
   })
+
+  const contractAddress = isFirstClaim
+    ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId]
+    : TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
 
   const handleClaim = useCallback(async () => {
     handleCloseError()
@@ -114,16 +121,16 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         <ConvertWrapper>
           <BalanceDisplay titleSize={18} altColor={true}>
             <i>
-              Vested{' '}
+              Claimable{' '}
               <MouseoverTooltipContent
                 wrap
                 content={
                   <div>
                     <p>
-                      <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on Fri
-                      Feb 11 2022 at 13:05:15 GMT.
+                      <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on{' '}
+                      {formatDateWithTimezone(new Date('02-11-2022 13:05:15 GMT'))}.
                     </p>
-                    <p>Each time you claim, you will receive the entire vested amount.</p>
+                    <p>Each time you claim, you will receive the entire claimable amount.</p>
                   </div>
                 }
               >
@@ -150,11 +157,9 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         </ConvertWrapper>
 
         <CardActions>
-          <ExtLink href={getBlockExplorerUrl(chainId, MERKLE_DROP_CONTRACT_ADDRESSES[chainId], 'token')}>
-            View contract ↗
-          </ExtLink>
-          <CopyHelper toCopy={MERKLE_DROP_CONTRACT_ADDRESSES[chainId]}>
-            <div title="Click to copy token contract address">Copy contract</div>
+          <ExtLink href={getBlockExplorerUrl(chainId, contractAddress, 'address')}>View contract ↗</ExtLink>
+          <CopyHelper toCopy={contractAddress}>
+            <div title="Click to copy contract address">Copy contract</div>
           </CopyHelper>
         </CardActions>
       </Card>
