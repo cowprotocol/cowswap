@@ -336,7 +336,7 @@ export function useDerivedSwapInfo(): /* {
 
     // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
     if (!balanceIn) {
-      inputError = <Trans>Insufficient {currencies[Field.INPUT]} balance</Trans>
+      inputError = <Trans>Couldn&apos;t load balances. Check your network</Trans>
     }
 
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
