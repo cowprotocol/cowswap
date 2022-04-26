@@ -64,8 +64,9 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
-      .then(() => {
-        setStatus(ClaimStatus.CONFIRMED)
+      .then((tx) => {
+        const success = tx.status === 1
+        setStatus(success ? ClaimStatus.CONFIRMED : ClaimStatus.INITIAL)
 
         setTimeout(() => {
           setStatus(ClaimStatus.INITIAL)
