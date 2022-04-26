@@ -146,18 +146,7 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const {
-    id,
-    isOrder,
-    summary,
-    order,
-    enhancedTransaction,
-    isCancelled,
-    isExpired,
-    isConfirmed,
-    isUnfillable,
-    isCancellable,
-  } = activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
@@ -307,10 +296,8 @@ export function ActivityDetails(props: {
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
         {order && creationTime && validTo && (
           <OrderProgressBar
+            activityDerivedState={activityDerivedState}
             creationTime={new Date(order.creationTime)}
-            isUnfillable={isUnfillable}
-            isCancellable={isCancellable}
-            isConfirmed={isConfirmed}
             validTo={new Date((order.validTo as number) * 1000)}
             chainId={chainId}
           />

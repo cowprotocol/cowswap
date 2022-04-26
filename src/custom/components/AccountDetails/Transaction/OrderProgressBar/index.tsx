@@ -17,20 +17,24 @@ import {
 } from './styled'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
-import { LinkStyledButton } from '@src/theme'
 import { SupportedChainId } from 'constants/chains'
+import { ActivityDerivedState } from '../index'
+import { CancelButton } from '../CancelButton'
+
+const COW_STATE_PERCENTAGE = 0.33 // 33% of the elapsed time based on the network's average is for the COW protocol
+const AMM_STATE_PERCENTAGE = 0.66 // 66% of the elapsed time based on the network's average is for finding an onchain best price
 
 type OrderProgressBarProps = {
+  activityDerivedState: ActivityDerivedState
   creationTime: Date
   validTo: Date
-  isUnfillable?: boolean
-  isCancellable?: boolean
-  isConfirmed: boolean
   chainId: SupportedChainId
 }
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
-  const { creationTime, validTo, isUnfillable = false, isCancellable = false, isConfirmed, chainId } = props
+  const { activityDerivedState, creationTime, validTo, chainId } = props
+  const { isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
+
   const [percentage, setPercentage] = useState(1)
   const transitions = useTransition(!isConfirmed, null, {
     from: { opacity: 0 },
@@ -78,7 +82,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       )
     }
 
-    if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * 0.33) {
+    if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * COW_STATE_PERCENTAGE) {
       return (
         <>
           <ProgressBarInnerWrapper>
@@ -92,7 +96,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           </StatusMsgContainer>
         </>
       )
-    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * 0.66) {
+    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * AMM_STATE_PERCENTAGE) {
       return (
         <>
           <ProgressBarInnerWrapper>
@@ -139,8 +143,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   <StatusMsgContainer>
                     <WarningIcon size={16} />
                     <StatusMsg>
-                      Your limit price is out of market. You can wait or
-                      <LinkStyledButton>Cancel order</LinkStyledButton>
+                      Your limit price is out of market.{' '}
+                      {isCancellable ? (
+                        <>
+                          You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                        </>
+                      ) : null}
                     </StatusMsg>
                   </StatusMsgContainer>
                 </>
