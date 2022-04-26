@@ -36,15 +36,16 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, creationTime, validTo, chainId } = props
   const { isConfirmed, isPending, isCancellable, isUnfillable = false } = activityDerivedState
 
+  const elapsedSeconds = (Date.now() - creationTime.getTime()) / 1000
+  const expirationInSeconds = (validTo.getTime() - creationTime.getTime()) / 1000
+
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
-  const [percentage, setPercentage] = useState(1)
+  const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
     leave: { opacity: 0 },
     trail: 3000,
   })
-
-  const elapsedSeconds = (Date.now() - creationTime.getTime()) / 1000
 
   useEffect(() => {
     if (!isPending) {
@@ -52,13 +53,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     }
 
     const id = setInterval(() => {
-      const expirationInSeconds = (validTo.getTime() - creationTime.getTime()) / 1000
       const percentage = getPercentage(elapsedSeconds, expirationInSeconds, chainId)
       setPercentage(percentage)
     }, 1000)
 
     return () => clearInterval(id)
-  }, [creationTime, validTo, chainId, elapsedSeconds, isPending])
+  }, [creationTime, validTo, chainId, elapsedSeconds, expirationInSeconds, isPending])
 
   useEffect(() => {
     if (isConfirmed) {
