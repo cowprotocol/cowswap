@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -33,7 +33,7 @@ import { getExplorerAddressLink } from 'utils/explorer'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import NotificationBanner from 'components/NotificationBanner'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { Title, SectionTitle, HelpCircle } from 'components/Page'
@@ -53,7 +53,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
-import { SwapVCowStatus } from 'state/claim/actions'
+import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
@@ -63,7 +63,7 @@ export default function Profile() {
   const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
-  const isTradesTooltipVisible = account && chainId == 1 && !!profileData?.totalTrades
+  const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
 
   const setSwapVCowStatus = useSetSwapVCowStatus()
@@ -95,7 +95,8 @@ export default function Profile() {
   // Boolean flags
   const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
   const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
-  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending)
+  const isSwapConfirmed = swapVCowStatus === SwapVCowStatus.CONFIRMED
+  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed)
 
   // Handle swaping
   const { swapCallback } = useSwapVCowCallback({
@@ -163,6 +164,32 @@ export default function Profile() {
     </>
   )
 
+  const renderConvertToCowContent = useCallback(() => {
+    let content = null
+
+    if (isSwapPending) {
+      content = <span>Converting vCOW...</span>
+    } else if (isSwapConfirmed) {
+      content = <span>Successfully converted!</span>
+    } else {
+      content = (
+        <>
+          Convert to COW <SVG src={ArrowIcon} />
+        </>
+      )
+    }
+
+    return content
+  }, [isSwapConfirmed, isSwapPending])
+
+  useEffect(() => {
+    if (isSwapConfirmed && hasVestedBalance) {
+      setTimeout(() => {
+        setSwapVCowStatus(SwapVCowStatus.INITIAL)
+      }, 5000)
+    }
+  }, [hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, vested])
+
   const currencyCOW = COW[chainId]
 
   return (
@@ -182,7 +209,7 @@ export default function Profile() {
                 <i>Total vCOW balance</i>
                 <b>
                   <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
-                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown}>
+                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </b>
@@ -192,20 +219,14 @@ export default function Profile() {
               <BalanceDisplay titleSize={18} altColor={true}>
                 <i>
                   Vested{' '}
-                  <MouseoverTooltipContent content={tooltipText.vested}>
+                  <MouseoverTooltipContent content={tooltipText.vested} wrap>
                     <HelpCircle size={14} />
                   </MouseoverTooltipContent>
                 </i>
                 <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
               </BalanceDisplay>
               <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                {isSwapPending ? (
-                  'Converting vCOW...'
-                ) : (
-                  <>
-                    Convert to COW <SVG src={ArrowIcon} />
-                  </>
-                )}
+                {renderConvertToCowContent()}
               </ButtonPrimary>
             </ConvertWrapper>
 
@@ -273,7 +294,7 @@ export default function Profile() {
                     &nbsp;&nbsp;
                     <Txt secondary>
                       Last updated
-                      <MouseoverTooltipContent content="Data is updated on the background periodically.">
+                      <MouseoverTooltipContent content="Data is updated on the background periodically." wrap>
                         <HelpCircle size={14} />
                       </MouseoverTooltipContent>
                       :&nbsp;
@@ -281,7 +302,7 @@ export default function Profile() {
                     {!lastUpdated ? (
                       '-'
                     ) : (
-                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />}>
+                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />} wrap>
                         <strong>{lastUpdated}</strong>
                       </MouseoverTooltipContent>
                     )}
@@ -320,7 +341,7 @@ export default function Profile() {
             <ChildWrapper>
               <ItemTitle>
                 Trades&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding your own trades.">
+                <MouseoverTooltipContent content="Statistics regarding your own trades." wrap>
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </ItemTitle>
@@ -336,7 +357,10 @@ export default function Profile() {
                     <span>
                       Total trades
                       {isTradesTooltipVisible && (
-                        <MouseoverTooltipContent content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ.">
+                        <MouseoverTooltipContent
+                          content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ."
+                          wrap
+                        >
                           <HelpCircle size={14} />
                         </MouseoverTooltipContent>
                       )}
@@ -359,7 +383,10 @@ export default function Profile() {
             <ChildWrapper>
               <ItemTitle>
                 Referrals&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding trades by people who used your referral link.">
+                <MouseoverTooltipContent
+                  content="Statistics regarding trades by people who used your referral link."
+                  wrap
+                >
                   <HelpCircle size={14} />
                 </MouseoverTooltipContent>
               </ItemTitle>

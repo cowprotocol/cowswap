@@ -2,243 +2,95 @@
 
 exports[`renders multi route 1`] = `
 <DocumentFragment>
-  .c1 {
-  box-sizing: border-box;
-  margin: 0;
-  min-width: 0;
-}
-
-.c9 {
-  box-sizing: border-box;
-  margin: 0;
-  min-width: 0;
-  width: 100%;
-}
-
-.c2 {
-  width: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 0;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-}
-
-.c10 {
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  margin: -1px;
-}
-
-.c10 > * {
-  margin: 1px !important;
-}
-
-.c7 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #ffffff;
-  border: unset;
-  border-radius: 0.5rem;
-  color: #000;
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  padding: 4px 6px;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  font-weight: 500;
-}
-
-.c0 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #FFF;
-  width: 400px;
-}
-
-.c3 {
-  display: grid;
-  grid-gap: 8px;
-  grid-template-columns: 24px 1fr 24px;
-}
-
-.c4 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  padding: 0.1rem 0.5rem;
-  position: relative;
-}
-
-.c11 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 0.25rem 0.5rem;
-}
-
-.c5 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  position: absolute;
-  width: calc(100%);
-  z-index: 1;
-  opacity: 0.5;
-}
-
-.c6 path {
-  stroke: #ffffff;
-}
-
-.c8 {
-  background-color: #ffffff;
-  z-index: 2;
-}
-
-<div
-    class="c0 css-vurnku"
+  <div
+    class="RoutingDiagram__Wrapper-sc-i2tbb-0 ivndgC css-vurnku"
   >
     <div
-      class="c1 c2 c3"
+      class="sc-bdnxRM Row-sc-u7azg8-0 RoutingDiagram__RouteContainerRow-sc-i2tbb-1 lmTMKd hLLNig hDkZVB"
     >
       CurrencyLogo currency=USDC
       <div
-        class="c1 c2 c4"
+        class="sc-bdnxRM Row-sc-u7azg8-0 RoutingDiagram__RouteRow-sc-i2tbb-2 lmTMKd hLLNig hUDqOH"
       >
         <div
-          class="c5"
+          class="RoutingDiagram__DottedLine-sc-i2tbb-4 cKqYfU"
         >
           <svg
-            class="c6"
+            class="RoutingDiagram__DotColor-sc-i2tbb-5 fhSaBA"
           >
             dot_line.svg
           </svg>
         </div>
         <div
-          class="c7 c8"
+          class="Badge-sc-3epor3-0 RoutingDiagram__OpaqueBadge-sc-i2tbb-6 knpfHF gGARxH"
         >
           <div
-            class="css-15li2d9"
-            style="word-break: normal;"
+            class="Badge-sc-3epor3-0 RoutingDiagram__ProtocolBadge-sc-i2tbb-7 knpfHF lbdUti"
+          >
+            <div
+              class="theme__TextWrapper-sc-5lu8um-0 chxxqs RoutingDiagram__BadgeText-sc-i2tbb-8 ijjHig css-15li2d9"
+            >
+              V2
+            </div>
+          </div>
+          <div
+            class="theme__TextWrapper-sc-5lu8um-0 chxxqs RoutingDiagram__BadgeText-sc-i2tbb-8 ijjHig css-1aekuku"
+            style="min-width: auto;"
           >
             75%
           </div>
         </div>
         <div
-          class="c9 c2 c10"
+          class="sc-bdnxRM Row-sc-u7azg8-0 Row__AutoRow-sc-u7azg8-3 iqvZFe hLLNig cUhARX"
           style="justify-content: space-evenly; z-index: 2;"
           width="100%"
         >
-          <div
-            class="c7 c11"
-          >
-            <div
-              class="css-1t7xebc"
-            >
-              DoubleCurrencyLogo currency0=DAI currency1=USDC
-            </div>
-            <div
-              class="css-15li2d9"
-            >
-              0.05%
-            </div>
-          </div>
+          Popover
         </div>
       </div>
       CurrencyLogo currency=DAI
     </div>
     <div
-      class="c1 c2 c3"
+      class="sc-bdnxRM Row-sc-u7azg8-0 RoutingDiagram__RouteContainerRow-sc-i2tbb-1 lmTMKd hLLNig hDkZVB"
     >
       CurrencyLogo currency=USDC
       <div
-        class="c1 c2 c4"
+        class="sc-bdnxRM Row-sc-u7azg8-0 RoutingDiagram__RouteRow-sc-i2tbb-2 lmTMKd hLLNig hUDqOH"
       >
         <div
-          class="c5"
+          class="RoutingDiagram__DottedLine-sc-i2tbb-4 cKqYfU"
         >
           <svg
-            class="c6"
+            class="RoutingDiagram__DotColor-sc-i2tbb-5 fhSaBA"
           >
             dot_line.svg
           </svg>
         </div>
         <div
-          class="c7 c8"
+          class="Badge-sc-3epor3-0 RoutingDiagram__OpaqueBadge-sc-i2tbb-6 knpfHF gGARxH"
         >
           <div
-            class="css-15li2d9"
-            style="word-break: normal;"
+            class="Badge-sc-3epor3-0 RoutingDiagram__ProtocolBadge-sc-i2tbb-7 knpfHF lbdUti"
+          >
+            <div
+              class="theme__TextWrapper-sc-5lu8um-0 chxxqs RoutingDiagram__BadgeText-sc-i2tbb-8 ijjHig css-15li2d9"
+            >
+              V3
+            </div>
+          </div>
+          <div
+            class="theme__TextWrapper-sc-5lu8um-0 chxxqs RoutingDiagram__BadgeText-sc-i2tbb-8 ijjHig css-1aekuku"
+            style="min-width: auto;"
           >
             25%
           </div>
         </div>
         <div
-          class="c9 c2 c10"
+          class="sc-bdnxRM Row-sc-u7azg8-0 Row__AutoRow-sc-u7azg8-3 iqvZFe hLLNig cUhARX"
           style="justify-content: space-evenly; z-index: 2;"
           width="100%"
         >
-          <div
-            class="c7 c11"
-          >
-            <div
-              class="css-1t7xebc"
-            >
-              DoubleCurrencyLogo currency0=WBTC currency1=USDC
-            </div>
-            <div
-              class="css-15li2d9"
-            >
-              0.3%
-            </div>
-          </div>
-          <div
-            class="c7 c11"
-          >
-            <div
-              class="css-1t7xebc"
-            >
-              DoubleCurrencyLogo currency0=DAI currency1=WBTC
-            </div>
-            <div
-              class="css-15li2d9"
-            >
-              1%
-            </div>
-          </div>
+          PopoverPopover
         </div>
       </div>
       CurrencyLogo currency=DAI
@@ -249,180 +101,50 @@ exports[`renders multi route 1`] = `
 
 exports[`renders single route 1`] = `
 <DocumentFragment>
-  .c1 {
-  box-sizing: border-box;
-  margin: 0;
-  min-width: 0;
-}
-
-.c9 {
-  box-sizing: border-box;
-  margin: 0;
-  min-width: 0;
-  width: 100%;
-}
-
-.c2 {
-  width: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 0;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-}
-
-.c10 {
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  margin: -1px;
-}
-
-.c10 > * {
-  margin: 1px !important;
-}
-
-.c7 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #ffffff;
-  border: unset;
-  border-radius: 0.5rem;
-  color: #000;
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  padding: 4px 6px;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  font-weight: 500;
-}
-
-.c0 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #FFF;
-  width: 400px;
-}
-
-.c3 {
-  display: grid;
-  grid-gap: 8px;
-  grid-template-columns: 24px 1fr 24px;
-}
-
-.c4 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  padding: 0.1rem 0.5rem;
-  position: relative;
-}
-
-.c11 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 0.25rem 0.5rem;
-}
-
-.c5 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  position: absolute;
-  width: calc(100%);
-  z-index: 1;
-  opacity: 0.5;
-}
-
-.c6 path {
-  stroke: #ffffff;
-}
-
-.c8 {
-  background-color: #ffffff;
-  z-index: 2;
-}
-
-<div
-    class="c0 css-vurnku"
+  <div
+    class="RoutingDiagram__Wrapper-sc-i2tbb-0 ivndgC css-vurnku"
   >
     <div
-      class="c1 c2 c3"
+      class="sc-bdnxRM Row-sc-u7azg8-0 RoutingDiagram__RouteContainerRow-sc-i2tbb-1 lmTMKd hLLNig hDkZVB"
     >
       CurrencyLogo currency=USDC
       <div
-        class="c1 c2 c4"
+        class="sc-bdnxRM Row-sc-u7azg8-0 RoutingDiagram__RouteRow-sc-i2tbb-2 lmTMKd hLLNig hUDqOH"
       >
         <div
-          class="c5"
+          class="RoutingDiagram__DottedLine-sc-i2tbb-4 cKqYfU"
         >
           <svg
-            class="c6"
+            class="RoutingDiagram__DotColor-sc-i2tbb-5 fhSaBA"
           >
             dot_line.svg
           </svg>
         </div>
         <div
-          class="c7 c8"
+          class="Badge-sc-3epor3-0 RoutingDiagram__OpaqueBadge-sc-i2tbb-6 knpfHF gGARxH"
         >
           <div
-            class="css-15li2d9"
-            style="word-break: normal;"
+            class="Badge-sc-3epor3-0 RoutingDiagram__ProtocolBadge-sc-i2tbb-7 knpfHF lbdUti"
+          >
+            <div
+              class="theme__TextWrapper-sc-5lu8um-0 chxxqs RoutingDiagram__BadgeText-sc-i2tbb-8 ijjHig css-15li2d9"
+            >
+              V3
+            </div>
+          </div>
+          <div
+            class="theme__TextWrapper-sc-5lu8um-0 chxxqs RoutingDiagram__BadgeText-sc-i2tbb-8 ijjHig css-1aekuku"
+            style="min-width: auto;"
           >
             100%
           </div>
         </div>
         <div
-          class="c9 c2 c10"
+          class="sc-bdnxRM Row-sc-u7azg8-0 Row__AutoRow-sc-u7azg8-3 iqvZFe hLLNig cUhARX"
           style="justify-content: space-evenly; z-index: 2;"
           width="100%"
         >
-          <div
-            class="c7 c11"
-          >
-            <div
-              class="css-1t7xebc"
-            >
-              DoubleCurrencyLogo currency0=DAI currency1=USDC
-            </div>
-            <div
-              class="css-15li2d9"
-            >
-              0.05%
-            </div>
-          </div>
+          Popover
         </div>
       </div>
       CurrencyLogo currency=DAI
@@ -433,17 +155,8 @@ exports[`renders single route 1`] = `
 
 exports[`renders when no routes are provided 1`] = `
 <DocumentFragment>
-  .c0 {
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #FFF;
-  width: 400px;
-}
-
-<div
-    class="c0 css-vurnku"
+  <div
+    class="RoutingDiagram__Wrapper-sc-i2tbb-0 ivndgC css-vurnku"
   />
 </DocumentFragment>
 `;

@@ -7,7 +7,7 @@ import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { RowFixed } from 'components/Row'
-import { TYPE } from 'theme'
+import { ThemedText } from 'theme'
 import { ExternalLink } from 'theme/components'
 import ListLogo from 'components/ListLogo'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
@@ -56,12 +56,12 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
         <CurrencyLogo currency={token} size={'32px'} />
 
         <AutoColumn gap="4px" justify="center">
-          <TYPE.body ml="8px" mr="8px" fontWeight={500} fontSize={20}>
+          <ThemedText.Body ml="8px" mr="8px" fontWeight={500} fontSize={20}>
             {token.symbol}
-          </TYPE.body>
-          <TYPE.darkGray fontWeight={400} fontSize={14}>
+          </ThemedText.Body>
+          <ThemedText.DarkGray fontWeight={400} fontSize={14}>
             {token.name}
-          </TYPE.darkGray>
+          </ThemedText.DarkGray>
         </AutoColumn>
         {chainId && (
           <ExternalLink href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)}>
@@ -71,17 +71,17 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
         {list !== undefined ? (
           <RowFixed>
             {list.logoURI && <ListLogo logoURI={list.logoURI} size="16px" />}
-            <TYPE.small ml="6px" fontSize={14} color={theme.text3}>
+            <ThemedText.Small ml="6px" fontSize={14} color={theme.text3}>
               <Trans>via {list.name} token list</Trans>
-            </TYPE.small>
+            </ThemedText.Small>
           </RowFixed>
         ) : (
           <WarningWrapper $borderRadius="4px" padding="4px" highWarning={true}>
             <RowFixed>
               <AlertCircle size="10px" />
-              <TYPE.body color={theme.red1} ml="4px" fontSize="10px" fontWeight={500}>
+              <ThemedText.Body color={theme.red1} ml="4px" fontSize="10px" fontWeight={500}>
                 <Trans>Unknown Source</Trans>
-              </TYPE.body>
+              </ThemedText.Body>
             </RowFixed>
           </WarningWrapper>
         )}

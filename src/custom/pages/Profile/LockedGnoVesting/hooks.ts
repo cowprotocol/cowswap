@@ -5,7 +5,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from 'abis/types'
-import { useSingleCallResult } from 'state/multicall/hooks'
+import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useContract } from 'hooks/useContract'
 import { COW as COW_TOKENS } from 'constants/tokens'
@@ -116,7 +116,7 @@ export function useClaimCowFromLockedGnoCallback({
     return claimPromise
       .then((tx) => {
         addTransaction({
-          swapVCow: true,
+          swapLockedGNOvCow: true,
           hash: tx.hash,
           summary,
         })

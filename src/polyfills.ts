@@ -1,4 +1,5 @@
 import 'polyfill-object.fromentries'
+import 'text-encoding-polyfill'
 
 import flat from 'array.prototype.flat'
 import flatMap from 'array.prototype.flatmap'
@@ -21,4 +22,5 @@ const proxiedConsole = new Proxy(window.console, {
 })
 
 window.console = Object.assign({}, proxiedConsole, { force: originalConsole })
+// eslint-disable-next-line no-native-reassign
 console = window.console

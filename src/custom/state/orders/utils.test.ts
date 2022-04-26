@@ -5,7 +5,7 @@
 import { PriceInformation } from 'utils/price'
 import { OrderKind } from 'state/orders/actions'
 
-import { USDC, USDT } from 'constants/tokens'
+import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 
 import { generateOrder } from 'state/orders/mocks'
 

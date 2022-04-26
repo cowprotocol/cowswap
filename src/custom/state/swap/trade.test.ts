@@ -4,7 +4,7 @@ import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } 
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { stringToCurrency } from './extension'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { WETH9_EXTENDED as WETH } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
 import Trade, { _constructTradePrice } from './TradeGp'
 import TradeGp from './TradeGp'

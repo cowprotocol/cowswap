@@ -71,8 +71,13 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
-      .then(() => {
-        setStatus(ClaimStatus.CONFIRMED)
+      .then((tx) => {
+        const success = tx.status === 1
+        setStatus(success ? ClaimStatus.CONFIRMED : ClaimStatus.INITIAL)
+
+        setTimeout(() => {
+          setStatus(ClaimStatus.INITIAL)
+        }, 5000)
       })
       .catch((error) => {
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', error)
@@ -96,6 +101,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
             <b>
               {allocatedFormatted} COW{' '}
               <MouseoverTooltipContent
+                wrap
                 content={
                   <VestingBreakdown>
                     <span>
@@ -117,6 +123,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
             <i>
               Claimable{' '}
               <MouseoverTooltipContent
+                wrap
                 content={
                   <div>
                     <p>

@@ -4,6 +4,7 @@ export enum SwapVCowStatus {
   INITIAL = 'INITIAL',
   ATTEMPTING = 'ATTEMPTING',
   SUBMITTED = 'SUBMITTED',
+  CONFIRMED = 'CONFIRMED',
 }
 
 export type CowTokenActions = {

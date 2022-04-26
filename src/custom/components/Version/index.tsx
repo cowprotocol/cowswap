@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ExternalLink, TYPE } from 'theme'
+import { ExternalLink, ThemedText } from 'theme'
 
 import { version as WEB_VERSION } from '@src/../package.json'
 import { version as CONTRACTS_VERSION } from '@gnosis.pm/gp-v2-contracts/package.json'
@@ -83,7 +83,7 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   `}
 `
 
-const VersionsLinkWrapper = styled(TYPE.small)`
+const VersionsLinkWrapper = styled(ThemedText.Small)`
   display: flex;
   justify-content: center;
   align-items: center;
