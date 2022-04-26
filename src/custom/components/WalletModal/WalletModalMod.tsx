@@ -349,7 +349,7 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <h5>
-                <Trans>Please connect to a supported network in the dropdown menu or in your wallet.</Trans>
+                <Trans>App/wallet network mismatch. Please connect to a supported network in your wallet.</Trans>
               </h5>
             ) : (
               <Trans>Error connecting. Try refreshing the page.</Trans>
