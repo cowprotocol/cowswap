@@ -16,7 +16,7 @@ import { getBlockExplorerUrl } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import { MERKLE_DROP_CONTRACT_ADDRESSES } from 'pages/Profile/LockedGnoVesting/hooks'
-import { useBalances, useClaimCallback } from './hooks'
+import { useCowFromLockedGnoBalances, useClaimCowFromLockedGnoCallback } from './hooks'
 
 enum ClaimStatus {
   INITIAL,
@@ -33,7 +33,7 @@ interface Props {
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
-  const { allocated, vested, claimed, loading: loadingBalances } = useBalances()
+  const { allocated, vested, claimed, loading: loadingBalances } = useCowFromLockedGnoBalances()
   const unvested = allocated.subtract(vested)
   const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
   const vestedFormatted = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
@@ -45,7 +45,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
 
-  const claimCallback = useClaimCallback({
+  const claimCallback = useClaimCowFromLockedGnoCallback({
     openModal,
     closeModal,
     isFirstClaim: claimed.equalTo(0),

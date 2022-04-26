@@ -56,7 +56,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 const START_TIME = 1644584715000
 const DURATION = 126144000000
 
-export const useBalances = () => {
+export const useCowFromLockedGnoBalances = () => {
   const { account } = useActiveWeb3React()
   const allocated = useAllocation()
   const vested = allocated.multiply(Math.min(Date.now() - START_TIME, DURATION)).divide(DURATION)
@@ -80,7 +80,7 @@ interface ClaimCallbackParams {
   closeModal: () => void
   isFirstClaim: boolean
 }
-export function useClaimCallback({
+export function useClaimCowFromLockedGnoCallback({
   openModal,
   closeModal,
   isFirstClaim,
