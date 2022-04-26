@@ -19,7 +19,7 @@ const COW = COW_TOKENS[SupportedChainId.MAINNET]
 export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
   [SupportedChainId.RINKEBY]: '0x5444c4AFb2ec7f7367C10F7732b8558650c5899F',
-  [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
+  [SupportedChainId.XDAI]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
 }
 
 const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MERKLE_DROP_ABI, true)
@@ -56,7 +56,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 const START_TIME = 1644584715000
 const DURATION = 126144000000
 
-export const useBalances = () => {
+export const useCowFromLockedGnoBalances = () => {
   const { account } = useActiveWeb3React()
   const allocated = useAllocation()
   const vested = allocated.multiply(Math.min(Date.now() - START_TIME, DURATION)).divide(DURATION)
@@ -80,7 +80,7 @@ interface ClaimCallbackParams {
   closeModal: () => void
   isFirstClaim: boolean
 }
-export function useClaimCallback({
+export function useClaimCowFromLockedGnoCallback({
   openModal,
   closeModal,
   isFirstClaim,
