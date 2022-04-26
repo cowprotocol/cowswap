@@ -102,7 +102,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           <>
             <ProgressBarInnerWrapper>
               <PendingProgress percentage={percentage}>
-                <AMMsLogo />
+                <AMMsLogo chainId={chainId} />
               </PendingProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
