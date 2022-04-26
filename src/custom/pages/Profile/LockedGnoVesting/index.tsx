@@ -109,7 +109,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         <ConvertWrapper>
           <BalanceDisplay titleSize={18} altColor={true}>
             <i>
-              Vested{' '}
+              Claimable{' '}
               <MouseoverTooltipContent
                 content={
                   <div>
@@ -117,7 +117,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
                       <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on{' '}
                       {formatDateWithTimezone(new Date('02-11-2022 13:05:15 GMT'))}.
                     </p>
-                    <p>Each time you claim, you will receive the entire vested amount.</p>
+                    <p>Each time you claim, you will receive the entire claimable amount.</p>
                   </div>
                 }
               >
