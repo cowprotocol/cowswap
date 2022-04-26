@@ -168,20 +168,26 @@ export function useCowBalance() {
  * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
 export function useCombinedBalance() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const { total: vCowBalance } = useVCowData()
   const lockedGnoBalance = useAllocation()
   const cowBalance = useCowBalance()
 
   return useMemo(() => {
-    let balance = JSBI.BigInt(0)
+    let tmpBalance = JSBI.BigInt(0)
+
+    const isLoading = account && (!vCowBalance || !lockedGnoBalance || !cowBalance) ? true : false
 
     const cow = COW[chainId || SupportedChainId.MAINNET]
 
-    if (vCowBalance) balance = JSBI.add(balance, vCowBalance.quotient)
-    if (lockedGnoBalance) balance = JSBI.add(balance, lockedGnoBalance.quotient)
-    if (cowBalance) balance = JSBI.add(balance, cowBalance.quotient)
+    if (account) {
+      if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
+      if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance.quotient)
+      if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
+    }
 
-    return CurrencyAmount.fromRawAmount(cow, balance)
-  }, [chainId, vCowBalance, lockedGnoBalance, cowBalance])
+    const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
+
+    return { balance, isLoading }
+  }, [vCowBalance, lockedGnoBalance, cowBalance, chainId, account])
 }
