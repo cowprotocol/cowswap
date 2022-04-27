@@ -104,7 +104,7 @@ export default function App() {
   return (
     <>
       <RedirectAnySwapAffectedUsers />
-      <SideBanner isVisible={isVisible} type={'anniversary'} />
+      <SideBanner isVisible={isVisible} type="anniversary" />
       <Wrapper>
         <Suspense fallback={Loading}>
           <Switch>
