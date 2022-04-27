@@ -144,3 +144,8 @@ export const DEFAULT_GP_PRICE_STRATEGY = 'COWSWAP'
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
+
+// These values match the vesting contract configuration (see contract's `cliffTime` and `duration` fields).
+// They are fixed and will never change.
+export const LOCKED_GNO_VESTING_START_TIME = 1644584715000
+export const LOCKED_GNO_VESTING_DURATION = 126144000000

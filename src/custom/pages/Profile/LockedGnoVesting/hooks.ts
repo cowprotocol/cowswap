@@ -13,6 +13,7 @@ import { SupportedChainId } from 'constants/chains'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { fetchClaim } from './claimData'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
+import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'constants/index'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]
@@ -45,15 +46,12 @@ export const useAllocation = (): CurrencyAmount<Token> => {
   return allocation
 }
 
-const START_TIME = 1644584715000
-const DURATION = 126144000000
-// These values match the vesting contract configuration (see contract's `cliffTime` and `duration` fields).
-// They are fixed and will never change.
-
 export const useCowFromLockedGnoBalances = () => {
   const { account } = useActiveWeb3React()
   const allocated = useAllocation()
-  const vested = allocated.multiply(Math.min(Date.now() - START_TIME, DURATION)).divide(DURATION)
+  const vested = allocated
+    .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
+    .divide(LOCKED_GNO_VESTING_DURATION)
 
   const tokenDistro = useTokenDistroContract()
   const { result, loading } = useSingleCallResult(allocated.greaterThan(0) ? tokenDistro : null, 'balances', [
