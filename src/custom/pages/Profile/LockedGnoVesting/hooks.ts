@@ -47,6 +47,8 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 
 const START_TIME = 1644584715000
 const DURATION = 126144000000
+// These values match the vesting contract configuration (see contract's `cliffTime` and `duration` fields).
+// They are fixed and will never change.
 
 export const useCowFromLockedGnoBalances = () => {
   const { account } = useActiveWeb3React()
