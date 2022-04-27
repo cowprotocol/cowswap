@@ -1,7 +1,7 @@
 import { Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
 import { L2_CHAIN_IDS } from '@src/constants/chains'
-import { SupportedLocale } from '@src/constants/locales'
+import { SupportedLocale } from 'constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import JSBI from 'jsbi'
