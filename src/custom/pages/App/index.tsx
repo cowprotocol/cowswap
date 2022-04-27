@@ -105,14 +105,14 @@ export default function App() {
   // Dealing with empty URL queryParameters
   useFilterEmptyQueryParams()
 
-  const isVisible = useMemo(() => getShowBannerState(IS_SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
+  const isSideBannerVisible = useMemo(() => getShowBannerState(IS_SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
 
   return (
     <>
       <RedirectAnySwapAffectedUsers />
       <Wrapper>
         <Suspense fallback={Loading}>
-          <SideBanner isVisible={isVisible} type={BannerType.ANNIVERSARY} />
+          <SideBanner isVisible={isSideBannerVisible} type={BannerType.ANNIVERSARY} />
           <Switch>
             <Redirect from="/claim" to="/profile" />
             <Route exact strict path="/swap" component={Swap} />
