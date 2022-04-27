@@ -104,9 +104,9 @@ export default function App() {
   return (
     <>
       <RedirectAnySwapAffectedUsers />
-      <SideBanner isVisible={isVisible} type={BannerType.ANNIVERSARY} />
       <Wrapper>
         <Suspense fallback={Loading}>
+          <SideBanner isVisible={isVisible} type={BannerType.ANNIVERSARY} />
           <Switch>
             <Redirect from="/claim" to="/profile" />
             <Route exact strict path="/swap" component={Swap} />
