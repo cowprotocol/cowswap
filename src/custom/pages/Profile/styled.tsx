@@ -11,6 +11,7 @@ import { CopyIcon as ClickToCopy } from 'components/Copy'
 export const Container = styled.div`
   max-width: 910px;
   width: 100%;
+  z-index: 1;
 `
 
 export const Wrapper = styled(Page)`
