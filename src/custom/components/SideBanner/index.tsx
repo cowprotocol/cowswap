@@ -29,7 +29,7 @@ const Banner = styled.div<{ isActive: boolean }>`
   left: 28px;
   bottom: 86px;
   background: linear-gradient(180deg, ${({ theme }) => theme.blueShade} 0%, #091e32 100%);
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);
   border-radius: 16px;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
   z-index: 9999;
