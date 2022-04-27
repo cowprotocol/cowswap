@@ -13,8 +13,12 @@ const HEIGHT = 440
 const ANNIVERSARY_TWEET_TEMPLATE =
   'Holy CoW, today @MEVprotection is 1 year old! Check out their UI growth over time to see the CoW-evolution https://youtu.be/nxU11DmBVMk'
 
+// create an enum with the types of banners we want to show
+export enum BannerType {
+  ANNIVERSARY = 'anniversary',
+}
 export interface BannerProps {
-  type: string
+  type: BannerType
   isVisible: boolean
 }
 
