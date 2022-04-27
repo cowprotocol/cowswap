@@ -1,7 +1,7 @@
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useMemo } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
@@ -14,6 +14,7 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
 import SideBanner from 'components/SideBanner'
+const SIDE_BANNER_VISIBLE_KEY = 'isSideBannerVisible'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -59,7 +60,7 @@ export const BodyWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex: auto;
-  z-index: 1;
+  z-index: initial;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 0 10px 0;
@@ -98,10 +99,12 @@ export default function App() {
   // Dealing with empty URL queryParameters
   useFilterEmptyQueryParams()
 
+  const isVisible = useMemo(() => getShowBannerState(SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
+
   return (
     <>
       <RedirectAnySwapAffectedUsers />
-      <SideBanner isVisible={getShowBannerState('isSideBannerVisible')} type={'anniversary'} />
+      <SideBanner isVisible={isVisible} type={'anniversary'} />
       <Wrapper>
         <Suspense fallback={Loading}>
           <Switch>
