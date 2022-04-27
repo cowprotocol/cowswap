@@ -303,7 +303,13 @@ export default function NetworkSelector() {
           failedSwitchNetwork: chainId as SupportedChainId,
           unsupportedNetwork: true,
           styles: css`
-            background: ${({ theme }) => theme.yellow1};
+            background: ${({ theme }) => theme.yellow3};
+            &&& {
+              margin-top: 20px;
+              ${({ theme }) => theme.mediaWidth.upToSmall`
+                margin-top: 40px;
+              `}
+            }
           `,
         },
         // ID
