@@ -3,6 +3,9 @@ import Sushi from 'assets/cow-swap/ammslogo/sushi.png'
 import Paraswap from 'assets/cow-swap/ammslogo/paraswap.png'
 import Oneinch from 'assets/cow-swap/ammslogo/1inch.png'
 import Uniswap from 'assets/cow-swap/ammslogo/uniswap.png'
+import Boaswap from 'assets/cow-swap/ammslogo/boaswap.png'
+import Honeyswap from 'assets/cow-swap/ammslogo/honeyswap.png'
+import Swapr from 'assets/cow-swap/ammslogo/swapr.png'
 import { SupportedChainId } from 'constants/chains'
 
 export const Wrapper = styled.div`
@@ -62,11 +65,14 @@ const SushiImage = { src: Sushi, alt: 'AMMs Sushiswap' }
 const OneInchImage = { src: Oneinch, alt: 'AMMs 1inch' }
 const ParaswapImage = { src: Paraswap, alt: 'AMMs Paraswap' }
 const UniswapImage = { src: Uniswap, alt: 'AMMs Uniswap' }
+const BoaswapImage = { src: Boaswap, alt: 'AMMs Boaswap' }
+const HoneyswapImage = { src: Honeyswap, alt: 'AMMs Honeyswap' }
+const SwaprImage = { src: Swapr, alt: 'AMMs Swapr' }
 
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
   [SupportedChainId.MAINNET]: [SushiImage, OneInchImage, ParaswapImage, UniswapImage],
   [SupportedChainId.RINKEBY]: [SushiImage, OneInchImage, ParaswapImage, UniswapImage],
-  [SupportedChainId.XDAI]: [SushiImage, OneInchImage, UniswapImage],
+  [SupportedChainId.XDAI]: [SushiImage, BoaswapImage, HoneyswapImage, SwaprImage],
 }
 
 export function AMMsLogo({ chainId }: { chainId: SupportedChainId }) {
