@@ -13,7 +13,7 @@ import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
-import SideBanner from 'components/SideBanner'
+import SideBanner, { BannerType } from 'components/SideBanner'
 import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
@@ -92,7 +92,11 @@ function createRedirectExternal(url: string) {
 const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
 const getShowBannerState = (key: string) => {
-  return JSON.parse(localStorage.getItem(key) || 'true') // show banner by default
+  const localStorageValue = localStorage.getItem(key)
+  if (localStorageValue && typeof localStorageValue === 'string') {
+    return JSON.parse(localStorageValue)
+  }
+  return true
 }
 
 export default function App() {
@@ -104,7 +108,7 @@ export default function App() {
   return (
     <>
       <RedirectAnySwapAffectedUsers />
-      <SideBanner isVisible={isVisible} type="anniversary" />
+      <SideBanner isVisible={isVisible} type={BannerType.ANNIVERSARY} />
       <Wrapper>
         <Suspense fallback={Loading}>
           <Switch>
