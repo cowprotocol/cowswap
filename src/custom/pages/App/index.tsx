@@ -91,11 +91,7 @@ function createRedirectExternal(url: string) {
 const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
 const getShowBannerState = (key: string) => {
-  const localStorageValue = localStorage.getItem(key)
-  if (localStorageValue && typeof localStorageValue === 'string') {
-    return JSON.parse(localStorageValue)
-  }
-  return true
+  return JSON.parse(localStorage.getItem(key) || 'true') // show banner by default
 }
 
 export default function App() {
