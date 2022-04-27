@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -57,8 +57,12 @@ import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
+
+// Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
+const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -69,6 +73,10 @@ export default function Profile() {
   const hasOrders = useHasOrders(account)
   const selectedAddress = useAddress()
 
+  const blockNumber = useBlockNumber()
+  const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
+  const [shouldUpdate, setShouldUpdate] = useState<boolean>(false)
+
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
 
@@ -78,28 +86,30 @@ export default function Profile() {
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
 
+  // Boolean flags
+  const hasVestedBalance = vested && !vested.equalTo(0)
+  const hasVCowBalance = total && !total.equalTo(0)
+
+  const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
+  const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
+  const isSwapConfirmed = swapVCowStatus === SwapVCowStatus.CONFIRMED
+  const isSwapDisabled = Boolean(
+    !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate
+  )
+
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
-  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
-  const vCowBalanceVestedMax = vested ? formatMax(vested, COW_DECIMALS) : '0'
+  const vCowBalanceVested = formatSmartLocaleAware(shouldUpdate ? undefined : vested, AMOUNT_PRECISION) || '0'
+  const vCowBalanceVestedMax = vested ? formatMax(shouldUpdate ? undefined : vested, COW_DECIMALS) : '0'
   const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
   const vCowBalanceMax = total ? formatMax(total, COW_DECIMALS) : '0'
-
-  const hasVestedBalance = vested && !vested.equalTo(0)
-  const hasVCowBalance = total && !total.equalTo(0)
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
     OperationType.CONVERT_VCOW
   )
-
-  // Boolean flags
-  const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
-  const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
-  const isSwapConfirmed = swapVCowStatus === SwapVCowStatus.CONFIRMED
-  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed)
 
   // Handle swaping
   const { swapCallback } = useSwapVCowCallback({
@@ -185,13 +195,24 @@ export default function Profile() {
     return content
   }, [isSwapConfirmed, isSwapPending])
 
+  // Fixes the issue with change in status after swap confirmation
+  // Makes sure to wait 2 blocks after confirmation to enable the swap button again
   useEffect(() => {
-    if (isSwapConfirmed && hasVestedBalance) {
-      setTimeout(() => {
-        setSwapVCowStatus(SwapVCowStatus.INITIAL)
-      }, 5000)
+    if (isSwapConfirmed && !confirmationBlock) {
+      setConfirmationBlock(blockNumber)
+      setShouldUpdate(true)
     }
-  }, [hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, vested])
+
+    if (!confirmationBlock || !blockNumber) {
+      return
+    }
+
+    if (isSwapConfirmed && blockNumber - confirmationBlock > BLOCKS_TO_WAIT && hasVestedBalance) {
+      setSwapVCowStatus(SwapVCowStatus.INITIAL)
+      setConfirmationBlock(undefined)
+      setShouldUpdate(false)
+    }
+  }, [blockNumber, confirmationBlock, hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, shouldUpdate])
 
   const currencyCOW = COW[chainId]
 

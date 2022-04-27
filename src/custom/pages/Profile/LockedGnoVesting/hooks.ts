@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -12,29 +12,19 @@ import { COW as COW_TOKENS } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { fetchClaim } from './claimData'
+import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
+import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'constants/index'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]
 
-export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
-  [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
-  [SupportedChainId.RINKEBY]: '0x5444c4AFb2ec7f7367C10F7732b8558650c5899F',
-  [SupportedChainId.XDAI]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
-}
-
 const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MERKLE_DROP_ABI, true)
-
-export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<number, string> = {
-  [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
-  [SupportedChainId.RINKEBY]: '0xeBA8CE5b23c054f1511F8fF5114d848329B8258d',
-  [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
-}
-
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   const { chainId, account } = useActiveWeb3React()
-  const [allocation, setAllocation] = useState(CurrencyAmount.fromRawAmount(COW, 0))
+  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(COW, 0))
+  const [allocation, setAllocation] = useState(initialAllocation.current)
 
   useEffect(() => {
     let canceled = false
@@ -44,26 +34,27 @@ export const useAllocation = (): CurrencyAmount<Token> => {
           setAllocation(CurrencyAmount.fromRawAmount(COW, claim?.amount ?? 0))
         }
       })
+    } else {
+      setAllocation(initialAllocation.current)
     }
     return () => {
       canceled = true
     }
-  }, [chainId, account])
+  }, [chainId, account, initialAllocation])
 
   return allocation
 }
 
-const START_TIME = 1644584715000
-const DURATION = 126144000000
-
 export const useCowFromLockedGnoBalances = () => {
   const { account } = useActiveWeb3React()
   const allocated = useAllocation()
-  const vested = allocated.multiply(Math.min(Date.now() - START_TIME, DURATION)).divide(DURATION)
+  const vested = allocated
+    .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
+    .divide(LOCKED_GNO_VESTING_DURATION)
 
   const tokenDistro = useTokenDistroContract()
   const { result, loading } = useSingleCallResult(allocated.greaterThan(0) ? tokenDistro : null, 'balances', [
-    account || undefined,
+    account ?? undefined,
   ])
   const claimed = useMemo(() => CurrencyAmount.fromRawAmount(COW, result ? result.claimed.toString() : 0), [result])
 
