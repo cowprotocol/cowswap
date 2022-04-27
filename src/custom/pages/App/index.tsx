@@ -13,6 +13,8 @@ import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
+import SideBanner from 'components/SideBanner'
+
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
@@ -96,6 +98,7 @@ export default function App() {
     <>
       <RedirectAnySwapAffectedUsers />
       <Wrapper>
+        <SideBanner type={'anniversary'} />
         <Suspense fallback={Loading}>
           <Switch>
             <Redirect from="/claim" to="/profile" />
