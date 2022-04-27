@@ -10,7 +10,7 @@ import { VCow as VCowType } from 'abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks/web3'
-import { useSingleContractMultipleData } from 'state/multicall/hooks'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
@@ -59,6 +59,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 import { ChainId } from '@uniswap/sdk'
 import { ClaimInfo } from 'state/claim/reducer'
+import { CallState } from '@uniswap/redux-multicall'
 
 export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
@@ -164,7 +165,7 @@ export function useClassifiedUserClaims(account: Account, optionalChainId?: Supp
 
     let isContractCallLoading = false
 
-    results.forEach((result, index) => {
+    results.forEach((result: CallState, index: number) => {
       const claim = userClaims[index]
 
       // Use the loading state from the multicall results
