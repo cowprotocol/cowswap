@@ -246,7 +246,6 @@ ListRowProps & { listUrl: string }) {
 })
 
 export const ListContainer = styled.div`
-  padding-bottom: 80px;
   height: 100%;
   overflow-y: auto;
   /* MOD */
