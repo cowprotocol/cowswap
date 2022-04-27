@@ -59,6 +59,9 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
+// Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
+const BLOCKS_TO_WAIT = 2
+
 export default function Profile() {
   const referralLink = useReferralLink()
   const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
@@ -201,12 +204,12 @@ export default function Profile() {
       return
     }
 
-    if (isSwapConfirmed && blockNumber - confirmationBlock > 2 && !vested?.equalTo(0)) {
+    if (isSwapConfirmed && blockNumber - confirmationBlock > BLOCKS_TO_WAIT && hasVestedBalance) {
       setSwapVCowStatus(SwapVCowStatus.INITIAL)
       setConfirmationBlock(undefined)
       setShouldUpdate(false)
     }
-  }, [blockNumber, confirmationBlock, isSwapConfirmed, setSwapVCowStatus, shouldUpdate, vested])
+  }, [blockNumber, confirmationBlock, hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, shouldUpdate])
 
   const currencyCOW = COW[chainId]
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -23,8 +23,8 @@ const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTR
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   const { chainId, account } = useActiveWeb3React()
-  const initial = CurrencyAmount.fromRawAmount(COW, 0)
-  const [allocation, setAllocation] = useState(initial)
+  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(COW, 0))
+  const [allocation, setAllocation] = useState(initialAllocation.current)
 
   useEffect(() => {
     let canceled = false
@@ -35,13 +35,12 @@ export const useAllocation = (): CurrencyAmount<Token> => {
         }
       })
     } else {
-      setAllocation(initial)
+      setAllocation(initialAllocation.current)
     }
     return () => {
       canceled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, account])
+  }, [chainId, account, initialAllocation])
 
   return allocation
 }

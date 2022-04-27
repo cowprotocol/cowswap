@@ -139,7 +139,8 @@ export const ADDRESS_IMAGE_OVERRIDE = {
 }
 
 /**
- * Locked GNO COW claiming
+ * Addresses related to COW vesting for Locked GNO
+ * These are used in src/custom/pages/Profile/LockedGnoVesting hooks and index files
  */
 export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
