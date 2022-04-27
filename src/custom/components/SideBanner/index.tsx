@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import AnniversaryImage from 'assets/cow-swap/anniversary-icons.png'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
@@ -14,6 +14,7 @@ const ANNIVERSARY_TWEET_TEMPLATE =
 
 export interface BannerProps {
   type: string
+  isVisible: boolean
 }
 
 const Banner = styled.div<{ isActive: boolean }>`
@@ -26,14 +27,13 @@ const Banner = styled.div<{ isActive: boolean }>`
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
   border-radius: 16px;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
-  z-index: 1;
+  z-index: 9999;
   overflow: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     bottom: 0;
     left: 0;
     width: 100%;
-    z-index: 9999;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   `};
@@ -129,8 +129,8 @@ const FooterContent = styled.div`
   }
 `
 
-export default function SideBanner({ type }: BannerProps) {
-  const [isActive, setIsActive] = useState(true)
+export default function SideBanner({ type, isVisible }: BannerProps) {
+  const [isActive, setIsActive] = useState(isVisible)
 
   // const isHidden = !isVisible || !isActive
 
@@ -138,11 +138,12 @@ export default function SideBanner({ type }: BannerProps) {
     setIsActive(false)
   }
 
-  // useEffect(() => {
-  //   if (isNotificationClosed !== null) {
-  //     setIsActive(!isNotificationClosed)
-  //   }
-  // }, [isNotificationClosed, isActive])
+  useEffect(() => {
+    if (!isActive) {
+      // set a localstorage key to prevent banner from showing again
+      localStorage.setItem('isSideBannerVisible', 'false')
+    }
+  }, [isActive])
 
   return (
     <Banner isActive={isActive}>

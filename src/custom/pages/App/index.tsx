@@ -89,12 +89,23 @@ function createRedirectExternal(url: string) {
 
 const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
+const getShowBannerState = (key: string) => {
+  const value = localStorage.getItem(key)
+  console.log('getShowBannerState ================')
+  console.log(value)
+  if (value === 'false') {
+    return false
+  }
+
+  return true
+}
+
 export default function App() {
   return (
     <>
       <RedirectAnySwapAffectedUsers />
+      <SideBanner isVisible={getShowBannerState('isSideBannerVisible')} type={'anniversary'} />
       <Wrapper>
-        <SideBanner type={'anniversary'} />
         <Suspense fallback={Loading}>
           <Switch>
             <Redirect from="/claim" to="/profile" />
