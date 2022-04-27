@@ -17,6 +17,7 @@ import { formatDateWithTimezone } from 'utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
+import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useCowFromLockedGnoBalances, useClaimCowFromLockedGnoCallback } from './hooks'
 
 enum ClaimStatus {
@@ -128,7 +129,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
                   <div>
                     <p>
                       <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on{' '}
-                      {formatDateWithTimezone(new Date('02-11-2022 13:05:15 GMT'))}.
+                      {formatDateWithTimezone(LOCKED_GNO_VESTING_START_DATE)}.
                     </p>
                     <p>Each time you claim, you will receive the entire claimable amount.</p>
                   </div>

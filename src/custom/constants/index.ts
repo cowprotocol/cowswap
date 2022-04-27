@@ -141,3 +141,6 @@ export const WAITING_TIME_RECONNECT_LAST_PROVIDER = 15000 // 15s
 // COWSWAP = new quote endpoint
 // LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
 export const DEFAULT_GP_PRICE_STRATEGY = 'COWSWAP'
+
+// Start date of COW vesting for locked GNO
+export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
