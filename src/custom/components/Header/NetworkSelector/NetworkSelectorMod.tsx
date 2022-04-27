@@ -14,10 +14,8 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 // import { replaceURLParam } from 'utils/routes'
-
 // import { useAppDispatch } from 'state/hooks'
 // import { switchToNetwork } from 'utils/switchToNetwork'
-
 // MOD imports
 import {
   ActiveRowLinkList,
@@ -27,6 +25,7 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
+import { getExplorerBaseUrl } from 'utils/explorer'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -185,7 +184,8 @@ const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygon Bridge</Trans>*/
-    // TODO: add bridges, if any
+    case SupportedChainId.RINKEBY:
+      return <Trans>Faucet</Trans>
     default:
       return <Trans>Bridge</Trans>
   }
@@ -253,6 +253,10 @@ function Row({
               <Trans>Help Center</Trans> <LinkOutCircle />
             </ExternalLink>
           ) : null}
+
+          <ExternalLink href={getExplorerBaseUrl(chainId)}>
+            <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
+          </ExternalLink>
         </ActiveRowLinkList>
       </ActiveRowWrapper>
     )
