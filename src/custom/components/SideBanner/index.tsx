@@ -1,0 +1,172 @@
+import { useState } from 'react'
+import styled from 'styled-components/macro'
+import AnniversaryImage from 'assets/cow-swap/anniversary-icons.png'
+import TwitterImage from 'assets/cow-swap/twitter.svg'
+import ReactConfetti from 'react-confetti'
+import { transparentize } from 'polished'
+import SVG from 'react-inlinesvg'
+import { CloseIcon, ExternalLink } from 'theme'
+
+const WIDTH = 440
+const HEIGHT = 440
+const ANNIVERSARY_TWEET_TEMPLATE =
+  'Holy CoW, today @MEVprotection is 1 year old! Check out their UI growth over time to see the CoW-evolution https://youtu.be/nxU11DmBVMk'
+
+export interface BannerProps {
+  type: string
+}
+
+const Banner = styled.div<{ isActive: boolean }>`
+  position: fixed;
+  width: ${`${WIDTH}px`};
+  height: ${`${HEIGHT}px`};
+  left: 28px;
+  bottom: 86px;
+  background: linear-gradient(180deg, ${({ theme }) => theme.blueShade} 0%, #091e32 100%);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
+  z-index: 1;
+  overflow: hidden;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  `};
+`
+
+const StyledTwitterIcon = styled(SVG)``
+
+const StyledClose = styled(CloseIcon)`
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  color: ${({ theme }) => theme.white};
+  opacity: 0.5;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+`
+
+const BannerContainer = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  flex: 1;
+  justify-content: flex-start;
+  padding: 16px;
+  height: 100%;
+  width: 100%;
+
+  > h3 {
+    font-weight: 500;
+    font-size: 23px;
+    text-align: center;
+    color: ${({ theme }) => theme.white};
+    margin: 16px 0 32px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 18px;
+    `};
+  }
+
+  > img {
+    width: 100%;
+    object-fit: contain;
+  }
+`
+
+const FooterContent = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  margin: auto 0 0;
+
+  > p {
+    color: ${({ theme }) => theme.white};
+    font-size: 15px;
+    text-align: center;
+    width: 100%;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 21px;
+    font-size: 16px;
+    font-weight: bold;
+    appearance: none;
+    border: 0;
+    color: ${({ theme }) => theme.orange};
+    background: ${({ theme }) => transparentize(0.85, theme.orange)};
+    border-radius: 16px;
+    transition: color 0.15s ease-in-out, background 0.15s ease-in-out;
+    text-decoration: none;
+
+    > ${StyledTwitterIcon} {
+      fill: ${({ theme }) => theme.orange};
+      margin: 0 6px 0 0;
+    }
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: none;
+      color: ${({ theme }) => theme.black};
+      background: ${({ theme }) => theme.orange};
+
+      > ${StyledTwitterIcon} {
+        fill: ${({ theme }) => theme.black};
+      }
+    }
+  }
+`
+
+export default function SideBanner({ type }: BannerProps) {
+  const [isActive, setIsActive] = useState(true)
+
+  // const isHidden = !isVisible || !isActive
+
+  const handleClose = () => {
+    setIsActive(false)
+  }
+
+  // useEffect(() => {
+  //   if (isNotificationClosed !== null) {
+  //     setIsActive(!isNotificationClosed)
+  //   }
+  // }, [isNotificationClosed, isActive])
+
+  return (
+    <Banner isActive={isActive}>
+      {type === 'anniversary' && (
+        <BannerContainer>
+          <ReactConfetti numberOfPieces={25} width={WIDTH} height={HEIGHT} recycle={true} run={true} />
+          <h3>
+            Celebrating year one
+            <br />
+            of the ever evolving COW 🎉
+          </h3>
+          <img src={AnniversaryImage} height="162" alt="CowSwap evolving icons" />
+          <FooterContent>
+            <p>Share and be eligible for a celebratory NFT!</p>
+            <ExternalLink href={`https://twitter.com/intent/tweet?text=${ANNIVERSARY_TWEET_TEMPLATE}`}>
+              <button>
+                <StyledTwitterIcon src={TwitterImage} height="18" width="18" description="Share CowSwap on Twitter" />
+                Share on Twitter
+              </button>
+            </ExternalLink>
+          </FooterContent>
+        </BannerContainer>
+      )}
+      <StyledClose size={24} onClick={handleClose} />
+    </Banner>
+  )
+}
