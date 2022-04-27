@@ -11,7 +11,7 @@ import { ChevronDown } from 'react-feather'
 // import { useHistory } from 'react-router-dom'
 // import { useModalOpen, useToggleModal } from 'state/application/hooks'
 // import { addPopup, ApplicationModal } from 'state/application/reducer'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 // import { replaceURLParam } from 'utils/routes'
 // import { useAppDispatch } from 'state/hooks'
@@ -25,6 +25,10 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
+// mod
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
+import { useAddPopup, useRemovePopup } from 'state/application/hooks'
+import { useEffect } from 'react'
 import { getExplorerBaseUrl } from 'utils/explorer'
 
 /* const ActiveRowLinkList = styled.div`
@@ -288,6 +292,42 @@ export default function NetworkSelector() {
   // mod: refactored inner logic into useChangeNetworks hook
   const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
 
+  // mod: add error and isUnsupportedNetwork const and useEffect
+  const { error } = useWeb3React()
+  const isUnsupportedNetwork = error instanceof UnsupportedChainIdError
+  const addPopup = useAddPopup()
+  const removePopup = useRemovePopup()
+
+  useEffect(() => {
+    const POPUP_KEY = chainId?.toString()
+
+    if (POPUP_KEY && isUnsupportedNetwork) {
+      addPopup(
+        {
+          failedSwitchNetwork: chainId as SupportedChainId,
+          unsupportedNetwork: true,
+          styles: css`
+            background: ${({ theme }) => theme.yellow3};
+            &&& {
+              margin-top: 20px;
+              ${({ theme }) => theme.mediaWidth.upToSmall`
+                margin-top: 40px;
+              `}
+            }
+          `,
+        },
+        // ID
+        POPUP_KEY,
+        // null to disable auto hide
+        null
+      )
+    }
+
+    return () => {
+      POPUP_KEY && removePopup(POPUP_KEY)
+    }
+  }, [addPopup, chainId, isUnsupportedNetwork, removePopup])
+
   /* const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
   const prevChainId = usePrevious(chainId)
@@ -352,7 +392,7 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain]) */
 
-  if (!chainId || !info || !library) {
+  if (!chainId || !info || !library || isUnsupportedNetwork) {
     return null
   }
 

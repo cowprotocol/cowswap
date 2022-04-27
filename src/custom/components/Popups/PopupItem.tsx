@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { PopupContent } from 'state/application/reducer'
-import { default as PopupItemUni, Popup, Fader, StyledClose } from './PopupItemMod'
+import { default as PopupItemUni, Popup, Fader } from './PopupItemMod'
 
 const Wrapper = styled.div`
   ${Popup} {
@@ -13,10 +13,6 @@ const Wrapper = styled.div`
   ${Fader} {
     background-color: ${({ theme }) => theme.disabled};
     height: 4px;
-  }
-
-  ${StyledClose} {
-    stroke: ${({ theme }) => theme.text1};
   }
 
   a {
