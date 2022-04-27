@@ -13,7 +13,7 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
 import SideBanner from 'components/SideBanner'
-const SIDE_BANNER_VISIBLE_KEY = 'isSideBannerVisible'
+import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -95,7 +95,7 @@ const getShowBannerState = (key: string) => {
 }
 
 export default function App() {
-  const isVisible = useMemo(() => getShowBannerState(SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
+  const isVisible = useMemo(() => getShowBannerState(IS_SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
 
   return (
     <>
