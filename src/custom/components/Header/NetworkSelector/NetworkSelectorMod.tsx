@@ -14,10 +14,8 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 // import { replaceURLParam } from 'utils/routes'
-
 // import { useAppDispatch } from 'state/hooks'
 // import { switchToNetwork } from 'utils/switchToNetwork'
-
 // MOD imports
 import {
   ActiveRowLinkList,
@@ -186,7 +184,8 @@ const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygon Bridge</Trans>*/
-    // TODO: add bridges, if any
+    case SupportedChainId.RINKEBY:
+      return <Trans>Faucet</Trans>
     default:
       return <Trans>Bridge</Trans>
   }

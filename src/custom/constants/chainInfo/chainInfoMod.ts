@@ -68,6 +68,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     docs: 'https://docs.cow.fi/',
     explorer: 'https://rinkeby.etherscan.io/',
     infoLink: 'https://cow.fi',
+    bridge: 'https://www.rinkeby.io/#faucet', // actually a faucet rather than a bridge
     label: 'Rinkeby',
     logoUrl: RinkebyLogo,
     nativeCurrency: { name: 'Rinkeby Ether', symbol: 'rETH', decimals: 18 },
