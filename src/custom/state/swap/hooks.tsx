@@ -334,6 +334,11 @@ export function useDerivedSwapInfo(): /* {
     // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
     const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)] // mod
 
+    // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
+    if (!balanceIn) {
+      inputError = <Trans>Couldn&apos;t load balances</Trans>
+    }
+
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
       inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
     }
