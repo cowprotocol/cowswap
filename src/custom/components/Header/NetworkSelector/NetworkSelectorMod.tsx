@@ -11,13 +11,11 @@ import { /* ArrowDownCircle,  */ ChevronDown } from 'react-feather'
 // import { useHistory } from 'react-router-dom'
 // import { useModalOpen, useToggleModal } from 'state/application/hooks'
 // import { addPopup, ApplicationModal } from 'state/application/reducer'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 // import { replaceURLParam } from 'utils/routes'
-
 // import { useAppDispatch } from 'state/hooks'
 // import { switchToNetwork } from 'utils/switchToNetwork'
-
 // MOD imports
 import {
   ActiveRowLinkList,
@@ -27,6 +25,11 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
+// mod
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
+import { useAddPopup, useRemovePopup } from 'state/application/hooks'
+import { useEffect } from 'react'
+import { getExplorerBaseUrl } from 'utils/explorer'
 
 /* export const ActiveRowLinkList = styled.div`
   display: flex;
@@ -186,7 +189,8 @@ const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygon Bridge</Trans>*/
-    // TODO: add bridges, if any
+    case SupportedChainId.RINKEBY:
+      return <Trans>Faucet</Trans>
     default:
       return <Trans>Bridge</Trans>
   }
@@ -255,6 +259,10 @@ function Row({
               <Trans>Help Center</Trans> <LinkOutCircle />
             </ExternalLink>
           ) : null}
+
+          <ExternalLink href={getExplorerBaseUrl(chainId)}>
+            <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
+          </ExternalLink>
         </ActiveRowLinkList>
       </ActiveRowWrapper>
     )
@@ -285,6 +293,36 @@ export default function NetworkSelector() {
   const { account, chainId, library } = useActiveWeb3React()
   // mod: refactored inner logic into useChangeNetworks hook
   const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
+
+  // mod: add error and isUnsupportedNetwork const and useEffect
+  const { error } = useWeb3React()
+  const isUnsupportedNetwork = error instanceof UnsupportedChainIdError
+  const addPopup = useAddPopup()
+  const removePopup = useRemovePopup()
+
+  useEffect(() => {
+    const POPUP_KEY = chainId?.toString()
+
+    if (POPUP_KEY && isUnsupportedNetwork) {
+      addPopup(
+        {
+          failedSwitchNetwork: chainId as SupportedChainId,
+          unsupportedNetwork: true,
+          styles: css`
+            background: ${({ theme }) => theme.yellow3};
+          `,
+        },
+        // ID
+        POPUP_KEY,
+        // null to disable auto hide
+        null
+      )
+    }
+
+    return () => {
+      POPUP_KEY && removePopup(POPUP_KEY)
+    }
+  }, [addPopup, chainId, isUnsupportedNetwork, removePopup])
 
   /* const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
@@ -350,7 +388,7 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain]) */
 
-  if (!chainId || !info || !library) {
+  if (!chainId || !info || !library || isUnsupportedNetwork) {
     return null
   }
 

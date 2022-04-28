@@ -1,12 +1,14 @@
 import { Trans } from '@lingui/macro'
 import Row from 'lib/components/Row'
 import { Logo } from 'lib/icons'
-import styled, { brand, ThemedText } from 'lib/theme'
-import { memo } from 'react'
+import { /*styled,*/ /*brand,*/ ThemedText } from 'lib/theme'
 
-import ExternalLink from './ExternalLink'
+// MOD imports
+import { UniswapA } from '@src/lib/components/BrandedFooter'
 
-export const UniswapA = styled(ExternalLink)`
+/* import ExternalLink from './ExternalLink'
+
+const UniswapA = styled(ExternalLink)`
   color: ${({ theme }) => theme.secondary};
   cursor: pointer;
   text-decoration: none;
@@ -23,19 +25,19 @@ export const UniswapA = styled(ExternalLink)`
     fill: ${brand};
     transform: rotate(-5deg);
   }
-`
+` */
 
-export default memo(function BrandedFooter() {
+export default function BrandedFooter() {
   return (
     <Row justify="center">
-      <UniswapA href={`https://uniswap.org/`}>
+      <UniswapA href={`https://cow.fi/`}>
         <Row gap={0.25}>
           <Logo />
           <ThemedText.Caption>
-            <Trans>Powered by the Uniswap protocol</Trans>
+            <Trans>Powered by the CoW Protocol</Trans>
           </ThemedText.Caption>
         </Row>
       </UniswapA>
     </Row>
   )
-})
+}
