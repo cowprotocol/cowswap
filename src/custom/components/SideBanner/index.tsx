@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import AnniversaryImage from 'assets/cow-swap/anniversary-icons.png'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
@@ -19,7 +19,6 @@ export enum BannerType {
 }
 export interface BannerProps {
   type: BannerType
-  isVisible: boolean
 }
 
 const Banner = styled.div<{ isActive: boolean }>`
@@ -134,10 +133,19 @@ const FooterContent = styled.div`
   }
 `
 
-export default function SideBanner({ type, isVisible }: BannerProps) {
-  const [isActive, setIsActive] = useState(isVisible)
+const getShowBannerState = (key: string) => {
+  const localStorageValue = localStorage.getItem(key)
 
-  // const isHidden = !isVisible || !isActive
+  // item doesn't exist, show banner (true)
+  if (localStorageValue === null) return true
+
+  // else return localstorage state (!! for type safety)
+  return !!JSON.parse(localStorageValue)
+}
+
+export default function SideBanner({ type }: BannerProps) {
+  const isSideBannerVisible = useMemo(() => getShowBannerState(IS_SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
+  const [isActive, setIsActive] = useState(isSideBannerVisible)
 
   const handleClose = () => {
     setIsActive(false)
