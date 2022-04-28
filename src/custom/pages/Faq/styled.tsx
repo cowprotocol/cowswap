@@ -19,6 +19,7 @@ export const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 160px auto;
   flex-direction: column;
+  z-index: 1;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
