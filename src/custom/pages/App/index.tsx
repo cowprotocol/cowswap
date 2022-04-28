@@ -14,7 +14,7 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
 import SideBanner, { BannerType } from 'components/SideBanner'
-import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
+import { IS_SIDE_BANNER_VISIBLE_KEY } from 'constants/misc'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
