@@ -151,7 +151,7 @@ export default function SideBanner({ type, isVisible }: BannerProps) {
   }, [isActive])
 
   return (
-    <Banner isActive={isActive}>
+    <Banner isActive={isActive} id={'anniversary-banner'}>
       {type === 'anniversary' && (
         <BannerContainer>
           <ReactConfetti numberOfPieces={25} width={WIDTH} height={HEIGHT} recycle={true} run={true} />
