@@ -40,6 +40,7 @@ import {
 // import { EventUpdater } from 'state/orders/mocks'
 import AppziButton from 'components/AppziButton'
 import { nodeRemoveChildFix } from 'utils/node'
+import SideBanner, { BannerType } from 'components/SideBanner'
 
 import Popups from 'components/Popups'
 
@@ -88,7 +89,7 @@ ReactDOM.render(
                 <Updaters />
                 <ThemeProvider>
                   <ThemedGlobalStyle />
-                  <Popups />
+                  <SideBanner type={BannerType.ANNIVERSARY} />
                   <AppziButton />
                   <App />
                 </ThemeProvider>
