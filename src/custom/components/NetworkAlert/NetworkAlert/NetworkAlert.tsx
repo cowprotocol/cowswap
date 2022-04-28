@@ -151,7 +151,6 @@ export function NetworkAlert() {
   const { chainId } = useActiveWeb3React()
   const [darkMode] = useDarkModeManager()
 
-  console.log(`networkalert/shouldshow`, chainId, shouldShowAlert(chainId))
   if (!shouldShowAlert(chainId)) {
     return null
   }
