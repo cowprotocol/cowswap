@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import AnniversaryImage from 'assets/cow-swap/anniversary-icons.png'
 import TwitterImage from 'assets/cow-swap/twitter.svg'
@@ -6,14 +6,20 @@ import ReactConfetti from 'react-confetti'
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import { CloseIcon, ExternalLink } from 'theme'
+import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
 
 const WIDTH = 440
 const HEIGHT = 440
 const ANNIVERSARY_TWEET_TEMPLATE =
   'Holy CoW, today @MEVprotection is 1 year old! Check out their UI growth over time to see the CoW-evolution https://youtu.be/nxU11DmBVMk'
 
+// create an enum with the types of banners we want to show
+export enum BannerType {
+  ANNIVERSARY = 'anniversary',
+}
 export interface BannerProps {
-  type: string
+  type: BannerType
+  isVisible: boolean
 }
 
 const Banner = styled.div<{ isActive: boolean }>`
@@ -23,17 +29,16 @@ const Banner = styled.div<{ isActive: boolean }>`
   left: 28px;
   bottom: 86px;
   background: linear-gradient(180deg, ${({ theme }) => theme.blueShade} 0%, #091e32 100%);
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);
   border-radius: 16px;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
-  z-index: 1;
+  z-index: 9999;
   overflow: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     bottom: 0;
     left: 0;
     width: 100%;
-    z-index: 9999;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   `};
@@ -129,8 +134,8 @@ const FooterContent = styled.div`
   }
 `
 
-export default function SideBanner({ type }: BannerProps) {
-  const [isActive, setIsActive] = useState(true)
+export default function SideBanner({ type, isVisible }: BannerProps) {
+  const [isActive, setIsActive] = useState(isVisible)
 
   // const isHidden = !isVisible || !isActive
 
@@ -138,14 +143,15 @@ export default function SideBanner({ type }: BannerProps) {
     setIsActive(false)
   }
 
-  // useEffect(() => {
-  //   if (isNotificationClosed !== null) {
-  //     setIsActive(!isNotificationClosed)
-  //   }
-  // }, [isNotificationClosed, isActive])
+  useEffect(() => {
+    if (!isActive) {
+      // set a localstorage key to prevent banner from showing again
+      localStorage.setItem(IS_SIDE_BANNER_VISIBLE_KEY, 'false')
+    }
+  }, [isActive])
 
   return (
-    <Banner isActive={isActive}>
+    <Banner isActive={isActive} id={'anniversary-banner'}>
       {type === 'anniversary' && (
         <BannerContainer>
           <ReactConfetti numberOfPieces={25} width={WIDTH} height={HEIGHT} recycle={true} run={true} />
