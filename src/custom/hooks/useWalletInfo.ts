@@ -60,7 +60,7 @@ function checkIsSupportedWallet(params: {
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
   const provider = (await connector.getProvider()) as WalletConnectProvider
 
-  const meta = provider.walletMeta
+  const meta = provider.peerMeta
   if (meta) {
     return {
       walletName: meta.name,
