@@ -1,7 +1,7 @@
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
-import { Suspense, lazy, useMemo } from 'react'
+import { Suspense, lazy } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
@@ -12,9 +12,6 @@ import { environmentName } from 'utils/environments'
 import { useFilterEmptyQueryParams } from 'hooks/useFilterEmptyQueryParams'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
-
-import SideBanner, { BannerType } from 'components/SideBanner'
-import { IS_SIDE_BANNER_VISIBLE_KEY } from 'constants/misc'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -91,28 +88,15 @@ function createRedirectExternal(url: string) {
 
 const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
-const getShowBannerState = (key: string) => {
-  const localStorageValue = localStorage.getItem(key)
-
-  // item doesn't exist, show banner (true)
-  if (localStorageValue === null) return true
-
-  // else return localstorage state (!! for type safety)
-  return !!JSON.parse(localStorageValue)
-}
-
 export default function App() {
   // Dealing with empty URL queryParameters
   useFilterEmptyQueryParams()
-
-  const isSideBannerVisible = useMemo(() => getShowBannerState(IS_SIDE_BANNER_VISIBLE_KEY), []) // empty array only calls on mount
 
   return (
     <>
       <RedirectAnySwapAffectedUsers />
       <Wrapper>
         <Suspense fallback={Loading}>
-          <SideBanner isVisible={isSideBannerVisible} type={BannerType.ANNIVERSARY} />
           <Switch>
             <Redirect from="/claim" to="/profile" />
             <Route exact strict path="/swap" component={Swap} />
