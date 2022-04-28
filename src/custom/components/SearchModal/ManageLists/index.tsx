@@ -24,6 +24,7 @@ const Wrapper = styled.div`
   ${ListContainer} {
     ${({ theme }) => theme.neumorphism.boxShadow}
     padding: 1rem;
+    padding-bottom: 80px;
   }
 `
 
