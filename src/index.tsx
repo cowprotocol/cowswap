@@ -30,6 +30,7 @@ import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import FeesUpdater from 'state/price/updater'
 import GasUpdater from 'state/gas/updater'
 import SentryUpdater from 'state/sentry/updater'
+import Popups from 'components/Popups'
 
 import {
   GpOrdersUpdater,
@@ -86,6 +87,7 @@ ReactDOM.render(
                 <Updaters />
                 <ThemeProvider>
                   <ThemedGlobalStyle />
+                  <Popups />
                   <AppziButton />
                   <App />
                 </ThemeProvider>
