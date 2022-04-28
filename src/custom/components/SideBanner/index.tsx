@@ -108,6 +108,10 @@ const FooterContent = styled.div`
     width: 100%;
   }
 
+  > a:hover {
+    text-decoration: none;
+  }
+
   button {
     display: flex;
     align-items: center;
