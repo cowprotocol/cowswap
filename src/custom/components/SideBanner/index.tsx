@@ -7,6 +7,7 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import { CloseIcon, ExternalLink } from 'theme'
 import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
+import { getCowSoundAnniversary } from 'utils/sound'
 
 const WIDTH = 440
 const HEIGHT = 440
@@ -20,6 +21,14 @@ export enum BannerType {
 export interface BannerProps {
   type: BannerType
   isVisible: boolean
+}
+
+function playAnniversarySound() {
+  getCowSoundAnniversary()
+    .play()
+    .catch((e) => {
+      console.error('🐮 [SideBanner] Celebration sound cannot be played', e)
+    })
 }
 
 const Banner = styled.div<{ isActive: boolean }>`
@@ -163,7 +172,10 @@ export default function SideBanner({ type, isVisible }: BannerProps) {
           <img src={AnniversaryImage} height="162" alt="CowSwap evolving icons" />
           <FooterContent>
             <p>Share and be eligible for a celebratory NFT!</p>
-            <ExternalLink href={`https://twitter.com/intent/tweet?text=${ANNIVERSARY_TWEET_TEMPLATE}`}>
+            <ExternalLink
+              href={`https://twitter.com/intent/tweet?text=${ANNIVERSARY_TWEET_TEMPLATE}`}
+              onClickOptional={playAnniversarySound}
+            >
               <button>
                 <StyledTwitterIcon src={TwitterImage} height="18" width="18" description="Share CowSwap on Twitter" />
                 Share on Twitter

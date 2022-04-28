@@ -193,9 +193,24 @@ export function ExternalLink({
   target = '_blank',
   href,
   rel = 'noopener noreferrer',
+  onClickOptional,
   ...rest
-}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  return <StyledLink target={target} rel={rel} href={href} onClick={handleClickExternalLink} {...rest} />
+}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
+  href: string
+  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
+}) {
+  return (
+    <StyledLink
+      target={target}
+      rel={rel}
+      href={href}
+      onClick={(event) => {
+        if (onClickOptional) onClickOptional(event)
+        handleClickExternalLink(event)
+      }}
+      {...rest}
+    />
+  )
 }
 
 export function ExternalLinkIcon({
