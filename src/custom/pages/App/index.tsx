@@ -60,7 +60,7 @@ export const BodyWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex: auto;
-  z-index: initial;
+  z-index: 1;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 0 10px 0;
