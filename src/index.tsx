@@ -41,6 +41,8 @@ import {
 import AppziButton from 'components/AppziButton'
 import { nodeRemoveChildFix } from 'utils/node'
 
+import Popups from 'components/Popups'
+
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
@@ -86,6 +88,7 @@ ReactDOM.render(
                 <Updaters />
                 <ThemeProvider>
                   <ThemedGlobalStyle />
+                  <Popups />
                   <AppziButton />
                   <App />
                 </ThemeProvider>
