@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import SVG from 'react-inlinesvg'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Profile/styled'
 import { ButtonPrimary } from 'custom/components/Button'
@@ -19,6 +19,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useCowFromLockedGnoBalances, useClaimCowFromLockedGnoCallback } from './hooks'
+import usePrevious from 'hooks/usePrevious'
 
 enum ClaimStatus {
   INITIAL,
@@ -33,7 +34,7 @@ interface Props {
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
-  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
+  const { chainId = ChainId.MAINNET, account } = useActiveWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const { allocated, vested, claimed, loading: loadingBalances } = useCowFromLockedGnoBalances()
   const unvested = allocated.subtract(vested)
@@ -41,6 +42,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
   const vestedFormatted = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
   const unvestedFormatted = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const claimableFormatted = formatSmartLocaleAware(vested.subtract(claimed), AMOUNT_PRECISION) || '0'
+  const previousAccount = usePrevious(account)
 
   const canClaim = !loadingBalances && unvested.greaterThan(0) && status === ClaimStatus.INITIAL
   const isClaimPending = status === ClaimStatus.SUBMITTED
@@ -86,6 +88,13 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
         handleSetError(error?.message)
       })
   }, [handleCloseError, handleSetError, claimCallback])
+
+  // Fix for enabling claim button after user changes account
+  useEffect(() => {
+    if (account && previousAccount && account !== previousAccount && status !== ClaimStatus.INITIAL) {
+      setStatus(ClaimStatus.INITIAL)
+    }
+  }, [account, previousAccount, status])
 
   if (allocated.equalTo(0)) {
     // don't render anything until we know that the user is actually eligible to claim
