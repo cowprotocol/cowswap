@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -20,6 +20,8 @@ import {
   BalanceDisplay,
   ConvertWrapper,
   VestingBreakdown,
+  BannerCardContent,
+  BannerCardSvg,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -52,12 +54,18 @@ import { COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { SwapVCowStatus } from 'state/cowToken/actions'
 import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
+import { SwapVCowStatus } from 'state/cowToken/actions'
+import LockedGnoVesting from './LockedGnoVesting'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+import usePrevious from 'hooks/usePrevious'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
+
+// Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
+const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
   const referralLink = useReferralLink()
@@ -67,6 +75,11 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
   const selectedAddress = useAddress()
+  const previousAccount = usePrevious(account)
+
+  const blockNumber = useBlockNumber()
+  const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
+  const [shouldUpdate, setShouldUpdate] = useState<boolean>(false)
 
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
@@ -77,27 +90,30 @@ export default function Profile() {
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
 
+  // Boolean flags
+  const hasVestedBalance = vested && !vested.equalTo(0)
+  const hasVCowBalance = total && !total.equalTo(0)
+
+  const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
+  const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
+  const isSwapConfirmed = swapVCowStatus === SwapVCowStatus.CONFIRMED
+  const isSwapDisabled = Boolean(
+    !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate
+  )
+
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
-  const vCowBalanceVested = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
-  const vCowBalanceVestedMax = vested ? formatMax(vested, COW_DECIMALS) : '0'
+  const vCowBalanceVested = formatSmartLocaleAware(shouldUpdate ? undefined : vested, AMOUNT_PRECISION) || '0'
+  const vCowBalanceVestedMax = vested ? formatMax(shouldUpdate ? undefined : vested, COW_DECIMALS) : '0'
   const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
   const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
   const vCowBalanceMax = total ? formatMax(total, COW_DECIMALS) : '0'
-
-  const hasVestedBalance = vested && !vested.equalTo(0)
-  const hasVCowBalance = total && !total.equalTo(0)
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
     OperationType.CONVERT_VCOW
   )
-
-  // Boolean flags
-  const isSwapPending = swapVCowStatus === SwapVCowStatus.SUBMITTED
-  const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
-  const isSwapDisabled = Boolean(!hasVestedBalance || !isSwapInitial || isSwapPending)
 
   // Handle swaping
   const { swapCallback } = useSwapVCowCallback({
@@ -165,6 +181,50 @@ export default function Profile() {
     </>
   )
 
+  const renderConvertToCowContent = useCallback(() => {
+    let content = null
+
+    if (isSwapPending) {
+      content = <span>Converting vCOW...</span>
+    } else if (isSwapConfirmed) {
+      content = <span>Successfully converted!</span>
+    } else {
+      content = (
+        <>
+          Convert to COW <SVG src={ArrowIcon} />
+        </>
+      )
+    }
+
+    return content
+  }, [isSwapConfirmed, isSwapPending])
+
+  // Fixes the issue with change in status after swap confirmation
+  // Makes sure to wait 2 blocks after confirmation to enable the swap button again
+  useEffect(() => {
+    if (isSwapConfirmed && !confirmationBlock) {
+      setConfirmationBlock(blockNumber)
+      setShouldUpdate(true)
+    }
+
+    if (!confirmationBlock || !blockNumber) {
+      return
+    }
+
+    if (isSwapConfirmed && blockNumber - confirmationBlock > BLOCKS_TO_WAIT && hasVestedBalance) {
+      setSwapVCowStatus(SwapVCowStatus.INITIAL)
+      setConfirmationBlock(undefined)
+      setShouldUpdate(false)
+    }
+  }, [blockNumber, confirmationBlock, hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, shouldUpdate])
+
+  // Reset swap button status on account change
+  useEffect(() => {
+    if (account && previousAccount && account !== previousAccount && !isSwapInitial) {
+      setSwapVCowStatus(SwapVCowStatus.INITIAL)
+    }
+  }, [account, isSwapInitial, previousAccount, setSwapVCowStatus])
+
   const currencyCOW = COW[chainId]
 
   return (
@@ -201,13 +261,7 @@ export default function Profile() {
                 <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
               </BalanceDisplay>
               <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                {isSwapPending ? (
-                  'Converting vCOW...'
-                ) : (
-                  <>
-                    Convert to COW <SVG src={ArrowIcon} />
-                  </>
-                )}
+                {renderConvertToCowContent()}
               </ButtonPrimary>
             </ConvertWrapper>
 
@@ -247,8 +301,10 @@ export default function Profile() {
           </CardActions>
         </Card>
 
+        <LockedGnoVesting openModal={openModal} closeModal={closeModal} />
+
         <BannerCard>
-          <span>
+          <BannerCardContent>
             <b>CoW DAO Governance</b>
             <small>Use your (v)COW balance to vote on important proposals or participate in forum discussions.</small>
             <span>
@@ -256,8 +312,8 @@ export default function Profile() {
               <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
               <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
             </span>
-          </span>
-          <SVG src={CowProtocolImage} description="CoWDAO Governance" />
+          </BannerCardContent>
+          <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
         </BannerCard>
       </CardsWrapper>
 
