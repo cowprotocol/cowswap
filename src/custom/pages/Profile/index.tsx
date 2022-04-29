@@ -60,6 +60,7 @@ import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
+import usePrevious from 'hooks/usePrevious'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -74,6 +75,7 @@ export default function Profile() {
   const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
   const selectedAddress = useAddress()
+  const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
@@ -215,6 +217,13 @@ export default function Profile() {
       setShouldUpdate(false)
     }
   }, [blockNumber, confirmationBlock, hasVestedBalance, isSwapConfirmed, setSwapVCowStatus, shouldUpdate])
+
+  // Reset swap button status on account change
+  useEffect(() => {
+    if (account && previousAccount && account !== previousAccount && !isSwapInitial) {
+      setSwapVCowStatus(SwapVCowStatus.INITIAL)
+    }
+  }, [account, isSwapInitial, previousAccount, setSwapVCowStatus])
 
   const currencyCOW = COW[chainId]
 
