@@ -7,6 +7,7 @@ import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
 import { ButtonCustom as AddToMetaMask } from 'components/AddToMetamask'
 import { CopyIcon as ClickToCopy } from 'components/Copy'
+import SVG from 'react-inlinesvg'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -636,4 +637,12 @@ export const VestingBreakdown = styled.div`
   > span:last-of-type > p {
     color: ${({ theme }) => theme.primary1};
   }
+`
+
+export const BannerCardContent = styled.span`
+  z-index: 2;
+`
+
+export const BannerCardSvg = styled(SVG)`
+  z-index: 1;
 `
