@@ -40,7 +40,12 @@ describe('Swap (mod)', () => {
   })
 
   it('zero output amount', () => {
-    cy.get('#swap-currency-output .token-amount-input').clear().type('0.0', { delay: 400 }).should('have.value', '0.0')
+    cy.get('#swap-currency-output .token-amount-input')
+      // When `.clear() doesn't work, brute force it with the input below.
+      // From https://stackoverflow.com/a/65918033/1272513
+      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('0.0', { delay: 400 })
+      .should('have.value', '0.0')
   })
 
   it('can swap Native for DAI', () => {
