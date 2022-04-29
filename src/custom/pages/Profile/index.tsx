@@ -20,6 +20,8 @@ import {
   BalanceDisplay,
   ConvertWrapper,
   VestingBreakdown,
+  BannerCardContent,
+  BannerCardSvg,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -293,7 +295,7 @@ export default function Profile() {
         <LockedGnoVesting openModal={openModal} closeModal={closeModal} />
 
         <BannerCard>
-          <span>
+          <BannerCardContent>
             <b>CoW DAO Governance</b>
             <small>Use your (v)COW balance to vote on important proposals or participate in forum discussions.</small>
             <span>
@@ -301,8 +303,8 @@ export default function Profile() {
               <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
               <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
             </span>
-          </span>
-          <SVG src={CowProtocolImage} description="CoWDAO Governance" />
+          </BannerCardContent>
+          <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
         </BannerCard>
       </CardsWrapper>
 
