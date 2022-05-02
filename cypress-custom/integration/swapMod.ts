@@ -1,7 +1,6 @@
 describe('Swap (mod)', () => {
   beforeEach(() => {
     cy.visit('/swap')
-    cy.get('#anniversary-banner > svg').click()
   })
   it('can enter an amount into input', () => {
     cy.get('#swap-currency-input .token-amount-input')

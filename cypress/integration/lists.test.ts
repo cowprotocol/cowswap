@@ -1,7 +1,6 @@
 describe('Lists', () => {
   beforeEach(() => {
     cy.visit('/swap')
-    cy.get('#anniversary-banner > svg').click()
   })
 
   // @TODO check if default lists are active when we have them
