@@ -1,7 +1,6 @@
 describe('Swap (mod)', () => {
   beforeEach(() => {
     cy.visit('/swap')
-    cy.get('#anniversary-banner > svg').click()
   })
 
   it('starts with an Native/USDC swap and quotes it', () => {

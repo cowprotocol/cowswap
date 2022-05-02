@@ -7,7 +7,6 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import { CloseIcon, ExternalLink } from 'theme'
 import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
-import { getCowSoundAnniversary } from 'utils/sound'
 
 const WIDTH = 440
 const HEIGHT = 440
@@ -20,14 +19,6 @@ export enum BannerType {
 }
 export interface BannerProps {
   type: BannerType
-}
-
-function playAnniversarySound() {
-  getCowSoundAnniversary()
-    .play()
-    .catch((e) => {
-      console.error('🐮 [SideBanner] Celebration sound cannot be played', e)
-    })
 }
 
 const Banner = styled.div<{ isActive: boolean }>`
@@ -172,7 +163,7 @@ export default function SideBanner({ type }: BannerProps) {
   }, [isActive])
 
   return (
-    <Banner isActive={isActive} id={'anniversary-banner'}>
+    <Banner isActive={isActive}>
       {type === 'anniversary' && (
         <BannerContainer>
           <ReactConfetti numberOfPieces={25} width={WIDTH} height={HEIGHT} recycle={true} run={true} />
@@ -184,10 +175,7 @@ export default function SideBanner({ type }: BannerProps) {
           <img src={AnniversaryImage} height="162" alt="CowSwap evolving icons" />
           <FooterContent>
             <p>Share and be eligible for a celebratory NFT!</p>
-            <ExternalLink
-              href={`https://twitter.com/intent/tweet?text=${ANNIVERSARY_TWEET_TEMPLATE}`}
-              onClickOptional={playAnniversarySound}
-            >
+            <ExternalLink href={`https://twitter.com/intent/tweet?text=${ANNIVERSARY_TWEET_TEMPLATE}`}>
               <button>
                 <StyledTwitterIcon src={TwitterImage} height="18" width="18" description="Share CowSwap on Twitter" />
                 Share on Twitter
