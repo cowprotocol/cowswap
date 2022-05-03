@@ -112,10 +112,9 @@ export function useWalletInfo(): ConnectedWalletInfo {
   }, [connector])
 
   useEffect(() => {
-    if (account && web3Instance) {
-      checkIsSmartContractWallet(account, web3Instance).then(setIsSmartContractWallet)
-    }
-  }, [account, web3Instance])
+    setIsSmartContractWallet(true)
+    checkIsSmartContractWallet(account, web3Instance).then(setIsSmartContractWallet)
+  }, [account, chainId, web3Instance])
 
   useEffect(() => {
     const isGnosisSafe = walletName && GNOSIS_SAFE_WALLET_NAMES.includes(walletName)
