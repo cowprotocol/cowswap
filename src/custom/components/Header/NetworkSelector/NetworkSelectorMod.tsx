@@ -30,7 +30,7 @@ import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { useAddPopup, useRemovePopup } from 'state/application/hooks'
 import { useEffect } from 'react'
 import { getExplorerBaseUrl } from 'utils/explorer'
-import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
+import { useWalletInfo } from 'hooks/useWalletInfo'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
