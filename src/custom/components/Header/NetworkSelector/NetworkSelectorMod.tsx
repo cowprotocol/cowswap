@@ -35,7 +35,6 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 
 import { isMobile } from 'utils/userAgent'
 
-
 /* const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;
