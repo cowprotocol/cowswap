@@ -291,8 +291,9 @@ export const getChainNameFromId = (id: string | number) => {
 }
 
 export default function NetworkSelector() {
-  // mod: add account & lib abd useWalletInfo
-  const { account, chainId, library, isSmartContractWallet } = useWalletInfo()
+  // mod: add account & lib
+  const { account, chainId, library } = useActiveWeb3React()
+  const { isSmartContractWallet } = useWalletInfo() // mod
   // mod: refactored inner logic into useChangeNetworks hook
   const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
 
@@ -394,7 +395,7 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain]) */
 
-  if (!chainId || !info || !library || isUnsupportedNetwork || isSmartContractWallet) {
+  if (!chainId || !info || isUnsupportedNetwork || isSmartContractWallet) {
     return null
   }
 

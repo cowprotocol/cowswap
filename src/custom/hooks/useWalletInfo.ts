@@ -73,7 +73,7 @@ async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ w
 }
 
 export function useWalletInfo(): ConnectedWalletInfo {
-  const { active, account, connector, chainId, library } = useWeb3React()
+  const { active, account, connector, chainId } = useWeb3React()
   const web3Instance = useActiveWeb3Instance()
   const [walletName, setWalletName] = useState<string>()
   const [icon, setIcon] = useState<string>()
@@ -137,7 +137,6 @@ export function useWalletInfo(): ConnectedWalletInfo {
     account,
     activeNetwork: contextNetwork.active,
     provider,
-    library,
     isSmartContractWallet,
     walletName,
     icon,
