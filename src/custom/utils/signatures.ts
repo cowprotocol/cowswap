@@ -162,27 +162,34 @@ async function _signPayload(
   try {
     signature = (await signFn({ ...payload, signer: _signer, signingScheme })) as EcdsaSignature // Only ECDSA signing supported for now
   } catch (e) {
+    console.log('[sign] Failed to sign', e, _signer)
     const regexErrorCheck = [METHOD_NOT_FOUND_ERROR_MSG_REGEX, RPC_REQUEST_FAILED_REGEX].some((regex) =>
       // for example 1Inch error doesn't have e.message so we will check the output of toString()
       [e.message, e.toString()].some((msg) => regex.test(msg))
     )
 
     if (e.code === METHOD_NOT_FOUND_ERROR_CODE || regexErrorCheck) {
+      console.log('[sign] Failed to sign', e, _signer)
       // Maybe the wallet returns the proper error code? We can only hope 🤞
       // OR it failed with a generic message, there's no error code set, and we also hope it'll work
       // with other methods...
       switch (signingMethod) {
         case 'v4':
+          console.log('[sign] Fail to sign using v4, trying v3')
           return _signPayload(payload, signFn, signer, 'v3')
         case 'v3':
+          console.log('[sign] Fail to sign using v3, trying eth_sign')
           return _signPayload(payload, signFn, signer, 'eth_sign')
         default:
+          console.log('[sign] Fail to sign all. Give up!')
           throw e
       }
     } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
+      console.log('[sign] METAMASK_STRING_CHAINID_REGEX')
       // Metamask now enforces chainId to be an integer
       return _signPayload(payload, signFn, signer, 'int_v4')
     } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
+      console.log('[sign] METAMASK_SIGNATURE_ERROR_CODE')
       // We tried to sign order the nice way.
       // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
       // See https://github.com/MetaMask/metamask-extension/issues/10240#issuecomment-810552020
@@ -190,13 +197,16 @@ async function _signPayload(
       // Then, we fallback to ETHSIGN.
       return _signPayload(payload, signFn, signer, 'eth_sign')
     } else if (V4_ERROR_MSG_REGEX.test(e.message)) {
+      console.log('[sign] V4_ERROR_MSG_REGEX')
       // Failed with `v4`, and the wallet does not set the proper error code
       return _signPayload(payload, signFn, signer, 'v3')
     } else if (V3_ERROR_MSG_REGEX.test(e.message)) {
+      console.log('[sign] V3_ERROR_MSG_REGEX')
       // Failed with `v3`, and the wallet does not set the proper error code
       return _signPayload(payload, signFn, signer, 'eth_sign')
     } else {
-      // Some other error signing. Let it bubble up.
+      // Some other error signing. Let
+      console.log('[sign] Other')
       console.error(e)
       throw e
     }
@@ -205,6 +215,7 @@ async function _signPayload(
 }
 
 export async function signOrder(order: UnsignedOrder, chainId: ChainId, signer: Signer): Promise<SigningResult> {
+  console.log('Sign order')
   return _signPayload({ order, chainId }, _signOrder, signer)
 }
 

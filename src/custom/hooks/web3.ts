@@ -9,7 +9,7 @@ import { isMobile } from 'utils/userAgent'
 // MOD imports
 import { STORAGE_KEY_LAST_PROVIDER, WAITING_TIME_RECONNECT_LAST_PROVIDER } from 'constants/index'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 
 // Exports from the original file
 export { useInactiveListener } from '@src/hooks/web3'
