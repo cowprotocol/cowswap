@@ -78,7 +78,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
   const [walletName, setWalletName] = useState<string>()
   const [icon, setIcon] = useState<string>()
   const [provider, setProvider] = useState<WalletProvider>()
-  const [isSmartContractWallet, setIsSmartContractWallet] = useState(false)
+  const [isSmartContractWallet, setIsSmartContractWallet] = useState(true)
   const contextNetwork = useWeb3React(NetworkContextName)
   const { ENSName } = useENSName(account ?? undefined)
   const [gnosisSafeInfo, setGnosisSafeInfo] = useState<SafeInfoResponse>()
