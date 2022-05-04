@@ -104,6 +104,11 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
     width: 300px;
     z-index: -1;
   }
+
+  // mod
+  :hover {
+    text-decoration: underline;
+  }
 `
 const Header = styled.h2`
   font-weight: 600;
