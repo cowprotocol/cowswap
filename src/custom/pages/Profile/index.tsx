@@ -64,6 +64,7 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
 import Circle from 'assets/images/blue-loader.svg'
 import { CustomLightSpinner } from 'theme'
+import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -87,8 +88,8 @@ export default function Profile() {
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
 
-  const [isLockedLoading, setIsLockedLoading] = useState(false)
-  const setLockedLoading = useCallback(() => setIsLockedLoading, [])
+  // Locked GNO balance
+  const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
@@ -108,7 +109,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedLoading || !library
+    let output = isVCowLoading || isLockedGnoLoading || !library
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -116,7 +117,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isLockedLoading, isVCowLoading, library])
+  }, [isLockedGnoLoading, isVCowLoading, library])
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
@@ -329,7 +330,12 @@ export default function Profile() {
               </CardActions>
             </Card>
 
-            <LockedGnoVesting setLockedLoading={setLockedLoading} openModal={openModal} closeModal={closeModal} />
+            <LockedGnoVesting
+              {...lockedGnoBalances}
+              loading={isLockedGnoLoading}
+              openModal={openModal}
+              closeModal={closeModal}
+            />
 
             <BannerCard>
               <BannerCardContent>
