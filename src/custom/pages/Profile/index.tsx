@@ -23,6 +23,7 @@ import {
   BannerCardContent,
   BannerCardSvg,
   CardsLoader,
+  CardsSpinner,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -62,8 +63,6 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
-import Circle from 'assets/images/blue-loader.svg'
-import { CustomLightSpinner } from 'theme'
 import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
@@ -257,7 +256,7 @@ export default function Profile() {
         {isCardsLoading ? (
           <CardsWrapper>
             <CardsLoader>
-              <CustomLightSpinner src={Circle} alt="loader" size={'30px'} />
+              <CardsSpinner size="24px" />
             </CardsLoader>
           </CardsWrapper>
         ) : (

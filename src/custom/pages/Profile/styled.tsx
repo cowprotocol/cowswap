@@ -8,6 +8,7 @@ import { ExternalLink } from 'theme'
 import { ButtonCustom as AddToMetaMask } from 'components/AddToMetamask'
 import { CopyIcon as ClickToCopy } from 'components/Copy'
 import SVG from 'react-inlinesvg'
+import SpinnerLoader from 'components/Loader'
 
 export const Container = styled.div`
   max-width: 910px;
@@ -652,4 +653,9 @@ export const CardsLoader = styled.div`
   align-items: center;
   justify-content: center;
   height: 100px;
+`
+export const CardsSpinner = styled(SpinnerLoader)`
+  & path {
+    stroke: ${({ theme }) => theme.text1};
+  }
 `
