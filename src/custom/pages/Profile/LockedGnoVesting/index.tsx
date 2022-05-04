@@ -31,9 +31,10 @@ enum ClaimStatus {
 interface Props {
   openModal: (message: string, operationType: OperationType) => void
   closeModal: () => void
+  setLockedLoading: (loading: boolean) => void
 }
 
-const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
+const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, setLockedLoading }: Props) => {
   const { chainId = ChainId.MAINNET, account } = useActiveWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const { allocated, vested, claimed, loading: loadingBalances } = useCowFromLockedGnoBalances()
@@ -95,6 +96,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
       setStatus(ClaimStatus.INITIAL)
     }
   }, [account, previousAccount, status])
+
+  useEffect(() => {
+    setLockedLoading(loadingBalances)
+  }, [loadingBalances, setLockedLoading])
 
   if (allocated.equalTo(0)) {
     // don't render anything until we know that the user is actually eligible to claim

@@ -646,3 +646,10 @@ export const BannerCardContent = styled.span`
 export const BannerCardSvg = styled(SVG)`
   z-index: 1;
 `
+
+export const CardsLoader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+`
