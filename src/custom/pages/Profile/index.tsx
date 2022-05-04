@@ -62,8 +62,8 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
-import Circle from '../../../assets/images/blue-loader.svg'
-import { CustomLightSpinner } from '@src/theme'
+import Circle from 'assets/images/blue-loader.svg'
+import { CustomLightSpinner } from 'theme'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
