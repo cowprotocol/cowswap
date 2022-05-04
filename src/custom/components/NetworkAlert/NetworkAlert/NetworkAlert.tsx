@@ -1,13 +1,17 @@
 import { Trans } from '@lingui/macro'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { ArrowUpRight } from 'react-feather'
 import { useDarkModeManager } from '@src/state/user/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, HideSmall } from 'theme'
 
 import { AutoRow } from 'components/Row'
+
+// mod imports
+import useTheme from 'hooks/useTheme'
+import { useWeb3React } from 'web3-react-core'
 
 const L2Icon = styled.img`
   width: 24px;
@@ -29,6 +33,12 @@ const BodyText = styled.div`
   justify-content: flex-start;
   margin: 8px;
   font-size: 14px;
+
+  //  mod
+  :hover {
+    text-decoration: underline;
+    color: ${({ theme }) => theme.primary1};
+  }
 `
 const RootWrapper = styled.div`
   position: relative;
@@ -47,11 +57,11 @@ const SHOULD_SHOW_ALERT = {
 
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
 
-const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
+/* const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
   [darkMode in 'dark' | 'light']: { [chainId in NetworkAlertChains]: string }
 } = {
   dark: {
-    /* [SupportedChainId.POLYGON]:
+     [SupportedChainId.POLYGON]:
       'radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)',
     [SupportedChainId.POLYGON_MUMBAI]:
       'radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)',
@@ -62,13 +72,10 @@ const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
     [SupportedChainId.ARBITRUM_ONE]:
       'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.01) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(75% 75% at 0% 0%, rgba(150, 190, 220, 0.05) 0%, rgba(33, 114, 229, 0.05) 100%), hsla(0, 0%, 100%, 0.05)',
     [SupportedChainId.ARBITRUM_RINKEBY]:
-      'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.05) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(75% 75% at 0% 0%, rgba(150, 190, 220, 0.05) 0%, rgba(33, 114, 229, 0.1) 100%), hsla(0, 0%, 100%, 0.05)', */
-    // TODO: adjust colors
-    [SupportedChainId.XDAI]:
-      'radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)',
+      'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.05) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(75% 75% at 0% 0%, rgba(150, 190, 220, 0.05) 0%, rgba(33, 114, 229, 0.1) 100%), hsla(0, 0%, 100%, 0.05)',
   },
   light: {
-    /* [SupportedChainId.POLYGON]:
+    [SupportedChainId.POLYGON]:
       'radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)',
     [SupportedChainId.POLYGON_MUMBAI]:
       'radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)',
@@ -79,15 +86,12 @@ const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
     [SupportedChainId.ARBITRUM_ONE]:
       'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.1) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(circle at top left, hsla(206, 50%, 75%, 0.01), hsla(215, 79%, 51%, 0.12)), hsla(0, 0%, 100%, 0.1)',
     [SupportedChainId.ARBITRUM_RINKEBY]:
-      'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.1) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(circle at top left, hsla(206, 50%, 75%, 0.01), hsla(215, 79%, 51%, 0.12)), hsla(0, 0%, 100%, 0.1)', */
-    // TODO: adjust colors
-    [SupportedChainId.XDAI]:
-      'radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)',
+      'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.1) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(circle at top left, hsla(206, 50%, 75%, 0.01), hsla(215, 79%, 51%, 0.12)), hsla(0, 0%, 100%, 0.1)',
   },
-}
+} */
 
 const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boolean; logoUrl: string }>`
-  background: ${({ chainId, darkMode }) => BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID[darkMode ? 'dark' : 'light'][chainId]};
+  background: ${({ theme }) => theme.bg1};
   border-radius: 20px;
   display: flex;
   flex-direction: row;
@@ -106,6 +110,11 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
     transform: rotate(25deg) translate(-90px, -40px);
     width: 300px;
     z-index: -1;
+  }
+
+  // mod
+  :hover {
+    background-color: ${({ theme }) => theme.bg7};
   }
 `
 const Header = styled.h2`
@@ -133,30 +142,31 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
   height: 24px;
 `
 
-const TEXT_COLORS: { [chainId in NetworkAlertChains]: string } = {
-  /* [SupportedChainId.POLYGON]: 'rgba(130, 71, 229)',
+/* const TEXT_COLORS: { [chainId in NetworkAlertChains]: string } = {
+  [SupportedChainId.POLYGON]: 'rgba(130, 71, 229)',
   [SupportedChainId.POLYGON_MUMBAI]: 'rgba(130, 71, 229)',
   [SupportedChainId.OPTIMISM]: '#ff3856',
   [SupportedChainId.OPTIMISTIC_KOVAN]: '#ff3856',
   [SupportedChainId.ARBITRUM_ONE]: '#0490ed',
-  [SupportedChainId.ARBITRUM_RINKEBY]: '#0490ed', */
-  [SupportedChainId.XDAI]: '#0490ed', // TODO: adjust colors
-}
+  [SupportedChainId.ARBITRUM_RINKEBY]: '#0490ed',
+} */
 
 function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertChains {
   return Boolean(chainId && SHOULD_SHOW_ALERT[chainId as unknown as NetworkAlertChains])
 }
 
 export function NetworkAlert() {
-  const { chainId } = useActiveWeb3React()
+  const { active, chainId } = useWeb3React() // mod
   const [darkMode] = useDarkModeManager()
 
-  if (!shouldShowAlert(chainId)) {
+  const theme = useTheme() // mod
+
+  if (!shouldShowAlert(chainId) || !active) {
     return null
   }
 
   const { label, logoUrl, bridge } = CHAIN_INFO[chainId]
-  const textColor = TEXT_COLORS[chainId]
+  const textColor = /*TEXT_COLORS[chainId]  mod */ theme.text1
 
   return bridge ? (
     <RootWrapper>
