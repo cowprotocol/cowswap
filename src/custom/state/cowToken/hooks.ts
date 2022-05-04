@@ -167,7 +167,7 @@ export function useCowBalance() {
 /**
  * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
-export function useCombinedBalance() {
+export function useCombinedBalance(includeFromLockedGNO = true) {
   const { chainId, account } = useActiveWeb3React()
   const { total: vCowBalance } = useVCowData()
   const { allocated, claimed } = useCowFromLockedGnoBalances()
@@ -190,12 +190,12 @@ export function useCombinedBalance() {
 
     if (account) {
       if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
-      if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
+      if (lockedGnoBalance && includeFromLockedGNO) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
       if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
     }
 
     const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
 
     return { balance, isLoading }
-  }, [vCowBalance, lockedGnoBalance, cowBalance, chainId, account])
+  }, [vCowBalance, lockedGnoBalance, cowBalance, chainId, account, includeFromLockedGNO])
 }
