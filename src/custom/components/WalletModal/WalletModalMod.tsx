@@ -482,6 +482,7 @@ export default function WalletModal({
             display: 'flex',
             width: '100%',
             padding: 15,
+            marginTop: 50,
             // background: 'white',
             // position: 'fixed',
             // bottom: -60,
