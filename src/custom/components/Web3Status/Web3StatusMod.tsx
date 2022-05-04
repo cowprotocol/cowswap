@@ -182,6 +182,22 @@ export function Web3StatusInner({
         onClick={openOrdersPanel} // mod
         pending={hasPendingTransactions}
       >
+        <div
+          style={{
+            display: 'flex',
+            width: 'calc(100vw - 20px)',
+            background: 'white',
+            position: 'fixed',
+            bottom: -60,
+            left: -100,
+            flexFlow: 'column nowrap',
+            alignItems: 'start',
+          }}
+        >
+          <small>ACCOUNT: {account}</small>
+          <small>CONNECTOR: {connector?.supportedChainIds}</small>
+          <small>ERROR: {error?.message}</small>
+        </div>
         {hasPendingTransactions ? (
           <RowBetween>
             <Text>
