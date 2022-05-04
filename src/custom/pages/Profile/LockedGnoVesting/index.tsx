@@ -18,8 +18,9 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { useActiveWeb3React } from 'hooks/web3'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
-import { useCowFromLockedGnoBalances, useClaimCowFromLockedGnoCallback } from './hooks'
+import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 enum ClaimStatus {
   INITIAL,
@@ -31,12 +32,15 @@ enum ClaimStatus {
 interface Props {
   openModal: (message: string, operationType: OperationType) => void
   closeModal: () => void
+  vested: CurrencyAmount<Currency>
+  allocated: CurrencyAmount<Currency>
+  claimed: CurrencyAmount<Currency>
+  loading: boolean
 }
 
-const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => {
+const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
   const { chainId = ChainId.MAINNET, account } = useActiveWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
-  const { allocated, vested, claimed, loading: loadingBalances } = useCowFromLockedGnoBalances()
   const unvested = allocated.subtract(vested)
   const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
   const vestedFormatted = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
@@ -44,7 +48,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
   const claimableFormatted = formatSmartLocaleAware(vested.subtract(claimed), AMOUNT_PRECISION) || '0'
   const previousAccount = usePrevious(account)
 
-  const canClaim = !loadingBalances && unvested.greaterThan(0) && status === ClaimStatus.INITIAL
+  const canClaim = !loading && unvested.greaterThan(0) && status === ClaimStatus.INITIAL
   const isClaimPending = status === ClaimStatus.SUBMITTED
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -103,7 +107,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal }: Props) => 
 
   return (
     <>
-      <Card showLoader={loadingBalances || isClaimPending}>
+      <Card showLoader={loading || isClaimPending}>
         <BalanceDisplay hAlign="left">
           <img src={cowImage} alt="COW token" width="56" height="56" />
           <span>

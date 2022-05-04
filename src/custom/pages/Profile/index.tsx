@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Txt } from 'assets/styles/styled'
 import {
   FlexCol,
@@ -22,6 +22,8 @@ import {
   VestingBreakdown,
   BannerCardContent,
   BannerCardSvg,
+  CardsLoader,
+  CardsSpinner,
 } from 'pages/Profile/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
@@ -61,6 +63,7 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
+import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -84,6 +87,9 @@ export default function Profile() {
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
 
+  // Locked GNO balance
+  const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
+
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
@@ -100,6 +106,17 @@ export default function Profile() {
   const isSwapDisabled = Boolean(
     !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate
   )
+
+  const isCardsLoading = useMemo(() => {
+    let output = isVCowLoading || isLockedGnoLoading || !library
+
+    // remove loader after 5 sec in any case
+    setTimeout(() => {
+      output = false
+    }, 5000)
+
+    return output
+  }, [isLockedGnoLoading, isVCowLoading, library])
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
@@ -236,85 +253,105 @@ export default function Profile() {
       <Title>Profile</Title>
 
       <CardsWrapper>
-        {hasVCowBalance && (
-          <Card showLoader={isVCowLoading || isSwapPending}>
-            <BalanceDisplay hAlign="left">
-              <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
-              <span>
-                <i>Total vCOW balance</i>
-                <b>
-                  <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
-                  <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
-                    <HelpCircle size={14} />
-                  </MouseoverTooltipContent>
-                </b>
-              </span>
-            </BalanceDisplay>
-            <ConvertWrapper>
-              <BalanceDisplay titleSize={18} altColor={true}>
-                <i>
-                  Vested{' '}
-                  <MouseoverTooltipContent content={tooltipText.vested} wrap>
-                    <HelpCircle size={14} />
-                  </MouseoverTooltipContent>
-                </i>
-                <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
-              </BalanceDisplay>
-              <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                {renderConvertToCowContent()}
-              </ButtonPrimary>
-            </ConvertWrapper>
+        {isCardsLoading ? (
+          <CardsWrapper>
+            <CardsLoader>
+              <CardsSpinner size="24px" />
+            </CardsLoader>
+          </CardsWrapper>
+        ) : (
+          <>
+            {hasVCowBalance && (
+              <Card showLoader={isVCowLoading || isSwapPending}>
+                <BalanceDisplay hAlign="left">
+                  <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+                  <span>
+                    <i>Total vCOW balance</i>
+                    <b>
+                      <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
+                      <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
+                        <HelpCircle size={14} />
+                      </MouseoverTooltipContent>
+                    </b>
+                  </span>
+                </BalanceDisplay>
+                <ConvertWrapper>
+                  <BalanceDisplay titleSize={18} altColor={true}>
+                    <i>
+                      Vested{' '}
+                      <MouseoverTooltipContent content={tooltipText.vested} wrap>
+                        <HelpCircle size={14} />
+                      </MouseoverTooltipContent>
+                    </i>
+                    <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
+                  </BalanceDisplay>
+                  <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
+                    {renderConvertToCowContent()}
+                  </ButtonPrimary>
+                </ConvertWrapper>
 
-            <CardActions>
-              <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
-                View contract ↗
-              </ExtLink>
-              <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
-                <div title="Click to copy token contract address">Copy contract</div>
-              </CopyHelper>
-            </CardActions>
-          </Card>
-        )}
-
-        <Card>
-          <BalanceDisplay titleSize={26}>
-            <img src={CowImage} alt="Cow Balance" height="80" width="80" />
-            <span>
-              <i>Available COW balance</i>
-              <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
-            </span>
-          </BalanceDisplay>
-          <CardActions>
-            <ExtLink title="View contract" href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}>
-              View contract ↗
-            </ExtLink>
-
-            {library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
-
-            {!library?.provider?.isMetaMask && (
-              <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
-                <div title="Click to copy token contract address">Copy contract</div>
-              </CopyHelper>
+                <CardActions>
+                  <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
+                    View contract ↗
+                  </ExtLink>
+                  <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
+                    <div title="Click to copy token contract address">Copy contract</div>
+                  </CopyHelper>
+                </CardActions>
+              </Card>
             )}
 
-            <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
-          </CardActions>
-        </Card>
+            <Card>
+              <BalanceDisplay titleSize={26}>
+                <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+                <span>
+                  <i>Available COW balance</i>
+                  <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
+                </span>
+              </BalanceDisplay>
+              <CardActions>
+                <ExtLink
+                  title="View contract"
+                  href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}
+                >
+                  View contract ↗
+                </ExtLink>
 
-        <LockedGnoVesting openModal={openModal} closeModal={closeModal} />
+                {library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
 
-        <BannerCard>
-          <BannerCardContent>
-            <b>CoW DAO Governance</b>
-            <small>Use your (v)COW balance to vote on important proposals or participate in forum discussions.</small>
-            <span>
-              {' '}
-              <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
-              <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
-            </span>
-          </BannerCardContent>
-          <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
-        </BannerCard>
+                {!library?.provider?.isMetaMask && (
+                  <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                    <div title="Click to copy token contract address">Copy contract</div>
+                  </CopyHelper>
+                )}
+
+                <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+              </CardActions>
+            </Card>
+
+            <LockedGnoVesting
+              {...lockedGnoBalances}
+              loading={isLockedGnoLoading}
+              openModal={openModal}
+              closeModal={closeModal}
+            />
+
+            <BannerCard>
+              <BannerCardContent>
+                <b>CoW DAO Governance</b>
+                <small>
+                  Use your (v)COW balance to vote on important proposals or participate in forum discussions.
+                </small>
+                <span>
+                  {' '}
+                  <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
+                  <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
+                </span>
+              </BannerCardContent>
+              <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
+            </BannerCard>
+          </>
+        )}
       </CardsWrapper>
 
       <Wrapper>
