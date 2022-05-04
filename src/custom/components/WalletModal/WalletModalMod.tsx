@@ -476,7 +476,26 @@ export default function WalletModal({
 
   return (
     <Modal isOpen={walletModalOpen} onDismiss={toggleWalletModal} minHeight={false} maxHeight={90}>
-      <Wrapper>{getModalContent()}</Wrapper>
+      <Wrapper>
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            padding: 15,
+            // background: 'white',
+            // position: 'fixed',
+            // bottom: -60,
+            // left: -100,
+            flexFlow: 'column nowrap',
+            alignItems: 'start',
+          }}
+        >
+          <small>ACCOUNT: {account}</small>
+          <small>CONNECTOR: {connector?.supportedChainIds}</small>
+          <small>ERROR: {error?.message}</small>
+        </div>
+        {getModalContent()}
+      </Wrapper>
     </Modal>
   )
 }
