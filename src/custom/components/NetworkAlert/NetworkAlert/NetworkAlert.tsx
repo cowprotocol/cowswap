@@ -33,6 +33,12 @@ const BodyText = styled.div`
   justify-content: flex-start;
   margin: 8px;
   font-size: 14px;
+
+  //  mod
+  :hover {
+    text-decoration: underline;
+    color: ${({ theme }) => theme.primary1};
+  }
 `
 const RootWrapper = styled.div`
   position: relative;
@@ -108,7 +114,6 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
 
   // mod
   :hover {
-    text-decoration: underline;
     background-color: ${({ theme }) => theme.bg7};
   }
 `
