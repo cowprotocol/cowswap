@@ -14,7 +14,7 @@ import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
+// import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 import { SupportedChainId } from 'constants/chains'
 import JSBI from 'jsbi'
 
@@ -170,32 +170,32 @@ export function useCowBalance() {
 export function useCombinedBalance() {
   const { chainId, account } = useActiveWeb3React()
   const { total: vCowBalance } = useVCowData()
-  const { allocated, claimed } = useCowFromLockedGnoBalances()
+  // const { allocated, claimed } = useCowFromLockedGnoBalances()
   const cowBalance = useCowBalance()
 
-  const lockedGnoBalance = useMemo(() => {
-    if (!allocated || !claimed) {
-      return
-    }
+  // const lockedGnoBalance = useMemo(() => {
+  //   if (!allocated || !claimed) {
+  //     return
+  //   }
 
-    return JSBI.subtract(allocated.quotient, claimed.quotient)
-  }, [allocated, claimed])
+  //   return JSBI.subtract(allocated.quotient, claimed.quotient)
+  // }, [allocated, claimed])
 
   return useMemo(() => {
     let tmpBalance = JSBI.BigInt(0)
 
-    const isLoading = account && (!vCowBalance || !lockedGnoBalance || !cowBalance) ? true : false
+    const isLoading = account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance) ? true : false
 
     const cow = COW[chainId || SupportedChainId.MAINNET]
 
     if (account) {
       if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
-      if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
+      // if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
       if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
     }
 
     const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
 
     return { balance, isLoading }
-  }, [vCowBalance, lockedGnoBalance, cowBalance, chainId, account])
+  }, [vCowBalance, /* lockedGnoBalance, */ cowBalance, chainId, account])
 }
