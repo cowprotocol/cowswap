@@ -9,8 +9,9 @@ import { isMobile } from 'utils/userAgent'
 // MOD imports
 import { STORAGE_KEY_LAST_PROVIDER, WAITING_TIME_RECONNECT_LAST_PROVIDER } from 'constants/index'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
-// exports from the original file
+// Exports from the original file
 export { useInactiveListener } from '@src/hooks/web3'
 export { default as useActiveWeb3React } from 'hooks/useActiveWeb3React'
 
@@ -19,16 +20,15 @@ enum DefaultProvidersInjected {
   COINBASE_WALLET = WalletProvider.WALLET_LINK,
 }
 
-// TODO: original from uniswap has gnosis-safe connection details, could be re-used
 export function useEagerConnect() {
   const { activate, active, connector } = useWeb3React()
   const [tried, setTried] = useState(false)
 
-  // gnosisSafe.isSafeApp() races a timeout against postMessage, so it delays pageload if we are not in a safe app;
-  // if we are not embedded in an iframe, it is not worth checking
+  // GnosisSafe.isSafeApp() races a timeout against postMessage, so it delays pageload if we are not in a safe app;
+  // If we are not embedded in an iframe, it is not worth checking
   const [triedSafe, setTriedSafe] = useState(!IS_IN_IFRAME)
 
-  // handle setting/removing wallet provider in local storage
+  // Handle setting/removing wallet provider in local storage
   const handleBeforeUnload = useCallback(() => {
     const walletType = getProviderType(connector)
 
@@ -41,7 +41,7 @@ export function useEagerConnect() {
 
   const connectInjected = useCallback(
     (providerName = DefaultProvidersInjected.METAMASK) => {
-      // check if the our application is authorized/connected with Metamask
+      // Check if our application is authorized/connected with Metamask
       injected.isAuthorized().then((isAuthorized) => {
         if (isAuthorized) {
           setDefaultInjected(providerName)
@@ -88,7 +88,7 @@ export function useEagerConnect() {
     if (!active) {
       const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
 
-      // if there is no last saved provider set tried state to true
+      // If there is no last saved provider set tried state to true
       if (!latestProvider) {
         if (!triedSafe) {
           // First try to connect using Gnosis Safe
@@ -130,10 +130,29 @@ export function useEagerConnect() {
   }, [active])
 
   useEffect(() => {
-    // add beforeunload event listener on initial component mount
+    // Check if current connector is of type WalletConnect
+    // Fix for this https://github.com/gnosis/cowswap/issues/1923
+    if (connector instanceof WalletConnectConnector) {
+      const walletConnect = connector.walletConnectProvider.signer.connection.wc
+
+      // Listen on disconnect events directly on WalletConnect client and close the connection
+      // Important in case the connection is closed from the wallet side after the page is refreshed
+      walletConnect.on('disconnect', (error: Error) => {
+        if (error) {
+          console.error('[WalletConnectConnector] Error during disconnect:', error)
+        } else {
+          connector.close()
+          localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+        }
+      })
+    }
+  }, [connector])
+
+  useEffect(() => {
+    // Add beforeunload event listener on initial component mount
     window.addEventListener('beforeunload', handleBeforeUnload)
 
-    // remove beforeunload event listener on component unmount
+    // Remove beforeunload event listener on component unmount
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }

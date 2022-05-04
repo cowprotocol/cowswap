@@ -43,7 +43,7 @@ describe('Swap (mod)', () => {
       // When `.clear() doesn't work, brute force it with the input below.
       // From https://stackoverflow.com/a/65918033/1272513
       .type('{selectall}{backspace}{selectall}{backspace}')
-      .type('0.0', { delay: 400 })
+      .type('0.0')
       .should('have.value', '0.0')
   })
 
@@ -52,7 +52,7 @@ describe('Swap (mod)', () => {
     cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').should('be.visible')
     cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').click({ force: true })
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
-    cy.get('#swap-currency-input .token-amount-input').clear().type('0.5', { delay: 400, force: true })
+    cy.get('#swap-currency-input .token-amount-input').type('{selectall}{backspace}{selectall}{backspace}').type('0.5')
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
     cy.get('#swap-button').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
