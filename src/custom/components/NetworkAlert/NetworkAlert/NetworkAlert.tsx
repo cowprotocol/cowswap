@@ -108,6 +108,7 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
   // mod
   :hover {
     text-decoration: underline;
+    background-color: ${({ theme }) => theme.bg7};
   }
 `
 const Header = styled.h2`
