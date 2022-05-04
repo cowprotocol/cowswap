@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { ArrowUpRight } from 'react-feather'
 import { useDarkModeManager } from '@src/state/user/hooks'
 import styled from 'styled-components/macro'
@@ -11,6 +11,7 @@ import { AutoRow } from 'components/Row'
 
 // mod imports
 import useTheme from 'hooks/useTheme'
+import { useWeb3React } from 'web3-react-core'
 
 const L2Icon = styled.img`
   width: 24px;
@@ -150,12 +151,12 @@ function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertCh
 }
 
 export function NetworkAlert() {
-  const { chainId } = useActiveWeb3React()
+  const { active, chainId } = useWeb3React() // mod
   const [darkMode] = useDarkModeManager()
 
   const theme = useTheme() // mod
 
-  if (!shouldShowAlert(chainId)) {
+  if (!shouldShowAlert(chainId) || !active) {
     return null
   }
 
