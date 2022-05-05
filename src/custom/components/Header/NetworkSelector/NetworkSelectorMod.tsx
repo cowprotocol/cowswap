@@ -30,6 +30,9 @@ import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { useAddPopup, useRemovePopup } from 'state/application/hooks'
 import { useEffect } from 'react'
 import { getExplorerBaseUrl } from 'utils/explorer'
+
+import { useWalletInfo } from 'hooks/useWalletInfo'
+
 import { isMobile } from 'utils/userAgent'
 
 /* const ActiveRowLinkList = styled.div`
@@ -288,8 +291,9 @@ export const getChainNameFromId = (id: string | number) => {
 }
 
 export default function NetworkSelector() {
-  // mod: add account
+  // mod: add account & lib
   const { account, chainId, library } = useActiveWeb3React()
+  const { isSmartContractWallet } = useWalletInfo() // mod
   // mod: refactored inner logic into useChangeNetworks hook
   const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
 
@@ -391,7 +395,7 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain]) */
 
-  if (!chainId || !info || !library || isUnsupportedNetwork) {
+  if (!chainId || !info || isUnsupportedNetwork || isSmartContractWallet) {
     return null
   }
 

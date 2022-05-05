@@ -30,8 +30,6 @@ import PendingView from 'components/WalletModal/PendingView'
 // MOD imports
 import ModalMod from '@src/components/Modal'
 
-import { SupportedChainId } from 'constants/chains'
-
 export const CloseIcon = styled.div`
   position: absolute;
   right: 1rem;
@@ -241,7 +239,9 @@ export default function WalletModal({
           // Fix for this https://github.com/gnosis/cowswap/issues/1930
           if (connector instanceof WalletConnectConnector) {
             const { http, rpc, signer } = connector.walletConnectProvider
-            const chainId = signer.connection.chainId || SupportedChainId.MAINNET
+            const chainId = signer.connection.chainId
+            // don't default to SupportedChainId.Mainnet - throw instead
+            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
             http.connection.url = rpc.custom[chainId]
           }
         })
