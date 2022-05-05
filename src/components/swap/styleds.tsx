@@ -5,8 +5,8 @@ import { MouseEventHandler, ReactNode } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
-import { TYPE } from 'theme'
 
+import { ThemedText } from '../../theme'
 import { AutoColumn } from '../Column'
 import TradePrice from './TradePrice'
 
@@ -30,7 +30,6 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   left: calc(50% - 16px);
   /* transform: rotate(90deg); */
   background-color: ${({ theme }) => theme.bg1};
-  border: 4px solid ${({ theme }) => theme.bg0};
   z-index: 2;
   ${({ clickable }) =>
     clickable
@@ -157,7 +156,7 @@ export const SwapShowAcceptChanges = styled(AutoColumn)`
   margin-top: 8px;
 `
 
-export const TransactionDetailsLabel = styled(TYPE.black)`
+export const TransactionDetailsLabel = styled(ThemedText.Black)`
   border-bottom: 1px solid ${({ theme }) => theme.bg2};
   padding-bottom: 0.5rem;
 `

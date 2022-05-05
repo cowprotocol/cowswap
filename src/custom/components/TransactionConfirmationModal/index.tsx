@@ -4,10 +4,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
-import {
-  CloseIcon,
-  // CustomLightSpinner
-} from 'theme'
+import { CloseIcon } from 'theme'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
@@ -21,7 +18,6 @@ import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
 import { ColumnCenter } from 'components/Column'
-// import { lighten } from 'polished'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'
@@ -359,6 +355,7 @@ export enum OperationType {
   ORDER_SIGN,
   ORDER_CANCEL,
   CONVERT_VCOW,
+  CLAIM_VESTED_COW,
 }
 
 function getWalletNameLabel(walletType: WalletType): string {
@@ -388,7 +385,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Revoking token approval'
     case OperationType.CONVERT_VCOW:
       return 'Converting vCOW to COW'
-
+    case OperationType.CLAIM_VESTED_COW:
+      return 'Claiming vested COW'
     default:
       return 'Almost there!'
   }
@@ -410,6 +408,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`cancellation`
     case OperationType.CONVERT_VCOW:
       return t`vCOW conversion`
+    case OperationType.CLAIM_VESTED_COW:
+      return t`vested COW claim`
   }
 }
 

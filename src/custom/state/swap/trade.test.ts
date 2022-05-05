@@ -1,10 +1,10 @@
 import { parseUnits } from '@ethersproject/units'
 import { DEFAULT_PRECISION, LONG_PRECISION } from 'constants/index'
 import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import { stringToCurrency } from './extension'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { WETH9_EXTENDED as WETH } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
 import Trade, { _constructTradePrice } from './TradeGp'
 import TradeGp from './TradeGp'

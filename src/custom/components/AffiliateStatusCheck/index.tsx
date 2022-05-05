@@ -106,7 +106,6 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    setAffiliateState(null)
     setError('')
 
     if (!account) {

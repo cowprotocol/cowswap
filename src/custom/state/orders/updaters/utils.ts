@@ -53,9 +53,17 @@ type PopupData = {
   popupData?: OrderLogPopupMixData
 }
 
-export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData> {
+export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
   // Get order from API
-  const orderFromApi = await getOrder(chainId, orderFromStore.id)
+  let orderFromApi: OrderMetaData | null = null
+  try {
+    orderFromApi = await getOrder(chainId, orderFromStore.id)
+  } catch (e) {
+    console.debug(
+      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`
+    )
+    return null
+  }
   const status = classifyOrder(orderFromApi)
 
   let popupData = undefined

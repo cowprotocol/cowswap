@@ -145,10 +145,15 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v1
         with:
-          eslint: true
-          prettier: true
           github_token: ${{ secrets.github_token }}
+          eslint: true
+          eslint_args: "-c .eslintrc.json ."
           auto_fix: ${{ github.event_name == 'pull_request' }}
+          prettier: true
+
+      - name: Run eslint
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login != github.repository_owner }}
+        run: yarn eslint .
 
   build:
     name: Build apps
@@ -300,8 +305,12 @@ jobs:
           start: yarn start:default
           wait-on: http://localhost:3000
           wait-on-timeout: 200
+        env:
+          CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
+          CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
+
       # Open tmate ssh connection on failure for debugging
       # Uncomment when needed and push upstream
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        if: ${{ failure() }}

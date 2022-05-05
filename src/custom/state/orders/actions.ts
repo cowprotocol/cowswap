@@ -6,7 +6,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { SerializedToken } from '@src/state/user/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { BigNumberish } from '@ethersproject/bignumber'
-export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+export { OrderKind } from '@cowprotocol/contracts'
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -152,8 +152,9 @@ export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/ca
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 
-export const updateLastCheckedBlock =
-  createAction<{ chainId: ChainId; lastCheckedBlock: number }>('order/updateLastCheckedBlock')
+export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheckedBlock: number }>(
+  'order/updateLastCheckedBlock'
+)
 
 export type SetIsOrderUnfillableParams = {
   id: OrderID

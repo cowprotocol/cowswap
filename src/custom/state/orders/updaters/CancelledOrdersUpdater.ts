@@ -76,8 +76,10 @@ export function CancelledOrdersUpdater(): null {
         // Group resolved promises by status
         // Only pick fulfilled
         const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
-          (acc, { status, popupData }) => {
-            popupData && acc[status].push(popupData)
+          (acc, orderData) => {
+            if (orderData && orderData.popupData) {
+              acc[orderData.status].push(orderData.popupData)
+            }
             return acc
           },
           {

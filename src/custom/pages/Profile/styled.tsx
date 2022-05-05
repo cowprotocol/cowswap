@@ -7,10 +7,13 @@ import { transparentize } from 'polished'
 import { ExternalLink } from 'theme'
 import { ButtonCustom as AddToMetaMask } from 'components/AddToMetamask'
 import { CopyIcon as ClickToCopy } from 'components/Copy'
+import SVG from 'react-inlinesvg'
+import SpinnerLoader from 'components/Loader'
 
 export const Container = styled.div`
   max-width: 910px;
   width: 100%;
+  z-index: 1;
 `
 
 export const Wrapper = styled(Page)`
@@ -243,13 +246,23 @@ export const CardsWrapper = styled.div`
   padding: 0;
   z-index: 2;
 
-  > div:nth-of-type(3n) {
+  > div {
+    flex: 1 1 300px;
+  }
+  > div:last-child:nth-child(odd) {
     flex: 1 1 100%;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
+
+    > div {
+      flex: 1 1 100%;
+    }
+    > div:last-child:nth-child(odd) {
+      flex: 1 1 100%;
+    }
   `};
 `
 
@@ -624,5 +637,25 @@ export const VestingBreakdown = styled.div`
 
   > span:last-of-type > p {
     color: ${({ theme }) => theme.primary1};
+  }
+`
+
+export const BannerCardContent = styled.span`
+  z-index: 2;
+`
+
+export const BannerCardSvg = styled(SVG)`
+  z-index: 1;
+`
+
+export const CardsLoader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+`
+export const CardsSpinner = styled(SpinnerLoader)`
+  & path {
+    stroke: ${({ theme }) => theme.text1};
   }
 `

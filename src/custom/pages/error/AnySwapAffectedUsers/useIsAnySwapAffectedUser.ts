@@ -1,5 +1,5 @@
-import { useMultipleContractSingleData } from 'state/multicall/hooks'
-import { WETH9_EXTENDED as WETH } from 'constants/tokens'
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { Interface } from '@ethersproject/abi'
 import ERC20_ABI from 'abis/erc20.json'
 import { Erc20Interface } from '@src/abis/types/Erc20'
@@ -34,20 +34,16 @@ export default function useIsAnySwapAffectedUser() {
     { blocksPerFetch: BLOCKS_PER_FETCH }
   )
 
-  const isAffected = useMemo(() => {
+  return useMemo(() => {
     // The error affects Mainnet
     if (chainId !== ChainId.MAINNET) {
       return false
     }
 
     // Check if any of the tokens has allowance in the router contract
-    const hasAllowance = result.some(({ result, loading, error, valid }) => {
+    return result.some(({ result, loading, error, valid }) => {
       const allowance = valid && !loading && !error && result ? (result[0] as BigNumber) : undefined
       return allowance ? !allowance.isZero() : false
     })
-
-    return hasAllowance
   }, [chainId, result])
-
-  return isAffected
 }

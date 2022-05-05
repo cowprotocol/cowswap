@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 

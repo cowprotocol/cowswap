@@ -1,10 +1,10 @@
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
-import Vibrant from 'node-vibrant/lib/bundle'
+import uriToHttp from 'lib/utils/uriToHttp'
+import Vibrant from 'node-vibrant/lib/bundle.js'
 import { shade } from 'polished'
 import { useLayoutEffect, useState } from 'react'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
-import uriToHttp from 'utils/uriToHttp'
 import { hex } from 'wcag-contrast'
 
 function URIForEthToken(address: string) {
@@ -43,7 +43,7 @@ async function getColorFromToken(token: Token): Promise<string | null> {
   return null
 }
 
-async function getColorFromUriPath(uri: string): Promise<string | null> {
+export async function getColorFromUriPath(uri: string): Promise<string | null> {
   const formattedPath = uriToHttp(uri)[0]
 
   const palette = await Vibrant.from(formattedPath).getPalette()

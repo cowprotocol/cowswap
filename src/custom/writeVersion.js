@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs')
 const { version: WEB_VERSION } = require('../../package.json')
-const { version: CONTRACTS_VERSION } = require('@gnosis.pm/gp-v2-contracts/package.json')
+const { version: CONTRACTS_VERSION } = require('@cowprotocol/contracts/package.json')
 
 const OUTPUT_FILE = 'public/version.json'
 

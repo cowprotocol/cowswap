@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
-import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind, QuoteQuery } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
   getSigningSchemeApiValue,

@@ -1,7 +1,7 @@
 import { ChainId } from '@uniswap/sdk'
 import { WETH9, Token } from '@uniswap/sdk-core'
 import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rinkeby/constants'
-import { DAI, USDC as USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
+import { DAI, USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
 import { USDC_XDAI, /*USDT_XDAI,*/ WBTC_XDAI, WETH_XDAI, WXDAI } from 'utils/xdai/constants'
 import { SupportedChainId } from 'constants/chains'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
@@ -112,15 +112,6 @@ export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.RINKEBY]: GNO_RINKEBY,
 }
 
-/**
- * USDC token
- */
-export const USDC_BY_CHAIN: Record<SupportedChainId, Token> = {
-  [SupportedChainId.MAINNET]: USDC_MAINNET,
-  [SupportedChainId.XDAI]: USDC_XDAI,
-  [SupportedChainId.RINKEBY]: USDC_RINKEBY,
-}
-
 export const ADDRESS_IMAGE_OVERRIDE = {
   // Rinkeby
   [DAI_RINKEBY.address]: getTrustImage(DAI.address),
@@ -145,4 +136,20 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   // Mainnet
   [V_COW_TOKEN_MAINNET.address]: vCowLogo,
   [COW_TOKEN_MAINNET.address]: cowLogo,
+}
+
+/**
+ * Addresses related to COW vesting for Locked GNO
+ * These are used in src/custom/pages/Profile/LockedGnoVesting hooks and index files
+ */
+export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
+  [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
+  [SupportedChainId.RINKEBY]: '0x5444c4AFb2ec7f7367C10F7732b8558650c5899F',
+  [SupportedChainId.XDAI]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
+}
+
+export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<number, string> = {
+  [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
+  [SupportedChainId.RINKEBY]: '0xeBA8CE5b23c054f1511F8fF5114d848329B8258d',
+  [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
 }

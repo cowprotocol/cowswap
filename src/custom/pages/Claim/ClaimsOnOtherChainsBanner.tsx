@@ -1,12 +1,13 @@
 import { useMemo, Fragment } from 'react'
 import styled from 'styled-components/macro'
-import { NETWORK_LABELS, SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from 'constants/chains'
 import { useClaimState } from 'state/claim/hooks'
 import useChangeNetworks from 'hooks/useChangeNetworks'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from '@src/custom/components/NotificationBanner'
 import { AlertTriangle } from 'react-feather'
 import { ClaimInfo } from 'state/claim/reducer'
+import { CHAIN_INFO } from 'constants/chainInfo'
 
 const ChainSpan = styled.span``
 const Wrapper = styled.div`
@@ -58,9 +59,7 @@ function _shouldNotDisplayBannerForChain(
   const { available, total } = claimInfo
   return (
     // If this is the same network
-    // Important, the double equal comparison is intentional!
-    // Don't be dumb like me and change to triple equal and spend awhile figuring out why it doesn't work...
-    checkedChain == chainId ||
+    Number(checkedChain) === chainId ||
     // If total claims is 0
     total === 0 ||
     // If there are no available
@@ -70,7 +69,7 @@ function _shouldNotDisplayBannerForChain(
 
 function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
   const { account, library, chainId } = useActiveWeb3React()
-  const { callback } = useChangeNetworks({ account, library, chainId })
+  const { handleChainSwitch } = useChangeNetworks({ library, chainId })
 
   const { claimInfoPerAccount, activeClaimAccount } = useClaimState()
 
@@ -103,12 +102,13 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
         <div>This account has available claims on</div>
         <div>
           {chainsWithClaims.map((chainId, index, array) => {
-            const changeNetworksCallback = () => callback(chainId)
+            const changeNetworksCallback = () =>
+              handleChainSwitch(chainId, { skipToggle: true, skipWalletToggle: false }) // true to avoid opening the dropdown
             const isLastInMultiple = index === array.length - 1 && array.length > 1
             return (
               <Fragment key={chainId}>
                 {isLastInMultiple && ' and'}
-                <ChainSpan onClick={changeNetworksCallback}>{NETWORK_LABELS[chainId]}</ChainSpan>
+                <ChainSpan onClick={changeNetworksCallback}>{CHAIN_INFO[chainId].label}</ChainSpan>
               </Fragment>
             )
           })}

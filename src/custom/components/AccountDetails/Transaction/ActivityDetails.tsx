@@ -86,7 +86,7 @@ function GnosisSafeTxDetails(props: {
     signaturesMessage = <span>Expired order</span>
   } else if (alreadySigned) {
     signaturesMessage = <span>Enough signatures</span>
-  } else if (numConfirmations == 0) {
+  } else if (numConfirmations === 0) {
     signaturesMessage = (
       <>
         <span>
@@ -232,7 +232,7 @@ export function ActivityDetails(props: {
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
 
-  if (enhancedTransaction?.swapVCow) {
+  if (enhancedTransaction?.swapVCow || enhancedTransaction?.swapLockedGNOvCow) {
     inputToken = V_COW[chainId]
     outputToken = COW[chainId]
   }

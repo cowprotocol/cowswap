@@ -4,9 +4,10 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
 import { FeeQuoteParams as FeeQuoteParamsFull } from 'utils/price'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
-import { useSwapState, tryParseAmount } from 'state/swap/hooks'
+import { useSwapState } from 'state/swap/hooks'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { Field } from 'state/swap/actions'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 
@@ -163,7 +164,10 @@ export default function FeesUpdater(): null {
 
     // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
-    const amount = tryParseAmount(typedValue, (kind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined)
+    const amount = tryParseCurrencyAmount(
+      typedValue,
+      (kind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined
+    )
     if (!amount) return
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS

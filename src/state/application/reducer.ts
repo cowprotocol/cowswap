@@ -1,14 +1,27 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 
-// export type PopupContent = {
-//   txn: {
-//     hash: string
-//   }
-// }
+import { SupportedChainId } from 'constants/chains'
+import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro' // mod
+
+type BasePopupContent =
+  //   | {
+  //       txn: {
+  //         hash: string
+  //       }
+  //     }
+  //   | {
+  {
+    failedSwitchNetwork: SupportedChainId
+    // mod: unsupported network
+    unsupportedNetwork?: boolean
+  }
 
 // MOD: Modified PopupContent. The mod happened directly in the src file, to avoid redefining the state/hoos/etc
-export type PopupContent = TxPopupContent | MetaTxPopupContent
+export type PopupContent = (TxPopupContent | MetaTxPopupContent | BasePopupContent) & {
+  // mod: custom styles
+  styles?: FlattenInterpolation<ThemeProps<DefaultTheme>>
+}
 
 export type TxPopupContent = {
   txn: {
@@ -38,10 +51,10 @@ export enum ApplicationModal {
   POOL_OVERVIEW_OPTIONS,
   NETWORK_SELECTOR,
   PRIVACY_POLICY,
+  ARBITRUM_OPTIONS,
   // -----------------      MOD: CowSwap specific modals      --------------------
   TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
-  ARBITRUM_OPTIONS,
   COW_SUBSIDY,
   // ------------------------------------------------------------------------------
 }
@@ -49,19 +62,13 @@ export enum ApplicationModal {
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
 export interface ApplicationState {
-  readonly blockNumber: { readonly [chainId: number]: number }
-  readonly chainConnectivityWarning: boolean
   readonly chainId: number | null
-  readonly implements3085: boolean
   readonly openModal: ApplicationModal | null
   readonly popupList: PopupList
 }
 
 const initialState: ApplicationState = {
-  blockNumber: {},
-  chainConnectivityWarning: false,
   chainId: null,
-  implements3085: false,
   openModal: null,
   popupList: [],
 }
@@ -73,14 +80,6 @@ const applicationSlice = createSlice({
     updateChainId(state, action) {
       const { chainId } = action.payload
       state.chainId = chainId
-    },
-    updateBlockNumber(state, action) {
-      const { chainId, blockNumber } = action.payload
-      if (typeof state.blockNumber[chainId] !== 'number') {
-        state.blockNumber[chainId] = blockNumber
-      } else {
-        state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
-      }
     },
     setOpenModal(state, action) {
       state.openModal = action.payload
@@ -102,22 +101,8 @@ const applicationSlice = createSlice({
         }
       })
     },
-    setImplements3085(state, { payload: { implements3085 } }) {
-      state.implements3085 = implements3085
-    },
-    setChainConnectivityWarning(state, { payload: { warn } }) {
-      state.chainConnectivityWarning = warn
-    },
   },
 })
 
-export const {
-  updateChainId,
-  updateBlockNumber,
-  setOpenModal,
-  addPopup,
-  removePopup,
-  setImplements3085,
-  setChainConnectivityWarning,
-} = applicationSlice.actions
+export const { updateChainId, setOpenModal, addPopup, removePopup } = applicationSlice.actions
 export default applicationSlice.reducer

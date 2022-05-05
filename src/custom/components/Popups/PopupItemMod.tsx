@@ -2,11 +2,14 @@ import { useCallback, useContext, useEffect } from 'react'
 import { X } from 'react-feather'
 import { animated } from 'react-spring'
 import { useSpring } from 'react-spring/web'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled, { FlattenInterpolation, ThemeContext, ThemeProps, DefaultTheme } from 'styled-components/macro'
 
 import { useRemovePopup } from 'state/application/hooks'
 import { PopupContent } from 'state/application/reducer'
+import FailedNetworkSwitchPopup from './FailedNetworkSwitchPopupMod'
 import TransactionPopup from './TransactionPopupMod'
+
+// MOD imports
 import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
 
 export const StyledClose = styled(X)`
@@ -18,10 +21,10 @@ export const StyledClose = styled(X)`
     cursor: pointer;
   }
 `
-export const Popup = styled.div`
+export const Popup = styled.div<{ css?: FlattenInterpolation<ThemeProps<DefaultTheme>> }>`
   display: inline-block;
   width: 100%;
-  padding: 1em;
+  //padding: 1em;
   background-color: ${({ theme }) => theme.bg1};
   position: relative;
   border-radius: 10px;
@@ -35,6 +38,8 @@ export const Popup = styled.div`
       margin-right: 20px;
     }
   `}
+
+  ${({ css }) => css && css}
 `
 export const Fader = styled.div`
   position: absolute;
@@ -51,7 +56,7 @@ export default function PopupItem({
   removeAfterMs,
   content,
   popKey,
-  className,
+  className, // mod
 }: {
   removeAfterMs: number | null
   content: PopupContent
@@ -74,22 +79,32 @@ export default function PopupItem({
 
   const theme = useContext(ThemeContext)
 
+  // mod
+  const isTxn = 'txn' in content
+  const isListUpdate = 'listUpdate' in content
+  const isUnsupportedNetwork = 'unsupportedNetwork' in content
+  const isMetaTxn = 'metatxn' in content
+
   let popupContent
-  if ('txn' in content) {
+  if (isTxn) {
     const {
       txn: { hash, success, summary },
     } = content
     popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
-  } else if ('listUpdate' in content) {
+  } else if (isListUpdate) {
     const {
       listUpdate: { listUrl, oldList, newList, auto },
     } = content
     popupContent = <ListUpdatePopup popKey={popKey} listUrl={listUrl} oldList={oldList} newList={newList} auto={auto} />
-  } else if ('metatxn' in content) {
+  } else if (isMetaTxn) {
     const {
       metatxn: { id, success, summary },
     } = content
     popupContent = <TransactionPopup hash={id} success={success} summary={summary} />
+  } else if (isUnsupportedNetwork) {
+    popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} isUnsupportedNetwork />
+  } else if ('failedSwitchNetwork' in content) {
+    popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} />
   }
 
   const faderStyle = useSpring({
@@ -99,8 +114,8 @@ export default function PopupItem({
   })
 
   return (
-    <Popup className={className}>
-      <StyledClose color={theme.text2} onClick={removeThisPopup} />
+    <Popup className={className} css={content.styles}>
+      <StyledClose stroke={isUnsupportedNetwork ? theme.black : theme.text2} onClick={removeThisPopup} />
       {popupContent}
       {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
     </Popup>

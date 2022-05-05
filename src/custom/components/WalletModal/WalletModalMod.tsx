@@ -1,12 +1,15 @@
 import { Trans } from '@lingui/macro'
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import { AutoRow } from 'components/Row'
+import { AutoColumn } from 'components/Column'
+// import { PrivacyPolicy } from 'components/PrivacyPolicy'
+import { /*Row,*/ AutoRow /*, RowBetween*/ } from 'components/Row'
 // import { useWalletConnectMonitoringEventCallback } from 'hooks/useMonitoringEventCallback'
 import { useEffect, useState } from 'react'
+// import { ArrowLeft, ArrowRight, Info } from 'react-feather'
 import ReactGA from 'react-ga'
 import styled from 'styled-components/macro'
+import { AbstractConnector } from 'web3-react-abstract-connector'
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
+import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 
 import MetamaskIcon from 'assets/images/metamask.png'
 import { ReactComponent as Close } from 'assets/images/x.svg'
@@ -16,16 +19,16 @@ import { SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import {
-  // ExternalLink,
-  TYPE,
-} from 'theme'
+import { /*ExternalLink,*/ ThemedText } from 'theme'
 import { isMobile } from 'react-device-detect'
 // import AccountDetails from 'components/AccountDetails'
-import ModalMod from '@src/components/Modal'
+import { /*Card,*/ LightCard } from 'components/Card'
+// import Modal from '../Modal'
 import Option from 'components/WalletModal/Option'
 import PendingView from 'components/WalletModal/PendingView'
-import { LightCard } from 'components/Card'
+
+// MOD imports
+import ModalMod from '@src/components/Modal'
 
 export const CloseIcon = styled.div`
   position: absolute;
@@ -111,11 +114,22 @@ export const HoverText = styled.div`
   }
 `
 
+/* const LinkCard = styled(Card)`
+  background-color: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text3};
+
+  :hover {
+    cursor: pointer;
+    filter: brightness(0.9);
+  }
+` */
+
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   OPTIONS_SECONDARY: 'options_secondary',
   ACCOUNT: 'account',
   PENDING: 'pending',
+  LEGAL: 'legal',
 }
 
 // MOD
@@ -145,6 +159,7 @@ export default function WalletModal({
   const { active, account, connector, activate, error } = useWeb3React()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+  // const previousWalletView = usePrevious(walletView)
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
 
@@ -209,7 +224,7 @@ export default function WalletModal({
     setWalletView(WALLET_VIEWS.PENDING)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+    if (connector instanceof WalletConnectConnector) {
       connector.walletConnectProvider = undefined
     }
 
@@ -219,6 +234,17 @@ export default function WalletModal({
         //   const walletAddress = await connector.getAccount()
         //   logMonitoringEvent({ walletAddress })
         // })
+        .then(() => {
+          // Manually set the WalletConnectConnector http.connection.url to currently connected network url
+          // Fix for this https://github.com/gnosis/cowswap/issues/1930
+          if (connector instanceof WalletConnectConnector) {
+            const { http, rpc, signer } = connector.walletConnectProvider
+            const chainId = signer.connection.chainId
+            // don't default to SupportedChainId.Mainnet - throw instead
+            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
+            http.connection.url = rpc.custom[chainId]
+          }
+        })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
             activate(connector) // a little janky...can't use setError because the connector isn't set
@@ -334,7 +360,10 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <h5>
-                <Trans>Please connect to the appropriate network.</Trans>
+                <Trans>
+                  App/wallet network mismatch. Please connect to a supported network in your wallet: Ethereum Mainnet or
+                  Gnosis Chain.
+                </Trans>
               </h5>
             ) : (
               <Trans>Error connecting. Try refreshing the page.</Trans>
@@ -343,17 +372,41 @@ export default function WalletModal({
         </UpperSection>
       )
     }
-    // if (account && walletView === WALLET_VIEWS.ACCOUNT) {
-    //   return (
-    //     <AccountDetails
-    //       toggleWalletModal={toggleWalletModal}
-    //       pendingTransactions={pendingTransactions}
-    //       confirmedTransactions={confirmedTransactions}
-    //       ENSName={ENSName}
-    //       openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
-    //     />
-    //   )
-    // }
+    /* if (walletView === WALLET_VIEWS.LEGAL) {
+      return (
+        <UpperSection>
+          <HeaderRow>
+            <HoverText
+              onClick={() => {
+                setWalletView(
+                  (previousWalletView === WALLET_VIEWS.LEGAL ? WALLET_VIEWS.ACCOUNT : previousWalletView) ??
+                    WALLET_VIEWS.ACCOUNT
+                )
+              }}
+            >
+              <ArrowLeft />
+            </HoverText>
+            <Row justify="center">
+              <ThemedText.MediumHeader>
+                <Trans>Legal & Privacy</Trans>
+              </ThemedText.MediumHeader>
+            </Row>
+          </HeaderRow>
+          <PrivacyPolicy />
+        </UpperSection>
+      )
+    }
+    if (account && walletView === WALLET_VIEWS.ACCOUNT) {
+      return (
+        <AccountDetails
+          toggleWalletModal={toggleWalletModal}
+          pendingTransactions={pendingTransactions}
+          confirmedTransactions={confirmedTransactions}
+          ENSName={ENSName}
+          openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+        />
+      )
+    } */
     return (
       <UpperSection>
         <CloseIcon onClick={toggleWalletModal}>
@@ -379,31 +432,43 @@ export default function WalletModal({
         )}
 
         <ContentWrapper>
-          <LightCard style={{ marginBottom: '16px' }}>
-            <AutoRow style={{ flexWrap: 'nowrap' }}>
-              <TYPE.main fontSize={14}>
-                {/* <Trans>
+          <AutoColumn gap="16px">
+            <LightCard style={{ marginBottom: '16px' }}>
+              <AutoRow style={{ flexWrap: 'nowrap' }}>
+                <ThemedText.Main fontSize={14}>
+                  {/* <Trans>
                   By connecting a wallet, you agree to Uniswap Labs’{' '}
                   <ExternalLink href="https://uniswap.org/terms-of-service/">Terms of Service</ExternalLink> and
                   acknowledge that you have read and understand the{' '}
                   <ExternalLink href="https://uniswap.org/disclaimer/">Uniswap protocol disclaimer</ExternalLink>.
                 </Trans> */}
-                <CustomTerms />
-              </TYPE.main>
-            </AutoRow>
-          </LightCard>
-
-          {walletView === WALLET_VIEWS.PENDING ? (
-            <PendingView
-              connector={pendingWallet}
-              error={pendingError}
-              setPendingError={setPendingError}
-              tryActivation={tryActivation}
-            />
-          ) : (
-            <OptionGrid>{getOptions()}</OptionGrid>
-          )}
-          {walletView !== WALLET_VIEWS.PENDING && <NewToEthereum />}
+                  <CustomTerms />
+                </ThemedText.Main>
+              </AutoRow>
+            </LightCard>
+            {walletView === WALLET_VIEWS.PENDING ? (
+              <PendingView
+                connector={pendingWallet}
+                error={pendingError}
+                setPendingError={setPendingError}
+                tryActivation={tryActivation}
+              />
+            ) : (
+              <OptionGrid>{getOptions()}</OptionGrid>
+            )}
+            {/* <LinkCard padding=".5rem" $borderRadius=".75rem" onClick={() => setWalletView(WALLET_VIEWS.LEGAL)}>
+              <RowBetween>
+                <AutoRow gap="4px">
+                  <Info size={20} />
+                  <ThemedText.Label fontSize={14}>
+                    <Trans>How this app uses APIs</Trans>
+                  </ThemedText.Label>
+                </AutoRow>
+                <ArrowRight size={16} />
+              </RowBetween>
+            </LinkCard> */}
+            {walletView !== WALLET_VIEWS.PENDING && <NewToEthereum />}
+          </AutoColumn>
         </ContentWrapper>
       </UpperSection>
     )

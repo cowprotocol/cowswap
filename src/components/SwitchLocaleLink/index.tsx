@@ -3,11 +3,11 @@ import { useLocationLinkProps } from 'hooks/useLocationLinkProps'
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 
-import { DEFAULT_LOCALE, LOCALE_LABEL, SupportedLocale } from '../../constants/locales'
+import { DEFAULT_LOCALE, LOCALE_LABEL, SupportedLocale } from 'constants/locales'
 import { navigatorLocale, useActiveLocale } from '../../hooks/useActiveLocale'
-import { StyledInternalLink, TYPE } from '../../theme'
+import { StyledInternalLink, ThemedText } from '../../theme'
 
-const Container = styled(TYPE.small)`
+const Container = styled(ThemedText.Small)`
   opacity: 0.6;
   :hover {
     opacity: 1;

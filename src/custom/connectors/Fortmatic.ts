@@ -1,4 +1,6 @@
-import { FortmaticConnector as FortmaticConnectorCore } from '@web3-react/fortmatic-connector'
+import { FortmaticConnector as FortmaticConnectorCore } from 'web3-react-fortmatic-connector'
+
+// MOD imports
 import { isProd, isBarn } from 'utils/environments'
 import { SupportedChainId } from 'constants/chains'
 
