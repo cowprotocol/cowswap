@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { timestamp } from '@gnosis.pm/gp-v2-contracts'
+import { timestamp } from '@cowprotocol/contracts'
 
 import { useActiveWeb3React } from 'hooks/web3'
 

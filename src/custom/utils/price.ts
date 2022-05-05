@@ -16,7 +16,7 @@ import {
 } from 'api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
-import { GetQuoteResponse, OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { GetQuoteResponse, OrderKind } from '@cowprotocol/contracts'
 import { ChainId } from 'state/lists/actions'
 import { toErc20Address } from 'utils/tokens'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
@@ -45,7 +45,7 @@ export interface PriceInformation {
   amount: string | null
 }
 
-// GetQuoteResponse from @gnosis.pm/gp-v2-contracts types Timestamp and BigNumberish
+// GetQuoteResponse from @cowprotocol/contracts types Timestamp and BigNumberish
 // do not play well with our existing methods, using string instead
 export type SimpleGetQuoteResponse = Pick<GetQuoteResponse, 'from'> & {
   // We need to map BigNumberIsh and Timestamp to what we use: string

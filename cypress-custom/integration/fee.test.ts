@@ -1,5 +1,5 @@
 import { WETH9 as WETH } from '@uniswap/sdk-core'
-import { GetQuoteResponse } from '@gnosis.pm/gp-v2-contracts'
+import { GetQuoteResponse } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'

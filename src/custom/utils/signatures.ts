@@ -6,10 +6,10 @@ import {
   Order,
   OrderCancellation as OrderCancellationGp,
   Signature,
-  TypedDataV3Signer,
+  TypedDataVersionedSigner,
   IntChainIdTypedDataV4Signer,
   SigningScheme,
-} from '@gnosis.pm/gp-v2-contracts'
+} from '@cowprotocol/contracts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
@@ -137,7 +137,7 @@ async function _signPayload(
   payload: any,
   signFn: typeof _signOrder | typeof _signOrderCancellation,
   signer: Signer,
-  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
+  signingMethod: 'default' | 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
 ): Promise<SigningResult> {
   const signingScheme = signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712
   let signature: Signature | null = null
@@ -145,8 +145,11 @@ async function _signPayload(
   let _signer
   try {
     switch (signingMethod) {
+      case 'default':
+        _signer = new TypedDataVersionedSigner(signer)
+        break
       case 'v3':
-        _signer = new TypedDataV3Signer(signer)
+        _signer = new TypedDataVersionedSigner(signer, 'v3')
         break
       case 'int_v4':
         _signer = new IntChainIdTypedDataV4Signer(signer)
@@ -173,6 +176,8 @@ async function _signPayload(
       // with other methods...
       switch (signingMethod) {
         case 'v4':
+          return _signPayload(payload, signFn, signer, 'default')
+        case 'default':
           return _signPayload(payload, signFn, signer, 'v3')
         case 'v3':
           return _signPayload(payload, signFn, signer, 'eth_sign')
@@ -180,7 +185,7 @@ async function _signPayload(
           throw e
       }
     } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
-      // Metamask now enforces chainId to be an integer
+      // Metamask nosw enforces chainId to be an integer
       return _signPayload(payload, signFn, signer, 'int_v4')
     } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
       // We tried to sign order the nice way.

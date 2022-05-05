@@ -1,6 +1,6 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 
-import { GPv2Settlement, GPv2VaultRelayer } from '@gnosis.pm/gp-v2-contracts/networks.json'
+import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
 import { SupportedChainId as ChainId } from 'constants/chains'

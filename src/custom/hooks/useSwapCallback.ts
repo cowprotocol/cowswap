@@ -13,7 +13,7 @@ import useENS from '@src/hooks/useENS'
 // import useTransactionDeadline from './useTransactionDeadline'
 
 // MOD
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { AddOrderCallback, AddUnserialisedPendingOrderParams, useAddPendingOrder } from 'state/orders/hooks'
 import { useWrapEther, Wrap } from 'hooks/useWrapEther'

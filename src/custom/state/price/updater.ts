@@ -4,7 +4,7 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
 import { FeeQuoteParams as FeeQuoteParamsFull } from 'utils/price'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 import { useSwapState } from 'state/swap/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
