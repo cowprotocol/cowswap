@@ -40,8 +40,13 @@ async function checkIsSmartContractWallet(
     return false
   }
 
-  const code = await web3.getCode(address)
-  return code !== '0x'
+  try {
+    const code = await web3.getCode(address)
+    return code !== '0x'
+  } catch (e) {
+    console.debug(`checkIsSmartContractWallet: failed to check address ${address}`, e.message)
+    return false
+  }
 }
 
 function checkIsSupportedWallet(params: {
