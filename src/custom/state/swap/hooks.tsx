@@ -335,7 +335,7 @@ export function useDerivedSwapInfo(): /* {
     const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)] // mod
 
     // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
-    if (!balanceIn) {
+    if (!balanceIn && inputCurrency) {
       inputError = <Trans>Couldn&apos;t load balances</Trans>
     }
 
@@ -344,7 +344,7 @@ export function useDerivedSwapInfo(): /* {
     }
 
     return inputError
-  }, [account, allowedSlippage, currencies, currencyBalances, parsedAmount, to, v2Trade]) // mod
+  }, [account, allowedSlippage, currencies, currencyBalances, inputCurrency, parsedAmount, to, v2Trade]) // mod
 
   return useMemo(
     () => ({
