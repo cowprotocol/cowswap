@@ -185,7 +185,7 @@ async function _signPayload(
           throw e
       }
     } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
-      // Metamask nosw enforces chainId to be an integer
+      // Metamask now enforces chainId to be an integer
       return _signPayload(payload, signFn, signer, 'int_v4')
     } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
       // We tried to sign order the nice way.
