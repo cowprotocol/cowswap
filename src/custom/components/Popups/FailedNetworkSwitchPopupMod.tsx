@@ -29,7 +29,7 @@ export default function FailedNetworkSwitchPopup({
         <AlertCircle color={isUnsupportedNetwork ? theme.red3 : theme.red1} size={24} />
       </div>
       <AutoColumn gap="8px">
-        <ThemedText.Body fontWeight={500} color={theme.text1}>
+        <ThemedText.Body fontWeight={500} color={isUnsupportedNetwork ? theme.text2 : 'initial'}>
           <Trans>
             {isUnsupportedNetwork
               ? `Please connect your wallet to one of the supported networks: Ethereum Mainnet or Gnosis Chain.`
