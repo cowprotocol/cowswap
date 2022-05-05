@@ -1,6 +1,6 @@
 import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
