@@ -129,8 +129,12 @@ export default function Swap({
 
   // dismiss warning if all imported tokens are in active lists
   const defaultTokens = useAllTokens()
-  const importTokensNotInDefault = useMemo(
-    () =>
+  const importTokensNotInDefault = useMemo(() => {
+    // We should return an empty array until the defaultTokens are loaded
+    // Otherwise WETH will be in urlLoadedTokens but defaultTokens will be empty
+    // Fix for https://github.com/cowprotocol/cowswap/issues/534
+    if (!Object.keys(defaultTokens).length) return []
+    return (
       urlLoadedTokens &&
       urlLoadedTokens
         .filter((token: Token) => {
@@ -144,9 +148,9 @@ export default function Swap({
             const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][supported]
             return shorthandTokenAddress && shorthandTokenAddress === token.address
           })
-        }),
-    [chainId, defaultTokens, urlLoadedTokens]
-  )
+        })
+    )
+  }, [chainId, defaultTokens, urlLoadedTokens])
 
   const theme = useContext(ThemeContext)
 
