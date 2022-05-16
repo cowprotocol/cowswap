@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { formatSmart as _formatSmart } from '@gnosis.pm/dex-js'
+import { formatSmart as _formatSmart } from '@cowprotocol/cow-js'
 import { Currency, CurrencyAmount, Percent, Fraction } from '@uniswap/sdk-core'
 import {
   DEFAULT_DECIMALS,
