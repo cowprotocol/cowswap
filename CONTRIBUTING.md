@@ -25,7 +25,7 @@ Thank you for your interest in contributing to the CowSwap interface! 🐮
 ## Finding a first issue
 
 Start with issues with the label
-[`good first issue`](https://github.com/Gnosis/cowswap/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
+[`Help wanted`](https://github.com/cowprotocol/cowswap/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help_Wanted%22+).
 
 ## Pull requests
 
