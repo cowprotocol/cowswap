@@ -620,7 +620,7 @@ function _getClaimManyArgs({
   nativeTokenPrice,
 }: GetClaimManyArgsParams): GetClaimManyArgsResult {
   // Arrays are named according to contract parameters
-  // For more info, check https://github.com/gnosis/gp-v2-token/blob/main/src/contracts/mixins/MerkleDistributor.sol#L123
+  // For more info, check https://github.com/cowprotocol/token/blob/main/src/contracts/mixins/MerkleDistributor.sol#L123
   const indices: ClaimManyFnArgs[0] = []
   const claimTypes: ClaimManyFnArgs[1] = []
   const claimants: ClaimManyFnArgs[2] = []
@@ -731,7 +731,7 @@ function _hasNoInputOrInputIsGreaterThanClaimAmount(
  *
  * The calculation is done based on the formula:
  * vCowAmount * wethPrice / 10^18
- * See https://github.com/gnosis/gp-v2-token/blob/main/src/contracts/mixins/Claiming.sol#L314-L320
+ * See https://github.com/cowprotocol/token/blob/main/src/contracts/mixins/Claiming.sol#L314-L320
  */
 function _getClaimValue(claim: UserClaimData, vCowAmount: string, nativeTokenPrice: string): string {
   if (claim.type !== ClaimType.UserOption) {
