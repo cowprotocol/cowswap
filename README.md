@@ -20,7 +20,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 Please see the:
 
 - [CoW Protocol: Smart contracts](https://github.com/cowprotocol/contracts)
-- [CoW Protocol: Services](https://github.com/gnosis/gp-v2-services)
+- [CoW Protocol: Services](https://github.com/cowprotocol/services)
 
 You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
 
@@ -137,7 +137,7 @@ REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
 Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
-The reference implementation of th API is [gp-v2-services](https://github.com/gnosis/gp-v2-services).
+The reference implementation of th API is [gp-v2-services](https://github.com/cowprotocol/services).
 
 The API endpoint is configured using the environment variable ` {XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
 
