@@ -19,7 +19,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 
 Please see the:
 
-- [CoW Protocol: Smart contracts](https://github.com/gnosis/gp-v2-contracts)
+- [CoW Protocol: Smart contracts](https://github.com/cowprotocol/contracts)
 - [CoW Protocol: Services](https://github.com/gnosis/gp-v2-services)
 
 You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
