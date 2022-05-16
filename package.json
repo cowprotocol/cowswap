@@ -1,5 +1,5 @@
 {
-  "name": "@gnosis/cowswap",
+  "name": "@cowprotocol/cowswap",
   "description": "CowSwap - CoW Protocol",
   "homepage": ".",
   "files": [
@@ -210,7 +210,7 @@
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
     "@gnosis.pm/cow-runner-game": "^0.2.9",
-    "@gnosis.pm/dex-js": "^0.14.0",
+    "@cowprotocol/cow-js": "^0.14.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.0",
     "@gnosis.pm/safe-service-client": "^0.1.1",
     "@lingui/cli": "^3.9.0",

@@ -1165,6 +1165,14 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.1.3-RC.0.tgz#23c400a7cbf50c1c2e7dca317a0b2940975b6867"
   integrity sha512-WwPvBKbBvRIj/W3I1/8yJPh0DLMx8EoDw/MTpF07rDq2W0QQ1r9GXq+GWIclt5Rcw7ZGwZMRlnM3XOYEWA+qpg==
 
+"@cowprotocol/cow-js@^0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-js/-/cow-js-0.14.1.tgz#7dd370cb1e3d6dd4183b5041953cb1f48bbf1b3b"
+  integrity sha512-z2WX/wH6wsa79XDSeQ2mDUYtP3ojNUuLMfLFfZYauPBh0JxQF7GcJzQGRvFpT/gPkbAFbMlrKDrtwkaWQqlgVA==
+  dependencies:
+    "@gnosis.pm/dex-contracts" "^0.5.0"
+    bignumber.js "^9.0.2"
+
 "@craco/craco@^5.7.0":
   version "5.9.0"
   resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-5.9.0.tgz#dcd34330b558596a4841374743071b7fa041dce9"
@@ -2138,14 +2146,6 @@
   integrity sha512-b3MgplVbd+6D3u9O0dVNU65ZYrD/FxSBv+X52ILHq9fTAMh5zGNfkUIYEJtc7QTrULhnmEUZJ3DO7sGh+SPReA==
   dependencies:
     bn.js "^5.1.3"
-
-"@gnosis.pm/dex-js@^0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/dex-js/-/dex-js-0.14.0.tgz#07939cc1f92886f1c5bdf49eb1a2042a75592c5b"
-  integrity sha512-0L7b2ZztdAYVzwVyxhHjreV+lqdLuXWEKphUGzoMbHeDuigJfQnd1CNCWm2hY+8KBA/Q68F1GZwMOvoCEC2s7A==
-  dependencies:
-    "@gnosis.pm/dex-contracts" "^0.5.0"
-    bignumber.js "^9.0.2"
 
 "@gnosis.pm/safe-apps-provider@0.9.3":
   version "0.9.3"
