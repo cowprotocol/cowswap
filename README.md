@@ -8,7 +8,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 - 🐮**Official Website**🐮: <https://cowswap.exchange/>
 
   - ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
-  - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/gnosis/gp-swap-ui/releases) section.
+  - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/cowprotocol/cowswap/releases) section.
 
 - Protocol: <https://cow.fi>
 - Docs: <https://docs.cow.fi>
