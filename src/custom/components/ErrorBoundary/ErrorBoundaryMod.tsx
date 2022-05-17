@@ -16,6 +16,7 @@ import CowError from 'assets/cow-swap/CowError.png'
 import { UniIcon, LogoImage } from '../Header'
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
+import { DISCORD_LINK, CODE_LINK } from 'constants/index'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -197,9 +198,12 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
                 <LinkWrapper>
                   <ExternalLink
                     id="create-github-issue-link"
-                    href={`https://github.com/gnosis/cowswap/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                      `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
-                    )}`}
+                    href={
+                      CODE_LINK +
+                      `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
+                        `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
+                      )}`
+                    }
                   >
                     <ThemedText.Link fontSize={16}>
                       <Trans>Create an issue on GitHub</Trans>
@@ -208,7 +212,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
                   </ExternalLink>
                 </LinkWrapper>
                 <LinkWrapper>
-                  <ExternalLink id="get-support-on-discord" href="https://chat.cowswap.exchange/">
+                  <ExternalLink id="get-support-on-discord" href={DISCORD_LINK}>
                     <ThemedText.Link fontSize={16}>
                       <Trans>Get support on Discord</Trans>
                       <span>↗</span>

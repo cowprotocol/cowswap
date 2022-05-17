@@ -94,9 +94,12 @@ export const WETH_LOGO_URI =
 export const XDAI_LOGO_URI =
   'https://raw.githubusercontent.com/1Hive/default-token-list/master/src/assets/xdai/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d/logo.png'
 
+const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
+export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
+export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
+
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
-export const CODE_LINK = 'https://github.com/cowprotocol/cowswap'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
 export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
 export const TWITTER_LINK = 'https://twitter.com/mevprotection'
