@@ -1,32 +1,25 @@
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/gnosis/gp-swap-ui)
-
-<p align="center">
-  <img height="120" src="https://bafybeig5h43icn326c45qmwl4mpimskfaqa3o2pnkuht5pqb6gfcfjzlxi.ipfs.dweb.link/">
-</p>
-
-[![Lint](https://github.com/gnosis/dex-swap/workflows/Lint/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ALint)
-[![Tests](https://github.com/gnosis/dex-swap/workflows/Tests/badge.svg)](https://github.com/gnosis/dex-swap/actions?query=workflow%3ATests)
+[![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
-CowSwap is the first trading interface built on top of CoW Protocol v2.
+CowSwap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
 - 🐮**Official Website**🐮: <https://cowswap.exchange/>
 
   - ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
-  - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/gnosis/gp-swap-ui/releases) section.
+  - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/cowprotocol/cowswap/releases) section.
 
+- Protocol: <https://cow.fi>
 - Docs: <https://docs.cow.fi>
 - Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
-- Twitter: [@gnosisPM](https://twitter.com/gnosisPM)
-- Reddit: [/r/gnosisPM](https://www.reddit.com/r/gnosisPM)
+- Twitter: [@MEVprotection](https://twitter.com/MEVprotection)
 - Discord: <https://discord.com/invite/cowprotocol>
 
 Please see the:
 
-- [CoW Protocol: Smart contracts](https://github.com/gnosis/gp-v2-contracts)
-- [CoW Protocol: Services](https://github.com/gnosis/gp-v2-services)
+- [CoW Protocol: Smart contracts](https://github.com/cowprotocol/contracts)
+- [CoW Protocol: Services](https://github.com/cowprotocol/services)
 
 You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
 
@@ -143,7 +136,7 @@ REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
 Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
-The reference implementation of th API is [gp-v2-services](https://github.com/gnosis/gp-v2-services).
+The reference implementation of th API is [gp-v2-services](https://github.com/cowprotocol/services).
 
 The API endpoint is configured using the environment variable ` {XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
 

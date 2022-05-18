@@ -8,7 +8,7 @@ import {
   SigningSchemeValue,
   UnsignedOrder,
 } from 'utils/signatures'
-import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
+import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
@@ -63,7 +63,7 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
   }
 }
-const STRATEGY_URL_BASE = 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/strategies'
+const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/strategies'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
   return {
     [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',

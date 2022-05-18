@@ -55,7 +55,7 @@ export interface TokensFromMarketParams<T> extends Market<T> {
 }
 
 export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMarketParams<T>): Market<T> {
-  // TODO: Implement smarter logic https://github.com/gnosis/gp-ui/issues/331
+  // TODO: Implement smarter logic https://github.com/cowprotocol/explorer/issues/9
 
   // Not big reasoning on my selection of what is base and what is quote (important thing in this PR is just to do a consistent selection)
   // The used reasoning is:
