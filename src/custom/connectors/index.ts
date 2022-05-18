@@ -13,7 +13,6 @@ import { NetworkConnector } from 'connectors/NetworkConnector'
 
 // MOD imports
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { RAW_CODE_LINK } from '../constants'
 
 export * from '@src/connectors'
 
@@ -120,7 +119,7 @@ export const portis = new PortisConnector({
 export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
   appName: 'CowSwap',
-  appLogoUrl: RAW_CODE_LINK + '/develop/public/favicon.png',
+  appLogoUrl: 'https://raw.githubusercontent.com/cowprotocol/cowswap/develop/public/favicon.png',
   supportedChainIds: getSupportedChainIds(),
 })
 
