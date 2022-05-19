@@ -1,5 +1,6 @@
 import Page, { Content } from 'components/Page'
 import { LinkScrollable } from 'components/Link'
+import { Link } from 'react-router-dom'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
 import { Footer } from '.'
@@ -18,11 +19,11 @@ export default function AffiliateFaq() {
         <Content>
           <h2 id="affiliate">Affiliate program</h2>
 
-          <h3 id="what-is-the-profile-page">What is the Profile page?</h3>
+          <h3 id="what-is-the-account-page">What is the Account page?</h3>
 
           <p>
-            It is a page where you can see your number of trades and volume that you have done with the wallet you have
-            connected with.
+            The <Link to="/account">account</Link> page is where you can see your number of trades and volume, generated
+            with the wallet you&amp;re connected with.
           </p>
 
           <p>
@@ -97,8 +98,8 @@ export default function AffiliateFaq() {
             counted.
           </p>
 
-          <h3 id="why-do-not-i-see-any-referral-trades-in-my-profile-page">
-            I shared my referral with a friend, who then also traded. Why do I not see any referral trades in my profile
+          <h3 id="why-do-not-i-see-any-referral-trades-in-my-account-page">
+            I shared my referral with a friend, who then also traded. Why do I not see any referral trades in my account
             page?
           </h3>
 
@@ -139,10 +140,12 @@ export default function AffiliateFaq() {
           </p>
 
           <h3 id="why-do-i-see-more-trades">
-            Why do I see more trades and referrals in my profile page than I actually see in the activity list?
+            Why do I see more trades and referrals in my account page than I actually see in the activity list?
           </h3>
 
-          <p>The number of trades on the profile page is calculated based on on-chain data.</p>
+          <p>
+            The number of trades on the <Link to="/account">account</Link> page is calculated based on on-chain data.
+          </p>
           <p>We have two publicly facing interfaces where both use the same contracts, which are:</p>
           <ul>
             <li>

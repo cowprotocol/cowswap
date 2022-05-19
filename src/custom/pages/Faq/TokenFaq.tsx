@@ -1,6 +1,7 @@
 import Page, { Content } from 'components/Page'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
+import { Link } from 'react-router-dom'
 import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
@@ -51,9 +52,10 @@ export default function TokenFaq() {
           </h3>
           <p>
             {' '}
-            Directly in the CowSwap UI. Simply click on the profile section at the top left of the page, or in the menu
-            if you are on mobile, and you will be redirected to a page where you can see your total combined balance for
-            COW and vCOW and convert them instantly.
+            Directly in the CowSwap UI. Simply click on the <Link to="/account">account</Link> menu item at the top left
+            of the page (desktop) or in the mobile menu. You then will be redirected to the{' '}
+            <Link to="/account">account</Link> page where you can see your total COW and/or vCOW balance. You will then
+            be able to convert your vCOW to COW (if applicable).
           </p>
 
           <h3 id="what-is-the-purpose-of-cow-token">What is the purpose of COW Token?</h3>
