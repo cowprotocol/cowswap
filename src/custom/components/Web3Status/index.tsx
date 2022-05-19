@@ -11,7 +11,7 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
-  padding: 1px 1px 1px 6px;
+  padding: 1px;
   height: 40px;
   border: 1px solid transparent;
   width: 100%;

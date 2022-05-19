@@ -17,7 +17,7 @@ import HeaderMod, {
   HeaderFrame,
   UNIWrapper,
 } from './HeaderMod'
-// import Menu from 'components/Menu'
+import MenuDropdown from 'components/MenuDropdown'
 // import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -27,18 +27,13 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { darken } from 'polished'
 // import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
-import { ApplicationModal } from 'state/application/reducer'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import Web3Status from 'components/Web3Status'
 import NetworkSelector from 'components/Header/NetworkSelector'
 // import SVG from 'react-inlinesvg'
-import {
-  useModalOpen,
-  /*useShowClaimPopup,*/
-  // useToggleSelfClaimModal
-} from 'state/application/hooks'
+
 //import { useUserHasAvailableClaim } from 'state/claim/hooks'
 
 // import Modal from 'components/Modal'
@@ -80,7 +75,7 @@ const StyledNavLink = styled(StyledNavLinkUni)`
 
 const BalanceText = styled(BalanceTextUni)`
   font-weight: 500;
-  padding: 0 0 0 12px;
+  padding: 0 6px 0 12px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     overflow: hidden;
@@ -250,18 +245,17 @@ export default function Header() {
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
-  const isMenuOpen = useModalOpen(ApplicationModal.MENU)
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
 
-  // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
+  // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isOrdersPanelOpen || isMenuOpen
-      ? document.body.classList.add('noScroll')
-      : document.body.classList.remove('noScroll')
-  }, [isOrdersPanelOpen, isMenuOpen])
+    isOrdersPanelOpen ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
+  }, [isOrdersPanelOpen])
+
+  // const close = useToggleModal(ApplicationModal.MENU)
 
   return (
     <Wrapper>
@@ -279,7 +273,25 @@ export default function Header() {
             <StyledNavLink to="/swap">Swap</StyledNavLink>
             <StyledNavLink to="/account">Account</StyledNavLink>
             <StyledNavLink to="/faq">FAQ</StyledNavLink>
-            <StyledNavLink to="/swap">More</StyledNavLink>
+            <MenuDropdown title="More">
+              <div>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+              </div>
+
+              <div>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+                <StyledNavLink to="/account">Account</StyledNavLink>
+              </div>
+            </MenuDropdown>
           </HeaderLinks>
         </HeaderRow>
 
