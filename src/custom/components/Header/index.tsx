@@ -222,6 +222,7 @@ const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   border-radius: 21px;
   border: 1px solid transparent;
   transition: border 0.2s ease-in-out;
+  pointer-events: auto;
 
   &:hover,
   &:focus {
@@ -285,13 +286,13 @@ export default function Header() {
               <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
             </VCowWrapper>
 
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+            <AccountElement active={!!account} onClick={openOrdersPanel}>
               {account && userEthBalance && (
                 <BalanceText>
                   {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
                 </BalanceText>
               )}
-              <Web3Status openOrdersPanel={openOrdersPanel} />
+              <Web3Status />
             </AccountElement>
           </HeaderElement>
           {/* <HeaderElementWrap> */}

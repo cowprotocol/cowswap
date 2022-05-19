@@ -499,7 +499,7 @@ export default function Profile() {
               </FlexWrap>
             </ChildWrapper>
           </GridWrap>
-          {!account && <Web3Status openOrdersPanel={() => console.log('TODO')} />}
+          {!account && <Web3Status />}
         </GridWrap>
       </Wrapper>
     </Container>

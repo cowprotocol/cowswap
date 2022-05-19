@@ -73,11 +73,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }): JSX.Elemen
   return getStatusIcon(connector, walletInfo)
 }
 
-interface Web3StatusProps {
-  openOrdersPanel: () => void
-}
-
-export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
+export default function Web3Status() {
   const walletInfo = useWalletInfo()
   const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
@@ -104,7 +100,6 @@ export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
       <Web3StatusInner
         pendingCount={pendingActivity.length}
         StatusIconComponent={StatusIcon}
-        openOrdersPanel={openOrdersPanel}
         thereWasAProvider={!!latestProvider}
       />
       <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />
