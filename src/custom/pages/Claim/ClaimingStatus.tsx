@@ -133,7 +133,7 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
               </SuccessBanner>
             </ExternalLink>
             {isSelfClaiming && (
-              <Link to="/profile">
+              <Link to="/account">
                 <SuccessBanner type={'Profile'}>
                   <span>
                     <Trans>View vCOW balance</Trans>

@@ -281,7 +281,7 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
   const history = useHistory()
   const handleBalanceButtonClick = () => {
     close()
-    history.push('/profile')
+    history.push('/account')
   }
 
   return (
@@ -292,8 +292,8 @@ export function Menu({ darkMode, toggleDarkMode }: MenuProps) {
         <ResponsiveInternalMenuItem to="/" onClick={close}>
           <Repeat size={14} /> Swap
         </ResponsiveInternalMenuItem>
-        <ResponsiveInternalMenuItem to="/profile" onClick={close}>
-          <User size={14} /> Profile
+        <ResponsiveInternalMenuItem to="/account" onClick={close}>
+          <User size={14} /> Account
         </ResponsiveInternalMenuItem>
         <InternalMenuItem to="/about" onClick={close}>
           <Star size={14} />

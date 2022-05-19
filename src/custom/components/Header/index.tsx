@@ -80,7 +80,7 @@ const StyledNavLink = styled(StyledNavLinkUni)`
 
 const BalanceText = styled(BalanceTextUni)`
   font-weight: 500;
-  padding: 0 12px;
+  padding: 0 0 0 12px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     overflow: hidden;
@@ -228,6 +228,10 @@ const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   &:focus {
     border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
   }
+
+  ${BalanceText} {
+    min-width: initial;
+  }
 `
 
 export default function Header() {
@@ -249,7 +253,7 @@ export default function Header() {
   const isMenuOpen = useModalOpen(ApplicationModal.MENU)
 
   const history = useHistory()
-  const handleBalanceButtonClick = () => history.push('/profile')
+  const handleBalanceButtonClick = () => history.push('/account')
 
   // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -273,7 +277,9 @@ export default function Header() {
           </Title>
           <HeaderLinks>
             <StyledNavLink to="/swap">Swap</StyledNavLink>
-            <StyledNavLink to="/profile">Profile</StyledNavLink>
+            <StyledNavLink to="/account">Account</StyledNavLink>
+            <StyledNavLink to="/faq">FAQ</StyledNavLink>
+            <StyledNavLink to="/swap">More</StyledNavLink>
           </HeaderLinks>
         </HeaderRow>
 

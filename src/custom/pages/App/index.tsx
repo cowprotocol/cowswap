@@ -20,7 +20,7 @@ const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
-const Profile = lazy(() => import(/* webpackChunkName: "profile" */ 'pages/Profile'))
+const Account = lazy(() => import(/* webpackChunkName: "profile" */ '@src/custom/pages/Account'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
@@ -94,12 +94,13 @@ export default function App() {
       <Wrapper>
         <Suspense fallback={Loading}>
           <Switch>
-            <Redirect from="/claim" to="/profile" />
+            <Redirect from="/claim" to="/account" />
+            <Redirect from="/profile" to="/account" />
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
             <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
             <Route exact strict path="/about" component={About} />
-            <Route exact strict path="/profile" component={Profile} />
+            <Route exact strict path="/account" component={Account} />
 
             <Route exact path="/faq" component={Faq} />
             <Route exact strict path="/faq/protocol" component={ProtocolFaq} />

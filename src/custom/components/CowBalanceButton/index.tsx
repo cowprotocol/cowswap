@@ -11,7 +11,7 @@ import { transparentize } from 'polished'
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: ${({ theme }) => theme.bg4};
   color: ${({ theme }) => theme.text1};
-  padding: 6px 12px;
+  padding: 7px 12px;
   border: 1px solid transparent;
   font-weight: 500;
   display: flex;
