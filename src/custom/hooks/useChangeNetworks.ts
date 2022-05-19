@@ -9,7 +9,7 @@ import usePrevious from 'hooks/usePrevious'
 import { addPopup, ApplicationModal } from 'state/application/reducer'
 import { useAppDispatch } from 'state/hooks'
 import { replaceURLParam } from 'utils/routes'
-import { getChainNameFromId, getParsedChainId } from 'components/Header/NetworkSelector'
+import { getChainNameFromId, getParsedChainId } from 'components/Header/NetworkSelector/NetworkSelectorMod'
 import { useHistory } from 'react-router-dom'
 
 type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'account' | 'chainId' | 'library'>

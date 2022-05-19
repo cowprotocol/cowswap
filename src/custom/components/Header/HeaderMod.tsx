@@ -186,13 +186,13 @@ export const UNIWrapper = styled.span`
   position: relative;
   cursor: pointer;
 
-  :hover {
+  /* :hover {
     opacity: 0.8;
   }
 
   :active {
     opacity: 0.9;
-  }
+  } */
 `
 
 export const BalanceText = styled(Text)`

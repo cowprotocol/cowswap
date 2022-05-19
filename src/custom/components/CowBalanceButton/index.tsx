@@ -6,19 +6,24 @@ import { ChainId } from 'state/lists/actions/actionsMod'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
+import { transparentize } from 'polished'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
-  ${({ theme }) => theme.card.boxShadow};
+  background-color: ${({ theme }) => theme.bg4};
   color: ${({ theme }) => theme.text1};
-  padding: 0 12px;
-  font-size: 15px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
   font-weight: 500;
-  height: 38px;
   display: flex;
   align-items: center;
   position: relative;
-  border-radius: 12px;
+  border-radius: 21px;
   pointer-events: auto;
+  transition: border 0.2s ease-in-out;
+
+  &:hover {
+    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+  }
 
   ${({ theme, isLoading }) =>
     isLoading &&
@@ -51,7 +56,6 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
 
   > b {
     margin: 0 0 0 5px;
-    color: inherit;
     font-weight: inherit;
     white-space: nowrap;
 

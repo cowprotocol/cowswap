@@ -11,18 +11,23 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
+  padding: 1px 1px 1px 6px;
+  height: 40px;
+  border: 1px solid transparent;
   width: 100%;
   display: flex;
   justify-content: center;
 
   button {
-    height: 38px;
+    height: auto;
     max-width: 180px;
+
     ${({ theme }) => theme.mediaWidth.upToVerySmall`
         max-width: 100%;
       `};
+
     > p {
-      font-size: 15px;
+      margin: 0;
 
       ${({ theme }) => theme.mediaWidth.upToExtraSmall`
         font-size: 13px;
@@ -31,15 +36,17 @@ export const Wrapper = styled.div`
   }
 
   ${Web3StatusConnected} {
+    border-radius: 21px;
     color: ${({ theme }) => theme.wallet?.color};
     background: ${({ theme }) => theme.wallet?.background};
-    height: 38px;
-    border: 1px solid transparent;
+    height: 100%;
+    border: 0;
     box-shadow: none;
+    padding: 6px 8px;
     transform: none;
 
     &:hover {
-      border: 1px solid ${({ theme }) => theme.primary1};
+      border: 0;
     }
 
     > div > svg > path {

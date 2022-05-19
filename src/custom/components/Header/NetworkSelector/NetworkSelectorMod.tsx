@@ -155,7 +155,7 @@ export const SelectorLabel = styled(NetworkLabel)`
     margin-right: 8px;
   }
 `
-const SelectorControls = styled.div<{ interactive: boolean }>`
+export const SelectorControls = styled.div<{ interactive: boolean }>`
   align-items: center;
   background-color: ${({ theme }) => theme.bg4};
   border: 1px solid ${({ theme }) => theme.bg0};

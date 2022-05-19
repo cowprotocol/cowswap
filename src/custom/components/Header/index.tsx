@@ -10,20 +10,20 @@ import HeaderMod, {
   HeaderControls as HeaderControlsUni,
   BalanceText as BalanceTextUni,
   HeaderElement,
-  AccountElement,
-  HeaderElementWrap,
+  AccountElement as AccountElementUni,
+  // HeaderElementWrap,
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
   UNIWrapper,
 } from './HeaderMod'
-import Menu from 'components/Menu'
-import { Moon, Sun } from 'react-feather'
+// import Menu from 'components/Menu'
+// import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { AMOUNT_PRECISION } from 'constants/index'
-import { useDarkModeManager } from 'state/user/hooks'
+// import { useDarkModeManager } from 'state/user/hooks'
 import { darken } from 'polished'
 // import TwitterImage from 'assets/cow-swap/twitter.svg'
 import OrdersPanel from 'components/OrdersPanel'
@@ -32,7 +32,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import Web3Status from 'components/Web3Status'
-import NetworkSelector, { SelectorLabel } from 'components/Header/NetworkSelector'
+import NetworkSelector from 'components/Header/NetworkSelector'
 // import SVG from 'react-inlinesvg'
 import {
   useModalOpen,
@@ -44,6 +44,7 @@ import {
 // import Modal from 'components/Modal'
 // import ClaimModal from 'components/claim/ClaimModal'
 import CowBalanceButton from 'components/CowBalanceButton'
+import { transparentize } from 'polished'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -78,6 +79,9 @@ const StyledNavLink = styled(StyledNavLinkUni)`
 `
 
 const BalanceText = styled(BalanceTextUni)`
+  font-weight: 500;
+  padding: 0 12px;
+
   ${({ theme }) => theme.mediaWidth.upToMedium`
     overflow: hidden;
     max-width: 100px;
@@ -128,12 +132,6 @@ export const Wrapper = styled.div`
     padding: 0;
     height: 38px;
     width: 38px;
-  }
-
-  ${SelectorLabel} {
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: none;
-    `};
   }
 `
 
@@ -219,13 +217,25 @@ const VCowWrapper = styled(UNIWrapper)`
   `}
 `
 
+const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
+  border-radius: 21px;
+  border: 1px solid transparent;
+  transition: border 0.2s ease-in-out;
+
+  &:hover,
+  &:focus {
+    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+  }
+`
+
 export default function Header() {
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
+  // const [darkMode, toggleDarkMode] = useDarkModeManager()
 
   // const toggleClaimModal = useToggleSelfClaimModal()
   // const availableClaim: boolean = useUserHasAvailableClaim(account)
@@ -277,24 +287,24 @@ export default function Header() {
 
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance && (
-                <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+                <BalanceText>
                   {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
                 </BalanceText>
               )}
               <Web3Status openOrdersPanel={openOrdersPanel} />
             </AccountElement>
           </HeaderElement>
-          <HeaderElementWrap>
-            {/* <TwitterLink>
+          {/* <HeaderElementWrap> */}
+          {/* <TwitterLink>
               <ExternalLink href="https://twitter.com/mevprotection">
                 <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" />
               </ExternalLink>
             </TwitterLink> */}
-            <StyledMenuButton onClick={() => toggleDarkMode()}>
+          {/* <StyledMenuButton onClick={() => toggleDarkMode()}>
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
-            </StyledMenuButton>
-          </HeaderElementWrap>
-          <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            </StyledMenuButton> */}
+          {/* </HeaderElementWrap> */}
+          {/* <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> */}
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>
