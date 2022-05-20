@@ -44,6 +44,7 @@ export interface PriceInformation {
   token: string
   amount: string | null
   oppositeAmount: string | null
+  // quoteId?: string // TODO fill in this info if we have it
 }
 
 // GetQuoteResponse from @cowprotocol/contracts types Timestamp and BigNumberish
@@ -55,6 +56,7 @@ export type SimpleGetQuoteResponse = Pick<GetQuoteResponse, 'from'> & {
     buyAmount: string
     validTo: string
     feeAmount: string
+    // quoteId?: string // TODO: not yet coming from the API, tracked on https://github.com/cowprotocol/services/issues/170
   }
   expiration: string
 }
@@ -270,11 +272,13 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
 export async function getFullQuote({ quoteParams }: { quoteParams: FeeQuoteParams }): Promise<QuoteResult> {
   const { kind } = quoteParams
   const { quote, expiration: expirationDate } = await getQuote(quoteParams)
+  // TODO: store/pass down as response the buyAmount, sellAmount and quoteId from quote obj
 
   const price = {
     amount: kind === OrderKind.SELL ? quote.buyAmount : quote.sellAmount,
     oppositeAmount: kind === OrderKind.SELL ? quote.sellAmount : quote.buyAmount,
     token: kind === OrderKind.SELL ? quote.buyToken : quote.sellToken,
+    // quoteId: quote.quoteId,
   }
   const fee = {
     amount: quote.feeAmount,
