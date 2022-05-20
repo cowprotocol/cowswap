@@ -138,8 +138,8 @@ export function toPriceInformation(priceRaw: MatchaPriceQuote | null, kind: Orde
   const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress } = priceRaw
 
   if (kind === OrderKind.BUY) {
-    return { amount: sellAmount, token: sellTokenAddress }
+    return { amount: sellAmount, oppositeAmount: buyAmount, token: sellTokenAddress }
   } else {
-    return { amount: buyAmount, token: buyTokenAddress }
+    return { amount: buyAmount, oppositeAmount: sellAmount, token: buyTokenAddress }
   }
 }
