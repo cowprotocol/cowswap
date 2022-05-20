@@ -111,13 +111,22 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
   const amount = BigNumberJs[aggregationFunction](...params.amounts).toString(10)
   const token = params.priceQuotes[0].token
 
-  const winningPrices = params.priceQuotes
-    .filter((quote) => quote.amount === amount)
-    .map((p) => p.source)
-    .join(', ')
-  console.debug('[util::filterWinningPrice] Winning price: ' + winningPrices + ' for token ' + token + ' @', amount)
+  const winningPrices = params.priceQuotes.filter((quote) => quote.amount === amount)
+  const oppositeAmount = winningPrices[0]?.oppositeAmount
 
-  return { token, amount }
+  console.debug(
+    '[util::filterWinningPrice] Winning price: ' +
+      winningPrices.map((p) => p.source).join(', ') +
+      ' for token ' +
+      token +
+      ' @ ' +
+      amount +
+      ' & oppositeAmount ' +
+      oppositeAmount,
+    winningPrices
+  )
+
+  return { token, amount, oppositeAmount }
 }
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
@@ -264,6 +273,7 @@ export async function getFullQuote({ quoteParams }: { quoteParams: FeeQuoteParam
 
   const price = {
     amount: kind === OrderKind.SELL ? quote.buyAmount : quote.sellAmount,
+    oppositeAmount: kind === OrderKind.SELL ? quote.sellAmount : quote.buyAmount,
     token: kind === OrderKind.SELL ? quote.buyToken : quote.sellToken,
   }
   const fee = {
