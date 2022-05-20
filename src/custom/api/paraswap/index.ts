@@ -44,11 +44,13 @@ export function toPriceInformation(priceRaw: ParaSwapPriceQuote | null): PriceIn
   if (side === SwapSide.SELL) {
     return {
       amount: destAmount,
+      oppositeAmount: srcAmount,
       token: destToken,
     }
   } else {
     return {
       amount: srcAmount,
+      oppositeAmount: destAmount,
       token: srcToken,
     }
   }
