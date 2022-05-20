@@ -108,17 +108,23 @@ export default function useCowUsdPrice(currency?: Currency) {
   // SWR cache cow usd requests
   const { data: priceResponse, error: errorResponse } = useSWR<CancelableResult<string | null> | null>(
     ['cowUsdPrice', strategy, quoteParams],
-    () => (strategy && quoteParams ? getGpUsdcPriceResolveOnlyLastCall({ strategy, quoteParams }) : null)
+    () => {
+      if (sellTokenAddress !== stablecoin?.address && strategy && quoteParams) {
+        return getGpUsdcPriceResolveOnlyLastCall({ strategy, quoteParams })
+      } else {
+        return null
+      }
+    }
   )
 
   useEffect(() => {
-    if (!quoteParams || !stablecoin || !priceResponse || !currency) return
+    if (!quoteParams || !stablecoin || !currency) return
 
     // tokens are the same, it's 1:1
     if (sellTokenAddress === stablecoin.address) {
       const price = new Price(stablecoin, stablecoin, '1', '1')
       return setBestUsdPrice(price)
-    } else {
+    } else if (priceResponse) {
       try {
         if (errorResponse) throw errorResponse
 
@@ -139,7 +145,7 @@ export default function useCowUsdPrice(currency?: Currency) {
             quoteAmount: stringToCurrency(quote, currency),
           })
           console.debug(
-            '[useBestUSDCPrice] Best USDC price amount',
+            '[useCowUsdPrice] COW USDC price amount',
             price.toSignificant(12),
             price.invert().toSignificant(12)
           )
@@ -147,7 +153,7 @@ export default function useCowUsdPrice(currency?: Currency) {
 
         return setBestUsdPrice(price)
       } catch (err) {
-        console.error('[useBestUSDCPrice] Error getting best price', err)
+        console.error('[useCowUsdPrice] Error getting best price', err)
         return batchedUpdate(() => {
           setError(new Error(err))
           setBestUsdPrice(null)
