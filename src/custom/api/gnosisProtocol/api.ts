@@ -353,7 +353,12 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
         },
       })
     } else {
-      return response.json()
+      const rawResponse = await response.json()
+      // The legacy quote endpoint does takes as part of the URL path the amount in
+      // and returns as response the amount out
+      // Since now we'll need to keep track of both, here we add to the response the amount in as oppositeAmount
+      const oppositeAmount = params.amount
+      return { ...rawResponse, oppositeAmount }
     }
   } catch (error) {
     throw _handleError(error, response, params, 'QUOTE')
