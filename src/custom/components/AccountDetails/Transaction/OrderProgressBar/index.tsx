@@ -163,7 +163,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <StatusMsg>
-                <p>Networks looks slower than usual. Solvers are adjusting gas fees for you!</p>
+                <p>Network looks slower than usual. Solvers are adjusting gas fees for you!</p>
                 {isCancellable ? (
                   <p>
                     You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
