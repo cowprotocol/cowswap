@@ -43,6 +43,7 @@ export interface FeeInformation {
 export interface PriceInformation {
   token: string
   amount: string | null
+  oppositeAmount: string | null
 }
 
 // GetQuoteResponse from @cowprotocol/contracts types Timestamp and BigNumberish

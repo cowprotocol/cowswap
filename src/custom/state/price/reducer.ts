@@ -47,6 +47,7 @@ function initializeState(
 function getResetPrice(sellToken: string, buyToken: string, kind: OrderKind) {
   return {
     amount: null,
+    oppositeAmount: null,
     // When we buy, the price estimation is given in sell tokens (if we sell, we give it in sell tokens)
     // The price estimation is given in:
     //    - sell tokens (for buy orders)
