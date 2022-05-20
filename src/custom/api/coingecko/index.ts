@@ -99,5 +99,5 @@ export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInf
   }
 
   const { usd } = priceRaw[token]
-  return { amount: usd.toString(), token }
+  return { amount: usd.toString(), token, oppositeAmount: '1' }
 }
