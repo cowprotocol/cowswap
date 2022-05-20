@@ -20,6 +20,7 @@ import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
 import { CancelButton } from '../CancelButton'
+import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_PERCENTAGE = 0.33 // 33% of the elapsed time based on the network's average is for the COW protocol
@@ -155,7 +156,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           <>
             <ProgressBarInnerWrapper>
               <WarningProgress percentage={percentage}>
-                <WarningLogo />
+                <WarningLogo>
+                  <img src={loadingCowGif} alt="Loading prices..." />
+                </WarningLogo>
               </WarningProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>

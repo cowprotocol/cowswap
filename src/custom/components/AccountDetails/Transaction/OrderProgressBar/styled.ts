@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { animated } from 'react-spring'
 import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
@@ -53,34 +53,52 @@ export const CowProtocolIcon = styled.div`
   box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
 `
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
-
 export const WarningLogo = styled.div`
   position: absolute;
   top: -4px;
   right: 0px;
-  height: 24px;
-  width: 24px;
-  border-radius: 100%;
-  background-color: ${({ theme }) => theme.white};
+  height: 26px;
+  width: 26px;
+  border-radius: 9px;
+  border: transparent;
+
+  background: ${({ theme }) => theme.blueShade};
   box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
-  animation: ${rotate360} 1.5s infinite linear;
-  transform: translateZ(0);
-  :after {
-    content: '⏱';
-    color: ${({ theme }) => theme.red1};
-    display: flex;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 14px;
-    margin: -2px 0;
+
+  img {
+    margin: 4px 0 0 2px;
+    width: 22px;
+  }
+
+  &::after {
+    filter: blur(10px);
+  }
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg4}, #c5daef, #1b5a7a)`};
+    background-size: 800%;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    z-index: -1;
+    animation: steam 7s linear infinite;
+    border-radius: 9px;
+  }
+
+  @keyframes steam {
+    0% {
+      background-position: 0 0;
+    }
+    50% {
+      background-position: 400% 0;
+    }
+    100% {
+      background-position: 0 0;
+    }
   }
 `
 
