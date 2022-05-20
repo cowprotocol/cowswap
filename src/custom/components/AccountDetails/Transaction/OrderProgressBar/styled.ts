@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
 import { animated } from 'react-spring'
 import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
@@ -53,6 +53,15 @@ export const CowProtocolIcon = styled.div`
   box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
 `
 
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
 export const WarningLogo = styled.div`
   position: absolute;
   top: -4px;
@@ -62,14 +71,16 @@ export const WarningLogo = styled.div`
   border-radius: 100%;
   background-color: ${({ theme }) => theme.white};
   box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+  animation: ${rotate360} 1.5s infinite linear;
+  transform: translateZ(0);
   :after {
-    content: '!';
+    content: '⏱';
     color: ${({ theme }) => theme.red1};
     display: flex;
     justify-content: center;
     font-weight: bold;
-    font-size: 16px;
-    margin: 2px 0;
+    font-size: 14px;
+    margin: -2px 0;
   }
 `
 
