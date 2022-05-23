@@ -14,19 +14,15 @@ import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSD
 import { stringToCurrency } from 'state/swap/extension'
 import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { getUSDPriceQuote, toPriceInformation } from 'api/coingecko'
+import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
-import { CancelableResult, onlyResolvesLast } from 'utils/async'
-import { getGpUsdcPrice, PriceInformation } from 'utils/price'
-import useSWR from 'swr'
+import { useGetGpUsdcPrice } from 'utils/price'
 
 export * from '@src/hooks/useUSDCPrice'
-
-const getGpUsdcPriceResolveOnlyLastCall = onlyResolvesLast(getGpUsdcPrice)
 
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
@@ -88,8 +84,12 @@ export default function useCowUsdPrice(currency?: Currency) {
   const stablecoin = baseAmount?.currency
   const baseAmountRaw = baseAmount?.quotient.toString()
 
+  const isStablecoin = sellTokenAddress && sellTokenAddress === stablecoin?.address
+  // build quote params
+  // null when no chain or base amount or if sell token = stablecoin
   const quoteParams = useMemo(() => {
-    if (!stablecoin || !supportedChain || !sellTokenAddress || !sellTokenDecimals) return null
+    if (!stablecoin || isStablecoin || !supportedChain || !sellTokenAddress || !sellTokenDecimals || !baseAmountRaw)
+      return null
 
     return {
       buyToken: stablecoin.address,
@@ -103,33 +103,24 @@ export default function useCowUsdPrice(currency?: Currency) {
       // we dont care about validTo here, just use max
       validTo: MAX_VALID_TO_EPOCH,
     }
-  }, [account, baseAmountRaw, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
+  }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 
-  // SWR cache cow usd requests
-  const { data: priceResponse, error: errorResponse } = useSWR<CancelableResult<string | null> | null>(
-    ['cowUsdPrice', strategy, quoteParams],
-    () => {
-      if (sellTokenAddress !== stablecoin?.address && strategy && quoteParams) {
-        return getGpUsdcPriceResolveOnlyLastCall({ strategy, quoteParams })
-      } else {
-        return null
-      }
-    }
-  )
+  // get SWR cached usd price
+  const { data: quote, error: errorResponse } = useGetGpUsdcPrice({
+    strategy,
+    quoteParams,
+  })
 
   useEffect(() => {
     if (!quoteParams || !stablecoin || !currency) return
 
     // tokens are the same, it's 1:1
-    if (sellTokenAddress === stablecoin.address) {
+    if (isStablecoin) {
       const price = new Price(stablecoin, stablecoin, '1', '1')
       return setBestUsdPrice(price)
-    } else if (priceResponse) {
+    } else if (quote) {
       try {
         if (errorResponse) throw errorResponse
-
-        const { cancelled, data: quote } = priceResponse
-        if (cancelled) return
 
         // reset the error
         setError(null)
@@ -160,7 +151,7 @@ export default function useCowUsdPrice(currency?: Currency) {
         })
       }
     }
-  }, [baseAmount, priceResponse, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency])
+  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
 
   return { price: bestUsdPrice, error }
 }
@@ -212,17 +203,11 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const tokenAddress = currencyRef.current ? currencyId(currencyRef.current) : undefined
 
   const chainIdSupported = supportedChainId(chainId)
-  // SWR cache cg usd requests
-  const { data: priceResponse, error: errorResponse } = useSWR<PriceInformation | null>(
-    ['coingeckoUsdPrice', chainIdSupported, tokenAddress],
-    () =>
-      chainIdSupported && tokenAddress
-        ? getUSDPriceQuote({
-            chainId: chainIdSupported,
-            tokenAddress,
-          }).then(toPriceInformation)
-        : null
-  )
+  // get SWR cached coingecko usd price
+  const { data: priceResponse, error: errorResponse } = useGetCoingeckoUsdPrice({
+    chainId: chainIdSupported,
+    tokenAddress,
+  })
 
   useEffect(() => {
     // build baseAmount here as to not mess with deps array

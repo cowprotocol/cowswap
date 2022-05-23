@@ -21,6 +21,7 @@ import { ChainId } from 'state/lists/actions'
 import { toErc20Address } from 'utils/tokens'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
+import useSWR from 'swr'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -430,4 +431,20 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams
 
     return quote.amount
   }
+}
+
+// SWR cached hook returning 407
+export function useGetGpUsdcPrice(props: {
+  strategy: QuoteParams['strategy']
+  quoteParams: QuoteParams['quoteParams'] | null
+}) {
+  const { strategy, quoteParams } = props
+
+  return useSWR<string | null>(['getGpUsdcPrice', strategy, quoteParams], () => {
+    if (strategy && quoteParams) {
+      return getGpUsdcPrice({ strategy, quoteParams })
+    } else {
+      return null
+    }
+  })
 }
