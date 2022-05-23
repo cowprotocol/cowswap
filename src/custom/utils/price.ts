@@ -7,7 +7,7 @@ import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp, OrderMetaData } from 
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
-import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
@@ -440,11 +440,15 @@ export function useGetGpUsdcPrice(props: {
 }) {
   const { strategy, quoteParams } = props
 
-  return useSWR<string | null>(['getGpUsdcPrice', strategy, quoteParams], () => {
-    if (strategy && quoteParams) {
-      return getGpUsdcPrice({ strategy, quoteParams })
-    } else {
-      return null
-    }
-  })
+  return useSWR<string | null>(
+    ['getGpUsdcPrice', strategy, quoteParams],
+    () => {
+      if (strategy && quoteParams) {
+        return getGpUsdcPrice({ strategy, quoteParams })
+      } else {
+        return null
+      }
+    },
+    SWR_OPTIONS
+  )
 }

@@ -1,3 +1,4 @@
+import { SWR_OPTIONS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import useSWR from 'swr'
 import { PriceInformation } from 'utils/price'
@@ -94,13 +95,17 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
 export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>) {
   const { chainId, tokenAddress } = params
 
-  return useSWR<PriceInformation | null>(['getUSDPriceQuote', chainId, tokenAddress], () => {
-    if (chainId && tokenAddress) {
-      return getUSDPriceQuote({ chainId, tokenAddress }).then(toPriceInformation)
-    } else {
-      return null
-    }
-  })
+  return useSWR<PriceInformation | null>(
+    ['getUSDPriceQuote', chainId, tokenAddress],
+    () => {
+      if (chainId && tokenAddress) {
+        return getUSDPriceQuote({ chainId, tokenAddress }).then(toPriceInformation)
+      } else {
+        return null
+      }
+    },
+    SWR_OPTIONS
+  )
 }
 
 export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInformation | null {
