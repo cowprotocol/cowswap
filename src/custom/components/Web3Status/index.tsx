@@ -20,7 +20,9 @@ export const Wrapper = styled.div`
 
   button {
     height: auto;
-    max-width: 180px;
+    border-radius: 21px;
+    padding: 6px 12px;
+    width: max-content;
 
     ${({ theme }) => theme.mediaWidth.upToVerySmall`
         max-width: 100%;
