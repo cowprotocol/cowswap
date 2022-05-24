@@ -92,7 +92,7 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
   return response.json()
 }
 
-export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>) {
+export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>, options = SWR_OPTIONS) {
   const { chainId, tokenAddress } = params
 
   return useSWR<PriceInformation | null>(
@@ -104,7 +104,7 @@ export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>
         return null
       }
     },
-    SWR_OPTIONS
+    options
   )
 }
 

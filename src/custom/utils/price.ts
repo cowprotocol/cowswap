@@ -433,11 +433,13 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams
   }
 }
 
-// SWR cached hook returning 407
-export function useGetGpUsdcPrice(props: {
-  strategy: QuoteParams['strategy']
-  quoteParams: QuoteParams['quoteParams'] | null
-}) {
+export function useGetGpUsdcPrice(
+  props: {
+    strategy: QuoteParams['strategy']
+    quoteParams: QuoteParams['quoteParams'] | null
+  },
+  options = SWR_OPTIONS
+) {
   const { strategy, quoteParams } = props
 
   return useSWR<string | null>(
@@ -449,6 +451,6 @@ export function useGetGpUsdcPrice(props: {
         return null
       }
     },
-    SWR_OPTIONS
+    options
   )
 }
