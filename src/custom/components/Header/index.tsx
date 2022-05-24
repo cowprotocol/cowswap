@@ -48,7 +48,7 @@ import CowBalanceButton from 'components/CowBalanceButton'
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   // [ChainId.ROPSTEN]: 'Ropsten',
-  // [ChainId.GOERLI]: 'Görli',
+  [ChainId.GOERLI]: 'Görli',
   // [ChainId.KOVAN]: 'Kovan',
   [ChainId.XDAI]: 'Gnosis Chain',
 }

@@ -2,6 +2,7 @@ import { SupportedChainId } from 'constants/chains'
 import mainnetIndex from './mainnet.json'
 import rinkebyIndex from './rinkeby.json'
 import gnosisChainIndex from './gnosisChain.json'
+import goerliIndex from './goerli.json'
 
 interface Claim {
   index: number
@@ -13,12 +14,14 @@ const indexFiles = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.RINKEBY]: rinkebyIndex,
   [SupportedChainId.XDAI]: gnosisChainIndex,
+  [SupportedChainId.GOERLI]: goerliIndex,
 }
 
 const chainNames = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.RINKEBY]: 'rinkeby',
   [SupportedChainId.XDAI]: 'gnosisChain',
+  [SupportedChainId.GOERLI]: 'goerli',
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'

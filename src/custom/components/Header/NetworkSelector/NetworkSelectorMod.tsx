@@ -433,6 +433,7 @@ export default function NetworkSelector() {
             </FlyoutHeader>
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.GOERLI} />
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
           </FlyoutMenuContents>
         </FlyoutMenu>

@@ -38,6 +38,7 @@ const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token
   // [SupportedChainId.OPTIMISM]: CurrencyAmount.fromRawAmount(DAI_OPTIMISM, 10_000e18),
   // [SupportedChainId.POLYGON]: CurrencyAmount.fromRawAmount(USDC_POLYGON, 10_000e6),
   [SupportedChainId.XDAI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.XDAI], 10_000e6),
+  [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6),
 }
 
 /**

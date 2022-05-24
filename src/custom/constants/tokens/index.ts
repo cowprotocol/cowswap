@@ -48,10 +48,19 @@ const V_COW_TOKEN_RINKEBY = new Token(
   'CoW Protocol Virtual Token'
 )
 
+const V_COW_TOKEN_GOERLI = new Token(
+  SupportedChainId.GOERLI,
+  V_COW_CONTRACT_ADDRESS[SupportedChainId.GOERLI] || '',
+  18,
+  'vCOW',
+  'CoW Protocol Virtual Token'
+)
+
 export const V_COW: Record<number, Token> = {
   [SupportedChainId.MAINNET]: V_COW_TOKEN_MAINNET,
   [SupportedChainId.XDAI]: V_COW_TOKEN_XDAI,
   [SupportedChainId.RINKEBY]: V_COW_TOKEN_RINKEBY,
+  [SupportedChainId.GOERLI]: V_COW_TOKEN_GOERLI,
 }
 
 /**
@@ -81,10 +90,19 @@ const COW_TOKEN_RINKEBY = new Token(
   'CoW Protocol Token'
 )
 
+const COW_TOKEN_GOERLI = new Token(
+  SupportedChainId.GOERLI,
+  COW_CONTRACT_ADDRESS[SupportedChainId.GOERLI] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
 export const COW: Record<number, Token> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
   [SupportedChainId.XDAI]: COW_TOKEN_XDAI,
   [SupportedChainId.RINKEBY]: COW_TOKEN_RINKEBY,
+  [SupportedChainId.GOERLI]: COW_TOKEN_GOERLI,
 }
 
 /**
@@ -105,11 +123,19 @@ const GNO_RINKEBY = new Token(
   'GNO',
   'Gnosis'
 )
+const GNO_GOERLI = new Token(
+  SupportedChainId.RINKEBY,
+  '0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c', // TODO: update with real goerli address
+  18,
+  'GNO',
+  'Gnosis'
+)
 
 export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.MAINNET]: GNO_MAINNET,
   [SupportedChainId.XDAI]: GNO_XDAI,
   [SupportedChainId.RINKEBY]: GNO_RINKEBY,
+  [SupportedChainId.GOERLI]: GNO_GOERLI,
 }
 
 export const ADDRESS_IMAGE_OVERRIDE = {
@@ -145,11 +171,13 @@ export const ADDRESS_IMAGE_OVERRIDE = {
 export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
   [SupportedChainId.RINKEBY]: '0x5444c4AFb2ec7f7367C10F7732b8558650c5899F',
+  [SupportedChainId.GOERLI]: '0x5444c4AFb2ec7f7367C10F7732b8558650c5899F', // TODO: update with actual goerli addresses
   [SupportedChainId.XDAI]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
 }
 
 export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<number, string> = {
   [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
   [SupportedChainId.RINKEBY]: '0xeBA8CE5b23c054f1511F8fF5114d848329B8258d',
+  [SupportedChainId.GOERLI]: '0xeBA8CE5b23c054f1511F8fF5114d848329B8258d', // TODO: update with actual goerli addresses
   [SupportedChainId.XDAI]: '0x3d610e917130f9D036e85A030596807f57e11093',
 }

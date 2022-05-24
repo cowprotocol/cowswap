@@ -90,17 +90,17 @@ export const CHAIN_INFO: ChainInfoMap = {
     label: 'Kovan',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Kovan Ether', symbol: 'kovETH', decimals: 18 },
-  },
+  }, */
   [SupportedChainId.GOERLI]: {
     networkType: NetworkType.L1,
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://goerli.etherscan.io/',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Görli',
-    logoUrl: ethereumLogoUrl,
+    logoUrl: RinkebyLogo, // TODO: should we change this
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
   },
-  [SupportedChainId.OPTIMISM]: {
+  /* [SupportedChainId.OPTIMISM]: {
     networkType: NetworkType.L2,
     blockWaitMsBeforeWarning: ms`25m`,
     bridge: 'https://gateway.optimism.io/?chainId=1',

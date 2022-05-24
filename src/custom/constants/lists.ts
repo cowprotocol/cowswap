@@ -35,7 +35,7 @@ export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   // [ChainId.KOVAN]: [BA_LIST],
   [ChainId.RINKEBY]: [BA_LIST],
   // [ChainId.ROPSTEN]: [BA_LIST],
-  // [ChainId.GOERLI]: [BA_LIST],
+  [ChainId.GOERLI]: [BA_LIST],
   [ChainId.XDAI]: [BA_LIST],
 }
 
@@ -77,10 +77,10 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   //   chainId: ChainId.ROPSTEN,
   //   networkLists: [COMPOUND_LIST],
   // }),
-  // [ChainId.GOERLI]: buildNetworkDefaultLists({
-  //   chainId: ChainId.GOERLI,
-  //   networkLists: [COMPOUND_LIST],
-  // }),
+  [ChainId.GOERLI]: buildNetworkDefaultLists({
+    chainId: ChainId.GOERLI,
+    networkLists: [COMPOUND_LIST],
+  }),
   [ChainId.XDAI]: buildNetworkDefaultLists({
     chainId: ChainId.XDAI,
     networkLists: [COW_DAO_LIST, HONEY_SWAP_XDAI],
@@ -94,7 +94,7 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
   [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
   // [ChainId.ROPSTEN]: [GEMINI_LIST],
   [ChainId.XDAI]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
-  // [ChainId.GOERLI]: [GEMINI_LIST],
+  [ChainId.GOERLI]: [GEMINI_LIST], // TODO: should we add here goerli list as for rinkeby
 }
 
 // Set what we want as the default list when no chain id available: default = MAINNET

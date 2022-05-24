@@ -39,6 +39,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
       [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
       [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
       [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
+      [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://barn.api.cow.fi/goerli/api',
     }
   }
 
@@ -47,6 +48,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
     [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://api.cow.fi/rinkeby/api',
     [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
+    [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://api.cow.fi/goerli/api',
   }
 }
 
@@ -69,6 +71,7 @@ function getPriceStrategyUrl(): Record<SupportedChainId, string> {
     [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
     [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
     [SupportedChainId.XDAI]: STRATEGY_URL_BASE + '/strategy-100.json',
+    [SupportedChainId.GOERLI]: STRATEGY_URL_BASE + '/strategy-5.json',
   }
 }
 
