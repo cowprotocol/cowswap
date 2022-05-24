@@ -19,7 +19,6 @@ import HeaderMod, {
 } from './HeaderMod'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
-import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
@@ -49,6 +48,8 @@ import IMAGE_TWITTER from 'assets/cow-swap/twitter.svg'
 import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
+import IMAGE_MOON from 'assets/cow-swap/moon.svg'
+import IMAGE_SUN from 'assets/cow-swap/sun.svg'
 import SVG from 'react-inlinesvg'
 
 //import { useUserHasAvailableClaim } from 'state/claim/hooks'
@@ -76,7 +77,7 @@ export interface LinkType {
   path: string
 }
 
-const StyledNavLink = styled(StyledNavLinkUni)`
+export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color 0.15s ease-in-out;
   color: ${({ theme }) => darken(0.3, theme.text1)};
 
@@ -254,11 +255,6 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
-  // const toggleClaimModal = useToggleSelfClaimModal()
-  // const availableClaim: boolean = useUserHasAvailableClaim(account)
-  // const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
-  // const showClaimPopup = useShowClaimPopup()
-
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
   const openOrdersPanel = () => setIsOrdersPanelOpen(true)
@@ -277,10 +273,7 @@ export default function Header() {
   return (
     <Wrapper>
       <HeaderModWrapper>
-        <HeaderRow marginRight="0">
-          {/*<Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
-            <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
-          </Modal>*/}
+        <HeaderRow>
           <Title href=".">
             <UniIcon>
               <LogoImage />
@@ -322,11 +315,11 @@ export default function Header() {
                 <button onClick={() => toggleDarkMode()}>
                   {darkMode ? (
                     <>
-                      <Sun size={20} /> Light
+                      <SVG src={IMAGE_SUN} description="Sun light mode icon" /> Light
                     </>
                   ) : (
                     <>
-                      <Moon size={20} /> Dark
+                      <SVG src={IMAGE_MOON} description="Moon dark mode icon" /> Dark
                     </>
                   )}{' '}
                   Mode
