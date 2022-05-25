@@ -93,9 +93,9 @@ export const CHAIN_INFO: ChainInfoMap = {
   }, */
   [SupportedChainId.GOERLI]: {
     networkType: NetworkType.L1,
-    docs: 'https://docs.uniswap.org/',
+    docs: 'https://docs.cow.fi/',
     explorer: 'https://goerli.etherscan.io/',
-    infoLink: 'https://info.uniswap.org/#/',
+    infoLink: 'https://cow.fi/',
     label: 'Görli',
     logoUrl: RinkebyLogo, // TODO: should we change this
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
