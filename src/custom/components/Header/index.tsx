@@ -104,7 +104,7 @@ export default function Header() {
         <HeaderRow>
           <Title href="." isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
-              <LogoImage />
+              <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
           <HeaderLinks isMobileMenuOpen={isMobileMenuOpen}>
@@ -163,25 +163,27 @@ export default function Header() {
           </HeaderLinks>
         </HeaderRow>
 
-        <HeaderControls>
-          <HeaderElement>
-            <NetworkSelector />
-          </HeaderElement>
-          <HeaderElement>
-            <VCowWrapper>
-              <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
-            </VCowWrapper>
+        {!isMobileMenuOpen && (
+          <HeaderControls>
+            <HeaderElement>
+              <NetworkSelector />
+            </HeaderElement>
+            <HeaderElement>
+              <VCowWrapper>
+                <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
+              </VCowWrapper>
 
-            <AccountElement active={!!account} onClick={openOrdersPanel}>
-              {account && userEthBalance && (
-                <BalanceText>
-                  {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
-                </BalanceText>
-              )}
-              <Web3Status />
-            </AccountElement>
-          </HeaderElement>
-        </HeaderControls>
+              <AccountElement active={!!account} onClick={openOrdersPanel}>
+                {account && userEthBalance && (
+                  <BalanceText>
+                    {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
+                  </BalanceText>
+                )}
+                <Web3Status />
+              </AccountElement>
+            </HeaderElement>
+          </HeaderControls>
+        )}
 
         {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
