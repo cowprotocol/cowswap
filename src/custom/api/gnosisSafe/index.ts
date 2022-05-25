@@ -1,18 +1,18 @@
 import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { registerOnWindow } from 'utils/misc'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'https://safe-transaction.gnosis.io',
   [ChainId.RINKEBY]: 'https://safe-transaction.rinkeby.gnosis.io',
-  [ChainId.XDAI]: 'https://safe-transaction.xdai.gnosis.io',
+  [ChainId.GNOSIS_CHAIN]: 'https://safe-transaction.xdai.gnosis.io',
 }
 
 const SAFE_BASE_URL = 'https://gnosis-safe.io'
 const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
   [ChainId.RINKEBY]: 'rin', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-4.json
-  [ChainId.XDAI]: 'xdai', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
+  [ChainId.GNOSIS_CHAIN]: 'xdai', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
 }
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}

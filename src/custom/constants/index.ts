@@ -48,24 +48,24 @@ export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
   [ChainId.RINKEBY]: GPv2Settlement[ChainId.RINKEBY].address,
-  [ChainId.XDAI]: GPv2Settlement[ChainId.XDAI].address,
+  [ChainId.GNOSIS_CHAIN]: GPv2Settlement[ChainId.GNOSIS_CHAIN].address,
 }
 
 export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2VaultRelayer[ChainId.MAINNET].address,
   [ChainId.RINKEBY]: GPv2VaultRelayer[ChainId.RINKEBY].address,
-  [ChainId.XDAI]: GPv2VaultRelayer[ChainId.XDAI].address,
+  [ChainId.GNOSIS_CHAIN]: GPv2VaultRelayer[ChainId.GNOSIS_CHAIN].address,
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
-  [ChainId.XDAI]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
+  [ChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
   [ChainId.RINKEBY]: '0x9386177e95A853070076Df2403b9D547D653126D',
 }
 
 export const COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
-  [ChainId.XDAI]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
+  [ChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [ChainId.RINKEBY]: '0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91',
 }
 
@@ -77,7 +77,7 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
   // [ChainId.ROPSTEN]: new Token(ChainId.ROPSTEN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   // [ChainId.GOERLI]: new Token(ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   // [ChainId.KOVAN]: new Token(ChainId.KOVAN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.XDAI]: new Token(ChainId.XDAI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'xDAI', 'xDAI'),
+  [ChainId.GNOSIS_CHAIN]: new Token(ChainId.GNOSIS_CHAIN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'xDAI', 'xDAI'),
 }
 
 export const ORDER_ID_SHORT_LENGTH = 8
@@ -122,7 +122,7 @@ export const GAS_FEE_ENDPOINTS = {
   // [ChainId.GOERLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
   // no kovan = main
   // [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
-  [ChainId.XDAI]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
+  [ChainId.GNOSIS_CHAIN]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'

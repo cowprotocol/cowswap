@@ -19,7 +19,7 @@ import { SupportedChainId } from 'constants/chains'
 // export { USDC_ARBITRUM, USDC_MAINNET, USDC_OPTIMISM, USDC_POLYGON }
 
 // MOD imports
-import { USDC_XDAI, WXDAI, XDAI_NAME, XDAI_SYMBOL } from 'utils/xdai/constants'
+import { USDC_GNOSIS_CHAIN, WXDAI, XDAI_NAME, XDAI_SYMBOL } from 'utils/gnosis_chain/constants'
 import {
   ExtendedEther,
   WRAPPED_NATIVE_CURRENCY as UNI_WRAPPED_NATIVE_CURRENCY,
@@ -60,7 +60,7 @@ export const DAI_OPTIMISM = new Token(
 ) */
 export const USDC: { [chainId in SupportedChainId]: Token } = {
   ...UNI_USDC,
-  [SupportedChainId.XDAI]: USDC_XDAI,
+  [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
   /* [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM,
   [SupportedChainId.OPTIMISM]: USDC_OPTIMISM,
@@ -224,7 +224,7 @@ export const UNI: { [chainId: number]: Token } = {
 
 export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token } = {
   ...UNI_WRAPPED_NATIVE_CURRENCY,
-  [SupportedChainId.XDAI]: WXDAI,
+  [SupportedChainId.GNOSIS_CHAIN]: WXDAI,
   /* ...WETH9,
   [SupportedChainId.OPTIMISM]: new Token(
     SupportedChainId.OPTIMISM,
@@ -270,8 +270,8 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token } = {
   ), */
 }
 
-function isGnosisChain(chainId: number): chainId is SupportedChainId.XDAI {
-  return chainId === SupportedChainId.XDAI
+function isGnosisChain(chainId: number): chainId is SupportedChainId.GNOSIS_CHAIN {
+  return chainId === SupportedChainId.GNOSIS_CHAIN
 }
 
 class GnosisChainNativeCurrency extends NativeCurrency {
@@ -314,7 +314,7 @@ export class GpEther extends Ether {
 export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedChainId]?: string } } = {
   USDC: {
     ...UNI_TOKEN_SHORTHANDS['USDC'],
-    [SupportedChainId.XDAI]: USDC_XDAI.address,
+    [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN.address,
     /*[SupportedChainId.MAINNET]: USDC_MAINNET.address,
     [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM.address,
     [SupportedChainId.OPTIMISM]: USDC_OPTIMISM.address,
