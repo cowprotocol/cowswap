@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { MenuFlyout, Content } from './styled'
 import IMAGE_CARRET_DOWN from 'assets/cow-swap/carret-down.svg'
 import SVG from 'react-inlinesvg'
+import { useMediaQuery, upToLarge } from 'hooks/useMediaQuery'
 
 interface MenuProps {
   title: string
@@ -9,10 +10,11 @@ interface MenuProps {
 }
 
 export function Menu({ title, children }: MenuProps) {
+  const isUpToLarge = useMediaQuery(upToLarge)
   const [showMenu, setShowMenu] = useState(false)
-  const handleOnClick = () => setShowMenu(!showMenu)
-  const handleMouseEnter = () => setShowMenu(true)
-  const handleMouseLeave = () => setShowMenu(false)
+  const handleOnClick = () => isUpToLarge && setShowMenu(!showMenu)
+  const handleMouseEnter = () => !isUpToLarge && setShowMenu(true)
+  const handleMouseLeave = () => !isUpToLarge && setShowMenu(false)
 
   return (
     <MenuFlyout>

@@ -94,7 +94,10 @@ export default function Header() {
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
     isOrdersPanelOpen ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
-  }, [isOrdersPanelOpen])
+    isUpToLarge && isMobileMenuOpen
+      ? document.body.classList.add('noScroll')
+      : document.body.classList.remove('noScroll')
+  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
 
   // const close = useToggleModal(ApplicationModal.MENU)
 
