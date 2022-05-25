@@ -32,6 +32,7 @@ import {
   HeaderControls,
   VCowWrapper,
 } from './styled'
+import MobileMenuIcon from './MobileMenuIcon'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import Web3Status from 'components/Web3Status'
@@ -177,6 +178,7 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
+        <MobileMenuIcon />
       </HeaderModWrapper>
     </Wrapper>
   )
