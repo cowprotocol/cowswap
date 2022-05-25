@@ -1178,10 +1178,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-0.0.9.tgz#100aced21b430b88d43d3ffb0c4018ed6efe72c0"
-  integrity sha512-4mDYIufykRBbzYr5voDNOIaCpet4FEzG8crOI+YJ105kVDV96FuIgoHr8VByFZ5VoMZUC9QLcq3lMPSFO+WsNA==
+"@cowprotocol/cow-sdk@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-0.0.11.tgz#f529dd9ceb1298decf3734d80572a788ab07097a"
+  integrity sha512-pLxvNrEA/Fc+n06e+ctKuckG0LbKUyME4plfWeCLIWAaoFJeyAyak4QdbFfFuYsMzVPuT9gYhsuTaZqf7SyRmg==
   dependencies:
     "@gnosis.pm/gp-v2-contracts" "^1.1.2"
     ajv "^8.8.2"
