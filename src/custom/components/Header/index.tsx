@@ -1,27 +1,9 @@
 import { useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-// import { ExternalLink } from 'theme'
 import { useHistory } from 'react-router-dom'
-
-import HeaderMod, {
-  Title as TitleMod,
-  HeaderLinks as HeaderLinksMod,
-  HeaderRow,
-  HeaderControls as HeaderControlsUni,
-  BalanceText as BalanceTextUni,
-  HeaderElement,
-  AccountElement as AccountElementUni,
-  // HeaderElementWrap,
-  StyledNavLink as StyledNavLinkUni,
-  StyledMenuButton,
-  HeaderFrame,
-  UNIWrapper,
-} from './HeaderMod'
-import MenuDropdown from 'components/MenuDropdown'
-import { MenuTitle, MenuSection, MenuFlyout } from 'components/MenuDropdown/styled'
-import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
+import { useDarkModeManager } from 'state/user/hooks'
 import {
   AMOUNT_PRECISION,
   DUNE_DASHBOARD_LINK,
@@ -30,16 +12,34 @@ import {
   DISCORD_LINK,
   TWITTER_LINK,
 } from 'constants/index'
-import { ExternalLink } from 'theme/components'
-import { useDarkModeManager } from 'state/user/hooks'
-import { darken } from 'polished'
-// import TwitterImage from 'assets/cow-swap/twitter.svg'
-import OrdersPanel from 'components/OrdersPanel'
-
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
+import SVG from 'react-inlinesvg'
+
+// Components
+import { ExternalLink } from 'theme/components'
+import { HeaderRow, HeaderElement } from './HeaderMod'
+import {
+  Wrapper,
+  Title,
+  LogoImage,
+  HeaderLinks,
+  HeaderModWrapper,
+  UniIcon,
+  StyledNavLink,
+  AccountElement,
+  BalanceText,
+  HeaderControls,
+  VCowWrapper,
+} from './styled'
+import MenuDropdown from 'components/MenuDropdown'
+import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import Web3Status from 'components/Web3Status'
+import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
+import CowBalanceButton from 'components/CowBalanceButton'
+
+// Assets
 import IMAGE_DOCS from 'assets/cow-swap/doc.svg'
 import IMAGE_INFO from 'assets/cow-swap/info.svg'
 import IMAGE_CODE from 'assets/cow-swap/code.svg'
@@ -50,14 +50,6 @@ import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
-import SVG from 'react-inlinesvg'
-
-//import { useUserHasAvailableClaim } from 'state/claim/hooks'
-
-// import Modal from 'components/Modal'
-// import ClaimModal from 'components/claim/ClaimModal'
-import CowBalanceButton from 'components/CowBalanceButton'
-import { transparentize } from 'polished'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -76,214 +68,6 @@ export interface LinkType {
   title: string
   path: string
 }
-
-export const StyledNavLink = styled(StyledNavLinkUni)`
-  transition: color 0.15s ease-in-out;
-  color: ${({ theme }) => darken(0.3, theme.text1)};
-
-  &:first-of-type {
-    margin: 0 12px 0 0;
-  }
-
-  &:hover,
-  &:focus {
-    color: ${({ theme }) => theme.text1};
-  }
-`
-
-const BalanceText = styled(BalanceTextUni)`
-  font-weight: 500;
-  padding: 0 6px 0 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    overflow: hidden;
-    max-width: 100px;
-    text-overflow: ellipsis;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `};
-`
-
-const HeaderControls = styled(HeaderControlsUni)`
-  justify-content: flex-end;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-width: 100%;
-    padding: 0;
-    height: auto;
-    width: 100%;
-  `};
-`
-export const Wrapper = styled.div`
-  width: 100%;
-
-  ${HeaderFrame} {
-    padding: 16px;
-    grid-template-columns: auto auto;
-    grid-gap: 16px;
-
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 10px;
-    `}
-  }
-
-  ${HeaderElement} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-    `};
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      flex-direction: initial;
-      align-items: inherit;
-    `};
-  }
-
-  ${StyledMenuButton} {
-    margin-left: 0.5rem;
-    padding: 0;
-    height: 38px;
-    width: 38px;
-  }
-`
-
-export const HeaderModWrapper = styled(HeaderMod)``
-
-const Title = styled(TitleMod)`
-  margin: 0;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text1};
-`
-
-export const HeaderLinks = styled(HeaderLinksMod)`
-  margin: 5px 0 0 0;
-
-  // Enforce uniform styling of different menu items/components
-  > ${StyledNavLink}, > ${MenuFlyout} > button {
-    font-size: 16px;
-    position: relative;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    appearance: none;
-    outline: 0;
-    margin: 0 6px;
-    padding: 6px 8px;
-    background: 0;
-    border: 0;
-    cursor: pointer;
-    background: transparent;
-    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
-
-    > svg > path {
-      fill: ${({ theme }) => transparentize(0.4, theme.text1)};
-      transition: fill 0.15s ease-in-out;
-    }
-
-    &:hover {
-      color: ${({ theme }) => theme.text1};
-      background: ${({ theme }) => transparentize(0.95, theme.text1)};
-
-      > svg > path {
-        fill: ${({ theme }) => theme.text1};
-      }
-    }
-
-    &.ACTIVE {
-      color: ${({ theme }) => theme.text1};
-    }
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: none;
-  `};
-`
-
-export const TwitterLink = styled(StyledMenuButton)`
-  > a {
-    ${({ theme }) => theme.cursor};
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  > a > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    stroke: transparent;
-  }
-
-  > a > svg > path {
-    fill: ${({ theme }) => theme.text1};
-  }
-
-  > a:hover > svg > path {
-    fill: ${({ theme }) => theme.primary1};
-  }
-`
-
-export const LogoImage = styled.div`
-  width: 190px;
-  height: 48px;
-  background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
-  margin: 0 32px 0 0;
-  position: relative;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
-    height: 34px;
-  `}
-
-  > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`
-
-export const UniIcon = styled.div`
-  display: flex;
-  position: relative;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: rotate(-5deg);
-  }
-`
-
-const VCowWrapper = styled(UNIWrapper)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
-
-const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
-  border-radius: 21px;
-  border: 1px solid transparent;
-  transition: border 0.2s ease-in-out;
-  pointer-events: auto;
-
-  &:hover,
-  &:focus {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
-  }
-
-  ${BalanceText} {
-    min-width: initial;
-  }
-`
 
 export default function Header() {
   const { account, chainId: connectedChainId } = useActiveWeb3React()
