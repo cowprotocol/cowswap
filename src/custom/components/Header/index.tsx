@@ -18,7 +18,7 @@ import HeaderMod, {
   UNIWrapper,
 } from './HeaderMod'
 import MenuDropdown from 'components/MenuDropdown'
-import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
+import { MenuTitle, MenuSection, MenuFlyout } from 'components/MenuDropdown/styled'
 import styled from 'styled-components/macro'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
@@ -158,6 +158,44 @@ const Title = styled(TitleMod)`
 
 export const HeaderLinks = styled(HeaderLinksMod)`
   margin: 5px 0 0 0;
+
+  // Enforce uniform styling of different menu items/components
+  > ${StyledNavLink}, > ${MenuFlyout} > button {
+    font-size: 16px;
+    position: relative;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    appearance: none;
+    outline: 0;
+    margin: 0 6px;
+    padding: 6px 8px;
+    background: 0;
+    border: 0;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+    color: ${({ theme }) => transparentize(0.4, theme.text1)};
+
+    > svg > path {
+      fill: ${({ theme }) => transparentize(0.4, theme.text1)};
+      transition: fill 0.15s ease-in-out;
+    }
+
+    &:hover {
+      color: ${({ theme }) => theme.text1};
+      background: ${({ theme }) => transparentize(0.95, theme.text1)};
+
+      > svg > path {
+        fill: ${({ theme }) => theme.text1};
+      }
+    }
+
+    &.ACTIVE {
+      color: ${({ theme }) => theme.text1};
+    }
+  }
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     display: none;

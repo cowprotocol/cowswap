@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro'
-import { darken } from 'polished'
 
 export const MenuFlyout = styled.ol`
   display: flex;
@@ -8,29 +7,7 @@ export const MenuFlyout = styled.ol`
   position: relative;
 
   > button {
-    font-size: 16px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    appearance: none;
-    outline: 0;
-    margin: 0 12px;
-    padding: 0;
-    background: 0;
-    border: 0;
-    cursor: pointer;
-    transition: color 0.15s ease-in-out;
-    color: ${({ theme }) => darken(0.3, theme.text1)};
-
-    &:hover,
-    &:focus {
-      color: ${({ theme }) => theme.text1};
-
-      > svg > path {
-        fill: ${({ theme }) => theme.text1};
-      }
-
+    &:hover {
       &::after {
         content: '';
         display: block;
@@ -48,11 +25,6 @@ export const MenuFlyout = styled.ol`
       width: 16px;
       height: 6px;
       object-fit: contain;
-
-      > path {
-        fill: ${({ theme }) => darken(0.3, theme.text1)};
-        transition: fill 0.15s ease-in-out;
-      }
     }
   }
 `
