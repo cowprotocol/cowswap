@@ -1,5 +1,5 @@
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { PriceInformation } from 'utils/price'
 
 function getApiUrl(): string {
   // it's all the same base url

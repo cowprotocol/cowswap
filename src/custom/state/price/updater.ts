@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
-import { FeeQuoteParams as FeeQuoteParamsFull } from 'utils/price'
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/contracts'
 
 import { useSwapState } from 'state/swap/hooks'
@@ -28,7 +28,7 @@ const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
 const UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL = 10 * 60 * 1000 // if unsupported token was added > 10min ago, re-try
 
-type FeeQuoteParams = Omit<FeeQuoteParamsFull, 'validTo'>
+type FeeQuoteParams = Omit<LegacyFeeQuoteParamsFull, 'validTo'>
 
 /**
  * Returns if the quote has been recently checked

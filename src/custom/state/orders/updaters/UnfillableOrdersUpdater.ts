@@ -9,10 +9,11 @@ import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { getBestQuote, PriceInformation } from 'utils/price'
+import { getBestQuote } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

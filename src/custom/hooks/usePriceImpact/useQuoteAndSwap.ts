@@ -10,7 +10,7 @@ import { useActiveWeb3React } from 'hooks/web3'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
-import { FeeQuoteParams, getBestQuote, QuoteResult } from 'utils/price'
+import { getBestQuote, QuoteResult } from 'utils/price'
 
 import { ZERO_ADDRESS } from 'constants/misc'
 import { SupportedChainId } from 'constants/chains'
@@ -19,6 +19,7 @@ import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { onlyResolvesLast } from 'utils/async'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
@@ -37,7 +38,7 @@ type GetQuoteParams = {
   validTo?: number
 } & WithLoading
 
-type FeeQuoteParamsWithError = FeeQuoteParams & { error?: QuoteError }
+type FeeQuoteParamsWithError = LegacyFeeQuoteParams & { error?: QuoteError }
 
 const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
 
@@ -78,7 +79,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
       chainId: chainId || SupportedChainId.MAINNET,
       validTo,
     }
-    let quoteData: QuoteInformationObject | FeeQuoteParams = quoteParams
+    let quoteData: QuoteInformationObject | LegacyFeeQuoteParams = quoteParams
     getBestQuoteResolveOnlyLastCall({
       strategy,
       quoteParams,
