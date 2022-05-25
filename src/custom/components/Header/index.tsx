@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
+import { useMediaQuery, upToLarge } from 'hooks/useMediaQuery'
 import {
   AMOUNT_PRECISION,
   DUNE_DASHBOARD_LINK,
@@ -84,6 +85,10 @@ export default function Header() {
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
+  const isUpToLarge = useMediaQuery(upToLarge)
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const handleMobileMenuOnClick = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
   // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -97,12 +102,12 @@ export default function Header() {
     <Wrapper>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href=".">
+          <Title href="." isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage />
             </UniIcon>
           </Title>
-          <HeaderLinks>
+          <HeaderLinks isMobileMenuOpen={isMobileMenuOpen}>
             <StyledNavLink to="/swap">Swap</StyledNavLink>
             <StyledNavLink to="/account">Account</StyledNavLink>
             <StyledNavLink to="/faq">FAQ</StyledNavLink>
@@ -177,8 +182,9 @@ export default function Header() {
             </AccountElement>
           </HeaderElement>
         </HeaderControls>
+
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
-        <MobileMenuIcon />
       </HeaderModWrapper>
     </Wrapper>
   )

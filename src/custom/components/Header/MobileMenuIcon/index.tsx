@@ -1,51 +1,51 @@
 import styled, { css } from 'styled-components/macro'
-import { useState } from 'react'
 
-const Wrapper = styled.div<{ isOpen: boolean }>`
+const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?: number; lineSize?: number }>`
+  z-index: 102;
   display: flex;
   cursor: pointer;
-  height: 50px;
-  margin: 0 auto;
+  margin: 0 6px;
   position: relative;
-  width: 60px;
+  width: ${({ width }) => (width ? width + 'px' : '42px')};
+  height: ${({ height }) => (height ? height + 'px' : '22px')};
 
 
   span {
     background-color: ${({ theme }) => theme.text1};
     border-radius: 3px;
-    height: 6px;
+    height: ${({ lineSize }) => (lineSize ? lineSize + 'px' : '3px')};
     position: absolute;
-    transition-duration: 150ms;
-    transition: cubic-bezier(0.8, 0.5, 0.2, 1.4);
+    transition: all 0.15s cubic-bezier(0.8, 0.5, 0.2, 1.4);
     width: 100%;
+    margin: auto;
   }
 
   span:nth-child(1) {
-    left: 0px;
-    top: 0px;
-    transition-duration: 150ms;
+    left: 0;
+    top: 0;
   }
 
   span:nth-child(2) {
-    left: 0px;
+    left: 0;
     opacity: 1;
-    top: 21px;
+    top: 50%;
+    bottom: 50%;
   }
 
   span:nth-child(3) {
-    bottom: 0px;
-    left: 0px;
-    transition-duration: 150ms;
+    bottom: 0;
+    left: 0;
+    width: 75%;
   }
 
 
-  ${({ isOpen }) =>
-    isOpen &&
+  ${({ isMobileMenuOpen }) =>
+    isMobileMenuOpen &&
     css`
       span:nth-child(1) {
-        top: 21px;
         transform: rotate(45deg);
-        transition-duration: 150ms;
+        top: 50%;
+        bottom: 50%;
       }
 
       span:nth-child(2) {
@@ -53,21 +53,27 @@ const Wrapper = styled.div<{ isOpen: boolean }>`
       }
 
       span:nth-child(3) {
-        top: 21px;
         transform: rotate(-45deg);
-        transition-duration: 150ms;
+        top: 50%;
+        bottom: 50%;
+        width: 100%;
       }
     `};
   
 }
 `
 
-export default function MobileMenuIcon() {
-  const [isOpen, setIsOpen] = useState(false)
-  const handleOnClick = () => setIsOpen(!isOpen)
+interface IconProps {
+  isMobileMenuOpen: boolean
+  width?: number
+  height?: number
+  lineSize?: number
+  onClick: () => void
+}
 
+export default function MobileMenuIcon({ isMobileMenuOpen, width, height, lineSize, onClick }: IconProps) {
   return (
-    <Wrapper onClick={handleOnClick} isOpen={isOpen}>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen} width={width} height={height} lineSize={lineSize} onClick={onClick}>
       <span></span>
       <span></span>
       <span></span>

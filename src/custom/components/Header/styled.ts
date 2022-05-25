@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { transparentize, darken } from 'polished'
 import HeaderMod, {
   Title as TitleMod,
@@ -87,14 +87,23 @@ export const Wrapper = styled.div`
 
 export const HeaderModWrapper = styled(HeaderMod)``
 
-export const Title = styled(TitleMod)`
+export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   margin: 0;
   text-decoration: none;
   color: ${({ theme }) => theme.text1};
+
+  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
+    ${
+      isMobileMenuOpen &&
+      css`
+        z-index: 101;
+      `
+    }
+  `};
 `
 
-export const HeaderLinks = styled(HeaderLinksMod)`
-  margin: 5px 0 0 0;
+export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>`
+  margin: 0;
 
   // Enforce uniform styling of different menu items/components
   > ${StyledNavLink}, > ${MenuFlyout} > button {
@@ -115,6 +124,11 @@ export const HeaderLinks = styled(HeaderLinksMod)`
     transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
     color: ${({ theme }) => transparentize(0.4, theme.text1)};
 
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      width: 100%;
+      margin: 0;
+    `};
+
     > svg > path {
       fill: ${({ theme }) => transparentize(0.4, theme.text1)};
       transition: fill 0.15s ease-in-out;
@@ -134,8 +148,27 @@ export const HeaderLinks = styled(HeaderLinksMod)`
     }
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    background: ${({ theme }) => theme.bg4};
+    outline: 0;
+    padding: 72px 8px;
+    overflow-y: auto;
+
+    ${
+      isMobileMenuOpen &&
+      css`
+        display: block;
+        // transform: translate3d(100%, 0, 0);
+      `
+    }
   `};
 `
 
