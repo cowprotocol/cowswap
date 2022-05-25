@@ -5,6 +5,7 @@ import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'cons
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
+import ms from 'ms.macro'
 
 export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
@@ -152,3 +153,11 @@ export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
 // They are fixed and will never change.
 export const LOCKED_GNO_VESTING_START_TIME = 1644584715000
 export const LOCKED_GNO_VESTING_DURATION = 126144000000 // 4 years
+
+export const SWR_OPTIONS = {
+  refreshInterval: ms`30s`,
+  dedupingInterval: ms`10s`,
+  // don't revalidate data on focus, can cause too many re-renders
+  // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
+  revalidateOnFocus: false,
+}
