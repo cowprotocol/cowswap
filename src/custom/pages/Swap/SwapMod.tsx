@@ -960,9 +960,6 @@ export default function Swap({
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>
-      <AlertWrapper>
-        <NetworkAlert />
-      </AlertWrapper>
       {/*<SwitchLocaleLink />*/}
       {!swapIsUnsupported ? null : !isSupportedWallet ? (
         <UnsupportedCurrencyFooter
@@ -982,6 +979,9 @@ export default function Swap({
       ) : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}
+      <AlertWrapper>
+        <NetworkAlert />
+      </AlertWrapper>
     </>
   )
 }
