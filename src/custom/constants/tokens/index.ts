@@ -124,7 +124,7 @@ const GNO_RINKEBY = new Token(
   'Gnosis'
 )
 const GNO_GOERLI = new Token(
-  SupportedChainId.RINKEBY,
+  SupportedChainId.GOERLI,
   '0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c', // TODO: update with real goerli address
   18,
   'GNO',
