@@ -761,10 +761,6 @@ export default function Swap({
                   <Trans>Unsupported Token</Trans>
                 </ThemedText.Main>
               </ButtonPrimary>
-            ) : !account ? (
-              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>
@@ -822,6 +818,10 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
               </GreyCard>
+            ) : !account ? (
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+              </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">
