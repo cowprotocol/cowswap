@@ -152,13 +152,12 @@ export default createReducer(initialState, (builder) =>
       initializeState(quotes, action)
 
       // Sets the error information
-      const quoteInformation = quotes[chainId][sellToken]
-      if (quoteInformation) {
-        quotes[chainId][sellToken] = {
-          ...quoteInformation,
-          ...payload,
-          price: getResetPrice(sellToken, buyToken, kind),
-        }
+      const quoteInformation = quotes[chainId][sellToken] || {}
+      quotes[chainId][sellToken] = {
+        ...quoteInformation,
+        ...payload,
+        price: getResetPrice(sellToken, buyToken, kind),
+        lastCheck: Date.now(),
       }
 
       // Stop the loaders
