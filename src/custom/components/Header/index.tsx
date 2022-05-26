@@ -15,6 +15,7 @@ import {
 } from 'constants/index'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
+import { toggleBodyClass } from 'utils/toggleBodyClass'
 import SVG from 'react-inlinesvg'
 
 // Components
@@ -93,10 +94,8 @@ export default function Header() {
   // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isOrdersPanelOpen ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
-    isUpToLarge && isMobileMenuOpen
-      ? document.body.classList.add('noScroll')
-      : document.body.classList.remove('noScroll')
+    isOrdersPanelOpen ? toggleBodyClass('noScroll', true) : toggleBodyClass('noScroll', false)
+    isUpToLarge && isMobileMenuOpen ? toggleBodyClass('noScroll', true) : toggleBodyClass('noScroll', false)
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
 
   // const close = useToggleModal(ApplicationModal.MENU)
