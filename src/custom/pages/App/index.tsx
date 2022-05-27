@@ -58,13 +58,13 @@ export const BodyWrapper = styled.div`
   flex: auto;
   z-index: 1;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 0 10px 0;
-  `}
-
   ${({ theme }) => theme.mediaWidth.upToExtraLarge`
     padding-top: 5vh;
     align-items: flex-start;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 0;
   `}
 `
 

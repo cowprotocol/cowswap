@@ -4,16 +4,16 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   z-index: 102;
   display: flex;
   cursor: pointer;
-  margin: 0 6px;
+  margin: 0 6px 0 16px;
   position: relative;
-  width: ${({ width }) => (width ? width + 'px' : '42px')};
-  height: ${({ height }) => (height ? height + 'px' : '22px')};
+  width: ${({ width }) => (width ? width + 'px' : '34px')};
+  height: ${({ height }) => (height ? height + 'px' : '18px')};
 
 
   span {
     background-color: ${({ theme }) => theme.text1};
     border-radius: 3px;
-    height: ${({ lineSize }) => (lineSize ? lineSize + 'px' : '3px')};
+    height: ${({ lineSize }) => (lineSize ? lineSize + 'px' : '2px')};
     position: absolute;
     transition: all 0.15s cubic-bezier(0.8, 0.5, 0.2, 1.4);
     width: 100%;

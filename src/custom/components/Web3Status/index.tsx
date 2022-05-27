@@ -11,12 +11,16 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
-  padding: 1px;
   height: 40px;
-  border: 1px solid transparent;
   width: 100%;
   display: flex;
   justify-content: center;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: auto;
+    height: 100%;
+    margin: 0 0 0 auto;
+  `};
 
   button {
     height: auto;
@@ -25,8 +29,8 @@ export const Wrapper = styled.div`
     width: max-content;
 
     ${({ theme }) => theme.mediaWidth.upToVerySmall`
-        max-width: 100%;
-      `};
+      max-width: 100%;
+    `};
 
     > p {
       margin: 0;

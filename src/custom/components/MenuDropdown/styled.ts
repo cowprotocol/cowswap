@@ -31,7 +31,7 @@ export const MenuFlyout = styled.ol`
       object-fit: contain;
     }
 
-    > svg.show {
+    > svg.expanded {
       transition: transform 0.3s ease-in-out;
       transform: rotate(180deg);
     }

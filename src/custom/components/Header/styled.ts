@@ -5,11 +5,11 @@ import HeaderMod, {
   HeaderLinks as HeaderLinksMod,
   HeaderControls as HeaderControlsUni,
   BalanceText as BalanceTextUni,
-  HeaderElement,
   AccountElement as AccountElementUni,
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
+  HeaderElement as HeaderElementUni,
   UNIWrapper,
 } from './HeaderMod'
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'components/MenuDropdown/styled'
@@ -51,9 +51,27 @@ export const HeaderControls = styled(HeaderControlsUni)`
     margin: 0 0 0 auto;
     padding: 0;
     height: auto;
+    width: auto;
+  `};
+`
+
+export const HeaderElement = styled(HeaderElementUni)`
+  border-radius: 0;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: initial;
+    align-items: inherit;
+    position: fixed;
+    left: 0;
+    bottom: 0;
     width: 100%;
   `};
 `
+
 export const Wrapper = styled.div`
   width: 100%;
 
@@ -68,17 +86,6 @@ export const Wrapper = styled.div`
     ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       padding: 10px;
     `}
-  }
-
-  ${HeaderElement} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-    `};
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      flex-direction: initial;
-      align-items: inherit;
-    `};
   }
 
   ${StyledMenuButton} {
@@ -308,6 +315,13 @@ export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   border: 1px solid transparent;
   transition: border 0.2s ease-in-out;
   pointer-events: auto;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    border-radius: 0;
+    height: 64px;
+    background-color: ${({ theme }) => theme.bg4};
+    padding: 12px 16px;
+  `}
 
   &:hover,
   &:focus {
