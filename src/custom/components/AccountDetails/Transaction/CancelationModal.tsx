@@ -12,7 +12,7 @@ import {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { CancellationSummary } from './styled'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 
 import { shortenOrderId } from 'utils'
 

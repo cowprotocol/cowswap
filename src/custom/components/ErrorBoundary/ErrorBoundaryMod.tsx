@@ -18,7 +18,7 @@ import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
 import { DISCORD_LINK, CODE_LINK } from 'constants/index'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 
 /* const FallbackWrapper = styled.div`
   display: flex;

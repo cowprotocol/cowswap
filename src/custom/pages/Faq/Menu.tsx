@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { Menu } from './styled'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 
 const LINKS = [
   { title: 'General', url: Routes.FAQ },

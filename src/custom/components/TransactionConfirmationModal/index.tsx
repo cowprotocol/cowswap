@@ -21,7 +21,7 @@ import { ColumnCenter } from 'components/Column'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 
 const Wrapper = styled.div`
   width: 100%;

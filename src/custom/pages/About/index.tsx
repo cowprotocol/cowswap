@@ -8,7 +8,7 @@ import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 

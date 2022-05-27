@@ -10,7 +10,7 @@ import {
   FLASHBOTS_LINK,
 } from 'constants/index'
 import Page, { Content } from 'components/Page'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
 import { StyledInternalLink } from 'theme'

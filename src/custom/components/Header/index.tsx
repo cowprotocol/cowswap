@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { Routes } from 'pages/App'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
@@ -39,7 +40,6 @@ import CowBalanceButton from 'components/CowBalanceButton'
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
-import { Routes } from 'pages/App'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',

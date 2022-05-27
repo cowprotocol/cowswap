@@ -6,7 +6,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()
