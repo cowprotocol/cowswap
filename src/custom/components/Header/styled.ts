@@ -310,7 +310,7 @@ export const UniIcon = styled.div`
 export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
   border-radius: 21px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   transition: border 0.2s ease-in-out;
   pointer-events: auto;
 

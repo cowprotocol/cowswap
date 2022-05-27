@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { Routes } from 'pages/App'
+import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
@@ -106,7 +106,7 @@ export default function Header() {
               return (
                 <MenuSection key={index}>
                   <MenuTitle>{sectionTitle}</MenuTitle>
-                  {links.map(({ title, url, externalURL, icon, action }, index) => {
+                  {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => {
                     return action && action === 'setColorMode' ? (
                       <button
                         key={index}
@@ -115,24 +115,28 @@ export default function Header() {
                           handleMobileMenuOnClick()
                         }}
                       >
-                        {darkMode ? (
-                          <>
-                            <SVG src={IMAGE_SUN} description="Sun light mode icon" /> Light
-                          </>
-                        ) : (
-                          <>
-                            <SVG src={IMAGE_MOON} description="Moon dark mode icon" /> Dark
-                          </>
-                        )}{' '}
-                        Mode
+                        <SVG
+                          src={darkMode ? IMAGE_SUN : IMAGE_MOON}
+                          description={`${darkMode ? 'Sun/light mode' : 'Moon/dark'} mode icon`}
+                        />{' '}
+                        {darkMode ? 'Light' : 'Dark'} Mode
                       </button>
                     ) : !externalURL && url ? (
                       <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
-                        {icon && <SVG src={icon} description={`${title} icon`} />} {title}
+                        {iconSVG ? (
+                          <SVG src={iconSVG} description={`${title} icon`} />
+                        ) : icon ? (
+                          <img src={icon} alt={`${title} icon`} />
+                        ) : null}{' '}
+                        {title}
                       </StyledNavLink>
                     ) : url ? (
                       <ExternalLink key={index} href={url} onClickOptional={handleMobileMenuOnClick}>
-                        {icon && <SVG src={icon} description={`${title} icon`} />} {title}
+                        {iconSVG ? (
+                          <SVG src={iconSVG} description={`${title} icon`} />
+                        ) : icon ? (
+                          <img src={icon} alt={`${title} icon`} />
+                        ) : null}{' '}
                       </ExternalLink>
                     ) : null
                   })}
@@ -144,8 +148,6 @@ export default function Header() {
       ),
     [darkMode, handleMobileMenuOnClick, toggleDarkMode]
   )
-
-  // const close = useToggleModal(ApplicationModal.MENU)
 
   return (
     <Wrapper>

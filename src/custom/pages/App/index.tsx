@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
 import { Suspense, lazy } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+import { Routes } from 'constants/routes'
 
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
@@ -45,31 +46,6 @@ if (SENTRY_DSN) {
     // We recommend adjusting this value in production
     tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE ? Number(SENTRY_TRACES_SAMPLE_RATE) : 1.0,
   })
-}
-
-// ENUM with routes
-export enum Routes {
-  HOME = '/',
-  SWAP = '/swap',
-  SWAP_OUTPUT_CURRENCY = '/swap/:outputCurrency',
-  SEND = '/send',
-  ACCOUNT = '/account',
-  ABOUT = '/about',
-  PRIVACY_POLICY = '/privacy-policy',
-  COOKIE_POLICY = '/cookie-policy',
-  TERMS_CONDITIONS = '/terms-and-conditions',
-  FAQ = '/faq',
-  FAQ_PROTOCOL = '/faq/protocol',
-  FAQ_TOKEN = '/faq/protocol',
-  FAQ_TRADING = '/faq/trading',
-  FAQ_AFFILIATE = '/faq/affiliate',
-  PLAY_COWRUNNER = '/play/cow-runner',
-  PLAY_MEVSLICER = '/play/mev-slicer',
-  ANYSWAP_AFFECTED = '/anyswap-affected-users',
-  CHAT = '/chat',
-  DOCS = '/docs',
-  STATS = '/stats',
-  TWITTER = '/twitter',
 }
 
 export const Wrapper = styled(AppMod)``

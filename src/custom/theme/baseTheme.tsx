@@ -282,7 +282,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     wallet: {
       color: darkMode ? colorsTheme.text1 : colorsTheme.text1,
-      background: darkMode ? colorsTheme.bg3 : colorsTheme.bg2,
+      background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
 }

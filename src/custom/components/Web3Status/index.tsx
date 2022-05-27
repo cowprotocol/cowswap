@@ -14,6 +14,8 @@ export const Wrapper = styled.div`
   height: 40px;
   width: 100%;
   display: flex;
+  padding: 0;
+  margin: 0;
   justify-content: center;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
