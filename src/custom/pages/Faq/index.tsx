@@ -10,6 +10,7 @@ import {
   FLASHBOTS_LINK,
 } from 'constants/index'
 import Page, { Content } from 'components/Page'
+import { Routes } from 'pages/App'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
 import { StyledInternalLink } from 'theme'
@@ -37,7 +38,7 @@ export function Footer() {
         </ExternalLinkFaq>{' '}
         <br />
         <br />
-        We really hope you like CowSwap. If you do,&nbsp;<Link to="/">Milk it!</Link>
+        We really hope you like CowSwap. If you do,&nbsp;<Link to={Routes.HOME}>Milk it!</Link>
         <span role="img" aria-label="glass of milk">
           🥛
         </span>
@@ -179,7 +180,7 @@ export default function Faq() {
             protocols or dapps, your use is at your own risk.{' '}
             <strong>
               Please review our{' '}
-              <StyledInternalLink to="/terms-and-conditions">
+              <StyledInternalLink to={Routes.TERMS_CONDITIONS}>
                 <strong>Terms and Conditions</strong>
               </StyledInternalLink>
               .

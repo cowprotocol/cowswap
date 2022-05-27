@@ -18,6 +18,7 @@ import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
 import { DISCORD_LINK, CODE_LINK } from 'constants/index'
+import { Routes } from 'pages/App'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -173,7 +174,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
         <AppWrapper>
           <HeaderWrapper>
             <HeaderRow marginRight="0">
-              <a href=".">
+              <a href={Routes.HOME}>
                 <UniIcon>
                   <LogoImage />
                 </UniIcon>

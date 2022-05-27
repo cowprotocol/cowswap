@@ -8,6 +8,7 @@ import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
+import { Routes } from 'pages/App'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 
@@ -103,7 +104,7 @@ export default function About() {
 
         <h3>Do you want to know more?</h3>
         <p>
-          Head over to the <Link to="/faq">FAQ</Link>
+          Head over to the <Link to={Routes.FAQ}>FAQ</Link>
         </p>
       </Content>
     </Wrapper>

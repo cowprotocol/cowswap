@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
-import { useMediaQuery, upToLarge } from 'hooks/useMediaQuery'
+import { useMediaQuery, upToSmall, upToLarge } from 'hooks/useMediaQuery'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { MAIN_MENU, MAIN_MENU_TYPE } from 'constants/mainMenu'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -27,7 +27,6 @@ import {
   BalanceText,
   HeaderControls,
   HeaderElement,
-  VCowWrapper,
 } from './styled'
 import MobileMenuIcon from './MobileMenuIcon'
 import MenuDropdown from 'components/MenuDropdown'
@@ -40,6 +39,7 @@ import CowBalanceButton from 'components/CowBalanceButton'
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
+import { Routes } from 'pages/App'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -74,6 +74,7 @@ export default function Header() {
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToSmall = useMediaQuery(upToSmall)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(
@@ -150,7 +151,7 @@ export default function Header() {
     <Wrapper>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href="." isMobileMenuOpen={isMobileMenuOpen}>
+          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
@@ -162,9 +163,13 @@ export default function Header() {
           <NetworkSelector />
 
           <HeaderElement>
-            <VCowWrapper>
-              <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
-            </VCowWrapper>
+            <CowBalanceButton
+              onClick={handleBalanceButtonClick}
+              account={account}
+              chainId={chainId}
+              isUpToSmall={isUpToSmall}
+            />
+
             <AccountElement active={!!account} onClick={openOrdersPanel}>
               {account && userEthBalance && (
                 <BalanceText>

@@ -27,18 +27,6 @@ export const Wrapper = styled.div`
     border-radius: 21px;
     padding: 6px 12px;
     width: max-content;
-
-    ${({ theme }) => theme.mediaWidth.upToVerySmall`
-      max-width: 100%;
-    `};
-
-    > p {
-      margin: 0;
-
-      ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-        font-size: 13px;
-      `};
-    }
   }
 
   ${Web3StatusConnected} {
@@ -61,10 +49,6 @@ export const Wrapper = styled.div`
   }
 
   ${Text} {
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      font-size: 13px;
-      margin: 0 0.5rem 0 0.25rem;
-    `}
   }
 `
 

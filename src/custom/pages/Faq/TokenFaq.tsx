@@ -6,6 +6,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
+import { Routes } from 'pages/App'
 
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()
@@ -52,10 +53,10 @@ export default function TokenFaq() {
           </h3>
           <p>
             {' '}
-            Directly in the CowSwap UI. Simply click on the <Link to="/account">account</Link> menu item at the top left
-            of the page (desktop) or in the mobile menu. You then will be redirected to the{' '}
-            <Link to="/account">account</Link> page where you can see your total COW and/or vCOW balance. You will then
-            be able to convert your vCOW to COW (if applicable).
+            Directly in the CowSwap UI. Simply click on the <Link to={Routes.ACCOUNT}>account</Link> menu item at the
+            top left of the page (desktop) or in the mobile menu. You then will be redirected to the{' '}
+            <Link to={Routes.ACCOUNT}>account</Link> page where you can see your total COW and/or vCOW balance. You will
+            then be able to convert your vCOW to COW (if applicable).
           </p>
 
           <h3 id="what-is-the-purpose-of-cow-token">What is the purpose of COW Token?</h3>

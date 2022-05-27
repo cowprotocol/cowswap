@@ -7,6 +7,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
+import { Routes } from 'pages/App'
 
 export default function AffiliateFaq() {
   const { toc, faqRef } = useToC()
@@ -22,8 +23,8 @@ export default function AffiliateFaq() {
           <h3 id="what-is-the-account-page">What is the Account page?</h3>
 
           <p>
-            The <Link to="/account">account</Link> page is where you can see your number of trades and volume, generated
-            with the wallet you&amp;re connected with.
+            The <Link to={Routes.ACCOUNT}>account</Link> page is where you can see your number of trades and volume,
+            generated with the wallet you&amp;re connected with.
           </p>
 
           <p>
@@ -144,7 +145,8 @@ export default function AffiliateFaq() {
           </h3>
 
           <p>
-            The number of trades on the <Link to="/account">account</Link> page is calculated based on on-chain data.
+            The number of trades on the <Link to={Routes.ACCOUNT}>account</Link> page is calculated based on on-chain
+            data.
           </p>
           <p>We have two publicly facing interfaces where both use the same contracts, which are:</p>
           <ul>

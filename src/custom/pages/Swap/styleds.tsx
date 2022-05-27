@@ -17,4 +17,9 @@ export const StyledAppBody = styled(AppBody)`
   border: ${({ theme }) => theme.appBody.border};
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
   background: ${({ theme }) => theme.bg1};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    border: ${({ theme }) => theme.appBody.borderMobile};
+    box-shadow: ${({ theme }) => theme.appBody.boxShadowMobile};
+  `};
 `

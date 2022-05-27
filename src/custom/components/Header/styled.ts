@@ -10,7 +10,6 @@ import HeaderMod, {
   StyledMenuButton,
   HeaderFrame,
   HeaderElement as HeaderElementUni,
-  UNIWrapper,
 } from './HeaderMod'
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'components/MenuDropdown/styled'
 
@@ -45,6 +44,7 @@ export const BalanceText = styled(BalanceTextUni)`
 
 export const HeaderControls = styled(HeaderControlsUni)`
   justify-content: flex-end;
+  gap: 12px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     max-width: 100%;
@@ -57,19 +57,23 @@ export const HeaderControls = styled(HeaderControlsUni)`
 
 export const HeaderElement = styled(HeaderElementUni)`
   border-radius: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
+  gap: 12px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: initial;
-    align-items: inherit;
+    flex-direction: row;
+    justify-content: flex-end;
     position: fixed;
-    left: 0;
     bottom: 0;
+    left: 0;
     width: 100%;
-  `};
+    border-radius: 0;
+    height: 64px;
+    background-color: ${({ theme }) => transparentize(0.1, theme.bg3)};
+    border-top: 1px solid ${({ theme }) => transparentize(0.7, theme.border)};
+    backdrop-filter: blur(21px);
+    padding: 10px 16px;
+    gap: 8px;
+  `}
 `
 
 export const Wrapper = styled.div`
@@ -303,12 +307,6 @@ export const UniIcon = styled.div`
   }
 `
 
-export const VCowWrapper = styled(UNIWrapper)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
-
 export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
   border-radius: 21px;
@@ -317,10 +315,8 @@ export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   pointer-events: auto;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    border-radius: 0;
-    height: 64px;
-    background-color: ${({ theme }) => theme.bg4};
-    padding: 12px 16px;
+    width: auto;
+    height: 100%;
   `}
 
   &:hover,

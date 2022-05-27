@@ -21,6 +21,15 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   pointer-events: auto;
   transition: border 0.2s ease-in-out;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 100%;
+    padding: 6px 12px 6px 8px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 6px 8px;
+  `};
+
   &:hover {
     border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
   }
@@ -76,11 +85,12 @@ interface CowBalanceButtonProps {
   account?: string | null | undefined
   chainId: ChainId | undefined
   onClick?: () => void
+  isUpToSmall?: boolean
 }
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
-export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
+export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
   const { balance, isLoading } = useCombinedBalance()
 
   const formattedBalance = formatSmartLocaleAware(balance, AMOUNT_PRECISION)
@@ -89,9 +99,11 @@ export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>
       <CowProtocolLogo />
-      <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
-        <Trans>{formattedBalance || 0}</Trans>
-      </b>
+      {!isUpToSmall && (
+        <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
+          <Trans>{formattedBalance || 0}</Trans>
+        </b>
+      )}
     </Wrapper>
   )
 }

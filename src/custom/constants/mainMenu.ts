@@ -1,4 +1,5 @@
 import { DUNE_DASHBOARD_LINK, CONTRACTS_CODE_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
+import { Routes } from 'pages/App'
 
 // Assets
 import IMAGE_DOCS from 'assets/cow-swap/doc.svg'
@@ -27,9 +28,9 @@ export interface MAIN_MENU_TYPE {
 }
 
 export const MAIN_MENU = [
-  { title: 'Swap', url: '/swap' },
-  { title: 'Account', url: '/account' },
-  { title: 'FAQ', url: '/faq' },
+  { title: 'Swap', url: Routes.SWAP },
+  { title: 'Account', url: Routes.ACCOUNT },
+  { title: 'FAQ', url: Routes.FAQ },
   {
     title: 'More',
     items: [
@@ -37,7 +38,7 @@ export const MAIN_MENU = [
         sectionTitle: 'Overview',
         links: [
           { title: 'Documentation', url: DOCS_LINK, externalURL: true, icon: IMAGE_DOCS },
-          { title: 'About', url: '/about', icon: IMAGE_INFO },
+          { title: 'About', url: Routes.ABOUT, icon: IMAGE_INFO },
           { title: 'Statistics', url: DUNE_DASHBOARD_LINK, externalURL: true, icon: IMAGE_PIE },
           { title: 'Contract', url: CONTRACTS_CODE_LINK, externalURL: true, icon: IMAGE_CODE },
         ],
@@ -53,8 +54,8 @@ export const MAIN_MENU = [
         sectionTitle: 'Other',
         links: [
           { action: 'setColorMode' },
-          { title: 'CoW Runner', url: '/play/cow-runner', icon: IMAGE_GAME },
-          { title: 'MEV Slicer', url: '/play/mev-slicer', icon: IMAGE_SLICER },
+          { title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
+          { title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
         ],
       },
     ],
