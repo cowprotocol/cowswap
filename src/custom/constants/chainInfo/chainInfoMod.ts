@@ -10,6 +10,7 @@ import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from 'consta
 // MOD imports
 import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg'
 import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg'
+import GoerliLogo from 'assets/cow-swap/network-goerli-logo.svg'
 import GnosisChainLogo from 'assets/cow-swap/network-gnosis-chain-logo.svg'
 import { CHAIN_INFO as UNI_CHAIN_INFO, NetworkType } from '@src/constants/chainInfo'
 
@@ -97,7 +98,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     explorer: 'https://goerli.etherscan.io/',
     infoLink: 'https://cow.fi/',
     label: 'Görli',
-    logoUrl: RinkebyLogo, // TODO: should we change this
+    logoUrl: GoerliLogo,
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
   },
   /* [SupportedChainId.OPTIMISM]: {
