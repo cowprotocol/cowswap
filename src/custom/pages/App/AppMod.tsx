@@ -32,7 +32,6 @@ import { OpenClaimAddressModalAndRedirectToSwap, RedirectPathToSwapOnly, Redirec
 
 // MOD imports
 import ReferralLinkUpdater from 'state/affiliate/updater'
-import URLWarning from 'components/Header/URLWarning'
 import Footer from 'components/Footer'
 import { BodyWrapper } from '.'
 import * as CSS from 'csstype' // mod
@@ -117,7 +116,6 @@ export default function App(props?: { children?: ReactNode }) {
       <Route component={ApeModeQueryParamReader} />
       <Web3ReactManager>
         <AppWrapper bgBlur={bgBlur}>
-          <URLWarning />
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
