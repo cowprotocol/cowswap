@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
   ${SelectorControls} {
     border-radius: 21px;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     padding: 6px;
     transition: border 0.2s ease-in-out;
 
@@ -31,7 +31,7 @@ const Wrapper = styled.div`
     }
 
     &:hover {
-      border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+      border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
     }
   }
 `

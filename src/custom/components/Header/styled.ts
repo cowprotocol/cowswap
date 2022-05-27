@@ -130,8 +130,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     font-weight: 500;
     appearance: none;
     outline: 0;
-    margin: 0 6px;
-    padding: 6px 8px;
+    margin: 0 4px;
+    padding: 8px 12px;
     background: 0;
     border: 0;
     cursor: pointer;
@@ -321,7 +321,7 @@ export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
 
   &:hover,
   &:focus {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   }
 
   ${BalanceText} {

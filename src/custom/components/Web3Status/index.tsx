@@ -36,6 +36,7 @@ export const Wrapper = styled.div`
     color: ${({ theme }) => theme.wallet?.color};
     background: ${({ theme }) => theme.wallet?.background};
     height: 100%;
+    width: 100%;
     border: 0;
     box-shadow: none;
     padding: 6px 8px;

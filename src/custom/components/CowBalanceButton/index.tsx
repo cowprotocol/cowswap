@@ -12,7 +12,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: ${({ theme }) => theme.bg4};
   color: ${({ theme }) => theme.text1};
   padding: 7px 12px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -31,7 +31,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   `};
 
   &:hover {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   }
 
   ${({ theme, isLoading }) =>
