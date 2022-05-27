@@ -36,7 +36,7 @@ export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   [ChainId.RINKEBY]: [BA_LIST],
   // [ChainId.ROPSTEN]: [BA_LIST],
   // [ChainId.GOERLI]: [BA_LIST],
-  [ChainId.XDAI]: [BA_LIST],
+  [ChainId.GNOSIS_CHAIN]: [BA_LIST],
 }
 
 function buildNetworkDefaultLists({ networkLists, chainId }: { chainId: ChainId; networkLists: string[] }) {
@@ -81,8 +81,8 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   //   chainId: ChainId.GOERLI,
   //   networkLists: [COMPOUND_LIST],
   // }),
-  [ChainId.XDAI]: buildNetworkDefaultLists({
-    chainId: ChainId.XDAI,
+  [ChainId.GNOSIS_CHAIN]: buildNetworkDefaultLists({
+    chainId: ChainId.GNOSIS_CHAIN,
     networkLists: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   }),
 }
@@ -93,7 +93,7 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
   // [ChainId.KOVAN]: [GEMINI_LIST],
   [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
   // [ChainId.ROPSTEN]: [GEMINI_LIST],
-  [ChainId.XDAI]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
+  [ChainId.GNOSIS_CHAIN]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   // [ChainId.GOERLI]: [GEMINI_LIST],
 }
 

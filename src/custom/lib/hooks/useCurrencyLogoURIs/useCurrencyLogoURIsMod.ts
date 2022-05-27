@@ -19,7 +19,7 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
     case SupportedChainId.MAINNET:
       return 'ethereum'
     // mod
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return 'xdai'
     /* case SupportedChainId.ARBITRUM_ONE:
       return 'arbitrum'
@@ -33,7 +33,7 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
 function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MAINNET): string {
   switch (chainId) {
     // mod
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return XDaiLogo
     /*case SupportedChainId.POLYGON_MUMBAI:
     case SupportedChainId.POLYGON:
@@ -46,7 +46,7 @@ function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MAINNET):
 function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedChainId.MAINNET): string | void {
   const networkName = chainIdToNetworkName(chainId)
   // const networksWithUrls = [SupportedChainId.ARBITRUM_ONE, SupportedChainId.MAINNET, SupportedChainId.OPTIMISM]
-  const networksWithUrls = [SupportedChainId.MAINNET, SupportedChainId.XDAI]
+  const networksWithUrls = [SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN]
   if (networksWithUrls.includes(chainId)) {
     return `https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/${networkName}/assets/${address}/logo.png`
   }
