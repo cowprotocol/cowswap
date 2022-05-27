@@ -39,7 +39,7 @@ export const MAIN_MENU = [
         sectionTitle: 'Overview',
         links: [
           { title: 'Documentation', url: DOCS_LINK, externalURL: true, iconSVG: IMAGE_DOCS },
-          { title: 'About', url: Routes.ABOUT, icon: IMAGE_INFO },
+          { title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
           { title: 'Statistics', url: DUNE_DASHBOARD_LINK, externalURL: true, iconSVG: IMAGE_PIE },
           { title: 'Contract', url: CONTRACTS_CODE_LINK, externalURL: true, iconSVG: IMAGE_CODE },
         ],

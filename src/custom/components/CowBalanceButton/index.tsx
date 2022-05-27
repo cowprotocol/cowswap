@@ -4,25 +4,26 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useCombinedBalance } from 'state/cowToken/hooks'
 import { ChainId } from 'state/lists/actions/actionsMod'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { transparentize } from 'polished'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: ${({ theme }) => theme.bg4};
   color: ${({ theme }) => theme.text1};
-  padding: 7px 12px;
+  padding: 6px 12px;
   border: 2px solid transparent;
   font-weight: 500;
+  width: auto;
   display: flex;
   align-items: center;
   position: relative;
   border-radius: 21px;
   pointer-events: auto;
-  transition: border 0.2s ease-in-out;
+  transition: width 0.2s ease-in-out, border 0.2s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;
+    width: auto;
     padding: 6px 12px 6px 8px;
   `};
 
@@ -93,7 +94,7 @@ const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
   const { balance, isLoading } = useCombinedBalance()
 
-  const formattedBalance = formatSmartLocaleAware(balance, AMOUNT_PRECISION)
+  const formattedBalance = formatSmartLocaleAware(balance, 0)
   const formattedMaxBalance = formatMax(balance, COW_DECIMALS)
 
   return (

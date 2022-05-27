@@ -137,6 +137,7 @@ export default function Header() {
                         ) : icon ? (
                           <img src={icon} alt={`${title} icon`} />
                         ) : null}{' '}
+                        {title}
                       </ExternalLink>
                     ) : null
                   })}

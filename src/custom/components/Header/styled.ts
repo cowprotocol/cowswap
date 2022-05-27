@@ -143,7 +143,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       width: 100%;
       border-radius: 0;
       margin: 0;
-      padding: 28px 16px;
+      font-weight: 600;
+      font-size: 17px;
+      padding: 28px 10px;
+      color: ${({ theme }) => theme.text1};
       border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
     `};
 
@@ -156,9 +159,23 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       color: ${({ theme }) => theme.text1};
       background: ${({ theme }) => transparentize(0.95, theme.text1)};
 
+      ${({ theme }) => theme.mediaWidth.upToLarge`
+        background: transparent;
+      `};
+
       > svg > path {
         fill: ${({ theme }) => theme.text1};
       }
+    }
+
+    &.expanded {
+      border: 0;
+    }
+
+    &.expanded + ${MenuContent} {
+      ${({ theme }) => theme.mediaWidth.upToLarge`
+        border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+      `};
     }
 
     &.ACTIVE {
@@ -180,14 +197,16 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
   ${MenuContent} {
     ${({ theme }) => theme.mediaWidth.upToLarge`
-      padding: 28px 16px;
-      gap: 42px;
+      padding: 8px 10px 28px;
+      gap: 36px;
+      margin: 0;
     `};
   }
 
   ${MenuSection} {
     ${({ theme }) => theme.mediaWidth.upToLarge`
-      gap 42px;
+      gap 36px;
+      opacity: 0.7;
     `};
   }}
 
@@ -211,7 +230,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     z-index: 100;
     background: ${({ theme }) => theme.bg4};
     outline: 0;
-    padding: 72px 8px;
+    padding: 60px 8px;
     overflow-y: auto;
 
     ${
@@ -223,7 +242,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
           content: '';
           width: 100%;
           display: flex;
-          height: 72px;
+          height: 60px;
           background: ${({ theme }) => theme.bg4};
           position: fixed;
           top: 0;
@@ -313,9 +332,9 @@ export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   border: 2px solid transparent;
   transition: border 0.2s ease-in-out;
   pointer-events: auto;
+  width: auto;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    width: auto;
     height: 100%;
   `}
 
