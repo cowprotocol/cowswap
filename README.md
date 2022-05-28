@@ -87,7 +87,7 @@ Modify the environment variables in `.env.production`, or override them in build
 
 ### Price feeds
 
-CowSwap tries to find the best price available onchain using some price feeds.
+CowSwap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
