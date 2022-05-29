@@ -139,7 +139,19 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   }, [toggleExpertModeAux, expertMode])
 
   //mod
-  const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
+  const [recipientToggleVisible, toggleRecipientVisibilityAux] = useRecipientToggleManager()
+  const toggleRecipientVisibility = useCallback(
+    (value?: boolean) => {
+      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
+      ReactGA.event({
+        category: 'Recipient address',
+        action: 'Toggle Recipient Address',
+        label: newRecipientToggleVisibilityValue ? 'Enabled' : 'Disabled',
+      })
+      toggleRecipientVisibilityAux(newRecipientToggleVisibilityValue)
+    },
+    [toggleRecipientVisibilityAux, recipientToggleVisible]
+  )
 
   // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
