@@ -368,7 +368,7 @@ function getWalletNameLabel(walletType: WalletType): string {
   }
 }
 
-function getOperationMessage(operationType: OperationType, chainId: number): string {
+export function getOperationMessage(operationType: OperationType, chainId: number): string {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
 
   switch (operationType) {
