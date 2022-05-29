@@ -13,9 +13,12 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
+import ReactGA from 'react-ga4'
 
 // MOD imports
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ORDER_VALID_TO_TIME_SECONDS } from 'constants/index'
+
+const MAX_DEADLINE_MINUTES = 180 // 3h
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -143,13 +146,27 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setDeadlineError(false)
 
     if (value.length === 0) {
+      ReactGA.event({
+        category: 'Order Expiration Time',
+        action: 'Set Default Expiration Time',
+        value: DEFAULT_DEADLINE_FROM_NOW,
+      })
       setDeadline(DEFAULT_DEADLINE_FROM_NOW)
     } else {
       try {
         const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-        if (!Number.isInteger(parsed) || parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || parsed > 180 * 60) {
+        if (
+          !Number.isInteger(parsed) || // Check deadline is a number
+          parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || // Check deadline is not too small
+          parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
+        ) {
           setDeadlineError(DeadlineError.InvalidInput)
         } else {
+          ReactGA.event({
+            category: 'Order Expiration Time',
+            action: 'Set Custom Expiration Time',
+            value: parsed,
+          })
           setDeadline(parsed)
         }
       } catch (error) {
