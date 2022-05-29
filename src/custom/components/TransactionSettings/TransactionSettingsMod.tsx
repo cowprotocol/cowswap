@@ -16,7 +16,16 @@ import { RowBetween, RowFixed } from 'components/Row'
 import ReactGA from 'react-ga4'
 
 // MOD imports
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ORDER_VALID_TO_TIME_SECONDS } from 'constants/index'
+import {
+  INPUT_OUTPUT_EXPLANATION,
+  MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
+  MIN_SLIPPAGE_BPS,
+  MAX_SLIPPAGE_BPS,
+  LOW_SLIPPAGE_BPS,
+  HIGH_SLIPPAGE_BPS,
+  DEFAULT_SLIPPAGE_BPS,
+} from 'constants/index'
+import ReactGA from 'react-ga4'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -126,19 +135,31 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     } else {
       const parsed = Math.floor(Number.parseFloat(value) * 100)
 
-      if (!Number.isInteger(parsed) || parsed < 0 || parsed > 5000) {
+      if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
+        ReactGA.event({
+          category: 'Order Slippage Tolerance',
+          action: 'Set Default Slippage Tolerance',
+          value: DEFAULT_SLIPPAGE_BPS,
+        })
         setUserSlippageTolerance('auto')
         if (value !== '.') {
           setSlippageError(SlippageError.InvalidInput)
         }
       } else {
+        ReactGA.event({
+          category: 'Order Slippage Tolerance',
+          action: 'Set Custom Slippage Tolerance',
+          value: parsed,
+        })
         setUserSlippageTolerance(new Percent(parsed, 10_000))
       }
     }
   }
 
-  const tooLow = userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(5, 10_000))
-  const tooHigh = userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(1, 100))
+  const tooLow =
+    userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
+  const tooHigh =
+    userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
