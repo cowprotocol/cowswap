@@ -3,7 +3,7 @@ import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
 // import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
 // import ReactGA from 'react-ga4'
 import { Text } from 'rebass'
@@ -20,6 +20,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
+import ReactGA from 'react-ga4'
 
 // MOD imports
 import { SettingsTabProp } from '.'
@@ -129,7 +130,19 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
   //mod
-  const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
+  const [recipientToggleVisible, toggleRecipientVisibilityAux] = useRecipientToggleManager()
+  const toggleRecipientVisibility = useCallback(
+    (value?: boolean) => {
+      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
+      ReactGA.event({
+        category: 'Recipient address',
+        action: 'Toggle Recipient Address',
+        label: newRecipientToggleVisibilityValue ? 'Enabled' : 'Disabled',
+      })
+      toggleRecipientVisibilityAux(newRecipientToggleVisibilityValue)
+    },
+    [toggleRecipientVisibilityAux, recipientToggleVisible]
+  )
 
   // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
