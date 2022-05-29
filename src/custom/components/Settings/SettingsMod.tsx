@@ -3,7 +3,7 @@ import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
 // import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
 // import ReactGA from 'react-ga4'
 import { Text } from 'rebass'
@@ -20,6 +20,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
+import ReactGA from 'react-ga4'
 
 // MOD imports
 import { SettingsTabProp } from '.'
@@ -127,14 +128,36 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const theme = useContext(ThemeContext)
 
-  const [expertMode, toggleExpertMode] = useExpertModeManager()
+  const [expertMode, toggleExpertModeAux] = useExpertModeManager()
+  const toggleExpertMode = useCallback(() => {
+    ReactGA.event({
+      category: 'Expert mode',
+      action: 'Confirm Enabling Expert Mode',
+    })
+
+    toggleExpertModeAux()
+  }, [toggleExpertModeAux])
+
   //mod
   const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
 
   // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
   // show confirmation view before turning on
-  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [showConfirmation, setShowConfirmationAux] = useState(false)
+  const setShowConfirmation = useCallback(
+    (showConfirmation: boolean) => {
+      if (showConfirmation) {
+        ReactGA.event({
+          category: 'Expert mode',
+          action: 'Show Confirmation',
+        })
+      }
+
+      setShowConfirmationAux(showConfirmation)
+    },
+    [setShowConfirmationAux]
+  )
 
   useOnClickOutside(node, open ? toggle : undefined)
 
