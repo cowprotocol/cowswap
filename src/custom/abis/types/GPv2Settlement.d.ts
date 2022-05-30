@@ -17,7 +17,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface GPv2SettlementInterface extends ethers.utils.Interface {
   functions: {
@@ -40,6 +40,18 @@ interface GPv2SettlementInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Trade"): EventFragment;
 }
+
+export type TradeEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber, BigNumber, string] & {
+    owner: string;
+    sellToken: string;
+    buyToken: string;
+    sellAmount: BigNumber;
+    buyAmount: BigNumber;
+    feeAmount: BigNumber;
+    orderUid: string;
+  }
+>;
 
 export class GPv2Settlement extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -107,6 +119,27 @@ export class GPv2Settlement extends BaseContract {
   };
 
   filters: {
+    "Trade(address,address,address,uint256,uint256,uint256,bytes)"(
+      owner?: string | null,
+      sellToken?: null,
+      buyToken?: null,
+      sellAmount?: null,
+      buyAmount?: null,
+      feeAmount?: null,
+      orderUid?: null
+    ): TypedEventFilter<
+      [string, string, string, BigNumber, BigNumber, BigNumber, string],
+      {
+        owner: string;
+        sellToken: string;
+        buyToken: string;
+        sellAmount: BigNumber;
+        buyAmount: BigNumber;
+        feeAmount: BigNumber;
+        orderUid: string;
+      }
+    >;
+
     Trade(
       owner?: string | null,
       sellToken?: null,
