@@ -3,9 +3,12 @@ import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
+
+import { CowSdk } from '@cowprotocol/cow-sdk'
+import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
 
 export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
 export const RADIX_DECIMAL = 10
@@ -160,4 +163,14 @@ export const SWR_OPTIONS = {
   // don't revalidate data on focus, can cause too many re-renders
   // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
   revalidateOnFocus: false,
+}
+
+const COW_SDK_OPTIONS = {
+  ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_SECRET_API_KEY },
+}
+
+export const COW_SDK: Record<SupportedChainId, CowSdk<SupportedChainId>> = {
+  [SupportedChainId.MAINNET]: new CowSdk(SupportedChainId.MAINNET, COW_SDK_OPTIONS),
+  [SupportedChainId.RINKEBY]: new CowSdk(SupportedChainId.RINKEBY, COW_SDK_OPTIONS),
+  [SupportedChainId.GNOSIS_CHAIN]: new CowSdk(SupportedChainId.GNOSIS_CHAIN, COW_SDK_OPTIONS),
 }
