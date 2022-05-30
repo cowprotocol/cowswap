@@ -3,7 +3,7 @@ import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
 
