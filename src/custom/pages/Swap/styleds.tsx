@@ -23,3 +23,13 @@ export const StyledAppBody = styled(AppBody)`
     box-shadow: ${({ theme }) => theme.appBody.boxShadowMobile};
   `};
 `
+
+export const AlertWrapper = styled.div`
+  max-width: 460px;
+  width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 26px auto 0;
+    padding: 0 16px;
+  `}
+`

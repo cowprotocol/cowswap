@@ -151,7 +151,7 @@ export default function Header() {
   )
 
   return (
-    <Wrapper>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
