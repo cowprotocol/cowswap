@@ -9,6 +9,7 @@ on:
     branches:    
       - '!uni-merge/**'
       - '!uni-merge-**'
+      - '!cla-yml-update'
 
 jobs:
   CLAssistant:
