@@ -7,7 +7,7 @@ on:
   pull_request:
     # ignore PR from branches names 'uni-merge/**'
     branches:    
-      - '!uni-merge/**'
+      - '!cla-yml-update/**'
 
 jobs:
   CLAssistant:
