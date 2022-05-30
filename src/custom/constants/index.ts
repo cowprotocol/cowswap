@@ -3,7 +3,7 @@ import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
-import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
 
@@ -169,8 +169,8 @@ const COW_SDK_OPTIONS = {
   ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_SECRET_API_KEY },
 }
 
-export const COW_SDK: Record<SupportedChainId, CowSdk<SupportedChainId>> = {
-  [SupportedChainId.MAINNET]: new CowSdk(SupportedChainId.MAINNET, COW_SDK_OPTIONS),
-  [SupportedChainId.RINKEBY]: new CowSdk(SupportedChainId.RINKEBY, COW_SDK_OPTIONS),
-  [SupportedChainId.GNOSIS_CHAIN]: new CowSdk(SupportedChainId.GNOSIS_CHAIN, COW_SDK_OPTIONS),
+export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
+  [ChainId.MAINNET]: new CowSdk(ChainId.MAINNET, COW_SDK_OPTIONS),
+  [ChainId.RINKEBY]: new CowSdk(ChainId.RINKEBY, COW_SDK_OPTIONS),
+  [ChainId.GNOSIS_CHAIN]: new CowSdk(ChainId.GNOSIS_CHAIN, COW_SDK_OPTIONS),
 }
