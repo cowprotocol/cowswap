@@ -10,7 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'CLA Assistant'
-        if: github.base_ref == 'main'
+        if: 
+          github.base_ref != 'main' && 
+          startsWith(github.head_ref, 'uni-merge') == false && 
+          ((github.event.comment.body == 'recheckcla' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || 
+          github.event_name == 'pull_request_target')
         # Alpha Release
         uses: gnosis/github-action@master
         # GitHub token, automatically provided to the action
