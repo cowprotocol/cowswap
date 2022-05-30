@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTradeExactInWithFee } from 'state/swap/extension'

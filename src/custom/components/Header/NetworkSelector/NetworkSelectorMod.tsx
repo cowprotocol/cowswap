@@ -31,7 +31,11 @@ import { useAddPopup, useRemovePopup } from 'state/application/hooks'
 import { useEffect } from 'react'
 import { getExplorerBaseUrl } from 'utils/explorer'
 
-/* export const ActiveRowLinkList = styled.div`
+import { useWalletInfo } from 'hooks/useWalletInfo'
+
+import { isMobile } from 'utils/userAgent'
+
+/* const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 8px;
@@ -206,7 +210,7 @@ const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygonscan</Trans> */
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return <Trans>Blockscout</Trans>
     default:
       return <Trans>Etherscan</Trans>
@@ -289,8 +293,9 @@ export const getChainNameFromId = (id: string | number) => {
 }
 
 export default function NetworkSelector() {
-  // mod: add account
+  // mod: add account & lib
   const { account, chainId, library } = useActiveWeb3React()
+  const { isSmartContractWallet } = useWalletInfo() // mod
   // mod: refactored inner logic into useChangeNetworks hook
   const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
 
@@ -299,6 +304,10 @@ export default function NetworkSelector() {
   const isUnsupportedNetwork = error instanceof UnsupportedChainIdError
   const addPopup = useAddPopup()
   const removePopup = useRemovePopup()
+
+  // mod: When on mobile, disable on hover and enable on click events
+  const onHoverEvent = () => !isMobile && toggle()
+  const onClickEvent = () => isMobile && toggle()
 
   useEffect(() => {
     const POPUP_KEY = chainId?.toString()
@@ -388,12 +397,12 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain]) */
 
-  if (!chainId || !info || !library || isUnsupportedNetwork) {
+  if (!chainId || !info || isUnsupportedNetwork || isSmartContractWallet) {
     return null
   }
 
   return (
-    <SelectorWrapper ref={node as any} onMouseEnter={toggle} onMouseLeave={toggle}>
+    <SelectorWrapper ref={node as any} onMouseEnter={onHoverEvent} onMouseLeave={onHoverEvent} onClick={onClickEvent}>
       {/*<SelectorControls onClick={conditionalToggle} interactive={showSelector}>
         <SelectorLogo interactive={showSelector} src={info.logoUrl || mainnetInfo.logoUrl} />*/}
       <SelectorControls interactive>
@@ -426,7 +435,7 @@ export default function NetworkSelector() {
             </FlyoutHeader>
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
-            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.GNOSIS_CHAIN} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}

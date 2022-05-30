@@ -136,8 +136,10 @@ async function _updateOrders({
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
     Record<OrderTransitionStatus, OrderLogPopupMixData[]>
   >(
-    (acc, { status, popupData }) => {
-      popupData && acc[status].push(popupData)
+    (acc, orderData) => {
+      if (orderData && orderData.popupData) {
+        acc[orderData.status].push(orderData.popupData)
+      }
       return acc
     },
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] }

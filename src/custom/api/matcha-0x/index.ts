@@ -1,4 +1,4 @@
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 import { NetworkID } from 'paraswap'
 import { SupportedChainId as ChainId } from 'constants/chains'

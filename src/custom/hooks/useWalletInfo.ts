@@ -9,6 +9,7 @@ import { getProviderType, WalletProvider } from 'connectors'
 import { useActiveWeb3Instance } from 'hooks/index'
 import { getSafeInfo } from 'api/gnosisSafe'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import useIsArgentWallet from 'hooks/useIsArgentWallet'
 
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
 const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe', GNOSIS_SAFE_APP_NAME]
@@ -20,6 +21,7 @@ export interface ConnectedWalletInfo {
   account?: string | null
   activeNetwork: boolean // active default connection
   provider?: WalletProvider
+  library?: Web3Provider
   isSmartContractWallet: boolean
   walletName?: string
   ensName?: string
@@ -37,8 +39,13 @@ async function checkIsSmartContractWallet(
     return false
   }
 
-  const code = await web3.getCode(address)
-  return code !== '0x'
+  try {
+    const code = await web3.getCode(address)
+    return code !== '0x'
+  } catch (e) {
+    console.debug(`checkIsSmartContractWallet: failed to check address ${address}`, e.message)
+    return false
+  }
 }
 
 function checkIsSupportedWallet(params: {
@@ -59,7 +66,8 @@ function checkIsSupportedWallet(params: {
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
   const provider = (await connector.getProvider()) as WalletConnectConnector['walletConnectProvider']
 
-  const meta = provider.walletMeta
+  // fix for this https://github.com/gnosis/cowswap/issues/1929
+  const meta = provider.walletMeta || provider.signer.connection.wc.peerMeta
   if (meta) {
     return {
       walletName: meta.name,
@@ -73,6 +81,7 @@ async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ w
 export function useWalletInfo(): ConnectedWalletInfo {
   const { active, account, connector, chainId } = useWeb3React()
   const web3Instance = useActiveWeb3Instance()
+  const isArgentWallet = useIsArgentWallet()
   const [walletName, setWalletName] = useState<string>()
   const [icon, setIcon] = useState<string>()
   const [provider, setProvider] = useState<WalletProvider>()
@@ -95,12 +104,10 @@ export function useWalletInfo(): ConnectedWalletInfo {
     const walletType = getProviderType(connector)
     switch (walletType) {
       case WalletProvider.WALLET_CONNECT:
-        if (connector instanceof WalletConnectConnector) {
-          getWcPeerMetadata(connector).then(({ walletName, icon }) => {
-            setWalletName(walletName)
-            setIcon(icon)
-          })
-        }
+        getWcPeerMetadata(connector as WalletConnectConnector).then(({ walletName, icon }) => {
+          setWalletName(walletName)
+          setIcon(icon)
+        })
         break
       case WalletProvider.GNOSIS_SAFE:
         setWalletName(GNOSIS_SAFE_APP_NAME)
@@ -108,12 +115,13 @@ export function useWalletInfo(): ConnectedWalletInfo {
         break
     }
   }, [connector])
-
   useEffect(() => {
-    if (account && web3Instance) {
+    if (account && isArgentWallet) {
+      setIsSmartContractWallet(true)
+    } else if (account && web3Instance) {
       checkIsSmartContractWallet(account, web3Instance).then(setIsSmartContractWallet)
     }
-  }, [account, web3Instance])
+  }, [account, chainId, isArgentWallet, web3Instance])
 
   useEffect(() => {
     const isGnosisSafe = walletName && GNOSIS_SAFE_WALLET_NAMES.includes(walletName)

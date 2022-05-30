@@ -1,4 +1,6 @@
+import { SWR_OPTIONS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import useSWR from 'swr'
 import { PriceInformation } from 'utils/price'
 
 function getApiUrl(): string {
@@ -36,7 +38,7 @@ function _getCoinGeckoAssetPlatform(chainId: ChainId) {
     // https://api.coingecko.com/api/v3/asset_platforms
     case ChainId.MAINNET:
       return 'ethereum'
-    case ChainId.XDAI:
+    case ChainId.GNOSIS_CHAIN:
       return 'xdai'
     default:
       return null
@@ -88,6 +90,22 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
   })
 
   return response.json()
+}
+
+export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>, options = SWR_OPTIONS) {
+  const { chainId, tokenAddress } = params
+
+  return useSWR<PriceInformation | null>(
+    ['getUSDPriceQuote', chainId, tokenAddress],
+    () => {
+      if (chainId && tokenAddress) {
+        return getUSDPriceQuote({ chainId, tokenAddress }).then(toPriceInformation)
+      } else {
+        return null
+      }
+    },
+    options
+  )
 }
 
 export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInformation | null {

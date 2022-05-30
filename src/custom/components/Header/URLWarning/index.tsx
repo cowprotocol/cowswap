@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { BARN_URL, PRODUCTION_URL } from 'constants/index'
+import { BARN_URL, PRODUCTION_URL, RAW_CODE_LINK } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
@@ -49,8 +49,7 @@ const Wrapper = styled.div`
 
 // Announcement content: Modify this file to edit the announcement
 //  https://github.com/gnosis/cowswap/blob/configuration/config/announcements/announcements.md
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL =
-  'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/announcements'
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = RAW_CODE_LINK + '/configuration/config/announcements'
 
 function getAnnouncementUrl(chainId: number) {
   return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}/announcements-${chainId}.md`

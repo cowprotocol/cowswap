@@ -224,7 +224,7 @@ export default function WalletModal({
     setWalletView(WALLET_VIEWS.PENDING)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+    if (connector instanceof WalletConnectConnector) {
       connector.walletConnectProvider = undefined
     }
 
@@ -234,6 +234,17 @@ export default function WalletModal({
         //   const walletAddress = await connector.getAccount()
         //   logMonitoringEvent({ walletAddress })
         // })
+        .then(() => {
+          // Manually set the WalletConnectConnector http.connection.url to currently connected network url
+          // Fix for this https://github.com/gnosis/cowswap/issues/1930
+          if (connector instanceof WalletConnectConnector) {
+            const { http, rpc, signer } = connector.walletConnectProvider
+            const chainId = signer.connection.chainId
+            // don't default to SupportedChainId.Mainnet - throw instead
+            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
+            http.connection.url = rpc.custom[chainId]
+          }
+        })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
             activate(connector) // a little janky...can't use setError because the connector isn't set

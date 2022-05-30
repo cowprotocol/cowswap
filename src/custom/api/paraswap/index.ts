@@ -1,4 +1,4 @@
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
 import { OptimalRate } from 'paraswap-core'

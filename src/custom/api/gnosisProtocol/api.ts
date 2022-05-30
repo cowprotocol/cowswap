@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
-import { OrderKind, QuoteQuery } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind, QuoteQuery } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
   getSigningSchemeApiValue,
@@ -8,7 +8,7 @@ import {
   SigningSchemeValue,
   UnsignedOrder,
 } from 'utils/signatures'
-import { APP_DATA_HASH, GAS_FEE_ENDPOINTS } from 'constants/index'
+import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
@@ -38,7 +38,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
     return {
       [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
       [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
-      [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
+      [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
     }
   }
 
@@ -46,7 +46,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   return {
     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
     [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://api.cow.fi/rinkeby/api',
-    [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
+    [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
   }
 }
 
@@ -63,12 +63,12 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
   }
 }
-const STRATEGY_URL_BASE = 'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/strategies'
+const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/strategies'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
   return {
     [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
     [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
-    [SupportedChainId.XDAI]: STRATEGY_URL_BASE + '/strategy-100.json',
+    [SupportedChainId.GNOSIS_CHAIN]: STRATEGY_URL_BASE + '/strategy-100.json',
   }
 }
 
@@ -552,7 +552,7 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
   const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
   const json = await response.json()
 
-  if (chainId === SupportedChainId.XDAI) {
+  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
     // Different endpoint for GChain with a different format. Need to transform it
     return _transformGChainGasPrices(json)
   }

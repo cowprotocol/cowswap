@@ -7,7 +7,7 @@ export interface GpQuoteErrorObject {
 }
 
 // Conforms to backend API
-// https://github.com/gnosis/gp-v2-services/blob/main/crates/orderbook/openapi.yml
+// https://github.com/cowprotocol/services/blob/main/crates/orderbook/openapi.yml
 export enum GpQuoteErrorCodes {
   UnsupportedToken = 'UnsupportedToken',
   InsufficientLiquidity = 'InsufficientLiquidity',
@@ -67,7 +67,7 @@ export default class GpQuoteError extends Error {
   data?: any
 
   // Status 400 errors
-  // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
+  // https://github.com/cowprotocol/services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
   static quoteErrorDetails = GpQuoteErrorDetails
 
   public static async getErrorMessage(response: Response) {

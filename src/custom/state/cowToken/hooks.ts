@@ -14,6 +14,9 @@ import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 import { useTokenBalance } from 'state/wallet/hooks'
+// import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
+import { SupportedChainId } from 'constants/chains'
+import JSBI from 'jsbi'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -162,18 +165,37 @@ export function useCowBalance() {
 }
 
 /**
- * Hook that returns combined vCOW + COW balance
+ * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
 export function useCombinedBalance() {
+  const { chainId, account } = useActiveWeb3React()
   const { total: vCowBalance } = useVCowData()
+  // const { allocated, claimed } = useCowFromLockedGnoBalances()
   const cowBalance = useCowBalance()
 
+  // const lockedGnoBalance = useMemo(() => {
+  //   if (!allocated || !claimed) {
+  //     return
+  //   }
+
+  //   return JSBI.subtract(allocated.quotient, claimed.quotient)
+  // }, [allocated, claimed])
+
   return useMemo(() => {
-    if (!vCowBalance || !cowBalance) {
-      return
+    let tmpBalance = JSBI.BigInt(0)
+
+    const isLoading = account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance) ? true : false
+
+    const cow = COW[chainId || SupportedChainId.MAINNET]
+
+    if (account) {
+      if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
+      // if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
+      if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
     }
 
-    const sum = vCowBalance.asFraction.add(cowBalance.asFraction)
-    return CurrencyAmount.fromRawAmount(cowBalance.currency, sum.quotient)
-  }, [cowBalance, vCowBalance])
+    const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
+
+    return { balance, isLoading }
+  }, [vCowBalance, /* lockedGnoBalance, */ cowBalance, chainId, account])
 }

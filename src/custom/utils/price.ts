@@ -7,7 +7,7 @@ import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp, OrderMetaData } from 
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
-import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
@@ -16,11 +16,12 @@ import {
 } from 'api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
-import { GetQuoteResponse, OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { GetQuoteResponse, OrderKind } from '@cowprotocol/contracts'
 import { ChainId } from 'state/lists/actions'
 import { toErc20Address } from 'utils/tokens'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
+import useSWR from 'swr'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -45,7 +46,7 @@ export interface PriceInformation {
   amount: string | null
 }
 
-// GetQuoteResponse from @gnosis.pm/gp-v2-contracts types Timestamp and BigNumberish
+// GetQuoteResponse from @cowprotocol/contracts types Timestamp and BigNumberish
 // do not play well with our existing methods, using string instead
 export type SimpleGetQuoteResponse = Pick<GetQuoteResponse, 'from'> & {
   // We need to map BigNumberIsh and Timestamp to what we use: string
@@ -430,4 +431,26 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams
 
     return quote.amount
   }
+}
+
+export function useGetGpUsdcPrice(
+  props: {
+    strategy: QuoteParams['strategy']
+    quoteParams: QuoteParams['quoteParams'] | null
+  },
+  options = SWR_OPTIONS
+) {
+  const { strategy, quoteParams } = props
+
+  return useSWR<string | null>(
+    ['getGpUsdcPrice', strategy, quoteParams],
+    () => {
+      if (strategy && quoteParams) {
+        return getGpUsdcPrice({ strategy, quoteParams })
+      } else {
+        return null
+      }
+    },
+    options
+  )
 }

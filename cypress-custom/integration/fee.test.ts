@@ -1,5 +1,5 @@
 import { WETH9 as WETH } from '@uniswap/sdk-core'
-import { GetQuoteResponse } from '@gnosis.pm/gp-v2-contracts'
+import { GetQuoteResponse } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
@@ -128,7 +128,6 @@ describe('Fee: Complex fetch and persist fee', () => {
     // GIVEN: user visits app, selects 0.1 WETH as sell, DAI as buy
     // and goes AFK
     cy.visit('/swap')
-    cy.get('#anniversary-banner > svg').click()
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -173,7 +172,6 @@ describe('Fee: simple checks it exists', () => {
     // GIVEN: A user loads the swap page
     // WHEN: Select DAI token as output and sells 0.1 WETH
     cy.visit('/swap')
-    cy.get('#anniversary-banner > svg').click()
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -186,7 +184,6 @@ describe('Swap: Considering fee', () => {
   beforeEach(() => {
     // GIVEN: an initial selection of WETH-DAI
     cy.visit('/swap')
-    cy.get('#anniversary-banner > svg').click()
   })
 
   it("Uses Uniswap price, if there's no tip", () => {

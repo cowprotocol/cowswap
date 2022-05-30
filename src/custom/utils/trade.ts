@@ -9,7 +9,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
-import { SigningScheme } from '@gnosis.pm/gp-v2-contracts'
+import { SigningScheme } from '@cowprotocol/contracts'
 import { getTrades, getProfileData } from 'api/gnosisProtocol/api'
 
 export interface PostOrderParams {
