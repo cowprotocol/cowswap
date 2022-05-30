@@ -1,12 +1,18 @@
 import { NavLink } from 'react-router-dom'
-import { SideMenu } from 'components/SideMenu'
-import { ACCOUNT_MENU_LINKS } from 'constants/index'
+import { Menu } from './styled'
+
+const LINKS = [
+  { title: 'General', url: '/account' },
+  { title: 'Tokens', url: '/account/tokens' },
+  { title: 'Governance', url: '/account/governance' },
+  { title: 'Affiliate', url: '/account/affiliate' },
+]
 
 export function AccountMenu() {
   return (
-    <SideMenu>
+    <Menu>
       <ul>
-        {ACCOUNT_MENU_LINKS.map(({ title, url }, i) => (
+        {LINKS.map(({ title, url }, i) => (
           <li key={i}>
             <NavLink exact to={url} activeClassName={'active'}>
               {title}
@@ -14,6 +20,6 @@ export function AccountMenu() {
           </li>
         ))}
       </ul>
-    </SideMenu>
+    </Menu>
   )
 }
