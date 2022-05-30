@@ -16,7 +16,7 @@ export interface MAIN_MENU_TYPE {
   url?: string
   externalURL?: boolean
   items?: {
-    sectionTitle: string
+    sectionTitle?: string
     links: {
       title?: string
       url?: string // If URL is an internal route
@@ -31,7 +31,20 @@ export interface MAIN_MENU_TYPE {
 export const MAIN_MENU = [
   { title: 'Swap', url: Routes.SWAP },
   { title: 'Account', url: Routes.ACCOUNT },
-  { title: 'FAQ', url: Routes.FAQ },
+  {
+    title: 'FAQ',
+    items: [
+      {
+        links: [
+          { title: 'Overview', url: Routes.FAQ },
+          { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
+          { title: 'Token', url: Routes.FAQ_TOKEN },
+          { title: 'Trading', url: Routes.FAQ_TRADING },
+          { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
+        ],
+      },
+    ],
+  },
   {
     title: 'More',
     items: [

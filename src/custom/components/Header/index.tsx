@@ -105,7 +105,7 @@ export default function Header() {
             {items.map(({ sectionTitle, links }, index) => {
               return (
                 <MenuSection key={index}>
-                  <MenuTitle>{sectionTitle}</MenuTitle>
+                  {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
                   {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => {
                     return action && action === 'setColorMode' ? (
                       <button
