@@ -12,7 +12,7 @@ jobs:
       - name: 'CLA Assistant'
         if: 
           github.base_ref != 'main' &&
-          (github.head_ref != 'refs/heads/uni-merge/**' || github.head_ref != 'refs/heads/uni-merge-**' || github.head_ref != 'refs/heads/cla-yml-update') &&
+          (startsWith(github.head_ref, 'uni-merge') == false || startsWith(github.head_ref, 'cla-yml-update') == false) &&
           ((github.event.comment.body == 'recheckcla' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || 
           github.event_name == 'pull_request_target')
         # Alpha Release
