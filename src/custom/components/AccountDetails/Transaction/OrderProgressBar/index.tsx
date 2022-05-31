@@ -9,11 +9,20 @@ import {
   StatusMsgContainer,
   StatusMsg,
   SwapIcon,
+  OrangeClockIcon,
+  PendingProgress,
+  WarningProgress,
+  WarningLogo,
+  WarningIcon,
+  GreenCheckIcon,
 } from './styled'
+import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
 import DancingCow from '@src/custom/components/DancingCow'
+import { CancelButton } from '../CancelButton'
+import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -59,21 +68,27 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
+    setExecutionState('cow')
+
     if (isConfirmed) {
-      setExecutionState('confirmed')
+      // setExecutionState('confirmed')
+      console.log('confirmed')
     } else if (isUnfillable) {
-      setExecutionState('unfillable')
+      // setExecutionState('unfillable')
+      console.log('unfillable')
     } else if (elapsedSeconds <= COW_STATE_SECONDS) {
-      setExecutionState('cow')
+      // setExecutionState('cow')
+      console.log('cow')
     } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
-      setExecutionState('amm')
+      // setExecutionState('amm')
+      console.log('amm')
     } else {
-      setExecutionState('delayed')
+      // setExecutionState('delayed')
+      console.log('delayed')
     }
   }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
 
   const progressBar = () => {
-    const executionState = 'cow'
     switch (executionState) {
       case 'cow': {
         return (
@@ -102,84 +117,84 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           </>
         )
       }
-      // case 'amm': {
-      //   return (
-      //     <>
-      //       <ProgressBarInnerWrapper>
-      //         <PendingProgress percentage={percentage}>
-      //           <AMMsLogo chainId={chainId} />
-      //         </PendingProgress>
-      //       </ProgressBarInnerWrapper>
-      //       <StatusMsgContainer>
-      //         <OrangeClockIcon size={16} />
-      //         <StatusMsg>Finding best onchain price.</StatusMsg>
-      //       </StatusMsgContainer>
-      //     </>
-      //   )
-      // }
-      // case 'confirmed': {
-      //   return (
-      //     <>
-      //       <ProgressBarInnerWrapper>
-      //         <SuccessProgress percentage={100}>
-      //           <CowProtocolIcon />
-      //         </SuccessProgress>
-      //       </ProgressBarInnerWrapper>
-      //       <StatusMsgContainer>
-      //         <GreenCheckIcon size={16} />
-      //         <StatusMsg>Transaction confirmed.</StatusMsg>
-      //       </StatusMsgContainer>
-      //     </>
-      //   )
-      // }
-      // case 'unfillable': {
-      //   return (
-      //     <>
-      //       <ProgressBarInnerWrapper>
-      //         <WarningProgress percentage={percentage}>
-      //           <WarningLogo />
-      //         </WarningProgress>
-      //       </ProgressBarInnerWrapper>
-      //       <StatusMsgContainer>
-      //         <WarningIcon size={16} />
-      //         <StatusMsg>
-      //           Your limit price is out of market.{' '}
-      //           {isCancellable ? (
-      //             <>
-      //               You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
-      //             </>
-      //           ) : null}
-      //         </StatusMsg>
-      //       </StatusMsgContainer>
-      //     </>
-      //   )
-      // }
-      // case 'delayed': {
-      //   return (
-      //     <>
-      //       <ProgressBarInnerWrapper>
-      //         <WarningProgress percentage={percentage}>
-      //           <WarningLogo>
-      //             <img src={loadingCowGif} alt="Loading prices..." />
-      //           </WarningLogo>
-      //         </WarningProgress>
-      //       </ProgressBarInnerWrapper>
-      //       <StatusMsgContainer>
-      //         <StatusMsg>
-      //           <p>The network looks slower than usual. Solvers are adjusting gas fees for you!</p>
-      //           {isCancellable ? (
-      //             <p>
-      //               You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
-      //             </p>
-      //           ) : null}
-      //         </StatusMsg>
-      //       </StatusMsgContainer>
-      //     </>
-      //   )
-      // }
-      // default: {
-      //   return null
-      // }
+      case 'amm': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <PendingProgress percentage={percentage}>
+                <AMMsLogo chainId={chainId} />
+              </PendingProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <OrangeClockIcon size={16} />
+              <StatusMsg>Finding best onchain price.</StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'confirmed': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <SuccessProgress percentage={100}>
+                <CowProtocolIcon />
+              </SuccessProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <GreenCheckIcon size={16} />
+              <StatusMsg>Transaction confirmed.</StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'unfillable': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <WarningProgress percentage={percentage}>
+                <WarningLogo />
+              </WarningProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <WarningIcon size={16} />
+              <StatusMsg>
+                Your limit price is out of market.{' '}
+                {isCancellable ? (
+                  <>
+                    You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                  </>
+                ) : null}
+              </StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      case 'delayed': {
+        return (
+          <>
+            <ProgressBarInnerWrapper>
+              <WarningProgress percentage={percentage}>
+                <WarningLogo>
+                  <img src={loadingCowGif} alt="Loading prices..." />
+                </WarningLogo>
+              </WarningProgress>
+            </ProgressBarInnerWrapper>
+            <StatusMsgContainer>
+              <StatusMsg>
+                <p>The network looks slower than usual. Solvers are adjusting gas fees for you!</p>
+                {isCancellable ? (
+                  <p>
+                    You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                  </p>
+                ) : null}
+              </StatusMsg>
+            </StatusMsgContainer>
+          </>
+        )
+      }
+      default: {
+        return null
+      }
     }
   }
 
