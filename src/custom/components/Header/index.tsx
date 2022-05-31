@@ -69,7 +69,7 @@ export default function Header() {
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
+  const openOrdersPanel = () => account && setIsOrdersPanelOpen(true)
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
