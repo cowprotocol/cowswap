@@ -154,4 +154,17 @@ export const StatusMsg = styled.p`
   font-size: 0.85rem;
   color: ${({ theme }) => theme.text1};
   margin: 0;
+
+  strong {
+    color: #d67b5a;
+  }
+`
+export const SwapIcon = styled.span`
+  font-size: 1.2rem;
+  margin: 0 0.2rem;
+  display: inline-block;
+  position: relative;
+  &::after {
+    content: '🔁';
+  }
 `

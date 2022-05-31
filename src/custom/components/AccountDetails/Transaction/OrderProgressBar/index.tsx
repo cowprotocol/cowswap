@@ -8,19 +8,12 @@ import {
   GreenClockIcon,
   StatusMsgContainer,
   StatusMsg,
-  OrangeClockIcon,
-  PendingProgress,
-  WarningProgress,
-  WarningLogo,
-  WarningIcon,
-  GreenCheckIcon,
+  SwapIcon,
 } from './styled'
-import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
-import { CancelButton } from '../CancelButton'
-import loadingCowGif from 'assets/cow-swap/cow-load.gif'
+import DancingCow from '@src/custom/components/DancingCow'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -80,6 +73,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
 
   const progressBar = () => {
+    const executionState = 'cow'
     switch (executionState) {
       case 'cow': {
         return (
@@ -91,89 +85,101 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <GreenClockIcon size={16} />
-              <StatusMsg>Looking for a CoW.</StatusMsg>
-            </StatusMsgContainer>
-          </>
-        )
-      }
-      case 'amm': {
-        return (
-          <>
-            <ProgressBarInnerWrapper>
-              <PendingProgress percentage={percentage}>
-                <AMMsLogo chainId={chainId} />
-              </PendingProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <OrangeClockIcon size={16} />
-              <StatusMsg>Finding best onchain price.</StatusMsg>
-            </StatusMsgContainer>
-          </>
-        )
-      }
-      case 'confirmed': {
-        return (
-          <>
-            <ProgressBarInnerWrapper>
-              <SuccessProgress percentage={100}>
-                <CowProtocolIcon />
-              </SuccessProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <GreenCheckIcon size={16} />
-              <StatusMsg>Transaction confirmed.</StatusMsg>
-            </StatusMsgContainer>
-          </>
-        )
-      }
-      case 'unfillable': {
-        return (
-          <>
-            <ProgressBarInnerWrapper>
-              <WarningProgress percentage={percentage}>
-                <WarningLogo />
-              </WarningProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <WarningIcon size={16} />
               <StatusMsg>
-                Your limit price is out of market.{' '}
-                {isCancellable ? (
-                  <>
-                    You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
-                  </>
-                ) : null}
+                <p>
+                  Looking for a CoW (<strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants)
+                  <br />
+                  <DancingCow />
+                  <SwapIcon />
+                  <DancingCow />
+                </p>
+                <p>
+                  CowSwap will be able to save in <strong>gas costs</strong> and get a <strong>better price</strong> if
+                  another trader makes the opposite trade
+                </p>
               </StatusMsg>
             </StatusMsgContainer>
           </>
         )
       }
-      case 'delayed': {
-        return (
-          <>
-            <ProgressBarInnerWrapper>
-              <WarningProgress percentage={percentage}>
-                <WarningLogo>
-                  <img src={loadingCowGif} alt="Loading prices..." />
-                </WarningLogo>
-              </WarningProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <StatusMsg>
-                <p>The network looks slower than usual. Solvers are adjusting gas fees for you!</p>
-                {isCancellable ? (
-                  <p>
-                    You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
-                  </p>
-                ) : null}
-              </StatusMsg>
-            </StatusMsgContainer>
-          </>
-        )
-      }
-      default: {
-        return null
-      }
+      // case 'amm': {
+      //   return (
+      //     <>
+      //       <ProgressBarInnerWrapper>
+      //         <PendingProgress percentage={percentage}>
+      //           <AMMsLogo chainId={chainId} />
+      //         </PendingProgress>
+      //       </ProgressBarInnerWrapper>
+      //       <StatusMsgContainer>
+      //         <OrangeClockIcon size={16} />
+      //         <StatusMsg>Finding best onchain price.</StatusMsg>
+      //       </StatusMsgContainer>
+      //     </>
+      //   )
+      // }
+      // case 'confirmed': {
+      //   return (
+      //     <>
+      //       <ProgressBarInnerWrapper>
+      //         <SuccessProgress percentage={100}>
+      //           <CowProtocolIcon />
+      //         </SuccessProgress>
+      //       </ProgressBarInnerWrapper>
+      //       <StatusMsgContainer>
+      //         <GreenCheckIcon size={16} />
+      //         <StatusMsg>Transaction confirmed.</StatusMsg>
+      //       </StatusMsgContainer>
+      //     </>
+      //   )
+      // }
+      // case 'unfillable': {
+      //   return (
+      //     <>
+      //       <ProgressBarInnerWrapper>
+      //         <WarningProgress percentage={percentage}>
+      //           <WarningLogo />
+      //         </WarningProgress>
+      //       </ProgressBarInnerWrapper>
+      //       <StatusMsgContainer>
+      //         <WarningIcon size={16} />
+      //         <StatusMsg>
+      //           Your limit price is out of market.{' '}
+      //           {isCancellable ? (
+      //             <>
+      //               You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+      //             </>
+      //           ) : null}
+      //         </StatusMsg>
+      //       </StatusMsgContainer>
+      //     </>
+      //   )
+      // }
+      // case 'delayed': {
+      //   return (
+      //     <>
+      //       <ProgressBarInnerWrapper>
+      //         <WarningProgress percentage={percentage}>
+      //           <WarningLogo>
+      //             <img src={loadingCowGif} alt="Loading prices..." />
+      //           </WarningLogo>
+      //         </WarningProgress>
+      //       </ProgressBarInnerWrapper>
+      //       <StatusMsgContainer>
+      //         <StatusMsg>
+      //           <p>The network looks slower than usual. Solvers are adjusting gas fees for you!</p>
+      //           {isCancellable ? (
+      //             <p>
+      //               You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+      //             </p>
+      //           ) : null}
+      //         </StatusMsg>
+      //       </StatusMsgContainer>
+      //     </>
+      //   )
+      // }
+      // default: {
+      //   return null
+      // }
     }
   }
 
