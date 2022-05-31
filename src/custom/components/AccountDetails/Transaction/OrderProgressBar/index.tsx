@@ -23,6 +23,7 @@ import { ActivityDerivedState } from '../index'
 import DancingCow from '@src/custom/components/DancingCow'
 import { CancelButton } from '../CancelButton'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
+import { ExternalLink } from 'theme'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -102,7 +103,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <GreenClockIcon size={16} />
               <StatusMsg>
                 <p>
-                  Looking for a CoW (<strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants)
+                  Looking for a{' '}
+                  <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">CoW</ExternalLink> (
+                  <strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants)
                   <br />
                   <DancingCow />
                   <SwapIcon />
