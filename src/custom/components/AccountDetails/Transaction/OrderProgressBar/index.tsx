@@ -20,7 +20,9 @@ import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
 import { CancelButton } from '../CancelButton'
+import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 
+const REFRESH_INTERVAL_MS = 200
 const COW_STATE_PERCENTAGE = 0.33 // 33% of the elapsed time based on the network's average is for the COW protocol
 
 type OrderProgressBarProps = {
@@ -55,7 +57,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     const id = setInterval(() => {
       const percentage = getPercentage(elapsedSeconds, expirationInSeconds, chainId)
       setPercentage(percentage)
-    }, 1000)
+    }, REFRESH_INTERVAL_MS)
 
     return () => clearInterval(id)
   }, [creationTime, validTo, chainId, elapsedSeconds, expirationInSeconds, isPending])
@@ -154,12 +156,20 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           <>
             <ProgressBarInnerWrapper>
               <WarningProgress percentage={percentage}>
-                <WarningLogo />
+                <WarningLogo>
+                  <img src={loadingCowGif} alt="Loading prices..." />
+                </WarningLogo>
               </WarningProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
-              <WarningIcon size={16} />
-              <StatusMsg> Your order is taking longer than usual.</StatusMsg>
+              <StatusMsg>
+                <p>The network looks slower than usual. Solvers are adjusting gas fees for you!</p>
+                {isCancellable ? (
+                  <p>
+                    You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                  </p>
+                ) : null}
+              </StatusMsg>
             </StatusMsgContainer>
           </>
         )

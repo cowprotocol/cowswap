@@ -1,11 +1,11 @@
 import { SupportedChainId } from 'constants/chains'
 
-const EXPECTED_EXECUTION_TIME_PERCENTAGE = 70
+const EXPECTED_EXECUTION_TIME_PERCENTAGE = 75
 
 export const EXPECTED_EXECUTION_TIME: Record<SupportedChainId, number> = {
-  [SupportedChainId.MAINNET]: 90,
-  [SupportedChainId.RINKEBY]: 15,
-  [SupportedChainId.XDAI]: 15,
+  [SupportedChainId.MAINNET]: 120,
+  [SupportedChainId.RINKEBY]: 50,
+  [SupportedChainId.XDAI]: 50,
 }
 
 const LOG_FUNCTION = Math.log2
