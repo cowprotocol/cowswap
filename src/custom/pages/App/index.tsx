@@ -34,7 +34,8 @@ const AffiliateFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/
 
 // Account pages
 const Account = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account'))
-const Tokens = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Tokens'))
+const TokensOverview = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Tokens'))
+const TokenSignle = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Tokens/TokenSingle'))
 const Governance = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Governance'))
 const Affiliate = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Affiliate'))
 
@@ -109,7 +110,8 @@ export default function App() {
             <Route exact strict path="/profile" component={Profile} />
 
             <Route exact strict path="/account" component={Account} />
-            <Route exact strict path="/account/tokens" component={Tokens} />
+            <Route exact strict path="/account/tokens" component={TokensOverview} />
+            <Route exact strict path="/account/tokens/:address" component={TokenSignle} />
             <Route exact strict path="/account/governance" component={Governance} />
             <Route exact strict path="/account/affiliate" component={Affiliate} />
 

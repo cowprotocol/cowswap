@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
 import { PageWrapper } from 'components/Page'
-import { MEDIA_WIDTHS } from '@src/theme'
+import { ThemedText, MEDIA_WIDTHS } from 'theme'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -63,8 +63,16 @@ export const Wrapper = styled.div`
 export const AccountPageWrapper = styled(PageWrapper)`
   width: 100%;
   max-width: 100%;
+  border: none;
+  background: none;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin-left: 0;
+    margin: 0;
+    padding: 0;
+    margin-top: 1rem;
   `};
+`
+
+export const Subtitle = styled(ThemedText.MediumHeader)`
+  padding-bottom: 1rem;
 `

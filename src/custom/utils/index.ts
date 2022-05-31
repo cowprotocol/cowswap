@@ -137,3 +137,7 @@ export function formatOrderId(orderId: string): string {
 export function basisPointsToPercent(num: number): Percent {
   return new Percent(JSBI.BigInt(num), JSBI.BigInt(10000))
 }
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
+}
