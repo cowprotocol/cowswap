@@ -152,8 +152,9 @@ export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/ca
 
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 
-export const updateLastCheckedBlock =
-  createAction<{ chainId: ChainId; lastCheckedBlock: number }>('order/updateLastCheckedBlock')
+export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheckedBlock: number }>(
+  'order/updateLastCheckedBlock'
+)
 
 export type SetIsOrderUnfillableParams = {
   id: OrderID
