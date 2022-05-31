@@ -1,9 +1,20 @@
 import styled from 'styled-components/macro'
-import NetworkSelectorMod, { SelectorLabel, SelectorControls } from './NetworkSelectorMod'
+import NetworkSelectorMod, { SelectorLabel, SelectorControls, FlyoutMenu } from './NetworkSelectorMod'
 import { transparentize } from 'polished'
 
 const Wrapper = styled.div`
   display: flex;
+
+  ${FlyoutMenu} {
+    top: 38px;
+    right: 0;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: 100%;
+      left: 0;
+      top: 58px;
+    `};
+  }
 
   ${SelectorLabel} {
     ${({ theme }) => theme.mediaWidth.upToMedium`

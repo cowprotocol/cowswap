@@ -66,7 +66,7 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   `}
 
   ${({ theme, location }) => theme.mediaWidth.upToMedium`
-    padding: ${location.pathname === '/swap' ? '0 0 16px' : '0 16px 16px'};
+    padding: ${location.pathname === Routes.SWAP ? '0 0 16px' : '0 16px 16px'};
   `}
 `
 

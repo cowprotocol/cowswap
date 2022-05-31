@@ -117,7 +117,7 @@ export default function Header() {
                       >
                         <SVG
                           src={darkMode ? IMAGE_SUN : IMAGE_MOON}
-                          description={`${darkMode ? 'Sun/light mode' : 'Moon/dark'} mode icon`}
+                          description={`${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`}
                         />{' '}
                         {darkMode ? 'Light' : 'Dark'} Mode
                       </button>
