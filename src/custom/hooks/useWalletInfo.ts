@@ -1,3 +1,4 @@
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 import { useWeb3React } from 'web3-react-core'
 import { Web3Provider } from '@ethersproject/providers'
@@ -64,7 +65,7 @@ function checkIsSupportedWallet(params: {
 }
 
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
-  const provider = (await connector.getProvider()) as WalletConnectConnector['walletConnectProvider']
+  const provider = (await connector.getProvider()) as WalletConnectProvider
 
   // fix for this https://github.com/gnosis/cowswap/issues/1929
   const meta = provider.walletMeta || provider.signer.connection.wc.peerMeta
