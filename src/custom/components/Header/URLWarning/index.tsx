@@ -9,7 +9,6 @@ import { Markdown } from 'components/Markdown'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { isBarn } from 'utils/environments'
 
 export * from './URLWarningMod'
 
