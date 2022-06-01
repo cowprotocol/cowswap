@@ -32,9 +32,9 @@ export default function useChangeNetworks({ account, chainId, library }: ChangeN
 
   const handleChainSwitch = useCallback(
     (targetChain: number, options: ChainSwitchCallbackOptions) => {
-      if (!library) return
+      if (!library?.provider) return
 
-      switchToNetwork({ library, chainId: targetChain })
+      switchToNetwork({ provider: library.provider, chainId: targetChain })
         .then(() => {
           // mod
           if (!options.skipToggle) {

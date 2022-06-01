@@ -13,3 +13,5 @@ function isDefined<T>(x: T | null | undefined): x is T {
 export function useLastTruthy<T>(value: T | undefined | null): T | null | undefined {
   return useLast(value, isDefined)
 }
+
+export default useLast

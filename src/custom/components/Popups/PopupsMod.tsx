@@ -1,3 +1,4 @@
+import { SupportedChainId } from 'constants/chains'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
@@ -9,7 +10,6 @@ import { AutoColumn } from 'components/Column'
 import PopupItem from 'components/Popups/PopupItem'
 
 // MOD imports
-import { SupportedChainId } from 'constants/chains'
 import { MobilePopupWrapper } from '.'
 
 /* const MobilePopupWrapper = styled.div<{ height: string | number }>`
@@ -77,6 +77,7 @@ export default function Popups() {
         ))}
       </FixedPopupColumn>
       {/* mod */}
+      {/* <MobilePopupWrapper height={activePopups?.length > 0 ? 'fit-content' : 0}> */}
       <MobilePopupWrapper show={activePopups?.length > 0}>
         <MobilePopupInner>
           {activePopups // reverse so new items up front
