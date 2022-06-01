@@ -1,16 +1,17 @@
 import { useEffect, useMemo } from 'react'
-import { Wrapper, AccountPageWrapper, Subtitle } from '../styled'
+import { Wrapper, AccountPageWrapper, Subtitle, MainText, AccountCard } from '../styled'
 import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
 import { notEmpty } from 'utils'
-import { Card } from 'pages/Profile/styled'
 import TokensTable from 'components/Tokens/TokensTable'
+import { useSavedTokens } from 'state/user/hooks'
 
 export default function TokensOverview() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
+  const savedTokens = useSavedTokens()
   const allTokens = useAllTokens()
 
   const formattedTokens = useMemo(() => {
@@ -21,10 +22,19 @@ export default function TokensOverview() {
     <Wrapper>
       <AccountMenu />
       <AccountPageWrapper>
+        <Subtitle>Saved tokens</Subtitle>
+        <AccountCard>
+          {savedTokens.length > 0 ? (
+            <TokensTable tokensData={savedTokens} />
+          ) : (
+            <MainText>Saved tokens will appear here</MainText>
+          )}
+        </AccountCard>
+
         <Subtitle>All tokens</Subtitle>
-        <Card>
+        <AccountCard>
           <TokensTable tokensData={formattedTokens} />
-        </Card>
+        </AccountCard>
       </AccountPageWrapper>
     </Wrapper>
   )

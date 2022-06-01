@@ -1,7 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
-import { LinkWrapper, ResponsiveGrid, Label, MediumOnly, HideMedium, ResponsiveLogo } from './styled'
+import { LinkWrapper, ResponsiveGrid, Label, MediumOnly, HideMedium, ResponsiveLogo, IndexNumber } from './styled'
 import SavedTokenButton from './SavedTokenButton'
 import { TableType } from './TokensTable'
 
@@ -11,14 +11,14 @@ type DataRowParams = {
   tableType?: TableType
 }
 
-const DataRow = ({ tokenData, tableType, index }: DataRowParams) => {
+const DataRow = ({ tokenData, index }: DataRowParams) => {
   const theme = useTheme()
 
   return (
     <ResponsiveGrid>
       <Label>
-        {tableType === TableType.OVERVIEW ? <SavedTokenButton tokenData={tokenData} /> : null}
-        <span>{index + 1}</span>
+        <SavedTokenButton tokenData={tokenData} />
+        <IndexNumber>{index + 1}</IndexNumber>
       </Label>
       <Label>
         <RowFixed>

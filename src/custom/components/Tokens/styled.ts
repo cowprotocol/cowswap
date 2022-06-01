@@ -120,3 +120,7 @@ export const TableHeader = styled(ResponsiveGrid)`
 export const TableBody = styled(AutoColumn)`
   margin-bottom: 0.8rem;
 `
+
+export const IndexNumber = styled.span`
+  font-size: 1rem;
+`
