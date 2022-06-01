@@ -37,3 +37,4 @@ export const removeSerializedPair = createAction<{ chainId: number; tokenAAddres
   'user/removeSerializedPair'
 )
 export const toggleURLWarning = createAction<void>('app/toggleURLWarning') // MOD - legacy Uni we want to keep
+export const toggleSavedToken = createAction<{ serializedToken: SerializedToken }>('user/toggleSavedToken')

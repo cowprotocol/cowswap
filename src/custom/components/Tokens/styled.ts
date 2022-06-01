@@ -15,12 +15,15 @@ export const ResponsiveGrid = styled.div`
   display: grid;
   grid-gap: 1em;
   align-items: center;
-  grid-template-columns: 25px 5fr repeat(2, 1fr);
+  grid-template-columns: 40px 5fr repeat(2, 1fr);
+  text-align: left;
 `
 
 export const LinkWrapper = styled(Link)`
   text-decoration: none;
   padding: 0.8rem 0;
+  display: flex;
+  align-items: center;
 
   :hover {
     cursor: pointer;
@@ -37,7 +40,7 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
 
 export const Label = styled(ThemedText.Label)<{ end?: number }>`
   display: flex;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
   color: ${({ theme }) => theme.text1};

@@ -23,6 +23,8 @@ import {
   updateUserLocale,
   // TODO: mod, shouldn't be here
   updateRecipientToggleVisible,
+  // saved tokens
+  toggleSavedToken,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -71,6 +73,13 @@ export interface UserState {
 
   // undefined means has not gone through A/B split yet
   showSurveyPopup: boolean | undefined
+
+  // saved tokens
+  savedTokens: {
+    [chainId: number]: {
+      [address: string]: SerializedToken
+    }
+  }
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -94,6 +103,7 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   showSurveyPopup: undefined,
+  savedTokens: {},
 }
 
 export default createReducer(initialState, (builder) =>
@@ -206,5 +216,22 @@ export default createReducer(initialState, (builder) =>
     // MOD - legacy Uni code we want to keep
     .addCase(toggleURLWarning, (state) => {
       state.URLWarningVisible = !state.URLWarningVisible
+    })
+    .addCase(toggleSavedToken, (state, { payload: { serializedToken } }) => {
+      const { chainId, address } = serializedToken
+
+      if (!state.savedTokens) {
+        state.savedTokens = {}
+      }
+
+      if (!state.savedTokens[chainId]) {
+        state.savedTokens[chainId] = {}
+      }
+
+      if (!state.savedTokens[chainId][address]) {
+        state.savedTokens[chainId][address] = serializedToken
+      } else {
+        delete state.savedTokens[chainId][address]
+      }
     })
 )

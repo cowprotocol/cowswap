@@ -29,6 +29,7 @@ import {
   updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
+  toggleSavedToken,
 } from './actions'
 // TODO: mod, move to mod file
 import { useSwapActionHandlers } from '../swap/hooks'
@@ -380,4 +381,27 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
     return Object.keys(keyed).map((key) => keyed[key])
   }, [combinedList])
+}
+
+export function useSavedTokens(): Token[] {
+  const { chainId } = useActiveWeb3React()
+  const serializedTokensMap = useAppSelector(({ user: { savedTokens } }) => savedTokens)
+
+  return useMemo(() => {
+    if (!chainId) return []
+    const tokenMap: Token[] = serializedTokensMap?.[chainId]
+      ? Object.values(serializedTokensMap[chainId]).map(deserializeToken)
+      : []
+    return tokenMap
+  }, [serializedTokensMap, chainId])
+}
+
+export function useToggleSavedToken(): (token: Token) => void {
+  const dispatch = useAppDispatch()
+  return useCallback(
+    (token: Token) => {
+      dispatch(toggleSavedToken({ serializedToken: serializeToken(token) }))
+    },
+    [dispatch]
+  )
 }
