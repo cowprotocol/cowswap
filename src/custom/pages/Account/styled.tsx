@@ -75,7 +75,6 @@ export const AccountPageWrapper = styled(PageWrapper)`
 `
 
 export const Subtitle = styled(ThemedText.MediumHeader)`
-  padding-bottom: 1rem;
   font-size: 1.1rem !important;
 `
 
@@ -87,4 +86,17 @@ export const MainText = styled(ThemedText.Main)`
 export const AccountCard = styled(Card)`
   min-height: auto;
   margin-bottom: 1rem;
+`
+
+export const AccountHeading = styled.div`
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+`
+
+export const RemoveTokens = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.primary1};
+  cursor: pointer;
 `

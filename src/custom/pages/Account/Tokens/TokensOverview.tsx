@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import { Wrapper, AccountPageWrapper, Subtitle, MainText, AccountCard } from '../styled'
+import { Wrapper, AccountPageWrapper, Subtitle, MainText, AccountCard, AccountHeading, RemoveTokens } from '../styled'
 import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
 import { notEmpty } from 'utils'
 import TokensTable from 'components/Tokens/TokensTable'
-import { useSavedTokens } from 'state/user/hooks'
+import { useSavedTokens, useRemoveAllSavedTokens } from 'state/user/hooks'
 
 export default function TokensOverview() {
   useEffect(() => {
@@ -14,6 +14,8 @@ export default function TokensOverview() {
   const savedTokens = useSavedTokens()
   const allTokens = useAllTokens()
 
+  const removeAllSavedTokens = useRemoveAllSavedTokens()
+
   const formattedTokens = useMemo(() => {
     return Object.values(allTokens).filter(notEmpty)
   }, [allTokens])
@@ -22,7 +24,10 @@ export default function TokensOverview() {
     <Wrapper>
       <AccountMenu />
       <AccountPageWrapper>
-        <Subtitle>Saved tokens</Subtitle>
+        <AccountHeading>
+          <Subtitle>Saved tokens</Subtitle>
+          <RemoveTokens onClick={() => removeAllSavedTokens()}>(Clear)</RemoveTokens>
+        </AccountHeading>
         <AccountCard>
           {savedTokens.length > 0 ? (
             <TokensTable tokensData={savedTokens} />
@@ -31,7 +36,9 @@ export default function TokensOverview() {
           )}
         </AccountCard>
 
-        <Subtitle>All tokens</Subtitle>
+        <AccountHeading>
+          <Subtitle>All tokens</Subtitle>
+        </AccountHeading>
         <AccountCard>
           <TokensTable tokensData={formattedTokens} />
         </AccountCard>

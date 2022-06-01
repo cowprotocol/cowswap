@@ -25,6 +25,7 @@ import {
   updateRecipientToggleVisible,
   // saved tokens
   toggleSavedToken,
+  removeAllSavedTokens,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -233,5 +234,12 @@ export default createReducer(initialState, (builder) =>
       } else {
         delete state.savedTokens[chainId][address]
       }
+    })
+    .addCase(removeAllSavedTokens, (state, { payload: { chainId } }) => {
+      if (!state.savedTokens) {
+        state.savedTokens = {}
+      }
+
+      state.savedTokens[chainId] = {}
     })
 )

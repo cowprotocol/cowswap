@@ -30,6 +30,7 @@ import {
   updateUserLocale,
   updateUserSlippageTolerance,
   toggleSavedToken,
+  removeAllSavedTokens,
 } from './actions'
 // TODO: mod, move to mod file
 import { useSwapActionHandlers } from '../swap/hooks'
@@ -404,4 +405,15 @@ export function useToggleSavedToken(): (token: Token) => void {
     },
     [dispatch]
   )
+}
+
+export function useRemoveAllSavedTokens(): () => void {
+  const { chainId } = useActiveWeb3React()
+  const dispatch = useAppDispatch()
+
+  return useCallback(() => {
+    if (chainId) {
+      dispatch(removeAllSavedTokens({ chainId }))
+    }
+  }, [dispatch, chainId])
 }
