@@ -91,6 +91,6 @@
     ],
     // TODO: review - it is likely an issue with the extended config
     // mod
-    "react/display-name":  "off"
+    "react/display-name": "off"
   }
 }
