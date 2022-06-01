@@ -16,9 +16,19 @@ const SORT_FIELD = {
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
+  tableType?: TableType
 }
 
-export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTableParams) {
+export enum TableType {
+  OVERVIEW = 'OVERVIEW',
+  SAVED = 'SAVED',
+}
+
+export default function TokenTable({
+  tokensData,
+  maxItems = MAX_ITEMS,
+  tableType = TableType.OVERVIEW,
+}: TokenTableParams) {
   // sorting
   const [sortField, setSortField] = useState(SORT_FIELD.name)
   const [sortDirection, setSortDirection] = useState<boolean>(false)
@@ -92,7 +102,7 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTa
               if (data) {
                 return (
                   <React.Fragment key={i}>
-                    <TokensTableRow index={(page - 1) * MAX_ITEMS + i} tokenData={data} />
+                    <TokensTableRow tableType={tableType} index={(page - 1) * MAX_ITEMS + i} tokenData={data} />
                     <Break />
                   </React.Fragment>
                 )
@@ -121,8 +131,8 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTa
         </AutoColumn>
       ) : (
         <LoadingRows>
-          {Array.from(Array(maxItems * 4), () => (
-            <div />
+          {Array.from(Array(maxItems * 4), (n, i) => (
+            <div key={i} />
           ))}
         </LoadingRows>
       )}
