@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { ThemedText } from 'theme'
 import Loader from 'components/Loader'
@@ -82,7 +83,9 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTa
         <AutoColumn>
           <TableHeader>
             <Label>#</Label>
-            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>Name {arrow(SORT_FIELD.NAME)}</ClickableText>
+            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+            </ClickableText>
           </TableHeader>
 
           <Break />
@@ -105,7 +108,10 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTa
             <ArrowButton onClick={() => setPage(prevPage)}>
               <Arrow faded={page === 1}>←</Arrow>
             </ArrowButton>
-            <ThemedText.Body>{'Page ' + page + ' of ' + maxPage}</ThemedText.Body>
+
+            <ThemedText.Body>
+              <Trans>{'Page ' + page + ' of ' + maxPage}</Trans>
+            </ThemedText.Body>
             <ArrowButton onClick={() => setPage(nextPage)}>
               <Arrow faded={page === maxPage}>→</Arrow>
             </ArrowButton>

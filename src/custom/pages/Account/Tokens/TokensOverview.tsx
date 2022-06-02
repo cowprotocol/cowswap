@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react'
+import { Trans } from '@lingui/macro'
 import { Wrapper, AccountPageWrapper, Subtitle } from '../styled'
 import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
-import { notEmpty } from 'utils'
+import { isTruthy } from 'utils/misc'
 import { Card } from 'pages/Profile/styled'
 import TokensTable from 'components/Tokens/TokensTable'
 
@@ -14,14 +15,16 @@ export default function TokensOverview() {
   const allTokens = useAllTokens()
 
   const formattedTokens = useMemo(() => {
-    return Object.values(allTokens).filter(notEmpty)
+    return Object.values(allTokens).filter(isTruthy)
   }, [allTokens])
 
   return (
     <Wrapper>
       <AccountMenu />
       <AccountPageWrapper>
-        <Subtitle>All tokens</Subtitle>
+        <Subtitle>
+          <Trans>All tokens</Trans>
+        </Subtitle>
         <Card>
           <TokensTable tokensData={formattedTokens} />
         </Card>
