@@ -1,4 +1,6 @@
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 import { createReducer } from '@reduxjs/toolkit'
+import { COMMON_BASES } from 'constants/routing'
 import { SupportedLocale } from 'constants/locales'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
@@ -27,6 +29,7 @@ import {
   toggleFavouriteToken,
   removeAllFavouriteTokens,
 } from './actions'
+import { serializeToken } from './hooks'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -87,6 +90,21 @@ function pairKey(token0Address: string, token1Address: string) {
   return `${token0Address};${token1Address}`
 }
 
+function _initialSavedTokensState() {
+  return ALL_SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
+    acc[chain] = COMMON_BASES[chain].reduce(
+      (acc2, curr) => {
+        acc2[curr.wrapped.address] = serializeToken(curr.wrapped)
+        return acc2
+      },
+      {} as {
+        [address: string]: SerializedToken
+      }
+    )
+    return acc
+  }, {} as UserState['favouriteTokens'])
+}
+
 export const initialState: UserState = {
   matchesDarkMode: false,
   userDarkMode: null,
@@ -105,7 +123,7 @@ export const initialState: UserState = {
   URLWarningVisible: true,
   showSurveyPopup: undefined,
   // mod, favourite tokens
-  favouriteTokens: {},
+  favouriteTokens: _initialSavedTokensState(),
 }
 
 export default createReducer(initialState, (builder) =>
@@ -220,15 +238,12 @@ export default createReducer(initialState, (builder) =>
       state.URLWarningVisible = !state.URLWarningVisible
     })
     // MOD - to add/remove favourite token based on if its already added or not
+    // TODO: move to mod
     .addCase(toggleFavouriteToken, (state, { payload: { serializedToken } }) => {
       const { chainId, address } = serializedToken
 
-      if (!state.favouriteTokens) {
-        state.favouriteTokens = {}
-      }
-
-      if (!state.favouriteTokens[chainId]) {
-        state.favouriteTokens[chainId] = {}
+      if (!state.favouriteTokens?.[chainId]) {
+        state.favouriteTokens = _initialSavedTokensState()
       }
 
       if (!state.favouriteTokens[chainId][address]) {
@@ -237,12 +252,8 @@ export default createReducer(initialState, (builder) =>
         delete state.favouriteTokens[chainId][address]
       }
     })
-    // MOD - to remove all favourite tokens
+    // TODO: move to mod
     .addCase(removeAllFavouriteTokens, (state, { payload: { chainId } }) => {
-      if (!state.favouriteTokens) {
-        state.favouriteTokens = {}
-      }
-
-      state.favouriteTokens[chainId] = {}
+      state.favouriteTokens = _initialSavedTokensState()
     })
 )
