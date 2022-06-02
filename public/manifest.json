@@ -2,7 +2,7 @@
   "background_color": "#fff",
   "display": "standalone",
   "homepage_url": "https://cowswap.exchange",
-  "description": "Swap tokens with front-running protection. 🐮 Also save fees with gas-less orders and Peer-to-Peer trades",
+  "description": "Save money on token swaps by trading directly with peers and avoiding front-running attacks",
   "iconPath": "favicon.png",
   "icons": [
     {
