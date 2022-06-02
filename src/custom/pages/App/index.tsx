@@ -25,11 +25,18 @@ const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/er
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
 
+// FAQ pages
 const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
 const ProtocolFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/ProtocolFaq'))
 const TokenFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TokenFaq'))
 const TradingFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TradingFaq'))
 const AffiliateFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/AffiliateFaq'))
+
+// Account pages
+const Account = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account'))
+const Tokens = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Tokens'))
+const Governance = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Governance'))
+const Affiliate = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Affiliate'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -100,6 +107,11 @@ export default function App() {
             <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
             <Route exact strict path="/about" component={About} />
             <Route exact strict path="/profile" component={Profile} />
+
+            <Route exact strict path="/account" component={Account} />
+            <Route exact strict path="/account/tokens" component={Tokens} />
+            <Route exact strict path="/account/governance" component={Governance} />
+            <Route exact strict path="/account/affiliate" component={Affiliate} />
 
             <Route exact path="/faq" component={Faq} />
             <Route exact strict path="/faq/protocol" component={ProtocolFaq} />

@@ -161,3 +161,20 @@ export const SWR_OPTIONS = {
   // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
   revalidateOnFocus: false,
 }
+
+// These are used for Account sidebar menu
+export const ACCOUNT_MENU_LINKS = [
+  { title: 'General', url: '/account' },
+  { title: 'Tokens', url: '/account/tokens' },
+  { title: 'Governance', url: '/account/governance' },
+  { title: 'Affiliate', url: '/account/affiliate' },
+]
+
+// These are used for FAQ sidebar menu
+export const FAQ_MENU_LINKS = [
+  { title: 'General', url: '/faq' },
+  { title: 'Protocol', url: '/faq/protocol' },
+  { title: 'Token', url: '/faq/token' },
+  { title: 'Trading', url: '/faq/trading' },
+  { title: 'Affiliate', url: '/faq/affiliate' },
+]
