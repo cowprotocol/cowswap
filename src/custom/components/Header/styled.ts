@@ -5,14 +5,13 @@ import HeaderMod, {
   HeaderLinks as HeaderLinksMod,
   HeaderControls as HeaderControlsUni,
   BalanceText as BalanceTextUni,
-  HeaderElement,
   AccountElement as AccountElementUni,
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
-  UNIWrapper,
+  HeaderElement as HeaderElementUni,
 } from './HeaderMod'
-import { MenuFlyout } from 'components/MenuDropdown/styled'
+import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'components/MenuDropdown/styled'
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color 0.15s ease-in-out;
@@ -45,36 +44,56 @@ export const BalanceText = styled(BalanceTextUni)`
 
 export const HeaderControls = styled(HeaderControlsUni)`
   justify-content: flex-end;
+  gap: 12px;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     max-width: 100%;
+    margin: 0 0 0 auto;
     padding: 0;
     height: auto;
-    width: 100%;
+    width: auto;
   `};
 `
-export const Wrapper = styled.div`
+
+export const HeaderElement = styled(HeaderElementUni)`
+  border-radius: 0;
+  gap: 12px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: row;
+    justify-content: flex-end;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    height: 64px;
+    background-color: ${({ theme }) => transparentize(0.1, theme.bg3)};
+    border-top: 1px solid ${({ theme }) => transparentize(0.7, theme.border)};
+    backdrop-filter: blur(21px);
+    padding: 10px 16px;
+    gap: 8px;
+  `}
+`
+
+export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
   ${HeaderFrame} {
     padding: 16px;
-    grid-template-columns: auto auto;
-    grid-gap: 16px;
+    display: flex;
 
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 10px;
+    ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
+      grid-template-columns: unset;
+
+      ${
+        isMobileMenuOpen &&
+        css`
+          position: absolute;
+          top: 0;
+        `
+      }
     `}
-  }
-
-  ${HeaderElement} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-    `};
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      flex-direction: initial;
-      align-items: inherit;
-    `};
   }
 
   ${StyledMenuButton} {
@@ -115,8 +134,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     font-weight: 500;
     appearance: none;
     outline: 0;
-    margin: 0 6px;
-    padding: 6px 8px;
+    margin: 0 4px;
+    padding: 8px 12px;
     background: 0;
     border: 0;
     cursor: pointer;
@@ -126,7 +145,13 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 100%;
+      border-radius: 0;
       margin: 0;
+      font-weight: 600;
+      font-size: 17px;
+      padding: 28px 10px;
+      color: ${({ theme }) => theme.text1};
+      border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
     `};
 
     > svg > path {
@@ -138,9 +163,23 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       color: ${({ theme }) => theme.text1};
       background: ${({ theme }) => transparentize(0.95, theme.text1)};
 
+      ${({ theme }) => theme.mediaWidth.upToLarge`
+        background: transparent;
+      `};
+
       > svg > path {
         fill: ${({ theme }) => theme.text1};
       }
+    }
+
+    &.expanded {
+      border: 0;
+    }
+
+    &.expanded + ${MenuContent} {
+      ${({ theme }) => theme.mediaWidth.upToLarge`
+        border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+      `};
     }
 
     &.ACTIVE {
@@ -148,24 +187,73 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
   }
 
+  ${MenuFlyout} {
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      width: 100%;
+      flex-flow: column wrap;
+
+      > button > svg {
+        margin: 0 0 0 auto;
+        height: 10px;
+      }
+    `};
+  }
+
+  ${MenuContent} {
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      padding: 8px 10px 28px;
+      gap: 36px;
+      margin: 0;
+    `};
+  }
+
+  ${MenuSection} {
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      gap 36px;
+      opacity: 0.7;
+    `};
+  }}
+
+  ${MenuTitle} {
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      display: none;
+    `};
+  }}
+
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     display: none;
     width: 100%;
     height: 100%;
     position: fixed;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 100;
     background: ${({ theme }) => theme.bg4};
     outline: 0;
-    padding: 72px 8px;
+    padding: 60px 8px;
     overflow-y: auto;
 
     ${
       isMobileMenuOpen &&
       css`
-        display: block;
+        display: flex;
+
+        &::before {
+          content: '';
+          width: 100%;
+          display: flex;
+          height: 60px;
+          background: ${({ theme }) => theme.bg4};
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 1;
+        }
+
         // transform: translate3d(100%, 0, 0);
       `
     }
@@ -203,7 +291,7 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 `
 
-export const LogoImage = styled.div`
+export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   width: 190px;
   height: 48px;
   background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
@@ -213,6 +301,16 @@ export const LogoImage = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
     height: 34px;
+  `}
+
+  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
+    ${
+      isMobileMenuOpen &&
+      css`
+        background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
+        height: 34px;
+      `
+    }
   `}
 
   > svg {
@@ -232,22 +330,21 @@ export const UniIcon = styled.div`
   }
 `
 
-export const VCowWrapper = styled(UNIWrapper)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
-
 export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
   border-radius: 21px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   transition: border 0.2s ease-in-out;
   pointer-events: auto;
+  width: auto;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 100%;
+  `}
 
   &:hover,
   &:focus {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   }
 
   ${BalanceText} {
