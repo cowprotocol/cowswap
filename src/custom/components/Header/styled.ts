@@ -76,19 +76,23 @@ export const HeaderElement = styled(HeaderElementUni)`
   `}
 `
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
   ${HeaderFrame} {
     padding: 16px;
     display: flex;
 
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
       grid-template-columns: unset;
-    `}
 
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 10px;
+      ${
+        isMobileMenuOpen &&
+        css`
+          position: absolute;
+          top: 0;
+        `
+      }
     `}
   }
 

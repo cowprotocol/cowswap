@@ -69,7 +69,7 @@ export default function Header() {
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
+  const openOrdersPanel = () => account && setIsOrdersPanelOpen(true)
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
@@ -105,7 +105,7 @@ export default function Header() {
             {items.map(({ sectionTitle, links }, index) => {
               return (
                 <MenuSection key={index}>
-                  <MenuTitle>{sectionTitle}</MenuTitle>
+                  {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
                   {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => {
                     return action && action === 'setColorMode' ? (
                       <button
@@ -117,7 +117,7 @@ export default function Header() {
                       >
                         <SVG
                           src={darkMode ? IMAGE_SUN : IMAGE_MOON}
-                          description={`${darkMode ? 'Sun/light mode' : 'Moon/dark'} mode icon`}
+                          description={`${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`}
                         />{' '}
                         {darkMode ? 'Light' : 'Dark'} Mode
                       </button>
@@ -151,7 +151,7 @@ export default function Header() {
   )
 
   return (
-    <Wrapper>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
