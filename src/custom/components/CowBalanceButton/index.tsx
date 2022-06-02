@@ -4,25 +4,35 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useCombinedBalance } from 'state/cowToken/hooks'
 import { ChainId } from 'state/lists/actions/actionsMod'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
 import { transparentize } from 'polished'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: ${({ theme }) => theme.bg4};
   color: ${({ theme }) => theme.text1};
-  padding: 7px 12px;
-  border: 1px solid transparent;
+  padding: 6px 12px;
+  border: 2px solid transparent;
   font-weight: 500;
+  width: auto;
   display: flex;
   align-items: center;
   position: relative;
   border-radius: 21px;
   pointer-events: auto;
-  transition: border 0.2s ease-in-out;
+  transition: width 0.2s ease-in-out, border 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 100%;
+    width: auto;
+    padding: 6px 12px 6px 8px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 6px 8px;
+  `};
 
   &:hover {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   }
 
   ${({ theme, isLoading }) =>
@@ -76,22 +86,25 @@ interface CowBalanceButtonProps {
   account?: string | null | undefined
   chainId: ChainId | undefined
   onClick?: () => void
+  isUpToSmall?: boolean
 }
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
-export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
+export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
   const { balance, isLoading } = useCombinedBalance()
 
-  const formattedBalance = formatSmartLocaleAware(balance, AMOUNT_PRECISION)
+  const formattedBalance = formatSmartLocaleAware(balance, 0)
   const formattedMaxBalance = formatMax(balance, COW_DECIMALS)
 
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>
       <CowProtocolLogo />
-      <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
-        <Trans>{formattedBalance || 0}</Trans>
-      </b>
+      {!isUpToSmall && (
+        <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
+          <Trans>{formattedBalance || 0}</Trans>
+        </b>
+      )}
     </Wrapper>
   )
 }
