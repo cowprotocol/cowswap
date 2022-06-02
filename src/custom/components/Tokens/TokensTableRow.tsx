@@ -2,7 +2,7 @@ import { Token } from '@uniswap/sdk-core'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
 import { LinkWrapper, ResponsiveGrid, Label, MediumOnly, HideMedium, ResponsiveLogo, IndexNumber } from './styled'
-import SavedTokenButton from './SavedTokenButton'
+import FavouriteTokenButton from './FavouriteTokenButton'
 import { TableType } from './TokensTable'
 
 type DataRowParams = {
@@ -17,7 +17,7 @@ const DataRow = ({ tokenData, index }: DataRowParams) => {
   return (
     <ResponsiveGrid>
       <Label>
-        <SavedTokenButton tokenData={tokenData} />
+        <FavouriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
       </Label>
       <Label>

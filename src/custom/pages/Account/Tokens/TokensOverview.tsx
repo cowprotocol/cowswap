@@ -25,14 +25,14 @@ export default function TokensOverview() {
       <AccountMenu />
       <AccountPageWrapper>
         <AccountHeading>
-          <Subtitle>Saved tokens</Subtitle>
+          <Subtitle>Favourite tokens</Subtitle>
           <RemoveTokens onClick={() => removeAllFavouriteTokens()}>(Clear)</RemoveTokens>
         </AccountHeading>
         <AccountCard>
           {favouriteTokens.length > 0 ? (
             <TokensTable tokensData={favouriteTokens} />
           ) : (
-            <MainText>Saved tokens will appear here</MainText>
+            <MainText>Favourite tokens will appear here</MainText>
           )}
         </AccountCard>
 

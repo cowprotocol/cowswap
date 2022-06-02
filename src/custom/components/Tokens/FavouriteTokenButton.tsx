@@ -3,16 +3,16 @@ import { Token } from '@uniswap/sdk-core'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'state/user/hooks'
 import { ButtonStar } from 'components/Button'
 
-type SavedTokenButtonParams = {
+type FavouriteTokenButtonParams = {
   tokenData: Token
 }
 
-export default function SavedTokenButton({ tokenData }: SavedTokenButtonParams) {
+export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButtonParams) {
   const favouriteTokens = useFavouriteTokens()
 
   const toggleFavouriteToken = useToggleFavouriteToken()
 
-  const handleSavedToken = useCallback(
+  const handleFavouriteToken = useCallback(
     (event) => {
       event.preventDefault()
       toggleFavouriteToken(tokenData)
@@ -20,10 +20,10 @@ export default function SavedTokenButton({ tokenData }: SavedTokenButtonParams) 
     [toggleFavouriteToken, tokenData]
   )
 
-  const isSavedToken = useMemo(
+  const isFavouriteToken = useMemo(
     () => favouriteTokens.some((t: Token) => t.address === tokenData.address),
     [favouriteTokens, tokenData]
   )
 
-  return <ButtonStar fill={isSavedToken} onClick={handleSavedToken} />
+  return <ButtonStar fill={isFavouriteToken} onClick={handleFavouriteToken} />
 }
