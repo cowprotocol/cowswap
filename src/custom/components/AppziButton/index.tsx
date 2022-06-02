@@ -23,11 +23,14 @@ const Wrapper = styled(ButtonPrimary)`
   z-index: 2;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    bottom: 86px;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    right: 14px;
+    left: 14px;
+    height: 42px;
+    width: 42px;
+    bottom: 11px;
+    right: initial;
+    z-index: 10;
+    box-shadow: none;
+    border-width: 3px;
   `};
 
   &::after {
