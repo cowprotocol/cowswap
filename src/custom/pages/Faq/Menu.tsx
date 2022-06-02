@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Menu } from './styled'
+import { SideMenu } from 'components/SideMenu'
 
 const LINKS = [
   { title: 'General', url: '/faq' },
@@ -11,7 +11,7 @@ const LINKS = [
 
 export function FaqMenu() {
   return (
-    <Menu>
+    <SideMenu>
       <ul>
         {LINKS.map(({ title, url }, i) => (
           <li key={i}>
@@ -21,6 +21,6 @@ export function FaqMenu() {
           </li>
         ))}
       </ul>
-    </Menu>
+    </SideMenu>
   )
 }

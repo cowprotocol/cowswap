@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Menu } from './styled'
+import { SideMenu } from 'components/SideMenu'
 
 const LINKS = [
   { title: 'General', url: '/account' },
@@ -10,7 +10,7 @@ const LINKS = [
 
 export function AccountMenu() {
   return (
-    <Menu>
+    <SideMenu>
       <ul>
         {LINKS.map(({ title, url }, i) => (
           <li key={i}>
@@ -20,6 +20,6 @@ export function AccountMenu() {
           </li>
         ))}
       </ul>
-    </Menu>
+    </SideMenu>
   )
 }
