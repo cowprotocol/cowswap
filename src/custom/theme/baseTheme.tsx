@@ -150,9 +150,11 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
     `,
     appBody: {
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      boxShadow: `4px 4px 0 ${colorsTheme.black}`,
+      boxShadowMobile: `0 4px 0 ${colorsTheme.black}`,
       borderRadius: '16px',
       border: `3px solid ${colorsTheme.black}`,
+      borderMobile: 'none',
       padding: '12px 6px',
       maxWidth: {
         normal: '460px',
@@ -280,7 +282,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     wallet: {
       color: darkMode ? colorsTheme.text1 : colorsTheme.text1,
-      background: darkMode ? colorsTheme.bg3 : colorsTheme.bg2,
+      background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
 }

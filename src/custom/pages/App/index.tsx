@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
 import { Suspense, lazy } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+import { Routes } from 'constants/routes'
 
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
@@ -11,6 +12,7 @@ import { version } from '@src/../package.json'
 import { environmentName } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
+import { DUNE_DASHBOARD_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -48,7 +50,7 @@ if (SENTRY_DSN) {
 
 export const Wrapper = styled(AppMod)``
 
-export const BodyWrapper = styled.div`
+export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -58,13 +60,13 @@ export const BodyWrapper = styled.div`
   flex: auto;
   z-index: 1;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 0 10px 0;
-  `}
-
   ${({ theme }) => theme.mediaWidth.upToExtraLarge`
     padding-top: 5vh;
     align-items: flex-start;
+  `}
+
+  ${({ theme, location }) => theme.mediaWidth.upToMedium`
+    padding: ${location.pathname === Routes.SWAP ? '0 0 16px' : '0 16px 16px'};
   `}
 `
 
@@ -96,38 +98,28 @@ export default function App() {
           <Switch>
             <Redirect from="/claim" to="/account" />
             <Redirect from="/profile" to="/account" />
-            <Route exact strict path="/swap" component={Swap} />
-            <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-            <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-            <Route exact strict path="/about" component={About} />
-            <Route exact strict path="/account" component={Account} />
+            <Route exact strict path={Routes.SWAP} component={Swap} />
+            <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
+            <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
+            <Route exact strict path={Routes.ABOUT} component={About} />
+            <Route exact strict path={Routes.ACCOUNT} component={Account} />
 
-            <Route exact path="/faq" component={Faq} />
-            <Route exact strict path="/faq/protocol" component={ProtocolFaq} />
-            <Route exact strict path="/faq/token" component={TokenFaq} />
-            <Route exact strict path="/faq/trading" component={TradingFaq} />
-            <Route exact strict path="/faq/affiliate" component={AffiliateFaq} />
-            <Route exact strict path="/play/cow-runner" component={CowRunner} />
-            <Route exact strict path="/play/mev-slicer" component={MevSlicer} />
-            <Route exact strict path="/anyswap-affected-users" component={AnySwapAffectedUsers} />
-            <Route exact strict path="/privacy-policy" component={PrivacyPolicy} />
-            <Route exact strict path="/cookie-policy" component={CookiePolicy} />
-            <Route exact strict path="/terms-and-conditions" component={TermsAndConditions} />
-            <Route exact strict path="/chat" component={createRedirectExternal('https://chat.cowswap.exchange')} />
-            <Route exact strict path="/docs" component={createRedirectExternal('https://docs.cow.fi')} />
-            <Route
-              exact
-              strict
-              path="/stats"
-              component={createRedirectExternal('https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2')}
-            />
-            <Route
-              exact
-              strict
-              path="/twitter"
-              component={createRedirectExternal('https://twitter.com/MEVprotection')}
-            />
-            <Route exact strict path="/" component={RedirectPathToSwapOnly} />
+            <Route exact path={Routes.FAQ} component={Faq} />
+            <Route exact strict path={Routes.FAQ} component={ProtocolFaq} />
+            <Route exact strict path={Routes.FAQ_TOKEN} component={TokenFaq} />
+            <Route exact strict path={Routes.FAQ_TRADING} component={TradingFaq} />
+            <Route exact strict path={Routes.FAQ_AFFILIATE} component={AffiliateFaq} />
+            <Route exact strict path={Routes.PLAY_COWRUNNER} component={CowRunner} />
+            <Route exact strict path={Routes.PLAY_MEVSLICER} component={MevSlicer} />
+            <Route exact strict path={Routes.ANYSWAP_AFFECTED} component={AnySwapAffectedUsers} />
+            <Route exact strict path={Routes.PRIVACY_POLICY} component={PrivacyPolicy} />
+            <Route exact strict path={Routes.COOKIE_POLICY} component={CookiePolicy} />
+            <Route exact strict path={Routes.TERMS_CONDITIONS} component={TermsAndConditions} />
+            <Route exact strict path={Routes.CHAT} component={createRedirectExternal(DISCORD_LINK)} />
+            <Route exact strict path={Routes.DOCS} component={createRedirectExternal(DOCS_LINK)} />
+            <Route exact strict path={Routes.STATS} component={createRedirectExternal(DUNE_DASHBOARD_LINK)} />
+            <Route exact strict path={Routes.TWITTER} component={createRedirectExternal(TWITTER_LINK)} />
+            <Route exact strict path={Routes.HOME} component={RedirectPathToSwapOnly} />
             <Route component={NotFound} />
           </Switch>
         </Suspense>

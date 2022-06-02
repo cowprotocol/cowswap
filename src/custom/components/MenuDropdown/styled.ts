@@ -7,6 +7,10 @@ export const MenuFlyout = styled.ol`
   position: relative;
 
   > button {
+    &.expanded {
+      border: none;
+    }
+
     &:hover {
       &::after {
         content: '';
@@ -17,6 +21,10 @@ export const MenuFlyout = styled.ol`
         bottom: -18px;
         left: 0;
         background: transparent;
+
+        ${({ theme }) => theme.mediaWidth.upToLarge`
+          content: none;
+        `};
       }
     }
 
@@ -26,6 +34,11 @@ export const MenuFlyout = styled.ol`
       height: 6px;
       object-fit: contain;
     }
+
+    > svg.expanded {
+      transition: transform 0.3s ease-in-out;
+      transform: rotate(180deg);
+    }
   }
 `
 
@@ -34,13 +47,24 @@ export const Content = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: red;
   border-radius: 16px;
   background: ${({ theme }) => theme.bg4};
   box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
   padding: 32px;
   gap: 62px;
   margin: 12px 0 0;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+    position: relative;
+    top: initial;
+    left: initial;
+    border-radius: 0;
+    display: flex;
+    flex-flow: column wrap;
+  `};
 
   > div {
     display: flex;
