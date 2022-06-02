@@ -40,6 +40,7 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   filter: ${({ disable }) => disable && 'grayscale(1)'};
 `
 
+// TODO: move into hooks mod once @nenadV91 fixes it
 export function useFavouriteOrCommonTokens() {
   const { chainId } = useActiveWeb3React()
 
@@ -51,6 +52,7 @@ export function useFavouriteOrCommonTokens() {
   }, [chainId, favouriteTokens])
 }
 
+const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({ chainId, onSelect, selectedCurrency }: CommonBasesProps) {
   /* {
   chainId?: number
@@ -60,7 +62,7 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
   const tokens = useFavouriteOrCommonTokens()
 
   return tokens.length > 0 ? (
-    <MobileWrapper gap="md">
+    <MobileWrapper gap="md" showOverflow={tokens.length > MAX_LENGTH_OVERFLOW}>
       <AutoRow>
         <Text fontWeight={500} fontSize={14}>
           {/* <Trans>Common bases</Trans> */}
