@@ -28,17 +28,6 @@ export const AutoColumn = styled(AutoColumnUni)`
   `}
 `
 
-export const MobileWrapper = styled(AutoColumn)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    /* isplay: none; */
-  `};
-`
-
-export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`
-  color: ${({ theme, disable }) => disable && transparentize(0.7, theme.text1)};
-  filter: ${({ disable }) => disable && 'contrast(0.85)'};
-`
-
 export const CommonBasesRow = styled(AutoRow)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: row nowrap;
@@ -61,6 +50,41 @@ export const CommonBasesRow = styled(AutoRow)`
       background-clip: padding-box;
     }
   `}
+`
+
+export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
+  ${({ showOverflow }) =>
+    showOverflow &&
+    `
+    ${CommonBasesRow} {
+      padding: 0 0 20px 0;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      background: linear-gradient(to top, #163861 0%, rgba(22, 56, 97, 0) 100%);
+      pointer-events: none;
+      height: 40px;
+      width: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 85px;
+      margin: auto;
+    }
+`}
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    /* display: none; */
+  `};
+
+  overflow-y: auto;
+  max-height: 150px;
+`
+
+export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`
+  color: ${({ theme, disable }) => disable && transparentize(0.7, theme.text1)};
+  filter: ${({ disable }) => disable && 'contrast(0.85)'};
 `
 
 export interface CommonBasesProps {
