@@ -24,7 +24,7 @@ import {
   BannerCardSvg,
   CardsLoader,
   CardsSpinner,
-} from 'pages/Profile/styled'
+} from '@src/custom/pages/Account/styled'
 import { useActiveWeb3React } from 'hooks/web3'
 import Copy from 'components/Copy/CopyMod'
 import { RefreshCcw } from 'react-feather'
@@ -63,7 +63,7 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
-import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
+import { useCowFromLockedGnoBalances } from '@src/custom/pages/Account/LockedGnoVesting/hooks'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -250,7 +250,7 @@ export default function Profile() {
       <ErrorModal />
 
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-      <Title>Profile</Title>
+      <Title>Account</Title>
 
       <CardsWrapper>
         {isCardsLoading ? (
