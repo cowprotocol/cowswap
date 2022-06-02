@@ -21,6 +21,7 @@ import { ColumnCenter } from 'components/Column'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/xdai/hack'
+import { Routes } from 'constants/routes'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -550,7 +551,7 @@ export function TransactionSubmittedContent({
           )}
 
           <ButtonCustom>
-            <InternalLink to="/play/cow-runner" onClick={onDismiss}>
+            <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
               Play the Cow Runner Game!
             </InternalLink>

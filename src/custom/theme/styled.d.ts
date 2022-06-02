@@ -77,8 +77,10 @@ declare module 'styled-components' {
     }
     appBody: {
       boxShadow: string
+      boxShadowMobile: string
       borderRadius: string
       border: string
+      borderMobile: string
       padding: string
       maxWidth: {
         normal: string

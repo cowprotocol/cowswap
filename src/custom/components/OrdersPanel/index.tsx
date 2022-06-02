@@ -23,7 +23,7 @@ const SideBar = styled.div`
   margin: auto;
   bottom: 0;
   left: 0;
-  z-index: 99;
+  z-index: 102;
   padding: 0;
   cursor: default;
   overflow-y: auto; // fallback for 'overlay'
