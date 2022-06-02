@@ -209,7 +209,7 @@ const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygonscan</Trans> */
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return <Trans>Blockscout</Trans>
     default:
       return <Trans>Etherscan</Trans>
@@ -433,7 +433,7 @@ export default function NetworkSelector() {
             </FlyoutHeader>
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
-            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.GNOSIS_CHAIN} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}
