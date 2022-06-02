@@ -1,4 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit'
+// TODO: properly mod
+import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
+import { COMMON_BASES } from 'constants/routing'
 import { SupportedLocale } from 'constants/locales'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
@@ -27,6 +30,7 @@ import {
   toggleSavedToken,
   removeAllSavedTokens,
 } from './actions'
+import { serializeToken } from './hooks'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -87,6 +91,22 @@ function pairKey(token0Address: string, token1Address: string) {
   return `${token0Address};${token1Address}`
 }
 
+// TODO: move to mod folder
+function _initialSavedTokensState() {
+  return ALL_SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
+    acc[chain] = COMMON_BASES[chain].reduce(
+      (acc2, curr) => {
+        acc2[curr.wrapped.address] = serializeToken(curr.wrapped)
+        return acc2
+      },
+      {} as {
+        [address: string]: SerializedToken
+      }
+    )
+    return acc
+  }, {} as UserState['savedTokens'])
+}
+
 export const initialState: UserState = {
   matchesDarkMode: false,
   userDarkMode: null,
@@ -104,7 +124,8 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   showSurveyPopup: undefined,
-  savedTokens: {},
+  // TODO: move to MOD
+  savedTokens: _initialSavedTokensState(),
 }
 
 export default createReducer(initialState, (builder) =>
@@ -218,15 +239,12 @@ export default createReducer(initialState, (builder) =>
     .addCase(toggleURLWarning, (state) => {
       state.URLWarningVisible = !state.URLWarningVisible
     })
+    // TODO: move to mod
     .addCase(toggleSavedToken, (state, { payload: { serializedToken } }) => {
       const { chainId, address } = serializedToken
 
-      if (!state.savedTokens) {
-        state.savedTokens = {}
-      }
-
-      if (!state.savedTokens[chainId]) {
-        state.savedTokens[chainId] = {}
+      if (!state.savedTokens?.[chainId]) {
+        state.savedTokens = _initialSavedTokensState()
       }
 
       if (!state.savedTokens[chainId][address]) {
@@ -235,11 +253,8 @@ export default createReducer(initialState, (builder) =>
         delete state.savedTokens[chainId][address]
       }
     })
+    // TODO: move to mod
     .addCase(removeAllSavedTokens, (state, { payload: { chainId } }) => {
-      if (!state.savedTokens) {
-        state.savedTokens = {}
-      }
-
-      state.savedTokens[chainId] = {}
+      state.savedTokens = _initialSavedTokensState()
     })
 )
