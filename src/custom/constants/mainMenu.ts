@@ -1,3 +1,4 @@
+import { Routes } from 'constants/routes'
 import { DUNE_DASHBOARD_LINK, CONTRACTS_CODE_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
 
 // Assets
@@ -15,46 +16,60 @@ export interface MAIN_MENU_TYPE {
   url?: string
   externalURL?: boolean
   items?: {
-    sectionTitle: string
+    sectionTitle?: string
     links: {
       title?: string
-      url?: string
-      externalURL?: boolean
-      icon?: string
-      action?: string
+      url?: string // If URL is an internal route
+      externalURL?: boolean // If URL is external
+      icon?: string // If icon uses a regular <img /> tag
+      iconSVG?: string // If icon is a <SVG> inline component
+      action?: string // Special purpose flag for non-regular links
     }[]
   }[]
 }
 
 export const MAIN_MENU = [
-  { title: 'Swap', url: '/swap' },
-  { title: 'Account', url: '/account' },
-  { title: 'FAQ', url: '/faq' },
+  { title: 'Swap', url: Routes.SWAP },
+  { title: 'Account', url: Routes.ACCOUNT },
+  {
+    title: 'FAQ',
+    items: [
+      {
+        links: [
+          { title: 'Overview', url: Routes.FAQ },
+          { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
+          { title: 'Token', url: Routes.FAQ_TOKEN },
+          { title: 'Trading', url: Routes.FAQ_TRADING },
+          { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
+        ],
+      },
+    ],
+  },
   {
     title: 'More',
     items: [
       {
         sectionTitle: 'Overview',
         links: [
-          { title: 'Documentation', url: DOCS_LINK, externalURL: true, icon: IMAGE_DOCS },
-          { title: 'About', url: '/about', icon: IMAGE_INFO },
-          { title: 'Statistics', url: DUNE_DASHBOARD_LINK, externalURL: true, icon: IMAGE_PIE },
-          { title: 'Contract', url: CONTRACTS_CODE_LINK, externalURL: true, icon: IMAGE_CODE },
+          { title: 'Documentation', url: DOCS_LINK, externalURL: true, iconSVG: IMAGE_DOCS },
+          { title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
+          { title: 'Statistics', url: DUNE_DASHBOARD_LINK, externalURL: true, iconSVG: IMAGE_PIE },
+          { title: 'Contract', url: CONTRACTS_CODE_LINK, externalURL: true, iconSVG: IMAGE_CODE },
         ],
       },
       {
         sectionTitle: 'Community',
         links: [
-          { title: 'Discord', url: DISCORD_LINK, externalURL: true, icon: IMAGE_DISCORD },
-          { title: 'Twitter', url: TWITTER_LINK, externalURL: true, icon: IMAGE_TWITTER },
+          { title: 'Discord', url: DISCORD_LINK, externalURL: true, iconSVG: IMAGE_DISCORD },
+          { title: 'Twitter', url: TWITTER_LINK, externalURL: true, iconSVG: IMAGE_TWITTER },
         ],
       },
       {
         sectionTitle: 'Other',
         links: [
           { action: 'setColorMode' },
-          { title: 'CoW Runner', url: '/play/cow-runner', icon: IMAGE_GAME },
-          { title: 'MEV Slicer', url: '/play/mev-slicer', icon: IMAGE_SLICER },
+          { title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
+          { title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
         ],
       },
     ],

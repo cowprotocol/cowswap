@@ -14,6 +14,8 @@ export const Wrapper = styled.div`
   height: 40px;
   width: 100%;
   display: flex;
+  padding: 0;
+  margin: 0;
   justify-content: center;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -27,18 +29,6 @@ export const Wrapper = styled.div`
     border-radius: 21px;
     padding: 6px 12px;
     width: max-content;
-
-    ${({ theme }) => theme.mediaWidth.upToVerySmall`
-      max-width: 100%;
-    `};
-
-    > p {
-      margin: 0;
-
-      ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-        font-size: 13px;
-      `};
-    }
   }
 
   ${Web3StatusConnected} {
@@ -46,6 +36,7 @@ export const Wrapper = styled.div`
     color: ${({ theme }) => theme.wallet?.color};
     background: ${({ theme }) => theme.wallet?.background};
     height: 100%;
+    width: 100%;
     border: 0;
     box-shadow: none;
     padding: 6px 8px;
@@ -61,10 +52,6 @@ export const Wrapper = styled.div`
   }
 
   ${Text} {
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      font-size: 13px;
-      margin: 0 0.5rem 0 0.25rem;
-    `}
   }
 `
 

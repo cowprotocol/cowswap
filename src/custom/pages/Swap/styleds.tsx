@@ -17,4 +17,19 @@ export const StyledAppBody = styled(AppBody)`
   border: ${({ theme }) => theme.appBody.border};
   box-shadow: ${({ theme }) => theme.appBody.boxShadow};
   background: ${({ theme }) => theme.bg1};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    border: ${({ theme }) => theme.appBody.borderMobile};
+    box-shadow: ${({ theme }) => theme.appBody.boxShadowMobile};
+  `};
+`
+
+export const AlertWrapper = styled.div`
+  max-width: 460px;
+  width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 26px auto 0;
+    padding: 0 16px;
+  `}
 `

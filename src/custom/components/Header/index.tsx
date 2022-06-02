@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
-import { useMediaQuery, upToLarge } from 'hooks/useMediaQuery'
+import { useMediaQuery, upToSmall, upToLarge } from 'hooks/useMediaQuery'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { MAIN_MENU, MAIN_MENU_TYPE } from 'constants/mainMenu'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -27,7 +28,6 @@ import {
   BalanceText,
   HeaderControls,
   HeaderElement,
-  VCowWrapper,
 } from './styled'
 import MobileMenuIcon from './MobileMenuIcon'
 import MenuDropdown from 'components/MenuDropdown'
@@ -69,11 +69,12 @@ export default function Header() {
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
+  const openOrdersPanel = () => account && setIsOrdersPanelOpen(true)
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToSmall = useMediaQuery(upToSmall)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(
@@ -104,8 +105,8 @@ export default function Header() {
             {items.map(({ sectionTitle, links }, index) => {
               return (
                 <MenuSection key={index}>
-                  <MenuTitle>{sectionTitle}</MenuTitle>
-                  {links.map(({ title, url, externalURL, icon, action }, index) => {
+                  {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+                  {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => {
                     return action && action === 'setColorMode' ? (
                       <button
                         key={index}
@@ -114,24 +115,29 @@ export default function Header() {
                           handleMobileMenuOnClick()
                         }}
                       >
-                        {darkMode ? (
-                          <>
-                            <SVG src={IMAGE_SUN} description="Sun light mode icon" /> Light
-                          </>
-                        ) : (
-                          <>
-                            <SVG src={IMAGE_MOON} description="Moon dark mode icon" /> Dark
-                          </>
-                        )}{' '}
-                        Mode
+                        <SVG
+                          src={darkMode ? IMAGE_SUN : IMAGE_MOON}
+                          description={`${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`}
+                        />{' '}
+                        {darkMode ? 'Light' : 'Dark'} Mode
                       </button>
                     ) : !externalURL && url ? (
                       <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
-                        {icon && <SVG src={icon} description={`${title} icon`} />} {title}
+                        {iconSVG ? (
+                          <SVG src={iconSVG} description={`${title} icon`} />
+                        ) : icon ? (
+                          <img src={icon} alt={`${title} icon`} />
+                        ) : null}{' '}
+                        {title}
                       </StyledNavLink>
                     ) : url ? (
                       <ExternalLink key={index} href={url} onClickOptional={handleMobileMenuOnClick}>
-                        {icon && <SVG src={icon} description={`${title} icon`} />} {title}
+                        {iconSVG ? (
+                          <SVG src={iconSVG} description={`${title} icon`} />
+                        ) : icon ? (
+                          <img src={icon} alt={`${title} icon`} />
+                        ) : null}{' '}
+                        {title}
                       </ExternalLink>
                     ) : null
                   })}
@@ -144,13 +150,11 @@ export default function Header() {
     [darkMode, handleMobileMenuOnClick, toggleDarkMode]
   )
 
-  // const close = useToggleModal(ApplicationModal.MENU)
-
   return (
-    <Wrapper>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href="." isMobileMenuOpen={isMobileMenuOpen}>
+          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
@@ -162,9 +166,13 @@ export default function Header() {
           <NetworkSelector />
 
           <HeaderElement>
-            <VCowWrapper>
-              <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
-            </VCowWrapper>
+            <CowBalanceButton
+              onClick={handleBalanceButtonClick}
+              account={account}
+              chainId={chainId}
+              isUpToSmall={isUpToSmall}
+            />
+
             <AccountElement active={!!account} onClick={openOrdersPanel}>
               {account && userEthBalance && (
                 <BalanceText>

@@ -21,6 +21,10 @@ export const MenuFlyout = styled.ol`
         bottom: -18px;
         left: 0;
         background: transparent;
+
+        ${({ theme }) => theme.mediaWidth.upToLarge`
+          content: none;
+        `};
       }
     }
 
