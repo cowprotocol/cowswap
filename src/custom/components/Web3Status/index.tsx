@@ -11,28 +11,24 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.wallet?.color};
-  padding: 1px 1px 1px 6px;
   height: 40px;
-  border: 1px solid transparent;
   width: 100%;
   display: flex;
+  padding: 0;
+  margin: 0;
   justify-content: center;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: auto;
+    height: 100%;
+    margin: 0 0 0 auto;
+  `};
 
   button {
     height: auto;
-    max-width: 180px;
-
-    ${({ theme }) => theme.mediaWidth.upToVerySmall`
-        max-width: 100%;
-      `};
-
-    > p {
-      margin: 0;
-
-      ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-        font-size: 13px;
-      `};
-    }
+    border-radius: 21px;
+    padding: 6px 12px;
+    width: max-content;
   }
 
   ${Web3StatusConnected} {
@@ -40,6 +36,7 @@ export const Wrapper = styled.div`
     color: ${({ theme }) => theme.wallet?.color};
     background: ${({ theme }) => theme.wallet?.background};
     height: 100%;
+    width: 100%;
     border: 0;
     box-shadow: none;
     padding: 6px 8px;
@@ -55,10 +52,6 @@ export const Wrapper = styled.div`
   }
 
   ${Text} {
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      font-size: 13px;
-      margin: 0 0.5rem 0 0.25rem;
-    `}
   }
 `
 
@@ -73,11 +66,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }): JSX.Elemen
   return getStatusIcon(connector, walletInfo)
 }
 
-interface Web3StatusProps {
-  openOrdersPanel: () => void
-}
-
-export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
+export default function Web3Status() {
   const walletInfo = useWalletInfo()
   const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
@@ -104,7 +93,6 @@ export default function Web3Status({ openOrdersPanel }: Web3StatusProps) {
       <Web3StatusInner
         pendingCount={pendingActivity.length}
         StatusIconComponent={StatusIcon}
-        openOrdersPanel={openOrdersPanel}
         thereWasAProvider={!!latestProvider}
       />
       <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />

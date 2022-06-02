@@ -123,7 +123,7 @@ export default function AffiliateStatusCheck() {
       setAffiliateState('OWN_LINK')
 
       if (referralAddressQueryParam) {
-        history.push('/profile' + location.search)
+        history.push('/account' + location.search)
       }
       return
     }

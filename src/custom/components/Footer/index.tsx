@@ -20,6 +20,10 @@ const Wrapper = styled.div`
   justify-content: space-evenly;
   margin: auto 16px;
   width: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: auto 0 100px;
+  `}
 `
 
 const FooterWrapper = styled.div`
