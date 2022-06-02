@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import { NavLink } from 'react-router-dom'
 import { ButtonPrimary, ButtonOutlined } from 'components/Button'
+import { Routes } from 'constants/routes'
 
 const Wrapper = styled.div`
   display: flex;
@@ -111,9 +112,9 @@ export default function ClickWrap() {
       <div>
         <p>
           We use cookies to provide you with the best experience and to help improve our website and application. Please
-          read our <NavLink to="/cookie-policy">Cookie Policy</NavLink> for more information. By clicking &apos;Accept
-          all&apos;, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage
-          and provide customer support.
+          read our <NavLink to={Routes.COOKIE_POLICY}>Cookie Policy</NavLink> for more information. By clicking
+          &apos;Accept all&apos;, you agree to the storing of cookies on your device to enhance site navigation, analyze
+          site usage and provide customer support.
         </p>
         <Form>
           <span>

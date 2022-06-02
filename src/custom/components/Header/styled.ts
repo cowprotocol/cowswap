@@ -5,12 +5,11 @@ import HeaderMod, {
   HeaderLinks as HeaderLinksMod,
   HeaderControls as HeaderControlsUni,
   BalanceText as BalanceTextUni,
-  HeaderElement,
   AccountElement as AccountElementUni,
   StyledNavLink as StyledNavLinkUni,
   StyledMenuButton,
   HeaderFrame,
-  UNIWrapper,
+  HeaderElement as HeaderElementUni,
 } from './HeaderMod'
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'components/MenuDropdown/styled'
 
@@ -45,40 +44,56 @@ export const BalanceText = styled(BalanceTextUni)`
 
 export const HeaderControls = styled(HeaderControlsUni)`
   justify-content: flex-end;
+  gap: 12px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     max-width: 100%;
     margin: 0 0 0 auto;
     padding: 0;
     height: auto;
-    width: 100%;
+    width: auto;
   `};
 `
-export const Wrapper = styled.div`
+
+export const HeaderElement = styled(HeaderElementUni)`
+  border-radius: 0;
+  gap: 12px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: row;
+    justify-content: flex-end;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    height: 64px;
+    background-color: ${({ theme }) => transparentize(0.1, theme.bg3)};
+    border-top: 1px solid ${({ theme }) => transparentize(0.7, theme.border)};
+    backdrop-filter: blur(21px);
+    padding: 10px 16px;
+    gap: 8px;
+  `}
+`
+
+export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
   ${HeaderFrame} {
     padding: 16px;
     display: flex;
 
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
       grid-template-columns: unset;
+
+      ${
+        isMobileMenuOpen &&
+        css`
+          position: absolute;
+          top: 0;
+        `
+      }
     `}
-
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 10px;
-    `}
-  }
-
-  ${HeaderElement} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-    `};
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      flex-direction: initial;
-      align-items: inherit;
-    `};
   }
 
   ${StyledMenuButton} {
@@ -119,8 +134,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     font-weight: 500;
     appearance: none;
     outline: 0;
-    margin: 0 6px;
-    padding: 6px 8px;
+    margin: 0 4px;
+    padding: 8px 12px;
     background: 0;
     border: 0;
     cursor: pointer;
@@ -132,7 +147,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       width: 100%;
       border-radius: 0;
       margin: 0;
-      padding: 28px 16px;
+      font-weight: 600;
+      font-size: 17px;
+      padding: 28px 10px;
+      color: ${({ theme }) => theme.text1};
       border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
     `};
 
@@ -145,9 +163,23 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       color: ${({ theme }) => theme.text1};
       background: ${({ theme }) => transparentize(0.95, theme.text1)};
 
+      ${({ theme }) => theme.mediaWidth.upToLarge`
+        background: transparent;
+      `};
+
       > svg > path {
         fill: ${({ theme }) => theme.text1};
       }
+    }
+
+    &.expanded {
+      border: 0;
+    }
+
+    &.expanded + ${MenuContent} {
+      ${({ theme }) => theme.mediaWidth.upToLarge`
+        border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+      `};
     }
 
     &.ACTIVE {
@@ -169,14 +201,16 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
   ${MenuContent} {
     ${({ theme }) => theme.mediaWidth.upToLarge`
-      padding: 28px 16px;
-      gap: 42px;
+      padding: 8px 10px 28px;
+      gap: 36px;
+      margin: 0;
     `};
   }
 
   ${MenuSection} {
     ${({ theme }) => theme.mediaWidth.upToLarge`
-      gap 42px;
+      gap 36px;
+      opacity: 0.7;
     `};
   }}
 
@@ -200,7 +234,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     z-index: 100;
     background: ${({ theme }) => theme.bg4};
     outline: 0;
-    padding: 72px 8px;
+    padding: 60px 8px;
     overflow-y: auto;
 
     ${
@@ -212,7 +246,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
           content: '';
           width: 100%;
           display: flex;
-          height: 72px;
+          height: 60px;
           background: ${({ theme }) => theme.bg4};
           position: fixed;
           top: 0;
@@ -296,22 +330,21 @@ export const UniIcon = styled.div`
   }
 `
 
-export const VCowWrapper = styled(UNIWrapper)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
-
 export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
   border-radius: 21px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   transition: border 0.2s ease-in-out;
   pointer-events: auto;
+  width: auto;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 100%;
+  `}
 
   &:hover,
   &:focus {
-    border: 1px solid ${({ theme }) => transparentize(0.4, theme.text1)};
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   }
 
   ${BalanceText} {

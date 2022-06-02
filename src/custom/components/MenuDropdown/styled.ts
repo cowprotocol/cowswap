@@ -21,6 +21,10 @@ export const MenuFlyout = styled.ol`
         bottom: -18px;
         left: 0;
         background: transparent;
+
+        ${({ theme }) => theme.mediaWidth.upToLarge`
+          content: none;
+        `};
       }
     }
 
@@ -31,7 +35,7 @@ export const MenuFlyout = styled.ol`
       object-fit: contain;
     }
 
-    > svg.show {
+    > svg.expanded {
       transition: transform 0.3s ease-in-out;
       transform: rotate(180deg);
     }

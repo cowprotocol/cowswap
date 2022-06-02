@@ -1,25 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
-import { useMediaQuery, upToLarge } from 'hooks/useMediaQuery'
-import {
-  AMOUNT_PRECISION,
-  DUNE_DASHBOARD_LINK,
-  CONTRACTS_CODE_LINK,
-  DOCS_LINK,
-  DISCORD_LINK,
-  TWITTER_LINK,
-} from 'constants/index'
+import { useMediaQuery, upToSmall, upToLarge } from 'hooks/useMediaQuery'
+import { AMOUNT_PRECISION } from 'constants/index'
+import { MAIN_MENU, MAIN_MENU_TYPE } from 'constants/mainMenu'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
+import { toggleBodyClass } from 'utils/toggleBodyClass'
 import SVG from 'react-inlinesvg'
 
 // Components
 import { ExternalLink } from 'theme/components'
-import { HeaderRow, HeaderElement } from './HeaderMod'
+import { HeaderRow } from './HeaderMod'
 import {
   Wrapper,
   Title,
@@ -31,7 +27,7 @@ import {
   AccountElement,
   BalanceText,
   HeaderControls,
-  VCowWrapper,
+  HeaderElement,
 } from './styled'
 import MobileMenuIcon from './MobileMenuIcon'
 import MenuDropdown from 'components/MenuDropdown'
@@ -42,14 +38,6 @@ import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
-import IMAGE_DOCS from 'assets/cow-swap/doc.svg'
-import IMAGE_INFO from 'assets/cow-swap/info.svg'
-import IMAGE_CODE from 'assets/cow-swap/code.svg'
-import IMAGE_DISCORD from 'assets/cow-swap/discord.svg'
-import IMAGE_TWITTER from 'assets/cow-swap/twitter.svg'
-import IMAGE_PIE from 'assets/cow-swap/pie.svg'
-import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
-import IMAGE_GAME from 'assets/cow-swap/game.gif'
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
 
@@ -81,112 +69,120 @@ export default function Header() {
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
+  const openOrdersPanel = () => account && setIsOrdersPanelOpen(true)
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToSmall = useMediaQuery(upToSmall)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const handleMobileMenuOnClick = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const handleMobileMenuOnClick = useCallback(
+    () => isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen),
+    [isUpToLarge, isMobileMenuOpen]
+  )
 
   // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isOrdersPanelOpen ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
-    isUpToLarge && isMobileMenuOpen
-      ? document.body.classList.add('noScroll')
-      : document.body.classList.remove('noScroll')
+    isOrdersPanelOpen ? toggleBodyClass('noScroll', true) : toggleBodyClass('noScroll', false)
+    isUpToLarge && isMobileMenuOpen ? toggleBodyClass('noScroll', true) : toggleBodyClass('noScroll', false)
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
 
-  // const close = useToggleModal(ApplicationModal.MENU)
+  const getMainMenu = useMemo(
+    () =>
+      MAIN_MENU.map(({ title, url, externalURL, items }: MAIN_MENU_TYPE, index) =>
+        !items && !externalURL && url ? (
+          <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
+            {title}
+          </StyledNavLink>
+        ) : !items && externalURL && url ? (
+          <ExternalLink key={index} href={url} onClickOptional={handleMobileMenuOnClick}>
+            {title}
+          </ExternalLink>
+        ) : items ? (
+          <MenuDropdown key={index} title={title}>
+            {items.map(({ sectionTitle, links }, index) => {
+              return (
+                <MenuSection key={index}>
+                  {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+                  {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => {
+                    return action && action === 'setColorMode' ? (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          toggleDarkMode()
+                          handleMobileMenuOnClick()
+                        }}
+                      >
+                        <SVG
+                          src={darkMode ? IMAGE_SUN : IMAGE_MOON}
+                          description={`${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`}
+                        />{' '}
+                        {darkMode ? 'Light' : 'Dark'} Mode
+                      </button>
+                    ) : !externalURL && url ? (
+                      <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
+                        {iconSVG ? (
+                          <SVG src={iconSVG} description={`${title} icon`} />
+                        ) : icon ? (
+                          <img src={icon} alt={`${title} icon`} />
+                        ) : null}{' '}
+                        {title}
+                      </StyledNavLink>
+                    ) : url ? (
+                      <ExternalLink key={index} href={url} onClickOptional={handleMobileMenuOnClick}>
+                        {iconSVG ? (
+                          <SVG src={iconSVG} description={`${title} icon`} />
+                        ) : icon ? (
+                          <img src={icon} alt={`${title} icon`} />
+                        ) : null}{' '}
+                        {title}
+                      </ExternalLink>
+                    ) : null
+                  })}
+                </MenuSection>
+              )
+            })}
+          </MenuDropdown>
+        ) : null
+      ),
+    [darkMode, handleMobileMenuOnClick, toggleDarkMode]
+  )
 
   return (
-    <Wrapper>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href="." isMobileMenuOpen={isMobileMenuOpen}>
+          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <HeaderLinks isMobileMenuOpen={isMobileMenuOpen}>
-            <StyledNavLink to="/swap">Swap</StyledNavLink>
-            <StyledNavLink to="/account">Account</StyledNavLink>
-            <StyledNavLink to="/faq">FAQ</StyledNavLink>
-            <MenuDropdown title="More">
-              <MenuSection>
-                <MenuTitle>Overview</MenuTitle>
-                <ExternalLink href={DOCS_LINK}>
-                  <SVG src={IMAGE_DOCS} description="Docs icon" /> Documentation
-                </ExternalLink>
-                <StyledNavLink to="/about">
-                  <SVG src={IMAGE_INFO} description="About icon" /> About
-                </StyledNavLink>
-                <ExternalLink href={DUNE_DASHBOARD_LINK}>
-                  <SVG src={IMAGE_PIE} description="Pie chart icon" /> Statistics
-                </ExternalLink>
-                <ExternalLink href={CONTRACTS_CODE_LINK}>
-                  <SVG src={IMAGE_CODE} description="Code icon" /> Contract
-                </ExternalLink>
-              </MenuSection>
-
-              <MenuSection>
-                <MenuTitle>Community</MenuTitle>
-                <ExternalLink href={DISCORD_LINK}>
-                  <SVG src={IMAGE_DISCORD} description="Discord icon" /> Discord
-                </ExternalLink>
-                <ExternalLink href={TWITTER_LINK}>
-                  <SVG src={IMAGE_TWITTER} description="Twitter icon" /> Twitter
-                </ExternalLink>
-              </MenuSection>
-
-              <MenuSection>
-                <MenuTitle>Other</MenuTitle>
-                <button onClick={() => toggleDarkMode()}>
-                  {darkMode ? (
-                    <>
-                      <SVG src={IMAGE_SUN} description="Sun light mode icon" /> Light
-                    </>
-                  ) : (
-                    <>
-                      <SVG src={IMAGE_MOON} description="Moon dark mode icon" /> Dark
-                    </>
-                  )}{' '}
-                  Mode
-                </button>
-                <StyledNavLink to="/play/cow-runner">
-                  <img src={IMAGE_GAME} alt="Running COW" /> CoW Runner
-                </StyledNavLink>
-                <StyledNavLink to="/play/mev-slicer">
-                  <img src={IMAGE_SLICER} alt="COW Ninja" /> MEV Slicer
-                </StyledNavLink>
-              </MenuSection>
-            </MenuDropdown>
-          </HeaderLinks>
+          <HeaderLinks isMobileMenuOpen={isMobileMenuOpen}>{getMainMenu}</HeaderLinks>
         </HeaderRow>
 
-        {!isMobileMenuOpen && (
-          <HeaderControls>
-            <HeaderElement>
-              <NetworkSelector />
-            </HeaderElement>
-            <HeaderElement>
-              <VCowWrapper>
-                <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
-              </VCowWrapper>
+        <HeaderControls>
+          <NetworkSelector />
 
-              <AccountElement active={!!account} onClick={openOrdersPanel}>
-                {account && userEthBalance && (
-                  <BalanceText>
-                    {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
-                  </BalanceText>
-                )}
-                <Web3Status />
-              </AccountElement>
-            </HeaderElement>
-          </HeaderControls>
-        )}
+          <HeaderElement>
+            <CowBalanceButton
+              onClick={handleBalanceButtonClick}
+              account={account}
+              chainId={chainId}
+              isUpToSmall={isUpToSmall}
+            />
+
+            <AccountElement active={!!account} onClick={openOrdersPanel}>
+              {account && userEthBalance && (
+                <BalanceText>
+                  {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
+                </BalanceText>
+              )}
+              <Web3Status />
+            </AccountElement>
+          </HeaderElement>
+        </HeaderControls>
 
         {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
