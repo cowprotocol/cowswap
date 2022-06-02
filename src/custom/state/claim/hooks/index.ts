@@ -57,7 +57,7 @@ import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { ClaimInfo } from 'state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
 
@@ -996,7 +996,9 @@ export const useClaimLinks = () => {
   return useMemo(
     () => ({
       vCowPost: `${COW_BLOG_LINKS_ROOT}/7689c4391373`,
-      stepGuide: `${COW_BLOG_LINKS_ROOT}/${chainId === SupportedChainId.XDAI ? 'b1a1442a3454' : '33ae0910d53f'}`,
+      stepGuide: `${COW_BLOG_LINKS_ROOT}/${
+        chainId === SupportedChainId.GNOSIS_CHAIN ? 'b1a1442a3454' : '33ae0910d53f'
+      }`,
     }),
     [chainId]
   )

@@ -398,7 +398,7 @@ export default function Profile() {
                 <>
                   <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
                     {referralLink.prefix}
-                    {chainId === ChainId.XDAI ? (
+                    {chainId === ChainId.GNOSIS_CHAIN ? (
                       <strong>{shortenAddress(referralLink.address)}</strong>
                     ) : (
                       <AddressSelector address={referralLink.address} />
@@ -407,7 +407,7 @@ export default function Profile() {
                     <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
                       <Copy
                         toCopy={
-                          selectedAddress && chainId !== ChainId.XDAI
+                          selectedAddress && chainId !== ChainId.GNOSIS_CHAIN
                             ? `${referralLink.prefix}${selectedAddress}`
                             : referralLink.link
                         }

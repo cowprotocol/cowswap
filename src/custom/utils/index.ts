@@ -53,7 +53,7 @@ function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLink
 
 function getBlockscoutUrlPrefix(chainId: ChainId): string {
   switch (chainId) {
-    case ChainId.XDAI:
+    case ChainId.GNOSIS_CHAIN:
       return 'poa/xdai'
 
     default:
@@ -84,7 +84,7 @@ function getBlockscoutUrl(chainId: ChainId, data: string, type: BlockExplorerLin
 export function getBlockExplorerUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
   switch (chainId) {
     // Check if chain is xDAI to use Blockscout
-    case ChainId.XDAI:
+    case ChainId.GNOSIS_CHAIN:
       return getBlockscoutUrl(chainId, data, type)
     // Otherwise always use Etherscan for other chains
     default:
@@ -101,7 +101,7 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExpl
     // Explorer for GP orders:
     //    If a transaction has the size of the GP orderId, then it's a meta-tx
     return getExplorerOrderLink(chainId, data)
-  } else if (chainId === ChainId.XDAI) {
+  } else if (chainId === ChainId.GNOSIS_CHAIN) {
     // Blockscout in xDAI
     return getBlockscoutUrl(chainId, data, type)
   } else {
@@ -113,7 +113,7 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExpl
 export function getExplorerLabel(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
   if (isGpOrder(data, type)) {
     return 'View on Explorer'
-  } else if (chainId === ChainId.XDAI) {
+  } else if (chainId === ChainId.GNOSIS_CHAIN) {
     return 'View on Blockscout'
   } else {
     return 'View on Etherscan'

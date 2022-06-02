@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import useActiveWeb3React from 'lib/hooks/useActiveWeb3React'
 import { Link } from 'lib/icons'
 import styled, { Color } from 'lib/theme'
@@ -26,10 +26,12 @@ export default function EtherscanLink({ data, type, color = 'currentColor', chil
     () => data && getExplorerLink(chainId || SupportedChainId.MAINNET, data, type),
     [chainId, data, type]
   )
+
   return (
     <StyledExternalLink href={url} color={color} target="_blank">
       <Row gap={0.25}>
-        {children} <Link />
+        {children}
+        {url && <Link />}
       </Row>
     </StyledExternalLink>
   )

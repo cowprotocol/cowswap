@@ -14,19 +14,15 @@ import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSD
 import { stringToCurrency } from 'state/swap/extension'
 import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { getUSDPriceQuote, toPriceInformation } from 'api/coingecko'
+import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
-import { useIsQuoteLoading } from 'state/price/hooks'
-import { onlyResolvesLast } from 'utils/async'
-import { getGpUsdcPrice } from 'utils/price'
+import { useGetGpUsdcPrice } from 'utils/price'
 
 export * from '@src/hooks/useUSDCPrice'
-
-const getGpUsdcPriceResolveOnlyLastCall = onlyResolvesLast(getGpUsdcPrice)
 
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
@@ -37,32 +33,32 @@ const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token
   // [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC_ARBITRUM, 10_000e6),
   // [SupportedChainId.OPTIMISM]: CurrencyAmount.fromRawAmount(DAI_OPTIMISM, 10_000e18),
   // [SupportedChainId.POLYGON]: CurrencyAmount.fromRawAmount(USDC_POLYGON, 10_000e6),
-  [SupportedChainId.XDAI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.XDAI], 10_000e6),
+  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 10_000e6),
 }
 
 /**
  * Returns the price in USDC of the input currency
  * @param currency currency to compute the USDC price of
  */
-export default function useUSDCPrice(currency?: Currency) {
+export default function useCowUsdPrice(currency?: Currency) {
   const [bestUsdPrice, setBestUsdPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
-  const { chainId, account } = useActiveWeb3React()
+  const chainId = currency?.chainId
+  const { account } = useActiveWeb3React()
   // use quote loading as a price update dependency
-  const isQuoteLoading = useIsQuoteLoading()
   const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
   const sellTokenDecimals = currency?.wrapped.decimals
 
-  /* // TODO(#2808): remove dependency on useBestV2Trade
+  /* 
+  // TODO(#2808): remove dependency on useBestV2Trade
   const v2USDCTrade = useBestV2Trade(TradeType.EXACT_OUTPUT, amountOut, currency, {
     maxHops: 2,
   })
   const v3USDCTrade = useClientSideV3Trade(TradeType.EXACT_OUTPUT, amountOut, currency)
-
-  return useMemo(() => {
+  const price = useMemo(() => {
     if (!currency || !stablecoin) {
       return undefined
     }
@@ -82,20 +78,26 @@ export default function useUSDCPrice(currency?: Currency) {
     }
 
     return undefined
-  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) */
+  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) 
+  */
 
-  useEffect(() => {
-    const supportedChain = supportedChainId(chainId)
-    if (!isQuoteLoading || !supportedChain || !sellTokenAddress || !sellTokenDecimals) return
+  const supportedChain = supportedChainId(chainId)
+  const baseAmount = supportedChain ? STABLECOIN_AMOUNT_OUT[supportedChain] : undefined
+  const stablecoin = baseAmount?.currency
+  const baseAmountRaw = baseAmount?.quotient.toString()
 
-    const baseAmount = STABLECOIN_AMOUNT_OUT[supportedChain]
-    const stablecoin = baseAmount.currency
+  const isStablecoin = sellTokenAddress && sellTokenAddress === stablecoin?.address
+  // build quote params
+  // null when no chain or base amount or if sell token = stablecoin
+  const quoteParams = useMemo(() => {
+    if (!stablecoin || isStablecoin || !supportedChain || !sellTokenAddress || !sellTokenDecimals || !baseAmountRaw)
+      return null
 
-    const quoteParams = {
+    return {
       buyToken: stablecoin.address,
       sellToken: sellTokenAddress,
       kind: OrderKind.BUY,
-      amount: baseAmount.quotient.toString(),
+      amount: baseAmountRaw,
       chainId: supportedChain,
       fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
@@ -103,49 +105,62 @@ export default function useUSDCPrice(currency?: Currency) {
       // we dont care about validTo here, just use max
       validTo: MAX_VALID_TO_EPOCH,
     }
+  }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
+
+  // get SWR cached usd price
+  const { data: quote, error: errorResponse } = useGetGpUsdcPrice({
+    strategy,
+    quoteParams,
+  })
+
+  useEffect(() => {
+    if (!quoteParams || !stablecoin || !currency) return
 
     // tokens are the same, it's 1:1
-    if (sellTokenAddress === stablecoin.address) {
+    if (isStablecoin) {
       const price = new Price(stablecoin, stablecoin, '1', '1')
       return setBestUsdPrice(price)
-    } else {
-      getGpUsdcPriceResolveOnlyLastCall({ strategy, quoteParams })
-        .then(({ cancelled, data: quote }) => {
-          if (cancelled) return
+    } else if (quote) {
+      try {
+        if (errorResponse) throw errorResponse
 
-          // reset the error
-          setError(null)
+        // reset the error
+        setError(null)
 
-          let price: Price<Token, Currency> | null
-          // Response can include a null price amount
-          // e.g fee > input error
-          if (!quote) {
-            price = null
-          } else {
-            price = new Price({
-              baseAmount,
-              quoteAmount: stringToCurrency(quote, stablecoin),
-            })
-            console.debug(
-              '[useBestUSDCPrice] Best USDC price amount',
-              price.toSignificant(12),
-              price.invert().toSignificant(12)
-            )
-          }
-
-          return setBestUsdPrice(price)
-        })
-        .catch((err) => {
-          console.error('[useBestUSDCPrice] Error getting best price', err)
-          return batchedUpdate(() => {
-            setError(new Error(err))
-            setBestUsdPrice(null)
+        let price: Price<Token, Currency> | null
+        // Response can include a null price amount
+        // e.g fee > input error
+        if (!quote) {
+          price = null
+        } else {
+          price = new Price({
+            baseAmount,
+            quoteAmount: stringToCurrency(quote, currency),
           })
-        })
-    }
-  }, [account, isQuoteLoading, chainId, strategy, sellTokenAddress, sellTokenDecimals])
+          console.debug(
+            '[useCowUsdPrice] COW USDC price amount',
+            price.toSignificant(12),
+            price.invert().toSignificant(12)
+          )
+        }
 
-  return { price: bestUsdPrice, error }
+        return setBestUsdPrice(price)
+      } catch (err) {
+        console.error('[useCowUsdPrice] Error getting best price', err)
+        return batchedUpdate(() => {
+          setError(new Error(err))
+          setBestUsdPrice(null)
+        })
+      }
+    }
+  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
+
+  const lastPrice = useRef(bestUsdPrice)
+  if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
+    lastPrice.current = bestUsdPrice
+  }
+
+  return { price: lastPrice.current, error }
 }
 
 interface GetPriceQuoteParams {
@@ -175,7 +190,7 @@ function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams)
  * @param currencyAmount currency to compute the USDC price of
  */
 export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
-  const usdcPrice = useUSDCPrice(currencyAmount?.currency)
+  const usdcPrice = useCowUsdPrice(currencyAmount?.currency)
 
   return useGetPriceQuote({ ...usdcPrice, currencyAmount })
 }
@@ -194,62 +209,70 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
 
   const tokenAddress = currencyRef.current ? currencyId(currencyRef.current) : undefined
 
+  const chainIdSupported = supportedChainId(chainId)
+  // get SWR cached coingecko usd price
+  const { data: priceResponse, error: errorResponse } = useGetCoingeckoUsdPrice({
+    chainId: chainIdSupported,
+    tokenAddress,
+  })
+
   useEffect(() => {
-    const isSupportedChainId = supportedChainId(chainId)
+    // build baseAmount here as to not mess with deps array
     const baseAmount = tryParseCurrencyAmount('1', currencyRef.current)
 
-    if (!isSupportedChainId || !tokenAddress || !baseAmount) return
+    if (!chainIdSupported || !priceResponse || !baseAmount) return
 
-    getUSDPriceQuote({
-      chainId: isSupportedChainId,
-      tokenAddress,
-    })
-      .then(toPriceInformation)
-      .then((priceResponse) => {
-        setError(null)
+    try {
+      if (errorResponse) throw errorResponse
 
-        if (!priceResponse?.amount) return
+      setError(null)
 
-        const { amount: apiUsdPrice } = priceResponse
-        // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
-        // we need to parse all USD returned amounts
-        // and convert to the same currencyRef.current for both sides (SDK math invariant)
-        // in our case we stick to the USDC paradigm
-        const quoteAmount = tryParseCurrencyAmount(apiUsdPrice.toString(), USDC[isSupportedChainId])
-        // parse failure is unlikely - type safe
-        if (!quoteAmount) return
-        // create a new Price object
-        // we need to invert here as it is
-        // constructed based on the coingecko USD price response
-        // e.g 1 unit of USER'S TOKEN represented in USD
-        const usdPrice = new Price({
-          baseAmount,
-          quoteAmount,
-        }).invert()
+      if (!priceResponse?.amount) return
 
-        console.debug(
-          '[useCoingeckoUsdPrice] Best Coingecko USD price amount',
-          usdPrice.toSignificant(12),
-          usdPrice.invert().toSignificant(12)
-        )
+      const { amount: apiUsdPrice } = priceResponse
+      // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
+      // we need to parse all USD returned amounts
+      // and convert to the same currencyRef.current for both sides (SDK math invariant)
+      // in our case we stick to the USDC paradigm
+      const quoteAmount = tryParseCurrencyAmount(apiUsdPrice.toString(), USDC[chainIdSupported])
+      // parse failure is unlikely - type safe
+      if (!quoteAmount) return
+      // create a new Price object
+      // we need to invert here as it is
+      // constructed based on the coingecko USD price response
+      // e.g 1 unit of USER'S TOKEN represented in USD
+      const usdPrice = new Price({
+        baseAmount,
+        quoteAmount,
+      }).invert()
 
-        return setPrice(usdPrice)
+      console.debug(
+        '[useCoingeckoUsdPrice] Best Coingecko USD price amount',
+        usdPrice.toSignificant(12),
+        usdPrice.invert().toSignificant(12)
+      )
+
+      return setPrice(usdPrice)
+    } catch (error) {
+      console.error(
+        '[useUSDCPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
+        tokenAddress,
+        error
+      )
+      return batchedUpdate(() => {
+        setError(new Error(error))
+        setPrice(null)
       })
-      .catch((error) => {
-        console.error(
-          '[useUSDCPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
-          tokenAddress,
-          error
-        )
-        return batchedUpdate(() => {
-          setError(new Error(error))
-          setPrice(null)
-        })
-      })
+    }
     // don't depend on Currency (deep nested object)
-  }, [chainId, blockNumber, tokenAddress])
+  }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse])
 
-  return { price, error }
+  const lastPrice = useRef(price)
+  if (!price || !lastPrice.current || !price.equalTo(lastPrice.current)) {
+    lastPrice.current = price
+  }
+
+  return { price: lastPrice.current, error }
 }
 
 export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
@@ -270,22 +293,24 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
  * @param fiatValue string representation of a USD amount
  * @returns CurrencyAmount where currency is stablecoin on active chain
  */
-// TODO: new function, check whether it's usueful anywhere
-/* export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
+/* 
+export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
   const { chainId } = useActiveWeb3React()
   const stablecoin = chainId ? STABLECOIN_AMOUNT_OUT[chainId]?.currency : undefined
 
-  if (fiatValue === null || fiatValue === undefined || !chainId || !stablecoin) {
-    return undefined
-  }
+  return useMemo(() => {
+    if (fiatValue === null || fiatValue === undefined || !chainId || !stablecoin) {
+      return undefined
+    }
 
-  // trim for decimal precision when parsing
-  const parsedForDecimals = parseFloat(fiatValue).toFixed(stablecoin.decimals).toString()
-
-  try {
-    // parse USD string into CurrencyAmount based on stablecoin decimals
-    return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
-  } catch (error) {
-    return undefined
-  }
-} */
+    // trim for decimal precision when parsing
+    const parsedForDecimals = parseFloat(fiatValue).toFixed(stablecoin.decimals).toString()
+    try {
+      // parse USD string into CurrencyAmount based on stablecoin decimals
+      return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
+    } catch (error) {
+      return undefined
+    }
+  }, [chainId, fiatValue, stablecoin])
+} 
+*/
