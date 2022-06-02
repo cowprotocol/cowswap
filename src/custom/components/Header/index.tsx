@@ -69,7 +69,7 @@ export default function Header() {
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
+  const openOrdersPanel = () => account && setIsOrdersPanelOpen(true)
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
@@ -117,7 +117,7 @@ export default function Header() {
                       >
                         <SVG
                           src={darkMode ? IMAGE_SUN : IMAGE_MOON}
-                          description={`${darkMode ? 'Sun/light mode' : 'Moon/dark'} mode icon`}
+                          description={`${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`}
                         />{' '}
                         {darkMode ? 'Light' : 'Dark'} Mode
                       </button>
