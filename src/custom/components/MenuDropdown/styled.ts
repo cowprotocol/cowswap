@@ -5,6 +5,41 @@ export const MenuFlyout = styled.ol`
   padding: 0;
   margin: 0;
   position: relative;
+
+  > button {
+    &.expanded {
+      border: none;
+    }
+
+    &:hover {
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        height: 18px;
+        width: 100%;
+        bottom: -18px;
+        left: 0;
+        background: transparent;
+
+        ${({ theme }) => theme.mediaWidth.upToLarge`
+          content: none;
+        `};
+      }
+    }
+
+    > svg {
+      margin: 0 0 0 3px;
+      width: 16px;
+      height: 6px;
+      object-fit: contain;
+    }
+
+    > svg.expanded {
+      transition: transform 0.3s ease-in-out;
+      transform: rotate(180deg);
+    }
+  }
 `
 
 export const Content = styled.div`
@@ -12,12 +47,24 @@ export const Content = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: red;
   border-radius: 16px;
-  background: #091e32;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+  background: ${({ theme }) => theme.bg4};
+  box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
   padding: 32px;
   gap: 62px;
+  margin: 12px 0 0;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+    position: relative;
+    top: initial;
+    left: initial;
+    border-radius: 0;
+    display: flex;
+    flex-flow: column wrap;
+  `};
 
   > div {
     display: flex;
@@ -29,6 +76,7 @@ export const MenuTitle = styled.b`
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 600;
+  opacity: 0.75;
   letter-spacing: 2px;
   display: flex;
   margin: 0 0 6px;
@@ -47,7 +95,7 @@ export const MenuSection = styled.div`
   a,
   button {
     display: flex;
-    background: none;
+    background: transparent;
     appearance: none;
     outline: 0;
     border: 0;
@@ -55,19 +103,15 @@ export const MenuSection = styled.div`
     font-size: 15px;
     white-space: nowrap;
     font-weight: 500;
-    opacity: 0.6;
-    transition: opacity 0.2s ease-in-out;
     margin: 0;
+    padding: 0;
     color: ${({ theme }) => theme.text1};
     gap: 12px;
 
-    &:hover {
-      opacity: 1;
-    }
-
+    &:hover,
     &.ACTIVE {
-      opacity: 1;
-      font-weight: inherit;
+      text-decoration: underline;
+      font-weight: 500;
     }
   }
 
@@ -78,5 +122,9 @@ export const MenuSection = styled.div`
     max-height: 21px;
     object-fit: contain;
     color: ${({ theme }) => theme.text1};
+  }
+
+  a > svg > path {
+    fill: ${({ theme }) => theme.text1};
   }
 `

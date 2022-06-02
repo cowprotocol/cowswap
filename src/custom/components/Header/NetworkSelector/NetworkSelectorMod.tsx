@@ -67,19 +67,19 @@ const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text2};
   font-weight: 400;
 ` */
-const FlyoutMenu = styled.div`
+export const FlyoutMenu = styled.div`
   position: absolute;
   top: 54px;
   width: 272px;
   z-index: 99;
   padding-top: 10px;
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
+  /* @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 38px;
-  }
+  } */
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  /* ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     right: 20%;
-  `}
+  `} */
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
 const FlyoutMenuContents = styled.div`
