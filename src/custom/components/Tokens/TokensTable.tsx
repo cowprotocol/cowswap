@@ -17,9 +17,19 @@ enum SORT_FIELD {
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
+  tableType?: TableType
 }
 
-export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTableParams) {
+export enum TableType {
+  OVERVIEW = 'OVERVIEW',
+  FAVOURITE = 'FAVOURITE',
+}
+
+export default function TokenTable({
+  tokensData,
+  maxItems = MAX_ITEMS,
+  tableType = TableType.OVERVIEW,
+}: TokenTableParams) {
   // sorting
   const [sortField, setSortField] = useState(SORT_FIELD.NAME)
   const [sortDirection, setSortDirection] = useState<boolean>(false)
@@ -95,7 +105,7 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS }: TokenTa
               if (data) {
                 return (
                   <React.Fragment key={i}>
-                    <TokensTableRow index={getTokenIndex(i)} tokenData={data} />
+                    <TokensTableRow tableType={tableType} index={getTokenIndex(i)} tokenData={data} />
                     <Break />
                   </React.Fragment>
                 )

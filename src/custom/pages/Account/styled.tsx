@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
 import { PageWrapper } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
+import { Card } from 'pages/Profile/styled'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -74,5 +75,28 @@ export const AccountPageWrapper = styled(PageWrapper)`
 `
 
 export const Subtitle = styled(ThemedText.MediumHeader)`
+  font-size: 1.1rem !important;
+`
+
+export const MainText = styled(ThemedText.Main)`
+  color: ${({ theme }) => theme.text1};
+  font-size: 14px;
+`
+
+export const AccountCard = styled(Card)`
+  min-height: auto;
+  margin-bottom: 1rem;
+`
+
+export const AccountHeading = styled.div`
+  display: flex;
+  align-items: center;
   padding-bottom: 1rem;
+`
+
+export const RemoveTokens = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.primary1};
+  cursor: pointer;
 `
