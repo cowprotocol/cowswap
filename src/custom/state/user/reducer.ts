@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { SupportedLocale } from 'constants/locales'
 
-import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
 import { updateVersion } from '../global/actions'
 import {
   addSerializedPair,
@@ -23,6 +23,9 @@ import {
   updateUserLocale,
   // TODO: mod, shouldn't be here
   updateRecipientToggleVisible,
+  // mod, favourite tokens
+  toggleFavouriteToken,
+  removeAllFavouriteTokens,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -71,6 +74,13 @@ export interface UserState {
 
   // undefined means has not gone through A/B split yet
   showSurveyPopup: boolean | undefined
+
+  // mod, favourite tokens
+  favouriteTokens: {
+    [chainId: number]: {
+      [address: string]: SerializedToken
+    }
+  }
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -94,6 +104,8 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   showSurveyPopup: undefined,
+  // mod, favourite tokens
+  favouriteTokens: {},
 }
 
 export default createReducer(initialState, (builder) =>
@@ -206,5 +218,31 @@ export default createReducer(initialState, (builder) =>
     // MOD - legacy Uni code we want to keep
     .addCase(toggleURLWarning, (state) => {
       state.URLWarningVisible = !state.URLWarningVisible
+    })
+    // MOD - to add/remove favourite token based on if its already added or not
+    .addCase(toggleFavouriteToken, (state, { payload: { serializedToken } }) => {
+      const { chainId, address } = serializedToken
+
+      if (!state.favouriteTokens) {
+        state.favouriteTokens = {}
+      }
+
+      if (!state.favouriteTokens[chainId]) {
+        state.favouriteTokens[chainId] = {}
+      }
+
+      if (!state.favouriteTokens[chainId][address]) {
+        state.favouriteTokens[chainId][address] = serializedToken
+      } else {
+        delete state.favouriteTokens[chainId][address]
+      }
+    })
+    // MOD - to remove all favourite tokens
+    .addCase(removeAllFavouriteTokens, (state, { payload: { chainId } }) => {
+      if (!state.favouriteTokens) {
+        state.favouriteTokens = {}
+      }
+
+      state.favouriteTokens[chainId] = {}
     })
 )
