@@ -3,10 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
 import { useReferralAddress, useResetReferralAddress } from 'state/affiliate/hooks'
-import { updateAppDataHash } from 'state/affiliate/actions'
-import { useAppDispatch } from 'state/hooks'
 import { hasTrades } from 'utils/trade'
-import { generateReferralMetadataDoc, uploadMetadataDocToIpfs } from 'utils/metadata'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
 import useParseReferralQueryParam from 'hooks/useParseReferralQueryParam'
@@ -26,7 +23,6 @@ const STATUS_TO_MESSAGE_MAPPING: Record<AffiliateStatus, string> = {
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
 export default function AffiliateStatusCheck() {
-  const appDispatch = useAppDispatch()
   const resetReferralAddress = useResetReferralAddress()
   const history = useHistory()
   const location = useLocation()
@@ -87,19 +83,19 @@ export default function AffiliateStatusCheck() {
     isFirstTrade.current = true
   }, [referralAddress, chainId, account, fulfilledOrders.length, history, resetReferralAddress])
 
-  useEffect(() => {
-    async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
-      if (!referralAddress?.value) return
-      try {
-        const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress.value))
-        appDispatch(updateAppDataHash(appDataHash))
-      } catch (e) {
-        console.error(e)
-        setError('Affiliate program: There was an error while uploading your referral data. Please try again later.')
-      }
-    }
-    if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
-  }, [referralAddress, affiliateState, appDispatch])
+  // useEffect(() => {
+  //   async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
+  //     if (!referralAddress?.value) return
+  //     try {
+  //       const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress.value))
+  //       appDispatch(updateAppDataHash(appDataHash))
+  //     } catch (e) {
+  //       console.error(e)
+  //       setError('Affiliate program: There was an error while uploading your referral data. Please try again later.')
+  //     }
+  //   }
+  //   if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
+  // }, [referralAddress, affiliateState, appDispatch])
 
   useEffect(() => {
     if (!referralAddress) {
