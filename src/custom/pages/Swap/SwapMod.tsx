@@ -524,10 +524,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    ReactGA.event({
-      category: 'Swap',
-      action: 'Max',
-    })
+    reportAnalytics('Max')
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(
