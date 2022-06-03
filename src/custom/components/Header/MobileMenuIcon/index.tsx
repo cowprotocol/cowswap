@@ -6,14 +6,13 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   cursor: pointer;
   margin: 0 6px 0 16px;
   position: relative;
-  width: ${({ width }) => (width ? width + 'px' : '34px')};
-  height: ${({ height }) => (height ? height + 'px' : '18px')};
-
+  width: ${({ width = 34 }) => `${width}px`};
+  height: ${({ height = 18 }) => `${height}px`};
 
   span {
     background-color: ${({ theme }) => theme.text1};
     border-radius: 3px;
-    height: ${({ lineSize }) => (lineSize ? lineSize + 'px' : '2px')};
+    height: ${({ lineSize = 2 }) => `${lineSize}px`};
     position: absolute;
     transition: all 0.15s cubic-bezier(0.8, 0.5, 0.2, 1.4);
     width: 100%;
@@ -71,9 +70,9 @@ interface IconProps {
   onClick: () => void
 }
 
-export default function MobileMenuIcon({ isMobileMenuOpen, width, height, lineSize, onClick }: IconProps) {
+export default function MobileMenuIcon(params: IconProps) {
   return (
-    <Wrapper isMobileMenuOpen={isMobileMenuOpen} width={width} height={height} lineSize={lineSize} onClick={onClick}>
+    <Wrapper {...params}>
       <span></span>
       <span></span>
       <span></span>

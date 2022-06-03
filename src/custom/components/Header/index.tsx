@@ -10,7 +10,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { MAIN_MENU, MAIN_MENU_TYPE } from 'constants/mainMenu'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import { toggleBodyClass } from 'utils/toggleBodyClass'
+import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 import SVG from 'react-inlinesvg'
 
 // Components
@@ -85,8 +85,8 @@ export default function Header() {
   // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isOrdersPanelOpen ? toggleBodyClass('noScroll', true) : toggleBodyClass('noScroll', false)
-    isUpToLarge && isMobileMenuOpen ? toggleBodyClass('noScroll', true) : toggleBodyClass('noScroll', false)
+    isUpToLarge && isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+    isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
 
   const getMainMenu = useMemo(
