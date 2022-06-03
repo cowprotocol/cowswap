@@ -16,6 +16,16 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string
   return Promise.race([promise, failOnTimeout])
 }
 
+export function debounce<F extends (...args: any) => any>(func: F, wait = 200) {
+  let timeout: NodeJS.Timeout
+  const debounced = (...args: any) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func(args), wait)
+  }
+
+  return debounced
+}
+
 export function isPromiseFulfilled<T>(
   promiseResult: PromiseSettledResult<T>
 ): promiseResult is PromiseFulfilledResult<T> {
