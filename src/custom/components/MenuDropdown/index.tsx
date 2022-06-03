@@ -12,7 +12,7 @@ interface MenuProps {
 export function Menu({ title, children }: MenuProps) {
   const isUpToLarge = useMediaQuery(upToLarge)
   const [showMenu, setShowMenu] = useState(false)
-  const handleOnClick = () => isUpToLarge && setShowMenu(!showMenu)
+  const handleOnClick = () => isUpToLarge && setShowMenu((showMenu) => !showMenu)
   const handleMouseEnter = () => !isUpToLarge && setShowMenu(true)
   const handleMouseLeave = () => !isUpToLarge && setShowMenu(false)
 
