@@ -132,11 +132,11 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const toggleExpertMode = useCallback(() => {
     ReactGA.event({
       category: 'Expert mode',
-      action: 'Confirm Enabling Expert Mode',
+      action: expertMode ? 'Disable Expert Mode' : 'Enable Expert Mode',
     })
 
     toggleExpertModeAux()
-  }, [toggleExpertModeAux])
+  }, [toggleExpertModeAux, expertMode])
 
   //mod
   const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
