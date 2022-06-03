@@ -138,14 +138,14 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Send transaction to Wallet',
+          action: 'Send Transaction to Wallet',
           label: operationMessage,
         })
 
         const txReceipt = await wrapUnwrap()
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Sign transaction',
+          action: 'Sign Transaction',
           label: operationMessage,
         })
         addTransaction({
