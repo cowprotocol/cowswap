@@ -463,7 +463,7 @@ export default function Swap({
           swapErrorMessage = error.message
           actionAnalytics = 'Signing Error'
 
-          if (error?.code && !isNaN(error.code)) {
+          if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
           }
           console.error('Error Signing Order', error)
