@@ -21,7 +21,7 @@ type TokenTableParams = {
 
 export enum TableType {
   OVERVIEW = 'OVERVIEW',
-  SAVED = 'SAVED',
+  FAVOURITE = 'FAVOURITE',
 }
 
 export default function TokenTable({

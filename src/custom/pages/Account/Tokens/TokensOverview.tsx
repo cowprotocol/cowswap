@@ -4,17 +4,17 @@ import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
 import { notEmpty } from 'utils'
 import TokensTable from 'components/Tokens/TokensTable'
-import { useSavedTokens, useRemoveAllSavedTokens } from 'state/user/hooks'
+import { useFavouriteTokens, useRemoveAllFavouriteTokens } from 'state/user/hooks'
 
 export default function TokensOverview() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const savedTokens = useSavedTokens()
+  const favouriteTokens = useFavouriteTokens()
   const allTokens = useAllTokens()
 
-  const removeAllSavedTokens = useRemoveAllSavedTokens()
+  const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
 
   const formattedTokens = useMemo(() => {
     return Object.values(allTokens).filter(notEmpty)
@@ -25,14 +25,14 @@ export default function TokensOverview() {
       <AccountMenu />
       <AccountPageWrapper>
         <AccountHeading>
-          <Subtitle>Saved tokens</Subtitle>
-          <RemoveTokens onClick={() => removeAllSavedTokens()}>(Clear)</RemoveTokens>
+          <Subtitle>Favourite tokens</Subtitle>
+          <RemoveTokens onClick={() => removeAllFavouriteTokens()}>(Clear)</RemoveTokens>
         </AccountHeading>
         <AccountCard>
-          {savedTokens.length > 0 ? (
-            <TokensTable tokensData={savedTokens} />
+          {favouriteTokens.length > 0 ? (
+            <TokensTable tokensData={favouriteTokens} />
           ) : (
-            <MainText>Saved tokens will appear here</MainText>
+            <MainText>Favourite tokens will appear here</MainText>
           )}
         </AccountCard>
 
