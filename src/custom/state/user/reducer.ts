@@ -23,7 +23,7 @@ import {
   updateUserLocale,
   // TODO: mod, shouldn't be here
   updateRecipientToggleVisible,
-  // favourite tokens
+  // mod, favourite tokens
   toggleFavouriteToken,
   removeAllFavouriteTokens,
 } from './actions'
@@ -75,7 +75,7 @@ export interface UserState {
   // undefined means has not gone through A/B split yet
   showSurveyPopup: boolean | undefined
 
-  // favourite tokens
+  // mod, favourite tokens
   favouriteTokens: {
     [chainId: number]: {
       [address: string]: SerializedToken
@@ -104,6 +104,7 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   showSurveyPopup: undefined,
+  // mod, favourite tokens
   favouriteTokens: {},
 }
 
@@ -218,6 +219,7 @@ export default createReducer(initialState, (builder) =>
     .addCase(toggleURLWarning, (state) => {
       state.URLWarningVisible = !state.URLWarningVisible
     })
+    // MOD - to add/remove favourite token based on if its already added or not
     .addCase(toggleFavouriteToken, (state, { payload: { serializedToken } }) => {
       const { chainId, address } = serializedToken
 
@@ -235,6 +237,7 @@ export default createReducer(initialState, (builder) =>
         delete state.favouriteTokens[chainId][address]
       }
     })
+    // MOD - to remove all favourite tokens
     .addCase(removeAllFavouriteTokens, (state, { payload: { chainId } }) => {
       if (!state.favouriteTokens) {
         state.favouriteTokens = {}
