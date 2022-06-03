@@ -238,7 +238,6 @@ export default createReducer(initialState, (builder) =>
       state.URLWarningVisible = !state.URLWarningVisible
     })
     // MOD - to add/remove favourite token based on if its already added or not
-    // TODO: move to mod
     .addCase(toggleFavouriteToken, (state, { payload: { serializedToken } }) => {
       const { chainId, address } = serializedToken
 
@@ -252,7 +251,6 @@ export default createReducer(initialState, (builder) =>
         delete state.favouriteTokens[chainId][address]
       }
     })
-    // TODO: move to mod
     .addCase(removeAllFavouriteTokens, (state, { payload: { chainId } }) => {
       state.favouriteTokens = _initialSavedTokensState()
     })

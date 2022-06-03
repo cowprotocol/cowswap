@@ -1,5 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit'
-// TODO: properly mod
 import { SupportedLocale } from 'constants/locales'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
