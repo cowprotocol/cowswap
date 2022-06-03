@@ -90,11 +90,12 @@ const AlertWrapper = styled.div`
   width: 100%;
 `
 
-function reportAnalytics(action: string, label?: string) {
+function reportAnalytics(action: string, label?: string, value?: number) {
   ReactGA.event({
     category: 'Swap',
     action,
     label,
+    value,
   })
 }
 
@@ -454,13 +455,17 @@ export default function Swap({
         reportAnalytics(actionAnalytics, marketLabel)
       })
       .catch((error) => {
-        let swapErrorMessage, actionAnalytics
+        let swapErrorMessage, actionAnalytics, errorCode
         if (error?.code === PROVIDER_REJECT_REQUEST_CODE) {
           swapErrorMessage = 'User rejected signing the order'
           actionAnalytics = 'Reject'
         } else {
           swapErrorMessage = error.message
           actionAnalytics = 'Signing Error'
+
+          if (error?.code && !isNaN(error.code)) {
+            errorCode = error.code
+          }
           console.error('Error Signing Order', error)
         }
 
@@ -471,7 +476,7 @@ export default function Swap({
           swapErrorMessage,
           txHash: undefined,
         })
-        reportAnalytics(actionAnalytics, marketLabel)
+        reportAnalytics(actionAnalytics, marketLabel, errorCode)
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
