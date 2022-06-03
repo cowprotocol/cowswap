@@ -431,6 +431,9 @@ export default function Swap({
     if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
       return
     }
+
+    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
@@ -443,23 +446,31 @@ export default function Swap({
               : (recipientAddress ?? recipient) === account
               ? 'Swap w/o Send + recipient'
               : 'Swap w/ Send',
-          label: [
-            // approvalOptimizedTradeString,
-            // approvalOptimizedTrade?.inputAmount?.currency?.symbol,
-            // approvalOptimizedTrade?.outputAmount?.currency?.symbol,
-            trade?.inputAmount?.currency?.symbol,
-            trade?.outputAmount?.currency?.symbol,
-            'MH',
-          ].join('/'),
+          label: marketLabel,
         })
       })
       .catch((error) => {
-        console.error('Error swapping tokens', error)
+        let swapErrorMessage, actionAnalytics
+        if (error?.code === PROVIDER_REJECT_REQUEST_CODE) {
+          swapErrorMessage = 'User rejected signing the order'
+          actionAnalytics = 'Reject'
+        } else {
+          swapErrorMessage = error.message
+          actionAnalytics = 'Signing Error'
+          console.error('Error Signing Order', error)
+        }
+
+        ReactGA.event({
+          category: 'Swap',
+          action: actionAnalytics,
+          label: marketLabel,
+        })
+
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,
           showConfirm,
-          swapErrorMessage: error.message,
+          swapErrorMessage,
           txHash: undefined,
         })
       })
