@@ -29,6 +29,7 @@ import {
 } from 'api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 import useSWR from 'swr'
+import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -382,8 +383,8 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuote
 
 export function useGetGpUsdcPrice(
   props: {
-    strategy: QuoteParams['strategy']
-    quoteParams: QuoteParams['quoteParams'] | null
+    strategy: GpPriceStrategy
+    quoteParams: LegacyFeeQuoteParams | null
   },
   options = SWR_OPTIONS
 ) {
