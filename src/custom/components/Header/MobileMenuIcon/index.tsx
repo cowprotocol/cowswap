@@ -67,7 +67,8 @@ interface IconProps {
   width?: number
   height?: number
   lineSize?: number
-  onClick: () => void
+  onTouchStart?: () => void
+  onClick?: () => void
 }
 
 export default function MobileMenuIcon(params: IconProps) {

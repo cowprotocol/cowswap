@@ -184,7 +184,7 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onTouchStart={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>
