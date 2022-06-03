@@ -434,18 +434,25 @@ export default function Swap({
 
     const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
 
+    ReactGA.event({
+      category: 'Swap',
+      action: 'Send Order to Wallet',
+      label: marketLabel,
+    })
+
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        let analyticsAction
+        if (recipient === null) {
+          analyticsAction = 'Swap'
+        } else {
+          analyticsAction = (recipientAddress ?? recipient) === account ? 'Swap and Send to Self' : 'Swap and Send'
+        }
         ReactGA.event({
           category: 'Swap',
-          action:
-            recipient === null
-              ? 'Swap w/o Send'
-              : (recipientAddress ?? recipient) === account
-              ? 'Swap w/o Send + recipient'
-              : 'Swap w/ Send',
+          action: analyticsAction,
           label: marketLabel,
         })
       })
