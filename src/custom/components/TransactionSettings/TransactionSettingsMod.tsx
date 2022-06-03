@@ -25,7 +25,6 @@ import {
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
 } from 'constants/index'
-import ReactGA from 'react-ga4'
 import { debounce } from 'utils/misc'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
