@@ -5,7 +5,7 @@ import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import ms from 'ms.macro'
 import { darken } from 'polished'
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -13,9 +13,22 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
+import ReactGA from 'react-ga4'
 
 // MOD imports
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ORDER_VALID_TO_TIME_SECONDS } from 'constants/index'
+import {
+  INPUT_OUTPUT_EXPLANATION,
+  MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
+  MIN_SLIPPAGE_BPS,
+  MAX_SLIPPAGE_BPS,
+  LOW_SLIPPAGE_BPS,
+  HIGH_SLIPPAGE_BPS,
+  DEFAULT_SLIPPAGE_BPS,
+} from 'constants/index'
+import ReactGA from 'react-ga4'
+import { debounce } from 'utils/misc'
+
+const MAX_DEADLINE_MINUTES = 180 // 3h
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -92,6 +105,14 @@ const SlippageEmojiContainer = styled.span`
   `}
 `
 
+const reportAnalytics = debounce((actionName: string, slippageBps: number) => {
+  ReactGA.event({
+    category: 'Order Slippage Tolerance',
+    action: actionName,
+    value: slippageBps,
+  })
+}, 2000)
+
 export interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
@@ -113,29 +134,37 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
-  function parseSlippageInput(value: string) {
-    // populate what the user typed and clear the error
-    setSlippageInput(value)
-    setSlippageError(false)
+  const parseSlippageInput = useCallback(
+    (value: string) => {
+      // populate what the user typed and clear the error
+      setSlippageInput(value)
+      setSlippageError(false)
 
-    if (value.length === 0) {
-      setUserSlippageTolerance('auto')
-    } else {
-      const parsed = Math.floor(Number.parseFloat(value) * 100)
-
-      if (!Number.isInteger(parsed) || parsed < 0 || parsed > 5000) {
+      if (value.length === 0) {
+        reportAnalytics('Set Default Slippage Tolerance', DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
-        if (value !== '.') {
-          setSlippageError(SlippageError.InvalidInput)
-        }
       } else {
-        setUserSlippageTolerance(new Percent(parsed, 10_000))
-      }
-    }
-  }
+        const parsed = Math.floor(Number.parseFloat(value) * 100)
 
-  const tooLow = userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(5, 10_000))
-  const tooHigh = userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(1, 100))
+        if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
+          reportAnalytics('Set Default Slippage Tolerance', DEFAULT_SLIPPAGE_BPS)
+          setUserSlippageTolerance('auto')
+          if (value !== '.') {
+            setSlippageError(SlippageError.InvalidInput)
+          }
+        } else {
+          reportAnalytics('Set Custom Slippage Tolerance', parsed)
+          setUserSlippageTolerance(new Percent(parsed, 10_000))
+        }
+      }
+    },
+    [setUserSlippageTolerance]
+  )
+
+  const tooLow =
+    userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
+  const tooHigh =
+    userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -143,13 +172,27 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setDeadlineError(false)
 
     if (value.length === 0) {
+      ReactGA.event({
+        category: 'Order Expiration Time',
+        action: 'Set Default Expiration Time',
+        value: DEFAULT_DEADLINE_FROM_NOW,
+      })
       setDeadline(DEFAULT_DEADLINE_FROM_NOW)
     } else {
       try {
         const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-        if (!Number.isInteger(parsed) || parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || parsed > 180 * 60) {
+        if (
+          !Number.isInteger(parsed) || // Check deadline is a number
+          parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || // Check deadline is not too small
+          parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
+        ) {
           setDeadlineError(DeadlineError.InvalidInput)
         } else {
+          ReactGA.event({
+            category: 'Order Expiration Time',
+            action: 'Set Custom Expiration Time',
+            value: parsed,
+          })
           setDeadline(parsed)
         }
       } catch (error) {

@@ -7,7 +7,12 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
 
-export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent('5', '1000') // 0.5%
+export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
+export const MAX_SLIPPAGE_BPS = 5000 // 50%
+export const MIN_SLIPPAGE_BPS = 0 // 0%
+export const HIGH_SLIPPAGE_BPS = 100 // 1%
+export const LOW_SLIPPAGE_BPS = 5 // 0.05%
+export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent(DEFAULT_SLIPPAGE_BPS, 10_000) // 0.5%
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
