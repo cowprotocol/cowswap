@@ -131,21 +131,21 @@ export function useIsRecipientToggleVisible(): boolean {
 // TODO: mod, move to mod file
 export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
   const dispatch = useAppDispatch()
-  const recipientToggleVisible = useIsRecipientToggleVisible()
+  const isVisible = useIsRecipientToggleVisible()
   const { onChangeRecipient } = useSwapActionHandlers()
 
-  const toggleRecipientVisibility = useCallback(
+  const toggleVisibility = useCallback(
     (value?: boolean) => {
-      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
-      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newRecipientToggleVisibilityValue }))
-      if (!newRecipientToggleVisibilityValue) {
+      const newIsVisible = value ?? !isVisible
+      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newIsVisible }))
+      if (!newIsVisible) {
         onChangeRecipient(null)
       }
     },
-    [recipientToggleVisible, dispatch, onChangeRecipient]
+    [isVisible, dispatch, onChangeRecipient]
   )
 
-  return [recipientToggleVisible, toggleRecipientVisibility]
+  return [isVisible, toggleVisibility]
 }
 
 const DONATION_END_TIMESTAMP = 1646864954 // Jan 15th
