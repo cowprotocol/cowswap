@@ -23,7 +23,7 @@ import {
 } from 'constants/tokens'
 
 // MOD imports
-import { USDC_XDAI, WBTC_XDAI, WETH_XDAI } from 'utils/xdai/constants'
+import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
 import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY } from 'utils/rinkeby/constants'
 
 /* type ChainTokenList = {
@@ -151,14 +151,14 @@ export const COMMON_BASES: ChainCurrencyList = {
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.POLYGON_MUMBAI],
     WETH_POLYGON_MUMBAI,
   ], */
-  [SupportedChainId.XDAI]: [
-    // nativeOnChain(SupportedChainId.XDAI),
-    USDC_XDAI,
-    WBTC_XDAI,
-    COW[SupportedChainId.XDAI],
-    /*USDT_XDAI,*/ WBTC_XDAI,
-    WETH_XDAI,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.XDAI],
+  [SupportedChainId.GNOSIS_CHAIN]: [
+    // nativeOnChain(SupportedChainId.GNOSIS_CHAIN),
+    USDC_GNOSIS_CHAIN,
+    WBTC_GNOSIS_CHAIN,
+    COW[SupportedChainId.GNOSIS_CHAIN],
+    /*USDT_GNOSIS_CHAIN,*/ WBTC_GNOSIS_CHAIN,
+    WETH_GNOSIS_CHAIN,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS_CHAIN],
   ], // mod
 }
 

@@ -27,17 +27,17 @@ const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/
 
 // FAQ pages
 const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
-const ProtocolFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/ProtocolFaq'))
-const TokenFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TokenFaq'))
-const TradingFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TradingFaq'))
-const AffiliateFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/AffiliateFaq'))
+const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pages/Faq/ProtocolFaq'))
+const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
+const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
+const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'pages/Faq/AffiliateFaq'))
 
 // Account pages
 const Account = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account'))
-const TokensOverview = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Tokens'))
-const TokenSignle = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Tokens/TokenSingle'))
-const Governance = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Governance'))
-const Affiliate = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Affiliate'))
+const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
+const TokenSingle = lazy(() => import(/* webpackChunkName: "token_single" */ 'pages/Account/Tokens/TokenSingle'))
+const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
+const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/Affiliate'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -111,7 +111,7 @@ export default function App() {
 
             <Route exact strict path="/account" component={Account} />
             <Route exact strict path="/account/tokens" component={TokensOverview} />
-            <Route exact strict path="/account/tokens/:address" component={TokenSignle} />
+            <Route exact strict path="/account/tokens/:address" component={TokenSingle} />
             <Route exact strict path="/account/governance" component={Governance} />
             <Route exact strict path="/account/affiliate" component={Affiliate} />
 

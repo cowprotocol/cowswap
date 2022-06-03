@@ -12,13 +12,13 @@ interface Claim {
 const indexFiles = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.RINKEBY]: rinkebyIndex,
-  [SupportedChainId.XDAI]: gnosisChainIndex,
+  [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
 }
 
 const chainNames = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.RINKEBY]: 'rinkeby',
-  [SupportedChainId.XDAI]: 'gnosisChain',
+  [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'

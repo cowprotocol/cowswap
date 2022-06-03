@@ -30,7 +30,7 @@ export function getRpcUrls(chainId: SupportedChainId): [string] {
       return ['https://polygon-rpc.com/']
     case SupportedChainId.POLYGON_MUMBAI:
       return ['https://rpc-endpoints.superfluid.dev/mumbai']*/
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return ['https://rpc.gnosischain.com/']
     default:
   }

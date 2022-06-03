@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { ThemedText } from 'theme'
 import Loader from 'components/Loader'
@@ -9,8 +10,8 @@ import { Label, Wrapper, TableHeader, TableBody, Break, PageButtons, Arrow, Arro
 
 const MAX_ITEMS = 10
 
-const SORT_FIELD = {
-  name: 'name',
+enum SORT_FIELD {
+  NAME = 'name',
 }
 
 type TokenTableParams = {
@@ -30,35 +31,35 @@ export default function TokenTable({
   tableType = TableType.OVERVIEW,
 }: TokenTableParams) {
   // sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.name)
+  const [sortField, setSortField] = useState(SORT_FIELD.NAME)
   const [sortDirection, setSortDirection] = useState<boolean>(false)
 
   // pagination
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+  const prevPage = page === 1 ? page : page - 1
+  const nextPage = page === maxPage ? page : page + 1
+
+  // token index
+  const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
 
   const sortedTokens = useMemo(() => {
     return tokensData
       ? tokensData
           .filter((x) => !!x)
           .sort((a, b) => {
-            const sortA = a[sortField as keyof Token]
-            const sortB = b[sortField as keyof Token]
+            const sortA = a[sortField]
+            const sortB = b[sortField]
 
-            if (!sortA || !sortB) return 0
-
-            if (a && b) {
-              return sortA > sortB ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
-            } else {
-              return -1
-            }
+            if (!a || !b || !sortA || !sortB) return 0
+            else return sortA > sortB ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
           })
           .slice(maxItems * (page - 1), page * maxItems)
       : []
   }, [tokensData, maxItems, page, sortDirection, sortField])
 
   const handleSort = useCallback(
-    (newField: string) => {
+    (newField: SORT_FIELD) => {
       setSortField(newField)
       setSortDirection(sortField !== newField ? true : !sortDirection)
     },
@@ -66,7 +67,7 @@ export default function TokenTable({
   )
 
   const arrow = useCallback(
-    (field: string) => {
+    (field: SORT_FIELD) => {
       return sortField === field ? (!sortDirection ? '↑' : '↓') : ''
     },
     [sortDirection, sortField]
@@ -92,7 +93,9 @@ export default function TokenTable({
         <AutoColumn>
           <TableHeader>
             <Label>#</Label>
-            <ClickableText onClick={() => handleSort(SORT_FIELD.name)}>Name {arrow(SORT_FIELD.name)}</ClickableText>
+            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+            </ClickableText>
           </TableHeader>
 
           <Break />
@@ -102,7 +105,7 @@ export default function TokenTable({
               if (data) {
                 return (
                   <React.Fragment key={i}>
-                    <TokensTableRow tableType={tableType} index={(page - 1) * MAX_ITEMS + i} tokenData={data} />
+                    <TokensTableRow tableType={tableType} index={getTokenIndex(i)} tokenData={data} />
                     <Break />
                   </React.Fragment>
                 )
@@ -112,26 +115,21 @@ export default function TokenTable({
           </TableBody>
 
           <PageButtons>
-            <ArrowButton
-              onClick={() => {
-                setPage(page === 1 ? page : page - 1)
-              }}
-            >
-              <Arrow faded={page === 1 ? true : false}>←</Arrow>
+            <ArrowButton onClick={() => setPage(prevPage)}>
+              <Arrow faded={page === 1}>←</Arrow>
             </ArrowButton>
-            <ThemedText.Body>{'Page ' + page + ' of ' + maxPage}</ThemedText.Body>
-            <ArrowButton
-              onClick={() => {
-                setPage(page === maxPage ? page : page + 1)
-              }}
-            >
-              <Arrow faded={page === maxPage ? true : false}>→</Arrow>
+
+            <ThemedText.Body>
+              <Trans>{'Page ' + page + ' of ' + maxPage}</Trans>
+            </ThemedText.Body>
+            <ArrowButton onClick={() => setPage(nextPage)}>
+              <Arrow faded={page === maxPage}>→</Arrow>
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
       ) : (
         <LoadingRows>
-          {Array.from(Array(maxItems * 4), (n, i) => (
+          {Array.from(Array(maxItems * 4), (_, i) => (
             <div key={i} />
           ))}
         </LoadingRows>
