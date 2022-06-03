@@ -89,6 +89,15 @@ const AlertWrapper = styled.div`
   max-width: 460px;
   width: 100%;
 `
+
+function reportAnalytics(action: string, label?: string) {
+  ReactGA.event({
+    category: 'Swap',
+    action,
+    label,
+  })
+}
+
 export default function Swap({
   history,
   location,
@@ -369,12 +378,8 @@ export default function Swap({
       approveRequired = true
     }
 
+    reportAnalytics('Approve', v2Trade?.inputAmount?.currency.symbol)
     if (approveRequired) {
-      ReactGA.event({
-        category: 'Swap',
-        action: 'Approve',
-        label: v2Trade?.inputAmount?.currency.symbol,
-      })
       return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
     }
   }, [approveCallback, gatherPermitSignature, signatureState, v2Trade?.inputAmount?.currency.symbol])
@@ -433,28 +438,20 @@ export default function Swap({
     }
 
     const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-
-    ReactGA.event({
-      category: 'Swap',
-      action: 'Send Order to Wallet',
-      label: marketLabel,
-    })
+    reportAnalytics('Send Order to Wallet', marketLabel)
 
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
-        let analyticsAction
+
+        let actionAnalytics
         if (recipient === null) {
-          analyticsAction = 'Swap'
+          actionAnalytics = 'Swap'
         } else {
-          analyticsAction = (recipientAddress ?? recipient) === account ? 'Swap and Send to Self' : 'Swap and Send'
+          actionAnalytics = (recipientAddress ?? recipient) === account ? 'Swap and Send to Self' : 'Swap and Send'
         }
-        ReactGA.event({
-          category: 'Swap',
-          action: analyticsAction,
-          label: marketLabel,
-        })
+        reportAnalytics(actionAnalytics, marketLabel)
       })
       .catch((error) => {
         let swapErrorMessage, actionAnalytics
@@ -467,12 +464,6 @@ export default function Swap({
           console.error('Error Signing Order', error)
         }
 
-        ReactGA.event({
-          category: 'Swap',
-          action: actionAnalytics,
-          label: marketLabel,
-        })
-
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,
@@ -480,6 +471,7 @@ export default function Swap({
           swapErrorMessage,
           txHash: undefined,
         })
+        reportAnalytics(actionAnalytics, marketLabel)
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
