@@ -5,7 +5,7 @@ import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import ms from 'ms.macro'
 import { darken } from 'polished'
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -26,6 +26,7 @@ import {
   DEFAULT_SLIPPAGE_BPS,
 } from 'constants/index'
 import ReactGA from 'react-ga4'
+import { debounce } from 'utils/misc'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -104,6 +105,14 @@ const SlippageEmojiContainer = styled.span`
   `}
 `
 
+const reportAnalytics = debounce((actionName: string, slippageBps: number) => {
+  ReactGA.event({
+    category: 'Order Slippage Tolerance',
+    action: actionName,
+    value: slippageBps,
+  })
+}, 2000)
+
 export interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
@@ -125,36 +134,32 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
-  function parseSlippageInput(value: string) {
-    // populate what the user typed and clear the error
-    setSlippageInput(value)
-    setSlippageError(false)
+  const parseSlippageInput = useCallback(
+    (value: string) => {
+      // populate what the user typed and clear the error
+      setSlippageInput(value)
+      setSlippageError(false)
 
-    if (value.length === 0) {
-      setUserSlippageTolerance('auto')
-    } else {
-      const parsed = Math.floor(Number.parseFloat(value) * 100)
-
-      if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
-        ReactGA.event({
-          category: 'Order Slippage Tolerance',
-          action: 'Set Default Slippage Tolerance',
-          value: DEFAULT_SLIPPAGE_BPS,
-        })
+      if (value.length === 0) {
+        reportAnalytics('Set Default Slippage Tolerance', DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
-        if (value !== '.') {
-          setSlippageError(SlippageError.InvalidInput)
-        }
       } else {
-        ReactGA.event({
-          category: 'Order Slippage Tolerance',
-          action: 'Set Custom Slippage Tolerance',
-          value: parsed,
-        })
-        setUserSlippageTolerance(new Percent(parsed, 10_000))
+        const parsed = Math.floor(Number.parseFloat(value) * 100)
+
+        if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
+          reportAnalytics('Set Default Slippage Tolerance', DEFAULT_SLIPPAGE_BPS)
+          setUserSlippageTolerance('auto')
+          if (value !== '.') {
+            setSlippageError(SlippageError.InvalidInput)
+          }
+        } else {
+          reportAnalytics('Set Custom Slippage Tolerance', parsed)
+          setUserSlippageTolerance(new Percent(parsed, 10_000))
+        }
       }
-    }
-  }
+    },
+    [setUserSlippageTolerance]
+  )
 
   const tooLow =
     userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
