@@ -5,8 +5,10 @@ import { OptimalRate } from 'paraswap-core'
 import { APIError, RateOptions } from 'paraswap/build/types'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getTokensFromMarket } from 'utils/misc'
-import { getValidParams, PriceInformation, PriceQuoteParams } from 'utils/price'
+import { getValidParams } from 'utils/price'
 import { SOLVER_ADDRESS as defaultUserAddress } from 'constants/index'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { LegacyPriceQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type ParaSwapPriceQuote = OptimalRate
 
@@ -67,7 +69,7 @@ function getPriceQuoteFromError(error: APIError): ParaSwapPriceQuote | null {
   }
 }
 
-export async function getPriceQuote(params: PriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
+export async function getPriceQuote(params: LegacyPriceQuoteParams): Promise<ParaSwapPriceQuote | null> {
   const { baseToken, quoteToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress } = getValidParams(params)
 
   let paraSwap = paraSwapLibs.get(chainId)

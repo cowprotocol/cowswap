@@ -4,7 +4,8 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
-import { FeeInformation, FeeQuoteParams, PriceInformation } from 'utils/price'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -13,7 +14,7 @@ export const EMPTY_FEE = {
   amount: '0',
 }
 
-export interface QuoteInformationObject extends FeeQuoteParams {
+export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
   error?: QuoteError
