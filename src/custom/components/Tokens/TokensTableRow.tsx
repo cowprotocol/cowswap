@@ -1,18 +1,31 @@
 import { Token } from '@uniswap/sdk-core'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
-import { LinkWrapper, ResponsiveGrid, Label, MediumOnly, HideMedium, ResponsiveLogo } from './styled'
+import { LinkWrapper, ResponsiveGrid, Label, MediumOnly, HideMedium, ResponsiveLogo, IndexNumber } from './styled'
+import FavouriteTokenButton from './FavouriteTokenButton'
+import { TableType } from './TokensTable'
 
-const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
+type DataRowParams = {
+  tokenData: Token
+  index: number
+  tableType?: TableType
+}
+
+const DataRow = ({ tokenData, index }: DataRowParams) => {
   const theme = useTheme()
+
   return (
-    <LinkWrapper to={'tokens/' + tokenData.address}>
-      <ResponsiveGrid>
-        <Label>{index + 1}</Label>
-        <Label>
-          <RowFixed>
-            <ResponsiveLogo currency={tokenData} />
-          </RowFixed>
+    <ResponsiveGrid>
+      <Label>
+        <FavouriteTokenButton tokenData={tokenData} />
+        <IndexNumber>{index + 1}</IndexNumber>
+      </Label>
+      <Label>
+        <RowFixed>
+          <ResponsiveLogo currency={tokenData} />
+        </RowFixed>
+
+        <LinkWrapper to={'tokens/' + tokenData.address}>
           <MediumOnly style={{ marginLeft: '6px' }}>
             <Label ml="8px">{tokenData.symbol}</Label>
           </MediumOnly>
@@ -27,9 +40,9 @@ const DataRow = ({ tokenData, index }: { tokenData: Token; index: number }) => {
               </Label>
             </RowFixed>
           </HideMedium>
-        </Label>
-      </ResponsiveGrid>
-    </LinkWrapper>
+        </LinkWrapper>
+      </Label>
+    </ResponsiveGrid>
   )
 }
 
