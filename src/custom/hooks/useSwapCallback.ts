@@ -26,7 +26,8 @@ import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
 import { Web3Provider, ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
-import { useAppDataHash } from 'state/affiliate/hooks'
+import { useAppData } from 'hooks/useAppData'
+import { useAddPendingAppData } from 'state/appData/atoms'
 
 export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -91,6 +92,7 @@ interface SwapParams {
   // Callbacks
   wrapEther: Wrap | null
   presignOrder: PresignOrder
+  addPendingAppData: (orderId: string) => void
 
   // Ui actions
   addPendingOrder: AddOrderCallback
@@ -125,6 +127,7 @@ async function _swap(params: SwapParams): Promise<string> {
     recipientAddressOrName,
     recipient,
     appDataHash,
+    addPendingAppData,
 
     // Callbacks
     wrapEther,
@@ -249,6 +252,8 @@ async function _swap(params: SwapParams): Promise<string> {
       presignGnosisSafeTxHash,
     },
   })
+  // Set appData to be uploaded to IPFS in the background
+  addPendingAppData(orderId)
 
   return orderId
 }
@@ -343,7 +348,11 @@ export function useSwapCallback(params: SwapCallbackParams): {
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   const [deadline] = useUserTransactionTTL()
-  const appDataHash = useAppDataHash()
+
+  const appData = useAppData(chainId, trade)
+  const { hash: appDataHash } = appData || {}
+  const addPendingAppData = useAddPendingAppData(chainId, appData)
+
   const addPendingOrder = useAddPendingOrder()
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -360,7 +369,8 @@ export function useSwapCallback(params: SwapCallbackParams): {
       !chainId ||
       !inputAmountWithSlippage ||
       !outputAmountWithSlippage ||
-      !presignOrder
+      !presignOrder ||
+      !appDataHash
     ) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
@@ -406,6 +416,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
       // Callbacks
       wrapEther,
       presignOrder,
+      addPendingAppData,
 
       // Ui actions
       addPendingOrder,
@@ -437,5 +448,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     closeModals,
     presignOrder,
     appDataHash,
+    addPendingAppData,
   ])
 }
