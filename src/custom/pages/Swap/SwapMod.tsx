@@ -65,7 +65,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 // import AppBody from 'pages/AppBody'
 
 // MOD imports
-import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT, PROVIDER_REJECT_REQUEST_CODE } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
@@ -361,7 +361,7 @@ export default function Swap({
         await gatherPermitSignature()
       } catch (error) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
-        if (error?.code !== 4001) {
+        if (error?.code !== PROVIDER_REJECT_REQUEST_CODE) {
           approveRequired = true
         }
       }
