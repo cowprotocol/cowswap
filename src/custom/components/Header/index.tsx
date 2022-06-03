@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 // import { ExternalLink } from 'theme'
 import { useHistory } from 'react-router-dom'
+import ReactGA from 'react-ga4'
 
 import HeaderMod, {
   Title as TitleMod,
@@ -225,7 +226,15 @@ export default function Header() {
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [darkMode, toggleDarkModeAux] = useDarkModeManager()
+  const toggleDarkMode = useCallback(() => {
+    ReactGA.event({
+      category: 'Theme',
+      action: 'Toggle dark/light mode',
+      label: `${darkMode ? 'Light' : 'Dark'} mode`,
+    })
+    toggleDarkModeAux()
+  }, [toggleDarkModeAux, darkMode])
 
   // const toggleClaimModal = useToggleSelfClaimModal()
   // const availableClaim: boolean = useUserHasAvailableClaim(account)
@@ -290,7 +299,7 @@ export default function Header() {
                 <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" />
               </ExternalLink>
             </TwitterLink> */}
-            <StyledMenuButton onClick={() => toggleDarkMode()}>
+            <StyledMenuButton onClick={toggleDarkMode}>
               {darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </StyledMenuButton>
           </HeaderElementWrap>

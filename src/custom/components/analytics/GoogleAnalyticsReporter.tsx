@@ -26,7 +26,7 @@ export default function GoogleAnalyticsReporter({ location: { pathname, search }
   }, [chainId])
 
   useEffect(() => {
-    ReactGA.pageview(`${pathname}${search}`)
+    ReactGA.send({ hitType: 'pageview', page: `${pathname}${search}` })
   }, [pathname, search])
 
   useEffect(() => {
