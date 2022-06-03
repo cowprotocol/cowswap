@@ -3,7 +3,6 @@ import { Currency } from '@uniswap/sdk-core'
 // import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { AutoRow } from 'components/Row'
-import { COMMON_BASES } from 'constants/routing'
 import { useTokenInfoFromActiveList } from 'hooks/useTokenInfoFromActiveList'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -12,9 +11,7 @@ import { currencyId } from 'utils/currencyId'
 // MOD imports
 import QuestionHelper from 'components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, CommonBasesProps, MobileWrapper } from '.' // mod
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useSavedTokens } from 'state/user/hooks'
-import { useMemo } from 'react'
+import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
 
 /* const MobileWrapper = styled(AutoColumn)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -39,17 +36,6 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   background-color: ${({ theme, disable }) => disable && theme.bg3};
   filter: ${({ disable }) => disable && 'grayscale(1)'};
 `
-
-export function useFavouriteOrCommonTokens() {
-  const { chainId } = useActiveWeb3React()
-
-  const favouriteTokens = useSavedTokens()
-
-  return useMemo(() => {
-    const bases = typeof chainId !== 'undefined' ? COMMON_BASES[chainId] ?? [] : []
-    return favouriteTokens.length > 0 ? favouriteTokens : bases
-  }, [chainId, favouriteTokens])
-}
 
 export default function CommonBases({ chainId, onSelect, selectedCurrency }: CommonBasesProps) {
   /* {
