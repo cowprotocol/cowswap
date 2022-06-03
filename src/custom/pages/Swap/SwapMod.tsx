@@ -448,9 +448,10 @@ export default function Swap({
 
         let actionAnalytics
         if (recipient === null) {
-          actionAnalytics = 'Swap'
+          actionAnalytics = 'Signed: Swap'
         } else {
-          actionAnalytics = (recipientAddress ?? recipient) === account ? 'Swap and Send to Self' : 'Swap and Send'
+          actionAnalytics =
+            (recipientAddress ?? recipient) === account ? 'Signed: Swap and Send to Self' : 'Signed: Swap and Send'
         }
         reportAnalytics(actionAnalytics, marketLabel)
       })
