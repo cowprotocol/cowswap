@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
@@ -19,6 +19,7 @@ const MobilePopupWrapper = styled.div<{ height: string | number }>`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: block;
+    padding-top: 20px;
   `};
 `
 

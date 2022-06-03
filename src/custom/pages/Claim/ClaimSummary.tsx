@@ -10,7 +10,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { V_COW } from 'constants/tokens'
 import { useActiveWeb3React } from 'hooks/web3'
-import { JSBI } from '@uniswap/sdk'
+import JSBI from 'jsbi'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined

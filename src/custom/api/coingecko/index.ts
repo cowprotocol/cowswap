@@ -1,5 +1,7 @@
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { SWR_OPTIONS } from 'constants/index'
+import useSWR from 'swr'
 
 function getApiUrl(): string {
   // it's all the same base url
@@ -88,6 +90,22 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
   })
 
   return response.json()
+}
+
+export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>, options = SWR_OPTIONS) {
+  const { chainId, tokenAddress } = params
+
+  return useSWR<PriceInformation | null>(
+    ['getUSDPriceQuote', chainId, tokenAddress],
+    () => {
+      if (chainId && tokenAddress) {
+        return getUSDPriceQuote({ chainId, tokenAddress }).then(toPriceInformation)
+      } else {
+        return null
+      }
+    },
+    options
+  )
 }
 
 export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInformation | null {

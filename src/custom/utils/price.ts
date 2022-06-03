@@ -7,7 +7,7 @@ import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp } from 'api/gnosisProt
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
-import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
@@ -28,6 +28,7 @@ import {
   LegacyQuoteParams,
 } from 'api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import useSWR from 'swr'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -377,4 +378,26 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuote
 
     return quote.amount
   }
+}
+
+export function useGetGpUsdcPrice(
+  props: {
+    strategy: QuoteParams['strategy']
+    quoteParams: QuoteParams['quoteParams'] | null
+  },
+  options = SWR_OPTIONS
+) {
+  const { strategy, quoteParams } = props
+
+  return useSWR<string | null>(
+    ['getGpUsdcPrice', strategy, quoteParams],
+    () => {
+      if (strategy && quoteParams) {
+        return getGpUsdcPrice({ strategy, quoteParams })
+      } else {
+        return null
+      }
+    },
+    options
+  )
 }

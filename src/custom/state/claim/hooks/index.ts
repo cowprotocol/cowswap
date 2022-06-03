@@ -57,7 +57,7 @@ import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
-import { ChainId } from '@uniswap/sdk'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { ClaimInfo } from 'state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
 

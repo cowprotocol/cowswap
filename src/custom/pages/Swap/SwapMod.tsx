@@ -15,7 +15,7 @@ import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
@@ -263,10 +263,10 @@ export default function Swap({
   //   [trade, tradeState]
   // )
 
-  // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
-  // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
-  const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
-  const fiatValueOutput = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
+  // const fiatValueInput = useUSDCValue(trade?.inputAmount)
+  // const fiatValueOutput = useUSDCValue(trade?.outputAmount)
+  const fiatValueInput = useHigherUSDValue(trade?.inputAmount)
+  const fiatValueOutput = useHigherUSDValue(trade?.outputAmount)
 
   const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
@@ -960,9 +960,6 @@ export default function Swap({
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>
-      <AlertWrapper>
-        <NetworkAlert />
-      </AlertWrapper>
       {/*<SwitchLocaleLink />*/}
       {!swapIsUnsupported ? null : !isSupportedWallet ? (
         <UnsupportedCurrencyFooter
@@ -982,6 +979,9 @@ export default function Swap({
       ) : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}
+      <AlertWrapper>
+        <NetworkAlert />
+      </AlertWrapper>
     </>
   )
 }

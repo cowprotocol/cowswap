@@ -1,4 +1,4 @@
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { isMobile } from 'utils/userAgent'
 import { analyticsId } from 'custom/utils/analytics'
 
@@ -24,5 +24,5 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
       : 'mobileRegular',
   })
 } else {
-  ReactGA.initialize('test', { testMode: true, debug: true })
+  ReactGA.initialize('test', { gtagOptions: { debug_mode: true } })
 }

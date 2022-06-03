@@ -1,6 +1,6 @@
 import { diffTokenLists /* , TokenList */ } from '@uniswap/token-lists'
 import React, { useCallback, useMemo } from 'react'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
