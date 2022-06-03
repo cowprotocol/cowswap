@@ -133,13 +133,13 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = useRecipientToggleManager()
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
-      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
+      const isVisible = value ?? !recipientToggleVisible
       ReactGA.event({
         category: 'Recipient address',
         action: 'Toggle Recipient Address',
-        label: newRecipientToggleVisibilityValue ? 'Enabled' : 'Disabled',
+        label: isVisible ? 'Enabled' : 'Disabled',
       })
-      toggleRecipientVisibilityAux(newRecipientToggleVisibilityValue)
+      toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible]
   )
