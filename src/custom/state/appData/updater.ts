@@ -4,14 +4,14 @@ import { AppDataDoc, SupportedChainId } from '@cowprotocol/cow-sdk'
 import ms from 'ms.macro'
 
 import {
-  filterUpdatableAtom,
+  flattenedAppDataFromUploadQueueAtom,
   removeAppDataFromUploadQueueAtom,
   updateAppDataOnUploadQueueAtom,
 } from 'state/appData/atoms'
 import { COW_SDK } from 'constants/index'
 
 export function UploadToIpfsUpdater(): null {
-  const toUpload = useAtomValue(filterUpdatableAtom)
+  const toUpload = useAtomValue(flattenedAppDataFromUploadQueueAtom)
   const removePending = useSetAtom(removeAppDataFromUploadQueueAtom)
   const updatePending = useSetAtom(updateAppDataOnUploadQueueAtom)
 
