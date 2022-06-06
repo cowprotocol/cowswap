@@ -138,7 +138,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Send Order to Wallet',
+          action: 'Send Transaction to Wallet',
           label: operationMessage,
         })
 
