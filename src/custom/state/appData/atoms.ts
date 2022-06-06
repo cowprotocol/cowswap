@@ -1,23 +1,17 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
   AddAppDataToUploadQueueParams,
-  AppDataDocsPendingToUpload,
+  AppDataPendingToUpload,
   AppDataInfo,
-  AppDataRecord,
+  FlattenedAppDataFromUploadQueue,
   RemoveAppDataFromUploadQueueParams,
   UpdateAppDataOnUploadQueueParams,
 } from 'state/appData/types'
+import { buildAppDataRecordKey, parseAppDataRecordKey } from 'state/appData/utils'
 
-// TODO: what about making it flat?
-// TODO: there's no benefit on it being split by network AFAICT
-const INITIAL_APP_DATA_DOC_PENDING_TO_UPLOAD: AppDataDocsPendingToUpload = {
-  [SupportedChainId.MAINNET]: {},
-  [SupportedChainId.RINKEBY]: {},
-  [SupportedChainId.GNOSIS_CHAIN]: {},
-}
+const INITIAL_APP_DATA_UPLOAD_QUEUE: AppDataPendingToUpload = {}
 
 /**
  * Base atom that store the current appDataInfo
@@ -28,8 +22,8 @@ export const appDataInfoAtom = atom<AppDataInfo | null>(null)
  * Base atom that stores all appData pending to be uploaded
  */
 export const appDataUploadQueueAtom = atomWithStorage(
-  'pendingUploadAppDataDocs', // local storage key
-  INITIAL_APP_DATA_DOC_PENDING_TO_UPLOAD
+  'appDataUploadQueue', // local storage key
+  INITIAL_APP_DATA_UPLOAD_QUEUE
 )
 
 /**
@@ -40,12 +34,10 @@ export const addAppDataToUploadQueueAtom = atom(
   (get, set, { chainId, orderId, appData }: AddAppDataToUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
+      const key = buildAppDataRecordKey({ chainId, orderId })
       return {
         ...docs,
-        [chainId]: {
-          ...docs[chainId],
-          [orderId]: { ...appData, uploading: false },
-        },
+        [key]: { ...appData, uploading: false },
       }
     })
   }
@@ -59,38 +51,18 @@ export const updateAppDataOnUploadQueueAtom = atom(
   (get, set, { chainId, orderId, uploading, tryAfter }: UpdateAppDataOnUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
+      const key = buildAppDataRecordKey({ chainId, orderId })
       console.debug(`atoms/update`, chainId, orderId, uploading, tryAfter)
-      if (!docs[chainId][orderId]) {
+      if (!docs[key]) {
         return docs
       }
       return {
         ...docs,
-        [chainId]: {
-          ...docs[chainId],
-          [orderId]: { ...docs[chainId][orderId], uploading, tryAfter },
-        },
+        [key]: { ...docs[key], uploading, tryAfter },
       }
     })
   }
 )
-
-// TODO: if we make the queue a flat structure, this atom will not be needed
-type T = Omit<AddAppDataToUploadQueueParams, 'appData'> & AppDataRecord
-export const filterUpdatableAtom = atom((get) => {
-  const docs = get(appDataUploadQueueAtom)
-  // for every network
-  const result: T[] = []
-  Object.keys(docs).forEach((_chainId) => {
-    const chainId = _chainId as unknown as SupportedChainId
-    const perChainId = docs[chainId]
-    // for every order
-    Object.keys(perChainId).forEach((orderId) => {
-      const singleDoc = perChainId[orderId]
-      result.push({ chainId, orderId, ...singleDoc })
-    })
-  })
-  return result
-})
 
 /**
  * Write only atom to remove appData from upload queue
@@ -100,9 +72,22 @@ export const removeAppDataFromUploadQueueAtom = atom(
   (get, set, { chainId, orderId }: RemoveAppDataFromUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = { ...get(appDataUploadQueueAtom) }
+      const key = buildAppDataRecordKey({ chainId, orderId })
       console.debug(`atoms/remove`, chainId, orderId)
-      delete docs[chainId][orderId]
+      delete docs[key]
       return docs
     })
   }
 )
+
+/**
+ * Read only atom to flatten pending list of appData into a list
+ */
+export const flattenedAppDataFromUploadQueueAtom = atom((get) => {
+  const docs = get(appDataUploadQueueAtom)
+
+  return Object.keys(docs).map<FlattenedAppDataFromUploadQueue>((key) => ({
+    ...docs[key],
+    ...parseAppDataRecordKey(key),
+  }))
+})
