@@ -35,6 +35,7 @@ export const addAppDataToUploadQueueAtom = atom(
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
       const key = buildAppDataRecordKey({ chainId, orderId })
+
       return {
         ...docs,
         [key]: { ...appData, uploading: false },
@@ -52,10 +53,11 @@ export const updateAppDataOnUploadQueueAtom = atom(
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
       const key = buildAppDataRecordKey({ chainId, orderId })
-      console.debug(`atoms/update`, chainId, orderId, uploading, tryAfter)
+
       if (!docs[key]) {
         return docs
       }
+
       return {
         ...docs,
         [key]: { ...docs[key], uploading, tryAfter },
@@ -73,8 +75,9 @@ export const removeAppDataFromUploadQueueAtom = atom(
     set(appDataUploadQueueAtom, () => {
       const docs = { ...get(appDataUploadQueueAtom) }
       const key = buildAppDataRecordKey({ chainId, orderId })
-      console.debug(`atoms/remove`, chainId, orderId)
+
       delete docs[key]
+
       return docs
     })
   }
