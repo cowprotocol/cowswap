@@ -106,15 +106,3 @@ export const removeAppDataFromUploadQueueAtom = atom(
     })
   }
 )
-
-export function useAddPendingAppData(chainId: SupportedChainId | undefined, appData: AppDataInfo | null) {
-  const _addPendingAppData = useUpdateAtom(addPendingAtom)
-
-  return useCallback(
-    (orderId: string) => {
-      if (!chainId || !appData) return
-      _addPendingAppData({ chainId, orderId, appData })
-    },
-    [appData, chainId, _addPendingAppData]
-  )
-}
