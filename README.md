@@ -87,7 +87,7 @@ Modify the environment variables in `.env.production`, or override them in build
 
 ### Price feeds
 
-CowSwap tries to find the best price available onchain using some price feeds.
+CowSwap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
@@ -102,7 +102,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 
 The app will attach some metadata to all orders.
 
-This metadata will be sent to the smart contract as an hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade.
+This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade.
 
 Any web app or client using CoW Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that
 information to the order.
@@ -136,7 +136,7 @@ REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
 Fee quote requests and posting orders are sent to an API. This API has the responsibility of collecting orders and
 handing them to the solvers.
 
-The reference implementation of th API is [gp-v2-services](https://github.com/cowprotocol/services).
+The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
 
 The API endpoint is configured using the environment variable ` {XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
 
