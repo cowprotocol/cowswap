@@ -8,7 +8,7 @@ import {
   GreenClockIcon,
   StatusMsgContainer,
   StatusMsg,
-  SwapIcon,
+  StatusGraph,
   OrangeClockIcon,
   PendingProgress,
   WarningProgress,
@@ -20,9 +20,9 @@ import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
-import DancingCow from '@src/custom/components/DancingCow'
 import { CancelButton } from '../CancelButton'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
+import cowGraph from 'assets/cow-swap/cow-graph.svg'
 import { ExternalLink } from 'theme'
 
 const REFRESH_INTERVAL_MS = 200
@@ -100,22 +100,19 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               </SuccessProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
-              <GreenClockIcon size={16} />
               <StatusMsg>
-                <p>
-                  Looking for a{' '}
-                  <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">CoW</ExternalLink> (
-                  <strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants)
-                  <br />
-                  <DancingCow />
-                  <SwapIcon />
-                  <DancingCow />
-                </p>
+                <GreenClockIcon size={16} />
+                Looking for a{' '}
+                <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">CoW ↗</ExternalLink> (
+                <strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants)
+              </StatusMsg>
+              <StatusGraph>
+                <img src={cowGraph} alt="Loading for a CoW..." />
                 <p>
                   CowSwap will be able to save in <strong>gas costs</strong> and get a <strong>better price</strong> if
                   another trader makes the opposite trade
                 </p>
-              </StatusMsg>
+              </StatusGraph>
             </StatusMsgContainer>
           </>
         )

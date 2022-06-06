@@ -136,17 +136,33 @@ export const WarningIcon = styled(AlertTriangle)`
 
 export const StatusMsgContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin: 1rem 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 0.2rem;
     display: flex;
     align-items: center;
+    flex-direction: column;
   
     svg {
       flex-shrink: 0;
     }
+  `};
+`
+
+export const StatusGraph = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin: 1rem 0 0 0;
+  gap: 1rem;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 0.2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
   `};
 `
 
@@ -156,7 +172,7 @@ export const StatusMsg = styled.p`
   margin: 0;
 
   strong {
-    color: #d67b5a;
+    color: ${({ theme }) => theme.orange};
   }
 `
 export const SwapIcon = styled.span`
