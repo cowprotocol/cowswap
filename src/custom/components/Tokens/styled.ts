@@ -124,3 +124,8 @@ export const TableBody = styled(AutoColumn)`
 export const IndexNumber = styled.span`
   font-size: 1rem;
 `
+
+export const BalanceValue = styled(Label)<{ hasBalance: boolean }>`
+  font-weight: 400 !important;
+  color: ${({ hasBalance, theme }) => theme[hasBalance ? 'text1' : 'text3']};
+`

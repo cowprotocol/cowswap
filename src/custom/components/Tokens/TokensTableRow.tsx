@@ -1,18 +1,31 @@
-import { Token } from '@uniswap/sdk-core'
+import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
-import { LinkWrapper, ResponsiveGrid, Label, MediumOnly, HideMedium, ResponsiveLogo, IndexNumber } from './styled'
+import {
+  LinkWrapper,
+  ResponsiveGrid,
+  Label,
+  MediumOnly,
+  HideMedium,
+  ResponsiveLogo,
+  IndexNumber,
+  BalanceValue,
+} from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { TableType } from './TokensTable'
+import { formatSmart } from 'utils/format'
 
 type DataRowParams = {
   tokenData: Token
   index: number
   tableType?: TableType
+  balance?: CurrencyAmount<Token> | undefined
 }
 
-const DataRow = ({ tokenData, index }: DataRowParams) => {
+const DataRow = ({ tokenData, index, balance }: DataRowParams) => {
   const theme = useTheme()
+  const hasBalance = balance?.greaterThan(0)
+  const formattedBalance = formatSmart(balance) || 0
 
   return (
     <ResponsiveGrid>
@@ -20,6 +33,7 @@ const DataRow = ({ tokenData, index }: DataRowParams) => {
         <FavouriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
       </Label>
+
       <Label>
         <RowFixed>
           <ResponsiveLogo currency={tokenData} />
@@ -42,6 +56,8 @@ const DataRow = ({ tokenData, index }: DataRowParams) => {
           </HideMedium>
         </LinkWrapper>
       </Label>
+
+      <BalanceValue hasBalance={!!hasBalance}>{formattedBalance}</BalanceValue>
     </ResponsiveGrid>
   )
 }

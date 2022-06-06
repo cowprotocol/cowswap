@@ -6,7 +6,7 @@ import { useAllTokenBalances } from 'state/wallet/hooks'
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
 // compare two token amounts with highest one coming first
-function balanceComparator(balanceA?: CurrencyAmount<Currency>, balanceB?: CurrencyAmount<Currency>) {
+export function balanceComparator(balanceA?: CurrencyAmount<Currency>, balanceB?: CurrencyAmount<Currency>) {
   if (balanceA && balanceB) {
     return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
   } else if (balanceA && balanceA.greaterThan('0')) {
