@@ -60,7 +60,7 @@ export default function TokenTable({
 
   const sortedTokens = useMemo(() => {
     return tokensData
-      ? [...tokensData]
+      ? tokensData
           .filter((x) => !!x)
           .sort((a, b) => {
             if (!a || !b) {
