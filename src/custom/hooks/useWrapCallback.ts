@@ -16,7 +16,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
-import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
+import { AMOUNT_PRECISION, PROVIDER_REJECT_REQUEST_CODE, RADIX_HEX } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
@@ -138,14 +138,14 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Send transaction to Wallet',
+          action: 'Send Transaction to Wallet',
           label: operationMessage,
         })
 
         const txReceipt = await wrapUnwrap()
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Sign transaction',
+          action: 'Sign Transaction',
           label: operationMessage,
         })
         addTransaction({
@@ -158,7 +158,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       } catch (error) {
         closeModals()
 
-        const action = (error?.code === 4001 ? 'Reject' : 'Error') + ' Signing transaction'
+        const action = (error?.code === PROVIDER_REJECT_REQUEST_CODE ? 'Reject' : 'Error') + ' Signing transaction'
 
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,

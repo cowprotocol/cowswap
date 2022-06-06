@@ -65,7 +65,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 // import AppBody from 'pages/AppBody'
 
 // MOD imports
-import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT, PROVIDER_REJECT_REQUEST_CODE } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
@@ -89,6 +89,16 @@ const AlertWrapper = styled.div`
   max-width: 460px;
   width: 100%;
 `
+
+function reportAnalytics(action: string, label?: string, value?: number) {
+  ReactGA.event({
+    category: 'Swap',
+    action,
+    label,
+    value,
+  })
+}
+
 export default function Swap({
   history,
   location,
@@ -361,7 +371,7 @@ export default function Swap({
         await gatherPermitSignature()
       } catch (error) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
-        if (error?.code !== 4001) {
+        if (error?.code !== PROVIDER_REJECT_REQUEST_CODE) {
           approveRequired = true
         }
       }
@@ -369,12 +379,8 @@ export default function Swap({
       approveRequired = true
     }
 
+    reportAnalytics('Approve', v2Trade?.inputAmount?.currency.symbol)
     if (approveRequired) {
-      ReactGA.event({
-        category: 'Swap',
-        action: 'Approve',
-        label: v2Trade?.inputAmount?.currency.symbol,
-      })
       return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
     }
   }, [approveCallback, gatherPermitSignature, signatureState, v2Trade?.inputAmount?.currency.symbol])
@@ -431,37 +437,47 @@ export default function Swap({
     if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
       return
     }
+
+    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+    reportAnalytics('Send Order to Wallet', marketLabel)
+
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
-        ReactGA.event({
-          category: 'Swap',
-          action:
-            recipient === null
-              ? 'Swap w/o Send'
-              : (recipientAddress ?? recipient) === account
-              ? 'Swap w/o Send + recipient'
-              : 'Swap w/ Send',
-          label: [
-            // approvalOptimizedTradeString,
-            // approvalOptimizedTrade?.inputAmount?.currency?.symbol,
-            // approvalOptimizedTrade?.outputAmount?.currency?.symbol,
-            trade?.inputAmount?.currency?.symbol,
-            trade?.outputAmount?.currency?.symbol,
-            'MH',
-          ].join('/'),
-        })
+
+        let actionAnalytics
+        if (recipient === null) {
+          actionAnalytics = 'Signed: Swap'
+        } else {
+          actionAnalytics =
+            (recipientAddress ?? recipient) === account ? 'Signed: Swap and Send to Self' : 'Signed: Swap and Send'
+        }
+        reportAnalytics(actionAnalytics, marketLabel)
       })
       .catch((error) => {
-        console.error('Error swapping tokens', error)
+        let swapErrorMessage, actionAnalytics, errorCode
+        if (error?.code === PROVIDER_REJECT_REQUEST_CODE) {
+          swapErrorMessage = 'User rejected signing the order'
+          actionAnalytics = 'Reject'
+        } else {
+          swapErrorMessage = error.message
+          actionAnalytics = 'Signing Error'
+
+          if (error?.code && typeof error.code === 'number') {
+            errorCode = error.code
+          }
+          console.error('Error Signing Order', error)
+        }
+
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,
           showConfirm,
-          swapErrorMessage: error.message,
+          swapErrorMessage,
           txHash: undefined,
         })
+        reportAnalytics(actionAnalytics, marketLabel, errorCode)
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
@@ -514,10 +530,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    ReactGA.event({
-      category: 'Swap',
-      action: 'Max',
-    })
+    reportAnalytics('Max')
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(
