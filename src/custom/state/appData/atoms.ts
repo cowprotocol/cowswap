@@ -1,56 +1,64 @@
 import { atom } from 'jotai'
-import { AppDataDoc, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { atomWithStorage } from 'jotai/utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { atomWithStorage, useUpdateAtom } from 'jotai/utils'
-import { useCallback } from 'react'
+import {
+  AddAppDataToUploadQueueParams,
+  AppDataDocsPendingToUpload,
+  AppDataInfo,
+  AppDataRecord,
+  RemoveAppDataFromUploadQueueParams,
+  UpdateAppDataOnUploadQueueParams,
+} from 'state/appData/types'
 
-export const appDataInfoAtom = atom<AppDataInfo | null>(null)
-
-export type AppDataInfo = {
-  doc?: AppDataDoc // in case of default hash, there's no doc
-  hash: string
-}
-type FlowControl = {
-  tryAfter?: number
-  uploading: boolean
-}
-export type AppDataRecord = AppDataInfo & FlowControl
-export type AppDataDocsPendingToUpload = Record<SupportedChainId, Record<string, AppDataRecord>>
-
-type AddPendingAppDataDocParams = {
-  chainId: SupportedChainId
-  orderId: string
-  appData: AppDataInfo
-}
-
+// TODO: what about making it flat?
+// TODO: there's no benefit on it being split by network AFAICT
 const INITIAL_APP_DATA_DOC_PENDING_TO_UPLOAD: AppDataDocsPendingToUpload = {
   [SupportedChainId.MAINNET]: {},
   [SupportedChainId.RINKEBY]: {},
   [SupportedChainId.GNOSIS_CHAIN]: {},
 }
 
-export const pendingUploadAppDataDocsAtom = atomWithStorage(
-  'pendingUploadAppDataDocs',
+/**
+ * Base atom that store the current appDataInfo
+ */
+export const appDataInfoAtom = atom<AppDataInfo | null>(null)
+
+/**
+ * Base atom that stores all appData pending to be uploaded
+ */
+export const appDataUploadQueueAtom = atomWithStorage(
+  'pendingUploadAppDataDocs', // local storage key
   INITIAL_APP_DATA_DOC_PENDING_TO_UPLOAD
 )
-export const addPendingAtom = atom(null, (get, set, { chainId, orderId, appData }: AddPendingAppDataDocParams) => {
-  set(pendingUploadAppDataDocsAtom, () => {
-    const docs = get(pendingUploadAppDataDocsAtom)
-    console.debug(`atoms/add`, chainId, orderId, appData)
-    return {
-      ...docs,
-      [chainId]: {
-        ...docs[chainId],
-        [orderId]: { ...appData, uploading: false },
-      },
-    }
-  })
-})
-export const updatePendingAtom = atom(
+
+/**
+ * Write only atom to add an appData to upload queue
+ */
+export const addAppDataToUploadQueueAtom = atom(
   null,
-  (get, set, { chainId, orderId, uploading, tryAfter }: Omit<AddPendingAppDataDocParams, 'appData'> & FlowControl) => {
-    set(pendingUploadAppDataDocsAtom, () => {
-      const docs = get(pendingUploadAppDataDocsAtom)
+  (get, set, { chainId, orderId, appData }: AddAppDataToUploadQueueParams) => {
+    set(appDataUploadQueueAtom, () => {
+      const docs = get(appDataUploadQueueAtom)
+      return {
+        ...docs,
+        [chainId]: {
+          ...docs[chainId],
+          [orderId]: { ...appData, uploading: false },
+        },
+      }
+    })
+  }
+)
+
+/**
+ * Write only atom to update upload status of an appData on upload queue
+ */
+export const updateAppDataOnUploadQueueAtom = atom(
+  null,
+  (get, set, { chainId, orderId, uploading, tryAfter }: UpdateAppDataOnUploadQueueParams) => {
+    set(appDataUploadQueueAtom, () => {
+      const docs = get(appDataUploadQueueAtom)
       console.debug(`atoms/update`, chainId, orderId, uploading, tryAfter)
       if (!docs[chainId][orderId]) {
         return docs
@@ -66,10 +74,10 @@ export const updatePendingAtom = atom(
   }
 )
 
-// TODO: clear this type mess
-type T = Omit<AddPendingAppDataDocParams, 'appData'> & AppDataRecord
+// TODO: if we make the queue a flat structure, this atom will not be needed
+type T = Omit<AddAppDataToUploadQueueParams, 'appData'> & AppDataRecord
 export const filterUpdatableAtom = atom((get) => {
-  const docs = get(pendingUploadAppDataDocsAtom)
+  const docs = get(appDataUploadQueueAtom)
   // for every network
   const result: T[] = []
   Object.keys(docs).forEach((_chainId) => {
@@ -83,11 +91,15 @@ export const filterUpdatableAtom = atom((get) => {
   })
   return result
 })
-export const removePendingAtom = atom(
+
+/**
+ * Write only atom to remove appData from upload queue
+ */
+export const removeAppDataFromUploadQueueAtom = atom(
   null,
-  (get, set, { chainId, orderId }: Omit<AddPendingAppDataDocParams, 'appData'>) => {
-    set(pendingUploadAppDataDocsAtom, () => {
-      const docs = { ...get(pendingUploadAppDataDocsAtom) }
+  (get, set, { chainId, orderId }: RemoveAppDataFromUploadQueueParams) => {
+    set(appDataUploadQueueAtom, () => {
+      const docs = { ...get(appDataUploadQueueAtom) }
       console.debug(`atoms/remove`, chainId, orderId)
       delete docs[chainId][orderId]
       return docs
