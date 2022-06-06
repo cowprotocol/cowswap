@@ -3,13 +3,17 @@ import { useEffect, useRef } from 'react'
 import { AppDataDoc, SupportedChainId } from '@cowprotocol/cow-sdk'
 import ms from 'ms.macro'
 
-import { filterUpdatableAtom, removePendingAtom, updatePendingAtom } from 'state/appData/atoms'
+import {
+  filterUpdatableAtom,
+  removeAppDataFromUploadQueueAtom,
+  updateAppDataOnUploadQueueAtom,
+} from 'state/appData/atoms'
 import { COW_SDK } from 'constants/index'
 
 export function UploadToIpfsUpdater(): null {
   const toUpload = useAtomValue(filterUpdatableAtom)
-  const removePending = useSetAtom(removePendingAtom)
-  const updatePending = useSetAtom(updatePendingAtom)
+  const removePending = useSetAtom(removeAppDataFromUploadQueueAtom)
+  const updatePending = useSetAtom(updateAppDataOnUploadQueueAtom)
 
   const refToUpload = useRef(toUpload)
   refToUpload.current = toUpload
