@@ -12,9 +12,9 @@ type AppDataUploadStatus = {
 
 export type AppDataRecord = AppDataInfo & AppDataUploadStatus
 
-export type AppDataDocsPendingToUpload = Record<SupportedChainId, Record<string, AppDataRecord>>
+export type AppDataPendingToUpload = Record<string, AppDataRecord>
 
-type AppDataKeyParams = {
+export type AppDataKeyParams = {
   chainId: SupportedChainId
   orderId: string
 }
@@ -24,3 +24,5 @@ export type AddAppDataToUploadQueueParams = AppDataKeyParams & {
 }
 export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & AppDataUploadStatus
 export type RemoveAppDataFromUploadQueueParams = AppDataKeyParams
+
+export type FlattenedAppDataFromUploadQueue = AppDataKeyParams & AppDataRecord
