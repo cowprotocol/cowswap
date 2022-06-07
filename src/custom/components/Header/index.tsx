@@ -102,7 +102,7 @@ export default function Header() {
     () =>
       MAIN_MENU.map(({ title, url, externalURL, items }: MAIN_MENU_TYPE, index) =>
         !items && !externalURL && url ? (
-          <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
+          <StyledNavLink key={index} exact to={url} onClick={handleMobileMenuOnClick}>
             {title}
           </StyledNavLink>
         ) : !items && externalURL && url ? (
@@ -131,7 +131,7 @@ export default function Header() {
                         {darkMode ? 'Light' : 'Dark'} Mode
                       </button>
                     ) : !externalURL && url ? (
-                      <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
+                      <StyledNavLink key={index} exact to={url} onClick={handleMobileMenuOnClick}>
                         {iconSVG ? (
                           <SVG src={iconSVG} description={`${title} icon`} />
                         ) : icon ? (
