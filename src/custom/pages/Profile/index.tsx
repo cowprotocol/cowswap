@@ -64,6 +64,7 @@ import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
 import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
+import { getProviderErrorMessage } from 'utils/misc'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -154,7 +155,7 @@ export default function Profile() {
       .catch((error) => {
         console.error('[Profile::index::swapVCowCallback]::error', error)
         setSwapVCowStatus(SwapVCowStatus.INITIAL)
-        handleSetError(error?.message)
+        handleSetError(getProviderErrorMessage(error))
       })
   }, [handleCloseError, handleSetError, setSwapVCowStatus, swapCallback])
 

@@ -22,6 +22,7 @@ import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import ReactGA from 'react-ga4'
+import { getProviderErrorMessage } from 'utils/misc'
 
 enum ClaimStatus {
   INITIAL,
@@ -102,7 +103,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           errorMessage = 'User rejected signing COW claim transaction'
           actionAnalytics = 'Reject'
         } else {
-          errorMessage = error.message
+          errorMessage = getProviderErrorMessage(error)
           actionAnalytics = 'Signing Error'
 
           if (error?.code && typeof error.code === 'number') {
@@ -112,8 +113,8 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        handleSetError(errorMessage)
         reportAnalytics(actionAnalytics, 'Locked GNO COW claiming', errorCode)
+        handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])
 
