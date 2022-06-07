@@ -425,7 +425,7 @@ export default function Swap({
         swapErrorMessage: undefined,
         showConfirm: true,
         txHash: undefined,
-      })\
+      })
     },
     //openTransactionConfirmationModal,
     closeModals,

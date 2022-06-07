@@ -1,7 +1,9 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/contracts'
-import { PROVIDER_REJECT_REQUEST_CODE, PROVIDER_REJECT_REQUEST_ERROR_MESSAGE } from '../constants'
+
+export const PROVIDER_REJECT_REQUEST_CODE = 4001
+export const PROVIDER_REJECT_REQUEST_ERROR_MESSAGE = 'User denied message signature'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -120,11 +122,12 @@ export function hashCode(text: string): number {
   return hash
 }
 
-export export function isRejectRequestProviderError(error: any) {
+export function isRejectRequestProviderError(error: any) {
   return (
-    (error && (      
-      error.code === PROVIDER_REJECT_REQUEST_CODE ||
-      error.message && error.message.includes(PROVIDER_REJECT_REQUEST_ERROR_MESSAGE
-    ))
+    error &&
+    // Either the error code flags its a Rejection
+    (error.code === PROVIDER_REJECT_REQUEST_CODE ||
+      // ...or the message contains some specific Rejection Error Message
+      (error.message && error.message.includes(PROVIDER_REJECT_REQUEST_ERROR_MESSAGE)))
   )
 }
