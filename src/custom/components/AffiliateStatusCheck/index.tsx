@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks/web3'
 import NotificationBanner from 'components/NotificationBanner'
-import { useReferralAddress, useResetReferralAddress } from 'state/affiliate/hooks'
+import { useReferralAddress, useResetReferralAddress, useSetReferralAddressActive } from 'state/affiliate/hooks'
 import { hasTrades } from 'utils/trade'
 import { retry, RetryOptions } from 'utils/retry'
 import { SupportedChainId } from 'constants/chains'
@@ -24,13 +24,32 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 
 export default function AffiliateStatusCheck() {
   const resetReferralAddress = useResetReferralAddress()
+  const setReferralAddressActive = useSetReferralAddressActive()
   const history = useHistory()
   const location = useLocation()
   const { account, chainId } = useActiveWeb3React()
   const referralAddress = useReferralAddress()
   const referralAddressQueryParam = useParseReferralQueryParam()
   const allRecentActivity = useRecentActivity()
-  const [affiliateState, setAffiliateState] = useState<AffiliateStatus | null>()
+  const [affiliateState, _setAffiliateState] = useState<AffiliateStatus | null>()
+
+  /**
+   * Wrapper around setAffiliateState (local) and setReferralAddressActive (global)
+   * Need to keep track when affiliate is ACTIVE to know whether it should be included in the
+   * metadata, no longer uploaded to IPFS here
+   */
+  const setAffiliateState = useCallback(
+    (state: AffiliateStatus | null) => {
+      _setAffiliateState(state)
+      setReferralAddressActive(state === 'ACTIVE')
+    },
+    [setReferralAddressActive]
+  )
+
+  // De-normalized to avoid unnecessary useEffect triggers
+  const referralAddressAccount = referralAddress?.value
+  const referralAddressIsValid = referralAddress?.isValid
+
   const [error, setError] = useState('')
   const isFirstTrade = useRef(false)
   const fulfilledOrders = allRecentActivity.filter((data) => {
@@ -38,23 +57,23 @@ export default function AffiliateStatusCheck() {
   })
 
   const notificationBannerId = useMemo(() => {
-    if (!referralAddress?.value) {
+    if (!referralAddressAccount) {
       return
     }
 
     if (!account) {
-      return `referral-${referralAddress.value}`
+      return `referral-${referralAddressAccount}`
     }
 
-    return `wallet-${account}:referral-${referralAddress.value}:chain-${chainId}`
-  }, [account, chainId, referralAddress?.value])
+    return `wallet-${account}:referral-${referralAddressAccount}:chain-${chainId}`
+  }, [account, chainId, referralAddressAccount])
 
   const handleAffiliateState = useCallback(async () => {
-    if (!chainId || !account || !referralAddress) {
+    if (!chainId || !account) {
       return
     }
 
-    if (!referralAddress.isValid) {
+    if (!referralAddressIsValid) {
       setError('Affiliate program: The referral address is invalid.')
       return
     }
@@ -81,24 +100,18 @@ export default function AffiliateStatusCheck() {
 
     setAffiliateState('ACTIVE')
     isFirstTrade.current = true
-  }, [referralAddress, chainId, account, fulfilledOrders.length, history, resetReferralAddress])
-
-  // useEffect(() => {
-  //   async function handleReferralAddress(referralAddress: { value: string; isValid: boolean } | undefined) {
-  //     if (!referralAddress?.value) return
-  //     try {
-  //       const appDataHash = await uploadMetadataDocToIpfs(generateReferralMetadataDoc(referralAddress.value))
-  //       appDispatch(updateAppDataHash(appDataHash))
-  //     } catch (e) {
-  //       console.error(e)
-  //       setError('Affiliate program: There was an error while uploading your referral data. Please try again later.')
-  //     }
-  //   }
-  //   if (affiliateState === 'ACTIVE') handleReferralAddress(referralAddress)
-  // }, [referralAddress, affiliateState, appDispatch])
+  }, [
+    account,
+    chainId,
+    fulfilledOrders.length,
+    history,
+    referralAddressIsValid,
+    resetReferralAddress,
+    setAffiliateState,
+  ])
 
   useEffect(() => {
-    if (!referralAddress) {
+    if (!referralAddressAccount) {
       return
     }
 
@@ -114,7 +127,7 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    if (referralAddress.value === account) {
+    if (referralAddressAccount === account) {
       // clean-up saved referral address if the user follows its own referral link
       setAffiliateState('OWN_LINK')
 
@@ -125,7 +138,16 @@ export default function AffiliateStatusCheck() {
     }
 
     handleAffiliateState()
-  }, [referralAddress, account, history, chainId, handleAffiliateState, location.search, referralAddressQueryParam])
+  }, [
+    account,
+    history,
+    chainId,
+    handleAffiliateState,
+    location.search,
+    referralAddressQueryParam,
+    setAffiliateState,
+    referralAddressAccount,
+  ])
 
   if (error) {
     return (

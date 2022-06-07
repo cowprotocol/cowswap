@@ -1,33 +1,32 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { dismissNotification, updateAddress, updateAppDataHash, updateReferralAddress } from './actions'
-import { APP_DATA_HASH } from 'constants/index'
+import { dismissNotification, setReferralAddressActive, updateAddress, updateReferralAddress } from './actions'
 
 export interface AffiliateState {
   referralAddress?: {
     value: string
     isValid: boolean
+    isActive?: boolean
   }
-  appDataHash?: string
   isNotificationClosed?: {
     [key: string]: boolean
   }
   address?: string // this can be a ENS name or an address
 }
 
-export const initialState: AffiliateState = {
-  appDataHash: APP_DATA_HASH,
-}
+export const initialState: AffiliateState = {}
 
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(updateReferralAddress, (state, action) => {
-      state.referralAddress = action.payload ?? undefined
+      state.referralAddress = action.payload ? { ...state.referralAddress, ...action.payload } : undefined
+    })
+    .addCase(setReferralAddressActive, (state, action) => {
+      if (state.referralAddress) {
+        state.referralAddress.isActive = action.payload
+      }
     })
     .addCase(updateAddress, (state, action) => {
       state.address = action.payload
-    })
-    .addCase(updateAppDataHash, (state, action) => {
-      state.appDataHash = action.payload
     })
     .addCase(dismissNotification, (state, action) => {
       state.isNotificationClosed = state.isNotificationClosed ?? {}
