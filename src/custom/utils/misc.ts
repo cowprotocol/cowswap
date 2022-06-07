@@ -1,6 +1,7 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/contracts'
+import { PROVIDER_REJECT_REQUEST_CODE, PROVIDER_REJECT_REQUEST_ERROR_MESSAGE } from '../constants'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -117,4 +118,13 @@ export function hashCode(text: string): number {
   }
 
   return hash
+}
+
+export export function isRejectRequestProviderError(error: any) {
+  return (
+    (error && (      
+      error.code === PROVIDER_REJECT_REQUEST_CODE ||
+      error.message && error.message.includes(PROVIDER_REJECT_REQUEST_ERROR_MESSAGE
+    ))
+  )
 }
