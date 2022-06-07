@@ -384,6 +384,17 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }
 
+  // Appzi Container
+  div#appzi-wfo-l44bn3jm-ydf0qhw7ykm {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      left: 36px;
+      bottom: 48px;
+      top: initial;
+      right: initial;
+      position: fixed;
+    `}
+  }
+
   ::selection { 
     background: ${({ theme }) => theme.primary1};
     color: ${({ theme }) => theme.text2};
