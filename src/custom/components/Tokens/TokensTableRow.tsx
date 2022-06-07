@@ -57,7 +57,9 @@ const DataRow = ({ tokenData, index, balance }: DataRowParams) => {
         </LinkWrapper>
       </Label>
 
-      <BalanceValue hasBalance={!!hasBalance}>{formattedBalance}</BalanceValue>
+      <BalanceValue title={balance?.toExact()} hasBalance={!!hasBalance}>
+        {formattedBalance}
+      </BalanceValue>
     </ResponsiveGrid>
   )
 }

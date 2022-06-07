@@ -53,7 +53,7 @@ export default function TokenTable({
 
   //sorting
   const applyDirection = useCallback((condition: boolean, sortDirection: boolean) => {
-    return condition ? (sortDirection ? -1 : 1) * -1 : (sortDirection ? -1 : 1) * 1
+    return (condition ? -1 : 1) * (sortDirection ? -1 : 1)
   }, [])
 
   const tokenComparator = useTokenComparator(false)
