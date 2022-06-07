@@ -2,7 +2,7 @@
  * @jest-environment ./custom-test-env.js
  */
 
-import { PriceInformation } from 'utils/price'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { OrderKind } from 'state/orders/actions'
 
 import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
+import ReactGA from 'react-ga4'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
@@ -65,7 +66,15 @@ export default function Header() {
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [darkMode, toggleDarkModeAux] = useDarkModeManager()
+  const toggleDarkMode = useCallback(() => {
+    ReactGA.event({
+      category: 'Theme',
+      action: 'Toggle dark/light mode',
+      label: `${darkMode ? 'Light' : 'Dark'} mode`,
+    })
+    toggleDarkModeAux()
+  }, [toggleDarkModeAux, darkMode])
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
