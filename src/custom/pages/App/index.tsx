@@ -48,7 +48,17 @@ if (SENTRY_DSN) {
   })
 }
 
-export const Wrapper = styled(AppMod)``
+export const Wrapper = styled(AppMod)`
+
+// Appzi Container
+div[data-appzi-dom=1]
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    left: 32px;
+    bottom: 64px;
+    top: initial;
+    right: initial;
+  `}
+`
 
 export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   display: flex;
