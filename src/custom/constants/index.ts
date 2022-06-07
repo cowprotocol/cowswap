@@ -33,6 +33,7 @@ export const PRODUCTION_URL = 'cowswap.exchange'
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
 export const PROVIDER_REJECT_REQUEST_CODE = 4001
+export const PROVIDER_REJECT_REQUEST_ERROR_MESSAGE = 'User denied message signature'
 
 // Allow WALLET_LINK to be activated on mobile
 // since COINBASE_LINK is limited to use only 1 deeplink on mobile
