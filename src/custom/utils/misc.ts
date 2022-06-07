@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/contracts'
 
-export const PROVIDER_REJECT_REQUEST_CODE = 4001
+export const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
 export const PROVIDER_REJECT_REQUEST_ERROR_MESSAGE = 'User denied message signature'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
@@ -122,12 +122,38 @@ export function hashCode(text: string): number {
   return hash
 }
 
+/**
+ * Convenient method to get the error message from the error raised by a provider.
+ *
+ * Some providers return some description in the error.message, and some others the error message is itself a String
+ * with the error message
+ */
+export function getProviderErrorMessage(error: any) {
+  return typeof error === 'string' ? error : error.message
+}
+
+/**
+ *
+ * @param error Optional error object return by a provider.
+ *
+ * There's no assumptions, the error can be undefined, it can contain an error code as described in https://eips.ethereum.org/EIPS/eip-1193
+ * or it could be a String (as some wallets like Metamask used through WalletConnect return)
+ *
+ * @returns true if the user rejected the request in their wallet
+ */
 export function isRejectRequestProviderError(error: any) {
-  return (
-    error &&
-    // Either the error code flags its a Rejection
-    (error.code === PROVIDER_REJECT_REQUEST_CODE ||
-      // ...or the message contains some specific Rejection Error Message
-      (error.message && error.message.includes(PROVIDER_REJECT_REQUEST_ERROR_MESSAGE)))
-  )
+  if (error) {
+    // Check the error code is the user rejection as described in eip-1193
+    if (error.code === PROVIDER_REJECT_REQUEST_CODE) {
+      return true
+    }
+
+    // Check for some specific messages returned by some wallets when rejecting requests
+    const message = getProviderErrorMessage(error)
+    if (message.includes(PROVIDER_REJECT_REQUEST_ERROR_MESSAGE)) {
+      return true
+    }
+  }
+
+  return false
 }

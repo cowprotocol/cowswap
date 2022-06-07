@@ -84,7 +84,7 @@ import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
-import { isRejectRequestProviderError } from 'utils/misc'
+import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 
 const AlertWrapper = styled.div`
   max-width: 460px;
@@ -458,14 +458,11 @@ export default function Swap({
       })
       .catch((error) => {
         let swapErrorMessage, actionAnalytics, errorCode
-        console.log('error?.code', error?.code)
-        console.log('error', error)
-        console.log('error', JSON.stringify(error, null, 2))
         if (isRejectRequestProviderError(error)) {
           swapErrorMessage = 'User rejected signing the order'
           actionAnalytics = 'Reject'
         } else {
-          swapErrorMessage = error.message
+          swapErrorMessage = getProviderErrorMessage(error)
           actionAnalytics = 'Signing Error'
 
           if (error?.code && typeof error.code === 'number') {
