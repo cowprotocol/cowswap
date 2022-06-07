@@ -15,7 +15,7 @@ export default styled.div`
   max-width: 100%;
   grid-gap: 1em;
   align-items: center;
-  grid-template-columns: 25px 5fr repeat(2, 1fr);
+  grid-template-columns: 50px 5fr minmax(auto, 150px) repeat(3, 75px);
 
   & > div {
     animation: ${loadingAnimation} 1.5s infinite;
@@ -28,7 +28,7 @@ export default styled.div`
     );
     background-size: 400%;
     border-radius: 12px;
-    height: 1.4rem;
+    height: 1.2rem;
     will-change: background-position;
   }
 `
