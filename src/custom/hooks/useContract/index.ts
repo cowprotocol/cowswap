@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, JsonRpcProvider, ExternalProvider } from '@ethersproject/providers'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -44,7 +44,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
       case ChainId.RINKEBY:
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
         break
-      case ChainId.XDAI:
+      case ChainId.GNOSIS_CHAIN:
         address = '0x25D2252Ec30de7830b6825D6b4A08E70a581cD6a'
         break
     }
@@ -59,7 +59,7 @@ function _getContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
   withSignerIfPossible = true,
-  library?: Web3Provider,
+  library?: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined }),
   account?: string,
   chainId?: ChainId
 ): T | null {
@@ -82,7 +82,7 @@ function _getContract<T extends Contract = Contract>(
 export function getTokenContract(
   tokenAddress?: string,
   withSignerIfPossible?: boolean,
-  library?: Web3Provider,
+  library?: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined }),
   account?: string,
   chainId?: ChainId
 ): Erc20 | null {
@@ -95,7 +95,7 @@ export function getTokenContract(
 export function getBytes32TokenContract(
   tokenAddress?: string,
   withSignerIfPossible?: boolean,
-  library?: Web3Provider,
+  library?: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined }),
   account?: string,
   chainId?: ChainId
 ): Contract | null {

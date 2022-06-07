@@ -486,7 +486,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
     const wrappedToken: Token & { logoURI: string } = Object.assign(
       WETH[chainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
       {
-        logoURI: chainId === ChainId.XDAI ? XDAI_LOGO_URI : WETH_LOGO_URI,
+        logoURI: chainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
       }
     )
 

@@ -15,18 +15,20 @@ import { useWETHContract } from 'hooks/useContract'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
-import { getChainCurrencySymbols } from 'utils/xdai/hack'
+import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { useWalletInfo } from './useWalletInfo'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
-import { OperationType } from '../components/TransactionConfirmationModal'
+import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
+import ReactGA from 'react-ga4'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
+const ANALYTICS_WRAP_CATEGORY = 'Wrapped Native Token'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -129,10 +131,23 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       confirmationMessage = t`Unwrapping ${baseSummary}`
     }
 
+    const operationMessage = getOperationMessage(operationType, chainId)
     wrapUnwrapCallback = async () => {
       try {
         openTransactionConfirmationModal(confirmationMessage, operationType)
+
+        ReactGA.event({
+          category: ANALYTICS_WRAP_CATEGORY,
+          action: 'Send transaction to Wallet',
+          label: operationMessage,
+        })
+
         const txReceipt = await wrapUnwrap()
+        ReactGA.event({
+          category: ANALYTICS_WRAP_CATEGORY,
+          action: 'Sign transaction',
+          label: operationMessage,
+        })
         addTransaction({
           hash: txReceipt.hash,
           summary,
@@ -142,8 +157,15 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
         return txReceipt
       } catch (error) {
         closeModals()
-        const actionName = WrapType.WRAP ? 'wrapping' : 'unwrapping'
-        console.error(t`Error ${actionName} ${symbol}`, error)
+
+        const action = (error?.code === 4001 ? 'Reject' : 'Error') + ' Signing transaction'
+
+        ReactGA.event({
+          category: ANALYTICS_WRAP_CATEGORY,
+          action,
+          label: operationMessage,
+        })
+        console.error(action, error)
 
         throw error.message ? error : new Error(error)
       }

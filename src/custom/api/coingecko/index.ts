@@ -1,7 +1,7 @@
-import { SWR_OPTIONS } from 'constants/index'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { SWR_OPTIONS } from 'constants/index'
 import useSWR from 'swr'
-import { PriceInformation } from 'utils/price'
 
 function getApiUrl(): string {
   // it's all the same base url
@@ -38,7 +38,7 @@ function _getCoinGeckoAssetPlatform(chainId: ChainId) {
     // https://api.coingecko.com/api/v3/asset_platforms
     case ChainId.MAINNET:
       return 'ethereum'
-    case ChainId.XDAI:
+    case ChainId.GNOSIS_CHAIN:
       return 'xdai'
     default:
       return null

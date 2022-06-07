@@ -5,16 +5,19 @@ import { useSwapState } from 'state/swap/hooks'
 
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
 import { FallbackPriceImpactParams } from './types'
-import { calculateFallbackPriceImpact, FeeQuoteParams } from 'utils/price'
+import { calculateFallbackPriceImpact } from 'utils/price'
 import TradeGp from 'state/swap/TradeGp'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { useQuote } from 'state/price/hooks'
 import { useActiveWeb3React } from 'hooks/web3'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
 
-function _isQuoteValid(quote: QuoteInformationObject | FeeQuoteParams | undefined): quote is QuoteInformationObject {
+function _isQuoteValid(
+  quote: QuoteInformationObject | LegacyFeeQuoteParams | undefined
+): quote is QuoteInformationObject {
   return Boolean(quote && 'lastCheck' in quote)
 }
 

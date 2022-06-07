@@ -25,7 +25,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { useAppDataHash } from 'state/affiliate/hooks'
 
 export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
@@ -72,7 +72,7 @@ interface SwapParams {
   account: string
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
-  library: Web3Provider
+  library: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined })
 
   // Trade details and derived data
   trade: TradeGp

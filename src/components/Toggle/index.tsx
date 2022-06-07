@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { WithClassName } from '@src/custom/types'
+import { WithClassName } from 'types'
 import { darken } from 'polished'
 import { ReactNode } from 'react'
 import styled from 'styled-components/macro'

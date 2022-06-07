@@ -16,14 +16,15 @@ export function useErrorMessage() {
     return {
       error: internalError,
       handleSetError: setError,
-      ErrorMessage: ({
+      ErrorMessage: function ErrorMessage({
         error = internalError,
         showClose = false,
         ...rest
-      }: Pick<ErrorMessageProps, 'error' | 'showClose' | '$css'>) =>
-        error ? (
+      }: Pick<ErrorMessageProps, 'error' | 'showClose' | '$css'>) {
+        return error ? (
           <SwapCallbackError showClose={showClose} handleClose={handleCloseError} error={error} {...rest} />
-        ) : null,
+        ) : null
+      },
     }
   }, [internalError])
 }
@@ -48,9 +49,9 @@ export function useErrorModal() {
       error: internalError,
       handleCloseError,
       handleSetError,
-      ErrorModal: ({ message = internalError }: { message?: string }) => (
-        <TransactionErrorModal onDismiss={handleCloseError} message={message} />
-      ),
+      ErrorModal: function ErrorModal({ message = internalError }: { message?: string }) {
+        return <TransactionErrorModal onDismiss={handleCloseError} message={message} />
+      },
     }
   }, [internalError, closeModal, openModal, TransactionErrorModal])
 }

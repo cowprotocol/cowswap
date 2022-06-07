@@ -4,6 +4,7 @@ import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { SupportedLocale } from 'constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual } from 'react-redux'
@@ -22,6 +23,7 @@ import {
   updateHideClosedPositions,
   // TODO: mod, move to mod file
   updateRecipientToggleVisible,
+  updateShowDonationLink,
   updateShowSurveyPopup,
   updateUserClientSideRouter,
   updateUserDarkMode,
@@ -129,21 +131,41 @@ export function useIsRecipientToggleVisible(): boolean {
 // TODO: mod, move to mod file
 export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
   const dispatch = useAppDispatch()
-  const recipientToggleVisible = useIsRecipientToggleVisible()
+  const isVisible = useIsRecipientToggleVisible()
   const { onChangeRecipient } = useSwapActionHandlers()
 
-  const toggleRecipientVisibility = useCallback(
+  const toggleVisibility = useCallback(
     (value?: boolean) => {
-      const newRecipientToggleVisibilityValue = value ?? !recipientToggleVisible
-      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newRecipientToggleVisibilityValue }))
-      if (!newRecipientToggleVisibilityValue) {
+      const newIsVisible = value ?? !isVisible
+      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newIsVisible }))
+      if (!newIsVisible) {
         onChangeRecipient(null)
       }
     },
-    [recipientToggleVisible, dispatch, onChangeRecipient]
+    [isVisible, dispatch, onChangeRecipient]
   )
 
-  return [recipientToggleVisible, toggleRecipientVisibility]
+  return [isVisible, toggleVisibility]
+}
+
+const DONATION_END_TIMESTAMP = 1646864954 // Jan 15th
+
+export function useShowDonationLink(): [boolean | undefined, (showDonationLink: boolean) => void] {
+  const dispatch = useAppDispatch()
+  const showDonationLink = useAppSelector((state) => state.user.showDonationLink)
+
+  const toggleShowDonationLink = useCallback(
+    (showPopup: boolean) => {
+      dispatch(updateShowDonationLink({ showDonationLink: showPopup }))
+    },
+    [dispatch]
+  )
+
+  const timestamp = useCurrentBlockTimestamp()
+  const durationOver = timestamp ? timestamp.toNumber() > DONATION_END_TIMESTAMP : false
+  const donationVisible = showDonationLink !== false && !durationOver
+
+  return [donationVisible, toggleShowDonationLink]
 }
 
 export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean) => void] {
