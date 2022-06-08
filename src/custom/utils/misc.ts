@@ -3,7 +3,7 @@ import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/contracts'
 
 const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
-const PROVIDER_REJECT_REQUEST_ERROR_MESSAGE = 'User denied message signature'
+const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = ['User denied message signature', 'User rejected the transaction']
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -150,7 +150,7 @@ export function isRejectRequestProviderError(error: any) {
 
     // Check for some specific messages returned by some wallets when rejecting requests
     const message = getProviderErrorMessage(error)
-    if (message.includes(PROVIDER_REJECT_REQUEST_ERROR_MESSAGE)) {
+    if (PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) => message.includes(rejectMessage))) {
       return true
     }
   }
