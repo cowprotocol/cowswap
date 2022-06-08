@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle<{ appziWidgetSelectorID: string }>`
   body {
     // Appzi Container override
     ${({ theme, appziWidgetSelectorID }) => theme.mediaWidth.upToMedium`
-      div[appzi-wfo-${appziWidgetSelectorID}] {
+      body.appzi-f-w-open-${appziWidgetSelectorID} #appzi-wfo-${appziWidgetSelectorID} {
         left: 36px;
         bottom: 48px;
         top: initial;
