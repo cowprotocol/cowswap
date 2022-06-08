@@ -1,16 +1,9 @@
 import { COW_SDK } from 'constants/index'
-import {
-  EnvironmentMetadata,
-  MetadataDoc,
-  QuoteMetadata,
-  ReferralMetadata,
-  SupportedChainId,
-} from '@cowprotocol/cow-sdk'
+import { MetadataDoc, QuoteMetadata, ReferralMetadata, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
 
 const QUOTE_METADATA_VERSION = '0.1.0'
 const REFERRER_METADATA_VERSION = '0.1.0'
-const ENVIRONMENT_METADATA_VERSION = '0.1.0'
 
 export async function buildAppData(
   chainId: SupportedChainId,
@@ -31,13 +24,8 @@ export async function buildAppData(
     metadata.referrer = _buildReferralMetadata(referrer)
   }
 
-  // build environment metadata, optional but very likely to be present
-  const environmentMetadata = _buildEnvironmentMetadata()
-  if (environmentMetadata) {
-    metadata.environment = environmentMetadata
-  }
+  const doc = sdk.metadataApi.generateAppDataDoc(metadata, { appCode, environment: environmentName })
 
-  const doc = sdk.metadataApi.generateAppDataDoc(metadata, appCode)
   const calculatedAppData = await sdk.metadataApi.calculateAppDataHash(doc)
 
   return { doc, calculatedAppData }
@@ -56,18 +44,5 @@ function _buildReferralMetadata(referrer: string): ReferralMetadata {
   return {
     address: referrer,
     version: REFERRER_METADATA_VERSION,
-  }
-}
-
-function _buildEnvironmentMetadata(): EnvironmentMetadata | undefined {
-  const name = environmentName
-
-  if (!name) {
-    return
-  }
-
-  return {
-    name,
-    version: ENVIRONMENT_METADATA_VERSION,
   }
 }
