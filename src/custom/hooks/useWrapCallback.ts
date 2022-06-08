@@ -168,7 +168,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
         })
         console.error(action, error)
 
-        throw error.message ? error : new Error(error)
+        throw typeof error === 'string' ? new Error(error) : error
       }
     }
   }
