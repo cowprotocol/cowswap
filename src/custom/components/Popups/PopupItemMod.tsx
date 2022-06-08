@@ -11,6 +11,7 @@ import TransactionPopup from './TransactionPopupMod'
 
 // MOD imports
 import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
+import { WarningPopup } from 'components/Popups/WarningPopup'
 
 export const StyledClose = styled(X)`
   position: absolute;
@@ -84,6 +85,7 @@ export default function PopupItem({
   const isListUpdate = 'listUpdate' in content
   const isUnsupportedNetwork = 'unsupportedNetwork' in content
   const isMetaTxn = 'metatxn' in content
+  const isWarningTxn = 'message' in content
 
   let popupContent
   if (isTxn) {
@@ -105,6 +107,8 @@ export default function PopupItem({
     popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} isUnsupportedNetwork />
   } else if ('failedSwitchNetwork' in content) {
     popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} />
+  } else if (isWarningTxn) {
+    popupContent = <WarningPopup message={content.message} />
   }
 
   const faderStyle = useSpring({

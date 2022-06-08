@@ -2,7 +2,8 @@ import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 
 import { SupportedChainId } from 'constants/chains'
-import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro' // mod
+import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
+import { initialState } from 'state/application/initialState' // mod
 
 type BasePopupContent =
   //   | {
@@ -18,7 +19,7 @@ type BasePopupContent =
   }
 
 // MOD: Modified PopupContent. The mod happened directly in the src file, to avoid redefining the state/hoos/etc
-export type PopupContent = (TxPopupContent | MetaTxPopupContent | BasePopupContent) & {
+export type PopupContent = (TxPopupContent | MetaTxPopupContent | BasePopupContent | WarningPopupContent) & {
   // mod: custom styles
   styles?: FlattenInterpolation<ThemeProps<DefaultTheme>>
 }
@@ -38,6 +39,8 @@ export interface MetaTxPopupContent {
     summary?: string | JSX.Element
   }
 }
+
+export type WarningPopupContent = { message: string }
 
 export enum ApplicationModal {
   WALLET,
@@ -67,11 +70,11 @@ export interface ApplicationState {
   readonly popupList: PopupList
 }
 
-const initialState: ApplicationState = {
+/* const initialState: ApplicationState = {
   chainId: null,
   openModal: null,
   popupList: [],
-}
+} */
 
 const applicationSlice = createSlice({
   name: 'application',
