@@ -9,18 +9,16 @@ if (FEEDBACK_ENABLED) {
 }
 
 const GlobalStyle = createGlobalStyle<{ appziWidgetSelectorID: string }>`
-  body {
-    // Appzi Container override
-    ${({ theme, appziWidgetSelectorID }) => theme.mediaWidth.upToMedium`
-      body.appzi-f-w-open-${appziWidgetSelectorID} #appzi-wfo-${appziWidgetSelectorID} {
-        left: 36px;
-        bottom: 48px;
-        top: initial;
-        right: initial;
-        position: fixed;
-      }
-    `}
-  }
+  // Appzi Container override
+  ${({ theme, appziWidgetSelectorID }) => theme.mediaWidth.upToMedium`
+    body.appzi-f-w-open-${appziWidgetSelectorID} #appzi-wfo-${appziWidgetSelectorID} {
+      left: 36px;
+      bottom: 48px;
+      top: initial;
+      right: initial;
+      position: fixed;
+    }
+  `}
 `
 
 const Wrapper = styled(ButtonPrimary)`
