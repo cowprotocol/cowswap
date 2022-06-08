@@ -9,9 +9,9 @@ import { HelpCircle } from 'react-feather'
 import { SearchInput } from 'components/SearchModal/styleds'
 
 export const TokenSearchInput = styled(SearchInput)`
-  padding: 10px 16px;
   margin-bottom: 16px;
   font-size: 14px;
+  max-width: 500px;
 `
 
 export const Wrapper = styled.div`
