@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
