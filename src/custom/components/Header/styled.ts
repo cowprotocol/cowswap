@@ -235,7 +235,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     background: ${({ theme }) => theme.bg4};
     outline: 0;
     padding: 60px 8px;
-    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; // iOS scroll fix
+    transform: translate3d(0,0,0); // iOS scroll fix
 
     ${
       isMobileMenuOpen &&

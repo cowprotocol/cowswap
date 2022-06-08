@@ -6,7 +6,7 @@ import ReactGA from 'react-ga4'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
-import { useMediaQuery, upToSmall, upToLarge } from 'hooks/useMediaQuery'
+import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { MAIN_MENU, MAIN_MENU_TYPE } from 'constants/mainMenu'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -77,32 +77,47 @@ export default function Header() {
   }, [toggleDarkModeAux, darkMode])
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
-  const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => account && setIsOrdersPanelOpen(true)
+  const handleOpenOrdersPanel = () => {
+    account && setIsOrdersPanelOpen(true)
+    account && isOrdersPanelOpen && addBodyClass('noScroll')
+  }
+  const handleCloseOrdersPanel = () => {
+    setIsOrdersPanelOpen(false)
+    !isOrdersPanelOpen && removeBodyClass('noScroll')
+  }
 
   const history = useHistory()
   const handleBalanceButtonClick = () => history.push('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
+  const isLargeAndUp = useMediaQuery(LargeAndUp)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const handleMobileMenuOnClick = useCallback(
-    () => isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen),
-    [isUpToLarge, isMobileMenuOpen]
-  )
+  const handleMobileMenuOnClick = useCallback(() => {
+    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
+  }, [isUpToLarge, isMobileMenuOpen])
+
+  const [isTouch, setIsTouch] = useState<boolean>(false)
 
   // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isUpToLarge && isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-    isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
+    isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+    // Set if device has touch capabilities
+    setIsTouch('ontouchstart' in document.documentElement)
+  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   const getMainMenu = useMemo(
     () =>
       MAIN_MENU.map(({ title, url, externalURL, items }: MAIN_MENU_TYPE, index) =>
         !items && !externalURL && url ? (
-          <StyledNavLink key={index} to={url} onClick={handleMobileMenuOnClick}>
+          <StyledNavLink
+            key={index}
+            to={url}
+            onTouchStart={handleMobileMenuOnClick}
+            onClick={isTouch ? undefined : handleMobileMenuOnClick}
+          >
             {title}
           </StyledNavLink>
         ) : !items && externalURL && url ? (
@@ -120,8 +135,8 @@ export default function Header() {
                       <button
                         key={index}
                         onClick={() => {
-                          toggleDarkMode()
                           handleMobileMenuOnClick()
+                          toggleDarkMode()
                         }}
                       >
                         <SVG
@@ -156,7 +171,7 @@ export default function Header() {
           </MenuDropdown>
         ) : null
       ),
-    [darkMode, handleMobileMenuOnClick, toggleDarkMode]
+    [darkMode, handleMobileMenuOnClick, toggleDarkMode, isTouch]
   )
 
   return (
@@ -182,7 +197,7 @@ export default function Header() {
               isUpToSmall={isUpToSmall}
             />
 
-            <AccountElement active={!!account} onClick={openOrdersPanel}>
+            <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
               {account && userEthBalance && (
                 <BalanceText>
                   {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
@@ -193,8 +208,14 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onTouchStart={handleMobileMenuOnClick} />}
-        {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
+        {isUpToLarge && (
+          <MobileMenuIcon
+            isMobileMenuOpen={isMobileMenuOpen}
+            onTouchStart={handleMobileMenuOnClick}
+            onClick={isTouch ? undefined : handleMobileMenuOnClick} // Disable onClick on touch devices and use onTouchStart
+          />
+        )}
+        {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>
   )
