@@ -6,10 +6,18 @@ import { AutoColumn } from 'components/Column'
 import { BaseButton } from 'components/Button'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { HelpCircle } from 'react-feather'
+import { SearchInput } from 'components/SearchModal/styleds'
+
+export const TokenSearchInput = styled(SearchInput)`
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+`
 
 export const Wrapper = styled.div`
   width: 100%;
   border: none;
+  padding: 0 1rem;
 `
 
 export const ResponsiveGrid = styled.div`

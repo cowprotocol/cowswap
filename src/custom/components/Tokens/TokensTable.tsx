@@ -17,6 +17,7 @@ import {
   PaginationText,
   IndexLabel,
   InfoCircle,
+  TokenSearchInput,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
@@ -30,6 +31,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { PageViewKeys } from 'pages/Account/Tokens/TokensOverview'
 import { MouseoverTooltip } from 'components/Tooltip'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import useDebounce from 'hooks/useDebounce'
 
 const MAX_ITEMS = 10
 
@@ -56,8 +58,19 @@ export enum TableType {
   FAVOURITE = 'FAVOURITE',
 }
 
+const _filterCb = (token: Token, query?: string) => {
+  if (!query) return false
+
+  const cleanQuery = query.toLowerCase()
+  const address = token.address.toLowerCase()
+  const symbol = token.symbol?.toLowerCase()
+  const name = token.name?.toLowerCase()
+
+  return address.match(cleanQuery) || symbol?.match(cleanQuery) || name?.match(cleanQuery)
+}
+
 export default function TokenTable({
-  tokensData,
+  tokensData: rawTokensData,
   maxItems = MAX_ITEMS,
   balances,
   selectedView,
@@ -69,6 +82,19 @@ export default function TokenTable({
 
   const toggleWalletModal = useWalletModalToggle()
   const tableRef = useRef<HTMLTableElement | null>(null)
+  // search - takes precedence re:filtering
+  const [query, setQuery] = useState<string>()
+  const debouncedQuery = useDebounce(query, 300)
+
+  const handleChange = useCallback((event) => {
+    const { value } = event.target
+    setQuery(value)
+  }, [])
+
+  const tokensData = useMemo(() => {
+    if (!debouncedQuery) return rawTokensData
+    return !!rawTokensData?.length ? rawTokensData.filter((token) => _filterCb(token, debouncedQuery)) : []
+  }, [rawTokensData, debouncedQuery])
 
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
@@ -190,6 +216,14 @@ export default function TokenTable({
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
+      <TokenSearchInput
+        type="text"
+        id="token-search-input"
+        placeholder={`Search name/symbol or paste address`}
+        autoComplete="off"
+        value={query}
+        onChange={handleChange}
+      />
       {tokensData && sortedTokens.length !== 0 ? (
         <AutoColumn>
           <Table ref={tableRef}>
@@ -262,8 +296,10 @@ export default function TokenTable({
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
-      ) : (
+      ) : !debouncedQuery ? (
         <Loader />
+      ) : (
+        <small>{'No results found :('}</small>
       )}
     </Wrapper>
   )
