@@ -131,6 +131,7 @@ export const Menu = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 0;
     position: relative;
+    margin: 0;
   `}
 
   > ul {
