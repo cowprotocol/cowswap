@@ -34,7 +34,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@cowprotocol/cow-sdk": "0.0.12",
+    "@cowprotocol/cow-sdk": "0.0.13",
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.4.0",
     "@graphql-codegen/cli": "1.21.5",
