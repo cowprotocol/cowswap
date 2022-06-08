@@ -91,6 +91,18 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
         css`
           position: absolute;
           top: 0;
+
+          &::before {
+            content: '';
+            width: 100%;
+            display: flex;
+            height: 60px;
+            background: ${({ theme }) => theme.bg4};
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 101;
+          }
         `
       }
     `}
@@ -235,26 +247,15 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     background: ${({ theme }) => theme.bg4};
     outline: 0;
     padding: 60px 8px;
-    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; // iOS scroll fix
+    transform: translate3d(0,0,0); // iOS scroll fix
 
     ${
       isMobileMenuOpen &&
       css`
         display: flex;
-
-        &::before {
-          content: '';
-          width: 100%;
-          display: flex;
-          height: 60px;
-          background: ${({ theme }) => theme.bg4};
-          position: fixed;
-          top: 0;
-          left: 0;
-          z-index: 1;
-        }
-
-        // transform: translate3d(100%, 0, 0);
       `
     }
   `};
