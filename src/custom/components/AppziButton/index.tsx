@@ -109,9 +109,9 @@ function openWidget() {
 }
 
 export default function Appzi() {
-  /* if (!FEEDBACK_ENABLED) {
+  if (!FEEDBACK_ENABLED) {
     return null
-  } */
+  }
 
   return (
     <>
