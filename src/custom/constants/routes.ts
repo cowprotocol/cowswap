@@ -11,7 +11,7 @@ export enum Routes {
   TERMS_CONDITIONS = '/terms-and-conditions',
   FAQ = '/faq',
   FAQ_PROTOCOL = '/faq/protocol',
-  FAQ_TOKEN = '/faq/protocol',
+  FAQ_TOKEN = '/faq/token',
   FAQ_TRADING = '/faq/trading',
   FAQ_AFFILIATE = '/faq/affiliate',
   PLAY_COWRUNNER = '/play/cow-runner',

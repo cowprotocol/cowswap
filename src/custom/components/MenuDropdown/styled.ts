@@ -108,10 +108,13 @@ export const MenuSection = styled.div`
     color: ${({ theme }) => theme.text1};
     gap: 12px;
 
-    &:hover,
-    &.ACTIVE {
+    &:hover {
       text-decoration: underline;
       font-weight: 500;
+    }
+
+    &.ACTIVE {
+      font-weight: bold;
     }
   }
 

@@ -28,6 +28,14 @@ export interface MAIN_MENU_TYPE {
   }[]
 }
 
+export const FAQ_MENU = [
+  { title: 'Overview', url: Routes.FAQ },
+  { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
+  { title: 'Token', url: Routes.FAQ_TOKEN },
+  { title: 'Trading', url: Routes.FAQ_TRADING },
+  { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
+]
+
 export const MAIN_MENU = [
   { title: 'Swap', url: Routes.SWAP },
   { title: 'Account', url: Routes.ACCOUNT },
@@ -35,13 +43,7 @@ export const MAIN_MENU = [
     title: 'FAQ',
     items: [
       {
-        links: [
-          { title: 'Overview', url: Routes.FAQ },
-          { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
-          { title: 'Token', url: Routes.FAQ_TOKEN },
-          { title: 'Trading', url: Routes.FAQ_TRADING },
-          { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
-        ],
+        links: FAQ_MENU,
       },
     ],
   },
