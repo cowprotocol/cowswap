@@ -66,7 +66,7 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
   const environment = environmentName !== 'production' ? 'barn' : environmentName
-  const url = STRATEGY_URL_BASE + environment
+  const url = STRATEGY_URL_BASE + environment + '/strategies'
 
   return {
     [SupportedChainId.MAINNET]: url + '/strategy-1.json',
