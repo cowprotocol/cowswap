@@ -30,7 +30,7 @@ export default function TokensOverview() {
             <Trans>Favourite tokens</Trans>
           </Subtitle>
           <RemoveTokens onClick={() => removeAllFavouriteTokens()}>
-            (<Trans>Clear</Trans>)
+            (<Trans>Restore defaults</Trans>)
           </RemoveTokens>
         </AccountHeading>
         <AccountCard>
