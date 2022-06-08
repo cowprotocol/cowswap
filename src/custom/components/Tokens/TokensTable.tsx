@@ -62,25 +62,23 @@ export default function TokenTable({
     return tokensData
       ? tokensData
           .filter((x) => !!x)
-          .sort((a, b) => {
-            if (!a || !b) {
-              return 0
+          .sort((tokenA, tokenB) => {
+            if (!sortField) {
               // If there is no sort field selected (default)
-            } else if (!sortField) {
-              return tokenComparator(a, b)
-              // If the sort field is Balance
+              return tokenComparator(tokenA, tokenB)
             } else if (sortField === SORT_FIELD.BALANCE) {
+              // If the sort field is Balance
               if (!balances) return 0
 
-              const balanceA = balances[a.address]
-              const balanceB = balances[b.address]
+              const balanceA = balances[tokenA.address]
+              const balanceB = balances[tokenB.address]
               const balanceComp = balanceComparator(balanceA, balanceB)
 
               return applyDirection(balanceComp > 0, sortDirection)
-              // If the sort field is something else
             } else {
-              const sortA = a[sortField]
-              const sortB = b[sortField]
+              // If the sort field is something else
+              const sortA = tokenA[sortField]
+              const sortB = tokenB[sortField]
 
               if (!sortA || !sortB) return 0
               return applyDirection(sortA > sortB, sortDirection)
