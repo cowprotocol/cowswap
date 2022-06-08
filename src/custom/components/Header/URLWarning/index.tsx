@@ -9,6 +9,7 @@ import { Markdown } from 'components/Markdown'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { localWarning } from 'components/Header/URLWarning/localWarning'
 
 export * from './URLWarningMod'
 
@@ -71,14 +72,21 @@ export default function URLWarning() {
 
   const announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
-  const announcement = announcementVisible && announcementText && (
-    <>
-      <div style={{ display: 'flex' }}>
-        <AlertTriangle /> <Markdown>{announcementText}</Markdown>
-      </div>
-      <StyledClose size={12} onClick={() => closeAnnouncement(contentHash)} />
-    </>
-  )
+
+  let announcement
+
+  if (localWarning) {
+    announcement = localWarning
+  } else {
+    announcement = announcementVisible && announcementText && (
+      <>
+        <div style={{ display: 'flex' }}>
+          <AlertTriangle /> <Markdown>{announcementText}</Markdown>
+        </div>
+        <StyledClose size={12} onClick={() => closeAnnouncement(contentHash)} />
+      </>
+    )
+  }
 
   return (
     <Wrapper>
