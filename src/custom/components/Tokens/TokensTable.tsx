@@ -1,23 +1,30 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { Trans } from '@lingui/macro'
-import { Token } from '@uniswap/sdk-core'
+import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { ThemedText } from 'theme'
 import Loader from 'components/Loader'
 import LoadingRows from 'components/LoadingRows'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import { Label, Wrapper, TableHeader, TableBody, Break, PageButtons, Arrow, ArrowButton, ClickableText } from './styled'
+import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 
 const MAX_ITEMS = 10
 
 enum SORT_FIELD {
   NAME = 'name',
+  BALANCE = 'balance',
+}
+
+type BalanceType = {
+  [tokenAddress: string]: CurrencyAmount<Token> | undefined
 }
 
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
   tableType?: TableType
+  balances?: BalanceType
 }
 
 export enum TableType {
@@ -29,10 +36,11 @@ export default function TokenTable({
   tokensData,
   maxItems = MAX_ITEMS,
   tableType = TableType.OVERVIEW,
+  balances,
 }: TokenTableParams) {
   // sorting
-  const [sortField, setSortField] = useState(SORT_FIELD.NAME)
-  const [sortDirection, setSortDirection] = useState<boolean>(false)
+  const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
+  const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   // pagination
   const [page, setPage] = useState(1)
@@ -43,25 +51,65 @@ export default function TokenTable({
   // token index
   const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
 
+  //sorting
+  const applyDirection = useCallback((condition: boolean, sortDirection: boolean) => {
+    return (condition ? -1 : 1) * (sortDirection ? -1 : 1)
+  }, [])
+
+  const tokenComparator = useTokenComparator(false)
+
   const sortedTokens = useMemo(() => {
     return tokensData
       ? tokensData
           .filter((x) => !!x)
-          .sort((a, b) => {
-            const sortA = a[sortField]
-            const sortB = b[sortField]
+          .sort((tokenA, tokenB) => {
+            if (!sortField) {
+              // If there is no sort field selected (default)
+              return tokenComparator(tokenA, tokenB)
+            } else if (sortField === SORT_FIELD.BALANCE) {
+              // If the sort field is Balance
+              if (!balances) return 0
 
-            if (!a || !b || !sortA || !sortB) return 0
-            else return sortA > sortB ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
+              const balanceA = balances[tokenA.address]
+              const balanceB = balances[tokenB.address]
+              const balanceComp = balanceComparator(balanceA, balanceB)
+
+              return applyDirection(balanceComp > 0, sortDirection)
+            } else {
+              // If the sort field is something else
+              const sortA = tokenA[sortField]
+              const sortB = tokenB[sortField]
+
+              if (!sortA || !sortB) return 0
+              return applyDirection(sortA > sortB, sortDirection)
+            }
           })
           .slice(maxItems * (page - 1), page * maxItems)
       : []
-  }, [tokensData, maxItems, page, sortDirection, sortField])
+  }, [tokensData, maxItems, page, sortField, tokenComparator, balances, applyDirection, sortDirection])
 
   const handleSort = useCallback(
-    (newField: SORT_FIELD) => {
+    (newField: SORT_FIELD | null) => {
+      let newDirection
+
+      // Reset to default order on 3rd click of the same sort field
+      // meaning on first click the sortDirection will be set to true,
+      // on second one to false and this will match the third click
+      if (sortField === newField && sortDirection === false) {
+        newField = null
+        newDirection = true
+        // This will match the first click on new sort field
+      } else if (sortField === null) {
+        newDirection = true
+        // This will match the second click on the same field
+      } else if (sortField === newField) {
+        newDirection = !sortDirection
+      } else {
+        newDirection = true
+      }
+
       setSortField(newField)
-      setSortDirection(sortField !== newField ? true : !sortDirection)
+      setSortDirection(newDirection)
     },
     [sortDirection, sortField]
   )
@@ -96,6 +144,9 @@ export default function TokenTable({
             <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
               <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
             </ClickableText>
+            <ClickableText onClick={() => handleSort(SORT_FIELD.BALANCE)}>
+              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+            </ClickableText>
           </TableHeader>
 
           <Break />
@@ -105,7 +156,12 @@ export default function TokenTable({
               if (data) {
                 return (
                   <React.Fragment key={i}>
-                    <TokensTableRow tableType={tableType} index={getTokenIndex(i)} tokenData={data} />
+                    <TokensTableRow
+                      balance={balances && balances[data.address]}
+                      tableType={tableType}
+                      index={getTokenIndex(i)}
+                      tokenData={data}
+                    />
                     <Break />
                   </React.Fragment>
                 )

@@ -15,7 +15,7 @@ export const ResponsiveGrid = styled.div`
   display: grid;
   grid-gap: 1em;
   align-items: center;
-  grid-template-columns: 40px 5fr repeat(2, 1fr);
+  grid-template-columns: 50px 5fr repeat(2, 1fr);
   text-align: left;
 `
 
@@ -47,21 +47,23 @@ export const Label = styled(ThemedText.Label)<{ end?: number }>`
   align-items: center;
   font-variant-numeric: tabular-nums;
 
-  @media screen and (max-width: 640px) {
-    font-size: 14px;
-  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 12px;
+  `};
 `
 
 export const ClickableText = styled(Label)`
   text-align: end;
+  user-select: none;
+
   &:hover {
     cursor: pointer;
     opacity: 0.6;
   }
-  user-select: none;
-  @media screen and (max-width: 640px) {
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;
-  }
+  `};
 `
 
 export const PageButtons = styled.div`
@@ -122,5 +124,21 @@ export const TableBody = styled(AutoColumn)`
 `
 
 export const IndexNumber = styled.span`
-  font-size: 1rem;
+  font-size: 14px;
+  font-weight: 400;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 12px;
+  `};
+`
+
+export const BalanceValue = styled.span<{ hasBalance: boolean }>`
+  color: ${({ hasBalance, theme }) => theme[hasBalance ? 'text1' : 'text3']};
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  font-size: 14px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 12px;
+  `};
 `
