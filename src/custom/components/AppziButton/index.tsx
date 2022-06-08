@@ -75,21 +75,11 @@ declare global {
     appzi?: {
       openWidget: (key: string) => void
     }
-    '0': {
-      appziBuild: {
-        root: string
-      }
-    }
   }
 }
 
 function openWidget() {
-  if (window.appzi) {
-    window.appzi.openWidget(APPZI_KEY)
-    console.log('Appzi widget opened')
-  } else {
-    console.log('Appzi widget not opened')
-  }
+  window.appzi?.openWidget(APPZI_KEY)
 }
 
 export default function Appzi() {
