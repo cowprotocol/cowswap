@@ -380,11 +380,47 @@ export default function Swap({
       approveRequired = true
     }
 
-    reportAnalytics('Approve', v2Trade?.inputAmount?.currency.symbol)
     if (approveRequired) {
-      return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
+      const symbol = v2Trade?.inputAmount?.currency.symbol
+      reportAnalytics('Send Token Approval to Wallet', symbol)
+      return approveCallback()
+        .then(() => {
+          reportAnalytics('Sign Token Approval', symbol)
+        })
+        .catch((error) => {
+          console.error('Error setting the allowance for token', error)
+
+          let swapErrorMessage, actionAnalytics, errorCode
+          if (isRejectRequestProviderError(error)) {
+            swapErrorMessage = 'User rejected approving the token'
+            actionAnalytics = 'Reject Token Approval'
+          } else {
+            swapErrorMessage = getProviderErrorMessage(error)
+            actionAnalytics = 'Signing Error for Token Approval'
+
+            if (error?.code && typeof error.code === 'number') {
+              errorCode = error.code
+            }
+          }
+
+          setSwapState({
+            attemptingTxn: false,
+            tradeToConfirm,
+            showConfirm,
+            swapErrorMessage,
+            txHash: undefined,
+          })
+          reportAnalytics(actionAnalytics, symbol, errorCode)
+        })
     }
-  }, [approveCallback, gatherPermitSignature, signatureState, v2Trade?.inputAmount?.currency.symbol])
+  }, [
+    approveCallback,
+    gatherPermitSignature,
+    showConfirm,
+    signatureState,
+    tradeToConfirm,
+    v2Trade?.inputAmount?.currency.symbol,
+  ])
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -460,10 +496,10 @@ export default function Swap({
         let swapErrorMessage, actionAnalytics, errorCode
         if (isRejectRequestProviderError(error)) {
           swapErrorMessage = 'User rejected signing the order'
-          actionAnalytics = 'Reject'
+          actionAnalytics = 'Reject Swap'
         } else {
           swapErrorMessage = getProviderErrorMessage(error)
-          actionAnalytics = 'Signing Error'
+          actionAnalytics = 'Signing Swap Error'
 
           if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
@@ -531,7 +567,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    reportAnalytics('Max')
+    reportAnalytics('Set Maximun Sell Tokens')
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(
