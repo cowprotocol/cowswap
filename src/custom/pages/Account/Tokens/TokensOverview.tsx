@@ -6,14 +6,16 @@ import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
 import TokensTable from 'components/Tokens/TokensTable'
 import { useFavouriteTokens, useRemoveAllFavouriteTokens } from 'state/user/hooks'
+import { useAllTokenBalances } from 'state/wallet/hooks'
 
 export default function TokensOverview() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const favouriteTokens = useFavouriteTokens()
   const allTokens = useAllTokens()
+  const favouriteTokens = useFavouriteTokens()
+  const balances = useAllTokenBalances()
 
   const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
 
@@ -35,7 +37,7 @@ export default function TokensOverview() {
         </AccountHeading>
         <AccountCard>
           {favouriteTokens.length > 0 ? (
-            <TokensTable tokensData={favouriteTokens} />
+            <TokensTable balances={balances} tokensData={favouriteTokens} />
           ) : (
             <MainText>
               <Trans>Favourite tokens will appear here</Trans>
@@ -49,7 +51,7 @@ export default function TokensOverview() {
           </Subtitle>
         </AccountHeading>
         <AccountCard>
-          <TokensTable tokensData={formattedTokens} />
+          <TokensTable balances={balances} tokensData={formattedTokens} />
         </AccountCard>
       </AccountPageWrapper>
     </Wrapper>
