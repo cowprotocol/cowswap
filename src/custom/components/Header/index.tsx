@@ -112,9 +112,10 @@ export default function Header() {
     () =>
       MAIN_MENU.map(({ title, url, externalURL, items }: MAIN_MENU_TYPE, index) =>
         !items && !externalURL && url ? (
-          <StyledNavLink 
-            key={index} 
-            exact to={url} 
+          <StyledNavLink
+            key={index}
+            exact
+            to={url}
             onTouchStart={handleMobileMenuOnClick}
             onClick={isTouch ? undefined : handleMobileMenuOnClick}
           >
