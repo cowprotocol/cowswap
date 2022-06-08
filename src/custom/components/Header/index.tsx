@@ -93,12 +93,11 @@ export default function Header() {
   const isUpToSmall = useMediaQuery(upToSmall)
   const isLargeAndUp = useMediaQuery(LargeAndUp)
 
+  const [isTouch, setIsTouch] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
-
-  const [isTouch, setIsTouch] = useState<boolean>(false)
 
   // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -112,13 +111,7 @@ export default function Header() {
     () =>
       MAIN_MENU.map(({ title, url, externalURL, items }: MAIN_MENU_TYPE, index) =>
         !items && !externalURL && url ? (
-          <StyledNavLink
-            key={index}
-            exact
-            to={url}
-            onTouchStart={handleMobileMenuOnClick}
-            onClick={isTouch ? undefined : handleMobileMenuOnClick}
-          >
+          <StyledNavLink key={index} exact to={url} onClick={handleMobileMenuOnClick}>
             {title}
           </StyledNavLink>
         ) : !items && externalURL && url ? (
@@ -172,7 +165,7 @@ export default function Header() {
           </MenuDropdown>
         ) : null
       ),
-    [darkMode, handleMobileMenuOnClick, toggleDarkMode, isTouch]
+    [darkMode, handleMobileMenuOnClick, toggleDarkMode]
   )
 
   return (

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { MenuFlyout, Content } from './styled'
 import IMAGE_CARRET_DOWN from 'assets/cow-swap/carret-down.svg'
 import SVG from 'react-inlinesvg'
+import { useMediaQuery, LargeAndUp } from 'hooks/useMediaQuery'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 
 interface MenuProps {
@@ -10,13 +11,16 @@ interface MenuProps {
 }
 
 export function Menu({ title, children }: MenuProps) {
+  const isLargeAndUp = useMediaQuery(LargeAndUp)
   const node = useRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
-  useOnClickOutside(node, () => setShowMenu(false))
 
   const handleOnClick = () => {
     setShowMenu((showMenu) => !showMenu)
   }
+
+  useOnClickOutside(node, () => isLargeAndUp && setShowMenu(false)) // only trigger on large screens
+
   return (
     <MenuFlyout ref={node as any}>
       <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
