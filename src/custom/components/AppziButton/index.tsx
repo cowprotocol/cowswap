@@ -100,7 +100,7 @@ declare global {
 
 const appziWidgetSelector = { id: '' }
 
-async function openWidget() {
+function openWidget() {
   if (window.appzi) {
     window.appzi.openWidget(APPZI_KEY)
     console.log('Appzi widget opened')
