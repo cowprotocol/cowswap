@@ -15,7 +15,7 @@ import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
@@ -263,10 +263,10 @@ export default function Swap({
   //   [trade, tradeState]
   // )
 
-  // const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
-  // const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
-  const fiatValueInput = useHigherUSDValue(parsedAmounts[Field.INPUT])
-  const fiatValueOutput = useHigherUSDValue(parsedAmounts[Field.OUTPUT])
+  // const fiatValueInput = useUSDCValue(trade?.inputAmount)
+  // const fiatValueOutput = useUSDCValue(trade?.outputAmount)
+  const fiatValueInput = useHigherUSDValue(trade?.inputAmount)
+  const fiatValueOutput = useHigherUSDValue(trade?.outputAmount)
 
   const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
@@ -761,10 +761,6 @@ export default function Swap({
                   <Trans>Unsupported Token</Trans>
                 </ThemedText.Main>
               </ButtonPrimary>
-            ) : !account ? (
-              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>
@@ -822,6 +818,10 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
               </GreyCard>
+            ) : !account ? (
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+              </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">

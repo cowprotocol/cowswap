@@ -7,7 +7,8 @@ import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { ChainId } from '@uniswap/sdk'
+
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 export * from './URLWarningMod'
 

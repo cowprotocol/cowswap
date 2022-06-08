@@ -19,7 +19,6 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 import { useGetGpUsdcPrice } from 'utils/price'
 
 export * from '@src/hooks/useUSDCPrice'
@@ -44,20 +43,21 @@ export default function useCowUsdPrice(currency?: Currency) {
   const [bestUsdPrice, setBestUsdPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
-  const { chainId, account } = useActiveWeb3React()
+  const chainId = currency?.chainId
+  const { account } = useActiveWeb3React()
   // use quote loading as a price update dependency
   const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
   const sellTokenDecimals = currency?.wrapped.decimals
 
-  /* // TODO(#2808): remove dependency on useBestV2Trade
+  /* 
+  // TODO(#2808): remove dependency on useBestV2Trade
   const v2USDCTrade = useBestV2Trade(TradeType.EXACT_OUTPUT, amountOut, currency, {
     maxHops: 2,
   })
   const v3USDCTrade = useClientSideV3Trade(TradeType.EXACT_OUTPUT, amountOut, currency)
-
-  return useMemo(() => {
+  const price = useMemo(() => {
     if (!currency || !stablecoin) {
       return undefined
     }
@@ -77,7 +77,8 @@ export default function useCowUsdPrice(currency?: Currency) {
     }
 
     return undefined
-  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) */
+  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]) 
+  */
 
   const supportedChain = supportedChainId(chainId)
   const baseAmount = supportedChain ? STABLECOIN_AMOUNT_OUT[supportedChain] : undefined
@@ -101,7 +102,8 @@ export default function useCowUsdPrice(currency?: Currency) {
       toDecimals: stablecoin.decimals,
       userAddress: account,
       // we dont care about validTo here, just use max
-      validTo: MAX_VALID_TO_EPOCH,
+      // FIXME: I guess we care now, using 10min. Future versions of the API will make it optional
+      validTo: Math.ceil(Date.now() / 1000) + 600,
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 
@@ -153,7 +155,12 @@ export default function useCowUsdPrice(currency?: Currency) {
     }
   }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
 
-  return { price: bestUsdPrice, error }
+  const lastPrice = useRef(bestUsdPrice)
+  if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
+    lastPrice.current = bestUsdPrice
+  }
+
+  return { price: lastPrice.current, error }
 }
 
 interface GetPriceQuoteParams {
@@ -260,7 +267,12 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
     // don't depend on Currency (deep nested object)
   }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse])
 
-  return { price, error }
+  const lastPrice = useRef(price)
+  if (!price || !lastPrice.current || !price.equalTo(lastPrice.current)) {
+    lastPrice.current = price
+  }
+
+  return { price: lastPrice.current, error }
 }
 
 export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
@@ -281,22 +293,24 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
  * @param fiatValue string representation of a USD amount
  * @returns CurrencyAmount where currency is stablecoin on active chain
  */
-// TODO: new function, check whether it's usueful anywhere
-/* export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
+/* 
+export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
   const { chainId } = useActiveWeb3React()
   const stablecoin = chainId ? STABLECOIN_AMOUNT_OUT[chainId]?.currency : undefined
 
-  if (fiatValue === null || fiatValue === undefined || !chainId || !stablecoin) {
-    return undefined
-  }
+  return useMemo(() => {
+    if (fiatValue === null || fiatValue === undefined || !chainId || !stablecoin) {
+      return undefined
+    }
 
-  // trim for decimal precision when parsing
-  const parsedForDecimals = parseFloat(fiatValue).toFixed(stablecoin.decimals).toString()
-
-  try {
-    // parse USD string into CurrencyAmount based on stablecoin decimals
-    return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
-  } catch (error) {
-    return undefined
-  }
-} */
+    // trim for decimal precision when parsing
+    const parsedForDecimals = parseFloat(fiatValue).toFixed(stablecoin.decimals).toString()
+    try {
+      // parse USD string into CurrencyAmount based on stablecoin decimals
+      return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
+    } catch (error) {
+      return undefined
+    }
+  }, [chainId, fiatValue, stablecoin])
+} 
+*/

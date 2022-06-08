@@ -10,7 +10,7 @@ import {
 } from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
 import { registerOnWindow } from 'utils/misc'
-import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
+import { environmentName, isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
   ApiErrorCodes,
@@ -23,7 +23,7 @@ import QuoteError, {
   mapOperatorErrorToQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
-import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
+import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import * as Sentry from '@sentry/browser'
@@ -32,6 +32,7 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { Context } from '@sentry/types'
+import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -63,12 +64,15 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
   }
 }
-const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/strategies'
+const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
+  const environment = environmentName !== 'production' ? 'barn' : environmentName
+  const url = STRATEGY_URL_BASE + environment
+
   return {
-    [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
-    [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
-    [SupportedChainId.GNOSIS_CHAIN]: STRATEGY_URL_BASE + '/strategy-100.json',
+    [SupportedChainId.MAINNET]: url + '/strategy-1.json',
+    [SupportedChainId.RINKEBY]: url + '/strategy-4.json',
+    [SupportedChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
   }
 }
 

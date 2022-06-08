@@ -8,16 +8,14 @@ import { Trans } from '@lingui/macro'
 
 import { SUPPORTED_WALLETS, STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { getEtherscanLink } from 'utils'
-import { injected, walletconnect, walletlink, fortmatic, portis, WalletProvider } from 'connectors'
+import { injected, walletconnect, walletlink, fortmatic, WalletProvider } from 'connectors'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
-import PortisIcon from 'assets/images/portisIcon.png'
 import Identicon from 'components/Identicon'
 import { NETWORK_LABELS } from 'components/Header'
 import {
   WalletName,
-  MainWalletAction,
   WalletAction,
   AccountControl,
   AddressLink,
@@ -115,21 +113,6 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
       <IconWrapper size={16}>
         <img src={FortmaticIcon} alt={'fortmatic logo'} />
       </IconWrapper>
-    )
-  } else if (connector === portis) {
-    return (
-      <>
-        <IconWrapper size={16}>
-          <img src={PortisIcon} alt={'portis logo'} />
-          <MainWalletAction
-            onClick={() => {
-              portis.portis.showPortis()
-            }}
-          >
-            Show Portis
-          </MainWalletAction>
-        </IconWrapper>
-      </>
     )
   }
   return null
