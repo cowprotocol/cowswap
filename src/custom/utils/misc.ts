@@ -2,8 +2,8 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/contracts'
 
-export const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
-export const PROVIDER_REJECT_REQUEST_ERROR_MESSAGE = 'User denied message signature'
+const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
+const PROVIDER_REJECT_REQUEST_ERROR_MESSAGE = 'User denied message signature'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
