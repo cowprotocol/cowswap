@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { createGlobalStyle } from 'styled-components/macro'
 import { ButtonPrimary } from '../Button'
 import FeedbackIcon from './../../assets/cow-swap/feedback.svg'
 import ReactAppzi from 'react-appzi'
@@ -7,6 +7,21 @@ const FEEDBACK_ENABLED = process.env.NODE_ENV === 'production'
 if (FEEDBACK_ENABLED) {
   ReactAppzi.initialize('5ju0G')
 }
+
+const GlobalStyle = createGlobalStyle<{ appziWidgetSelectorID: string }>`
+  body {
+    // Appzi Container override
+    ${({ theme, appziWidgetSelectorID }) => theme.mediaWidth.upToMedium`
+      div[appzi-wfo-${appziWidgetSelectorID}] {
+        left: 36px;
+        bottom: 48px;
+        top: initial;
+        right: initial;
+        position: fixed;
+      }
+    `}
+  }
+`
 
 const Wrapper = styled(ButtonPrimary)`
   border-radius: 46px;
@@ -75,21 +90,37 @@ declare global {
     appzi?: {
       openWidget: (key: string) => void
     }
+    '0': {
+      appziBuild: {
+        root: string
+      }
+    }
   }
 }
 
-function openWidget() {
-  window.appzi?.openWidget(APPZI_KEY)
+const appziWidgetSelector = { id: '' }
+
+async function openWidget() {
+  if (window.appzi) {
+    window.appzi.openWidget(APPZI_KEY)
+    console.log('Appzi widget opened')
+    window[0].appziBuild && (appziWidgetSelector.id = window[0].appziBuild.root)
+  } else {
+    console.log('Appzi widget not opened')
+  }
 }
 
 export default function Appzi() {
-  if (!FEEDBACK_ENABLED) {
+  /* if (!FEEDBACK_ENABLED) {
     return null
-  }
+  } */
 
   return (
-    <Wrapper onClick={openWidget}>
-      <img src={FeedbackIcon} alt="Provide Feedback" />
-    </Wrapper>
+    <>
+      <GlobalStyle appziWidgetSelectorID={appziWidgetSelector.id} />
+      <Wrapper onClick={openWidget}>
+        <img src={FeedbackIcon} alt="Provide Feedback" />
+      </Wrapper>
+    </>
   )
 }
