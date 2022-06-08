@@ -7,7 +7,7 @@ import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import cowImage from 'assets/cow-swap/cow_v2.svg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
-import { AMOUNT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, PROVIDER_REJECT_REQUEST_CODE } from 'constants/index'
 import { formatSmartLocaleAware } from 'utils/format'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -21,6 +21,7 @@ import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import ReactGA from 'react-ga4'
 
 enum ClaimStatus {
   INITIAL,
@@ -36,6 +37,15 @@ interface Props {
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>
   loading: boolean
+}
+
+function reportAnalytics(action: string, label?: string, value?: number) {
+  ReactGA.event({
+    category: 'COW Claim',
+    action,
+    label,
+    value,
+  })
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
@@ -87,9 +97,23 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }, 5000)
       })
       .catch((error) => {
-        console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', error)
+        let errorMessage, actionAnalytics, errorCode
+        if (error?.code === PROVIDER_REJECT_REQUEST_CODE) {
+          errorMessage = 'User rejected signing COW claim transaction'
+          actionAnalytics = 'Reject'
+        } else {
+          errorMessage = error.message
+          actionAnalytics = 'Signing Error'
+
+          if (error?.code && typeof error.code === 'number') {
+            errorCode = error.code
+          }
+          console.error('Error Signing locked GNO COW claiming', error)
+        }
+        console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        handleSetError(error?.message)
+        handleSetError(errorMessage)
+        reportAnalytics(actionAnalytics, 'Locked GNO COW claiming', errorCode)
       })
   }, [handleCloseError, handleSetError, claimCallback])
 
