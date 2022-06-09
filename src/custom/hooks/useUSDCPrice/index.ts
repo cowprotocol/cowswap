@@ -207,7 +207,13 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const currencyRef = useRef(currency)
   currencyRef.current = currency
 
-  const tokenAddress = currencyRef.current ? currencyId(currencyRef.current) : undefined
+  const isNative = !!currency?.isNative
+  // use wrapped address equivalent if native (DONT USE "ETH" or "XDAI")
+  const tokenAddress = currencyRef.current
+    ? isNative
+      ? currency.wrapped.address
+      : currencyId(currencyRef.current)
+    : undefined
 
   const chainIdSupported = supportedChainId(chainId)
   // get SWR cached coingecko usd price
