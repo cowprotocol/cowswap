@@ -40,11 +40,10 @@ interface Props {
   loading: boolean
 }
 
-function reportAnalytics(action: string, label?: string, value?: number) {
+function reportAnalytics(action: string, value?: number) {
   ReactGA.event({
-    category: 'COW Claim',
+    category: 'Claim COW for Locked GNO',
     action,
-    label,
     value,
   })
 }
@@ -84,8 +83,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
+    reportAnalytics('Send Transaction to Wallet')
     claimCallback()
       .then((tx) => {
+        reportAnalytics('Sign Transaction')
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
@@ -101,10 +102,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         let errorMessage, actionAnalytics, errorCode
         if (isRejectRequestProviderError(error)) {
           errorMessage = 'User rejected signing COW claim transaction'
-          actionAnalytics = 'Reject'
+          actionAnalytics = 'Reject Signing Transaction'
         } else {
           errorMessage = getProviderErrorMessage(error)
-          actionAnalytics = 'Signing Error'
+          actionAnalytics = 'Error Signing Transaction'
 
           if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
@@ -113,7 +114,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        reportAnalytics(actionAnalytics, 'Locked GNO COW claiming', errorCode)
+        reportAnalytics(actionAnalytics, errorCode)
         handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])
