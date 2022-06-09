@@ -21,6 +21,8 @@ import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import ReactGA from 'react-ga4'
+import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 
 enum ClaimStatus {
   INITIAL,
@@ -36,6 +38,14 @@ interface Props {
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>
   loading: boolean
+}
+
+function reportAnalytics(action: string, value?: number) {
+  ReactGA.event({
+    category: 'Claim COW for Locked GNO',
+    action,
+    value,
+  })
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
@@ -73,8 +83,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
+    reportAnalytics('Send Transaction to Wallet')
     claimCallback()
       .then((tx) => {
+        reportAnalytics('Sign Transaction')
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
@@ -87,9 +99,23 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }, 5000)
       })
       .catch((error) => {
-        console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', error)
+        let errorMessage, actionAnalytics, errorCode
+        if (isRejectRequestProviderError(error)) {
+          errorMessage = 'User rejected signing COW claim transaction'
+          actionAnalytics = 'Reject Signing Transaction'
+        } else {
+          errorMessage = getProviderErrorMessage(error)
+          actionAnalytics = 'Error Signing Transaction'
+
+          if (error?.code && typeof error.code === 'number') {
+            errorCode = error.code
+          }
+          console.error('Error Signing locked GNO COW claiming', error)
+        }
+        console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        handleSetError(error?.message)
+        reportAnalytics(actionAnalytics, errorCode)
+        handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])
 
