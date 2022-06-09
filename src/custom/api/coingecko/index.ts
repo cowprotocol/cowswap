@@ -62,6 +62,7 @@ function _get(chainId: ChainId, url: string): Promise<Response> {
 export interface CoinGeckoUsdPriceParams {
   chainId: ChainId
   tokenAddress: string
+  isNative: boolean
 }
 
 interface CoinGeckoUsdQuote {
@@ -70,7 +71,9 @@ interface CoinGeckoUsdQuote {
   }
 }
 
-export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise<CoinGeckoUsdQuote | null> {
+export async function getUSDPriceQuote(
+  params: Omit<CoinGeckoUsdPriceParams, 'isNative'>
+): Promise<CoinGeckoUsdQuote | null> {
   const { chainId, tokenAddress } = params
   // ethereum/xdai (chains)
   const assetPlatform = _getCoinGeckoAssetPlatform(chainId)
@@ -93,10 +96,10 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
 }
 
 export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>, options = SWR_OPTIONS) {
-  const { chainId, tokenAddress } = params
+  const { chainId, tokenAddress, isNative } = params
 
   return useSWR<PriceInformation | null>(
-    ['getUSDPriceQuote', chainId, tokenAddress],
+    ['getUSDPriceQuote', chainId, tokenAddress, isNative],
     () => {
       if (chainId && tokenAddress) {
         return getUSDPriceQuote({ chainId, tokenAddress }).then(toPriceInformation)

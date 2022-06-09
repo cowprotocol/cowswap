@@ -220,6 +220,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const { data: priceResponse, error: errorResponse } = useGetCoingeckoUsdPrice({
     chainId: chainIdSupported,
     tokenAddress,
+    isNative,
   })
 
   useEffect(() => {

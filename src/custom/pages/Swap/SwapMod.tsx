@@ -204,7 +204,10 @@ export default function Swap({
   } = useDerivedSwapInfo()
 
   // detects trade load
-  const { quote, isGettingNewQuote } = useGetQuoteAndStatus({ token: INPUT.currencyId, chainId })
+  const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
+    token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
+    chainId,
+  })
 
   // Log all trade information
   // logTradeDetails(v2Trade, allowedSlippage)
