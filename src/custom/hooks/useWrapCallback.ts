@@ -25,6 +25,7 @@ import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 import ReactGA from 'react-ga4'
+import { isRejectRequestProviderError } from '../utils/misc'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -138,14 +139,14 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Send transaction to Wallet',
+          action: 'Send Transaction to Wallet',
           label: operationMessage,
         })
 
         const txReceipt = await wrapUnwrap()
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Sign transaction',
+          action: 'Sign Transaction',
           label: operationMessage,
         })
         addTransaction({
@@ -158,7 +159,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       } catch (error) {
         closeModals()
 
-        const action = (error?.code === 4001 ? 'Reject' : 'Error') + ' Signing transaction'
+        const action = (isRejectRequestProviderError(error) ? 'Reject' : 'Error') + ' Signing transaction'
 
         ReactGA.event({
           category: ANALYTICS_WRAP_CATEGORY,
@@ -167,7 +168,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
         })
         console.error(action, error)
 
-        throw error.message ? error : new Error(error)
+        throw typeof error === 'string' ? new Error(error) : error
       }
     }
   }

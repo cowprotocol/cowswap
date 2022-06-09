@@ -84,12 +84,23 @@ import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
+import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
 //   width: 100%;
 // `
+
+function reportAnalytics(action: string, label?: string, value?: number) {
+  ReactGA.event({
+    category: 'Swap',
+    action,
+    label,
+    value,
+  })
+}
+
 export default function Swap({
   history,
   location,
@@ -362,7 +373,7 @@ export default function Swap({
         await gatherPermitSignature()
       } catch (error) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
-        if (error?.code !== 4001) {
+        if (!isRejectRequestProviderError(error)) {
           approveRequired = true
         }
       }
@@ -371,14 +382,46 @@ export default function Swap({
     }
 
     if (approveRequired) {
-      ReactGA.event({
-        category: 'Swap',
-        action: 'Approve',
-        label: v2Trade?.inputAmount?.currency.symbol,
-      })
-      return approveCallback().catch((error) => console.error('Error setting the allowance for token', error))
+      const symbol = v2Trade?.inputAmount?.currency.symbol
+      reportAnalytics('Send Token Approval to Wallet', symbol)
+      return approveCallback()
+        .then(() => {
+          reportAnalytics('Sign Token Approval', symbol)
+        })
+        .catch((error) => {
+          console.error('Error setting the allowance for token', error)
+
+          let swapErrorMessage, actionAnalytics, errorCode
+          if (isRejectRequestProviderError(error)) {
+            swapErrorMessage = 'User rejected approving the token'
+            actionAnalytics = 'Reject Token Approval'
+          } else {
+            swapErrorMessage = getProviderErrorMessage(error)
+            actionAnalytics = 'Signing Error for Token Approval'
+
+            if (error?.code && typeof error.code === 'number') {
+              errorCode = error.code
+            }
+          }
+
+          setSwapState({
+            attemptingTxn: false,
+            tradeToConfirm,
+            showConfirm,
+            swapErrorMessage,
+            txHash: undefined,
+          })
+          reportAnalytics(actionAnalytics, symbol, errorCode)
+        })
     }
-  }, [approveCallback, gatherPermitSignature, signatureState, v2Trade?.inputAmount?.currency.symbol])
+  }, [
+    approveCallback,
+    gatherPermitSignature,
+    showConfirm,
+    signatureState,
+    tradeToConfirm,
+    v2Trade?.inputAmount?.currency.symbol,
+  ])
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -432,37 +475,47 @@ export default function Swap({
     if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
       return
     }
+
+    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+    reportAnalytics('Send Order to Wallet', marketLabel)
+
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
-        ReactGA.event({
-          category: 'Swap',
-          action:
-            recipient === null
-              ? 'Swap w/o Send'
-              : (recipientAddress ?? recipient) === account
-              ? 'Swap w/o Send + recipient'
-              : 'Swap w/ Send',
-          label: [
-            // approvalOptimizedTradeString,
-            // approvalOptimizedTrade?.inputAmount?.currency?.symbol,
-            // approvalOptimizedTrade?.outputAmount?.currency?.symbol,
-            trade?.inputAmount?.currency?.symbol,
-            trade?.outputAmount?.currency?.symbol,
-            'MH',
-          ].join('/'),
-        })
+
+        let actionAnalytics
+        if (recipient === null) {
+          actionAnalytics = 'Signed: Swap'
+        } else {
+          actionAnalytics =
+            (recipientAddress ?? recipient) === account ? 'Signed: Swap and Send to Self' : 'Signed: Swap and Send'
+        }
+        reportAnalytics(actionAnalytics, marketLabel)
       })
       .catch((error) => {
-        console.error('Error swapping tokens', error)
+        let swapErrorMessage, actionAnalytics, errorCode
+        if (isRejectRequestProviderError(error)) {
+          swapErrorMessage = 'User rejected signing the order'
+          actionAnalytics = 'Reject Swap'
+        } else {
+          swapErrorMessage = getProviderErrorMessage(error)
+          actionAnalytics = 'Signing Swap Error'
+
+          if (error?.code && typeof error.code === 'number') {
+            errorCode = error.code
+          }
+          console.error('Error Signing Order', error)
+        }
+
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,
           showConfirm,
-          swapErrorMessage: error.message,
+          swapErrorMessage,
           txHash: undefined,
         })
+        reportAnalytics(actionAnalytics, marketLabel, errorCode)
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
@@ -515,10 +568,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    ReactGA.event({
-      category: 'Swap',
-      action: 'Max',
-    })
+    reportAnalytics('Set Maximun Sell Tokens')
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(
@@ -762,10 +812,6 @@ export default function Swap({
                   <Trans>Unsupported Token</Trans>
                 </ThemedText.Main>
               </ButtonPrimary>
-            ) : !account ? (
-              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>
@@ -823,6 +869,10 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
               </GreyCard>
+            ) : !account ? (
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+              </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">
