@@ -46,7 +46,10 @@ const Wrapper = styled(ButtonPrimary)`
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, top 0.2s ease-in-out;
-  }
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      display: none;
+    `}
 
   &:hover::after {
     top: -60px;

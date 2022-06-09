@@ -389,6 +389,18 @@ export const ThemedGlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.text2};
   }
 
+  // Appzi Container override
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+      transform: none!important;
+      left: 16px!important;
+      bottom: 72px!important;
+      top: initial!important;
+      right: initial!important;
+      position: fixed!important;
+    }
+  `}
+
   // START - Modal overrides
   ${HeaderText} {
     color: ${({ theme }) => theme.text1};
