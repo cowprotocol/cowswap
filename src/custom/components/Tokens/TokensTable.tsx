@@ -6,8 +6,21 @@ import Loader from 'components/Loader'
 import LoadingRows from 'components/LoadingRows'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
-import { Label, Wrapper, TableHeader, TableBody, Break, PageButtons, Arrow, ArrowButton, ClickableText } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
+import {
+  Label,
+  Wrapper,
+  TableHeader,
+  TableBody,
+  Break,
+  PageButtons,
+  Arrow,
+  ArrowButton,
+  ClickableText,
+  TokenSearchInput,
+} from './styled'
+import useDebounce from 'hooks/useDebounce'
+import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
 
 const MAX_ITEMS = 10
 
@@ -32,12 +45,42 @@ export enum TableType {
   FAVOURITE = 'FAVOURITE',
 }
 
+const _filterCb = (token: Token, query?: string) => {
+  if (!query) return false
+
+  const cleanQuery = query.toLowerCase()
+  const address = token.address.toLowerCase()
+  const symbol = token.symbol?.toLowerCase()
+  const name = token.name?.toLowerCase()
+
+  return address.match(cleanQuery) || symbol?.match(cleanQuery) || name?.match(cleanQuery)
+}
+
 export default function TokenTable({
-  tokensData,
+  tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
   tableType = TableType.OVERVIEW,
   balances,
 }: TokenTableParams) {
+  // search - takes precedence re:filtering
+  const [query, setQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(query, 300)
+
+  const handleChange = useCallback((event) => {
+    const { value } = event.target
+    setQuery(value)
+  }, [])
+
+  const tokensData = useMemo(() => {
+    // only calc anything if we actually have more than 1 token in list
+    // and the user is actively searching tokens
+    if (rawTokensData.length > 1 && debouncedQuery) {
+      return rawTokensData.filter((token) => _filterCb(token, debouncedQuery))
+    } else {
+      return rawTokensData
+    }
+  }, [rawTokensData, debouncedQuery])
+
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
@@ -131,12 +174,22 @@ export default function TokenTable({
     }
   }, [maxItems, tokensData])
 
-  if (!tokensData) {
+  if (!query && !tokensData) {
     return <Loader />
   }
 
   return (
     <Wrapper>
+      <SearchInputFormatter>
+        <TokenSearchInput
+          type="text"
+          id="token-search-input"
+          placeholder={`Search name/symbol or paste address`}
+          autoComplete="off"
+          value={query}
+          onChange={handleChange}
+        />
+      </SearchInputFormatter>
       {sortedTokens.length > 0 ? (
         <AutoColumn>
           <TableHeader>
@@ -183,12 +236,14 @@ export default function TokenTable({
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
-      ) : (
+      ) : !debouncedQuery ? (
         <LoadingRows>
           {Array.from(Array(maxItems * 4), (_, i) => (
             <div key={i} />
           ))}
         </LoadingRows>
+      ) : (
+        <small>{'No results found :('}</small>
       )}
     </Wrapper>
   )

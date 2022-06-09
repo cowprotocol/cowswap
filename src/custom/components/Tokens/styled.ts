@@ -4,11 +4,19 @@ import { ThemedText } from 'theme'
 import { LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { SearchInput } from 'components/SearchModal/styleds'
+
+export const TokenSearchInput = styled(SearchInput)`
+  margin-bottom: 16px;
+  font-size: 14px;
+  max-width: 500px;
+`
 
 export const Wrapper = styled(LightCard)`
   width: 100%;
   border: none;
   background: transparent;
+  padding: 0 1rem;
 `
 
 export const ResponsiveGrid = styled.div`
