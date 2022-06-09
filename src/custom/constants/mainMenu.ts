@@ -72,6 +72,7 @@ export const MAIN_MENU = [
           { action: 'setColorMode' },
           { title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
           { title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
+          { title: 'Terms and Conditions', url: Routes.TERMS_CONDITIONS, iconSVG: IMAGE_DOCS },
         ],
       },
     ],
