@@ -7,7 +7,7 @@ import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import cowImage from 'assets/cow-swap/cow_v2.svg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
-import { AMOUNT_PRECISION, PROVIDER_REJECT_REQUEST_CODE } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import { formatSmartLocaleAware } from 'utils/format'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -22,6 +22,7 @@ import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import ReactGA from 'react-ga4'
+import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 
 enum ClaimStatus {
   INITIAL,
@@ -98,11 +99,11 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
       })
       .catch((error) => {
         let errorMessage, actionAnalytics, errorCode
-        if (error?.code === PROVIDER_REJECT_REQUEST_CODE) {
+        if (isRejectRequestProviderError(error)) {
           errorMessage = 'User rejected signing COW claim transaction'
           actionAnalytics = 'Reject'
         } else {
-          errorMessage = error.message
+          errorMessage = getProviderErrorMessage(error)
           actionAnalytics = 'Signing Error'
 
           if (error?.code && typeof error.code === 'number') {
@@ -112,8 +113,8 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        handleSetError(errorMessage)
         reportAnalytics(actionAnalytics, 'Locked GNO COW claiming', errorCode)
+        handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])
 

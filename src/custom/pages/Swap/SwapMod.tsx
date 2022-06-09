@@ -65,7 +65,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 // import AppBody from 'pages/AppBody'
 
 // MOD imports
-import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT, PROVIDER_REJECT_REQUEST_CODE } from 'constants/index'
+import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
@@ -84,6 +84,7 @@ import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
+import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 
 const AlertWrapper = styled.div`
   max-width: 460px;
@@ -371,7 +372,7 @@ export default function Swap({
         await gatherPermitSignature()
       } catch (error) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
-        if (error?.code !== PROVIDER_REJECT_REQUEST_CODE) {
+        if (!isRejectRequestProviderError(error)) {
           approveRequired = true
         }
       }
@@ -457,11 +458,11 @@ export default function Swap({
       })
       .catch((error) => {
         let swapErrorMessage, actionAnalytics, errorCode
-        if (error?.code === PROVIDER_REJECT_REQUEST_CODE) {
+        if (isRejectRequestProviderError(error)) {
           swapErrorMessage = 'User rejected signing the order'
           actionAnalytics = 'Reject'
         } else {
-          swapErrorMessage = error.message
+          swapErrorMessage = getProviderErrorMessage(error)
           actionAnalytics = 'Signing Error'
 
           if (error?.code && typeof error.code === 'number') {

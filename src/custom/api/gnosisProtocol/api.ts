@@ -9,7 +9,7 @@ import {
   UnsignedOrder,
 } from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
-import { registerOnWindow } from 'utils/misc'
+import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
@@ -283,7 +283,7 @@ function _handleError<P extends Context>(error: any, response: Response, params:
   const sentryError =
     error?.sentryError ||
     constructSentryError(error, response, {
-      message: error?.message || error,
+      message: getProviderErrorMessage(error),
       name: `[${operation}-ERROR] - Unmapped ${operation} Error`,
     })
   // Create the error tags or use the previously constructed ones from the try block
