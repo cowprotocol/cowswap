@@ -22,7 +22,10 @@ import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
 import { CancelButton } from '../CancelButton'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
-import cowGraph from 'assets/cow-swap/cow-graph.svg'
+import cowGraph from 'assets/images/cow-graph.svg'
+import ammsGraph from 'assets/images/amms-graph.svg'
+import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
+
 import { ExternalLink } from 'theme'
 
 const REFRESH_INTERVAL_MS = 200
@@ -69,7 +72,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('cow')
+    setExecutionState('confirmed')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
@@ -109,8 +112,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusGraph>
                 <img src={cowGraph} alt="Loading for a CoW..." />
                 <p>
-                  CowSwap will be able to save in <strong>gas costs</strong> and get a <strong>better price</strong> if
-                  another trader makes the opposite trade
+                  <strong>CowSwap</strong> can save you gas costs and get a better price if another trader takes the
+                  opposite side of your trade.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
@@ -127,7 +130,13 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <OrangeClockIcon size={16} />
-              <StatusMsg>Finding best onchain price.</StatusMsg>
+              <StatusMsg>Finding the best on-chain price.</StatusMsg>
+              <StatusGraph>
+                <img src={ammsGraph} alt="Finding the best price ..." />
+                <p>
+                  <strong>CowSwap</strong> searches all on-chain liquidity sources to find you the best price.
+                </p>
+              </StatusGraph>
             </StatusMsgContainer>
           </>
         )
@@ -142,7 +151,14 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <GreenCheckIcon size={16} />
-              <StatusMsg>Transaction confirmed.</StatusMsg>
+              <StatusMsg>Congrats! Your transaction has been confirmed successfully! 🚀</StatusMsg>
+              <StatusGraph>
+                {/* <img src={ammsGraph} alt="Finding the best price ..." /> */}
+                <p>
+                  Your tokens should already be in your wallet,
+                  <ExternalLink href="https://explorer.cow.fi/">check out your trade on the explorer ↗</ExternalLink>
+                </p>
+              </StatusGraph>
             </StatusMsgContainer>
           </>
         )
@@ -165,6 +181,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   </>
                 ) : null}
               </StatusMsg>
+              <StatusGraph>
+                <img src={cowMeditatingGraph} alt="Cow meditating ..." />
+                <p>
+                  <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                </p>
+              </StatusGraph>
             </StatusMsgContainer>
           </>
         )
@@ -181,13 +203,19 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <StatusMsg>
-                <p>The network looks slower than usual. Solvers are adjusting gas fees for you!</p>
+                <p>The network looks slower than usual. Our solvers are adjusting gas fees for you!</p>
                 {isCancellable ? (
                   <p>
                     You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                   </p>
                 ) : null}
               </StatusMsg>
+              <StatusGraph>
+                <img src={cowMeditatingGraph} alt="Cow meditating ..." />
+                <p>
+                  <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                </p>
+              </StatusGraph>
             </StatusMsgContainer>
           </>
         )
