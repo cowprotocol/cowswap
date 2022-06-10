@@ -151,8 +151,7 @@ export const TableBody = styled(AutoColumn)`
 
 export const Cell = styled.div<{ center?: boolean }>`
   display: flex;
-  padding: 8px 0;
-  padding: 10px 0;
+  padding: 12px 0;
   justify-content: ${({ center }) => (center ? 'center' : 'flex-start')};
 
   > * {

@@ -10,7 +10,6 @@ import {
   Wrapper,
   TableHeader,
   TableBody,
-  Break,
   PageButtons,
   Arrow,
   ArrowButton,
@@ -196,8 +195,6 @@ export default function TokenTable({
               <Label>Sell</Label>
               <Label>Approve</Label>
             </TableHeader>
-
-            <Break />
 
             <TableBody>
               {sortedTokens.map((data, i) => {
