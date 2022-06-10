@@ -18,7 +18,7 @@ export const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
   text-align: left;
-  grid-template-columns: 50px minmax(80px, auto) minmax(60px, 120px) repeat(3, 55px);
+  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(3, 55px);
 `
 
 export const LinkWrapper = styled(Link)`
