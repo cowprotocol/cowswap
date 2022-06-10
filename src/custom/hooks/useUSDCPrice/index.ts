@@ -16,7 +16,7 @@ import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { currencyId } from 'utils/currencyId'
+// import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
@@ -155,12 +155,12 @@ export default function useCowUsdPrice(currency?: Currency) {
     }
   }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
 
-  const lastPrice = useRef(bestUsdPrice)
+  /* const lastPrice = useRef(bestUsdPrice)
   if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
     lastPrice.current = bestUsdPrice
-  }
+  } */
 
-  return { price: lastPrice.current, error }
+  return { price: bestUsdPrice, error }
 }
 
 interface GetPriceQuoteParams {
@@ -209,11 +209,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
 
   const isNative = !!currency?.isNative
   // use wrapped address equivalent if native (DONT USE "ETH" or "XDAI")
-  const tokenAddress = currencyRef.current
-    ? isNative
-      ? currency.wrapped.address
-      : currencyId(currencyRef.current)
-    : undefined
+  const tokenAddress = currency?.wrapped.address
 
   const chainIdSupported = supportedChainId(chainId)
   // get SWR cached coingecko usd price
@@ -272,14 +268,14 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
       })
     }
     // don't depend on Currency (deep nested object)
-  }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse])
+  }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse, isNative])
 
-  const lastPrice = useRef(price)
+  /* const lastPrice = useRef(price)
   if (!price || !lastPrice.current || !price.equalTo(lastPrice.current)) {
     lastPrice.current = price
-  }
+  } */
 
-  return { price: lastPrice.current, error }
+  return { price, error }
 }
 
 export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
