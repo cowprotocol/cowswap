@@ -18,7 +18,8 @@ export const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
   text-align: left;
-  grid-template-columns: 50px minmax(80px, auto) minmax(60px, 120px) repeat(3, 55px);
+  border-bottom: 1px solid ${({ theme }) => theme.bg5};
+  grid-template-columns: 50px minmax(80px, auto) minmax(60px, 120px) repeat(2, 55px) 75px;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -141,16 +142,18 @@ export const LargeOnly = styled.span`
 `
 
 export const TableHeader = styled(ResponsiveGrid)`
-  margin-bottom: 0.8rem;
+  padding-bottom: 10px;
 `
 
 export const TableBody = styled(AutoColumn)`
   margin-bottom: 0.8rem;
 `
 
-export const Cell = styled.div`
+export const Cell = styled.div<{ center?: boolean }>`
   display: flex;
   padding: 8px 0;
+  padding: 10px 0;
+  justify-content: ${({ center }) => (center ? 'center' : 'flex-start')};
 
   > * {
     max-width: 100%;
@@ -179,7 +182,7 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   `};
 `
 
-export const TableButton = styled(BaseButton)<{ color?: string }>`
+export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean }>`
   font-size: 12px;
   padding: 3px 15px;
   width: auto;
@@ -193,6 +196,17 @@ export const TableButton = styled(BaseButton)<{ color?: string }>`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 10px;
+  `};
+
+  ${({ theme, outlined, color }) =>
+    outlined &&
+    `
+      background: transparent;
+      color: ${color || theme.primary1};
+      border: 1px solid ${color || theme.primary1};
+      :hover {
+        color: white;
+      }
   `};
 `
 
@@ -221,4 +235,10 @@ export const TokenText = styled.div`
   display: flex;
   align-items: center;
   text-align: left;
+`
+
+export const ApproveLabel = styled.span<{ color?: string }>`
+  font-size: 12px;
+  margin: 0 auto;
+  color: ${({ theme, color }) => color || theme.text1};
 `

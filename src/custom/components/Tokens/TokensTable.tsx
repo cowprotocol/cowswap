@@ -20,6 +20,9 @@ import {
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
+import { OperationType } from 'components/TransactionConfirmationModal'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 
 const MAX_ITEMS = 10
 
@@ -84,6 +87,17 @@ export default function TokenTable({
       history.push(`/swap?inputCurrency=${token.address}`)
     },
     [history]
+  )
+
+  const { ErrorModal } = useErrorModal()
+
+  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
+    OperationType.APPROVE_TOKEN
+  )
+
+  const openTransactionConfirmationModal = useCallback(
+    (message: string, operationType: OperationType) => openModal(message, operationType),
+    [openModal]
   )
 
   const sortedTokens = useMemo(() => {
@@ -165,6 +179,8 @@ export default function TokenTable({
 
   return (
     <Wrapper>
+      <ErrorModal />
+      <TransactionConfirmationModal />
       {sortedTokens.length > 0 ? (
         <AutoColumn>
           <Table>
@@ -178,6 +194,7 @@ export default function TokenTable({
               </ClickableText>
               <Label>Buy</Label>
               <Label>Sell</Label>
+              <Label>Approve</Label>
             </TableHeader>
 
             <Break />
@@ -186,17 +203,17 @@ export default function TokenTable({
               {sortedTokens.map((data, i) => {
                 if (data) {
                   return (
-                    <React.Fragment key={i}>
-                      <TokensTableRow
-                        handleSell={handleSell}
-                        handleBuy={handleBuy}
-                        balance={balances && balances[data.address]}
-                        tableType={tableType}
-                        index={getTokenIndex(i)}
-                        tokenData={data}
-                      />
-                      <Break />
-                    </React.Fragment>
+                    <TokensTableRow
+                      key={i}
+                      handleSell={handleSell}
+                      handleBuy={handleBuy}
+                      balance={balances && balances[data.address]}
+                      openTransactionConfirmationModal={openTransactionConfirmationModal}
+                      closeModal={closeModal}
+                      tableType={tableType}
+                      index={getTokenIndex(i)}
+                      tokenData={data}
+                    />
                   )
                 }
                 return null
