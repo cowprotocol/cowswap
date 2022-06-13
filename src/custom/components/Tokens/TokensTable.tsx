@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import Loader from 'components/Loader'
@@ -22,6 +22,7 @@ import { useHistory } from 'react-router-dom'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import usePrevious from 'hooks/usePrevious'
 
 const MAX_ITEMS = 10
 
@@ -52,6 +53,8 @@ export default function TokenTable({
   tableType = TableType.OVERVIEW,
   balances,
 }: TokenTableParams) {
+  const tableRef = useRef<HTMLTableElement | null>(null)
+
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
@@ -67,6 +70,7 @@ export default function TokenTable({
   const [maxPage, setMaxPage] = useState(1)
   const prevPage = page === 1 ? page : page - 1
   const nextPage = page === maxPage ? page : page + 1
+  const prevPageIndex = usePrevious(page)
 
   // token index
   const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
@@ -172,6 +176,12 @@ export default function TokenTable({
     }
   }, [maxItems, tokensData])
 
+  useEffect(() => {
+    if (prevPageIndex !== page && tableRef.current) {
+      tableRef.current.scrollLeft = 0
+    }
+  }, [page, prevPageIndex])
+
   if (!tokensData) {
     return <Loader />
   }
@@ -182,7 +192,7 @@ export default function TokenTable({
       <TransactionConfirmationModal />
       {sortedTokens.length > 0 ? (
         <AutoColumn>
-          <Table>
+          <Table ref={tableRef}>
             <TableHeader>
               <Label>#</Label>
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
