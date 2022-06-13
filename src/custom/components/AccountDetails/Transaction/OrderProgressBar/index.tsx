@@ -23,7 +23,7 @@ import { CancelButton } from '../CancelButton'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 
 const REFRESH_INTERVAL_MS = 200
-const COW_STATE_PERCENTAGE = 0.33 // 33% of the elapsed time based on the network's average is for the COW protocol
+const COW_STATE_SECONDS = 30
 
 type OrderProgressBarProps = {
   activityDerivedState: ActivityDerivedState
@@ -73,7 +73,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       setExecutionState('confirmed')
     } else if (isUnfillable) {
       setExecutionState('unfillable')
-    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId] * COW_STATE_PERCENTAGE) {
+    } else if (elapsedSeconds <= COW_STATE_SECONDS) {
       setExecutionState('cow')
     } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
       setExecutionState('amm')
