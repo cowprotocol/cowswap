@@ -43,7 +43,7 @@ type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, creationTime, validTo, chainId } = props
   const { isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
-  const { elapsedSeconds, expirationInSeconds, isPending } = useGetProgressBarInfo(props)
+  const { elapsedSeconds, expirationInSeconds /*isPending*/ } = useGetProgressBarInfo(props)
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const fadeOutTransition = useTransition(isPending, null, {
@@ -51,6 +51,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     leave: { opacity: 0 },
     trail: 3000,
   })
+
+  const isPending = true
 
   useEffect(() => {
     if (!isPending) {
@@ -72,7 +74,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('confirmed')
+    setExecutionState('cow')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
