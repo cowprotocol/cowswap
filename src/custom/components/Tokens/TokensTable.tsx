@@ -22,6 +22,7 @@ import { useHistory } from 'react-router-dom'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 const MAX_ITEMS = 10
 
@@ -39,6 +40,7 @@ type TokenTableParams = {
   maxItems?: number
   tableType?: TableType
   balances?: BalanceType
+  loadingRows?: number
 }
 
 export enum TableType {
@@ -51,7 +53,10 @@ export default function TokenTable({
   maxItems = MAX_ITEMS,
   tableType = TableType.OVERVIEW,
   balances,
+  loadingRows = MAX_ITEMS,
 }: TokenTableParams) {
+  const toggleWalletModal = useWalletModalToggle()
+
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
@@ -204,6 +209,7 @@ export default function TokenTable({
                       key={i}
                       handleSell={handleSell}
                       handleBuy={handleBuy}
+                      toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[data.address]}
                       openTransactionConfirmationModal={openTransactionConfirmationModal}
                       closeModal={closeModal}
@@ -234,7 +240,7 @@ export default function TokenTable({
         </AutoColumn>
       ) : (
         <LoadingRows>
-          {Array.from(Array(maxItems * 4), (_, i) => (
+          {Array.from(Array(loadingRows * 6), (_, i) => (
             <div key={i} />
           ))}
         </LoadingRows>

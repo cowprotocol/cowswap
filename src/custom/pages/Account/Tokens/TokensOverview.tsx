@@ -37,7 +37,7 @@ export default function TokensOverview() {
         </AccountHeading>
         <AccountCard>
           {favouriteTokens.length > 0 ? (
-            <TokensTable balances={balances} tokensData={favouriteTokens} />
+            <TokensTable loadingRows={4} balances={balances} tokensData={favouriteTokens} />
           ) : (
             <MainText>
               <Trans>Favourite tokens will appear here</Trans>

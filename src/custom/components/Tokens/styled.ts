@@ -19,7 +19,7 @@ export const ResponsiveGrid = styled.div`
   align-items: center;
   text-align: left;
   border-bottom: 1px solid ${({ theme }) => theme.bg5};
-  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(2, 55px) 75px;
+  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(2, 55px) 80px;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -181,13 +181,15 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   `};
 `
 
-export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean }>`
+export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
   font-size: 12px;
   padding: 3px 15px;
   width: auto;
   font-weight: 400;
   transition: all 0.15s ease-in;
   background: ${({ theme, color }) => transparentize(0.4, color || theme.primary1)};
+  white-space: nowrap;
+  position: relative;
 
   :hover {
     background: ${({ theme, color }) => color || theme.primary1};
@@ -205,6 +207,19 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
       border: 1px solid ${color || theme.primary1};
       :hover {
         color: white;
+      }
+  `};
+
+  ${({ theme, text, color }) =>
+    text &&
+    `
+      background: none;
+      border: none;
+      color: ${color || theme.primary1};
+      padding: 0;
+
+      :hover {
+        background: none;
       }
   `};
 `
@@ -238,6 +253,16 @@ export const TokenText = styled.div`
 
 export const ApproveLabel = styled.span<{ color?: string }>`
   font-size: 12px;
-  margin: 0 auto;
   color: ${({ theme, color }) => color || theme.text1};
+`
+
+export const CustomLimit = styled.div`
+  padding: 0 2px;
+
+  span:last-child {
+    cursor: default;
+    font-size: 10px;
+    margin-top: 5px;
+    display: block;
+  }
 `

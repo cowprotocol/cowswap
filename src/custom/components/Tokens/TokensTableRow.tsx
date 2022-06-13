@@ -14,6 +14,7 @@ import {
   Cell,
   TableButton,
   ApproveLabel,
+  CustomLimit,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { TableType } from './TokensTable'
@@ -23,6 +24,9 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { CardsSpinner } from 'pages/Profile/styled'
 import usePrevious from 'hooks/usePrevious'
+import { useTokenAllowance } from 'hooks/useTokenAllowance'
+import { useActiveWeb3React } from 'hooks/web3'
+import { GP_VAULT_RELAYER } from 'constants/index'
 
 type DataRowParams = {
   tokenData: Token
@@ -33,6 +37,7 @@ type DataRowParams = {
   handleSell: (token: Token) => void
   closeModal: () => void
   openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
+  toggleWalletModal: () => void
 }
 
 const DataRow = ({
@@ -43,10 +48,17 @@ const DataRow = ({
   handleSell,
   closeModal,
   openTransactionConfirmationModal,
+  toggleWalletModal,
 }: DataRowParams) => {
+  const { account, chainId } = useActiveWeb3React()
+
   const theme = useTheme()
   const hasBalance = balance?.greaterThan(0)
   const formattedBalance = formatSmart(balance) || 0
+
+  // allowance
+  const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
+  const currentAllowance = useTokenAllowance(tokenData, account ?? undefined, spender)
 
   // approve
   const [approving, setApproving] = useState(false)
@@ -65,6 +77,11 @@ const DataRow = ({
   const handleApprove = useCallback(async () => {
     handleCloseError()
 
+    if (!account) {
+      toggleWalletModal()
+      return
+    }
+
     try {
       setApproving(true)
       const summary = `Approve ${tokenData?.symbol || 'token'}`
@@ -75,19 +92,32 @@ const DataRow = ({
     } finally {
       setApproving(false)
     }
-  }, [approve, handleCloseError, handleSetError, tokenData?.symbol])
+  }, [account, approve, handleCloseError, handleSetError, toggleWalletModal, tokenData?.symbol])
 
   const isApproved = approvalState === ApprovalState.APPROVED
   const isPendingOnchainApprove = approvalState === ApprovalState.PENDING
   const isPendingApprove = !isApproved && (approving || isPendingOnchainApprove)
 
+  const noBalance = !balance || balance?.equalTo(0)
+
   const displayApproveContent = useMemo(() => {
-    if (balance?.equalTo(0)) {
+    if (noBalance) {
       return <ApproveLabel>No balance</ApproveLabel>
     } else if (isPendingApprove) {
       return <CardsSpinner />
     } else if (isApproved) {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
+    } else if (!isApproved && currentAllowance && !currentAllowance?.equalTo(0)) {
+      return (
+        <CustomLimit>
+          <TableButton text onClick={handleApprove} color={theme.primary1}>
+            Approve all
+          </TableButton>
+          <ApproveLabel color={theme.green1} title={`Approved: ${currentAllowance.toExact()}`}>
+            Approved: <strong>{formatSmart(currentAllowance, 4)}</strong>
+          </ApproveLabel>
+        </CustomLimit>
+      )
     } else {
       return (
         <TableButton outlined onClick={handleApprove} color={theme.primary1}>
@@ -95,7 +125,7 @@ const DataRow = ({
         </TableButton>
       )
     }
-  }, [balance, handleApprove, isApproved, isPendingApprove, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, noBalance, theme.green1, theme.primary1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -148,12 +178,12 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <TableButton onClick={() => handleSell(tokenData)} color={theme.red1}>
+        <TableButton disabled={noBalance} onClick={() => handleSell(tokenData)} color={theme.red1}>
           Sell
         </TableButton>
       </Cell>
 
-      <Cell center>{displayApproveContent}</Cell>
+      <Cell>{displayApproveContent}</Cell>
     </ResponsiveGrid>
   )
 }
