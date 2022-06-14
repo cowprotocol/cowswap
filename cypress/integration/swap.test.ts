@@ -6,8 +6,8 @@ describe('Swap', () => {
   it.skip('starts with an ETH/USDC swap and quotes it', () => {
     cy.get('#swap-currency-input .token-amount-input').should('have.value', '1')
     cy.get('#swap-currency-input .token-symbol-container').should('contain.text', 'ETH')
-    cy.get('#swap-currency-output .token-amount-input').should('not.have.value', '')
-    cy.get('#swap-currency-output .token-symbol-container').should('contain.text', 'USDC')
+    cy.get('#swap-currency-output .token-amount-input').should('not.have.value')
+    cy.get('#swap-currency-output .token-symbol-container').should('contain.text', 'Select a token')
   })
 
   it.skip('can enter an amount into input', () => {

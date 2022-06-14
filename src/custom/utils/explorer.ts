@@ -18,13 +18,13 @@ function _getExplorerUrlByEnvironment() {
   return {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.RINKEBY]: `${baseUrl}/rinkeby`,
-    [ChainId.XDAI]: `${baseUrl}/xdai`,
+    [ChainId.GNOSIS_CHAIN]: `${baseUrl}/xdai`,
   }
 }
 
 const EXPLORER_BASE_URL: Partial<Record<ChainId, string>> = _getExplorerUrlByEnvironment()
 
-function _getExplorerBaseUrl(chainId: ChainId): string {
+export function getExplorerBaseUrl(chainId: ChainId): string {
   const baseUrl = EXPLORER_BASE_URL[chainId]
 
   if (!baseUrl) {
@@ -35,13 +35,13 @@ function _getExplorerBaseUrl(chainId: ChainId): string {
 }
 
 export function getExplorerOrderLink(chainId: ChainId, orderId: OrderID): string {
-  const baseUrl = _getExplorerBaseUrl(chainId)
+  const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/orders/${orderId}`
 }
 
 export function getExplorerAddressLink(chainId: ChainId, address: string): string {
-  const baseUrl = _getExplorerBaseUrl(chainId)
+  const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/address/${address}`
 }

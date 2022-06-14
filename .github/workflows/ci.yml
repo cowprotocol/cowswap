@@ -17,6 +17,7 @@ env:
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
   REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
   REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
+  REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
 
 jobs:
   setup:
@@ -305,8 +306,12 @@ jobs:
           start: yarn start:default
           wait-on: http://localhost:3000
           wait-on-timeout: 200
+        env:
+          CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
+          CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
+
       # Open tmate ssh connection on failure for debugging
       # Uncomment when needed and push upstream
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        if: ${{ failure() }}

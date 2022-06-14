@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { BARN_URL, PRODUCTION_URL } from 'constants/index'
+import { RAW_CODE_LINK } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
@@ -7,8 +7,8 @@ import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { ChainId } from '@uniswap/sdk'
-import { isBarn } from 'utils/environments'
+
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 export * from './URLWarningMod'
 
@@ -49,14 +49,11 @@ const Wrapper = styled.div`
 
 // Announcement content: Modify this file to edit the announcement
 //  https://github.com/gnosis/cowswap/blob/configuration/config/announcements/announcements.md
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL =
-  'https://raw.githubusercontent.com/gnosis/cowswap/configuration/config/announcements'
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = RAW_CODE_LINK + '/configuration/config/announcements'
 
 function getAnnouncementUrl(chainId: number) {
   return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}/announcements-${chainId}.md`
 }
-
-const WARNING_URL = isBarn ? BARN_URL : PRODUCTION_URL
 
 export default function URLWarning() {
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
@@ -85,7 +82,7 @@ export default function URLWarning() {
 
   return (
     <Wrapper>
-      <URLWarningUni url={WARNING_URL} announcement={announcement} />
+      <URLWarningUni announcement={announcement} />
     </Wrapper>
   )
 }

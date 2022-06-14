@@ -2,6 +2,7 @@ import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 
 import { SupportedChainId } from 'constants/chains'
+import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro' // mod
 
 type BasePopupContent =
   //   | {
@@ -12,10 +13,15 @@ type BasePopupContent =
   //   | {
   {
     failedSwitchNetwork: SupportedChainId
+    // mod: unsupported network
+    unsupportedNetwork?: boolean
   }
 
 // MOD: Modified PopupContent. The mod happened directly in the src file, to avoid redefining the state/hoos/etc
-export type PopupContent = TxPopupContent | MetaTxPopupContent | BasePopupContent
+export type PopupContent = (TxPopupContent | MetaTxPopupContent | BasePopupContent) & {
+  // mod: custom styles
+  styles?: FlattenInterpolation<ThemeProps<DefaultTheme>>
+}
 
 export type TxPopupContent = {
   txn: {

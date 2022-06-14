@@ -3,9 +3,9 @@ import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
 // import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
-// import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga4'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
@@ -20,6 +20,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
+import ReactGA from 'react-ga4'
 
 // MOD imports
 import { SettingsTabProp } from '.'
@@ -127,14 +128,48 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const theme = useContext(ThemeContext)
 
-  const [expertMode, toggleExpertMode] = useExpertModeManager()
+  const [expertMode, toggleExpertModeAux] = useExpertModeManager()
+  const toggleExpertMode = useCallback(() => {
+    ReactGA.event({
+      category: 'Expert mode',
+      action: expertMode ? 'Disable Expert Mode' : 'Enable Expert Mode',
+    })
+
+    toggleExpertModeAux()
+  }, [toggleExpertModeAux, expertMode])
+
   //mod
-  const [recipientToggleVisible, toggleRecipientVisibility] = useRecipientToggleManager()
+  const [recipientToggleVisible, toggleRecipientVisibilityAux] = useRecipientToggleManager()
+  const toggleRecipientVisibility = useCallback(
+    (value?: boolean) => {
+      const isVisible = value ?? !recipientToggleVisible
+      ReactGA.event({
+        category: 'Recipient address',
+        action: 'Toggle Recipient Address',
+        label: isVisible ? 'Enabled' : 'Disabled',
+      })
+      toggleRecipientVisibilityAux(isVisible)
+    },
+    [toggleRecipientVisibilityAux, recipientToggleVisible]
+  )
 
   // const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
 
   // show confirmation view before turning on
-  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [showConfirmation, setShowConfirmationAux] = useState(false)
+  const setShowConfirmation = useCallback(
+    (showConfirmation: boolean) => {
+      if (showConfirmation) {
+        ReactGA.event({
+          category: 'Expert mode',
+          action: 'Show Confirmation',
+        })
+      }
+
+      setShowConfirmationAux(showConfirmation)
+    },
+    [setShowConfirmationAux]
+  )
 
   useOnClickOutside(node, open ? toggle : undefined)
 

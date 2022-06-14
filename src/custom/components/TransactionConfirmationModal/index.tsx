@@ -20,7 +20,8 @@ import { ConfirmationModalContent as ConfirmationModalContentMod } from './Trans
 import { ColumnCenter } from 'components/Column'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
-import { getChainCurrencySymbols } from 'utils/xdai/hack'
+import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
+import { Routes } from 'constants/routes'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -355,6 +356,7 @@ export enum OperationType {
   ORDER_SIGN,
   ORDER_CANCEL,
   CONVERT_VCOW,
+  CLAIM_VESTED_COW,
 }
 
 function getWalletNameLabel(walletType: WalletType): string {
@@ -368,7 +370,7 @@ function getWalletNameLabel(walletType: WalletType): string {
   }
 }
 
-function getOperationMessage(operationType: OperationType, chainId: number): string {
+export function getOperationMessage(operationType: OperationType, chainId: number): string {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
 
   switch (operationType) {
@@ -384,7 +386,8 @@ function getOperationMessage(operationType: OperationType, chainId: number): str
       return 'Revoking token approval'
     case OperationType.CONVERT_VCOW:
       return 'Converting vCOW to COW'
-
+    case OperationType.CLAIM_VESTED_COW:
+      return 'Claiming vested COW'
     default:
       return 'Almost there!'
   }
@@ -406,6 +409,8 @@ function getOperationLabel(operationType: OperationType): string {
       return t`cancellation`
     case OperationType.CONVERT_VCOW:
       return t`vCOW conversion`
+    case OperationType.CLAIM_VESTED_COW:
+      return t`vested COW claim`
   }
 }
 
@@ -546,7 +551,7 @@ export function TransactionSubmittedContent({
           )}
 
           <ButtonCustom>
-            <InternalLink to="/play/cow-runner" onClick={onDismiss}>
+            <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
               Play the Cow Runner Game!
             </InternalLink>

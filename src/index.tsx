@@ -3,7 +3,7 @@ import 'inter-ui'
 import 'polyfills'
 import 'components/analytics'
 
-import { BlockUpdater } from 'lib/hooks/useBlockNumber'
+import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { MulticallUpdater } from 'lib/state/multicall'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
@@ -41,6 +41,8 @@ import {
 import AppziButton from 'components/AppziButton'
 import { nodeRemoveChildFix } from 'utils/node'
 
+import Popups from 'components/Popups'
+
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
@@ -59,7 +61,6 @@ function Updaters() {
       <UserUpdater />
       <ApplicationUpdater />
       <TransactionUpdater />
-      <BlockUpdater />
       <EnhancedTransactionUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
@@ -83,12 +84,15 @@ ReactDOM.render(
           <Web3ReactProvider getLibrary={getLibrary}>
             <Web3ProviderNetwork getLibrary={getLibrary}>
               <Blocklist>
-                <Updaters />
-                <ThemeProvider>
-                  <ThemedGlobalStyle />
-                  <AppziButton />
-                  <App />
-                </ThemeProvider>
+                <BlockNumberProvider>
+                  <Updaters />
+                  <ThemeProvider>
+                    <ThemedGlobalStyle />
+                    <Popups />
+                    <AppziButton />
+                    <App />
+                  </ThemeProvider>
+                </BlockNumberProvider>
               </Blocklist>
             </Web3ProviderNetwork>
           </Web3ReactProvider>

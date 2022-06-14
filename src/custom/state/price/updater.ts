@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
-import { FeeQuoteParams as FeeQuoteParamsFull } from 'utils/price'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import { OrderKind } from '@cowprotocol/contracts'
 
 import { useSwapState } from 'state/swap/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -21,6 +21,7 @@ import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
 import { isWrappingTrade } from 'state/swap/utils'
 import { useOrderValidTo } from 'state/user/hooks'
+import { isAddress } from 'utils'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -28,7 +29,7 @@ const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
 const UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL = 10 * 60 * 1000 // if unsupported token was added > 10min ago, re-try
 
-type FeeQuoteParams = Omit<FeeQuoteParamsFull, 'validTo'>
+type FeeQuoteParams = Omit<LegacyFeeQuoteParamsFull, 'validTo'>
 
 /**
  * Returns if the quote has been recently checked
@@ -151,13 +152,26 @@ export default function FeesUpdater(): null {
   const isOnline = useIsOnline()
   const { validTo } = useOrderValidTo()
 
+  // prevents things like "USDC" being used as an address
+  const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellToken)
+  const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyToken)
+
   // Update if any parameter is changing
   useEffect(() => {
     // Don't refetch if:
     //  - window is not visible
     //  - some parameter is missing
     //  - it is a wrapping operation
-    if (!chainId || !sellToken || !buyToken || !typedValue || !windowVisible) return
+    if (
+      !chainId ||
+      !sellToken ||
+      !buyToken ||
+      !typedValue ||
+      !windowVisible ||
+      sellTokenAddressInvalid ||
+      buyTokenAddressInvalid
+    )
+      return
 
     // Native wrap trade, return
     if (isWrappingTrade(sellCurrency, buyCurrency, chainId)) return
@@ -263,6 +277,8 @@ export default function FeesUpdater(): null {
     lastUnsupportedCheck,
     receiver,
     validTo,
+    buyTokenAddressInvalid,
+    sellTokenAddressInvalid,
   ])
 
   return null

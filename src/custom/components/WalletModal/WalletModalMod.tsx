@@ -5,7 +5,7 @@ import { /*Row,*/ AutoRow /*, RowBetween*/ } from 'components/Row'
 // import { useWalletConnectMonitoringEventCallback } from 'hooks/useMonitoringEventCallback'
 import { useEffect, useState } from 'react'
 // import { ArrowLeft, ArrowRight, Info } from 'react-feather'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 import { AbstractConnector } from 'web3-react-abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
@@ -13,8 +13,8 @@ import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 
 import MetamaskIcon from 'assets/images/metamask.png'
 import { ReactComponent as Close } from 'assets/images/x.svg'
-import { injected, portis } from 'connectors'
-// import { OVERLAY_READY } from 'connectors/Fortmatic'
+import { fortmatic, injected } from 'connectors'
+import { OVERLAY_READY } from 'connectors/Fortmatic'
 import { SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
@@ -224,7 +224,7 @@ export default function WalletModal({
     setWalletView(WALLET_VIEWS.PENDING)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+    if (connector instanceof WalletConnectConnector) {
       connector.walletConnectProvider = undefined
     }
 
@@ -234,6 +234,17 @@ export default function WalletModal({
         //   const walletAddress = await connector.getAccount()
         //   logMonitoringEvent({ walletAddress })
         // })
+        .then(() => {
+          // Manually set the WalletConnectConnector http.connection.url to currently connected network url
+          // Fix for this https://github.com/gnosis/cowswap/issues/1930
+          if (connector instanceof WalletConnectConnector) {
+            const { http, rpc, signer } = connector.walletConnectProvider
+            const chainId = signer.connection.chainId
+            // don't default to SupportedChainId.Mainnet - throw instead
+            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
+            http.connection.url = rpc.custom[chainId]
+          }
+        })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
             activate(connector) // a little janky...can't use setError because the connector isn't set
@@ -244,11 +255,11 @@ export default function WalletModal({
   }
 
   // close wallet modal if fortmatic modal is active
-  // useEffect(() => {
-  //   fortmatic.on(OVERLAY_READY, () => {
-  //     toggleWalletModal()
-  //   })
-  // }, [toggleWalletModal])
+  useEffect(() => {
+    fortmatic.on(OVERLAY_READY, () => {
+      toggleWalletModal()
+    })
+  }, [toggleWalletModal])
 
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
@@ -257,11 +268,6 @@ export default function WalletModal({
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
       if (isMobile) {
-        //disable portis on mobile for now
-        if (option.connector === portis) {
-          return null
-        }
-
         if (!window.web3 && !window.ethereum && option.mobile) {
           return (
             <Option
@@ -349,7 +355,10 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <h5>
-                <Trans>Please connect to a supported network in the dropdown menu or in your wallet.</Trans>
+                <Trans>
+                  App/wallet network mismatch. Please connect to a supported network in your wallet: Ethereum Mainnet or
+                  Gnosis Chain.
+                </Trans>
               </h5>
             ) : (
               <Trans>Error connecting. Try refreshing the page.</Trans>

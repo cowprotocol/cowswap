@@ -7,17 +7,15 @@ import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import usePrevious from 'hooks/usePrevious'
 import { ParsedQs } from 'qs'
 // import { useCallback, useEffect, useRef } from 'react'
-import { ChevronDown } from 'react-feather'
+import { /* ArrowDownCircle,  */ ChevronDown } from 'react-feather'
 // import { useHistory } from 'react-router-dom'
 // import { useModalOpen, useToggleModal } from 'state/application/hooks'
 // import { addPopup, ApplicationModal } from 'state/application/reducer'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 // import { replaceURLParam } from 'utils/routes'
-
 // import { useAppDispatch } from 'state/hooks'
 // import { switchToNetwork } from 'utils/switchToNetwork'
-
 // MOD imports
 import {
   ActiveRowLinkList,
@@ -27,6 +25,15 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
+// mod
+import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
+import { useAddPopup, useRemovePopup } from 'state/application/hooks'
+import { useEffect } from 'react'
+import { getExplorerBaseUrl } from 'utils/explorer'
+
+import { useWalletInfo } from 'hooks/useWalletInfo'
+
+import { isMobile } from 'utils/userAgent'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -34,13 +41,13 @@ import { transparentize } from 'polished'
   padding: 0 8px;
   & > a {
     align-items: center;
-    color: ${({ theme }) => theme.text2};
+    color: ${({ theme }) => theme.text1};
     display: flex;
     flex-direction: row;
     font-size: 14px;
     font-weight: 500;
     justify-content: space-between;
-    padding: 8px 0 4px;
+    padding: 8px 0 4px 6px;
     text-decoration: none;
   }
   & > a:first-child {
@@ -49,36 +56,36 @@ import { transparentize } from 'polished'
     padding-top: 10px;
   }
 `
-const ActiveRowWrapper = styled.div`
+export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg1};
   border-radius: 8px;
   cursor: pointer;
-  padding: 8px;
   width: 100%;
+  padding: 8px;
 `
-const FlyoutHeader = styled.div`
-  color: ${({ theme }) => theme.text2};
+export const FlyoutHeader = styled.div`
+  color: ${({ theme }) => theme.text1};
   font-weight: 400;
 ` */
-const FlyoutMenu = styled.div`
+export const FlyoutMenu = styled.div`
   position: absolute;
   top: 54px;
   width: 272px;
   z-index: 99;
   padding-top: 10px;
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
+  /* @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 38px;
-  }
+  } */
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  /* ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     right: 20%;
-  `}
+  `} */
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
 const FlyoutMenuContents = styled.div`
   align-items: flex-start;
-  border: 1px solid ${({ theme }) => theme.bg0};
   background-color: ${({ theme }) => theme.bg1};
+  border: 1px solid ${({ theme }) => theme.bg0};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 12px;
@@ -87,19 +94,18 @@ const FlyoutMenuContents = styled.div`
   font-size: 16px;
   overflow: auto;
   padding: 10px 12px;
-  //position: absolute;
-  //top: 54px;
-  min-width: 175px;
-  z-index: 99;
-  // mod
-  ${ActiveRowWrapper} {
-    background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
-  }
   & > *:not(:last-child) {
     margin-bottom: 5px;
   }
+
+  // mod
+  min-width: 175px;
+  z-index: 99;
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     top: 50px;
+  }
+  ${ActiveRowWrapper} {
+    background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
   }
 `
 const FlyoutRow = styled.div<{ active: boolean }>`
@@ -133,22 +139,23 @@ export const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
 ` */
 const Logo = styled.img`
   height: 20px;
+  // width: 20px; // mod
   width: 16px;
   margin-right: 8px;
 `
 const NetworkLabel = styled.div`
   flex: 1 1 auto;
-  margin: 0px auto 0px 8px;
+  margin: 0px auto 0px 8px; // mod
 `
 export const SelectorLabel = styled(NetworkLabel)`
   display: none;
-  margin-left: 0;
+  margin-left: 0; // mod
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
     display: block;
     margin-right: 8px;
   }
 `
-const SelectorControls = styled.div<{ interactive: boolean }>`
+export const SelectorControls = styled.div<{ interactive: boolean }>`
   align-items: center;
   background-color: ${({ theme }) => theme.bg4};
   border: 1px solid ${({ theme }) => theme.bg0};
@@ -185,7 +192,8 @@ const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygon Bridge</Trans>*/
-    // TODO: add bridges, if any
+    case SupportedChainId.RINKEBY:
+      return <Trans>Faucet</Trans>
     default:
       return <Trans>Bridge</Trans>
   }
@@ -201,7 +209,7 @@ const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return <Trans>Polygonscan</Trans> */
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return <Trans>Blockscout</Trans>
     default:
       return <Trans>Etherscan</Trans>
@@ -213,7 +221,8 @@ function Row({
   onSelectChain,
 }: {
   targetChain: SupportedChainId
-  onSelectChain: (targetChain: number, options: ChainSwitchCallbackOptions) => void
+  // onSelectChain: (targetChain: number) => void
+  onSelectChain: (targetChain: number, options: ChainSwitchCallbackOptions) => void // mod
 }) {
   const { library, chainId } = useActiveWeb3React()
   if (!library || !chainId) {
@@ -253,6 +262,10 @@ function Row({
               <Trans>Help Center</Trans> <LinkOutCircle />
             </ExternalLink>
           ) : null}
+
+          <ExternalLink href={getExplorerBaseUrl(chainId)}>
+            <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
+          </ExternalLink>
         </ActiveRowLinkList>
       </ActiveRowWrapper>
     )
@@ -279,10 +292,45 @@ export const getChainNameFromId = (id: string | number) => {
 }
 
 export default function NetworkSelector() {
-  // mod: add account
+  // mod: add account & lib
   const { account, chainId, library } = useActiveWeb3React()
+  const { isSmartContractWallet } = useWalletInfo() // mod
   // mod: refactored inner logic into useChangeNetworks hook
   const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
+
+  // mod: add error and isUnsupportedNetwork const and useEffect
+  const { error } = useWeb3React()
+  const isUnsupportedNetwork = error instanceof UnsupportedChainIdError
+  const addPopup = useAddPopup()
+  const removePopup = useRemovePopup()
+
+  // mod: When on mobile, disable on hover and enable on click events
+  const onHoverEvent = () => !isMobile && toggle()
+  const onClickEvent = () => isMobile && toggle()
+
+  useEffect(() => {
+    const POPUP_KEY = chainId?.toString()
+
+    if (POPUP_KEY && isUnsupportedNetwork) {
+      addPopup(
+        {
+          failedSwitchNetwork: chainId as SupportedChainId,
+          unsupportedNetwork: true,
+          styles: css`
+            background: ${({ theme }) => theme.yellow3};
+          `,
+        },
+        // ID
+        POPUP_KEY,
+        // null to disable auto hide
+        null
+      )
+    }
+
+    return () => {
+      POPUP_KEY && removePopup(POPUP_KEY)
+    }
+  }, [addPopup, chainId, isUnsupportedNetwork, removePopup])
 
   /* const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
@@ -348,12 +396,12 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain]) */
 
-  if (!chainId || !info || !library) {
+  if (!chainId || !info || isUnsupportedNetwork || isSmartContractWallet) {
     return null
   }
 
   return (
-    <SelectorWrapper ref={node as any} onMouseEnter={toggle} onMouseLeave={toggle}>
+    <SelectorWrapper ref={node as any} onMouseEnter={onHoverEvent} onMouseLeave={onHoverEvent} onClick={onClickEvent}>
       {/*<SelectorControls onClick={conditionalToggle} interactive={showSelector}>
         <SelectorLogo interactive={showSelector} src={info.logoUrl || mainnetInfo.logoUrl} />*/}
       <SelectorControls interactive>
@@ -386,7 +434,7 @@ export default function NetworkSelector() {
             </FlyoutHeader>
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.MAINNET} />
             <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.RINKEBY} />
-            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.XDAI} />
+            <Row onSelectChain={handleChainSwitch} targetChain={SupportedChainId.GNOSIS_CHAIN} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}

@@ -126,7 +126,7 @@ export default function TokenFaq() {
             When an order is executed, the settlement contract withdraws the sell amount from the trader’s token balance
             via the CoW Protocol Vault Relayer (for more information read{' '}
             <ExternalLinkFaq
-              href="https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/GPv2VaultRelayer.sol"
+              href="https://github.com/cowprotocol/contracts/blob/main/src/contracts/GPv2VaultRelayer.sol"
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@src/constants/chains'
 import { ReactNode } from 'react'
 
 export const FEE_AMOUNT_DETAIL: Record<
@@ -10,7 +10,7 @@ export const FEE_AMOUNT_DETAIL: Record<
   [FeeAmount.LOWEST]: {
     label: '0.01',
     description: <Trans>Best for very stable pairs.</Trans>,
-    supportedChains: [SupportedChainId.MAINNET],
+    supportedChains: [SupportedChainId.MAINNET, SupportedChainId.POLYGON, SupportedChainId.POLYGON_MUMBAI],
   },
   [FeeAmount.LOW]: {
     label: '0.05',

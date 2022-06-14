@@ -68,6 +68,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     docs: 'https://docs.cow.fi/',
     explorer: 'https://rinkeby.etherscan.io/',
     infoLink: 'https://cow.fi',
+    bridge: 'https://www.rinkeby.io/#faucet', // actually a faucet rather than a bridge
     label: 'Rinkeby',
     logoUrl: RinkebyLogo,
     nativeCurrency: { name: 'Rinkeby Ether', symbol: 'rETH', decimals: 18 },
@@ -175,9 +176,10 @@ export const CHAIN_INFO: ChainInfoMap = {
     logoUrl: polygonMaticLogo,
     nativeCurrency: { name: 'Polygon Mumbai Matic', symbol: 'mMATIC', decimals: 18 },
   },*/
-  [SupportedChainId.XDAI]: {
+  [SupportedChainId.GNOSIS_CHAIN]: {
     networkType: NetworkType.L1,
     docs: 'https://docs.gnosischain.com/',
+    bridge: 'https://omni.gnosischain.com/bridge',
     explorer: 'https://blockscout.com/xdai/mainnet/',
     infoLink: 'https://www.xdaichain.com/',
     label: 'Gnosis Chain',

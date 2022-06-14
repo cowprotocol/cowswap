@@ -1,0 +1,41 @@
+import {
+  FeeInformation,
+  FeeQuoteParams,
+  PriceInformation,
+  PriceQuoteParams,
+  SupportedChainId as ChainId,
+} from '@cowprotocol/cow-sdk'
+import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+
+export interface LegacyQuoteParams {
+  quoteParams: LegacyFeeQuoteParams
+  strategy: GpPriceStrategy
+  fetchFee: boolean
+  previousFee?: FeeInformation
+  isPriceRefresh: boolean
+}
+
+export class LegacyPriceQuoteError extends Error {
+  params: LegacyPriceQuoteParams
+  results: PromiseSettledResult<any>[]
+
+  constructor(message: string, params: LegacyPriceQuoteParams, results: PromiseSettledResult<any>[]) {
+    super(message)
+    this.params = params
+    this.results = results
+  }
+}
+
+export type LegacyFeeQuoteParams = FeeQuoteParams & {
+  fromDecimals: number
+  toDecimals: number
+  chainId: ChainId
+  priceQuality?: string
+  isBestQuote?: boolean
+}
+
+export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'sellToken' | 'buyToken'> & PriceQuoteParams
+
+export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
+export type LegacyPriceInformationWithSource = PriceInformation & { source: LegacyPriceSource; data?: any }
+export type LegacyPromiseRejectedResultWithSource = PromiseRejectedResult & { source: LegacyPriceSource }

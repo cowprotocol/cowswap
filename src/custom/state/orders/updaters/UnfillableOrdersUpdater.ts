@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { timestamp } from '@gnosis.pm/gp-v2-contracts'
+import { timestamp } from '@cowprotocol/contracts'
 
 import { useActiveWeb3React } from 'hooks/web3'
 
@@ -9,10 +9,11 @@ import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { getBestQuote, PriceInformation } from 'utils/price'
+import { getBestQuote } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -106,19 +107,26 @@ export function UnfillableOrdersUpdater(): null {
       }
 
       pending.forEach((order, index) =>
-        _getOrderPrice(chainId, order, strategy).then((quote) => {
-          if (quote) {
-            const [promisedPrice] = quote
-            const price = getPromiseFulfilledValue(promisedPrice, null)
+        _getOrderPrice(chainId, order, strategy)
+          .then((quote) => {
+            if (quote) {
+              const [promisedPrice] = quote
+              const price = getPromiseFulfilledValue(promisedPrice, null)
+              console.debug(
+                `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
+                price ? price.amount : 'no :('
+              )
+              price?.amount && updateIsUnfillableFlag(chainId, order, price)
+            } else {
+              console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
+            }
+          })
+          .catch((e) => {
             console.debug(
-              `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-              price ? price.amount : 'no :('
+              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
+              e
             )
-            price?.amount && updateIsUnfillableFlag(chainId, order, price)
-          } else {
-            console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
-          }
-        })
+          })
       )
     } finally {
       isUpdating.current = false

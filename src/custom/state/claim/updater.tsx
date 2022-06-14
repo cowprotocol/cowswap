@@ -32,18 +32,18 @@ export default function Updater() {
   }, [activeClaimAccount, mAvailable, mClaimed, mExpired, mTotal, setClaimsCount])
 
   // --- GCHAIN ---
-  const gChainClaims = useClassifiedUserClaims(activeClaimAccount, SupportedChainId.XDAI)
+  const gChainClaims = useClassifiedUserClaims(activeClaimAccount, SupportedChainId.GNOSIS_CHAIN)
   const {
     total: gTotal,
     expired: gExpired,
     claimed: gClaimed,
     available: gAvailable,
-  } = useMemo(() => _countClaims(gChainClaims, chainId, SupportedChainId.XDAI), [chainId, gChainClaims])
+  } = useMemo(() => _countClaims(gChainClaims, chainId, SupportedChainId.GNOSIS_CHAIN), [chainId, gChainClaims])
 
   useEffect(() => {
     if (!activeClaimAccount) return
     setClaimsCount({
-      chain: SupportedChainId.XDAI,
+      chain: SupportedChainId.GNOSIS_CHAIN,
       claimInfo: { total: gTotal, expired: gExpired, claimed: gClaimed, available: gAvailable },
       account: activeClaimAccount,
     })

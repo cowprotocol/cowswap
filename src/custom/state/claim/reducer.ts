@@ -1,5 +1,5 @@
 import { createReducer, current } from '@reduxjs/toolkit'
-import { SupportedChainId } from '@src/custom/constants/chains'
+import { SupportedChainId } from 'constants/chains'
 import {
   setActiveClaimAccount,
   setActiveClaimAccountENS,
@@ -19,8 +19,6 @@ import {
   setEstimatedGas,
   setIsTouched,
   setClaimsCount,
-  SwapVCowStatus,
-  setSwapVCowStatus,
 } from './actions'
 
 export type ClaimInfo = {
@@ -37,7 +35,7 @@ type ClaimInfoPerChain = Record<SupportedChainId, ClaimInfo>
 
 const DEFAULT_CLAIM_INFO_PER_CHAIN: ClaimInfoPerChain = {
   [SupportedChainId.MAINNET]: { ...DEFAULT_CLAIM_INFO },
-  [SupportedChainId.XDAI]: { ...DEFAULT_CLAIM_INFO },
+  [SupportedChainId.GNOSIS_CHAIN]: { ...DEFAULT_CLAIM_INFO },
   [SupportedChainId.RINKEBY]: { ...DEFAULT_CLAIM_INFO },
 }
 
@@ -66,8 +64,6 @@ export const initialState: ClaimState = {
   selectedAll: false,
   // claims on other networks
   claimInfoPerAccount: { ...DEFAULT_CLAIM_INFO_PER_ACCOUNT },
-  // swap VCow status
-  swapVCowStatus: SwapVCowStatus.INITIAL,
 }
 
 export type InvestClaim = {
@@ -98,8 +94,6 @@ export type ClaimState = {
   selectedAll: boolean
   // claims on other chains
   claimInfoPerAccount: ClaimInfoPerAccount
-  // swap VCow status
-  swapVCowStatus: SwapVCowStatus
 }
 
 export default createReducer(initialState, (builder) =>
@@ -185,8 +179,5 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setIsTouched, (state, { payload: { index, isTouched } }) => {
       state.investFlowData[index].isTouched = isTouched
-    })
-    .addCase(setSwapVCowStatus, (state, { payload }) => {
-      state.swapVCowStatus = payload
     })
 )

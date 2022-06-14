@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { FeeQuoteParams, getBestQuote, getFastQuote, QuoteParams, QuoteResult } from 'utils/price'
+import { getBestQuote, getFastQuote, QuoteResult } from 'utils/price'
 import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, {
   GpQuoteErrorCodes,
@@ -23,14 +23,15 @@ import { CancelableResult, onlyResolvesLast } from 'utils/async'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { calculateValidTo } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL } from 'state/user/hooks'
+import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 interface HandleQuoteErrorParams {
-  quoteData: QuoteInformationObject | FeeQuoteParams
+  quoteData: QuoteInformationObject | LegacyFeeQuoteParams
   error: unknown
   addUnsupportedToken: (params: AddGpUnsupportedTokenParams) => void
 }
 
-type QuoteParamsForFetching = Omit<QuoteParams, 'strategy'>
+type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
 
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
@@ -143,7 +144,7 @@ export function useRefetchQuoteCallback() {
       // set the validTo time here
       quoteParams.validTo = calculateValidTo(deadline)
 
-      let quoteData: FeeQuoteParams | QuoteInformationObject = quoteParams
+      let quoteData: LegacyFeeQuoteParams | QuoteInformationObject = quoteParams
 
       // price can be null if fee > price
       const handleResponse = (response: CancelableResult<QuoteResult>, isBestQuote: boolean) => {

@@ -1,5 +1,7 @@
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { PriceInformation } from 'utils/price'
+import { SWR_OPTIONS } from 'constants/index'
+import useSWR from 'swr'
 
 function getApiUrl(): string {
   // it's all the same base url
@@ -36,7 +38,7 @@ function _getCoinGeckoAssetPlatform(chainId: ChainId) {
     // https://api.coingecko.com/api/v3/asset_platforms
     case ChainId.MAINNET:
       return 'ethereum'
-    case ChainId.XDAI:
+    case ChainId.GNOSIS_CHAIN:
       return 'xdai'
     default:
       return null
@@ -60,6 +62,7 @@ function _get(chainId: ChainId, url: string): Promise<Response> {
 export interface CoinGeckoUsdPriceParams {
   chainId: ChainId
   tokenAddress: string
+  isNative: boolean
 }
 
 interface CoinGeckoUsdQuote {
@@ -68,7 +71,9 @@ interface CoinGeckoUsdQuote {
   }
 }
 
-export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise<CoinGeckoUsdQuote | null> {
+export async function getUSDPriceQuote(
+  params: Omit<CoinGeckoUsdPriceParams, 'isNative'>
+): Promise<CoinGeckoUsdQuote | null> {
   const { chainId, tokenAddress } = params
   // ethereum/xdai (chains)
   const assetPlatform = _getCoinGeckoAssetPlatform(chainId)
@@ -88,6 +93,22 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
   })
 
   return response.json()
+}
+
+export function useGetCoingeckoUsdPrice(params: Partial<CoinGeckoUsdPriceParams>, options = SWR_OPTIONS) {
+  const { chainId, tokenAddress, isNative } = params
+
+  return useSWR<PriceInformation | null>(
+    ['getUSDPriceQuote', chainId, tokenAddress, isNative],
+    () => {
+      if (chainId && tokenAddress) {
+        return getUSDPriceQuote({ chainId, tokenAddress }).then(toPriceInformation)
+      } else {
+        return null
+      }
+    },
+    options
+  )
 }
 
 export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInformation | null {

@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { FeeQuoteParams } from 'utils/price'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { QuoteInformationObject } from './reducer'
 
@@ -10,7 +10,7 @@ export interface ClearQuoteParams {
   chainId: ChainId
 }
 
-export type GetQuoteParams = FeeQuoteParams
+export type GetQuoteParams = LegacyFeeQuoteParams
 export type RefreshQuoteParams = Pick<GetQuoteParams, 'sellToken' | 'chainId'>
 
 export type QuoteError =

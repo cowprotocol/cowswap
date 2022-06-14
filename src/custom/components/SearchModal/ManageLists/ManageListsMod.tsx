@@ -9,7 +9,7 @@ import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { usePopper } from 'react-popper'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import styled from 'styled-components/macro'
@@ -246,7 +246,6 @@ ListRowProps & { listUrl: string }) {
 })
 
 export const ListContainer = styled.div`
-  padding-bottom: 80px;
   height: 100%;
   overflow-y: auto;
   /* MOD */

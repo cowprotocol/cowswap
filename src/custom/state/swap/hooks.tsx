@@ -334,12 +334,17 @@ export function useDerivedSwapInfo(): /* {
     // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
     const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)] // mod
 
+    // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
+    if (!balanceIn && inputCurrency) {
+      inputError = <Trans>Couldn&apos;t load balances</Trans>
+    }
+
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
       inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
     }
 
     return inputError
-  }, [account, allowedSlippage, currencies, currencyBalances, parsedAmount, to, v2Trade]) // mod
+  }, [account, allowedSlippage, currencies, currencyBalances, inputCurrency, parsedAmount, to, v2Trade]) // mod
 
   return useMemo(
     () => ({
@@ -481,7 +486,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
     const wrappedToken: Token & { logoURI: string } = Object.assign(
       WETH[chainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
       {
-        logoURI: chainId === ChainId.XDAI ? XDAI_LOGO_URI : WETH_LOGO_URI,
+        logoURI: chainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
       }
     )
 
