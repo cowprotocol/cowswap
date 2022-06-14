@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
 import SVG from 'react-inlinesvg'
-import { LinkStyledButton, ExternalLink } from 'theme'
+import { ExternalLink } from 'theme'
 
 import OrderCheckImage from 'assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
@@ -11,9 +10,9 @@ import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
-import { CancellationModal } from './CancelationModal'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { CancelButton } from './CancelButton'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -86,10 +85,8 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
   const { activityDerivedState, chainId } = props
 
   const {
-    id,
     status,
     type,
-    summary,
     isPending,
     isCancelling,
     isPresignaturePending,
@@ -99,11 +96,6 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isCancelled,
     isCancellable,
   } = activityDerivedState
-
-  const [showCancelModal, setShowCancelModal] = useState(false)
-
-  const onCancelClick = () => setShowCancelModal(true)
-  const onDismiss = () => setShowCancelModal(false)
 
   return (
     <StatusLabelWrapper>
@@ -135,16 +127,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
       {isCancellable && (
         <StatusLabelBelow>
           {/* Cancel order */}
-          <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>
-          {showCancelModal && (
-            <CancellationModal
-              chainId={chainId}
-              orderId={id}
-              summary={summary}
-              isOpen={showCancelModal}
-              onDismiss={onDismiss}
-            />
-          )}
+          <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
         </StatusLabelBelow>
       )}
     </StatusLabelWrapper>

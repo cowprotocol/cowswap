@@ -8,7 +8,6 @@ import {
   Summary,
   SummaryInner,
   SummaryInnerRow,
-  TransactionAlertMessage,
   TransactionInnerDetail,
   TextAlert,
   TransactionState as ActivityLink,
@@ -21,28 +20,16 @@ import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
-import AttentionIcon from 'assets/cow-swap/attention.svg'
 import { useToken } from 'hooks/Tokens'
-import SVG from 'react-inlinesvg'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { V_COW, COW } from 'constants/tokens'
+import { OrderProgressBar } from './OrderProgressBar'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
   limitPrice: '',
   validTo: '',
-}
-
-function unfillableAlert(): JSX.Element {
-  return (
-    <>
-      <TransactionAlertMessage type="attention">
-        <SVG src={AttentionIcon} description="Limit Price Warning" />
-        <b>Limit price out of range:</b>&nbsp;Wait for a matching price or cancel your order.
-      </TransactionAlertMessage>
-    </>
-  )
 }
 
 function GnosisSafeTxDetails(props: {
@@ -159,8 +146,7 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
-    activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
@@ -307,10 +293,15 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
-
-        {isUnfillable && unfillableAlert()}
-
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        {order && creationTime && validTo && (
+          <OrderProgressBar
+            activityDerivedState={activityDerivedState}
+            creationTime={new Date(order.creationTime)}
+            validTo={new Date((order.validTo as number) * 1000)}
+            chainId={chainId}
+          />
+        )}
       </SummaryInner>
     </Summary>
   )
