@@ -96,8 +96,9 @@ export const ArrowButton = styled.button`
 export const Arrow = styled.div<{ faded: boolean }>`
   color: ${({ theme }) => theme.primary1};
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
-  padding: 0 20px;
+  padding: 0 10px;
   user-select: none;
+
   :hover {
     cursor: pointer;
   }

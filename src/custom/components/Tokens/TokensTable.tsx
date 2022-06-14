@@ -24,6 +24,7 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useWalletModalToggle } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 
 const MAX_ITEMS = 10
 
@@ -56,6 +57,9 @@ export default function TokenTable({
   balances,
   loadingRows = MAX_ITEMS,
 }: TokenTableParams) {
+  const { chainId, account } = useActiveWeb3React()
+  const prevChainId = usePrevious(chainId)
+
   const toggleWalletModal = useWalletModalToggle()
   const tableRef = useRef<HTMLTableElement | null>(null)
 
@@ -180,11 +184,19 @@ export default function TokenTable({
     }
   }, [maxItems, tokensData])
 
+  // for small screens, auto-scrolls table to left on the page change
   useEffect(() => {
     if (prevPageIndex !== page && tableRef.current) {
       tableRef.current.scrollLeft = 0
     }
   }, [page, prevPageIndex])
+
+  // reset table to page 1 on chain change
+  useEffect(() => {
+    if (chainId !== prevChainId) {
+      setPage(1)
+    }
+  }, [chainId, prevChainId])
 
   if (!tokensData) {
     return <Loader />
@@ -202,7 +214,7 @@ export default function TokenTable({
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
                 <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
               </ClickableText>
-              <ClickableText onClick={() => handleSort(SORT_FIELD.BALANCE)}>
+              <ClickableText onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
               <Label>Buy</Label>
@@ -234,6 +246,10 @@ export default function TokenTable({
           </Table>
 
           <PageButtons>
+            <ArrowButton onClick={() => setPage(1)}>
+              <Arrow faded={page === 1}>{'<<'}</Arrow>
+            </ArrowButton>
+
             <ArrowButton onClick={() => setPage(prevPage)}>
               <Arrow faded={page === 1}>←</Arrow>
             </ArrowButton>
@@ -244,6 +260,10 @@ export default function TokenTable({
 
             <ArrowButton onClick={() => setPage(nextPage)}>
               <Arrow faded={page === maxPage}>→</Arrow>
+            </ArrowButton>
+
+            <ArrowButton onClick={() => setPage(maxPage)}>
+              <Arrow faded={page === maxPage}>{'>>'}</Arrow>
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
