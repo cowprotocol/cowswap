@@ -11,8 +11,7 @@ import {
   StatusMsg,
   StatusGraph,
   OrangeClockIcon,
-  PendingProgress,
-  WarningProgress,
+  DelayedProgress,
   WarningLogo,
   GreenCheckIcon,
 } from './styled'
@@ -128,9 +127,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         return (
           <>
             <ProgressBarInnerWrapper>
-              <PendingProgress percentage={percentage}>
+              <SuccessProgress percentage={percentage}>
                 <AMMsLogo chainId={chainId} />
-              </PendingProgress>
+              </SuccessProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <StatusWrapper>
@@ -175,9 +174,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         return (
           <>
             <ProgressBarInnerWrapper>
-              <WarningProgress percentage={percentage}>
+              <DelayedProgress percentage={percentage}>
                 <WarningLogo />
-              </WarningProgress>
+              </DelayedProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <StatusWrapper>
@@ -205,11 +204,11 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         return (
           <>
             <ProgressBarInnerWrapper>
-              <WarningProgress percentage={percentage}>
+              <DelayedProgress percentage={percentage}>
                 <WarningLogo>
                   <img src={loadingCowGif} alt="Loading prices..." />
                 </WarningLogo>
-              </WarningProgress>
+              </DelayedProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
               <StatusWrapper>

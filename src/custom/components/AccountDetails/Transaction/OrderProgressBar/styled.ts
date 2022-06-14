@@ -104,16 +104,12 @@ export const WarningLogo = styled.div`
   }
 `
 
-export const WarningProgress = styled(ProgressBarIndicator)`
-  background: linear-gradient(270deg, #de3f3f 2.17%, #ff784a 106.52%); ;
-`
-
 export const SuccessProgress = styled(ProgressBarIndicator)`
-  background: linear-gradient(270deg, #27ae5f 16.85%, #b6a82d 106.52%);
+  background: linear-gradient(270deg, #27ae5f 15%, #b6a82d 125%);
 `
 
-export const PendingProgress = styled(ProgressBarIndicator)`
-  background: linear-gradient(270deg, #b6a82d 16.85%, #ff784a 106.52%);
+export const DelayedProgress = styled(ProgressBarIndicator)`
+  background: linear-gradient(270deg, #27ae5f 25%, #ff784a 100%);
 `
 
 export const GreenClockIcon = styled(Clock)`
@@ -175,14 +171,5 @@ export const StatusMsg = styled.p`
 
   strong {
     color: ${({ theme }) => theme.orange};
-  }
-`
-export const SwapIcon = styled.span`
-  font-size: 1.2rem;
-  margin: 0 0.2rem;
-  display: inline-block;
-  position: relative;
-  &::after {
-    content: '🔁';
   }
 `
