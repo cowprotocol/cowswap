@@ -26,7 +26,7 @@ import { CardsSpinner } from 'pages/Profile/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useActiveWeb3React } from 'hooks/web3'
-import { GP_VAULT_RELAYER } from 'constants/index'
+import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 
 type DataRowParams = {
   tokenData: Token
@@ -36,7 +36,7 @@ type DataRowParams = {
   handleBuy: (token: Token) => void
   handleSell: (token: Token) => void
   closeModal: () => void
-  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
+  openModal: (message: string, operationType: OperationType) => void
   toggleWalletModal: () => void
 }
 
@@ -47,7 +47,7 @@ const DataRow = ({
   handleBuy,
   handleSell,
   closeModal,
-  openTransactionConfirmationModal,
+  openModal,
   toggleWalletModal,
 }: DataRowParams) => {
   const { account, chainId } = useActiveWeb3React()
@@ -66,7 +66,7 @@ const DataRow = ({
   const { handleSetError, handleCloseError } = useErrorModal()
 
   const { approvalState, approve } = useApproveCallbackFromBalance({
-    openTransactionConfirmationModal,
+    openTransactionConfirmationModal: openModal,
     closeModals: closeModal,
     token: tokenData,
     balance,
@@ -82,6 +82,7 @@ const DataRow = ({
       return
     }
 
+    // TODO: make a separate hook out of this and add GA
     try {
       setApproving(true)
       const summary = `Approve ${tokenData?.symbol || 'token'}`
@@ -110,11 +111,11 @@ const DataRow = ({
     } else if (!isApproved && currentAllowance && !currentAllowance?.equalTo(0)) {
       return (
         <CustomLimit>
-          <TableButton text onClick={handleApprove} color={theme.primary1}>
+          <TableButton outlined onClick={handleApprove} color={theme.primary1}>
             Approve all
           </TableButton>
           <ApproveLabel color={theme.green1} title={`Approved: ${currentAllowance.toExact()}`}>
-            Approved: <strong>{formatSmart(currentAllowance, 4)}</strong>
+            Approved: <strong>{formatSmart(currentAllowance, AMOUNT_PRECISION)}</strong>
           </ApproveLabel>
         </CustomLimit>
       )
