@@ -1,13 +1,25 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { ThemedText } from 'theme'
 import Loader from 'components/Loader'
 import LoadingRows from 'components/LoadingRows'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
-import { Label, Wrapper, TableHeader, TableBody, Break, PageButtons, Arrow, ArrowButton, ClickableText } from './styled'
+import {
+  Label,
+  Wrapper,
+  TableHeader,
+  TableBody,
+  Break,
+  PageButtons,
+  Arrow,
+  ArrowButton,
+  ClickableText,
+  Table,
+  PaginationText,
+} from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
+import { useHistory } from 'react-router-dom'
 
 const MAX_ITEMS = 10
 
@@ -42,6 +54,12 @@ export default function TokenTable({
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
+  const tokenComparator = useTokenComparator(false)
+
+  const applyDirection = useCallback((condition: boolean, sortDirection: boolean) => {
+    return (condition ? -1 : 1) * (sortDirection ? -1 : 1)
+  }, [])
+
   // pagination
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -51,12 +69,22 @@ export default function TokenTable({
   // token index
   const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
 
-  //sorting
-  const applyDirection = useCallback((condition: boolean, sortDirection: boolean) => {
-    return (condition ? -1 : 1) * (sortDirection ? -1 : 1)
-  }, [])
+  // buy and sell
+  const history = useHistory()
 
-  const tokenComparator = useTokenComparator(false)
+  const handleBuy = useCallback(
+    (token: Token) => {
+      history.push(`/swap?outputCurrency=${token.address}`)
+    },
+    [history]
+  )
+
+  const handleSell = useCallback(
+    (token: Token) => {
+      history.push(`/swap?inputCurrency=${token.address}`)
+    },
+    [history]
+  )
 
   const sortedTokens = useMemo(() => {
     return tokensData
@@ -139,45 +167,52 @@ export default function TokenTable({
     <Wrapper>
       {sortedTokens.length > 0 ? (
         <AutoColumn>
-          <TableHeader>
-            <Label>#</Label>
-            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
-            </ClickableText>
-            <ClickableText onClick={() => handleSort(SORT_FIELD.BALANCE)}>
-              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
-            </ClickableText>
-          </TableHeader>
+          <Table>
+            <TableHeader>
+              <Label>#</Label>
+              <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+                <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+              </ClickableText>
+              <ClickableText onClick={() => handleSort(SORT_FIELD.BALANCE)}>
+                <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+              </ClickableText>
+              <Label>Buy</Label>
+              <Label>Sell</Label>
+            </TableHeader>
 
-          <Break />
+            <Break />
 
-          <TableBody>
-            {sortedTokens.map((data, i) => {
-              if (data) {
-                return (
-                  <React.Fragment key={i}>
-                    <TokensTableRow
-                      balance={balances && balances[data.address]}
-                      tableType={tableType}
-                      index={getTokenIndex(i)}
-                      tokenData={data}
-                    />
-                    <Break />
-                  </React.Fragment>
-                )
-              }
-              return null
-            })}
-          </TableBody>
+            <TableBody>
+              {sortedTokens.map((data, i) => {
+                if (data) {
+                  return (
+                    <React.Fragment key={i}>
+                      <TokensTableRow
+                        handleSell={handleSell}
+                        handleBuy={handleBuy}
+                        balance={balances && balances[data.address]}
+                        tableType={tableType}
+                        index={getTokenIndex(i)}
+                        tokenData={data}
+                      />
+                      <Break />
+                    </React.Fragment>
+                  )
+                }
+                return null
+              })}
+            </TableBody>
+          </Table>
 
           <PageButtons>
             <ArrowButton onClick={() => setPage(prevPage)}>
               <Arrow faded={page === 1}>←</Arrow>
             </ArrowButton>
 
-            <ThemedText.Body>
+            <PaginationText>
               <Trans>{'Page ' + page + ' of ' + maxPage}</Trans>
-            </ThemedText.Body>
+            </PaginationText>
+
             <ArrowButton onClick={() => setPage(nextPage)}>
               <Arrow faded={page === maxPage}>→</Arrow>
             </ArrowButton>
