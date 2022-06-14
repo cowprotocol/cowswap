@@ -60,8 +60,7 @@ function checkIsSupportedWallet(params: {
 async function getWcPeerMetadata(connector: WalletConnectConnector): Promise<{ walletName?: string; icon?: string }> {
   const provider = (await connector.getProvider()) as WalletConnectProvider
 
-  // fix for this https://github.com/gnosis/cowswap/issues/1929
-  const meta = provider.walletMeta || provider.signer.connection.wc.peerMeta
+  const meta = provider.walletMeta
   if (meta) {
     return {
       walletName: meta.name,
@@ -97,10 +96,12 @@ export function useWalletInfo(): ConnectedWalletInfo {
     const walletType = getProviderType(connector)
     switch (walletType) {
       case WalletProvider.WALLET_CONNECT:
-        getWcPeerMetadata(connector as WalletConnectConnector).then(({ walletName, icon }) => {
-          setWalletName(walletName)
-          setIcon(icon)
-        })
+        if (connector instanceof WalletConnectConnector) {
+          getWcPeerMetadata(connector).then(({ walletName, icon }) => {
+            setWalletName(walletName)
+            setIcon(icon)
+          })
+        }
         break
       case WalletProvider.GNOSIS_SAFE:
         setWalletName(GNOSIS_SAFE_APP_NAME)
