@@ -27,6 +27,7 @@ import usePrevious from 'hooks/usePrevious'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 
 const MAX_ITEMS = 10
+const MAX_COLUMNS = 6
 
 enum SORT_FIELD {
   NAME = 'name',
@@ -106,11 +107,6 @@ export default function TokenTable({
     OperationType.APPROVE_TOKEN
   )
 
-  const openTransactionConfirmationModal = useCallback(
-    (message: string, operationType: OperationType) => openModal(message, operationType),
-    [openModal]
-  )
-
   const sortedTokens = useMemo(() => {
     return tokensData
       ? tokensData
@@ -184,7 +180,7 @@ export default function TokenTable({
     }
   }, [maxItems, tokensData])
 
-  // for small screens, auto-scrolls table to left on the page change
+  // for small screens, auto-scrolls table to the left on the page change
   useEffect(() => {
     if (prevPageIndex !== page && tableRef.current) {
       tableRef.current.scrollLeft = 0
@@ -227,12 +223,12 @@ export default function TokenTable({
                 if (data) {
                   return (
                     <TokensTableRow
-                      key={i}
+                      key={data.address}
                       handleSell={handleSell}
                       handleBuy={handleBuy}
                       toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[data.address]}
-                      openTransactionConfirmationModal={openTransactionConfirmationModal}
+                      openModal={openModal}
                       closeModal={closeModal}
                       tableType={tableType}
                       index={getTokenIndex(i)}
@@ -269,7 +265,7 @@ export default function TokenTable({
         </AutoColumn>
       ) : (
         <LoadingRows>
-          {Array.from(Array(loadingRows * 6), (_, i) => (
+          {Array.from(Array(loadingRows * MAX_COLUMNS), (_, i) => (
             <div key={i} />
           ))}
         </LoadingRows>

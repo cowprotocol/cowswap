@@ -19,7 +19,7 @@ export const ResponsiveGrid = styled.div`
   align-items: center;
   text-align: left;
   border-bottom: 1px solid ${({ theme }) => theme.bg5};
-  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(2, 55px) 80px;
+  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(2, 55px) 100px;
 `
 
 export const LinkWrapper = styled(Link)`

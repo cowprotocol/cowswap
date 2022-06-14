@@ -8,6 +8,8 @@ import TokensTable from 'components/Tokens/TokensTable'
 import { useFavouriteTokens, useRemoveAllFavouriteTokens } from 'state/user/hooks'
 import { useAllTokenBalances } from 'state/wallet/hooks'
 
+const FAVOURITE_TABLE_LOADING_ROWS = 4
+
 export default function TokensOverview() {
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -37,7 +39,7 @@ export default function TokensOverview() {
         </AccountHeading>
         <AccountCard>
           {favouriteTokens.length > 0 ? (
-            <TokensTable loadingRows={4} balances={balances} tokensData={favouriteTokens} />
+            <TokensTable loadingRows={FAVOURITE_TABLE_LOADING_ROWS} balances={balances} tokensData={favouriteTokens} />
           ) : (
             <MainText>
               <Trans>Favourite tokens will appear here</Trans>
