@@ -25,7 +25,7 @@ export const Wrapper = styled(Page)`
   padding-top: 16px;
   display: flex;
   justify-content: flex-end;
-  flex-direction: column;
+  flex-flow: column wrap;
   margin: 0;
   background: ${({ theme }) => transparentize(0.3, theme.bg1)};
   box-shadow: none;
@@ -81,8 +81,6 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr;
-    grid-column-gap: 16px;
-    grid-row-gap: 16px;
       grid-column-gap: 0;
       > :first-child,
       > :nth-child(2) {

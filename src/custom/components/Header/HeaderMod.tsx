@@ -88,14 +88,14 @@ export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
 
-  &:not(:first-child) {
+  /* &:not(:first-child) {
     margin-left: 0.5em;
-  }
+  } */
 
   /* addresses safari's lack of support for "gap" */
-  & > *:not(:first-child) {
+  /* & > *:not(:first-child) {
     margin-left: 8px;
-  }
+  } */
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-direction: row-reverse;
@@ -186,13 +186,13 @@ export const UNIWrapper = styled.span`
   position: relative;
   cursor: pointer;
 
-  :hover {
+  /* :hover {
     opacity: 0.8;
   }
 
   :active {
     opacity: 0.9;
-  }
+  } */
 `
 
 export const BalanceText = styled(Text)`

@@ -19,7 +19,7 @@ import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
-import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemeContext } from 'styled-components/macro'
 
 import AddressInputPanel from 'components/AddressInputPanel'
 import { ButtonConfirmed /*, ButtonError, ButtonLight, ButtonPrimary*/ } from 'components/Button'
@@ -85,11 +85,12 @@ import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
+import { AlertWrapper } from './styleds' // mod
 
-const AlertWrapper = styled.div`
-  max-width: 460px;
-  width: 100%;
-`
+// const AlertWrapper = styled.div`
+//   max-width: 460px;
+//   width: 100%;
+// `
 
 function reportAnalytics(action: string, label?: string, value?: number) {
   ReactGA.event({

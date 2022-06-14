@@ -13,10 +13,10 @@ export const GpModal = styled(Modal)<{
 }>`
   > [data-reach-dialog-content] {
     background-color: ${({ backgroundColor, theme }) => (backgroundColor ? backgroundColor : theme.bg1)};
-    max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '470px')};
-    border: ${({ border }) => (border ? border : 'inherit')};
+    max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
+    border: ${({ border = 'inherit' }) => `${border}`};
     z-index: 100;
-    padding: ${({ padding }) => (padding ? padding : 'none')};
+    padding: ${({ padding = 'none' }) => `${padding}`};
     margin: auto;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
