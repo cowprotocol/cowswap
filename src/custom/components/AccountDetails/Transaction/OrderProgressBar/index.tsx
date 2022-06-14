@@ -36,11 +36,8 @@ type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, creationTime, validTo, chainId } = props
-  const { isConfirmed, isPending, isCancellable, isUnfillable = false } = activityDerivedState
-
-  const elapsedSeconds = (Date.now() - creationTime.getTime()) / 1000
-  const expirationInSeconds = (validTo.getTime() - creationTime.getTime()) / 1000
-
+  const { isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
+  const { elapsedSeconds, expirationInSeconds, isPending } = useGetProgressBarInfo(props)
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const fadeOutTransition = useTransition(isPending, null, {
@@ -193,4 +190,34 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       })}
     </>
   )
+}
+
+type ProgressBarInfo = {
+  elapsedSeconds: number
+  expirationInSeconds: number
+  isPending: boolean
+}
+
+function useGetProgressBarInfo({
+  creationTime,
+  validTo,
+  activityDerivedState,
+}: OrderProgressBarProps): ProgressBarInfo {
+  const { isPending: orderIsPending, isPresignaturePending, order } = activityDerivedState
+
+  if (order?.presignGnosisSafeTx) {
+    const submissionDate = new Date(order?.presignGnosisSafeTx?.submissionDate)
+
+    return {
+      elapsedSeconds: (Date.now() - submissionDate.getTime()) / 1000,
+      expirationInSeconds: (validTo.getTime() - submissionDate.getTime()) / 1000,
+      isPending: orderIsPending || isPresignaturePending,
+    }
+  }
+
+  return {
+    elapsedSeconds: (Date.now() - creationTime.getTime()) / 1000,
+    expirationInSeconds: (validTo.getTime() - creationTime.getTime()) / 1000,
+    isPending: orderIsPending,
+  }
 }
