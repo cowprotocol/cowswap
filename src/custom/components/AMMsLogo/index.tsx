@@ -72,7 +72,7 @@ const SwaprImage = { src: Swapr, alt: 'AMMs Swapr' }
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
   [SupportedChainId.MAINNET]: [SushiImage, OneInchImage, ParaswapImage, UniswapImage],
   [SupportedChainId.RINKEBY]: [SushiImage, OneInchImage, ParaswapImage, UniswapImage],
-  [SupportedChainId.XDAI]: [SushiImage, BaoswapImage, HoneyswapImage, SwaprImage],
+  [SupportedChainId.GNOSIS_CHAIN]: [SushiImage, BaoswapImage, HoneyswapImage, SwaprImage],
 }
 
 export function AMMsLogo({ chainId }: { chainId: SupportedChainId }) {

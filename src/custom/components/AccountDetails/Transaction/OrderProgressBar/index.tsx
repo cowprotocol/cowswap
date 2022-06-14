@@ -46,13 +46,13 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const { elapsedSeconds, expirationInSeconds /*isPending*/ } = useGetProgressBarInfo(props)
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
+  const isPending = true
+
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
     leave: { opacity: 0 },
     trail: 3000,
   })
-
-  const isPending = true
 
   useEffect(() => {
     if (!isPending) {
