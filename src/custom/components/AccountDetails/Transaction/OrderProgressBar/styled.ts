@@ -1,21 +1,23 @@
 import styled from 'styled-components/macro'
 import { animated } from 'react-spring'
-import { AlertTriangle, CheckCircle, Clock } from 'react-feather'
+import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   width: 575px;
+  /* min-height: 164px; */
   margin: 16px 0 8px 0;
   overflow: hidden;
   display: flex;
   flex-flow: column wrap;
   border-radius: 12px;
-  padding: 20px 20px 4px;
+  padding: 20px 20px 0;
   color: ${({ theme }) => theme.text1};
   background-color: ${({ theme }) => theme.bg4};
+  transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 24px auto 12px;
@@ -129,11 +131,6 @@ export const OrangeClockIcon = styled(Clock)`
   color: ${({ theme }) => theme.yellow1};
 `
 
-export const WarningIcon = styled(AlertTriangle)`
-  margin: 0 0.5rem 0 0;
-  color: ${({ theme }) => theme.attention};
-`
-
 export const StatusMsgContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -164,6 +161,11 @@ export const StatusGraph = styled.div`
     align-items: center;
     flex-direction: column;
   `};
+`
+
+export const StatusWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 export const StatusMsg = styled.p`
