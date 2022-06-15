@@ -413,9 +413,7 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams
     quoteParams.validTo = MAX_VALID_TO_EPOCH
     const { quote } = await getQuote(quoteParams)
 
-    // BUY order always. We also need to add the fee to the sellAmount to get the unaffected price
-    const amountWithoutFee = new BigNumberJs(quote.feeAmount).plus(new BigNumberJs(quote.sellAmount))
-    return amountWithoutFee.toString(10)
+    return quote.sellAmount
   } else {
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
