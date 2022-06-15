@@ -73,7 +73,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('amm')
+    setExecutionState('confirmed')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
@@ -107,9 +107,11 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusWrapper>
                 <GreenClockIcon size={16} />
                 <StatusMsg>
-                  Order Status: Looking for a{' '}
+                  Order Status: <strong>Looking for a</strong>{' '}
                   <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">
-                    <strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants (CoW)
+                    <strong>
+                      <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW)
+                    </strong>
                   </ExternalLink>{' '}
                   ↗
                 </StatusMsg>
@@ -136,7 +138,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             <StatusMsgContainer>
               <StatusWrapper>
                 <OrangeClockIcon size={16} />
-                <StatusMsg>Finding the best on-chain price.</StatusMsg>
+                <StatusMsg>
+                  Order Status: <strong>Finding the best on-chain price.</strong>
+                </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
                 <img src={ammsGraph} alt="Finding the best price ..." />
@@ -159,7 +163,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             <StatusMsgContainer>
               <StatusWrapper>
                 <GreenCheckIcon size={16} />
-                <StatusMsg>Congrats! Your transaction has been confirmed successfully! 🚀</StatusMsg>
+                <StatusMsg>
+                  <strong>Congrats! Your transaction has been confirmed successfully! 🚀 </strong>
+                </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
                 {/* <img src={ammsGraph} alt="Finding the best price ..." /> */}
@@ -184,7 +190,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusWrapper>
                 <OrangeClockIcon size={16} />
                 <StatusMsg>
-                  Your limit price is out of market.{' '}
+                  Order Status: <strong>Your limit price is out of market.</strong>{' '}
                   {isCancellable ? (
                     <>
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
@@ -216,7 +222,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusWrapper>
                 <OrangeClockIcon size={16} />
                 <StatusMsg>
-                  The network looks slower than usual. Our solvers are adjusting gas fees for you!
+                  Order Status:{' '}
+                  <strong>The network looks slower than usual. Our solvers are adjusting gas fees for you!</strong>
                   {isCancellable ? (
                     <>
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />

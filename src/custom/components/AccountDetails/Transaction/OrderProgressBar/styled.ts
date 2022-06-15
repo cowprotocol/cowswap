@@ -147,7 +147,7 @@ export const StatusMsgContainer = styled.div`
 
 export const StatusGraph = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin: 1rem 0 0 0;
   gap: 1rem;
   border: 1px solid ${({ theme }) => theme.border2};
@@ -176,7 +176,7 @@ export const StatusMsg = styled.p`
   color: ${({ theme }) => theme.text1};
   margin: 0;
 
-  strong {
+  span {
     color: ${({ theme }) => theme.orange};
   }
 `
