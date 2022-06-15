@@ -150,6 +150,13 @@ export const StatusGraph = styled.div`
   align-items: flex-start;
   margin: 1rem 0 0 0;
   gap: 1rem;
+  border: 1px solid ${({ theme }) => theme.border2};
+  border-radius: 0.6rem;
+  padding: 0.5rem;
+
+  img {
+    margin: 0.4rem 0 0 0;
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 0.2rem;

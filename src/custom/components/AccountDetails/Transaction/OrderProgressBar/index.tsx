@@ -73,7 +73,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('delayed')
+    setExecutionState('amm')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
@@ -107,9 +107,11 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusWrapper>
                 <GreenClockIcon size={16} />
                 <StatusMsg>
-                  Looking for a{' '}
-                  <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">CoW ↗</ExternalLink> (
-                  <strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants)
+                  Order Status: Looking for a{' '}
+                  <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">
+                    <strong>C</strong>oincidence <strong>o</strong>f <strong>W</strong>ants (CoW)
+                  </ExternalLink>{' '}
+                  ↗
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
