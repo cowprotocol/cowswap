@@ -1,16 +1,14 @@
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ThemedText } from 'theme'
-import { LightCard } from 'components/Card'
-import { AutoColumn } from 'components/Column'
-import CurrencyLogo from 'components/CurrencyLogo'
-import { BaseButton } from 'components/Button'
 import { transparentize } from 'polished'
+import { AutoColumn } from 'components/Column'
+import { BaseButton } from 'components/Button'
+import CurrencyLogo from 'components/CurrencyLogo'
 
-export const Wrapper = styled(LightCard)`
+export const Wrapper = styled.div`
   width: 100%;
   border: none;
-  background: transparent;
 `
 
 export const ResponsiveGrid = styled.div`
@@ -18,8 +16,8 @@ export const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
   text-align: left;
-  border-bottom: 1px solid ${({ theme }) => theme.bg5};
-  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(2, 55px) 100px;
+  border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.primary1))};
+  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) repeat(2, 55px) 100px;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -143,7 +141,8 @@ export const LargeOnly = styled.span`
 `
 
 export const TableHeader = styled(ResponsiveGrid)`
-  padding-bottom: 10px;
+  padding: 1.2rem 0;
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.bg2) : transparentize(0.7, theme.bg4))};
 `
 
 export const TableBody = styled(AutoColumn)`
@@ -152,7 +151,7 @@ export const TableBody = styled(AutoColumn)`
 
 export const Cell = styled.div<{ center?: boolean }>`
   display: flex;
-  padding: 12px 0;
+  padding: 1rem 0;
   justify-content: ${({ center }) => (center ? 'center' : 'flex-start')};
 
   > * {
@@ -188,7 +187,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   width: auto;
   font-weight: 400;
   transition: all 0.15s ease-in;
-  background: ${({ theme, color }) => transparentize(0.4, color || theme.primary1)};
+  background: ${({ theme, color }) => transparentize(0.2, color || theme.primary1)};
   white-space: nowrap;
   position: relative;
 
@@ -258,12 +257,23 @@ export const ApproveLabel = styled.span<{ color?: string }>`
 `
 
 export const CustomLimit = styled.div`
-  padding: 0 2px;
-
   span:last-child {
     cursor: default;
     font-size: 10px;
     margin-top: 5px;
     display: block;
   }
+`
+
+export const IndexLabel = styled(Label)`
+  padding-left: 15px;
+`
+
+export const FiatValue = styled.div`
+  font-size: 10px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${({ theme }) => theme.primary1};
 `

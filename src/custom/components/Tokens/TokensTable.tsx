@@ -16,6 +16,7 @@ import {
   ClickableText,
   Table,
   PaginationText,
+  IndexLabel,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
@@ -206,7 +207,7 @@ export default function TokenTable({
         <AutoColumn>
           <Table ref={tableRef}>
             <TableHeader>
-              <Label>#</Label>
+              <IndexLabel>#</IndexLabel>
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
                 <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
               </ClickableText>

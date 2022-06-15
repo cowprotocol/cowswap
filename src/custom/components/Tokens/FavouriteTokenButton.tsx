@@ -2,6 +2,12 @@ import { useCallback, useMemo } from 'react'
 import { Token } from '@uniswap/sdk-core'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'state/user/hooks'
 import { ButtonStar } from 'components/Button'
+import useTheme from 'hooks/useTheme'
+import styled from 'styled-components/macro'
+
+export const StyledButtonStar = styled(ButtonStar)`
+  z-index: 9;
+`
 
 type FavouriteTokenButtonParams = {
   tokenData: Token
@@ -9,6 +15,7 @@ type FavouriteTokenButtonParams = {
 
 export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButtonParams) {
   const favouriteTokens = useFavouriteTokens()
+  const theme = useTheme()
 
   const toggleFavouriteToken = useToggleFavouriteToken()
 
@@ -25,5 +32,11 @@ export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButton
     [favouriteTokens, tokenData]
   )
 
-  return <ButtonStar fill={isFavouriteToken} onClick={handleFavouriteToken} />
+  return (
+    <StyledButtonStar
+      stroke={theme.yellow2}
+      fill={isFavouriteToken ? theme.yellow2 : false}
+      onClick={handleFavouriteToken}
+    />
+  )
 }

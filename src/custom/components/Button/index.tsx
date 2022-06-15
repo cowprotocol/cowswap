@@ -254,12 +254,13 @@ export function ButtonDropdownLight({
 export const ButtonStar = ({
   fill = false,
   size = '15px',
+  stroke,
   ...rest
-}: { fill: boolean; size?: string } & HTMLAttributes<HTMLDivElement>) => {
+}: { fill: string | false; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
   const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={theme.text3} fill={fill ? theme.text3 : 'transparent'} size={size} />
+      <Star stroke={stroke || theme.text3} fill={fill || 'transparent'} size={size} />
     </HoverIcon>
   )
 }

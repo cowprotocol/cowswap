@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { Trans } from '@lingui/macro'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
 import {
@@ -15,6 +16,7 @@ import {
   TableButton,
   ApproveLabel,
   CustomLimit,
+  FiatValue,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { TableType } from './TokensTable'
@@ -28,6 +30,8 @@ import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useActiveWeb3React } from 'hooks/web3'
 import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 import Loader from 'components/Loader'
+import { useHigherUSDValue } from 'hooks/useUSDCPrice'
+import { FIAT_PRECISION } from 'constants/index'
 
 type DataRowParams = {
   tokenData: Token
@@ -56,6 +60,7 @@ const DataRow = ({
   const theme = useTheme()
   const hasBalance = balance?.greaterThan(0)
   const formattedBalance = formatSmart(balance) || 0
+  const fiatValue = useHigherUSDValue(balance)
 
   // allowance
   const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
@@ -103,16 +108,10 @@ const DataRow = ({
   const noBalance = !balance || balance?.equalTo(0)
 
   const displayApproveContent = useMemo(() => {
-    if (noBalance) {
-      return <ApproveLabel>No balance</ApproveLabel>
-    } else if (isPendingApprove) {
-      return <CardsSpinner />
-    } else if (isApproved) {
-      return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
-    } else if (!isApproved && currentAllowance && !currentAllowance?.equalTo(0)) {
+    if (!isApproved && currentAllowance && !currentAllowance?.equalTo(0)) {
       return (
         <CustomLimit>
-          <TableButton outlined onClick={handleApprove} color={theme.primary1}>
+          <TableButton onClick={handleApprove} color={theme.primary1}>
             Approve all
           </TableButton>
           <ApproveLabel color={theme.green1} title={`Approved: ${currentAllowance.toExact()}`}>
@@ -120,12 +119,16 @@ const DataRow = ({
           </ApproveLabel>
         </CustomLimit>
       )
-    } else {
+    } else if (!isApproved || noBalance) {
       return (
-        <TableButton outlined onClick={handleApprove} color={theme.primary1}>
+        <TableButton onClick={handleApprove} color={theme.primary1}>
           Approve
         </TableButton>
       )
+    } else if (isPendingApprove) {
+      return <CardsSpinner />
+    } else {
+      return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
   }, [currentAllowance, handleApprove, isApproved, isPendingApprove, noBalance, theme.green1, theme.primary1])
 
@@ -170,7 +173,20 @@ const DataRow = ({
       <Cell>
         {balance ? (
           <BalanceValue title={balance?.toExact()} hasBalance={!!hasBalance}>
-            {formattedBalance}
+            <div>{formattedBalance}</div>
+            {hasBalance && fiatValue ? (
+              <Trans>
+                <FiatValue title={`$${fiatValue.toExact()}`}>
+                  <span>≈ $</span>
+                  {formatSmart(fiatValue, FIAT_PRECISION, {
+                    thousandSeparator: true,
+                    isLocaleAware: true,
+                  })}
+                </FiatValue>
+              </Trans>
+            ) : (
+              ''
+            )}
           </BalanceValue>
         ) : account ? (
           <Loader />
