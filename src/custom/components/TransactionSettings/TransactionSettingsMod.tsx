@@ -13,7 +13,7 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 
 // MOD imports
 import {
@@ -26,6 +26,7 @@ import {
   DEFAULT_SLIPPAGE_BPS,
 } from 'constants/index'
 import { debounce } from 'utils/misc'
+import { reportEvent } from '@src/custom/utils/analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -105,7 +106,7 @@ const SlippageEmojiContainer = styled.span`
 `
 
 const reportAnalytics = debounce((actionName: string, slippageBps: number) => {
-  ReactGA.event({
+  reportEvent({
     category: 'Order Slippage Tolerance',
     action: actionName,
     value: slippageBps,
@@ -171,7 +172,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setDeadlineError(false)
 
     if (value.length === 0) {
-      ReactGA.event({
+      reportEvent({
         category: 'Order Expiration Time',
         action: 'Set Default Expiration Time',
         value: DEFAULT_DEADLINE_FROM_NOW,
@@ -187,7 +188,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
         } else {
-          ReactGA.event({
+          reportEvent({
             category: 'Order Expiration Time',
             action: 'Set Custom Expiration Time',
             value: parsed,

@@ -11,7 +11,7 @@ import useTheme from 'hooks/useTheme'
 import { transparentize } from 'polished'
 import { useCallback, useState } from 'react'
 import { AlertTriangle, ArrowLeft } from 'react-feather'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 // import { useAppDispatch } from 'state/hooks'
 // import { enableList, removeList } from '@src/state/lists/actions'
 import { useAllLists } from 'state/lists/hooks'
@@ -25,6 +25,7 @@ import { Checkbox, PaddedColumn, TextDot } from 'components/SearchModal/styleds'
 // MOD imports
 import { Card } from 'components/SearchModal/ManageLists' // mod
 import { ImportProps } from '.'
+import { reportEvent } from 'utils/analytics'
 
 const Wrapper = styled.div`
   position: relative;
@@ -59,7 +60,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
     setAddError(null)
     fetchList(listURL)
       .then(() => {
-        ReactGA.event({
+        reportEvent({
           category: 'Lists',
           action: 'Add List',
           label: listURL,
@@ -71,7 +72,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
         setModalView(CurrencyModalView.manage)
       })
       .catch((error) => {
-        ReactGA.event({
+        reportEvent({
           category: 'Lists',
           action: 'Add List Failed',
           label: listURL,

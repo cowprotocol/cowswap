@@ -5,7 +5,7 @@ import { /*Row,*/ AutoRow /*, RowBetween*/ } from 'components/Row'
 // import { useWalletConnectMonitoringEventCallback } from 'hooks/useMonitoringEventCallback'
 import { useEffect, useState } from 'react'
 // import { ArrowLeft, ArrowRight, Info } from 'react-feather'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 import { AbstractConnector } from 'web3-react-abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
@@ -26,6 +26,7 @@ import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
 import Option from 'components/WalletModal/Option'
 import PendingView from 'components/WalletModal/PendingView'
+import { reportEvent } from 'utils/analytics'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
@@ -215,7 +216,7 @@ export default function WalletModal({
       return true
     })
     // log selected wallet
-    ReactGA.event({
+    reportEvent({
       category: 'Wallet',
       action: 'Change Wallet',
       label: name,

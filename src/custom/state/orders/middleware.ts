@@ -7,7 +7,8 @@ import * as OrderActions from './actions'
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
 import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
+import { reportEvent } from 'utils/analytics'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -31,7 +32,7 @@ const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderAction
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
 function reportAnalytics(action: string, label?: string) {
-  ReactGA.event({
+  reportEvent({
     category: 'Swap',
     action,
     label,

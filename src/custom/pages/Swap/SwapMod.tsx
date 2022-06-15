@@ -15,7 +15,7 @@ import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
@@ -86,6 +86,7 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
+import { reportEvent } from 'utils/analytics'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -93,7 +94,7 @@ import { AlertWrapper } from './styleds' // mod
 // `
 
 function reportAnalytics(action: string, label?: string, value?: number) {
-  ReactGA.event({
+  reportEvent({
     category: 'Swap',
     action,
     label,

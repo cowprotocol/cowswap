@@ -21,8 +21,9 @@ import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
+import { reportEvent } from 'utils/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -41,7 +42,7 @@ interface Props {
 }
 
 function reportAnalytics(action: string, value?: number) {
-  ReactGA.event({
+  reportEvent({
     category: 'Claim COW for Locked GNO',
     action,
     value,

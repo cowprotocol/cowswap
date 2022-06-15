@@ -1,3 +1,5 @@
+import { ErrorInfo } from 'react'
+
 import ReactGA from 'react-ga4'
 
 import {} from 'web-vitals'
@@ -34,4 +36,19 @@ export function onChainIdChange(chainId: number | undefined) {
 
 export function onPathNameChange(pathname: string, search: string) {
   ReactGA.send({ hitType: 'pageview', page: `${pathname}${search}` })
+}
+
+export function reportError(error: Error, errorInfo: ErrorInfo) {
+  ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
+}
+
+interface EventParams {
+  category: string
+  action: string
+  label?: string
+  value?: number
+}
+
+export function reportEvent({ category, action, label, value }: EventParams) {
+  ReactGA.event({ category, action, label, value })
 }
