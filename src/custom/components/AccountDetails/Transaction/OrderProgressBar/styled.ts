@@ -155,6 +155,14 @@ export const StatusGraph = styled.div`
   padding: 0 0.9rem;
   min-height: 6rem;
 
+  .meditating-cow {
+    margin: 0 2rem;
+  }
+
+  span {
+    color: ${({ theme }) => theme.orange};
+  }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 0rem;
     display: flex;

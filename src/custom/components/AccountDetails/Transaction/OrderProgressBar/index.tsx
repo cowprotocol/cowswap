@@ -73,7 +73,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('delayed')
+    setExecutionState('unfillable')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
@@ -199,7 +199,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." />
+                <p>
+                  Current price: <strong>$1200.56</strong>
+                </p>
+                <p>
+                  Your price: $1300.55 (<span>+8%</span>)
+                </p>
                 <p>
                   <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>
@@ -232,7 +237,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." />
+                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
                   <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>
