@@ -152,17 +152,15 @@ export const StatusGraph = styled.div`
   gap: 1rem;
   border: 1px solid ${({ theme }) => theme.border2};
   border-radius: 0.6rem;
-  padding: 0.5rem;
-
-  img {
-    margin: 0.4rem 0 0 0;
-  }
+  padding: 0 0.9rem;
+  min-height: 6rem;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    gap: 0.2rem;
+    gap: 0rem;
     display: flex;
     align-items: center;
     flex-direction: column;
+    padding: 0.4rem 0.8rem; 
   `};
 `
 

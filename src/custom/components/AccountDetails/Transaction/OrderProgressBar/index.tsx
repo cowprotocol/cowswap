@@ -73,7 +73,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('confirmed')
+    setExecutionState('delayed')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
