@@ -128,7 +128,7 @@ To have the interface default to a different network when a wallet is not connec
 REACT_APP_SUPPORTED_CHAIN_IDS="1,4,100"
 REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_4=https://rinkeby.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_100=https://rpc.xdaichain.com
+REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
 ```
 
 ### API endpoints
