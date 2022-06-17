@@ -78,7 +78,7 @@ interface DropdownType {
   items: MAIN_MENU_TYPE['items']
 }
 
-const buildDropdown = ({ index, title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items }: DropdownType) => (
+const getDropdown = ({ index, title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items }: DropdownType) => (
   <MenuDropdown key={index} title={title}>
     {items &&
       items.map(({ sectionTitle, links }, index) => {
@@ -125,7 +125,7 @@ export default function MainMenu({
           {!items && url && getLink({ title, externalURL, index, url, handleMobileMenuOnClick })}
 
           {/* 1st level main menu item: Has dropdown items */}
-          {items && buildDropdown({ index, title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items })}
+          {items && getDropdown({ index, title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items })}
         </>
       )),
     [darkMode, handleMobileMenuOnClick, toggleDarkMode]
