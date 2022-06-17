@@ -40,7 +40,7 @@ import CowBalanceButton from 'components/CowBalanceButton'
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
-import { reportEvent } from '@src/custom/utils/analytics'
+import { reportEvent } from 'utils/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',

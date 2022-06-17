@@ -26,7 +26,7 @@ import {
   DEFAULT_SLIPPAGE_BPS,
 } from 'constants/index'
 import { debounce } from 'utils/misc'
-import { reportEvent } from '@src/custom/utils/analytics'
+import { reportEvent } from 'utils/analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
