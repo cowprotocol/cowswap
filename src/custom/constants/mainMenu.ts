@@ -11,23 +11,6 @@ import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
 
-export interface MAIN_MENU_TYPE {
-  title: string
-  url?: string
-  externalURL?: boolean
-  items?: {
-    sectionTitle?: string
-    links: {
-      title?: string
-      url?: string // If URL is an internal route
-      externalURL?: boolean // If URL is external
-      icon?: string // If icon uses a regular <img /> tag
-      iconSVG?: string // If icon is a <SVG> inline component
-      action?: string // Special purpose flag for non-regular links
-    }[]
-  }[]
-}
-
 export const FAQ_MENU = [
   { title: 'Overview', url: Routes.FAQ },
   { title: 'Protocol', url: Routes.FAQ_PROTOCOL },

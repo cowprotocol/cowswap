@@ -26,7 +26,7 @@ import {
   HeaderControls,
   HeaderElement,
 } from './styled'
-import MainMenu from './mainMenu'
+import MainMenu from './MainMenu'
 import MobileMenuIcon from './MobileMenuIcon'
 import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
