@@ -32,7 +32,7 @@ describe('Swap (mod)', () => {
   })
 
   it('can enter an amount into output', () => {
-    // first, clear the INPUT currency input field
+    // clear the INPUT currency input field first
     // as it is auto filled with "1"
     cy.get('#swap-currency-input .token-amount-input')
       .clear()
@@ -43,7 +43,7 @@ describe('Swap (mod)', () => {
   })
 
   it('zero output amount', () => {
-    // first, clear the INPUT currency input field
+    // clear the INPUT currency input field first
     // as it is auto filled with "1"
     cy.get('#swap-currency-input .token-amount-input')
       .clear()
@@ -53,10 +53,11 @@ describe('Swap (mod)', () => {
       .should('have.value', '0.0')
   })
 
-  it('can swap Native for DAI', () => {
+  it('can find GNO and swap Native for GNO', () => {
     cy.get('#swap-currency-output .open-currency-select-button').click()
-    cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').should('be.visible')
-    cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').click({ force: true })
+    cy.get('#token-search-input').type('GNO')
+    cy.get('.token-item-0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c').should('be.visible')
+    cy.get('.token-item-0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c').click({ force: true })
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('{selectall}{backspace}{selectall}{backspace}').type('0.5')
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
