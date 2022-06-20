@@ -43,12 +43,56 @@ export function reportError(error: Error, errorInfo: ErrorInfo) {
 }
 
 interface EventParams {
-  category: string
+  category: Category
   action: string
   label?: string
   value?: number
 }
 
-export function reportEvent({ category, action, label, value }: EventParams) {
-  ReactGA.event({ category, action, label, value })
+export enum Category {
+  SWAP = 'Swap',
+  LIST = 'Lists',
+  CURRENCY_SELECT = 'Currency Select',
+  EXPERT_MODE = 'Expert mode',
+  RECIPIENT_ADDRESS = 'Recipient address',
+  ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
+  ORDER_EXPIRATION_TIME = 'Order Expiration Time',
+  WALLET = 'Wallet',
+  ORDER_SLIPPAGE = 'Order Slippage Tolerance',
+  WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
+  CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO' // TODO: Maybe Claim COW was enough?
+}
+
+function _reportEvent(params: EventParams) {
+  ReactGA.event(params)
+}
+
+export function updateListAnalytics (listUrl: string, modal: boolean) {
+  _reportEvent({
+    category: Category.LIST,
+    action: 'Update List from ' + modal? 'Modal' : 'App',
+    label: listUrl,
+  })
+}
+
+export function toggleExpertModeAnalytics (isDisabling: boolean) {
+  _reportEvent({
+    category: Category.EXPERT_MODE,
+    action: isDisabling ? 'Disable Expert Mode' : 'Enable Expert Mode',
+  })
+}
+
+export function showExpertModeConfirmationAnalytics () {
+  _reportEvent({
+    category: Category.EXPERT_MODE,
+    action: 'Show Confirmation',
+  })
+}
+
+export function toggleRecepientAddressAnalytics (isDisabling: boolean) {
+  _reportEvent({
+    category: Category.RECIPIENT_ADDRESS,
+    action: 'Toggle Recipient Address',
+    label: !isDisabling ? 'Enabled' : 'Disabled',
+  })
 }

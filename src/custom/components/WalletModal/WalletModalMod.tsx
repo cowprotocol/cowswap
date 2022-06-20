@@ -26,7 +26,7 @@ import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
 import Option from 'components/WalletModal/Option'
 import PendingView from 'components/WalletModal/PendingView'
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
@@ -216,7 +216,7 @@ export default function WalletModal({
       return true
     })
     // log selected wallet
-    reportEvent({
+    _reportEvent({
       category: 'Wallet',
       action: 'Change Wallet',
       label: name,

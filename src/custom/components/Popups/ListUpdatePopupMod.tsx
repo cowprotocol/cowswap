@@ -13,7 +13,7 @@ import { ButtonSecondary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { ListUpdatePopupProps } from './ListUpdatePopup'
-import { reportEvent } from 'utils/analytics'
+import { updateListAnalytics } from 'utils/analytics'
 
 export const ChangesList = styled.ul`
   max-height: 400px;
@@ -35,11 +35,7 @@ export default function ListUpdatePopup({
 
   const handleAcceptUpdate = useCallback(() => {
     if (auto) return
-    reportEvent({
-      category: 'Lists',
-      action: 'Update List from Popup',
-      label: listUrl,
-    })
+    updateListAnalytics(listUrl)
     dispatch(acceptListUpdate(listUrl))
     removeThisPopup()
     // MOD: deps

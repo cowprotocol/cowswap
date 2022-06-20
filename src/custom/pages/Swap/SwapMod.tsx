@@ -86,7 +86,7 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -94,7 +94,7 @@ import { reportEvent } from 'utils/analytics'
 // `
 
 function reportAnalytics(action: string, label?: string, value?: number) {
-  reportEvent({
+  _reportEvent({
     category: 'Swap',
     action,
     label,

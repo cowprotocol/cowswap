@@ -34,7 +34,7 @@ import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/
 import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -142,7 +142,7 @@ ListRowProps & { listUrl: string }) {
 
   const handleAcceptListUpdate = useCallback(() => {
     if (!pending) return
-    reportEvent({
+    _reportEvent({
       category: 'Lists',
       action: 'Update List from List Select',
       label: listUrl,
@@ -152,13 +152,13 @@ ListRowProps & { listUrl: string }) {
   }, [acceptListUpdate, dispatch, listUrl, pending])
 
   const handleRemoveList = useCallback(() => {
-    reportEvent({
+    _reportEvent({
       category: 'Lists',
       action: 'Start Remove List',
       label: listUrl,
     })
     if (window.prompt(t`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
-      reportEvent({
+      _reportEvent({
         category: 'Lists',
         action: 'Confirm Remove List',
         label: listUrl,
@@ -169,7 +169,7 @@ ListRowProps & { listUrl: string }) {
   }, [dispatch, listUrl, removeList])
 
   const handleEnableList = useCallback(() => {
-    reportEvent({
+    _reportEvent({
       category: 'Lists',
       action: 'Enable List',
       label: listUrl,
@@ -179,7 +179,7 @@ ListRowProps & { listUrl: string }) {
   }, [dispatch, enableList, listUrl])
 
   const handleDisableList = useCallback(() => {
-    reportEvent({
+    _reportEvent({
       category: 'Lists',
       action: 'Disable List',
       label: listUrl,

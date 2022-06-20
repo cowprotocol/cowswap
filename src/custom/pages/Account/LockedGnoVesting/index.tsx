@@ -23,7 +23,7 @@ import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -42,7 +42,7 @@ interface Props {
 }
 
 function reportAnalytics(action: string, value?: number) {
-  reportEvent({
+  _reportEvent({
     category: 'Claim COW for Locked GNO',
     action,
     value,

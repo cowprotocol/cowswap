@@ -27,7 +27,7 @@ import CommonBases from 'components/SearchModal/CommonBases'
 import CurrencyList from 'components/SearchModal/CurrencyList'
 import ImportRow from 'components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 // MOD imports
 import useNetworkName from 'hooks/useNetworkName'
@@ -99,7 +99,7 @@ export function CurrencySearch({
 
   useEffect(() => {
     if (isAddressSearch) {
-      reportEvent({
+      _reportEvent({
         category: 'Currency Select',
         action: 'Search by address',
         label: isAddressSearch,

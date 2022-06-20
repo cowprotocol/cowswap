@@ -26,7 +26,7 @@ import { getOperationMessage, OperationType } from '../components/TransactionCon
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -138,14 +138,14 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       try {
         openTransactionConfirmationModal(confirmationMessage, operationType)
 
-        reportEvent({
+        _reportEvent({
           category: ANALYTICS_WRAP_CATEGORY,
           action: 'Send Transaction to Wallet',
           label: operationMessage,
         })
 
         const txReceipt = await wrapUnwrap()
-        reportEvent({
+        _reportEvent({
           category: ANALYTICS_WRAP_CATEGORY,
           action: 'Sign Transaction',
           label: operationMessage,
@@ -162,7 +162,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
         const action = (isRejectRequestProviderError(error) ? 'Reject' : 'Error') + ' Signing transaction'
 
-        reportEvent({
+        _reportEvent({
           category: ANALYTICS_WRAP_CATEGORY,
           action,
           label: operationMessage,

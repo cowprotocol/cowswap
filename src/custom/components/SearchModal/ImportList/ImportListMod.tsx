@@ -25,7 +25,7 @@ import { Checkbox, PaddedColumn, TextDot } from 'components/SearchModal/styleds'
 // MOD imports
 import { Card } from 'components/SearchModal/ManageLists' // mod
 import { ImportProps } from '.'
-import { reportEvent } from 'utils/analytics'
+import { xxxxxxAnalytics } from 'utils/analytics'
 
 const Wrapper = styled.div`
   position: relative;
@@ -60,7 +60,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
     setAddError(null)
     fetchList(listURL)
       .then(() => {
-        reportEvent({
+        _reportEvent({
           category: 'Lists',
           action: 'Add List',
           label: listURL,
@@ -72,7 +72,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
         setModalView(CurrencyModalView.manage)
       })
       .catch((error) => {
-        reportEvent({
+        _reportEvent({
           category: 'Lists',
           action: 'Add List Failed',
           label: listURL,
