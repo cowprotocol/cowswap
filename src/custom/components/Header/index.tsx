@@ -26,7 +26,7 @@ import {
   HeaderControls,
   HeaderElement,
 } from './styled'
-import MainMenu from './MainMenu'
+import { MenuTree } from './MenuTree'
 import MobileMenuIcon from './MobileMenuIcon'
 import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
@@ -107,7 +107,7 @@ export default function Header() {
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <MainMenu
+          <MenuTree
             isMobileMenuOpen={isMobileMenuOpen}
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}

@@ -11,7 +11,30 @@ import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
 
-export const FAQ_MENU = [
+export interface BasicMenuLink {
+  title?: string // FIXME: This title should be mandatory, only because of the "setColorMode" is not. Model this better
+  // TODO: Can we just have a type, and a default?
+  url?: string // If URL is an internal route
+  externalURL?: boolean // If URL is external
+}
+export interface MenuLink extends BasicMenuLink {
+  icon?: string // If icon uses a regular <img /> tag
+  iconSVG?: string // If icon is a <SVG> inline component
+  // TODO: Review why we need this?
+  action?: string // Special purpose flag for non-regular links
+}
+export interface MenuTreeSubItem {
+  sectionTitle?: string
+  links: MenuLink[]
+}
+
+export interface MenuTreeItem extends BasicMenuLink {
+  title: string
+  items?: MenuTreeSubItem[]
+}
+
+// FIXME: Remove ({ title: string } when modeled properly. See other fixmes
+export const FAQ_MENU: ({ title: string; url: string } & MenuLink)[] = [
   { title: 'Overview', url: Routes.FAQ },
   { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
   { title: 'Token', url: Routes.FAQ_TOKEN },
@@ -19,7 +42,7 @@ export const FAQ_MENU = [
   { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
 ]
 
-export const MAIN_MENU = [
+export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
   { title: 'Account', url: Routes.ACCOUNT },
   {
