@@ -103,19 +103,19 @@ const getDropdown = ({ index, title, handleMobileMenuOnClick, toggleDarkMode, da
   </MenuDropdown>
 )
 
-export interface MainMenuProps {
+export interface MenuTreeProps {
   isMobileMenuOpen: boolean
   darkMode: boolean
   toggleDarkMode: () => void
   handleMobileMenuOnClick: () => void
 }
 
-export default function MainMenu({
+export default function MenuTree({
   isMobileMenuOpen,
   darkMode,
   toggleDarkMode,
   handleMobileMenuOnClick,
-}: MainMenuProps) {
+}: MenuTreeProps) {
   const getMainMenu = useMemo(
     () =>
       MAIN_MENU.map(({ title, url, externalURL, items }: MAIN_MENU_TYPE, index) => (
