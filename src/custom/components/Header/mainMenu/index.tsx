@@ -80,27 +80,26 @@ interface DropdownType {
 
 const getDropdown = ({ index, title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items }: DropdownType) => (
   <MenuDropdown key={index} title={title}>
-    {items &&
-      items.map(({ sectionTitle, links }, index) => {
-        return (
-          <MenuSection key={index}>
-            {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+    {items?.map(({ sectionTitle, links }, index) => {
+      return (
+        <MenuSection key={index}>
+          {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
 
-            {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => (
-              <>
-                {!url &&
-                  action &&
-                  action === 'setColorMode' &&
-                  getDarkModeButton({ index, darkMode, toggleDarkMode, handleMobileMenuOnClick })}
-                {!action &&
-                  url &&
-                  title &&
-                  getLink({ title, externalURL, index, url, handleMobileMenuOnClick, icon, iconSVG })}
-              </>
-            ))}
-          </MenuSection>
-        )
-      })}
+          {links.map(({ title, url, externalURL, icon, iconSVG, action }, index) => (
+            <>
+              {!url &&
+                action &&
+                action === 'setColorMode' &&
+                getDarkModeButton({ index, darkMode, toggleDarkMode, handleMobileMenuOnClick })}
+              {!action &&
+                url &&
+                title &&
+                getLink({ title, externalURL, index, url, handleMobileMenuOnClick, icon, iconSVG })}
+            </>
+          ))}
+        </MenuSection>
+      )
+    })}
   </MenuDropdown>
 )
 
