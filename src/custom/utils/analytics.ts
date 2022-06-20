@@ -60,36 +60,36 @@ export enum Category {
   WALLET = 'Wallet',
   ORDER_SLIPPAGE = 'Order Slippage Tolerance',
   WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
-  CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO' // TODO: Maybe Claim COW was enough?
+  CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO', // TODO: Maybe Claim COW was enough?
 }
 
 function _reportEvent(params: EventParams) {
   ReactGA.event(params)
 }
 
-export function updateListAnalytics (listUrl: string, modal: boolean) {
+export function updateListAnalytics(listUrl: string, modal: boolean) {
   _reportEvent({
     category: Category.LIST,
-    action: 'Update List from ' + modal? 'Modal' : 'App',
+    action: 'Update List from ' + modal ? 'Modal' : 'App',
     label: listUrl,
   })
 }
 
-export function toggleExpertModeAnalytics (isDisabling: boolean) {
+export function toggleExpertModeAnalytics(isDisabling: boolean) {
   _reportEvent({
     category: Category.EXPERT_MODE,
     action: isDisabling ? 'Disable Expert Mode' : 'Enable Expert Mode',
   })
 }
 
-export function showExpertModeConfirmationAnalytics () {
+export function showExpertModeConfirmationAnalytics() {
   _reportEvent({
     category: Category.EXPERT_MODE,
     action: 'Show Confirmation',
   })
 }
 
-export function toggleRecepientAddressAnalytics (isDisabling: boolean) {
+export function toggleRecepientAddressAnalytics(isDisabling: boolean) {
   _reportEvent({
     category: Category.RECIPIENT_ADDRESS,
     action: 'Toggle Recipient Address',

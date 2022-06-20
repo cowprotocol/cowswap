@@ -21,7 +21,11 @@ import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
 // import ReactGA from 'react-ga4'
-import { showExpertModeConfirmationAnalytics, toggleExpertModeAnalytics, toggleRecepientAddressAnalytics } from 'utils/analytics'
+import {
+  showExpertModeConfirmationAnalytics,
+  toggleExpertModeAnalytics,
+  toggleRecepientAddressAnalytics,
+} from 'utils/analytics'
 
 // MOD imports
 import { SettingsTabProp } from '.'
