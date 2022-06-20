@@ -2,23 +2,28 @@ import { HeaderLinks as Wrapper, StyledNavLink } from '../styled'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
-import { MAIN_MENU, MenuLink, MenuTreeItem, MenuTreeSubItem } from 'constants/mainMenu'
-import { ExternalLink } from 'theme/components'
+import {
+  MAIN_MENU,
+  MenuTreeItem,
+  MenuItemKind,
+  InternalLink,
+  ExternalLink,
+  DropDownItem,
+  MenuLink,
+} from 'constants/mainMenu'
+import { ExternalLink as ExternalLinkComponent } from 'theme/components'
 
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
 
-interface MenuItemProps {
+interface MenuImageProps {
   title: string
-  externalURL?: boolean
-  url: string
-  icon?: string
   iconSVG?: string
-  handleMobileMenuOnClick: () => void
+  icon?: string
 }
 
-function MenuImage(props: { title: string; iconSVG?: string; icon?: string }) {
+function MenuImage(props: MenuImageProps) {
   const { title, iconSVG, icon } = props
 
   if (iconSVG) {
@@ -30,30 +35,47 @@ function MenuImage(props: { title: string; iconSVG?: string; icon?: string }) {
   }
 }
 
-// Dynamic util function to render links based on internal or external type (with or without icon image)
-function MenuItem({ title, externalURL, url, iconSVG, icon, handleMobileMenuOnClick }: MenuItemProps) {
-  const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
-
-  return externalURL ? (
-    <ExternalLink href={url} onClickOptional={handleMobileMenuOnClick}>
-      {menuImage}
-      {title}
-    </ExternalLink>
-  ) : (
-    <StyledNavLink exact to={url} onClick={handleMobileMenuOnClick}>
-      {menuImage}
-      {title}
-    </StyledNavLink>
-  )
+interface InternalExternalLinkProps {
+  link: InternalLink | ExternalLink
+  handleMobileMenuOnClick: () => void
 }
 
-interface DarkModeButtonProps {
+function InternalExternalLink({ link, handleMobileMenuOnClick }: InternalExternalLinkProps) {
+  const { kind, title, url, iconSVG, icon } = link
+  const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
+  const isExternal = kind === MenuItemKind.EXTERNAL_LINK
+
+  if (isExternal) {
+    return (
+      <ExternalLinkComponent href={url} onClickOptional={handleMobileMenuOnClick}>
+        {menuImage}
+        {title}
+      </ExternalLinkComponent>
+    )
+  } else {
+    return (
+      <StyledNavLink exact to={url} onClick={handleMobileMenuOnClick}>
+        {menuImage}
+        {title}
+      </StyledNavLink>
+    )
+  }
+}
+
+interface ContextProps {
   darkMode: boolean
   toggleDarkMode: () => void
   handleMobileMenuOnClick: () => void
 }
 
-const DarkModeButton = ({ darkMode, toggleDarkMode, handleMobileMenuOnClick }: DarkModeButtonProps) => {
+type DarkModeButtonProps = {
+  context: ContextProps
+}
+
+function DarkModeButton({ context }: DarkModeButtonProps) {
+  const { darkMode, toggleDarkMode, handleMobileMenuOnClick } = context
+  const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`
+  const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
   return (
     <button
       onClick={() => {
@@ -61,57 +83,43 @@ const DarkModeButton = ({ darkMode, toggleDarkMode, handleMobileMenuOnClick }: D
         toggleDarkMode()
       }}
     >
-      <SVG src={darkMode ? IMAGE_SUN : IMAGE_MOON} description={`${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`} />{' '}
-      {darkMode ? 'Light' : 'Dark'} Mode
+      <SVG src={darkMode ? IMAGE_SUN : IMAGE_MOON} description={description} /> {label}
     </button>
   )
 }
 
-interface DropDownItemProps {
+interface LinkProps {
   link: MenuLink
-  darkMode: boolean
-  handleMobileMenuOnClick: () => void
-  toggleDarkMode: () => void
+  context: ContextProps
 }
 
-function DropDownItem({ link, darkMode, handleMobileMenuOnClick, toggleDarkMode }: DropDownItemProps) {
-  const { title, url, externalURL, icon, iconSVG, action } = link
-  return (
-    <>
-      {!url &&
-        action &&
-        action === 'setColorMode' &&
-        DarkModeButton({ darkMode, toggleDarkMode, handleMobileMenuOnClick })}
-      {!action && url && title && MenuItem({ title, externalURL, url, handleMobileMenuOnClick, icon, iconSVG })}
-    </>
-  )
+function Link({ link, context }: LinkProps) {
+  switch (link.kind) {
+    case MenuItemKind.DARK_MODE_BUTTON:
+      return <DarkModeButton context={context} />
+
+    default:
+      return <InternalExternalLink link={link} handleMobileMenuOnClick={context.handleMobileMenuOnClick} />
+  }
 }
 
 interface DropdownProps {
-  title: string
-  darkMode: boolean
-  items: MenuTreeSubItem[]
-  handleMobileMenuOnClick: () => void
-  toggleDarkMode: () => void
+  item: DropDownItem
+  context: ContextProps
 }
 
-const DropDown = (props: DropdownProps) => {
-  const { title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items } = props
+const DropDown = ({ item, context }: DropdownProps) => {
+  const { title, items } = item
 
   return (
     <MenuDropdown title={title}>
-      {items?.map(({ sectionTitle, links }, index) => {
+      {items?.map((item, index) => {
+        const { sectionTitle, links } = item
         return (
           <MenuSection key={index}>
             {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-            {links.map((link, index) => (
-              <DropDownItem
-                key={index}
-                link={link}
-                handleMobileMenuOnClick={handleMobileMenuOnClick}
-                toggleDarkMode={toggleDarkMode}
-                darkMode={darkMode}
-              />
+            {links.map((link, linkIndex) => (
+              <Link key={linkIndex} link={link} context={context} />
             ))}
           </MenuSection>
         )
@@ -122,40 +130,35 @@ const DropDown = (props: DropdownProps) => {
 
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem
-
-  darkMode: boolean
-  toggleDarkMode: () => void
-  handleMobileMenuOnClick: () => void
+  context: ContextProps
 }
 
 function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
-  const { menuItem, darkMode, toggleDarkMode, handleMobileMenuOnClick } = props
-  const { title, externalURL, url, items } = menuItem
-  return (
-    <>
-      {/* 1st level main menu item: No dropdown items */}
-      {!items && url && MenuItem({ title, externalURL, url, handleMobileMenuOnClick })}
+  const { menuItem, context } = props
 
-      {/* 1st level main menu item: Has dropdown items */}
-      {items && DropDown({ title, handleMobileMenuOnClick, toggleDarkMode, darkMode, items })}
-    </>
-  )
+  switch (menuItem.kind) {
+    case MenuItemKind.DROP_DOWN:
+      return <DropDown item={menuItem} context={context} />
+
+    case undefined: // INTERNAL
+    case MenuItemKind.EXTERNAL_LINK: // EXTERNAL
+      // Render Internal/External links
+      return <InternalExternalLink link={menuItem} handleMobileMenuOnClick={context.handleMobileMenuOnClick} />
+    default:
+      return null
+  }
 }
 
-export interface MenuTreeProps {
+export interface MenuTreeProps extends ContextProps {
   isMobileMenuOpen: boolean
-
-  darkMode: boolean
-  toggleDarkMode: () => void
-  handleMobileMenuOnClick: () => void
 }
 
 export function MenuTree({ isMobileMenuOpen, darkMode, toggleDarkMode, handleMobileMenuOnClick }: MenuTreeProps) {
-  const otherProps = { darkMode, toggleDarkMode, handleMobileMenuOnClick }
+  const context = { darkMode, toggleDarkMode, handleMobileMenuOnClick }
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       {MAIN_MENU.map((menuItem, index) => (
-        <MenuItemWithDropDown key={index} menuItem={menuItem} {...otherProps} />
+        <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
       ))}
     </Wrapper>
   )
