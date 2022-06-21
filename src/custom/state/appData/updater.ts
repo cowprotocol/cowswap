@@ -49,7 +49,7 @@ async function _uploadToIpfs(
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
   removePending: (params: AppDataKeyParams) => void
 ) {
-  const { doc, chainId, orderId, uploading, tryAfter, hash } = appDataRecord
+  const { doc, chainId, orderId, uploading, failedAttempts, lastAttempt, hash } = appDataRecord
 
   if (!doc) {
     // No actual doc to upload, nothing to do here

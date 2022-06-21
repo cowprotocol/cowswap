@@ -36,7 +36,7 @@ export const addAppDataToUploadQueueAtom = atom(
 
       return {
         ...docs,
-        [key]: { ...appData, uploading: false },
+        [key]: { ...appData, uploading: false, failedAttempts: 0 },
       }
     })
   }
@@ -47,7 +47,7 @@ export const addAppDataToUploadQueueAtom = atom(
  */
 export const updateAppDataOnUploadQueueAtom = atom(
   null,
-  (get, set, { chainId, orderId, uploading, tryAfter }: UpdateAppDataOnUploadQueueParams) => {
+  (get, set, { chainId, orderId, uploading, lastAttempt, failedAttempts }: UpdateAppDataOnUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
       const key = buildAppDataRecordKey({ chainId, orderId })
@@ -56,9 +56,16 @@ export const updateAppDataOnUploadQueueAtom = atom(
         return docs
       }
 
+      const current = docs[key]
+
       return {
         ...docs,
-        [key]: { ...docs[key], uploading, tryAfter },
+        [key]: {
+          ...current,
+          uploading: uploading ?? current.uploading,
+          lastAttempt: lastAttempt ?? current.lastAttempt,
+          failedAttempts: failedAttempts ?? current.failedAttempts,
+        },
       }
     })
   }
