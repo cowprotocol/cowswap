@@ -27,10 +27,6 @@ export interface InternalLink extends BasicMenuLink {
   kind?: undefined
 }
 
-export interface InternalLink extends BasicMenuLink {
-  kind?: undefined
-}
-
 export interface ExternalLink extends BasicMenuLink {
   kind: MenuItemKind.EXTERNAL_LINK
 }
