@@ -16,8 +16,9 @@ import {
 } from 'state/appData/types'
 
 const UPLOAD_CHECK_INTERVAL = ms`10s`
-// TODO: implement exponential back off instead of fixed retry time
-const TRY_AGAIN_AFTER = ms`1min`
+const BASE_TIME_BETWEEN_ATTEMPTS = 2 // in seconds, converted to milliseconds later
+const ONE_SECOND = ms`1s`
+const MAX_TIME_TO_WAIT = ms`5 minutes`
 
 export function UploadToIpfsUpdater(): null {
   const toUpload = useAtomValue(flattenedAppDataFromUploadQueueAtom)
@@ -54,9 +55,7 @@ async function _uploadToIpfs(
   if (!doc) {
     // No actual doc to upload, nothing to do here
     removePending({ chainId, orderId })
-  } else if (!uploading && (!tryAfter || tryAfter <= Date.now())) {
-    // Not currently uploading, and within try/retry window
-
+  } else if (_canUpload(uploading, failedAttempts, lastAttempt)) {
     // Update state to prevent it to be uploaded by another process in the meantime
     updatePending({ chainId, orderId, uploading: true })
 
@@ -79,7 +78,25 @@ async function _uploadToIpfs(
     } catch (e) {
       // TODO: add sentry error to track soft failure
       console.debug(`[UploadToIpfsUpdater] Failed to upload doc, will try again`, JSON.stringify(doc))
-      updatePending({ chainId, orderId, uploading: false, tryAfter: Date.now() + TRY_AGAIN_AFTER })
+      updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })
     }
   }
+}
+
+function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number): boolean {
+  if (uploading) {
+    return false
+  }
+
+  if (lastAttempt) {
+    // Every attempt takes BASE_TIME_BETWEEN_ATTEMPTS ˆ failedAttempts
+    const timeToWait = BASE_TIME_BETWEEN_ATTEMPTS ** attempts * ONE_SECOND
+    // Don't wait more than MAX_TIME_TO_WAIT.
+    // Both are in milliseconds
+    const timeDelta = Math.min(timeToWait, MAX_TIME_TO_WAIT)
+
+    return lastAttempt + timeDelta <= Date.now()
+  }
+
+  return true
 }
