@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTransition } from 'react-spring'
 import {
   ProgressBarWrapper,
@@ -32,17 +32,32 @@ const COW_STATE_SECONDS = 30
 
 type OrderProgressBarProps = {
   activityDerivedState: ActivityDerivedState
-  creationTime: Date
-  validTo: Date
   chainId: SupportedChainId
 }
 
 type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
-  const { activityDerivedState, creationTime, validTo, chainId } = props
-  const { isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
-  const { elapsedSeconds, expirationInSeconds /*isPending*/ } = useGetProgressBarInfo(props)
+  const { activityDerivedState, chainId } = props
+  const { order, isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
+  const { validTo, creationTime } = useMemo(() => {
+    if (order) {
+      return {
+        validTo: new Date((order.validTo as number) * 1000),
+        creationTime: new Date(order.creationTime),
+      }
+    }
+
+    return {
+      validTo: null,
+      creationTime: null,
+    }
+  }, [order])
+  const { elapsedSeconds, expirationInSeconds /*isPending*/ } = useGetProgressBarInfo({
+    activityDerivedState,
+    validTo,
+    creationTime,
+  })
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const isPending = true
@@ -273,12 +288,26 @@ type ProgressBarInfo = {
   isPending: boolean
 }
 
+type GetProgressBarInfoProps = {
+  activityDerivedState: ActivityDerivedState
+  creationTime: Date | null
+  validTo: Date | null
+}
+
 function useGetProgressBarInfo({
+  activityDerivedState,
   creationTime,
   validTo,
-  activityDerivedState,
-}: OrderProgressBarProps): ProgressBarInfo {
+}: GetProgressBarInfoProps): ProgressBarInfo {
   const { isPending: orderIsPending, isPresignaturePending, order } = activityDerivedState
+
+  if (!creationTime || !validTo) {
+    return {
+      elapsedSeconds: 0,
+      expirationInSeconds: 0,
+      isPending: false,
+    }
+  }
 
   if (order?.presignGnosisSafeTx) {
     const submissionDate = new Date(order?.presignGnosisSafeTx?.submissionDate)

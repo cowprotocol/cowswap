@@ -17,12 +17,13 @@ import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
-import { ColumnCenter } from 'components/Column'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from 'constants/routes'
-import { OrderProgressBar } from './OrderProgressBar'
+import { useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
+import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
+import { OrderProgressBar } from '../AccountDetails/Transaction/OrderProgressBar'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -501,7 +502,8 @@ export function TransactionSubmittedContent({
   const theme = useContext(ThemeContext)
   const { library } = useActiveWeb3React()
   const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
-  const { chainId, activityDerivedState } = props
+  const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
+  const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
 
   return (
     <Wrapper>
@@ -517,12 +519,7 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        <OrderProgressBar
-          activityDerivedState={activityDerivedState}
-          creationTime={new Date(order.creationTime)}
-          validTo={new Date((order.validTo as number) * 1000)}
-          chainId={chainId}
-        />
+        {activityDerivedState && <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />}
         <ButtonGroup>
           {currencyToAdd && library?.provider?.isMetaMask && (
             <ButtonCustom onClick={addToken}>

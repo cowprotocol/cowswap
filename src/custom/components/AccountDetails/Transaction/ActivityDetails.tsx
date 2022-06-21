@@ -295,12 +295,7 @@ export function ActivityDetails(props: {
         )}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
         {order && creationTime && validTo && (
-          <OrderProgressBar
-            activityDerivedState={activityDerivedState}
-            creationTime={new Date(order.creationTime)}
-            validTo={new Date((order.validTo as number) * 1000)}
-            chainId={chainId}
-          />
+          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
       </SummaryInner>
     </Summary>
