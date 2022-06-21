@@ -12,7 +12,7 @@ import { RowBetween, RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
 import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
-import { ArrowUpCircle, CheckCircle, UserCheck } from 'react-feather'
+import { CheckCircle, UserCheck } from 'react-feather'
 import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
@@ -22,6 +22,7 @@ import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from 'constants/routes'
+import { OrderProgressBar } from './OrderProgressBar'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -78,14 +79,6 @@ const WalletIcon = styled.div`
   > div > img[alt='Gnosis Safe Multisig logo'] {
     ${({ theme }) => theme.util.invertImageForDarkMode};
   }
-`
-
-const CloseLink = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.primary1};
-  cursor: pointer;
-  margin: 8px auto;
 `
 
 export const GPModalHeader = styled(RowBetween)`
@@ -159,10 +152,6 @@ const CheckCircleCustom = styled(CheckCircle)`
   width: 20px;
   max-height: 100%;
   margin: 0 10px 0 0;
-`
-
-const ConfirmedIcon = styled(ColumnCenter)`
-  padding: 16px 0 32px;
 `
 
 const UpperSection = styled.div`
@@ -512,20 +501,15 @@ export function TransactionSubmittedContent({
   const theme = useContext(ThemeContext)
   const { library } = useActiveWeb3React()
   const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
+  const { chainId, activityDerivedState } = props
 
   return (
     <Wrapper>
       <Section>
         <CloseIconWrapper onClick={onDismiss} />
-
-        <ConfirmedIcon>
-          <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary1} />
-        </ConfirmedIcon>
-
         <Text fontWeight={500} fontSize={20}>
           Transaction Submitted
         </Text>
-
         {chainId && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
             <Text fontWeight={500} fontSize={14} color={theme.primary1}>
@@ -533,7 +517,12 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-
+        <OrderProgressBar
+          activityDerivedState={activityDerivedState}
+          creationTime={new Date(order.creationTime)}
+          validTo={new Date((order.validTo as number) * 1000)}
+          chainId={chainId}
+        />
         <ButtonGroup>
           {currencyToAdd && library?.provider?.isMetaMask && (
             <ButtonCustom onClick={addToken}>
@@ -557,8 +546,6 @@ export function TransactionSubmittedContent({
             </InternalLink>
           </ButtonCustom>
         </ButtonGroup>
-
-        <CloseLink onClick={onDismiss}>Close</CloseLink>
       </Section>
     </Wrapper>
   )
