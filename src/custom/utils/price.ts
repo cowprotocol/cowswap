@@ -18,7 +18,6 @@ import {
 import { OptimalRate } from 'paraswap-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { toErc20Address } from 'utils/tokens'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 import {
   LegacyFeeQuoteParams,
   LegacyPriceInformationWithSource,
@@ -28,8 +27,8 @@ import {
   LegacyQuoteParams,
 } from 'api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
-import useSWR from 'swr'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import useSWR from 'swr'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -358,12 +357,9 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuote
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
     )
-    quoteParams.validTo = MAX_VALID_TO_EPOCH
     const { quote } = await getQuote(quoteParams)
 
-    // BUY order always. We also need to add the fee to the sellAmount to get the unaffected price
-    const amountWithoutFee = new BigNumberJs(quote.feeAmount).plus(new BigNumberJs(quote.sellAmount))
-    return amountWithoutFee.toString(10)
+    return quote.sellAmount
   } else {
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
