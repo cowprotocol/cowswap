@@ -77,9 +77,14 @@ async function _uploadToIpfs(
       }
     } catch (e) {
       // TODO: add sentry error to track soft failure
-      console.debug(`[UploadToIpfsUpdater] Failed to upload doc, will try again`, JSON.stringify(doc))
+      console.debug(
+        `[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`,
+        JSON.stringify(doc)
+      )
       updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })
     }
+  } else {
+    console.log(`[UploadToIpfsUpdater] Criteria not met, skipping ${chainId}-${orderId}`)
   }
 }
 
