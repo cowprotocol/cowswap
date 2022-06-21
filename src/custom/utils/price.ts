@@ -20,7 +20,6 @@ import { GetQuoteResponse, OrderKind } from '@cowprotocol/contracts'
 import { ChainId } from 'state/lists/actions'
 import { toErc20Address } from 'utils/tokens'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 import useSWR from 'swr'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
@@ -410,12 +409,9 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
     )
-    quoteParams.validTo = MAX_VALID_TO_EPOCH
     const { quote } = await getQuote(quoteParams)
 
-    // BUY order always. We also need to add the fee to the sellAmount to get the unaffected price
-    const amountWithoutFee = new BigNumberJs(quote.feeAmount).plus(new BigNumberJs(quote.sellAmount))
-    return amountWithoutFee.toString(10)
+    return quote.sellAmount
   } else {
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
