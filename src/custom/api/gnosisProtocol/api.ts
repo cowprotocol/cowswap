@@ -23,7 +23,7 @@ import QuoteError, {
   mapOperatorErrorToQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
-import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
+import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import * as Sentry from '@sentry/browser'
@@ -32,6 +32,7 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { Context } from '@sentry/types'
+import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {

@@ -19,7 +19,7 @@ import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
-import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemeContext } from 'styled-components/macro'
 
 import AddressInputPanel from 'components/AddressInputPanel'
 import { ButtonConfirmed /*, ButtonError, ButtonLight, ButtonPrimary*/ } from 'components/Button'
@@ -85,11 +85,12 @@ import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
+import { AlertWrapper } from './styleds' // mod
 
-const AlertWrapper = styled.div`
-  max-width: 460px;
-  width: 100%;
-`
+// const AlertWrapper = styled.div`
+//   max-width: 460px;
+//   width: 100%;
+// `
 
 function reportAnalytics(action: string, label?: string, value?: number) {
   ReactGA.event({
@@ -814,10 +815,6 @@ export default function Swap({
                   <Trans>Unsupported Token</Trans>
                 </ThemedText.Main>
               </ButtonPrimary>
-            ) : !account ? (
-              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonPrimary>
             ) : !isSupportedWallet ? (
               <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
                 <Text fontSize={20} fontWeight={500}>
@@ -875,6 +872,10 @@ export default function Swap({
               <GreyCard style={{ textAlign: 'center' }}>
                 <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
               </GreyCard>
+            ) : !account ? (
+              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+              </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">

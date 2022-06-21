@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useCallback, useState, useEffect } from 'react'
 import SVG from 'react-inlinesvg'
-import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Profile/styled'
+import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
 import { ButtonPrimary } from 'custom/components/Button'
 import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'

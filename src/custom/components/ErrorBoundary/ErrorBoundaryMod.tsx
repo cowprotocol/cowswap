@@ -13,10 +13,12 @@ import { AutoRow } from 'components/Row'
 import Page, { Title } from 'components/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
 import CowError from 'assets/cow-swap/CowError.png'
-import { UniIcon, LogoImage } from '../Header'
+// import { UniIcon, LogoImage } from '../Header'
+import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
 import { DISCORD_LINK, CODE_LINK } from 'constants/index'
+import { Routes } from 'constants/routes'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -193,7 +195,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
         <AppWrapper>
           <HeaderWrapper>
             <HeaderRow marginRight="0">
-              <a href=".">
+              <a href={Routes.HOME}>
                 <UniIcon>
                   <LogoImage />
                 </UniIcon>

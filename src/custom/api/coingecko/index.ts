@@ -1,7 +1,7 @@
-import { SWR_OPTIONS } from 'constants/index'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { SWR_OPTIONS } from 'constants/index'
 import useSWR from 'swr'
-import { PriceInformation } from 'utils/price'
 
 function getApiUrl(): string {
   // it's all the same base url

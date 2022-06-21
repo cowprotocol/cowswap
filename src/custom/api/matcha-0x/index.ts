@@ -3,7 +3,9 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { NetworkID } from 'paraswap'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getTokensFromMarket } from 'utils/misc'
-import { getValidParams, PriceInformation, PriceQuoteParams } from 'utils/price'
+import { getValidParams } from 'utils/price'
+import { LegacyPriceQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { PriceInformation } from '@cowprotocol/cow-sdk'
 
 // copy/pasting as the library types correspond to the internal types, not API response
 // e.g "price: BigNumber" when we want the API response type: "price: string"
@@ -104,7 +106,7 @@ function _get(chainId: ChainId, url: string): Promise<Response> {
   return _fetch(chainId, url, 'GET')
 }
 
-export async function getPriceQuote(params: PriceQuoteParams): Promise<MatchaPriceQuote | null> {
+export async function getPriceQuote(params: LegacyPriceQuoteParams): Promise<MatchaPriceQuote | null> {
   const { baseToken, quoteToken, amount, kind, chainId } = getValidParams(params)
 
   const networkId = getMatchaChainId(chainId)
