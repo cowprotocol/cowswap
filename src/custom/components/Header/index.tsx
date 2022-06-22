@@ -84,7 +84,6 @@ export default function Header() {
   const isUpToSmall = useMediaQuery(upToSmall)
   const isLargeAndUp = useMediaQuery(LargeAndUp)
 
-  const [isTouch, setIsTouch] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -94,8 +93,6 @@ export default function Header() {
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
     isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-    // Set if device has touch capabilities
-    setIsTouch('ontouchstart' in document.documentElement)
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
@@ -137,13 +134,7 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && (
-          <MobileMenuIcon
-            isMobileMenuOpen={isMobileMenuOpen}
-            onTouchStart={handleMobileMenuOnClick}
-            onClick={isTouch ? undefined : handleMobileMenuOnClick} // Disable onClick on touch devices and use onTouchStart
-          />
-        )}
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>
