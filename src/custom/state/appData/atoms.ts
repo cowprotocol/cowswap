@@ -11,8 +11,6 @@ import {
 } from 'state/appData/types'
 import { buildAppDataRecordKey, parseAppDataRecordKey } from 'state/appData/utils'
 
-const INITIAL_APP_DATA_UPLOAD_QUEUE: AppDataPendingToUpload = {}
-
 /**
  * Base atom that store the current appDataInfo
  */
@@ -21,9 +19,9 @@ export const appDataInfoAtom = atom<AppDataInfo | null>(null)
 /**
  * Base atom that stores all appData pending to be uploaded
  */
-export const appDataUploadQueueAtom = atomWithStorage(
+export const appDataUploadQueueAtom = atomWithStorage<AppDataPendingToUpload>(
   'appDataUploadQueue', // local storage key
-  INITIAL_APP_DATA_UPLOAD_QUEUE
+  {}
 )
 
 /**
