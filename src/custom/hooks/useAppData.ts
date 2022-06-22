@@ -35,16 +35,11 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
       return
     }
 
+    const params: Parameters<typeof buildAppData> = [chainId, sellAmount, buyAmount, referrer, isReferrerValid, appCode]
+
     const updateAppData = async (): Promise<void> => {
       try {
-        const { doc, calculatedAppData } = await buildAppData(
-          chainId,
-          sellAmount,
-          buyAmount,
-          referrer,
-          isReferrerValid,
-          appCode
-        )
+        const { doc, calculatedAppData } = await buildAppData(...params)
 
         console.debug(`[useAppDataHash] appDataInfo`, JSON.stringify(doc), calculatedAppData)
 
@@ -52,10 +47,10 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
           setAppDataInfo({ doc, hash: calculatedAppData.appDataHash })
         } else {
           // For some reason failed to calculate the appDataHash, use a default hash
-          throw new Error("Couldn't calculate appDataHash")
+          throw new Error(`Couldn't calculate appDataHash`)
         }
       } catch (e) {
-        console.error(`[useAppDataHash] failed to generate appData, falling back to default`, e.message)
+        console.error(`[useAppDataHash] failed to generate appData, falling back to default`, params, e.message)
         setAppDataInfo({ hash: APP_DATA_HASH })
       }
     }
