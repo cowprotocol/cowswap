@@ -77,7 +77,7 @@ async function _uploadToIpfs(
       }
     } catch (e) {
       // TODO: add sentry error to track soft failure
-      console.debug(
+      console.warn(
         `[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`,
         JSON.stringify(doc)
       )
