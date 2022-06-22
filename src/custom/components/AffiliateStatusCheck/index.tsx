@@ -47,6 +47,7 @@ export default function AffiliateStatusCheck() {
   )
 
   // De-normalized to avoid unnecessary useEffect triggers
+  const isReferralAddressNull = referralAddress === null
   const referralAddressAccount = referralAddress?.value
   const referralAddressIsValid = referralAddress?.isValid
 
@@ -111,7 +112,7 @@ export default function AffiliateStatusCheck() {
   ])
 
   useEffect(() => {
-    if (!referralAddressAccount) {
+    if (isReferralAddressNull) {
       return
     }
 
@@ -147,6 +148,7 @@ export default function AffiliateStatusCheck() {
     referralAddressQueryParam,
     setAffiliateState,
     referralAddressAccount,
+    isReferralAddressNull,
   ])
 
   if (error) {
