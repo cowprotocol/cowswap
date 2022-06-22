@@ -163,6 +163,10 @@ export const StatusGraph = styled.div`
     color: ${({ theme }) => theme.orange};
   }
 
+  p {
+    font-size: 0.82rem;
+  }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 0rem;
     display: flex;

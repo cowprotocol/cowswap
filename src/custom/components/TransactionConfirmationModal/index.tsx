@@ -104,14 +104,14 @@ const StyledIcon = styled.img`
 `
 
 const ExternalLinkCustom = styled(ExternalLink)`
-  margin: 12px auto 48px;
+  margin: 12px auto 32px;
 `
 
 const ButtonGroup = styled.div`
-  display: grid;
+  display: flex;
   align-items: center;
   justify-content: center;
-  flex-flow: column wrap;
+  gap: 12px;
   margin: 12px 0 24px;
   width: 100%;
 `

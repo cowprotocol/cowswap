@@ -6,6 +6,8 @@ export * from '@src/components/Modal'
 export { default } from '@src/components/Modal'
 
 export const GpModal = styled(Modal)<{
+  minWidth?: number
+  width?: string
   maxWidth?: number
   backgroundColor?: string
   border?: string
@@ -13,6 +15,8 @@ export const GpModal = styled(Modal)<{
 }>`
   > [data-reach-dialog-content] {
     background-color: ${({ backgroundColor, theme }) => (backgroundColor ? backgroundColor : theme.bg1)};
+    min-width: ${({ minWidth = 470 }) => `${minWidth}px`};
+    width: ${({ width = 'auto' }) => `${width}`};
     max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
     z-index: 100;
