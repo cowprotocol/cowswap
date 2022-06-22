@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import ms from 'ms.macro'
+import { AppDataDoc } from '@cowprotocol/cow-sdk'
 
 import { COW_SDK } from 'constants/index'
 
@@ -50,39 +51,13 @@ async function _uploadToIpfs(
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
   removePending: (params: AppDataKeyParams) => void
 ) {
-  const { doc, chainId, orderId, uploading, failedAttempts, lastAttempt, hash } = appDataRecord
+  const { doc, chainId, orderId, uploading, failedAttempts, lastAttempt } = appDataRecord
 
   if (!doc) {
     // No actual doc to upload, nothing to do here
     removePending({ chainId, orderId })
   } else if (_canUpload(uploading, failedAttempts, lastAttempt)) {
-    // Update state to prevent it to be uploaded by another process in the meantime
-    updatePending({ chainId, orderId, uploading: true })
-
-    try {
-      const sdk = COW_SDK[chainId]
-
-      const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc)
-
-      removePending({ chainId, orderId })
-
-      if (hash !== actualHash) {
-        // TODO: add sentry error to track hard failure
-        console.error(
-          `[UploadToIpfsUpdater] Uploaded data hash (${actualHash}) differs from calculated (${hash}) for doc`,
-          JSON.stringify(doc)
-        )
-      } else {
-        console.debug(`[UploadToIpfsUpdater] Uploaded doc with hash ${actualHash}`, JSON.stringify(doc))
-      }
-    } catch (e) {
-      // TODO: add sentry error to track soft failure
-      console.warn(
-        `[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`,
-        JSON.stringify(doc)
-      )
-      updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })
-    }
+    await _actuallyUploadToIpfs(appDataRecord, updatePending, removePending)
   } else {
     console.log(`[UploadToIpfsUpdater] Criteria not met, skipping ${chainId}-${orderId}`)
   }
@@ -104,4 +79,40 @@ function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number):
   }
 
   return true
+}
+
+async function _actuallyUploadToIpfs(
+  appDataRecord: FlattenedAppDataFromUploadQueue,
+  updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
+  removePending: (params: AppDataKeyParams) => void
+) {
+  const { doc, chainId, orderId, failedAttempts, hash } = appDataRecord
+
+  // Update state to prevent it to be uploaded by another process in the meantime
+  updatePending({ chainId, orderId, uploading: true })
+
+  try {
+    const sdk = COW_SDK[chainId]
+
+    const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc as AppDataDoc)
+
+    removePending({ chainId, orderId })
+
+    if (hash !== actualHash) {
+      // TODO: add sentry error to track hard failure
+      console.error(
+        `[UploadToIpfsUpdater] Uploaded data hash (${actualHash}) differs from calculated (${hash}) for doc`,
+        JSON.stringify(doc)
+      )
+    } else {
+      console.debug(`[UploadToIpfsUpdater] Uploaded doc with hash ${actualHash}`, JSON.stringify(doc))
+    }
+  } catch (e) {
+    // TODO: add sentry error to track soft failure
+    console.warn(
+      `[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`,
+      JSON.stringify(doc)
+    )
+    updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })
+  }
 }
