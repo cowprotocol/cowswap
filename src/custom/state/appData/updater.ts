@@ -17,7 +17,7 @@ import {
 } from 'state/appData/types'
 
 const UPLOAD_CHECK_INTERVAL = ms`10s`
-const BASE_TIME_BETWEEN_ATTEMPTS = 2 // in seconds, converted to milliseconds later
+const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later
 const ONE_SECOND = ms`1s`
 const MAX_TIME_TO_WAIT = ms`5 minutes`
 
@@ -69,8 +69,8 @@ function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number):
   }
 
   if (lastAttempt) {
-    // Every attempt takes BASE_TIME_BETWEEN_ATTEMPTS ˆ failedAttempts
-    const timeToWait = BASE_TIME_BETWEEN_ATTEMPTS ** attempts * ONE_SECOND
+    // Every attempt takes BASE_FOR_EXPONENTIAL_BACKOFF ˆ failedAttempts
+    const timeToWait = BASE_FOR_EXPONENTIAL_BACKOFF ** attempts * ONE_SECOND
     // Don't wait more than MAX_TIME_TO_WAIT.
     // Both are in milliseconds
     const timeDelta = Math.min(timeToWait, MAX_TIME_TO_WAIT)
