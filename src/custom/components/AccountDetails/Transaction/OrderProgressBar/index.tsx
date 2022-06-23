@@ -27,6 +27,7 @@ import ammsGraph from 'assets/images/amms-graph.svg'
 import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
 
 import { ExternalLink } from 'theme'
+import { getExplorerOrderLink } from '@src/custom/utils/explorer'
 // import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
 
 const REFRESH_INTERVAL_MS = 200
@@ -181,8 +182,10 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
                   Your tokens should already be in your wallet, check out your trade on the{' '}
-                  {/* <StyledExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}> */}
-                  <StyledExternalLink href="#">explorer</StyledExternalLink> ↗
+                  <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>
+                    explorer
+                  </StyledExternalLink>{' '}
+                  ↗
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
