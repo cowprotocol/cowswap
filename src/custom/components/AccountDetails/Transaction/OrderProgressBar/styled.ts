@@ -2,13 +2,13 @@ import styled from 'styled-components/macro'
 import { animated } from 'react-spring'
 import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
+import { ExternalLink } from 'theme'
 
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: 575px;
-  /* min-height: 164px; */
   margin: 16px 0 8px 0;
   overflow: hidden;
   display: flex;
@@ -189,4 +189,7 @@ export const StatusMsg = styled.p`
   span {
     color: ${({ theme }) => theme.orange};
   }
+`
+export const StyledExternalLink = styled(ExternalLink)`
+  font-size: 0.82rem !important;
 `

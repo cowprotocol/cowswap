@@ -14,6 +14,7 @@ import {
   DelayedProgress,
   WarningLogo,
   GreenCheckIcon,
+  StyledExternalLink,
 } from './styled'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
@@ -88,7 +89,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('unfillable')
+    setExecutionState('confirmed')
 
     if (isConfirmed) {
       // setExecutionState('confirmed')
@@ -183,10 +184,10 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                {/* <img src={ammsGraph} alt="Finding the best price ..." /> */}
+                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
                   Your tokens should already be in your wallet, check out your trade on the{' '}
-                  <ExternalLink href="https://explorer.cow.fi/"> explorer ↗</ExternalLink>
+                  <StyledExternalLink href="https://explorer.cow.fi/">explorer</StyledExternalLink> ↗
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
