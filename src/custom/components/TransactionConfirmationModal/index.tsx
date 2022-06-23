@@ -114,6 +114,9 @@ const ButtonGroup = styled.div`
   gap: 12px;
   margin: 12px 0 24px;
   width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-direction: column;
+  `}
 `
 
 const ButtonCustom = styled.button`
