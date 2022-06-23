@@ -79,16 +79,13 @@ describe('Swap PRICE Quote test', () => {
         expect(expectedPrice).toEqual(actualPrice)
       })
       it('Shows the proper minimumAmountOut', () => {
-        // GIVEN --> slippage is set @ 0.5%
-        const slippage = SLIPPAGE_HALF_PERCENT
-        // Min_price => Price_displayed * (1+slippage)
-        // Min_price_displayed = 0.000225 * (1.005) = 0.000226125
+        // GIVEN --> An expected received amount of 4000 DAI
+        // GIVEN --> Slippage of 0.5%
 
-        // WHEN --> Min_received_tokens = Sold_tokens / Min_price
-        // THEN --> 900000000000000000 / 0.000226125 / 10**18 = 3980.099502487562
-        const expectedMinimumAmountOut = '3980.099502'
-        const actualMinimumAmountOut = trade.minimumAmountOut(slippage).toSignificant(LONG_PRECISION)
-        expect(expectedMinimumAmountOut).toEqual(actualMinimumAmountOut)
+        // WHEN --> Calculate the minimun received amount (accounting slippage)
+        // THEN --> 3,980     = 4000*0.995
+        const actualMinimumAmountOut = trade.minimumAmountOut(SLIPPAGE_HALF_PERCENT).toSignificant(LONG_PRECISION)
+        expect(actualMinimumAmountOut).toEqual('3980')
       })
     })
   })
@@ -160,15 +157,12 @@ describe('Swap PRICE Quote test', () => {
         expect(expectedPriceWithSlippage).toEqual(actualPriceWithSlipapge.toSignificant(12))
       })
       it('Expected maximum sold correct', () => {
-        // GIVEN To = 4000000000000000000000, MaxPrice = 3980 & Fee = 0.1
-        // WHEN Maximum_sold = To / Max_price + Fee
-        // THEN
-        // 4000000000000000000000 / 3980 + 100000000000000000 = 1,105025125e18
-        // 1,105025125e18 * 1e-18 = 1,105025125
-        const userSlippage = SLIPPAGE_HALF_PERCENT
-        const expectedMaximumSold = '1.105025125'
-        const actualMaximumSold = trade.maximumAmountIn(userSlippage).toSignificant(LONG_PRECISION)
-        expect(expectedMaximumSold).toEqual(actualMaximumSold)
+        // GIVEN: An expected sell amount of 1.1 ETH   (1 ETH for the 4000 DAI, and 0.1 ETH for fee)
+        // GIVEN: Slippage of 0.5%
+        // WHEN: Calculate the maximum sold including slippage
+        // THEN: 1.1 * 1.005
+        const actualMaximumSold = trade.maximumAmountIn(SLIPPAGE_HALF_PERCENT).toSignificant(LONG_PRECISION)
+        expect(actualMaximumSold).toEqual('1.1055')
       })
     })
   })
