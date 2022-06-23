@@ -1,5 +1,4 @@
-import { Category } from '../types'
-import { _reportEvent } from '../utils'
+import { Category, _reportEvent } from './index'
 
 const types = {
   maxSellTokens: 'Set Maximun Sell Tokens',

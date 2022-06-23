@@ -1,12 +1,37 @@
 import ReactGA from 'react-ga4'
 
+import { ErrorInfo } from 'react'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
-export * from './actions'
-export * from './utils'
+export * from './listEvents'
+export * from './settingsEvents'
+export * from './themeEvents'
+export * from './transactionEvents'
+export * from './walletEvents'
 
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 export const ANALITICS_EVENTS = {}
+
+export interface EventParams {
+  category: Category
+  action: string
+  label?: string
+  value?: number
+}
+
+export enum Category {
+  SWAP = 'Swap',
+  LIST = 'Lists',
+  CURRENCY_SELECT = 'Currency Select',
+  EXPERT_MODE = 'Expert mode',
+  RECIPIENT_ADDRESS = 'Recipient address',
+  ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
+  ORDER_EXPIRATION_TIME = 'Order Expiration Time',
+  WALLET = 'Wallet',
+  WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
+  CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO', // TODO: Maybe Claim COW was enough?
+  THEME = 'Theme',
+}
 
 export function persistClientId() {
   // typed as 'any' in react-ga4 -.-
@@ -27,4 +52,21 @@ export function reportWebVitals() {
   getFID(sendWebVitals)
   getLCP(sendWebVitals)
   getCLS(sendWebVitals)
+}
+
+export function onChainIdChange(chainId: number | undefined) {
+  // cd1 - custom dimension 1 - chainId
+  ReactGA.set({ cd1: chainId ?? 0 })
+}
+
+export function onPathNameChange(pathname: string, search: string) {
+  ReactGA.send({ hitType: 'pageview', page: `${pathname}${search}` })
+}
+
+export function reportError(error: Error, errorInfo: ErrorInfo) {
+  ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
+}
+
+export function _reportEvent(params: EventParams) {
+  ReactGA.event(params)
 }
