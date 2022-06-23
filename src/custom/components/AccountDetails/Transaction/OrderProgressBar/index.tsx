@@ -27,6 +27,7 @@ import ammsGraph from 'assets/images/amms-graph.svg'
 import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
 
 import { ExternalLink } from 'theme'
+// import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -54,14 +55,13 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       creationTime: null,
     }
   }, [order])
-  const { elapsedSeconds, expirationInSeconds /*isPending*/ } = useGetProgressBarInfo({
+  const { elapsedSeconds, expirationInSeconds, isPending } = useGetProgressBarInfo({
     activityDerivedState,
     validTo,
     creationTime,
   })
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
-  const isPending = true
 
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
@@ -89,22 +89,20 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [isConfirmed])
 
   useEffect(() => {
-    setExecutionState('confirmed')
-
     if (isConfirmed) {
-      // setExecutionState('confirmed')
+      setExecutionState('confirmed')
       console.log('confirmed')
     } else if (isUnfillable) {
-      // setExecutionState('unfillable')
+      setExecutionState('unfillable')
       console.log('unfillable')
     } else if (elapsedSeconds <= COW_STATE_SECONDS) {
-      // setExecutionState('cow')
+      setExecutionState('cow')
       console.log('cow')
     } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
-      // setExecutionState('amm')
+      setExecutionState('amm')
       console.log('amm')
     } else {
-      // setExecutionState('delayed')
+      setExecutionState('delayed')
       console.log('delayed')
     }
   }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
@@ -187,7 +185,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
                   Your tokens should already be in your wallet, check out your trade on the{' '}
-                  <StyledExternalLink href="https://explorer.cow.fi/">explorer</StyledExternalLink> ↗
+                  {/* <StyledExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}> */}
+                  <StyledExternalLink href="#">explorer</StyledExternalLink> ↗
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
