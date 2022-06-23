@@ -91,19 +91,14 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   useEffect(() => {
     if (isConfirmed) {
       setExecutionState('confirmed')
-      console.log('confirmed')
     } else if (isUnfillable) {
       setExecutionState('unfillable')
-      console.log('unfillable')
     } else if (elapsedSeconds <= COW_STATE_SECONDS) {
       setExecutionState('cow')
-      console.log('cow')
     } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
       setExecutionState('amm')
-      console.log('amm')
     } else {
       setExecutionState('delayed')
-      console.log('delayed')
     }
   }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
 
