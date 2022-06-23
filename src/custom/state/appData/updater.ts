@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import ms from 'ms.macro'
+import { AppDataDoc } from '@cowprotocol/cow-sdk'
 
 import { COW_SDK } from 'constants/index'
 
@@ -16,8 +17,9 @@ import {
 } from 'state/appData/types'
 
 const UPLOAD_CHECK_INTERVAL = ms`10s`
-// TODO: implement exponential back off instead of fixed retry time
-const TRY_AGAIN_AFTER = ms`1min`
+const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later
+const ONE_SECOND = ms`1s`
+const MAX_TIME_TO_WAIT = ms`5 minutes`
 
 export function UploadToIpfsUpdater(): null {
   const toUpload = useAtomValue(flattenedAppDataFromUploadQueueAtom)
@@ -49,37 +51,68 @@ async function _uploadToIpfs(
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
   removePending: (params: AppDataKeyParams) => void
 ) {
-  const { doc, chainId, orderId, uploading, tryAfter, hash } = appDataRecord
+  const { doc, chainId, orderId, uploading, failedAttempts, lastAttempt } = appDataRecord
 
   if (!doc) {
     // No actual doc to upload, nothing to do here
     removePending({ chainId, orderId })
-  } else if (!uploading && (!tryAfter || tryAfter <= Date.now())) {
-    // Not currently uploading, and within try/retry window
+  } else if (_canUpload(uploading, failedAttempts, lastAttempt)) {
+    await _actuallyUploadToIpfs(appDataRecord, updatePending, removePending)
+  } else {
+    console.log(`[UploadToIpfsUpdater] Criteria not met, skipping ${chainId}-${orderId}`)
+  }
+}
 
-    // Update state to prevent it to be uploaded by another process in the meantime
-    updatePending({ chainId, orderId, uploading: true })
+function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number): boolean {
+  if (uploading) {
+    return false
+  }
 
-    try {
-      const sdk = COW_SDK[chainId]
+  if (lastAttempt) {
+    // Every attempt takes BASE_FOR_EXPONENTIAL_BACKOFF ˆ failedAttempts
+    const timeToWait = BASE_FOR_EXPONENTIAL_BACKOFF ** attempts * ONE_SECOND
+    // Don't wait more than MAX_TIME_TO_WAIT.
+    // Both are in milliseconds
+    const timeDelta = Math.min(timeToWait, MAX_TIME_TO_WAIT)
 
-      const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc)
+    return lastAttempt + timeDelta <= Date.now()
+  }
 
-      removePending({ chainId, orderId })
+  return true
+}
 
-      if (hash !== actualHash) {
-        // TODO: add sentry error to track hard failure
-        console.error(
-          `[UploadToIpfsUpdater] Uploaded data hash (${actualHash}) differs from calculated (${hash}) for doc`,
-          JSON.stringify(doc)
-        )
-      } else {
-        console.debug(`[UploadToIpfsUpdater] Uploaded doc with hash ${actualHash}`, JSON.stringify(doc))
-      }
-    } catch (e) {
-      // TODO: add sentry error to track soft failure
-      console.debug(`[UploadToIpfsUpdater] Failed to upload doc, will try again`, JSON.stringify(doc))
-      updatePending({ chainId, orderId, uploading: false, tryAfter: Date.now() + TRY_AGAIN_AFTER })
+async function _actuallyUploadToIpfs(
+  appDataRecord: FlattenedAppDataFromUploadQueue,
+  updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
+  removePending: (params: AppDataKeyParams) => void
+) {
+  const { doc, chainId, orderId, failedAttempts, hash } = appDataRecord
+
+  // Update state to prevent it to be uploaded by another process in the meantime
+  updatePending({ chainId, orderId, uploading: true })
+
+  try {
+    const sdk = COW_SDK[chainId]
+
+    const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc as AppDataDoc)
+
+    removePending({ chainId, orderId })
+
+    if (hash !== actualHash) {
+      // TODO: add sentry error to track hard failure
+      console.error(
+        `[UploadToIpfsUpdater] Uploaded data hash (${actualHash}) differs from calculated (${hash}) for doc`,
+        JSON.stringify(doc)
+      )
+    } else {
+      console.debug(`[UploadToIpfsUpdater] Uploaded doc with hash ${actualHash}`, JSON.stringify(doc))
     }
+  } catch (e) {
+    // TODO: add sentry error to track soft failure
+    console.warn(
+      `[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`,
+      JSON.stringify(doc)
+    )
+    updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })
   }
 }
