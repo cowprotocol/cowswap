@@ -3,6 +3,7 @@ import { CurrencyAmount, Currency, TradeType, Price, Percent, Fraction } from '@
 import { Trade } from '@uniswap/v2-sdk'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 
+const ONE = new Fraction('1')
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
 
 export type TradeWithFee = Omit<Trade<Currency, Currency, TradeType>, 'nextMidPrice' | 'exactIn' | 'exactOut'> & {
@@ -48,21 +49,7 @@ export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
     return trade.outputAmount
   }
 
-  const priceDisplayed = trade.executionPrice.invert().asFraction
-  const slippage = new Fraction('1').add(pct)
-  // slippage is applied to PRICE
-  const slippagePrice = priceDisplayed.multiply(slippage)
-  // newly constructed price with slippage applied
-  const minPrice = new Price<Currency, Currency>(
-    trade.executionPrice.quoteCurrency,
-    trade.executionPrice.baseCurrency,
-    slippagePrice.denominator,
-    slippagePrice.numerator
-  )
-
-  const minimumAmountOut = minPrice.invert().quote(trade.inputAmountWithFee)
-
-  return minimumAmountOut
+  return trade.outputAmount.multiply(ONE.subtract(pct))
 }
 
 export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
