@@ -198,7 +198,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           <>
             <ProgressBarInnerWrapper>
               <DelayedProgress percentage={percentage}>
-                <WarningLogo />
+                <WarningLogo>
+                  <img src={loadingCowGif} alt="Loading prices..." />
+                </WarningLogo>
               </DelayedProgress>
             </ProgressBarInnerWrapper>
             <StatusMsgContainer>
