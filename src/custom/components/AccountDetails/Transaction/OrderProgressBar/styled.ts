@@ -192,4 +192,5 @@ export const StatusMsg = styled.p`
 `
 export const StyledExternalLink = styled(ExternalLink)`
   font-size: 0.82rem !important;
+  color: ${({ theme }) => theme.orange};
 `
