@@ -6,7 +6,8 @@ export type AppDataInfo = {
 }
 
 type AppDataUploadStatus = {
-  tryAfter?: number
+  lastAttempt?: number
+  failedAttempts: number
   uploading: boolean
 }
 
@@ -22,7 +23,7 @@ export type AppDataKeyParams = {
 export type AddAppDataToUploadQueueParams = AppDataKeyParams & {
   appData: AppDataInfo
 }
-export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & AppDataUploadStatus
+export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & Partial<AppDataUploadStatus>
 export type RemoveAppDataFromUploadQueueParams = AppDataKeyParams
 
 export type FlattenedAppDataFromUploadQueue = AppDataKeyParams & AppDataRecord
