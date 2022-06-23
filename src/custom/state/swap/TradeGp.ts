@@ -56,23 +56,8 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
   if (trade.tradeType === TradeType.EXACT_INPUT) {
     return trade.inputAmount
   }
-  const priceDisplayed = trade.executionPrice.invert().asFraction
-  const slippage = new Fraction('1').subtract(pct)
-  // slippage is applied to the price
-  const slippagePrice = priceDisplayed.multiply(slippage)
-  // construct new price using slippage price
-  const maxPrice = new Price<Currency, Currency>(
-    trade.executionPrice.quoteCurrency,
-    trade.executionPrice.baseCurrency,
-    slippagePrice.denominator,
-    slippagePrice.numerator
-  )
 
-  // fee is in sell token so we
-  // add fee to the calculated input
-  const maximumAmountIn = maxPrice.invert().quote(trade.outputAmount).add(trade.fee.feeAsCurrency)
-
-  return maximumAmountIn
+  return trade.inputAmountWithFee.multiply(ONE.add(pct))
 }
 
 interface TradeGpConstructor {
