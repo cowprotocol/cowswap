@@ -35,12 +35,13 @@ const COW_STATE_SECONDS = 30
 type OrderProgressBarProps = {
   activityDerivedState: ActivityDerivedState
   chainId: SupportedChainId
+  hideWhenFinished?: boolean
 }
 
 type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
-  const { activityDerivedState, chainId } = props
+  const { activityDerivedState, chainId, hideWhenFinished = false } = props
   const { order, isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
   const { validTo, creationTime } = useMemo(() => {
     if (order) {
@@ -266,15 +267,19 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
 
   return (
     <>
-      {fadeOutTransition.map(({ item, props, key }) => {
-        return (
-          item && (
-            <ProgressBarWrapper key={key} style={props}>
-              {progressBar()}
-            </ProgressBarWrapper>
+      {hideWhenFinished ? (
+        fadeOutTransition.map(({ item, props, key }) => {
+          return (
+            item && (
+              <ProgressBarWrapper key={key} style={props}>
+                {progressBar()}
+              </ProgressBarWrapper>
+            )
           )
-        )
-      })}
+        })
+      ) : (
+        <ProgressBarWrapper>{progressBar()}</ProgressBarWrapper>
+      )}
     </>
   )
 }

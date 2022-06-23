@@ -295,7 +295,7 @@ export function ActivityDetails(props: {
         )}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
         {order && creationTime && validTo && (
-          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
         )}
       </SummaryInner>
     </Summary>
