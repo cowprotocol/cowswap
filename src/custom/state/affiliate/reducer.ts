@@ -10,7 +10,7 @@ export interface AffiliateState {
   isNotificationClosed?: {
     [key: string]: boolean
   }
-  address?: string // this can be a ENS name or an address
+  address?: string // this can be an ENS name or an address
 }
 
 export const initialState: AffiliateState = {}
