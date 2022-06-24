@@ -19,6 +19,10 @@ export const GpModal = styled(Modal)<{
     padding: ${({ padding = 'none' }) => `${padding}`};
     margin: auto;
 
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      width: 623px;
+    `}
+
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;
       max-width: 100%;

@@ -180,6 +180,7 @@ export const StatusGraph = styled.div`
 export const StatusWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
 `
 
 export const StatusMsg = styled.p`
