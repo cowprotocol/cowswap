@@ -215,12 +215,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <p>
+                {/*<p>
                   Current price: <strong>$1200.56</strong>
                 </p>
                 <p>
                   Your price: $1300.55 (<span>+8%</span>)
-                </p>
+                </p>*/}
                 <p>
                   <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>

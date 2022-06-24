@@ -154,6 +154,7 @@ export const StatusGraph = styled.div`
   border-radius: 0.6rem;
   padding: 0 0.9rem;
   min-height: 6rem;
+  width: 100%;
 
   .meditating-cow {
     margin: 0 2rem;
