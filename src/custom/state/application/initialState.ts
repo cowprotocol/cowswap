@@ -5,7 +5,7 @@ const popupList: ApplicationState['popupList'] = []
 
 if (localWarning) {
   popupList.push({
-    key: 'missingPinataEnvVars',
+    key: 'localWarning',
     show: true,
     removeAfterMs: null,
     content: {
