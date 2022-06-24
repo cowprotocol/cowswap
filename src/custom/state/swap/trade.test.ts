@@ -65,25 +65,23 @@ describe('Swap PRICE Quote test', () => {
         })
       })
       it('Uses proper input amount WITHOUT fee in trade object', () => {
-        // WHEN --> Sold_tokens => From_amount - Fee
-        // THEN --> expected inputAmountMinusFee = 1 - 0.1
-        const expectedInputWithFee = '900000000000000000'
-        const actualInputWithFee = trade.inputAmount.subtract(trade.fee.feeAsCurrency)
-        expect(expectedInputWithFee).toEqual(actualInputWithFee.quotient.toString())
+        // GIVEN --> User is selling 1 WETH
+        // THEN --> we expect the trade inputAmount to be exactly 1 in weth atoms
+        const actualInputWithFee = trade.inputAmount.quotient.toString()
+        expect(actualInputWithFee).toEqual('1000000000000000000')
       })
       it('Has the correct execution price', () => {
-        // WHEN --> Price_displayed => Sold_tokens / Received_tokens
+        // WHEN --> Price_displayed = Sold_tokens / Received_tokens
         // THEN --> 900000000000000000 / 4000000000000000000000 = 0.000225
-        const expectedPrice = '0.000225'
         const actualPrice = trade.executionPrice.invert().toSignificant(DEFAULT_PRECISION)
-        expect(expectedPrice).toEqual(actualPrice)
+        expect(actualPrice).toEqual('0.000225')
       })
       it('Shows the proper minimumAmountOut', () => {
         // GIVEN --> An expected received amount of 4000 DAI
         // GIVEN --> Slippage of 0.5%
 
-        // WHEN --> Calculate the minimun received amount (accounting slippage)
-        // THEN --> 3,980     = 4000*0.995
+        // WHEN --> Calculating the minimum received amount (accounting slippage)
+        // THEN --> 4000*0.995 = 3980
         const actualMinimumAmountOut = trade.minimumAmountOut(SLIPPAGE_HALF_PERCENT).toSignificant(LONG_PRECISION)
         expect(actualMinimumAmountOut).toEqual('3980')
       })
@@ -127,21 +125,20 @@ describe('Swap PRICE Quote test', () => {
 
       it('Shows correct sold amount', () => {
         // GIVEN --> Api response: price = 1000000000000000000 (1) & fee = 100000000000000000 (0.1)
-        // WHEN --> Estimated_sold_before_fee + Fee
-        // THEN --> From = 1000000000000000000 + 100000000000000000 = 1100000000000000000
-        const expectedSoldAmount = 1000000000000000000 + 100000000000000000
-        const actualSoldAmount = trade.inputAmountWithFee.quotient.toString()
-        expect(expectedSoldAmount.toString()).toEqual(actualSoldAmount)
+        // GIVEN --> Trade FROM amount for buy orders equals ESTIMATED_SELL_AMOUNT + FEE_AMOUNT
+        // THEN --> FROM = 1000000000000000000 (1) + 100000000000000000 (0.1)= 1100000000000000000 (1.1)
+        const tradeSoldAmount = trade.inputAmountWithFee.quotient.toString()
+        expect(tradeSoldAmount).toEqual((1100000000000000000).toString())
       })
       it('Display price correct', () => {
         const displayPrice = trade.executionPrice.invert()
 
-        // GIVEN --> To = 4000000000000000000000 & Estimated Sold Before Fee = 1000000000000000000
-        // WEHN --> Price_displayed => To / Estimated_sold_before_fee
-        // THEN --> Price_displayed = 4000000000000000000000 / 1000000000000000000 = 4000
-        const expectedDisplayPrice = '4000'
-        const actualDisplayPrice = displayPrice.toSignificant(DEFAULT_PRECISION)
-        expect(expectedDisplayPrice).toEqual(actualDisplayPrice)
+        // GIVEN --> EXACT_BUY_AMOUNT = 4000000000000000000000 (4000) and
+        // GIVEN --> ESTIMATED_SELL_AMOUNT_BEFORE_FEE = 1000000000000000000 (1)
+        // WHEN --> PRICE_DISPLAYED = EXACT_BUY_AMOUNT / ESTIMATED_SELL_AMOUNT_BEFORE_FEE
+        // THEN --> PRICE_DISPLAYED = 4000000000000000000000 (4000) / 1000000000000000000 (1) = 4000
+        const tradeDisplayPrice = displayPrice.toSignificant(DEFAULT_PRECISION)
+        expect(tradeDisplayPrice).toEqual('4000')
       })
       it('Price with 0.5% slippage correct', () => {
         const displayPrice = trade.executionPrice.invert()
@@ -149,12 +146,12 @@ describe('Swap PRICE Quote test', () => {
         // 0.995
         const slippage = new Fraction('1').subtract(userSlippage)
 
-        // GIVEN 0.5% slippage & displayPrice = 4000
-        // WHEN Max_price => Price_displayed * (1-slippage)
+        // GIVEN 0.5% slippage & display price = 4000
+        // WHEN MAX_PRICE = PRICE_DISPLAYED * (1-SLIPPAGE)
         // THEN
-        const expectedPriceWithSlippage = '3980' // 4000 * 0.995
-        const actualPriceWithSlipapge = slippage.multiply(displayPrice)
-        expect(expectedPriceWithSlippage).toEqual(actualPriceWithSlipapge.toSignificant(12))
+        const priceWithSlippage = '3980' // 4000 * 0.995
+        const actualPriceWithSlipapge = slippage.multiply(displayPrice).toSignificant(12)
+        expect(actualPriceWithSlipapge).toEqual(priceWithSlippage)
       })
       it('Expected maximum sold correct', () => {
         // GIVEN: An expected sell amount of 1.1 ETH   (1 ETH for the 4000 DAI, and 0.1 ETH for fee)
