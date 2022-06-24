@@ -6,7 +6,7 @@ export function useReferralAddress() {
   return useAppSelector((state) => state.affiliate.referralAddress)
 }
 
-export function useAddress() {
+export function useAffiliateAddress() {
   return useAppSelector((state) => state.affiliate.address)
 }
 
