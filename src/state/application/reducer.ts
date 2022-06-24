@@ -40,7 +40,7 @@ export interface MetaTxPopupContent {
   }
 }
 
-export type WarningPopupContent = { message: string }
+export type WarningPopupContent = { warning: string }
 
 export enum ApplicationModal {
   WALLET,

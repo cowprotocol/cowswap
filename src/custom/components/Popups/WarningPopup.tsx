@@ -9,14 +9,14 @@ const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
 `
 
-export function WarningPopup({ message }: { message: string | JSX.Element }) {
+export function WarningPopup({ warning }: { warning: string | JSX.Element }) {
   const theme = useContext(ThemeContext)
 
   return (
     <RowNoFlex>
       <AutoColumn gap="8px">
         <ThemedText.Body fontWeight={'bold'} color={theme.warningText}>
-          {message}
+          {warning}
         </ThemedText.Body>
       </AutoColumn>
     </RowNoFlex>

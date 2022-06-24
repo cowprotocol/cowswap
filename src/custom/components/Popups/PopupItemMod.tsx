@@ -85,7 +85,7 @@ export default function PopupItem({
   const isListUpdate = 'listUpdate' in content
   const isUnsupportedNetwork = 'unsupportedNetwork' in content
   const isMetaTxn = 'metatxn' in content
-  const isWarningTxn = 'message' in content
+  const isWarningTxn = 'warning' in content
 
   let popupContent
   if (isTxn) {
@@ -108,7 +108,7 @@ export default function PopupItem({
   } else if ('failedSwitchNetwork' in content) {
     popupContent = <FailedNetworkSwitchPopup chainId={content.failedSwitchNetwork} />
   } else if (isWarningTxn) {
-    popupContent = <WarningPopup message={content.message} />
+    popupContent = <WarningPopup warning={content.warning} />
   }
 
   const faderStyle = useSpring({

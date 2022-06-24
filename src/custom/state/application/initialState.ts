@@ -8,7 +8,9 @@ if (localWarning) {
     key: 'missingPinataEnvVars',
     show: true,
     removeAfterMs: null,
-    content: { message: localWarning },
+    content: {
+      warning: localWarning,
+    },
   })
 }
 
