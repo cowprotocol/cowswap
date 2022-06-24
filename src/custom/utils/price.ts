@@ -29,7 +29,7 @@ import {
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import useSWR from 'swr'
-import { USD_QUOTE_VALID_TO } from '../hooks/useUSDCPrice'
+import { USD_QUOTE_VALID_TO } from 'hooks/useUSDCPrice'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
