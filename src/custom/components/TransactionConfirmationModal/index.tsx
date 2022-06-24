@@ -513,7 +513,7 @@ export function TransactionSubmittedContent({
       <Section>
         <CloseIconWrapper onClick={onDismiss} />
         <Text fontWeight={500} fontSize={20}>
-          Transaction Submitted
+          Transaction {activityDerivedState?.isConfirmed ? 'Confirmed' : 'Submitted'}
         </Text>
         {chainId && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
