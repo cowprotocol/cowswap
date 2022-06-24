@@ -102,8 +102,6 @@ export default function useCowUsdPrice(currency?: Currency) {
       fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
-      // we dont care about validTo here, just use max
-      // FIXME: I guess we care now, using 10min. Future versions of the API will make it optional
       validTo: USD_QUOTE_VALID_TO,
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
