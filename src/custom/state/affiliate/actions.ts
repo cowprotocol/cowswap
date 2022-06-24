@@ -5,8 +5,8 @@ export const updateReferralAddress = createAction<{
   isValid: boolean
 } | null>('affiliate/updateReferralAddress')
 
-export const updateAddress = createAction<string>('affiliate/updateAddress')
+export const setReferralAddressActive = createAction<boolean>('affiliate/setReferralAddressActive')
 
-export const updateAppDataHash = createAction<string>('affiliate/updateAppDataHash')
+export const updateAddress = createAction<string>('affiliate/updateAddress')
 
 export const dismissNotification = createAction<string>('affiliate/dismissNotification')

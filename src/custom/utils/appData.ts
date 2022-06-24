@@ -9,8 +9,7 @@ export async function buildAppData(
   chainId: SupportedChainId,
   sellAmount: string,
   buyAmount: string,
-  referrer: string | undefined,
-  isReferrerValid: boolean | undefined,
+  referrerAccount: string | undefined,
   appCode: string
 ) {
   const sdk = COW_SDK[chainId]
@@ -20,8 +19,8 @@ export async function buildAppData(
   const metadata: MetadataDoc = { quote: quoteMetadata }
 
   // build referrer metadata, optional
-  if (referrer && isReferrerValid) {
-    metadata.referrer = _buildReferralMetadata(referrer)
+  if (referrerAccount) {
+    metadata.referrer = _buildReferralMetadata(referrerAccount)
   }
 
   const doc = sdk.metadataApi.generateAppDataDoc(metadata, { appCode, environment: environmentName })
@@ -40,9 +39,9 @@ function _buildQuoteMetadata(sellAmount: string, buyAmount: string): QuoteMetada
   }
 }
 
-function _buildReferralMetadata(referrer: string): ReferralMetadata {
+function _buildReferralMetadata(address: string): ReferralMetadata {
   return {
-    address: referrer,
+    address,
     version: REFERRER_METADATA_VERSION,
   }
 }
