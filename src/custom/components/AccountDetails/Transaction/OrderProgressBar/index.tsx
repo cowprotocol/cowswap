@@ -209,6 +209,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   Order Status: <strong>Your limit price is out of market.</strong>{' '}
                   {isCancellable ? (
                     <>
+                      {' '}
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
