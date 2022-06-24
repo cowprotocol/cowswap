@@ -187,12 +187,22 @@ export const StatusMsg = styled.p`
   font-size: 0.85rem;
   color: ${({ theme }) => theme.text1};
   margin: 0;
+`
+
+export const StyledCoWLink = styled(ExternalLink)`
+  color: ${({ theme }) => theme.text1};
+  text-decoration: underline;
 
   span {
     color: ${({ theme }) => theme.orange};
   }
+
+  :hover {
+    opacity: 0.8;
+  }
 `
+
 export const StyledExternalLink = styled(ExternalLink)`
-  font-size: 0.82rem !important;
+  font-size: 0.82rem;
   color: ${({ theme }) => theme.orange};
 `

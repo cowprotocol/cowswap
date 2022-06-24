@@ -15,6 +15,7 @@ import {
   WarningLogo,
   GreenCheckIcon,
   StyledExternalLink,
+  StyledCoWLink,
 } from './styled'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
@@ -23,10 +24,11 @@ import { ActivityDerivedState } from '../index'
 import { CancelButton } from '../CancelButton'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 import cowGraph from 'assets/images/cow-graph.svg'
-import ammsGraph from 'assets/images/amms-graph.svg'
+import ammsGraphEth from 'assets/images/amms-graph.svg'
+import ammsGraphGC from 'assets/images/amms-graph-gc.svg'
 import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
+import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
-import { ExternalLink } from 'theme'
 import { getExplorerOrderLink } from '@src/custom/utils/explorer'
 // import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
 
@@ -119,11 +121,11 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 <GreenClockIcon size={16} />
                 <StatusMsg>
                   Order Status: <strong>Looking for a</strong>{' '}
-                  <ExternalLink href="https://docs.cow.fi/overview/coincidence-of-wants">
+                  <StyledCoWLink href="https://docs.cow.fi/overview/coincidence-of-wants" className="cowlink">
                     <strong>
                       <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW)
                     </strong>
-                  </ExternalLink>{' '}
+                  </StyledCoWLink>{' '}
                   ↗
                 </StatusMsg>
               </StatusWrapper>
@@ -154,7 +156,10 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={ammsGraph} alt="Finding the best price ..." />
+                <img
+                  src={chainId === SupportedChainId.GNOSIS_CHAIN ? ammsGraphGC : ammsGraphEth}
+                  alt="Finding the best price ..."
+                />
                 <p>
                   <strong>CowSwap</strong> searches all on-chain liquidity sources to find you the best price.
                 </p>
@@ -179,13 +184,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
+                <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." className="meditating-cow" />
                 <p>
                   Your tokens should already be in your wallet, check out your trade on the{' '}
                   <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>
-                    explorer
+                    explorer ↗
                   </StyledExternalLink>{' '}
-                  ↗
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
