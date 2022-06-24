@@ -123,10 +123,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   Order Status: <strong>Looking for a</strong>{' '}
                   <StyledCoWLink href="https://docs.cow.fi/overview/coincidence-of-wants" className="cowlink">
                     <strong>
-                      <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW)
+                      <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW) ↗
                     </strong>
-                  </StyledCoWLink>{' '}
-                  ↗
+                  </StyledCoWLink>
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
