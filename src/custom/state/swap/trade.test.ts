@@ -67,8 +67,8 @@ describe('Swap PRICE Quote test', () => {
       it('Uses proper input amount WITHOUT fee in trade object', () => {
         // GIVEN --> User is selling 1 WETH
         // THEN --> we expect the trade inputAmount to be exactly 1 in weth atoms
-        const actualInputWithFee = trade.inputAmount
-        expect(actualInputWithFee.quotient.toString()).toEqual('1000000000000000000')
+        const actualInputWithFee = trade.inputAmount.quotient.toString()
+        expect(actualInputWithFee).toEqual('1000000000000000000')
       })
       it('Has the correct execution price', () => {
         // WHEN --> Price_displayed = Sold_tokens / Received_tokens
@@ -150,8 +150,8 @@ describe('Swap PRICE Quote test', () => {
         // WHEN MAX_PRICE = PRICE_DISPLAYED * (1-SLIPPAGE)
         // THEN
         const priceWithSlippage = '3980' // 4000 * 0.995
-        const actualPriceWithSlipapge = slippage.multiply(displayPrice)
-        expect(actualPriceWithSlipapge.toSignificant(12)).toEqual(priceWithSlippage)
+        const actualPriceWithSlipapge = slippage.multiply(displayPrice).toSignificant(12)
+        expect(actualPriceWithSlipapge).toEqual(priceWithSlippage)
       })
       it('Expected maximum sold correct', () => {
         // GIVEN: An expected sell amount of 1.1 ETH   (1 ETH for the 4000 DAI, and 0.1 ETH for fee)
