@@ -1,33 +1,13 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
-import { AppState } from 'state'
-import { useAppDispatch } from 'state/hooks'
-import { updateReferralAddress } from 'state/affiliate/actions'
-import { APP_DATA_HASH } from 'constants/index'
-
-export function useAppDataHash() {
-  return useSelector<AppState, string>((state) => {
-    return state.affiliate.appDataHash || APP_DATA_HASH
-  })
-}
+import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { setReferralAddressActive, updateReferralAddress } from 'state/affiliate/actions'
 
 export function useReferralAddress() {
-  return useSelector<
-    AppState,
-    | {
-        value: string
-        isValid: boolean
-      }
-    | undefined
-  >((state) => {
-    return state.affiliate.referralAddress
-  })
+  return useAppSelector((state) => state.affiliate.referralAddress)
 }
 
 export function useAddress() {
-  return useSelector<AppState, string | undefined>((state) => {
-    return state.affiliate.address
-  })
+  return useAppSelector((state) => state.affiliate.address)
 }
 
 export function useResetReferralAddress() {
@@ -36,8 +16,12 @@ export function useResetReferralAddress() {
   return useCallback(() => dispatch(updateReferralAddress(null)), [dispatch])
 }
 
+export function useSetReferralAddressActive() {
+  const dispatch = useAppDispatch()
+
+  return useCallback((isActive: boolean) => dispatch(setReferralAddressActive(isActive)), [dispatch])
+}
+
 export function useIsNotificationClosed(id?: string): boolean | null {
-  return useSelector<AppState, boolean | null>((state) => {
-    return id ? state.affiliate.isNotificationClosed?.[id] ?? false : null
-  })
+  return useAppSelector((state) => (id ? state.affiliate.isNotificationClosed?.[id] ?? false : null))
 }
