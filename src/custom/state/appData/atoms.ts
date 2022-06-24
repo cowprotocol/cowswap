@@ -5,11 +5,10 @@ import {
   AddAppDataToUploadQueueParams,
   AppDataPendingToUpload,
   AppDataInfo,
-  FlattenedAppDataFromUploadQueue,
   RemoveAppDataFromUploadQueueParams,
   UpdateAppDataOnUploadQueueParams,
 } from 'state/appData/types'
-import { buildAppDataRecordKey, parseAppDataRecordKey } from 'state/appData/utils'
+import { buildDocFilterFn, buildInverseDocFilterFn } from 'state/appData/utils'
 
 /**
  * Base atom that store the current appDataInfo
@@ -21,7 +20,7 @@ export const appDataInfoAtom = atom<AppDataInfo | null>(null)
  */
 export const appDataUploadQueueAtom = atomWithStorage<AppDataPendingToUpload>(
   'appDataUploadQueue', // local storage key
-  {}
+  []
 )
 
 /**
@@ -32,12 +31,14 @@ export const addAppDataToUploadQueueAtom = atom(
   (get, set, { chainId, orderId, appData }: AddAppDataToUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
-      const key = buildAppDataRecordKey({ chainId, orderId })
+      const existingDoc = docs.find(buildDocFilterFn(chainId, orderId))
 
-      return {
-        ...docs,
-        [key]: { ...appData, uploading: false, failedAttempts: 0 },
+      if (existingDoc) {
+        // Entry already in the queue, ignore
+        return docs
       }
+
+      return [...docs, { chainId, orderId, ...appData, uploading: false, failedAttempts: 0 }]
     })
   }
 )
@@ -50,23 +51,28 @@ export const updateAppDataOnUploadQueueAtom = atom(
   (get, set, { chainId, orderId, uploading, lastAttempt, failedAttempts }: UpdateAppDataOnUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
-      const key = buildAppDataRecordKey({ chainId, orderId })
+      const existingDocIndex = docs.findIndex(buildDocFilterFn(chainId, orderId))
 
-      if (!docs[key]) {
+      if (existingDocIndex === -1) {
+        // Entry doesn't exist in the queue, ignore
         return docs
       }
 
-      const current = docs[key]
+      // Create a copy of original docs
+      const updateDocs = [...docs]
 
-      return {
-        ...docs,
-        [key]: {
-          ...current,
-          uploading: uploading ?? current.uploading,
-          lastAttempt: lastAttempt ?? current.lastAttempt,
-          failedAttempts: failedAttempts ?? current.failedAttempts,
-        },
+      // Using the index, get the value
+      const existingDoc = docs[existingDocIndex]
+
+      // Replace existing doc at index with the updated version
+      updateDocs[existingDocIndex] = {
+        ...existingDoc,
+        uploading: uploading ?? existingDoc.uploading,
+        lastAttempt: lastAttempt ?? existingDoc.lastAttempt,
+        failedAttempts: failedAttempts ?? existingDoc.failedAttempts,
       }
+
+      return updateDocs
     })
   }
 )
@@ -77,25 +83,6 @@ export const updateAppDataOnUploadQueueAtom = atom(
 export const removeAppDataFromUploadQueueAtom = atom(
   null,
   (get, set, { chainId, orderId }: RemoveAppDataFromUploadQueueParams) => {
-    set(appDataUploadQueueAtom, () => {
-      const docs = { ...get(appDataUploadQueueAtom) }
-      const key = buildAppDataRecordKey({ chainId, orderId })
-
-      delete docs[key]
-
-      return docs
-    })
+    set(appDataUploadQueueAtom, () => get(appDataUploadQueueAtom).filter(buildInverseDocFilterFn(chainId, orderId)))
   }
 )
-
-/**
- * Read only atom to flatten pending list of appData into a list
- */
-export const flattenedAppDataFromUploadQueueAtom = atom((get) => {
-  const docs = get(appDataUploadQueueAtom)
-
-  return Object.keys(docs).map<FlattenedAppDataFromUploadQueue>((key) => ({
-    ...docs[key],
-    ...parseAppDataRecordKey(key),
-  }))
-})
