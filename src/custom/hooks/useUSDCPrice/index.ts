@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser'
 import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -286,6 +287,32 @@ export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | 
 export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
   const gpUsdPrice = useUSDCValue(currencyAmount)
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
+
+  if (!gpUsdPrice || !coingeckoUsdPrice) {
+    let failedEndpoint = ''
+    if (!gpUsdPrice && !coingeckoUsdPrice) {
+      failedEndpoint = 'BOTH'
+    } else if (!gpUsdPrice) {
+      failedEndpoint = 'COW_API'
+    } else {
+      failedEndpoint = 'COINGECKO'
+    }
+
+    const token = currencyAmount?.wrapped.currency
+
+    const contexts = {
+      params: {
+        endpoint: failedEndpoint,
+        quotedCurrency: token?.symbol || token?.address || 'UNKNOWN TOKEN',
+        amount: currencyAmount?.toExact() || 'UNKNOWN AMOUNT',
+      },
+    }
+    // report this to sentry
+    Sentry.captureMessage('[UsdPriceFeed] - EmptyResponse', {
+      tags: { errorType: 'usdPriceFeed' },
+      contexts,
+    })
+  }
 
   return coingeckoUsdPrice || gpUsdPrice
 }
