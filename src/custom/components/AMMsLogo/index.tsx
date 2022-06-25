@@ -10,6 +10,7 @@ import Curve from 'assets/cow-swap/ammslogo/curve.png'
 import Matcha from 'assets/cow-swap/ammslogo/matcha.png'
 import ZeroX from 'assets/cow-swap/ammslogo/0x.png'
 import { SupportedChainId } from 'constants/chains'
+import { imagesAnimationDelay, animationDelay, crossFade, fadeInOut, presentationTime } from './utils'
 
 export const Wrapper = styled.div<{ logosLength: number }>`
   display: flex;
@@ -28,38 +29,11 @@ export const Wrapper = styled.div<{ logosLength: number }>`
   img {
     position: absolute;
     left: 0;
-    animation: FadeInOut 6s infinite;
-  }
-  @keyframes FadeInOut {
-    0% {
-      opacity: 1;
-    }
-    17% {
-      opacity: 1;
-    }
-    25% {
-      opacity: 0;
-    }
-    92% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+    animation: ${(props) => fadeInOut(presentationTime, crossFade, props.logosLength)}
+      ${(props) => animationDelay * props.logosLength}s infinite;
   }
 
-  img:nth-of-type(1) {
-    animation-delay: 6s;
-  }
-  img:nth-of-type(2) {
-    animation-delay: 4.5s;
-  }
-  img:nth-of-type(3) {
-    animation-delay: 3s;
-  }
-  img:nth-of-type(4) {
-    animation-delay: 1.5s;
-  }
+  ${(props) => imagesAnimationDelay(props.logosLength, animationDelay)}
 `
 
 type Image = { src: string; alt: string }
@@ -85,7 +59,15 @@ const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
     MatchaImage,
     ZeroXImage,
   ],
-  [SupportedChainId.RINKEBY]: [SushiImage, OneInchImage, ParaSwapImage, UniswapImage],
+  [SupportedChainId.RINKEBY]: [
+    SushiImage,
+    OneInchImage,
+    ParaSwapImage,
+    UniswapImage,
+    CurveImage,
+    MatchaImage,
+    ZeroXImage,
+  ],
   [SupportedChainId.GNOSIS_CHAIN]: [SushiImage, BaoSwapImage, HoneySwapImage, SwaprImage],
 }
 
