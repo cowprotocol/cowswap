@@ -6,9 +6,12 @@ import Uniswap from 'assets/cow-swap/ammslogo/uniswap.png'
 import Baoswap from 'assets/cow-swap/ammslogo/baoswap.png'
 import Honeyswap from 'assets/cow-swap/ammslogo/honeyswap.png'
 import Swapr from 'assets/cow-swap/ammslogo/swapr.png'
+import Curve from 'assets/cow-swap/ammslogo/curve.png'
+import Matcha from 'assets/cow-swap/ammslogo/matcha.png'
+import ZeroX from 'assets/cow-swap/ammslogo/0x.png'
 import { SupportedChainId } from 'constants/chains'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ logosLength: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,23 +64,34 @@ export const Wrapper = styled.div`
 
 type Image = { src: string; alt: string }
 
-const SushiImage = { src: Sushi, alt: 'AMMs Sushiswap' }
+const SushiImage = { src: Sushi, alt: 'AMMs Sushi' }
 const OneInchImage = { src: Oneinch, alt: 'AMMs 1inch' }
-const ParaswapImage = { src: Paraswap, alt: 'AMMs Paraswap' }
+const ParaSwapImage = { src: Paraswap, alt: 'AMMs ParaSwap' }
 const UniswapImage = { src: Uniswap, alt: 'AMMs Uniswap' }
-const BaoswapImage = { src: Baoswap, alt: 'AMMs Baoswap' }
-const HoneyswapImage = { src: Honeyswap, alt: 'AMMs Honeyswap' }
+const BaoSwapImage = { src: Baoswap, alt: 'AMMs BaoSwap' }
+const HoneySwapImage = { src: Honeyswap, alt: 'AMMs HoneySwap' }
 const SwaprImage = { src: Swapr, alt: 'AMMs Swapr' }
+const CurveImage = { src: Curve, alt: 'AMMs Curve' }
+const MatchaImage = { src: Matcha, alt: 'AMMs Matcha' }
+const ZeroXImage = { src: ZeroX, alt: 'AMMs 0x' }
 
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
-  [SupportedChainId.MAINNET]: [SushiImage, OneInchImage, ParaswapImage, UniswapImage],
-  [SupportedChainId.RINKEBY]: [SushiImage, OneInchImage, ParaswapImage, UniswapImage],
-  [SupportedChainId.GNOSIS_CHAIN]: [SushiImage, BaoswapImage, HoneyswapImage, SwaprImage],
+  [SupportedChainId.MAINNET]: [
+    SushiImage,
+    OneInchImage,
+    ParaSwapImage,
+    UniswapImage,
+    CurveImage,
+    MatchaImage,
+    ZeroXImage,
+  ],
+  [SupportedChainId.RINKEBY]: [SushiImage, OneInchImage, ParaSwapImage, UniswapImage],
+  [SupportedChainId.GNOSIS_CHAIN]: [SushiImage, BaoSwapImage, HoneySwapImage, SwaprImage],
 }
 
 export function AMMsLogo({ chainId }: { chainId: SupportedChainId }) {
   return (
-    <Wrapper>
+    <Wrapper logosLength={LogosPerNetwork[chainId].length}>
       {LogosPerNetwork[chainId].map(({ src, alt }, index) => (
         <img key={index} src={src} alt={alt} />
       ))}
