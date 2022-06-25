@@ -34,13 +34,16 @@ export const ProgressBarInnerWrapper = styled.div`
   position: relative;
 `
 
-export const ProgressBarIndicator = styled.div<{ percentage: number }>`
+export const ProgressBarIndicator = styled.div.attrs<{ percentage: number }>((props) => ({
+  style: {
+    width: props.percentage + '%',
+  },
+}))<{ percentage: number }>`
   height: 18px;
   background: rgb(233, 214, 37);
   transform: translateX(0%);
   border-radius: 12px;
   transition: all 0.5s;
-  width: ${({ percentage }) => percentage}%;
 `
 
 export const CowProtocolIcon = styled.div`
