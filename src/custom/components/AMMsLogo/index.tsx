@@ -8,6 +8,9 @@ import Honeyswap from 'assets/cow-swap/ammslogo/honeyswap.png'
 import Swapr from 'assets/cow-swap/ammslogo/swapr.png'
 import Curve from 'assets/cow-swap/ammslogo/curve.png'
 import Matcha from 'assets/cow-swap/ammslogo/matcha.png'
+import Levinswap from 'assets/cow-swap/ammslogo/levinswap.png'
+import Elk from 'assets/cow-swap/ammslogo/elk.png'
+import Symmetric from 'assets/cow-swap/ammslogo/symmetric.png'
 import ZeroX from 'assets/cow-swap/ammslogo/0x.png'
 import { SupportedChainId } from 'constants/chains'
 import { imagesAnimationDelay, animationDelay, crossFade, fadeInOut, presentationTime } from './utils'
@@ -47,6 +50,9 @@ const HoneySwapImage = { src: Honeyswap, alt: 'AMMs HoneySwap' }
 const SwaprImage = { src: Swapr, alt: 'AMMs Swapr' }
 const CurveImage = { src: Curve, alt: 'AMMs Curve' }
 const MatchaImage = { src: Matcha, alt: 'AMMs Matcha' }
+const ElkImage = { src: Elk, alt: 'AMMs Elk' }
+const LevinSwapImage = { src: Levinswap, alt: 'Levinswap 0x' }
+const SymmetricImage = { src: Symmetric, alt: 'Symmetric 0x' }
 const ZeroXImage = { src: ZeroX, alt: 'AMMs 0x' }
 
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
@@ -68,7 +74,15 @@ const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
     MatchaImage,
     ZeroXImage,
   ],
-  [SupportedChainId.GNOSIS_CHAIN]: [SushiImage, BaoSwapImage, HoneySwapImage, SwaprImage],
+  [SupportedChainId.GNOSIS_CHAIN]: [
+    SushiImage,
+    BaoSwapImage,
+    HoneySwapImage,
+    SwaprImage,
+    SymmetricImage,
+    ElkImage,
+    LevinSwapImage,
+  ],
 }
 
 export function AMMsLogo({ chainId }: { chainId: SupportedChainId }) {
