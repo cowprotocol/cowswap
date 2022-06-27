@@ -142,7 +142,7 @@ ListRowProps & { listUrl: string }) {
 
   const handleAcceptListUpdate = useCallback(() => {
     if (!pending) return
-    updateListAnalytics('Select', listUrl)
+    updateListAnalytics('List Select', listUrl)
     dispatch(acceptListUpdate(listUrl))
     // }, [dispatch, listUrl, pending])
   }, [acceptListUpdate, dispatch, listUrl, pending])

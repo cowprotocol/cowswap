@@ -1,6 +1,6 @@
 import { Category, _reportEvent } from './index'
 
-type UpdateListAction = 'Popup' | 'Select'
+type UpdateListAction = 'Popup' | 'List Select'
 export function updateListAnalytics(action: UpdateListAction, listUrl: string) {
   _reportEvent({
     category: Category.LIST,
