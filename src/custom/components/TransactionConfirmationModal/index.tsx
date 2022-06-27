@@ -20,7 +20,8 @@ import { ConfirmationModalContent as ConfirmationModalContentMod } from './Trans
 import { ColumnCenter } from 'components/Column'
 import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
-import { getChainCurrencySymbols } from 'utils/xdai/hack'
+import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
+import { Routes } from 'constants/routes'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -369,7 +370,7 @@ function getWalletNameLabel(walletType: WalletType): string {
   }
 }
 
-function getOperationMessage(operationType: OperationType, chainId: number): string {
+export function getOperationMessage(operationType: OperationType, chainId: number): string {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
 
   switch (operationType) {
@@ -550,7 +551,7 @@ export function TransactionSubmittedContent({
           )}
 
           <ButtonCustom>
-            <InternalLink to="/play/cow-runner" onClick={onDismiss}>
+            <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
               Play the Cow Runner Game!
             </InternalLink>

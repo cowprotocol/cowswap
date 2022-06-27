@@ -3,9 +3,8 @@ import INJECTED_ICON_URL from '../assets/images/arrow-right.svg'
 import COINBASE_ICON_URL from '../assets/images/coinbaseWalletIcon.svg'
 import FORTMATIC_ICON_URL from '../assets/images/fortmaticIcon.png'
 import METAMASK_ICON_URL from '../assets/images/metamask.png'
-import PORTIS_ICON_URL from '../assets/images/portisIcon.png'
 import WALLETCONNECT_ICON_URL from '../assets/images/walletConnectIcon.svg'
-import { fortmatic, injected, portis, walletconnect, walletlink } from 'connectors'
+import { fortmatic, injected, walletconnect, walletlink } from 'connectors'
 
 export interface WalletInfo {
   connector?: AbstractConnector
@@ -70,15 +69,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Login using Fortmatic hosted wallet',
     href: null,
     color: '#6748FF',
-    mobile: true,
-  },
-  Portis: {
-    connector: portis,
-    name: 'Portis',
-    iconURL: PORTIS_ICON_URL,
-    description: 'Login using Portis hosted wallet',
-    href: null,
-    color: '#4A6C9B',
     mobile: true,
   },
 }

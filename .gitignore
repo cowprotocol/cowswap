@@ -18,9 +18,11 @@
 
 # testing
 /coverage
+cypress.env.json
 
 # builds
 /build
+/cosmos-export
 /dist
 /dts
 

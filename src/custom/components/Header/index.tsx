@@ -1,48 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-// import { ExternalLink } from 'theme'
+import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
-
-import HeaderMod, {
-  Title as TitleMod,
-  HeaderLinks as HeaderLinksMod,
-  HeaderRow,
-  HeaderControls as HeaderControlsUni,
-  BalanceText as BalanceTextUni,
-  HeaderElement,
-  AccountElement,
-  HeaderElementWrap,
-  StyledNavLink as StyledNavLinkUni,
-  StyledMenuButton,
-  HeaderFrame,
-  UNIWrapper,
-} from './HeaderMod'
-import Menu from 'components/Menu'
-import { Moon, Sun } from 'react-feather'
-import styled from 'styled-components/macro'
+import ReactGA from 'react-ga4'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { useDarkModeManager } from 'state/user/hooks'
-import { darken } from 'polished'
-// import TwitterImage from 'assets/cow-swap/twitter.svg'
-import OrdersPanel from 'components/OrdersPanel'
-import { ApplicationModal } from 'state/application/reducer'
+import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
+import { AMOUNT_PRECISION } from 'constants/index'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
-import Web3Status from 'components/Web3Status'
-import NetworkSelector, { SelectorLabel } from 'components/Header/NetworkSelector'
-// import SVG from 'react-inlinesvg'
-import {
-  useModalOpen,
-  /*useShowClaimPopup,*/
-  // useToggleSelfClaimModal
-} from 'state/application/hooks'
-//import { useUserHasAvailableClaim } from 'state/claim/hooks'
+import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
-// import Modal from 'components/Modal'
-// import ClaimModal from 'components/claim/ClaimModal'
+// Components
+import { HeaderRow } from './HeaderMod'
+import {
+  Wrapper,
+  Title,
+  LogoImage,
+  HeaderModWrapper,
+  UniIcon,
+  AccountElement,
+  BalanceText,
+  HeaderControls,
+  HeaderElement,
+} from './styled'
+import { MenuTree } from './MenuTree'
+import MobileMenuIcon from './MobileMenuIcon'
+import Web3Status from 'components/Web3Status'
+import OrdersPanel from 'components/OrdersPanel'
+import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
@@ -50,11 +38,11 @@ export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GOERLI]: 'Görli',
   // [ChainId.KOVAN]: 'Kovan',
-  [ChainId.XDAI]: 'Gnosis Chain',
+  [ChainId.GNOSIS_CHAIN]: 'Gnosis Chain',
 }
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
-  [ChainId.XDAI]: 'xDAI',
+  [ChainId.GNOSIS_CHAIN]: 'xDAI',
 }
 
 export interface LinkType {
@@ -63,240 +51,100 @@ export interface LinkType {
   path: string
 }
 
-const StyledNavLink = styled(StyledNavLinkUni)`
-  transition: color 0.15s ease-in-out;
-  color: ${({ theme }) => darken(0.3, theme.text1)};
-
-  &:first-of-type {
-    margin: 0 12px 0 0;
-  }
-
-  &:hover,
-  &:focus {
-    color: ${({ theme }) => theme.text1};
-  }
-`
-
-const BalanceText = styled(BalanceTextUni)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    overflow: hidden;
-    max-width: 100px;
-    text-overflow: ellipsis;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `};
-`
-
-const HeaderControls = styled(HeaderControlsUni)`
-  justify-content: flex-end;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-width: 100%;
-    padding: 0;
-    height: auto;
-    width: 100%;
-  `};
-`
-export const Wrapper = styled.div`
-  width: 100%;
-
-  ${HeaderFrame} {
-    padding: 16px;
-    grid-template-columns: auto auto;
-    grid-gap: 16px;
-
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 10px;
-    `}
-  }
-
-  ${HeaderElement} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-    `};
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      flex-direction: initial;
-      align-items: inherit;
-    `};
-  }
-
-  ${StyledMenuButton} {
-    margin-left: 0.5rem;
-    padding: 0;
-    height: 38px;
-    width: 38px;
-  }
-
-  ${SelectorLabel} {
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: none;
-    `};
-  }
-`
-
-export const HeaderModWrapper = styled(HeaderMod)``
-
-const Title = styled(TitleMod)`
-  margin: 0;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text1};
-`
-
-export const HeaderLinks = styled(HeaderLinksMod)`
-  margin: 5px 0 0 0;
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: none;
-  `};
-`
-
-export const TwitterLink = styled(StyledMenuButton)`
-  > a {
-    ${({ theme }) => theme.cursor};
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  > a > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    stroke: transparent;
-  }
-
-  > a > svg > path {
-    fill: ${({ theme }) => theme.text1};
-  }
-
-  > a:hover > svg > path {
-    fill: ${({ theme }) => theme.primary1};
-  }
-`
-
-export const LogoImage = styled.div`
-  width: 190px;
-  height: 48px;
-  background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
-  margin: 0 32px 0 0;
-  position: relative;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
-    height: 34px;
-  `}
-
-  > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`
-
-export const UniIcon = styled.div`
-  display: flex;
-  position: relative;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: rotate(-5deg);
-  }
-`
-
-const VCowWrapper = styled(UNIWrapper)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `}
-`
-
 export default function Header() {
   const { account, chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
-
-  // const toggleClaimModal = useToggleSelfClaimModal()
-  // const availableClaim: boolean = useUserHasAvailableClaim(account)
-  // const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
-  // const showClaimPopup = useShowClaimPopup()
+  const [darkMode, toggleDarkModeAux] = useDarkModeManager()
+  const toggleDarkMode = useCallback(() => {
+    ReactGA.event({
+      category: 'Theme',
+      action: 'Toggle dark/light mode',
+      label: `${darkMode ? 'Light' : 'Dark'} mode`,
+    })
+    toggleDarkModeAux()
+  }, [toggleDarkModeAux, darkMode])
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
-  const closeOrdersPanel = () => setIsOrdersPanelOpen(false)
-  const openOrdersPanel = () => setIsOrdersPanelOpen(true)
-  const isMenuOpen = useModalOpen(ApplicationModal.MENU)
+  const handleOpenOrdersPanel = () => {
+    account && setIsOrdersPanelOpen(true)
+    account && isOrdersPanelOpen && addBodyClass('noScroll')
+  }
+  const handleCloseOrdersPanel = () => {
+    setIsOrdersPanelOpen(false)
+    !isOrdersPanelOpen && removeBodyClass('noScroll')
+  }
 
   const history = useHistory()
-  const handleBalanceButtonClick = () => history.push('/profile')
+  const handleBalanceButtonClick = () => history.push('/account')
+  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToMedium = useMediaQuery(upToMedium)
+  const isUpToSmall = useMediaQuery(upToSmall)
+  const isLargeAndUp = useMediaQuery(LargeAndUp)
 
-  // Toggle the 'noScroll' class on body, whenever the orders panel or flyout menu is open.
+  const [isTouch, setIsTouch] = useState<boolean>(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const handleMobileMenuOnClick = useCallback(() => {
+    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
+  }, [isUpToLarge, isMobileMenuOpen])
+
+  // Toggle the 'noScroll' class on body, whenever the orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isOrdersPanelOpen || isMenuOpen
-      ? document.body.classList.add('noScroll')
-      : document.body.classList.remove('noScroll')
-  }, [isOrdersPanelOpen, isMenuOpen])
+    isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+    // Set if device has touch capabilities
+    setIsTouch('ontouchstart' in document.documentElement)
+  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
-    <Wrapper>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
-        <HeaderRow marginRight="0">
-          {/*<Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
-            <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
-          </Modal>*/}
-          <Title href=".">
+        <HeaderRow>
+          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
-              <LogoImage />
+              <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <HeaderLinks>
-            <StyledNavLink to="/swap">Swap</StyledNavLink>
-            <StyledNavLink to="/profile">Profile</StyledNavLink>
-          </HeaderLinks>
+          <MenuTree
+            isMobileMenuOpen={isMobileMenuOpen}
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            handleMobileMenuOnClick={handleMobileMenuOnClick}
+          />
         </HeaderRow>
 
         <HeaderControls>
-          <HeaderElement>
-            <NetworkSelector />
-          </HeaderElement>
-          <HeaderElement>
-            <VCowWrapper>
-              <CowBalanceButton onClick={handleBalanceButtonClick} account={account} chainId={chainId} />
-            </VCowWrapper>
+          <NetworkSelector />
 
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+          <HeaderElement>
+            <CowBalanceButton
+              onClick={handleBalanceButtonClick}
+              account={account}
+              chainId={chainId}
+              isUpToSmall={isUpToSmall}
+            />
+
+            <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
               {account && userEthBalance && (
-                <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+                <BalanceText>
                   {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
                 </BalanceText>
               )}
-              <Web3Status openOrdersPanel={openOrdersPanel} />
+              <Web3Status />
             </AccountElement>
           </HeaderElement>
-          <HeaderElementWrap>
-            {/* <TwitterLink>
-              <ExternalLink href="https://twitter.com/mevprotection">
-                <SVG src={TwitterImage} description="Follow CowSwap on Twitter!" />
-              </ExternalLink>
-            </TwitterLink> */}
-            <StyledMenuButton onClick={() => toggleDarkMode()}>
-              {darkMode ? <Moon size={20} /> : <Sun size={20} />}
-            </StyledMenuButton>
-          </HeaderElementWrap>
-          <Menu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </HeaderControls>
-        {isOrdersPanelOpen && <OrdersPanel closeOrdersPanel={closeOrdersPanel} />}
+
+        {isUpToLarge && (
+          <MobileMenuIcon
+            isMobileMenuOpen={isMobileMenuOpen}
+            onTouchStart={handleMobileMenuOnClick}
+            onClick={isTouch ? undefined : handleMobileMenuOnClick} // Disable onClick on touch devices and use onTouchStart
+          />
+        )}
+        {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>
   )

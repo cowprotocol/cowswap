@@ -61,7 +61,7 @@ const FAQ_DATA = (chainId: number | undefined) => [
   {
     title: 'What will happen?',
     content: `By sending this ${
-      chainId !== SupportedChainId.XDAI ? 'Ethereum' : ''
+      chainId !== SupportedChainId.GNOSIS_CHAIN ? 'Ethereum' : ''
     } transaction, you will be investing tokens from the connected account and exchanging them for vCOW tokens that will be received by the claiming account specified above.`,
   },
   {

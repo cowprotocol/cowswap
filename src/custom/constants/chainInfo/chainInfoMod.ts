@@ -177,7 +177,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     logoUrl: polygonMaticLogo,
     nativeCurrency: { name: 'Polygon Mumbai Matic', symbol: 'mMATIC', decimals: 18 },
   },*/
-  [SupportedChainId.XDAI]: {
+  [SupportedChainId.GNOSIS_CHAIN]: {
     networkType: NetworkType.L1,
     docs: 'https://docs.gnosischain.com/',
     bridge: 'https://omni.gnosischain.com/bridge',

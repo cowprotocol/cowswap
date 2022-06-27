@@ -9,8 +9,8 @@ import {
   UnsignedOrder,
 } from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
-import { registerOnWindow } from 'utils/misc'
-import { isBarn, isDev, isLocal, isPr } from '../../utils/environments'
+import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
+import { environmentName, isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
   ApiErrorCodes,
@@ -23,7 +23,7 @@ import QuoteError, {
   mapOperatorErrorToQuoteError,
 } from 'api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
-import { FeeQuoteParams, PriceInformation, PriceQuoteParams, SimpleGetQuoteResponse } from 'utils/price'
+import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import * as Sentry from '@sentry/browser'
@@ -32,13 +32,14 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { Context } from '@sentry/types'
+import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
       [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
       [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
-      [ChainId.XDAI]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
+      [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
       [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://barn.api.cow.fi/goerli/api',
     }
   }
@@ -47,7 +48,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   return {
     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
     [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://api.cow.fi/rinkeby/api',
-    [ChainId.XDAI]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
+    [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
     [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://api.cow.fi/goerli/api',
   }
 }
@@ -65,12 +66,15 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
   }
 }
-const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/strategies'
+const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
+  const environment = environmentName !== 'production' ? 'barn' : environmentName
+  const url = STRATEGY_URL_BASE + environment + '/strategies'
+
   return {
-    [SupportedChainId.MAINNET]: STRATEGY_URL_BASE + '/strategy-1.json',
-    [SupportedChainId.RINKEBY]: STRATEGY_URL_BASE + '/strategy-4.json',
-    [SupportedChainId.XDAI]: STRATEGY_URL_BASE + '/strategy-100.json',
+    [SupportedChainId.MAINNET]: url + '/strategy-1.json',
+    [SupportedChainId.RINKEBY]: url + '/strategy-4.json',
+    [SupportedChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
     [SupportedChainId.GOERLI]: STRATEGY_URL_BASE + '/strategy-5.json',
   }
 }
@@ -283,7 +287,7 @@ function _handleError<P extends Context>(error: any, response: Response, params:
   const sentryError =
     error?.sentryError ||
     constructSentryError(error, response, {
-      message: error?.message || error,
+      message: getProviderErrorMessage(error),
       name: `[${operation}-ERROR] - Unmapped ${operation} Error`,
     })
   // Create the error tags or use the previously constructed ones from the try block
@@ -555,7 +559,7 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
   const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
   const json = await response.json()
 
-  if (chainId === SupportedChainId.XDAI) {
+  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
     // Different endpoint for GChain with a different format. Need to transform it
     return _transformGChainGasPrices(json)
   }

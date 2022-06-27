@@ -1,5 +1,5 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@src/constants/chains'
 import { nativeOnChain } from 'constants/tokens'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useMemo } from 'react'

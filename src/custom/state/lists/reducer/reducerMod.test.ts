@@ -44,7 +44,7 @@ const EMPTY_STORE = {
     activeListUrls: undefined,
     gpUnsupportedTokens: {},
   },
-  [ChainId.XDAI]: {
+  [ChainId.GNOSIS_CHAIN]: {
     byUrl: {},
     activeListUrls: undefined,
     gpUnsupportedTokens: {},

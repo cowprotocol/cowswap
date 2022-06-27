@@ -10,6 +10,7 @@ import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
 import { useAddUserToken } from 'state/user/hooks'
 import { Erc20 } from 'abis/types'
 import { retry } from 'utils/retry'
+import { ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}
@@ -27,7 +28,7 @@ export interface GetTokenInfoParams {
   address: string
   account: string
 
-  library: Web3Provider
+  library: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined })
 }
 
 async function _getTokenContract(params: GetTokenInfoParams): Promise<Erc20> {

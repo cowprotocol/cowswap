@@ -96,7 +96,7 @@ function _repoNetworkIdMapping(id: SupportedChainId): string {
       return 'mainnet'
     case SupportedChainId.RINKEBY:
       return 'rinkeby'
-    case SupportedChainId.XDAI:
+    case SupportedChainId.GNOSIS_CHAIN:
       return 'gnosis-chain'
     case SupportedChainId.GOERLI: // TODO: not sure if we need this
       return 'goerli'

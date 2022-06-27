@@ -39,7 +39,7 @@ type Mutable<T> = {
 export const EMPTY_LIST: TokenAddressMap = {
   [ChainId.RINKEBY]: {},
   [ChainId.MAINNET]: {},
-  [ChainId.XDAI]: {},
+  [ChainId.GNOSIS_CHAIN]: {},
   [ChainId.GOERLI]: {},
 }
 

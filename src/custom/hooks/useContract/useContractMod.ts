@@ -109,7 +109,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean) {
       case ChainId.GOERLI:
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
         break
-      case ChainId.XDAI:
+      case ChainId.GNOSIS_CHAIN:
         address = '0x25D2252Ec30de7830b6825D6b4A08E70a581cD6a'
         break
     }

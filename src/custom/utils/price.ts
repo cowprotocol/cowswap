@@ -3,11 +3,11 @@ import BigNumberJs from 'bignumber.js'
 import * as Sentry from '@sentry/browser'
 import { Percent } from '@uniswap/sdk-core'
 
-import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp, OrderMetaData } from 'api/gnosisProtocol'
+import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
-import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
@@ -16,79 +16,25 @@ import {
 } from 'api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
-import { GetQuoteResponse, OrderKind } from '@cowprotocol/contracts'
-import { ChainId } from 'state/lists/actions'
+import { OrderKind } from '@cowprotocol/contracts'
 import { toErc20Address } from 'utils/tokens'
+import {
+  LegacyFeeQuoteParams,
+  LegacyPriceInformationWithSource,
+  LegacyPriceQuoteError,
+  LegacyPriceQuoteParams,
+  LegacyPromiseRejectedResultWithSource,
+  LegacyQuoteParams,
+} from 'api/gnosisProtocol/legacy/types'
+import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
+import useSWR from 'swr'
+import { USD_QUOTE_VALID_TO } from 'hooks/useUSDCPrice'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
   description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom,
 })
-
-export interface QuoteParams {
-  quoteParams: FeeQuoteParams
-  strategy: GpPriceStrategy
-  fetchFee: boolean
-  previousFee?: FeeInformation
-  isPriceRefresh: boolean
-}
-
-export interface FeeInformation {
-  expirationDate: string
-  amount: string
-}
-
-export interface PriceInformation {
-  token: string
-  amount: string | null
-}
-
-// GetQuoteResponse from @cowprotocol/contracts types Timestamp and BigNumberish
-// do not play well with our existing methods, using string instead
-export type SimpleGetQuoteResponse = Pick<GetQuoteResponse, 'from'> & {
-  // We need to map BigNumberIsh and Timestamp to what we use: string
-  quote: Omit<GetQuoteResponse['quote'], 'sellAmount' | 'buyAmount' | 'feeAmount' | 'validTo'> & {
-    sellAmount: string
-    buyAmount: string
-    validTo: string
-    feeAmount: string
-  }
-  expiration: string
-}
-
-export class PriceQuoteError extends Error {
-  params: PriceQuoteParams
-  results: PromiseSettledResult<any>[]
-
-  constructor(message: string, params: PriceQuoteParams, results: PromiseSettledResult<any>[]) {
-    super(message)
-    this.params = params
-    this.results = results
-  }
-}
-
-export type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
-  amount: string
-  fromDecimals: number
-  toDecimals: number
-  chainId: ChainId
-  userAddress?: string | null
-  receiver?: string | null
-  validTo: number
-  priceQuality?: string
-  isBestQuote?: boolean
-}
-
-export type PriceQuoteParams = Omit<FeeQuoteParams, 'sellToken' | 'buyToken'> & {
-  baseToken: string
-  quoteToken: string
-}
-
-export type PriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
-export type PriceInformationWithSource = PriceInformation & { source: PriceSource; data?: any }
-export type PromiseRejectedResultWithSource = PromiseRejectedResult & { source: PriceSource }
 
 interface GetBestPriceOptions {
   aggrOverride?: 'max' | 'min'
@@ -97,7 +43,7 @@ interface GetBestPriceOptions {
 type FilterWinningPriceParams = {
   kind: string
   amounts: string[]
-  priceQuotes: PriceInformationWithSource[]
+  priceQuotes: LegacyPriceInformationWithSource[]
 } & GetBestPriceOptions
 
 function _filterWinningPrice(params: FilterWinningPriceParams) {
@@ -129,7 +75,7 @@ export type AllPricesResult = {
 /**
  *  Return all price estimations from all price sources
  */
-export async function getAllPrices(params: PriceQuoteParams): Promise<AllPricesResult> {
+export async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllPricesResult> {
   // Get price from all API: Gpv2, Paraswap, Matcha (0x)
   const gpPricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
 
@@ -164,10 +110,10 @@ function _extractPriceAndErrorPromiseValues(
   gpPriceResult: PromiseSettledResult<PriceInformation | null>,
   paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>,
   matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
-): [Array<PriceInformationWithSource>, Array<PromiseRejectedResultWithSource>] {
+): [Array<LegacyPriceInformationWithSource>, Array<LegacyPromiseRejectedResultWithSource>] {
   // Prepare an array with all successful estimations
-  const priceQuotes: Array<PriceInformationWithSource> = []
-  const errorsGetPrice: Array<PromiseRejectedResultWithSource> = []
+  const priceQuotes: Array<LegacyPriceInformationWithSource> = []
+  const errorsGetPrice: Array<LegacyPromiseRejectedResultWithSource> = []
 
   if (isPromiseFulfilled(gpPriceResult)) {
     const gpPrice = gpPriceResult.value
@@ -202,7 +148,10 @@ function _extractPriceAndErrorPromiseValues(
 /**
  *  Return the best price considering all price feeds
  */
-export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPriceOptions): Promise<PriceInformation> {
+export async function getBestPrice(
+  params: LegacyPriceQuoteParams,
+  options?: GetBestPriceOptions
+): Promise<PriceInformation> {
   // Get all prices
   const { gpPriceResult, paraSwapPriceResult, matcha0xPriceResult } = await getAllPrices(params)
 
@@ -230,7 +179,7 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
     return _filterWinningPrice({ ...options, kind: params.kind, amounts, priceQuotes })
   } else {
     // It was not possible to get a price estimation
-    const priceQuoteError = new PriceQuoteError('Error querying price from APIs', params, [
+    const priceQuoteError = new LegacyPriceQuoteError('Error querying price from APIs', params, [
       gpPriceResult,
       paraSwapPriceResult,
       matcha0xPriceResult,
@@ -257,7 +206,7 @@ export async function getBestPrice(params: PriceQuoteParams, options?: GetBestPr
  * Queries the new Quote api endpoint found here: https://protocol-mainnet.gnosis.io/api/#/default/post_api_v1_quote
  * TODO: consider name // check with backend when logic returns best quote, not first
  */
-export async function getFullQuote({ quoteParams }: { quoteParams: FeeQuoteParams }): Promise<QuoteResult> {
+export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuoteParams }): Promise<QuoteResult> {
   const { kind } = quoteParams
   const { quote, expiration: expirationDate } = await getQuote(quoteParams)
 
@@ -296,7 +245,7 @@ export async function getBestQuoteLegacy({
   quoteParams,
   fetchFee,
   previousFee,
-}: Omit<QuoteParams, 'strategy'>): Promise<QuoteResult> {
+}: Omit<LegacyQuoteParams, 'strategy'>): Promise<QuoteResult> {
   const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress, validTo } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
   // Get a new fee quote (if required)
@@ -351,7 +300,7 @@ export async function getBestQuote({
   fetchFee,
   previousFee,
   strategy,
-}: QuoteParams): Promise<QuoteResult> {
+}: LegacyQuoteParams): Promise<QuoteResult> {
   if (strategy === 'COWSWAP') {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
 
@@ -371,13 +320,13 @@ export async function getBestQuote({
   }
 }
 
-export async function getFastQuote({ quoteParams }: QuoteParams): Promise<QuoteResult> {
+export async function getFastQuote({ quoteParams }: LegacyQuoteParams): Promise<QuoteResult> {
   console.debug('[GP PRICE::API] getFastQuote - Attempting fast quote retrieval, hang tight.')
 
   return getFullQuote({ quoteParams })
 }
 
-export function getValidParams(params: PriceQuoteParams) {
+export function getValidParams(params: LegacyPriceQuoteParams) {
   const { baseToken: baseTokenAux, quoteToken: quoteTokenAux, chainId } = params
   const baseToken = toErc20Address(baseTokenAux, chainId)
   const quoteToken = toErc20Address(quoteTokenAux, chainId)
@@ -404,17 +353,16 @@ export function calculateFallbackPriceImpact(initialValue: string, finalValue: s
   return impact
 }
 
-export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams, 'strategy' | 'quoteParams'>) {
+export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuoteParams, 'strategy' | 'quoteParams'>) {
   if (strategy === 'COWSWAP') {
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
     )
-    quoteParams.validTo = MAX_VALID_TO_EPOCH
+    // we need to explicitly set the validTo time to 10m in future on every call
+    quoteParams.validTo = USD_QUOTE_VALID_TO
     const { quote } = await getQuote(quoteParams)
 
-    // BUY order always. We also need to add the fee to the sellAmount to get the unaffected price
-    const amountWithoutFee = new BigNumberJs(quote.feeAmount).plus(new BigNumberJs(quote.sellAmount))
-    return amountWithoutFee.toString(10)
+    return quote.sellAmount
   } else {
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
@@ -430,4 +378,26 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<QuoteParams
 
     return quote.amount
   }
+}
+
+export function useGetGpUsdcPrice(
+  props: {
+    strategy: GpPriceStrategy
+    quoteParams: LegacyFeeQuoteParams | null
+  },
+  options = SWR_OPTIONS
+) {
+  const { strategy, quoteParams } = props
+
+  return useSWR<string | null>(
+    ['getGpUsdcPrice', strategy, quoteParams],
+    () => {
+      if (strategy && quoteParams) {
+        return getGpUsdcPrice({ strategy, quoteParams })
+      } else {
+        return null
+      }
+    },
+    options
+  )
 }
