@@ -75,7 +75,7 @@ function getPriceStrategyUrl(): Record<SupportedChainId, string> {
     [SupportedChainId.MAINNET]: url + '/strategy-1.json',
     [SupportedChainId.RINKEBY]: url + '/strategy-4.json',
     [SupportedChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
-    [SupportedChainId.GOERLI]: STRATEGY_URL_BASE + '/strategy-5.json',
+    [SupportedChainId.GOERLI]: url + '/strategy-5.json',
   }
 }
 

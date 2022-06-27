@@ -134,13 +134,7 @@ const GNO_RINKEBY = new Token(
   'GNO',
   'Gnosis'
 )
-const GNO_GOERLI = new Token(
-  SupportedChainId.GOERLI,
-  '0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c', // TODO: update with real goerli address
-  18,
-  'GNO',
-  'Gnosis'
-)
+const GNO_GOERLI = new Token(SupportedChainId.GOERLI, '0x02abbdbaaa7b1bb64b5c878f7ac17f8dda169532', 18, 'GNO', 'Gnosis')
 
 export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.MAINNET]: GNO_MAINNET,
