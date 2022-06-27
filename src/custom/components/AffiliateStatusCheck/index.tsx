@@ -74,7 +74,8 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    if (!referralAddressIsValid) {
+    // Note: comparing with `false` because in case `undefined` msg shouldn't be displayed
+    if (referralAddressIsValid === false) {
       setError('Affiliate program: The referral address is invalid.')
       return
     }
