@@ -1,97 +1,72 @@
 import { Category, _reportEvent } from './index'
 
-const types = {
-  maxSellTokens: 'Set Maximun Sell Tokens',
-  expirationTime: {
-    default: 'Set Default Expiration Time',
-    custom: 'Set Custom Expiration Time',
-  },
-  wrap: {
-    send: 'Send Wrap/Unwrap Transaction to Wallet',
-    sign: 'Sign Wrap/Unwrap Transaction',
-    reject: 'Reject Wrap/Unwrap Signing transaction',
-    error: 'Error Wrap/Unwrap Signing transaction',
-  },
-  claim: {
-    send: 'Send Claim Transaction to Wallet',
-    sign: 'Sign Claim Transaction',
-    reject: 'Reject Claim Signing Transaction',
-    error: 'Error Claim Signing Transaction',
-  },
-  approval: {
-    send: 'Send Token Approval to Wallet',
-    sign: 'Sign Token Approval',
-    reject: 'Reject Token Approval',
-    error: 'Signing Error for Token Approval',
-  },
-  swap: {
-    send: 'Send Order to Wallet',
-    signedSwap: 'Signed: Swap',
-    signedSwapSelf: 'Signed: Swap and Send to Self',
-    signedSwapSend: 'Signed: Swap and Send',
-    reject: 'Reject Swap',
-    error: 'Signing Swap Error',
-  },
-  order: {
-    posted: 'Posted Order',
-    executed: 'Executed Swap',
-    cancel: 'Canceled Order',
-    expired: 'Expired Order',
-  },
-}
-
-type expirationTimeType = keyof typeof types.expirationTime
-export function orderExpirationTimeAnalytics(option: expirationTimeType, value: number) {
+type ExpirationAction = 'Default' | 'Custom'
+export function orderExpirationTimeAnalytics(action: ExpirationAction, value: number) {
   _reportEvent({
     category: Category.ORDER_EXPIRATION_TIME,
-    action: types.expirationTime[option],
+    action: `Set ${action} Expiration Time`,
     value,
   })
 }
 
-type wrapTransactionType = keyof typeof types.wrap
-export function wrapTransactionAnalytics(option: wrapTransactionType, message: string) {
+type wrapTransactionType = 'Send' | 'Sign' | 'Reject' | 'Error'
+export function wrapAnalytics(action: wrapTransactionType, message: string) {
   _reportEvent({
     category: Category.WRAP_NATIVE_TOKEN,
-    action: types.wrap[option],
+    action: `${action} Wrap/Unwrap Transaction`,
     label: message,
   })
 }
 
-type claimTransactionType = keyof typeof types.claim
-export function claimTransactionAnalytics(option: claimTransactionType, value?: number) {
+type ClaimAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+export function claimAnalytics(action: ClaimAction, value?: number) {
   _reportEvent({
     category: Category.CLAIM_COW_FOR_LOCKED_GNO,
-    action: types.claim[option],
+    action: `${action} Claim Transaction`,
     value,
   })
 }
 
-type approvalTransactionType = keyof typeof types.approval
-export function approvalTransactionAnalytics(option: approvalTransactionType, label?: string, value?: number) {
+type ApprovalAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+export function approvalAnalytics(action: ApprovalAction, label?: string, value?: number) {
   _reportEvent({
     category: Category.SWAP,
-    action: types.approval[option],
+    action: `${action} Token Approval`,
     label,
     value,
   })
 }
 
-export type swapTransactionType = keyof typeof types.swap
-export function swapTransactionAnalytics(option: swapTransactionType, label?: string, value?: number) {
+export type SwapAction = 'Send' | 'Error' | 'Reject'
+export function swapAnalytics(action: SwapAction, label?: string, value?: number) {
   _reportEvent({
     category: Category.SWAP,
-    action: types.swap[option],
+    action: `${action} Swap Order`,
     label,
     value,
   })
 }
 
-export type orderType = keyof typeof types.order
-export function orderAnalytics(option: orderType, label?: string) {
+const signSwapActions = {
+  Sign: 'Signed: Swap',
+  SignAndSend: 'Signed: Swap and send',
+  SignToSelf: 'Signed: Swap and send to self',
+}
+
+export type SignSwapAction = 'Sign' | 'SignAndSend' | 'SignToSelf'
+export function signSwapAnalytics(action: SignSwapAction, label?: string) {
   _reportEvent({
     category: Category.SWAP,
-    action: types.order[option],
+    action: signSwapActions[action],
+    label,
+  })
+}
+
+export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
+export function orderAnalytics(action: OrderType, label?: string) {
+  _reportEvent({
+    category: Category.SWAP,
+    action: `${action} Swap Order`,
     label,
   })
 }
@@ -99,6 +74,6 @@ export function orderAnalytics(option: orderType, label?: string) {
 export function setMaxSellTokens() {
   _reportEvent({
     category: Category.SWAP,
-    action: types.maxSellTokens,
+    action: 'Set Maximun Sell Tokens',
   })
 }

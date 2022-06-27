@@ -1,56 +1,36 @@
 import { Category, _reportEvent } from './index'
 
-const types = {
-  remove: {
-    start: 'Start Remove List',
-    confirm: 'Confirm Remove List',
-  },
-  update: {
-    popup: 'Update List from Popup',
-    select: 'Update List from List Select',
-  },
-  toggle: {
-    enable: 'Enable List',
-    disable: 'Disable List',
-  },
-  add: {
-    success: 'Add List Success',
-    failed: 'Add List Failed',
-  },
-}
-
-type updateListType = keyof typeof types.update
-export function updateListAnalytics(option: updateListType, listUrl: string) {
+type UpdateListAction = 'Popup' | 'Select'
+export function updateListAnalytics(action: UpdateListAction, listUrl: string) {
   _reportEvent({
     category: Category.LIST,
-    action: types.update[option],
+    action: `Update List from ${action}`,
     label: listUrl,
   })
 }
 
-type removeListType = keyof typeof types.remove
-export function removeListAnalytics(option: removeListType, listUrl: string) {
+type RemoveListAction = 'Start' | 'Confirm'
+export function removeListAnalytics(action: RemoveListAction, listUrl: string) {
   _reportEvent({
     category: Category.LIST,
-    action: types.remove[option],
+    action: `${action} Remove List`,
     label: listUrl,
   })
 }
 
-type toggleListType = keyof typeof types.toggle
-export function toggleListAnalytics(option: toggleListType, listUrl: string) {
+export function toggleListAnalytics(enable: boolean, listUrl: string) {
   _reportEvent({
     category: Category.LIST,
-    action: types.toggle[option],
+    action: `${enable ? 'Enable' : 'Disable'} List`,
     label: listUrl,
   })
 }
 
-type addListType = keyof typeof types.add
-export function addListAnalytics(option: addListType, listURL: string) {
+type AddListAction = 'Success' | 'Failed'
+export function addListAnalytics(action: AddListAction, listURL: string) {
   _reportEvent({
     category: Category.LIST,
-    action: types.add[option],
+    action: `Add List ${action}`,
     label: listURL,
   })
 }

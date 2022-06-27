@@ -26,7 +26,7 @@ import { getOperationMessage, OperationType } from '../components/TransactionCon
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
-import { wrapTransactionAnalytics } from 'utils/analytics'
+import { wrapAnalytics } from 'utils/analytics'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -136,10 +136,10 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     wrapUnwrapCallback = async () => {
       try {
         openTransactionConfirmationModal(confirmationMessage, operationType)
-        wrapTransactionAnalytics('send', operationMessage)
+        wrapAnalytics('Send', operationMessage)
 
         const txReceipt = await wrapUnwrap()
-        wrapTransactionAnalytics('sign', operationMessage)
+        wrapAnalytics('Sign', operationMessage)
 
         addTransaction({
           hash: txReceipt.hash,
@@ -152,8 +152,8 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
         closeModals()
 
         const isRejected = isRejectRequestProviderError(error)
-        const action = isRejected ? 'reject' : 'error'
-        wrapTransactionAnalytics(action, operationMessage)
+        const action = isRejected ? 'Reject' : 'Error'
+        wrapAnalytics(action, operationMessage)
 
         const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
         console.error(errorMessage, error)

@@ -60,14 +60,14 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
     setAddError(null)
     fetchList(listURL)
       .then(() => {
-        addListAnalytics('success', listURL)
+        addListAnalytics('Success', listURL)
         // turn list on
         enableList(listURL)
         // go back to lists
         setModalView(CurrencyModalView.manage)
       })
       .catch((error) => {
-        addListAnalytics('failed', listURL)
+        addListAnalytics('Failed', listURL)
         setAddError(error.message)
         removeList(listURL)
       })

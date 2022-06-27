@@ -86,7 +86,7 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
-import { approvalTransactionAnalytics, swapTransactionAnalytics, setMaxSellTokens } from 'utils/analytics'
+import { approvalAnalytics, swapAnalytics, setMaxSellTokens, signSwapAnalytics } from 'utils/analytics'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -378,10 +378,10 @@ export default function Swap({
 
     if (approveRequired) {
       const symbol = v2Trade?.inputAmount?.currency.symbol
-      approvalTransactionAnalytics('send', symbol)
+      approvalAnalytics('Send', symbol)
       return approveCallback()
         .then(() => {
-          approvalTransactionAnalytics('sign', symbol)
+          approvalAnalytics('Sign', symbol)
         })
         .catch((error) => {
           console.error('Error setting the allowance for token', error)
@@ -389,7 +389,7 @@ export default function Swap({
           let swapErrorMessage, errorCode
           if (isRejectRequestProviderError(error)) {
             swapErrorMessage = 'User rejected approving the token'
-            approvalTransactionAnalytics('reject', symbol)
+            approvalAnalytics('Reject', symbol)
           } else {
             swapErrorMessage = getProviderErrorMessage(error)
 
@@ -397,7 +397,7 @@ export default function Swap({
               errorCode = error.code
             }
 
-            approvalTransactionAnalytics('error', symbol, errorCode)
+            approvalAnalytics('Error', symbol, errorCode)
           }
 
           setSwapState({
@@ -472,7 +472,7 @@ export default function Swap({
     }
 
     const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-    swapTransactionAnalytics('send', marketLabel)
+    swapAnalytics('Send', marketLabel)
 
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
@@ -480,18 +480,18 @@ export default function Swap({
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
 
         if (recipient === null) {
-          swapTransactionAnalytics('signedSwap', marketLabel)
+          signSwapAnalytics('Sign', marketLabel)
         } else {
           ;(recipientAddress ?? recipient) === account
-            ? swapTransactionAnalytics('signedSwapSelf', marketLabel)
-            : swapTransactionAnalytics('signedSwapSend', marketLabel)
+            ? signSwapAnalytics('SignAndSend', marketLabel)
+            : signSwapAnalytics('SignToSelf', marketLabel)
         }
       })
       .catch((error) => {
         let swapErrorMessage, errorCode
         if (isRejectRequestProviderError(error)) {
           swapErrorMessage = 'User rejected signing the order'
-          swapTransactionAnalytics('reject', marketLabel)
+          swapAnalytics('Reject', marketLabel)
         } else {
           swapErrorMessage = getProviderErrorMessage(error)
 
@@ -499,7 +499,7 @@ export default function Swap({
             errorCode = error.code
           }
           console.error('Error Signing Order', error)
-          swapTransactionAnalytics('error', marketLabel, errorCode)
+          swapAnalytics('Error', marketLabel, errorCode)
         }
 
         setSwapState({

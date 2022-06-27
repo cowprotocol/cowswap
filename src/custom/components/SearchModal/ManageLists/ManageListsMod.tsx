@@ -142,29 +142,29 @@ ListRowProps & { listUrl: string }) {
 
   const handleAcceptListUpdate = useCallback(() => {
     if (!pending) return
-    updateListAnalytics('select', listUrl)
+    updateListAnalytics('Select', listUrl)
     dispatch(acceptListUpdate(listUrl))
     // }, [dispatch, listUrl, pending])
   }, [acceptListUpdate, dispatch, listUrl, pending])
 
   const handleRemoveList = useCallback(() => {
-    removeListAnalytics('start', listUrl)
+    removeListAnalytics('Start', listUrl)
 
     if (window.prompt(t`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
-      removeListAnalytics('confirm', listUrl)
+      removeListAnalytics('Confirm', listUrl)
       dispatch(removeList(listUrl))
     }
     // }, [dispatch, listUrl])
   }, [dispatch, listUrl, removeList])
 
   const handleEnableList = useCallback(() => {
-    toggleListAnalytics('enable', listUrl)
+    toggleListAnalytics(true, listUrl)
     dispatch(enableList(listUrl))
     // }, [dispatch, listUrl])
   }, [dispatch, enableList, listUrl])
 
   const handleDisableList = useCallback(() => {
-    toggleListAnalytics('disable', listUrl)
+    toggleListAnalytics(false, listUrl)
     dispatch(disableList(listUrl))
     // }, [dispatch, listUrl])
   }, [disableList, dispatch, listUrl])

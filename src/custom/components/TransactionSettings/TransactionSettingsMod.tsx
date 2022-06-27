@@ -132,19 +132,19 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       setSlippageError(false)
 
       if (value.length === 0) {
-        slippageToleranceAnalytics('default', DEFAULT_SLIPPAGE_BPS)
+        slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
       } else {
         const parsed = Math.floor(Number.parseFloat(value) * 100)
 
         if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
-          slippageToleranceAnalytics('default', DEFAULT_SLIPPAGE_BPS)
+          slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
           setUserSlippageTolerance('auto')
           if (value !== '.') {
             setSlippageError(SlippageError.InvalidInput)
           }
         } else {
-          slippageToleranceAnalytics('custom', parsed)
+          slippageToleranceAnalytics('Custom', parsed)
           setUserSlippageTolerance(new Percent(parsed, 10_000))
         }
       }
@@ -163,7 +163,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setDeadlineError(false)
 
     if (value.length === 0) {
-      orderExpirationTimeAnalytics('default', DEFAULT_DEADLINE_FROM_NOW)
+      orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
       setDeadline(DEFAULT_DEADLINE_FROM_NOW)
     } else {
       try {
@@ -175,7 +175,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
         } else {
-          orderExpirationTimeAnalytics('custom', parsed)
+          orderExpirationTimeAnalytics('Custom', parsed)
           setDeadline(parsed)
         }
       } catch (error) {

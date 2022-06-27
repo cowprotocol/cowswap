@@ -23,7 +23,7 @@ import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
-import { claimTransactionAnalytics } from 'utils/analytics'
+import { claimAnalytics } from 'utils/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -76,10 +76,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
-    claimTransactionAnalytics('send')
+    claimAnalytics('Send')
     claimCallback()
       .then((tx) => {
-        claimTransactionAnalytics('sign')
+        claimAnalytics('Sign')
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
@@ -106,7 +106,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        claimTransactionAnalytics(isRejected ? 'reject' : 'error', errorCode)
+        claimAnalytics(isRejected ? 'Reject' : 'Error', errorCode)
         handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])

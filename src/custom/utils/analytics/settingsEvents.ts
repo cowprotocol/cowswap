@@ -1,41 +1,24 @@
 import { Category, _reportEvent } from './index'
 import { debounce } from 'utils/misc'
 
-const types = {
-  expertMode: {
-    toggle: {
-      enable: 'Enable Expert Mode',
-      disable: 'Disable Expert Mode',
-    },
-    confirmation: 'Show Confirmation',
-  },
-  recipient: 'Toggle Recipient Address',
-  search: 'Search by address',
-  slippageTolerance: {
-    custom: 'Set Custom Slippage Tolerance',
-    default: 'Set Default Slippage Tolerance',
-  },
-}
-
-type toggleExpertModeType = keyof typeof types.expertMode.toggle
-export function toggleExpertModeAnalytics(option: toggleExpertModeType) {
+export function toggleExpertModeAnalytics(enable: boolean) {
   _reportEvent({
     category: Category.EXPERT_MODE,
-    action: types.expertMode.toggle[option],
+    action: `${enable ? 'Enable' : 'Disable'} Expert Mode`,
   })
 }
 
 export function showExpertModeConfirmationAnalytics() {
   _reportEvent({
     category: Category.EXPERT_MODE,
-    action: types.expertMode.confirmation,
+    action: 'Show Confirmation',
   })
 }
 
 export function toggleRecepientAddressAnalytics(isDisabling: boolean) {
   _reportEvent({
     category: Category.RECIPIENT_ADDRESS,
-    action: types.recipient,
+    action: 'Toggle Recipient Address',
     label: !isDisabling ? 'Enabled' : 'Disabled',
   })
 }
@@ -43,20 +26,20 @@ export function toggleRecepientAddressAnalytics(isDisabling: boolean) {
 export function searchByAddressAnalytics(isAddressSearch: string) {
   _reportEvent({
     category: Category.CURRENCY_SELECT,
-    action: types.search,
+    action: 'Search by address',
     label: isAddressSearch,
   })
 }
 
-type slippageToleranceType = keyof typeof types.slippageTolerance
-function _slippageToleranceAnalytics(option: slippageToleranceType, value: number) {
+type SlipageToleranceAction = 'Custom' | 'Default'
+function _slippageToleranceAnalytics(action: SlipageToleranceAction, value: number) {
   _reportEvent({
     category: Category.ORDER_SLIPAGE_TOLERANCE,
-    action: types.slippageTolerance[option],
+    action: `Set ${action} Slipage Tolerance`,
     value,
   })
 }
 
-export const slippageToleranceAnalytics = debounce(([option, value]: [slippageToleranceType, number]) => {
-  _slippageToleranceAnalytics(option, value)
+export const slippageToleranceAnalytics = debounce(([action, value]: [SlipageToleranceAction, number]) => {
+  _slippageToleranceAnalytics(action, value)
 }, 2000)

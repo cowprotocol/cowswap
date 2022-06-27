@@ -35,7 +35,7 @@ export default function ListUpdatePopup({
 
   const handleAcceptUpdate = useCallback(() => {
     if (auto) return
-    updateListAnalytics('popup', listUrl)
+    updateListAnalytics('Popup', listUrl)
     dispatch(acceptListUpdate(listUrl))
     removeThisPopup()
     // MOD: deps

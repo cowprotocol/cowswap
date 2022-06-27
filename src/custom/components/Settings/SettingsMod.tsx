@@ -135,7 +135,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const [expertMode, toggleExpertModeAux] = useExpertModeManager()
   const toggleExpertMode = useCallback(() => {
-    toggleExpertModeAnalytics(expertMode ? 'disable' : 'enable')
+    toggleExpertModeAnalytics(!expertMode)
     toggleExpertModeAux()
   }, [toggleExpertModeAux, expertMode])
 
