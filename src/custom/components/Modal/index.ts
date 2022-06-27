@@ -18,6 +18,7 @@ export const GpModal = styled(Modal)<{
     z-index: 100;
     padding: ${({ padding = 'none' }) => `${padding}`};
     margin: auto;
+    transition: width 0.2s ease;
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 623px;
