@@ -118,6 +118,7 @@ export default function AffiliateStatusCheck() {
     }
 
     setError('')
+    setAffiliateState(null)
 
     if (!account) {
       setAffiliateState('NOT_CONNECTED')
