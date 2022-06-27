@@ -31,9 +31,8 @@ export const addAppDataToUploadQueueAtom = atom(
   (get, set, { chainId, orderId, appData }: AddAppDataToUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
-      const existingDoc = docs.find(buildDocFilterFn(chainId, orderId))
 
-      if (existingDoc) {
+      if (docs.some(buildDocFilterFn(chainId, orderId))) {
         // Entry already in the queue, ignore
         return docs
       }
