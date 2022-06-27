@@ -9,13 +9,14 @@ export async function buildAppData(
   chainId: SupportedChainId,
   sellAmount: string,
   buyAmount: string,
+  quoteId: number | undefined,
   referrerAccount: string | undefined,
   appCode: string
 ) {
   const sdk = COW_SDK[chainId]
 
   // build quote metadata, not required in the schema but always present
-  const quoteMetadata = _buildQuoteMetadata(sellAmount, buyAmount)
+  const quoteMetadata = _buildQuoteMetadata(sellAmount, buyAmount, quoteId)
   const metadata: MetadataDoc = { quote: quoteMetadata }
 
   // build referrer metadata, optional
@@ -30,9 +31,9 @@ export async function buildAppData(
   return { doc, calculatedAppData }
 }
 
-function _buildQuoteMetadata(sellAmount: string, buyAmount: string): QuoteMetadata {
+function _buildQuoteMetadata(sellAmount: string, buyAmount: string, quoteId: number | undefined): QuoteMetadata {
   return {
-    // id: quoteId, TODO: add quoteId here when available
+    id: quoteId?.toString(), // Comes from the api as number|null, metadata expects a string|undefined
     sellAmount,
     buyAmount,
     version: QUOTE_METADATA_VERSION,

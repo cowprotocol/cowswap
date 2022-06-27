@@ -29,6 +29,7 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
   // Sell and buy amounts, from trade param
   const sellAmount = trade?.inputAmountWithFee.quotient.toString()
   const buyAmount = trade?.outputAmount.quotient.toString()
+  const quoteId = trade?.quoteId
 
   useEffect(() => {
     if (!chainId || !sellAmount || !buyAmount) {
@@ -37,7 +38,7 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
       return
     }
 
-    const params: Parameters<typeof buildAppData> = [chainId, sellAmount, buyAmount, referrerAccount, appCode]
+    const params: Parameters<typeof buildAppData> = [chainId, sellAmount, buyAmount, quoteId, referrerAccount, appCode]
 
     const updateAppData = async (): Promise<void> => {
       try {
@@ -58,7 +59,7 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
     }
 
     updateAppData()
-  }, [appCode, buyAmount, chainId, referrerAccount, sellAmount, setAppDataInfo])
+  }, [appCode, buyAmount, chainId, quoteId, referrerAccount, sellAmount, setAppDataInfo])
 
   return appDataInfo
 }
