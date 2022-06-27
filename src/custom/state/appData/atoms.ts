@@ -59,7 +59,7 @@ export const updateAppDataOnUploadQueueAtom = atom(
       }
 
       // Create a copy of original docs
-      const updateDocs = [...docs]
+      const updateDocs = docs.slice(0)
 
       // Using the index, get the value
       const existingDoc = docs[existingDocIndex]
