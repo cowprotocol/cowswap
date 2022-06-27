@@ -29,8 +29,7 @@ import ammsGraphGC from 'assets/images/amms-graph-gc.svg'
 import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
 import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
-import { getExplorerOrderLink } from '@src/custom/utils/explorer'
-// import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
+import { getExplorerOrderLink } from 'utils/explorer'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
