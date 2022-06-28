@@ -15,13 +15,13 @@ import {
   WarningLogo,
   GreenCheckIcon,
   StyledExternalLink,
+  StyledCancelButton,
   StyledCoWLink,
 } from './styled'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from './utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from '../index'
-import { CancelButton } from '../CancelButton'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 import cowGraph from 'assets/images/cow-graph.svg'
 import ammsGraphEth from 'assets/images/amms-graph.svg'
@@ -212,12 +212,14 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   {isCancellable ? (
                     <>
                       {' '}
-                      You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                      You can wait or{' '}
+                      <StyledCancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
+                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 {/*<p>
                   Current price: <strong>$1200.56</strong>
                 </p>
@@ -251,7 +253,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   {isCancellable ? (
                     <>
                       {' '}
-                      You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                      You can wait or{' '}
+                      <StyledCancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
                 </StatusMsg>
