@@ -399,6 +399,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
       right: initial!important;
       position: fixed!important;
     }
+
+    body.noScroll div[id^='appzi-wfo-'] {
+      display: none!important;
+    }
   `}
 
   // START - Modal overrides

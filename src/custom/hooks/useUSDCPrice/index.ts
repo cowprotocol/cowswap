@@ -23,6 +23,7 @@ import { useGetGpUsdcPrice } from 'utils/price'
 
 export * from '@src/hooks/useUSDCPrice'
 
+export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
   // MOD: lowers threshold from 100k to 100
@@ -101,9 +102,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
-      // we dont care about validTo here, just use max
-      // FIXME: I guess we care now, using 10min. Future versions of the API will make it optional
-      validTo: Math.ceil(Date.now() / 1000) + 600,
+      validTo: getUsdQuoteValidTo(),
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 
