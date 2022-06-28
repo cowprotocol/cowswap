@@ -225,11 +225,13 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
 function _checkFeeErrorForData(error: GpQuoteError) {
   console.warn('[getBestQuote:Legacy]::Fee error', error)
 
+  const feeAmount = error?.data?.fee_amount || error?.data?.feeAmount
+  const feeExpiration = error?.data?.expiration
   // check if our error response has any fee data attached to it
-  if (error?.data) {
+  if (feeAmount) {
     return {
-      amount: error?.data.feeAmount,
-      expirationDate: error?.data.expiration,
+      amount: feeAmount,
+      expirationDate: feeExpiration,
     }
   } else {
     // no data object, just rethrow
