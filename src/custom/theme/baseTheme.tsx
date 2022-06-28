@@ -411,6 +411,14 @@ export const ThemedGlobalStyle = createGlobalStyle`
       width: 100%!important;
       overflow-y: scroll!important;
 
+      > div[data-appzi-dom='1'] {
+        position: fixed!important;
+        top: 10px!important;
+        right: 10px!important;
+        height: 30px!important;
+        width: 30px!important;
+      }
+
       > div[data-appzi-dom='1'] > div {
         position: fixed!important;
         z-index: 2147483004!important;
