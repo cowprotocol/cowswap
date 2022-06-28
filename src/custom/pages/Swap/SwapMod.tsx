@@ -664,7 +664,7 @@ export default function Swap({
                 }
                 value={formattedAmounts[Field.INPUT]}
                 showMaxButton={showMaxButton}
-                currency={currencies[Field.INPUT]}
+                currency={currencies[Field.INPUT] ?? null}
                 onUserInput={handleTypeInput}
                 onMax={handleMaxInput}
                 fiatValue={fiatValueInput ?? undefined}
@@ -728,7 +728,7 @@ export default function Swap({
                 fiatValue={fiatValueOutput ?? undefined}
                 priceImpact={onWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
-                currency={currencies[Field.OUTPUT]}
+                currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
                 showCommonBases={true}

@@ -34,7 +34,8 @@ export function useEagerConnect() {
 
     if (!walletType || !active) {
       localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
-    } else {
+    } else if (!IS_IN_IFRAME) {
+      // Set if its not from an Iframe
       localStorage.setItem(STORAGE_KEY_LAST_PROVIDER, walletType)
     }
   }, [connector, active])
@@ -88,8 +89,8 @@ export function useEagerConnect() {
     if (!active) {
       const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
 
-      // If there is no last saved provider set tried state to true
-      if (!latestProvider) {
+      // If there is no last saved provider or its running in Iframe, try connecting with safe first
+      if (!latestProvider || IS_IN_IFRAME) {
         if (!triedSafe) {
           // First try to connect using Gnosis Safe
           connectSafe()
