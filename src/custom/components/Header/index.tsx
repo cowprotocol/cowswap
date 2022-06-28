@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
-import ReactGA from 'react-ga4'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
@@ -33,6 +32,9 @@ import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
+// Assets
+import { reportEvent } from 'utils/analytics'
+
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   // [ChainId.ROPSTEN]: 'Ropsten',
@@ -59,7 +61,7 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
-    ReactGA.event({
+    reportEvent({
       category: 'Theme',
       action: 'Toggle dark/light mode',
       label: `${darkMode ? 'Light' : 'Dark'} mode`,

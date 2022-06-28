@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import React, { ErrorInfo } from 'react'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 
 import store, { AppState } from 'state/index'
@@ -19,6 +19,7 @@ import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
 import { DISCORD_LINK, CODE_LINK } from 'constants/index'
 import { Routes } from 'constants/routes'
+import { reportError } from 'utils/analytics'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -181,7 +182,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
+    reportError(error, errorInfo)
   }
 
   render() {

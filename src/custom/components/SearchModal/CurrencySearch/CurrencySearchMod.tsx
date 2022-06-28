@@ -11,7 +11,7 @@ import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 import { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 // import { Edit } from 'react-feather'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
@@ -27,6 +27,7 @@ import CommonBases from 'components/SearchModal/CommonBases'
 import CurrencyList from 'components/SearchModal/CurrencyList'
 import ImportRow from 'components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
+import { reportEvent } from 'utils/analytics'
 
 // MOD imports
 import useNetworkName from 'hooks/useNetworkName'
@@ -98,7 +99,7 @@ export function CurrencySearch({
 
   useEffect(() => {
     if (isAddressSearch) {
-      ReactGA.event({
+      reportEvent({
         category: 'Currency Select',
         action: 'Search by address',
         label: isAddressSearch,
