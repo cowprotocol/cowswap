@@ -86,21 +86,12 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
-import { xxxxxxAnalytics } from 'utils/analytics'
+import { approvalAnalytics, swapAnalytics, setMaxSellTokens, signSwapAnalytics } from 'utils/analytics'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
 //   width: 100%;
 // `
-
-function reportAnalytics(action: string, label?: string, value?: number) {
-  _reportEvent({
-    category: 'Swap',
-    action,
-    label,
-    value,
-  })
-}
 
 export default function Swap({
   history,
@@ -387,25 +378,26 @@ export default function Swap({
 
     if (approveRequired) {
       const symbol = v2Trade?.inputAmount?.currency.symbol
-      reportAnalytics('Send Token Approval to Wallet', symbol)
+      approvalAnalytics('Send', symbol)
       return approveCallback()
         .then(() => {
-          reportAnalytics('Sign Token Approval', symbol)
+          approvalAnalytics('Sign', symbol)
         })
         .catch((error) => {
           console.error('Error setting the allowance for token', error)
 
-          let swapErrorMessage, actionAnalytics, errorCode
+          let swapErrorMessage, errorCode
           if (isRejectRequestProviderError(error)) {
             swapErrorMessage = 'User rejected approving the token'
-            actionAnalytics = 'Reject Token Approval'
+            approvalAnalytics('Reject', symbol)
           } else {
             swapErrorMessage = getProviderErrorMessage(error)
-            actionAnalytics = 'Signing Error for Token Approval'
 
             if (error?.code && typeof error.code === 'number') {
               errorCode = error.code
             }
+
+            approvalAnalytics('Error', symbol, errorCode)
           }
 
           setSwapState({
@@ -415,7 +407,6 @@ export default function Swap({
             swapErrorMessage,
             txHash: undefined,
           })
-          reportAnalytics(actionAnalytics, symbol, errorCode)
         })
     }
   }, [
@@ -481,35 +472,34 @@ export default function Swap({
     }
 
     const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-    reportAnalytics('Send Order to Wallet', marketLabel)
+    swapAnalytics('Send', marketLabel)
 
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
 
-        let actionAnalytics
         if (recipient === null) {
-          actionAnalytics = 'Signed: Swap'
+          signSwapAnalytics('Sign', marketLabel)
         } else {
-          actionAnalytics =
-            (recipientAddress ?? recipient) === account ? 'Signed: Swap and Send to Self' : 'Signed: Swap and Send'
+          ;(recipientAddress ?? recipient) === account
+            ? signSwapAnalytics('SignAndSend', marketLabel)
+            : signSwapAnalytics('SignToSelf', marketLabel)
         }
-        reportAnalytics(actionAnalytics, marketLabel)
       })
       .catch((error) => {
-        let swapErrorMessage, actionAnalytics, errorCode
+        let swapErrorMessage, errorCode
         if (isRejectRequestProviderError(error)) {
           swapErrorMessage = 'User rejected signing the order'
-          actionAnalytics = 'Reject Swap'
+          swapAnalytics('Reject', marketLabel)
         } else {
           swapErrorMessage = getProviderErrorMessage(error)
-          actionAnalytics = 'Signing Swap Error'
 
           if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
           }
           console.error('Error Signing Order', error)
+          swapAnalytics('Error', marketLabel, errorCode)
         }
 
         setSwapState({
@@ -519,7 +509,6 @@ export default function Swap({
           swapErrorMessage,
           txHash: undefined,
         })
-        reportAnalytics(actionAnalytics, marketLabel, errorCode)
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
@@ -572,7 +561,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    reportAnalytics('Set Maximun Sell Tokens')
+    setMaxSellTokens()
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(

@@ -135,8 +135,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const [expertMode, toggleExpertModeAux] = useExpertModeManager()
   const toggleExpertMode = useCallback(() => {
-    toggleExpertModeAnalytics(expertMode)
-
+    toggleExpertModeAnalytics(!expertMode)
     toggleExpertModeAux()
   }, [toggleExpertModeAux, expertMode])
 
@@ -145,7 +144,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
       const isVisible = value ?? !recipientToggleVisible
-      toggleRecepientAddressAnalytics(!isVisible)
+      toggleRecepientAddressAnalytics(isVisible)
       toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible]

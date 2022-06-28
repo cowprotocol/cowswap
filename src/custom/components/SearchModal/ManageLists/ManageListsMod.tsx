@@ -34,7 +34,7 @@ import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/
 import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
-import { xxxxxxAnalytics } from 'utils/analytics'
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'utils/analytics'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -142,48 +142,29 @@ ListRowProps & { listUrl: string }) {
 
   const handleAcceptListUpdate = useCallback(() => {
     if (!pending) return
-    _reportEvent({
-      category: 'Lists',
-      action: 'Update List from List Select',
-      label: listUrl,
-    })
+    updateListAnalytics('List Select', listUrl)
     dispatch(acceptListUpdate(listUrl))
     // }, [dispatch, listUrl, pending])
   }, [acceptListUpdate, dispatch, listUrl, pending])
 
   const handleRemoveList = useCallback(() => {
-    _reportEvent({
-      category: 'Lists',
-      action: 'Start Remove List',
-      label: listUrl,
-    })
+    removeListAnalytics('Start', listUrl)
+
     if (window.prompt(t`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
-      _reportEvent({
-        category: 'Lists',
-        action: 'Confirm Remove List',
-        label: listUrl,
-      })
+      removeListAnalytics('Confirm', listUrl)
       dispatch(removeList(listUrl))
     }
     // }, [dispatch, listUrl])
   }, [dispatch, listUrl, removeList])
 
   const handleEnableList = useCallback(() => {
-    _reportEvent({
-      category: 'Lists',
-      action: 'Enable List',
-      label: listUrl,
-    })
+    toggleListAnalytics(true, listUrl)
     dispatch(enableList(listUrl))
     // }, [dispatch, listUrl])
   }, [dispatch, enableList, listUrl])
 
   const handleDisableList = useCallback(() => {
-    _reportEvent({
-      category: 'Lists',
-      action: 'Disable List',
-      label: listUrl,
-    })
+    toggleListAnalytics(false, listUrl)
     dispatch(disableList(listUrl))
     // }, [dispatch, listUrl])
   }, [disableList, dispatch, listUrl])

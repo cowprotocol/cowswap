@@ -40,7 +40,7 @@ import CowBalanceButton from 'components/CowBalanceButton'
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'assets/cow-swap/sun.svg'
-import { xxxxxxAnalytics } from 'utils/analytics'
+import { toggleDarkModeAnalytics } from 'utils/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -68,11 +68,7 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
-    _reportEvent({
-      category: 'Theme',
-      action: 'Toggle dark/light mode',
-      label: `${darkMode ? 'Light' : 'Dark'} mode`,
-    })
+    toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
 
