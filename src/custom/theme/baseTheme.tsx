@@ -414,7 +414,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       > div[data-appzi-dom='1'] {
         position: fixed!important;
         top: 10px!important;
-        right: 10px!important;
+        right: 0!important;
         height: 30px!important;
         width: 30px!important;
         z-index: 2147483004!important;
@@ -423,7 +423,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       > div[data-appzi-dom='1'] > div {
         position: fixed!important;
         top: 10px !important;
-        right: 30px !important;
+        right: 15px !important;
         opacity: 1 !important;
       }
     `}
