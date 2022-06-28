@@ -407,7 +407,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       top: 0 !important;
       right: initial !important;
       position: fixed !important;
-      height: 100%!important;
+      height: 100vh!important;
       width: 100%!important;
       overflow-y: scroll!important;
 
