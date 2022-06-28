@@ -400,7 +400,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       position: fixed!important;
     `}
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${({ theme }) => theme.mediaWidth.upToSmall`
       transform: none !important;
       left: 0 !important;
       bottom: initial !important;
