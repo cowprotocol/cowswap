@@ -291,7 +291,7 @@ export default function WalletModal({
       // overwrite injected when needed
       if (option.connector === injected) {
         // don't show injected if there's no injected provider
-        if (!(window.web3 || window.ethereum)) {
+        if (!(window.web3 || window.ethereum) || !isMetamask) {
           if (option.name === 'MetaMask') {
             return (
               <Option
