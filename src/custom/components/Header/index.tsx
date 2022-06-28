@@ -68,7 +68,7 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
-    toggleDarkModeAnalytics(darkMode)
+    toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
 

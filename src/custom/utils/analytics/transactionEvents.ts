@@ -1,16 +1,16 @@
 import { Category, _reportEvent } from './index'
 
-type ExpirationAction = 'Default' | 'Custom'
-export function orderExpirationTimeAnalytics(action: ExpirationAction, value: number) {
+type ExpirationType = 'Default' | 'Custom'
+export function orderExpirationTimeAnalytics(type: ExpirationType, value: number) {
   _reportEvent({
     category: Category.ORDER_EXPIRATION_TIME,
-    action: `Set ${action} Expiration Time`,
+    action: `Set ${type} Expiration Time`,
     value,
   })
 }
 
-type wrapTransactionType = 'Send' | 'Sign' | 'Reject' | 'Error'
-export function wrapAnalytics(action: wrapTransactionType, message: string) {
+type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+export function wrapAnalytics(action: WrapAction, message: string) {
   _reportEvent({
     category: Category.WRAP_NATIVE_TOKEN,
     action: `${action} Wrap/Unwrap Transaction`,

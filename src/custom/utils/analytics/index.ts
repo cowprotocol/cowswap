@@ -68,5 +68,6 @@ export function reportError(error: Error, errorInfo: ErrorInfo) {
 }
 
 export function _reportEvent(params: EventParams) {
+  console.log('called _reportEvent with', params)
   ReactGA.event(params)
 }
