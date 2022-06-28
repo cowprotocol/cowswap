@@ -410,6 +410,11 @@ export const ThemedGlobalStyle = createGlobalStyle`
       height: 100%!important;
       width: 100%!important;
       overflow-y: scroll!important;
+
+      > div[data-appzi-dom='1'] > div {
+        position: fixed!important;
+        z-index: 2147483004!important;
+      }
     `}
   }
 
