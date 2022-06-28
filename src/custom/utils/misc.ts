@@ -157,3 +157,35 @@ export function isRejectRequestProviderError(error: any) {
 
   return false
 }
+
+/**
+ *
+ * @param providerName Can be MetaMask or CoinBase (We might extend this in future)
+ *
+ * This solves the issue of injected provider opening both Metamask and Coinbase wallet popups
+ * The solution is to set selected provider on ethereum based on pased providerName parameter
+ * Link: https://github.com/NoahZinsmeister/web3-react/issues/300#issuecomment-995170556
+ *
+ * @returns void | undefined
+ */
+export function activateInjectedProvider(providerName: 'MetaMask' | 'CoinBase'): void | undefined {
+  const { ethereum } = window
+
+  if (!ethereum?.providers) {
+    return undefined
+  }
+
+  let provider
+  switch (providerName) {
+    case 'CoinBase':
+      provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet)
+      break
+    case 'MetaMask':
+      provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask)
+      break
+  }
+
+  if (provider) {
+    ethereum.setSelectedProvider(provider)
+  }
+}

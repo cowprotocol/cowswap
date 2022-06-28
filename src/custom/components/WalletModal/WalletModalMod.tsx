@@ -29,6 +29,7 @@ import PendingView from 'components/WalletModal/PendingView'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
+import { activateInjectedProvider } from 'utils/misc'
 
 export const CloseIcon = styled.div`
   position: absolute;
@@ -325,6 +326,11 @@ export default function WalletModal({
           <Option
             id={`connect-${key}`}
             onClick={() => {
+              // Solves the problem of opening both Coinbase and Metamask popups
+              if (option.name === 'MetaMask') {
+                activateInjectedProvider('MetaMask')
+              }
+
               option.connector === connector
                 ? setWalletView(WALLET_VIEWS.ACCOUNT)
                 : !option.href && tryActivation(option.connector)
