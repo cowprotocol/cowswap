@@ -33,7 +33,7 @@ import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
-import { reportEvent } from 'utils/analytics'
+import { toggleDarkModeAnalytics } from 'utils/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -61,11 +61,7 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
-    reportEvent({
-      category: 'Theme',
-      action: 'Toggle dark/light mode',
-      label: `${darkMode ? 'Light' : 'Dark'} mode`,
-    })
+    toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
 

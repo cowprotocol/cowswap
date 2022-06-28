@@ -1,12 +1,37 @@
-import { ErrorInfo } from 'react'
-
 import ReactGA from 'react-ga4'
 
-import {} from 'web-vitals'
+import { ErrorInfo } from 'react'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
+
+export * from './listEvents'
+export * from './settingsEvents'
+export * from './themeEvents'
+export * from './transactionEvents'
+export * from './walletEvents'
 
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 export const ANALITICS_EVENTS = {}
+
+export interface EventParams {
+  category: Category
+  action: string
+  label?: string
+  value?: number
+}
+
+export enum Category {
+  SWAP = 'Swap',
+  LIST = 'Lists',
+  CURRENCY_SELECT = 'Currency Select',
+  EXPERT_MODE = 'Expert mode',
+  RECIPIENT_ADDRESS = 'Recipient address',
+  ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
+  ORDER_EXPIRATION_TIME = 'Order Expiration Time',
+  WALLET = 'Wallet',
+  WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
+  CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO', // TODO: Maybe Claim COW was enough?
+  THEME = 'Theme',
+}
 
 export function persistClientId() {
   // typed as 'any' in react-ga4 -.-
@@ -42,13 +67,6 @@ export function reportError(error: Error, errorInfo: ErrorInfo) {
   ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
 }
 
-interface EventParams {
-  category: string
-  action: string
-  label?: string
-  value?: number
-}
-
-export function reportEvent({ category, action, label, value }: EventParams) {
-  ReactGA.event({ category, action, label, value })
+export function _reportEvent(params: EventParams) {
+  ReactGA.event(params)
 }

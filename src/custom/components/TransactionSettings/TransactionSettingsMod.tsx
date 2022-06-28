@@ -25,8 +25,7 @@ import {
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
 } from 'constants/index'
-import { debounce } from 'utils/misc'
-import { reportEvent } from 'utils/analytics'
+import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'utils/analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -105,14 +104,6 @@ const SlippageEmojiContainer = styled.span`
   `}
 `
 
-const reportAnalytics = debounce((actionName: string, slippageBps: number) => {
-  reportEvent({
-    category: 'Order Slippage Tolerance',
-    action: actionName,
-    value: slippageBps,
-  })
-}, 2000)
-
 export interface TransactionSettingsProps {
   placeholderSlippage: Percent // varies according to the context in which the settings dialog is placed
 }
@@ -141,19 +132,19 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       setSlippageError(false)
 
       if (value.length === 0) {
-        reportAnalytics('Set Default Slippage Tolerance', DEFAULT_SLIPPAGE_BPS)
+        slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
       } else {
         const parsed = Math.floor(Number.parseFloat(value) * 100)
 
         if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
-          reportAnalytics('Set Default Slippage Tolerance', DEFAULT_SLIPPAGE_BPS)
+          slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
           setUserSlippageTolerance('auto')
           if (value !== '.') {
             setSlippageError(SlippageError.InvalidInput)
           }
         } else {
-          reportAnalytics('Set Custom Slippage Tolerance', parsed)
+          slippageToleranceAnalytics('Custom', parsed)
           setUserSlippageTolerance(new Percent(parsed, 10_000))
         }
       }
@@ -172,11 +163,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setDeadlineError(false)
 
     if (value.length === 0) {
-      reportEvent({
-        category: 'Order Expiration Time',
-        action: 'Set Default Expiration Time',
-        value: DEFAULT_DEADLINE_FROM_NOW,
-      })
+      orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
       setDeadline(DEFAULT_DEADLINE_FROM_NOW)
     } else {
       try {
@@ -188,11 +175,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
         } else {
-          reportEvent({
-            category: 'Order Expiration Time',
-            action: 'Set Custom Expiration Time',
-            value: parsed,
-          })
+          orderExpirationTimeAnalytics('Custom', parsed)
           setDeadline(parsed)
         }
       } catch (error) {

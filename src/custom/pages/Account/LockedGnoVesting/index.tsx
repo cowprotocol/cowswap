@@ -23,7 +23,7 @@ import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
-import { reportEvent } from 'utils/analytics'
+import { claimAnalytics } from 'utils/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -39,14 +39,6 @@ interface Props {
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>
   loading: boolean
-}
-
-function reportAnalytics(action: string, value?: number) {
-  reportEvent({
-    category: 'Claim COW for Locked GNO',
-    action,
-    value,
-  })
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
@@ -84,10 +76,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
-    reportAnalytics('Send Transaction to Wallet')
+    claimAnalytics('Send')
     claimCallback()
       .then((tx) => {
-        reportAnalytics('Sign Transaction')
+        claimAnalytics('Sign')
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
@@ -100,13 +92,12 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }, 5000)
       })
       .catch((error) => {
-        let errorMessage, actionAnalytics, errorCode
-        if (isRejectRequestProviderError(error)) {
+        let errorMessage, errorCode
+        const isRejected = isRejectRequestProviderError(error)
+        if (isRejected) {
           errorMessage = 'User rejected signing COW claim transaction'
-          actionAnalytics = 'Reject Signing Transaction'
         } else {
           errorMessage = getProviderErrorMessage(error)
-          actionAnalytics = 'Error Signing Transaction'
 
           if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
@@ -115,7 +106,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        reportAnalytics(actionAnalytics, errorCode)
+        claimAnalytics(isRejected ? 'Reject' : 'Error', errorCode)
         handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])
