@@ -118,16 +118,19 @@ export const DelayedProgress = styled(ProgressBarIndicator)`
 export const GreenClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.success};
+  width: 24px;
 `
 
 export const GreenCheckIcon = styled(CheckCircle)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.success};
+  width: 24px;
 `
 
 export const OrangeClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.yellow1};
+  width: 24px;
 `
 
 export const StatusMsgContainer = styled.div`
