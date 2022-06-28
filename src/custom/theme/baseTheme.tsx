@@ -390,20 +390,34 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // Appzi Container override
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+  body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
       left: 16px!important;
       bottom: 72px!important;
       top: initial!important;
       right: initial!important;
       position: fixed!important;
-    }
+    `}
 
-    body.noScroll div[id^='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      transform: none !important;
+      left: 0 !important;
+      bottom: initial !important;
+      top: 0 !important;
+      right: initial !important;
+      position: fixed !important;
+      height: 100%!important;
+      width: 100%!important;
+      overflow-y: scroll!important;
+    `}
+  }
+
+  body.noScroll div[id^='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       display: none!important;
-    }
-  `}
+    `}
+  }
 
   // START - Modal overrides
   ${HeaderText} {
