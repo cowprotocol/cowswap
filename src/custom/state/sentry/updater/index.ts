@@ -57,7 +57,6 @@ export default function Updater(): null {
   const { symbol: buySymbol, name: buyName } = useCurrency(buyTokenAddress) || {}
   const { symbol: sellSymbol, name: sellName } = useCurrency(sellTokenAddress) || {}
 
-  // create sentry context based on "main" parameters
   useEffect(() => {
     if (windowVisible) {
       const [chainId, connected] = _getSentryChainIdAndConnectionStatus(disconnectedChainId, connectedChainId)
