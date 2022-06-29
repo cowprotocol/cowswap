@@ -289,9 +289,9 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
 
   if (!gpUsdPrice || !coingeckoUsdPrice) {
-    let failedEndpoint = ''
+    let failedEndpoint
     if (!gpUsdPrice && !coingeckoUsdPrice) {
-      failedEndpoint = 'COINGECKO,COW_API'
+      failedEndpoint = ['COINGECKO', 'COW_API']
     } else if (!gpUsdPrice) {
       failedEndpoint = 'COW_API'
     } else {
