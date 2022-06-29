@@ -294,7 +294,7 @@ function _handleError<P extends Context>(error: any, response: Response, params:
   Sentry.captureException(sentryError, {
     tags,
     // TODO: change/remove this in context update pr
-    contexts: { params: { ...params } },
+    contexts: { params },
   })
 
   return error?.baseError || error

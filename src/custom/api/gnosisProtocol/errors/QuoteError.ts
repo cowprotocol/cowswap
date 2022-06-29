@@ -25,6 +25,7 @@ export enum GpQuoteErrorDetails {
   FeeExceedsFrom = 'Current fee exceeds entered "from" amount.',
   ZeroPrice = 'Quoted price is zero. This is likely due to a significant price difference between the two tokens. Please try increasing amounts.',
   TransferEthToContract = 'Buying native currencies using smart contract wallets is not currently supported.',
+  SellAmountDoesNotCoverFee = 'The selling amount for the order is lower than the fee.',
   UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
