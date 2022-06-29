@@ -211,6 +211,7 @@ async function _swap(params: SwapParams): Promise<string> {
     signer: library.getSigner(),
     allowsOffchainSigning,
     appDataHash,
+    quoteId: trade.quoteId,
   })
 
   let pendingOrderParams: AddUnserialisedPendingOrderParams
