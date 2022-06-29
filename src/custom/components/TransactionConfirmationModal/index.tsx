@@ -21,7 +21,7 @@ import { getStatusIcon } from 'components/AccountDetails'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from 'constants/routes'
-import { useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
+import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { OrderProgressBar } from '../AccountDetails/Transaction/OrderProgressBar'
 
@@ -416,6 +416,19 @@ function getSubmittedMessage(operationLabel: string, operationType: OperationTyp
   }
 }
 
+function getTitleStatus(status?: ActivityStatus): string {
+  switch (status) {
+    case ActivityStatus.CONFIRMED:
+      return 'Confirmed'
+    case ActivityStatus.EXPIRED:
+      return 'Expired'
+    case ActivityStatus.CANCELLED:
+      return 'Cancelled'
+    default:
+      return 'Submitted'
+  }
+}
+
 export function ConfirmationPendingContent({
   onDismiss,
   pendingText,
@@ -507,13 +520,14 @@ export function TransactionSubmittedContent({
   const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
+  const hideProgressBar = activityDerivedState?.isCancelled || activityDerivedState?.isExpired
 
   return (
     <Wrapper>
       <Section>
         <CloseIconWrapper onClick={onDismiss} />
         <Text fontWeight={500} fontSize={20}>
-          Transaction {activityDerivedState?.isConfirmed ? 'Confirmed' : 'Submitted'}
+          Transaction {getTitleStatus(activityDerivedState?.status)}
         </Text>
         {chainId && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
@@ -522,7 +536,9 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        {activityDerivedState && <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />}
+        {activityDerivedState && !hideProgressBar && (
+          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+        )}
         <ButtonGroup>
           {currencyToAdd && library?.provider?.isMetaMask && (
             <ButtonCustom onClick={addToken}>
