@@ -1,11 +1,11 @@
-import { AppDataKeyParams } from 'state/appData/types'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export function buildAppDataRecordKey({ chainId, orderId }: AppDataKeyParams): string {
-  return `${chainId}-${orderId}`
+import { AppDataRecord } from 'state/appData/types'
+
+export function buildDocFilterFn(chainId: SupportedChainId, orderId: string) {
+  return (doc: AppDataRecord) => doc.chainId === chainId && doc.orderId === orderId
 }
 
-export function parseAppDataRecordKey(key: string): AppDataKeyParams {
-  const [chainId, orderId] = key.split('-')
-
-  return { chainId, orderId } as unknown as AppDataKeyParams
+export function buildInverseDocFilterFn(chainId: SupportedChainId, orderId: string) {
+  return (doc: AppDataRecord) => doc.chainId !== chainId && doc.orderId !== orderId
 }

@@ -6,15 +6,11 @@ import { AppDataDoc } from '@cowprotocol/cow-sdk'
 import { COW_SDK } from 'constants/index'
 
 import {
-  flattenedAppDataFromUploadQueueAtom,
+  appDataUploadQueueAtom,
   removeAppDataFromUploadQueueAtom,
   updateAppDataOnUploadQueueAtom,
 } from 'state/appData/atoms'
-import {
-  AppDataKeyParams,
-  FlattenedAppDataFromUploadQueue,
-  UpdateAppDataOnUploadQueueParams,
-} from 'state/appData/types'
+import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from 'state/appData/types'
 
 const UPLOAD_CHECK_INTERVAL = ms`10s`
 const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later
@@ -22,7 +18,7 @@ const ONE_SECOND = ms`1s`
 const MAX_TIME_TO_WAIT = ms`5 minutes`
 
 export function UploadToIpfsUpdater(): null {
-  const toUpload = useAtomValue(flattenedAppDataFromUploadQueueAtom)
+  const toUpload = useAtomValue(appDataUploadQueueAtom)
   const removePending = useSetAtom(removeAppDataFromUploadQueueAtom)
   const updatePending = useSetAtom(updateAppDataOnUploadQueueAtom)
 
@@ -47,7 +43,7 @@ export function UploadToIpfsUpdater(): null {
 }
 
 async function _uploadToIpfs(
-  appDataRecord: FlattenedAppDataFromUploadQueue,
+  appDataRecord: AppDataRecord,
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
   removePending: (params: AppDataKeyParams) => void
 ) {
@@ -82,7 +78,7 @@ function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number):
 }
 
 async function _actuallyUploadToIpfs(
-  appDataRecord: FlattenedAppDataFromUploadQueue,
+  appDataRecord: AppDataRecord,
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
   removePending: (params: AppDataKeyParams) => void
 ) {
