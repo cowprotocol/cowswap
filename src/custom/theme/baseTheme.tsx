@@ -391,7 +391,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
   // Appzi Container override
   body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
-    background: lightgrey!important;
     z-index: 2147483004!important;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
