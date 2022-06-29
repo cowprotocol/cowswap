@@ -7,7 +7,7 @@ import { useCurrency } from 'hooks/Tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useAppSelector } from 'state/hooks'
 
-enum SentryTag {
+export enum SentryTag {
   DISCONNECTED = 'DISCONNECTED',
   UNKNOWN = 'UNKNOWN',
 }
