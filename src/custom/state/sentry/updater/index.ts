@@ -9,6 +9,7 @@ import { useAppSelector } from 'state/hooks'
 
 enum SentryTag {
   DISCONNECTED = 'DISCONNECTED',
+  UNKNOWN = 'UNKNOWN',
 }
 
 /**
@@ -64,8 +65,7 @@ export default function Updater(): null {
       Sentry.configureScope(function (scope) {
         // setup a context
         scope.setContext('user', {
-          user: account,
-          wallet: walletName,
+          user: account || SentryTag.DISCONNECTED,
           sellToken: `${sellTokenAddress} <${sellSymbol || sellName}>`,
           buyToken: `${buyTokenAddress} <${buySymbol || buyName}>`,
         })
@@ -74,7 +74,7 @@ export default function Updater(): null {
         // connectivity tag
         scope.setTag('walletConnected', connected)
         // set walletName tag
-        scope.setTag('wallet', walletName)
+        scope.setTag('wallet', walletName || SentryTag.UNKNOWN)
       })
     }
   }, [
