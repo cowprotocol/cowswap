@@ -291,7 +291,7 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   if (!gpUsdPrice || !coingeckoUsdPrice) {
     let failedEndpoint = ''
     if (!gpUsdPrice && !coingeckoUsdPrice) {
-      failedEndpoint = 'BOTH'
+      failedEndpoint = 'COINGECKO,COW_API'
     } else if (!gpUsdPrice) {
       failedEndpoint = 'COW_API'
     } else {
@@ -303,8 +303,9 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
     const contexts = {
       params: {
         endpoint: failedEndpoint,
-        quotedCurrency: token?.symbol || token?.address || 'UNKNOWN TOKEN',
-        amount: currencyAmount?.toExact() || 'UNKNOWN AMOUNT',
+        // TODO: use enum from pr #751
+        quotedCurrency: token?.symbol || token?.address || 'UNKNOWN',
+        amount: currencyAmount?.toExact() || 'UNKNOWN',
       },
     }
     // report this to sentry
