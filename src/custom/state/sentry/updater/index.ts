@@ -7,20 +7,30 @@ import { useCurrency } from 'hooks/Tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useAppSelector } from 'state/hooks'
 
-function _getSentryChainId(appChainId: null | number, chainId: number | undefined) {
-  const connectedChainId = chainId
-  const appChainIdFull = appChainId ?? undefined
+/**
+ * _getSentryChainId
+ * @param appChainId - redux chainId (not necessarily connected to a wallet)
+ * @param connectedChainId - wallet chainId
+ * @returns string e.g 'DISCONNECTED' | appChainId | connectedChainId | appChainId - DISCONNECTED
+ */
+function _getSentryChainId(appChainId: number | null, connectedChainId: number | undefined) {
+  // match connectedChainId type
+  const appChainNormalised = appChainId ?? undefined
 
+  let sentryChainId
   // app and connected chains the same
-  if (appChainIdFull === connectedChainId) {
-    return appChainIdFull
-    // appChain but no connected chain
+  // undefined === undefined is ok
+  if (appChainNormalised === connectedChainId) {
+    sentryChainId = appChainNormalised
   } else if (connectedChainId === undefined) {
-    return `${appChainIdFull} - DISCONNECTED`
-    // connected chain but doesn't match app chain, use connected chain
+    // user is browsing app disconnected from wallet
+    sentryChainId = `${appChainNormalised} - DISCONNECTED`
   } else {
-    return connectedChainId
+    // connectedChainId takes precedence
+    sentryChainId = connectedChainId
   }
+
+  return sentryChainId?.toString() ?? 'DISCONNECTED'
 }
 
 export default function Updater(): null {
@@ -52,7 +62,7 @@ export default function Updater(): null {
           buyToken: `${buyTokenAddress} <${buySymbol || buyName}>`,
         })
         // also set tags for each session
-        scope.setTag('chainId', chainId || 'DISCONNECTED')
+        scope.setTag('chainId', chainId)
       })
     }
   }, [
