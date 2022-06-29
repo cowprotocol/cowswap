@@ -6,11 +6,7 @@ import { useSwapState } from 'state/swap/hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useAppSelector } from 'state/hooks'
-
-export enum SentryTag {
-  DISCONNECTED = 'DISCONNECTED',
-  UNKNOWN = 'UNKNOWN',
-}
+import { SentryTag } from 'utils/logging'
 
 /**
  * _getSentryChainId
