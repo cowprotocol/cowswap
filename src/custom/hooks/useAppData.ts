@@ -1,14 +1,16 @@
 import { useEffect } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAtom } from 'jotai'
+import { Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'state/swap/TradeGp'
-import { APP_DATA_HASH } from 'constants/index'
-import { buildAppData } from 'utils/appData'
+import { APP_DATA_HASH, DEFAULT_SLIPPAGE_BPS } from 'constants/index'
+import { buildAppData, BuildAppDataParams } from 'utils/appData'
 import { appDataInfoAtom } from 'state/appData/atoms'
 import { AppDataInfo } from 'state/appData/types'
 import { useReferralAddress } from 'state/affiliate/hooks'
 import { useAppCode } from 'hooks/useAppCode'
+import { percentToBips } from 'utils/misc'
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
@@ -16,7 +18,7 @@ import { useAppCode } from 'hooks/useAppCode'
  * @param chainId
  * @param trade
  */
-export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppDataInfo | null {
+export function useAppData(chainId?: SupportedChainId, trade?: TradeGp, allowedSlippage?: Percent): AppDataInfo | null {
   // AppDataInfo, from Jotai
   const [appDataInfo, setAppDataInfo] = useAtom(appDataInfoAtom)
   // Referrer address, from Redux
@@ -26,23 +28,27 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
   const appCode = useAppCode()
 
+  // TODO: Section commented out for future reference, in case we want to enable it again
   // Sell and buy amounts, from trade param
-  const sellAmount = trade?.inputAmountWithFee.quotient.toString()
-  const buyAmount = trade?.outputAmount.quotient.toString()
-  const quoteId = trade?.quoteId
+  // const sellAmount = trade?.inputAmountWithFee.quotient.toString()
+  // const buyAmount = trade?.outputAmount.quotient.toString()
+  // const quoteId = trade?.quoteId
+
+  // Transform slippage Percent to bips
+  const slippageBips = allowedSlippage ? percentToBips(allowedSlippage) : DEFAULT_SLIPPAGE_BPS.toString()
 
   useEffect(() => {
-    if (!chainId || !sellAmount || !buyAmount) {
+    if (!chainId || !slippageBips) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
       return
     }
 
-    const params: Parameters<typeof buildAppData> = [chainId, sellAmount, buyAmount, quoteId, referrerAccount, appCode]
+    const params: BuildAppDataParams = { chainId, slippageBips, referrerAccount, appCode }
 
     const updateAppData = async (): Promise<void> => {
       try {
-        const { doc, calculatedAppData } = await buildAppData(...params)
+        const { doc, calculatedAppData } = await buildAppData(params)
 
         console.debug(`[useAppData] appDataInfo`, JSON.stringify(doc), calculatedAppData)
 
@@ -59,7 +65,7 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp): AppData
     }
 
     updateAppData()
-  }, [appCode, buyAmount, chainId, quoteId, referrerAccount, sellAmount, setAppDataInfo])
+  }, [appCode, chainId, referrerAccount, setAppDataInfo, slippageBips])
 
   return appDataInfo
 }
