@@ -407,9 +407,11 @@ export const ThemedGlobalStyle = createGlobalStyle`
       top: 0 !important;
       right: initial !important;
       position: fixed !important;
-      height: 100vh!important;
+      height: 100%!important;
       width: 100%!important;
       overflow-y: scroll!important;
+      opacity: 1!important;
+      transition: none!important;
 
       > div[data-appzi-dom='1'] {
         position: fixed!important;
