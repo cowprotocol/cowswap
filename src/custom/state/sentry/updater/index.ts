@@ -7,30 +7,40 @@ import { useCurrency } from 'hooks/Tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useAppSelector } from 'state/hooks'
 
+enum SentryTag {
+  DISCONNECTED = 'DISCONNECTED',
+}
+
 /**
  * _getSentryChainId
  * @param appChainId - redux chainId (not necessarily connected to a wallet)
  * @param connectedChainId - wallet chainId
- * @returns string e.g 'DISCONNECTED' | appChainId | connectedChainId | appChainId - DISCONNECTED
+ * @returns string e.g "DISCONNECTED" | appChainId | connectedChainId
  */
-function _getSentryChainId(appChainId: number | null, connectedChainId: number | undefined) {
+function _getSentryChainIdAndConnectionStatus(
+  appChainId: number | null,
+  connectedChainId: number | undefined
+): [string, boolean] {
   // match connectedChainId type
   const appChainNormalised = appChainId ?? undefined
 
   let sentryChainId
-  // app and connected chains the same
-  // undefined === undefined is ok
-  if (appChainNormalised === connectedChainId) {
-    sentryChainId = appChainNormalised
+  let connected
+  // neither connected
+  if (appChainNormalised === undefined && connectedChainId === undefined) {
+    connected = false
   } else if (connectedChainId === undefined) {
     // user is browsing app disconnected from wallet
-    sentryChainId = `${appChainNormalised} - DISCONNECTED`
+    sentryChainId = appChainNormalised
+    connected = false
   } else {
     // connectedChainId takes precedence
     sentryChainId = connectedChainId
+    connected = true
   }
 
-  return sentryChainId?.toString() ?? 'DISCONNECTED'
+  // if not connected, sentry doesn't accept undefined, use "DISCONNECTED"
+  return [sentryChainId?.toString() || SentryTag.DISCONNECTED, connected]
 }
 
 export default function Updater(): null {
@@ -50,19 +60,22 @@ export default function Updater(): null {
   // create sentry context based on "main" parameters
   useEffect(() => {
     if (windowVisible) {
-      const chainId = _getSentryChainId(disconnectedChainId, connectedChainId)
+      const [chainId, connected] = _getSentryChainIdAndConnectionStatus(disconnectedChainId, connectedChainId)
       // setup scope/context/tags
       Sentry.configureScope(function (scope) {
         // setup a context
         scope.setContext('user', {
-          user: account || 'DISCONNECTED',
+          user: account,
           wallet: walletName,
-          // chainId,
           sellToken: `${sellTokenAddress} <${sellSymbol || sellName}>`,
           buyToken: `${buyTokenAddress} <${buySymbol || buyName}>`,
         })
         // also set tags for each session
         scope.setTag('chainId', chainId)
+        // connectivity tag
+        scope.setTag('walletConnected', connected)
+        // set walletName tag
+        scope.setTag('wallet', walletName)
       })
     }
   }, [
