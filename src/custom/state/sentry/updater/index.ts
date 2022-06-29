@@ -18,30 +18,21 @@ enum SentryTag {
  * @param connectedChainId - wallet chainId
  * @returns string e.g "DISCONNECTED" | appChainId | connectedChainId
  */
-function _getSentryChainIdAndConnectionStatus(
-  appChainId: number | null,
-  connectedChainId: number | undefined
-): [string, boolean] {
+function _getSentryChainIdAndConnectionStatus(appChainId: number | null, connectedChainId: number | undefined): string {
   // match connectedChainId type
   const appChainNormalised = appChainId ?? undefined
 
   let sentryChainId
-  let connected
-  // neither connected
-  if (appChainNormalised === undefined && connectedChainId === undefined) {
-    connected = false
-  } else if (connectedChainId === undefined) {
+  if (connectedChainId) {
     // user is browsing app disconnected from wallet
-    sentryChainId = appChainNormalised
-    connected = false
+    sentryChainId = connectedChainId
   } else {
     // connectedChainId takes precedence
-    sentryChainId = connectedChainId
-    connected = true
+    sentryChainId = appChainNormalised
   }
 
   // if not connected, sentry doesn't accept undefined, use "DISCONNECTED"
-  return [sentryChainId?.toString() || SentryTag.DISCONNECTED, connected]
+  return sentryChainId?.toString() || SentryTag.DISCONNECTED
 }
 
 export default function Updater(): null {
@@ -60,7 +51,7 @@ export default function Updater(): null {
 
   useEffect(() => {
     if (windowVisible) {
-      const [chainId, connected] = _getSentryChainIdAndConnectionStatus(disconnectedChainId, connectedChainId)
+      const chainId = _getSentryChainIdAndConnectionStatus(disconnectedChainId, connectedChainId)
       // setup scope/context/tags
       Sentry.configureScope(function (scope) {
         // setup a context
@@ -72,7 +63,7 @@ export default function Updater(): null {
         // also set tags for each session
         scope.setTag('chainId', chainId)
         // connectivity tag
-        scope.setTag('walletConnected', connected)
+        scope.setTag('walletConnected', !!account)
         // set walletName tag
         scope.setTag('wallet', walletName || SentryTag.UNKNOWN)
       })
