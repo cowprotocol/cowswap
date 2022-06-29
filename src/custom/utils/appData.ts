@@ -2,7 +2,7 @@ import { COW_SDK } from 'constants/index'
 import { MetadataDoc, QuoteMetadata, ReferralMetadata, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
 
-const QUOTE_METADATA_VERSION = '0.1.0'
+const QUOTE_METADATA_VERSION = '0.2.0'
 const REFERRER_METADATA_VERSION = '0.1.0'
 
 export async function buildAppData(
