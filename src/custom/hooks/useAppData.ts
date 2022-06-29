@@ -3,8 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAtom } from 'jotai'
 import { Percent } from '@uniswap/sdk-core'
 
-import TradeGp from 'state/swap/TradeGp'
-import { APP_DATA_HASH, DEFAULT_SLIPPAGE_BPS } from 'constants/index'
+import { APP_DATA_HASH } from 'constants/index'
 import { buildAppData, BuildAppDataParams } from 'utils/appData'
 import { appDataInfoAtom } from 'state/appData/atoms'
 import { AppDataInfo } from 'state/appData/types'
@@ -12,13 +11,15 @@ import { useReferralAddress } from 'state/affiliate/hooks'
 import { useAppCode } from 'hooks/useAppCode'
 import { percentToBips } from 'utils/misc'
 
+type UseAppDataParams = {
+  chainId?: SupportedChainId
+  allowedSlippage: Percent
+}
+
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
- *
- * @param chainId
- * @param trade
  */
-export function useAppData(chainId?: SupportedChainId, trade?: TradeGp, allowedSlippage?: Percent): AppDataInfo | null {
+export function useAppData({ chainId, allowedSlippage }: UseAppDataParams): AppDataInfo | null {
   // AppDataInfo, from Jotai
   const [appDataInfo, setAppDataInfo] = useAtom(appDataInfoAtom)
   // Referrer address, from Redux
@@ -35,10 +36,10 @@ export function useAppData(chainId?: SupportedChainId, trade?: TradeGp, allowedS
   // const quoteId = trade?.quoteId
 
   // Transform slippage Percent to bips
-  const slippageBips = allowedSlippage ? percentToBips(allowedSlippage) : DEFAULT_SLIPPAGE_BPS.toString()
+  const slippageBips = percentToBips(allowedSlippage)
 
   useEffect(() => {
-    if (!chainId || !slippageBips) {
+    if (!chainId) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
       return
