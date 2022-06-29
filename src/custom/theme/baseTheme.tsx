@@ -390,20 +390,55 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // Appzi Container override
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+  body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+    z-index: 2147483004!important;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
       left: 16px!important;
       bottom: 72px!important;
       top: initial!important;
       right: initial!important;
       position: fixed!important;
-    }
+    `}
 
-    body.noScroll div[id^='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: none !important;
+      left: 0 !important;
+      bottom: initial !important;
+      top: 0 !important;
+      right: initial !important;
+      position: fixed !important;
+      height: 100%!important;
+      width: 100%!important;
+      overflow-x: hidden!important;
+      overflow-y: auto!important;
+      opacity: 1!important;
+      transition: none!important;
+
+      > div[data-appzi-dom='1'] {
+        position: fixed!important;
+        top: 10px!important;
+        right: 0!important;
+        height: 30px!important;
+        width: 30px!important;
+        z-index: 2147483004!important;
+      }
+
+      > div[data-appzi-dom='1'] > div {
+        position: fixed!important;
+        top: 10px !important;
+        right: 15px !important;
+        opacity: 1 !important;
+      }
+    `}
+  }
+
+  body.noScroll div[id^='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       display: none!important;
-    }
-  `}
+    `}
+  }
 
   // START - Modal overrides
   ${HeaderText} {
