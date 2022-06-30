@@ -86,7 +86,7 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
-import { approvalAnalytics, swapAnalytics, setMaxSellTokens, signSwapAnalytics } from 'utils/analytics'
+import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -561,7 +561,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    setMaxSellTokens()
+    setMaxSellTokensAnalytics()
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(
