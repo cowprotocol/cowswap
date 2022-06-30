@@ -35,3 +35,10 @@ export function switchTokensAnalytics() {
     action: 'Switch INPUT/OUTPUT tokens',
   })
 }
+
+export function initialPriceLoadAnalytics() {
+  _reportEvent({
+    category: Category.SWAP,
+    action: 'Initial Price estimation',
+  })
+}
