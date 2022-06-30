@@ -43,7 +43,7 @@ export async function buildAppData({
   return { doc, calculatedAppData }
 }
 
-function _buildQuoteMetadata(slippageBips: string): QuoteMetadata | undefined {
+function _buildQuoteMetadata(slippageBips: string): QuoteMetadata {
   return { version: QUOTE_METADATA_VERSION, slippageBips }
 }
 
