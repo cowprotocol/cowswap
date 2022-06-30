@@ -12,7 +12,7 @@ import {
 } from 'state/appData/atoms'
 import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from 'state/appData/types'
 
-const UPLOAD_CHECK_INTERVAL = ms`10s`
+const UPLOAD_CHECK_INTERVAL = ms`1 minute`
 const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later
 const ONE_SECOND = ms`1s`
 const MAX_TIME_TO_WAIT = ms`5 minutes`
