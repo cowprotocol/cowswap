@@ -74,7 +74,7 @@ export function UnfillableOrdersUpdater(): null {
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   const updateIsUnfillableFlag = useCallback(
-    (chainId: ChainId, order: Order, price: Required<PriceInformation>) => {
+    (chainId: ChainId, order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>) => {
       const isUnfillable = isOrderUnfillable(order, price)
 
       // Only trigger state update if flag changed

@@ -69,6 +69,7 @@ interface TradeGpConstructor {
   fee: FeeForTrade
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
+  quoteId?: number
 }
 
 /**
@@ -100,6 +101,13 @@ export default class TradeGp {
    */
   readonly executionPrice: Price<Currency, Currency>
 
+  /**
+   * The id returned by CowSwap's quote backend, if any
+   *
+   * Note that it won't be set for fast quotes, nor for quotes from other sources (paraswap, 0x, etc)
+   */
+  readonly quoteId?: number
+
   public constructor({
     inputAmount,
     inputAmountWithFee,
@@ -109,6 +117,7 @@ export default class TradeGp {
     fee,
     executionPrice,
     tradeType,
+    quoteId,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
@@ -118,6 +127,7 @@ export default class TradeGp {
     this.outputAmount = outputAmount
     this.fee = fee
     this.executionPrice = executionPrice
+    this.quoteId = quoteId
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance
