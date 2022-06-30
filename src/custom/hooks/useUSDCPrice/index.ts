@@ -20,6 +20,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
+import { capturePriceFeedException, SentryTag } from 'utils/logging'
 
 export * from '@src/hooks/useUSDCPrice'
 
@@ -287,7 +288,32 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   const gpUsdPrice = useUSDCValue(currencyAmount)
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
 
+  if (!!currencyAmount) {
+    // report this to sentry
+    capturePriceFeedException(
+      _buildExceptionIssueParams(currencyAmount),
+      // price feed results
+      { res: !!gpUsdPrice, name: 'COW_API' },
+      { res: !!coingeckoUsdPrice, name: 'COINGECKO' }
+    )
+  }
+
   return coingeckoUsdPrice || gpUsdPrice
+}
+
+function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | undefined) {
+  const token = currencyAmount?.wrapped.currency
+  return {
+    // issue name
+    message: '[UsdPriceFeed] - EmptyResponse',
+    // tags
+    tags: { errorType: 'usdPriceFeed' },
+    // context
+    context: {
+      quotedCurrency: token?.symbol || token?.address || SentryTag.UNKNOWN,
+      amount: currencyAmount?.toExact() || SentryTag.UNKNOWN,
+    },
+  }
 }
 
 /**
