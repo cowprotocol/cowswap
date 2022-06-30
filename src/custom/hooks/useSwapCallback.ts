@@ -27,6 +27,7 @@ import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
 import { Web3Provider, ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { useAppDataHash } from 'state/affiliate/hooks'
+import { OrderStatus } from 'state/orders/actions'
 
 export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber() // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
@@ -71,6 +72,7 @@ interface SwapParams {
   chainId: number
   account: string
   allowsOffchainSigning: boolean
+  isSmartContractWallet: boolean
   isGnosisSafeWallet: boolean
   library: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined })
 
@@ -109,6 +111,7 @@ async function _swap(params: SwapParams): Promise<string> {
     chainId,
     account,
     allowsOffchainSigning,
+    isSmartContractWallet,
     isGnosisSafeWallet,
     library,
 
@@ -207,6 +210,7 @@ async function _swap(params: SwapParams): Promise<string> {
     recipientAddressOrName,
     signer: library.getSigner(),
     allowsOffchainSigning,
+    isSmartContractWallet,
     appDataHash,
   })
 
@@ -231,7 +235,7 @@ async function _swap(params: SwapParams): Promise<string> {
 
   // Send pre-sign transaction, if necessary
   let presignGnosisSafeTxHash: string | undefined
-  if (!allowsOffchainSigning) {
+  if (isSmartContractWallet && pendingOrderParams.order.status === OrderStatus.PRESIGNATURE_PENDING) {
     const presignTx = await presignOrder(orderId)
     console.log('Pre-sign order has been sent with: ', pendingOrderParams, presignTx)
 
@@ -337,7 +341,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     closeModals,
   } = params
   const { account, chainId, library } = useActiveWeb3React()
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
+  const { allowsOffchainSigning, gnosisSafeInfo, isSmartContractWallet } = useWalletInfo()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
@@ -386,6 +390,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
       chainId,
       account,
       allowsOffchainSigning,
+      isSmartContractWallet,
       isGnosisSafeWallet: !!gnosisSafeInfo,
       library,
 
@@ -430,6 +435,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     allowedSlippage,
     deadline,
     allowsOffchainSigning,
+    isSmartContractWallet,
     gnosisSafeInfo,
     wrapEther,
     addPendingOrder,

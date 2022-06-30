@@ -2,7 +2,7 @@ import {
   domain as domainGp,
   signOrder as signOrderGp,
   signOrderCancellation as signOrderCancellationGp,
-  EcdsaSignature,
+  OffChainSignature,
   Order,
   OrderCancellation as OrderCancellationGp,
   Signature,
@@ -15,6 +15,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from '@ethersproject/abstract-signer'
 import { registerOnWindow } from 'utils/misc'
+import { METHOD_NOT_FOUND_ERROR } from '@src/constants/misc'
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal
@@ -75,10 +76,11 @@ const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.PRESIGN, { libraryValue: 3, apiValue: 'presign' }],
 ])
 
-function _getSigningSchemeInfo(ecdaSigningScheme: SigningScheme): SchemaInfo {
-  const value = mapSigningSchema.get(ecdaSigningScheme)
+function _getSigningSchemeInfo(offChainSigningScheme: SigningScheme): SchemaInfo {
+  debugger
+  const value = mapSigningSchema.get(offChainSigningScheme)
   if (value === undefined) {
-    throw new Error('Unknown schema ' + ecdaSigningScheme)
+    throw new Error('Unknown schema ' + offChainSigningScheme)
   }
 
   return value
@@ -88,8 +90,8 @@ export function getSigningSchemeApiValue(ecdaSigningScheme: SigningScheme): stri
   return _getSigningSchemeInfo(ecdaSigningScheme).apiValue
 }
 
-export function getSigningSchemeLibValue(ecdaSigningScheme: SigningScheme): number {
-  return _getSigningSchemeInfo(ecdaSigningScheme).libraryValue
+export function getSigningSchemeLibValue(offChainSigningScheme: SigningScheme): number {
+  return _getSigningSchemeInfo(offChainSigningScheme).libraryValue
 }
 // ---------------- end of the TODO:
 
@@ -137,9 +139,19 @@ async function _signPayload(
   payload: any,
   signFn: typeof _signOrder | typeof _signOrderCancellation,
   signer: Signer,
-  signingMethod: 'default' | 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
+  signingMethod: 'default' | 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4',
+  isSmartContract: boolean
 ): Promise<SigningResult> {
-  const signingScheme = signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712
+  let signingScheme: SigningScheme
+  if (isSmartContract) {
+    if (signingMethod === 'eth_sign') {
+      throw Error(METHOD_NOT_FOUND_ERROR)
+    }
+    signingScheme = SigningScheme.EIP1271
+  } else {
+    signingScheme = signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712
+  }
+
   let signature: Signature | null = null
 
   let _signer
@@ -163,7 +175,7 @@ async function _signPayload(
   }
 
   try {
-    signature = (await signFn({ ...payload, signer: _signer, signingScheme })) as EcdsaSignature // Only ECDSA signing supported for now
+    signature = (await signFn({ ...payload, signer: _signer, signingScheme })) as OffChainSignature
   } catch (e) {
     const regexErrorCheck = [METHOD_NOT_FOUND_ERROR_MSG_REGEX, RPC_REQUEST_FAILED_REGEX].some((regex) =>
       // for example 1Inch error doesn't have e.message so we will check the output of toString()
@@ -176,30 +188,30 @@ async function _signPayload(
       // with other methods...
       switch (signingMethod) {
         case 'v4':
-          return _signPayload(payload, signFn, signer, 'default')
+          return _signPayload(payload, signFn, signer, 'default', isSmartContract)
         case 'default':
-          return _signPayload(payload, signFn, signer, 'v3')
+          return _signPayload(payload, signFn, signer, 'v3', isSmartContract)
         case 'v3':
-          return _signPayload(payload, signFn, signer, 'eth_sign')
+          return _signPayload(payload, signFn, signer, 'eth_sign', isSmartContract)
         default:
           throw e
       }
     } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
       // Metamask now enforces chainId to be an integer
-      return _signPayload(payload, signFn, signer, 'int_v4')
+      return _signPayload(payload, signFn, signer, 'int_v4', isSmartContract)
     } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
       // We tried to sign order the nice way.
       // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
       // See https://github.com/MetaMask/metamask-extension/issues/10240#issuecomment-810552020
       // So, when that specific error occurs, we know this is a problem with MM + HW.
       // Then, we fallback to ETHSIGN.
-      return _signPayload(payload, signFn, signer, 'eth_sign')
+      return _signPayload(payload, signFn, signer, 'eth_sign', isSmartContract)
     } else if (V4_ERROR_MSG_REGEX.test(e.message)) {
       // Failed with `v4`, and the wallet does not set the proper error code
-      return _signPayload(payload, signFn, signer, 'v3')
+      return _signPayload(payload, signFn, signer, 'v3', isSmartContract)
     } else if (V3_ERROR_MSG_REGEX.test(e.message)) {
       // Failed with `v3`, and the wallet does not set the proper error code
-      return _signPayload(payload, signFn, signer, 'eth_sign')
+      return _signPayload(payload, signFn, signer, 'eth_sign', isSmartContract)
     } else {
       // Some other error signing. Let it bubble up.
       console.error(e)
@@ -209,12 +221,22 @@ async function _signPayload(
   return { signature: signature.data.toString(), signingScheme }
 }
 
-export async function signOrder(order: UnsignedOrder, chainId: ChainId, signer: Signer): Promise<SigningResult> {
-  return _signPayload({ order, chainId }, _signOrder, signer)
+export async function signOrder(
+  order: UnsignedOrder,
+  chainId: ChainId,
+  signer: Signer,
+  isSmartContract: boolean
+): Promise<SigningResult> {
+  return _signPayload({ order, chainId }, _signOrder, signer, 'v4', isSmartContract)
 }
 
-export async function signOrderCancellation(orderId: string, chainId: ChainId, signer: Signer): Promise<SigningResult> {
-  return _signPayload({ orderId, chainId }, _signOrderCancellation, signer)
+export async function signOrderCancellation(
+  orderId: string,
+  chainId: ChainId,
+  signer: Signer,
+  isSmartContract: boolean
+): Promise<SigningResult> {
+  return _signPayload({ orderId, chainId }, _signOrderCancellation, signer, 'v4', isSmartContract)
 }
 
 registerOnWindow({ signature: { signOrder: _signOrder, getDomain: _getDomain } })

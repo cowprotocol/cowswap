@@ -40,3 +40,5 @@ export const TWO_PERCENT = new Percent(JSBI.BigInt(200), BIPS_BASE)
 export const ONE_HUNDRED_PERCENT = new Percent('1')
 
 export const IS_SIDE_BANNER_VISIBLE_KEY = 'IS_SIDEBAR_BANNER_VISIBLE'
+
+export const METHOD_NOT_FOUND_ERROR = 'Method not found'

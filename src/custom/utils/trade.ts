@@ -11,6 +11,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
 import { getTrades, getProfileData } from 'api/gnosisProtocol/api'
+import { METHOD_NOT_FOUND_ERROR } from '@src/constants/misc'
 
 export interface PostOrderParams {
   account: string
@@ -27,6 +28,7 @@ export interface PostOrderParams {
   recipient: string
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
+  isSmartContractWallet: boolean
   appDataHash: string
 }
 
@@ -70,6 +72,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     signer,
     recipient,
     allowsOffchainSigning,
+    isSmartContractWallet,
     appDataHash,
     sellAmountBeforeFee,
   } = params
@@ -99,14 +102,32 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   let signingScheme: SigningScheme
   let signature: string | undefined
-  if (allowsOffchainSigning) {
-    const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer)
+  let orderStatus: OrderStatus
+
+  if (isSmartContractWallet) {
+    debugger
+    const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer, isSmartContractWallet).catch((err) => {
+      // if a wallet returns something not standard, presign will also not happen. Should we include a broader non supported range?
+      if (!(err.message || err.toString()).includes(METHOD_NOT_FOUND_ERROR)) {
+        throw err
+      }
+    })
+    if (signedOrderInfo) {
+      signingScheme = SigningScheme.EIP1271
+      signature = signedOrderInfo.signature
+      orderStatus = OrderStatus.PENDING
+    } else {
+      signingScheme = SigningScheme.PRESIGN
+      signature = account
+      orderStatus = OrderStatus.PRESIGNATURE_PENDING
+    }
+  } else {
+    const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer, isSmartContractWallet)
     signingScheme = signedOrderInfo.signingScheme
     signature = signedOrderInfo.signature
-  } else {
-    signingScheme = SigningScheme.PRESIGN
-    signature = account
+    orderStatus = OrderStatus.PENDING
   }
+  debugger
 
   // Call API
   const orderId = await sendOrderApi({
@@ -132,7 +153,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     outputToken: buyToken,
 
     // Status
-    status: allowsOffchainSigning ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
+    status: orderStatus,
     creationTime,
 
     // Signature
@@ -158,12 +179,13 @@ type OrderCancellationParams = {
   chainId: ChainId
   signer: Signer
   cancelPendingOrder: (params: ChangeOrderStatusParams) => void
+  isSmartContractWallet: boolean
 }
 
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
-  const { orderId, account, chainId, signer, cancelPendingOrder } = params
+  const { orderId, account, chainId, signer, cancelPendingOrder, isSmartContractWallet } = params
 
-  const { signature, signingScheme } = await signOrderCancellation(orderId, chainId, signer)
+  const { signature, signingScheme } = await signOrderCancellation(orderId, chainId, signer, isSmartContractWallet)
 
   await sendSignedOrderCancellation({
     chainId,
