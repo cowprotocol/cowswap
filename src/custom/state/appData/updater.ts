@@ -26,6 +26,14 @@ export function UploadToIpfsUpdater(): null {
   const refToUpload = useRef(toUpload)
   refToUpload.current = toUpload
 
+  // Filtering only newly created and not yet attempted to upload docs
+  const newlyAdded = toUpload.filter(({ uploading, lastAttempt }) => !uploading && !lastAttempt)
+
+  useEffect(() => {
+    // Try to upload new docs as soon as they are added
+    newlyAdded.forEach((appDataRecord) => _uploadToIpfs(appDataRecord, updatePending, removePending))
+  }, [newlyAdded, removePending, updatePending])
+
   useEffect(() => {
     async function uploadPendingAppData() {
       console.debug(`[UploadToIpfsUpdater] Iterating over ${refToUpload.current.length} appData on upload queue`)
