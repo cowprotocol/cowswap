@@ -71,13 +71,6 @@ export function orderAnalytics(action: OrderType, label?: string) {
   })
 }
 
-export function setMaxSellTokensAnalytics() {
-  _reportEvent({
-    category: Category.SWAP,
-    action: 'Set Maximun Sell Tokens',
-  })
-}
-
 export function priceOutOfRangeAnalytics(isUnfillable: boolean, label: string) {
   _reportEvent({
     category: Category.SWAP,
