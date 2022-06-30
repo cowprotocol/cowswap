@@ -8,7 +8,7 @@ const REFERRER_METADATA_VERSION = '0.1.0'
 
 export type BuildAppDataParams = {
   chainId: SupportedChainId
-  slippageBips?: string
+  slippageBips: string
   sellAmount?: string
   buyAmount?: string
   quoteId?: number
@@ -28,7 +28,7 @@ export async function buildAppData({
   const sdk = COW_SDK[chainId]
 
   // build quote metadata, not required in the schema but always present
-  const quoteMetadata = _buildQuoteMetadata({ slippageBips, sellAmount, buyAmount, quoteId })
+  const quoteMetadata = _buildQuoteMetadata(slippageBips)
   const metadata: MetadataDoc = { quote: quoteMetadata }
 
   // build referrer metadata, optional
@@ -43,26 +43,8 @@ export async function buildAppData({
   return { doc, calculatedAppData }
 }
 
-type BuildQuoteMetadataParams = Omit<QuoteMetadata, 'version' | 'id'> & {
-  quoteId?: number | undefined
-}
-
-function _buildQuoteMetadata({
-  slippageBips,
-  sellAmount,
-  buyAmount,
-  quoteId,
-}: BuildQuoteMetadataParams): QuoteMetadata | undefined {
-  const base = { version: QUOTE_METADATA_VERSION, id: quoteId?.toString() }
-
-  if (slippageBips) {
-    return { ...base, slippageBips }
-  } else if (sellAmount && buyAmount) {
-    return { ...base, sellAmount, buyAmount }
-  }
-
-  console.warn(`Neither slippageBips nor sellAmount and buyAmount set. Cannot build quote metadata`)
-  return
+function _buildQuoteMetadata(slippageBips: string): QuoteMetadata | undefined {
+  return { version: QUOTE_METADATA_VERSION, slippageBips }
 }
 
 function _buildReferralMetadata(address: string): ReferralMetadata {

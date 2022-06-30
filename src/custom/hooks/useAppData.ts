@@ -29,12 +29,6 @@ export function useAppData({ chainId, allowedSlippage }: UseAppDataParams): AppD
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
   const appCode = useAppCode()
 
-  // TODO: Section commented out for future reference, in case we want to enable it again
-  // Sell and buy amounts, from trade param
-  // const sellAmount = trade?.inputAmountWithFee.quotient.toString()
-  // const buyAmount = trade?.outputAmount.quotient.toString()
-  // const quoteId = trade?.quoteId
-
   // Transform slippage Percent to bips
   const slippageBips = percentToBips(allowedSlippage)
 
