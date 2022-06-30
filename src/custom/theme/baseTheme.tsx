@@ -390,8 +390,13 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // Appzi Container override
+  div[id^='appzi-wfo-'] {
+    display: none!important; // Force hiding Appzi container when not opened
+  }
+
   body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
     z-index: 2147483004!important;
+    display: block!important;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
