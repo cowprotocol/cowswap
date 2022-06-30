@@ -350,7 +350,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
 
   const [deadline] = useUserTransactionTTL()
 
-  const appData = useAppData(chainId, trade)
+  const appData = useAppData({ chainId, allowedSlippage })
   const { hash: appDataHash } = appData || {}
   const addAppDataToUploadQueue = useAddAppDataToUploadQueue(chainId, appData)
 
