@@ -28,7 +28,8 @@ import {
 } from 'api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
-import useSWR from 'swr'
+import useSWR, { SWRConfiguration } from 'swr'
+import { getUsdQuoteValidTo } from 'hooks/useUSDCPrice'
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
@@ -224,11 +225,13 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
 function _checkFeeErrorForData(error: GpQuoteError) {
   console.warn('[getBestQuote:Legacy]::Fee error', error)
 
+  const feeAmount = error?.data?.fee_amount || error?.data?.feeAmount
+  const feeExpiration = error?.data?.expiration
   // check if our error response has any fee data attached to it
-  if (error?.data) {
+  if (feeAmount) {
     return {
-      amount: error?.data.feeAmount,
-      expirationDate: error?.data.expiration,
+      amount: feeAmount,
+      expirationDate: feeExpiration,
     }
   } else {
     // no data object, just rethrow
@@ -357,6 +360,8 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuote
     console.debug(
       '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
     )
+    // we need to explicitly set the validTo time to 10m in future on every call
+    quoteParams.validTo = getUsdQuoteValidTo()
     const { quote } = await getQuote(quoteParams)
 
     return quote.sellAmount
@@ -382,7 +387,7 @@ export function useGetGpUsdcPrice(
     strategy: GpPriceStrategy
     quoteParams: LegacyFeeQuoteParams | null
   },
-  options = SWR_OPTIONS
+  options: SWRConfiguration = SWR_OPTIONS
 ) {
   const { strategy, quoteParams } = props
 

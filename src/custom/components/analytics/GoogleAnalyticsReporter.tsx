@@ -1,42 +1,23 @@
 import { useActiveWeb3React } from 'hooks/web3' // mod
 import { useEffect } from 'react'
-import ReactGA from 'react-ga4'
 import { RouteComponentProps } from 'react-router-dom'
-import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
-
-import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from 'components/analytics'
-
-function reportWebVitals({ name, delta, id }: Metric) {
-  ReactGA._gaCommandSendTiming('Web Vitals', name, Math.round(name === 'CLS' ? delta * 1000 : delta), id)
-}
+import { persistClientId, reportWebVitals, onChainIdChange, onPathNameChange } from 'utils/analytics'
 
 // tracks web vitals and pageviews
 export default function GoogleAnalyticsReporter({ location: { pathname, search } }: RouteComponentProps): null {
-  useEffect(() => {
-    getFCP(reportWebVitals)
-    getFID(reportWebVitals)
-    getLCP(reportWebVitals)
-    getCLS(reportWebVitals)
-  }, [])
+  useEffect(reportWebVitals, [])
 
   const { chainId } = useActiveWeb3React()
   useEffect(() => {
-    // cd1 - custom dimension 1 - chainId
-    ReactGA.set({ cd1: chainId ?? 0 })
+    onChainIdChange(chainId)
   }, [chainId])
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `${pathname}${search}` })
+    onPathNameChange(pathname, search)
   }, [pathname, search])
 
   useEffect(() => {
-    // typed as 'any' in react-ga4 -.-
-    ReactGA.ga((tracker: any) => {
-      if (!tracker) return
-
-      const clientId = tracker.get('clientId')
-      window.localStorage.setItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY, clientId)
-    })
+    persistClientId()
   }, [])
   return null
 }
