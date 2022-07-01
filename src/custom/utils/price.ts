@@ -208,11 +208,12 @@ export async function getBestPrice(
  */
 export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuoteParams }): Promise<QuoteResult> {
   const { kind } = quoteParams
-  const { quote, expiration: expirationDate } = await getQuote(quoteParams)
+  const { quote, expiration: expirationDate, id: quoteId } = await getQuote(quoteParams)
 
   const price = {
     amount: kind === OrderKind.SELL ? quote.buyAmount : quote.sellAmount,
     token: kind === OrderKind.SELL ? quote.buyToken : quote.sellToken,
+    quoteId: quoteId ?? undefined,
   }
   const fee = {
     amount: quote.feeAmount,
