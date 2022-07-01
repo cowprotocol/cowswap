@@ -41,7 +41,7 @@ import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import AddressSelector from './AddressSelector'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
-import { useAddress } from 'state/affiliate/hooks'
+import { useAffiliateAddress } from 'state/affiliate/hooks'
 import { Title, SectionTitle, HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
@@ -78,7 +78,7 @@ export default function Profile() {
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
   const hasOrders = useHasOrders(account)
-  const selectedAddress = useAddress()
+  const selectedAddress = useAffiliateAddress()
   const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()

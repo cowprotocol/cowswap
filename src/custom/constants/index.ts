@@ -32,6 +32,9 @@ export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
+export const DEFAULT_APP_CODE = 'CowSwap'
+export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
+
 export const PRODUCTION_URL = 'cowswap.exchange'
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
@@ -170,6 +173,7 @@ export const SWR_OPTIONS = {
   revalidateOnFocus: false,
 }
 
+// TODO: show banner warning when PINATA env vars are missing
 const COW_SDK_OPTIONS = {
   ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_SECRET_API_KEY },
 }
