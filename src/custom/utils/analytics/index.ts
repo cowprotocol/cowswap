@@ -68,6 +68,6 @@ export function reportError(error: Error, errorInfo: ErrorInfo) {
   ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
 }
 
-export function _reportEvent(params: EventParams) {
+export function reportEvent(params: EventParams) {
   ReactGA.event(params)
 }
