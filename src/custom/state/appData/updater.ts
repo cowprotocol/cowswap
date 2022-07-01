@@ -12,7 +12,7 @@ import {
 } from 'state/appData/atoms'
 import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from 'state/appData/types'
 
-const UPLOAD_CHECK_INTERVAL = ms`10s`
+const UPLOAD_CHECK_INTERVAL = ms`1 minute`
 const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later
 const ONE_SECOND = ms`1s`
 const MAX_TIME_TO_WAIT = ms`5 minutes`
@@ -25,6 +25,14 @@ export function UploadToIpfsUpdater(): null {
   // Storing a reference to avoid re-render on every update
   const refToUpload = useRef(toUpload)
   refToUpload.current = toUpload
+
+  // Filtering only newly created and not yet attempted to upload docs
+  const newlyAdded = toUpload.filter(({ uploading, lastAttempt }) => !uploading && !lastAttempt)
+
+  useEffect(() => {
+    // Try to upload new docs as soon as they are added
+    newlyAdded.forEach((appDataRecord) => _uploadToIpfs(appDataRecord, updatePending, removePending))
+  }, [newlyAdded, removePending, updatePending])
 
   useEffect(() => {
     async function uploadPendingAppData() {
