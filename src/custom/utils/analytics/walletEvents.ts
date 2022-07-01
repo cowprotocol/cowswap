@@ -1,7 +1,7 @@
-import { Category, _reportEvent } from './index'
+import { Category, reportEvent } from './index'
 
 export function changeWalletAnalytics(walletName: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.WALLET,
     action: 'Change Wallet',
     label: walletName,

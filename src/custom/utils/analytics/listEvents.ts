@@ -1,8 +1,8 @@
-import { Category, _reportEvent } from './index'
+import { Category, reportEvent } from './index'
 
 type UpdateListLocation = 'Popup' | 'List Select'
 export function updateListAnalytics(location: UpdateListLocation, listUrl: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.LIST,
     action: `Update List from ${location}`,
     label: listUrl,
@@ -11,7 +11,7 @@ export function updateListAnalytics(location: UpdateListLocation, listUrl: strin
 
 type RemoveListAction = 'Start' | 'Confirm'
 export function removeListAnalytics(action: RemoveListAction, listUrl: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.LIST,
     action: `${action} Remove List`,
     label: listUrl,
@@ -19,7 +19,7 @@ export function removeListAnalytics(action: RemoveListAction, listUrl: string) {
 }
 
 export function toggleListAnalytics(enable: boolean, listUrl: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.LIST,
     action: `${enable ? 'Enable' : 'Disable'} List`,
     label: listUrl,
@@ -28,7 +28,7 @@ export function toggleListAnalytics(enable: boolean, listUrl: string) {
 
 type AddListAction = 'Success' | 'Failed'
 export function addListAnalytics(action: AddListAction, listURL: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.LIST,
     action: `Add List ${action}`,
     label: listURL,
