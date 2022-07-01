@@ -84,7 +84,7 @@ export function UnfillableOrdersUpdater(): null {
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
         if (typeof order.isUnfillable === 'boolean') {
-          const label = [order.inputToken.symbol, order.outputToken.symbol].join(',')
+          const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
           priceOutOfRangeAnalytics(isUnfillable, label)
         }
       }
