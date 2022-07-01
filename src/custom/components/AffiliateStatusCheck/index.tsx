@@ -47,7 +47,7 @@ export default function AffiliateStatusCheck() {
   )
 
   // De-normalized to avoid unnecessary useEffect triggers
-  const isReferralAddressNull = referralAddress === null
+  const isReferralAddressNotSet = !referralAddress
   const referralAddressAccount = referralAddress?.value
   const referralAddressIsValid = referralAddress?.isValid
 
@@ -74,7 +74,8 @@ export default function AffiliateStatusCheck() {
       return
     }
 
-    if (!referralAddressIsValid) {
+    // Note: comparing with `false` because in case `undefined` msg shouldn't be displayed
+    if (referralAddressIsValid === false) {
       setError('Affiliate program: The referral address is invalid.')
       return
     }
@@ -112,11 +113,12 @@ export default function AffiliateStatusCheck() {
   ])
 
   useEffect(() => {
-    if (isReferralAddressNull) {
+    if (isReferralAddressNotSet) {
       return
     }
 
     setError('')
+    setAffiliateState(null)
 
     if (!account) {
       setAffiliateState('NOT_CONNECTED')
@@ -148,7 +150,7 @@ export default function AffiliateStatusCheck() {
     referralAddressQueryParam,
     setAffiliateState,
     referralAddressAccount,
-    isReferralAddressNull,
+    isReferralAddressNotSet,
   ])
 
   if (error) {
