@@ -17,7 +17,7 @@ export function setMaxSellTokensAnalytics() {
   })
 }
 
-export function _changeSwapAmountAnalytics(field: Field, value: number) {
+function _changeSwapAmountAnalytics(field: Field, value: number) {
   _reportEvent({
     category: Category.SWAP,
     action: `Change ${field} field amount`,
