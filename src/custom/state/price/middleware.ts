@@ -10,6 +10,7 @@ export const priceMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   if (isUpdateQuoteAction(action)) {
     if (!state.price.initialQuoteLoaded) {
+      // Send an event only on the first price load
       initialPriceLoadAnalytics()
     }
   }
