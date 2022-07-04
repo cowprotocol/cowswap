@@ -8,6 +8,7 @@ export * from './settingsEvents'
 export * from './themeEvents'
 export * from './transactionEvents'
 export * from './walletEvents'
+export * from './swapEvents'
 
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 export const ANALITICS_EVENTS = {}
@@ -67,6 +68,6 @@ export function reportError(error: Error, errorInfo: ErrorInfo) {
   ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
 }
 
-export function _reportEvent(params: EventParams) {
+export function reportEvent(params: EventParams) {
   ReactGA.event(params)
 }

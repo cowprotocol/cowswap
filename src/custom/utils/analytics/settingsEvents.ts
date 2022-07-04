@@ -1,22 +1,22 @@
-import { Category, _reportEvent } from './index'
+import { Category, reportEvent } from './index'
 import { debounce } from 'utils/misc'
 
 export function toggleExpertModeAnalytics(enable: boolean) {
-  _reportEvent({
+  reportEvent({
     category: Category.EXPERT_MODE,
     action: `${enable ? 'Enable' : 'Disable'} Expert Mode`,
   })
 }
 
 export function showExpertModeConfirmationAnalytics() {
-  _reportEvent({
+  reportEvent({
     category: Category.EXPERT_MODE,
     action: 'Show Confirmation',
   })
 }
 
 export function toggleRecepientAddressAnalytics(enable: boolean) {
-  _reportEvent({
+  reportEvent({
     category: Category.RECIPIENT_ADDRESS,
     action: 'Toggle Recipient Address',
     label: enable ? 'Enabled' : 'Disabled',
@@ -24,7 +24,7 @@ export function toggleRecepientAddressAnalytics(enable: boolean) {
 }
 
 export function searchByAddressAnalytics(isAddressSearch: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.CURRENCY_SELECT,
     action: 'Search by address',
     label: isAddressSearch,
@@ -33,7 +33,7 @@ export function searchByAddressAnalytics(isAddressSearch: string) {
 
 type SlipageToleranceType = 'Custom' | 'Default'
 function _slippageToleranceAnalytics(type: SlipageToleranceType, value: number) {
-  _reportEvent({
+  reportEvent({
     category: Category.ORDER_SLIPAGE_TOLERANCE,
     action: `Set ${type} Slipage Tolerance`,
     value,

@@ -156,3 +156,9 @@ export function useWalletInfo(): ConnectedWalletInfo {
     gnosisSafeInfo,
   }
 }
+
+export function useIsGnosisSafeApp(): boolean {
+  const { walletName } = useWalletInfo()
+
+  return walletName === GNOSIS_SAFE_APP_NAME
+}
