@@ -3,7 +3,7 @@ import { animated } from 'react-spring'
 import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
-import { CancelButton } from '../CancelButton'
+import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
