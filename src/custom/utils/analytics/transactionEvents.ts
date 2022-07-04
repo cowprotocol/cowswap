@@ -1,8 +1,8 @@
-import { Category, _reportEvent } from './index'
+import { Category, reportEvent } from './index'
 
 type ExpirationType = 'Default' | 'Custom'
 export function orderExpirationTimeAnalytics(type: ExpirationType, value: number) {
-  _reportEvent({
+  reportEvent({
     category: Category.ORDER_EXPIRATION_TIME,
     action: `Set ${type} Expiration Time`,
     value,
@@ -11,7 +11,7 @@ export function orderExpirationTimeAnalytics(type: ExpirationType, value: number
 
 type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 export function wrapAnalytics(action: WrapAction, message: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.WRAP_NATIVE_TOKEN,
     action: `${action} Wrap/Unwrap Transaction`,
     label: message,
@@ -20,7 +20,7 @@ export function wrapAnalytics(action: WrapAction, message: string) {
 
 type ClaimAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 export function claimAnalytics(action: ClaimAction, value?: number) {
-  _reportEvent({
+  reportEvent({
     category: Category.CLAIM_COW_FOR_LOCKED_GNO,
     action: `${action} Claim Transaction`,
     value,
@@ -29,7 +29,7 @@ export function claimAnalytics(action: ClaimAction, value?: number) {
 
 type ApprovalAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 export function approvalAnalytics(action: ApprovalAction, label?: string, value?: number) {
-  _reportEvent({
+  reportEvent({
     category: Category.SWAP,
     action: `${action} Token Approval`,
     label,
@@ -39,7 +39,7 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
 
 export type SwapAction = 'Send' | 'Error' | 'Reject'
 export function swapAnalytics(action: SwapAction, label?: string, value?: number) {
-  _reportEvent({
+  reportEvent({
     category: Category.SWAP,
     action: `${action} Swap Order`,
     label,
@@ -55,7 +55,7 @@ const signSwapActions = {
 
 export type SignSwapAction = 'Sign' | 'SignAndSend' | 'SignToSelf'
 export function signSwapAnalytics(action: SignSwapAction, label?: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.SWAP,
     action: signSwapActions[action],
     label,
@@ -64,16 +64,17 @@ export function signSwapAnalytics(action: SignSwapAction, label?: string) {
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
 export function orderAnalytics(action: OrderType, label?: string) {
-  _reportEvent({
+  reportEvent({
     category: Category.SWAP,
     action: `${action} Swap Order`,
     label,
   })
 }
 
-export function setMaxSellTokens() {
-  _reportEvent({
+export function priceOutOfRangeAnalytics(isUnfillable: boolean, label: string) {
+  reportEvent({
     category: Category.SWAP,
-    action: 'Set Maximun Sell Tokens',
+    action: `Order price is ${isUnfillable ? 'out of' : 'back to'} market`,
+    label,
   })
 }
