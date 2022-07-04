@@ -60,6 +60,11 @@ export function onChainIdChange(chainId: number | undefined) {
   ReactGA.set({ cd1: chainId ?? 0 })
 }
 
+export function onWalletChange(walletName: string | undefined) {
+  // cd2 - custom dimension 2 - walletName
+  ReactGA.set({ cd2: walletName })
+}
+
 export function onPathNameChange(pathname: string, search: string) {
   ReactGA.send({ hitType: 'pageview', page: `${pathname}${search}` })
 }
