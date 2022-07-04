@@ -19,7 +19,7 @@ import {
   StyledCoWLink,
 } from './styled'
 import { AMMsLogo } from 'components/AMMsLogo'
-import { EXPECTED_EXECUTION_TIME, getPercentage } from 'components/AccountDetails/Transaction/OrderProgressBar/utils'
+import { EXPECTED_EXECUTION_TIME, getPercentage } from 'components/OrderProgressBar/utils'
 import { SupportedChainId } from 'constants/chains'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'

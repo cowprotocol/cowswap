@@ -18,12 +18,12 @@ import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
 import { getStatusIcon } from 'components/AccountDetails'
+import { OrderProgressBar } from 'components/OrderProgressBar'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from 'constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
-import { OrderProgressBar } from '../AccountDetails/Transaction/OrderProgressBar'
 
 const Wrapper = styled.div`
   width: 100%;
