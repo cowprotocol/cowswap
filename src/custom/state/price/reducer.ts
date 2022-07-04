@@ -6,7 +6,6 @@ import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
-import { initialPriceLoadAnalytics } from 'utils/analytics'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
@@ -138,10 +137,6 @@ export default createReducer(initialState, (builder) =>
 
       if (quoteInformation && shouldUpdate) {
         quotes[chainId][sellToken] = { ...quoteInformation, ...payload }
-      }
-
-      if (!state.initialQuoteLoaded) {
-        initialPriceLoadAnalytics()
       }
 
       // Stop the loader
