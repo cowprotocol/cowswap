@@ -102,3 +102,59 @@ function getActivityLinkUrl(params: {
 
   return undefined
 }
+
+type ActivityState =
+  | 'open'
+  | 'filled'
+  | 'executed'
+  | 'expired'
+  | 'failed'
+  | 'cancelled'
+  | 'pending'
+  | 'signing'
+  | 'cancelling'
+
+export function getActivityState({
+  isPending,
+  isOrder,
+  isConfirmed,
+  isExpired,
+  isCancelling,
+  isPresignaturePending,
+  isCancelled,
+  enhancedTransaction,
+}: ActivityDerivedState): ActivityState {
+  if (isPending) {
+    if (enhancedTransaction) {
+      console.log('enhancedTransaction', enhancedTransaction)
+      const { safeTransaction, transactionHash } = enhancedTransaction
+      if (safeTransaction && !transactionHash) {
+        return 'signing'
+      }
+    }
+
+    return isOrder ? 'open' : 'pending'
+  }
+
+  if (isConfirmed) {
+    return isOrder ? 'filled' : 'executed'
+  }
+
+  if (isExpired) {
+    return isOrder ? 'expired' : 'failed'
+  }
+
+  if (isCancelling) {
+    return 'cancelling'
+  }
+
+  if (isPresignaturePending) {
+    return 'signing'
+  }
+
+  if (isCancelled) {
+    return 'cancelled'
+  }
+
+  return 'open'
+}

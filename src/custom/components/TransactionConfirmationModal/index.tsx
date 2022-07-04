@@ -22,7 +22,7 @@ import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from 'constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
-import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
+import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { OrderProgressBar } from '../AccountDetails/Transaction/OrderProgressBar'
 
 const Wrapper = styled.div`
@@ -520,7 +520,8 @@ export function TransactionSubmittedContent({
   const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
-  const hideProgressBar = activityDerivedState?.isCancelled || activityDerivedState?.isExpired
+  const activityState = activityDerivedState && getActivityState(activityDerivedState)
+  const showProgressBar = activityState === 'open' || activityState === 'filled'
 
   return (
     <Wrapper>
@@ -536,7 +537,7 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        {activityDerivedState && !hideProgressBar && (
+        {activityDerivedState && showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
         <ButtonGroup>

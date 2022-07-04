@@ -24,6 +24,7 @@ import { useToken } from 'hooks/Tokens'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { V_COW, COW } from 'constants/tokens'
 import { OrderProgressBar } from './OrderProgressBar'
+import { getActivityState } from 'hooks/useActivityDerivedState'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -40,7 +41,6 @@ function GnosisSafeTxDetails(props: {
   const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
-
   if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
     return null
   }
@@ -147,9 +147,11 @@ export function ActivityDetails(props: {
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
+  const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
+  const showProgressBar = activityState === 'open' || activityState === 'filled'
 
   if (!order && !enhancedTransaction) return null
 
@@ -294,7 +296,7 @@ export function ActivityDetails(props: {
           </ActivityLink>
         )}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-        {order && creationTime && validTo && (
+        {showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
         )}
       </SummaryInner>

@@ -13,6 +13,7 @@ import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { CancelButton } from './CancelButton'
+import { getActivityState } from 'hooks/useActivityDerivedState'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -36,49 +37,31 @@ export function GnosisSafeLink(props: {
   return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
 }
 
-function _getStateLabel({
-  isPending,
-  isOrder,
-  isConfirmed,
-  isExpired,
-  isCancelling,
-  isPresignaturePending,
-  isCancelled,
-  enhancedTransaction,
-}: ActivityDerivedState) {
-  if (isPending) {
-    if (enhancedTransaction) {
-      console.log('enhancedTransaction', enhancedTransaction)
-      const { safeTransaction, transactionHash } = enhancedTransaction
-      if (safeTransaction && !transactionHash) {
-        return 'Signing...'
-      }
-    }
+function _getStateLabel(activityDerivedState: ActivityDerivedState) {
+  const activityState = getActivityState(activityDerivedState)
 
-    return isOrder ? 'Open' : 'Pending...'
+  switch (activityState) {
+    case 'pending':
+      return 'Pending...'
+    case 'open':
+      return 'Open'
+    case 'signing':
+      return 'Signing...'
+    case 'filled':
+      return 'Filled'
+    case 'executed':
+      return 'Executed'
+    case 'expired':
+      return 'Expired'
+    case 'failed':
+      return 'Failed'
+    case 'cancelling':
+      return 'Cancelling...'
+    case 'cancelled':
+      return 'Cancelled'
+    default:
+      return 'Open'
   }
-
-  if (isConfirmed) {
-    return isOrder ? 'Filled' : 'Executed'
-  }
-
-  if (isExpired) {
-    return isOrder ? 'Expired' : 'Failed'
-  }
-
-  if (isCancelling) {
-    return 'Cancelling...'
-  }
-
-  if (isPresignaturePending) {
-    return 'Signing...'
-  }
-
-  if (isCancelled) {
-    return 'Cancelled'
-  }
-
-  return 'Open'
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {

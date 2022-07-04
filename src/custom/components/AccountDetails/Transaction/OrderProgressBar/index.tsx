@@ -311,7 +311,7 @@ function useGetProgressBarInfo({
   creationTime,
   validTo,
 }: GetProgressBarInfoProps): ProgressBarInfo {
-  const { isPending: orderIsPending, isPresignaturePending, order } = activityDerivedState
+  const { isPending: orderIsPending, enhancedTransaction, order } = activityDerivedState
 
   if (!creationTime || !validTo) {
     return {
@@ -320,14 +320,14 @@ function useGetProgressBarInfo({
       isPending: false,
     }
   }
+  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
 
-  if (order?.presignGnosisSafeTx) {
-    const submissionDate = new Date(order?.presignGnosisSafeTx?.submissionDate)
-
+  if (safeTransaction) {
+    const executionDate = new Date(safeTransaction.executionDate)
     return {
-      elapsedSeconds: (Date.now() - submissionDate.getTime()) / 1000,
-      expirationInSeconds: (validTo.getTime() - submissionDate.getTime()) / 1000,
-      isPending: orderIsPending || isPresignaturePending,
+      elapsedSeconds: (Date.now() - executionDate.getTime()) / 1000,
+      expirationInSeconds: (validTo.getTime() - executionDate.getTime()) / 1000,
+      isPending: orderIsPending,
     }
   }
 
