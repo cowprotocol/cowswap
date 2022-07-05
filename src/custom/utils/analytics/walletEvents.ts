@@ -8,7 +8,7 @@ export function changeWalletAnalytics(walletName: string) {
   })
 }
 
-type AddTokenActions = 'Success' | 'Fail'
+type AddTokenActions = 'Succeeded' | 'Failed'
 export function addTokenToMetamaskAnalytics(action: AddTokenActions, symbol: string | undefined) {
   reportEvent({
     category: Category.WALLET,
