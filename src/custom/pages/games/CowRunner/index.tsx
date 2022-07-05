@@ -1,6 +1,8 @@
 import Page, { Content } from 'components/Page'
 import styled from 'styled-components/macro'
 import { CowGame } from '@cowprotocol/cow-runner-game'
+import { useEffect } from 'react'
+import { gameAnalytics } from 'utils/analytics'
 
 const Wrapper = styled(Page)`
   min-height: initial;
@@ -29,6 +31,10 @@ const Wrapper = styled(Page)`
 `
 
 export default function CowRunnerPage() {
+  useEffect(() => {
+    gameAnalytics('Cow Runner')
+  }, [])
+
   return (
     <Wrapper>
       <p>
