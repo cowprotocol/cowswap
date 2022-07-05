@@ -3,7 +3,7 @@ import { ButtonPrimary } from '../Button'
 import FeedbackIcon from './../../assets/cow-swap/feedback.svg'
 import ReactAppzi from 'react-appzi'
 
-const FEEDBACK_ENABLED = process.env.NODE_ENV === 'production'
+const FEEDBACK_ENABLED = process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' || process.env.NODE_ENV === 'production'
 if (FEEDBACK_ENABLED) {
   ReactAppzi.initialize('5ju0G')
 }
@@ -68,7 +68,8 @@ const Wrapper = styled(ButtonPrimary)`
     object-fit: contain;
   }
 `
-const APPZI_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
+/* const APPZI_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd' */
+const APPZI_KEY = '55872789-593b-4c6c-9e49-9b5c7693e90a'
 
 declare global {
   interface Window {
