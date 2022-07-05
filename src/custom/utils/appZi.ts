@@ -8,10 +8,10 @@ export const NPS_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || '55872789-593
 
 const APIZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 
-const DEFAULT_SETTINGS: AppziCustomSettings = {
-  tradeCount: 10,
-  userJustTraded: 'true',
-}
+// const DEFAULT_SETTINGS: AppziCustomSettings = {
+//   tradeCount: 10,
+//   userJustTraded: 'true',
+// }
 
 declare global {
   interface Window {
@@ -31,22 +31,22 @@ interface AppziCustomSettings {
 
 function initialize() {
   if (isAppziEnabled) {
-    window.appziSettings = { data: DEFAULT_SETTINGS }
+    // window.appziSettings = { data: DEFAULT_SETTINGS }
+    // updateSettingsAppzi(DEFAULT_SETTINGS)
 
-    updateSettingsAppzi(DEFAULT_SETTINGS)
     ReactAppzi.initialize(APIZI_TOKEN)
-    // const appziScript = document.getElementById('react-appzi')
-    // if (appziScript) {
-    //   appziScript.onload = () => {
-    //     console.log('appZi ready')
-    //     // updateAppziSettings({
-    //     //   tradeCount: 0,
-    //     //   userJustTraded: 'true',
-    //     // })
-    //   }
-    // } else {
-    //   console.error('Unable to initialize AppZi settings: react-appzi script not present')
-    // }
+    // // const appziScript = document.getElementById('react-appzi')
+    // // if (appziScript) {
+    // //   appziScript.onload = () => {
+    // //     console.log('appZi ready')
+    // //     // updateAppziSettings({
+    // //     //   tradeCount: 0,
+    // //     //   userJustTraded: 'true',
+    // //     // })
+    // //   }
+    // // } else {
+    // //   console.error('Unable to initialize AppZi settings: react-appzi script not present')
+    // // }
   }
 }
 
