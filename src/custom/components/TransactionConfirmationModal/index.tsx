@@ -24,6 +24,7 @@ import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from 'constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
+import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -416,17 +417,32 @@ function getSubmittedMessage(operationLabel: string, operationType: OperationTyp
   }
 }
 
-function getTitleStatus(status?: ActivityStatus): string {
-  switch (status) {
-    case ActivityStatus.CONFIRMED:
-      return 'Confirmed'
-    case ActivityStatus.EXPIRED:
-      return 'Expired'
-    case ActivityStatus.CANCELLED:
-      return 'Cancelled'
-    default:
-      return 'Submitted'
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+  if (!activityDerivedState) {
+    return ''
   }
+
+  let title = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+
+  switch (activityDerivedState.status) {
+    case ActivityStatus.CONFIRMED:
+      title += ' Confirmed'
+      break
+    case ActivityStatus.EXPIRED:
+      title += ' Expired'
+      break
+    case ActivityStatus.CANCELLED:
+      title += ' Cancelled'
+      break
+    case ActivityStatus.CANCELLING:
+      title += ' is Cancelling'
+      break
+    default:
+      title += ' Submitted'
+      break
+  }
+
+  return title
 }
 
 export function ConfirmationPendingContent({
@@ -528,7 +544,7 @@ export function TransactionSubmittedContent({
       <Section>
         <CloseIconWrapper onClick={onDismiss} />
         <Text fontWeight={500} fontSize={20}>
-          Transaction {getTitleStatus(activityDerivedState?.status)}
+          {getTitleStatus(activityDerivedState)}
         </Text>
         {chainId && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
