@@ -199,13 +199,14 @@ export const StatusMsg = styled.p`
 export const StyledCoWLink = styled(ExternalLink)`
   color: ${({ theme }) => theme.text1};
   text-decoration: underline;
+  opacity: 1 !important;
 
   span {
     color: ${({ theme }) => theme.orange};
   }
 
   :hover {
-    opacity: 0.8;
+    opacity: 0.8 !important;
   }
 `
 
