@@ -390,8 +390,19 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // Appzi Container override
-  body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+  div[id*='appzi-wfo-'] {
+    display: none!important; // Force hiding Appzi container when not opened
+  }
+
+  body[class*='appzi-f-w-open-'] {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      overflow: hidden;
+    `}
+  }
+
+  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
     z-index: 2147483004!important;
+    display: block!important;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
@@ -434,7 +445,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     `}
   }
 
-  body.noScroll div[id^='appzi-wfo-'] {
+  body.noScroll div[id*='appzi-wfo-'] {
     ${({ theme }) => theme.mediaWidth.upToMedium`
       display: none!important;
     `}

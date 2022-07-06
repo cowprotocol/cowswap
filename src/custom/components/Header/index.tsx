@@ -68,7 +68,6 @@ export default function Header() {
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const handleOpenOrdersPanel = () => {
     account && setIsOrdersPanelOpen(true)
-    account && isOrdersPanelOpen && addBodyClass('noScroll')
   }
   const handleCloseOrdersPanel = () => {
     setIsOrdersPanelOpen(false)
@@ -87,10 +86,10 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  // Toggle the 'noScroll' class on body, whenever the orders panel is open.
+  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+    isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
