@@ -1,4 +1,5 @@
 import { Category, reportEvent } from './index'
+import { detectExplorer } from 'utils/explorer'
 
 type GameType = 'Cow Runner' | 'MEV Slicer'
 export function gameAnalytics(gameType: GameType) {
@@ -8,23 +9,13 @@ export function gameAnalytics(gameType: GameType) {
   })
 }
 
-function _detectExplorer(href: string) {
-  if (href.includes('explorer')) {
-    return 'Explorer'
-  } else if (href.includes('blockscout')) {
-    return 'Blockscout'
-  } else {
-    return undefined
-  }
-}
-
 export function externalLinkAnalytics(href: string) {
-  const explorer = _detectExplorer(href)
+  const explorer = detectExplorer(href)
 
   if (explorer) {
     reportEvent({
       category: Category.EXTERNAL_LINK,
-      action: `View on ${_detectExplorer(href)}`,
+      action: `View on ${explorer}`,
       label: href,
     })
   }

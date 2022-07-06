@@ -45,3 +45,16 @@ export function getExplorerAddressLink(chainId: ChainId, address: string): strin
 
   return baseUrl + `/address/${address}`
 }
+
+// Used for GA ExternalLink detection
+export function detectExplorer(href: string) {
+  if (href.includes('explorer')) {
+    return 'Explorer'
+  } else if (href.includes('blockscout')) {
+    return 'Blockscout'
+  } else if (href.includes('etherscan')) {
+    return 'Etherscan'
+  } else {
+    return undefined
+  }
+}
