@@ -2,7 +2,6 @@ import { Currency, Token } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 import { useCallback, useState } from 'react'
-import { addTokenToMetamaskAnalytics } from 'utils/analytics'
 
 export default function useAddTokenToMetamask(currencyToAdd: Currency | undefined): {
   addToken: () => void
@@ -32,11 +31,9 @@ export default function useAddTokenToMetamask(currencyToAdd: Currency | undefine
           },
         })
         .then((success) => {
-          addTokenToMetamaskAnalytics('Success', token.symbol)
           setSuccess(success)
         })
         .catch(() => {
-          addTokenToMetamaskAnalytics('Fail', token.symbol)
           setSuccess(false)
         })
     } else {
