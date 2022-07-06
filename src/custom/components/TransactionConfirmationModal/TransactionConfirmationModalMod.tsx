@@ -24,6 +24,8 @@ import { RowBetween, RowFixed } from 'components/Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
 // MOD imports
+import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { GpModal } from 'components/Modal'
 import {
   ConfirmationPendingContent,
@@ -34,6 +36,8 @@ import {
   OperationType,
 } from '.'
 import { SupportedChainId } from 'constants/chains'
+
+const isTxModalSubmittedClosedAtom = atomWithStorage('isTxModalSubmittedClosed', true)
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -383,34 +387,42 @@ export default function TransactionConfirmationModal({
   operationType, // mod
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
+  const [, setIsTxSubmittedModalClosed] = useAtom(isTxModalSubmittedClosedAtom)
 
   const isL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId))
 
   if (!chainId) return null
 
+  const _onDismiss = () => {
+    setIsTxSubmittedModalClosed(true)
+    onDismiss()
+  }
+
   // confirmation screen
   return (
     // <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
-      {isL2 && (hash || attemptingTxn) ? (
-        <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
-      ) : attemptingTxn ? (
-        <ConfirmationPendingContent
-          chainId={chainId}
-          operationType={operationType}
-          onDismiss={onDismiss}
-          pendingText={pendingText}
-        />
-      ) : hash ? (
-        <TransactionSubmittedContent
-          chainId={chainId}
-          hash={hash}
-          onDismiss={onDismiss}
-          currencyToAdd={currencyToAdd}
-        />
-      ) : (
-        content && content()
-      )}
-    </GpModal>
+    <>
+      <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
+        {isL2 && (hash || attemptingTxn) ? (
+          <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
+        ) : attemptingTxn ? (
+          <ConfirmationPendingContent
+            chainId={chainId}
+            operationType={operationType}
+            onDismiss={onDismiss}
+            pendingText={pendingText}
+          />
+        ) : hash ? (
+          <TransactionSubmittedContent
+            chainId={chainId}
+            hash={hash}
+            onDismiss={_onDismiss}
+            currencyToAdd={currencyToAdd}
+          />
+        ) : (
+          content && content()
+        )}
+      </GpModal>
+    </>
   )
 }

@@ -24,6 +24,7 @@ import { RowBetween } from 'components/Row'
 // MOD imports
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
+import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
 
 /* const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -181,10 +182,12 @@ export function Web3StatusInner({
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>
-              {/* <Trans>{pending?.length} Pending</Trans> */}
-              <Trans>{pendingCount} Pending</Trans>
-            </Text>{' '}
+            <FollowPendingTxPopup show={true}>
+              <Text>
+                {/* <Trans>{pending?.length} Pending</Trans> */}
+                <Trans>{pendingCount} Pending</Trans>
+              </Text>{' '}
+            </FollowPendingTxPopup>
             <Loader stroke="white" />
           </RowBetween>
         ) : (
