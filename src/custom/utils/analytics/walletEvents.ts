@@ -7,3 +7,12 @@ export function changeWalletAnalytics(walletName: string) {
     label: walletName,
   })
 }
+
+type AddTokenActions = 'Succeeded' | 'Failed'
+export function addTokenToMetamaskAnalytics(action: AddTokenActions, symbol: string | undefined) {
+  reportEvent({
+    category: Category.WALLET,
+    action: `Add token to Metamask ${action}`,
+    label: symbol,
+  })
+}

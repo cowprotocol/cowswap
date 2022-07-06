@@ -9,6 +9,7 @@ export * from './themeEvents'
 export * from './transactionEvents'
 export * from './walletEvents'
 export * from './swapEvents'
+export * from './otherEvents'
 
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 export const ANALITICS_EVENTS = {}
@@ -32,6 +33,7 @@ export enum Category {
   WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
   CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO', // TODO: Maybe Claim COW was enough?
   THEME = 'Theme',
+  GAMES = 'Games',
 }
 
 export function persistClientId() {
