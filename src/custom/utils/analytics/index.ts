@@ -34,6 +34,7 @@ export enum Category {
   CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO', // TODO: Maybe Claim COW was enough?
   THEME = 'Theme',
   GAMES = 'Games',
+  EXTERNAL_LINK = 'External Link',
 }
 
 export function persistClientId() {
