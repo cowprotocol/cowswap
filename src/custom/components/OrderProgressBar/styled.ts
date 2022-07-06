@@ -26,6 +26,9 @@ export const ProgressBarWrapper = animated(styled.div`
     max-width: 100%;
     grid-column: 1 / -1;
   `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 24px 10px 0;
+  `};
 `)
 
 export const ProgressBarInnerWrapper = styled.div`
@@ -194,6 +197,9 @@ export const StatusMsg = styled.p`
   font-size: 0.85rem;
   color: ${({ theme }) => theme.text1};
   margin: 0;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 0.84rem; 
+  `};
 `
 
 export const StyledCoWLink = styled(ExternalLink)`
