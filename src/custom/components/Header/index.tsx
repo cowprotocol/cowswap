@@ -86,7 +86,7 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  // Toggle the 'noScroll' class on body, whenever the orders panel is open.
+  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
     isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
