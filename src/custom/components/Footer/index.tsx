@@ -11,10 +11,6 @@ const FooterVersion = styled(Version)`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 0 0 8px;
     `}
-
-    > strong {
-      text-transform: capitalize;
-    }
   }
 `
 
