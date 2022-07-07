@@ -123,18 +123,30 @@ export const GreenClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.success};
   width: 24px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 13px; 
+    margin: 0 0.3rem 0 0; 
+  `};
 `
 
 export const GreenCheckIcon = styled(CheckCircle)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.success};
   width: 24px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 13px;
+    margin: 0 0.3rem 0 0; 
+  `};
 `
 
 export const OrangeClockIcon = styled(Clock)`
   margin: 0 0.5rem 0 0;
   color: ${({ theme }) => theme.yellow1};
   width: 24px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 13px; 
+    margin: 0 0.3rem 0 0; 
+  `};
 `
 
 export const StatusMsgContainer = styled.div`
@@ -198,8 +210,12 @@ export const StatusMsg = styled.p`
   color: ${({ theme }) => theme.text1};
   margin: 0;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 0.84rem; 
+    font-size: 0.835rem; 
   `};
+  button {
+    color: ${({ theme }) => theme.orange} !important;
+    padding-left: 0 !important;
+  }
 `
 
 export const StyledCoWLink = styled(ExternalLink)`
@@ -222,5 +238,5 @@ export const StyledExternalLink = styled(ExternalLink)`
 `
 
 export const StyledCancelButton = styled(CancelButton)`
-  color: ${({ theme }) => theme.text1} !important;
+  color: ${({ theme }) => theme.orange} !important;
 `
