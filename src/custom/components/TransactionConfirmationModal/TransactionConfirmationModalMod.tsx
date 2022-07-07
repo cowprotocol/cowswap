@@ -25,7 +25,7 @@ import AnimatedConfirmation from 'components/TransactionConfirmationModal/Animat
 
 // MOD imports
 import { useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { handleOpenModalAtom } from 'state/application/atom'
 import { GpModal } from 'components/Modal'
 import {
   ConfirmationPendingContent,
@@ -36,8 +36,6 @@ import {
   OperationType,
 } from '.'
 import { SupportedChainId } from 'constants/chains'
-
-const isTxModalSubmittedClosedAtom = atomWithStorage('isTxModalSubmittedClosed', true)
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -387,14 +385,14 @@ export default function TransactionConfirmationModal({
   operationType, // mod
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
-  const [, setIsTxSubmittedModalClosed] = useAtom(isTxModalSubmittedClosedAtom)
+  const [, setIsTxSubmittedModalOpen] = useAtom(handleOpenModalAtom)
 
   const isL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId))
 
   if (!chainId) return null
 
   const _onDismiss = () => {
-    setIsTxSubmittedModalClosed(true)
+    setIsTxSubmittedModalOpen(false)
     onDismiss()
   }
 
