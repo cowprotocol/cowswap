@@ -28,6 +28,8 @@ import ammsGraphEth from 'assets/images/amms-graph.svg'
 import ammsGraphGC from 'assets/images/amms-graph-gc.svg'
 import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
 import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
+import { useAtom } from 'jotai'
+import { handleFollowPendingTxPopupAtom } from 'state/application/atom'
 
 import { getExplorerOrderLink } from 'utils/explorer'
 import { useWalletInfo } from 'hooks/useWalletInfo'
@@ -67,6 +69,11 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const { isSmartContractWallet } = useWalletInfo()
+  const [, setIsTxSubmittedModalOpen] = useAtom(handleFollowPendingTxPopupAtom)
+
+  useEffect(() => {
+    setIsTxSubmittedModalOpen(true)
+  }, [setIsTxSubmittedModalOpen])
 
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
