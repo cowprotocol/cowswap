@@ -167,7 +167,7 @@ export const UniTokenAnimated = styled.img`
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
 `
 
-function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>) {
+export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>) {
   const { target, href } = event.currentTarget
 
   const anonymizedHref = anonymizeLink(href)

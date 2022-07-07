@@ -23,11 +23,14 @@ const Wrapper = styled(ButtonPrimary)`
   z-index: 2;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    bottom: 86px;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    right: 14px;
+    left: 14px;
+    height: 42px;
+    width: 42px;
+    bottom: 11px;
+    right: initial;
+    z-index: 10;
+    box-shadow: none;
+    border-width: 3px;
   `};
 
   &::after {
@@ -43,7 +46,10 @@ const Wrapper = styled(ButtonPrimary)`
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, top 0.2s ease-in-out;
-  }
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      display: none;
+    `}
 
   &:hover::after {
     top: -60px;

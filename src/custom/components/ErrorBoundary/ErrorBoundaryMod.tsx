@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import React, { ErrorInfo } from 'react'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 
 import store, { AppState } from 'state/index'
@@ -13,10 +13,13 @@ import { AutoRow } from 'components/Row'
 import Page, { Title } from 'components/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
 import CowError from 'assets/cow-swap/CowError.png'
-import { UniIcon, LogoImage } from '../Header'
+// import { UniIcon, LogoImage } from '../Header'
+import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
 import { DISCORD_LINK, CODE_LINK } from 'constants/index'
+import { Routes } from 'constants/routes'
+import { reportError } from 'utils/analytics'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -179,7 +182,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
+    reportError(error, errorInfo)
   }
 
   render() {
@@ -193,7 +196,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
         <AppWrapper>
           <HeaderWrapper>
             <HeaderRow marginRight="0">
-              <a href=".">
+              <a href={Routes.HOME}>
                 <UniIcon>
                   <LogoImage />
                 </UniIcon>

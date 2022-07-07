@@ -7,6 +7,8 @@ import * as OrderActions from './actions'
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
 import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
+// import ReactGA from 'react-ga4'
+import { orderAnalytics } from 'utils/analytics'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -56,8 +58,10 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (isPendingOrderAction(action)) {
       // Pending Order Popup
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
+      orderAnalytics('Posted', 'Offchain')
     } else if (isPresignOrders(action)) {
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'presigned', id })
+      orderAnalytics('Posted', 'Pre-Signed')
     } else if (isSingleFulfillOrderAction(action)) {
       // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
       // because it's nicer there
@@ -67,6 +71,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         status: OrderActions.OrderStatus.FULFILLED,
         descriptor: 'was traded',
       })
+      orderAnalytics('Executed')
     } else if (isCancelOrderAction(action)) {
       // action is order/cancelOrder
       // Cancelled Order Popup
@@ -75,6 +80,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         summary: buildCancellationPopupSummary(id, summary),
         id,
       })
+      orderAnalytics('Canceled')
     } else {
       // action is order/expireOrder
       // Expired Order Popup
@@ -84,6 +90,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         id,
         status: OrderActions.OrderStatus.EXPIRED,
       })
+      orderAnalytics('Expired')
     }
 
     idsAndPopups.push({
@@ -112,6 +119,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           status: OrderActions.OrderStatus.FULFILLED,
           descriptor: 'was traded',
         })
+        orderAnalytics('Executed')
 
         return { id, popup }
       })
@@ -132,6 +140,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           summary: buildCancellationPopupSummary(id, summary),
           id,
         })
+        orderAnalytics('Canceled')
 
         return { id, popup }
       })
@@ -148,6 +157,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           id,
           status: OrderActions.OrderStatus.EXPIRED,
         })
+        orderAnalytics('Expired')
 
         return { id, popup }
       })

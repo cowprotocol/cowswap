@@ -39,6 +39,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { IS_TESTING_ENV } from '../const'
 import { InvestmentFlowProps } from '.'
+import { getProviderErrorMessage } from 'utils/misc'
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>
@@ -168,7 +169,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
       await approveCallback({ modalMessage: summary, transactionSummary: summary })
     } catch (error) {
       console.error('[InvestOption]: Issue approving.', error)
-      handleSetError(error?.message)
+      handleSetError(getProviderErrorMessage(error))
     } finally {
       setApproving(false)
     }
@@ -190,7 +191,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
       })
     } catch (error) {
       console.error('[InvestOption]: Issue revoking approval.', error)
-      handleSetError(error?.message)
+      handleSetError(getProviderErrorMessage(error))
     } finally {
       setApproving(false)
     }

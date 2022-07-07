@@ -148,12 +148,10 @@ function Sock() {
 export function Web3StatusInner({
   pendingCount,
   StatusIconComponent,
-  openOrdersPanel, // mod
   thereWasAProvider, //mod
 }: {
   pendingCount?: number
   StatusIconComponent: (props: { connector: AbstractConnector }) => JSX.Element | null
-  openOrdersPanel: () => void // mod
   thereWasAProvider: boolean //mod
 }) {
   const { account, connector, error } = useWeb3React()
@@ -179,7 +177,6 @@ export function Web3StatusInner({
       <Web3StatusConnected
         id="web3-status-connected"
         // onClick={toggleWalletModal}
-        onClick={openOrdersPanel} // mod
         pending={hasPendingTransactions}
       >
         {hasPendingTransactions ? (
