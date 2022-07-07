@@ -49,7 +49,7 @@ const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
 
 type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
 
-function getWalletName(connector?: AbstractConnector): string {
+export function getWalletName(connector?: AbstractConnector): string {
   const { ethereum } = window
   const isMetaMask = !!(ethereum && ethereum.isMetaMask)
 
