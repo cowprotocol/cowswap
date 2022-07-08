@@ -184,7 +184,10 @@ export function Web3StatusInner({
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <FollowPendingTxPopup show={showFollowPendingTxPopup} onCheckout={setHidePendingTxPopupPermanently(true)}>
+            <FollowPendingTxPopup
+              show={showFollowPendingTxPopup}
+              onCheckout={() => setHidePendingTxPopupPermanently(true)}
+            >
               <Text>
                 {/* <Trans>{pending?.length} Pending</Trans> */}
                 <Trans>{pendingCount} Pending</Trans>
