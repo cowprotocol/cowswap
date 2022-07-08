@@ -53,7 +53,7 @@ export const ProgressBarIndicator = styled.div.attrs<{ percentage: number }>((pr
 export const CowProtocolIcon = styled.div`
   position: absolute;
   top: -4px;
-  right: 0px;
+  right: -8px;
   height: 24px;
   width: 24px;
   border-radius: 100%;
