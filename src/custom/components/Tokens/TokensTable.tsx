@@ -24,6 +24,7 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useWalletModalToggle } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
+import { OrderKind } from '@cowprotocol/contracts'
 
 const MAX_ITEMS = 10
 const MAX_COLUMNS = 6
@@ -83,16 +84,10 @@ export default function TokenTable({
   // buy and sell
   const history = useHistory()
 
-  const handleBuy = useCallback(
-    (token: Token) => {
-      history.push(`/swap?outputCurrency=${token.address}`)
-    },
-    [history]
-  )
-
-  const handleSell = useCallback(
-    (token: Token) => {
-      history.push(`/swap?inputCurrency=${token.address}`)
+  const handleBuyOrSell = useCallback(
+    (token: Token, type: OrderKind) => {
+      const typeQuery = type === OrderKind.BUY ? 'outputCurrency' : 'inputCurrency'
+      history.push(`/swap?${typeQuery}=${token.address}`)
     },
     [history]
   )
@@ -213,8 +208,7 @@ export default function TokenTable({
                   return (
                     <TokensTableRow
                       key={data.address}
-                      handleSell={handleSell}
-                      handleBuy={handleBuy}
+                      handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[data.address]}
                       openModal={openModal}
