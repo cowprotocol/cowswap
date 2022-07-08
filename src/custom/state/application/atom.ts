@@ -19,10 +19,17 @@ export const handleFollowPendingTxPopupAtom = atom(null, (_get, set, update: boo
   set(followPendingTxPopupAtom, (prev) => ({ ...prev, showPopup: update }))
 })
 
-export const showFollowTxPopupAtom = atom((get) => get(followPendingTxPopupAtom).showPopup === true)
+export const handleHidePopupPermanentlyAtom = atom(null, (_get, set, update: boolean) => {
+  set(followPendingTxPopupAtom, (prev) => ({ ...prev, hideFollowTxPopup: update }))
+})
+
+export const showFollowTxPopupAtom = atom(
+  (get) => get(followPendingTxPopupAtom).showPopup === true && !get(followPendingTxPopupAtom).hideFollowTxPopup
+)
 
 export const useFollowPendingTxPopup = () => {
   const [, _setFollowPendingPopup] = useAtom(handleFollowPendingTxPopupAtom)
+  const [, _setHidePopup] = useAtom(handleHidePopupPermanentlyAtom)
   const [_showFollowPendingTxPopup] = useAtom(showFollowTxPopupAtom)
 
   const setShowFollowPendingTxPopup = useCallback(
@@ -32,8 +39,16 @@ export const useFollowPendingTxPopup = () => {
     [_setFollowPendingPopup]
   )
 
+  const setHidePendingTxPopupPermanently = useCallback(
+    (hidePopup: boolean) => {
+      _setHidePopup(hidePopup)
+    },
+    [_setHidePopup]
+  )
+
   return {
     showFollowPendingTxPopup: _showFollowPendingTxPopup,
     setShowFollowPendingTxPopup,
+    setHidePendingTxPopupPermanently,
   }
 }

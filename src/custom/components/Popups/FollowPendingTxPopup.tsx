@@ -1,9 +1,9 @@
 import Tooltip, { TooltipProps } from 'components/Tooltip/TooltipMod'
 
-type PopupContentProps = { onChange?: () => void }
+type PopupContentProps = { onCheckout?: () => void }
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
-const PopupContent = ({ onChange }: PopupContentProps) => {
+const PopupContent = ({ onCheckout }: PopupContentProps) => {
   return (
     <>
       <div>💡</div>
@@ -11,7 +11,7 @@ const PopupContent = ({ onChange }: PopupContentProps) => {
         <p>Follow your pending transactions here!</p>
         <span>
           <label>
-            <input type="checkbox" onChange={onChange} /> Don&apos;t show it again
+            <input type="checkbox" onChange={onCheckout} /> Don&apos;t show it again
           </label>
         </span>
       </div>
@@ -22,11 +22,11 @@ const PopupContent = ({ onChange }: PopupContentProps) => {
 export default function FollowPendingTxPopup({
   show,
   children,
-  onChange,
+  onCheckout,
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <Tooltip show={show} placement="bottom" text={<PopupContent onChange={onChange} />} {...rest}>
+    <Tooltip show={show} placement="bottom" text={<PopupContent onCheckout={onCheckout} />} {...rest}>
       {children}
     </Tooltip>
   )

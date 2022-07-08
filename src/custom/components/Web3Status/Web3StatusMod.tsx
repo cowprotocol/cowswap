@@ -22,8 +22,7 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import { useAtom } from 'jotai'
-import { showFollowTxPopupAtom } from 'state/application/atom'
+import { useFollowPendingTxPopup } from 'state/application/atom'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
 import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
@@ -174,7 +173,7 @@ export function Web3StatusInner({
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
-  const [showFolloxTxPending] = useAtom(showFollowTxPopupAtom)
+  const { showFollowPendingTxPopup, setHidePendingTxPopupPermanently } = useFollowPendingTxPopup()
 
   if (account) {
     return (
@@ -185,7 +184,7 @@ export function Web3StatusInner({
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <FollowPendingTxPopup show={showFolloxTxPending}>
+            <FollowPendingTxPopup show={showFollowPendingTxPopup} onCheckout={setHidePendingTxPopupPermanently(true)}>
               <Text>
                 {/* <Trans>{pending?.length} Pending</Trans> */}
                 <Trans>{pendingCount} Pending</Trans>
