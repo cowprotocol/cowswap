@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import Loader from 'components/Loader'
@@ -10,7 +10,6 @@ import {
   Wrapper,
   TableHeader,
   TableBody,
-  Break,
   PageButtons,
   Arrow,
   ArrowButton,
@@ -20,8 +19,15 @@ import {
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
+import { OperationType } from 'components/TransactionConfirmationModal'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
+import { useWalletModalToggle } from 'state/application/hooks'
+import usePrevious from 'hooks/usePrevious'
+import { OrderKind } from '@cowprotocol/contracts'
 
 const MAX_ITEMS = 10
+const MAX_COLUMNS = 6
 
 enum SORT_FIELD {
   NAME = 'name',
@@ -37,6 +43,7 @@ type TokenTableParams = {
   maxItems?: number
   tableType?: TableType
   balances?: BalanceType
+  loadingRows?: number
 }
 
 export enum TableType {
@@ -49,7 +56,11 @@ export default function TokenTable({
   maxItems = MAX_ITEMS,
   tableType = TableType.OVERVIEW,
   balances,
+  loadingRows = MAX_ITEMS,
 }: TokenTableParams) {
+  const toggleWalletModal = useWalletModalToggle()
+  const tableRef = useRef<HTMLTableElement | null>(null)
+
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
@@ -65,6 +76,7 @@ export default function TokenTable({
   const [maxPage, setMaxPage] = useState(1)
   const prevPage = page === 1 ? page : page - 1
   const nextPage = page === maxPage ? page : page + 1
+  const prevPageIndex = usePrevious(page)
 
   // token index
   const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
@@ -72,18 +84,18 @@ export default function TokenTable({
   // buy and sell
   const history = useHistory()
 
-  const handleBuy = useCallback(
-    (token: Token) => {
-      history.push(`/swap?outputCurrency=${token.address}`)
+  const handleBuyOrSell = useCallback(
+    (token: Token, type: OrderKind) => {
+      const typeQuery = type === OrderKind.BUY ? 'outputCurrency' : 'inputCurrency'
+      history.push(`/swap?${typeQuery}=${token.address}`)
     },
     [history]
   )
 
-  const handleSell = useCallback(
-    (token: Token) => {
-      history.push(`/swap?inputCurrency=${token.address}`)
-    },
-    [history]
+  const { ErrorModal } = useErrorModal()
+
+  const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
+    OperationType.APPROVE_TOKEN
   )
 
   const sortedTokens = useMemo(() => {
@@ -159,15 +171,24 @@ export default function TokenTable({
     }
   }, [maxItems, tokensData])
 
+  // for small screens, auto-scrolls table to the left on the page change
+  useEffect(() => {
+    if (prevPageIndex !== page && tableRef.current) {
+      tableRef.current.scrollLeft = 0
+    }
+  }, [page, prevPageIndex])
+
   if (!tokensData) {
     return <Loader />
   }
 
   return (
     <Wrapper>
+      <ErrorModal />
+      <TransactionConfirmationModal />
       {sortedTokens.length > 0 ? (
         <AutoColumn>
-          <Table>
+          <Table ref={tableRef}>
             <TableHeader>
               <Label>#</Label>
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
@@ -178,25 +199,24 @@ export default function TokenTable({
               </ClickableText>
               <Label>Buy</Label>
               <Label>Sell</Label>
+              <Label>Approve</Label>
             </TableHeader>
-
-            <Break />
 
             <TableBody>
               {sortedTokens.map((data, i) => {
                 if (data) {
                   return (
-                    <React.Fragment key={i}>
-                      <TokensTableRow
-                        handleSell={handleSell}
-                        handleBuy={handleBuy}
-                        balance={balances && balances[data.address]}
-                        tableType={tableType}
-                        index={getTokenIndex(i)}
-                        tokenData={data}
-                      />
-                      <Break />
-                    </React.Fragment>
+                    <TokensTableRow
+                      key={data.address}
+                      handleBuyOrSell={handleBuyOrSell}
+                      toggleWalletModal={toggleWalletModal}
+                      balance={balances && balances[data.address]}
+                      openModal={openModal}
+                      closeModal={closeModal}
+                      tableType={tableType}
+                      index={getTokenIndex(i)}
+                      tokenData={data}
+                    />
                   )
                 }
                 return null
@@ -220,7 +240,7 @@ export default function TokenTable({
         </AutoColumn>
       ) : (
         <LoadingRows>
-          {Array.from(Array(maxItems * 4), (_, i) => (
+          {Array.from(Array(loadingRows * MAX_COLUMNS), (_, i) => (
             <div key={i} />
           ))}
         </LoadingRows>

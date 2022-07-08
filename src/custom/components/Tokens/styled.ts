@@ -18,7 +18,8 @@ export const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
   text-align: left;
-  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(3, 55px);
+  border-bottom: 1px solid ${({ theme }) => theme.bg5};
+  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 120px) repeat(2, 55px) 100px;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -141,16 +142,17 @@ export const LargeOnly = styled.span`
 `
 
 export const TableHeader = styled(ResponsiveGrid)`
-  margin-bottom: 0.8rem;
+  padding-bottom: 10px;
 `
 
 export const TableBody = styled(AutoColumn)`
   margin-bottom: 0.8rem;
 `
 
-export const Cell = styled.div`
+export const Cell = styled.div<{ center?: boolean }>`
   display: flex;
-  padding: 8px 0;
+  padding: 12px 0;
+  justify-content: ${({ center }) => (center ? 'center' : 'flex-start')};
 
   > * {
     max-width: 100%;
@@ -179,13 +181,15 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   `};
 `
 
-export const TableButton = styled(BaseButton)<{ color?: string }>`
+export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
   font-size: 12px;
   padding: 3px 15px;
   width: auto;
   font-weight: 400;
   transition: all 0.15s ease-in;
   background: ${({ theme, color }) => transparentize(0.4, color || theme.primary1)};
+  white-space: nowrap;
+  position: relative;
 
   :hover {
     background: ${({ theme, color }) => color || theme.primary1};
@@ -193,6 +197,30 @@ export const TableButton = styled(BaseButton)<{ color?: string }>`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 10px;
+  `};
+
+  ${({ theme, outlined, color }) =>
+    outlined &&
+    `
+      background: transparent;
+      color: ${color || theme.primary1};
+      border: 1px solid ${color || theme.primary1};
+      :hover {
+        color: white;
+      }
+  `};
+
+  ${({ theme, text, color }) =>
+    text &&
+    `
+      background: none;
+      border: none;
+      color: ${color || theme.primary1};
+      padding: 0;
+
+      :hover {
+        background: none;
+      }
   `};
 `
 
@@ -221,4 +249,20 @@ export const TokenText = styled.div`
   display: flex;
   align-items: center;
   text-align: left;
+`
+
+export const ApproveLabel = styled.span<{ color?: string }>`
+  font-size: 12px;
+  color: ${({ theme, color }) => color || theme.text1};
+`
+
+export const CustomLimit = styled.div`
+  padding: 0 2px;
+
+  span:last-child {
+    cursor: default;
+    font-size: 10px;
+    margin-top: 5px;
+    display: block;
+  }
 `
