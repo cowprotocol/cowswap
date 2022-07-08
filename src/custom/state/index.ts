@@ -30,6 +30,7 @@ import cowToken from 'state/cowToken/reducer'
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
 import { cowTokenMiddleware } from 'state/cowToken/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { priceMiddleware } from 'state/price/middleware'
 
 const UNISWAP_REDUCERS = {
   application,
@@ -71,7 +72,8 @@ const store = configureStore({
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
       .concat(cowTokenMiddleware)
-      .concat(soundMiddleware),
+      .concat(soundMiddleware)
+      .concat(priceMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
 

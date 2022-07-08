@@ -19,6 +19,7 @@ import { AppState } from 'state'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
+import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
@@ -33,6 +34,8 @@ export function useSwapActionHandlers(): {
   const dispatch = useAppDispatch()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
+      currencySelectAnalytics(field, currency.symbol)
+
       dispatch(
         selectCurrency({
           field,
@@ -44,11 +47,13 @@ export function useSwapActionHandlers(): {
   )
 
   const onSwitchTokens = useCallback(() => {
+    switchTokensAnalytics()
     dispatch(switchCurrencies())
   }, [dispatch])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
+      changeSwapAmountAnalytics(field, Number(typedValue))
       dispatch(typeInput({ field, typedValue }))
     },
     [dispatch]

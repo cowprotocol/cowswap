@@ -18,7 +18,7 @@ export default function useParseReferralQueryParam(): ReferralQueryValue {
   const result = useENS(referralAddress)
   const [loading, setLoading] = useState(isAddress(referralAddress) === false) // this is a hack to force a initial loading state to true in case of referralAddress is a ens name because the useENS hook returns loading as false when initialized
 
-  const referral = useMemo(() => {
+  return useMemo(() => {
     if (loading || result.loading || !referralAddress) {
       if (result.loading) {
         setLoading(false)
@@ -33,6 +33,4 @@ export default function useParseReferralQueryParam(): ReferralQueryValue {
     console.warn('Invalid referral address')
     return { value: '', isValid: false }
   }, [result.loading, result.address, referralAddress, loading])
-
-  return referral
 }

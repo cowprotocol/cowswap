@@ -9,7 +9,7 @@ import {
   UnsignedOrder,
 } from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
-import { registerOnWindow } from 'utils/misc'
+import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from '../../utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
@@ -67,7 +67,7 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
 function getPriceStrategyUrl(): Record<SupportedChainId, string> {
   const environment = environmentName !== 'production' ? 'barn' : environmentName
-  const url = STRATEGY_URL_BASE + environment
+  const url = STRATEGY_URL_BASE + environment + '/strategies'
 
   return {
     [SupportedChainId.MAINNET]: url + '/strategy-1.json',
@@ -284,7 +284,7 @@ function _handleError<P extends Context>(error: any, response: Response, params:
   const sentryError =
     error?.sentryError ||
     constructSentryError(error, response, {
-      message: error?.message || error,
+      message: getProviderErrorMessage(error),
       name: `[${operation}-ERROR] - Unmapped ${operation} Error`,
     })
   // Create the error tags or use the previously constructed ones from the try block
@@ -294,7 +294,7 @@ function _handleError<P extends Context>(error: any, response: Response, params:
   Sentry.captureException(sentryError, {
     tags,
     // TODO: change/remove this in context update pr
-    contexts: { params: { ...params } },
+    contexts: { params },
   })
 
   return error?.baseError || error

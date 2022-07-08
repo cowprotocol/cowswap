@@ -121,7 +121,7 @@ export default function App(props?: { children?: ReactNode }) {
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
-          <BodyWrapper>
+          <BodyWrapper location={location}>
             <Polling />
             <TopLevelModals />
             <ReferralLinkUpdater />

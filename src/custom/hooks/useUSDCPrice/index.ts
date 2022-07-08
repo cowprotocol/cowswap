@@ -16,13 +16,15 @@ import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { currencyId } from 'utils/currencyId'
+// import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
+import { capturePriceFeedException, SentryTag } from 'utils/logging'
 
 export * from '@src/hooks/useUSDCPrice'
 
+export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
   // MOD: lowers threshold from 100k to 100
@@ -101,9 +103,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
-      // we dont care about validTo here, just use max
-      // FIXME: I guess we care now, using 10min. Future versions of the API will make it optional
-      validTo: Math.ceil(Date.now() / 1000) + 600,
+      validTo: getUsdQuoteValidTo(),
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 
@@ -155,12 +155,12 @@ export default function useCowUsdPrice(currency?: Currency) {
     }
   }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
 
-  const lastPrice = useRef(bestUsdPrice)
+  /* const lastPrice = useRef(bestUsdPrice)
   if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
     lastPrice.current = bestUsdPrice
-  }
+  } */
 
-  return { price: lastPrice.current, error }
+  return { price: bestUsdPrice, error }
 }
 
 interface GetPriceQuoteParams {
@@ -207,13 +207,16 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   const currencyRef = useRef(currency)
   currencyRef.current = currency
 
-  const tokenAddress = currencyRef.current ? currencyId(currencyRef.current) : undefined
+  const isNative = !!currency?.isNative
+  // use wrapped address equivalent if native (DONT USE "ETH" or "XDAI")
+  const tokenAddress = currency?.wrapped.address
 
   const chainIdSupported = supportedChainId(chainId)
   // get SWR cached coingecko usd price
   const { data: priceResponse, error: errorResponse } = useGetCoingeckoUsdPrice({
     chainId: chainIdSupported,
     tokenAddress,
+    isNative,
   })
 
   useEffect(() => {
@@ -265,14 +268,14 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
       })
     }
     // don't depend on Currency (deep nested object)
-  }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse])
+  }, [chainId, blockNumber, tokenAddress, chainIdSupported, priceResponse, errorResponse, isNative])
 
-  const lastPrice = useRef(price)
+  /* const lastPrice = useRef(price)
   if (!price || !lastPrice.current || !price.equalTo(lastPrice.current)) {
     lastPrice.current = price
-  }
+  } */
 
-  return { price: lastPrice.current, error }
+  return { price, error }
 }
 
 export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
@@ -285,7 +288,32 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   const gpUsdPrice = useUSDCValue(currencyAmount)
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
 
+  if (!!currencyAmount) {
+    // report this to sentry
+    capturePriceFeedException(
+      _buildExceptionIssueParams(currencyAmount),
+      // price feed results
+      { res: !!gpUsdPrice, name: 'COW_API' },
+      { res: !!coingeckoUsdPrice, name: 'COINGECKO' }
+    )
+  }
+
   return coingeckoUsdPrice || gpUsdPrice
+}
+
+function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | undefined) {
+  const token = currencyAmount?.wrapped.currency
+  return {
+    // issue name
+    message: '[UsdPriceFeed] - EmptyResponse',
+    // tags
+    tags: { errorType: 'usdPriceFeed' },
+    // context
+    context: {
+      quotedCurrency: token?.symbol || token?.address || SentryTag.UNKNOWN,
+      amount: currencyAmount?.toExact() || SentryTag.UNKNOWN,
+    },
+  }
 }
 
 /**

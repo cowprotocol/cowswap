@@ -71,6 +71,7 @@ export default function URLWarning() {
 
   const announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
+
   const announcement = announcementVisible && announcementText && (
     <>
       <div style={{ display: 'flex' }}>

@@ -12,45 +12,56 @@ describe('Swap (mod)', () => {
 
   it('can enter an amount into input', () => {
     cy.get('#swap-currency-input .token-amount-input')
-      .clear()
-      .type('0.001', { delay: 400, force: true })
+      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('0.001')
       .should('have.value', '0.001')
   })
 
   it('zero swap amount', () => {
     cy.get('#swap-currency-input .token-amount-input')
-      .clear()
-      .type('0.0', { delay: 400, force: true })
-      .should('have.value', '0.0')
-  })
-
-  it('invalid swap amount', () => {
-    cy.get('#swap-currency-input .token-amount-input')
-      .clear()
-      .type('\\', { delay: 400, force: true })
-      .should('have.value', '')
-  })
-
-  it('can enter an amount into output', () => {
-    cy.get('#swap-currency-output .token-amount-input')
-      .clear()
-      .type('0.001', { delay: 400, force: true })
-      .should('have.value', '0.001')
-  })
-
-  it('zero output amount', () => {
-    cy.get('#swap-currency-output .token-amount-input')
-      // When `.clear() doesn't work, brute force it with the input below.
-      // From https://stackoverflow.com/a/65918033/1272513
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('0.0')
       .should('have.value', '0.0')
   })
 
-  it('can swap Native for DAI', () => {
+  it('invalid swap amount', () => {
+    cy.get('#swap-currency-input .token-amount-input')
+      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('\\')
+      .should('have.value', '')
+  })
+
+  it('can enter an amount into output', () => {
+    // first clear/reset the INPUT currency input field
+    // as it is auto prefilled with "1"
+    cy.get('#swap-currency-input .token-amount-input')
+      .clear()
+      // then we select and clear the OUTPUT field
+      .get('#swap-currency-output .token-amount-input')
+      .clear()
+      // and type in an amount
+      .type('0.001', { delay: 400, force: true })
+      .should('have.value', '0.001')
+  })
+
+  it('zero output amount', () => {
+    // first clear/reset the INPUT currency input field
+    // as it is auto prefilled with "1"
+    cy.get('#swap-currency-input .token-amount-input')
+      .clear()
+      // then we select and clear the OUTPUT field
+      .get('#swap-currency-output .token-amount-input')
+      .clear()
+      // and type in an amount
+      .type('0.0')
+      .should('have.value', '0.0')
+  })
+
+  it('can find GNO and swap Native for GNO', () => {
     cy.get('#swap-currency-output .open-currency-select-button').click()
-    cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').should('be.visible')
-    cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').click({ force: true })
+    cy.get('#token-search-input').type('GNO')
+    cy.get('.token-item-0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c').should('be.visible')
+    cy.get('.token-item-0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c').click({ force: true })
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('{selectall}{backspace}{selectall}{backspace}').type('0.5')
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
