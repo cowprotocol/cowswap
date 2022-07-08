@@ -435,7 +435,7 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
       title += ' Cancelled'
       break
     case ActivityStatus.CANCELLING:
-      title += ' is Cancelling'
+      title += ' Cancelling'
       break
     default:
       title += ' Submitted'
