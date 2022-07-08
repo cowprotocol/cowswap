@@ -391,28 +391,26 @@ export default function TransactionConfirmationModal({
   // confirmation screen
   return (
     // <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
-    <>
-      <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
-        {isL2 && (hash || attemptingTxn) ? (
-          <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
-        ) : attemptingTxn ? (
-          <ConfirmationPendingContent
-            chainId={chainId}
-            operationType={operationType}
-            onDismiss={onDismiss}
-            pendingText={pendingText}
-          />
-        ) : hash ? (
-          <TransactionSubmittedContent
-            chainId={chainId}
-            hash={hash}
-            onDismiss={onDismiss}
-            currencyToAdd={currencyToAdd}
-          />
-        ) : (
-          content && content()
-        )}
-      </GpModal>
-    </>
+    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
+      {isL2 && (hash || attemptingTxn) ? (
+        <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
+      ) : attemptingTxn ? (
+        <ConfirmationPendingContent
+          chainId={chainId}
+          operationType={operationType}
+          onDismiss={onDismiss}
+          pendingText={pendingText}
+        />
+      ) : hash ? (
+        <TransactionSubmittedContent
+          chainId={chainId}
+          hash={hash}
+          onDismiss={onDismiss}
+          currencyToAdd={currencyToAdd}
+        />
+      ) : (
+        content && content()
+      )}
+    </GpModal>
   )
 }

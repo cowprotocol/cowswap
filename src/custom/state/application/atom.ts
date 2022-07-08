@@ -1,5 +1,6 @@
-import { atom } from 'jotai'
+import { atom, useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import { useCallback } from 'react'
 
 type FollowPendingTxPopup = {
   showPopup: boolean
@@ -19,3 +20,20 @@ export const handleFollowPendingTxPopupAtom = atom(null, (_get, set, update: boo
 })
 
 export const showFollowTxPopupAtom = atom((get) => get(followPendingTxPopupAtom).showPopup === true)
+
+export const useFollowPendingTxPopup = () => {
+  const [, _setFollowPendingPopup] = useAtom(handleFollowPendingTxPopupAtom)
+  const [_showFollowPendingTxPopup] = useAtom(showFollowTxPopupAtom)
+
+  const setShowFollowPendingTxPopup = useCallback(
+    (showPopup: boolean) => {
+      _setFollowPendingPopup(showPopup)
+    },
+    [_setFollowPendingPopup]
+  )
+
+  return {
+    showFollowPendingTxPopup: _showFollowPendingTxPopup,
+    setShowFollowPendingTxPopup,
+  }
+}
