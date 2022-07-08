@@ -173,7 +173,8 @@ export function Web3StatusInner({
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
-  const { showFollowPendingTxPopup, setHidePendingTxPopupPermanently } = useFollowPendingTxPopup()
+  const { showFollowPendingTxPopup, setHidePendingTxPopupPermanently, setShowFollowPendingTxPopup } =
+    useFollowPendingTxPopup()
 
   if (account) {
     return (
@@ -187,6 +188,7 @@ export function Web3StatusInner({
             <FollowPendingTxPopup
               show={showFollowPendingTxPopup}
               onCheckout={() => setHidePendingTxPopupPermanently(true)}
+              onClose={() => setShowFollowPendingTxPopup(false)}
             >
               <Text>
                 {/* <Trans>{pending?.length} Pending</Trans> */}

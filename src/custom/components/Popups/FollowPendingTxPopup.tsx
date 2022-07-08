@@ -1,26 +1,53 @@
-import Tooltip, { TooltipProps } from 'components/Tooltip/TooltipMod'
+import React from 'react'
+import styled from 'styled-components/macro'
+import { Text } from 'rebass'
 
-type PopupContentProps = { onCheckout: () => void }
+import { StyledClose } from 'components/Popups/PopupItemMod'
+import Tooltip, { TooltipProps } from 'components/Tooltip/TooltipMod'
+import { AutoColumn } from 'components/Column'
+
+interface PopupContentProps {
+  onCheckout: () => void
+  onClose: () => void
+}
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
-const PopupContent = ({ onCheckout }: PopupContentProps) => {
+const BodyWrapper = styled(AutoColumn)`
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.5rem;
+
+  > div:nth-child(2) {
+    padding-top: 0.5rem;
+    font-size: 18px;
+  }
+`
+
+const TooltipWrapper = styled(Tooltip)`
+  z-index: 1;
+`
+
+const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
   const _onCheckout = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
     onCheckout()
   }
 
   return (
-    <>
+    <BodyWrapper onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => e.stopPropagation()}>
+      <StyledClose onClick={onClose} />
       <div>💡</div>
-      <div>
-        <p>Follow your pending transactions here!</p>
+      <AutoColumn gap="10px">
+        <Text fontWeight={500} fontSize={14}>
+          Follow your pending transactions here!
+        </Text>
         <span>
           <label>
             <input type="checkbox" onChange={_onCheckout} /> Don&apos;t show it again
           </label>
         </span>
-      </div>
-    </>
+      </AutoColumn>
+    </BodyWrapper>
   )
 }
 
@@ -28,11 +55,17 @@ export default function FollowPendingTxPopup({
   show,
   children,
   onCheckout,
+  onClose,
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <Tooltip show={show} placement="bottom" text={<PopupContent onCheckout={onCheckout} />} {...rest}>
+    <TooltipWrapper
+      show={show}
+      placement="bottom"
+      text={<PopupContent onClose={onClose} onCheckout={onCheckout} />}
+      {...rest}
+    >
       {children}
-    </Tooltip>
+    </TooltipWrapper>
   )
 }
