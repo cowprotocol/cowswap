@@ -33,7 +33,9 @@ export default function useAddTokenToMetamask(currencyToAdd: Currency | undefine
         .then((success) => {
           setSuccess(success)
         })
-        .catch(() => setSuccess(false))
+        .catch(() => {
+          setSuccess(false)
+        })
     } else {
       setSuccess(false)
     }

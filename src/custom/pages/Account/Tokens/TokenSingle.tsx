@@ -1,5 +1,5 @@
 import { Content } from 'components/Page'
-import { Wrapper, AccountPageWrapper } from '../styled'
+import { Wrapper, AccountPageWrapper } from './styled'
 import { AccountMenu } from '../Menu'
 import { useParams } from 'react-router-dom'
 

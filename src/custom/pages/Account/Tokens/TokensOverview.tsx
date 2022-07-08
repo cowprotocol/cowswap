@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
-import { Wrapper, AccountPageWrapper, Subtitle, MainText, AccountCard, AccountHeading, RemoveTokens } from '../styled'
+import { Wrapper, AccountPageWrapper, Subtitle, MainText, AccountCard, AccountHeading, RemoveTokens } from './styled'
 import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'

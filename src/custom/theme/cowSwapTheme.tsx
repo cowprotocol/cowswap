@@ -13,7 +13,6 @@ import { theme as themeUniswap, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@sr
 import { useIsDarkMode } from 'state/user/hooks'
 
 export { MEDIA_WIDTHS, ThemedText } from '@src/theme'
-export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
   return colorsBaseTheme(darkMode)

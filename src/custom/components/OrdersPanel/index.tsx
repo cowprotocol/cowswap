@@ -23,7 +23,7 @@ const SideBar = styled.div`
   margin: auto;
   bottom: 0;
   left: 0;
-  z-index: 99;
+  z-index: 102;
   padding: 0;
   cursor: default;
   overflow-y: auto; // fallback for 'overlay'
@@ -147,10 +147,10 @@ const isConfirmed = (data: TransactionAndOrder) =>
   data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
 
 export interface OrdersPanelProps {
-  closeOrdersPanel: () => void
+  handleCloseOrdersPanel: () => void
 }
 
-export default function OrdersPanel({ closeOrdersPanel }: OrdersPanelProps) {
+export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
   const walletInfo = useWalletInfo()
   const toggleWalletModal = useWalletModalToggle()
 
@@ -177,12 +177,12 @@ export default function OrdersPanel({ closeOrdersPanel }: OrdersPanelProps) {
 
   return (
     <>
-      <SidebarBackground onClick={closeOrdersPanel} />
+      <SidebarBackground onClick={handleCloseOrdersPanel} />
       <SideBar>
         <Wrapper>
           <Header>
             <strong>Account</strong>
-            <CloseIcon onClick={closeOrdersPanel} />
+            <CloseIcon onClick={handleCloseOrdersPanel} />
           </Header>
 
           <AccountDetails
@@ -190,7 +190,7 @@ export default function OrdersPanel({ closeOrdersPanel }: OrdersPanelProps) {
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
             toggleWalletModal={toggleWalletModal}
-            closeOrdersPanel={closeOrdersPanel}
+            handleCloseOrdersPanel={handleCloseOrdersPanel}
           />
         </Wrapper>
       </SideBar>

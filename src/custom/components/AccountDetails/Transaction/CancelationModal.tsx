@@ -12,6 +12,7 @@ import {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { CancellationSummary } from './styled'
+import { Routes } from 'constants/routes'
 
 import { shortenOrderId } from 'utils'
 
@@ -48,7 +49,7 @@ function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Ele
               <p>
                 This means that a solver might already have included the order in a solution even if this cancellation
                 is successful. Read more in the{' '}
-                <a target="_blank" href="/#/faq/trading#can-i-cancel-an-order">
+                <a target="_blank" rel="noreferrer" href={`${Routes.FAQ_TRADING}#can-i-cancel-an-order`}>
                   FAQ
                 </a>
                 .

@@ -1,5 +1,5 @@
 import { Content } from 'components/Page'
-import { Wrapper, AccountPageWrapper } from './styled'
+import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 import { AccountMenu } from './Menu'
 
 export default function Governance() {
