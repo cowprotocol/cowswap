@@ -31,7 +31,7 @@ import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
 import { getExplorerOrderLink } from 'utils/explorer'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useFollowPendingTxPopup } from 'state/application/atom'
+import { useFollowPendingTxPopup } from 'state/application/hooks'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30

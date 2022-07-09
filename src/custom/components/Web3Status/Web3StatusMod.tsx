@@ -22,7 +22,7 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import { useFollowPendingTxPopup } from 'state/application/atom'
+import { useFollowPendingTxPopup } from 'state/application/hooks'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
 import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'

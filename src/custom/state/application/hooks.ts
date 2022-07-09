@@ -4,6 +4,12 @@ import { useToggleModal } from '@src/state/application/hooks'
 import { useCallback } from 'react'
 import { addPopup, ApplicationModal, PopupContent } from 'state/application/reducer'
 import { useAppDispatch } from 'state/hooks'
+import { useAtom } from 'jotai'
+import {
+  handleFollowPendingTxPopupAtom,
+  handleHidePopupPermanentlyAtom,
+  showFollowTxPopupAtom,
+} from 'state/application/atom'
 
 export * from '@src/state/application/hooks'
 
@@ -41,4 +47,32 @@ export function useAddPopup(): (content: PopupContent, key?: string, removeAfter
     },
     [dispatch]
   )
+}
+
+// Allow show popup
+// actions to use followPendingTxPopup atom
+export const useFollowPendingTxPopup = () => {
+  const [, _setFollowPendingPopup] = useAtom(handleFollowPendingTxPopupAtom)
+  const [, _setHidePopup] = useAtom(handleHidePopupPermanentlyAtom)
+  const [_showFollowPendingTxPopup] = useAtom(showFollowTxPopupAtom)
+
+  const setShowFollowPendingTxPopup = useCallback(
+    (showPopup: boolean) => {
+      _setFollowPendingPopup(showPopup)
+    },
+    [_setFollowPendingPopup]
+  )
+
+  const setHidePendingTxPopupPermanently = useCallback(
+    (hidePopup: boolean) => {
+      _setHidePopup(hidePopup)
+    },
+    [_setHidePopup]
+  )
+
+  return {
+    showFollowPendingTxPopup: _showFollowPendingTxPopup,
+    setShowFollowPendingTxPopup,
+    setHidePendingTxPopupPermanently,
+  }
 }
