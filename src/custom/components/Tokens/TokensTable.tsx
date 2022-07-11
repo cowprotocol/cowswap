@@ -205,7 +205,7 @@ export default function TokenTable({
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
                 <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
               </ClickableText>
-              <ClickableText onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
+              <ClickableText disabled={!account} onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
               <Label>Buy</Label>
