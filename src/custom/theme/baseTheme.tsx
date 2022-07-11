@@ -150,9 +150,11 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
     `,
     appBody: {
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
+      boxShadow: `4px 4px 0 ${colorsTheme.black}`,
+      boxShadowMobile: `0 4px 0 ${colorsTheme.black}`,
       borderRadius: '16px',
       border: `3px solid ${colorsTheme.black}`,
+      borderMobile: 'none',
       padding: '12px 6px',
       maxWidth: {
         normal: '460px',
@@ -279,8 +281,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       text: colorsTheme.black,
     },
     wallet: {
-      color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
-      background: darkMode ? colorsTheme.white : colorsTheme.bg2,
+      color: darkMode ? colorsTheme.text1 : colorsTheme.text1,
+      background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
 }
@@ -385,6 +387,68 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ::selection { 
     background: ${({ theme }) => theme.primary1};
     color: ${({ theme }) => theme.text2};
+  }
+
+  // Appzi Container override
+  div[id*='appzi-wfo-'] {
+    display: none!important; // Force hiding Appzi container when not opened
+  }
+
+  body[class*='appzi-f-w-open-'] {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      overflow: hidden;
+    `}
+  }
+
+  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+    z-index: 2147483004!important;
+    display: block!important;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      transform: none!important;
+      left: 16px!important;
+      bottom: 72px!important;
+      top: initial!important;
+      right: initial!important;
+      position: fixed!important;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: none !important;
+      left: 0 !important;
+      bottom: initial !important;
+      top: 0 !important;
+      right: initial !important;
+      position: fixed !important;
+      height: 100%!important;
+      width: 100%!important;
+      overflow-x: hidden!important;
+      overflow-y: auto!important;
+      opacity: 1!important;
+      transition: none!important;
+
+      > div[data-appzi-dom='1'] {
+        position: fixed!important;
+        top: 10px!important;
+        right: 0!important;
+        height: 30px!important;
+        width: 30px!important;
+        z-index: 2147483004!important;
+      }
+
+      > div[data-appzi-dom='1'] > div {
+        position: fixed!important;
+        top: 10px !important;
+        right: 15px !important;
+        opacity: 1 !important;
+      }
+    `}
+  }
+
+  body.noScroll div[id*='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      display: none!important;
+    `}
   }
 
   // START - Modal overrides

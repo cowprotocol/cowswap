@@ -1,8 +1,18 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
-import { Wrapper, AccountPageWrapper, Subtitle, AccountHeading, RemoveTokens } from '../styled'
-import { Menu, MenuButton, MenuItem, MenuWrapper, StyledChevronDown } from './styled'
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuWrapper,
+  StyledChevronDown,
+  Wrapper,
+  AccountPageWrapper,
+  Subtitle,
+  AccountHeading,
+  RemoveTokens,
+} from './styled'
 import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'

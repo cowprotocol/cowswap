@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import QuoteError from 'api/gnosisProtocol/errors/QuoteError'
 
@@ -34,4 +35,29 @@ export function checkAndThrowIfJsonSerialisableError(response: Response) {
   if (response.headers.get('Content-Type') !== 'application/json') {
     throw new Error(`Error code ${response.status} occurred`)
   }
+}
+
+export enum SentryTag {
+  DISCONNECTED = 'DISCONNECTED',
+  UNKNOWN = 'UNKNOWN',
+}
+
+type PriceFeed = { res: boolean; name: string }
+type ExceptionContext = Record<string, any>
+type ExceptionParams = { message: string; tags: Record<string, string>; context: ExceptionContext }
+export function capturePriceFeedException({ message, tags, context }: ExceptionParams, ...feedResults: PriceFeed[]) {
+  // no feed result? reduce an array into a list of feed names
+  const emptyFeedsList = feedResults.reduce<string[]>((acc, { res, name }) => (!res ? acc.concat(name) : acc), [])
+
+  const contexts = {
+    params: {
+      ...context,
+      endpoint: emptyFeedsList,
+    },
+  }
+  // report this to sentry
+  Sentry.captureMessage(message, {
+    tags,
+    contexts,
+  })
 }

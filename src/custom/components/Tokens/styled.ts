@@ -53,14 +53,18 @@ export const Label = styled(ThemedText.Label)<{ end?: number }>`
   `};
 `
 
-export const ClickableText = styled(Label)`
+export const ClickableText = styled(Label)<{ disabled?: boolean }>`
   text-align: end;
   user-select: none;
 
-  &:hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
+  ${({ disabled }) =>
+    !disabled &&
+    `
+    &:hover {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+  `}
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;
@@ -84,6 +88,12 @@ export const PaginationText = styled.span`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;
   `};
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 10px;
+  `};
+
+  white-space: nowrap;
 `
 
 export const ArrowButton = styled.button`
@@ -96,6 +106,10 @@ export const Arrow = styled.div<{ faded: boolean }>`
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 10px;
   user-select: none;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 5px;
+  `};
 
   :hover {
     cursor: pointer;

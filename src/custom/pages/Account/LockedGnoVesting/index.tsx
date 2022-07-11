@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useCallback, useState, useEffect } from 'react'
 import SVG from 'react-inlinesvg'
-import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Profile/styled'
+import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
 import { ButtonPrimary } from 'custom/components/Button'
 import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -21,6 +21,9 @@ import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+// import ReactGA from 'react-ga4'
+import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
+import { claimAnalytics } from 'utils/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -73,8 +76,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
+    claimAnalytics('Send')
     claimCallback()
       .then((tx) => {
+        claimAnalytics('Sign')
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
@@ -87,9 +92,22 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }, 5000)
       })
       .catch((error) => {
-        console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', error)
+        let errorMessage, errorCode
+        const isRejected = isRejectRequestProviderError(error)
+        if (isRejected) {
+          errorMessage = 'User rejected signing COW claim transaction'
+        } else {
+          errorMessage = getProviderErrorMessage(error)
+
+          if (error?.code && typeof error.code === 'number') {
+            errorCode = error.code
+          }
+          console.error('Error Signing locked GNO COW claiming', error)
+        }
+        console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        handleSetError(error?.message)
+        claimAnalytics(isRejected ? 'Reject' : 'Error', errorCode)
+        handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])
 

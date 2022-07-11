@@ -14,6 +14,7 @@ import { isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { priceOutOfRangeAnalytics } from 'utils/analytics'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -74,11 +75,19 @@ export function UnfillableOrdersUpdater(): null {
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   const updateIsUnfillableFlag = useCallback(
-    (chainId: ChainId, order: Order, price: Required<PriceInformation>) => {
+    (chainId: ChainId, order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>) => {
       const isUnfillable = isOrderUnfillable(order, price)
 
       // Only trigger state update if flag changed
-      order.isUnfillable !== isUnfillable && setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
+      if (order.isUnfillable !== isUnfillable) {
+        setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
+
+        // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
+        if (typeof order.isUnfillable !== 'undefined') {
+          const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
+          priceOutOfRangeAnalytics(isUnfillable, label)
+        }
+      }
     },
     [setIsOrderUnfillable]
   )

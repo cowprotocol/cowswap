@@ -24,7 +24,7 @@ import { formatSmart } from 'utils/format'
 import { useApproveCallbackFromBalance, ApprovalState } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import { CardsSpinner } from 'pages/Profile/styled'
+import { CardsSpinner } from 'pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useActiveWeb3React } from 'hooks/web3'
@@ -32,14 +32,14 @@ import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 import Loader from 'components/Loader'
 import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 import { FIAT_PRECISION } from 'constants/index'
+import { OrderKind } from '@cowprotocol/contracts'
 
 type DataRowParams = {
   tokenData: Token
   index: number
   tableType?: TableType
   balance?: CurrencyAmount<Token> | undefined
-  handleBuy: (token: Token) => void
-  handleSell: (token: Token) => void
+  handleBuyOrSell: (token: Token, type: OrderKind) => void
   closeModal: () => void
   openModal: (message: string, operationType: OperationType) => void
   toggleWalletModal: () => void
@@ -49,8 +49,7 @@ const DataRow = ({
   tokenData,
   index,
   balance,
-  handleBuy,
-  handleSell,
+  handleBuyOrSell,
   closeModal,
   openModal,
   toggleWalletModal,
@@ -196,13 +195,13 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <TableButton onClick={() => handleBuy(tokenData)} color={theme.green1}>
+        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)} color={theme.green1}>
           Buy
         </TableButton>
       </Cell>
 
       <Cell>
-        <TableButton disabled={noBalance} onClick={() => handleSell(tokenData)} color={theme.red1}>
+        <TableButton disabled={noBalance} onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
           Sell
         </TableButton>
       </Cell>

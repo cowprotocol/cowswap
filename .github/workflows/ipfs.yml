@@ -52,7 +52,7 @@ jobs:
         run: yarn ipfs:build
         env:
           REACT_APP_CHAIN_ID: 1
-          REACT_APP_NETWORK_URL_XDAI: https://rpc.xdaichain.com/
+          REACT_APP_NETWORK_URL_XDAI: https://rpc.gnosischain.com/
           REACT_APP_ADDITIONAL_SERVICES_API_URL_XDAI: https://ido-api-xdai.gnosis.io/
           REACT_APP_NETWORK_URL_MAINNET: https://mainnet.infura.io/v3/${{ secrets.INFURA_PROJECT_KEY }}
           REACT_APP_ADDITIONAL_SERVICES_API_URL_MAINNET: https://ido-api-mainnet.gnosis.io/

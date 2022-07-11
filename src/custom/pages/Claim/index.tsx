@@ -29,6 +29,7 @@ import InvestmentFlow from './InvestmentFlow'
 import { ClaimSummary } from './ClaimSummary'
 
 import usePrevious from 'hooks/usePrevious'
+import { getProviderErrorMessage } from 'utils/misc'
 
 export default function Claim() {
   const { account, chainId } = useActiveWeb3React()
@@ -163,7 +164,7 @@ export default function Claim() {
         .catch((error) => {
           setClaimStatus(ClaimStatus.DEFAULT)
           console.error('[Claim::index::handleSubmitClaim]::error', error)
-          handleSetError(error?.message)
+          handleSetError(getProviderErrorMessage(error))
         })
     }
 

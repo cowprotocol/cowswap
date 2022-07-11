@@ -42,7 +42,7 @@ const VERSIONS: Record<
       }
     },
   },
-  'Settlement contract': {
+  'Settlement Contract': {
     version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
       return {

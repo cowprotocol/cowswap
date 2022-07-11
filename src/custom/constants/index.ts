@@ -32,6 +32,9 @@ export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
+export const DEFAULT_APP_CODE = 'CowSwap'
+export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
+
 export const PRODUCTION_URL = 'cowswap.exchange'
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
@@ -110,7 +113,7 @@ export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOS
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://duneanalytics.com/gnosis.protocol/Gnosis-Protocol-V2'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/gnosis.protocol/Gnosis-Protocol-V2'
 export const TWITTER_LINK = 'https://twitter.com/mevprotection'
 export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
 export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
@@ -170,6 +173,7 @@ export const SWR_OPTIONS = {
   revalidateOnFocus: false,
 }
 
+// TODO: show banner warning when PINATA env vars are missing
 const COW_SDK_OPTIONS = {
   ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_SECRET_API_KEY },
 }
@@ -183,8 +187,8 @@ export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
 export const ACCOUNT_MENU_LINKS = [
   { title: 'General', url: '/account' },
   { title: 'Tokens', url: '/account/tokens' },
-  { title: 'Governance', url: '/account/governance' },
-  { title: 'Affiliate', url: '/account/affiliate' },
+  // { title: 'Governance', url: '/account/governance' },
+  // { title: 'Affiliate', url: '/account/affiliate' },
 ]
 
 // These are used for FAQ sidebar menu
