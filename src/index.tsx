@@ -40,8 +40,10 @@ import {
 // import { EventUpdater } from 'state/orders/mocks'
 import AppziButton from 'components/AppziButton'
 import { nodeRemoveChildFix } from 'utils/node'
+import { Provider as AtomProvider } from 'jotai'
 
 import Popups from 'components/Popups'
+import { UploadToIpfsUpdater } from 'state/appData/updater'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -71,6 +73,7 @@ function Updaters() {
       <GasUpdater />
       <LogsUpdater />
       <SentryUpdater />
+      <UploadToIpfsUpdater />
     </>
   )
 }
@@ -79,25 +82,27 @@ ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
     <Provider store={store}>
-      <HashRouter>
-        <LanguageProvider>
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <Web3ProviderNetwork getLibrary={getLibrary}>
-              <Blocklist>
-                <BlockNumberProvider>
-                  <Updaters />
-                  <ThemeProvider>
-                    <ThemedGlobalStyle />
-                    <Popups />
-                    <AppziButton />
-                    <App />
-                  </ThemeProvider>
-                </BlockNumberProvider>
-              </Blocklist>
-            </Web3ProviderNetwork>
-          </Web3ReactProvider>
-        </LanguageProvider>
-      </HashRouter>
+      <AtomProvider>
+        <HashRouter>
+          <LanguageProvider>
+            <Web3ReactProvider getLibrary={getLibrary}>
+              <Web3ProviderNetwork getLibrary={getLibrary}>
+                <Blocklist>
+                  <BlockNumberProvider>
+                    <Updaters />
+                    <ThemeProvider>
+                      <ThemedGlobalStyle />
+                      <Popups />
+                      <AppziButton />
+                      <App />
+                    </ThemeProvider>
+                  </BlockNumberProvider>
+                </Blocklist>
+              </Web3ProviderNetwork>
+            </Web3ReactProvider>
+          </LanguageProvider>
+        </HashRouter>
+      </AtomProvider>
     </Provider>
   </StrictMode>,
   document.getElementById('root')

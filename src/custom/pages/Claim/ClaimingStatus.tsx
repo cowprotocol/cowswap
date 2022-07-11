@@ -30,6 +30,7 @@ import { shortenAddress } from 'utils'
 import CopyHelper from 'components/Copy'
 import { ButtonSecondary } from 'components/Button'
 import { ClaimCommonTypes } from './types'
+import { Routes } from 'constants/routes'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
@@ -133,7 +134,7 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
               </SuccessBanner>
             </ExternalLink>
             {isSelfClaiming && (
-              <Link to="/profile">
+              <Link to={Routes.ACCOUNT}>
                 <SuccessBanner type={'Profile'}>
                   <span>
                     <Trans>View vCOW balance</Trans>

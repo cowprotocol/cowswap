@@ -20,7 +20,12 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
+import {
+  showExpertModeConfirmationAnalytics,
+  toggleExpertModeAnalytics,
+  toggleRecepientAddressAnalytics,
+} from 'utils/analytics'
 
 // MOD imports
 import { SettingsTabProp } from '.'
@@ -130,11 +135,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   const [expertMode, toggleExpertModeAux] = useExpertModeManager()
   const toggleExpertMode = useCallback(() => {
-    ReactGA.event({
-      category: 'Expert mode',
-      action: expertMode ? 'Disable Expert Mode' : 'Enable Expert Mode',
-    })
-
+    toggleExpertModeAnalytics(!expertMode)
     toggleExpertModeAux()
   }, [toggleExpertModeAux, expertMode])
 
@@ -143,11 +144,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
       const isVisible = value ?? !recipientToggleVisible
-      ReactGA.event({
-        category: 'Recipient address',
-        action: 'Toggle Recipient Address',
-        label: isVisible ? 'Enabled' : 'Disabled',
-      })
+      toggleRecepientAddressAnalytics(isVisible)
       toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible]
@@ -160,10 +157,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const setShowConfirmation = useCallback(
     (showConfirmation: boolean) => {
       if (showConfirmation) {
-        ReactGA.event({
-          category: 'Expert mode',
-          action: 'Show Confirmation',
-        })
+        showExpertModeConfirmationAnalytics()
       }
 
       setShowConfirmationAux(showConfirmation)

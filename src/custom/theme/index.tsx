@@ -20,6 +20,7 @@ export enum Z_INDEX {
 // Cow theme
 export { default } from './cowSwapTheme'
 export * from './cowSwapTheme'
+export * from './components'
 
 // GP theme
 // export { default } from './baseTheme'

@@ -28,6 +28,7 @@ export interface PostOrderParams {
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
   appDataHash: string
+  quoteId?: number
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -72,6 +73,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     allowsOffchainSigning,
     appDataHash,
     sellAmountBeforeFee,
+    quoteId,
   } = params
 
   // fee adjusted input amount
@@ -117,6 +119,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       signingScheme,
       // Include the signature
       signature,
+      quoteId,
     },
     owner: account,
   })

@@ -67,20 +67,19 @@ export const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text1};
   font-weight: 400;
 ` */
-const FlyoutMenu = styled.div`
+export const FlyoutMenu = styled.div`
   position: absolute;
   top: 54px;
   width: 272px;
   z-index: 99;
   padding-top: 10px;
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    top: 40px;
-  }
+  /* @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    top: 38px;
+  } */
 
-  // mod
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  /* ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     right: 20%;
-  `}
+  `} */
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
 const FlyoutMenuContents = styled.div`
@@ -156,7 +155,7 @@ export const SelectorLabel = styled(NetworkLabel)`
     margin-right: 8px;
   }
 `
-const SelectorControls = styled.div<{ interactive: boolean }>`
+export const SelectorControls = styled.div<{ interactive: boolean }>`
   align-items: center;
   background-color: ${({ theme }) => theme.bg4};
   border: 1px solid ${({ theme }) => theme.bg0};
