@@ -48,31 +48,33 @@ export const ProgressBarIndicator = styled.div.attrs<{ percentage: number }>((pr
   transform: translateX(0%);
   border-radius: 12px;
   transition: all 0.5s;
+  position: relative;
+  padding-left: 16px;
 `
 
 export const CowProtocolIcon = styled.div`
   position: absolute;
   top: -4px;
-  right: -8px;
+  right: 0;
   height: 24px;
   width: 24px;
   border-radius: 100%;
   border: 1px solid ${({ theme }) => theme.bg4};
   background: url(${CowProtocolLogo}) ${({ theme }) => theme.black} no-repeat center/75%;
-  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
 `
 
 export const WarningLogo = styled.div`
   position: absolute;
   top: -4px;
-  right: 0px;
+  right: 0;
   height: 26px;
   width: 26px;
   border-radius: 9px;
   border: transparent;
 
   background: ${({ theme }) => theme.blueShade};
-  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
 
   img {
     margin: 4px 0 0 2px;
