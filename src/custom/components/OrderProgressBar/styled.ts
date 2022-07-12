@@ -43,13 +43,14 @@ export const ProgressBarIndicator = styled.div.attrs<{ percentage: number }>((pr
     width: props.percentage + '%',
   },
 }))<{ percentage: number }>`
+  width: 0% !important;
   height: 18px;
   background: rgb(233, 214, 37);
   transform: translateX(0%);
   border-radius: 12px;
   transition: all 0.5s;
   position: relative;
-  padding-left: 16px;
+  padding-left: 24px;
 `
 
 export const CowProtocolIcon = styled.div`
