@@ -5,6 +5,7 @@ import { transparentize } from 'polished'
 import { AutoColumn } from 'components/Column'
 import { BaseButton } from 'components/Button'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { HelpCircle } from 'react-feather'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -17,7 +18,7 @@ export const ResponsiveGrid = styled.div`
   align-items: center;
   text-align: left;
   border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.primary1))};
-  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) repeat(2, 55px) 100px;
+  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -111,9 +112,13 @@ export const Arrow = styled.div<{ faded: boolean }>`
     padding: 5px;
   `};
 
+  ${({ faded }) =>
+    !faded &&
+    `
   :hover {
     cursor: pointer;
   }
+  `}
 `
 
 export const Break = styled.div`
@@ -284,10 +289,15 @@ export const IndexLabel = styled(Label)`
 `
 
 export const FiatValue = styled.div`
-  font-size: 10px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: ${({ theme }) => theme.primary1};
+  display: flex;
+  align-items: center;
+`
+
+export const BalanceInfoCircle = styled(HelpCircle)`
+  stroke: ${({ theme }) => theme.primary1};
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
+  vertical-align: middle;
+  margin-bottom: 2px;
 `

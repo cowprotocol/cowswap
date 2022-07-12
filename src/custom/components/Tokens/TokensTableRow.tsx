@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { Trans } from '@lingui/macro'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
 import {
@@ -11,12 +10,10 @@ import {
   HideLarge,
   ResponsiveLogo,
   IndexNumber,
-  BalanceValue,
   Cell,
   TableButton,
   ApproveLabel,
   CustomLimit,
-  FiatValue,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { TableType } from './TokensTable'
@@ -29,10 +26,9 @@ import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useActiveWeb3React } from 'hooks/web3'
 import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
-import Loader from 'components/Loader'
-import { useHigherUSDValue } from 'hooks/useUSDCPrice'
-import { FIAT_PRECISION } from 'constants/index'
 import { OrderKind } from '@cowprotocol/contracts'
+import BalanceCell from './BalanceCell'
+import FiatBalanceCell from './FiatBalanceCell'
 
 type DataRowParams = {
   tokenData: Token
@@ -57,9 +53,6 @@ const DataRow = ({
   const { account, chainId } = useActiveWeb3React()
 
   const theme = useTheme()
-  const hasBalance = balance?.greaterThan(0)
-  const formattedBalance = formatSmart(balance) || 0
-  const fiatValue = useHigherUSDValue(balance)
 
   // allowance
   const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
@@ -170,28 +163,11 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        {balance ? (
-          <BalanceValue title={balance?.toExact()} hasBalance={!!hasBalance}>
-            <div>{formattedBalance}</div>
-            {hasBalance && fiatValue ? (
-              <Trans>
-                <FiatValue title={`$${fiatValue.toExact()}`}>
-                  <span>≈ $</span>
-                  {formatSmart(fiatValue, FIAT_PRECISION, {
-                    thousandSeparator: true,
-                    isLocaleAware: true,
-                  })}
-                </FiatValue>
-              </Trans>
-            ) : (
-              ''
-            )}
-          </BalanceValue>
-        ) : account ? (
-          <Loader />
-        ) : (
-          <BalanceValue hasBalance={false}>0</BalanceValue>
-        )}
+        <BalanceCell balance={balance} />
+      </Cell>
+
+      <Cell>
+        <FiatBalanceCell balance={balance} />
       </Cell>
 
       <Cell>

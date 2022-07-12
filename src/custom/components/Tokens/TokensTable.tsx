@@ -2,7 +2,6 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import Loader from 'components/Loader'
-import LoadingRows from 'components/LoadingRows'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
@@ -29,7 +28,6 @@ import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { OrderKind } from '@cowprotocol/contracts'
 
 const MAX_ITEMS = 10
-const MAX_COLUMNS = 6
 
 enum SORT_FIELD {
   NAME = 'name',
@@ -190,15 +188,11 @@ export default function TokenTable({
     }
   }, [chainId, prevChainId])
 
-  if (!tokensData) {
-    return <Loader />
-  }
-
   return (
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
-      {sortedTokens.length > 0 ? (
+      {tokensData && sortedTokens.length !== 0 ? (
         <AutoColumn>
           <Table ref={tableRef}>
             <TableHeader>
@@ -209,6 +203,7 @@ export default function TokenTable({
               <ClickableText disabled={!account} onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
+              <Label>Value</Label>
               <Label>Buy</Label>
               <Label>Sell</Label>
               <Label>Approve</Label>
@@ -259,11 +254,7 @@ export default function TokenTable({
           </PageButtons>
         </AutoColumn>
       ) : (
-        <LoadingRows>
-          {Array.from(Array(loadingRows * MAX_COLUMNS), (_, i) => (
-            <div key={i} />
-          ))}
-        </LoadingRows>
+        <Loader />
       )}
     </Wrapper>
   )
