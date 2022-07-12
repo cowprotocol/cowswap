@@ -22,7 +22,13 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import { useFollowPendingTxPopup } from 'state/application/hooks'
+import {
+  useUpdateAtom,
+  useAtomValue,
+  handleFollowPendingTxPopupAtom,
+  handleHidePopupPermanentlyAtom,
+  showFollowTxPopupAtom,
+} from 'state/application/atom'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
 import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
@@ -173,8 +179,9 @@ export function Web3StatusInner({
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
-  const { showFollowPendingTxPopup, setHidePendingTxPopupPermanently, setShowFollowPendingTxPopup } =
-    useFollowPendingTxPopup()
+  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
+  const setHidePendingTxPopupPermanently = useUpdateAtom(handleHidePopupPermanentlyAtom)
+  const showFollowPendingTxPopup = useAtomValue(showFollowTxPopupAtom)
 
   if (account) {
     return (

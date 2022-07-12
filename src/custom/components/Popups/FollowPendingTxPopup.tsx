@@ -24,7 +24,12 @@ const BodyWrapper = styled(AutoColumn)`
 `
 
 const TooltipWrapper = styled(Tooltip)`
-  z-index: 1 !important;
+  & {
+    z-index: 2;
+  }
+  > .arrow- {
+    z-index: 1;
+  }
 `
 
 const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
