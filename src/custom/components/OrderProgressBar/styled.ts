@@ -43,7 +43,6 @@ export const ProgressBarIndicator = styled.div.attrs<{ percentage: number }>((pr
     width: props.percentage + '%',
   },
 }))<{ percentage: number }>`
-  width: 0% !important;
   height: 18px;
   background: rgb(233, 214, 37);
   transform: translateX(0%);
