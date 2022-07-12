@@ -15,12 +15,12 @@ import {
   WarningLogo,
   GreenCheckIcon,
   StyledExternalLink,
-  StyledCancelButton,
   StyledCoWLink,
 } from './styled'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from 'components/OrderProgressBar/utils'
 import { SupportedChainId } from 'constants/chains'
+import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import loadingCowGif from 'assets/cow-swap/cow-load.gif'
 import cowGraph from 'assets/images/cow-graph.svg'
@@ -214,8 +214,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   {isCancellable ? (
                     <>
                       {' '}
-                      You can wait or{' '}
-                      <StyledCancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                      You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
                 </StatusMsg>
@@ -255,8 +254,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   {isCancellable ? (
                     <>
                       {' '}
-                      You can wait or{' '}
-                      <StyledCancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                      You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
                 </StatusMsg>

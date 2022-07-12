@@ -3,7 +3,6 @@ import { animated } from 'react-spring'
 import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
-import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
@@ -237,8 +236,4 @@ export const StyledCoWLink = styled(ExternalLink)`
 export const StyledExternalLink = styled(ExternalLink)`
   font-size: 0.82rem;
   color: ${({ theme }) => theme.orange};
-`
-
-export const StyledCancelButton = styled(CancelButton)`
-  color: ${({ theme }) => theme.orange} !important;
 `
