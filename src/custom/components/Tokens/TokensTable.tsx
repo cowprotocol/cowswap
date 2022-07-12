@@ -26,6 +26,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { OrderKind } from '@cowprotocol/contracts'
+import { PageViewKeys } from 'pages/Account/Tokens/TokensOverview'
 
 const MAX_ITEMS = 10
 
@@ -41,9 +42,8 @@ type BalanceType = {
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
-  tableType?: TableType
   balances?: BalanceType
-  loadingRows?: number
+  selectedView?: PageViewKeys
 }
 
 export enum TableType {
@@ -51,15 +51,10 @@ export enum TableType {
   FAVOURITE = 'FAVOURITE',
 }
 
-export default function TokenTable({
-  tokensData,
-  maxItems = MAX_ITEMS,
-  tableType = TableType.OVERVIEW,
-  balances,
-  loadingRows = MAX_ITEMS,
-}: TokenTableParams) {
+export default function TokenTable({ tokensData, maxItems = MAX_ITEMS, balances, selectedView }: TokenTableParams) {
   const { chainId, account } = useActiveWeb3React()
   const prevChainId = usePrevious(chainId)
+  const prevSelectedView = usePrevious(selectedView)
 
   const toggleWalletModal = useWalletModalToggle()
   const tableRef = useRef<HTMLTableElement | null>(null)
@@ -181,12 +176,12 @@ export default function TokenTable({
     }
   }, [page, prevPageIndex])
 
-  // reset table to page 1 on chain change
+  // reset table to page 1 on chain change or on table view change
   useEffect(() => {
-    if (chainId !== prevChainId) {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView) {
       setPage(1)
     }
-  }, [chainId, prevChainId])
+  }, [chainId, prevChainId, prevSelectedView, selectedView])
 
   return (
     <Wrapper>
@@ -218,9 +213,8 @@ export default function TokenTable({
                       handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[data.address]}
-                      openModal={openModal}
-                      closeModal={closeModal}
-                      tableType={tableType}
+                      openTransactionConfirmationModal={openModal}
+                      closeModals={closeModal}
                       index={getTokenIndex(i)}
                       tokenData={data}
                     />

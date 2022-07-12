@@ -23,7 +23,7 @@ import { Check } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 
-enum PageViewKeys {
+export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
   FAVOURITE_TOKENS = 'FAVOURITE_TOKENS',
 }
@@ -36,9 +36,6 @@ const PageView = {
     label: 'Favourite tokens',
   },
 }
-
-const FAVOURITE_TABLE_LOADING_ROWS = 4
-const DEFAULT_TABLE_LOADING_ROWS = 10
 
 export default function TokensOverview() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -70,16 +67,14 @@ export default function TokensOverview() {
 
   const renderTableContent = useCallback(() => {
     let tokensData: Token[] = []
-    let loadingRows = DEFAULT_TABLE_LOADING_ROWS
 
     if (selectedView === PageViewKeys.ALL_TOKENS) {
       tokensData = formattedTokens
     } else if (selectedView === PageViewKeys.FAVOURITE_TOKENS) {
-      loadingRows = FAVOURITE_TABLE_LOADING_ROWS
       tokensData = favouriteTokens
     }
 
-    return <TokensTable loadingRows={loadingRows} balances={balances} tokensData={tokensData} />
+    return <TokensTable selectedView={selectedView} balances={balances} tokensData={tokensData} />
   }, [balances, favouriteTokens, formattedTokens, selectedView])
 
   return (

@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { Token, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
 import {
@@ -16,9 +16,8 @@ import {
   CustomLimit,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { TableType } from './TokensTable'
 import { formatSmart } from 'utils/format'
-import { useApproveCallbackFromBalance, ApprovalState } from 'hooks/useApproveCallback'
+import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { CardsSpinner } from 'pages/Account/styled'
@@ -33,11 +32,10 @@ import FiatBalanceCell from './FiatBalanceCell'
 type DataRowParams = {
   tokenData: Token
   index: number
-  tableType?: TableType
   balance?: CurrencyAmount<Token> | undefined
   handleBuyOrSell: (token: Token, type: OrderKind) => void
-  closeModal: () => void
-  openModal: (message: string, operationType: OperationType) => void
+  closeModals: () => void
+  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
   toggleWalletModal: () => void
 }
 
@@ -46,8 +44,8 @@ const DataRow = ({
   index,
   balance,
   handleBuyOrSell,
-  closeModal,
-  openModal,
+  closeModals,
+  openTransactionConfirmationModal,
   toggleWalletModal,
 }: DataRowParams) => {
   const { account, chainId } = useActiveWeb3React()
@@ -63,11 +61,14 @@ const DataRow = ({
 
   const { handleSetError, handleCloseError } = useErrorModal()
 
-  const { approvalState, approve } = useApproveCallbackFromBalance({
-    openTransactionConfirmationModal: openModal,
-    closeModals: closeModal,
-    token: tokenData,
-    balance,
+  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
+  const amountToApprove = CurrencyAmount.fromRawAmount(tokenData, MaxUint256)
+
+  const { approvalState, approve } = useApproveCallback({
+    openTransactionConfirmationModal,
+    closeModals,
+    spender: vaultRelayer,
+    amountToApprove,
   })
 
   const prevApprovalState = usePrevious(approvalState)
@@ -98,6 +99,7 @@ const DataRow = ({
   const isPendingApprove = !isApproved && (approving || isPendingOnchainApprove)
 
   const noBalance = !balance || balance?.equalTo(0)
+  const noAllowance = !currentAllowance || currentAllowance?.equalTo(0)
 
   const displayApproveContent = useMemo(() => {
     if (!isApproved && currentAllowance && !currentAllowance?.equalTo(0)) {
@@ -111,7 +113,7 @@ const DataRow = ({
           </ApproveLabel>
         </CustomLimit>
       )
-    } else if (!isApproved || noBalance) {
+    } else if (!isApproved || noAllowance) {
       return (
         <TableButton onClick={handleApprove} color={theme.primary1}>
           Approve
@@ -122,7 +124,7 @@ const DataRow = ({
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, noBalance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, noAllowance, theme.green1, theme.primary1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
