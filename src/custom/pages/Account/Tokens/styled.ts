@@ -1,10 +1,10 @@
 import { ChevronDown } from 'react-feather'
-import { lighten } from 'polished'
 import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
 import { PageWrapper } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
 import { Card } from 'pages/Account/styled'
+import { darken } from 'polished'
 
 export const MenuWrapper = styled.div`
   position: relative;
@@ -26,8 +26,9 @@ export const StyledChevronDown = styled(ChevronDown)`
 `
 
 export const Menu = styled.div`
-  border-radius: 2px;
-  background: ${({ theme }) => theme.bg5};
+  border-radius: 16px;
+  background: ${({ theme }) => (theme.darkMode ? darken(0.09, theme.bg5) : theme.bg4)};
+  box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -36,23 +37,22 @@ export const Menu = styled.div`
   transform: translateY(105%);
   max-width: 400px;
   min-width: 250px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
   z-index: 99;
+  padding: 12px;
 `
 
-export const MenuItem = styled.div`
+export const MenuItem = styled.div<{ active: boolean }>`
   transition: background 0.2s ease-in;
-  padding: 0.8rem;
+  background-color: ${({ active, theme }) => (active ? theme.primary1 : 'transparent')};
+  color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+  justify-content: space-between;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
 
   :not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.disabled};
-  }
-
-  :hover {
-    background: ${({ theme }) => lighten(0.05, theme.bg5)};
+    margin-bottom: 5px;
   }
 `
 

@@ -25,15 +25,15 @@ import useTheme from 'hooks/useTheme'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
-  FAVOURITE_TOKENS = 'FAVOURITE_TOKENS',
+  FAVORITE_TOKENS = 'FAVORITE_TOKENS',
 }
 
 const PageView = {
   [PageViewKeys.ALL_TOKENS]: {
     label: 'All tokens',
   },
-  [PageViewKeys.FAVOURITE_TOKENS]: {
-    label: 'Favourite tokens',
+  [PageViewKeys.FAVORITE_TOKENS]: {
+    label: 'Favorite tokens',
   },
 }
 
@@ -70,7 +70,7 @@ export default function TokensOverview() {
 
     if (selectedView === PageViewKeys.ALL_TOKENS) {
       tokensData = formattedTokens
-    } else if (selectedView === PageViewKeys.FAVOURITE_TOKENS) {
+    } else if (selectedView === PageViewKeys.FAVORITE_TOKENS) {
       tokensData = favouriteTokens
     }
 
@@ -93,7 +93,11 @@ export default function TokensOverview() {
             {isMenuOpen ? (
               <Menu>
                 {Object.entries(PageView).map(([key, value]) => (
-                  <MenuItem key={key} onClick={() => handleMenuClick(key as PageViewKeys)}>
+                  <MenuItem
+                    key={key}
+                    active={selectedView === key}
+                    onClick={() => handleMenuClick(key as PageViewKeys)}
+                  >
                     <span>{value.label}</span>
                     {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
                   </MenuItem>
