@@ -391,7 +391,7 @@ export default function TransactionConfirmationModal({
   // confirmation screen
   return (
     // <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
+    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
       {isL2 && (hash || attemptingTxn) ? (
         <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
       ) : attemptingTxn ? (

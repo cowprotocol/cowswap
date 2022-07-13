@@ -6,7 +6,7 @@ export * from '@src/components/Modal'
 export { default } from '@src/components/Modal'
 
 export const GpModal = styled(Modal)<{
-  maxWidth?: number
+  maxWidth?: number | string
   backgroundColor?: string
   border?: string
   padding?: string
@@ -18,6 +18,11 @@ export const GpModal = styled(Modal)<{
     z-index: 100;
     padding: ${({ padding = 'none' }) => `${padding}`};
     margin: auto;
+    transition: max-width 0.4s ease;
+
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      width: 623px;
+    `}
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;

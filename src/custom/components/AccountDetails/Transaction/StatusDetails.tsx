@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
 import SVG from 'react-inlinesvg'
-import { LinkStyledButton, ExternalLink } from 'theme'
+import { ExternalLink } from 'theme'
 
 import OrderCheckImage from 'assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
@@ -11,9 +10,10 @@ import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
-import { CancellationModal } from './CancelationModal'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { CancelButton } from './CancelButton'
+import { getActivityState } from 'hooks/useActivityDerivedState'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -37,59 +37,39 @@ export function GnosisSafeLink(props: {
   return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
 }
 
-function _getStateLabel({
-  isPending,
-  isOrder,
-  isConfirmed,
-  isExpired,
-  isCancelling,
-  isPresignaturePending,
-  isCancelled,
-  enhancedTransaction,
-}: ActivityDerivedState) {
-  if (isPending) {
-    if (enhancedTransaction) {
-      console.log('enhancedTransaction', enhancedTransaction)
-      const { safeTransaction, transactionHash } = enhancedTransaction
-      if (safeTransaction && !transactionHash) {
-        return 'Signing...'
-      }
-    }
+function _getStateLabel(activityDerivedState: ActivityDerivedState) {
+  const activityState = getActivityState(activityDerivedState)
 
-    return isOrder ? 'Open' : 'Pending...'
+  switch (activityState) {
+    case 'pending':
+      return 'Pending...'
+    case 'open':
+      return 'Open'
+    case 'signing':
+      return 'Signing...'
+    case 'filled':
+      return 'Filled'
+    case 'executed':
+      return 'Executed'
+    case 'expired':
+      return 'Expired'
+    case 'failed':
+      return 'Failed'
+    case 'cancelling':
+      return 'Cancelling...'
+    case 'cancelled':
+      return 'Cancelled'
+    default:
+      return 'Open'
   }
-
-  if (isConfirmed) {
-    return isOrder ? 'Filled' : 'Executed'
-  }
-
-  if (isExpired) {
-    return isOrder ? 'Expired' : 'Failed'
-  }
-
-  if (isCancelling) {
-    return 'Cancelling...'
-  }
-
-  if (isPresignaturePending) {
-    return 'Signing...'
-  }
-
-  if (isCancelled) {
-    return 'Cancelled'
-  }
-
-  return 'Open'
 }
 
 export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
   const { activityDerivedState, chainId } = props
 
   const {
-    id,
     status,
     type,
-    summary,
     isPending,
     isCancelling,
     isPresignaturePending,
@@ -99,11 +79,6 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isCancelled,
     isCancellable,
   } = activityDerivedState
-
-  const [showCancelModal, setShowCancelModal] = useState(false)
-
-  const onCancelClick = () => setShowCancelModal(true)
-  const onDismiss = () => setShowCancelModal(false)
 
   return (
     <StatusLabelWrapper>
@@ -135,16 +110,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
       {isCancellable && (
         <StatusLabelBelow>
           {/* Cancel order */}
-          <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>
-          {showCancelModal && (
-            <CancellationModal
-              chainId={chainId}
-              orderId={id}
-              summary={summary}
-              isOpen={showCancelModal}
-              onDismiss={onDismiss}
-            />
-          )}
+          <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
         </StatusLabelBelow>
       )}
     </StatusLabelWrapper>
