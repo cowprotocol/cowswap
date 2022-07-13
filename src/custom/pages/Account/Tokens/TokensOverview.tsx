@@ -106,9 +106,11 @@ export default function TokensOverview() {
             ) : null}
           </MenuWrapper>
 
-          <RemoveTokens onClick={() => removeAllFavouriteTokens()}>
-            (<Trans>Restore defaults</Trans>)
-          </RemoveTokens>
+          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+            <RemoveTokens onClick={() => removeAllFavouriteTokens()}>
+              (<Trans>Restore defaults</Trans>)
+            </RemoveTokens>
+          )}
         </AccountHeading>
 
         {renderTableContent()}

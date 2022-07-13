@@ -1,7 +1,7 @@
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { useActiveWeb3React } from 'hooks/web3'
 import { BalanceValue } from './styled'
-import { formatSmart } from 'utils/format'
+import { formatSmart, formatMax } from 'utils/format'
 import Loader from 'components/Loader'
 
 type BalanceCellProps = {
@@ -18,7 +18,7 @@ export default function BalanceCell({ balance }: BalanceCellProps) {
   }
 
   return (
-    <BalanceValue title={balance?.toExact()} hasBalance={!!hasBalance}>
+    <BalanceValue title={formatMax(balance, balance.currency.decimals)} hasBalance={!!hasBalance}>
       <div>{formattedBalance}</div>
     </BalanceValue>
   )

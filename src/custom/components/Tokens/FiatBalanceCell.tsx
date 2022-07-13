@@ -4,7 +4,7 @@ import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 import { FIAT_PRECISION } from 'constants/index'
 import { useActiveWeb3React } from 'hooks/web3'
 import { BalanceValue, BalanceInfoCircle, FiatValue } from './styled'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import { MouseoverTooltip } from 'components/Tooltip'
 import Loader from 'components/Loader'
 
@@ -25,7 +25,7 @@ export default function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
   if (!hasBalance) return <BalanceValue hasBalance={false}>0</BalanceValue>
 
   return (
-    <BalanceValue title={fiatValue?.toExact()} hasBalance={!!hasBalance}>
+    <BalanceValue title={formatMax(fiatValue || undefined, fiatValue?.currency.decimals)} hasBalance={!!hasBalance}>
       {formattedFiatValue ? (
         <span>$ {formattedFiatValue}</span>
       ) : (

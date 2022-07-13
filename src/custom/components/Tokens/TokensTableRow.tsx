@@ -63,12 +63,14 @@ const DataRow = ({
 
   const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
   const amountToApprove = CurrencyAmount.fromRawAmount(tokenData, MaxUint256)
+  const amountToCheckAgainstAllowance = currentAllowance?.equalTo(0) ? undefined : balance
 
   const { approvalState, approve } = useApproveCallback({
     openTransactionConfirmationModal,
     closeModals,
     spender: vaultRelayer,
     amountToApprove,
+    amountToCheckAgainstAllowance,
   })
 
   const prevApprovalState = usePrevious(approvalState)

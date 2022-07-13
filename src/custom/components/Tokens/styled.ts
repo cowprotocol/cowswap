@@ -194,6 +194,7 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   font-variant-numeric: tabular-nums;
   font-weight: 400;
   font-size: 14px;
+  white-space: nowrap;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;
