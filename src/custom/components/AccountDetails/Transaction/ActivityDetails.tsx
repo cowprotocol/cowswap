@@ -20,10 +20,11 @@ import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { OrderProgressBar } from 'components/OrderProgressBar'
 import { useToken } from 'hooks/Tokens'
 import { ActivityStatus } from 'hooks/useRecentActivity'
+import { getActivityState } from 'hooks/useActivityDerivedState'
 import { V_COW, COW } from 'constants/tokens'
-import { OrderProgressBar } from './OrderProgressBar'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -40,7 +41,6 @@ function GnosisSafeTxDetails(props: {
   const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
-
   if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
     return null
   }
@@ -147,9 +147,11 @@ export function ActivityDetails(props: {
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
+  const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
+  const showProgressBar = activityState === 'open' || activityState === 'filled'
 
   if (!order && !enhancedTransaction) return null
 
@@ -294,13 +296,8 @@ export function ActivityDetails(props: {
           </ActivityLink>
         )}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-        {order && creationTime && validTo && (
-          <OrderProgressBar
-            activityDerivedState={activityDerivedState}
-            creationTime={new Date(order.creationTime)}
-            validTo={new Date((order.validTo as number) * 1000)}
-            chainId={chainId}
-          />
+        {showProgressBar && (
+          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
         )}
       </SummaryInner>
     </Summary>

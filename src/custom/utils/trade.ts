@@ -82,7 +82,6 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   // Prepare order
   const summary = _getSummary(params)
   const receiver = recipient
-  const creationTime = new Date().toISOString()
 
   const unsignedOrder: UnsignedOrder = {
     sellToken: sellToken.address,
@@ -120,6 +119,8 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     },
     owner: account,
   })
+
+  const creationTime = new Date().toISOString()
 
   const pendingOrderParams: Order = {
     ...unsignedOrder,
