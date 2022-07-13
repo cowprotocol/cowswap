@@ -67,7 +67,6 @@ interface IconProps {
   width?: number
   height?: number
   lineSize?: number
-  onTouchStart?: () => void
   onClick?: () => void
 }
 

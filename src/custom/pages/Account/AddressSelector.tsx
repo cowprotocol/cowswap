@@ -4,7 +4,7 @@ import { Check, ChevronDown } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useActiveWeb3React } from 'hooks/web3'
 import { ensNames } from './ens'
-import { useAddress } from 'state/affiliate/hooks'
+import { useAffiliateAddress } from 'state/affiliate/hooks'
 import { updateAddress } from 'state/affiliate/actions'
 import { useAppDispatch } from 'state/hooks'
 import { isAddress, shortenAddress } from 'utils'
@@ -16,7 +16,7 @@ type AddressSelectorProps = {
 export default function AddressSelector(props: AddressSelectorProps) {
   const { address } = props
   const dispatch = useAppDispatch()
-  const selectedAddress = useAddress()
+  const selectedAddress = useAffiliateAddress()
   const { chainId, library } = useActiveWeb3React()
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<string[]>([address])

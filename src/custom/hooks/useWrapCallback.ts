@@ -24,12 +24,12 @@ import { useWalletInfo } from './useWalletInfo'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
+import { wrapAnalytics } from 'utils/analytics'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
-const ANALYTICS_WRAP_CATEGORY = 'Wrapped Native Token'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -136,19 +136,11 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     wrapUnwrapCallback = async () => {
       try {
         openTransactionConfirmationModal(confirmationMessage, operationType)
-
-        ReactGA.event({
-          category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Send Transaction to Wallet',
-          label: operationMessage,
-        })
+        wrapAnalytics('Send', operationMessage)
 
         const txReceipt = await wrapUnwrap()
-        ReactGA.event({
-          category: ANALYTICS_WRAP_CATEGORY,
-          action: 'Sign Transaction',
-          label: operationMessage,
-        })
+        wrapAnalytics('Sign', operationMessage)
+
         addTransaction({
           hash: txReceipt.hash,
           summary,
@@ -159,14 +151,12 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
       } catch (error) {
         closeModals()
 
-        const action = (isRejectRequestProviderError(error) ? 'Reject' : 'Error') + ' Signing transaction'
+        const isRejected = isRejectRequestProviderError(error)
+        const action = isRejected ? 'Reject' : 'Error'
+        wrapAnalytics(action, operationMessage)
 
-        ReactGA.event({
-          category: ANALYTICS_WRAP_CATEGORY,
-          action,
-          label: operationMessage,
-        })
-        console.error(action, error)
+        const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
+        console.error(errorMessage, error)
 
         throw typeof error === 'string' ? new Error(error) : error
       }

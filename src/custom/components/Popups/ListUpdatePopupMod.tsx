@@ -1,6 +1,6 @@
 import { diffTokenLists /* , TokenList */ } from '@uniswap/token-lists'
 import React, { useCallback, useMemo } from 'react'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -13,6 +13,7 @@ import { ButtonSecondary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { ListUpdatePopupProps } from './ListUpdatePopup'
+import { updateListAnalytics } from 'utils/analytics'
 
 export const ChangesList = styled.ul`
   max-height: 400px;
@@ -34,11 +35,7 @@ export default function ListUpdatePopup({
 
   const handleAcceptUpdate = useCallback(() => {
     if (auto) return
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Update List from Popup',
-      label: listUrl,
-    })
+    updateListAnalytics('Popup', listUrl)
     dispatch(acceptListUpdate(listUrl))
     removeThisPopup()
     // MOD: deps

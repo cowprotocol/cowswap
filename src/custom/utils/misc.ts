@@ -1,6 +1,7 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/contracts'
+import { Percent } from '@uniswap/sdk-core'
 
 const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = ['User denied message signature', 'User rejected the transaction']
@@ -156,4 +157,12 @@ export function isRejectRequestProviderError(error: any) {
   }
 
   return false
+}
+
+/**
+ * Helper function that transforms a Percent instance into the correspondent BIPS value as a string
+ * @param percent
+ */
+export function percentToBips(percent: Percent): string {
+  return percent.multiply('100').toSignificant()
 }
