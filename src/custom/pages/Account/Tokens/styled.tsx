@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
 import { PageWrapper } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
-import Card from 'components/Card'
+import { Card } from 'pages/Account/styled'
 
 export const Wrapper = styled.div`
   display: grid;

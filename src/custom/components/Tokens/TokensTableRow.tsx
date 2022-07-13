@@ -27,6 +27,7 @@ import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useActiveWeb3React } from 'hooks/web3'
 import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
+import Loader from 'components/Loader'
 import { OrderKind } from '@cowprotocol/contracts'
 
 type DataRowParams = {
@@ -166,9 +167,15 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <BalanceValue title={balance?.toExact()} hasBalance={!!hasBalance}>
-          {formattedBalance}
-        </BalanceValue>
+        {balance ? (
+          <BalanceValue title={balance?.toExact()} hasBalance={!!hasBalance}>
+            {formattedBalance}
+          </BalanceValue>
+        ) : account ? (
+          <Loader />
+        ) : (
+          <BalanceValue hasBalance={false}>0</BalanceValue>
+        )}
       </Cell>
 
       <Cell>
