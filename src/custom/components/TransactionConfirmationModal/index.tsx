@@ -25,6 +25,7 @@ import { Routes } from 'constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atom'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -538,11 +539,17 @@ export function TransactionSubmittedContent({
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
+
+  const _onDismiss = () => {
+    setShowFollowPendingTxPopup(true)
+    onDismiss()
+  }
 
   return (
     <Wrapper>
       <Section>
-        <CloseIconWrapper onClick={onDismiss} />
+        <CloseIconWrapper onClick={_onDismiss} />
         <Text fontWeight={500} fontSize={20}>
           {getTitleStatus(activityDerivedState)}
         </Text>

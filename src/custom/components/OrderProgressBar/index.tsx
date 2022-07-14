@@ -31,7 +31,6 @@ import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
 import { getExplorerOrderLink } from 'utils/explorer'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atom'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -68,19 +67,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const { isSmartContractWallet } = useWalletInfo()
-  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
 
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
     leave: { opacity: 0 },
     trail: 3000,
   })
-
-  useEffect(() => {
-    setShowFollowPendingTxPopup(false)
-
-    return () => setShowFollowPendingTxPopup(true)
-  }, [setShowFollowPendingTxPopup])
 
   useEffect(() => {
     if (!isPending) {

@@ -70,7 +70,9 @@ export default function FollowPendingTxPopup({
       text={<PopupContent onClose={onClose} onCheckout={onCheckout} />}
       {...rest}
     >
-      {children}
+      <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
+        {children}
+      </div>
     </TooltipWrapper>
   )
 }
