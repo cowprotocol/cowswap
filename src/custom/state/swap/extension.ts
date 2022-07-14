@@ -77,6 +77,7 @@ export function useTradeExactInWithFee({
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
+    quoteId: quote.price.quoteId,
   })
 }
 
@@ -129,5 +130,6 @@ export function useTradeExactOutWithFee({
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,
+    quoteId: quote.price.quoteId,
   })
 }

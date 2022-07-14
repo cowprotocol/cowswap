@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
-import ReactGA from 'react-ga4'
 import { useActiveWeb3React } from 'hooks/web3'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
@@ -33,6 +32,9 @@ import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
+// Assets
+import { toggleDarkModeAnalytics } from 'utils/analytics'
+
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   // [ChainId.ROPSTEN]: 'Ropsten',
@@ -59,18 +61,13 @@ export default function Header() {
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
-    ReactGA.event({
-      category: 'Theme',
-      action: 'Toggle dark/light mode',
-      label: `${darkMode ? 'Light' : 'Dark'} mode`,
-    })
+    toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const handleOpenOrdersPanel = () => {
     account && setIsOrdersPanelOpen(true)
-    account && isOrdersPanelOpen && addBodyClass('noScroll')
   }
   const handleCloseOrdersPanel = () => {
     setIsOrdersPanelOpen(false)
@@ -84,18 +81,15 @@ export default function Header() {
   const isUpToSmall = useMediaQuery(upToSmall)
   const isLargeAndUp = useMediaQuery(LargeAndUp)
 
-  const [isTouch, setIsTouch] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  // Toggle the 'noScroll' class on body, whenever the orders panel is open.
+  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
-    isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-    // Set if device has touch capabilities
-    setIsTouch('ontouchstart' in document.documentElement)
+    isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
@@ -137,13 +131,7 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && (
-          <MobileMenuIcon
-            isMobileMenuOpen={isMobileMenuOpen}
-            onTouchStart={handleMobileMenuOnClick}
-            onClick={isTouch ? undefined : handleMobileMenuOnClick} // Disable onClick on touch devices and use onTouchStart
-          />
-        )}
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
         {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>

@@ -17,7 +17,7 @@ export function ReferralLinkUpdater() {
     } else if (referralAddressParam) {
       dispatch(updateReferralAddress(referralAddressParam))
     }
-  }, [referralAddressParam, referralAddress, dispatch])
+  }, [referralAddressParam, referralAddress?.isValid, dispatch])
 
   return null
 }

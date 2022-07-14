@@ -46,3 +46,22 @@ export function getExplorerAddressLink(chainId: ChainId, address: string): strin
 
   return baseUrl + `/address/${address}`
 }
+
+enum Explorers {
+  Explorer = 'Explorer',
+  Blockscout = 'Blockscout',
+  Etherscan = 'Etherscan',
+}
+
+// Used for GA ExternalLink detection
+export function detectExplorer(href: string) {
+  if (href.includes('explorer')) {
+    return Explorers.Explorer
+  } else if (href.includes('blockscout')) {
+    return Explorers.Blockscout
+  } else if (href.includes('etherscan')) {
+    return Explorers.Etherscan
+  } else {
+    return undefined
+  }
+}

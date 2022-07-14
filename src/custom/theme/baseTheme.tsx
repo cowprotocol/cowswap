@@ -180,6 +180,24 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
       `,
     },
+    dancingCow: css`
+      background: url(${Cursor1}), no-repeat;
+      animation: dancingCow 1s infinite;
+      @keyframes dancingCow {
+        0% {
+          background: url(${Cursor1}), no-repeat;
+        }
+        25% {
+          background: url(${Cursor2}), no-repeat;
+        }
+        50% {
+          background: url(${Cursor3}), no-repeat;
+        }
+        75% {
+          background: url(${Cursor4}), no-repeat;
+        }
+      }
+    `,
     card: {
       background: css`
         background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
@@ -390,20 +408,66 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // Appzi Container override
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+  div[id*='appzi-wfo-'] {
+    display: none!important; // Force hiding Appzi container when not opened
+  }
+
+  body[class*='appzi-f-w-open-'] {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      overflow: hidden;
+    `}
+  }
+
+  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+    z-index: 2147483004!important;
+    display: block!important;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
       left: 16px!important;
       bottom: 72px!important;
       top: initial!important;
       right: initial!important;
       position: fixed!important;
-    }
+    `}
 
-    body.noScroll div[id^='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: none !important;
+      left: 0 !important;
+      bottom: initial !important;
+      top: 0 !important;
+      right: initial !important;
+      position: fixed !important;
+      height: 100%!important;
+      width: 100%!important;
+      overflow-x: hidden!important;
+      overflow-y: auto!important;
+      opacity: 1!important;
+      transition: none!important;
+
+      > div[data-appzi-dom='1'] {
+        position: fixed!important;
+        top: 10px!important;
+        right: 0!important;
+        height: 30px!important;
+        width: 30px!important;
+        z-index: 2147483004!important;
+      }
+
+      > div[data-appzi-dom='1'] > div {
+        position: fixed!important;
+        top: 10px !important;
+        right: 15px !important;
+        opacity: 1 !important;
+      }
+    `}
+  }
+
+  body.noScroll div[id*='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       display: none!important;
-    }
-  `}
+    `}
+  }
 
   // START - Modal overrides
   ${HeaderText} {

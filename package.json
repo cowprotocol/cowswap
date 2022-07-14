@@ -24,7 +24,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.16.0",
+  "version": "1.18.0",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -251,8 +251,8 @@
     "@gnosis.pm/safe-service-client": "^0.1.1",
     "@popperjs/core": "^2.4.4",
     "@reduxjs/toolkit": "^1.8.0",
-    "@sentry/react": "^6.11.0",
-    "@sentry/tracing": "^6.11.0",
+    "@sentry/react": "^7.3.0",
+    "@sentry/tracing": "^7.3.0",
     "@sentry/webpack-plugin": "^1.17.1",
     "@uniswap/redux-multicall": "^1.1.1",
     "@uniswap/router-sdk": "^1.0.3",

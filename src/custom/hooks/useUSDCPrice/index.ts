@@ -20,10 +20,11 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
+import { capturePriceFeedException, SentryTag } from 'utils/logging'
 
 export * from '@src/hooks/useUSDCPrice'
 
-export const USD_QUOTE_VALID_TO = Math.ceil(Date.now() / 1000) + 600
+export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
   ...STABLECOIN_AMOUNT_OUT_UNI,
   // MOD: lowers threshold from 100k to 100
@@ -103,7 +104,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       fromDecimals: sellTokenDecimals,
       toDecimals: stablecoin.decimals,
       userAddress: account,
-      validTo: USD_QUOTE_VALID_TO,
+      validTo: getUsdQuoteValidTo(),
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 
@@ -288,7 +289,32 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   const gpUsdPrice = useUSDCValue(currencyAmount)
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
 
+  if (!!currencyAmount) {
+    // report this to sentry
+    capturePriceFeedException(
+      _buildExceptionIssueParams(currencyAmount),
+      // price feed results
+      { res: !!gpUsdPrice, name: 'COW_API' },
+      { res: !!coingeckoUsdPrice, name: 'COINGECKO' }
+    )
+  }
+
   return coingeckoUsdPrice || gpUsdPrice
+}
+
+function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | undefined) {
+  const token = currencyAmount?.wrapped.currency
+  return {
+    // issue name
+    message: '[UsdPriceFeed] - EmptyResponse',
+    // tags
+    tags: { errorType: 'usdPriceFeed' },
+    // context
+    context: {
+      quotedCurrency: token?.symbol || token?.address || SentryTag.UNKNOWN,
+      amount: currencyAmount?.toExact() || SentryTag.UNKNOWN,
+    },
+  }
 }
 
 /**

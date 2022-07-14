@@ -208,7 +208,7 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
  * @param order
  * @param price
  */
-export function isOrderUnfillable(order: Order, price: Required<PriceInformation>): boolean {
+export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): boolean {
   // Build price object from stored order
   const orderPrice = new Price(
     order.inputToken,
