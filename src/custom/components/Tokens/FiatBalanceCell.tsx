@@ -3,7 +3,7 @@ import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useUSDCPrice'
 import { FIAT_PRECISION } from 'constants/index'
 import { useActiveWeb3React } from 'hooks/web3'
-import { BalanceValue, BalanceInfoCircle, FiatValue } from './styled'
+import { BalanceValue, InfoCircle, FiatValue } from './styled'
 import { formatMax, formatSmart } from 'utils/format'
 import { MouseoverTooltip } from 'components/Tooltip'
 import Loader from 'components/Loader'
@@ -32,7 +32,7 @@ export default function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
         <FiatValue>
           <span>$ 0.00</span>
           <MouseoverTooltip text={<Trans>Value may be zero due to missing token price information</Trans>}>
-            <BalanceInfoCircle size="20" color={'white'} />
+            <InfoCircle size="20" color={'white'} />
           </MouseoverTooltip>
         </FiatValue>
       )}

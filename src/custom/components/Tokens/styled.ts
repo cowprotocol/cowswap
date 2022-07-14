@@ -294,7 +294,7 @@ export const FiatValue = styled.div`
   align-items: center;
 `
 
-export const BalanceInfoCircle = styled(HelpCircle)`
+export const InfoCircle = styled(HelpCircle)`
   stroke: ${({ theme }) => theme.primary1};
   width: 15px;
   height: 15px;
