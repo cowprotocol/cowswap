@@ -115,9 +115,9 @@ export const Arrow = styled.div<{ faded: boolean }>`
   ${({ faded }) =>
     !faded &&
     `
-  :hover {
-    cursor: pointer;
-  }
+    :hover {
+      cursor: pointer;
+    }
   `}
 `
 
