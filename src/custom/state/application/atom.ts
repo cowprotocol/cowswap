@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { atomWithStorage, useUpdateAtom, useAtomValue } from 'jotai/utils'
+import { atomWithStorage, useUpdateAtom, useAtomValue, selectAtom } from 'jotai/utils'
 
 export { useUpdateAtom, useAtomValue }
 
@@ -16,14 +16,15 @@ export const followPendingTxPopupAtom = atomWithStorage<FollowPendingTxPopup>('f
   showPopup: false,
 })
 
-export const handleFollowPendingTxPopupAtom = atom(null, (_get, set, update: boolean) => {
-  set(followPendingTxPopupAtom, (prev) => ({ ...prev, showPopup: update }))
+export const handleFollowPendingTxPopupAtom = atom(null, (_get, set, showPopup: boolean) => {
+  set(followPendingTxPopupAtom, (prev) => ({ ...prev, showPopup }))
 })
 
-export const handleHidePopupPermanentlyAtom = atom(null, (_get, set, update: boolean) => {
-  set(followPendingTxPopupAtom, (prev) => ({ ...prev, hideFollowTxPopup: update }))
+export const handleHidePopupPermanentlyAtom = atom(null, (_get, set, hidePopup: boolean) => {
+  set(followPendingTxPopupAtom, (prev) => ({ ...prev, hideFollowTxPopup: hidePopup }))
 })
 
-export const showFollowTxPopupAtom = atom(
-  (get) => get(followPendingTxPopupAtom).showPopup === true && !get(followPendingTxPopupAtom).hideFollowTxPopup
+export const showFollowTxPopupAtom = selectAtom(
+  followPendingTxPopupAtom,
+  ({ showPopup, hideFollowTxPopup }) => showPopup && !hideFollowTxPopup
 )
