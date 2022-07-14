@@ -3,7 +3,7 @@ import { hexStripZeros } from '@ethersproject/bytes'
 import { ExternalProvider } from '@ethersproject/providers'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
-import { INFURA_NETWORK_URLS } from 'constants/infura'
+import { RPC_NETWORKS } from '../connectors'
 
 interface SwitchNetworkArguments {
   provider: ExternalProvider
@@ -11,31 +11,12 @@ interface SwitchNetworkArguments {
 }
 
 export function getRpcUrls(chainId: SupportedChainId): [string] {
-  switch (chainId) {
-    case SupportedChainId.MAINNET:
-    case SupportedChainId.RINKEBY:
-      /*case SupportedChainId.ROPSTEN:
-    case SupportedChainId.KOVAN:
-    case SupportedChainId.GOERLI:*/
-      return [INFURA_NETWORK_URLS[chainId]]
-    /*case SupportedChainId.OPTIMISM:
-      return ['https://mainnet.optimism.io']
-    case SupportedChainId.OPTIMISTIC_KOVAN:
-      return ['https://kovan.optimism.io']
-    case SupportedChainId.ARBITRUM_ONE:
-      return ['https://arb1.arbitrum.io/rpc']
-    case SupportedChainId.ARBITRUM_RINKEBY:
-      return ['https://rinkeby.arbitrum.io/rpc']
-    case SupportedChainId.POLYGON:
-      return ['https://polygon-rpc.com/']
-    case SupportedChainId.POLYGON_MUMBAI:
-      return ['https://rpc-endpoints.superfluid.dev/mumbai']*/
-    case SupportedChainId.GNOSIS_CHAIN:
-      return ['https://rpc.gnosischain.com/']
-    default:
+  const rpcUrl = RPC_NETWORKS[chainId]
+  if (!rpcUrl) {
+    throw new Error('RPC URLs must use public endpoints')
   }
-  // Our API-keyed URLs will fail security checks when used with external wallets.
-  throw new Error('RPC URLs must use public endpoints')
+
+  return [rpcUrl]
 }
 
 // provider.request returns Promise<any>, but wallet_switchEthereumChain must return null or throw

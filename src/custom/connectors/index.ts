@@ -75,11 +75,12 @@ function getRpcNetworks(): [RpcNetworks, number[]] {
   return [rpcNetworks, supportedChainIds]
 }
 
-const [rpcNetworks, supportedChainIds] = getRpcNetworks()
-export const NETWORK_CHAIN_ID = supportedChainIds[0]
+export const [RPC_NETWORKS, SUPPORTED_CHAIN_IDS] = getRpcNetworks()
+
+export const NETWORK_CHAIN_ID = SUPPORTED_CHAIN_IDS[0]
 
 export const network = new NetworkConnector({
-  urls: rpcNetworks, // INFURA_NETWORK_URLS
+  urls: RPC_NETWORKS, // INFURA_NETWORK_URLS
   defaultChainId: NETWORK_CHAIN_ID, // 1
 })
 
@@ -96,7 +97,7 @@ export const gnosisSafe = new SafeAppConnector()
 
 export const walletconnect = new WalletConnectConnector({
   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
-  rpc: rpcNetworks,
+  rpc: RPC_NETWORKS,
   bridge: WALLET_CONNECT_BRIDGE,
   qrcode: true,
 })
@@ -116,7 +117,7 @@ export const portis = new PortisConnector({
 }) */
 
 export const walletlink = new WalletLinkConnector({
-  url: rpcNetworks[NETWORK_CHAIN_ID],
+  url: RPC_NETWORKS[NETWORK_CHAIN_ID],
   appName: 'CowSwap',
   appLogoUrl: 'https://raw.githubusercontent.com/cowprotocol/cowswap/develop/public/favicon.png',
   supportedChainIds: getSupportedChainIds(),
