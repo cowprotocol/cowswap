@@ -22,6 +22,8 @@ import { useAllTokenBalances } from 'state/wallet/hooks'
 import { Check } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
+import usePrevious from 'hooks/usePrevious'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -38,8 +40,14 @@ const PageView = {
 }
 
 export default function TokensOverview() {
+  const { chainId } = useActiveWeb3React()
+
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
+  const [page, setPage] = useState<number>(1)
+
+  const prevChainId = usePrevious(chainId)
+  const prevSelectedView = usePrevious(selectedView)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -51,6 +59,10 @@ export default function TokensOverview() {
   const balances = useAllTokenBalances()
 
   const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
+  const handleRestoreTokens = useCallback(() => {
+    removeAllFavouriteTokens()
+    setPage(1)
+  }, [removeAllFavouriteTokens])
 
   const formattedTokens = useMemo(() => {
     return Object.values(allTokens).filter(isTruthy)
@@ -74,8 +86,23 @@ export default function TokensOverview() {
       tokensData = favouriteTokens
     }
 
-    return <TokensTable selectedView={selectedView} balances={balances} tokensData={tokensData} />
-  }, [balances, favouriteTokens, formattedTokens, selectedView])
+    return (
+      <TokensTable
+        page={page}
+        setPage={setPage}
+        selectedView={selectedView}
+        balances={balances}
+        tokensData={tokensData}
+      />
+    )
+  }, [balances, favouriteTokens, formattedTokens, page, selectedView])
+
+  // reset table to page 1 on chain change or on table view change
+  useEffect(() => {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView) {
+      setPage(1)
+    }
+  }, [chainId, prevChainId, prevSelectedView, selectedView])
 
   return (
     <Wrapper>
@@ -107,7 +134,7 @@ export default function TokensOverview() {
           </MenuWrapper>
 
           {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-            <RemoveTokens onClick={() => removeAllFavouriteTokens()}>
+            <RemoveTokens onClick={handleRestoreTokens}>
               (<Trans>Restore defaults</Trans>)
             </RemoveTokens>
           )}

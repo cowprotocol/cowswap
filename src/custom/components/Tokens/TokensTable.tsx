@@ -47,6 +47,8 @@ type TokenTableParams = {
   maxItems?: number
   balances?: BalanceType
   selectedView?: PageViewKeys
+  page: number
+  setPage: (page: number) => void
 }
 
 export enum TableType {
@@ -54,10 +56,15 @@ export enum TableType {
   FAVOURITE = 'FAVOURITE',
 }
 
-export default function TokenTable({ tokensData, maxItems = MAX_ITEMS, balances, selectedView }: TokenTableParams) {
-  const { chainId, account } = useActiveWeb3React()
-  const prevChainId = usePrevious(chainId)
-  const prevSelectedView = usePrevious(selectedView)
+export default function TokenTable({
+  tokensData,
+  maxItems = MAX_ITEMS,
+  balances,
+  selectedView,
+  page,
+  setPage,
+}: TokenTableParams) {
+  const { account } = useActiveWeb3React()
   const native = useNativeCurrency()
 
   const toggleWalletModal = useWalletModalToggle()
@@ -74,7 +81,6 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS, balances,
   }, [])
 
   // pagination
-  const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
   const prevPage = page === 1 ? page : page - 1
   const nextPage = page === maxPage ? page : page + 1
@@ -179,13 +185,6 @@ export default function TokenTable({ tokensData, maxItems = MAX_ITEMS, balances,
       tableRef.current.scrollLeft = 0
     }
   }, [page, prevPageIndex])
-
-  // reset table to page 1 on chain change or on table view change
-  useEffect(() => {
-    if (chainId !== prevChainId || selectedView !== prevSelectedView) {
-      setPage(1)
-    }
-  }, [chainId, prevChainId, prevSelectedView, selectedView])
 
   return (
     <Wrapper>
