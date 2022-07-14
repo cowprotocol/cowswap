@@ -44,6 +44,7 @@ export function useAddPopup(): (content: PopupContent, key?: string, removeAfter
   )
 }
 
+// Change the popup state when it doest not fulfill a condition such as not pending transactions
 export function useCloseFollowTxPopupIfNot(fulfillsCondition: boolean) {
   const setShowFollowTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const showingPopup = selectAtom(followPendingTxPopupAtom, ({ showPopup }) => showPopup)
