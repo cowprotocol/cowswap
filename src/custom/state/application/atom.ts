@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage, useUpdateAtom, useAtomValue, selectAtom } from 'jotai/utils'
 
-export { useUpdateAtom, useAtomValue }
+export { useUpdateAtom, useAtomValue, selectAtom }
 
 type FollowPendingTxPopup = {
   showPopup: boolean

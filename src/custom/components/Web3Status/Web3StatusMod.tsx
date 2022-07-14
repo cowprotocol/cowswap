@@ -29,6 +29,7 @@ import {
   handleHidePopupPermanentlyAtom,
   showFollowTxPopupAtom,
 } from 'state/application/atom'
+import { useCloseFollowTxPopupIfNot } from 'state/application/hooks'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
 import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
@@ -182,6 +183,7 @@ export function Web3StatusInner({
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const setHidePendingTxPopupPermanently = useUpdateAtom(handleHidePopupPermanentlyAtom)
   const showFollowPendingTxPopup = useAtomValue(showFollowTxPopupAtom)
+  useCloseFollowTxPopupIfNot(hasPendingTransactions)
 
   if (account) {
     return (

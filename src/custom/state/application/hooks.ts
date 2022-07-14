@@ -1,9 +1,10 @@
 import { createAction } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from '@src/constants/misc'
 import { useToggleModal } from '@src/state/application/hooks'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { addPopup, ApplicationModal, PopupContent } from 'state/application/reducer'
 import { useAppDispatch } from 'state/hooks'
+import { followPendingTxPopupAtom, handleFollowPendingTxPopupAtom, selectAtom, useUpdateAtom } from './atom'
 
 export * from '@src/state/application/hooks'
 
@@ -41,4 +42,22 @@ export function useAddPopup(): (content: PopupContent, key?: string, removeAfter
     },
     [dispatch]
   )
+}
+
+export function useCloseFollowTxPopupIfNot(fulfillsCondition: boolean) {
+  const setShowFollowTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
+  const showingPopup = selectAtom(followPendingTxPopupAtom, ({ showPopup }) => showPopup)
+
+  const closeIfNotFulfillsCondition = useCallback(
+    (_fulfillsCondition) => {
+      if (!showingPopup) return
+
+      !_fulfillsCondition && setShowFollowTxPopup(false)
+    },
+    [setShowFollowTxPopup, showingPopup]
+  )
+
+  useEffect(() => {
+    closeIfNotFulfillsCondition(fulfillsCondition)
+  }, [closeIfNotFulfillsCondition, fulfillsCondition])
 }
