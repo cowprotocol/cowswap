@@ -9,6 +9,7 @@ import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'utils/analytics'
+import { openNpsAppzi } from 'utils/appZi'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -71,6 +72,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         status: OrderActions.OrderStatus.FULFILLED,
         descriptor: 'was traded',
       })
+      openNpsAppzi()
       orderAnalytics('Executed')
     } else if (isCancelOrderAction(action)) {
       // action is order/cancelOrder
@@ -119,6 +121,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           status: OrderActions.OrderStatus.FULFILLED,
           descriptor: 'was traded',
         })
+        openNpsAppzi()
         orderAnalytics('Executed')
 
         return { id, popup }
