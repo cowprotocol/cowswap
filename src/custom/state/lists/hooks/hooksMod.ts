@@ -40,6 +40,7 @@ export const EMPTY_LIST: TokenAddressMap = {
   [ChainId.RINKEBY]: {},
   [ChainId.MAINNET]: {},
   [ChainId.GNOSIS_CHAIN]: {},
+  [ChainId.GOERLI]: {},
 }
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =
