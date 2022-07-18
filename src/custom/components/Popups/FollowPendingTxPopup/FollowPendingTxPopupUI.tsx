@@ -21,6 +21,10 @@ const BodyWrapper = styled(AutoColumn)`
     padding-top: 0.5rem;
     font-size: 18px;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 0.1;
+  `};
 `
 
 const TooltipWrapper = styled(Tooltip)`
@@ -66,7 +70,7 @@ export default function FollowPendingTxPopupUI({
   return (
     <TooltipWrapper
       show={show}
-      placement="bottom"
+      placement="left"
       text={<PopupContent onClose={onClose} onCheckout={onCheckout} />}
       {...rest}
     >
