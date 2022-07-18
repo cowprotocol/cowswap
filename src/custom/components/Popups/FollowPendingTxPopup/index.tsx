@@ -23,7 +23,7 @@ const FollowPendingTxPopup: React.FC = ({ children }): JSX.Element => {
   const showFollowPendingTxPopup = useAtomValue(showFollowTxPopupAtom)
   const isExpertMode = useIsExpertMode()
   const allRecentActivity = useRecentActivity()
-  const pendingOrder = useMemo(() => {
+  const isTherePendingOrder = useMemo(() => {
     if (!isExpertMode) return
     const pendings = allRecentActivity.filter(isPending)
 
@@ -31,10 +31,10 @@ const FollowPendingTxPopup: React.FC = ({ children }): JSX.Element => {
   }, [allRecentActivity, isExpertMode])
 
   useEffect(() => {
-    if (isExpertMode && pendingOrder) {
+    if (isExpertMode && isTherePendingOrder) {
       setShowFollowPendingTxPopup(true)
     }
-  }, [isExpertMode, pendingOrder, setShowFollowPendingTxPopup])
+  }, [isExpertMode, isTherePendingOrder, setShowFollowPendingTxPopup])
 
   return (
     <FollowPendingTxPopupUI
