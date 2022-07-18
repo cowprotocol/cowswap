@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { Text } from 'rebass'
 
-import { StyledClose } from 'components/Popups/PopupItemMod'
+import { StyledClose as IconClose } from 'components/Popups/PopupItemMod'
 import Tooltip, { TooltipProps } from 'components/Tooltip/TooltipMod'
 import { AutoColumn } from 'components/Column'
 
@@ -20,8 +20,14 @@ const BodyWrapper = styled(AutoColumn)`
   > div:nth-child(2) {
     padding-top: 0.5rem;
     font-size: 18px;
-    border-color: solid red 1px;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding-top: 0.3rem;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding-top: auto;
+  `};
 `
 
 const TooltipWrapper = styled(Tooltip)`
@@ -31,10 +37,40 @@ const TooltipWrapper = styled(Tooltip)`
   > .arrow- {
     z-index: 1;
   }
+  > div {
+    max-width: 23rem !important;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding-right: 0.5rem;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding-right: auto;
+  `}; */
 `
 
 const AutoColumnWrapper = styled(AutoColumn)`
   max-width: 10rem;
+  * input {
+    margin-left: 0;
+  }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    min-width: 21rem;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-width: auto;
+  `}; */
+`
+
+const StyledClose = styled(IconClose)`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    top: 0.5rem;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    top: auto;
+  `}; */
 `
 
 const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
