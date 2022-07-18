@@ -46,7 +46,7 @@ const TooltipWrapper = styled(Tooltip)`
   `};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding-right: auto;
-  `}; */
+  `};
 `
 
 const AutoColumnWrapper = styled(AutoColumn)`
@@ -60,7 +60,7 @@ const AutoColumnWrapper = styled(AutoColumn)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     min-width: auto;
-  `}; */
+  `};
 `
 
 const StyledClose = styled(IconClose)`
@@ -70,7 +70,7 @@ const StyledClose = styled(IconClose)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: auto;
-  `}; */
+  `};
 `
 
 const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
