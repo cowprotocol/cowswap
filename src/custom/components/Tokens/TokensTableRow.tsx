@@ -16,7 +16,7 @@ import {
   CustomLimit,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from 'utils/format'
 import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -101,16 +101,19 @@ const DataRow = ({
   const isPendingApprove = !isApproved && (approving || isPendingOnchainApprove)
 
   const noBalance = !balance || balance?.equalTo(0)
-  const noAllowance = !currentAllowance || currentAllowance?.equalTo(0)
+  const noAllowance = !currentAllowance || currentAllowance.equalTo(0)
 
   const displayApproveContent = useMemo(() => {
-    if (!isApproved && currentAllowance && !currentAllowance?.equalTo(0)) {
+    if (!isApproved && !noAllowance) {
       return (
         <CustomLimit>
           <TableButton onClick={handleApprove} color={theme.primary1}>
             Approve all
           </TableButton>
-          <ApproveLabel color={theme.green1} title={`Approved: ${currentAllowance.toExact()}`}>
+          <ApproveLabel
+            color={theme.green1}
+            title={`Approved: ${formatMax(currentAllowance, currentAllowance.currency.decimals)}`}
+          >
             Approved: <strong>{formatSmart(currentAllowance, AMOUNT_PRECISION)}</strong>
           </ApproveLabel>
         </CustomLimit>
