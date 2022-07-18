@@ -22,10 +22,6 @@ const BodyWrapper = styled(AutoColumn)`
     font-size: 18px;
     border-color: solid red 1px;
   }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    gap: 0.1;
-  `};
 `
 
 const TooltipWrapper = styled(Tooltip)`
