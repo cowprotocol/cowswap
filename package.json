@@ -121,6 +121,7 @@
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "inter-ui": "^3.13.1",
+    "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.0.5",
     "polyfill-object.fromentries": "^1.0.1",
     "prettier": "^2.2.1",
