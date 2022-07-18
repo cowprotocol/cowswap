@@ -2,7 +2,6 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import Loader from 'components/Loader'
-import LoadingRows from 'components/LoadingRows'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
@@ -16,6 +15,8 @@ import {
   ClickableText,
   Table,
   PaginationText,
+  IndexLabel,
+  InfoCircle,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
@@ -26,9 +27,11 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { OrderKind } from '@cowprotocol/contracts'
+import { PageViewKeys } from 'pages/Account/Tokens/TokensOverview'
+import { MouseoverTooltip } from 'components/Tooltip'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 const MAX_ITEMS = 10
-const MAX_COLUMNS = 6
 
 enum SORT_FIELD {
   NAME = 'name',
@@ -42,9 +45,10 @@ type BalanceType = {
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
-  tableType?: TableType
   balances?: BalanceType
-  loadingRows?: number
+  selectedView?: PageViewKeys
+  page: number
+  setPage: (page: number) => void
 }
 
 export enum TableType {
@@ -55,12 +59,13 @@ export enum TableType {
 export default function TokenTable({
   tokensData,
   maxItems = MAX_ITEMS,
-  tableType = TableType.OVERVIEW,
   balances,
-  loadingRows = MAX_ITEMS,
+  selectedView,
+  page,
+  setPage,
 }: TokenTableParams) {
-  const { chainId, account } = useActiveWeb3React()
-  const prevChainId = usePrevious(chainId)
+  const { account } = useActiveWeb3React()
+  const native = useNativeCurrency()
 
   const toggleWalletModal = useWalletModalToggle()
   const tableRef = useRef<HTMLTableElement | null>(null)
@@ -76,7 +81,6 @@ export default function TokenTable({
   }, [])
 
   // pagination
-  const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
   const prevPage = page === 1 ? page : page - 1
   const nextPage = page === maxPage ? page : page + 1
@@ -182,35 +186,37 @@ export default function TokenTable({
     }
   }, [page, prevPageIndex])
 
-  // reset table to page 1 on chain change
-  useEffect(() => {
-    if (chainId !== prevChainId) {
-      setPage(1)
-    }
-  }, [chainId, prevChainId])
-
-  if (!tokensData) {
-    return <Loader />
-  }
-
   return (
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
-      {sortedTokens.length > 0 ? (
+      {tokensData && sortedTokens.length !== 0 ? (
         <AutoColumn>
           <Table ref={tableRef}>
             <TableHeader>
-              <Label>#</Label>
+              <IndexLabel>#</IndexLabel>
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
                 <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
               </ClickableText>
               <ClickableText disabled={!account} onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
+              <Label>Value</Label>
               <Label>Buy</Label>
               <Label>Sell</Label>
-              <Label>Approve</Label>
+              <Label>
+                <span>Approve</span>
+                <MouseoverTooltip
+                  text={
+                    <Trans>
+                      Enable token for trading. This only need to be done once. Once it is enabled, you can place orders
+                      for free using meta-transactions (no {native.name} is required)
+                    </Trans>
+                  }
+                >
+                  <InfoCircle size="20" color={'white'} />
+                </MouseoverTooltip>
+              </Label>
             </TableHeader>
 
             <TableBody>
@@ -222,9 +228,8 @@ export default function TokenTable({
                       handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[data.address]}
-                      openModal={openModal}
-                      closeModal={closeModal}
-                      tableType={tableType}
+                      openTransactionConfirmationModal={openModal}
+                      closeModals={closeModal}
                       index={getTokenIndex(i)}
                       tokenData={data}
                     />
@@ -258,11 +263,7 @@ export default function TokenTable({
           </PageButtons>
         </AutoColumn>
       ) : (
-        <LoadingRows>
-          {Array.from(Array(loadingRows * MAX_COLUMNS), (_, i) => (
-            <div key={i} />
-          ))}
-        </LoadingRows>
+        <Loader />
       )}
     </Wrapper>
   )

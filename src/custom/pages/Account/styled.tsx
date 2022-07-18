@@ -653,7 +653,8 @@ export const CardsLoader = styled.div`
   height: 100px;
 `
 export const CardsSpinner = styled(SpinnerLoader)`
+  margin-left: 30px;
   & path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: ${({ theme }) => (theme.darkMode ? theme.text1 : theme.primary1)};
   }
 `

@@ -1,8 +1,60 @@
+import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
 import { PageWrapper } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
 import { Card } from 'pages/Account/styled'
+import { darken } from 'polished'
+
+export const MenuWrapper = styled.div`
+  position: relative;
+`
+
+export const MenuButton = styled.button`
+  background: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text1};
+  display: flex;
+  align-items: center;
+`
+
+export const StyledChevronDown = styled(ChevronDown)`
+  margin-left: 5px;
+  font-sze: 14px;
+`
+
+export const Menu = styled.div`
+  border-radius: 16px;
+  background: ${({ theme }) => (theme.darkMode ? darken(0.09, theme.bg5) : theme.bg4)};
+  box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform: translateY(105%);
+  max-width: 400px;
+  min-width: 250px;
+  z-index: 99;
+  padding: 12px;
+`
+
+export const MenuItem = styled.div<{ active: boolean }>`
+  transition: background 0.2s ease-in;
+  background-color: ${({ active, theme }) => (active ? theme.primary1 : 'transparent')};
+  color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+  justify-content: space-between;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  display: flex;
+
+  :not(:last-child) {
+    margin-bottom: 5px;
+  }
+`
 
 export const Wrapper = styled.div`
   display: grid;
