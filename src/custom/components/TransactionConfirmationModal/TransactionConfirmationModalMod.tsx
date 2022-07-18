@@ -369,7 +369,7 @@ export interface ConfirmationModalProps {
   content?: () => ReactNode // mod
   attemptingTxn: boolean
   pendingText: ReactNode
-  currencyToAdd?: Currency | undefined
+  currencyToAdd?: Currency
   operationType: OperationType // mod
 }
 
