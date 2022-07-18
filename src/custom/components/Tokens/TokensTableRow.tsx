@@ -104,7 +104,9 @@ const DataRow = ({
   const noAllowance = !currentAllowance || currentAllowance.equalTo(0)
 
   const displayApproveContent = useMemo(() => {
-    if (!isApproved && !noAllowance) {
+    if (isPendingApprove) {
+      return <CardsSpinner />
+    } else if (!isApproved && !noAllowance) {
       return (
         <CustomLimit>
           <TableButton onClick={handleApprove} color={theme.primary1}>
@@ -124,8 +126,6 @@ const DataRow = ({
           Approve
         </TableButton>
       )
-    } else if (isPendingApprove) {
-      return <CardsSpinner />
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
