@@ -20,6 +20,7 @@ const BodyWrapper = styled(AutoColumn)`
   > div:nth-child(2) {
     padding-top: 0.5rem;
     font-size: 18px;
+    border-color: solid red 1px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -36,6 +37,10 @@ const TooltipWrapper = styled(Tooltip)`
   }
 `
 
+const AutoColumnWrapper = styled(AutoColumn)`
+  max-width: 10rem;
+`
+
 const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
   const _onCheckout = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
@@ -46,7 +51,7 @@ const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
     <BodyWrapper onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => e.stopPropagation()}>
       <StyledClose onClick={onClose} />
       <div>💡</div>
-      <AutoColumn gap="10px">
+      <AutoColumnWrapper gap="10px">
         <Text fontWeight={500} fontSize={14}>
           Follow your pending transactions here!
         </Text>
@@ -55,7 +60,7 @@ const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
             <input type="checkbox" onChange={_onCheckout} /> Don&apos;t show it again
           </label>
         </span>
-      </AutoColumn>
+      </AutoColumnWrapper>
     </BodyWrapper>
   )
 }
