@@ -34,7 +34,7 @@ import {
   OperationType,
 } from '.'
 import { SupportedChainId } from 'constants/chains'
-import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atom'
+import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
 
 export const Wrapper = styled.div`
   width: 100%;

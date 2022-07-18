@@ -22,13 +22,6 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import {
-  useUpdateAtom,
-  useAtomValue,
-  handleFollowPendingTxPopupAtom,
-  handleHidePopupPermanentlyAtom,
-  showFollowTxPopupAtom,
-} from 'state/application/atom'
 import { useCloseFollowTxPopupIfNot } from 'state/application/hooks'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
@@ -180,9 +173,6 @@ export function Web3StatusInner({
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
-  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
-  const setHidePendingTxPopupPermanently = useUpdateAtom(handleHidePopupPermanentlyAtom)
-  const showFollowPendingTxPopup = useAtomValue(showFollowTxPopupAtom)
   useCloseFollowTxPopupIfNot(hasPendingTransactions)
 
   if (account) {
@@ -194,11 +184,7 @@ export function Web3StatusInner({
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <FollowPendingTxPopup
-              show={showFollowPendingTxPopup}
-              onCheckout={() => setHidePendingTxPopupPermanently(true)}
-              onClose={() => setShowFollowPendingTxPopup(false)}
-            >
+            <FollowPendingTxPopup>
               <Text>
                 {/* <Trans>{pending?.length} Pending</Trans> */}
                 <Trans>{pendingCount} Pending</Trans>

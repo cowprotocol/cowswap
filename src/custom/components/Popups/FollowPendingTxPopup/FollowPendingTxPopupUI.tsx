@@ -56,7 +56,7 @@ const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
   )
 }
 
-export default function FollowPendingTxPopup({
+export default function FollowPendingTxPopupUI({
   show,
   children,
   onCheckout,

@@ -4,7 +4,7 @@ import { useToggleModal } from '@src/state/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { addPopup, ApplicationModal, PopupContent } from 'state/application/reducer'
 import { useAppDispatch } from 'state/hooks'
-import { followPendingTxPopupAtom, handleFollowPendingTxPopupAtom, selectAtom, useUpdateAtom } from './atom'
+import { followPendingTxPopupAtom, handleFollowPendingTxPopupAtom, selectAtom, useUpdateAtom } from './atoms'
 
 export * from '@src/state/application/hooks'
 
