@@ -272,8 +272,8 @@ export default function Swap({
 
   // const fiatValueInput = useUSDCValue(trade?.inputAmount)
   // const fiatValueOutput = useUSDCValue(trade?.outputAmount)
-  const fiatValueInput = useHigherUSDValue(trade?.inputAmount)
-  const fiatValueOutput = useHigherUSDValue(trade?.outputAmount)
+  const fiatValueInput = useHigherUSDValue(trade?.inputAmountWithoutFee)
+  const fiatValueOutput = useHigherUSDValue(trade?.outputAmountWithoutFee)
 
   const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
