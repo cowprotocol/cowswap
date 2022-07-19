@@ -12,24 +12,6 @@ interface PopupContentProps {
 }
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
-const BodyWrapper = styled(AutoColumn)`
-  display: flex;
-  gap: 1rem;
-  padding-top: 0.5rem;
-
-  > div:nth-child(2) {
-    padding-top: 0.5rem;
-    font-size: 18px;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    padding-top: 0.3rem;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding-top: auto;
-  `};
-`
-
 const TooltipWrapper = styled(Tooltip)`
   & {
     z-index: 2;
@@ -42,34 +24,52 @@ const TooltipWrapper = styled(Tooltip)`
   }
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding-right: 0.8rem;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding-left: 0;
     padding-right: 0.5rem;
   `};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding-right: auto;
+`
+
+const BodyWrapper = styled(AutoColumn)`
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.3rem;
+
+  > div:nth-child(2) {
+    padding-top: 0.5rem;
+    font-size: 18px;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    gap: 0.8rem;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 0.6rem;
+    padding-top: 0.5rem;
+    padding-top: auto;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    gap: 0.4rem;
   `};
 `
 
 const AutoColumnWrapper = styled(AutoColumn)`
-  max-width: 10rem;
+  min-width: 21rem;
   * input {
     margin-left: 0;
   }
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    min-width: 21rem;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    max-width: 9rem;
     min-width: auto;
   `};
 `
 
 const StyledClose = styled(IconClose)`
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    top: 0.5rem;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    top: auto;
+  top: 0.5rem;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    right:0.5rem; 
   `};
 `
 
