@@ -3,7 +3,6 @@ import { Currency } from '@uniswap/sdk-core'
 // import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { AutoRow } from 'components/Row'
-import { COMMON_BASES } from 'constants/routing'
 import { useTokenInfoFromActiveList } from 'hooks/useTokenInfoFromActiveList'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -12,6 +11,7 @@ import { currencyId } from 'utils/currencyId'
 // MOD imports
 import QuestionHelper from 'components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, CommonBasesProps, MobileWrapper } from '.' // mod
+import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
 
 /* const MobileWrapper = styled(AutoColumn)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -37,25 +37,26 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   filter: ${({ disable }) => disable && 'grayscale(1)'};
 `
 
+const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({ chainId, onSelect, selectedCurrency }: CommonBasesProps) {
   /* {
   chainId?: number
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 } */
-  const bases = typeof chainId !== 'undefined' ? COMMON_BASES[chainId] ?? [] : []
+  const tokens = useFavouriteOrCommonTokens()
 
-  return bases.length > 0 ? (
-    <MobileWrapper gap="md">
+  return tokens.length > 0 ? (
+    <MobileWrapper gap="md" showOverflow={tokens.length > MAX_LENGTH_OVERFLOW}>
       <AutoRow>
         <Text fontWeight={500} fontSize={14}>
           {/* <Trans>Common bases</Trans> */}
-          <Trans>Common tokens</Trans>
+          <Trans>Favourite tokens</Trans>
         </Text>
-        <QuestionHelper text={<Trans>These tokens are commonly paired with other tokens.</Trans>} />
+        <QuestionHelper text={<Trans>Your favourite saved tokens. Edit this list in your account page.</Trans>} />
       </AutoRow>
       <CommonBasesRow gap="4px">
-        {bases.map((currency: Currency) => {
+        {tokens.map((currency: Currency) => {
           const isSelected = selectedCurrency?.equals(currency)
           return (
             <BaseWrapper

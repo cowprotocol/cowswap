@@ -1,6 +1,8 @@
+import { HTMLAttributes } from 'react'
 import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
-import { ChevronDown } from 'react-feather'
+import { ChevronDown, Star } from 'react-feather'
+import useTheme from 'hooks/useTheme'
 
 import { RowBetween } from 'components/Row'
 
@@ -186,6 +188,19 @@ export const ButtonEmpty = styled(ButtonEmptyMod)`
   // CSS overrides
 `
 
+const HoverIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  margin-right: 8px;
+
+  :hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+`
+
 type ButtonCustomProps = ButtonProps & {
   buttonSize?: ButtonSize
 }
@@ -233,5 +248,19 @@ export function ButtonDropdownLight({
         <ChevronDown size={24} />
       </RowBetween>
     </ButtonOutlined>
+  )
+}
+
+export const ButtonStar = ({
+  fill = 'transparent',
+  size = '15px',
+  stroke,
+  ...rest
+}: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
+  const theme = useTheme()
+  return (
+    <HoverIcon {...rest}>
+      <Star stroke={stroke || theme.text3} fill={fill} size={size} />
+    </HoverIcon>
   )
 }

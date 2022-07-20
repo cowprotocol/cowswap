@@ -15,7 +15,7 @@ import logs from '@src/state/logs/slice'
 // import { routingApi } from './routing/slice'
 import swap from '@src/state/swap/reducer'
 // import transactions from './transactions/reducer'
-import user from '@src/state/user/reducer'
+import user from 'state/user/reducer'
 
 // MOD imports
 import orders from 'state/orders/reducer'

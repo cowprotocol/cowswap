@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
@@ -22,16 +23,22 @@ const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
-const Account = lazy(() => import(/* webpackChunkName: "profile" */ '@src/custom/pages/Account'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
 
+// FAQ pages
 const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
-const ProtocolFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/ProtocolFaq'))
-const TokenFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TokenFaq'))
-const TradingFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TradingFaq'))
-const AffiliateFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/AffiliateFaq'))
+const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pages/Faq/ProtocolFaq'))
+const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
+const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
+const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'pages/Faq/AffiliateFaq'))
+
+// Account pages
+const Account = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account'))
+const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
+// const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
+// const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/Affiliate'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -96,13 +103,18 @@ export default function App() {
       <Wrapper>
         <Suspense fallback={Loading}>
           <Switch>
-            <Redirect from="/claim" to="/account" />
-            <Redirect from="/profile" to="/account" />
+            <Redirect from="/claim" to={Routes.ACCOUNT} />
+            <Redirect from="/profile" to={Routes.ACCOUNT} />
             <Route exact strict path={Routes.SWAP} component={Swap} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
             <Route exact strict path={Routes.ACCOUNT} component={Account} />
+
+            <Route exact strict path={Routes.ACCOUNT} component={Account} />
+            <Route exact strict path={Routes.ACCOUNT_TOKENS} component={TokensOverview} />
+            {/* <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} /> */}
+            {/* <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} /> */}
 
             <Route exact path={Routes.FAQ} component={Faq} />
             <Route exact strict path={Routes.FAQ_PROTOCOL} component={ProtocolFaq} />
