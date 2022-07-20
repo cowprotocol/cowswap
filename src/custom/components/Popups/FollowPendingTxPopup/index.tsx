@@ -39,7 +39,7 @@ const FollowPendingTxPopup: React.FC = ({ children }): JSX.Element => {
   return (
     <FollowPendingTxPopupUI
       show={showFollowPendingTxPopup}
-      onCheckout={() => setHidePendingTxPopupPermanently(true)}
+      onCheck={() => setHidePendingTxPopupPermanently(true)}
       onClose={() => setShowFollowPendingTxPopup(false)}
     >
       {children}

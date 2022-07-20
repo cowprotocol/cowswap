@@ -7,7 +7,7 @@ import Tooltip, { TooltipProps } from 'components/Tooltip/TooltipMod'
 import { AutoColumn } from 'components/Column'
 
 interface PopupContentProps {
-  onCheckout: () => void
+  onCheck: () => void
   onClose: () => void
 }
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
@@ -73,7 +73,7 @@ const StyledClose = styled(IconClose)`
   `};
 `
 
-const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
+const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
   const _onCheckout = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
     onCheckout()
@@ -100,7 +100,7 @@ const PopupContent = ({ onCheckout, onClose }: PopupContentProps) => {
 export default function FollowPendingTxPopupUI({
   show,
   children,
-  onCheckout,
+  onCheck: onCheckout,
   onClose,
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
@@ -108,7 +108,7 @@ export default function FollowPendingTxPopupUI({
     <TooltipWrapper
       show={show}
       placement="left"
-      text={<PopupContent onClose={onClose} onCheckout={onCheckout} />}
+      text={<PopupContent onClose={onClose} onCheck={onCheckout} />}
       {...rest}
     >
       <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
