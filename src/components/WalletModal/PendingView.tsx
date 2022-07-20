@@ -76,6 +76,7 @@ export default function PendingView({
   tryActivation: (connector: AbstractConnector) => void
 }) {
   const isMetamask = window?.ethereum?.isMetaMask
+  const isExodus = window?.ethereum?.isExodus
 
   return (
     <PendingSection>
@@ -108,6 +109,9 @@ export default function PendingView({
         if (option.connector === connector) {
           if (option.connector === injected) {
             if (isMetamask && option.name !== 'MetaMask') {
+              return null
+            }
+            if (isExodus && option.name !== 'Exodus') {
               return null
             }
             if (!isMetamask && option.name === 'MetaMask') {

@@ -14,6 +14,7 @@ interface Window {
     // value that is populated and returns true by the Coinbase Wallet mobile dapp browser
     isCoinbaseWallet?: true
     isMetaMask?: true
+    isExodus?: true
     autoRefreshOnNetworkChange?: boolean
     setSelectedProvider: (any) => void
     providers: [any]
