@@ -299,7 +299,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       text: colorsTheme.black,
     },
     wallet: {
-      color: colorsTheme.text2,
+      color: colorsTheme.text1,
       background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
