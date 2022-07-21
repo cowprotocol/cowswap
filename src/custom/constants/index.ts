@@ -10,6 +10,9 @@ import ms from 'ms.macro'
 import { CowSdk } from '@cowprotocol/cow-sdk'
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
 
+import { injected } from 'connectors'
+import TALLY_ICON_URL from 'assets/external/tally.svg'
+
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%
 export const MIN_SLIPPAGE_BPS = 0 // 0%
@@ -46,13 +49,27 @@ SUPPORTED_WALLETS_UNISWAP.WALLET_LINK = {
 }
 const DISABLED_WALLETS = /^(?:Portis|COINBASE_LINK)$/i
 
+const ADDED_WALLETS: { [key: string]: WalletInfo } = {
+  TALLY: {
+    connector: injected,
+    name: 'Tally Ho',
+    iconURL: TALLY_ICON_URL,
+    description: 'Connect with Tally Ho Wallet',
+    href: null,
+    color: '#D59B4B',
+  },
+}
+
 // Re-export only the supported wallets
-export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
-  if (!DISABLED_WALLETS.test(key)) {
-    acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
-  }
-  return acc
-}, {} as { [key: string]: WalletInfo })
+export const SUPPORTED_WALLETS = {
+  ...ADDED_WALLETS,
+  ...Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
+    if (!(DISABLED_WALLETS.test(key) || key in ADDED_WALLETS)) {
+      acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
+    }
+    return acc
+  }, {} as { [key: string]: WalletInfo }),
+}
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])

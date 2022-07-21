@@ -12,6 +12,7 @@ import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { WalletConnectConnector } from 'web3-react-walletconnect-connector'
 
 import MetamaskIcon from 'assets/images/metamask.png'
+import TallyIcon from 'assets/external/tally.svg'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { fortmatic, injected } from 'connectors'
 import { OVERLAY_READY } from 'connectors/Fortmatic'
@@ -261,6 +262,9 @@ export default function WalletModal({
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask
+    const isTally = window.ethereum && window.ethereum.isTally
+    const tallyInstalled = window.tally && window.tally.isTally
+    const tallyIsDefault = isTally && tallyInstalled
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
@@ -301,16 +305,54 @@ export default function WalletModal({
                 icon={MetamaskIcon}
               />
             )
+          } else if (option.name === 'Tally Ho' && tallyInstalled && !tallyIsDefault) {
+            return (
+              <Option
+                id={`connect-${key}`}
+                key={key}
+                color={'#D59B4B'}
+                header={<Trans>Tally Ho</Trans>}
+                subheader={
+                  <Trans>
+                    To use Tally Ho, enable as default in Tally Ho settings and refresh the page. (click for details)
+                  </Trans>
+                }
+                link={'https://docs.tally.cash/tally/the-wallet/wallet-features#settings'}
+                icon={TallyIcon}
+              />
+            )
           } else {
             return null //dont want to return install twice
           }
+        }
+        // show Tally hint if installed but not set to default, to avoid confusion with MetaMask
+        else if (option.name === 'Tally Ho' && tallyInstalled && !tallyIsDefault) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={'#D59B4B'}
+              header={<Trans>Tally Ho</Trans>}
+              subheader={
+                <Trans>
+                  To use Tally Ho, enable as default in Tally Ho settings and refresh the page. (click for details)
+                </Trans>
+              }
+              link={'https://docs.tally.cash/tally/the-wallet/wallet-features#settings'}
+              icon={TallyIcon}
+            />
+          )
+        }
+        // don't return Tally if not installed
+        else if (option.name === 'Tally Ho' && !tallyInstalled) {
+          return null
         }
         // don't return metamask if injected provider isn't metamask
         else if (option.name === 'MetaMask' && !isMetamask) {
           return null
         }
         // likewise for generic
-        else if (option.name === 'Injected' && isMetamask) {
+        else if (option.name === 'Injected' && (isMetamask || isTally)) {
           return null
         }
       }
