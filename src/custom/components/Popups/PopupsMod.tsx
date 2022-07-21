@@ -54,7 +54,7 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean; xlPadding: 
   `};
 
   ${StopOverflowQuery} {
-    top: ${({ extraPadding, xlPadding }) => (xlPadding ? '64px' : extraPadding ? '64px' : '56px')};
+    top: ${({ extraPadding, xlPadding }) => (xlPadding ? '108px' : extraPadding ? '64px' : '56px')};
   }
 `
 
