@@ -3,6 +3,7 @@ import INJECTED_ICON_URL from '../assets/images/arrow-right.svg'
 import COINBASE_ICON_URL from '../assets/images/coinbaseWalletIcon.svg'
 import FORTMATIC_ICON_URL from '../assets/images/fortmaticIcon.png'
 import METAMASK_ICON_URL from '../assets/images/metamask.png'
+import EXODUS_ICON_URL from '../assets/images/exodus.png'
 import WALLETCONNECT_ICON_URL from '../assets/images/walletConnectIcon.svg'
 import { fortmatic, injected, walletconnect, walletlink } from 'connectors'
 
@@ -35,6 +36,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
+  },
+  EXODUS: {
+    connector: injected,
+    name: 'Exodus',
+    iconURL: EXODUS_ICON_URL,
+    description: 'Web3 Simplified',
+    href: null,
+    color: '#2663F5',
   },
   WALLET_CONNECT: {
     connector: walletconnect,

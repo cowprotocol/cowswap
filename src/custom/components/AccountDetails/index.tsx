@@ -52,10 +52,12 @@ type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'
 export function getWalletName(connector?: AbstractConnector): string {
   const { ethereum } = window
   const isMetaMask = !!(ethereum && ethereum.isMetaMask)
+  const isExodus = !!(ethereum && ethereum.isExodus)
 
   const walletTuple = Object.entries(SUPPORTED_WALLETS).filter(
     ([walletType, { connector: walletConnector }]) =>
-      walletConnector === connector && (connector !== injected || isMetaMask === (walletType === 'METAMASK'))
+      walletConnector === connector &&
+      (connector !== injected || (isMetaMask === (walletType === 'METAMASK') && isExodus === (walletType === 'EXODUS')))
   )
   return walletTuple[0]?.[1]?.name || 'Unknown wallet'
 }
