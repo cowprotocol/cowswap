@@ -1,6 +1,6 @@
 // import { Trans } from '@lingui/macro'
 import { Currency, Price } from '@uniswap/sdk-core'
-// import useUSDCPrice from '@src/hooks/useUSDCPrice'
+// import useStablecoinPrice from '@src/hooks/useStablecoinPrice'
 import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -13,8 +13,8 @@ import { LightGreyText } from 'pages/Swap'
 export interface TradePriceProps {
   price: Price<Currency, Currency>
   showInverted: boolean
-  fiatValue?: string // mod
   setShowInverted: (showInverted: boolean) => void
+  fiatValue?: string // mod
 }
 
 const StyledPriceContainer = styled.button`
@@ -39,7 +39,12 @@ const StyledPriceContainer = styled.button`
 export default function TradePrice({ price, showInverted, fiatValue, setShowInverted }: TradePriceProps) {
   const theme = useContext(ThemeContext)
 
-  // const usdcPrice = useUSDCPrice(showInverted ? price.baseCurrency : price.quoteCurrency)
+  // const usdcPrice = useStablecoinPrice(showInverted ? price.baseCurrency : price.quoteCurrency)
+  // /*
+  //  * calculate needed amount of decimal prices, for prices between 0.95-1.05 use 4 decimal places
+  //  */
+  // const p = Number(usdcPrice?.toFixed())
+  // const visibleDecimalPlaces = p < 1.05 ? 4 : 2
 
   let formattedPrice: string
   try {
@@ -76,7 +81,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
       </Text>{' '}
       {/* {usdcPrice && (
         <ThemedText.DarkGray>
-          <Trans>(${usdcPrice.toSignificant(6, { groupSeparator: ',' })})</Trans>
+          <Trans>(${usdcPrice.toFixed(visibleDecimalPlaces, { groupSeparator: ',' })})</Trans>
         </ThemedText.DarkGray>
       )} */}
     </StyledPriceContainer>

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES, SupportedChainId } from 'constants/chains'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 // import { useOnClickOutside } from 'hooks/useOnClickOutside'
 // import useParsedQueryString from 'hooks/useParsedQueryString'
 // import usePrevious from 'hooks/usePrevious'
@@ -26,7 +26,6 @@ import {
 import useChangeNetworks, { ChainSwitchCallbackOptions } from 'hooks/useChangeNetworks'
 import { transparentize } from 'polished'
 // mod
-import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { useAddPopup, useRemovePopup } from 'state/application/hooks'
 import { useEffect } from 'react'
 import { getExplorerBaseUrl } from 'utils/explorer'
@@ -224,8 +223,8 @@ function Row({
   // onSelectChain: (targetChain: number) => void
   onSelectChain: (targetChain: number, options: ChainSwitchCallbackOptions) => void // mod
 }) {
-  const { library, chainId } = useActiveWeb3React()
-  if (!library || !chainId) {
+  const { provider, chainId } = useWeb3React()
+  if (!provider || !chainId) {
     return null
   }
   const active = chainId === targetChain
@@ -293,10 +292,10 @@ export const getChainNameFromId = (id: string | number) => {
 
 export default function NetworkSelector() {
   // mod: add account & lib
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const { isSmartContractWallet } = useWalletInfo() // mod
   // mod: refactored inner logic into useChangeNetworks hook
-  const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library })
+  const { node, open, toggle, info, handleChainSwitch } = useChangeNetworks({ account, chainId, library: provider })
 
   // mod: add error and isUnsupportedNetwork const and useEffect
   const { error } = useWeb3React()

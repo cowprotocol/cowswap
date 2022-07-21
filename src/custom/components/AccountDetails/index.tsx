@@ -3,7 +3,7 @@ import React, { Fragment } from 'react'
 import { useActiveWeb3React } from 'hooks/web3'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
-import Copy from 'components/Copy'
+import CopyHelper from 'components/AccountDetails/Copy'
 import { Trans } from '@lingui/macro'
 
 import { SUPPORTED_WALLETS, STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
@@ -161,9 +161,9 @@ export default function AccountDetails({
               {getStatusIcon(connector, walletInfo)}
 
               {(ENSName || account) && (
-                <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
+                <CopyHelper toCopy={ENSName ? ENSName : account ? account : ''}>
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
-                </Copy>
+                </CopyHelper>
               )}
             </WalletWrapper>
 

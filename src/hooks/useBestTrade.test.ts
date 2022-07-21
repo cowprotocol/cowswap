@@ -1,7 +1,7 @@
 /**
  * @jest-environment ./custom-test-env.js
  */
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import { DAI, USDC_MAINNET } from 'constants/tokens'
 import { TradeState } from 'state/routing/types'
@@ -48,7 +48,7 @@ beforeEach(() => {
 })
 
 describe('#useBestV3Trade ExactIn', () => {
-  it('does not compute routing api trade when routing API is not supported', () => {
+  it('does not compute routing api trade when routing API is not supported', async () => {
     mockUseAutoRouterSupported.mockReturnValue(false)
     expectRouterMock(TradeState.INVALID)
     expectClientSideMock(TradeState.VALID)
@@ -60,7 +60,7 @@ describe('#useBestV3Trade ExactIn', () => {
     expect(result.current).toEqual({ state: TradeState.VALID, trade: undefined })
   })
 
-  it('does not compute routing api trade when window is not focused', () => {
+  it('does not compute routing api trade when window is not focused', async () => {
     mockUseIsWindowVisible.mockReturnValue(false)
     expectRouterMock(TradeState.NO_ROUTE_FOUND)
     expectClientSideMock(TradeState.VALID)

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
-import { toggleURLWarning } from 'state/user/actions'
+import { toggleURLWarning } from 'state/user/reducer'
 import { calculateValidTo } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL } from '@src/state/user/hooks'
 

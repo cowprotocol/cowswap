@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 // import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // import { useBestTrade } from 'hooks/useBestTrade'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -15,13 +15,11 @@ import { useCurrency } from 'hooks/Tokens'
 import useENS from 'hooks/useENS'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isAddress } from 'utils'
-// import { AppState } from 'state'
-import { useCurrencyBalances } from 'state/wallet/hooks'
-import {
-  Field,
-  replaceSwapState /* , selectCurrency, setRecipient, switchCurrencies, typeInput */,
-} from 'state/swap/actions'
+import { useCurrencyBalances } from 'state/connection/hooks'
+// import { AppState } from '../index'
+import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
+import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 // MOD
 import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
@@ -60,7 +58,7 @@ interface DerivedSwapInfo {
   allowedSlippage: Percent
 }
 
-/* export function useSwapActionHandlers(): {
+export function useSwapActionHandlers(): {
   onCurrencySelection: (field: Field, currency: Currency) => void
   onSwitchTokens: () => void
   onUserInput: (field: Field, typedValue: string) => void
@@ -69,6 +67,8 @@ interface DerivedSwapInfo {
   const dispatch = useAppDispatch()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
+      currencySelectAnalytics(field, currency.symbol)
+
       dispatch(
         selectCurrency({
           field,
@@ -80,11 +80,13 @@ interface DerivedSwapInfo {
   )
 
   const onSwitchTokens = useCallback(() => {
+    switchTokensAnalytics()
     dispatch(switchCurrencies())
   }, [dispatch])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
+      changeSwapAmountAnalytics(field, Number(typedValue))
       dispatch(typeInput({ field, typedValue }))
     },
     [dispatch]
@@ -103,13 +105,7 @@ interface DerivedSwapInfo {
     onUserInput,
     onChangeRecipient,
   }
-} */
-
-/* const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
-  '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
-  '0xf164fC0Ec4E93095b804a4795bBe1e041497b92a': true, // v2 router 01
-  '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D': true, // v2 router 02
-} */
+}
 
 /**
  * useHighFeeWarning
@@ -219,7 +215,7 @@ export function useDerivedSwapInfo(): /* {
   }
   allowedSlippage: Percent
 } */ DerivedSwapInfo {
-  const { account, chainId } = useActiveWeb3React() // MOD: chainId
+  const { account, chainId } = useWeb3React() // MOD: chainId
 
   const {
     independentField,
@@ -427,7 +423,7 @@ export function queryParametersToSwapState(
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 

@@ -6,6 +6,7 @@ import { load, save } from 'redux-localstorage-simple'
 import application from 'state/application/reducer'
 // import burn from './burn/reducer'
 // import burnV3 from './burn/v3/reducer'
+import connection from '@src/state/connection/reducer'
 // import { api as dataApi } from './data/slice'
 import { updateVersion } from 'state/global/actions'
 import lists from 'state/lists/reducer'
@@ -35,6 +36,7 @@ import { priceMiddleware } from 'state/price/middleware'
 const UNISWAP_REDUCERS = {
   application,
   user,
+  connection,
   // transactions,
   swap,
   /* mint,

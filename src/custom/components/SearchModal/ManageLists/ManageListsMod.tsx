@@ -1,13 +1,14 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
+import { useWeb3React } from '@web3-react/core'
+// import { sendEvent } from 'components/analytics'
 // import Card from 'components/Card'
 // import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useListColor } from 'hooks/useColor'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
 // import ReactGA from 'react-ga4'
 import { usePopper } from 'react-popper'
@@ -109,7 +110,7 @@ const ListRow = memo(function ListRow({
 }: // }: { listUrl: string }) {
 ListRowProps & { listUrl: string }) {
   // We default to a chainId if none is available
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
   const listsByUrl = useAppSelector((state) => state.lists[chainId].byUrl)
@@ -190,7 +191,7 @@ ListRowProps & { listUrl: string }) {
         </Row>
         <RowFixed mt="4px">
           <StyledListUrlText active={isActive} mr="6px">
-            <Trans>{list.tokens.length} tokens</Trans>
+            <Trans>{activeTokensOnThisChain} tokens</Trans>
           </StyledListUrlText>
           <StyledMenu ref={node as any}>
             <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
@@ -260,7 +261,7 @@ export function ManageLists({
   unsupportedListUrls: string[]
   listRowProps: ListRowProps
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useTheme()
 
   const [listUrlInput, setListUrlInput] = useState<string>('')
@@ -284,7 +285,7 @@ export function ManageLists({
   // sort by active but only if not visible
   const activeListUrls = useActiveListUrls()
 
-  const handleInput = useCallback((e) => {
+  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setListUrlInput(e.target.value)
   }, [])
 
