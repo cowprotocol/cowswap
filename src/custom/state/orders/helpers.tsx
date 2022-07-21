@@ -61,7 +61,7 @@ const Wrapper = styled.div`
     margin-top: 0;
   }
 
-  & > p:last-chid {
+  & > p:last-child {
     margin-bottom: 0;
   }
 `
