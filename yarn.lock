@@ -1196,10 +1196,10 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cowprotocol/contracts@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.3.1.tgz#a812b27bdd0c046ab730eb24911ef7c641ed0df8"
-  integrity sha512-p93xODog3XG5eSDU5od1ERvYf7YIyXd7USknKcsWnka5VN5mDDjqjCKTLw8EoZdrCIEpf6fGd8At2nv+MsvNqA==
+"@cowprotocol/app-data@^0.0.1-RC.1":
+  version "0.0.1-RC.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.1-RC.1.tgz#1d00036a1f49ffb6128f424e7a778c50973e9248"
+  integrity sha512-LYMRjU7xDd8t9KZXkRI36AN1RtgdxACXvqv/9yqNpi0AxRiePH5bqTOYm9RuFwIzmAbHq5xGN2/rSCxfvfU9eQ==
 
 "@cowprotocol/contracts@^1.3.1":
   version "1.3.1"
@@ -1219,11 +1219,12 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-0.0.15.tgz#844d51e8ea4969521d72086c54d09394bbb0750b"
-  integrity sha512-Lz5iTGjzMNJ+gHERnm+71HKLwcBGh60w3OJU4LRiU0X6Ug1Rzlrgp+3Ok84zpi3LQgc79IvB5v5riI0J4goHkQ==
+"@cowprotocol/cow-sdk@1.0.0-RC.0":
+  version "1.0.0-RC.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.0-RC.0.tgz#acadbaf46f8538665a55d84daed8bf4976f33a94"
+  integrity sha512-84GZNRFxl8ZJe6ZNGX6BlMj/UIZ9mwylaJv8HIJN3eEUnXGwZE48NElOQMINa4OaQv49cxh2C4K77E6HU9PiCQ==
   dependencies:
+    "@cowprotocol/app-data" "^0.0.1-RC.1"
     "@cowprotocol/contracts" "^1.3.1"
     ajv "^8.8.2"
     cross-fetch "^3.1.5"
