@@ -29,8 +29,8 @@ interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverCon
   disableHover?: boolean // disable the hover and content display
 }
 
-export default function Tooltip({ text, ...rest }: TooltipProps) {
-  return <Popover content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
+export default function Tooltip({ text, className, ...rest }: TooltipProps) {
+  return <Popover className={className} content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
 export function TooltipContent({ content, wrap = false, ...rest }: TooltipContentProps) {

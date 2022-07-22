@@ -27,9 +27,9 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosis_chain',
   /* [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.ROPSTEN]: 'ropsten',
-  [SupportedChainId.RINKEBY]: 'rinkeby',
+  [SupportedChainId.RINKEBY]: 'rinkeby', */
   [SupportedChainId.GOERLI]: 'goerli',
-  [SupportedChainId.KOVAN]: 'kovan',
+  /* [SupportedChainId.KOVAN]: 'kovan',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
@@ -59,8 +59,8 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.ROPSTEN,
   SupportedChainId.RINKEBY,
-  /* SupportedChainId.GOERLI,
-  SupportedChainId.KOVAN,
+  SupportedChainId.GOERLI,
+  /* SupportedChainId.KOVAN,
   SupportedChainId.POLYGON,
   SupportedChainId.POLYGON_MUMBAI, */
   SupportedChainId.GNOSIS_CHAIN,

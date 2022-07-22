@@ -40,6 +40,7 @@ import {
 // MOD imports
 import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
 import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY } from 'utils/rinkeby/constants'
+import { DAI_GOERLI, USDC_GOERLI, USDT_GOERLI } from 'utils/goerli/constants'
 
 /* type ChainTokenList = {
   readonly [chainId: number]: Token[]
@@ -133,8 +134,15 @@ export const COMMON_BASES: ChainCurrencyList = {
     USDC_RINKEBY,
     USDT_RINKEBY,
   ],
-  /* [SupportedChainId.GOERLI]: [nativeOnChain(SupportedChainId.GOERLI), WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI]],
-  [SupportedChainId.KOVAN]: [nativeOnChain(SupportedChainId.KOVAN), WRAPPED_NATIVE_CURRENCY[SupportedChainId.KOVAN]],
+  [SupportedChainId.GOERLI]: [
+    // ExtendedEther.onChain(SupportedChainId.GOERLI),
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI],
+    COW[SupportedChainId.GOERLI],
+    DAI_GOERLI,
+    USDC_GOERLI,
+    USDT_GOERLI,
+  ],
+  /* [SupportedChainId.KOVAN]: [nativeOnChain(SupportedChainId.KOVAN), WRAPPED_NATIVE_CURRENCY[SupportedChainId.KOVAN]],
   [SupportedChainId.ARBITRUM_ONE]: [
     nativeOnChain(SupportedChainId.ARBITRUM_ONE),
     DAI_ARBITRUM_ONE,

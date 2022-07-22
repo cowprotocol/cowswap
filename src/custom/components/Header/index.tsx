@@ -38,7 +38,7 @@ import { toggleDarkModeAnalytics } from 'utils/analytics'
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   // [ChainId.ROPSTEN]: 'Ropsten',
-  // [ChainId.GOERLI]: 'Görli',
+  [ChainId.GOERLI]: 'Görli',
   // [ChainId.KOVAN]: 'Kovan',
   [ChainId.GNOSIS_CHAIN]: 'Gnosis Chain',
 }

@@ -39,6 +39,11 @@ const EMPTY_STORE = {
     activeListUrls: undefined,
     gpUnsupportedTokens: {},
   },
+  [ChainId.GOERLI]: {
+    byUrl: {},
+    activeListUrls: undefined,
+    gpUnsupportedTokens: {},
+  },
   [ChainId.GNOSIS_CHAIN]: {
     byUrl: {},
     activeListUrls: undefined,

@@ -27,6 +27,9 @@ const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/se
 // Rinkeby Default
 const RINKEBY_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/rinkeby-token-list.json'
 
+// Goerli Default
+const GOERLI_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/goerli-token-list.json'
+
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
 
@@ -35,7 +38,7 @@ export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   // [ChainId.KOVAN]: [BA_LIST],
   [ChainId.RINKEBY]: [BA_LIST],
   // [ChainId.ROPSTEN]: [BA_LIST],
-  // [ChainId.GOERLI]: [BA_LIST],
+  [ChainId.GOERLI]: [BA_LIST],
   [ChainId.GNOSIS_CHAIN]: [BA_LIST],
 }
 
@@ -77,10 +80,10 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   //   chainId: ChainId.ROPSTEN,
   //   networkLists: [COMPOUND_LIST],
   // }),
-  // [ChainId.GOERLI]: buildNetworkDefaultLists({
-  //   chainId: ChainId.GOERLI,
-  //   networkLists: [COMPOUND_LIST],
-  // }),
+  [ChainId.GOERLI]: buildNetworkDefaultLists({
+    chainId: ChainId.GOERLI,
+    networkLists: [GOERLI_LIST, COMPOUND_LIST],
+  }),
   [ChainId.GNOSIS_CHAIN]: buildNetworkDefaultLists({
     chainId: ChainId.GNOSIS_CHAIN,
     networkLists: [COW_DAO_LIST, HONEY_SWAP_XDAI],
@@ -94,7 +97,7 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
   [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
   // [ChainId.ROPSTEN]: [GEMINI_LIST],
   [ChainId.GNOSIS_CHAIN]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
-  // [ChainId.GOERLI]: [GEMINI_LIST],
+  [ChainId.GOERLI]: [COW_DAO_LIST, GOERLI_LIST],
 }
 
 // Set what we want as the default list when no chain id available: default = MAINNET

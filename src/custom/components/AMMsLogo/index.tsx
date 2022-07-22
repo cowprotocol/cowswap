@@ -74,6 +74,15 @@ const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
     MatchaImage,
     ZeroXImage,
   ],
+  [SupportedChainId.GOERLI]: [
+    SushiImage,
+    OneInchImage,
+    ParaSwapImage,
+    UniswapImage,
+    CurveImage,
+    MatchaImage,
+    ZeroXImage,
+  ],
   [SupportedChainId.GNOSIS_CHAIN]: [
     SushiImage,
     BaoSwapImage,

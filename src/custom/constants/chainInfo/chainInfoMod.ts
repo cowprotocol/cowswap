@@ -10,6 +10,7 @@ import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from 'consta
 // MOD imports
 import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg'
 import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg'
+import GoerliLogo from 'assets/cow-swap/network-goerli-logo.svg'
 import GnosisChainLogo from 'assets/cow-swap/network-gnosis-chain-logo.svg'
 import { CHAIN_INFO as UNI_CHAIN_INFO, NetworkType } from '@src/constants/chainInfo'
 
@@ -90,17 +91,17 @@ export const CHAIN_INFO: ChainInfoMap = {
     label: 'Kovan',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Kovan Ether', symbol: 'kovETH', decimals: 18 },
-  },
+  }, */
   [SupportedChainId.GOERLI]: {
     networkType: NetworkType.L1,
-    docs: 'https://docs.uniswap.org/',
+    docs: 'https://docs.cow.fi/',
     explorer: 'https://goerli.etherscan.io/',
-    infoLink: 'https://info.uniswap.org/#/',
+    infoLink: 'https://cow.fi/',
     label: 'Görli',
-    logoUrl: ethereumLogoUrl,
+    logoUrl: GoerliLogo,
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
   },
-  [SupportedChainId.OPTIMISM]: {
+  /* [SupportedChainId.OPTIMISM]: {
     networkType: NetworkType.L2,
     blockWaitMsBeforeWarning: ms`25m`,
     bridge: 'https://gateway.optimism.io/?chainId=1',
