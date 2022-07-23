@@ -49,36 +49,8 @@ const AppWrapper = styled.div<Partial<CSS.Properties & AppWrapProps>>`
   align-items: flex-start;
   // MOD
   min-height: 100vh;
-  /* overflow-x: hidden; */ // mod
-  &:after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    filter: blur(20px);
-    backdrop-filter: blur(20px);
-    background-image: ${({ theme }) => theme.body.background};
-    opacity: 0;
-    transition: 0.5s;
-  }
   ${(props) => (props.bgBlur ? '&:after {opacity: 1}' : '&:after {opacity:0}')};
 `
-
-/* const BodyWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 120px 16px 0px 16px;
-  align-items: center;
-  flex: 1;
-  z-index: 1;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 4rem 8px 16px 8px;
-  `};
-` */
 
 const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
