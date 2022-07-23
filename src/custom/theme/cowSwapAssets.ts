@@ -1,4 +1,4 @@
-export function cowSwapBackground(darkMode: boolean): string {
+export function cowSwapBackground(darkMode: boolean, shouldBlurBackground: boolean): string {
   const image = `<svg viewBox="-613.259 -350 2132.13 1200" width="2132.13" height="1200" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <clipPath id="clip-path">
@@ -120,7 +120,13 @@ export function cowSwapBackground(darkMode: boolean): string {
     </style>
   </defs>
   
-  <g clip-path="url(#clip-path)" transform="matrix(1, 0, 0, 1, -613.25885, -350)">
+  <filter id="blurFilter">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="20" />
+  </filter>
+  
+  <g clip-path="url(#clip-path)"
+  ${shouldBlurBackground ? 'filter="url(#blurFilter)"' : ''}
+  transform="matrix(1, 0, 0, 1, -613.25885, -350)">
   
     <!-- WIND POLE -->
     <path id="WINDPOLE_1" class="BROWN_WOOD" d="M364.39 480.48l2.8-.5-37.1-205.68a8.76 8.76 0 01-2.8 0L294.8 489.23h35.31V408.5h21.3zM317 361.22l4.82-31.81h5.43v31.81zm10.25 2.84v41.6h-17l6.29-41.6zm2.84-34.65h7l5.74 31.81h-12.72zm0-2.84v-36.14l6.52 36.14zm-2.84 0h-5l5-33.12zm0 159.82H298.1l11.78-77.89h17.39zm2.84-80.73v-41.6h13.28l7.51 41.6z"/>
