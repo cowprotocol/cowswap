@@ -33,6 +33,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import useDebounce from 'hooks/useDebounce'
 import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
+import { isAddress } from 'utils'
+import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 
 const MAX_ITEMS = 10
 
@@ -59,17 +61,6 @@ export enum TableType {
   FAVOURITE = 'FAVOURITE',
 }
 
-const _filterCb = (token: Token, query?: string) => {
-  if (!query) return false
-
-  const cleanQuery = query.toLowerCase()
-  const address = token.address.toLowerCase()
-  const symbol = token.symbol?.toLowerCase()
-  const name = token.name?.toLowerCase()
-
-  return address.match(cleanQuery) || symbol?.match(cleanQuery) || name?.match(cleanQuery)
-}
-
 export default function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
@@ -88,15 +79,16 @@ export default function TokenTable({
   const debouncedQuery = useDebounce(query, 300)
 
   const handleChange = useCallback((event) => {
-    const { value } = event.target
-    setQuery(value)
+    const input = event.target.value
+    const checksummedInput = isAddress(input)
+    setQuery(checksummedInput || input)
   }, [])
 
   const tokensData = useMemo(() => {
     // only calc anything if we actually have more than 1 token in list
     // and the user is actively searching tokens
     if (rawTokensData.length > 1 && debouncedQuery) {
-      return rawTokensData.filter((token) => _filterCb(token, debouncedQuery))
+      return rawTokensData.filter(getTokenFilter(debouncedQuery))
     } else {
       return rawTokensData
     }
