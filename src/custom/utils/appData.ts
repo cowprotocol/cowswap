@@ -12,7 +12,8 @@ export type BuildAppDataParams = {
 export async function buildAppData({ chainId, slippageBips, referrerAccount, appCode }: BuildAppDataParams) {
   const sdk = COW_SDK[chainId]
 
-  const referrerParams = referrerAccount ? { address: referrerAccount } : undefined
+  const referrerParams =
+    referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
 
   const quoteParams = { slippageBips }
 
