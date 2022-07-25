@@ -14,9 +14,11 @@ export async function buildAppData({ chainId, slippageBips, referrerAccount, app
 
   const referrerParams = referrerAccount ? { address: referrerAccount } : undefined
 
+  const quoteParams = { slippageBips }
+
   const doc = sdk.metadataApi.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
-    metadataParams: { referrerParams, quoteParams: { slippageBips } },
+    metadataParams: { referrerParams, quoteParams },
   })
 
   const calculatedAppData = await sdk.metadataApi.calculateAppDataHash(doc)
