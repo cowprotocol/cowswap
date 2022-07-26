@@ -97,7 +97,7 @@ export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
   const { chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   // return useAppSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  return useAppSelector((state) => state.lists[chainId]?.byUrl)
+  return useAppSelector((state) => state.lists[chainId]?.byUrl || {})
 }
 
 /**
