@@ -12,11 +12,14 @@ export type BuildAppDataParams = {
 export async function buildAppData({ chainId, slippageBips, referrerAccount, appCode }: BuildAppDataParams) {
   const sdk = COW_SDK[chainId]
 
-  const referrerParams = referrerAccount ? { address: referrerAccount } : undefined
+  const referrerParams =
+    referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
+
+  const quoteParams = { slippageBips }
 
   const doc = sdk.metadataApi.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
-    metadataParams: { referrerParams, quoteParams: { slippageBips } },
+    metadataParams: { referrerParams, quoteParams },
   })
 
   const calculatedAppData = await sdk.metadataApi.calculateAppDataHash(doc)
