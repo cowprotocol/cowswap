@@ -25,7 +25,7 @@ export default function Updater(): null {
   const isWindowVisible = useIsWindowVisible()
 
   // get all loaded lists, and the active urls
-  const lists = useAllLists()
+  const lists = useAllLists() || {}
   const activeListUrls = useActiveListUrls()
 
   const fetchList = useFetchListCallback()
