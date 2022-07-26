@@ -78,7 +78,7 @@ export const HeaderControls = styled.div`
     justify-self: center;
     max-width: 960px;
     padding: 1rem;
-    z-index: 99;
+    z-index: 1;
     height: 72px;
     border-radius: 12px 12px 0 0;
   `};

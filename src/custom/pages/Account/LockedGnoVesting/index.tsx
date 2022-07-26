@@ -51,7 +51,12 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const claimableFormatted = formatSmartLocaleAware(vested.subtract(claimed), AMOUNT_PRECISION) || '0'
   const previousAccount = usePrevious(account)
 
-  const canClaim = !loading && unvested.greaterThan(0) && status === ClaimStatus.INITIAL
+  const canClaim =
+    !loading &&
+    unvested.greaterThan(0) &&
+    status === ClaimStatus.INITIAL &&
+    MERKLE_DROP_CONTRACT_ADDRESSES[chainId] &&
+    TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
   const isClaimPending = status === ClaimStatus.SUBMITTED
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
