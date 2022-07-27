@@ -192,8 +192,8 @@ export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
 export const ACCOUNT_MENU_LINKS = [
   { title: 'General', url: '/account' },
   { title: 'Tokens', url: '/account/tokens' },
-  // { title: 'Governance', url: '/account/governance' },
-  // { title: 'Affiliate', url: '/account/affiliate' },
+  { title: 'Governance', url: '/account/governance' },
+  { title: 'Affiliate', url: '/account/affiliate' },
 ]
 
 // These are used for FAQ sidebar menu

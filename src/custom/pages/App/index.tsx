@@ -14,6 +14,7 @@ import { environmentName } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 import { DUNE_DASHBOARD_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
+import { Loading } from 'components/FlashingLoading'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -37,8 +38,8 @@ const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ '
 // Account pages
 const Account = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account'))
 const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
-// const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
-// const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/Affiliate'))
+const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
+const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/Affiliate'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -77,24 +78,12 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   `}
 `
 
-export const LoadingWrapper = styled.div`
-  animation: blinker 2s linear infinite;
-
-  @keyframes blinker {
-    50% {
-      opacity: 0;
-    }
-  }
-`
-
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
     return null
   }
 }
-
-const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
 
 export default function App() {
   return (
@@ -112,9 +101,9 @@ export default function App() {
             <Route exact strict path={Routes.ACCOUNT} component={Account} />
 
             <Route exact strict path={Routes.ACCOUNT} component={Account} />
+            <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} />
             <Route exact strict path={Routes.ACCOUNT_TOKENS} component={TokensOverview} />
-            {/* <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} /> */}
-            {/* <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} /> */}
+            <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} />
 
             <Route exact path={Routes.FAQ} component={Faq} />
             <Route exact strict path={Routes.FAQ_PROTOCOL} component={ProtocolFaq} />

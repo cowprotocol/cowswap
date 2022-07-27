@@ -1,54 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Txt } from 'assets/styles/styled'
 import {
-  FlexCol,
-  FlexWrap,
-  Wrapper,
-  Container,
-  GridWrap,
-  CardHead,
-  StyledContainer,
-  StyledTime,
-  ItemTitle,
-  ChildWrapper,
-  Loader,
   ExtLink,
   CardsWrapper,
   Card,
   CardActions,
-  BannerCard,
   BalanceDisplay,
   ConvertWrapper,
   VestingBreakdown,
-  BannerCardContent,
-  BannerCardSvg,
   CardsLoader,
   CardsSpinner,
-} from '@src/custom/pages/Account/styled'
+} from 'pages/Account/styled'
 import { useActiveWeb3React } from 'hooks/web3'
-import Copy from 'components/Copy/CopyMod'
-import { RefreshCcw } from 'react-feather'
-import Web3Status from 'components/Web3Status'
-import useReferralLink from 'hooks/useReferralLink'
-import useFetchProfile from 'hooks/useFetchProfile'
-import { getBlockExplorerUrl, shortenAddress } from 'utils'
-import { formatMax, formatSmartLocaleAware, numberFormatter } from 'utils/format'
-import { getExplorerAddressLink } from 'utils/explorer'
-import useTimeAgo from 'hooks/useTimeAgo'
+import { getBlockExplorerUrl } from 'utils'
+import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import NotificationBanner from 'components/NotificationBanner'
-import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-import AddressSelector from './AddressSelector'
-import { useHasOrders } from 'api/gnosisProtocol/hooks'
-import { useAffiliateAddress } from 'state/affiliate/hooks'
-import { Title, SectionTitle, HelpCircle } from 'components/Page'
+import { HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
 import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
-import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
@@ -65,6 +38,7 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
+import WrapperWithNav from './WrapperWithNav'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -72,13 +46,7 @@ const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const referralLink = useReferralLink()
   const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
-  const { profileData, isLoading, error } = useFetchProfile()
-  const lastUpdated = useTimeAgo(profileData?.lastUpdated)
-  const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
-  const hasOrders = useHasOrders(account)
-  const selectedAddress = useAffiliateAddress()
   const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()
@@ -184,21 +152,6 @@ export default function Profile() {
     ),
   }
 
-  const renderNotificationMessages = (
-    <>
-      {error && (
-        <NotificationBanner isVisible level="error" canClose={false}>
-          There was an error loading your profile data. Please try again later.
-        </NotificationBanner>
-      )}
-      {chainId && chainId !== ChainId.MAINNET && (
-        <NotificationBanner isVisible level="info" canClose={false}>
-          Affiliate data is only available for Ethereum. Please change the network to see it.
-        </NotificationBanner>
-      )}
-    </>
-  )
-
   const renderConvertToCowContent = useCallback(() => {
     let content = null
 
@@ -246,12 +199,11 @@ export default function Profile() {
   const currencyCOW = COW[chainId]
 
   return (
-    <Container>
+    <WrapperWithNav name="General" id="account-general">
       <TransactionConfirmationModal />
       <ErrorModal />
 
       {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-      <Title>Account</Title>
 
       <CardsWrapper>
         {isCardsLoading ? (
@@ -336,209 +288,9 @@ export default function Profile() {
               openModal={openModal}
               closeModal={closeModal}
             />
-
-            <BannerCard>
-              <BannerCardContent>
-                <b>CoW DAO Governance</b>
-                <small>
-                  Use your (v)COW balance to vote on important proposals or participate in forum discussions.
-                </small>
-                <span>
-                  {' '}
-                  <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
-                  <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
-                </span>
-              </BannerCardContent>
-              <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
-            </BannerCard>
           </>
         )}
       </CardsWrapper>
-
-      <Wrapper>
-        <GridWrap>
-          <CardHead>
-            <SectionTitle>Affiliate Program</SectionTitle>
-            {account && (
-              <Loader isLoading={isLoading}>
-                <StyledContainer>
-                  <Txt>
-                    <RefreshCcw size={16} />
-                    &nbsp;&nbsp;
-                    <Txt secondary>
-                      Last updated
-                      <MouseoverTooltipContent content="Data is updated on the background periodically." wrap>
-                        <HelpCircle size={14} />
-                      </MouseoverTooltipContent>
-                      :&nbsp;
-                    </Txt>
-                    {!lastUpdated ? (
-                      '-'
-                    ) : (
-                      <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />} wrap>
-                        <strong>{lastUpdated}</strong>
-                      </MouseoverTooltipContent>
-                    )}
-                  </Txt>
-                  {hasOrders && (
-                    <ExtLink href={getExplorerAddressLink(chainId, account)}>
-                      <Txt secondary>View all orders ↗</Txt>
-                    </ExtLink>
-                  )}
-                </StyledContainer>
-              </Loader>
-            )}
-          </CardHead>
-          {renderNotificationMessages}
-          <ChildWrapper>
-            <Txt fs={16}>
-              <strong>Your referral url</strong>
-            </Txt>
-            <Txt fs={14} center>
-              {referralLink ? (
-                <>
-                  <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
-                    {referralLink.prefix}
-                    {chainId === ChainId.GNOSIS_CHAIN ? (
-                      <strong>{shortenAddress(referralLink.address)}</strong>
-                    ) : (
-                      <AddressSelector address={referralLink.address} />
-                    )}
-
-                    <span style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 8 }}>
-                      <Copy
-                        toCopy={
-                          selectedAddress && chainId !== ChainId.GNOSIS_CHAIN
-                            ? `${referralLink.prefix}${selectedAddress}`
-                            : referralLink.link
-                        }
-                      />
-                    </span>
-                  </span>
-                </>
-              ) : (
-                '-'
-              )}
-            </Txt>
-          </ChildWrapper>
-          <GridWrap horizontal>
-            <ChildWrapper>
-              <ItemTitle>
-                Trades&nbsp;
-                <MouseoverTooltipContent content="Statistics regarding your own trades." wrap>
-                  <HelpCircle size={14} />
-                </MouseoverTooltipContent>
-              </ItemTitle>
-              <FlexWrap className="item">
-                <FlexCol>
-                  <span role="img" aria-label="farmer">
-                    🧑‍🌾
-                  </span>
-                  <Loader isLoading={isLoading}>
-                    <strong>{formatInt(profileData?.totalTrades)}</strong>
-                  </Loader>
-                  <Loader isLoading={isLoading}>
-                    <span>
-                      Total trades
-                      {isTradesTooltipVisible && (
-                        <MouseoverTooltipContent
-                          content="You may see more trades here than what you see in the activity list. To understand why, check out the FAQ."
-                          wrap
-                        >
-                          <HelpCircle size={14} />
-                        </MouseoverTooltipContent>
-                      )}
-                    </span>
-                  </Loader>
-                </FlexCol>
-                <FlexCol>
-                  <span role="img" aria-label="moneybag">
-                    💰
-                  </span>
-                  <Loader isLoading={isLoading}>
-                    <strong>{formatDecimal(profileData?.tradeVolumeUsd)}</strong>
-                  </Loader>
-                  <Loader isLoading={isLoading}>
-                    <span>Total traded volume</span>
-                  </Loader>
-                </FlexCol>
-              </FlexWrap>
-            </ChildWrapper>
-            <ChildWrapper>
-              <ItemTitle>
-                Referrals&nbsp;
-                <MouseoverTooltipContent
-                  content="Statistics regarding trades by people who used your referral link."
-                  wrap
-                >
-                  <HelpCircle size={14} />
-                </MouseoverTooltipContent>
-              </ItemTitle>
-              <FlexWrap className="item">
-                <FlexCol>
-                  <span role="img" aria-label="handshake">
-                    🤝
-                  </span>
-                  <Loader isLoading={isLoading}>
-                    <strong>{formatInt(profileData?.totalReferrals)}</strong>
-                  </Loader>
-                  <Loader isLoading={isLoading}>
-                    <span>Total referrals</span>
-                  </Loader>
-                </FlexCol>
-                <FlexCol>
-                  <span role="img" aria-label="wingedmoney">
-                    💸
-                  </span>
-                  <Loader isLoading={isLoading}>
-                    <strong>{formatDecimal(profileData?.referralVolumeUsd)}</strong>
-                  </Loader>
-                  <Loader isLoading={isLoading}>
-                    <span>Referrals volume</span>
-                  </Loader>
-                </FlexCol>
-              </FlexWrap>
-            </ChildWrapper>
-          </GridWrap>
-          {!account && <Web3Status />}
-        </GridWrap>
-      </Wrapper>
-    </Container>
+    </WrapperWithNav>
   )
-}
-
-interface TimeProps {
-  date: string | undefined
-}
-
-const TimeFormatted = ({ date }: TimeProps) => {
-  if (!date) return null
-
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
-  const _date = new Date(date)
-  const monthName = months[_date.getMonth()]
-  const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-
-  return <StyledTime>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</StyledTime>
-}
-
-const formatDecimal = (number?: number): string => {
-  return number ? numberFormatter.format(number) : '-'
-}
-
-const formatInt = (number?: number): string => {
-  return number ? number.toLocaleString() : '-'
 }
