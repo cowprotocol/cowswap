@@ -2,7 +2,7 @@ import ms from 'ms.macro'
 import { useState, useEffect, useCallback } from 'react'
 import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
 import { getPriceStrategy, PriceStrategy } from 'api/gnosisProtocol/api'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { SupportedChainId } from 'constants/chains'
 
@@ -13,7 +13,7 @@ const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
 export default function useGetGpPriceStrategy(): GpPriceStrategy {
   const [gpPriceStrategy, setGpPriceStrategy] = useState<GpPriceStrategy>(DEFAULT_GP_PRICE_STRATEGY)
-  const { chainId: preChainId } = useActiveWeb3React()
+  const { chainId: preChainId } = useWeb3React()
 
   const _handleSetStrategy = useCallback((response: PriceStrategy) => setGpPriceStrategy(response.primary), [])
 

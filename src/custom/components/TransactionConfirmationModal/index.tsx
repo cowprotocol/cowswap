@@ -1,19 +1,18 @@
 import { Currency } from '@uniswap/sdk-core'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import React, { ReactNode, useContext, useMemo } from 'react'
+import React, { ReactNode, /*useCallback,*/ useContext, useMemo /*, useState */ } from 'react'
+// import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { CloseIcon } from 'theme'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
-import { RowBetween, RowFixed } from 'components/Row'
-import MetaMaskLogo from 'assets/images/metamask.png'
+import { RowBetween } from 'components/Row'
 import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
-import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
@@ -25,6 +24,7 @@ import { Routes } from 'constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import AddToMetamask from 'components/AddToMetamask' // mod
 
 const Wrapper = styled.div`
   width: 100%;
@@ -152,12 +152,12 @@ const ButtonCustom = styled.button`
   }
 `
 
-const CheckCircleCustom = styled(CheckCircle)`
-  height: auto;
-  width: 20px;
-  max-height: 100%;
-  margin: 0 10px 0 0;
-`
+// const CheckCircleCustom = styled(CheckCircle)`
+//   height: auto;
+//   width: 20px;
+//   max-height: 100%;
+//   margin: 0 10px 0 0;
+// `
 
 const UpperSection = styled.div`
   display: flex;
@@ -456,7 +456,7 @@ export function ConfirmationPendingContent({
   operationType: OperationType
   chainId: number
 }) {
-  const { connector } = useActiveWeb3React()
+  const { connector } = useWeb3React()
   const walletInfo = useWalletInfo()
   const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = useWalletInfo()
 
@@ -531,13 +531,37 @@ export function TransactionSubmittedContent({
   chainId: ChainId
   currencyToAdd?: Currency | undefined
 }) {
+  // const { connector } = useWeb3React()
+  // const isMetamask = getIsMetaMask()
   const theme = useContext(ThemeContext)
-  const { library } = useActiveWeb3React()
-  const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
+
+  // const [success, setSuccess] = useState<boolean | undefined>()
+
+  // const token = currencyToAdd?.wrapped
+  // const logoURL = useCurrencyLogoURIs(token)[0]
+
+  // const addToken = useCallback(() => {
+  //   if (!token?.symbol || !connector.watchAsset) return
+  //   connector
+  //     .watchAsset({
+  //       address: token.address,
+  //       symbol: token.symbol,
+  //       decimals: token.decimals,
+  //       image: logoURL,
+  //     })
+  //     .then(() => {
+  //       addTokenToMetamaskAnalytics('Succeeded', token.symbol)
+  //       setSuccess(true)
+  //     })
+  //     .catch(() => {
+  //       addTokenToMetamaskAnalytics('Failed', token.symbol)
+  //       setSuccess(false)
+  //     })
+  // }, [connector, logoURL, token])
 
   return (
     <Wrapper>
@@ -557,7 +581,8 @@ export function TransactionSubmittedContent({
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
         <ButtonGroup>
-          {currencyToAdd && library?.provider?.isMetaMask && (
+          <AddToMetamask shortLabel currency={currencyToAdd} />
+          {/* {currencyToAdd && isMetamask && (
             <ButtonCustom onClick={addToken}>
               {!success ? (
                 <RowFixed>
@@ -570,7 +595,7 @@ export function TransactionSubmittedContent({
                 </RowFixed>
               )}
             </ButtonCustom>
-          )}
+          )} */}
 
           <ButtonCustom>
             <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>

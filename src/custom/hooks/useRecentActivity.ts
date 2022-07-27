@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
 import { useOrder, useOrders, useOrdersById } from 'state/orders/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -39,7 +39,7 @@ enum TxReceiptStatus {
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
  */
 export default function useRecentActivity() {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const allTransactions = useAllTransactions()
   const allNonEmptyOrders = useOrders({ chainId })
 

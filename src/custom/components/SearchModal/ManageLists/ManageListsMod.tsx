@@ -27,7 +27,7 @@ import { ButtonEmpty, ButtonPrimary } from 'components/Button'
 import Column, { AutoColumn } from 'components/Column'
 import ListLogo from 'components/ListLogo'
 import Row, { RowBetween, RowFixed } from 'components/Row'
-import ListToggle from 'components/Toggle/ListToggle'
+import Toggle from 'components/Toggle'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/SearchModal/styleds'
 
@@ -217,7 +217,7 @@ ListRowProps & { listUrl: string }) {
           </StyledMenu>
         </RowFixed>
       </Column>
-      <ListToggle
+      <Toggle
         isActive={isActive}
         bgColor={listColor}
         toggle={() => {

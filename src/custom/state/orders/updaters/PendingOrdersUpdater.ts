@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useActiveWeb3React } from 'hooks/web3'
-
+import { useWeb3React } from '@web3-react/core'
 import {
   useCancelOrdersBatch,
   useExpireOrdersBatch,
@@ -184,7 +183,7 @@ async function _updateOrders({
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
 
   const pending = usePendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises

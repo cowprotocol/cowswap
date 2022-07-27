@@ -25,12 +25,12 @@ export function shortenAddress(address: string, chars = 4): string {
 }
 
 // account is not optional
-function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
+export function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
   return provider.getSigner(account).connectUnchecked()
 }
 
 // account is optional
-function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
+export function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
   return account ? getSigner(provider, account) : provider
 }
 

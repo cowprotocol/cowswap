@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Check, ChevronDown } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { ensNames } from './ens'
 import { useAffiliateAddress } from 'state/affiliate/hooks'
 import { updateAddress } from 'state/affiliate/actions'
@@ -17,7 +17,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
   const { address } = props
   const dispatch = useAppDispatch()
   const selectedAddress = useAffiliateAddress()
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, provider } = useWeb3React()
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<string[]>([address])
   const toggle = useCallback(() => setOpen((open) => !open), [])
@@ -69,14 +69,14 @@ export default function AddressSelector(props: AddressSelectorProps) {
 
     // the selected address is a ens name, verify that resolves to the correct address
     const verify = async () => {
-      const resolvedAddress = await library?.resolveName(selectedAddress)
+      const resolvedAddress = await provider?.resolveName(selectedAddress)
       if (resolvedAddress !== address) {
         dispatch(updateAddress(address))
       }
     }
 
     verify()
-  }, [selectedAddress, address, dispatch, library])
+  }, [selectedAddress, address, dispatch, provider])
 
   return (
     <>

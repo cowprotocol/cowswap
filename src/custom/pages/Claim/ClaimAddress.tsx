@@ -8,14 +8,14 @@ import { ClaimCommonTypes } from './types'
 import useENS from 'hooks/useENS'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
-import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
+// import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void
 }
 
 export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddressProps) {
-  const { error } = useWeb3React()
+  // const { error } = useWeb3React()
   const { activeClaimAccount, claimStatus, inputAddress } = useClaimState()
   const { setInputAddress } = useClaimDispatchers()
 
@@ -34,8 +34,8 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
     setInputAddress(withoutSpaces)
   }
 
-  const buttonLabel =
-    error instanceof UnsupportedChainIdError ? 'or connect a wallet in a supported network' : 'or connect a wallet'
+  // const buttonLabel =
+  // error instanceof UnsupportedChainIdError ? 'or connect a wallet in a supported network' : 'or connect a wallet'
 
   if (activeClaimAccount || claimStatus === ClaimStatus.CONFIRMED) return null
 
@@ -62,11 +62,7 @@ export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddres
         </InputErrorText>
       )}
 
-      {!account && (
-        <ButtonSecondary onClick={toggleWalletModal}>
-          <Trans>{buttonLabel}</Trans>
-        </ButtonSecondary>
-      )}
+      {!account && <ButtonSecondary onClick={toggleWalletModal}>{/* <Trans>{buttonLabel}</Trans> */}</ButtonSecondary>}
     </CheckAddress>
   )
 }

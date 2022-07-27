@@ -9,7 +9,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { VCow as VCowType } from 'abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
@@ -205,7 +205,7 @@ export function useUserAvailableClaims(account: Account, optionalChainId?: Suppo
 }
 
 export function useUserUnclaimedAmount(account: string | null | undefined): CurrencyAmount<Token> | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { claims } = useUserAvailableClaims(account)
   const pendingIndices = useAllClaimingTransactionIndices()
 
@@ -235,7 +235,7 @@ type UserClaimsResult = {
  * Stores fetched claims in local state
  */
 export function useUserClaims(account: Account, optionalChainId?: SupportedChainId): UserClaimsResult {
-  const { chainId: connectedChain } = useActiveWeb3React()
+  const { chainId: connectedChain } = useWeb3React()
   const chainId = optionalChainId || connectedChain
 
   const [claimInfo, setClaimInfo] = useState<{ [account: string]: UserClaims | null }>({})
@@ -299,7 +299,7 @@ function fetchDeploymentTimestamp(vCowContract: VCowType, chainId: ChainId): Pro
  * Returns null if in there's no network or vCowContract doesn't exist
  */
 function useDeploymentTimestamp(): number | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const vCowContract = useVCowContract()
   const isMounted = useIsMounted()
 
@@ -380,7 +380,7 @@ export function useGnoPrice(): string | null {
   return _useVCowPriceForToken('gnoPrice')
 }
 
-export function useUsdcPrice(): string | null {
+export function useStablecoinPrice(): string | null {
   return _useVCowPriceForToken('usdcPrice')
 }
 
@@ -390,7 +390,7 @@ type VCowPriceFnNames = 'nativeTokenPrice' | 'gnoPrice' | 'usdcPrice'
  * Generic hook for fetching contract value for the many prices
  */
 function _useVCowPriceForToken(priceFnName: VCowPriceFnNames): string | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const vCowContract = useVCowContract()
 
   const [price, setPrice] = useState<string | null>(null)
@@ -416,7 +416,7 @@ export type VCowPrices = {
 export function useVCowPrices(): VCowPrices {
   const native = useNativeTokenPrice()
   const gno = useGnoPrice()
-  const usdc = useUsdcPrice()
+  const usdc = useStablecoinPrice()
 
   return useMemo(() => ({ native, gno, usdc }), [gno, native, usdc])
 }
@@ -458,7 +458,7 @@ export function useClaimCallback(account: string | null | undefined): {
   estimateGasCallback: (claimInputs: ClaimInput[]) => Promise<BigNumber | undefined>
 } {
   // get claim data for given account
-  const { chainId, account: connectedAccount } = useActiveWeb3React()
+  const { chainId, account: connectedAccount } = useWeb3React()
   const { claims } = useUserAvailableClaims(account)
   const vCowContract = useVCowContract()
   const nativeTokenPrice = useNativeTokenPrice()
@@ -929,10 +929,10 @@ type UseUserEnhancedClaimDataResult = {
  */
 export function useUserEnhancedClaimData(account: Account): UseUserEnhancedClaimDataResult {
   const { available, claimed, isLoading } = useClassifiedUserClaims(account)
-  const { chainId: preCheckChainId } = useActiveWeb3React()
+  const { chainId: preCheckChainId } = useWeb3React()
   const native = useNativeTokenPrice()
   const gno = useGnoPrice()
-  const usdc = useUsdcPrice()
+  const usdc = useStablecoinPrice()
 
   const claims = useMemo(() => {
     const chainId = supportedChainId(preCheckChainId)
@@ -991,7 +991,7 @@ function _getPrice({ token, amount }: { amount: string; token: Token | GpEther }
  */
 const COW_BLOG_LINKS_ROOT = 'https://cow-protocol.medium.com'
 export const useClaimLinks = () => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   return useMemo(
     () => ({

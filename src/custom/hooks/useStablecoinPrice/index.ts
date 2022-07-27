@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -10,7 +10,7 @@ import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ 
 
 // MOD imports
 import { supportedChainId } from 'utils/supportedChainId'
-import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useUSDCPrice'
+import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useStablecoinPrice'
 import { stringToCurrency } from 'state/swap/extension'
 import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
@@ -22,7 +22,7 @@ import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { capturePriceFeedException, SentryTag } from 'utils/logging'
 
-export * from '@src/hooks/useUSDCPrice'
+export * from '@src/hooks/useStablecoinPrice'
 
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
@@ -47,7 +47,7 @@ export default function useCowUsdPrice(currency?: Currency) {
   const [error, setError] = useState<Error | null>(null)
 
   const chainId = currency?.chainId
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   // use quote loading as a price update dependency
   const strategy = useGetGpPriceStrategy()
 
@@ -198,7 +198,7 @@ export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
 
 export function useCoingeckoUsdPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
   const blockNumber = useBlockNumber()
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -259,7 +259,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
       return setPrice(usdPrice)
     } catch (error) {
       console.error(
-        '[useUSDCPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
+        '[useStablecoinPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
         tokenAddress,
         error
       )
@@ -324,7 +324,7 @@ function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | u
  */
 /* 
 export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const stablecoin = chainId ? STABLECOIN_AMOUNT_OUT[chainId]?.currency : undefined
 
   return useMemo(() => {

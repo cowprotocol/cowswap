@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { useAppDispatch } from 'state/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
 import { sdk } from 'utils/blocknative'
 import { replaceTransaction } from 'state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
+import { useWeb3React } from '@web3-react/core'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
   for (const hash of pendingHashes) {
@@ -52,13 +52,13 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 }
 
 export default function CancelReplaceTxUpdater(): null {
-  const { chainId, library, account } = useActiveWeb3React()
+  const { chainId, provider, account } = useWeb3React()
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)
 
   useEffect(() => {
-    if (!chainId || !library) return
+    if (!chainId || !provider) return
 
     // Watch the mempool for cancellation/replacement of tx
     watchTxChanges(pendingHashes, chainId, dispatch)
@@ -67,7 +67,7 @@ export default function CancelReplaceTxUpdater(): null {
       // Unwatch the mempool
       unwatchTxChanges(pendingHashes, chainId)
     }
-  }, [chainId, library, pendingHashes, dispatch])
+  }, [chainId, provider, pendingHashes, dispatch])
 
   return null
 }

@@ -25,7 +25,7 @@ import {
   CardsLoader,
   CardsSpinner,
 } from '@src/custom/pages/Account/styled'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import Copy from 'components/Copy/CopyMod'
 import { RefreshCcw } from 'react-feather'
 import Web3Status from 'components/Web3Status'
@@ -49,7 +49,7 @@ import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useTokenBalance } from 'state/connection/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
 import { COW } from 'constants/tokens'
@@ -65,6 +65,7 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
+import { getIsMetaMask } from 'connection/utils'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -72,8 +73,9 @@ const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
+  const isMetamask = getIsMetaMask()
   const referralLink = useReferralLink()
-  const { account, chainId = ChainId.MAINNET, library } = useActiveWeb3React()
+  const { account, chainId = ChainId.MAINNET, provider } = useWeb3React()
   const { profileData, isLoading, error } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const isTradesTooltipVisible = account && chainId === SupportedChainId.MAINNET && !!profileData?.totalTrades
@@ -109,7 +111,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading || !library
+    let output = isVCowLoading || isLockedGnoLoading || !provider
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -117,7 +119,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isLockedGnoLoading, isVCowLoading, library])
+  }, [isLockedGnoLoading, isVCowLoading, provider])
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
@@ -318,9 +320,9 @@ export default function Profile() {
                   View contract ↗
                 </ExtLink>
 
-                {library?.provider?.isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
+                {isMetamask && <AddToMetamask shortLabel currency={currencyCOW} />}
 
-                {!library?.provider?.isMetaMask && (
+                {isMetamask && (
                   <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
                     <div title="Click to copy token contract address">Copy contract</div>
                   </CopyHelper>

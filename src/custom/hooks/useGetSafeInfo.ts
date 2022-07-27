@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { getSafeTransaction } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { retry, RetryOptions } from 'utils/retry'
@@ -10,7 +10,7 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export type GetSafeInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
 export function useGetSafeInfo(): GetSafeInfo {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const getSafeInfo = useCallback<GetSafeInfo>(
     (hash) => {

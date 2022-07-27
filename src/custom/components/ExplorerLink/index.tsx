@@ -1,5 +1,5 @@
 import { ExternalLink } from 'theme'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'utils'
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
  */
 export function ExplorerLink(props: Props) {
   const { id, label, type = 'transaction' } = props
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   if (!chainId) {
     return null
   }

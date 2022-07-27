@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from 'constants/routes'
 import { useHistory } from 'react-router-dom'
-import { useActiveWeb3React } from 'hooks/web3'
-import { useNativeCurrencyBalances } from 'state/wallet/hooks'
+import { useWeb3React } from '@web3-react/core'
+import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
 import { AMOUNT_PRECISION } from 'constants/index'
@@ -54,7 +54,7 @@ export interface LinkType {
 }
 
 export default function Header() {
-  const { account, chainId: connectedChainId } = useActiveWeb3React()
+  const { account, chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']

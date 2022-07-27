@@ -1,16 +1,15 @@
 import { useCallback } from 'react'
-import { Web3Provider } from '@ethersproject/providers'
 
 import { Token } from '@uniswap/sdk-core'
 import { Contract } from '@ethersproject/contracts'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { getBytes32TokenContract, getTokenContract } from 'hooks/useContract'
 import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
 import { useAddUserToken } from 'state/user/hooks'
 import { Erc20 } from 'abis/types'
 import { retry } from 'utils/retry'
-import { ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}
@@ -28,19 +27,19 @@ export interface GetTokenInfoParams {
   address: string
   account: string
 
-  library: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined })
+  provider: JsonRpcProvider
 }
 
 async function _getTokenContract(params: GetTokenInfoParams): Promise<Erc20> {
-  const { address, account, chainId, library } = params
+  const { address, account, chainId, provider } = params
 
-  return contractsCache[address] || getTokenContract(address, undefined, library, account, chainId)
+  return contractsCache[address] || getTokenContract(address, undefined, provider, account, chainId)
 }
 
 async function _getTokenBytes32Contract(params: GetTokenInfoParams): Promise<Contract> {
-  const { address, account, chainId, library } = params
+  const { address, account, chainId, provider } = params
 
-  return bytes32ContractsCache[address] || getBytes32TokenContract(address, undefined, library, account, chainId)
+  return bytes32ContractsCache[address] || getBytes32TokenContract(address, undefined, provider, account, chainId)
 }
 
 async function _getBytes32NameAndSymbol(
@@ -143,18 +142,18 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
  * at hook phase nor uses multicall
  */
 export function useTokenLazy() {
-  const { library, account, chainId } = useActiveWeb3React()
+  const { provider, account, chainId } = useWeb3React()
   const addUserToken = useAddUserToken()
 
   return useCallback(
     async (address: string): Promise<Token | null> => {
       console.debug(`[useTokenLazy::callback] callback called`, address, account, chainId)
 
-      if (!account || !chainId || !address || !library) {
+      if (!account || !chainId || !address || !provider) {
         return null
       }
 
-      const tokenInfo = await _getTokenInfo({ chainId, account, address, library })
+      const tokenInfo = await _getTokenInfo({ chainId, account, address, provider })
 
       if (!tokenInfo) {
         return null
@@ -169,6 +168,6 @@ export function useTokenLazy() {
 
       return token
     },
-    [account, addUserToken, chainId, library]
+    [account, addUserToken, chainId, provider]
   )
 }

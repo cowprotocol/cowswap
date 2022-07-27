@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import NotificationBanner from 'components/NotificationBanner'
 import { useReferralAddress, useResetReferralAddress, useSetReferralAddressActive } from 'state/affiliate/hooks'
 import { hasTrades } from 'utils/trade'
@@ -27,7 +27,7 @@ export default function AffiliateStatusCheck() {
   const setReferralAddressActive = useSetReferralAddressActive()
   const history = useHistory()
   const location = useLocation()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const referralAddress = useReferralAddress()
   const referralAddressQueryParam = useParseReferralQueryParam()
   const allRecentActivity = useRecentActivity()

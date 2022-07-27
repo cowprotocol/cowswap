@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 
-import { useAllTokenBalances } from 'state/wallet/hooks'
+import { useAllTokenBalances } from 'state/connection/hooks'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
@@ -17,16 +17,16 @@ function balanceComparator(balanceA?: CurrencyAmount<Currency>, balanceB?: Curre
   return 0
 }
 
-function getTokenComparator(balances: {
-  [tokenAddress: string]: CurrencyAmount<Currency> | undefined
-}): (tokenA: Token, tokenB: Token) => number {
+function getTokenComparator(
+  balances: [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean]
+): (tokenA: Token, tokenB: Token) => number {
   return function sortTokens(tokenA: Token, tokenB: Token): number {
     // -1 = a is first
     // 1 = b is first
 
     // sort by balances
-    const balanceA = balances[tokenA.address]
-    const balanceB = balances[tokenB.address]
+    const balanceA = balances[0][tokenA.address]
+    const balanceB = balances[0][tokenB.address]
 
     const balanceComp = balanceComparator(balanceA, balanceB)
     if (balanceComp !== 0) return balanceComp

@@ -1,6 +1,6 @@
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { createAction } from '@reduxjs/toolkit'
-import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
+import { SerializableTransactionReceipt } from 'state/transactions/types'
 import { EnhancedTransactionDetails } from './reducer'
 
 type WithChainId = { chainId: number }

@@ -48,7 +48,7 @@ export default function Updater(): null {
       dispatch(enableList(CELO_LIST))
     }
   }, [chainId, dispatch]) */
-  // fetch all lists every 10 minutes, but only after we initialize library
+  // fetch all lists every 10 minutes, but only after we initialize provider
   useInterval(fetchAllListsCallback, provider ? 1000 * 60 * 10 : null)
 
   // whenever a list is not loaded and not loading, try again to load it

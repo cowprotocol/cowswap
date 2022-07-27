@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from 'connection/utils'
-import { getChainInfo } from 'constants/chainInfo'
+import { getConnection } from '@src/connection/utils'
+import { getChainInfo } from '@src/constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES, SupportedChainId } from '@src/constants/chains'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import usePrevious from 'hooks/usePrevious'
@@ -16,7 +16,7 @@ import { useAppDispatch } from 'state/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 import { replaceURLParam } from 'utils/routes'
-import { isChainAllowed, switchChain } from 'utils/switchChain'
+import { isChainAllowed, switchChain } from '@src/utils/switchChain'
 
 export const ActiveRowLinkList = styled.div`
   display: flex;

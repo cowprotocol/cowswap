@@ -13,7 +13,7 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 import ms from 'ms.macro'
 import { useState } from 'react'
 import { ArrowLeft } from 'react-feather'
-import ReactMarkdown from 'react-markdown'
+// import ReactMarkdown from 'react-markdown'
 import { RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -464,9 +464,7 @@ export default function VotePage({
               <ThemedText.MediumHeader fontWeight={600}>
                 <Trans>Description</Trans>
               </ThemedText.MediumHeader>
-              <MarkDownWrapper>
-                <ReactMarkdown source={proposalData?.description} />
-              </MarkDownWrapper>
+              <MarkDownWrapper>{/* <ReactMarkdown source={proposalData?.description} /> */}</MarkDownWrapper>
             </AutoColumn>
             <AutoColumn gap="md">
               <ThemedText.MediumHeader fontWeight={600}>
@@ -479,7 +477,7 @@ export default function VotePage({
                     : ''
                 }
               >
-                <ReactMarkdown source={proposalData?.proposer} />
+                {/* <ReactMarkdown source={proposalData?.proposer} /> */}
               </ProposerAddressLink>
             </AutoColumn>
           </ProposalInfo>

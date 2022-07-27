@@ -1,14 +1,14 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import CopyHelper from 'components/AccountDetails/Copy'
 import { Trans } from '@lingui/macro'
 
-import { SUPPORTED_WALLETS, STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
+import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { getEtherscanLink } from 'utils'
-import { injected, walletconnect, walletlink, fortmatic, WalletProvider } from 'connectors'
+import { getConnection, getConnectionName, getIsMetaMask } from 'connection/utils'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
@@ -41,43 +41,28 @@ import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useR
 import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
-import { gnosisSafe } from 'connectors'
+import { Connector } from '@web3-react/types'
+import {
+  coinbaseWalletConnection,
+  ConnectionType,
+  fortmaticConnection,
+  injectedConnection,
+  walletConnectConnection,
+} from 'connection'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
-type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
-
-export function getWalletName(connector?: AbstractConnector): string {
-  const { ethereum } = window
-  const isMetaMask = !!(ethereum && ethereum.isMetaMask)
-
-  const walletTuple = Object.entries(SUPPORTED_WALLETS).filter(
-    ([walletType, { connector: walletConnector }]) =>
-      walletConnector === connector && (connector !== injected || isMetaMask === (walletType === 'METAMASK'))
-  )
-  return walletTuple[0]?.[1]?.name || 'Unknown wallet'
-}
-
-export function formatConnectorName(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo) {
-  const name = walletInfo?.walletName || getWalletName(connector)
-  // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
-  // This to avoid confusion for instance when using Metamask mobile
-  // When name is not set, it defaults to WalletConnect already
-  const walletConnectSuffix =
-    walletInfo?.provider === WalletProvider.WALLET_CONNECT && walletInfo?.walletName ? ' (via WalletConnect)' : ''
-
-  return (
-    <WalletName>
-      Connected with {name} {walletConnectSuffix}
-    </WalletName>
-  )
-}
-
 // TODO: look into StatusIcon.tsx, could be re-used here
 
-export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo, size?: number) {
+export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo?: ConnectedWalletInfo, size?: number) {
+  if (!connector) {
+    return null
+  }
+
+  const connectionType = getConnection(connector)
+
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
     return (
@@ -94,21 +79,21 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
         <img src={walletInfo.icon} alt={`${walletInfo?.walletName || 'wallet'} logo`} />
       </IconWrapper>
     )
-  } else if (connector === injected) {
+  } else if (connectionType === injectedConnection) {
     return <Identicon size={size} />
-  } else if (connector === walletconnect) {
+  } else if (connectionType === walletConnectConnection) {
     return (
       <IconWrapper size={16}>
         <img src={WalletConnectIcon} alt={'wallet connect logo'} />
       </IconWrapper>
     )
-  } else if (connector === walletlink) {
+  } else if (connectionType === coinbaseWalletConnection) {
     return (
       <IconWrapper size={16}>
         <img src={CoinbaseWalletIcon} alt={'coinbase wallet logo'} />
       </IconWrapper>
     )
-  } else if (connector === fortmatic) {
+  } else if (connectionType === fortmaticConnection) {
     return (
       <IconWrapper size={16}>
         <img src={FortmaticIcon} alt={'fortmatic logo'} />
@@ -133,7 +118,8 @@ export default function AccountDetails({
   toggleWalletModal,
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
-  const { account, connector, chainId: connectedChainId } = useActiveWeb3React()
+  const { account, connector, chainId: connectedChainId } = useWeb3React()
+  const connection = getConnection(connector)
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
 
@@ -145,8 +131,22 @@ export default function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const isMetaMask = getIsMetaMask()
+
+  function formatConnectorName() {
+    return (
+      <WalletName>
+        <Trans>Connected with</Trans> {getConnectionName(connection.type, isMetaMask)}
+      </WalletName>
+    )
+  }
+
   const handleDisconnectClick = () => {
-    ;(connector as any).close()
+    if (connector.deactivate) {
+      connector.deactivate()
+    } else {
+      connector.resetState()
+    }
     localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
     handleCloseOrdersPanel()
     toggleWalletModal()
@@ -172,19 +172,17 @@ export default function AccountDetails({
               {chainId && NETWORK_LABELS[chainId] && (
                 <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
               )}{' '}
-              {formatConnectorName(connector, walletInfo)}
+              {formatConnectorName()}
             </WalletActions>
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              {connector !== injected && connector !== walletlink && connector !== gnosisSafe && (
-                <WalletAction onClick={handleDisconnectClick}>
-                  <Trans>Disconnect</Trans>
-                </WalletAction>
-              )}
-              {connector !== gnosisSafe && (
+              <WalletAction onClick={handleDisconnectClick}>
+                <Trans>Disconnect</Trans>
+              </WalletAction>
+              {connection.type !== ConnectionType.GNOSIS_SAFE && (
                 <WalletAction onClick={toggleWalletModal}>
                   <Trans>Change Wallet</Trans>
                 </WalletAction>

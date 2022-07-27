@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import { useWeb3React } from '@web3-react/core'
 // import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useCallback, useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
@@ -9,7 +9,7 @@ import { Settings, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
+import { useModalIsOpen, useToggleSettingsMenu } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ThemedText } from 'theme'
@@ -125,10 +125,10 @@ export const ModalContentWrapper = styled.div`
 `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
-  // const { chainId } = useActiveWeb3React()
+  // const { chainId } = useWeb3React()
 
   const node = useRef<HTMLDivElement>()
-  const open = useModalOpen(ApplicationModal.SETTINGS)
+  const open = useModalIsOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
 
   const theme = useContext(ThemeContext)

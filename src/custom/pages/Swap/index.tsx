@@ -32,7 +32,7 @@ import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceiv
 import { RowFee } from 'components/swap/TradeSummary/RowFee'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
-import { useHigherUSDValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
 import { MouseoverTooltipContent } from 'components/Tooltip'

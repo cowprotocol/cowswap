@@ -1,7 +1,6 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
-import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
@@ -37,22 +36,6 @@ export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
 export const PRODUCTION_URL = 'cowswap.exchange'
 export const BARN_URL = `barn.${PRODUCTION_URL}`
-
-// Allow WALLET_LINK to be activated on mobile
-// since COINBASE_LINK is limited to use only 1 deeplink on mobile
-SUPPORTED_WALLETS_UNISWAP.WALLET_LINK = {
-  ...SUPPORTED_WALLETS_UNISWAP.WALLET_LINK,
-  mobile: true,
-}
-const DISABLED_WALLETS = /^(?:Portis|COINBASE_LINK)$/i
-
-// Re-export only the supported wallets
-export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
-  if (!DISABLED_WALLETS.test(key)) {
-    acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
-  }
-  return acc
-}, {} as { [key: string]: WalletInfo })
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])

@@ -1,14 +1,14 @@
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import { useWeb3React } from '@web3-react/core'
 // import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 // import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useMemo } from 'react'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 // import { TransactionType } from '../state/transactions/actions'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance } from 'state/connection/hooks'
 import { useWETHContract } from 'hooks/useContract'
 
 // MOD imports

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
 import { OrderMetaData } from 'api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
@@ -140,7 +140,7 @@ function _filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | n
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()

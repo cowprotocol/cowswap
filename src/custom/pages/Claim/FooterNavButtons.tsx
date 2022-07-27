@@ -1,5 +1,4 @@
 import { ReactNode, useEffect, useRef } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 import { Trans } from '@lingui/macro'
 import { isAddress } from '@ethersproject/address'
 import {
@@ -11,7 +10,7 @@ import {
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { ClaimStatus } from 'state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { ClaimAddressProps } from './ClaimAddress'
 import { ClaimCommonTypes } from 'pages/Claim/types'
 
@@ -33,7 +32,7 @@ export default function FooterNavButtons({
   handleSubmitClaim,
   handleCheckClaim,
 }: FooterNavButtonsProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const {
     // account
     activeClaimAccount,
@@ -54,8 +53,6 @@ export default function FooterNavButtons({
 
   const hasError = useHasClaimInvestmentFlowError()
   const hasZeroInvested = useHasZeroInvested()
-
-  const { error } = useWeb3React()
 
   const isInputAddressValid = isAddress(resolvedAddress || '')
 
@@ -91,17 +88,8 @@ export default function FooterNavButtons({
   else if (!hasClaims && claimStatus === ClaimStatus.DEFAULT) {
     buttonContent = (
       <>
-        <ButtonPrimary
-          ref={buttonRef}
-          disabled={!isInputAddressValid || error instanceof UnsupportedChainIdError}
-          type="text"
-          onClick={handleCheckClaim}
-        >
-          {error instanceof UnsupportedChainIdError ? (
-            <Trans>Wrong Network</Trans>
-          ) : (
-            <Trans>Check claimable vCOW</Trans>
-          )}
+        <ButtonPrimary ref={buttonRef} disabled={!isInputAddressValid} type="text" onClick={handleCheckClaim}>
+          <Trans>Check claimable vCOW</Trans>
         </ButtonPrimary>
       </>
     )

@@ -1,6 +1,7 @@
 import { darken } from 'polished'
 import { useState } from 'react'
 import styled, { keyframes } from 'styled-components/macro'
+import { WithClassName } from '@src/custom/types'
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
@@ -62,14 +63,14 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
   width: 24px;
 `
 
-export interface ToggleProps {
+export interface ToggleProps extends WithClassName {
   id?: string
   bgColor?: string
   isActive: boolean
   toggle: () => void
 }
 
-export default function Toggle({ id, bgColor, isActive, toggle }: ToggleProps) {
+export default function Toggle({ id, bgColor, isActive, toggle, className }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
 
   const switchToggle = () => {
@@ -78,7 +79,7 @@ export default function Toggle({ id, bgColor, isActive, toggle }: ToggleProps) {
   }
 
   return (
-    <Wrapper id={id} isActive={isActive} onClick={switchToggle}>
+    <Wrapper id={id} isActive={isActive} onClick={switchToggle} className={className}>
       <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
     </Wrapper>
   )

@@ -9,10 +9,9 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
-import { createWeb3ReactRoot, Web3ReactProvider } from 'web3-react-core'
 
 import Blocklist from 'components/Blocklist'
-import { NetworkContextName } from 'constants/misc'
+import Web3Provider from 'components/Web3Provider'
 import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
@@ -24,7 +23,6 @@ import TransactionUpdater from 'state/transactions/updater'
 import UserUpdater from 'state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
-import getLibrary from 'utils/getLibrary'
 
 import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import FeesUpdater from 'state/price/updater'
@@ -48,8 +46,6 @@ import { UploadToIpfsUpdater } from 'state/appData/updater'
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
-
-const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -85,21 +81,19 @@ ReactDOM.render(
       <AtomProvider>
         <HashRouter>
           <LanguageProvider>
-            <Web3ReactProvider getLibrary={getLibrary}>
-              <Web3ProviderNetwork getLibrary={getLibrary}>
-                <Blocklist>
-                  <BlockNumberProvider>
-                    <Updaters />
-                    <ThemeProvider>
-                      <ThemedGlobalStyle />
-                      <Popups />
-                      <AppziButton />
-                      <App />
-                    </ThemeProvider>
-                  </BlockNumberProvider>
-                </Blocklist>
-              </Web3ProviderNetwork>
-            </Web3ReactProvider>
+            <Web3Provider>
+              <Blocklist>
+                <BlockNumberProvider>
+                  <Updaters />
+                  <ThemeProvider>
+                    <ThemedGlobalStyle />
+                    <Popups />
+                    <AppziButton />
+                    <App />
+                  </ThemeProvider>
+                </BlockNumberProvider>
+              </Blocklist>
+            </Web3Provider>
           </LanguageProvider>
         </HashRouter>
       </AtomProvider>

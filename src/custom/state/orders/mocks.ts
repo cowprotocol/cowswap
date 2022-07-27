@@ -3,7 +3,7 @@ import { batch } from 'react-redux'
 import { Token } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus, OrderKind } from './actions'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
 import { useCombinedActiveList } from 'state/lists/hooks'
 import { registerOnWindow } from 'utils/misc'
@@ -84,7 +84,7 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
 
 // add more orders if less than minPendingOrders currently
 const useAddOrdersOnMount = (minPendingOrders = 5) => {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3React()
 
   const pendingOrders = usePendingOrders({ chainId })
 
@@ -98,7 +98,7 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
 
   useEffect(() => {
     const addNOrders = (ordersNum: number) => {
-      if (!account || !chainId || !library) return
+      if (!account || !chainId || !provider) return
       const tokenMap = lists[chainId]
 
       const tokenList = Object.values(tokenMap)
@@ -126,11 +126,11 @@ const useAddOrdersOnMount = (minPendingOrders = 5) => {
     if (pendingOrdersRef.current.length >= minPendingOrders) return
 
     addNOrders(10)
-  }, [account, addOrder, chainId, library, lists, minPendingOrders])
+  }, [account, addOrder, chainId, provider, lists, minPendingOrders])
 }
 
 const useFulfillOrdersRandomly = (interval = 30000 /* ms */) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const pendingOrders = usePendingOrders({ chainId })
 
   // ref, so we don't rerun useEffect

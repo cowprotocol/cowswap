@@ -5,7 +5,6 @@
 import { useEffect, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
 import { useAddPopup } from 'state/application/hooks'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
@@ -15,6 +14,7 @@ import { useAllTransactionsDetails } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
+import { useWeb3React } from '@web3-react/core'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -163,7 +163,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 }
 
 export default function Updater(): null {
-  const { chainId, library, account } = useActiveWeb3React()
+  const { chainId, provider, account } = useWeb3React()
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''
 
@@ -183,7 +183,7 @@ export default function Updater(): null {
   const transactions = useAllTransactionsDetails(shouldCheckFilter)
 
   useEffect(() => {
-    if (!chainId || !library || !lastBlockNumber) return
+    if (!chainId || !provider || !lastBlockNumber) return
 
     const promiseCancellations = checkEthereumTransactions({
       transactions,
@@ -199,7 +199,7 @@ export default function Updater(): null {
       // Cancel all promises
       promiseCancellations.forEach((cancel) => cancel())
     }
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt, getSafeInfo])
+  }, [chainId, provider, transactions, lastBlockNumber, dispatch, addPopup, getReceipt, getSafeInfo])
 
   return null
 }

@@ -1,4 +1,4 @@
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -27,7 +27,7 @@ export default function TransactionPopup({
   success?: boolean
   summary?: string | JSX.Element
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   // const tx = useTransaction(hash)
   const theme = useContext(ThemeContext)

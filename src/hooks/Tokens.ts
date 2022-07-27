@@ -5,7 +5,7 @@ import { SupportedChainId } from 'constants/chains'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
-import { isL2ChainId } from 'utils/chains'
+import { isL2ChainId } from '@src/utils/chains'
 
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'
