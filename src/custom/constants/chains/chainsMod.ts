@@ -42,7 +42,8 @@ export const CHAIN_IDS_TO_NAMES = {
  * Array of all the supported chain IDs
  */
 export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
-  (id) => typeof id === 'number'
+  // TODO: undo this id check for goerli after prod apis adapt
+  (id) => typeof id === 'number' && id !== SupportedChainId.GOERLI
 ) as SupportedChainId[]
 
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
@@ -59,7 +60,9 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.ROPSTEN,
   SupportedChainId.RINKEBY,
-  SupportedChainId.GOERLI,
+  /* // TODO: reenable once prod has api compatibility
+  SupportedChainId.GOERLI, 
+  */
   /* SupportedChainId.KOVAN,
   SupportedChainId.POLYGON,
   SupportedChainId.POLYGON_MUMBAI, */
