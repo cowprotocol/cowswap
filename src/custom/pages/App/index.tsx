@@ -16,9 +16,13 @@ import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteE
 import { DUNE_DASHBOARD_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 
+// Sync routes
+import Account from 'pages/Account'
+
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
+// Async routes
 const Swap = lazy(() => import(/* webpackPrefetch: true,  webpackChunkName: "swap" */ 'pages/Swap'))
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
@@ -34,12 +38,6 @@ const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pa
 const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
 const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
 const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'pages/Faq/AffiliateFaq'))
-
-// Account pages
-const Account = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account'))
-const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
-const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
-const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/Affiliate'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -90,6 +88,9 @@ export default function App() {
     <>
       <RedirectAnySwapAffectedUsers />
       <Wrapper>
+        {/* Optimistic routes */}
+        <Route strict path={Routes.ACCOUNT} component={Account} />
+        {/* Lazy routes */}
         <Suspense fallback={Loading}>
           <Switch>
             <Redirect from="/claim" to={Routes.ACCOUNT} />
@@ -98,12 +99,6 @@ export default function App() {
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
-            <Route exact strict path={Routes.ACCOUNT} component={Account} />
-
-            <Route exact strict path={Routes.ACCOUNT} component={Account} />
-            <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} />
-            <Route exact strict path={Routes.ACCOUNT_TOKENS} component={TokensOverview} />
-            <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} />
 
             <Route exact path={Routes.FAQ} component={Faq} />
             <Route exact strict path={Routes.FAQ_PROTOCOL} component={ProtocolFaq} />

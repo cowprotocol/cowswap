@@ -21,7 +21,6 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import usePrevious from 'hooks/usePrevious'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import WrapperWithNav from '../WrapperWithNav'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -103,7 +102,7 @@ export default function TokensOverview() {
   }, [chainId, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <WrapperWithNav name="Tokens" id="account-tokens">
+    <>
       <AccountHeading>
         <MenuWrapper ref={node as any}>
           <MenuButton onClick={toggleMenu}>
@@ -133,6 +132,6 @@ export default function TokensOverview() {
       </AccountHeading>
 
       {renderTableContent()}
-    </WrapperWithNav>
+    </>
   )
 }
