@@ -11,6 +11,7 @@ import { useAppDispatch } from 'state/hooks'
 import { replaceURLParam } from 'utils/routes'
 import { getChainNameFromId, getParsedChainId } from 'components/Header/NetworkSelector'
 import { useHistory } from 'react-router-dom'
+import { BLOCKED_CHAIN_IDS } from '../constants/chains'
 
 type ChangeNetworksParams = Pick<ReturnType<typeof useActiveWeb3React>, 'account' | 'chainId' | 'library'>
 export type ChainSwitchCallbackOptions = { skipWalletToggle: boolean; skipToggle: boolean }
@@ -67,6 +68,15 @@ export default function useChangeNetworks({ account, chainId, library }: ChangeN
 
   useEffect(() => {
     if (!chainId || !prevChainId) return
+
+    // check if chain is in blocked list (constants > chains)
+    // do nothing if blocked
+    if (BLOCKED_CHAIN_IDS.find((blockedChain) => blockedChain === urlChainId)) {
+      if (prevChainId) {
+        history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(prevChainId)) })
+      }
+      return
+    }
 
     // when network change originates from wallet or dropdown selector, just update URL
     if (chainId !== prevChainId) {

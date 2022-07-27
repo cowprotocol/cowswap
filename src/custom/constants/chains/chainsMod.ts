@@ -46,6 +46,9 @@ export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(Support
   (id) => typeof id === 'number' && id !== SupportedChainId.GOERLI
 ) as SupportedChainId[]
 
+// TODO: remove goerli
+export const BLOCKED_CHAIN_IDS = [SupportedChainId.GOERLI]
+
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.POLYGON,
@@ -60,9 +63,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.ROPSTEN,
   SupportedChainId.RINKEBY,
-  /* // TODO: reenable once prod has api compatibility
-  SupportedChainId.GOERLI, 
-  */
+  SupportedChainId.GOERLI,
   /* SupportedChainId.KOVAN,
   SupportedChainId.POLYGON,
   SupportedChainId.POLYGON_MUMBAI, */
