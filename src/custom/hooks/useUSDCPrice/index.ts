@@ -20,7 +20,6 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
-import { capturePriceFeedException, SentryTag } from 'utils/logging'
 
 export * from '@src/hooks/useUSDCPrice'
 
@@ -34,6 +33,7 @@ const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token
   // [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC_ARBITRUM, 10_000e6),
   // [SupportedChainId.OPTIMISM]: CurrencyAmount.fromRawAmount(DAI_OPTIMISM, 10_000e18),
   // [SupportedChainId.POLYGON]: CurrencyAmount.fromRawAmount(USDC_POLYGON, 10_000e6),
+  [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6),
   [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 10_000e6),
 }
 
@@ -288,6 +288,7 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
   const gpUsdPrice = useUSDCValue(currencyAmount)
   const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
 
+  /* TODO: review this capturing - it's super noisy in sentry 
   if (!!currencyAmount) {
     // report this to sentry
     capturePriceFeedException(
@@ -296,12 +297,12 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
       { res: !!gpUsdPrice, name: 'COW_API' },
       { res: !!coingeckoUsdPrice, name: 'COINGECKO' }
     )
-  }
+  } */
 
   return coingeckoUsdPrice || gpUsdPrice
 }
 
-function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | undefined) {
+/* function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | undefined) {
   const token = currencyAmount?.wrapped.currency
   return {
     // issue name
@@ -314,7 +315,7 @@ function _buildExceptionIssueParams(currencyAmount: CurrencyAmount<Currency> | u
       amount: currencyAmount?.toExact() || SentryTag.UNKNOWN,
     },
   }
-}
+} */
 
 /**
  *

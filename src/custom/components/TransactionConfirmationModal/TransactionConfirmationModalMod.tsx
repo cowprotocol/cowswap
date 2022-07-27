@@ -34,6 +34,7 @@ import {
   OperationType,
 } from '.'
 import { SupportedChainId } from 'constants/chains'
+import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -383,15 +384,24 @@ export default function TransactionConfirmationModal({
   operationType, // mod
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
+  const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
 
   const isL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId))
 
   if (!chainId) return null
 
+  const _onDismiss =
+    !isL2 && !attemptingTxn && hash
+      ? () => {
+          setShowFollowPendingTxPopup(true)
+          onDismiss()
+        }
+      : onDismiss
+
   // confirmation screen
   return (
     // <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
-    <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
+    <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
       {isL2 && (hash || attemptingTxn) ? (
         <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
       ) : attemptingTxn ? (
@@ -405,7 +415,7 @@ export default function TransactionConfirmationModal({
         <TransactionSubmittedContent
           chainId={chainId}
           hash={hash}
-          onDismiss={onDismiss}
+          onDismiss={_onDismiss}
           currencyToAdd={currencyToAdd}
         />
       ) : (

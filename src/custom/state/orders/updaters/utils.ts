@@ -21,14 +21,18 @@ export function computeOrderSummary({
   // if we can find the order from the API
   // and our specific order exists in our state, let's use that
   if (orderFromApi) {
-    const { buyToken, sellToken, sellAmount, buyAmount, executedBuyAmount, executedSellAmount } = orderFromApi
+    const { buyToken, sellToken, sellAmount, feeAmount, buyAmount, executedBuyAmount, executedSellAmount } =
+      orderFromApi
 
     if (orderFromStore) {
       const { inputToken, outputToken, status, kind } = orderFromStore
       const isFulfilled = status === OrderStatus.FULFILLED
 
       // don't show amounts in atoms
-      const inputAmount = stringToCurrency(isFulfilled ? executedSellAmount : sellAmount, inputToken)
+      const inputAmount = isFulfilled
+        ? stringToCurrency(executedSellAmount, inputToken)
+        : // sellAmount doesn't include the fee, so we add it back to not show a different value when the order is traded
+          stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken))
       const outputAmount = stringToCurrency(isFulfilled ? executedBuyAmount : buyAmount, outputToken)
 
       const inputPrefix = !isFulfilled && kind === OrderKind.BUY ? 'at most ' : ''

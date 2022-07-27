@@ -77,7 +77,7 @@ export const Arrow = styled.div`
   }
 `
 
-export interface PopoverProps extends PopoverContainerProps {
+export interface PopoverProps extends PopoverContainerProps, React.HTMLAttributes<HTMLDivElement> {
   content: React.ReactNode
   // show: boolean
   children: React.ReactNode
@@ -96,6 +96,7 @@ export default function Popover({
   color,
   PopoverContainer,
   Arrow,
+  className,
 }: PopoverProps) {
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
@@ -126,6 +127,7 @@ export default function Popover({
       <ReferenceElement ref={setReferenceElement as any}>{children}</ReferenceElement>
       <Portal>
         <PopoverContainer
+          className={className}
           show={show}
           ref={setPopperElement as any}
           style={styles.popper}

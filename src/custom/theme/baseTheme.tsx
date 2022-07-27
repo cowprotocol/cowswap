@@ -180,6 +180,24 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
       `,
     },
+    dancingCow: css`
+      background: url(${Cursor1}), no-repeat;
+      animation: dancingCow 1s infinite;
+      @keyframes dancingCow {
+        0% {
+          background: url(${Cursor1}), no-repeat;
+        }
+        25% {
+          background: url(${Cursor2}), no-repeat;
+        }
+        50% {
+          background: url(${Cursor3}), no-repeat;
+        }
+        75% {
+          background: url(${Cursor4}), no-repeat;
+        }
+      }
+    `,
     card: {
       background: css`
         background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
@@ -281,7 +299,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       text: colorsTheme.black,
     },
     wallet: {
-      color: darkMode ? colorsTheme.text1 : colorsTheme.text1,
+      color: colorsTheme.text1,
       background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }

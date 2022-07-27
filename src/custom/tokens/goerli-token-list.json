@@ -1,0 +1,85 @@
+{
+  "name": "GP Goerli",
+  "version": {
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  },
+  "keywords": ["GP", "Goerli", "tokens", "trusted"],
+  "logoURI": "https://avatars.githubusercontent.com/u/24954468?s=200&v=4",
+  "timestamp": "2022-05-26T10:45:01.151Z",
+  "tokens": [
+    {
+      "name": "Gnosis",
+      "chainId": 5,
+      "symbol": "GNO",
+      "decimals": 18,
+      "address": "0x02abbdbaaa7b1bb64b5c878f7ac17f8dda169532",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png"
+    },
+    {
+      "name": "CoW Protocol Token",
+      "chainId": 5,
+      "symbol": "COW",
+      "decimals": 18,
+      "address": "0x3430d04E42a722c5Ae52C5Bffbf1F230C2677600",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB/logo.png"
+    },
+    {
+      "name": "USDT",
+      "chainId": 5,
+      "symbol": "USDT",
+      "decimals": 6,
+      "address": "0xe583769738b6dd4e7caf8451050d1948be717679",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png"
+    },
+    {
+      "name": "USD Coin",
+      "chainId": 5,
+      "symbol": "USDC",
+      "decimals": 6,
+      "address": "0x5ddba296458986e462ba4aeb4dddc00fadc9c43b",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+    },
+    {
+      "name": "DAI",
+      "chainId": 5,
+      "symbol": "DAI",
+      "decimals": 18,
+      "address": "0x5c221e77624690fff6dd741493d735a17716c26b",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
+    },
+    {
+      "name": "wBTC",
+      "chainId": 5,
+      "symbol": "wBTC",
+      "decimals": 8,
+      "address": "0xca063a2ab07491ee991dcecb456d1265f842b568",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png"
+    },
+    {
+      "name": "Liquid staked Ether 2.0",
+      "chainId": 5,
+      "symbol": "stETH",
+      "decimals": 18,
+      "address": "0x1643e812ae58766192cf7d2cf9567df2c37e9b7f",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png"
+    },
+    {
+      "name": "Wrapped Ether",
+      "chainId": 5,
+      "symbol": "WETH",
+      "decimals": 18,
+      "address": "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+    },
+    {
+      "name": "Chainlink",
+      "chainId": 5,
+      "symbol": "LINK",
+      "decimals": 18,
+      "address": "0x63bfb2118771bd0da7a6936667a7bb705a06c1ba",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png"
+    }
+  ]
+}

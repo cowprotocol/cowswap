@@ -27,9 +27,9 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosis_chain',
   /* [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.ROPSTEN]: 'ropsten',
-  [SupportedChainId.RINKEBY]: 'rinkeby',
+  [SupportedChainId.RINKEBY]: 'rinkeby', */
   [SupportedChainId.GOERLI]: 'goerli',
-  [SupportedChainId.KOVAN]: 'kovan',
+  /* [SupportedChainId.KOVAN]: 'kovan',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
@@ -42,8 +42,12 @@ export const CHAIN_IDS_TO_NAMES = {
  * Array of all the supported chain IDs
  */
 export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
-  (id) => typeof id === 'number'
+  // TODO: undo this id check for goerli after prod apis adapt
+  (id) => typeof id === 'number' && id !== SupportedChainId.GOERLI
 ) as SupportedChainId[]
+
+// TODO: remove goerli
+export const BLOCKED_CHAIN_IDS = [SupportedChainId.GOERLI]
 
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.MAINNET,
@@ -59,8 +63,8 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.ROPSTEN,
   SupportedChainId.RINKEBY,
-  /* SupportedChainId.GOERLI,
-  SupportedChainId.KOVAN,
+  SupportedChainId.GOERLI,
+  /* SupportedChainId.KOVAN,
   SupportedChainId.POLYGON,
   SupportedChainId.POLYGON_MUMBAI, */
   SupportedChainId.GNOSIS_CHAIN,

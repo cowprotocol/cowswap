@@ -8,7 +8,6 @@ import {
   Summary,
   SummaryInner,
   SummaryInnerRow,
-  TransactionAlertMessage,
   TransactionInnerDetail,
   TextAlert,
   TransactionState as ActivityLink,
@@ -21,10 +20,10 @@ import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
-import AttentionIcon from 'assets/cow-swap/attention.svg'
+import { OrderProgressBar } from 'components/OrderProgressBar'
 import { useToken } from 'hooks/Tokens'
-import SVG from 'react-inlinesvg'
 import { ActivityStatus } from 'hooks/useRecentActivity'
+import { getActivityState } from 'hooks/useActivityDerivedState'
 import { V_COW, COW } from 'constants/tokens'
 
 const DEFAULT_ORDER_SUMMARY = {
@@ -32,17 +31,6 @@ const DEFAULT_ORDER_SUMMARY = {
   to: '',
   limitPrice: '',
   validTo: '',
-}
-
-function unfillableAlert(): JSX.Element {
-  return (
-    <>
-      <TransactionAlertMessage type="attention">
-        <SVG src={AttentionIcon} description="Limit Price Warning" />
-        <b>Limit price out of range:</b>&nbsp;Wait for a matching price or cancel your order.
-      </TransactionAlertMessage>
-    </>
-  )
 }
 
 function GnosisSafeTxDetails(props: {
@@ -53,7 +41,6 @@ function GnosisSafeTxDetails(props: {
   const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
-
   if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
     return null
   }
@@ -159,11 +146,12 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired, isUnfillable } =
-    activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
+  const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
+  const showProgressBar = activityState === 'open' || activityState === 'filled'
 
   if (!order && !enhancedTransaction) return null
 
@@ -307,10 +295,10 @@ export function ActivityDetails(props: {
             View details ↗
           </ActivityLink>
         )}
-
-        {isUnfillable && unfillableAlert()}
-
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        {showProgressBar && (
+          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
+        )}
       </SummaryInner>
     </Summary>
   )

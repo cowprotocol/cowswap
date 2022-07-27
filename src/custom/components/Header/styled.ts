@@ -91,6 +91,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
         css`
           position: absolute;
           top: 0;
+          z-index: 3;
 
           &::before {
             content: '';
@@ -243,7 +244,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 100;
+    z-index: 3;
     background: ${({ theme }) => theme.bg4};
     outline: 0;
     padding: 60px 8px;

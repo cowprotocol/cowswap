@@ -231,7 +231,7 @@ export const LowerSection = styled.div`
     }
   }
 
-  ${LinkStyledButton},${StyledLink} {
+  ${LinkStyledButton}, ${StyledLink} {
     opacity: 0.7;
     color: ${({ theme }) => theme.text1};
 
@@ -239,8 +239,9 @@ export const LowerSection = styled.div`
     font-size: 14px;
 
     &:hover {
-      opacity: 1;
+      color: ${({ theme }) => theme.textLink};
     }
+  }
 `
 
 const NetworkCardUni = styled(YellowCard)`
