@@ -236,13 +236,18 @@ export const ProfileGridWrap = styled(GridWrap)`
   `};
 `
 
-export const CardsWrapper = styled.div<{ padding?: string }>`
+export const CardsWrapper = styled.div<{ padding?: string; useFlex?: boolean }>`
   background: ${({ theme }) => transparentize(0.12, theme.bg1)};
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.cardBorder};
 
-  display: flex;
-  flex-flow: row wrap;
+  ${({ useFlex = true }) =>
+    useFlex &&
+    `
+      display: flex;
+      flex-flow: column nowrap;
+  `};
+
   gap: 16px;
   margin: 16px 0 16px 0;
   padding: ${({ padding = '0px' }) => padding};
