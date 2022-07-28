@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
@@ -13,25 +14,30 @@ import { environmentName } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 import { DUNE_DASHBOARD_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
+import { Loading } from 'components/FlashingLoading'
+
+// Sync routes
+import Account from 'pages/Account'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
+// Async routes
 const Swap = lazy(() => import(/* webpackPrefetch: true,  webpackChunkName: "swap" */ 'pages/Swap'))
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
-const Account = lazy(() => import(/* webpackChunkName: "profile" */ '@src/custom/pages/Account'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
 
+// FAQ pages
 const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
-const ProtocolFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/ProtocolFaq'))
-const TokenFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TokenFaq'))
-const TradingFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/TradingFaq'))
-const AffiliateFaq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq/AffiliateFaq'))
+const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pages/Faq/ProtocolFaq'))
+const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
+const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
+const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'pages/Faq/AffiliateFaq'))
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -70,16 +76,6 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   `}
 `
 
-export const LoadingWrapper = styled.div`
-  animation: blinker 2s linear infinite;
-
-  @keyframes blinker {
-    50% {
-      opacity: 0;
-    }
-  }
-`
-
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
@@ -87,22 +83,22 @@ function createRedirectExternal(url: string) {
   }
 }
 
-const Loading = <LoadingWrapper>Loading...</LoadingWrapper>
-
 export default function App() {
   return (
     <>
       <RedirectAnySwapAffectedUsers />
       <Wrapper>
+        {/* Optimistic routes */}
+        <Route strict path={Routes.ACCOUNT} component={Account} />
+        {/* Lazy routes */}
         <Suspense fallback={Loading}>
           <Switch>
-            <Redirect from="/claim" to="/account" />
-            <Redirect from="/profile" to="/account" />
+            <Redirect from="/claim" to={Routes.ACCOUNT} />
+            <Redirect from="/profile" to={Routes.ACCOUNT} />
             <Route exact strict path={Routes.SWAP} component={Swap} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
-            <Route exact strict path={Routes.ACCOUNT} component={Account} />
 
             <Route exact path={Routes.FAQ} component={Faq} />
             <Route exact strict path={Routes.FAQ_PROTOCOL} component={ProtocolFaq} />

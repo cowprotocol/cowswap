@@ -188,3 +188,19 @@ export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
   [ChainId.GOERLI]: new CowSdk(ChainId.GOERLI, COW_SDK_OPTIONS),
   [ChainId.GNOSIS_CHAIN]: new CowSdk(ChainId.GNOSIS_CHAIN, COW_SDK_OPTIONS),
 }
+// These are used for Account sidebar menu
+export const ACCOUNT_MENU_LINKS = [
+  { title: 'General', url: '/account' },
+  { title: 'Tokens', url: '/account/tokens' },
+  { title: 'Governance', url: '/account/governance' },
+  { title: 'Affiliate', url: '/account/affiliate' },
+]
+
+// These are used for FAQ sidebar menu
+export const FAQ_MENU_LINKS = [
+  { title: 'General', url: '/faq' },
+  { title: 'Protocol', url: '/faq/protocol' },
+  { title: 'Token', url: '/faq/token' },
+  { title: 'Trading', url: '/faq/trading' },
+  { title: 'Affiliate', url: '/faq/affiliate' },
+]
