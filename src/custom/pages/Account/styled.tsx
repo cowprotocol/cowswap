@@ -658,3 +658,31 @@ export const CardsSpinner = styled(SpinnerLoader)`
     stroke: ${({ theme }) => (theme.darkMode ? theme.text1 : theme.primary1)};
   }
 `
+
+interface TimeProps {
+  date: string | undefined
+}
+
+export const TimeFormatted = ({ date }: TimeProps) => {
+  if (!date) return null
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+  const _date = new Date(date)
+  const monthName = months[_date.getMonth()]
+  const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  return <StyledTime>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</StyledTime>
+}

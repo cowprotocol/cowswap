@@ -7,13 +7,10 @@ import {
   MenuItem,
   MenuWrapper,
   StyledChevronDown,
-  Wrapper,
-  AccountPageWrapper,
   Subtitle,
   AccountHeading,
   RemoveTokens,
 } from './styled'
-import { AccountMenu } from '../Menu'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
 import TokensTable from 'components/Tokens/TokensTable'
@@ -105,43 +102,36 @@ export default function TokensOverview() {
   }, [chainId, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <Wrapper>
-      <AccountMenu />
-      <AccountPageWrapper>
-        <AccountHeading>
-          <MenuWrapper ref={node as any}>
-            <MenuButton onClick={toggleMenu}>
-              <Subtitle>
-                <Trans>{PageView[selectedView].label}</Trans>
-              </Subtitle>
-              <StyledChevronDown size={14} />
-            </MenuButton>
+    <>
+      <AccountHeading>
+        <MenuWrapper ref={node as any}>
+          <MenuButton onClick={toggleMenu}>
+            <Subtitle>
+              <Trans>{PageView[selectedView].label}</Trans>
+            </Subtitle>
+            <StyledChevronDown size={14} />
+          </MenuButton>
 
-            {isMenuOpen ? (
-              <Menu>
-                {Object.entries(PageView).map(([key, value]) => (
-                  <MenuItem
-                    key={key}
-                    active={selectedView === key}
-                    onClick={() => handleMenuClick(key as PageViewKeys)}
-                  >
-                    <span>{value.label}</span>
-                    {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                  </MenuItem>
-                ))}
-              </Menu>
-            ) : null}
-          </MenuWrapper>
+          {isMenuOpen ? (
+            <Menu>
+              {Object.entries(PageView).map(([key, value]) => (
+                <MenuItem key={key} active={selectedView === key} onClick={() => handleMenuClick(key as PageViewKeys)}>
+                  <span>{value.label}</span>
+                  {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                </MenuItem>
+              ))}
+            </Menu>
+          ) : null}
+        </MenuWrapper>
 
-          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-            <RemoveTokens onClick={handleRestoreTokens}>
-              (<Trans>Restore defaults</Trans>)
-            </RemoveTokens>
-          )}
-        </AccountHeading>
+        {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+          <RemoveTokens onClick={handleRestoreTokens}>
+            (<Trans>Restore defaults</Trans>)
+          </RemoveTokens>
+        )}
+      </AccountHeading>
 
-        {renderTableContent()}
-      </AccountPageWrapper>
-    </Wrapper>
+      {renderTableContent()}
+    </>
   )
 }
