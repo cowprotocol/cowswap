@@ -78,11 +78,25 @@ export default function TokenTable({
   const [query, setQuery] = useState<string>('')
   const debouncedQuery = useDebounce(query, 300)
 
+  const prevQuery = usePrevious(debouncedQuery)
+
   const handleChange = useCallback((event) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setQuery(checksummedInput || input)
   }, [])
+
+  // reset pagination when user is in a page > 1, searching and deletes query
+  useEffect(() => {
+    // already on page 1, ignore
+    if (page === 1) return
+
+    // if there was some query and user deletes it
+    // reset page
+    if (!!prevQuery && !query) {
+      setPage(1)
+    }
+  }, [query, page, setPage, prevQuery])
 
   const tokensData = useMemo(() => {
     // only calc anything if we actually have more than 1 token in list
