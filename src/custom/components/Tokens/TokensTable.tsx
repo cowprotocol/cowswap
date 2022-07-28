@@ -17,6 +17,7 @@ import {
   PaginationText,
   IndexLabel,
   InfoCircle,
+  TokenSearchInput,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
@@ -30,6 +31,10 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { PageViewKeys } from 'pages/Account/Tokens/TokensOverview'
 import { MouseoverTooltip } from 'components/Tooltip'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import useDebounce from 'hooks/useDebounce'
+import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
+import { isAddress } from 'utils'
+import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 
 const MAX_ITEMS = 10
 
@@ -57,7 +62,7 @@ export enum TableType {
 }
 
 export default function TokenTable({
-  tokensData,
+  tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
   balances,
   selectedView,
@@ -69,6 +74,39 @@ export default function TokenTable({
 
   const toggleWalletModal = useWalletModalToggle()
   const tableRef = useRef<HTMLTableElement | null>(null)
+  // search - takes precedence re:filtering
+  const [query, setQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(query, 300)
+
+  const prevQuery = usePrevious(debouncedQuery)
+
+  const handleChange = useCallback((event) => {
+    const input = event.target.value
+    const checksummedInput = isAddress(input)
+    setQuery(checksummedInput || input)
+  }, [])
+
+  // reset pagination when user is in a page > 1, searching and deletes query
+  useEffect(() => {
+    // already on page 1, ignore
+    if (page === 1) return
+
+    // if there was some query and user deletes it
+    // reset page
+    if (!!prevQuery && !query) {
+      setPage(1)
+    }
+  }, [query, page, setPage, prevQuery])
+
+  const tokensData = useMemo(() => {
+    // only calc anything if we actually have more than 1 token in list
+    // and the user is actively searching tokens
+    if (rawTokensData.length > 1 && debouncedQuery) {
+      return rawTokensData.filter(getTokenFilter(debouncedQuery))
+    } else {
+      return rawTokensData
+    }
+  }, [rawTokensData, debouncedQuery])
 
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
@@ -190,6 +228,16 @@ export default function TokenTable({
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
+      <SearchInputFormatter>
+        <TokenSearchInput
+          type="text"
+          id="token-search-input"
+          placeholder={`Search name/symbol or paste address`}
+          autoComplete="off"
+          value={query}
+          onChange={handleChange}
+        />
+      </SearchInputFormatter>
       {tokensData && sortedTokens.length !== 0 ? (
         <AutoColumn>
           <Table ref={tableRef}>
@@ -262,8 +310,10 @@ export default function TokenTable({
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
-      ) : (
+      ) : !debouncedQuery ? (
         <Loader />
+      ) : (
+        <small>{'No results found :('}</small>
       )}
     </Wrapper>
   )
