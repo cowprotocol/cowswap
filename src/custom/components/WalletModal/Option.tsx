@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
+import { darken } from 'polished'
 
 import { ExternalLink } from 'theme'
 
@@ -38,6 +39,7 @@ export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boole
     border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.primary1}` : ``)};
   }
   opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
+  background-color: ${({ theme, active }) => (active ? theme.primary1 : darken(0.06, theme.bg1))};
 `
 
 const GreenCircle = styled.div`
@@ -88,21 +90,6 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   `};
 `
 
-// MOD
-export interface OptionProps {
-  link?: string | null
-  clickable?: boolean
-  size?: number | null
-  onClick?: null | (() => void)
-  color: string
-  header: React.ReactNode
-  subheader: React.ReactNode | null
-  icon: string
-  active?: boolean
-  id: string
-  OptionCardClickable: typeof OptionCardClickable // GP MOD
-}
-
 export default function Option({
   link = null,
   clickable = true,
@@ -112,27 +99,31 @@ export default function Option({
   header,
   subheader = null,
   icon,
-  active = false,
+  isActive = false,
   id,
-  OptionCardClickable,
-}: OptionProps) {
-  /* {
+}: {
   link?: string | null
   clickable?: boolean
   size?: number | null
   onClick?: null | (() => void)
   color: string
   header: React.ReactNode
-  subheader: React.ReactNode | null
+  subheader?: React.ReactNode
   icon: string
-  active?: boolean
+  isActive?: boolean
   id: string
-} */
+}) {
   const content = (
-    <OptionCardClickable id={id} onClick={onClick} clickable={clickable && !active} active={active}>
+    <OptionCardClickable
+      id={id}
+      onClick={onClick}
+      clickable={clickable && !isActive}
+      active={isActive}
+      data-testid="wallet-modal-option"
+    >
       <OptionCardLeft>
         <HeaderText color={color}>
-          {active ? (
+          {isActive ? (
             <CircleWrapper>
               <GreenCircle>
                 <div />

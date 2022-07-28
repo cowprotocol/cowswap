@@ -3,7 +3,7 @@ import COINBASE_ICON_URL from 'assets/images/coinbaseWalletIcon.svg'
 import { coinbaseWalletConnection, ConnectionType } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from './Option'
+import Option from 'components/WalletModal/Option'
 
 const BASE_PROPS = {
   color: '#315CF5',

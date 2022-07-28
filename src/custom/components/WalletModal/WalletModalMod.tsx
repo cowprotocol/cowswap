@@ -29,6 +29,7 @@ import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
 // MOD imports
 import ModalMod from '@src/components/Modal'
 import { changeWalletAnalytics } from 'utils/analytics'
+import usePrevious from '@src/hooks/usePrevious'
 
 export const CloseIcon = styled.div`
   position: absolute;
@@ -140,7 +141,7 @@ export default function WalletModal({
     ENSName?: string
   } */
   const dispatch = useAppDispatch()
-  const { account } = useWeb3React()
+  const { account, isActive, connector } = useWeb3React()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
@@ -168,6 +169,28 @@ export default function WalletModal({
       setPendingConnector(undefined)
     }
   }, [pendingConnector, walletView])
+
+  // MOD: close modal when a connection is successful
+  const activePrevious = usePrevious(isActive)
+  const connectorPrevious = usePrevious(connector)
+  useEffect(() => {
+    if (
+      walletModalOpen &&
+      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))
+    ) {
+      setWalletView(WALLET_VIEWS.ACCOUNT)
+      toggleWalletModal() // mod
+    }
+  }, [
+    setWalletView,
+    isActive,
+    pendingError,
+    connector,
+    walletModalOpen,
+    activePrevious,
+    connectorPrevious,
+    toggleWalletModal, // mod
+  ])
 
   const tryActivation = useCallback(
     async (connector: Connector) => {

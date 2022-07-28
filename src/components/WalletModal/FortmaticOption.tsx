@@ -3,7 +3,7 @@ import FORTMATIC_ICON_URL from 'assets/images/fortmaticIcon.png'
 import { ConnectionType, fortmaticConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from './Option'
+import Option from 'components/WalletModal/Option'
 
 const BASE_PROPS = {
   color: '#6748FF',

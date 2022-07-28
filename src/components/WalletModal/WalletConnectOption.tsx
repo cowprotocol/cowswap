@@ -3,7 +3,7 @@ import WALLET_CONNECT_ICON_URL from 'assets/images/walletConnectIcon.svg'
 import { ConnectionType, walletConnectConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from './Option'
+import Option from 'components/WalletModal/Option'
 
 const BASE_PROPS = {
   color: '#4196FC',
