@@ -236,12 +236,16 @@ export const ProfileGridWrap = styled(GridWrap)`
   `};
 `
 
-export const CardsWrapper = styled.div`
+export const CardsWrapper = styled.div<{ padding?: string }>`
+  background: ${({ theme }) => transparentize(0.12, theme.bg1)};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
+
   display: flex;
   flex-flow: row wrap;
   gap: 16px;
   margin: 16px 0 16px 0;
-  padding: 0;
+  padding: ${({ padding = '0px' }) => padding};
   z-index: 2;
 
   > div {
@@ -264,19 +268,23 @@ export const CardsWrapper = styled.div`
   `};
 `
 
-export const Card = styled.div<{ showLoader?: boolean }>`
+export const Card = styled.div<{ showLoader?: boolean; useStyles?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
-  border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.cardBorder};
   align-items: flex-end;
+  ${({ theme, useStyles = false }) =>
+    useStyles &&
+    `
+    background: ${transparentize(0.3, theme.bg1)};
+    border-radius: 16px;
+    border: 1px solid ${theme.cardBorder};
+  `};
 
   ${({ showLoader, theme }) =>
     showLoader &&
