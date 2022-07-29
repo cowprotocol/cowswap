@@ -25,6 +25,10 @@ import { OrderID } from 'api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
+import ms from 'ms.macro'
+import { openNpsAppziSometimes } from 'utils/appzi'
+
+const PENDING_TOO_LONG_TIME = ms`5 min`
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -45,10 +49,6 @@ function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: Or
 /**
  *
  * Update the presign Gnosis Safe Tx information (if applies)
- *
- * @param allPendingOrders
- * @param signedOrdersIds
- * @returns
  */
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
@@ -133,9 +133,13 @@ async function _updateOrders({
 
   // Group resolved promises by status
   // Only pick the status that are final
-  const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
-    Record<OrderTransitionStatus, OrderLogPopupMixData[]>
-  >(
+  const {
+    fulfilled,
+    expired,
+    cancelled,
+    presigned,
+    pending: _pending,
+  } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
     (acc, orderData) => {
       if (orderData && orderData.popupData) {
         acc[orderData.status].push(orderData.popupData)
@@ -177,6 +181,23 @@ async function _updateOrders({
       ordersData: fulfilled as OrderFulfillmentData[],
       chainId,
     })
+  }
+
+  // Do not trigger any notification
+  // Instead, check if there is any order pending for a long time
+  // If so, trigger appzi
+  if (_pending.length > 0) {
+    // If there are still pending orders
+    const now = Date.now()
+    for (const { openSince } of pending) {
+      // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
+      if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
+        // Trigger NPS display, controlled by Appzi
+        openNpsAppziSometimes()
+        // Break the loop, don't need to show more than once
+        break
+      }
+    }
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)}
