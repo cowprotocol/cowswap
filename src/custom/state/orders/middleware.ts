@@ -9,7 +9,7 @@ import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'utils/analytics'
-import { openNpsAppzi } from 'utils/appZi'
+import { openNpsAppzi } from 'utils/appzi'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(

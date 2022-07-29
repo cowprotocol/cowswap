@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { ButtonPrimary } from '../Button'
 import FeedbackIcon from './../../assets/cow-swap/feedback.svg'
-import { isAppziEnabled, openFeedbackAppzi } from 'utils/appZi'
+import { isAppziEnabled, openFeedbackAppzi } from 'utils/appzi'
 
 const Wrapper = styled(ButtonPrimary)`
   border-radius: 46px;
