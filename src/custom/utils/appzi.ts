@@ -6,7 +6,7 @@ export const isAppziEnabled =
 export const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
 export const NPS_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || '55872789-593b-4c6c-9e49-9b5c7693e90a'
 
-const APIZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
+const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 
 // const DEFAULT_SETTINGS: AppziCustomSettings = {
 //   tradeCount: 10,
@@ -34,7 +34,7 @@ function initialize() {
     // window.appziSettings = { data: DEFAULT_SETTINGS }
     // updateSettingsAppzi(DEFAULT_SETTINGS)
 
-    ReactAppzi.initialize(APIZI_TOKEN)
+    ReactAppzi.initialize(APPZI_TOKEN)
     // // const appziScript = document.getElementById('react-appzi')
     // // if (appziScript) {
     // //   appziScript.onload = () => {
