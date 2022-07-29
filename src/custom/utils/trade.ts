@@ -147,6 +147,9 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
     sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+
+    // Track since when this order has been open. If pre-sign, not open yet
+    openSince: signingScheme === SigningScheme.PRESIGN ? undefined : Date.now(),
   }
 
   return {

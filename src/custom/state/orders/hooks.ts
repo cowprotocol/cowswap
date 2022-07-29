@@ -4,36 +4,37 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
 import {
+  addOrUpdateOrders,
+  AddOrUpdateOrdersParams,
   addPendingOrder,
-  removeOrder,
-  clearOrders,
-  fulfillOrder,
-  expireOrder,
   cancelOrder,
-  requestOrderCancellation,
-  updateLastCheckedBlock,
-  SerializedOrder,
+  cancelOrdersBatch,
+  clearOrders,
+  expireOrder,
+  expireOrdersBatch,
+  fulfillOrder,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
-  expireOrdersBatch,
-  cancelOrdersBatch,
   Order,
+  OrderStatus,
+  preSignOrders,
+  removeOrder,
+  requestOrderCancellation,
+  SerializedOrder,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
-  AddOrUpdateOrdersParams,
-  addOrUpdateOrders,
-  preSignOrders,
-  UpdatePresignGnosisSafeTxParams,
+  updateLastCheckedBlock,
   updatePresignGnosisSafeTx,
+  UpdatePresignGnosisSafeTxParams,
 } from './actions'
 import {
   getDefaultNetworkState,
+  ORDER_LIST_KEYS,
   OrderObject,
+  ORDERS_LIST,
   OrdersState,
   OrdersStateNetwork,
-  ORDERS_LIST,
   OrderTypeKeys,
-  ORDER_LIST_KEYS,
   PartialOrdersMap,
   V2OrderObject,
 } from './reducer'
@@ -308,11 +309,21 @@ export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (params: AddOrUpdateUnserialisedOrdersParams) => {
-      const orders = params.orders.map((order) => ({
-        ...order,
-        inputToken: serializeToken(order.inputToken),
-        outputToken: serializeToken(order.outputToken),
-      }))
+      const orders = params.orders.map((order) => {
+        const openSince = order.openSince
+          ? order.openSince
+          : order.status === OrderStatus.PENDING
+          ? Date.now()
+          : undefined
+        return {
+          ...order,
+          // set openSince, if not yet set
+          openSince,
+          // serialize token
+          inputToken: serializeToken(order.inputToken),
+          outputToken: serializeToken(order.outputToken),
+        }
+      })
       dispatch(addOrUpdateOrders({ ...params, orders }))
     },
     [dispatch]
