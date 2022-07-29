@@ -26,5 +26,5 @@ export const RPC_URLS: { [key in SupportedChainId]: string } = {
   // [SupportedChainId.POLYGON_MUMBAI]: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
   // [SupportedChainId.CELO]: `https://forno.celo.org`,
   // [SupportedChainId.CELO_ALFAJORES]: `https://alfajores-forno.celo-testnet.org`,
-  [SupportedChainId.GNOSIS_CHAIN]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
+  [SupportedChainId.GNOSIS_CHAIN]: `https://rpc.gnosischain.com`,
 }

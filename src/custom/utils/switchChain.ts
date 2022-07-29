@@ -15,7 +15,6 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {
     case SupportedChainId.MAINNET:
     case SupportedChainId.RINKEBY:
-    case SupportedChainId.GNOSIS_CHAIN:
     case SupportedChainId.GOERLI:
       return [RPC_URLS[chainId]]
     // case SupportedChainId.ROPSTEN:
@@ -36,8 +35,12 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
     //   return ['https://forno.celo.org']
     // case SupportedChainId.CELO_ALFAJORES:
     //   return ['https://alfajores-forno.celo-testnet.org']
-    // default:
+    case SupportedChainId.GNOSIS_CHAIN:
+      return ['https://rpc.gnosischain.com/']
+    default:
   }
+  // Our API-keyed URLs will fail security checks when used with external wallets.
+  throw new Error('RPC URLs must use public endpoints')
 }
 
 export function isChainAllowed(connector: Connector, chainId: number) {
