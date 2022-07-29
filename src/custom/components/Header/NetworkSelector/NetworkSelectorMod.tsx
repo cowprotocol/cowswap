@@ -391,7 +391,6 @@ export default function NetworkSelector() {
   }
 
   const onSupportedChain = info !== undefined
-  console.log('called onSupportedChain', onSupportedChain)
 
   return (
     <SelectorWrapper

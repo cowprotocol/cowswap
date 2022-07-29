@@ -9,7 +9,7 @@ import { getSafeInfo } from 'api/gnosisSafe'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import useIsArgentWallet from 'hooks/useIsArgentWallet'
 import { ConnectionType } from 'connection'
-import { supportedChainId } from '../utils/supportedChainId'
+import { supportedChainId } from 'utils/supportedChainId'
 
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
 const GNOSIS_SAFE_WALLET_NAMES = ['Gnosis Safe Multisig', 'Gnosis Safe', GNOSIS_SAFE_APP_NAME]
@@ -92,14 +92,14 @@ export function useWalletInfo(): ConnectedWalletInfo {
   const { ENSName } = useENSName(account ?? undefined)
   const [gnosisSafeInfo, setGnosisSafeInfo] = useState<SafeInfoResponse>()
 
+  const connectionType = getConnection(connector).type
+
   useEffect(() => {
     // Reset name and icon when provider changes
     // These values are only set for WC wallets
     // When connect is not WC, leave them empty
     setWalletName('')
     setIcon('')
-
-    const connectionType = getConnection(connector).type
 
     // If the connector is wallet connect, try to get the wallet name and icon
     switch (connectionType) {
@@ -117,7 +117,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
         setIcon(SAFE_ICON_URL)
         break
     }
-  }, [connector, provider, walletName])
+  }, [connectionType, connector, provider])
   useEffect(() => {
     if (account && isArgentWallet) {
       setIsSmartContractWallet(true)
