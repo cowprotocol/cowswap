@@ -123,7 +123,7 @@ export default function AccountDetails({
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
 
-  const explorerOrdersLink = account && connectedChainId && getExplorerAddressLink(connectedChainId, account)
+  const explorerOrdersLink = account && chainId && getExplorerAddressLink(chainId, account)
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
 
   const activities =

@@ -42,6 +42,7 @@ import {
   validatedRecipient,
 } from '@src/state/swap/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export * from '@src/state/swap/hooks'
 
@@ -395,11 +396,12 @@ export function queryParametersToSwapState(
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   let typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
   const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
+  const validChainId = supportedChainId(chainId)
 
   if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
     // Defaults to 1 ETH -> USDC
     inputCurrency = defaultInputCurrency // 'ETH' // mod
-    outputCurrency = chainId ? USDC[chainId].address : 'USDC' // mod
+    outputCurrency = validChainId ? USDC[validChainId].address : 'USDC' // mod
     typedValue = '1'
   } else if (inputCurrency === outputCurrency) {
     // clear output if identical
@@ -430,7 +432,7 @@ export function useDefaultsFromURLSearch(): SwapState {
   // TODO: check whether we can use the new function for native currency
   // This is not a great fix for setting a default token
   // but it is better and easiest considering updating default files
-  const defaultInputToken = WETH[chainId || 1].address // mod
+  const defaultInputToken = WETH[supportedChainId(chainId) || SupportedChainId.MAINNET].address // mod
 
   const parsedSwapState = useMemo(() => {
     return queryParametersToSwapState(parsedQs, defaultInputToken, chainId) // mod
@@ -479,15 +481,16 @@ interface CurrencyWithAddress {
 
 export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
   return useMemo(() => {
+    const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
-      WETH[chainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
+      WETH[activeChainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
       {
-        logoURI: chainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
+        logoURI: activeChainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
       }
     )
 
     // TODO: check the new native currency function
-    const native = ETHER.onChain(chainId || DEFAULT_NETWORK_FOR_LISTS)
+    const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
     const [isNativeIn, isNativeOut] = [input?.currency?.isNative, output?.currency?.isNative]
     const [isWrappedIn, isWrappedOut] = [input?.currency?.equals(wrappedToken), output?.currency?.equals(wrappedToken)]

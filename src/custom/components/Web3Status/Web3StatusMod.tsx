@@ -7,7 +7,6 @@ import { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
 import styled, { css } from 'styled-components/macro'
-import { isChainAllowed } from 'utils/switchChain'
 
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useToggleWalletModal } from 'state/application/hooks'
@@ -146,8 +145,6 @@ export function Web3StatusInner() {
 
   const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
-  const chainAllowed = chainId && isChainAllowed(connector, chainId)
-
   const allTransactions = useAllTransactions()
 
   const sortedRecentTransactions = useMemo(() => {
@@ -163,15 +160,6 @@ export function Web3StatusInner() {
 
   if (!chainId) {
     return null
-  } else if (!chainAllowed) {
-    return (
-      <Web3StatusError onClick={toggleWalletModal}>
-        <NetworkIcon />
-        <Text>
-          <Trans>Wrong Network</Trans>
-        </Text>
-      </Web3StatusError>
-    )
   } else if (error) {
     return (
       <Web3StatusError onClick={toggleWalletModal}>

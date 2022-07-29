@@ -17,6 +17,7 @@ import { useTokenBalance } from 'state/connection/hooks'
 // import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 import { SupportedChainId } from 'constants/chains'
 import JSBI from 'jsbi'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -186,7 +187,7 @@ export function useCombinedBalance() {
 
     const isLoading = account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance) ? true : false
 
-    const cow = COW[chainId || SupportedChainId.MAINNET]
+    const cow = COW[supportedChainId(chainId) || SupportedChainId.MAINNET]
 
     if (account) {
       if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
