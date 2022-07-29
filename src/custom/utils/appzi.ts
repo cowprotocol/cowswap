@@ -8,62 +8,55 @@ export const NPS_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || '55872789-593
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 
-// const DEFAULT_SETTINGS: AppziCustomSettings = {
-//   tradeCount: 10,
-//   userJustTraded: 'true',
-// }
-
 declare global {
   interface Window {
     appzi?: {
       openWidget: (key: string) => void
     }
     appziSettings: {
+      userId: string
       data: AppziCustomSettings
     }
   }
 }
 
 interface AppziCustomSettings {
-  tradeCount: number
-  userJustTraded: 'true' | 'false'
+  userTradedOrWaitedForLong?: 'required-to-be-set'
 }
 
 function initialize() {
   if (isAppziEnabled) {
-    // window.appziSettings = { data: DEFAULT_SETTINGS }
-    // updateSettingsAppzi(DEFAULT_SETTINGS)
-
     ReactAppzi.initialize(APPZI_TOKEN)
-    // // const appziScript = document.getElementById('react-appzi')
-    // // if (appziScript) {
-    // //   appziScript.onload = () => {
-    // //     console.log('appZi ready')
-    // //     // updateAppziSettings({
-    // //     //   tradeCount: 0,
-    // //     //   userJustTraded: 'true',
-    // //     // })
-    // //   }
-    // // } else {
-    // //   console.error('Unable to initialize AppZi settings: react-appzi script not present')
-    // // }
   }
 }
 
-export function updateSettingsAppzi(settings: Partial<AppziCustomSettings>) {
-  window.appziSettings.data = {
-    ...window.appziSettings.data,
-    ...settings,
-  }
-  console.log('window.appziSettings', window.appziSettings)
+type AppziSettings = {
+  userId?: string
+  data?: Partial<AppziCustomSettings>
+}
+
+export function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
+  window.appziSettings = { ...(window.appziSettings || {}), data, userId }
 }
 
 export function openFeedbackAppzi() {
+  console.debug(`Showing appzi feedback. Always!`)
   window.appzi?.openWidget(FEEDBACK_KEY)
 }
 
 export function openNpsAppzi() {
+  console.debug(`Showing appzi NPS. Always!`)
   window.appzi?.openWidget(NPS_KEY)
+}
+
+/**
+ * Opening of the modal is delegated to Appzi
+ * It'll display only if the trigger rules are met
+ * Check https://portal.appzi.com/portals/5ju0G/configs/55872789-593b-4c6c-9e49-9b5c7693e90a/trigger
+ */
+export function openNpsAppziSometimes() {
+  console.debug(`Showing appzi NPS. Sometimes...`)
+  updateAppziSettings({ data: { userTradedOrWaitedForLong: 'required-to-be-set' } })
 }
 
 initialize()
