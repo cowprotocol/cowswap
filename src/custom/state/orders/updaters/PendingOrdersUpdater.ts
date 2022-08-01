@@ -117,14 +117,22 @@ async function _updateOrders({
   const pending = orders.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
   // Exit early when there are no pending orders
-  if (pending.length === 0) {
-    // console.debug('[PendingOrdersUpdater] No orders to update')
+  if (!pending.length) {
     return
-  } /* else {
-    console.debug(
-      `[PendingOrdersUpdater] Update ${pending.length} orders for account ${account} and network ${chainId}`
-    )
-  }*/
+  } else {
+    // Check if there is any order pending for a long time
+    // If so, trigger appzi
+    const now = Date.now()
+    for (const { openSince } of pending) {
+      // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
+      if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
+        // Trigger NPS display, controlled by Appzi
+        openNpsAppziSometimes()
+        // Break the loop, don't need to show more than once
+        break
+      }
+    }
+  }
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
@@ -133,13 +141,9 @@ async function _updateOrders({
 
   // Group resolved promises by status
   // Only pick the status that are final
-  const {
-    fulfilled,
-    expired,
-    cancelled,
-    presigned,
-    pending: _pending,
-  } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
+  const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
+    Record<OrderTransitionStatus, OrderLogPopupMixData[]>
+  >(
     (acc, orderData) => {
       if (orderData && orderData.popupData) {
         acc[orderData.status].push(orderData.popupData)
@@ -181,23 +185,6 @@ async function _updateOrders({
       ordersData: fulfilled as OrderFulfillmentData[],
       chainId,
     })
-  }
-
-  // Do not trigger any notification
-  // Instead, check if there is any order pending for a long time
-  // If so, trigger appzi
-  if (_pending.length > 0) {
-    // If there are still pending orders
-    const now = Date.now()
-    for (const { openSince } of pending) {
-      // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
-      if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
-        // Trigger NPS display, controlled by Appzi
-        openNpsAppziSometimes()
-        // Break the loop, don't need to show more than once
-        break
-      }
-    }
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)}

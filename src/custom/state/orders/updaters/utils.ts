@@ -89,7 +89,6 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
     case 'expired':
     case 'cancelled':
     case 'presigned':
-    case 'pending':
       popupData = orderFromStore.id
       break
     default:
