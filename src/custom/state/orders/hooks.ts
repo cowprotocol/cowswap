@@ -16,7 +16,6 @@ import {
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   Order,
-  OrderStatus,
   preSignOrders,
   removeOrder,
   requestOrderCancellation,
@@ -309,21 +308,11 @@ export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (params: AddOrUpdateUnserialisedOrdersParams) => {
-      const orders = params.orders.map((order) => {
-        const openSince = order.openSince
-          ? order.openSince
-          : order.status === OrderStatus.PENDING
-          ? Date.now()
-          : undefined
-        return {
-          ...order,
-          // set openSince, if not yet set
-          openSince,
-          // serialize token
-          inputToken: serializeToken(order.inputToken),
-          outputToken: serializeToken(order.outputToken),
-        }
-      })
+      const orders = params.orders.map((order) => ({
+        ...order,
+        inputToken: serializeToken(order.inputToken),
+        outputToken: serializeToken(order.outputToken),
+      }))
       dispatch(addOrUpdateOrders({ ...params, orders }))
     },
     [dispatch]
