@@ -32,7 +32,7 @@ function getActivityDerivedState(props: {
   gnosisSafeInfo?: SafeInfoResponse
 }): ActivityDerivedState | null {
   const { chainId, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
-  if (activityData === null || chainId === undefined) {
+  if (!activityData || chainId === undefined) {
     return null
   }
 
