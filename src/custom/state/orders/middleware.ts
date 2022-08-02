@@ -9,6 +9,7 @@ import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'utils/analytics'
+import { openNpsAppziSometimes } from 'utils/appzi'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -217,6 +218,17 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     cowSound.play().catch((e) => {
       console.error('🐮 Moooooo sound cannot be played', e)
     })
+  }
+
+  return result
+}
+
+export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
+  const result = next(action)
+
+  if (isBatchFulfillOrderAction(action) || isSingleFulfillOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when there's a successful trade
+    openNpsAppziSometimes()
   }
 
   return result

@@ -44,6 +44,9 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
 
   // Sell amount before the fee applied - necessary for later calculations (unfilled orders)
   sellAmountBeforeFee: BigNumberish
+
+  // For tracking how long an order has been pending
+  openSince?: number
 }
 
 /**

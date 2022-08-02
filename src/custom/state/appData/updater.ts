@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import ms from 'ms.macro'
-import { AppDataDoc } from '@cowprotocol/cow-sdk'
+import { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 import { COW_SDK } from 'constants/index'
 
@@ -98,7 +98,7 @@ async function _actuallyUploadToIpfs(
   try {
     const sdk = COW_SDK[chainId]
 
-    const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc as AppDataDoc)
+    const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc as LatestAppDataDocVersion)
 
     removePending({ chainId, orderId })
 

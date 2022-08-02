@@ -20,23 +20,19 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
+import { useCloseFollowTxPopupIfNot } from 'state/application/hooks'
 import { Web3StatusGeneric as Web3StatusGenericUni } from '@src/components/Web3Status'
+import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
 
-// export const Web3StatusGeneric = styled(ButtonSecondary)`
-//   ${({ theme }) => theme.flexRowNoWrap}
-//   width: 100%;
-//   align-items: center;
-//   padding: 0.5rem;
-//   border-radius: 12px;
-//   cursor: pointer;
-//   user-select: none;
-//   height: 36px;
-//   margin-right: 2px;
-//   margin-left: 1px;
-//   :focus {
-//     outline: none;
-//   }
-// `
+/* const IconWrapper = styled.div<{ size?: number }>`
+  ${({ theme }) => theme.flexColumnNoWrap};
+  align-items: center;
+  justify-content: center;
+  & > * {
+    height: ${({ size }) => (size ? size + 'px' : '32px')};
+    width: ${({ size }) => (size ? size + 'px' : '32px')};
+  }
+`*/
 
 // mod
 export const Web3StatusGeneric = styled(Web3StatusGenericUni)`
@@ -157,6 +153,7 @@ export function Web3StatusInner() {
   const hasPendingTransactions = !!pending.length
   const hasSocks = useHasSocks()
   const toggleWalletModal = useToggleWalletModal()
+  useCloseFollowTxPopupIfNot(hasPendingTransactions)
 
   if (!chainId) {
     return null
@@ -178,9 +175,11 @@ export function Web3StatusInner() {
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>
-              <Trans>{pending?.length} Pending</Trans>
-            </Text>{' '}
+            <FollowPendingTxPopup>
+              <Text>
+                <Trans>{pending?.length} Pending</Trans>
+              </Text>{' '}
+            </FollowPendingTxPopup>
             <Loader stroke="white" />
           </RowBetween>
         ) : (

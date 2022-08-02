@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom'
-import { Menu } from './styled'
-import { FAQ_MENU } from 'constants/mainMenu'
+import { SideMenu } from 'components/SideMenu'
+import { FAQ_MENU_LINKS } from 'constants/index'
 
 export function FaqMenu() {
   return (
-    <Menu>
+    <SideMenu>
       <ul>
-        {FAQ_MENU.map(({ title, url }, i) => (
+        {FAQ_MENU_LINKS.map(({ title, url }, i) => (
           <li key={i}>
             <NavLink exact to={url} activeClassName={'active'}>
               {title}
@@ -14,6 +14,6 @@ export function FaqMenu() {
           </li>
         ))}
       </ul>
-    </Menu>
+    </SideMenu>
   )
 }

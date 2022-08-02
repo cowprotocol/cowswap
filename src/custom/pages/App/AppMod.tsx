@@ -1,6 +1,6 @@
 import Loader from 'components/Loader'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
-import { /*Lazy,*/ Suspense, /* PropsWithChildren, */ ReactNode, useState, useEffect } from 'react'
+import { /*Lazy,*/ Suspense, /* PropsWithChildren, */ ReactNode } from 'react'
 import { /*Redirect,*/ Route, Switch, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
@@ -40,31 +40,13 @@ import * as CSS from 'csstype' // mod
 
 // const Vote = lazy(() => import('./Vote'))
 
-interface AppWrapProps {
-  bgBlur?: boolean
-}
-
-const AppWrapper = styled.div<Partial<CSS.Properties & AppWrapProps>>`
+const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   // MOD
   min-height: 100vh;
   /* overflow-x: hidden; */ // mod
-  &:after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    filter: blur(20px);
-    backdrop-filter: blur(20px);
-    background-image: ${({ theme }) => theme.body.background};
-    opacity: 0;
-    transition: 0.5s;
-  }
-  ${(props) => (props.bgBlur ? '&:after {opacity: 1}' : '&:after {opacity:0}')};
 `
 
 /* const BodyWrapper = styled.div`
@@ -106,17 +88,14 @@ function TopLevelModals() {
 }
 
 export default function App(props?: { children?: ReactNode }) {
-  const [bgBlur, setBgBlur] = useState(false)
   const location = useLocation()
-  useEffect(() => {
-    setBgBlur(location.pathname.length > 1 && location.pathname !== '/swap')
-  }, [location.pathname])
+
   return (
     <ErrorBoundary>
       <Route component={GoogleAnalyticsReporter} />
       <Route component={DarkModeQueryParamReader} />
       <Route component={ApeModeQueryParamReader} />
-      <AppWrapper bgBlur={bgBlur}>
+      <AppWrapper>
         <URLWarning />
         <HeaderWrapper>
           <Header />
@@ -128,11 +107,8 @@ export default function App(props?: { children?: ReactNode }) {
           <Suspense fallback={<Loader />}>
             <Switch>
               {props && props.children}
-              {/*
-              <Route strict path="/vote" component={Vote} />
-              <Route exact strict path="/create-proposal">
-                <Redirect to="/vote/create-proposal" />
-              </Route>
+              {/* <Route exact strict path="/vote" component={Vote} />
+              <Route exact strict path="/vote/:governorIndex/:id" component={VotePage} />
               <Route exact strict path="/claim" component={OpenClaimAddressModalAndRedirectToSwap} />
               <Route exact strict path="/uni" component={Earn} />
               <Route exact strict path="/uni/:currencyIdA/:currencyIdB" component={Manage} />

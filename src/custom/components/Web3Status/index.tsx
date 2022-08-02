@@ -53,7 +53,7 @@ export const Wrapper = styled.div`
   }
 `
 
-const isPending = (data: TransactionAndOrder) =>
+export const isPending = (data: TransactionAndOrder) =>
   data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
 
 const isConfirmed = (data: TransactionAndOrder) =>

@@ -40,7 +40,7 @@ export const WrapCardContainer = styled.div`
   > ${WrapCardWrapper} {
     &:nth-of-type(1) {
       background-color: transparent;
-      color: ${({ theme }) => theme.wallet.color};
+      color: ${({ theme }) => theme.text2};
     }
 
     &:nth-of-type(2) {

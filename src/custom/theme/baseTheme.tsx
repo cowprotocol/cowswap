@@ -108,12 +108,13 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
+export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean, colorsTheme: Colors) {
+  const background = cowSwapBackground(darkMode, shouldBlurBackground)
+
   return {
     body: {
       background: css`
-        background: rgba(164, 211, 227, 1);
-        background: url(data:image/svg+xml;base64,${cowSwapBackground(darkMode)}) no-repeat 100% / cover fixed,
+        background: url(data:image/svg+xml;base64,${background}) no-repeat 100% / cover fixed,
           ${darkMode
             ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
             : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
@@ -299,7 +300,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       text: colorsTheme.black,
     },
     wallet: {
-      color: darkMode ? colorsTheme.text1 : colorsTheme.text1,
+      color: colorsTheme.text1,
       background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }

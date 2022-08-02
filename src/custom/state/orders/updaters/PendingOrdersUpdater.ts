@@ -24,6 +24,10 @@ import { OrderID } from 'api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
+import ms from 'ms.macro'
+import { openNpsAppziSometimes } from 'utils/appzi'
+
+const PENDING_TOO_LONG_TIME = ms`5 min`
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -44,10 +48,6 @@ function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: Or
 /**
  *
  * Update the presign Gnosis Safe Tx information (if applies)
- *
- * @param allPendingOrders
- * @param signedOrdersIds
- * @returns
  */
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
@@ -116,14 +116,22 @@ async function _updateOrders({
   const pending = orders.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
   // Exit early when there are no pending orders
-  if (pending.length === 0) {
-    // console.debug('[PendingOrdersUpdater] No orders to update')
+  if (!pending.length) {
     return
-  } /* else {
-    console.debug(
-      `[PendingOrdersUpdater] Update ${pending.length} orders for account ${account} and network ${chainId}`
-    )
-  }*/
+  } else {
+    // Check if there is any order pending for a long time
+    // If so, trigger appzi
+    const now = Date.now()
+    for (const { openSince } of pending) {
+      // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
+      if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
+        // Trigger NPS display, controlled by Appzi
+        openNpsAppziSometimes()
+        // Break the loop, don't need to show more than once
+        break
+      }
+    }
+  }
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
