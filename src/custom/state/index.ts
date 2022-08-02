@@ -27,7 +27,7 @@ import enhancedTransactions from 'state/enhancedTransactions/reducer'
 import claim from 'state/claim/reducer'
 import cowToken from 'state/cowToken/reducer'
 
-import { popupMiddleware, soundMiddleware } from './orders/middleware'
+import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
 import { cowTokenMiddleware } from 'state/cowToken/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { priceMiddleware } from 'state/price/middleware'
@@ -73,6 +73,7 @@ const store = configureStore({
       .concat(popupMiddleware)
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
+      .concat(appziMiddleware)
       .concat(priceMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
