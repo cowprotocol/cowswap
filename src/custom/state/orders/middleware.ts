@@ -224,12 +224,10 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 }
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
-  const result = next(action)
-
   if (isBatchFulfillOrderAction(action) || isSingleFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
     openNpsAppziSometimes()
   }
 
-  return result
+  return next(action)
 }
