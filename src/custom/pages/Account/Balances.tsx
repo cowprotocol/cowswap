@@ -33,10 +33,8 @@ import AddToMetamask from 'components/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/cowToken/actions'
-import LockedGnoVesting from './LockedGnoVesting'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
-import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
 import { getIsMetaMask } from 'connection/utils'
 
@@ -59,7 +57,7 @@ export default function Profile() {
   const isMetaMask = getIsMetaMask()
 
   // Locked GNO balance
-  const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
+  // const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
@@ -79,7 +77,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading || !provider
+    let output = isVCowLoading || !provider
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -87,7 +85,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isLockedGnoLoading, isVCowLoading, provider])
+  }, [isVCowLoading, provider])
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
@@ -284,12 +282,12 @@ export default function Profile() {
               </CardActions>
             </Card>
 
-            <LockedGnoVesting
+            {/* <LockedGnoVesting
               {...lockedGnoBalances}
               loading={isLockedGnoLoading}
               openModal={openModal}
               closeModal={closeModal}
-            />
+            /> */}
           </>
         )}
       </CardsWrapper>

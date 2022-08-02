@@ -10,6 +10,7 @@ import {
   Subtitle,
   AccountHeading,
   RemoveTokens,
+  WrongNetwork,
 } from './styled'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
@@ -22,6 +23,8 @@ import useTheme from 'hooks/useTheme'
 import usePrevious from 'hooks/usePrevious'
 import { useWeb3React } from '@web3-react/core'
 import { CardsWrapper } from '../styled'
+import { supportedChainId } from 'utils/supportedChainId'
+import Web3Status from '@src/components/Web3Status'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -46,6 +49,8 @@ export default function TokensOverview() {
 
   const prevChainId = usePrevious(chainId)
   const prevSelectedView = usePrevious(selectedView)
+
+  const isChainSupported = supportedChainId(chainId)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -84,8 +89,16 @@ export default function TokensOverview() {
       tokensData = favouriteTokens
     }
 
+    if (!isChainSupported) {
+      return (
+        <WrongNetwork>
+          <Web3Status />
+        </WrongNetwork>
+      )
+    }
+
     return <TokensTable page={page} setPage={setPage} balances={balances} tokensData={tokensData} />
-  }, [balances, favouriteTokens, formattedTokens, page, selectedView])
+  }, [balances, favouriteTokens, formattedTokens, isChainSupported, page, selectedView])
 
   // reset table to page 1 on chain change or on table view change
   useEffect(() => {
