@@ -47,6 +47,12 @@ export function openFeedbackAppzi() {
 export function openNpsAppzi() {
   console.debug(`Showing appzi NPS. Always!`)
   window.appzi?.openWidget(NPS_KEY)
+
+  // Add a unique class based on NPS_KEY
+  const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
+  if (appziRoot) {
+    appziRoot.classList.add(`appzi-nps-${NPS_KEY}`)
+  }
 }
 
 /**
