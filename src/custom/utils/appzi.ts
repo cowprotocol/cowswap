@@ -35,6 +35,10 @@ export function onAppziEvent(callback: EventCallback) {
   eventEmitter.on(EVENT, callback)
 }
 
+export function onceAppziEvent(callback: EventCallback) {
+  eventEmitter.once(EVENT, callback)
+}
+
 export function offAppziEvent(callback: EventCallback) {
   eventEmitter.off(EVENT, callback)
 }
@@ -67,15 +71,21 @@ export function openFeedbackAppzi() {
   window.appzi?.openWidget(FEEDBACK_KEY)
 }
 
-export function openNpsAppzi() {
-  console.debug(`Showing appzi NPS. Always!`)
-  window.appzi?.openWidget(NPS_KEY)
-
+function restyleAppziNps() {
   // Add a unique class based on NPS_KEY
   const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
   if (appziRoot) {
     appziRoot.classList.add(`appzi-nps-${NPS_KEY}`)
   }
+}
+
+export function openNpsAppzi() {
+  console.debug(`Showing appzi NPS. Always!`)
+
+  // Make sure we apply the re-style once the appzi NPS is loaded
+  onceAppziEvent(restyleAppziNps)
+
+  window.appzi?.openWidget(NPS_KEY)
 }
 
 /**
