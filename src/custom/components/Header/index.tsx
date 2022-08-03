@@ -34,7 +34,6 @@ import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'utils/analytics'
-import { openNpsAppzi } from 'utils/appzi'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -69,7 +68,6 @@ export default function Header() {
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const handleOpenOrdersPanel = () => {
     account && setIsOrdersPanelOpen(true)
-    openNpsAppzi()
   }
   const handleCloseOrdersPanel = () => {
     setIsOrdersPanelOpen(false)
