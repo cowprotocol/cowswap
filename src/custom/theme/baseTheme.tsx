@@ -427,7 +427,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       width: 100%!important;
       max-width: 500px!important;
       height: 100%!important;
-      max-height: 260px!important;
+      max-height: 460px!important;
       top: 0!important;
       bottom: 0!important;
       margin: auto!important;
@@ -435,10 +435,12 @@ export const ThemedGlobalStyle = createGlobalStyle`
       left: 0!important;
       right: 0!important;
       z-index: 2147483004!important;
+      padding: 12px 0!important;
 
       ${({ theme }) => theme.mediaWidth.upToSmall`
         max-height: 100%!important;
         max-width: 100%!important;
+        padding: 0!important;
       `}
 
       &::before {
@@ -453,14 +455,31 @@ export const ThemedGlobalStyle = createGlobalStyle`
         z-index: -1;
       }
 
+      > div[data-appzi-dom] {
+        right: 10px;
+        top: 21px;
+        position: absolute;
+        z-index: 99999;
+        width: 100%!important;
+        left: initial!important;
+        bottom: initial;
+        margin: 0 0 0 auto;
+        height: 42px!important;
+      }
+
       > div[data-appzi-dom] > div {
         background-size: 26px 26px!important;
         height: 42px!important;
         width: 42px!important;
-        top: -20px!important;
+        position: relative;
+        top: 0!important;
+        right: 0!important;
+        left: initial!important;
+        margin: 0 0 0 auto!important;
 
         ${({ theme }) => theme.mediaWidth.upToSmall`
           top: 10px!important;
+          right: 10px!important;
         `}
       }
 
