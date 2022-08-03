@@ -422,6 +422,109 @@ export const ThemedGlobalStyle = createGlobalStyle`
     z-index: 2147483004!important;
     display: block!important;
 
+    // Appzi NPS override =============================
+    &.appzi-nps-55872789-593b-4c6c-9e49-9b5c7693e90a {
+      width: 100%!important;
+      max-width: 500px!important;
+      height: 100%!important;
+      max-height: 460px!important;
+      top: 0!important;
+      bottom: 0!important;
+      margin: auto!important;
+      transform: none!important;
+      left: 0!important;
+      right: 0!important;
+      z-index: 2147483004!important;
+      padding: 12px 0!important;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        max-height: 100%!important;
+        max-width: 100%!important;
+        padding: 0!important;
+      `}
+
+      &::before {
+        content: "";
+        background: ${({ theme }) => transparentize(0.6, theme.bg1)};
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        backdrop-filter: blur(3px);
+        z-index: -1;
+      }
+
+      > div[data-appzi-dom] {
+        right: 10px;
+        top: 21px;
+        position: absolute;
+        z-index: 99999;
+        width: 100%!important;
+        left: initial!important;
+        bottom: initial;
+        margin: 0 0 0 auto;
+        height: 42px!important;
+      }
+
+      > div[data-appzi-dom] > div {
+        background-size: 26px 26px!important;
+        height: 42px!important;
+        width: 42px!important;
+        position: relative;
+        top: 0!important;
+        right: 0!important;
+        left: initial!important;
+        margin: 0 0 0 auto!important;
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          top: 10px!important;
+          right: 10px!important;
+        `}
+      }
+
+      #nps-l {
+        font-size: 18px!important;
+        line-height: 1.2!important;
+      }
+
+      #nps-wrapper-inner > div {
+        max-width: 100%!important;
+
+      }
+
+      .digit {
+        font-size: 15px!important;
+        height: 30px!important;
+        width: 30px!important;
+        line-height: 30px!important;
+      }
+
+      .nps {
+        max-width: 100%!important;
+        width: 100%!important;
+
+        > div {
+          margin: 0!important;
+        }
+
+        > div span {
+          color: ${({ theme }) => theme.text1}!important;
+        }
+
+        > div > div {
+          justify-content: space-between!important;
+          display: flex!important;
+          width: 100%!important;
+         }
+      }
+    }
+    // ===================================================
+
+    > div[data-appzi-dom] > div {
+      opacity: 1!important;
+    }
+
     ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
       left: 16px!important;
