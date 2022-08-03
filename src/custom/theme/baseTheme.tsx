@@ -17,6 +17,7 @@ import { HeaderText } from '@src/components/WalletModal/Option'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { ModalContentWrapper } from 'components/Settings/SettingsMod'
+import { NPS_KEY } from 'utils/appzi'
 
 export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
@@ -423,7 +424,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     display: block!important;
 
     // Appzi NPS override =============================
-    &.appzi-nps-55872789-593b-4c6c-9e49-9b5c7693e90a {
+    &.appzi-nps-${NPS_KEY} {
       width: 100%!important;
       max-width: 500px!important;
       height: 100%!important;
