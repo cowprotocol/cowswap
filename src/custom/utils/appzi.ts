@@ -21,7 +21,7 @@ declare global {
 }
 
 interface AppziCustomSettings {
-  userTradedOrWaitedForLong?: 'required-to-be-set'
+  userTradedOrWaitedForLong?: true
 }
 
 function initialize() {
@@ -56,7 +56,7 @@ export function openNpsAppzi() {
  */
 export function openNpsAppziSometimes() {
   console.debug(`Showing appzi NPS. Sometimes...`)
-  updateAppziSettings({ data: { userTradedOrWaitedForLong: 'required-to-be-set' } })
+  updateAppziSettings({ data: { userTradedOrWaitedForLong: true } })
 }
 
 initialize()
