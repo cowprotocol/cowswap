@@ -11,7 +11,8 @@ import { useActiveWeb3Instance } from 'hooks/index'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import useIsArgentWallet from 'hooks/useIsArgentWallet'
 import { useAsyncMemo } from 'use-async-memo'
-import { useAppSelector } from 'state/hooks'
+import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'
+import { useAtomValue } from 'jotai/utils'
 
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
 const SAFE_ICON_URL = 'https://apps.gnosis-safe.io/wallet-connect/favicon.ico'
@@ -133,7 +134,7 @@ export function useWalletInfo(): ConnectedWalletInfo {
   const { ENSName } = useENSName(account ?? undefined)
   const provider = useProviderType()
   const { walletName, icon } = useWalletMetaData()
-  const gnosisSafeInfo = useAppSelector((state) => state.gnosisSafe.safeInfo)
+  const gnosisSafeInfo = useAtomValue(gnosisSafeAtom)
   const isSmartContractWallet = useIsSmartContract()
 
   return {

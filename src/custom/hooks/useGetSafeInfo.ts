@@ -16,12 +16,8 @@ export function useGetSafeInfo(): GetSafeInfo {
   return useCallback<GetSafeInfo>(
     (hash) => {
       return retry(() => {
-        if (chainId === undefined) {
-          throw new Error('No chainId yet')
-        }
-
-        if (!library) {
-          throw new Error('No library yet')
+        if (chainId === undefined || !library) {
+          throw new Error('No chainId or library yet')
         }
 
         return getSafeTransaction(chainId, hash, library as Web3Provider)
