@@ -73,7 +73,8 @@ export function openFeedbackAppzi() {
 
 let appziRestyleApplied = false
 function applyOnceRestyleAppziNps() {
-  if (appziRestyleApplied) {
+  if (!appziRestyleApplied) {
+    appziRestyleApplied = true
     // Make sure we apply the re-style once the appzi NPS is loaded
     onceAppziEvent(restyleAppziNps)
   }
