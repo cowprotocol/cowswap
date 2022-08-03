@@ -71,20 +71,27 @@ export function openFeedbackAppzi() {
   window.appzi?.openWidget(FEEDBACK_KEY)
 }
 
+let appziRestyleApplied = false
+function applyOnceRestyleAppziNps() {
+  if (appziRestyleApplied) {
+    // Make sure we apply the re-style once the appzi NPS is loaded
+    onceAppziEvent(restyleAppziNps)
+  }
+}
+
 function restyleAppziNps() {
   // Add a unique class based on NPS_KEY
   const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
   if (appziRoot) {
     appziRoot.classList.add(`appzi-nps-${NPS_KEY}`)
+    appziRestyleApplied = true
   }
 }
 
 export function openNpsAppzi() {
   console.debug(`Showing appzi NPS. Always!`)
 
-  // Make sure we apply the re-style once the appzi NPS is loaded
-  onceAppziEvent(restyleAppziNps)
-
+  applyOnceRestyleAppziNps()
   window.appzi?.openWidget(NPS_KEY)
 }
 
@@ -95,6 +102,8 @@ export function openNpsAppzi() {
  */
 export function openNpsAppziSometimes() {
   console.debug(`Showing appzi NPS. Sometimes...`)
+
+  applyOnceRestyleAppziNps()
   updateAppziSettings({ data: { userTradedOrWaitedForLong: true } })
 }
 
