@@ -44,7 +44,7 @@ export function offAppziEvent(callback: EventCallback) {
 }
 
 function triggerAppziEvent(payload: any) {
-  console.log('[appzi] Event', payload)
+  // console.log('[appzi] Event', payload)
   eventEmitter.emit(EVENT, payload)
 }
 
@@ -67,24 +67,31 @@ export function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
 }
 
 export function openFeedbackAppzi() {
-  console.debug(`Showing appzi feedback. Always!`)
   window.appzi?.openWidget(FEEDBACK_KEY)
 }
 
-function restyleAppziNps() {
-  // Add a unique class based on NPS_KEY
-  const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
-  if (appziRoot) {
-    appziRoot.classList.add(`appzi-nps-${NPS_KEY}`)
+let appziRestyleApplied = false
+function applyOnceRestyleAppziNps() {
+  if (!appziRestyleApplied) {
+    appziRestyleApplied = true
+    // Make sure we apply the re-style once the appzi NPS is loaded
+    onceAppziEvent(restyleAppziNps)
+  }
+}
+
+function restyleAppziNps(event: any) {
+  if (event && event.type && event.type === 'open-survey') {
+    // Add a unique class based on NPS_KEY
+    const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
+    if (appziRoot) {
+      appziRoot.classList.add(`appzi-nps-${NPS_KEY}`)
+      appziRestyleApplied = true
+    }
   }
 }
 
 export function openNpsAppzi() {
-  console.debug(`Showing appzi NPS. Always!`)
-
-  // Make sure we apply the re-style once the appzi NPS is loaded
-  onceAppziEvent(restyleAppziNps)
-
+  applyOnceRestyleAppziNps()
   window.appzi?.openWidget(NPS_KEY)
 }
 
@@ -94,7 +101,7 @@ export function openNpsAppzi() {
  * Check https://portal.appzi.com/portals/5ju0G/configs/55872789-593b-4c6c-9e49-9b5c7693e90a/trigger
  */
 export function openNpsAppziSometimes() {
-  console.debug(`Showing appzi NPS. Sometimes...`)
+  applyOnceRestyleAppziNps()
   updateAppziSettings({ data: { userTradedOrWaitedForLong: true } })
 }
 
