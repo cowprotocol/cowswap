@@ -1,20 +1,20 @@
-import * as connectionUtils from 'connection/utils'
-import { ApplicationModal } from 'state/application/reducer'
+import * as connectionUtils from '@src/connection/utils'
+import { ApplicationModal } from '@src/state/application/reducer'
 
 import { render, screen } from '../../test-utils'
-import WalletModal from './index'
+import WalletModal from '@src/components/WalletModal/index'
 
 afterEach(() => {
   jest.clearAllMocks()
   jest.resetModules()
 })
 
-const UserAgentMock = jest.requireMock('utils/userAgent')
-jest.mock('utils/userAgent', () => ({
+const UserAgentMock = jest.requireMock('@src/utils/userAgent')
+jest.mock('@src/utils/userAgent', () => ({
   isMobile: false,
 }))
 
-jest.mock('.../../state/application/hooks', () => {
+jest.mock('@src/state/application/hooks', () => {
   return {
     useModalIsOpen: (_modal: ApplicationModal) => true,
     useToggleWalletModal: () => {

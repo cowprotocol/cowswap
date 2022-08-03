@@ -15,7 +15,7 @@ jest.mock('@web3-react/core', () => {
   }
 })
 
-describe('networks', () => {
+describe.skip('networks', () => {
   it('renders error card when unsupported chain is selected', () => {
     jest.spyOn(switchChain, 'isChainAllowed').mockReturnValue(false)
     jest.spyOn(useV3Positions, 'useV3Positions').mockImplementation(() => {
