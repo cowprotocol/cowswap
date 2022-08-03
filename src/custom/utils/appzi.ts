@@ -1,3 +1,4 @@
+import EventEmitter from 'events'
 import ReactAppzi from 'react-appzi'
 
 export const isAppziEnabled =
@@ -7,6 +8,9 @@ export const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || 'f7591ec
 export const NPS_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || '55872789-593b-4c6c-9e49-9b5c7693e90a'
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
+const EVENT = 'message'
+
+type EventCallback = (event: any) => void
 
 declare global {
   interface Window {
@@ -16,6 +20,7 @@ declare global {
     appziSettings: {
       userId: string
       data: AppziCustomSettings
+      onEvent: EventCallback
     }
   }
 }
@@ -24,9 +29,31 @@ interface AppziCustomSettings {
   userTradedOrWaitedForLong?: 'required-to-be-set'
 }
 
+const eventEmitter = new EventEmitter()
+
+export function onAppziEvent(callback: EventCallback) {
+  eventEmitter.on(EVENT, callback)
+}
+
+export function onceAppziEvent(callback: EventCallback) {
+  eventEmitter.once(EVENT, callback)
+}
+
+export function offAppziEvent(callback: EventCallback) {
+  eventEmitter.off(EVENT, callback)
+}
+
+function triggerAppziEvent(payload: any) {
+  console.log('[appzi] Event', payload)
+  eventEmitter.emit(EVENT, payload)
+}
+
 function initialize() {
   if (isAppziEnabled) {
     ReactAppzi.initialize(APPZI_TOKEN)
+
+    window.appziSettings = window.appziSettings || {}
+    window.appziSettings.onEvent = triggerAppziEvent
   }
 }
 
@@ -44,15 +71,21 @@ export function openFeedbackAppzi() {
   window.appzi?.openWidget(FEEDBACK_KEY)
 }
 
-export function openNpsAppzi() {
-  console.debug(`Showing appzi NPS. Always!`)
-  window.appzi?.openWidget(NPS_KEY)
-
+function restyleAppziNps() {
   // Add a unique class based on NPS_KEY
   const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
   if (appziRoot) {
     appziRoot.classList.add(`appzi-nps-${NPS_KEY}`)
   }
+}
+
+export function openNpsAppzi() {
+  console.debug(`Showing appzi NPS. Always!`)
+
+  // Make sure we apply the re-style once the appzi NPS is loaded
+  onceAppziEvent(restyleAppziNps)
+
+  window.appzi?.openWidget(NPS_KEY)
 }
 
 /**
