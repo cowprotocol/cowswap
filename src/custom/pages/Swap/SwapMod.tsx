@@ -87,6 +87,7 @@ import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
 import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
+import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -571,6 +572,8 @@ export default function Swap({
 
   const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
 
+  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
   const [exactInLabel, exactOutLabel] = useMemo(
@@ -865,6 +868,12 @@ export default function Swap({
             ) : !account ? (
               <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+              </ButtonPrimary>
+            ) : isReadonlyGnosisSafeUser ? (
+              <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+                <ThemedText.Main mb="4px">
+                  <Trans>Read Only</Trans>
+                </ThemedText.Main>
               </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>

@@ -248,7 +248,7 @@
     "@davatar/react": "1.8.1",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
-    "@gnosis.pm/safe-apps-web3-react": "^0.6.0",
+    "@gnosis.pm/safe-apps-web3-react": "^1.5.0",
     "@gnosis.pm/safe-service-client": "^0.1.1",
     "@popperjs/core": "^2.4.4",
     "@reduxjs/toolkit": "^1.8.0",
