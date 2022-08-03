@@ -22,9 +22,6 @@ export function useFavouriteTokens(): Token[] {
   const { chainId } = useWeb3React()
   const serializedTokensMap = useAppSelector(({ user: { favouriteTokens } }) => favouriteTokens)
 
-  const s = useAppSelector((state) => state)
-  console.log('state', s)
-
   return useMemo(() => {
     if (!chainId) return []
     const tokenMap: Token[] = serializedTokensMap?.[chainId]
