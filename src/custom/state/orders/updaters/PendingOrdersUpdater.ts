@@ -25,10 +25,9 @@ import { OrderID } from 'api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
-import ms from 'ms.macro'
 import { openNpsAppziSometimes } from 'utils/appzi'
 
-const PENDING_TOO_LONG_TIME = ms`5 min`
+const PENDING_TOO_LONG_TIME = 10 * 1000 // 10 seconds
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
