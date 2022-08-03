@@ -26,6 +26,7 @@ import affiliate from 'state/affiliate/reducer'
 import enhancedTransactions from 'state/enhancedTransactions/reducer'
 import claim from 'state/claim/reducer'
 import cowToken from 'state/cowToken/reducer'
+import gnosisSafe from 'state/gnosisSafe/reducer'
 
 import { popupMiddleware, soundMiddleware } from './orders/middleware'
 import { cowTokenMiddleware } from 'state/cowToken/middleware'
@@ -59,6 +60,7 @@ const reducers = {
   profile,
   claim,
   cowToken,
+  gnosisSafe,
 }
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile']

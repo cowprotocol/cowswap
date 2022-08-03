@@ -1,6 +1,10 @@
 import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { registerOnWindow } from 'utils/misc'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
+import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
+// eslint-disable-next-line no-restricted-imports
+import { ethers } from 'ethers'
 
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'https://safe-transaction.gnosis.io',
@@ -19,25 +23,34 @@ const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}
 
-function _getClient(chainId: number): SafeServiceClient | null {
-  let client = SAFE_TRANSACTION_SERVICE_CACHE[chainId]
-  if (client === undefined) {
-    const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
-    if (!url) {
-      client = null
-    } else {
-      client = new SafeServiceClient(url)
-    }
+function _getClient(chainId: number, library: Web3Provider): SafeServiceClient | null {
+  const cachedClient = SAFE_TRANSACTION_SERVICE_CACHE[chainId]
 
-    // Add client to cache (or null if unknonw network)
-    SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
+  if (cachedClient !== undefined) {
+    return cachedClient
   }
+
+  const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
+  const client = url ? createSafeServiceClient(url, library) : null
+
+  // Add client to cache (or null if unknonw network)
+  SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
 
   return client
 }
 
-function _getClientOrThrow(chainId: number): SafeServiceClient {
-  const client = _getClient(chainId)
+function createSafeServiceClient(txServiceUrl: string, library: Web3Provider): SafeServiceClient {
+  const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signer: provider.getSigner(0),
+  })
+
+  return new SafeServiceClient({ txServiceUrl, ethAdapter })
+}
+
+function _getClientOrThrow(chainId: number, library: Web3Provider): SafeServiceClient {
+  const client = _getClient(chainId, library)
   if (!client) {
     throw new Error('Unsupported network for Gnosis Safe Transaction Service: ' + chainId)
   }
@@ -55,15 +68,20 @@ export function getSafeWebUrl(chaindId: number, safeAddress: string): string | n
   return `${SAFE_BASE_URL}/app/${chainShortName}:${safeAddress}/transactions/queue` // TODO: This will change soon in https://github.com/gnosis/safe-react/issues/970
 }
 
-export function getSafeTransaction(chainId: number, safeTxHash: string): Promise<SafeMultisigTransactionResponse> {
+export function getSafeTransaction(
+  chainId: number,
+  safeTxHash: string,
+  library: Web3Provider
+): Promise<SafeMultisigTransactionResponse> {
   console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
-  const client = _getClientOrThrow(chainId)
+  const client = _getClientOrThrow(chainId, library)
+
   return client.getTransaction(safeTxHash)
 }
 
-export function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
+export function getSafeInfo(chainId: number, safeAddress: string, library: Web3Provider): Promise<SafeInfoResponse> {
   console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
-  const client = _getClientOrThrow(chainId)
+  const client = _getClientOrThrow(chainId, library)
 
   return client.getSafeInfo(safeAddress)
 }

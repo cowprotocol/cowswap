@@ -21,7 +21,6 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { useWalletInfo } from './useWalletInfo'
-import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
@@ -51,7 +50,6 @@ interface GetWrapUnwrapCallback {
   balance?: CurrencyAmount<Currency>
   inputAmount?: CurrencyAmount<Currency>
   wethContract: Contract
-  gnosisSafeInfo: SafeInfoResponse | undefined
   addTransaction: TransactionAdder
   openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
   closeModals: () => void
@@ -203,7 +201,7 @@ export default function useWrapCallback(
   inputAmount?: CurrencyAmount<Currency>,
   isEthTradeOverride?: boolean
 ): WrapUnwrapCallback {
-  const { chainId: connectedChainId, account, gnosisSafeInfo } = useWalletInfo()
+  const { chainId: connectedChainId, account } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -232,7 +230,6 @@ export default function useWrapCallback(
         inputAmount,
         addTransaction,
         wethContract,
-        gnosisSafeInfo,
         openTransactionConfirmationModal,
         closeModals,
       })
@@ -245,7 +242,6 @@ export default function useWrapCallback(
     isEthTradeOverride,
     balance,
     inputAmount,
-    gnosisSafeInfo,
     addTransaction,
     openTransactionConfirmationModal,
     closeModals,
