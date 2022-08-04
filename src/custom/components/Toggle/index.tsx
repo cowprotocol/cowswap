@@ -4,12 +4,13 @@ import ToggleUni, { ToggleProps as TogglePropsUni, ToggleElement } from '@src/co
 export type ToggleProps = TogglePropsUni
 
 const WrappedToggle = styled(ToggleUni)`
-  background: ${({ theme }) => theme.bg7};
+  background: ${({ theme }) => (theme.darkMode ? theme.bg3 : theme.bg2)};
 
   ${ToggleElement} {
     color: ${({ theme }) => theme.text1};
     border: 2px solid transparent;
     transition: border 0.2s ease-in-out;
+    background: ${({ theme }) => theme.primary1};
 
     &:hover {
       color: ${({ theme }) => theme.text1};

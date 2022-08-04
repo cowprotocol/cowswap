@@ -36,7 +36,7 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
 import { getProviderErrorMessage } from 'utils/misc'
-import { getIsMetaMask } from 'connection/utils'
+import { MetaMask } from '@web3-react/metamask'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
@@ -44,7 +44,7 @@ const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const { account, chainId = ChainId.MAINNET, provider } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET, provider, connector } = useWeb3React()
   const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()
@@ -54,7 +54,7 @@ export default function Profile() {
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
 
-  const isMetaMask = getIsMetaMask()
+  const isMetaMask = (connector as MetaMask)?.provider?.isMetaMask
 
   // Locked GNO balance
   // const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()

@@ -4,9 +4,10 @@ import { useWeb3React } from '@web3-react/core'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import CopyHelper from 'components/AccountDetails/Copy'
+import { updateSelectedWallet } from 'state/user/reducer'
+import { useAppDispatch } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 
-import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { getEtherscanLink } from 'utils'
 import { getConnection, getConnectionName, getIsMetaMask } from 'connection/utils'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
@@ -131,6 +132,8 @@ export default function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const dispatch = useAppDispatch()
+
   const isMetaMask = getIsMetaMask()
 
   function formatConnectorName() {
@@ -147,7 +150,7 @@ export default function AccountDetails({
     } else {
       connector.resetState()
     }
-    localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+    dispatch(updateSelectedWallet({ wallet: undefined }))
     handleCloseOrdersPanel()
     toggleWalletModal()
   }
