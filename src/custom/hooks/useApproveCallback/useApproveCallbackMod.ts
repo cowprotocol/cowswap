@@ -20,9 +20,10 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
-import { OptionalApproveCallbackParams } from '.'
+import { ApproveCallback, OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
+import { MakeOptional } from 'types'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -61,7 +62,23 @@ export function useApproveCallback({
   amountToApprove,
   spender,
   amountToCheckAgainstAllowance,
-}: ApproveCallbackParams) {
+}: MakeOptional<ApproveCallbackParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback
+export function useApproveCallback({
+  openTransactionConfirmationModal,
+  closeModals,
+  amountToApprove,
+  spender,
+  amountToCheckAgainstAllowance,
+}: ApproveCallbackParams): ApproveCallback
+export function useApproveCallback({
+  openTransactionConfirmationModal,
+  closeModals,
+  amountToApprove,
+  spender,
+  amountToCheckAgainstAllowance,
+}:
+  | ApproveCallbackParams
+  | MakeOptional<ApproveCallbackParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback {
   const { account, chainId } = useWeb3React()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -87,7 +104,9 @@ export function useApproveCallback({
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
-    async (optionalParams?: OptionalApproveCallbackParams): Promise<void> => {
+    async (
+      optionalParams: OptionalApproveCallbackParams = { useModals: true }
+    ): Promise<TransactionResponse | undefined> => {
       if (approvalState !== ApprovalState.NOT_APPROVED) {
         console.error('approve was called unnecessarily')
         return
@@ -132,10 +151,11 @@ export function useApproveCallback({
         })
       })
 
-      openTransactionConfirmationModal(
-        optionalParams?.modalMessage || `Approving ${amountToApprove.currency.symbol} for trading`,
-        OperationType.APPROVE_TOKEN
-      )
+      optionalParams.useModals &&
+        openTransactionConfirmationModal?.(
+          optionalParams?.modalMessage || `Approving ${amountToApprove.currency.symbol} for trading`,
+          OperationType.APPROVE_TOKEN
+        )
       return (
         tokenContract
           .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
@@ -147,6 +167,7 @@ export function useApproveCallback({
               summary: optionalParams?.transactionSummary || 'Approve ' + amountToApprove.currency.symbol,
               approval: { tokenAddress: token.address, spender },
             })
+            return response
           })
           // .catch((error: Error) => {
           //   console.debug('Failed to approve token', error)
@@ -169,7 +190,7 @@ export function useApproveCallback({
   )
 
   const revokeApprove = useCallback(
-    async (optionalParams?: OptionalApproveCallbackParams): Promise<void> => {
+    async (optionalParams: OptionalApproveCallbackParams = { useModals: true }): Promise<void> => {
       if (approvalState === ApprovalState.NOT_APPROVED) {
         console.error('Revoke approve was called unnecessarily')
         return
@@ -206,10 +227,11 @@ export function useApproveCallback({
         })
       })
 
-      openTransactionConfirmationModal(
-        optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
-        OperationType.REVOKE_APPROVE_TOKEN
-      )
+      optionalParams.useModals &&
+        openTransactionConfirmationModal?.(
+          optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
+          OperationType.REVOKE_APPROVE_TOKEN
+        )
       return (
         tokenContract
           .approve(spender, '0', {
