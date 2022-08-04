@@ -80,7 +80,7 @@ function applyOnceRestyleAppziNps() {
 }
 
 function restyleAppziNps(event: any) {
-  if (event && event.type && event.type === 'open-survey') {
+  if (event && event.type === 'open-survey') {
     // Add a unique class based on NPS_KEY
     const appziRoot = document.querySelector("div[id^='appzi-wfo-']")
     if (appziRoot) {
