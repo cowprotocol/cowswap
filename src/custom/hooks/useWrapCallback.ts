@@ -40,7 +40,7 @@ export enum WrapType {
 
 interface WrapUnwrapCallback {
   wrapType: WrapType
-  execute?: ({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
+  execute?: (params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
   inputError?: string
 }
 
@@ -104,7 +104,7 @@ function _getWrapUnwrapCallback(
 
   // Create wrap/unwrap callback if sufficient balance
   let wrapUnwrapCallback:
-    | (({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
+    | ((params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
     | undefined
   if (sufficientBalance && inputAmount) {
     let wrapUnwrap: () => Promise<TransactionResponse>
@@ -141,9 +141,9 @@ function _getWrapUnwrapCallback(
     }
 
     const operationMessage = getOperationMessage(operationType, chainId)
-    wrapUnwrapCallback = async ({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => {
+    wrapUnwrapCallback = async (params) => {
       try {
-        useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
+        params?.useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
         wrapAnalytics('Send', operationMessage)
 
         const txReceipt = await wrapUnwrap()
@@ -153,11 +153,11 @@ function _getWrapUnwrapCallback(
           hash: txReceipt.hash,
           summary,
         })
-        useModals && closeModals?.()
+        params?.useModals && closeModals?.()
 
         return txReceipt
       } catch (error) {
-        useModals && closeModals?.()
+        params?.useModals && closeModals?.()
 
         const isRejected = isRejectRequestProviderError(error)
         const action = isRejected ? 'Reject' : 'Error'
