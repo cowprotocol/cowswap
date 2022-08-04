@@ -264,10 +264,6 @@ export const LowerSectionSimple = styled(LowerSection)`
     ${TransactionWrapper} {
       padding: 10px 15px;
 
-      &:last-child {
-        margin-bottom: 0;
-      }
-
       // target the activity comp
       > div > ${ActivityDetailsText} > ${Summary} {
         grid-template-columns: auto;

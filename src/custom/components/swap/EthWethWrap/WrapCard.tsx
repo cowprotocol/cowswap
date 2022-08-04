@@ -36,10 +36,11 @@ export const WrapCardContainer = styled.div`
   margin: 12px 0;
   width: 100%;
   min-height: 140px;
+  overflow: hidden;
 
   > ${WrapCardWrapper} {
     &:nth-of-type(1) {
-      background-color: transparent;
+      background-color: ${({ theme }) => theme.bg2};
       color: ${({ theme }) => theme.text2};
     }
 
