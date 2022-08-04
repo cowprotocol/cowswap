@@ -28,6 +28,7 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
+import { supportedChainId } from 'utils/supportedChainId'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -390,7 +391,7 @@ export default function NetworkSelector() {
     return null
   }
 
-  const onSupportedChain = info !== undefined
+  const isChainSupported = supportedChainId(chainId)
 
   return (
     <SelectorWrapper
@@ -399,11 +400,11 @@ export default function NetworkSelector() {
       onMouseLeave={closeModal}
       onClick={isMobile ? toggleModal : undefined}
     >
-      <SelectorControls supportedChain={onSupportedChain}>
-        {onSupportedChain ? (
+      <SelectorControls supportedChain={!!isChainSupported}>
+        {isChainSupported ? (
           <>
-            <SelectorLogo src={info.logoUrl} />
-            <SelectorLabel>{info.label}</SelectorLabel>
+            <SelectorLogo src={info?.logoUrl} />
+            <SelectorLabel>{info?.label}</SelectorLabel>
             <StyledChevronDown />
           </>
         ) : (
@@ -418,7 +419,7 @@ export default function NetworkSelector() {
         <FlyoutMenu>
           <FlyoutMenuContents>
             <FlyoutHeader>
-              <Trans>Select a {!onSupportedChain ? ' supported ' : ''}network</Trans>
+              <Trans>Select a {!isChainSupported ? ' supported ' : ''}network</Trans>
             </FlyoutHeader>
             {NETWORK_SELECTOR_CHAINS.map((chainId: SupportedChainId) =>
               isChainAllowed(connector, chainId) ? (

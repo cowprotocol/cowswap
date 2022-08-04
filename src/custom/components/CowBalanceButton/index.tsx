@@ -7,7 +7,7 @@ import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { COW } from 'constants/tokens'
 import { transparentize } from 'polished'
 import { useWeb3React } from '@web3-react/core'
-import { supportedChainId } from '@src/custom/utils/supportedChainId'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: ${({ theme }) => theme.bg4};

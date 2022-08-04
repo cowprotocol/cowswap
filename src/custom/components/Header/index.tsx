@@ -121,7 +121,7 @@ export default function Header() {
             />
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
-              {account && userEthBalance && (
+              {account && userEthBalance && chainId && (
                 <BalanceText>
                   {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
                 </BalanceText>
