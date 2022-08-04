@@ -4,6 +4,7 @@ import { getSafeTransaction } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { retry, RetryOptions } from 'utils/retry'
 import { RetryResult } from '../types'
+import { supportedChainId } from 'utils/supportedChainId'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
@@ -17,6 +18,10 @@ export function useGetSafeInfo(): GetSafeInfo {
       return retry(() => {
         if (chainId === undefined) {
           throw new Error('No chainId yet')
+        }
+
+        if (!supportedChainId(chainId)) {
+          throw new Error('Unsupported chainId: ' + chainId)
         }
 
         return getSafeTransaction(chainId, hash)

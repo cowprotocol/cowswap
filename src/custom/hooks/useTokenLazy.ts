@@ -10,6 +10,7 @@ import { useAddUserToken } from 'state/user/hooks'
 import { Erc20 } from 'abis/types'
 import { retry } from 'utils/retry'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { supportedChainId } from '../utils/supportedChainId'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}
@@ -142,8 +143,9 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
  * at hook phase nor uses multicall
  */
 export function useTokenLazy() {
-  const { provider, account, chainId } = useWeb3React()
+  const { provider, account, chainId: _chainId } = useWeb3React()
   const addUserToken = useAddUserToken()
+  const chainId = supportedChainId(_chainId)
 
   return useCallback(
     async (address: string): Promise<Token | null> => {

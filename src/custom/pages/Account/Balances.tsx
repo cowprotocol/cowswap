@@ -35,6 +35,8 @@ import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/cowToken/actions'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
+import LockedGnoVesting from './LockedGnoVesting'
+import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
 
@@ -57,7 +59,7 @@ export default function Profile() {
   const isMetaMask = (connector as MetaMask)?.provider?.isMetaMask
 
   // Locked GNO balance
-  // const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
+  const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
   // Cow balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
@@ -282,12 +284,12 @@ export default function Profile() {
               </CardActions>
             </Card>
 
-            {/* <LockedGnoVesting
+            <LockedGnoVesting
               {...lockedGnoBalances}
               loading={isLockedGnoLoading}
               openModal={openModal}
               closeModal={closeModal}
-            /> */}
+            />
           </>
         )}
       </CardsWrapper>

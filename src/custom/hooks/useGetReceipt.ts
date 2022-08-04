@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { retry, RetryableError, RetryOptions } from 'utils/retry'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { RetryResult } from 'types/index'
+import { supportedChainId } from '../utils/supportedChainId'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {
@@ -21,6 +22,7 @@ export function useGetReceipt(): GetReceipt {
 
       return retry(() => {
         if (!provider || !chainId) throw new Error('No provider or chainId yet')
+        if (!supportedChainId(chainId)) throw new Error('Unsupported chainId: ' + chainId)
 
         return provider.getTransactionReceipt(hash).then((receipt) => {
           if (receipt === null) {
