@@ -89,6 +89,9 @@ import { AlertWrapper } from './styleds' // mod
 import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
+import { GpModal } from 'components/Modal'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
 //   width: 100%;
@@ -181,6 +184,10 @@ export default function Swap({
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
+  // Native wrap modals
+  const openNativeWrapModal = useOpenModal(ApplicationModal.WRAP_NATIVE)
+  const showNativeWrapModal = useModalIsOpen(ApplicationModal.WRAP_NATIVE)
+
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
@@ -513,6 +520,22 @@ export default function Swap({
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
+  // handle swap when native token is detected as sell token
+  const handleNativeWrapAndSwap = () => {
+    if (!chainId) throw new Error('Need to be connected')
+
+    // switch to wrapped native currency
+    onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+    // open TX confirmation modal
+    setSwapState({
+      tradeToConfirm: trade,
+      attemptingTxn: false,
+      swapErrorMessage: undefined,
+      showConfirm: true,
+      txHash: undefined,
+    })
+  }
+
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
@@ -613,6 +636,21 @@ export default function Swap({
       />
       {/* CoWmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
+      {/* Native wrapping modal */}
+      <GpModal isOpen={showNativeWrapModal} onDismiss={closeModals}>
+        <EthWethWrapMessage
+          account={account ?? undefined}
+          native={native}
+          isNativeIn={!!isNativeIn}
+          nativeInput={nativeInput}
+          wrapped={wrappedToken}
+          // close modals on error
+          wrapCallback={async () =>
+            Promise.all([onWrap?.({ useModals: false }), approveCallback({ useModals: false })])
+          }
+          swapCallback={handleNativeWrapAndSwap}
+        />
+      </GpModal>
 
       <AffiliateStatusCheck />
       <StyledAppBody className={className}>
@@ -773,16 +811,6 @@ export default function Swap({
                   {/* TODO: check cow balance and set here, else don't show */}
                   <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />
                 </AutoColumn>
-                {/* ETH exactIn && wrapCallback returned us cb */}
-                {isNativeIn && isSupportedWallet && onWrap && (
-                  <EthWethWrapMessage
-                    account={account ?? undefined}
-                    native={native}
-                    nativeInput={nativeInput}
-                    wrapped={wrappedToken}
-                    wrapCallback={onWrap}
-                  />
-                )}
               </Card>
             )}
           </AutoColumn>
@@ -817,7 +845,7 @@ export default function Swap({
             ) : showWrap ? (
               <ButtonPrimary
                 disabled={Boolean(wrapInputError)}
-                onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
+                onClick={openNativeWrapModal}
                 buttonSize={ButtonSize.BIG}
               >
                 {wrapInputError ??
@@ -827,8 +855,6 @@ export default function Swap({
                     <Trans>Unwrap</Trans>
                   ) : null)}
               </ButtonPrimary>
-            ) : !swapInputError && isNativeIn ? (
-              <SwitchToWethBtn wrappedToken={wrappedToken} />
             ) : quote?.error === 'fee-exceeds-sell-amount' ? (
               <FeesExceedFromAmountMessage />
             ) : quote?.error === 'insufficient-liquidity' ? (
@@ -875,7 +901,7 @@ export default function Swap({
                   <Trans>Read Only</Trans>
                 </ThemedText.Main>
               </ButtonPrimary>
-            ) : showApproveFlow ? (
+            ) : !isNativeInSwap && showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">
                   <ButtonConfirmed
@@ -975,16 +1001,20 @@ export default function Swap({
               <ButtonError
                 buttonSize={ButtonSize.BIG}
                 onClick={() => {
-                  if (isExpertMode) {
-                    handleSwap()
+                  if (!swapInputError && isNativeIn) {
+                    openNativeWrapModal()
                   } else {
-                    setSwapState({
-                      tradeToConfirm: trade,
-                      attemptingTxn: false,
-                      swapErrorMessage: undefined,
-                      showConfirm: true,
-                      txHash: undefined,
-                    })
+                    if (isExpertMode) {
+                      handleSwap()
+                    } else {
+                      setSwapState({
+                        tradeToConfirm: trade,
+                        attemptingTxn: false,
+                        swapErrorMessage: undefined,
+                        showConfirm: true,
+                        txHash: undefined,
+                      })
+                    }
                   }
                 }}
                 id="swap-button"
