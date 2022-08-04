@@ -12,6 +12,7 @@ import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { TransactionResponse } from '@ethersproject/providers'
+import { MakeOptional } from 'types'
 
 export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
@@ -39,7 +40,25 @@ export function useApproveCallbackFromTrade({
   allowedSlippage,
   amountToCheckAgainstAllowance,
   isNativeFlow,
-}: ApproveCallbackFromTradeParams): ApproveCallback {
+}: MakeOptional<ApproveCallbackFromTradeParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback
+export function useApproveCallbackFromTrade({
+  openTransactionConfirmationModal,
+  closeModals,
+  trade,
+  allowedSlippage,
+  amountToCheckAgainstAllowance,
+  isNativeFlow,
+}: ApproveCallbackFromTradeParams): ApproveCallback
+export function useApproveCallbackFromTrade({
+  openTransactionConfirmationModal,
+  closeModals,
+  trade,
+  allowedSlippage,
+  amountToCheckAgainstAllowance,
+  isNativeFlow = false,
+}:
+  | ApproveCallbackFromTradeParams
+  | MakeOptional<ApproveCallbackFromTradeParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback {
   const { chainId } = useWeb3React()
 
   const amountToApprove = useMemo(() => {
