@@ -26,6 +26,7 @@ import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'utils/analytics'
+import { MakeOptional } from 'types'
 import { OptionalApproveCallbackParams } from './useApproveCallback'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -39,7 +40,7 @@ export enum WrapType {
 
 interface WrapUnwrapCallback {
   wrapType: WrapType
-  execute?: (params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
+  execute?: ({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
   inputError?: string
 }
 
@@ -74,8 +75,14 @@ function _handleGasEstimateError(error: any) {
   )
   return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
 }
-
-function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallback {
+function _getWrapUnwrapCallback(
+  params: MakeOptional<GetWrapUnwrapCallback, 'openTransactionConfirmationModal' | 'closeModals'>
+): WrapUnwrapCallback
+function _getWrapUnwrapCallback(
+  params:
+    | GetWrapUnwrapCallback
+    | MakeOptional<GetWrapUnwrapCallback, 'openTransactionConfirmationModal' | 'closeModals'>
+): WrapUnwrapCallback {
   const {
     chainId,
     isWrap,
@@ -97,7 +104,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
   // Create wrap/unwrap callback if sufficient balance
   let wrapUnwrapCallback:
-    | ((params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
+    | (({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
     | undefined
   if (sufficientBalance && inputAmount) {
     let wrapUnwrap: () => Promise<TransactionResponse>
@@ -134,9 +141,9 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     }
 
     const operationMessage = getOperationMessage(operationType, chainId)
-    wrapUnwrapCallback = async (params = { useModals: true }) => {
+    wrapUnwrapCallback = async ({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => {
       try {
-        params?.useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
+        useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
         wrapAnalytics('Send', operationMessage)
 
         const txReceipt = await wrapUnwrap()
@@ -146,11 +153,11 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
           hash: txReceipt.hash,
           summary,
         })
-        params?.useModals && closeModals?.()
+        useModals && closeModals?.()
 
         return txReceipt
       } catch (error) {
-        params?.useModals && closeModals?.()
+        useModals && closeModals?.()
 
         const isRejected = isRejectRequestProviderError(error)
         const action = isRejected ? 'Reject' : 'Error'
@@ -197,8 +204,24 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
  * @param typedValue the user input value
  */
 export default function useWrapCallback(
+  openTransactionConfirmationModal?: (message: string, operationType: OperationType) => void,
+  closeModals?: () => void,
+  inputCurrency?: Currency | null,
+  outputCurrency?: Currency | null,
+  inputAmount?: CurrencyAmount<Currency>,
+  isEthTradeOverride?: boolean
+): WrapUnwrapCallback
+export default function useWrapCallback(
   openTransactionConfirmationModal: (message: string, operationType: OperationType) => void,
   closeModals: () => void,
+  inputCurrency?: Currency | null,
+  outputCurrency?: Currency | null,
+  inputAmount?: CurrencyAmount<Currency>,
+  isEthTradeOverride?: boolean
+): WrapUnwrapCallback
+export default function useWrapCallback(
+  openTransactionConfirmationModal: ((message: string, operationType: OperationType) => void) | undefined,
+  closeModals: (() => void) | undefined,
   inputCurrency?: Currency | null,
   outputCurrency?: Currency | null,
   inputAmount?: CurrencyAmount<Currency>,
