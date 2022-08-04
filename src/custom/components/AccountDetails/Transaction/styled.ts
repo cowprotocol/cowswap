@@ -78,12 +78,12 @@ export const IconType = styled.div`
   }
 `
 
-export const Summary = styled.div`
+export const Summary = styled.div<{ renderSimple?: boolean }>`
   display: grid;
   flex-flow: row wrap;
   width: 100%;
   grid-template-rows: 1fr;
-  grid-template-columns: 80px max-content;
+  grid-template-columns: ${({ renderSimple }) => (renderSimple ? 'auto' : '80px max-content')};
   color: ${({ theme }) => theme.text1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

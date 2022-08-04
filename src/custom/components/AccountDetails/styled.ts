@@ -13,6 +13,13 @@ import {
   IconWrapper,
 } from './AccountDetailsMod'
 import { YellowCard } from 'components/Card'
+import {
+  StatusLabelWrapper,
+  Summary,
+  TransactionWrapper,
+  TransactionStatusText as ActivityDetailsText,
+  SummaryInner,
+} from './Transaction/styled'
 
 export const WalletActions = styled.div`
   display: flex;
@@ -240,6 +247,49 @@ export const LowerSection = styled.div`
 
     &:hover {
       color: ${({ theme }) => theme.textLink};
+    }
+  }
+`
+
+export const LowerSectionSimple = styled(LowerSection)`
+  padding: 0 12px;
+  > div {
+    padding: 0;
+
+    ${StyledLink} {
+      align-self: center;
+      margin: 7px 0 0;
+      font-size: 12px;
+    }
+    ${TransactionWrapper} {
+      padding: 10px 15px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      // target the activity comp
+      > div > ${ActivityDetailsText} > ${Summary} {
+        grid-template-columns: auto;
+
+        > span {
+          display: none;
+        }
+
+        > ${SummaryInner} {
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            margin: 16px 0;
+          `}
+
+          > b {
+            display: none;
+          }
+        }
+      }
+
+      > ${StatusLabelWrapper} {
+        margin: auto;
+      }
     }
   }
 `
