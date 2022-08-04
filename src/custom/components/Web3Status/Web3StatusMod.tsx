@@ -3,15 +3,15 @@ import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { getConnection } from 'connection/utils'
 import { darken, lighten } from 'polished'
-import { useMemo } from 'react'
+// import { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
 import styled, { css } from 'styled-components/macro'
 
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
-import { TransactionDetails } from 'state/transactions/types'
+// import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+// import { TransactionDetails } from 'state/transactions/types'
 import { shortenAddress } from 'utils'
 // import { ButtonSecondary } from 'components/Button'
 import StatusIcon from 'components/Identicon/StatusIcon'
@@ -123,9 +123,9 @@ const NetworkIcon = styled(Activity)`
 `
 
 // we want the latest one to come first, so return negative if a is after b
-function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
-  return b.addedTime - a.addedTime
-}
+// function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+//   return b.addedTime - a.addedTime
+// }
 
 function Sock() {
   return (
@@ -135,22 +135,23 @@ function Sock() {
   )
 }
 
-export function Web3StatusInner() {
+export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
   const { account, connector, chainId, ENSName } = useWeb3React()
   const connectionType = getConnection(connector).type
 
   const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
-  const allTransactions = useAllTransactions()
+  // const allTransactions = useAllTransactions()
 
-  const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
-  }, [allTransactions])
+  // const sortedRecentTransactions = useMemo(() => {
+  //   const txs = Object.values(allTransactions)
+  //   return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+  // }, [allTransactions])
 
-  const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
+  // const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
 
-  const hasPendingTransactions = !!pending.length
+  // const hasPendingTransactions = !!pending.length
+  const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useToggleWalletModal()
   useCloseFollowTxPopupIfNot(hasPendingTransactions)
@@ -177,7 +178,7 @@ export function Web3StatusInner() {
           <RowBetween>
             <FollowPendingTxPopup>
               <Text>
-                <Trans>{pending?.length} Pending</Trans>
+                <Trans>{pendingCount} Pending</Trans>
               </Text>{' '}
             </FollowPendingTxPopup>
             <Loader stroke="white" />

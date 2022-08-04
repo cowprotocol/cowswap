@@ -83,7 +83,7 @@ export default function Web3Status() {
 
   return (
     <Wrapper>
-      <Web3StatusInner />
+      <Web3StatusInner pendingCount={pendingActivity.length} />
       <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />
     </Wrapper>
   )
