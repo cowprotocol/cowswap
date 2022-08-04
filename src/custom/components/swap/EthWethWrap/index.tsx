@@ -1,33 +1,41 @@
-import { useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { TransactionResponse } from '@ethersproject/providers'
-import { AlertTriangle } from 'react-feather'
 import { Currency, Token, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ButtonSecondary, ButtonPrimary } from 'components/Button'
-import Loader from 'components/Loader'
+import { ButtonPrimary } from 'components/Button'
 import WrappingVisualisation from './WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/connection/hooks'
 import { useIsTransactionPending } from 'state/enhancedTransactions/hooks'
 
-import Modal from 'components/Modal'
 import { useGasPrices } from 'state/gas/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { _isLowBalanceCheck, _setNativeLowBalanceError, _getAvailableTransactions, _estimateTxCost } from './helpers'
+import { _isLowBalanceCheck, _getAvailableTransactions, _estimateTxCost } from './helpers'
 import { Trans } from '@lingui/macro'
+import SimpleAccountDetails from '../../AccountDetails/SimpleAccountDetails'
+import Loader from 'components/Loader'
+import { useCloseModals } from 'state/application/hooks'
+import { CloseIcon, ThemedText } from 'theme'
+import { RowBetween } from 'components/Row'
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
-  background: ${({ theme }) => theme.bg2};
   align-items: center;
   color: ${({ theme }) => theme.text1};
   justify-content: center;
-  margin: 16px auto 8px;
-  padding: 14px 14px 22px;
   width: 100%;
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
   font-size: smaller;
+  overflow: hidden;
+
+  margin: 0 auto;
+  padding: 24px 24px;
+  background: ${({ theme }) => theme.bg4};
+
+  > h2 {
+    color: ${({ theme }) => theme.wallet.color};
+  }
 
   > ${ButtonPrimary} {
     background: #62d9ff;
@@ -44,64 +52,10 @@ const Wrapper = styled.div`
 const ModalMessage = styled.p`
   display: flex;
   flex-flow: row wrap;
-  padding: 0 8px;
+  padding: 0;
+  margin-bottom: 20px;
   width: 100%;
   color: ${({ theme }) => theme.wallet.color};
-`
-
-const ModalWrapper = styled(Wrapper)`
-  margin: 0 auto;
-
-  > h2 {
-    color: ${({ theme }) => theme.wallet.color};
-  }
-`
-
-const WarningWrapper = styled(Wrapper)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  padding: 0;
-  margin: 0;
-  color: ${({ theme }) => theme.redShade};
-  font-weight: bold;
-  font-size: small;
-
-  // warning logo
-  > svg {
-    margin: 0 8px 0 0;
-  }
-
-  // warning text
-  > div {
-    ${({ theme }) => theme.flexColumnNoWrap}
-    align-items: flex-start;
-    justify-content: center;
-    font-size: 14px;
-  }
-`
-
-const BalanceLabel = styled.p<{ background?: string }>`
-  display: flex;
-  justify-content: space-between;
-  text-align: center;
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-  background: ${({ background = 'initial' }) => background};
-
-  > span {
-    &:first-of-type {
-      margin-right: auto;
-    }
-  }
-`
-
-const ErrorWrapper = styled(BalanceLabel)`
-  width: 100%;
-  margin: 12px auto 0;
-  font-size: 12px;
-  background-color: #ffefea;
-  color: ${({ theme }) => theme.redShade};
 `
 
 const ButtonWrapper = styled.div`
@@ -113,32 +67,32 @@ const ButtonWrapper = styled.div`
   margin-top: 8px;
 `
 
-const ErrorMessage = ({ error }: { error: Error }) => (
-  <ErrorWrapper>
-    <strong>{error.message}</strong>
-  </ErrorWrapper>
-)
-
-const WarningLabel = ({ children }: { children?: ReactNode }) => (
-  <WarningWrapper>
-    <AlertTriangle size={25} />
-    <div>{children}</div>
-  </WarningWrapper>
-)
-
 export interface Props {
   account?: string
   native: Currency
+  isNativeIn: boolean
   nativeInput?: CurrencyAmount<Currency>
   wrapped: Token & { logoURI: string }
-  wrapCallback: () => Promise<TransactionResponse>
+  wrapCallback: () => Promise<[TransactionResponse | undefined, TransactionResponse | undefined]>
+  swapCallback: () => void
 }
 
-export default function EthWethWrap({ account, native, nativeInput, wrapped, wrapCallback }: Props) {
+export default function EthWethWrap({
+  account,
+  native,
+  isNativeIn,
+  nativeInput,
+  wrapped,
+  wrapCallback,
+  swapCallback,
+}: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [pendingHash, setPendingHash] = useState<string | undefined>()
+  const [, setModalOpen] = useState<boolean>(false)
+  const [pendingHashMap, setPendingHashMap] = useState<{ approveHash?: string; wrapHash?: string }>({
+    approveHash: undefined,
+    wrapHash: undefined,
+  })
 
   const { chainId } = useWeb3React()
   const gasPrice = useGasPrices(chainId)
@@ -146,12 +100,16 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
   // returns the cost of 1 tx and multi txs
   const { multiTxCost, singleTxCost } = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
 
-  const isWrapPending = useIsTransactionPending(pendingHash)
+  const isApprovePending = useIsTransactionPending(pendingHashMap.approveHash)
+  const isWrapPending = useIsTransactionPending(pendingHashMap.wrapHash)
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
+  const closeModals = useCloseModals()
 
   // does the user have a lower than set threshold balance? show error
-  const { isLowBalance, txsRemaining } = useMemo(
-    () => ({
+  const balanceChecks: { isLowBalance: boolean; txsRemaining: string | null } | undefined = useMemo(() => {
+    if (!isNativeIn) return undefined
+
+    return {
       isLowBalance: _isLowBalanceCheck({
         threshold: multiTxCost,
         nativeInput,
@@ -159,9 +117,8 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
         txCost: singleTxCost,
       }),
       txsRemaining: _getAvailableTransactions({ nativeBalance, nativeInput, singleTxCost }),
-    }),
-    [multiTxCost, nativeBalance, singleTxCost, nativeInput]
-  )
+    }
+  }, [isNativeIn, multiTxCost, nativeBalance, nativeInput, singleTxCost])
 
   const wrappedSymbol = wrapped.symbol || 'wrapped native token'
   const nativeSymbol = native.symbol || 'native token'
@@ -169,91 +126,78 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
   // Listen for changes in isWrapPending
   // and set loading local state accordingly..
   useEffect(() => {
-    setLoading(isWrapPending)
-  }, [isWrapPending])
+    setLoading(isApprovePending || isWrapPending)
+  }, [isApprovePending, isWrapPending])
 
   const handleWrap = useCallback(async () => {
+    setModalOpen(true)
     setError(null)
     setLoading(true)
 
     try {
-      const txResponse = await wrapCallback()
-      setPendingHash(txResponse.hash)
+      const [wrapTx, approveTx] = await wrapCallback()
+      setPendingHashMap((currTx) => ({
+        ...currTx,
+        wrapHash: wrapTx?.hash,
+        approveHash: approveTx?.hash,
+      }))
     } catch (error) {
       console.error(error)
 
       setError(error)
       setLoading(false)
+      closeModals()
     } finally {
-      setModalOpen(false)
+      if (!isNativeIn) {
+        closeModals()
+      }
     }
-  }, [wrapCallback])
+  }, [isNativeIn, closeModals, wrapCallback])
 
-  // if low balance, clicking CTA opens modal, else opens wallet prompt
-  const handlePrimaryAction = isLowBalance ? () => setModalOpen(true) : handleWrap
+  // wrap on comp mount
+  useEffect(() => {
+    handleWrap()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Wrapper>
-      {/* Conditional Confirmation modal */}
-      <Modal isOpen={modalOpen} onDismiss={() => setModalOpen(false)}>
-        <ModalWrapper>
-          <h2>
-            <Trans>Confirm {nativeSymbol} wrap</Trans>
-          </h2>
-          <ModalMessage>
-            <span>
-              <Trans>
-                CoW Swap is a gasless exchange. <strong>{nativeSymbol}</strong> however, is required for paying{' '}
-                <strong>
-                  on-chain transaction costs associated with enabling tokens and the wrapping/unwrapping of{' '}
-                  {nativeSymbol}/{wrappedSymbol}
-                </strong>
-                , respectively.
-              </Trans>
-            </span>
-          </ModalMessage>
-          <ModalMessage>
-            <span>
-              <Trans>
-                At current gas prices, your remaining {nativeSymbol} balance after confirmation would be{' '}
-                {!txsRemaining ? (
-                  <strong>insufficient for any further on-chain transactions.</strong>
-                ) : (
-                  <>
-                    sufficient for <strong>up to {txsRemaining} wrapping, unwrapping, or enabling operation(s)</strong>.
-                  </>
-                )}
-              </Trans>
-            </span>
-          </ModalMessage>
-          <WrappingVisualisation
-            nativeSymbol={nativeSymbol}
-            nativeBalance={nativeBalance}
-            native={native}
-            wrapped={wrapped}
-            wrappedBalance={wrappedBalance}
-            wrappedSymbol={wrappedSymbol}
-            nativeInput={nativeInput}
-          />
-          <ButtonWrapper>
-            <ButtonSecondary padding="0.5rem" maxWidth="30%" onClick={(): void => setModalOpen(false)}>
-              <Trans>Cancel</Trans>
-            </ButtonSecondary>
-            <ButtonPrimary disabled={loading} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
-              {loading ? <Loader /> : <Trans>Wrap my {nativeSymbol} anyways</Trans>}
-            </ButtonPrimary>
-          </ButtonWrapper>
-        </ModalWrapper>
-      </Modal>
-      {/* Primary warning label */}
-      <WarningLabel>
-        Wrap your {nativeSymbol} first or switch to {wrappedSymbol}!
-      </WarningLabel>
-      {/* Low Balance Error */}
-      {isLowBalance && <ErrorMessage error={_setNativeLowBalanceError(nativeSymbol)} />}
-      {/* Async Error */}
-      {error && <ErrorMessage error={error} />}
-      {/* Wrapping cards */}
+      <RowBetween marginBottom={20}>
+        <ThemedText.MediumHeader>
+          <Trans>{isNativeIn ? `Wrapping your ${nativeSymbol}` : `Unwrapping your ${wrappedSymbol}`}</Trans>
+        </ThemedText.MediumHeader>
+        <CloseIcon onClick={() => closeModals()} />
+      </RowBetween>
+
+      <ModalMessage>
+        <span>
+          <Trans>
+            Submit {isNativeIn ? 'a wrapping' : 'an unwrapping'} transaction to convert your{' '}
+            {isNativeIn ? nativeSymbol : wrappedSymbol} to {isNativeIn ? wrappedSymbol : nativeSymbol}
+          </Trans>
+        </span>
+      </ModalMessage>
+      {balanceChecks?.isLowBalance && (
+        <ModalMessage>
+          <span>
+            <Trans>
+              At current gas prices, your remaining {nativeSymbol} balance after confirmation would be{' '}
+              {!balanceChecks.txsRemaining ? (
+                <strong>insufficient for any further on-chain transactions.</strong>
+              ) : (
+                <>
+                  sufficient for{' '}
+                  <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or enabling operation(s)</strong>.
+                </>
+              )}
+            </Trans>
+          </span>
+        </ModalMessage>
+      )}
+      <SimpleAccountDetails
+        pendingTransactions={['0x_WRAP', '0x_APPROVE'] /* Object.values(pendingHashMap) */}
+        confirmedTransactions={[]}
+      />
       <WrappingVisualisation
         nativeSymbol={nativeSymbol}
         nativeBalance={nativeBalance}
@@ -263,10 +207,13 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
         wrappedSymbol={wrappedSymbol}
         nativeInput={nativeInput}
       />
-      {/* Wrap CTA */}
-      <ButtonPrimary disabled={loading} padding="0.5rem" onClick={handlePrimaryAction}>
-        {loading ? <Loader /> : <Trans>Wrap my {nativeSymbol}</Trans>}
-      </ButtonPrimary>
+      {isNativeIn && (
+        <ButtonWrapper>
+          <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={swapCallback}>
+            {loading ? <Loader /> : <Trans>Swap</Trans>}
+          </ButtonPrimary>
+        </ButtonWrapper>
+      )}
     </Wrapper>
   )
 }
