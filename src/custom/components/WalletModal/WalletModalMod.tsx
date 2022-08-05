@@ -7,7 +7,6 @@ import { AutoRow } from 'components/Row'
 import { ConnectionType } from 'connection'
 import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils'
 import { useCallback, useEffect, useState } from 'react'
-import { ArrowLeft } from 'react-feather'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
@@ -280,7 +279,7 @@ export default function WalletModal({
     let headerRow
     if (walletView === WALLET_VIEWS.PENDING) {
       headerRow = null
-    } else if (walletView === WALLET_VIEWS.ACCOUNT || !!account) {
+    } /* else if (walletView === WALLET_VIEWS.ACCOUNT || !!account) {
       headerRow = (
         <HeaderRow color="blue">
           <HoverText onClick={() => setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)}>
@@ -288,7 +287,7 @@ export default function WalletModal({
           </HoverText>
         </HeaderRow>
       )
-    } else {
+    } */ else {
       headerRow = (
         <HeaderRow>
           <HoverText>

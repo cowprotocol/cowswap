@@ -51,3 +51,7 @@ export function useRemoveAllFavouriteTokens(): () => void {
     }
   }, [dispatch, chainId])
 }
+
+export function useSelectedWallet(): string | undefined {
+  return useAppSelector(({ user: { selectedWallet } }) => selectedWallet)
+}
