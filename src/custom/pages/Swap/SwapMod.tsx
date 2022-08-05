@@ -360,6 +360,7 @@ export default function Swap({
     closeModals,
     trade,
     allowedSlippage,
+    isNativeFlow: isNativeInSwap,
   })
   const transactionDeadline = useTransactionDeadline()
   const prevApprovalState = usePrevious(approvalState) // mod
