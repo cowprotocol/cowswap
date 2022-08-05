@@ -55,8 +55,6 @@ const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
-// TODO: look into StatusIcon.tsx, could be re-used here
-
 export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo?: ConnectedWalletInfo, size?: number) {
   if (!connector) {
     return null
@@ -134,12 +132,17 @@ export default function AccountDetails({
 
   const dispatch = useAppDispatch()
 
-  const isMetaMask = getIsMetaMask()
-
   function formatConnectorName() {
+    const name = walletInfo?.walletName || getConnectionName(connection.type, getIsMetaMask())
+    // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
+    // This to avoid confusion for instance when using Metamask mobile
+    // When name is not set, it defaults to WalletConnect already
+    const walletConnectSuffix =
+      getConnection(connector) === walletConnectConnection && walletInfo?.walletName ? ' (via WalletConnect)' : ''
+
     return (
       <WalletName>
-        <Trans>Connected with</Trans> {getConnectionName(connection.type, isMetaMask)}
+        <Trans>Connected with</Trans> {name} {walletConnectSuffix}
       </WalletName>
     )
   }

@@ -25,6 +25,7 @@ import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentA
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import AddToMetamask from 'components/AddToMetamask' // mod
+import { supportedChainId } from '@src/custom/utils/supportedChainId'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -563,6 +564,10 @@ export function TransactionSubmittedContent({
   //     })
   // }, [connector, logoURL, token])
 
+  if (!supportedChainId(chainId)) {
+    return null
+  }
+
   return (
     <Wrapper>
       <Section>
@@ -570,7 +575,7 @@ export function TransactionSubmittedContent({
         <Text fontWeight={500} fontSize={20}>
           {getTitleStatus(activityDerivedState)}
         </Text>
-        {chainId && hash && (
+        {supportedChainId(chainId) && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
             <Text fontWeight={500} fontSize={14} color={theme.primary1}>
               {getExplorerLabel(chainId, hash, 'transaction')} ↗
