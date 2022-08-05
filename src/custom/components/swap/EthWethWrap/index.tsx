@@ -194,10 +194,7 @@ export default function EthWethWrap({
           </span>
         </ModalMessage>
       )}
-      <SimpleAccountDetails
-        pendingTransactions={['0x_WRAP', '0x_APPROVE'] /* Object.values(pendingHashMap) */}
-        confirmedTransactions={[]}
-      />
+      <SimpleAccountDetails pendingTransactions={Object.values(pendingHashMap)} confirmedTransactions={[]} />
       <WrappingVisualisation
         nativeSymbol={nativeSymbol}
         nativeBalance={nativeBalance}
