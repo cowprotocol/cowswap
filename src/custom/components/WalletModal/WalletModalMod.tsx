@@ -4,7 +4,7 @@ import { Connector } from '@web3-react/types'
 // import { sendEvent } from 'components/analytics'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
-import { ConnectionType } from 'connection'
+import { ConnectionType, walletConnectConnection } from 'connection'
 import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
@@ -24,6 +24,7 @@ import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from 'components/WalletModal/InjectedOption'
 import PendingView from 'components/WalletModal/PendingView'
 import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
+import { WalletConnect } from '@web3-react/walletconnect'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
@@ -209,6 +210,17 @@ export default function WalletModal({
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
         await connector.activate()
+
+        // MOD: Important for balances to load when connected to Gnosis-chain via WalletConnect
+        if (getConnection(connector) === walletConnectConnection) {
+          if (connector instanceof WalletConnect) {
+            const { http, rpc, signer } = connector.provider
+            const chainId = signer.connection.chainId
+            // don't default to SupportedChainId.Mainnet - throw instead
+            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
+            http.connection.url = rpc.custom[chainId]
+          }
+        }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
       } catch (error) {
