@@ -173,7 +173,9 @@ export function useApproveCallback({
           //   console.debug('Failed to approve token', error)
           //   throw error
           // })
-          .finally(closeModals)
+          .finally(() => {
+            optionalParams.useModals && closeModals?.()
+          })
       )
     },
     [
@@ -248,7 +250,9 @@ export function useApproveCallback({
           //   console.debug('Failed to approve token', error)
           //   throw error
           // })
-          .finally(closeModals)
+          .finally(() => {
+            optionalParams.useModals && closeModals?.()
+          })
       )
     },
     [
