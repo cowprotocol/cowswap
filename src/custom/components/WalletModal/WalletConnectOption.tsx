@@ -2,9 +2,9 @@ import { Connector } from '@web3-react/types'
 import WALLET_CONNECT_ICON_URL from 'assets/images/walletConnectIcon.svg'
 import { ConnectionType, walletConnectConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import Option from 'components/WalletModal/Option'
-import { useSelectedWallet } from 'state/user/hooks'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -14,9 +14,7 @@ const BASE_PROPS = {
 
 export function WalletConnectOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   // const isActive = walletConnectConnection.hooks.useIsActive()
-  // MOD
-  const selectedWallet = useSelectedWallet()
-  const isActive = selectedWallet === ConnectionType.WALLET_CONNECT
+  const isActive = useIsActiveWallet(walletConnectConnection)
   return (
     <Option
       {...BASE_PROPS}

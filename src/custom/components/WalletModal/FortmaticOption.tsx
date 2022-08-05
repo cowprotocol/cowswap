@@ -4,7 +4,7 @@ import { ConnectionType, fortmaticConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
 import Option from 'components/WalletModal/Option'
-import { useSelectedWallet } from 'state/user/hooks'
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 
 const BASE_PROPS = {
   color: '#6748FF',
@@ -14,9 +14,8 @@ const BASE_PROPS = {
 
 export function FortmaticOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   // const isActive = fortmaticConnection.hooks.useIsActive()
-  // MOD
-  const selectedWallet = useSelectedWallet()
-  const isActive = selectedWallet === ConnectionType.FORTMATIC
+  const isActive = useIsActiveWallet(fortmaticConnection) // MOD
+
   return (
     <Option
       {...BASE_PROPS}

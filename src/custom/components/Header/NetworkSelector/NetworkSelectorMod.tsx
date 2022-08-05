@@ -29,6 +29,7 @@ import {
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
+import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -340,6 +341,7 @@ export default function NetworkSelector() {
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const history = useHistory()
+  const isSmartContractWallet = useIsSmartContractWallet() // mod
 
   const info = getChainInfo(chainId)
 
@@ -389,7 +391,7 @@ export default function NetworkSelector() {
     }
   }, [chainId, history, urlChainId, urlChain])
 
-  if (!chainId || !provider) {
+  if (!chainId || !provider || isSmartContractWallet) {
     return null
   }
 

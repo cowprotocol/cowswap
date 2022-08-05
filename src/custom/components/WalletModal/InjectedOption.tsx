@@ -8,7 +8,8 @@ import { getConnectionName } from 'connection/utils'
 
 import Option from 'components/WalletModal/Option'
 import useTheme from 'hooks/useTheme'
-import { useSelectedWallet } from 'state/user/hooks'
+// import { useSelectedWallet } from 'state/user/hooks'
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 
 const INJECTED_PROPS = {
   color: '#010101',
@@ -28,9 +29,7 @@ export function InstallMetaMaskOption() {
 
 export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   // const isActive = injectedConnection.hooks.useIsActive()
-  // MOD
-  const selectedWallet = useSelectedWallet()
-  const isActive = selectedWallet === ConnectionType.INJECTED
+  const isActive = useIsActiveWallet(injectedConnection) // MOD
 
   return (
     <Option
@@ -44,11 +43,11 @@ export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: C
 
 export function InjectedOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   // const isActive = injectedConnection.hooks.useIsActive()
-  // MOD
-  const selectedWallet = useSelectedWallet()
-  const isActive = selectedWallet === ConnectionType.INJECTED
   const { darkMode } = useTheme()
   const icon = darkMode ? INJECTED_ICON_WHITE_URL : INJECTED_ICON_URL
+
+  const isActive = useIsActiveWallet(injectedConnection) // MOD
+
   return (
     <Option
       {...INJECTED_PROPS}

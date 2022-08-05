@@ -5,6 +5,7 @@ import { getConnectionName } from 'connection/utils'
 
 import Option from 'components/WalletModal/Option'
 import { useSelectedWallet } from 'state/user/hooks'
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 
 const BASE_PROPS = {
   color: '#315CF5',
@@ -29,9 +30,8 @@ export function OpenCoinbaseWalletOption() {
 
 export function CoinbaseWalletOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   // const isActive = coinbaseWalletConnection.hooks.useIsActive()
-  // MOD
-  const selectedWallet = useSelectedWallet()
-  const isActive = selectedWallet === ConnectionType.COINBASE_WALLET
+  const isActive = useIsActiveWallet(coinbaseWalletConnection) // MOD
+
   return (
     <Option
       {...BASE_PROPS}
