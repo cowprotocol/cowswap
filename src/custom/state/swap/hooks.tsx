@@ -492,8 +492,11 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
     // TODO: check the new native currency function
     const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
-    const [isNativeIn, isNativeOut] = [input?.currency?.isNative, output?.currency?.isNative]
-    const [isWrappedIn, isWrappedOut] = [input?.currency?.equals(wrappedToken), output?.currency?.equals(wrappedToken)]
+    const [isNativeIn, isNativeOut] = [!!input?.currency?.isNative, !!output?.currency?.isNative]
+    const [isWrappedIn, isWrappedOut] = [
+      !!input?.currency?.equals(wrappedToken),
+      !!output?.currency?.equals(wrappedToken),
+    ]
 
     return {
       isNativeIn: isNativeIn && !isWrappedOut,
