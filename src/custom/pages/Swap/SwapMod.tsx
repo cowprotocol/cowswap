@@ -189,8 +189,9 @@ export default function Swap({
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
   // Native wrap modals
-  const openNativeWrapModal = useOpenModal(ApplicationModal.WRAP_NATIVE)
-  const showNativeWrapModal = useModalIsOpen(ApplicationModal.WRAP_NATIVE)
+  const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
+  const openNativeWrapModal = () => setOpenNativeWrapModal(true)
+  const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
@@ -626,13 +627,17 @@ export default function Swap({
 
   const nativeWrappingCallback = useCallback(
     async (params: OptionalApproveCallbackParams) => {
-      if (isExpertMode) {
+      /* if (isExpertMode) {
         return Promise.all([onWrap?.({ useModals: false }), approveCallback({ ...params, useModals: false })])
       } else {
         const wrapTx = await onWrap?.()
         const approveTx = await approveCallback(params)
         return [wrapTx, approveTx]
-      }
+      } */
+      return Promise.all([
+        onWrap?.({ useModals: !isExpertMode }),
+        approveCallback({ ...params, useModals: !isExpertMode }),
+      ])
     },
     [approveCallback, isExpertMode, onWrap]
   )
@@ -655,7 +660,7 @@ export default function Swap({
       {/* CoWmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
       {/* Native wrapping modal */}
-      <GpModal isOpen={showNativeWrapModal} onDismiss={closeModals}>
+      <GpModal isOpen={showNativeWrapModal} onDismiss={dismissNativeWrapModal}>
         <EthWethWrapMessage
           account={account ?? undefined}
           native={native}
@@ -663,14 +668,15 @@ export default function Swap({
           nativeInput={nativeInput}
           wrapped={wrappedToken}
           // state
-          needsApproval={showApproveFlow}
+          needsApproval={showApproveFlow && !!approveCallback}
           approvalState={approvalState}
           approvalPending={prevApprovalState === ApprovalState.PENDING && approvalState !== ApprovalState.APPROVED}
-          needsWrap={wrapType !== WrapType.NOT_APPLICABLE}
+          needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
           wrapPending={false}
           // cbs
+          onDismiss={dismissNativeWrapModal}
           approveCallback={approveCallback}
-          wrapCallback={() => onWrap?.() as any}
+          wrapCallback={onWrap}
           wrapAndApproveCallback={nativeWrappingCallback as any}
           swapCallback={handleNativeWrapAndSwap}
         />
