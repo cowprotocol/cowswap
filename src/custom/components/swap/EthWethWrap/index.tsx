@@ -84,6 +84,7 @@ export interface Props {
   needsWrap: boolean
   wrapPending: boolean
 
+  onDismiss: () => void
   approveCallback: () => Promise<TransactionResponse | undefined>
   wrapCallback: (() => Promise<TransactionResponse | undefined>) | undefined
   wrapAndApproveCallback:
@@ -107,6 +108,7 @@ export default function EthWethWrap({
   // needsWrap,
   wrapPending,
 
+  onDismiss,
   approveCallback,
   wrapCallback,
   wrapAndApproveCallback,
@@ -114,7 +116,6 @@ export default function EthWethWrap({
 }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  const [, setModalOpen] = useState<boolean>(false)
   const [pendingHashMap, setPendingHashMap] = useState<{ approveHash?: string; wrapHash?: string }>({
     approveHash: undefined,
     wrapHash: undefined,
@@ -160,12 +161,12 @@ export default function EthWethWrap({
 
   const handleWrap = useCallback(async () => {
     if (!wrapAndApproveCallback) return
-    setModalOpen(true)
     setError(null)
     setLoading(true)
 
     try {
       const [wrapTx, approveTx] = await wrapAndApproveCallback()
+      console.log('🚀 ~ [WRAP, APPROVE]', [wrapTx, approveTx])
       setPendingHashMap((currTx) => ({
         ...currTx,
         wrapHash: wrapTx?.hash,
@@ -205,16 +206,12 @@ export default function EthWethWrap({
         // show wrap button
         actionButton = (
           <ButtonPrimary
-            disabled={wrapPending || !!error}
+            disabled={loading || !!error}
             padding="0.5rem"
             maxWidth="70%"
-            onClick={() => wrapCallback?.().then(openNativeWrapModal)}
+            onClick={() => handleWrap().then(openNativeWrapModal)}
           >
-            {wrapPending ? (
-              <Loader />
-            ) : (
-              <Trans>{!isNativeIn ? 'Unwrap ' + wrappedSymbol : 'Wrap ' + nativeSymbol}</Trans>
-            )}
+            {loading ? <Loader /> : <Trans>{!isNativeIn ? 'Unwrap ' + wrappedSymbol : 'Wrap ' + nativeSymbol}</Trans>}
           </ButtonPrimary>
         )
       } else if (needsApproval) {
@@ -234,7 +231,6 @@ export default function EthWethWrap({
 
     return <ButtonWrapper>{actionButton}</ButtonWrapper>
   }, [
-    approveCallback,
     error,
     isExpertMode,
     isNativeIn,
@@ -244,10 +240,10 @@ export default function EthWethWrap({
     approvalState,
     approvalPending,
     needsWrap,
-    wrapPending,
+    handleWrap,
+    approveCallback,
     openNativeWrapModal,
     swapCallback,
-    wrapCallback,
     wrappedSymbol,
   ])
 
@@ -257,7 +253,7 @@ export default function EthWethWrap({
         <ThemedText.MediumHeader>
           <Trans>{isNativeIn ? `Wrapping your ${nativeSymbol}` : `Unwrapping your ${wrappedSymbol}`}</Trans>
         </ThemedText.MediumHeader>
-        <CloseIcon onClick={() => closeModals()} />
+        <CloseIcon onClick={onDismiss} />
       </RowBetween>
 
       <ModalMessage>
