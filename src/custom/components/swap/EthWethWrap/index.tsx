@@ -15,9 +15,12 @@ import { _isLowBalanceCheck, _getAvailableTransactions, _estimateTxCost } from '
 import { Trans } from '@lingui/macro'
 import SimpleAccountDetails from '../../AccountDetails/SimpleAccountDetails'
 import Loader from 'components/Loader'
-import { useCloseModals } from 'state/application/hooks'
+import { useCloseModals, useOpenModal } from 'state/application/hooks'
 import { CloseIcon, ThemedText } from 'theme'
 import { RowBetween } from 'components/Row'
+import { useIsExpertMode } from 'state/user/hooks'
+import { ApplicationModal } from 'state/application/reducer'
+import { ApprovalState } from 'hooks/useApproveCallback'
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -73,7 +76,19 @@ export interface Props {
   isNativeIn: boolean
   nativeInput?: CurrencyAmount<Currency>
   wrapped: Token & { logoURI: string }
-  wrapCallback: () => Promise<[TransactionResponse | undefined, TransactionResponse | undefined]>
+
+  // state
+  needsApproval: boolean
+  approvalState: ApprovalState
+  approvalPending: boolean
+  needsWrap: boolean
+  wrapPending: boolean
+
+  approveCallback: () => Promise<TransactionResponse | undefined>
+  wrapCallback: (() => Promise<TransactionResponse | undefined>) | undefined
+  wrapAndApproveCallback:
+    | (() => Promise<[TransactionResponse | undefined, TransactionResponse | undefined]>)
+    | undefined
   swapCallback: () => void
 }
 
@@ -83,7 +98,18 @@ export default function EthWethWrap({
   isNativeIn,
   nativeInput,
   wrapped,
+
+  // state
+  needsApproval,
+  needsWrap,
+  approvalState,
+  approvalPending,
+  // needsWrap,
+  wrapPending,
+
+  approveCallback,
   wrapCallback,
+  wrapAndApproveCallback,
   swapCallback,
 }: Props) {
   const [loading, setLoading] = useState(false)
@@ -95,6 +121,7 @@ export default function EthWethWrap({
   })
 
   const { chainId } = useWeb3React()
+  const isExpertMode = useIsExpertMode()
   const gasPrice = useGasPrices(chainId)
 
   // returns the cost of 1 tx and multi txs
@@ -103,6 +130,8 @@ export default function EthWethWrap({
   const isApprovePending = useIsTransactionPending(pendingHashMap.approveHash)
   const isWrapPending = useIsTransactionPending(pendingHashMap.wrapHash)
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
+
+  const openNativeWrapModal = useOpenModal(ApplicationModal.WRAP_NATIVE)
   const closeModals = useCloseModals()
 
   // does the user have a lower than set threshold balance? show error
@@ -130,12 +159,13 @@ export default function EthWethWrap({
   }, [isApprovePending, isWrapPending])
 
   const handleWrap = useCallback(async () => {
+    if (!wrapAndApproveCallback) return
     setModalOpen(true)
     setError(null)
     setLoading(true)
 
     try {
-      const [wrapTx, approveTx] = await wrapCallback()
+      const [wrapTx, approveTx] = await wrapAndApproveCallback()
       setPendingHashMap((currTx) => ({
         ...currTx,
         wrapHash: wrapTx?.hash,
@@ -152,13 +182,74 @@ export default function EthWethWrap({
         closeModals()
       }
     }
-  }, [isNativeIn, closeModals, wrapCallback])
+  }, [wrapAndApproveCallback, closeModals, isNativeIn])
 
-  // wrap on comp mount
+  // wrap on comp mount (expert mode only)
   useEffect(() => {
-    handleWrap()
+    if (isExpertMode) {
+      handleWrap()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const _renderActionButton = useCallback(() => {
+    let actionButton
+    if (isExpertMode || (!needsApproval && !needsWrap)) {
+      actionButton = (
+        <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={swapCallback}>
+          {loading ? <Loader /> : <Trans>Swap</Trans>}
+        </ButtonPrimary>
+      )
+    } else {
+      if (needsWrap) {
+        // show wrap button
+        actionButton = (
+          <ButtonPrimary
+            disabled={wrapPending || !!error}
+            padding="0.5rem"
+            maxWidth="70%"
+            onClick={() => wrapCallback?.().then(openNativeWrapModal)}
+          >
+            {wrapPending ? (
+              <Loader />
+            ) : (
+              <Trans>{!isNativeIn ? 'Unwrap ' + wrappedSymbol : 'Wrap ' + nativeSymbol}</Trans>
+            )}
+          </ButtonPrimary>
+        )
+      } else if (needsApproval) {
+        // show approval button
+        actionButton = (
+          <ButtonPrimary
+            disabled={approvalState === ApprovalState.PENDING || !!error}
+            padding="0.5rem"
+            maxWidth="70%"
+            onClick={() => approveCallback().then(openNativeWrapModal)}
+          >
+            {approvalPending ? <Loader /> : <Trans>Approve {wrappedSymbol}</Trans>}
+          </ButtonPrimary>
+        )
+      }
+    }
+
+    return <ButtonWrapper>{actionButton}</ButtonWrapper>
+  }, [
+    approveCallback,
+    error,
+    isExpertMode,
+    isNativeIn,
+    loading,
+    nativeSymbol,
+    needsApproval,
+    approvalState,
+    approvalPending,
+    needsWrap,
+    wrapPending,
+    openNativeWrapModal,
+    swapCallback,
+    wrapCallback,
+    wrappedSymbol,
+  ])
 
   return (
     <Wrapper>
@@ -204,13 +295,7 @@ export default function EthWethWrap({
         wrappedSymbol={wrappedSymbol}
         nativeInput={nativeInput}
       />
-      {isNativeIn && (
-        <ButtonWrapper>
-          <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={swapCallback}>
-            {loading ? <Loader /> : <Trans>Swap</Trans>}
-          </ButtonPrimary>
-        </ButtonWrapper>
-      )}
+      {_renderActionButton()}
     </Wrapper>
   )
 }
