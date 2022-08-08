@@ -141,7 +141,7 @@ function _getWrapUnwrapCallback(
     }
 
     const operationMessage = getOperationMessage(operationType, chainId)
-    wrapUnwrapCallback = async (params) => {
+    wrapUnwrapCallback = async (params = { useModals: true }) => {
       try {
         params?.useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
         wrapAnalytics('Send', operationMessage)
@@ -231,6 +231,7 @@ export default function useWrapCallback(
   const chainId = supportedChainId(connectedChainId)
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const wrappedBalance = useCurrencyBalance(account ?? undefined, inputCurrency?.wrapped)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   /* const inputAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),
@@ -245,8 +246,11 @@ export default function useWrapCallback(
 
     const isWrappingEther = inputCurrency.isNative && (isEthTradeOverride || weth.equals(outputCurrency))
     const isUnwrappingWeth = weth.equals(inputCurrency) && outputCurrency.isNative
+    // is an native currency trade but wrapped token has enough balance
+    const hasEnoughWrappedBalanceForSwap =
+      isEthTradeOverride && wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount)
 
-    if (!isWrappingEther && !isUnwrappingWeth) {
+    if ((!isWrappingEther && !isUnwrappingWeth) || hasEnoughWrappedBalanceForSwap) {
       return NOT_APPLICABLE
     } else {
       return _getWrapUnwrapCallback({
@@ -267,6 +271,7 @@ export default function useWrapCallback(
     outputCurrency,
     isEthTradeOverride,
     balance,
+    wrappedBalance,
     inputAmount,
     addTransaction,
     openTransactionConfirmationModal,
