@@ -1,7 +1,6 @@
 import { Protocol } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import type { SwapRoute } from '@uniswap/smart-order-router'
-// Mod import { routeAmountsToString, SwapRoute } from '@uniswap/smart-order-router'
+import { routeAmountsToString, SwapRoute } from '@uniswap/smart-order-router'
 import { GetQuoteResult, V2PoolInRoute, V3PoolInRoute } from 'state/routing/types'
 
 // from routing-api (https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/quote.ts#L243-L311)
@@ -144,8 +143,7 @@ export function transformSwapRouteToGetQuoteResult(
     gasUseEstimateUSD: estimatedGasUsedUSD.toExact(),
     gasPriceWei: gasPriceWei.toString(),
     route: routeResponse,
-    // Mod routeString: routeAmountsToString(route),
-    routeString: '',
+    routeString: routeAmountsToString(route),
   }
 
   return result
