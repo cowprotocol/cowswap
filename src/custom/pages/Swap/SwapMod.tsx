@@ -37,7 +37,11 @@ import SwapHeader from 'components/swap/SwapHeader'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
-import { ApprovalState /*, useApprovalOptimizedTrade*/, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
+import {
+  ApprovalState /*, useApprovalOptimizedTrade*/,
+  OptionalApproveCallbackParams,
+  useApproveCallbackFromTrade,
+} from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
 // import useIsArgentWallet from '../../hooks/useIsArgentWallet'
@@ -248,8 +252,8 @@ export default function Swap({
     closeModals,
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
-    // if native input !== NATIVE_TOKEN, validation fails
-    nativeInput || parsedAmount,
+    // is native token swap, use the wrapped equivalent as input currency
+    isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput,
     // should override and get wrapCallback?
     isNativeInSwap
   )
@@ -620,6 +624,19 @@ export default function Swap({
 
   const { ErrorMessage } = useErrorMessage()
 
+  const nativeWrappingCallback = useCallback(
+    async (params: OptionalApproveCallbackParams) => {
+      if (isExpertMode) {
+        return Promise.all([onWrap?.({ useModals: false }), approveCallback({ ...params, useModals: false })])
+      } else {
+        const wrapTx = await onWrap?.()
+        const approveTx = await approveCallback(params)
+        return [wrapTx, approveTx]
+      }
+    },
+    [approveCallback, isExpertMode, onWrap]
+  )
+
   return (
     <>
       <TokenWarningModal
@@ -645,10 +662,16 @@ export default function Swap({
           isNativeIn={!!isNativeIn}
           nativeInput={nativeInput}
           wrapped={wrappedToken}
-          // close modals on error
-          wrapCallback={async () =>
-            Promise.all([onWrap?.({ useModals: false }), approveCallback({ useModals: false })])
-          }
+          // state
+          needsApproval={showApproveFlow}
+          approvalState={approvalState}
+          approvalPending={prevApprovalState === ApprovalState.PENDING && approvalState !== ApprovalState.APPROVED}
+          needsWrap={wrapType !== WrapType.NOT_APPLICABLE}
+          wrapPending={false}
+          // cbs
+          approveCallback={approveCallback}
+          wrapCallback={() => onWrap?.() as any}
+          wrapAndApproveCallback={nativeWrappingCallback as any}
           swapCallback={handleNativeWrapAndSwap}
         />
       </GpModal>
