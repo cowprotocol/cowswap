@@ -1,4 +1,4 @@
-// import { Trans } from '@lingui/macro'
+//Mod import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 // Mod import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
