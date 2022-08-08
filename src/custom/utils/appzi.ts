@@ -1,14 +1,14 @@
 import EventEmitter from 'events'
 import ReactAppzi from 'react-appzi'
-import { userAgent, majorBrowserVersion } from 'utils/userAgent'
+import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'utils/userAgent'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
 const isOldChrome =
   userAgent.browser.name === 'Chrome' && majorBrowserVersion && majorBrowserVersion <= OLD_CHROME_FROM_METAMASK_IOS_APP
 
-export const isAppziEnabled =
-  !isOldChrome && (process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' || process.env.NODE_ENV === 'production')
+const isFeedbackEnabled = process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' || process.env.NODE_ENV === 'production'
+export const isAppziEnabled = !isOldChrome && !isImTokenBrowser && isFeedbackEnabled
 
 export const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
 export const NPS_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || '55872789-593b-4c6c-9e49-9b5c7693e90a'
