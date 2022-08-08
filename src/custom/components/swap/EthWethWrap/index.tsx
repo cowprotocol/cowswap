@@ -15,11 +15,9 @@ import { _isLowBalanceCheck, _getAvailableTransactions, _estimateTxCost } from '
 import { Trans } from '@lingui/macro'
 import SimpleAccountDetails from '../../AccountDetails/SimpleAccountDetails'
 import Loader from 'components/Loader'
-import { useCloseModals, useOpenModal } from 'state/application/hooks'
 import { CloseIcon, ThemedText } from 'theme'
 import { RowBetween } from 'components/Row'
 import { useIsExpertMode } from 'state/user/hooks'
-import { ApplicationModal } from 'state/application/reducer'
 import { ApprovalState } from 'hooks/useApproveCallback'
 
 const Wrapper = styled.div`
@@ -73,9 +71,12 @@ const ButtonWrapper = styled.div`
 export interface Props {
   account?: string
   native: Currency
-  isNativeIn: boolean
-  nativeInput?: CurrencyAmount<Currency>
   wrapped: Token & { logoURI: string }
+  nativeInput?: CurrencyAmount<Currency>
+  isNativeIn: boolean
+  isNativeOut: boolean
+  isWrappedIn: boolean
+  isWrappedOut: boolean
 
   // state
   needsApproval: boolean
@@ -96,9 +97,11 @@ export interface Props {
 export default function EthWethWrap({
   account,
   native,
-  isNativeIn,
-  nativeInput,
   wrapped,
+  nativeInput,
+  isNativeIn,
+  isWrappedIn,
+  isWrappedOut,
 
   // state
   needsApproval,
@@ -132,9 +135,6 @@ export default function EthWethWrap({
   const isWrapPending = useIsTransactionPending(pendingHashMap.wrapHash)
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
 
-  const openNativeWrapModal = useOpenModal(ApplicationModal.WRAP_NATIVE)
-  const closeModals = useCloseModals()
-
   // does the user have a lower than set threshold balance? show error
   const balanceChecks: { isLowBalance: boolean; txsRemaining: string | null } | undefined = useMemo(() => {
     if (!isNativeIn) return undefined
@@ -150,6 +150,7 @@ export default function EthWethWrap({
     }
   }, [isNativeIn, multiTxCost, nativeBalance, nativeInput, singleTxCost])
 
+  const isWrap = !isNativeIn && isWrappedOut
   const wrappedSymbol = wrapped.symbol || 'wrapped native token'
   const nativeSymbol = native.symbol || 'native token'
 
@@ -177,13 +178,13 @@ export default function EthWethWrap({
 
       setError(error)
       setLoading(false)
-      closeModals()
-    } finally {
+      onDismiss()
+    } /* finally {
       if (!isNativeIn) {
-        closeModals()
+        onDismiss()
       }
-    }
-  }, [wrapAndApproveCallback, closeModals, isNativeIn])
+    } */
+  }, [wrapAndApproveCallback, /* isNativeIn, */ onDismiss])
 
   // wrap on comp mount (expert mode only)
   useEffect(() => {
@@ -202,16 +203,15 @@ export default function EthWethWrap({
         </ButtonPrimary>
       )
     } else {
-      if (needsWrap) {
+      if (!loading && needsWrap) {
         // show wrap button
         actionButton = (
-          <ButtonPrimary
-            disabled={loading || !!error}
-            padding="0.5rem"
-            maxWidth="70%"
-            onClick={() => handleWrap().then(openNativeWrapModal)}
-          >
-            {loading ? <Loader /> : <Trans>{!isNativeIn ? 'Unwrap ' + wrappedSymbol : 'Wrap ' + nativeSymbol}</Trans>}
+          <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
+            {loading ? (
+              <Loader />
+            ) : (
+              <Trans>{isNativeIn || isWrap ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol}</Trans>
+            )}
           </ButtonPrimary>
         )
       } else if (needsApproval) {
@@ -221,16 +221,19 @@ export default function EthWethWrap({
             disabled={approvalState === ApprovalState.PENDING || !!error}
             padding="0.5rem"
             maxWidth="70%"
-            onClick={() => approveCallback().then(openNativeWrapModal)}
+            onClick={approveCallback}
           >
             {approvalPending ? <Loader /> : <Trans>Approve {wrappedSymbol}</Trans>}
           </ButtonPrimary>
         )
+      } else {
+        actionButton = <ThemedText.Black>You can safely close this modal</ThemedText.Black>
       }
     }
 
     return <ButtonWrapper>{actionButton}</ButtonWrapper>
   }, [
+    isWrap,
     error,
     isExpertMode,
     isNativeIn,
@@ -242,7 +245,6 @@ export default function EthWethWrap({
     needsWrap,
     handleWrap,
     approveCallback,
-    openNativeWrapModal,
     swapCallback,
     wrappedSymbol,
   ])
@@ -251,7 +253,7 @@ export default function EthWethWrap({
     <Wrapper>
       <RowBetween marginBottom={20}>
         <ThemedText.MediumHeader>
-          <Trans>{isNativeIn ? `Wrapping your ${nativeSymbol}` : `Unwrapping your ${wrappedSymbol}`}</Trans>
+          <Trans>{isNativeIn || isWrap ? `Wrapping your ${nativeSymbol}` : `Unwrapping your ${wrappedSymbol}`}</Trans>
         </ThemedText.MediumHeader>
         <CloseIcon onClick={onDismiss} />
       </RowBetween>
@@ -259,8 +261,9 @@ export default function EthWethWrap({
       <ModalMessage>
         <span>
           <Trans>
-            Submit {isNativeIn ? 'a wrapping' : 'an unwrapping'} transaction to convert your{' '}
-            {isNativeIn ? nativeSymbol : wrappedSymbol} to {isNativeIn ? wrappedSymbol : nativeSymbol}
+            Submit {isNativeIn || isWrap ? 'a wrapping' : 'an unwrapping'} transaction to convert your{' '}
+            {isNativeIn || isWrap ? nativeSymbol : wrappedSymbol} to{' '}
+            {isNativeIn || isWrap ? wrappedSymbol : nativeSymbol}
           </Trans>
         </span>
       </ModalMessage>
