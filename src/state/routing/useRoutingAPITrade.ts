@@ -1,13 +1,14 @@
-import { skipToken } from '@reduxjs/toolkit/query/react'
+// Mod import { skipToken } from '@reduxjs/toolkit/query/react'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
-import { IMetric, MetricLoggerUnit, setGlobalMetric } from '@uniswap/smart-order-router'
-import { sendTiming } from 'components/analytics'
+// Mod import { IMetric, MetricLoggerUnit, setGlobalMetric } from '@uniswap/smart-order-router'
+// Mod import type { IMetric, MetricLoggerUnit } from '@uniswap/smart-order-router'
+// Mod import { sendTiming } from 'components/analytics'
 import { useStablecoinAmountFromFiatValue } from 'hooks/useStablecoinPrice'
 import { useRoutingAPIArguments } from 'lib/hooks/routing/useRoutingAPIArguments'
 import useIsValidBlock from 'lib/hooks/useIsValidBlock'
-import ms from 'ms.macro'
+// Mod import ms from 'ms.macro'
 import { useMemo } from 'react'
-import { useGetQuoteQuery } from 'state/routing/slice'
+// Mod import { useGetQuoteQuery } from 'state/routing/slice'
 import { useClientSideRouter } from 'state/user/hooks'
 
 import { GetQuoteResult, InterfaceTrade, TradeState } from './types'
@@ -45,10 +46,14 @@ export function useRoutingAPITrade<TTradeType extends TradeType>(
     useClientSideRouter: clientSideRouter,
   })
 
-  const { isLoading, isError, data, currentData } = useGetQuoteQuery(queryArgs ?? skipToken, {
-    pollingInterval: ms`15s`,
-    refetchOnFocus: true,
-  })
+  const data: any = {}
+  const currentData: any = {}
+  const isLoading = false
+  const isError = false
+  // Mod const { isLoading, isError, data, currentData } = useGetQuoteQuery(queryArgs ?? skipToken, {
+  //   pollingInterval: ms`15s`,
+  //   refetchOnFocus: true,
+  // })
 
   const quoteResult: GetQuoteResult | undefined = useIsValidBlock(Number(data?.blockNumber) || 0) ? data : undefined
 
@@ -121,14 +126,14 @@ export function useRoutingAPITrade<TTradeType extends TradeType>(
 }
 
 // only want to enable this when app hook called
-class GAMetric extends IMetric {
-  putDimensions() {
-    return
-  }
+// Mod class GAMetric extends IMetric {
+//   putDimensions() {
+//     return
+//   }
+//
+//   putMetric(key: string, value: number, unit?: MetricLoggerUnit) {
+//     sendTiming('Routing API', `${key} | ${unit}`, value, 'client')
+//   }
+// }
 
-  putMetric(key: string, value: number, unit?: MetricLoggerUnit) {
-    sendTiming('Routing API', `${key} | ${unit}`, value, 'client')
-  }
-}
-
-setGlobalMetric(new GAMetric())
+// setGlobalMetric(new GAMetric())
