@@ -33,7 +33,7 @@ async function getQuote(
   routerParams: AlphaRouterParams,
   routerConfig: Partial<AlphaRouterConfig>
 ): Promise<{ data: GetQuoteResult; error?: unknown }> {
-    return Promise.resolve({data: undefined} as any)
+  return Promise.resolve({ data: undefined } as any)
   // Mod const router = new AlphaRouter(routerParams)
 
   // const currencyIn = new Token(tokenIn.chainId, tokenIn.address, tokenIn.decimals, tokenIn.symbol)
