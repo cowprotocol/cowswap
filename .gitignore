@@ -3,6 +3,9 @@
 # generated contract types
 /src/types/v3
 /src/abis/types
+/src/lib/locales/**/*.js
+/src/lib/locales/**/en-US.po
+/src/lib/locales/**/pseudo.po
 /src/locales/**/*.js
 /src/locales/**/*.ts
 /src/locales/**/*.json
@@ -20,6 +23,8 @@ cypress.env.json
 # builds
 /build
 /dts
+/cosmos-export
+/dist
 
 # misc
 .DS_Store
@@ -36,6 +41,8 @@ yarn-error.log*
 
 notes.txt
 .idea/
+
+.vscode/
 
 package-lock.json
 
