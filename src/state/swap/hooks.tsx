@@ -88,7 +88,7 @@ export function useDerivedSwapInfo(): {
   allowedSlippage: Percent
 } {
   return undefined as any
-  /* Mod this hooks it's not used
+  /* Mod: this hooks is not used
   const { account } = useWeb3React()
 
   const {
