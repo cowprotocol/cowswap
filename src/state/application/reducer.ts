@@ -61,7 +61,6 @@ export enum ApplicationModal {
   TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
   COW_SUBSIDY,
-  WRAP_NATIVE,
   // ------------------------------------------------------------------------------
 }
 
