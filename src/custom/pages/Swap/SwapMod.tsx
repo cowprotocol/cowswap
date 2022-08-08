@@ -38,8 +38,7 @@ import TokenWarningModal from 'components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import {
-  ApprovalState /*, useApprovalOptimizedTrade*/,
-  OptionalApproveCallbackParams,
+  ApprovalState /*, useApprovalOptimizedTrade, OptionalApproveCallbackParams,*/,
   useApproveCallbackFromTrade,
 } from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
@@ -625,23 +624,6 @@ export default function Swap({
 
   const { ErrorMessage } = useErrorMessage()
 
-  const nativeWrappingCallback = useCallback(
-    async (params: OptionalApproveCallbackParams) => {
-      /* if (isExpertMode) {
-        return Promise.all([onWrap?.({ useModals: false }), approveCallback({ ...params, useModals: false })])
-      } else {
-        const wrapTx = await onWrap?.()
-        const approveTx = await approveCallback(params)
-        return [wrapTx, approveTx]
-      } */
-      return Promise.all([
-        onWrap?.({ useModals: !isExpertMode }),
-        approveCallback({ ...params, useModals: !isExpertMode }),
-      ])
-    },
-    [approveCallback, isExpertMode, onWrap]
-  )
-
   return (
     <>
       <TokenWarningModal
@@ -671,15 +653,12 @@ export default function Swap({
           {...nativeRest}
           // state
           needsApproval={showApproveFlow && !!approveCallback}
-          approvalState={approvalState}
-          approvalPending={prevApprovalState === ApprovalState.PENDING && approvalState !== ApprovalState.APPROVED}
           needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
           wrapPending={false}
           // cbs
           onDismiss={dismissNativeWrapModal}
           approveCallback={approveCallback}
           wrapCallback={onWrap}
-          wrapAndApproveCallback={nativeWrappingCallback as any}
           swapCallback={handleNativeWrapAndSwap}
         />
       </GpModal>
