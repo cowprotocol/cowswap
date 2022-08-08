@@ -253,7 +253,7 @@ export default function Swap({
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     // is native token swap, use the wrapped equivalent as input currency
-    isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput,
+    isNativeInSwap ? (nativeInput ?? parsedAmount)?.wrapped : nativeInput ?? parsedAmount,
     // should override and get wrapCallback?
     isNativeInSwap
   )
