@@ -220,7 +220,7 @@ export default function Swap({
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
-  const { isNativeIn, native, wrappedToken } = useDetectNativeToken(
+  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(
     { currency: currencies.INPUT, address: INPUT.currencyId },
     { currency: currencies.OUTPUT, address: OUTPUT.currencyId },
     chainId
@@ -664,9 +664,11 @@ export default function Swap({
         <EthWethWrapMessage
           account={account ?? undefined}
           native={native}
-          isNativeIn={!!isNativeIn}
-          nativeInput={nativeInput}
           wrapped={wrappedToken}
+          nativeInput={nativeInput}
+          // native currency state
+          isNativeIn={isNativeIn}
+          {...nativeRest}
           // state
           needsApproval={showApproveFlow && !!approveCallback}
           approvalState={approvalState}
