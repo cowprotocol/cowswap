@@ -39,8 +39,14 @@ declare global {
   }
 }
 
-interface AppziCustomSettings {
+type AppziCustomSettings = {
   userTradedOrWaitedForLong?: true
+  isTestNps?: true // to trigger test rather than prod NPS
+}
+
+type AppziSettings = {
+  userId?: string
+  data?: Partial<AppziCustomSettings>
 }
 
 const eventEmitter = new EventEmitter()
@@ -69,11 +75,6 @@ function initialize() {
     window.appziSettings = window.appziSettings || {}
     window.appziSettings.onEvent = triggerAppziEvent
   }
-}
-
-type AppziSettings = {
-  userId?: string
-  data?: Partial<AppziCustomSettings>
 }
 
 export function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
@@ -109,6 +110,14 @@ export function openNpsAppzi() {
   window.appzi?.openWidget(NPS_KEY)
 }
 
+// Different triggers for each NPS survey.
+// If `userTradedOrWaitedForLong` is present and set, it'll be logged into the PROD NPS
+const PROD_NPS_DATA: AppziCustomSettings = { userTradedOrWaitedForLong: true }
+// If on the other hand `isTestNps` is present and tagged, it'll be logged into TEST NPS
+const TEST_NPS_DATA: AppziCustomSettings = { isTestNps: true }
+// Either one or the other. If both are present, PROD takes precedence
+const NPS_DATA = isProdLike ? PROD_NPS_DATA : TEST_NPS_DATA
+
 /**
  * Opening of the modal is delegated to Appzi
  * It'll display only if the trigger rules are met
@@ -116,7 +125,7 @@ export function openNpsAppzi() {
  */
 export function openNpsAppziSometimes() {
   applyOnceRestyleAppziNps()
-  updateAppziSettings({ data: { userTradedOrWaitedForLong: true } })
+  updateAppziSettings({ data: NPS_DATA })
 }
 
 initialize()
