@@ -9,8 +9,8 @@ afterEach(() => {
   jest.resetModules()
 })
 
-const UserAgentMock = jest.requireMock('@src/utils/userAgent')
-jest.mock('@src/utils/userAgent', () => ({
+const UserAgentMock = jest.requireMock('utils/userAgent')
+jest.mock('utils/userAgent', () => ({
   isMobile: false,
 }))
 
