@@ -95,6 +95,7 @@ import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
+import EthWrapToggle from 'components/swap/EthWethWrap/Toggle'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -817,6 +818,7 @@ export default function Swap({
                     padding: '0 8px',
                   }}
                 >
+                  <EthWrapToggle />
                   {trade && (
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
