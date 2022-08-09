@@ -160,7 +160,7 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
     return null
   } else if (error) {
     return (
-      <Web3StatusError onClick={toggleWalletModal}>
+      <Web3StatusError /* onClick={toggleWalletModal} */>
         <NetworkIcon />
         <Text>
           <Trans>Error</Trans>

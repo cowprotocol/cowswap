@@ -42,12 +42,8 @@ export const CHAIN_IDS_TO_NAMES = {
  * Array of all the supported chain IDs
  */
 export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
-  // TODO: undo this id check for goerli after prod apis adapt
-  (id) => typeof id === 'number' && id !== SupportedChainId.GOERLI
+  (id) => typeof id === 'number'
 ) as SupportedChainId[]
-
-// TODO: remove goerli
-export const BLOCKED_CHAIN_IDS = [SupportedChainId.GOERLI]
 
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.MAINNET,

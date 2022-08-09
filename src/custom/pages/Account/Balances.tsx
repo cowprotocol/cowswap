@@ -79,7 +79,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || !provider
+    let output = isVCowLoading || isLockedGnoLoading || !provider
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -87,7 +87,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isVCowLoading, provider])
+  }, [isLockedGnoLoading, isVCowLoading, provider])
 
   const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
   const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'

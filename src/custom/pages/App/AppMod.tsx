@@ -1,16 +1,14 @@
 import Loader from 'components/Loader'
+import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import { /*Lazy,*/ Suspense, /* PropsWithChildren, */ ReactNode } from 'react'
 import { /*Redirect,*/ Route, Switch, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
-import AddressClaimModal from 'components/claim/AddressClaimModal'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
 import Polling from 'components/Header/Polling'
 
-import { useModalIsOpen, useToggleModal } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
 import DarkModeQueryParamReader from 'theme'
 /* import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
@@ -80,12 +78,6 @@ const FooterWrapper = styled(HeaderWrapper)`
 const Marginer = styled.div`
   margin-top: 5rem;
 `
-
-function TopLevelModals() {
-  const open = useModalIsOpen(ApplicationModal.ADDRESS_CLAIM)
-  const toggle = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
-  return <AddressClaimModal isOpen={open} onDismiss={toggle} />
-}
 
 export default function App(props?: { children?: ReactNode }) {
   const location = useLocation()
