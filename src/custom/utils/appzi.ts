@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import ReactAppzi from 'react-appzi'
 import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'utils/userAgent'
+import { isProdLike } from 'utils/environments'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -11,8 +12,14 @@ const isFeedbackEnabled = process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' 
 const isImTokenIosBrowser = isImTokenBrowser && userAgent.os.name === 'iOS'
 export const isAppziEnabled = !isOldChrome && !isImTokenIosBrowser && isFeedbackEnabled
 
-export const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
-export const NPS_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || '55872789-593b-4c6c-9e49-9b5c7693e90a'
+const PROD_FEEDBACK_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
+const TEST_FEEDBACK_KEY = '6da8bf10-4904-4952-9a34-12db70e9194e'
+const PROD_NPS_KEY = '55872789-593b-4c6c-9e49-9b5c7693e90a'
+const TEST_NPS_KEY = '5b794318-f81c-4dac-83ba-15a6e4c9353d'
+
+export const FEEDBACK_KEY =
+  process.env.REACT_APP_APPZI_FEEDBACK_KEY || isProdLike ? PROD_FEEDBACK_KEY : TEST_FEEDBACK_KEY
+export const NPS_KEY = process.env.REACT_APP_APPZI_NPS_KEY || isProdLike ? PROD_NPS_KEY : TEST_NPS_KEY
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 const EVENT = 'message'
