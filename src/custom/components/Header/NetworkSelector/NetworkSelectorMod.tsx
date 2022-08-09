@@ -221,6 +221,8 @@ const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     // case SupportedChainId.CELO:
     // case SupportedChainId.CELO_ALFAJORES:
     //   return <Trans>Portal Bridge</Trans>
+    case SupportedChainId.RINKEBY:
+      return <Trans>Faucet</Trans>
     default:
       return <Trans>Bridge</Trans>
   }
@@ -239,6 +241,8 @@ const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     // case SupportedChainId.CELO:
     // case SupportedChainId.CELO_ALFAJORES:
     //   return <Trans>Blockscout</Trans>
+    case SupportedChainId.GNOSIS_CHAIN:
+      return <Trans>Blockscout</Trans>
     default:
       return <Trans>Etherscan</Trans>
   }

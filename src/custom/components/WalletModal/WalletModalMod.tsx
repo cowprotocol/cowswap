@@ -29,7 +29,7 @@ import { WalletConnect } from '@web3-react/walletconnect'
 // MOD imports
 import ModalMod from '@src/components/Modal'
 import { changeWalletAnalytics } from 'utils/analytics'
-import usePrevious from '@src/hooks/usePrevious'
+import usePrevious from 'hooks/usePrevious'
 
 export const CloseIcon = styled.div`
   position: absolute;

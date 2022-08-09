@@ -24,7 +24,7 @@ import usePrevious from 'hooks/usePrevious'
 import { useWeb3React } from '@web3-react/core'
 import { CardsWrapper } from '../styled'
 import { supportedChainId } from 'utils/supportedChainId'
-import Web3Status from '@src/components/Web3Status'
+import Web3Status from 'components/Web3Status'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',

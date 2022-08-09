@@ -9,7 +9,7 @@ import { useAppDispatch } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
-import { getConnection, getConnectionName, getIsMetaMask } from 'connection/utils'
+import { getConnection, getConnectionName, getIsMetaMask, getIsCoinbaseWallet } from 'connection/utils'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
@@ -50,6 +50,7 @@ import {
   injectedConnection,
   walletConnectConnection,
 } from 'connection'
+import { isMobile } from 'utils/userAgent'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -132,6 +133,10 @@ export default function AccountDetails({
 
   const dispatch = useAppDispatch()
 
+  const isMetaMask = getIsMetaMask()
+  const isCoinbaseWallet = getIsCoinbaseWallet()
+  const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
+
   function formatConnectorName() {
     const name = walletInfo?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
@@ -185,14 +190,20 @@ export default function AccountDetails({
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              <WalletAction onClick={handleDisconnectClick}>
-                <Trans>Disconnect</Trans>
-              </WalletAction>
-              {connection.type !== ConnectionType.GNOSIS_SAFE && (
-                <WalletAction onClick={toggleWalletModal}>
-                  <Trans>Change Wallet</Trans>
-                </WalletAction>
+              {!isInjectedMobileBrowser && (
+                <>
+                  <WalletAction onClick={handleDisconnectClick}>
+                    <Trans>Disconnect</Trans>
+                  </WalletAction>
+
+                  {connection.type !== ConnectionType.GNOSIS_SAFE && (
+                    <WalletAction onClick={toggleWalletModal}>
+                      <Trans>Change Wallet</Trans>
+                    </WalletAction>
+                  )}
+                </>
               )}
+
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}

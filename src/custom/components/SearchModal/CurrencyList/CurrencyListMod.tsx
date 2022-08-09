@@ -142,6 +142,7 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
   showCurrencyAmount?: boolean
+  // eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
@@ -155,6 +156,12 @@ function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
+    //   <TraceEvent
+    //   events={[Event.onClick, Event.onKeyPress]}
+    //   name={EventName.TOKEN_SELECTED}
+    //   properties={{ is_imported_by_user: customAdded, ...eventProperties }}
+    //   element={ElementName.TOKEN_SELECTOR_ROW}
+    // >
     <MenuItem
       tabIndex={0}
       style={style}
@@ -185,6 +192,7 @@ function CurrencyRow({
         </RowFixed>
       )}
     </MenuItem>
+    // </TraceEvent>
   )
 }
 
