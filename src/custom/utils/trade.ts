@@ -95,7 +95,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     feeAmount: feeAmount?.quotient.toString() || '0',
     kind,
     receiver,
-    partiallyFillable: false, // Always fill or kill
+    partiallyFillable: true, // Always fill or kill
   }
 
   let signingScheme: SigningScheme
