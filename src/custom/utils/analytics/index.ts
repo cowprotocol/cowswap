@@ -59,13 +59,13 @@ export function reportWebVitals() {
 }
 
 export function onChainIdChange(chainId: number | undefined) {
-  // chainId - custom dimension 1
-  ReactGA.set({ chainId: chainId ?? 0 })
+  // cd1 - custom dimension 1 (chain id)
+  ReactGA.set({ cd1: chainId ?? 0 })
 }
 
 export function onWalletChange(walletName: string | undefined) {
-  // walletname - custom dimension 2
-  ReactGA.set({ walletName })
+  // cd2 - custom dimension 2 (wallet name)
+  ReactGA.set({ cd2: walletName })
 }
 
 export function onPathNameChange(pathname: string, search: string) {
