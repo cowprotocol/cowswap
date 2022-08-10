@@ -818,7 +818,9 @@ export default function Swap({
                     padding: '0 8px',
                   }}
                 >
-                  <EthWrapToggle />
+                  {/* ETH-FLOW TOGGLE */}
+                  {isNativeIn && <EthWrapToggle />}
+
                   {trade && (
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
@@ -1019,7 +1021,11 @@ export default function Swap({
                     // error={isValid && priceImpactSeverity > 2}
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                      <Trans>Swap</Trans>
+                      <Trans>
+                        {showNativeEthFlowSlippageWarning
+                          ? 'Swap'
+                          : `Wrap ${trade?.inputAmount.currency.name} and swap`}
+                      </Trans>
                     </SwapButton>
                     {/* <Text fontSize={16} fontWeight={500}>
                         {priceImpactTooHigh ? (
