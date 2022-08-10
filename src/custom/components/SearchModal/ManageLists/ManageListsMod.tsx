@@ -295,47 +295,92 @@ export function ManageLists({
     return uriToHttp(listUrlInput).length > 0 || Boolean(parseENSAddress(listUrlInput))
   }, [listUrlInput])
 
-  const sortedLists = useMemo(
+  // const sortedLists = useMemo(() => {
+  //   const listUrls = Object.keys(lists)
+  //   return listUrls
+  //     .filter((listUrl) => {
+  //       // only show loaded lists, hide unsupported lists
+  //       return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+  //     })
+  //     .sort((listUrlA, listUrlB) => {
+  //       const { current: listA } = lists[listUrlA]
+  //       const { current: listB } = lists[listUrlB]
+
+  //       // first filter on active lists
+  //       if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
+  //         return -1
+  //       }
+  //       if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
+  //         return 1
+  //       }
+
+  //       if (listA && listB) {
+  //         if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
+  //           return -1
+  //         }
+  //         if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
+  //           return 1
+  //         }
+  //         return listA.name.toLowerCase() < listB.name.toLowerCase()
+  //           ? -1
+  //           : listA.name.toLowerCase() === listB.name.toLowerCase()
+  //           ? 0
+  //           : 1
+  //       }
+  //       if (listA) return -1
+  //       if (listB) return 1
+  //       return 0
+  //     })
+  // }, [lists, activeListUrls, tokenCountByListName])
+
+  // Mod: Sort only on initial component load to avoid jumping UI issues
+  // Next time the component is loaded, the lists will be sorted
+  const sortedLists = useMemo(() => {
+    const listsUrls = Object.keys(lists)
+
+    return listsUrls.sort((listUrlA, listUrlB) => {
+      const { current: listA } = lists[listUrlA]
+      const { current: listB } = lists[listUrlB]
+
+      // first filter on active lists
+      if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
+        return -1
+      }
+      if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
+        return 1
+      }
+
+      if (listA && listB) {
+        if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
+          return -1
+        }
+        if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
+          return 1
+        }
+        return listA.name.toLowerCase() < listB.name.toLowerCase()
+          ? -1
+          : listA.name.toLowerCase() === listB.name.toLowerCase()
+          ? 0
+          : 1
+      }
+      if (listA) return -1
+      if (listB) return 1
+      return 0
+    })
+    // This is fine to have empty dependencies here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const filteredLists = useMemo(
     () => {
-      const listUrls = Object.keys(lists)
-      return listUrls
-        .filter((listUrl) => {
-          // only show loaded lists, hide unsupported lists
-          // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
-          return Boolean(lists[listUrl].current) && !Boolean(unsupportedListUrls.includes(listUrl))
-        })
-        .sort((listUrlA, listUrlB) => {
-          const { current: listA } = lists[listUrlA]
-          const { current: listB } = lists[listUrlB]
-
-          // first filter on active lists
-          if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
-            return -1
-          }
-          if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
-            return 1
-          }
-
-          if (listA && listB) {
-            if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
-              return -1
-            }
-            if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
-              return 1
-            }
-            return listA.name.toLowerCase() < listB.name.toLowerCase()
-              ? -1
-              : listA.name.toLowerCase() === listB.name.toLowerCase()
-              ? 0
-              : 1
-          }
-          if (listA) return -1
-          if (listB) return 1
-          return 0
-        })
+      return sortedLists.filter((listUrl) => {
+        // only show loaded lists, hide unsupported lists
+        // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+        return Boolean(lists[listUrl].current) && !Boolean(unsupportedListUrls.includes(listUrl))
+      })
     },
     // [lists, activeListUrls, tokenCountByListName]
-    [lists, unsupportedListUrls, activeListUrls, tokenCountByListName]
+    [sortedLists, lists, unsupportedListUrls]
   )
 
   // temporary fetched list for import flow
@@ -430,7 +475,7 @@ export function ManageLists({
       <Separator />
       <ListContainer>
         <AutoColumn gap="md">
-          {sortedLists.map((listUrl) => (
+          {filteredLists.map((listUrl) => (
             // <ListRow key={listUrl} listUrl={listUrl} />
             <ListRow key={listUrl} listUrl={listUrl} {...listRowProps} />
           ))}
