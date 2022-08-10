@@ -225,11 +225,9 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   if (isBatchFulfillOrderAction(action) || isSingleFulfillOrderAction(action)) {
-    console.warn(`appzi: fulfilled`, action.payload)
     // Shows NPS feedback (or attempts to) when there's a successful trade
     openNpsAppziSometimes({ traded: true })
   } else if (isExpireOrdersAction(action)) {
-    console.warn(`appzi: expired`, action.payload)
     // Shows NPS feedback (or attempts to) when the order expired
     openNpsAppziSometimes({ expired: true })
   }
