@@ -235,7 +235,7 @@ jobs:
 
       - name: 'Deploy to S3: Develop'
         if: github.ref == 'refs/heads/develop'
-        run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete --content-type 'br'
 
       - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/main'
