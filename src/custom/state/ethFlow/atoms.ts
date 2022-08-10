@@ -1,6 +1,4 @@
-import { atomWithStorage, useUpdateAtom, useAtomValue, selectAtom } from 'jotai/utils'
-
-export { useUpdateAtom, useAtomValue, selectAtom }
+import { atomWithStorage, selectAtom } from 'jotai/utils'
 
 /**
  * Base atom that stores the user's set native ETH sell value
