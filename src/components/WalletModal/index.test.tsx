@@ -15,6 +15,11 @@ afterEach(() => {
 const UserAgentMock = jest.requireMock('utils/userAgent')
 jest.mock('utils/userAgent', () => ({
   isMobile: false,
+  userAgent: {
+    browser: {
+      name: 'Chrome',
+    },
+  },
 }))
 
 jest.mock('@src/state/application/hooks', () => {
