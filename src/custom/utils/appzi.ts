@@ -126,9 +126,12 @@ const NPS_DATA = isProdLike ? PROD_NPS_DATA : TEST_NPS_DATA
  * It'll display only if the trigger rules are met
  * Check https://portal.appzi.com/portals/5ju0G/configs/55872789-593b-4c6c-9e49-9b5c7693e90a/trigger
  */
-export function openNpsAppziSometimes(data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>) {
+export function openNpsAppziSometimes(
+  data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>,
+  userId?: string
+) {
   applyOnceRestyleAppziNps()
-  updateAppziSettings({ data: { ...data, ...NPS_DATA } })
+  updateAppziSettings({ data: { ...data, ...NPS_DATA }, userId })
 }
 
 initialize()
