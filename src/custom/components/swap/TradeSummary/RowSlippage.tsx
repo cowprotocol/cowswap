@@ -18,7 +18,7 @@ export interface RowSlippageProps {
   fontSize?: number
   rowHeight?: number
   showSettingOnClick?: boolean
-  nativeSymbolInNativeFlow?: string
+  nativeSymbolInNativeFlow?: false | string
 }
 export function RowSlippage({
   allowedSlippage,

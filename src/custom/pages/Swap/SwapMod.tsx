@@ -214,7 +214,7 @@ export default function Swap({
   // logTradeDetails(v2Trade, allowedSlippage)
 
   // enable when components ready
-  /* const isUserNativeEthFlow =  */ useIsUserNativeEthFlow()
+  const isUserNativeEthFlow = useIsUserNativeEthFlow()
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
@@ -816,9 +816,16 @@ export default function Swap({
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
 
-                  {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                    <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
-                  )}
+                  {isUserNativeEthFlow ||
+                    (!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
+                      <RowSlippage
+                        allowedSlippage={allowedSlippage}
+                        fontSize={12}
+                        fontWeight={400}
+                        rowHeight={24}
+                        nativeSymbolInNativeFlow={isUserNativeEthFlow && trade?.inputAmount.currency.symbol}
+                      />
+                    ))}
                   {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
                   {/* FEES DISCOUNT */}
                   {/* TODO: check cow balance and set here, else don't show */}
