@@ -1,53 +1,18 @@
-import { Trans } from '@lingui/macro'
-import React, { ErrorInfo, useCallback } from 'react'
+import React, { ErrorInfo } from 'react'
 // import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 
-import store, { AppState } from 'state/index'
-import { ExternalLink, ThemedText } from 'theme/index'
-import { userAgent } from '@src/utils/userAgent'
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
-
 // MOD imports
-import Page, { Title } from 'components/Page'
+import Page from 'components/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
-import CowError from 'assets/cow-swap/CowError.png'
 // import { UniIcon, LogoImage } from '../Header'
 import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
-import { DISCORD_LINK, CODE_LINK } from 'constants/index'
 import { Routes } from 'constants/routes'
 import { reportError } from 'utils/analytics'
-import { ButtonPrimary } from 'components/Button'
-import cowNoConnectionIMG from 'assets/cow-swap/cow-no-connection.png'
-
-/**
- * We use the `cow-no-connection.png` image in case when there is no internet connection
- * Cause of it we must preload the image before lost of connection
- */
-let cowNoConnectionIMGCache: string | null = null
-
-function preloadNoConnectionImg() {
-  fetch(cowNoConnectionIMG)
-    .then((res) => res.blob())
-    .then((blob) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(blob)
-
-      return new Promise<string>((resolve) => {
-        reader.onload = function () {
-          resolve(this.result as string)
-        }
-      })
-    })
-    .then((img) => {
-      cowNoConnectionIMGCache = img
-    })
-}
-
-preloadNoConnectionImg()
+import { ChunkLoadError } from 'components/ErrorBoundary/ChunkLoadError'
+import { ErrorWithStackTrace } from 'components/ErrorBoundary/ErrorWithStackTrace'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -62,28 +27,6 @@ const BodyWrapper = styled.div<{ margin?: string }>`
   width: 100%;
   white-space: ;
 ` */
-
-const CodeBlockWrapper = styled.div`
-  background: ${({ theme }) => theme.bg4};
-  overflow: auto;
-  white-space: pre;
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 16px;
-  padding: 16px;
-  color: ${({ theme }) => theme.text2};
-
-  /* MOD */
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 12px;
-    width: auto;
-  `};
-`
-
-const LinkWrapper = styled.div`
-  color: ${({ theme }) => theme.blue1};
-  padding: 6px 24px;
-`
 
 /* const SomethingWentWrongWrapper = styled.div`
   padding: 6px 24px;
@@ -129,23 +72,6 @@ const Wrapper = styled(Page)`
   }
 `
 
-const StyledTitle = styled(Title)`
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    text-align: center;
-  }
-`
-
-const FlexContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 0 0.5rem 0;
-
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToMedium}px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`
 const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
@@ -165,122 +91,6 @@ const FooterWrapper = styled(HeaderWrapper)`
   position: relative;
   top: auto;
 `
-
-const StyledParagraph = styled.p`
-  overflow-x: auto;
-`
-
-const NoConnectionContainer = styled.div`
-  text-align: center;
-`
-
-const NoConnectionDesc = styled.div`
-  text-align: left;
-`
-
-const NoConnectionImg = styled.img`
-  max-width: 500px;
-  display: inline-block;
-  margin: 20px 0;
-
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToMedium}px) {
-    width: 90%;
-  }
-`
-
-const ErrorInfoWithStackTrace = ({ error }: { error: Error }) => {
-  const encodedBody = encodeURIComponent(issueBody(error))
-
-  return (
-    <>
-      <FlexContainer>
-        <StyledTitle>
-          <Trans> Something went wrong</Trans>
-        </StyledTitle>
-        <img src={CowError} alt="CowSwap Error" height="125" />
-      </FlexContainer>
-      <AutoColumn gap={'md'}>
-        <CodeBlockWrapper>
-          <code>
-            <ThemedText.Main fontSize={10} color={'text1'}>
-              <StyledParagraph>{error.stack}</StyledParagraph>
-            </ThemedText.Main>
-          </code>
-        </CodeBlockWrapper>
-        <AutoRow>
-          <LinkWrapper>
-            <ExternalLink
-              id="create-github-issue-link"
-              href={
-                CODE_LINK +
-                `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                  `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
-                )}`
-              }
-            >
-              <ThemedText.Link fontSize={16}>
-                <Trans>Create an issue on GitHub</Trans>
-                <span>↗</span>
-              </ThemedText.Link>
-            </ExternalLink>
-          </LinkWrapper>
-          <LinkWrapper>
-            <ExternalLink id="get-support-on-discord" href={DISCORD_LINK}>
-              <ThemedText.Link fontSize={16}>
-                <Trans>Get support on Discord</Trans>
-                <span>↗</span>
-              </ThemedText.Link>
-            </ExternalLink>
-          </LinkWrapper>
-        </AutoRow>
-      </AutoColumn>
-    </>
-  )
-}
-
-const ChunkLoadError = () => {
-  const reloadPage = useCallback(() => {
-    window.location.reload()
-  }, [])
-
-  return (
-    <>
-      <FlexContainer>
-        <StyledTitle>
-          <Trans>This page can&apos;t be reached</Trans>
-        </StyledTitle>
-      </FlexContainer>
-      <AutoColumn gap={'md'}>
-        <NoConnectionContainer>
-          <NoConnectionDesc>
-            <p>Sorry, we were unable to load the requested page.</p>
-            <p>
-              This could have happened due to the lack of internet or the release of a new version of the application.
-            </p>
-          </NoConnectionDesc>
-          {cowNoConnectionIMGCache && <NoConnectionImg src={cowNoConnectionIMGCache} alt="CowSwap no connection" />}
-        </NoConnectionContainer>
-        <AutoRow justify="center" gap="16px">
-          <ButtonPrimary width="fit-content" onClick={reloadPage}>
-            <Trans>Reload page</Trans>
-          </ButtonPrimary>
-          <LinkWrapper>
-            <ExternalLink id="get-support-on-discord" href={DISCORD_LINK}>
-              <ThemedText.Link fontSize={16}>
-                <Trans>Get support on Discord</Trans>
-                <span>↗</span>
-              </ThemedText.Link>
-            </ExternalLink>
-          </LinkWrapper>
-        </AutoRow>
-      </AutoColumn>
-    </>
-  )
-}
-
-function truncate(value?: string): string | undefined {
-  return value ? value.slice(0, 1000) : undefined
-}
 
 async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
   const ready = await navigator.serviceWorker.ready
@@ -339,7 +149,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
             </HeaderRow>
           </HeaderWrapper>
           <Wrapper>
-            {error?.name === 'ChunkLoadError' ? <ChunkLoadError /> : <ErrorInfoWithStackTrace error={error} />}
+            {error?.name === 'ChunkLoadError' ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}
           </Wrapper>
           <FooterWrapper>
             <Footer />
@@ -349,70 +159,4 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
     }
     return this.props.children
   }
-}
-
-function getRelevantState(): null | keyof AppState {
-  const path = window.location.hash
-  if (!path.startsWith('#/')) {
-    return null
-  }
-  const pieces = path.substring(2).split(/[/\\?]/)
-  switch (pieces[0]) {
-    case 'swap':
-      return 'swap'
-    /* case 'add':
-      if (pieces[1] === 'v2') return 'mint'
-      else return 'mintV3'
-    case 'remove':
-      if (pieces[1] === 'v2') return 'burn'
-      else return 'burnV3' */
-  }
-  return null
-}
-
-function issueBody(error: Error): string {
-  const relevantState = getRelevantState()
-  const deviceData = userAgent
-  return `## URL
-  
-${window.location.href}
-
-${
-  relevantState
-    ? `## \`${relevantState}\` state
-    
-\`\`\`json
-${JSON.stringify(store.getState()[relevantState], null, 2)}
-\`\`\`
-`
-    : ''
-}
-${
-  error.name &&
-  `## Error
-
-\`\`\`
-${error.name}${error.message && `: ${truncate(error.message)}`}
-\`\`\`
-`
-}
-${
-  error.stack &&
-  `## Stacktrace
-
-\`\`\`
-${truncate(error.stack)}
-\`\`\`
-`
-}
-${
-  deviceData &&
-  `## Device data
-
-\`\`\`json
-${JSON.stringify(deviceData, null, 2)}
-\`\`\`
-`
-}
-`
 }
