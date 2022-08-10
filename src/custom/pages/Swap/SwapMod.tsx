@@ -213,6 +213,9 @@ export default function Swap({
   // Log all trade information
   // logTradeDetails(v2Trade, allowedSlippage)
 
+  // enable when components ready
+  /* const isUserNativeEthFlow =  */ useIsUserNativeEthFlow()
+
   // Checks if either currency is native ETH
   // MOD: adds this hook
   const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(
