@@ -10,6 +10,7 @@ import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sou
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'utils/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
+import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -30,9 +31,22 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 // const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch) // disabled because doesn't work on `if`
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
+const isSingleExpireOrderAction = isAnyOf(OrderActions.expireOrder)
+const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
+function getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
+  if (!orders) {
+    return
+  }
+
+  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
+
+  const orderObject = pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
+  return orderObject
+}
+
 // a corresponsing Popup action is dispatched
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
@@ -44,16 +58,13 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // use current state to lookup orders' data
     const orders = store.getState().orders[chainId]
+    const orderObject = getOrderById(orders, id)
 
-    if (!orders) return
-
-    const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
-
-    const orderObject =
-      pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
-
+    if (!orderObject) {
+      return
+    }
     // look up Order.summary for Popup
-    const summary = orderObject?.order.summary
+    const summary = orderObject.order.summary
 
     let popup: PopupPayload
     if (isPendingOrderAction(action)) {
@@ -224,12 +235,43 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 }
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
-  if (isBatchFulfillOrderAction(action) || isSingleFulfillOrderAction(action)) {
+  if (isBatchFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
-    openNpsAppziSometimes({ traded: true })
-  } else if (isExpireOrdersAction(action)) {
+    const {
+      chainId,
+      ordersData: [{ id }],
+    } = action.payload
+    const orders = store.getState().orders[chainId]
+    const userId = getOrderById(orders, id)?.order?.owner
+
+    openNpsAppziSometimes({ traded: true }, userId)
+  } else if (isSingleFulfillOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when there's a successful trade
+    const { chainId, id } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const userId = getOrderById(orders, id)?.order?.owner
+
+    openNpsAppziSometimes({ traded: true }, userId)
+  } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
-    openNpsAppziSometimes({ expired: true })
+    const {
+      chainId,
+      ids: [id],
+    } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const userId = getOrderById(orders, id)?.order?.owner
+
+    openNpsAppziSometimes({ expired: true }, userId)
+  } else if (isSingleExpireOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when the order expired
+    const { chainId, id } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const userId = getOrderById(orders, id)?.order?.owner
+
+    openNpsAppziSometimes({ expired: true }, userId)
   }
 
   return next(action)
