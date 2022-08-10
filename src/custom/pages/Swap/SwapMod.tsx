@@ -1017,7 +1017,9 @@ export default function Swap({
                     // error={isValid && priceImpactSeverity > 2}
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                      <Trans>Swap</Trans>
+                      <Trans>
+                        {isUserNativeEthFlow ? 'Swap' : `Wrap ${trade?.inputAmount.currency.name} and swap`}
+                      </Trans>
                     </SwapButton>
                     {/* <Text fontSize={16} fontWeight={500}>
                         {priceImpactTooHigh ? (
