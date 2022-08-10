@@ -22,6 +22,7 @@ import LogsUpdater from 'state/logs/updater'
 import TransactionUpdater from 'state/transactions/updater'
 import UserUpdater from 'state/user/updater'
 import GnosisSafeUpdater from 'state/gnosisSafe/updater'
+import EthFlowSlippageUpdater from 'state/ethFlow/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
 
@@ -74,6 +75,7 @@ function Updaters() {
       <UploadToIpfsUpdater />
       <GnosisSafeUpdater />
       <GasPriceStrategyUpdater />
+      <EthFlowSlippageUpdater />
     </>
   )
 }
