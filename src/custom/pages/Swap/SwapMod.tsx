@@ -816,17 +816,19 @@ export default function Swap({
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
 
-                  {isUserNativeEthFlow ||
-                    (!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                      <RowSlippage
-                        allowedSlippage={allowedSlippage}
-                        fontSize={12}
-                        fontWeight={400}
-                        rowHeight={24}
-                        nativeSymbolInNativeFlow={isUserNativeEthFlow && trade?.inputAmount.currency.symbol}
-                      />
-                    ))}
-                  {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
+                  {((!isExpertMode && isUserNativeEthFlow) ||
+                    !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && (
+                    <RowSlippage
+                      allowedSlippage={allowedSlippage}
+                      fontSize={12}
+                      fontWeight={400}
+                      rowHeight={24}
+                      nativeFlowSymbol={isNativeIn && trade?.inputAmount.currency.symbol}
+                    />
+                  )}
+                  {(isFeeGreater || trade) && fee && (
+                    <TradeBasicDetails trade={trade} fee={fee} isNativeIn={isNativeIn} />
+                  )}
                   {/* FEES DISCOUNT */}
                   {/* TODO: check cow balance and set here, else don't show */}
                   <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />

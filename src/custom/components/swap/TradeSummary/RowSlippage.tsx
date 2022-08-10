@@ -18,7 +18,7 @@ export interface RowSlippageProps {
   fontSize?: number
   rowHeight?: number
   showSettingOnClick?: boolean
-  nativeSymbolInNativeFlow?: false | string
+  nativeFlowSymbol?: false | string
 }
 export function RowSlippage({
   allowedSlippage,
@@ -26,9 +26,9 @@ export function RowSlippage({
   fontWeight = 500,
   rowHeight,
   showSettingOnClick = true,
-  // undefined if NOT in native flow
+  // false/undefined if NOT in native flow
   // else is symbol of native currency
-  nativeSymbolInNativeFlow,
+  nativeFlowSymbol,
 }: RowSlippageProps) {
   const theme = useContext(ThemeContext)
   const toggleSettings = useToggleSettingsMenu()
@@ -38,7 +38,7 @@ export function RowSlippage({
     <RowBetween height={rowHeight}>
       <RowFixed>
         <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
-          {nativeSymbolInNativeFlow ? (
+          {nativeFlowSymbol ? (
             <Trans>
               Slippage tolerance <ThemedText.Warn override>(modified)</ThemedText.Warn>
             </Trans>
@@ -55,12 +55,12 @@ export function RowSlippage({
           color={theme.text1}
           wrap
           content={
-            nativeSymbolInNativeFlow ? (
+            nativeFlowSymbol ? (
               <Trans>
                 <p>
-                  You are currently swapping {nativeSymbolInNativeFlow || 'a native token'} with the classic native
-                  currency CowSwap experience disabled. Slippage tolerance is defaulted to a 2% spread to maximise
-                  chances of order matching success.
+                  You are currently swapping {nativeFlowSymbol || 'a native token'} with the classic{' '}
+                  {nativeFlowSymbol || 'native currency'} CowSwap experience disabled.
+                  <p>Slippage tolerance is defaulted to a 2% spread to maximise chances of order matching success.</p>
                 </p>
               </Trans>
             ) : (
