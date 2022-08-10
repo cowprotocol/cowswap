@@ -10,7 +10,7 @@ import { useAddUserToken } from 'state/user/hooks'
 import { Erc20 } from 'abis/types'
 import { retry } from 'utils/retry'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { supportedChainId } from '../utils/supportedChainId'
+import { supportedChainId } from 'utils/supportedChainId'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}

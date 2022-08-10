@@ -1,6 +1,6 @@
 describe('Swap (mod)', () => {
   beforeEach(() => {
-    cy.visit('/swap')
+    cy.visit('/#/swap')
   })
 
   it('starts with an Native/USDC swap and quotes it', () => {
