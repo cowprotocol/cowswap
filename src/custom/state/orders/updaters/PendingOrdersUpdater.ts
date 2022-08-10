@@ -126,7 +126,7 @@ async function _updateOrders({
       // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
       if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
         // Trigger NPS display, controlled by Appzi
-        openNpsAppziSometimes()
+        openNpsAppziSometimes({ waitedFor: `${Math.floor((now - openSince) / 60_000)} min` })
         // Break the loop, don't need to show more than once
         break
       }
