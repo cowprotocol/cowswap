@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
+const zlib = require('zlib')
+const { when } = require('@craco/craco')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CompressionPlugin = require('compression-webpack-plugin')
 const { version } = require('./package.json')
 
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
@@ -14,6 +17,24 @@ const ANALYZE_BUNDLE = process.env.REACT_APP_ANALYZE_BUNDLE
 if (ANALYZE_BUNDLE) {
   plugins.push(new BundleAnalyzerPlugin())
 }
+
+when(process.env.NODE_ENV !== 'development', () => {
+  plugins.push(
+    new CompressionPlugin({
+      filename: '[path][base].br',
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: {
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+        },
+      },
+      threshold: 10240,
+      minRatio: 0.8,
+      deleteOriginalAssets: false,
+    })
+  )
+})
 
 if (SENTRY_AUTH_TOKEN) {
   plugins.push(

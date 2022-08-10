@@ -181,7 +181,7 @@
     "@uniswap/v3-sdk": "^3.8.2"
   },
   "scripts": {
-    "start:default": "craco start",
+    "start:default": "cross-env NODE_ENV=development craco start",
     "start": "REACT_APP_DISABLE_TOKEN_WARNING=true yarn start:default",
     "start:ssl": "HTTPS=true yarn start",
     "start:service-worker": "yarn build && yarn serve",
@@ -276,6 +276,7 @@
     "ajv": "^6.12.3",
     "bnc-sdk": "^3.5.0",
     "cids": "^1.0.0",
+    "compression-webpack-plugin": "^6.0.5",
     "ethers": "^5.1.4",
     "fast-safe-stringify": "^2.0.8",
     "fortmatic": "^2.2.1",

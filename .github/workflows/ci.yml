@@ -220,7 +220,7 @@ jobs:
 
       - name: 'Deploy to S3: PRaul'
         if: env.PR_NUMBER
-        run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ env.PR_NUMBER }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ env.PR_NUMBER }} --delete --content-encoding=br
 
       - name: 'PRaul: Comment PR with app URLs'
         uses: mshick/add-pr-comment@v1
@@ -235,7 +235,7 @@ jobs:
 
       - name: 'Deploy to S3: Develop'
         if: github.ref == 'refs/heads/develop'
-        run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete --content-type 'br'
+        run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete --content-encoding=br
 
       - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/main'
