@@ -19,7 +19,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import { ThemedText } from 'theme'
 import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
-import { CoinbaseWalletOption, OpenCoinbaseWalletOption } from 'components/WalletModal/CoinbaseWalletOption'
+import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from 'components/WalletModal/CoinbaseWalletOption'
 import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from 'components/WalletModal/InjectedOption'
 import PendingView from 'components/WalletModal/PendingView'
@@ -253,12 +253,13 @@ export default function WalletModal({
       }
     }
 
-    let coinbaseWalletOption
-    if (isMobile && !isInjectedMobileBrowser) {
-      coinbaseWalletOption = <OpenCoinbaseWalletOption />
-    } else if (!isMobile || isCoinbaseWalletBrowser) {
-      coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
-    }
+    // let coinbaseWalletOption
+    // if (isMobile && !isInjectedMobileBrowser) {
+    //   coinbaseWalletOption = <OpenCoinbaseWalletOption />
+    // } else if (!isMobile || isCoinbaseWalletBrowser) {
+    //   coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
+    // }
+    const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} /> // Mod
 
     const walletConnectionOption =
       (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
