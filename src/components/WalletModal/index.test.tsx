@@ -1,16 +1,19 @@
+/**
+ * @jest-environment ./custom-test-env.js
+ */
 import * as connectionUtils from '@src/connection/utils'
 import { ApplicationModal } from '@src/state/application/reducer'
 
 import { render, screen } from '../../test-utils'
-import WalletModal from '@src/components/WalletModal/index'
+import WalletModal from './index'
 
 afterEach(() => {
   jest.clearAllMocks()
   jest.resetModules()
 })
 
-const UserAgentMock = jest.requireMock('@src/utils/userAgent')
-jest.mock('@src/utils/userAgent', () => ({
+const UserAgentMock = jest.requireMock('utils/userAgent')
+jest.mock('utils/userAgent', () => ({
   isMobile: false,
 }))
 

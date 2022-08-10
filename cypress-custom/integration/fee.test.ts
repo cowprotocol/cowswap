@@ -127,7 +127,7 @@ describe('Fee: Complex fetch and persist fee', () => {
 
     // GIVEN: user visits app, selects 0.1 WETH as sell, DAI as buy
     // and goes AFK
-    cy.visit('/swap')
+    cy.visit('/#/swap')
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -171,7 +171,7 @@ describe('Fee: simple checks it exists', () => {
     })
     // GIVEN: A user loads the swap page
     // WHEN: Select DAI token as output and sells 0.1 WETH
-    cy.visit('/swap')
+    cy.visit('/#/swap')
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -183,7 +183,7 @@ describe('Fee: simple checks it exists', () => {
 describe('Swap: Considering fee', () => {
   beforeEach(() => {
     // GIVEN: an initial selection of WETH-DAI
-    cy.visit('/swap')
+    cy.visit('/#/swap')
   })
 
   it("Uses Uniswap price, if there's no tip", () => {

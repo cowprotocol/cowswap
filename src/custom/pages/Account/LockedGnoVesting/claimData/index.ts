@@ -3,7 +3,7 @@ import mainnetIndex from './mainnet.json'
 import rinkebyIndex from './rinkeby.json'
 import gnosisChainIndex from './gnosisChain.json'
 import goerliIndex from './goerli.json'
-import { supportedChainId } from '@src/custom/utils/supportedChainId'
+import { supportedChainId } from 'utils/supportedChainId'
 
 interface Claim {
   index: number

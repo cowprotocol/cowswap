@@ -304,6 +304,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
               <Toggle
                 id="toggle-recipient-mode-button"
                 isActive={recipientToggleVisible || expertMode}
+                isDisabled={expertMode}
                 toggle={() => (expertMode ? null : toggleRecipientVisibility())}
                 className={expertMode ? 'disabled' : ''}
               />
