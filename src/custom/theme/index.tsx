@@ -1,3 +1,8 @@
+import styled from 'styled-components/macro'
+import { Text } from 'rebass'
+import { ThemedText as ThemedTextUni, TextProps as TextPropsUni } from '@src/theme'
+import { Colors } from './styled'
+
 export enum ButtonSize {
   SMALL,
   DEFAULT,
@@ -15,6 +20,30 @@ export enum Z_INDEX {
   modal = 1060,
   popover = 1070,
   tooltip = 1080,
+}
+
+type TextProps = TextPropsUni & { override?: boolean }
+
+export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
+  color: ${({ color, theme, override }) => {
+    const colour = (theme as any)[color]
+    if (colour && override) {
+      return colour + '!important'
+    } else {
+      return colour
+    }
+  }};
+`
+
+/**
+ * Preset styles of the Rebass Text component
+ * MOD of UNI's in @src/theme/index.ts
+ */
+export const ThemedText = {
+  ...ThemedTextUni,
+  Warn(props: TextProps) {
+    return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
+  },
 }
 
 // Cow theme
