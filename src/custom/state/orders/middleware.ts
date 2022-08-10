@@ -36,16 +36,6 @@ const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
-function getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
-  if (!orders) {
-    return
-  }
-
-  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
-
-  const orderObject = pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
-  return orderObject
-}
 
 // a corresponsing Popup action is dispatched
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
@@ -58,7 +48,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // use current state to lookup orders' data
     const orders = store.getState().orders[chainId]
-    const orderObject = getOrderById(orders, id)
+    const orderObject = _getOrderById(orders, id)
 
     if (!orderObject) {
       return
@@ -242,7 +232,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       ordersData: [{ id }],
     } = action.payload
     const orders = store.getState().orders[chainId]
-    const userId = getOrderById(orders, id)?.order?.owner
+    const userId = _getOrderById(orders, id)?.order?.owner
 
     console.warn('appzi: batch fulfillment', userId)
     openNpsAppziSometimes({ traded: true }, userId)
@@ -251,7 +241,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const { chainId, id } = action.payload
 
     const orders = store.getState().orders[chainId]
-    const userId = getOrderById(orders, id)?.order?.owner
+    const userId = _getOrderById(orders, id)?.order?.owner
 
     console.warn('appzi: single fulfillment', userId)
     openNpsAppziSometimes({ traded: true }, userId)
@@ -263,7 +253,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } = action.payload
 
     const orders = store.getState().orders[chainId]
-    const userId = getOrderById(orders, id)?.order?.owner
+    const userId = _getOrderById(orders, id)?.order?.owner
 
     console.warn('appzi: batch expiration', userId)
     openNpsAppziSometimes({ expired: true }, userId)
@@ -272,11 +262,21 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const { chainId, id } = action.payload
 
     const orders = store.getState().orders[chainId]
-    const userId = getOrderById(orders, id)?.order?.owner
+    const userId = _getOrderById(orders, id)?.order?.owner
 
     console.warn('appzi: single expiration', userId)
     openNpsAppziSometimes({ expired: true }, userId)
   }
 
   return next(action)
+}
+
+function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
+  if (!orders) {
+    return
+  }
+
+  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
+
+  return pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
 }
