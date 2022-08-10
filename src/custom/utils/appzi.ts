@@ -35,6 +35,7 @@ declare global {
       userId: string
       data: AppziCustomSettings
       onEvent: EventCallback
+      render: { type: 'client' }
     }
   }
 }
@@ -81,7 +82,15 @@ function initialize() {
 }
 
 export function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
-  window.appziSettings = { ...(window.appziSettings || {}), data, userId }
+  window.appziSettings = {
+    ...(window.appziSettings || {}),
+    data,
+    userId,
+    // alternative render method
+    render: {
+      type: 'client',
+    },
+  }
 }
 
 export function openFeedbackAppzi() {
