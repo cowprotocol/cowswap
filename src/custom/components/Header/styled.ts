@@ -294,22 +294,21 @@ export const TwitterLink = styled(StyledMenuButton)`
 `
 
 export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
-  width: 190px;
-  height: 48px;
+  width: 131px;
+  height: 41px;
   background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
   margin: 0 32px 0 0;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 34px;
+    width: 106px;
   `}
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
       isMobileMenuOpen &&
       css`
-        background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
         height: 34px;
       `
     }
