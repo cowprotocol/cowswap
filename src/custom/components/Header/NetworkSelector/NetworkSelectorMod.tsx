@@ -291,11 +291,11 @@ function Row({
             </ExternalLink>
           ) : null}
 
-          {supportedChainId(chainId) ? (
+          {supportedChainId(chainId) && (
             <ExternalLink href={getExplorerBaseUrl(chainId)}>
               <Trans>CoW Protocol Explorer</Trans> <LinkOutCircle />
             </ExternalLink>
-          ) : null}
+          )}
         </ActiveRowLinkList>
       </ActiveRowWrapper>
     )
