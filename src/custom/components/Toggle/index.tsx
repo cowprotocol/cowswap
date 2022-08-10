@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components/macro'
-import { WithClassName } from 'types'
-import { ToggleElement } from '@src/components/Toggle' // Mod
-import { darken } from 'polished'
+import ToggleUni, { ToggleElement } from '@src/components/Toggle'
+import { transparentize } from 'polished'
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
@@ -16,9 +15,9 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   width: fit-content;
 `
 
-// Mod
-const WrappedToggle = styled(Wrapper)`
-  background: ${({ theme }) => (theme.darkMode ? theme.bg3 : darken(0.05, theme.bg3))};
+const WrappedToggle = styled(ToggleUni)`
+  background: ${({ theme }) => theme.bg6};
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.bg2)};
 
   ${ToggleElement} {
     color: ${({ theme }) => theme.text1};
@@ -28,7 +27,6 @@ const WrappedToggle = styled(Wrapper)`
 
     &:hover {
       color: ${({ theme }) => theme.text1};
-      border: 2px solid ${({ theme }) => theme.text1};
     }
   }
 
