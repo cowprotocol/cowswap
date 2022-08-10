@@ -82,6 +82,7 @@ function initialize() {
 
 export function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
   window.appziSettings = { ...(window.appziSettings || {}), data, userId }
+  console.warn(`appzi: updated settings`, window.appziSettings)
 }
 
 export function openFeedbackAppzi() {
@@ -131,6 +132,7 @@ export function openNpsAppziSometimes(
   userId?: string
 ) {
   applyOnceRestyleAppziNps()
+  console.warn(`appzi: open nps sometimes`, data, userId)
   updateAppziSettings({ data: { ...data, ...NPS_DATA }, userId })
 }
 
