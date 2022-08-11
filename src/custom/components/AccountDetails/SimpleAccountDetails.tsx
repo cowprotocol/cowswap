@@ -7,9 +7,12 @@ import { renderActivities } from './AccountDetailsMod'
 import { AccountDetailsProps } from '.'
 import styled from 'styled-components/macro'
 
-type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions' | 'confirmedTransactions'>
+type StyledWrapperProps = { $margin?: string }
+type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions' | 'confirmedTransactions'> &
+  StyledWrapperProps
 
-const SimpleWrapper = styled(Wrapper)`
+const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
+  ${({ $margin }) => $margin && `margin: ${$margin};`}
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 0;
   `};
@@ -18,6 +21,7 @@ const SimpleWrapper = styled(Wrapper)`
 export default function SimpleAccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
+  ...styleProps
 }: SimpleAccountDetailsProps) {
   const { chainId: connectedChainId } = useActiveWeb3React()
   const chainId = supportedChainId(connectedChainId)
@@ -27,7 +31,7 @@ export default function SimpleAccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
 
   return (
-    <SimpleWrapper>
+    <SimpleWrapper {...styleProps}>
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSectionSimple>
           <div>

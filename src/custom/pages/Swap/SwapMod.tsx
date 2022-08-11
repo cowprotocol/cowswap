@@ -526,17 +526,17 @@ export default function Swap({
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
   // handle swap when native token is detected as sell token
-  const handleNativeWrapAndSwap = () => {
+  const handleNativeWrapAndSwap = (submitSwap = false) => {
     if (!chainId) throw new Error('Need to be connected')
 
     // switch to wrapped native currency
     onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
-    // open TX confirmation modal
+    // set swap state
     setSwapState({
       tradeToConfirm: trade,
       attemptingTxn: false,
       swapErrorMessage: undefined,
-      showConfirm: true,
+      showConfirm: submitSwap,
       txHash: undefined,
     })
   }
@@ -647,14 +647,13 @@ export default function Swap({
           account={account ?? undefined}
           native={native}
           wrapped={wrappedToken}
-          nativeInput={nativeInput}
+          nativeInput={showWrap ? parsedAmount : nativeInput}
           // native currency state
           isNativeIn={isNativeIn}
           {...nativeRest}
           // state
           needsApproval={showApproveFlow && !!approveCallback}
           needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
-          wrapPending={false}
           // cbs
           onDismiss={dismissNativeWrapModal}
           approveCallback={approveCallback}

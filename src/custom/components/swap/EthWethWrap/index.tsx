@@ -18,6 +18,7 @@ import Loader from 'components/Loader'
 import { CloseIcon, ThemedText } from 'theme'
 import { RowBetween } from 'components/Row'
 import { useIsExpertMode } from 'state/user/hooks'
+import { delay } from 'utils/misc'
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -53,7 +54,6 @@ const ModalMessage = styled.p`
   display: flex;
   flex-flow: row wrap;
   padding: 0;
-  margin-bottom: 20px;
   width: 100%;
   color: ${({ theme }) => theme.wallet.color};
 `
@@ -66,6 +66,8 @@ const ButtonWrapper = styled.div`
   width: 100%;
   margin-top: 8px;
 `
+
+const MODAL_CLOSE_DELAY = 1000 // 1s
 
 export interface Props {
   account?: string
@@ -80,12 +82,12 @@ export interface Props {
   // state
   needsApproval: boolean
   needsWrap: boolean
-  wrapPending: boolean
 
+  // cbs
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
   wrapCallback: ((params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>) | undefined
-  swapCallback: () => void
+  swapCallback: (showConfirmModal?: boolean) => void
 }
 
 export default function EthWethWrap({
@@ -102,6 +104,7 @@ export default function EthWethWrap({
   needsApproval,
   needsWrap,
 
+  // cbs
   onDismiss,
   approveCallback,
   wrapCallback,
@@ -121,7 +124,7 @@ export default function EthWethWrap({
   // returns the cost of 1 tx and multi txs
   const { multiTxCost, singleTxCost } = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
 
-  const [approvalSubmitted, setApprovalSubmitted] = useState(false)
+  const [approveSubmitted, setApproveSubmitted] = useState(false)
   const [wrapSubmitted, setWrapSubmitted] = useState(false)
   const isApprovePending = useIsTransactionPending(pendingHashMap.approveHash)
   const isWrapPending = useIsTransactionPending(pendingHashMap.wrapHash)
@@ -142,32 +145,48 @@ export default function EthWethWrap({
     }
   }, [isNativeIn, multiTxCost, nativeBalance, nativeInput, singleTxCost])
 
-  // constants
-  const { wrapSuccessful, approveSuccessful, isNative, isWrap, isUnwrap, wrappedSymbol, nativeSymbol } = useMemo(
-    () => ({
-      wrapSuccessful: wrapSubmitted && !isWrapPending,
-      approveSuccessful: approvalSubmitted && !isApprovePending,
-      isWrap: !isNativeIn && isWrappedOut,
-      get isNative() {
-        return isNativeIn || this.isWrap
-      },
+  // states and constants
+  const {
+    wrapFinished,
+    approveFinished,
+    wrapSentAndSuccessful,
+    approveSentAndSuccessful,
+    isNative,
+    isWrap,
+    isUnwrap,
+    wrappedSymbol,
+    nativeSymbol,
+  } = useMemo(() => {
+    const wrapSentAndSuccessful = wrapSubmitted && !isWrapPending
+    const approveSentAndSuccessful = approveSubmitted && !isApprovePending
+    const isWrap = !isNativeIn && isWrappedOut
+    const isNative = isNativeIn || isWrap
+
+    return {
+      wrapFinished: !needsWrap || (wrapSubmitted && wrapSentAndSuccessful),
+      approveFinished: !needsApproval || (approveSubmitted && approveSentAndSuccessful),
+      wrapSentAndSuccessful,
+      approveSentAndSuccessful,
+      isWrap,
       isUnwrap: !isNativeOut && isWrappedIn,
+      isNative,
       wrappedSymbol: wrapped.symbol || 'wrapped native token',
       nativeSymbol: native.symbol || 'native token',
-    }),
-    [
-      approvalSubmitted,
-      isApprovePending,
-      isNativeIn,
-      isNativeOut,
-      isWrapPending,
-      isWrappedIn,
-      isWrappedOut,
-      native.symbol,
-      wrapSubmitted,
-      wrapped.symbol,
-    ]
-  )
+    }
+  }, [
+    approveSubmitted,
+    isApprovePending,
+    isNativeIn,
+    isNativeOut,
+    isWrapPending,
+    isWrappedIn,
+    isWrappedOut,
+    native.symbol,
+    needsApproval,
+    needsWrap,
+    wrapSubmitted,
+    wrapped.symbol,
+  ])
 
   // Listen for changes in isWrapPending
   // and set loading local state accordingly..
@@ -185,41 +204,6 @@ export default function EthWethWrap({
     },
     [onDismiss]
   )
-
-  const handleExpertCb = useCallback(async () => {
-    setError(null)
-    setLoading(true)
-    setApprovalSubmitted(false)
-    setWrapSubmitted(false)
-
-    try {
-      if (needsApproval || needsWrap) {
-        const [wrapTx, approveTx] = await Promise.all([
-          wrapCallback?.({ useModals: false }),
-          approveCallback({ useModals: false }),
-        ])
-        setPendingHashMap((currTx) => ({
-          ...currTx,
-          wrapHash: wrapTx?.hash,
-          approveHash: approveTx?.hash,
-        }))
-        setApprovalSubmitted(true)
-        setWrapSubmitted(true)
-      } else {
-        // user doesn't need either, in expert mode we jsut start swap
-        swapCallback()
-        onDismiss()
-      }
-    } catch (error) {
-      handleError(error)
-      setApprovalSubmitted(false)
-      setWrapSubmitted(false)
-    } finally {
-      if (!isNativeIn) {
-        onDismiss()
-      }
-    }
-  }, [needsApproval, needsWrap, wrapCallback, approveCallback, swapCallback, handleError, isNativeIn, onDismiss])
 
   const handleWrap = useCallback(async () => {
     if (!wrapCallback) return
@@ -249,7 +233,7 @@ export default function EthWethWrap({
     if (!approveCallback) return
     setError(null)
     setLoading(true)
-    setApprovalSubmitted(false)
+    setApproveSubmitted(false)
 
     try {
       const approveTx = await approveCallback()
@@ -257,30 +241,68 @@ export default function EthWethWrap({
         ...currTx,
         approveHash: approveTx?.hash,
       }))
-      setApprovalSubmitted(true)
+      setApproveSubmitted(true)
     } catch (error) {
       handleError(error)
-      setApprovalSubmitted(false)
+      setApproveSubmitted(false)
     }
   }, [approveCallback, handleError])
 
-  const handleSwap = useCallback(async () => {
+  const handleSwap = useCallback(
+    async (showSwapModal?: boolean) => {
+      setError(null)
+
+      try {
+        await swapCallback(!!showSwapModal)
+      } catch (error) {
+        handleError(error)
+      } finally {
+        // close modal after swap initiated
+        onDismiss()
+      }
+    },
+    [swapCallback, handleError, onDismiss]
+  )
+
+  const handleMountInExpertMode = useCallback(async () => {
     setError(null)
+    setLoading(true)
+    setApproveSubmitted(false)
+    setWrapSubmitted(false)
 
     try {
-      await swapCallback()
+      if (needsApproval || needsWrap) {
+        const [wrapTx, approveTx] = await Promise.all([
+          wrapCallback?.({ useModals: false }),
+          approveCallback({ useModals: false }),
+        ])
+        setPendingHashMap((currTx) => ({
+          ...currTx,
+          wrapHash: wrapTx?.hash,
+          approveHash: approveTx?.hash,
+        }))
+        setApproveSubmitted(true)
+        setWrapSubmitted(true)
+      } else {
+        // user doesn't need either, in expert mode we just start swap
+        // and pass true to show swap confirmation modal
+        handleSwap(true)
+      }
     } catch (error) {
       handleError(error)
+      setApproveSubmitted(false)
+      setWrapSubmitted(false)
     } finally {
-      // close modal after swap initiated
-      onDismiss()
+      if (!isNativeIn) {
+        onDismiss()
+      }
     }
-  }, [swapCallback, handleError, onDismiss])
+  }, [needsApproval, needsWrap, wrapCallback, approveCallback, handleError, handleSwap, isNativeIn, onDismiss])
 
-  // cb fires on mount (expert mode only)
+  // expert mode only: swap/wrap/unwrap on mount
   useEffect(() => {
     if (isExpertMode) {
-      handleExpertCb()
+      handleMountInExpertMode()
     } else if (isWrap || isUnwrap) {
       // is a pure wrap/unwrap, just start the tx
       handleWrap()
@@ -288,16 +310,30 @@ export default function EthWethWrap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // expert mode only: auto close the wrapping modals and set swap page to WrappedNative <> ERC20
+  useEffect(() => {
+    if (isExpertMode && (wrapSubmitted || approveSubmitted)) {
+      if (approveFinished && wrapFinished) {
+        // reset the submission state
+        setWrapSubmitted(false)
+        setApproveSubmitted(false)
+        // call the swap handle cb after 1s artificial delay
+        // to not create jarring UI changes: confirmed tx update and modal closing
+        delay(MODAL_CLOSE_DELAY).then(() => handleSwap(true))
+      }
+    }
+  }, [isExpertMode, approveFinished, approveSubmitted, handleSwap, wrapFinished, wrapSubmitted])
+
   const renderActionButton = useCallback(() => {
     let actionButton
-    if (isExpertMode || ((!needsApproval || approveSuccessful) && (!needsWrap || wrapSuccessful))) {
-      actionButton = (
-        <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={handleSwap}>
+    if (isExpertMode || (approveFinished && wrapFinished)) {
+      actionButton = isExpertMode ? null : (
+        <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={() => handleSwap(true)}>
           {loading ? <Loader /> : <Trans>Swap</Trans>}
         </ButtonPrimary>
       )
     } else {
-      if (needsWrap && !wrapSuccessful) {
+      if (needsWrap && !wrapSentAndSuccessful) {
         // show wrap button
         actionButton = (
           <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
@@ -308,7 +344,7 @@ export default function EthWethWrap({
             )}
           </ButtonPrimary>
         )
-      } else if (needsApproval && !approvalSubmitted) {
+      } else if (needsApproval && !approveSubmitted) {
         // show approval button
         actionButton = (
           <ButtonPrimary disabled={isApprovePending || !!error} padding="0.5rem" maxWidth="70%" onClick={handleApprove}>
@@ -326,13 +362,13 @@ export default function EthWethWrap({
 
     return <ButtonWrapper>{actionButton}</ButtonWrapper>
   }, [
-    isApprovePending,
-    approvalSubmitted,
-    approveSuccessful,
+    approveFinished,
+    approveSubmitted,
     error,
     handleApprove,
     handleSwap,
     handleWrap,
+    isApprovePending,
     isExpertMode,
     isNativeIn,
     isWrap,
@@ -340,44 +376,61 @@ export default function EthWethWrap({
     nativeSymbol,
     needsApproval,
     needsWrap,
-    wrapSuccessful,
+    wrapFinished,
+    wrapSentAndSuccessful,
     wrappedSymbol,
   ])
 
   const { header, description } = useMemo(() => {
     // common text
     const swapHeader = `Swap ${wrappedSymbol}`
-    const swapDescription = `Submit an off-chain transaction and swap your ${wrappedSymbol}`
+    const swapDescription = `Click "Swap" to submit an off-chain transaction and swap your ${wrappedSymbol}`
     const wrapHeader = isNative ? `Wrap your ${nativeSymbol}` : `Unwrap your ${wrappedSymbol}`
 
     let header = '',
-      description = ''
+      description: string | null = null
     // in expert mode we start the logic right away
+    // and sometimes there can be 2 simultaneous transactions
     if (isExpertMode) {
-      if (needsWrap && !wrapSuccessful && needsApproval && !approveSuccessful) {
-        header = `Wrap ${isNative ? nativeSymbol : wrappedSymbol} and Approve`
-        description = `On-chain ${
+      if (needsWrap && !wrapSentAndSuccessful && needsApproval && !approveSentAndSuccessful) {
+        header = `${isNative ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol} and Approve`
+        description = `2 pending on-chain transactions: ${
           isNative ? nativeSymbol + ' wrap' : wrappedSymbol + ' unwrap'
-        } and approve transactions in progress`
-      } else if (needsWrap && !wrapSuccessful) {
+        } and approve. Please check your connected wallet for both signature requests`
+        // Hide description on submission, pending tx visual is enough
+        if (wrapSubmitted && approveSubmitted) {
+          description = null
+        }
+      } else if (needsWrap && !wrapSentAndSuccessful) {
         header = wrapHeader
-        description = `${isNative ? nativeSymbol + ' wrap' : wrappedSymbol + ' unwrap'} transaction in progress`
-      } else if (needsApproval && !approveSuccessful) {
+        if (!wrapSubmitted) {
+          description = `Transaction signature required, please check your connected wallet`
+        } else {
+          // Hide description on submission, pending tx visual is enough
+          description = null
+        }
+      } else if (needsApproval && !approveSentAndSuccessful) {
         header = `Approving ${wrappedSymbol}`
         description = `${wrappedSymbol} approval transaction in progress`
+        if (!approveSubmitted) {
+          description = 'Transaction signature required, please check your connected wallet'
+        } else {
+          // Hide description on submission, pending tx visual is enough
+          description = null
+        }
       } else {
         header = swapHeader
-        description = swapDescription
+        description = null
       }
     } else {
       // pending wrap operation
-      if (needsWrap && !wrapSuccessful) {
+      if (needsWrap && !wrapSentAndSuccessful) {
         header = wrapHeader
         description = `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
           isNative ? nativeSymbol : wrappedSymbol
         } into ${isNative ? wrappedSymbol : nativeSymbol}`
         // pending approve operation
-      } else if (needsApproval && !approveSuccessful) {
+      } else if (needsApproval && !approveSentAndSuccessful) {
         header = `Approve ${wrappedSymbol}`
         description = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
       } else {
@@ -387,7 +440,18 @@ export default function EthWethWrap({
       }
     }
     return { header, description }
-  }, [approveSuccessful, isExpertMode, isNative, nativeSymbol, needsApproval, needsWrap, wrapSuccessful, wrappedSymbol])
+  }, [
+    approveSentAndSuccessful,
+    approveSubmitted,
+    isExpertMode,
+    isNative,
+    nativeSymbol,
+    needsApproval,
+    needsWrap,
+    wrapSentAndSuccessful,
+    wrapSubmitted,
+    wrappedSymbol,
+  ])
 
   return (
     <Wrapper>
@@ -398,39 +462,53 @@ export default function EthWethWrap({
         <CloseIcon onClick={onDismiss} />
       </RowBetween>
 
-      <ModalMessage>
-        <span>
-          <Trans>{description}</Trans>
-        </span>
-      </ModalMessage>
+      {description && (
+        <ModalMessage>
+          <span>
+            <Trans>{description}</Trans>
+          </span>
+        </ModalMessage>
+      )}
       {balanceChecks?.isLowBalance && (
         <ModalMessage>
           <span>
             <Trans>
-              At current gas prices, your remaining {nativeSymbol} balance after confirmation would be{' '}
+              At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
               {!balanceChecks.txsRemaining ? (
                 <strong>insufficient for any further on-chain transactions.</strong>
               ) : (
                 <>
                   sufficient for{' '}
-                  <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or enabling operation(s)</strong>.
+                  <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
                 </>
               )}
             </Trans>
           </span>
         </ModalMessage>
       )}
-      <SimpleAccountDetails pendingTransactions={Object.values(pendingHashMap)} confirmedTransactions={[]} />
       <WrappingVisualisation
-        nativeSymbol={nativeSymbol}
-        nativeBalance={nativeBalance}
-        native={native}
-        wrapped={wrapped}
-        wrappedBalance={wrappedBalance}
-        wrappedSymbol={wrappedSymbol}
+        nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
+        nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
+        native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
+        wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
+        wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
+        wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
         nativeInput={nativeInput}
+      />
+      <SimpleAccountDetails
+        pendingTransactions={Object.values(pendingHashMap)}
+        confirmedTransactions={[]}
+        $margin="12px 0 0"
       />
       {renderActionButton()}
     </Wrapper>
   )
+}
+
+function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, isUnwrap: boolean) {
+  if (isWrap || isUnwrap) {
+    return isWrap ? native : wrapped
+  } else {
+    return native
+  }
 }
