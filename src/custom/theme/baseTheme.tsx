@@ -125,10 +125,9 @@ export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean,
     },
     logo: {
       src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
-      srcIcon: `data:image/svg+xml;base64,${cowSwapLogo(darkMode, true)}`,
       alt: 'CowSwap Logo',
-      width: '208px',
-      height: '50px',
+      width: '137px',
+      height: '44px',
     },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
