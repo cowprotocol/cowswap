@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'state/application/hooks'
-import { addPopup, ApplicationModal } from 'state/application/reducer'
+import { /*addPopup,*/ ApplicationModal } from 'state/application/reducer'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch } from 'state/hooks'
 import styled from 'styled-components/macro'
@@ -30,6 +30,8 @@ import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
+import { css } from 'styled-components/macro'
+import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -321,7 +323,7 @@ export const getChainNameFromId = (id: string | number) => {
   return CHAIN_IDS_TO_NAMES[id as SupportedChainId] || ''
 }
 
-const NETWORK_SELECTOR_CHAINS = [
+export const NETWORK_SELECTOR_CHAINS = [
   SupportedChainId.MAINNET,
   SupportedChainId.RINKEBY,
   SupportedChainId.GNOSIS_CHAIN,
@@ -346,6 +348,10 @@ export default function NetworkSelector() {
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const history = useHistory()
   const isSmartContractWallet = useIsSmartContractWallet() // mod
+  const isUnsupportedNetwork = !supportedChainId(chainId)
+
+  const addPopup = useAddPopup()
+  const removePopup = useRemovePopup()
 
   const info = getChainInfo(chainId)
 
@@ -362,14 +368,14 @@ export default function NetworkSelector() {
         console.error('Failed to switch networks', error)
 
         dispatch(updateConnectionError({ connectionType, error: error.message }))
-        dispatch(addPopup({ content: { failedSwitchNetwork: targetChain }, key: `failed-network-switch` }))
+        addPopup({ failedSwitchNetwork: targetChain }, 'failed-network-switch')
       }
 
       if (!skipClose) {
         closeModal()
       }
     },
-    [connector, closeModal, dispatch]
+    [connector, dispatch, addPopup, closeModal]
   )
 
   useEffect(() => {
@@ -394,6 +400,29 @@ export default function NetworkSelector() {
       history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
     }
   }, [chainId, history, urlChainId, urlChain])
+
+  // Mod: to show popup for unsupported network
+  useEffect(() => {
+    const POPUP_KEY = chainId?.toString()
+
+    if (POPUP_KEY && isUnsupportedNetwork) {
+      addPopup(
+        {
+          failedSwitchNetwork: chainId as SupportedChainId,
+          unsupportedNetwork: true,
+          styles: css`
+            background: ${({ theme }) => theme.yellow3};
+          `,
+        },
+        POPUP_KEY,
+        null
+      )
+    }
+
+    return () => {
+      POPUP_KEY && removePopup(POPUP_KEY)
+    }
+  }, [addPopup, chainId, dispatch, isUnsupportedNetwork, removePopup])
 
   if (!chainId || !provider || isSmartContractWallet) {
     return null

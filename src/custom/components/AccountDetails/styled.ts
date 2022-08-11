@@ -272,3 +272,9 @@ export const NetworkCard = styled(NetworkCardUni)`
     margin: 0 auto 12px;
   `};
 `
+
+export const UnsupportedNetworkMsg = styled.span`
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.4;
+`
