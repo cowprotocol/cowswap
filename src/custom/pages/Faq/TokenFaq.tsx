@@ -28,7 +28,7 @@ export default function TokenFaq() {
           </p>
           <p>
             At launch the token will be a pure virtual token for governance. This implies that the token will not be
-            transferable. The token entitles its holders with voting rights in the CoW DAO. It is up to CowDAO to vote
+            transferable. The token entitles its holders with voting rights in the CoW DAO. It is up to CoW DAO to vote
             on whether making the token transferable complies with applicable laws.
           </p>
           <p>
