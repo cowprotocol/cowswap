@@ -37,7 +37,7 @@ export default function TokenFaq() {
           </p>
           <p>Be cautious, some people may create fake COW tokens, that are not affiliated with this project.</p>
           <p>
-            Follow <ExternalLinkFaq href="https://twitter.com/CoWSwap">@CoWSwapn</ExternalLinkFaq> on Twitter to be up
+            Follow <ExternalLinkFaq href="https://twitter.com/CoWSwap">@CoWSwap</ExternalLinkFaq> on Twitter to be up
             to date!
           </p>
           <h3 id="is-there-a-proposal-to-make-vcow-transferable">Is there a proposal to make vCOW transferrable?</h3>
