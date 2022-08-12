@@ -108,10 +108,10 @@ export default function Faq() {
           </p>
 
           <p>
-            This means, on CoW Swap, when two traders each hold an asset the other wants, a trade can be settled directly
-            between them without an external market maker or liquidity provider. This leads to better prices for the
-            individual traders (because traditionally market makers add a fee — referred to as spread — for their
-            service).
+            This means, on CoW Swap, when two traders each hold an asset the other wants, a trade can be settled
+            directly between them without an external market maker or liquidity provider. This leads to better prices
+            for the individual traders (because traditionally market makers add a fee — referred to as spread — for
+            their service).
           </p>
 
           <p>
@@ -148,10 +148,10 @@ export default function Faq() {
           <h3 id="how-does-cowswap-determine-prices">How does CoW Swap determine prices?</h3>
 
           <p>
-            CoW Swap settles batch auctions in discrete time intervals. In the absence of other traders, CoW Swap matches
-            traders against the best available on-chain liquidity (note: currently the solvers have integrated liquidity
-            from Uni v2, Uni v3, Balancer, Balancer v2, Sushiswap and the liquidity that Aggregators such as Paraswap,
-            Matcha and 1inch leverage).
+            CoW Swap settles batch auctions in discrete time intervals. In the absence of other traders, CoW Swap
+            matches traders against the best available on-chain liquidity (note: currently the solvers have integrated
+            liquidity from Uni v2, Uni v3, Balancer, Balancer v2, Sushiswap and the liquidity that Aggregators such as
+            Paraswap, Matcha and 1inch leverage).
           </p>
 
           <p>
