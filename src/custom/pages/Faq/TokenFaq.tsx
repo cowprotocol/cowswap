@@ -95,9 +95,9 @@ export default function TokenFaq() {
           <p>
             <ul>
               <li>
-                <strong>CoW POAP</strong>: Awarded POAPs from the testing sessions, Batch challenges, CowStars or user
-                research sessions. Not all are equally valuable. Some that are most special are the ones for our
-                CowStars and User Test Participants. Note that we say “awarded” and not “owns”, since we know that there
+                <strong>CoW POAP</strong>: Awarded POAPs from the testing sessions, Batch challenges, CoW Stars or user
+                research sessions. Not all are equally valuable. Some that are most special are the ones for our CoW
+                Stars and User Test Participants. Note that we say “awarded” and not “owns”, since we know that there
                 have been secondary markets for these POAPS. We only took awardees into consideration.
               </li>
               <li>
