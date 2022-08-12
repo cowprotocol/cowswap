@@ -31,7 +31,7 @@ export default function About() {
       <Title>About</Title>
 
       <Content>
-        <p>CowSwap is the first trading interface built on top of CoW Protocol.</p>
+        <p>CoW Swap is the first trading interface built on top of CoW Protocol.</p>
         <p>
           It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
           into any on-chain liquidity source while providing MEV protection.
@@ -46,7 +46,7 @@ export default function About() {
         <p>
           Every time you and another trader each hold an asset the other wants, your trade is settled directly without
           using an AMM (Automated Market Maker) and therefore without incurring any slippage + fees. Only amounts that
-          can&apos;t be settled with other CowSwap traders are sent to the underlying AMMs.
+          can&apos;t be settled with other CoW Swap traders are sent to the underlying AMMs.
           <br />
           <br />
           This economic phenomenon is known as <b>Coincidence Of Wants (CoW)</b>.
@@ -57,15 +57,15 @@ export default function About() {
           <img src={gaslessIMG} alt="CowSwap - Gas Free Transactions" />
         </p>
         <p>
-          Gas costs are accounted for in your sell token already - no gas costs need to be paid! CowSwap uses an
+          Gas costs are accounted for in your sell token already - no gas costs need to be paid! CoW Swap uses an
           off-chain design for submitting trades:
         </p>
         <ol>
           <li>
-            <p>You sign a trade message which is submitted to CowSwap’s off-chain service</p>
+            <p>You sign a trade message which is submitted to CoW Swap&apos;s off-chain service</p>
           </li>
           <li>
-            <p>CowSwap&apos;s off-chain service optimizes your trade&apos;s execution by considering:</p>
+            <p>CoW Swap&apos;s off-chain service optimizes your trade&apos;s execution by considering:</p>
             <ul>
               <li>
                 <p>Coincidence Of Wants</p>
@@ -98,7 +98,7 @@ export default function About() {
           bots frontrunning transactions, exploiting the slippage users allow in a trade.
           <br />
           <br />
-          CowSwap is the first DEX Aggregator offering some protection against it: COWs enable tight slippages and can
+          CoW Swap is the first DEX Aggregator offering some protection against it: CoWs enable tight slippages and can
           even avoid settlement on AMMs altogether.
         </p>
 
