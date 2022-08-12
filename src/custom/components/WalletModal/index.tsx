@@ -4,6 +4,8 @@ import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
 import { Trans } from '@lingui/macro'
 import { Routes } from 'constants/routes'
+import { useHistory } from 'react-router-dom'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 // export * from '@src/components/WalletModal'
 
@@ -12,12 +14,24 @@ const TermsWrapper = styled.div`
 `
 
 function CustomTerms() {
+  const history = useHistory()
+  const toggleWalletModal = useWalletModalToggle()
+
   return (
     <TermsWrapper>
       <Trans>
         By connecting a wallet, you agree to GnosisDAO&apos;s{' '}
-        <ExternalLink href={Routes.TERMS_CONDITIONS}>Terms &amp; Conditions</ExternalLink> and acknowledge that you have
-        read, understood, and agree to them.{' '}
+        <ExternalLink
+          href="#"
+          onClickOptional={(e) => {
+            e.preventDefault()
+            toggleWalletModal()
+            history.push(Routes.TERMS_CONDITIONS)
+          }}
+        >
+          Terms &amp; Conditions
+        </ExternalLink>{' '}
+        and acknowledge that you have read, understood, and agree to them.{' '}
       </Trans>
     </TermsWrapper>
   )
