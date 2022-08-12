@@ -59,7 +59,7 @@ export default function NotFound() {
       <Title>Page not found!</Title>
       <Content>
         <Container>
-          <img src={cow404IMG} alt="CowSwap 404 not found" />
+          <img src={cow404IMG} alt="CoW Swap 404 not found" />
           <h2>The page you are looking for does not exist. </h2>
           <ButtonPrimary as={Link} to={'/'}>
             Back home
