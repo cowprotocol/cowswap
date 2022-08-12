@@ -1,5 +1,5 @@
 /**
- * List of all the networks supported by the CowSwap Interface
+ * List of all the networks supported by the CoW Swap Interface
  */
 
 import { CHAIN_IDS_TO_NAMES as UNI_CHAIN_IDS_TO_NAMES } from '@src/constants/chains'

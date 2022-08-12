@@ -55,7 +55,7 @@ export enum ApplicationModal {
   NETWORK_SELECTOR,
   PRIVACY_POLICY,
   ARBITRUM_OPTIONS,
-  // -----------------      MOD: CowSwap specific modals      --------------------
+  // -----------------      MOD: CoW Swap specific modals      --------------------
   TRANSACTION_CONFIRMATION,
   TRANSACTION_ERROR,
   COW_SUBSIDY,

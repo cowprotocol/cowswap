@@ -47,12 +47,12 @@ export default function AffiliateFaq() {
           </p>
 
           <p>
-            CowSwap&apos;s positive network effect scales exponentially with more people using it, therefore, the
+            CoW Swap&apos;s positive network effect scales exponentially with more people using it, therefore, the
             affiliate program aims to acknowledge which users are contributing more to the success of the protocol.{' '}
           </p>
 
           <p>
-            We now briefly explain CowSwap’s positive network effect. CowSwap&apos;s name comes from the economic
+            We now briefly explain CoW Swap’s positive network effect. CoW Swap&apos;s name comes from the economic
             phenomenon &quot;Coincidence of Wants&quot;, where users&apos; orders can be matched with each other to
             obtain better prices. When the protocol finds a CoW, trades are directly settled among traders, which allows
             saving on slippage, gas, and LP fees. The network effect of CoWs increases alongside with the number of
@@ -70,8 +70,8 @@ export default function AffiliateFaq() {
           <h3 id="who-can-follow-the-referral-link">Who can follow the referral link?</h3>
 
           <p>
-            Everyone! Please share the excitement for the CowSwap protocol & dapp. It would really make a difference for
-            the Cow-mmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
+            Everyone! Please share the excitement for the CoW Swap protocol & dapp. It would really make a difference
+            for the Cow-mmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
             interested.
           </p>
 
@@ -85,7 +85,7 @@ export default function AffiliateFaq() {
           </p>
 
           <p>
-            Note that trades and volume will only be credited to your wallet if the user has not traded in CowSwap with
+            Note that trades and volume will only be credited to your wallet if the user has not traded in CoW Swap with
             that address before, and their first trade is done after following your link.
           </p>
 

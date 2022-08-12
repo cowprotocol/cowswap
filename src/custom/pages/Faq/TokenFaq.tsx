@@ -18,7 +18,7 @@ export default function TokenFaq() {
         <ToC toc={toc} name="Token FAQ" />
         <Content>
           <h2 id="Token">Token</h2>
-          <h3 id="does-cowswap-have-a-token">Does CowSwap have a token?</h3>
+          <h3 id="does-cowswap-have-a-token">Does CoW Swap have a token?</h3>
           <p>
             Yes,{' '}
             <ExternalLinkFaq href="https://etherscan.io/address/0xd057b63f5e69cf1b929b356b579cba08d7688048">
@@ -53,7 +53,7 @@ export default function TokenFaq() {
           </h3>
           <p>
             {' '}
-            Directly in the CowSwap UI. Simply click on the <Link to={Routes.ACCOUNT}>account</Link> menu item at the
+            Directly in the CoW Swap UI. Simply click on the <Link to={Routes.ACCOUNT}>account</Link> menu item at the
             top left of the page (desktop) or in the mobile menu. You then will be redirected to the{' '}
             <Link to={Routes.ACCOUNT}>account</Link> page where you can see your total COW and/or vCOW balance. You will
             then be able to convert your vCOW to COW (if applicable).

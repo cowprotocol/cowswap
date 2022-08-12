@@ -38,7 +38,7 @@ export function Footer() {
         </ExternalLinkFaq>{' '}
         <br />
         <br />
-        We really hope you like CowSwap. If you do,&nbsp;<Link to={Routes.HOME}>Milk it!</Link>
+        We really hope you like CoW Swap. If you do,&nbsp;<Link to={Routes.HOME}>Milk it!</Link>
         <span role="img" aria-label="glass of milk">
           🥛
         </span>
@@ -57,14 +57,14 @@ export default function Faq() {
         <ToC toc={toc} name="General FAQ" />
         <Content>
           <h2 id="general">General</h2>
-          <h3 id="what-is-cowswap">What is CowSwap?</h3>
-          <p>CowSwap is the first trading interface built on top of CoW Protocol.</p>
+          <h3 id="what-is-cowswap">What is CoW Swap?</h3>
+          <p>CoW Swap is the first trading interface built on top of CoW Protocol.</p>
           <p>
-            CowSwap is a Meta DEX aggregator that allows you to buy and sell tokens using gasless orders that are
+            CoW Swap is a Meta DEX aggregator that allows you to buy and sell tokens using gasless orders that are
             settled peer-to-peer among its users, or into any on-chain liquidity source while providing MEV protection.
           </p>
 
-          <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CowSwap a &quot;Meta&quot; DEX aggregator?</h3>
+          <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CoW Swap a &quot;Meta&quot; DEX aggregator?</h3>
           <p>
             Cowswap is built on top of the CoW Protocol which matches trades via batch auctions for a variety of
             on-chain liquidity sources.
@@ -103,29 +103,29 @@ export default function Faq() {
           <p>
             <ExternalLinkFaq href={COWWIKI_LINK}>Coincidence of Wants (CoWs)</ExternalLinkFaq> can be explained as “an
             economic phenomenon where two parties each hold an item the other wants, so they exchange these items
-            directly.” CowSwap facilitates CoWs among traders and their orders through using batch auctions as a core
+            directly.” CoW Swap facilitates CoWs among traders and their orders through using batch auctions as a core
             mechanism.
           </p>
 
           <p>
-            This means, on CowSwap, when two traders each hold an asset the other wants, a trade can be settled directly
-            between them without an external market maker or liquidity provider. This leads to better prices for the
-            individual traders (because traditionally market makers add a fee — referred to as spread — for their
-            service).
+            This means, on CoW Swap, when two traders each hold an asset the other wants, a trade can be settled
+            directly between them without an external market maker or liquidity provider. This leads to better prices
+            for the individual traders (because traditionally market makers add a fee — referred to as spread — for
+            their service).
           </p>
 
           <p>
-            CowSwap allows for coincidence of wants (CoWs) orders to be traded directly against one another. Only the
-            excess order amounts that cannot be settled directly with other CowSwap traders are sent to the underlying
+            CoW Swap allows for coincidence of wants (CoWs) orders to be traded directly against one another. Only the
+            excess order amounts that cannot be settled directly with other CoW Swap traders are sent to the underlying
             AMMs (automated market makers).
           </p>
 
           <h3 id="how-am-i-protected-from-mev-arbitrage-front-running-sandwiching-with-cowswap">
-            How am I protected from MEV (Arbitrage, Front running, Sandwiching) with CowSwap?
+            How am I protected from MEV (Arbitrage, Front running, Sandwiching) with CoW Swap?
           </h3>
 
           <p>
-            CowSwap leverages batch auctions with uniform clearing prices for all trades in the same batch. Because of
+            CoW Swap leverages batch auctions with uniform clearing prices for all trades in the same batch. Because of
             the uniform clearing price, there is no need for ordering the transactions within a single batch. Because
             everyone receives the same price across assets it&apos;s not possible for <b>any</b> value to be extracted
             by placing transactions in a certain order. This prevents the primary strategy used in MEV.
@@ -145,18 +145,18 @@ export default function Faq() {
             protocols, such as Uniswap.
           </p>
 
-          <h3 id="how-does-cowswap-determine-prices">How does CowSwap determine prices?</h3>
+          <h3 id="how-does-cowswap-determine-prices">How does CoW Swap determine prices?</h3>
 
           <p>
-            CowSwap settles batch auctions in discrete time intervals. In the absence of other traders, CowSwap matches
-            traders against the best available on-chain liquidity (note: currently the solvers have integrated liquidity
-            from Uni v2, Uni v3, Balancer, Balancer v2, Sushiswap and the liquidity that Aggregators such as Paraswap,
-            Matcha and 1inch leverage).
+            CoW Swap settles batch auctions in discrete time intervals. In the absence of other traders, CoW Swap
+            matches traders against the best available on-chain liquidity (note: currently the solvers have integrated
+            liquidity from Uni v2, Uni v3, Balancer, Balancer v2, Sushiswap and the liquidity that Aggregators such as
+            Paraswap, Matcha and 1inch leverage).
           </p>
 
           <p>
             If CoWs (Coincidence of Wants) orders exist in a batch, the “smaller” order is matched fully with the larger
-            order. The excess of the larger order is settled with the best available base liquidity CowSwap integrates
+            order. The excess of the larger order is settled with the best available base liquidity CoW Swap integrates
             with, which is, for now, Uniswap. The clearing price for both orders will be the price of the token with the
             excess amount on external liquidity sources to which the protocol is connected.
           </p>
@@ -166,17 +166,17 @@ export default function Faq() {
             <ExternalLinkFaq href={GNOSIS_FORUM_ROADTODECENT_LINK}>decentralized competition</ExternalLinkFaq>.
           </p>
 
-          <h3 id="is-cowswap-secure-to-use">Is CowSwap secure to use?</h3>
+          <h3 id="is-cowswap-secure-to-use">Is CoW Swap secure to use?</h3>
 
           <p>
-            As of August 11th, 2021, CowSwap is no longer in alpha and moves to a final, stable version. The underlying
+            As of August 11th, 2021, CoW Swap is no longer in alpha and moves to a final, stable version. The underlying
             CoW Protocol Smart contracts have been upgraded to integrate tightly with Balancer v2.
           </p>
 
           <p>
-            With this upgrade, CowSwap evolves into its most stable, performant form: the code has been thoroughly and
+            With this upgrade, CoW Swap evolves into its most stable, performant form: the code has been thoroughly and
             carefully tested, peer-reviewed and fully <ExternalLinkFaq href={GPAUDIT_LINK}>audited</ExternalLinkFaq>.
-            Whilst CowSwap has taken a major step forward in terms of security and stability, as with other crypto
+            Whilst CoW Swap has taken a major step forward in terms of security and stability, as with other crypto
             protocols or dapps, your use is at your own risk.{' '}
             <strong>
               Please review our{' '}
