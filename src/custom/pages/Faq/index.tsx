@@ -116,7 +116,7 @@ export default function Faq() {
 
           <p>
             CoW Swap allows for coincidence of wants (CoWs) orders to be traded directly against one another. Only the
-            excess order amounts that cannot be settled directly with other CowSwap traders are sent to the underlying
+            excess order amounts that cannot be settled directly with other CoW Swap traders are sent to the underlying
             AMMs (automated market makers).
           </p>
 
