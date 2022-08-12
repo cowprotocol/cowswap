@@ -124,8 +124,10 @@ export default function ProtocolFaq() {
               solutions, or take the risk of being slashed by the CoW DAO for wrongdoing.
             </li>
           </ol>
-          <h3 id="what-interactions-can-i-encounter-when-using-
-                  ">
+          <h3
+            id="what-interactions-can-i-encounter-when-using-
+                  "
+          >
             What interactions can I encounter when using CoW Swap?
           </h3>
           <p>

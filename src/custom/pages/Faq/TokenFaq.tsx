@@ -28,8 +28,8 @@ export default function TokenFaq() {
           </p>
           <p>
             At launch the token will be a pure virtual token for governance. This implies that the token will not be
-            transferable. The token entitles its holders with voting rights in the CoW DAO. It is up to CowDAO to vote on
-            whether making the token transferable complies with applicable laws.
+            transferable. The token entitles its holders with voting rights in the CoW DAO. It is up to CowDAO to vote
+            on whether making the token transferable complies with applicable laws.
           </p>
           <p>
             The token&apos;s main purpose is to govern and curate essential infrastructure components of the CoW
@@ -37,8 +37,8 @@ export default function TokenFaq() {
           </p>
           <p>Be cautious, some people may create fake COW tokens, that are not affiliated with this project.</p>
           <p>
-            Follow <ExternalLinkFaq href="https://twitter.com/CoWSwap">@CoWSwapn</ExternalLinkFaq> on Twitter
-            to be up to date!
+            Follow <ExternalLinkFaq href="https://twitter.com/CoWSwap">@CoWSwapn</ExternalLinkFaq> on Twitter to be up
+            to date!
           </p>
           <h3 id="is-there-a-proposal-to-make-vcow-transferable">Is there a proposal to make vCOW transferrable?</h3>
           <p>
@@ -61,8 +61,8 @@ export default function TokenFaq() {
 
           <h3 id="what-is-the-purpose-of-cow-token">What is the purpose of COW Token?</h3>
           <p>
-            The COW token will entitle its holders to voting rights within the CoW DAO. The main purpose of CoW DAO is to
-            govern and curate essential infrastructure components of the CoW Protocol ecosystem, including:
+            The COW token will entitle its holders to voting rights within the CoW DAO. The main purpose of CoW DAO is
+            to govern and curate essential infrastructure components of the CoW Protocol ecosystem, including:
           </p>
           <p>
             <ul>

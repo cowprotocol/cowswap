@@ -186,8 +186,8 @@ export default function TokenFaq() {
           </p>
 
           <p>
-            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CoW Swap allows you to
-            buy WETH and will directly unwrap it for you.
+            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CoW Swap allows you
+            to buy WETH and will directly unwrap it for you.
           </p>
 
           {/*
