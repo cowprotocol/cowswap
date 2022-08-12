@@ -70,8 +70,8 @@ export default function AffiliateFaq() {
           <h3 id="who-can-follow-the-referral-link">Who can follow the referral link?</h3>
 
           <p>
-            Everyone! Please share the excitement for the CoW Swap protocol & dapp. It would really make a difference for
-            the Cow-mmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
+            Everyone! Please share the excitement for the CoW Swap protocol & dapp. It would really make a difference
+            for the Cow-mmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
             interested.
           </p>
 
