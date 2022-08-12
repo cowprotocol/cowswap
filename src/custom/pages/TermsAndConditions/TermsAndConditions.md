@@ -82,9 +82,9 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 
 **5. FEES**
 
-Cowswap does not levy any fees on users of the Platform, however the
+CoW Swap does not levy any fees on users of the Platform, however the
 user incurs a fee on the Protocol level, which is shown to the user on
-the Cowswap interface when the user places their trade.
+the CoW Swap interface when the user places their trade.
 
 **6. WE MAY MAKE CHANGES TO OR SUSPEND OR WITHDRAW OUR PLATFORM**
 

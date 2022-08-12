@@ -66,7 +66,7 @@ export default function Faq() {
 
           <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CoW Swap a &quot;Meta&quot; DEX aggregator?</h3>
           <p>
-            Cowswap is built on top of the CoW Protocol which matches trades via batch auctions for a variety of
+            CoW Swap is built on top of the CoW Protocol which matches trades via batch auctions for a variety of
             on-chain liquidity sources.
           </p>
           <p>

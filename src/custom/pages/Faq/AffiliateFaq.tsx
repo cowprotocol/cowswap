@@ -76,7 +76,7 @@ export default function AffiliateFaq() {
           </p>
 
           <p>
-            Share your referral link with all your friends if you think they can be interested in the qualities Cowswap
+            Share your referral link with all your friends if you think they can be interested in the qualities CoW Swap
             has to offer. These qualities range from ETH-less trading experience, MEV protection, no fees for failed
             transactions, and more.{' '}
             <span role="img" aria-label="cow">
