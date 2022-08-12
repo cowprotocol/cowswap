@@ -349,7 +349,7 @@ export default function Profile() {
                   <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
                 </span>
               </BannerCardContent>
-              <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
+              <BannerCardSvg src={CowProtocolImage} description="CoW DAO Governance" />
             </BannerCard>
           </>
         )}

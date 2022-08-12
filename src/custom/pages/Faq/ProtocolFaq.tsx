@@ -112,16 +112,16 @@ export default function ProtocolFaq() {
           <ol>
             <li>
               To become a solver, an Ethereum address needs to deposit a bond in the form of tokens. Asset type and
-              amounts are pending to be defined by the CowDAO.
+              amounts are pending to be defined by the CoW DAO.
             </li>
             <li>
-              Once the tokens have been staked (locked up), CowDAO must vote to approve or reject the Ethereum address
+              Once the tokens have been staked (locked up), CoW DAO must vote to approve or reject the Ethereum address
               that will identify the solver. If the vote is successful, the solver Ethereum address will be included in
               the allowlist (verification) solvers contract.
             </li>
             <li>
               Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
-              solutions, or take the risk of being slashed by the CowDAO for wrongdoing.
+              solutions, or take the risk of being slashed by the CoW DAO for wrongdoing.
             </li>
           </ol>
           <h3 id="what-interactions-can-i-encounter-when-using-Cowswap">

@@ -28,8 +28,8 @@ export default function TokenFaq() {
           </p>
           <p>
             At launch the token will be a pure virtual token for governance. This implies that the token will not be
-            transferable. The token entitles its holders with voting rights in the CowDAO. It is up to CowDAO to vote on
-            whether making the token transferable complies with applicable laws.
+            transferable. The token entitles its holders with voting rights in the CoW DAO. It is up to CoW DAO to vote
+            on whether making the token transferable complies with applicable laws.
           </p>
           <p>
             The token&apos;s main purpose is to govern and curate essential infrastructure components of the CoW
@@ -44,7 +44,7 @@ export default function TokenFaq() {
           <p>
             Yes! A CoWmunity member created a{' '}
             <ExternalLinkFaq href="https://forum.cow.fi/t/cip-draft-enable-swapping-of-vcow-to-cow/91/22">
-              CoWDAO Proposal
+              CoW DAO Proposal
             </ExternalLinkFaq>{' '}
             on the forum.
           </p>
@@ -61,13 +61,13 @@ export default function TokenFaq() {
 
           <h3 id="what-is-the-purpose-of-cow-token">What is the purpose of COW Token?</h3>
           <p>
-            The COW token will entitle its holders to voting rights within the CowDAO. The main purpose of CowDAO is to
-            govern and curate essential infrastructure components of the CoW Protocol ecosystem, including:
+            The COW token will entitle its holders to voting rights within the CoW DAO. The main purpose of CoW DAO is
+            to govern and curate essential infrastructure components of the CoW Protocol ecosystem, including:
           </p>
           <p>
             <ul>
               <li>
-                <strong>System Parameters</strong>: CowDAO will be in charge of all system parameters such as the
+                <strong>System Parameters</strong>: CoW DAO will be in charge of all system parameters such as the
                 objective function for solution scoring and solver slashing conditions.
               </li>
               <li>
