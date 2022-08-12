@@ -18,11 +18,11 @@ export default function TokenFaq() {
         <Content>
           <h2 id="trading">Trading</h2>
 
-          <h3 id="what-types-of-orders-does-cowswap-support">What types of orders does CowSwap support?</h3>
+          <h3 id="what-types-of-orders-does-cowswap-support">What types of orders does CoW Swap support?</h3>
 
           <p>At the moment, only limit sell and buy orders (fill-or-kill) are enabled. </p>
 
-          <h3 id="what-token-pairs-does-cowswap-allow-to-trade">What token pairs does CowSwap allow you to trade?</h3>
+          <h3 id="what-token-pairs-does-cowswap-allow-to-trade">What token pairs does CoW Swap allow you to trade?</h3>
 
           <p>
             Any valid ERC20 token pair that does not apply transfer fees, and for which there is some basic liquidity on
@@ -30,20 +30,20 @@ export default function TokenFaq() {
           </p>
 
           <h3 id="what-token-pairs-does-cowswap-not-allow-to-trade">
-            What token pairs does CowSwap NOT allow you to trade?
+            What token pairs does CoW Swap NOT allow you to trade?
           </h3>
 
           <p>
-            Unfortunately, CowSwap does not support some tokens. While these tokens implement the typical ERC20
+            Unfortunately, CoW Swap does not support some tokens. While these tokens implement the typical ERC20
             interface, when calling the transfer and transferFrom methods, the actual amount the receiver will get will
-            be smaller than the specified sent amount. This causes problems with CowSwap&apos;s settlement logic which
+            be smaller than the specified sent amount. This causes problems with CoW Swap&apos;s settlement logic which
             expects the received amount (e.g., from a Uniswap interaction) to be fully transferable to the trader.
           </p>
 
-          <h3 id="why-is-cowswap-able-to-offer-gas-free-trades">Why is CowSwap able to offer gas-free trades?</h3>
+          <h3 id="why-is-cowswap-able-to-offer-gas-free-trades">Why is CoW Swap able to offer gas-free trades?</h3>
 
           <p>
-            CowSwap is able to offer gas-free trades because the orders are submitted off-chain via signed messages.
+            CoW Swap is able to offer gas-free trades because the orders are submitted off-chain via signed messages.
             Once you approve your funds for spending on the dapp, you can submit orders via signed messages that contain
             the trade’s details, such as limit price, amount, timestamp, and so on.
           </p>
@@ -51,9 +51,9 @@ export default function TokenFaq() {
           <h3 id="do-i-need-eth-to-trade">Do I need ETH to trade?</h3>
 
           <p>
-            For the trade itself you do not need to hold ETH. Although, in order to be able to trade on CowSwap, you
+            For the trade itself you do not need to hold ETH. Although, in order to be able to trade on CoW Swap, you
             first need to approve your funds for spending on the dapp<small>*</small>. For that action, you need ETH to
-            pay for gas fees. Once you have done this, ETH is no longer required as CowSwap charges the fee from the
+            pay for gas fees. Once you have done this, ETH is no longer required as CoW Swap charges the fee from the
             sell token.
           </p>
 
@@ -70,11 +70,11 @@ export default function TokenFaq() {
             How does a trader submit a valid order in CowSwap?
           </h3>
 
-          <p>In order for a trader to submit a valid order to CowSwap, they must do the following steps:</p>
+          <p>In order for a trader to submit a valid order to CoW Swap, they must do the following steps:</p>
 
           <ol>
             <li>
-              Approve the CowSwap smart contract to spend the token on your behalf. By executing this smart contract
+              Approve the CoW Swap smart contract to spend the token on your behalf. By executing this smart contract
               interaction you are approving the contract to withdraw the funds from your wallet once the trade you have
               signed has been filled in a batch auction.
             </li>
@@ -105,7 +105,7 @@ export default function TokenFaq() {
           </p>
           <p>
             Alternatively, there is the so-called hard cancellation, which allows to cancel an order on-chain. This is
-            not currently supported by the CowSwap web interface, and you would need to pay for the gas of the on-chain
+            not currently supported by the CoW Swap web interface, and you would need to pay for the gas of the on-chain
             cancellation. For more information, check the Smart Contract implementation.
           </p>
 
@@ -154,7 +154,7 @@ export default function TokenFaq() {
             route an order is matched against without requiring the user to submit a new order.
           </p>
 
-          <h3 id="can-i-buy-and-sell-eth-in-cowswap">Can I buy and sell ETH in CowSwap?</h3>
+          <h3 id="can-i-buy-and-sell-eth-in-cowswap">Can I buy and sell ETH in CoW Swap?</h3>
 
           <p>
             Yes, you can directly place buy and sell orders for ETH. Before the actual order is placed, the UI will
@@ -164,7 +164,7 @@ export default function TokenFaq() {
           <h3 id="why-is-selling-eth-more-troublesome">Why is selling ETH more troublesome?</h3>
 
           <p>
-            CowSwap only operates with ERC20 tokens. ETH is the native Ethereum currency, which is not an ERC20 token.
+            CoW Swap only operates with ERC20 tokens. ETH is the native Ethereum currency, which is not an ERC20 token.
           </p>
 
           <p>
@@ -176,17 +176,17 @@ export default function TokenFaq() {
           <p>You can withdraw your ETH from the WETH contract at any time, and this is called unwrapping WETH.</p>
 
           <p>
-            Wrapping and unwrapping ETH are simple Ethereum transactions not related to CowSwap, meaning gas costs for
+            Wrapping and unwrapping ETH are simple Ethereum transactions not related to CoW Swap, meaning gas costs for
             executing the transactions are involved.
           </p>
 
           <p>
-            Although CowSwap does not allow you to sell ETH directly, it will assist you with the wrapping/unwrapping,
+            Although CoW Swap does not allow you to sell ETH directly, it will assist you with the wrapping/unwrapping,
             so you can easily handle ETH/WETH, as needed.
           </p>
 
           <p>
-            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CowSwap allows you to
+            While ETH cannot be sold directly, it is possible to directly buy ETH. This is because CoW Swap allows you to
             buy WETH and will directly unwrap it for you.
           </p>
 
@@ -195,7 +195,7 @@ export default function TokenFaq() {
 
         <ul>
           <li>
-            **How can I cancel an order that I placed on CowSwap? Canceling an order in CowSwap can be done in two
+            **How can I cancel an order that I placed on CoW Swap? Canceling an order in CowSwap can be done in two
             different ways:
           </li>
         </ul>
@@ -207,7 +207,7 @@ export default function TokenFaq() {
           </li>
 
           <li>
-            Calling the CowSwap contract to register onchain that you want to cancel a specific order. In this case the
+            Calling the CoW Swap contract to register onchain that you want to cancel a specific order. In this case the
             cancellation does have a cost as the onchain interaction requires gas fees
           </li>
         </ol>
