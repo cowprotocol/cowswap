@@ -42,7 +42,7 @@ export default function TokenFaq() {
           </p>
           <h3 id="is-there-a-proposal-to-make-vcow-transferable">Is there a proposal to make vCOW transferrable?</h3>
           <p>
-            Yes! A CoWmunity member created a{' '}
+            Yes! A CoW-mmunity member created a{' '}
             <ExternalLinkFaq href="https://forum.cow.fi/t/cip-draft-enable-swapping-of-vcow-to-cow/91/22">
               CoW DAO Proposal
             </ExternalLinkFaq>{' '}

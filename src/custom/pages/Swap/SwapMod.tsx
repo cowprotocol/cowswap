@@ -608,7 +608,7 @@ export default function Swap({
         onDismiss={closeModals}
         operationType={operationType}
       />
-      {/* CoWmunity Fees Discount Modal */}
+      {/* CoW-mmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
 
       <AffiliateStatusCheck />

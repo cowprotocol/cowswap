@@ -68,7 +68,7 @@ export default function CowSubsidyModal({
     <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
       <ConfirmationModalContent
         {...restProps}
-        title="CoWmunity fees discount"
+        title="CoW-mmunity fees discount"
         titleSize={21}
         styles={{ textAlign: 'center', width: '100%' }}
         onDismiss={onDismiss}
