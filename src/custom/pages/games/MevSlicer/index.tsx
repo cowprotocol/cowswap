@@ -48,7 +48,7 @@ function openGame() {
 export default function MevSlicer() {
   return (
     <Wrapper>
-      <p>This Cow doesn&apos;t run away any more! Not from MEV!</p>
+      <p>This CoW doesn&apos;t run away any more! Not from MEV!</p>
       <p>
         Now is the time to take some action! -{' '}
         <strong>
