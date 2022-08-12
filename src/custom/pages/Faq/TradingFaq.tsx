@@ -67,7 +67,7 @@ export default function TokenFaq() {
           </p>
 
           <h3 id="how-does-a-trader-submit-a-valid-order-in-cowswap">
-            How does a trader submit a valid order in CowSwap?
+            How does a trader submit a valid order in CoW Swap?
           </h3>
 
           <p>In order for a trader to submit a valid order to CoW Swap, they must do the following steps:</p>
@@ -80,10 +80,10 @@ export default function TokenFaq() {
             </li>
             <li>
               Once the approval has been mined, the next step is to sign a meta-tx in which you will see the parameters
-              of the order you are about to place in the CowSwap interface. After that, there is nothing else to do.
+              of the order you are about to place in the CoW Swap interface. After that, there is nothing else to do.
             </li>
             <li>
-              Once the order is executed, you will see a notification in the CowSwap UI and hear a confirming “Moo”
+              Once the order is executed, you will see a notification in the CoW Swap UI and hear a confirming “Moo”
               sound.
             </li>
           </ol>
