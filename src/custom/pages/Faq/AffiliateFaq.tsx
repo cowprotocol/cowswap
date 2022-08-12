@@ -71,7 +71,7 @@ export default function AffiliateFaq() {
 
           <p>
             Everyone! Please share the excitement for the CoW Swap protocol & dapp. It would really make a difference
-            for the CoW-mmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
+            for the CoWmunity if you share it with your friends, Twitter/YouTube followers, or anyone that would be
             interested.
           </p>
 
