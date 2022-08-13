@@ -95,6 +95,7 @@ import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
+import Banner from 'components/swap/EthWethWrap/Banner'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -1018,7 +1019,9 @@ export default function Swap({
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                       <Trans>
-                        {isUserNativeEthFlow ? 'Swap' : `Wrap ${trade?.inputAmount.currency.name} and swap`}
+                        {isNativeIn && !isUserNativeEthFlow
+                          ? `Wrap ${trade?.inputAmount.currency.name} and swap`
+                          : 'Swap'}
                       </Trans>
                     </SwapButton>
                     {/* <Text fontSize={16} fontWeight={500}>
@@ -1085,6 +1088,17 @@ export default function Swap({
             )}
             {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
           </BottomGrouping>
+          {/* ETH-FLOW BANNER */}
+          <Banner
+            native={native}
+            wrapped={wrappedToken}
+            isNativeIn={isNativeIn}
+            callback={() => {
+              if (!swapInputError && isNativeIn) {
+                openNativeWrapModal()
+              }
+            }}
+          />
         </Wrapper>
       </StyledAppBody>
       {/*<SwitchLocaleLink />*/}
