@@ -6,6 +6,7 @@ import { SupportedChainId } from 'constants/chains'
 
 // MOD imports
 import { USDC_GNOSIS_CHAIN, WXDAI, XDAI_NAME, XDAI_SYMBOL } from 'utils/gnosis_chain/constants'
+import { WETH_GOERLI } from 'utils/goerli/constants'
 import {
   ExtendedEther,
   WRAPPED_NATIVE_CURRENCY as UNI_WRAPPED_NATIVE_CURRENCY,
@@ -289,6 +290,7 @@ export const UNI: { [chainId: number]: Token } = {
 export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token } = {
   ...UNI_WRAPPED_NATIVE_CURRENCY,
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI,
+  [SupportedChainId.GOERLI]: WETH_GOERLI,
   /* ...WETH9,
   [SupportedChainId.OPTIMISM]: new Token(
     SupportedChainId.OPTIMISM,
