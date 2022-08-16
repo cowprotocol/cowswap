@@ -94,6 +94,7 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { useIsUserNativeEthFlow } from 'state/ethFlow/hooks'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
