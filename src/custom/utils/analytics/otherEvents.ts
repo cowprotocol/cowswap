@@ -1,7 +1,7 @@
 import { Category, reportEvent } from './index'
 import { detectExplorer } from 'utils/explorer'
 
-type GameType = 'Cow Runner' | 'MEV Slicer'
+type GameType = 'CoW Runner' | 'MEV Slicer'
 export function gameAnalytics(gameType: GameType) {
   reportEvent({
     category: Category.GAMES,

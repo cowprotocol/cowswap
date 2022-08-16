@@ -908,7 +908,7 @@ export default function Swap({
                         {approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED ? (
                           <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
                         ) : (
-                          <Trans>Allow CowSwap to use your {currencies[Field.INPUT]?.symbol}</Trans>
+                          <Trans>Allow CoW Swap to use your {currencies[Field.INPUT]?.symbol}</Trans>
                         )}
                         {approvalState === ApprovalState.PENDING ? (
                           <Loader stroke="white" />
@@ -1021,7 +1021,7 @@ export default function Swap({
           showDetailsText="Read more about unsupported wallets"
           detailsText={
             <>
-              <p>CowSwap requires offline signatures, which is currently not supported by some wallets.</p>
+              <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
               <p>
                 Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
               </p>

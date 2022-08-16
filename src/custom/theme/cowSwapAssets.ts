@@ -380,7 +380,7 @@ export function cowSwapLogo(darkMode: boolean): string {
    </svg>`
 
   // Please note, this Light Mode logo is using a different blue from the branding kit.
-  // Instead it uses #152943 to adapt to the existing CowSwap theme colors.
+  // Instead it uses #152943 to adapt to the existing CoW Swap theme colors.
   const lightModeLogo = `
   <svg fill="none" height="54" width="169" xmlns="http://www.w3.org/2000/svg">
   <g fill="#152943">

@@ -32,7 +32,7 @@ export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
-export const DEFAULT_APP_CODE = 'CowSwap'
+export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
 export const PRODUCTION_URL = 'cowswap.exchange'

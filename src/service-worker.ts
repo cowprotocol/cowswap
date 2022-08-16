@@ -16,7 +16,7 @@ console.log(`[worker] registerRoutes for v${WEB_VERSION}`)
 // Set Cache name
 //  See https://dev.to/atonchev/flawless-and-silent-upgrade-of-the-service-worker-2o95
 setCacheNameDetails({
-  prefix: 'CowSwap',
+  prefix: 'CoW Swap',
   suffix: WEB_VERSION,
 })
 
