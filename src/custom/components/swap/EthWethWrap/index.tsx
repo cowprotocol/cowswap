@@ -125,6 +125,7 @@ export default function EthWethWrap({
   // returns the cost of 1 tx and multi txs
   const { multiTxCost, singleTxCost } = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
 
+  // maintain own track of approve/wrap states
   const [approveSubmitted, setApproveSubmitted] = useState(false)
   const [wrapSubmitted, setWrapSubmitted] = useState(false)
   const isApprovePending = useIsTransactionPending(pendingHashMap.approveHash)
@@ -225,6 +226,7 @@ export default function EthWethWrap({
 
     try {
       const wrapTx = await wrapCallback()
+      // save own local pending wrap hash to track progress
       setPendingHashMap((currTx) => ({
         ...currTx,
         wrapHash: wrapTx?.hash,
@@ -249,6 +251,7 @@ export default function EthWethWrap({
 
     try {
       const approveTx = await approveCallback()
+      // save own local pending approve hash to track progress
       setPendingHashMap((currTx) => ({
         ...currTx,
         approveHash: approveTx?.hash,
@@ -287,11 +290,13 @@ export default function EthWethWrap({
           needsWrap ? wrapCallback?.({ useModals: false }) : undefined,
           needsApproval ? approveCallback({ useModals: false }) : undefined,
         ])
+        // save own local pending hashes to track progress
         setPendingHashMap((currTx) => ({
           ...currTx,
           wrapHash: wrapTx?.hash,
           approveHash: approveTx?.hash,
         }))
+        // only set submitted states if we need to
         needsApproval && setApproveSubmitted(true)
         needsWrap && setWrapSubmitted(true)
       } else {
