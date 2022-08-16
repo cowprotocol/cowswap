@@ -2,7 +2,7 @@ import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 // Todo: address should be updated
-export const DAI_GOERLI = new Token(ChainId.GOERLI, '0x5c221e77624690fff6dd741493d735a17716c26b', 18, 'DAI', 'DAI')
+export const DAI_GOERLI = new Token(ChainId.GOERLI, '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60', 18, 'DAI', 'DAI')
 
 export const USDT_GOERLI = new Token(
   ChainId.GOERLI,
@@ -13,7 +13,7 @@ export const USDT_GOERLI = new Token(
 )
 export const USDC_GOERLI = new Token(
   ChainId.GOERLI,
-  '0x5ddba296458986e462ba4aeb4dddc00fadc9c43b',
+  '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C',
   6,
   'USDC',
   'USD Coin'
@@ -24,4 +24,11 @@ export const WBTC_GOERLI = new Token(
   8,
   'WBTC',
   'Wrapped BTC'
+)
+export const WETH_GOERLI = new Token(
+  ChainId.GOERLI,
+  '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+  18,
+  'WETH',
+  'Wrapped Görli Ether'
 )
