@@ -111,7 +111,8 @@ export default function EthWethWrap({
   swapCallback,
 }: Props) {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [wrapError, setWrapError] = useState<Error | null>(null)
+  const [approveError, setApproveError] = useState<Error | null>(null)
   const [pendingHashMap, setPendingHashMap] = useState<{ approveHash?: string; wrapHash?: string }>({
     approveHash: undefined,
     wrapHash: undefined,
@@ -157,15 +158,15 @@ export default function EthWethWrap({
     wrappedSymbol,
     nativeSymbol,
   } = useMemo(() => {
-    const wrapSentAndSuccessful = wrapSubmitted && !isWrapPending
-    const approveSentAndSuccessful = approveSubmitted && !isApprovePending
+    const wrapSentAndSuccessful = !wrapError && wrapSubmitted && !isWrapPending
+    const approveSentAndSuccessful = !approveError && approveSubmitted && !isApprovePending
     const isWrap = !isNativeIn && isWrappedOut
     const isNative = isNativeIn || isWrap
 
     return {
-      wrapFinished: !needsWrap || (wrapSubmitted && wrapSentAndSuccessful),
-      approveFinished: !needsApproval || (approveSubmitted && approveSentAndSuccessful),
+      wrapFinished: !needsWrap || wrapSentAndSuccessful,
       wrapSentAndSuccessful,
+      approveFinished: !needsApproval || approveSentAndSuccessful,
       approveSentAndSuccessful,
       isWrap,
       isUnwrap: !isNativeOut && isWrappedIn,
@@ -174,17 +175,22 @@ export default function EthWethWrap({
       nativeSymbol: native.symbol || 'native token',
     }
   }, [
+    // approval state
+    needsApproval,
     approveSubmitted,
     isApprovePending,
+    approveError,
+    // wrap state
+    needsWrap,
+    wrapSubmitted,
+    isWrapPending,
+    wrapError,
+    // native token
     isNativeIn,
     isNativeOut,
-    isWrapPending,
     isWrappedIn,
     isWrappedOut,
     native.symbol,
-    needsApproval,
-    needsWrap,
-    wrapSubmitted,
     wrapped.symbol,
   ])
 
@@ -195,10 +201,16 @@ export default function EthWethWrap({
   }, [isApprovePending, isWrapPending])
 
   const handleError = useCallback(
-    (error: any) => {
+    (error: any, type: 'WRAP' | 'APPROVE') => {
       console.error(error)
 
-      setError(error)
+      if (type === 'WRAP') {
+        setWrapError(error)
+      }
+      if (type === 'APPROVE') {
+        setApproveError(error)
+      }
+
       setLoading(false)
       onDismiss()
     },
@@ -207,7 +219,7 @@ export default function EthWethWrap({
 
   const handleWrap = useCallback(async () => {
     if (!wrapCallback) return
-    setError(null)
+    setWrapError(null)
     setLoading(true)
     setWrapSubmitted(false)
 
@@ -219,7 +231,7 @@ export default function EthWethWrap({
       }))
       setWrapSubmitted(true)
     } catch (error) {
-      handleError(error)
+      handleError(error, 'WRAP')
       setWrapSubmitted(false)
     } finally {
       // is pure wrap/unwrap operation, close modal
@@ -231,7 +243,7 @@ export default function EthWethWrap({
 
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
-    setError(null)
+    setApproveError(null)
     setLoading(true)
     setApproveSubmitted(false)
 
@@ -243,29 +255,28 @@ export default function EthWethWrap({
       }))
       setApproveSubmitted(true)
     } catch (error) {
-      handleError(error)
+      handleError(error, 'APPROVE')
       setApproveSubmitted(false)
     }
   }, [approveCallback, handleError])
 
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
-      setError(null)
-
       try {
-        await swapCallback(!!showSwapModal)
+        swapCallback(!!showSwapModal)
       } catch (error) {
-        handleError(error)
+        throw error
       } finally {
         // close modal after swap initiated
         onDismiss()
       }
     },
-    [swapCallback, handleError, onDismiss]
+    [swapCallback, onDismiss]
   )
 
   const handleMountInExpertMode = useCallback(async () => {
-    setError(null)
+    setWrapError(null)
+    setApproveError(null)
     setLoading(true)
     setApproveSubmitted(false)
     setWrapSubmitted(false)
@@ -289,7 +300,8 @@ export default function EthWethWrap({
         handleSwap(true)
       }
     } catch (error) {
-      handleError(error)
+      needsWrap && handleError(error, 'WRAP')
+      needsApproval && handleError(error, 'APPROVE')
       setApproveSubmitted(false)
       setWrapSubmitted(false)
     } finally {
@@ -325,10 +337,16 @@ export default function EthWethWrap({
   }, [isExpertMode, approveFinished, approveSubmitted, handleSwap, wrapFinished, wrapSubmitted])
 
   const renderActionButton = useCallback(() => {
+    const hasErrored = !!(approveError || wrapError)
     let actionButton
     if (isExpertMode || (approveFinished && wrapFinished)) {
       actionButton = isExpertMode ? null : (
-        <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={() => handleSwap(true)}>
+        <ButtonPrimary
+          disabled={loading || hasErrored}
+          padding="0.5rem"
+          maxWidth="70%"
+          onClick={() => handleSwap(true)}
+        >
           {loading ? <Loader /> : <Trans>Swap</Trans>}
         </ButtonPrimary>
       )
@@ -336,7 +354,7 @@ export default function EthWethWrap({
       if (needsWrap && !wrapSentAndSuccessful) {
         // show wrap button
         actionButton = (
-          <ButtonPrimary disabled={loading || !!error} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
+          <ButtonPrimary disabled={loading || hasErrored} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
             {loading ? (
               <Loader />
             ) : (
@@ -347,7 +365,12 @@ export default function EthWethWrap({
       } else if (needsApproval && !approveSubmitted) {
         // show approval button
         actionButton = (
-          <ButtonPrimary disabled={isApprovePending || !!error} padding="0.5rem" maxWidth="70%" onClick={handleApprove}>
+          <ButtonPrimary
+            disabled={isApprovePending || hasErrored}
+            padding="0.5rem"
+            maxWidth="70%"
+            onClick={handleApprove}
+          >
             {isApprovePending ? <Loader /> : <Trans>Approve {wrappedSymbol}</Trans>}
           </ButtonPrimary>
         )
@@ -362,23 +385,29 @@ export default function EthWethWrap({
 
     return <ButtonWrapper>{actionButton}</ButtonWrapper>
   }, [
-    approveFinished,
+    // approve state
+    needsApproval,
     approveSubmitted,
-    error,
+    approveFinished,
+    approveError,
+    isApprovePending,
+    // wrap state
+    needsWrap,
+    wrapError,
+    wrapFinished,
+    wrapSentAndSuccessful,
+    isWrap,
+    // misc state
+    loading,
+    isExpertMode,
+    isNativeIn,
+    // constants
+    nativeSymbol,
+    wrappedSymbol,
+    // cbs
     handleApprove,
     handleSwap,
     handleWrap,
-    isApprovePending,
-    isExpertMode,
-    isNativeIn,
-    isWrap,
-    loading,
-    nativeSymbol,
-    needsApproval,
-    needsWrap,
-    wrapFinished,
-    wrapSentAndSuccessful,
-    wrappedSymbol,
   ])
 
   const { header, description } = useMemo(() => {
