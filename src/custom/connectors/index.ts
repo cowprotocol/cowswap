@@ -117,7 +117,7 @@ export const portis = new PortisConnector({
 
 export const walletlink = new WalletLinkConnector({
   url: rpcNetworks[NETWORK_CHAIN_ID],
-  appName: 'CowSwap',
+  appName: 'CoW Swap',
   appLogoUrl: 'https://raw.githubusercontent.com/cowprotocol/cowswap/develop/public/favicon.png',
   supportedChainIds: getSupportedChainIds(),
 })

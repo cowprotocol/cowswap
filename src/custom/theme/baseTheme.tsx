@@ -124,7 +124,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     logo: {
       src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
-      alt: 'CowSwap Logo',
+      alt: 'CoW Swap Logo',
       width: '137px',
       height: '44px',
     },

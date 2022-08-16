@@ -14,7 +14,7 @@
       "chainId": 5,
       "symbol": "GNO",
       "decimals": 18,
-      "address": "0x02abbdbaaa7b1bb64b5c878f7ac17f8dda169532",
+      "address": "0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532",
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png"
     },
     {
@@ -26,19 +26,11 @@
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB/logo.png"
     },
     {
-      "name": "USDT",
-      "chainId": 5,
-      "symbol": "USDT",
-      "decimals": 6,
-      "address": "0xe583769738b6dd4e7caf8451050d1948be717679",
-      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png"
-    },
-    {
       "name": "USD Coin",
       "chainId": 5,
       "symbol": "USDC",
       "decimals": 6,
-      "address": "0x5ddba296458986e462ba4aeb4dddc00fadc9c43b",
+      "address": "0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C",
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
     },
     {
@@ -46,40 +38,32 @@
       "chainId": 5,
       "symbol": "DAI",
       "decimals": 18,
-      "address": "0x5c221e77624690fff6dd741493d735a17716c26b",
+      "address": "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60",
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
     },
     {
-      "name": "wBTC",
+      "name": "0x",
       "chainId": 5,
-      "symbol": "wBTC",
-      "decimals": 8,
-      "address": "0xca063a2ab07491ee991dcecb456d1265f842b568",
-      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png"
+      "symbol": "ZRX",
+      "decimals": 18,
+      "address": "0xe4E81Fa6B16327D4B78CFEB83AAdE04bA7075165",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xE41d2489571d322189246DaFA5ebDe1F4699F498/logo.png"
     },
     {
-      "name": "Liquid staked Ether 2.0",
+      "name": "Basic Attention Token",
       "chainId": 5,
-      "symbol": "stETH",
+      "symbol": "BAT",
       "decimals": 18,
-      "address": "0x1643e812ae58766192cf7d2cf9567df2c37e9b7f",
-      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png"
+      "address": "0x70cBa46d2e933030E2f274AE58c951C800548AeF",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0D8775F648430679A709E98d2b0Cb6250d2887EF/logo.png"
     },
     {
-      "name": "Wrapped Ether",
+      "name": "Polymath Network",
       "chainId": 5,
-      "symbol": "WETH",
+      "symbol": "POLY",
       "decimals": 18,
-      "address": "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
-      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
-    },
-    {
-      "name": "Chainlink",
-      "chainId": 5,
-      "symbol": "LINK",
-      "decimals": 18,
-      "address": "0x63bfb2118771bd0da7a6936667a7bb705a06c1ba",
-      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png"
+      "address": "0x9e32c0EfF886B6Ccae99350Fd5e7002dCED55F15",
+      "logoURI": "https://assets.coingecko.com/coins/images/2784/thumb/inKkF01.png?1605007034"
     }
   ]
 }

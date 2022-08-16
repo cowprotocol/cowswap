@@ -203,7 +203,7 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
           <ModalMessage>
             <span>
               <Trans>
-                CowSwap is a gasless exchange. <strong>{nativeSymbol}</strong> however, is required for paying{' '}
+                CoW Swap is a gasless exchange. <strong>{nativeSymbol}</strong> however, is required for paying{' '}
                 <strong>
                   on-chain transaction costs associated with enabling tokens and the wrapping/unwrapping of{' '}
                   {nativeSymbol}/{wrappedSymbol}

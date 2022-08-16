@@ -3,7 +3,7 @@ import { ErrorMessageProps, SwapCallbackError } from 'components/swap/styleds'
 import useTransactionErrorModal from './useTransactionErrorModal'
 
 /**
- * @description hook for getting CowSwap error and handling them visually
+ * @description hook for getting CoW Swap error and handling them visually
  * @description ErrorMessage component accepts an error message to override exported error state, and a close option
  * @returns returns object: { error, setError, ErrorMessage } => error message, error message setter, and our ErrorMessage component
  */

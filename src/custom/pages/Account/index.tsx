@@ -91,7 +91,7 @@ export default function Profile() {
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
-  // Cow balance
+  // CoW balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
   // vCow balance values
@@ -349,7 +349,7 @@ export default function Profile() {
                   <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
                 </span>
               </BannerCardContent>
-              <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
+              <BannerCardSvg src={CowProtocolImage} description="CoW DAO Governance" />
             </BannerCard>
           </>
         )}
