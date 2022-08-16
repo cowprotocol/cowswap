@@ -91,7 +91,7 @@ export default function Profile() {
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
-  // Cow balance
+  // CoW balance
   const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
 
   // vCow balance values
