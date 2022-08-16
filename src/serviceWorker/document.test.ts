@@ -13,12 +13,9 @@ jest.mock('workbox-routing', () => ({ Route: class {} }))
 describe('document', () => {
   describe('matchDocument', () => {
     const TEST_DOCUMENTS = [
-      [{ request: {}, url: { hostname: 'example.com', pathname: '' } }, false],
-      [{ request: { mode: 'navigate' }, url: { hostname: 'example.com', pathname: '' } }, false],
-      [{ request: {}, url: { hostname: 'app.uniswap.org', pathname: '' } }, false],
-      [{ request: { mode: 'navigate' }, url: { hostname: 'app.uniswap.org', pathname: '' } }, true],
-      [{ request: { mode: 'navigate' }, url: { hostname: 'app.uniswap.org', pathname: '/#/swap' } }, true],
-      [{ request: { mode: 'navigate' }, url: { hostname: 'app.uniswap.org', pathname: '/asset.gif' } }, false],
+      [{ request: { mode: 'navigate' }, url: { hostname: 'cowswap.exchange', pathname: '' } }, true],
+      [{ request: { mode: 'navigate' }, url: { hostname: 'cowswap.exchange', pathname: '/#/swap' } }, true],
+      [{ request: { mode: 'navigate' }, url: { hostname: 'cowswap.exchange', pathname: '/asset.gif' } }, false],
       [{ request: {}, url: { hostname: 'localhost', pathname: '' } }, false],
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '' } }, true],
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '/#/swap' } }, true],
