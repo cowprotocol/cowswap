@@ -273,16 +273,16 @@ export default function EthWethWrap({
     try {
       if (needsApproval || needsWrap) {
         const [wrapTx, approveTx] = await Promise.all([
-          wrapCallback?.({ useModals: false }),
-          approveCallback({ useModals: false }),
+          needsWrap ? wrapCallback?.({ useModals: false }) : undefined,
+          needsApproval ? approveCallback({ useModals: false }) : undefined,
         ])
         setPendingHashMap((currTx) => ({
           ...currTx,
           wrapHash: wrapTx?.hash,
           approveHash: approveTx?.hash,
         }))
-        setApproveSubmitted(true)
-        setWrapSubmitted(true)
+        needsApproval && setApproveSubmitted(true)
+        needsWrap && setWrapSubmitted(true)
       } else {
         // user doesn't need either, in expert mode we just start swap
         // and pass true to show swap confirmation modal
