@@ -2,6 +2,9 @@
 // Main differences summarised:
 // GP doesn't use ETH, so we need to test for this
 
+const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
+const WETH = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
+
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
   // it('can swap ETH for DAI', () => {
@@ -13,9 +16,7 @@ describe('Swap (custom)', () => {
     // cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').should('be.visible')
     // cy.get('.token-item-0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735').click({ force: true })
 
-    cy.visit(
-      '/swap?inputCurrency=0xc778417E063141139Fce010982780140Aa0cD5Ab&outputCurrency=0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa'
-    )
+    cy.visit(`/swap?inputCurrency=${WETH}&outputCurrency=${DAI}`)
 
     // input amounts
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
@@ -27,7 +28,7 @@ describe('Swap (custom)', () => {
 
   // ETH should be tradable but show Switch to Weth
   it('Swap ETH for DAI - shows Switch to WETH ', () => {
-    cy.visit('/swap?inputCurrency=ETH&outputCurrency=0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa')
+    cy.visit(`/swap?inputCurrency=ETH&outputCurrency=${DAI}`)
 
     // select ETH
     // cy.get('#swap-currency-input .open-currency-select-button').click()
