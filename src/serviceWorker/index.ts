@@ -45,7 +45,7 @@ const { assets, entries } = self.__WB_MANIFEST.reduce<{ assets: string[]; entrie
 // Registers the assets' routes for on-demand caching.
 registerRoute(
   new Route(
-    ({ url }) => assets.includes(url.href),
+    ({ url }) => assets.includes('.' + url.pathname),
     new CacheFirst({
       cacheName: 'assets',
       plugins: [new ExpirationPlugin({ maxEntries: 16 })],
