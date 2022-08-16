@@ -9,6 +9,10 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 
+import { NETWORK_SELECTOR_CHAINS } from 'components/Header/NetworkSelector/NetworkSelectorMod'
+import { getChainInfo } from 'constants/chainInfo'
+import { useCallback } from 'react'
+
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
 `
@@ -23,6 +27,15 @@ export default function FailedNetworkSwitchPopup({
   const chainInfo = CHAIN_INFO[chainId]
   const theme = useContext(ThemeContext)
 
+  const getErrorMessage = useCallback(() => {
+    return isUnsupportedNetwork
+      ? 'Please connect your wallet to one of our supported networks: ' +
+          NETWORK_SELECTOR_CHAINS.map((chainId) => getChainInfo(chainId)?.label)
+            .filter(Boolean)
+            .join(', ')
+      : `Failed to switch networks from the CowSwap Interface. In order to use CowSwap on ${chainInfo.label}, you must change the network in your wallet.`
+  }, [chainInfo.label, isUnsupportedNetwork])
+
   return (
     <RowNoFlex>
       <div style={{ paddingRight: 16 }}>
@@ -30,11 +43,7 @@ export default function FailedNetworkSwitchPopup({
       </div>
       <AutoColumn gap="8px">
         <ThemedText.Body fontWeight={500} color={isUnsupportedNetwork ? theme.text2 : theme.text1}>
-          <Trans>
-            {isUnsupportedNetwork
-              ? `Please connect your wallet to one of the supported networks: Ethereum Mainnet or Gnosis Chain.`
-              : `Failed to switch networks from the CowSwap Interface. In order to use CowSwap on ${chainInfo.label}, you must change the network in your wallet.`}
-          </Trans>
+          <Trans>{getErrorMessage()}</Trans>
         </ThemedText.Body>
       </AutoColumn>
     </RowNoFlex>

@@ -12,12 +12,40 @@ export const TokenSearchInput = styled(SearchInput)`
   margin-bottom: 16px;
   font-size: 14px;
   max-width: 500px;
+  align-self: flex-end;
+  border-radius: 0;
+  box-shadow: none !important;
+  border-bottom: 1px solid ${({ theme }) => theme.primary1} !important;
+
+  ::placeholder {
+    font-size: 14px !important;
+    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? 'white' : theme.text1)} !important;
+  }
+
+  :focus::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? 'white' : theme.text1)} !important;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-width: 350px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+    font-size: 12px !important;
+    align-self: flex-start;
+    max-width: 100%;
+
+    ::placeholder {
+      font-size: 12px !important;
+    }
+  `};
 `
 
 export const Wrapper = styled.div`
   width: 100%;
   border: none;
-  padding: 0 1rem;
+  padding: 0;
 `
 
 export const ResponsiveGrid = styled.div`

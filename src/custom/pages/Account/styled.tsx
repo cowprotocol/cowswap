@@ -263,6 +263,7 @@ export const CardsWrapper = styled.div<{ padding?: string; useFlex?: boolean }>`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
+    padding: 0.8rem;
 
     > div {
       flex: 1 1 100%;

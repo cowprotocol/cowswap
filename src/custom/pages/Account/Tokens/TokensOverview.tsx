@@ -11,7 +11,10 @@ import {
   AccountHeading,
   RemoveTokens,
   WrongNetwork,
+  LeftSection,
+  ClearSearchInput,
 } from './styled'
+import { TokenSearchInput } from 'components/Tokens/styled'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
 import TokensTable from 'components/Tokens/TokensTable'
@@ -25,6 +28,10 @@ import { useWeb3React } from '@web3-react/core'
 import { CardsWrapper } from '../styled'
 import { supportedChainId } from 'utils/supportedChainId'
 import Web3Status from 'components/Web3Status'
+import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
+import useDebounce from 'hooks/useDebounce'
+import { isAddress } from 'utils'
+import { CloseIcon } from 'theme'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -60,6 +67,11 @@ export default function TokensOverview() {
   const allTokens = useAllTokens()
   const favouriteTokens = useFavouriteTokens()
   const balances = useAllTokenBalances()
+
+  // search - takes precedence re:filtering
+  const [query, setQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(query, 300)
+  const prevQuery = usePrevious(debouncedQuery)
 
   const removeAllFavouriteTokens = useRemoveAllFavouriteTokens()
   const handleRestoreTokens = useCallback(() => {
@@ -97,8 +109,42 @@ export default function TokensOverview() {
       )
     }
 
-    return <TokensTable page={page} setPage={setPage} balances={balances} tokensData={tokensData} />
-  }, [balances, favouriteTokens, formattedTokens, isChainSupported, page, selectedView])
+    return (
+      <TokensTable
+        page={page}
+        query={query}
+        prevQuery={prevQuery || ''}
+        debouncedQuery={debouncedQuery || ''}
+        setPage={setPage}
+        balances={balances}
+        tokensData={tokensData}
+      />
+    )
+  }, [
+    balances,
+    debouncedQuery,
+    favouriteTokens,
+    formattedTokens,
+    isChainSupported,
+    page,
+    prevQuery,
+    query,
+    selectedView,
+  ])
+
+  const handleSearch = useCallback(
+    (event) => {
+      const input = event.target.value.trim()
+      const checksummedInput = isAddress(input)
+      setQuery(checksummedInput || input)
+      if (page !== 1) setPage(1)
+    },
+    [page, setPage]
+  )
+
+  const handleSearchClear = useCallback(() => {
+    setQuery('')
+  }, [])
 
   // reset table to page 1 on chain change or on table view change
   useEffect(() => {
@@ -110,31 +156,54 @@ export default function TokensOverview() {
   return (
     <CardsWrapper useFlex={false} padding={'20px 30px 30px'}>
       <AccountHeading>
-        <MenuWrapper ref={node as any}>
-          <MenuButton onClick={toggleMenu}>
-            <Subtitle>
-              <Trans>{PageView[selectedView].label}</Trans>
-            </Subtitle>
-            <StyledChevronDown size={14} />
-          </MenuButton>
+        <LeftSection>
+          <MenuWrapper ref={node as any}>
+            <MenuButton onClick={toggleMenu}>
+              <Subtitle>
+                <Trans>{PageView[selectedView].label}</Trans>
+              </Subtitle>
+              <StyledChevronDown size={14} />
+            </MenuButton>
 
-          {isMenuOpen ? (
-            <Menu>
-              {Object.entries(PageView).map(([key, value]) => (
-                <MenuItem key={key} active={selectedView === key} onClick={() => handleMenuClick(key as PageViewKeys)}>
-                  <span>{value.label}</span>
-                  {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                </MenuItem>
-              ))}
-            </Menu>
-          ) : null}
-        </MenuWrapper>
+            {isMenuOpen ? (
+              <Menu>
+                {Object.entries(PageView).map(([key, value]) => (
+                  <MenuItem
+                    key={key}
+                    active={selectedView === key}
+                    onClick={() => handleMenuClick(key as PageViewKeys)}
+                  >
+                    <span>{value.label}</span>
+                    {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                  </MenuItem>
+                ))}
+              </Menu>
+            ) : null}
+          </MenuWrapper>
 
-        {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-          <RemoveTokens onClick={handleRestoreTokens}>
-            (<Trans>Restore defaults</Trans>)
-          </RemoveTokens>
-        )}
+          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+            <RemoveTokens onClick={handleRestoreTokens}>
+              (<Trans>Restore defaults</Trans>)
+            </RemoveTokens>
+          )}
+        </LeftSection>
+
+        <SearchInputFormatter>
+          <TokenSearchInput
+            type="text"
+            id="token-search-input"
+            placeholder={`Search name/symbol or paste address`}
+            autoComplete="off"
+            value={query}
+            onChange={handleSearch}
+          />
+
+          {!!query.length && (
+            <ClearSearchInput>
+              <CloseIcon size={24} onClick={handleSearchClear} />
+            </ClearSearchInput>
+          )}
+        </SearchInputFormatter>
       </AccountHeading>
 
       {renderTableContent()}

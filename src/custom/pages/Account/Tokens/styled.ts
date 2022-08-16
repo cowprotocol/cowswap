@@ -145,6 +145,13 @@ export const AccountHeading = styled.div`
   display: flex;
   align-items: center;
   padding-bottom: 1rem;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+  `}
 `
 
 export const RemoveTokens = styled.button`
@@ -152,8 +159,36 @@ export const RemoveTokens = styled.button`
   border: none;
   color: ${({ theme }) => theme.primary1};
   cursor: pointer;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    margin-top: 5px;
+    padding: 0;
+  `}
 `
 
 export const WrongNetwork = styled.div`
   max-width: 200px;
+`
+
+export const LeftSection = styled.div`
+  display: flex;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    flex-direction: column;
+    align-items: flex-start;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  `};
+`
+
+export const ClearSearchInput = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  cursor: pointer;
 `
