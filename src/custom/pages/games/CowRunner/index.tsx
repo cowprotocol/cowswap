@@ -32,7 +32,7 @@ const Wrapper = styled(Page)`
 
 export default function CowRunnerPage() {
   useEffect(() => {
-    gameAnalytics('Cow Runner')
+    gameAnalytics('CoW Runner')
   }, [])
 
   return (

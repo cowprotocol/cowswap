@@ -50,7 +50,7 @@ function GnosisSafeTxDetails(props: {
     ? order?.fulfillmentTime !== undefined
     : enhancedTransaction?.confirmedTime !== undefined
 
-  // Check if its in a state where we dont need more signatures. We do this, because this state comes from CowSwap API, which
+  // Check if its in a state where we dont need more signatures. We do this, because this state comes from CoW Swap API, which
   // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
   // this check to infer that we don't need to sign anything anymore
   const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING

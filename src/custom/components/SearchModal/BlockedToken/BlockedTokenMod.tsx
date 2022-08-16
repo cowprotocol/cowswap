@@ -63,7 +63,7 @@ const BlockedToken = ({ onBack, onDismiss, blockedTokens }: BlockedTokenProps) =
     <Icon />
     <Content>
       <Copy>
-        <Trans>This token is not supported in the Cowswap app</Trans>
+        <Trans>This token is not supported in the CoW Swap app</Trans>
       </Copy>
       <TokenImportCard token={blockedTokens[0]} />
       <Button disabled>

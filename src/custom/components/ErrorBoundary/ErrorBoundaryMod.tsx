@@ -208,7 +208,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
               <StyledTitle>
                 <Trans> Something went wrong</Trans>
               </StyledTitle>
-              <img src={CowError} alt="CowSwap Error" height="125" />
+              <img src={CowError} alt="CoW Swap Error" height="125" />
             </FlexContainer>
             <AutoColumn gap={'md'}>
               <CodeBlockWrapper>

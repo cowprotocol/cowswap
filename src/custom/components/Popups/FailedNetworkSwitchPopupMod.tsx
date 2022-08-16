@@ -33,7 +33,7 @@ export default function FailedNetworkSwitchPopup({
           <Trans>
             {isUnsupportedNetwork
               ? `Please connect your wallet to one of the supported networks: Ethereum Mainnet or Gnosis Chain.`
-              : `Failed to switch networks from the CowSwap Interface. In order to use CowSwap on ${chainInfo.label}, you must change the network in your wallet.`}
+              : `Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on ${chainInfo.label}, you must change the network in your wallet.`}
           </Trans>
         </ThemedText.Body>
       </AutoColumn>
