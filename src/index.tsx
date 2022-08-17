@@ -14,7 +14,7 @@ import Blocklist from 'components/Blocklist'
 import Web3Provider from 'components/Web3Provider'
 import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
-import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import store from 'state'
 import ApplicationUpdater from 'state/application/updater'
 import ListsUpdater from 'state/lists/updater'
@@ -104,41 +104,6 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-// TODO: maybe re-enable service workers?
-// if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {
-//   serviceWorkerRegistration.register()
-// }
-
-async function deleteAllCaches() {
-  const cacheNames = (await caches.keys()) || []
-
-  cacheNames.map((cacheName) => {
-    console.log('[worker] Delete cache', cacheName)
-    // Delete old caches
-    // https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker#removing_outdated_caches
-    return caches.delete(cacheName)
-  })
-}
-
-async function unregisterAllWorkers() {
-  navigator.serviceWorker.getRegistrations().then(function (registrations) {
-    for (const registration of registrations) {
-      registration.unregister()
-    }
-  })
-}
-
-if ('serviceWorker' in navigator) {
-  console.log('[worker] Unregister worker...')
-  serviceWorkerRegistration.unregister()
-
-  console.log('[worker] Deleting all caches...')
-  deleteAllCaches()
-    .then(() => console.log('[worker] All caches have been deleted'))
-    .catch(console.error)
-
-  console.log('[worker] Unregistering all workers...')
-  unregisterAllWorkers()
-    .then(() => console.log('[worker] All workers have been unregistered'))
-    .catch(console.error)
+if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {
+  serviceWorkerRegistration.register()
 }

@@ -8887,6 +8887,11 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
+craco-workbox@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/craco-workbox/-/craco-workbox-0.2.0.tgz#13e5c3c87c49a67d3d64ad6d636868c623cd7d89"
+  integrity sha512-5UFq99GrBs+cvyxxHSlCPmEduUwCRLsmAmmaW6qLhpXeKwxzk1UguVYXbYZNILcjUTdOM1yuu0VLvi3a1mop/A==
+
 crc-32@^1.2.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/crc-32/-/crc-32-1.2.2.tgz#3cad35a934b8bf71f25ca524b6da51fb7eace2ff"
