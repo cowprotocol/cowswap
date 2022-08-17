@@ -71,8 +71,8 @@ export function RowSlippage({
                   You are currently swapping {nativeSymbol || 'a native token'} with the classic{' '}
                   {wrappedSymbol || 'wrapped currency'} experience disabled.
                   <p>
-                    Slippage tolerance is defaulted to {formatSmart(ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION)}% to ensure
-                    a high likelihood of order matching, even in volatile market situations.
+                    Slippage tolerance is defaulted to {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to
+                    ensure a high likelihood of order matching, even in volatile market situations.
                   </p>
                 </p>
               </Trans>
