@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "description": "CowSwap - CoW Protocol",
+  "description": "CoW Swap",
   "homepage": ".",
   "files": [
     "dist"
@@ -24,7 +24,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.20.0",
+  "version": "1.20.2",
   "engines": {
     "node": ">=14.0.0"
   },

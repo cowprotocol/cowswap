@@ -132,7 +132,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusGraph>
                 <img src={cowGraph} alt="Loading for a CoW..." />
                 <p>
-                  <strong>CowSwap</strong> can save you gas costs and get a better price if another trader takes the
+                  <strong>CoW Swap</strong> can save you gas costs and get a better price if another trader takes the
                   opposite side of your trade.
                 </p>
               </StatusGraph>
@@ -161,7 +161,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   alt="Finding the best price ..."
                 />
                 <p>
-                  <strong>CowSwap</strong> searches all on-chain liquidity sources to find you the best price.
+                  <strong>CoW Swap</strong> searches all on-chain liquidity sources to find you the best price.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
@@ -228,7 +228,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   Your price: $1300.55 (<span>+8%</span>)
                 </p>*/}
                 <p>
-                  <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
@@ -262,7 +262,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusGraph>
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
-                  <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>

@@ -29,7 +29,7 @@ const useTargetLocale = (activeLocale: SupportedLocale) => {
 }
 
 // export function SwitchLocaleLink() {
-export function SwitchLocaleLink({ label = 'CowSwap available in: ' }: { label?: string }) {
+export function SwitchLocaleLink({ label = 'CoW Swap available in: ' }: { label?: string }) {
   const activeLocale = useActiveLocale()
   const targetLocale = useTargetLocale(activeLocale)
 

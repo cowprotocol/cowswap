@@ -557,7 +557,7 @@ export function TransactionSubmittedContent({
           <ButtonCustom>
             <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
-              Play the Cow Runner Game!
+              Play the CoW Runner Game!
             </InternalLink>
           </ButtonCustom>
         </ButtonGroup>

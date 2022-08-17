@@ -17,7 +17,7 @@ export default function ProtocolFaq() {
         <ToC toc={toc} name="Protocol FAQ" />
         <Content>
           <h2 id="protocol">Protocol</h2>
-          <h3 id="what-is-cowswap-s-fee-model">What is CowSwap’s fee model?</h3>
+          <h3 id="what-is-cowswap-s-fee-model">What is CoW Swap’s fee model?</h3>
           <p>
             Each executed order has a fee which is captured by the protocol. Part of the fee is paid to solvers
             (entities which provide order settlement solutions) to incentivize their participation.
@@ -37,34 +37,34 @@ export default function ProtocolFaq() {
             </strong>
           </p>
           <h3 id="how-does-cowswap-connect-to-all-on-chain-liquidity">
-            How does CowSwap connect to all on-chain liquidity?
+            How does CoW Swap connect to all on-chain liquidity?
           </h3>
-          <p>CowSwap can connect to all on-chain liquidity.</p>
+          <p>CoW Swap can connect to all on-chain liquidity.</p>
           <p>
-            When CowSwap does not have enough CoWs (Coincidence of Wants) among the orders available for a batch, it
+            When CoW Swap does not have enough CoWs (Coincidence of Wants) among the orders available for a batch, it
             taps other AMMs’ liquidity to be able to settle the traders’ orders. CoW Protocol can be connected to any
             on-chain liquidity sources and can therefore enjoy the benefits of concentrating the fragmented liquidity
             across decentralized finance.
           </p>
           <h3 id="how-is-cowswap-able-to-offer-better-prices-than-aggregators-themselves">
-            How is CowSwap able to offer better prices?
+            How is CoW Swap able to offer better prices?
           </h3>
           <p>
-            Before using on-chain liquidity, CowSwap tries to find CoWs (Coincidences of Wants) within the set of
+            Before using on-chain liquidity, CoW Swap tries to find CoWs (Coincidences of Wants) within the set of
             currently valid orders and match them directly with one another. CoWs result in better prices because no fee
-            is paid to the liquidity provider (e.g., 0.3% for Uniswap v2). In the case that CowSwap does not have CoWs,
+            is paid to the liquidity provider (e.g., 0.3% for Uniswap v2). In the case that CoW Swap does not have CoWs,
             it taps into the DEX that gives the next best price. This results in the same or better performance than
             existing DEX aggregators.
           </p>
           <h3 id="how-can-i-become-a-liquidity-provider">How can I become a liquidity provider?</h3>
           <p>
-            CowSwap does not have liquidity providers. Instead, it connects to all on-chain liquidity that is provided
+            CoW Swap does not have liquidity providers. Instead, it connects to all on-chain liquidity that is provided
             across different protocols. Since orders only incur a cost if traded, active market makers can observe the
             orderbook and place counter orders (creating a CoW) to prevent settling trades via external liquidity.
           </p>
           <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
           <p>
-            CowSwap uses offline signatures to offer gasless orders. Additionally, Smart Contract (SC) wallets are
+            CoW Swap uses offline signatures to offer gasless orders. Additionally, Smart Contract (SC) wallets are
             supported through an alternative signing method called{' '}
             <LinkScrollable href={'/faq/protocol#what-is-presign'}>pre-sign</LinkScrollable>.
           </p>
@@ -79,7 +79,7 @@ export default function ProtocolFaq() {
           </p>
           <h3 id="smart-contract-support">Are Smart Contract wallets supported?</h3>
           <p>
-            Yes! Any Smart Contract (be it a wallet or regular contract) can trade in CowSwap by using one signing
+            Yes! Any Smart Contract (be it a wallet or regular contract) can trade in CoW Swap by using one signing
             method called pre-sign.
           </p>
           <p>
@@ -112,23 +112,23 @@ export default function ProtocolFaq() {
           <ol>
             <li>
               To become a solver, an Ethereum address needs to deposit a bond in the form of tokens. Asset type and
-              amounts are pending to be defined by the CowDAO.
+              amounts are pending to be defined by the CoW DAO.
             </li>
             <li>
-              Once the tokens have been staked (locked up), CowDAO must vote to approve or reject the Ethereum address
+              Once the tokens have been staked (locked up), CoW DAO must vote to approve or reject the Ethereum address
               that will identify the solver. If the vote is successful, the solver Ethereum address will be included in
               the allowlist (verification) solvers contract.
             </li>
             <li>
               Additionally, a solver must have the technical knowledge to create the appropriate batch settlement
-              solutions, or take the risk of being slashed by the CowDAO for wrongdoing.
+              solutions, or take the risk of being slashed by the CoW DAO for wrongdoing.
             </li>
           </ol>
           <h3 id="what-interactions-can-i-encounter-when-using-Cowswap">
-            What interactions can I encounter when using CowSwap?
+            What interactions can I encounter when using CoW Swap?
           </h3>
           <p>
-            <strong>CowSwap Operations</strong>
+            <strong>CoW Swap Operations</strong>
           </p>
           <div id="table-container">
             <table>
@@ -205,7 +205,7 @@ export default function ProtocolFaq() {
               <p>
                 <strong>Submit order (Sign order)</strong> <br />
                 Signature of a gasless off-chain order. You define your limit price and expiration date. The order will
-                try to be executed using MEV protection against different on-chain liquidity sources or other CowSwap
+                try to be executed using MEV protection against different on-chain liquidity sources or other CoW Swap
                 users trading in the same block.
               </p>
             </li>

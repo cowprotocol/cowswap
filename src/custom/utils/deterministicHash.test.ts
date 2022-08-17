@@ -4,7 +4,7 @@ describe('deterministicHash', () => {
   it('correctly generates the sha256 of an object', () => {
     const doc = {
       version: '1.0.0',
-      appCode: 'CowSwap',
+      appCode: 'CoW Swap',
       metadata: {
         referrer: {
           kind: 'referrer',
@@ -14,12 +14,12 @@ describe('deterministicHash', () => {
       },
     }
 
-    expect(deterministicHash(doc)).toBe('0xd5f44c18e6cc2e16023dcd145710208339bb26f6c52df20d1c2f49f3f31c7014')
+    expect(deterministicHash(doc)).toBe('0xb2fd9de6391637033411986be9ff8549a3902456d2517cd9c5acad427b332fdb')
   })
   it('always generates the same sha256 of an object no matter the order of the properties', () => {
     const doc1 = {
       version: '1.0.0',
-      appCode: 'CowSwap',
+      appCode: 'CoW Swap',
       metadata: {
         referrer: {
           kind: 'referrer',
@@ -29,7 +29,7 @@ describe('deterministicHash', () => {
       },
     }
     const doc2 = {
-      appCode: 'CowSwap',
+      appCode: 'CoW Swap',
       version: '1.0.0',
       metadata: {
         referrer: {
