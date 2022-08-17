@@ -451,7 +451,7 @@ export function ConfirmationPendingContent({
 }) {
   const { connector } = useWeb3React()
   const walletInfo = useWalletInfo()
-  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = useWalletInfo()
+  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = walletInfo
 
   const walletType = useMemo((): WalletType => {
     if (gnosisSafeInfo) {

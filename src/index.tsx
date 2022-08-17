@@ -21,6 +21,7 @@ import ListsUpdater from 'state/lists/updater'
 import LogsUpdater from 'state/logs/updater'
 import TransactionUpdater from 'state/transactions/updater'
 import UserUpdater from 'state/user/updater'
+import GnosisSafeUpdater from 'state/gnosisSafe/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
 
@@ -70,6 +71,7 @@ function Updaters() {
       <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
+      <GnosisSafeUpdater />
     </>
   )
 }
