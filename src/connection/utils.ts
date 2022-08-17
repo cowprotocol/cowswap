@@ -1,6 +1,7 @@
 import { Connector } from '@web3-react/types'
 import {
   coinbaseWalletConnection,
+  Connection,
   ConnectionType,
   fortmaticConnection,
   gnosisSafeConnection,
@@ -21,7 +22,7 @@ export function getIsCoinbaseWallet(): boolean {
   return window.ethereum?.isCoinbaseWallet ?? false
 }
 
-const CONNECTIONS = [
+const CONNECTIONS: Connection[] = [
   gnosisSafeConnection,
   injectedConnection,
   coinbaseWalletConnection,
@@ -29,7 +30,7 @@ const CONNECTIONS = [
   fortmaticConnection,
   networkConnection,
 ]
-export function getConnection(c: Connector | ConnectionType) {
+export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find((connection) => connection.connector === c)
     if (!connection) {

@@ -155,3 +155,13 @@ To update its content:
 1. Edit the list of pages in <./src/custom/sitemap.js>
 2. Run `yarn sitemap`
 3. Commit the changes to git
+
+## Service worker
+
+In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)  
+The plan:
+
+1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
+2. Deploy a new version to production
+
+`emergency.js` is not cached by browser and loaded before all.

@@ -11,23 +11,23 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export type GetSafeInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
 export function useGetSafeInfo(): GetSafeInfo {
-  const { chainId } = useWeb3React()
+  const { chainId, provider } = useWeb3React()
 
   const getSafeInfo = useCallback<GetSafeInfo>(
     (hash) => {
       return retry(() => {
-        if (chainId === undefined) {
-          throw new Error('No chainId yet')
+        if (!provider) {
+          throw new Error('There is no provider to get Gnosis safe info')
         }
 
-        if (!supportedChainId(chainId)) {
+        if (chainId === undefined || !supportedChainId(chainId)) {
           throw new Error('Unsupported chainId: ' + chainId)
         }
 
-        return getSafeTransaction(chainId, hash)
+        return getSafeTransaction(chainId, hash, provider)
       }, DEFAULT_RETRY_OPTIONS)
     },
-    [chainId]
+    [chainId, provider]
   )
 
   return getSafeInfo
