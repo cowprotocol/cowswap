@@ -41,7 +41,10 @@ export function RowSlippage({
         <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           {nativeEthFlowSymbol ? (
             <Trans>
-              Slippage tolerance <ThemedText.Warn override>(modified)</ThemedText.Warn>
+              Slippage tolerance{' '}
+              <ThemedText.Warn display="inline-block" override>
+                (modified)
+              </ThemedText.Warn>
             </Trans>
           ) : showSettingOnClick ? (
             <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
