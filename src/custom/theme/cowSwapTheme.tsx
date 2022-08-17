@@ -9,7 +9,7 @@ import {
   ThemedGlobalStyle as ThemedGlobalStyleBase,
 } from 'theme/baseTheme'
 
-import { theme as themeUniswap, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
+import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Routes } from 'constants/routes'
 import { useLocation } from 'react-router-dom'
@@ -40,7 +40,7 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 export function theme(darkmode: boolean, shouldBlurBackground: boolean): DefaultTheme {
   const colorsTheme = colors(darkmode)
   return {
-    ...themeUniswap(darkmode),
+    ...getTheme(darkmode),
     ...colorsTheme,
 
     // Overide Theme

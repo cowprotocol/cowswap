@@ -6,7 +6,7 @@ import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hook
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
@@ -56,7 +56,7 @@ function getAnnouncementUrl(chainId: number) {
 }
 
 export default function URLWarning() {
-  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
+  const { chainId = ChainId.MAINNET } = useWeb3React()
 
   // Ger announcement if there's one
   const { file, error } = useFetchFile(getAnnouncementUrl(chainId))

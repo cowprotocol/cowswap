@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { COMMON_BASES } from 'constants/routing'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useFavouriteTokens } from 'state/user/hooks'
 
 export function useFavouriteOrCommonTokens() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const favouriteTokens = useFavouriteTokens()
 

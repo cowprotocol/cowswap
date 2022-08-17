@@ -19,7 +19,7 @@ import { useHasPendingApproval, useTransactionAdder } from 'state/enhancedTransa
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
@@ -62,7 +62,7 @@ export function useApproveCallback({
   spender,
   amountToCheckAgainstAllowance,
 }: ApproveCallbackParams) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)

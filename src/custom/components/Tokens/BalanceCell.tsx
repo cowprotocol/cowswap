@@ -1,5 +1,5 @@
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { BalanceValue } from './styled'
 import { formatSmart, formatMax } from 'utils/format'
 import Loader from 'components/Loader'
@@ -9,7 +9,7 @@ type BalanceCellProps = {
 }
 
 export default function BalanceCell({ balance }: BalanceCellProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const hasBalance = balance?.greaterThan(0)
   const formattedBalance = formatSmart(balance) || 0
 

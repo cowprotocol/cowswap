@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { useHigherUSDValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FIAT_PRECISION } from 'constants/index'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { BalanceValue, InfoCircle, FiatValue } from './styled'
 import { formatMax, formatSmart } from 'utils/format'
 import { MouseoverTooltip } from 'components/Tooltip'
@@ -13,7 +13,7 @@ type FiatBalanceCellProps = {
 }
 
 export default function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const hasBalance = balance?.greaterThan(0)
   const fiatValue = useHigherUSDValue(balance)
   const formattedFiatValue = formatSmart(fiatValue, FIAT_PRECISION, {

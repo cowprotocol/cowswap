@@ -4,7 +4,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { ListRowProps } from '../SearchModal/ManageLists'
 import { acceptListUpdate } from 'state/lists/actions'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 
 export interface ListUpdatePopupProps {
   popKey: string
@@ -17,7 +17,7 @@ export interface ListUpdatePopupProps {
 }
 
 export default function ListUpdatePopup(props: Omit<ListUpdatePopupProps, 'acceptListUpdate'>) {
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
   const acceptListUpdateCustom = useCallback((url: string) => acceptListUpdate({ url, chainId }), [chainId])
 
   return <ListUpdatePopupMod {...props} acceptListUpdate={acceptListUpdateCustom} />

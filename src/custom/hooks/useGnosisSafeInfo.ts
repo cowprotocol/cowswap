@@ -1,19 +1,19 @@
-import { useWeb3React } from 'web3-react-core'
+import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
-import { gnosisSafe } from 'connectors'
 import { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import { GnosisSafe } from '@web3-react/gnosis-safe'
 
 export function useGnosisSafeInfo(): SafeInfo | null {
   const [gnosisSafeInfo, setGnosisSafeInfo] = useState<SafeInfo | null>(null)
-  const { active, connector } = useWeb3React()
+  const { isActive, connector } = useWeb3React()
 
   useEffect(() => {
-    if (!active || connector !== gnosisSafe) {
+    if (!isActive || !(connector instanceof GnosisSafe)) {
       setGnosisSafeInfo(null)
     } else {
-      gnosisSafe.getSafeInfo().then(setGnosisSafeInfo)
+      connector.sdk?.safe.getInfo().then(setGnosisSafeInfo)
     }
-  }, [active, connector])
+  }, [isActive, connector])
 
   return gnosisSafeInfo
 }

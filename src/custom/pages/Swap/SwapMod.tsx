@@ -9,7 +9,7 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 // import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
@@ -42,9 +42,9 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
 // import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useStablecoinPrice'
 import useWrapCallback, { /*WrapErrorText, */ WrapType } from 'hooks/useWrapCallback'
-import { useCloseModals, useModalOpen, useOpenModal, useWalletModalToggle } from 'state/application/hooks'
+import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -111,7 +111,7 @@ export default function Swap({
   className,
   allowsOffchainSigning,
 }: SwapProps) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const previousChainId = usePrevious(chainId)
@@ -160,14 +160,14 @@ export default function Swap({
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   // Transaction confirmation modal
   const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
-  const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
   const openTransactionConfirmationModal = useCallback(
     (message: string, operationType: OperationType) => {
@@ -180,7 +180,7 @@ export default function Swap({
 
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
-  const showCowSubsidyModal = useModalOpen(ApplicationModal.COW_SUBSIDY)
+  const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 

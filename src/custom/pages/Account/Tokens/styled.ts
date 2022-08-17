@@ -18,6 +18,7 @@ export const MenuButton = styled.button`
   color: ${({ theme }) => theme.text1};
   display: flex;
   align-items: center;
+  padding: 0;
 `
 
 export const StyledChevronDown = styled(ChevronDown)`
@@ -151,4 +152,8 @@ export const RemoveTokens = styled.button`
   border: none;
   color: ${({ theme }) => theme.primary1};
   cursor: pointer;
+`
+
+export const WrongNetwork = styled.div`
+  max-width: 200px;
 `

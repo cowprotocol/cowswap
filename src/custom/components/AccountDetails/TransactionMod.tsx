@@ -1,4 +1,4 @@
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { CheckCircle, Triangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -38,7 +38,7 @@ export const IconWrapper = styled.div<{ pending: boolean; success?: boolean }>`
 `
 
 export default function Transaction({ hash }: { hash: string }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const allTransactions = useAllTransactions()
 
   const tx = allTransactions?.[hash]

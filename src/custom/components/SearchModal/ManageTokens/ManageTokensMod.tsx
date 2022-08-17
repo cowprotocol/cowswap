@@ -5,7 +5,7 @@ import Column from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useRemoveUserAddedToken, useUserAddedTokens } from 'state/user/hooks'
 import styled from 'styled-components/macro'
@@ -48,7 +48,7 @@ export interface ManageTokensProps {
 }
 
 export default function ManageTokens({ setModalView, setImportToken, ImportTokensRow }: ManageTokensProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const theme = useTheme()

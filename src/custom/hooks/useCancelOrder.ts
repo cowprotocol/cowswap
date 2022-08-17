@@ -1,19 +1,19 @@
 import { useCallback } from 'react'
 import { sendOrderCancellation } from 'utils/trade'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useRequestOrderCancellation } from 'state/orders/hooks'
 
 export const useCancelOrder = () => {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const cancelPendingOrder = useRequestOrderCancellation()
   return useCallback(
     async (orderId: string): Promise<void> => {
-      if (!account || !chainId || !library) {
+      if (!account || !chainId || !provider) {
         return
       }
-      const signer = library.getSigner()
+      const signer = provider.getSigner()
       return sendOrderCancellation({ chainId, orderId, signer, account, cancelPendingOrder })
     },
-    [account, cancelPendingOrder, chainId, library]
+    [account, cancelPendingOrder, chainId, provider]
   )
 }

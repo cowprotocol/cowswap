@@ -23,7 +23,7 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { CardsSpinner } from 'pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
@@ -48,7 +48,7 @@ const DataRow = ({
   openTransactionConfirmationModal,
   toggleWalletModal,
 }: DataRowParams) => {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const theme = useTheme()
 

@@ -1,5 +1,7 @@
 import { Trans } from '@lingui/macro'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency /*, Token */ } from '@uniswap/sdk-core'
+// import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
+// import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 // import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { AutoRow } from 'components/Row'
@@ -37,6 +39,23 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   filter: ${({ disable }) => disable && 'grayscale(1)'};
 `
 
+// const formatAnalyticsEventProperties = (
+//   currency: Currency,
+//   tokenAddress: string | undefined,
+//   searchQuery: string,
+//   isAddressSearch: string | false
+// ) => ({
+//   token_symbol: currency?.symbol,
+//   token_chain_id: currency?.chainId,
+//   ...(tokenAddress ? { token_address: tokenAddress } : {}),
+//   is_suggested_token: true,
+//   is_selected_from_list: false,
+//   is_imported_by_user: false,
+//   ...(isAddressSearch === false
+//     ? { search_token_symbol_input: searchQuery }
+//     : { search_token_address_input: isAddressSearch }),
+// })
+
 const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({ chainId, onSelect, selectedCurrency }: CommonBasesProps) {
   /* {
@@ -58,8 +77,19 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
       <CommonBasesRow gap="4px">
         {tokens.map((currency: Currency) => {
           const isSelected = selectedCurrency?.equals(currency)
+          // const tokenAddress = currency instanceof Token ? currency?.address : undefined
+
           return (
+            //   <TraceEvent
+            //   events={[Event.onClick, Event.onKeyPress]}
+            //   name={EventName.TOKEN_SELECTED}
+            //   properties={formatAnalyticsEventProperties(currency, tokenAddress, searchQuery, isAddressSearch)}
+            //   element={ElementName.COMMON_BASES_CURRENCY_BUTTON}
+            //   key={currencyId(currency)}
+            // >
             <BaseWrapper
+              tabIndex={0}
+              onKeyPress={(e) => !isSelected && e.key === 'Enter' && onSelect(currency)}
               onClick={() => !isSelected && onSelect(currency)}
               disable={isSelected}
               key={currencyId(currency)}
@@ -69,6 +99,7 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
                 {currency.symbol}
               </Text>
             </BaseWrapper>
+            // </TraceEvent>
           )
         })}
       </CommonBasesRow>

@@ -10,18 +10,21 @@ import {
   Subtitle,
   AccountHeading,
   RemoveTokens,
+  WrongNetwork,
 } from './styled'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
 import TokensTable from 'components/Tokens/TokensTable'
 import { useFavouriteTokens, useRemoveAllFavouriteTokens } from 'state/user/hooks'
-import { useAllTokenBalances } from 'state/wallet/hooks'
+import { useAllTokenBalances } from 'state/connection/hooks'
 import { Check } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import usePrevious from 'hooks/usePrevious'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { CardsWrapper } from '../styled'
+import { supportedChainId } from 'utils/supportedChainId'
+import Web3Status from 'components/Web3Status'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -38,7 +41,7 @@ const PageView = {
 }
 
 export default function TokensOverview() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
@@ -46,6 +49,8 @@ export default function TokensOverview() {
 
   const prevChainId = usePrevious(chainId)
   const prevSelectedView = usePrevious(selectedView)
+
+  const isChainSupported = supportedChainId(chainId)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -84,16 +89,16 @@ export default function TokensOverview() {
       tokensData = favouriteTokens
     }
 
-    return (
-      <TokensTable
-        page={page}
-        setPage={setPage}
-        selectedView={selectedView}
-        balances={balances}
-        tokensData={tokensData}
-      />
-    )
-  }, [balances, favouriteTokens, formattedTokens, page, selectedView])
+    if (!isChainSupported) {
+      return (
+        <WrongNetwork>
+          <Web3Status />
+        </WrongNetwork>
+      )
+    }
+
+    return <TokensTable page={page} setPage={setPage} balances={balances} tokensData={tokensData} />
+  }, [balances, favouriteTokens, formattedTokens, isChainSupported, page, selectedView])
 
   // reset table to page 1 on chain change or on table view change
   useEffect(() => {

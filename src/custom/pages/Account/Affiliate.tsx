@@ -23,14 +23,14 @@ import {
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatInt, formatDecimal } from './utils'
 import useReferralLink from 'hooks/useReferralLink'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import useFetchProfile from 'hooks/useFetchProfile'
 import useTimeAgo from 'hooks/useTimeAgo'
 import NotificationBanner from 'components/NotificationBanner'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { useAffiliateAddress } from 'state/affiliate/hooks'
 
-const NotificationMessages = ({ error, chainId }: { error: unknown; chainId: ChainId }) => (
+const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: ChainId }) => (
   <>
     {error && (
       <NotificationBanner isVisible level="error" canClose={false}>
@@ -47,7 +47,7 @@ const NotificationMessages = ({ error, chainId }: { error: unknown; chainId: Cha
 
 export default function Affiliate() {
   const referralLink = useReferralLink()
-  const { account, chainId = ChainId.MAINNET, error } = useActiveWeb3React()
+  const { account, chainId = ChainId.MAINNET /* , error */ } = useWeb3React()
   const { profileData, isLoading } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const hasOrders = useHasOrders(account)
@@ -90,7 +90,7 @@ export default function Affiliate() {
           )}
         </CardHead>
 
-        <NotificationMessages error={error} chainId={chainId} />
+        <NotificationMessages /* error={error} */ chainId={chainId} />
 
         <ChildWrapper>
           <Txt fs={16}>

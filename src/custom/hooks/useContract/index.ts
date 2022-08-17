@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import { Web3Provider, JsonRpcProvider, ExternalProvider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -11,7 +11,7 @@ import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 import { Erc20, GPv2Settlement, VCow } from 'abis/types'
 
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
 
 import { useContract } from '@src/hooks/useContract'
@@ -22,7 +22,7 @@ export * from './useContractMod'
 // Custom (non-MOD) hooks
 
 export function useGP2SettlementContract(): GPv2Settlement | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return useContract<GPv2Settlement>(
     chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
     GPv2_SETTLEMENT_ABI,
@@ -31,12 +31,12 @@ export function useGP2SettlementContract(): GPv2Settlement | null {
 }
 
 export function useVCowContract() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, V_COW_ABI, true)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   let address: string | undefined
   if (chainId) {
     switch (chainId) {
@@ -60,17 +60,17 @@ function _getContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
   withSignerIfPossible = true,
-  library?: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined }),
+  provider?: JsonRpcProvider,
   account?: string,
   chainId?: ChainId
 ): T | null {
-  if (!addressOrAddressMap || !ABI || !library || !chainId) return null
+  if (!addressOrAddressMap || !ABI || !provider || !chainId) return null
   let address: string | undefined
   if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
   else address = addressOrAddressMap[chainId]
   if (!address) return null
   try {
-    return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined) as T
+    return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined) as T
   } catch (error) {
     console.error('Failed to get contract', error)
     return null
@@ -83,11 +83,11 @@ function _getContract<T extends Contract = Contract>(
 export function getTokenContract(
   tokenAddress?: string,
   withSignerIfPossible?: boolean,
-  library?: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined }),
+  provider?: JsonRpcProvider,
   account?: string,
   chainId?: ChainId
 ): Erc20 | null {
-  return _getContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible, library, account, chainId)
+  return _getContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible, provider, account, chainId)
 }
 
 /**
@@ -96,9 +96,9 @@ export function getTokenContract(
 export function getBytes32TokenContract(
   tokenAddress?: string,
   withSignerIfPossible?: boolean,
-  library?: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined }),
+  provider?: JsonRpcProvider,
   account?: string,
   chainId?: ChainId
 ): Contract | null {
-  return _getContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible, library, account, chainId)
+  return _getContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible, provider, account, chainId)
 }

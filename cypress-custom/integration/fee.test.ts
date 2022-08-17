@@ -2,13 +2,13 @@ import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { GetQuoteResponse } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 
-const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
+const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
 const FOUR_HOURS = 3600 * 4 * 1000
-const DEFAULT_SELL_TOKEN = WETH[4]
+const DEFAULT_SELL_TOKEN = WETH[5]
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://barn.api.cow.fi/rinkeby/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.fi/goerli/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,
@@ -127,7 +127,7 @@ describe('Fee: Complex fetch and persist fee', () => {
 
     // GIVEN: user visits app, selects 0.1 WETH as sell, DAI as buy
     // and goes AFK
-    cy.visit('/swap')
+    cy.visit('/#/swap')
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -171,7 +171,7 @@ describe('Fee: simple checks it exists', () => {
     })
     // GIVEN: A user loads the swap page
     // WHEN: Select DAI token as output and sells 0.1 WETH
-    cy.visit('/swap')
+    cy.visit('/#/swap')
     cy.swapSelectOutput(DAI)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN.address, INPUT_AMOUNT)
 
@@ -183,7 +183,7 @@ describe('Fee: simple checks it exists', () => {
 describe('Swap: Considering fee', () => {
   beforeEach(() => {
     // GIVEN: an initial selection of WETH-DAI
-    cy.visit('/swap')
+    cy.visit('/#/swap')
   })
 
   it("Uses Uniswap price, if there's no tip", () => {

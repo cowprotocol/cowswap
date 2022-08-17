@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 
 interface Params {
   amountToApprove: CurrencyAmount<Currency> | undefined
@@ -15,7 +15,7 @@ interface Params {
  * and the remaining allowance IF allowance > remaining. Else is null
  */
 export default function useRemainingAllowanceToApprove({ amountToApprove, spender }: Params) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const allowance = useTokenAllowance(amountToApprove?.wrapped.currency, account ?? undefined, spender)
 
   return useMemo(() => {

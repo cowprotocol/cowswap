@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import TradePriceMod, { TradePriceProps } from './TradePriceMod'
-import { useHigherUSDValue /*  useUSDCValue */ } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /*  useUSDCValue */ } from 'hooks/useStablecoinPrice'
 import { formatSmart } from 'utils/format'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 

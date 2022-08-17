@@ -1,17 +1,14 @@
 import Loader from 'components/Loader'
+import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import { /*Lazy,*/ Suspense, /* PropsWithChildren, */ ReactNode } from 'react'
 import { /*Redirect,*/ Route, Switch, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
-import AddressClaimModal from 'components/claim/AddressClaimModal'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
 import Polling from 'components/Header/Polling'
 
-import Web3ReactManager from 'components/Web3ReactManager'
-import { useModalOpen, useToggleModal } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
 import DarkModeQueryParamReader from 'theme'
 /* import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
@@ -29,6 +26,8 @@ import RemoveLiquidityV3 from './RemoveLiquidity/V3'
 import Swap from './Swap'
 import { OpenClaimAddressModalAndRedirectToSwap, RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 */
+
+// const Vote = lazy(() => import('./Vote'))
 
 // MOD imports
 import ReferralLinkUpdater from 'state/affiliate/updater'
@@ -80,12 +79,6 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
-function TopLevelModals() {
-  const open = useModalOpen(ApplicationModal.ADDRESS_CLAIM)
-  const toggle = useToggleModal(ApplicationModal.ADDRESS_CLAIM)
-  return <AddressClaimModal isOpen={open} onDismiss={toggle} />
-}
-
 export default function App(props?: { children?: ReactNode }) {
   const location = useLocation()
 
@@ -94,20 +87,19 @@ export default function App(props?: { children?: ReactNode }) {
       <Route component={GoogleAnalyticsReporter} />
       <Route component={DarkModeQueryParamReader} />
       <Route component={ApeModeQueryParamReader} />
-      <Web3ReactManager>
-        <AppWrapper>
-          <URLWarning />
-          <HeaderWrapper>
-            <Header />
-          </HeaderWrapper>
-          <BodyWrapper location={location}>
-            <Polling />
-            <TopLevelModals />
-            <ReferralLinkUpdater />
-            <Suspense fallback={<Loader />}>
-              <Switch>
-                {props && props.children}
-                {/* <Route exact strict path="/vote" component={Vote} />
+      <AppWrapper>
+        <URLWarning />
+        <HeaderWrapper>
+          <Header />
+        </HeaderWrapper>
+        <BodyWrapper location={location}>
+          <Polling />
+          <TopLevelModals />
+          <ReferralLinkUpdater />
+          <Suspense fallback={<Loader />}>
+            <Switch>
+              {props && props.children}
+              {/* <Route exact strict path="/vote" component={Vote} />
               <Route exact strict path="/vote/:governorIndex/:id" component={VotePage} />
               <Route exact strict path="/claim" component={OpenClaimAddressModalAndRedirectToSwap} />
               <Route exact strict path="/uni" component={Earn} />
@@ -143,17 +135,15 @@ export default function App(props?: { children?: ReactNode }) {
               <Route exact strict path="/migrate/v2" component={MigrateV2} />
               <Route exact strict path="/migrate/v2/:address" component={MigrateV2Pair} />
 
-              <Route exact strict path="/create-proposal" component={CreateProposal} />
               <Route component={RedirectPathToSwapOnly} /> */}
-              </Switch>
-            </Suspense>
-            <Marginer />
-          </BodyWrapper>
-          <FooterWrapper>
-            <Footer />
-          </FooterWrapper>
-        </AppWrapper>
-      </Web3ReactManager>
+            </Switch>
+          </Suspense>
+          <Marginer />
+        </BodyWrapper>
+        <FooterWrapper>
+          <Footer />
+        </FooterWrapper>
+      </AppWrapper>
     </ErrorBoundary>
   )
 }

@@ -15,7 +15,7 @@ import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
@@ -123,7 +123,7 @@ function unsupportedTokenNeedsRecheck(
 
 export default function FeesUpdater(): null {
   const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
 
   const {
     INPUT: { currencyId: sellToken },

@@ -24,11 +24,10 @@ import { useHistory } from 'react-router-dom'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
-import { PageViewKeys } from 'pages/Account/Tokens/TokensOverview'
 import { MouseoverTooltip } from 'components/Tooltip'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import useDebounce from 'hooks/useDebounce'
@@ -43,15 +42,17 @@ enum SORT_FIELD {
   BALANCE = 'balance',
 }
 
-type BalanceType = {
-  [tokenAddress: string]: CurrencyAmount<Token> | undefined
-}
+type BalanceType = [
+  {
+    [tokenAddress: string]: CurrencyAmount<Token> | undefined
+  },
+  boolean
+]
 
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
   balances?: BalanceType
-  selectedView?: PageViewKeys
   page: number
   setPage: (page: number) => void
 }
@@ -65,14 +66,13 @@ export default function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
   balances,
-  selectedView,
   page,
   setPage,
 }: TokenTableParams) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const native = useNativeCurrency()
 
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
   // search - takes precedence re:filtering
   const [query, setQuery] = useState<string>('')
@@ -156,8 +156,8 @@ export default function TokenTable({
               // If the sort field is Balance
               if (!balances) return 0
 
-              const balanceA = balances[tokenA.address]
-              const balanceB = balances[tokenB.address]
+              const balanceA = balances[0][tokenA.address]
+              const balanceB = balances[0][tokenB.address]
               const balanceComp = balanceComparator(balanceA, balanceB)
 
               return applyDirection(balanceComp > 0, sortDirection)
@@ -275,7 +275,7 @@ export default function TokenTable({
                       key={data.address}
                       handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
-                      balance={balances && balances[data.address]}
+                      balance={balances && balances[0][data.address]}
                       openTransactionConfirmationModal={openModal}
                       closeModals={closeModal}
                       index={getTokenIndex(i)}
