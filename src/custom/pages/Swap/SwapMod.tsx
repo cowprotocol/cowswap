@@ -819,13 +819,7 @@ export default function Swap({
 
                   {((!isExpertMode && isUserNativeEthFlow) ||
                     !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && (
-                    <RowSlippage
-                      allowedSlippage={allowedSlippage}
-                      fontSize={12}
-                      fontWeight={400}
-                      rowHeight={24}
-                      nativeFlowSymbol={isNativeIn && trade?.inputAmount.currency.symbol}
-                    />
+                    <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
                   )}
                   {(isFeeGreater || trade) && fee && (
                     <TradeBasicDetails trade={trade} fee={fee} isNativeIn={isNativeIn} />

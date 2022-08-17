@@ -38,7 +38,6 @@ import { StyledInfo } from './styleds'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { useIsUserNativeEthFlow } from 'state/ethFlow/hooks'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
@@ -242,7 +241,6 @@ export const LightGreyText = styled.span`
 function TradeBasicDetails({ trade, fee, isNativeIn, ...boxProps }: TradeBasicDetailsProp) {
   const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
   const [isExpertMode] = useExpertModeManager()
-  const isNativeEthFlow = useIsUserNativeEthFlow()
   const { allowsOffchainSigning } = useWalletInfo()
 
   // trades are null when there is a fee quote error e.g
@@ -265,10 +263,7 @@ function TradeBasicDetails({ trade, fee, isNativeIn, ...boxProps }: TradeBasicDe
       {isExpertMode && trade && (
         <>
           {/* Slippage */}
-          <RowSlippage
-            allowedSlippage={allowedSlippage}
-            nativeFlowSymbol={isNativeEthFlow && isNativeIn && trade.inputAmount.currency.symbol}
-          />
+          <RowSlippage allowedSlippage={allowedSlippage} />
 
           {/* Min/Max received */}
           <RowReceivedAfterSlippage

@@ -11,6 +11,7 @@ import { StyledInfo } from 'pages/Swap/styleds'
 import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
+import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -20,25 +21,25 @@ export interface RowSlippageProps {
   showSettingOnClick?: boolean
   nativeFlowSymbol?: false | string
 }
+
 export function RowSlippage({
   allowedSlippage,
   fontSize = 14,
   fontWeight = 500,
   rowHeight,
   showSettingOnClick = true,
-  // false/undefined if NOT in native flow
-  // else is symbol of native currency
-  nativeFlowSymbol,
 }: RowSlippageProps) {
   const theme = useContext(ThemeContext)
   const toggleSettings = useToggleSettingsMenu()
   const displaySlippage = `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`
 
+  const nativeEthFlowSymbol = useShowNativeEthFlowSlippageWarning()
+
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
         <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
-          {nativeFlowSymbol ? (
+          {nativeEthFlowSymbol ? (
             <Trans>
               Slippage tolerance <ThemedText.Warn override>(modified)</ThemedText.Warn>
             </Trans>
@@ -55,12 +56,15 @@ export function RowSlippage({
           color={theme.text1}
           wrap
           content={
-            nativeFlowSymbol ? (
+            nativeEthFlowSymbol ? (
               <Trans>
                 <p>
-                  You are currently swapping {nativeFlowSymbol || 'a native token'} with the classic{' '}
-                  {nativeFlowSymbol || 'native currency'} CowSwap experience disabled.
-                  <p>Slippage tolerance is defaulted to a 2% spread to maximise chances of order matching success.</p>
+                  You are currently swapping {nativeEthFlowSymbol || 'a native token'} with the classic{' '}
+                  {nativeEthFlowSymbol || 'wrapped currency'} experience disabled.
+                  <p>
+                    Slippage tolerance is defaulted to 2% to ensure a high likelihood of order matching, even in
+                    volatile market situations.
+                  </p>
                 </p>
               </Trans>
             ) : (
