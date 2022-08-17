@@ -13,6 +13,7 @@ import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 import TradeGp from 'state/swap/TradeGp'
+import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
 
 export interface RowSlippageProps {
   trade?: TradeGp
@@ -70,8 +71,8 @@ export function RowSlippage({
                   You are currently swapping {nativeSymbol || 'a native token'} with the classic{' '}
                   {wrappedSymbol || 'wrapped currency'} experience disabled.
                   <p>
-                    Slippage tolerance is defaulted to 2% to ensure a high likelihood of order matching, even in
-                    volatile market situations.
+                    Slippage tolerance is defaulted to {formatSmart(ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION)}% to ensure
+                    a high likelihood of order matching, even in volatile market situations.
                   </p>
                 </p>
               </Trans>
