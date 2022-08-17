@@ -91,7 +91,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss, enableList,
             <RowBetween>
               <RowFixed>
                 {list.logoURI && <ListLogo logoURI={list.logoURI} size="40px" />}
-                <AutoColumn gap="sm" style={{ marginLeft: '20px' }}>
+                <AutoColumn gap="sm" style={{ marginLeft: '20px', wordBreak: 'break-all' }}>
                   <RowFixed>
                     <ThemedText.Body fontWeight={600} mr="6px">
                       {list.name}
