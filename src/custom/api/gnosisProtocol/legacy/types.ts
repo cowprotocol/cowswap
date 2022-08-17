@@ -5,7 +5,7 @@ import {
   PriceQuoteParams,
   SupportedChainId as ChainId,
 } from '@cowprotocol/cow-sdk'
-import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { GpPriceStrategy } from 'state/gas/atoms'
 
 export interface LegacyQuoteParams {
   quoteParams: LegacyFeeQuoteParams

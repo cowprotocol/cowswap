@@ -10,10 +10,11 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { getBestQuote } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
-import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { priceOutOfRangeAnalytics } from 'utils/analytics'
+import { GpPriceStrategy } from 'state/gas/atoms'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

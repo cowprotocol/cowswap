@@ -30,9 +30,9 @@ import * as Sentry from '@sentry/browser'
 import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
-import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { GpPriceStrategy } from 'state/gas/atoms'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
