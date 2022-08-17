@@ -376,7 +376,7 @@ export function ManageLists({
       return sortedLists.filter((listUrl) => {
         // only show loaded lists, hide unsupported lists
         // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
-        return Boolean(lists[listUrl].current) && !Boolean(unsupportedListUrls.includes(listUrl))
+        return Boolean(lists[listUrl]?.current) && !Boolean(unsupportedListUrls.includes(listUrl))
       })
     },
     // [lists, activeListUrls, tokenCountByListName]
