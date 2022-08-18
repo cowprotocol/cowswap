@@ -94,7 +94,11 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
+import {
+  useEthFlowActionHandlers,
+  useShowNativeEthFlowSlippageWarning,
+  useIsUserNativeEthFlow,
+} from 'state/ethFlow/hooks'
 import Banner from 'components/swap/EthWethWrap/Banner'
 
 // const AlertWrapper = styled.div`
@@ -213,6 +217,7 @@ export default function Swap({
 
   // shows slippage (modified) warning when nativeEthFlow is enabled
   const showNativeEthFlowSlippageWarning = useShowNativeEthFlowSlippageWarning()
+  const isUserNativeEthFlow = useIsUserNativeEthFlow()
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
