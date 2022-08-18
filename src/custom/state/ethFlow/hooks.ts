@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSwapState } from 'state/swap/hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { Field } from 'state/swap/actions'
@@ -18,14 +18,31 @@ export function useShowNativeEthFlowSlippageWarning() {
 }
 
 export function useEthFlowActionHandlers() {
-  // modal
+  // modal open mounts eth-flow modal to swapmod
   const [isModalOpen, setOpenNativeWrapModal] = useState(false)
-  const openModal = () => setOpenNativeWrapModal(true)
-  const closeModal = () => setOpenNativeWrapModal(false)
+
+  const openModal = useCallback((forceWrap?: boolean) => {
+    if (forceWrap) {
+      setForceWrap(true)
+    }
+
+    setOpenNativeWrapModal(true)
+  }, [])
+
+  const closeModal = useCallback(() => {
+    setOpenNativeWrapModal(false)
+    setForceWrap(false)
+  }, [])
+
+  // force wrap
+  // forces useWrapCallback to return wrap cb and needsWrap to true
+  const [forceWrap, setForceWrap] = useState(false)
 
   return {
     openModal,
     closeModal,
     isModalOpen,
+    forceWrap,
+    setForceWrap,
   }
 }
