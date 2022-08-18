@@ -33,7 +33,7 @@ const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderAction
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
-// a corresponsing Popup action is dispatched
+// a corresponding Popup action is dispatched
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -44,16 +44,13 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // use current state to lookup orders' data
     const orders = store.getState().orders[chainId]
+    const orderObject = _getOrderById(orders, id)
 
-    if (!orders) return
-
-    const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
-
-    const orderObject =
-      pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
-
+    if (!orderObject) {
+      return
+    }
     // look up Order.summary for Popup
-    const summary = orderObject?.order.summary
+    const summary = orderObject.order.summary
 
     let popup: PopupPayload
     if (isPendingOrderAction(action)) {
@@ -233,4 +230,14 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   }
 
   return next(action)
+}
+
+function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
+  if (!orders) {
+    return
+  }
+
+  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
+
+  return pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
 }
