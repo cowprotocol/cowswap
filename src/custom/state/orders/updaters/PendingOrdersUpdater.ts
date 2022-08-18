@@ -26,6 +26,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import ms from 'ms.macro'
 import { openNpsAppziSometimes } from 'utils/appzi'
+import { timeSinceInSeconds } from 'utils/time'
 
 const PENDING_TOO_LONG_TIME = ms`5 min`
 
@@ -126,7 +127,7 @@ async function _updateOrders({
       // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
       if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
         // Trigger NPS display, controlled by Appzi
-        openNpsAppziSometimes({ waitedFor: `${Math.floor((now - openSince) / 60_000)} min` })
+        openNpsAppziSometimes({ waitedTooLong: true, pendingFor: timeSinceInSeconds(openSince) })
         // Break the loop, don't need to show more than once
         break
       }
