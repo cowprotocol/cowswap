@@ -94,7 +94,7 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useIsUserNativeEthFlow } from 'state/ethFlow/hooks'
+import { useEthFlowActionHandlers, useIsUserNativeEthFlow } from 'state/ethFlow/hooks'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -184,10 +184,6 @@ export default function Swap({
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
-  // Native wrap modals
-  const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
-  const openNativeWrapModal = () => setOpenNativeWrapModal(true)
-  const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
@@ -242,6 +238,14 @@ export default function Swap({
     ? tradeCurrentVersion?.inputAmount
     : // else use the slippage + fee adjusted amount
       computeSlippageAdjustedAmounts(tradeCurrentVersion, allowedSlippage).INPUT
+
+  // eth-flow action handler cbs
+  // and state
+  const {
+    openModal: openNativeWrapModal,
+    closeModal: dismissNativeWrapModal,
+    isModalOpen: showNativeWrapModal,
+  } = useEthFlowActionHandlers()
 
   const {
     wrapType,
