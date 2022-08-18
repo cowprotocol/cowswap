@@ -43,6 +43,7 @@ import { Provider as AtomProvider } from 'jotai'
 
 import Popups from 'components/Popups'
 import { UploadToIpfsUpdater } from 'state/appData/updater'
+import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -72,6 +73,7 @@ function Updaters() {
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <GnosisSafeUpdater />
+      <GasPriceStrategyUpdater />
     </>
   )
 }
