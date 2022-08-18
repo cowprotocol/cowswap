@@ -12,8 +12,10 @@ import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
+import TradeGp from 'state/swap/TradeGp'
 
 export interface RowSlippageProps {
+  trade?: TradeGp
   allowedSlippage: Percent
   fontWeight?: number
   fontSize?: number
@@ -23,6 +25,7 @@ export interface RowSlippageProps {
 }
 
 export function RowSlippage({
+  trade,
   allowedSlippage,
   fontSize = 14,
   fontWeight = 500,
@@ -33,13 +36,15 @@ export function RowSlippage({
   const toggleSettings = useToggleSettingsMenu()
   const displaySlippage = `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`
 
-  const nativeEthFlowSymbol = useShowNativeEthFlowSlippageWarning()
+  // should we show the warning?
+  const showEthFlowSlippageWarning = useShowNativeEthFlowSlippageWarning()
+  const [nativeSymbol, wrappedSymbol] = [trade?.inputAmount.currency.symbol, trade?.inputAmount.currency.wrapped.symbol]
 
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
         <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
-          {nativeEthFlowSymbol ? (
+          {showEthFlowSlippageWarning ? (
             <Trans>
               Slippage tolerance{' '}
               <ThemedText.Warn display="inline-block" override>
@@ -59,11 +64,11 @@ export function RowSlippage({
           color={theme.text1}
           wrap
           content={
-            nativeEthFlowSymbol ? (
+            showEthFlowSlippageWarning ? (
               <Trans>
                 <p>
-                  You are currently swapping {nativeEthFlowSymbol || 'a native token'} with the classic{' '}
-                  {nativeEthFlowSymbol || 'wrapped currency'} experience disabled.
+                  You are currently swapping {nativeSymbol || 'a native token'} with the classic{' '}
+                  {wrappedSymbol || 'wrapped currency'} experience disabled.
                   <p>
                     Slippage tolerance is defaulted to 2% to ensure a high likelihood of order matching, even in
                     volatile market situations.

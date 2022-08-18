@@ -43,6 +43,7 @@ export default function TradeSummary({ trade, allowedSlippage, showHelpers, show
 
         {/* Slippage */}
         <RowSlippage
+          trade={trade}
           allowedSlippage={allowedSlippage}
           fontSize={12}
           fontWeight={400}

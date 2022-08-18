@@ -22,9 +22,7 @@ export function useShowNativeEthFlowSlippageWarning() {
   const isNativeEthFlow = useIsUserNativeEthFlow()
   const { isNativeIn } = useDetectNativeToken({ currency: inputCurrency }, { currency: outputCurrency })
 
-  const showNativeEthFlow = isNativeEthFlow && isNativeIn
-
-  return showNativeEthFlow ? inputCurrency?.wrapped.symbol : undefined
+  return isNativeEthFlow && isNativeIn
 }
 
 export function useEthFlowActionHandlers() {

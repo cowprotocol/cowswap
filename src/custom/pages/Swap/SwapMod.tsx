@@ -94,7 +94,7 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useEthFlowActionHandlers, useIsUserNativeEthFlow } from 'state/ethFlow/hooks'
+import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -210,8 +210,8 @@ export default function Swap({
   // Log all trade information
   // logTradeDetails(v2Trade, allowedSlippage)
 
-  // enable when components ready
-  const isUserNativeEthFlow = useIsUserNativeEthFlow()
+  // shows slippage (modified) warning when nativeEthFlow is enabled
+  const showNativeEthFlowSlippageWarning = useShowNativeEthFlowSlippageWarning()
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
@@ -821,10 +821,17 @@ export default function Swap({
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
                   )}
 
-                  {((!isExpertMode && isUserNativeEthFlow) ||
-                    !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && (
-                    <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
-                  )}
+                  {!isExpertMode &&
+                    showNativeEthFlowSlippageWarning &&
+                    !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
+                      <RowSlippage
+                        trade={trade}
+                        allowedSlippage={allowedSlippage}
+                        fontSize={12}
+                        fontWeight={400}
+                        rowHeight={24}
+                      />
+                    )}
                   {(isFeeGreater || trade) && fee && (
                     <TradeBasicDetails trade={trade} fee={fee} isNativeIn={isNativeIn} />
                   )}

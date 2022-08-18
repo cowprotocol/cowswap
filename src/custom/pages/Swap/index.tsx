@@ -263,7 +263,7 @@ function TradeBasicDetails({ trade, fee, isNativeIn, ...boxProps }: TradeBasicDe
       {isExpertMode && trade && (
         <>
           {/* Slippage */}
-          <RowSlippage allowedSlippage={allowedSlippage} />
+          <RowSlippage trade={trade} allowedSlippage={allowedSlippage} />
 
           {/* Min/Max received */}
           <RowReceivedAfterSlippage
