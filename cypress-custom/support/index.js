@@ -6,7 +6,7 @@
 // ***********************************************************
 
 // Uniswap original commands
-import '../../cypress/support/ethereum'
+import './ethereum'
 
 // Import commands.ts using ES2015 syntax:
 import './commands'

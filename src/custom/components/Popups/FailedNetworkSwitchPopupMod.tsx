@@ -33,7 +33,7 @@ export default function FailedNetworkSwitchPopup({
           NETWORK_SELECTOR_CHAINS.map((chainId) => getChainInfo(chainId)?.label)
             .filter(Boolean)
             .join(', ')
-      : `Failed to switch networks from the CowSwap Interface. In order to use CowSwap on ${chainInfo.label}, you must change the network in your wallet.`
+      : `Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on ${chainInfo.label}, you must change the network in your wallet.`
   }, [chainInfo.label, isUnsupportedNetwork])
 
   return (

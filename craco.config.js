@@ -2,6 +2,7 @@
 const path = require('path')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CracoWorkboxPlugin = require('craco-workbox')
 const { version } = require('./package.json')
 
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
@@ -33,6 +34,11 @@ if (SENTRY_AUTH_TOKEN) {
 }
 
 module.exports = {
+  plugins: [
+    {
+      plugin: CracoWorkboxPlugin,
+    },
+  ],
   babel: {
     plugins: [
       '@babel/plugin-proposal-nullish-coalescing-operator',

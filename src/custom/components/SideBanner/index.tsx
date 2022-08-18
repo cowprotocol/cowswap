@@ -172,12 +172,12 @@ export default function SideBanner({ type }: BannerProps) {
             <br />
             of the ever evolving COW 🎉
           </h3>
-          <img src={AnniversaryImage} height="162" alt="CowSwap evolving icons" />
+          <img src={AnniversaryImage} height="162" alt="CoW Swap evolving icons" />
           <FooterContent>
             <p>Share and be eligible for a celebratory NFT!</p>
             <ExternalLink href={`https://twitter.com/intent/tweet?text=${ANNIVERSARY_TWEET_TEMPLATE}`}>
               <button>
-                <StyledTwitterIcon src={TwitterImage} height="18" width="18" description="Share CowSwap on Twitter" />
+                <StyledTwitterIcon src={TwitterImage} height="18" width="18" description="Share CoW Swap on Twitter" />
                 Share on Twitter
               </button>
             </ExternalLink>

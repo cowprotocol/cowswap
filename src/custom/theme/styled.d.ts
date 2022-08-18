@@ -65,7 +65,6 @@ declare module 'styled-components' {
     // css snippets
     logo: {
       src?: string
-      srcIcon?: string
       alt?: string
     }
     util: {

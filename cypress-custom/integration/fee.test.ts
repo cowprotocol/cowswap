@@ -2,13 +2,13 @@ import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { GetQuoteResponse } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 
-const DAI = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
+const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
 const FOUR_HOURS = 3600 * 4 * 1000
-const DEFAULT_SELL_TOKEN = WETH[4]
+const DEFAULT_SELL_TOKEN = WETH[5]
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://barn.api.cow.fi/rinkeby/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.fi/goerli/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,

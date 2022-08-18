@@ -57,7 +57,7 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
   return useMemo(() => {
     const logoURIs = [...locations]
     if (currency) {
-      // mod: CowSwap Native buy orders have address set to EeeEE... rather than `isNative` flag
+      // mod: CoW Swap Native buy orders have address set to EeeEE... rather than `isNative` flag
       if (currency.isNative || currency.address === NATIVE_CURRENCY_BUY_ADDRESS) {
         logoURIs.push(getNativeLogoURI(currency.chainId))
       } else if (currency.isToken) {

@@ -1,6 +1,8 @@
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
+import { isProductionEnv, isStagingEnv } from 'utils/env'
+
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
 // will only see deployed updates on subsequent visits to a page, after all the
@@ -9,12 +11,6 @@
 
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://cra.link/PWA
-
-declare global {
-  interface Window {
-    swNeedUpdate: boolean
-  }
-}
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -29,32 +25,10 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void
 }
 
-const SWHelper = {
-  async getWaitingWorker() {
-    const registrations = (await navigator?.serviceWorker?.getRegistrations()) || []
-    const registrationWithWaiting = registrations.find((reg) => reg.waiting)
-    return registrationWithWaiting?.waiting
-  },
-
-  async skipWaiting() {
-    return (await SWHelper.getWaitingWorker())?.postMessage({ type: 'SKIP_WAITING_WHEN_SOLO' })
-  },
-
-  async prepareCachesForUpdate() {
-    console.log('[worker] prepareCachesForUpdate')
-    return (await SWHelper.getWaitingWorker())?.postMessage({ type: 'PREPARE_CACHES_FOR_UPDATE' })
-  },
-}
-
 function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
-      if (registration.waiting && registration.active) {
-        console.log('[worker] Needs update (waiting & active)')
-        window.swNeedUpdate = true
-      }
-
       registration.onupdatefound = () => {
         const installingWorker = registration.installing
         if (installingWorker == null) {
@@ -63,16 +37,12 @@ function registerValidSW(swUrl: string, config?: Config) {
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
-              console.log('[worker] Needs update (installed)')
-              window.swNeedUpdate = true
-
-              SWHelper.prepareCachesForUpdate().then()
-
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
               console.log(
-                '[worker] New content is available and will be used when all tabs for this page are closed. See https://cra.link/PWA.'
+                'New content is available and will be used when all ' +
+                  'tabs for this page are closed. See https://cra.link/PWA.'
               )
 
               // Execute callback
@@ -83,7 +53,7 @@ function registerValidSW(swUrl: string, config?: Config) {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              console.log('[worker] Content is cached for offline use.')
+              console.log('Content is cached for offline use.')
 
               // Execute callback
               if (config && config.onSuccess) {
@@ -95,7 +65,7 @@ function registerValidSW(swUrl: string, config?: Config) {
       }
     })
     .catch((error) => {
-      console.error('[worker] Error during service worker registration:', error)
+      console.error('Error during service worker registration:', error)
     })
 }
 
@@ -125,7 +95,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
 }
 
 export function register(config?: Config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  if ((isProductionEnv() || isStagingEnv()) && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href)
     if (publicUrl.origin !== window.location.origin) {
@@ -146,18 +116,13 @@ export function register(config?: Config) {
         // service worker/PWA documentation.
         navigator.serviceWorker.ready.then(() => {
           console.log(
-            '[worker] This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA'
+            'This web app is being served cache-first by a service ' +
+              'worker. To learn more, visit https://cra.link/PWA'
           )
         })
       } else {
         // Is not localhost. Just register service worker
         registerValidSW(swUrl, config)
-      }
-    })
-
-    window.addEventListener('beforeunload', async () => {
-      if (window.swNeedUpdate) {
-        await SWHelper.skipWaiting()
       }
     })
   }

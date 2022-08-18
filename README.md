@@ -1,7 +1,7 @@
 [![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
-CowSwap is the first trading interface built on top of CoW Protocol.
+CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
@@ -87,7 +87,7 @@ Modify the environment variables in `.env.production`, or override them in build
 
 ### Price feeds
 
-CowSwap tries to find the best price available on-chain using some price feeds.
+CoW Swap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
@@ -107,7 +107,7 @@ This metadata will be sent to the smart contract as a hexadecimal value in an or
 Any web app or client using CoW Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that
 information to the order.
 
-For example, CowSwap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ
+For example, CoW Swap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ
 which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37` (See
 [CID Explorer](https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ) for more details).
 
@@ -155,3 +155,13 @@ To update its content:
 1. Edit the list of pages in <./src/custom/sitemap.js>
 2. Run `yarn sitemap`
 3. Commit the changes to git
+
+## Service worker
+
+In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)  
+The plan:
+
+1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
+2. Deploy a new version to production
+
+`emergency.js` is not cached by browser and loaded before all.
