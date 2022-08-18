@@ -51,7 +51,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orderObject = _getOrderById(orders, id)
 
     if (!orderObject) {
-      return
+      return result
     }
     // look up Order.summary for Popup
     const summary = orderObject.order.summary
@@ -105,7 +105,9 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     // use current state to lookup orders' data
     const orders = store.getState().orders[chainId]
 
-    if (!orders) return
+    if (!orders) {
+      return result
+    }
 
     const { pending, fulfilled, expired, cancelled } = orders
 
@@ -197,11 +199,15 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orders = store.getState().orders[chainId]
 
     // no orders were executed/expired
-    if (!orders) return result
+    if (!orders) {
+      return result
+    }
 
     const updatedElements = isBatchFulfillOrderAction(action) ? action.payload.ordersData : action.payload.ids
     // no orders were executed/expired
-    if (updatedElements.length === 0) return result
+    if (updatedElements.length === 0) {
+      return result
+    }
   }
 
   let cowSound
