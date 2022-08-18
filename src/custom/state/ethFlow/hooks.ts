@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai/utils'
 import { isUserNativeEthFlow } from './atoms'
 
+import { useState } from 'react'
 import { useSwapState } from 'state/swap/hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { Field } from 'state/swap/actions'
@@ -24,4 +25,17 @@ export function useShowNativeEthFlowSlippageWarning() {
   const showNativeEthFlow = isNativeEthFlow && isNativeIn
 
   return showNativeEthFlow ? inputCurrency?.wrapped.symbol : undefined
+}
+
+export function useEthFlowActionHandlers() {
+  // modal
+  const [isModalOpen, setOpenNativeWrapModal] = useState(false)
+  const openModal = () => setOpenNativeWrapModal(true)
+  const closeModal = () => setOpenNativeWrapModal(false)
+
+  return {
+    openModal,
+    closeModal,
+    isModalOpen,
+  }
 }
