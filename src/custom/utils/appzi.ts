@@ -42,7 +42,7 @@ declare global {
 type AppziCustomSettings = {
   userTradedOrWaitedForLong?: true
   isTestNps?: true // to trigger test rather than prod NPS
-  pendingFor?: number // how long has this order been open (in seconds)?
+  secondsSinceOpen?: number // how long has this order been open (in seconds)?
   waitedTooLong?: true
   expired?: true
   traded?: true

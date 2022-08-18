@@ -242,7 +242,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
     console.warn('appzi: batch fulfillment', openSince)
-    openNpsAppziSometimes({ traded: true, pendingFor: timeSinceInSeconds(openSince) })
+    openNpsAppziSometimes({ traded: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   } else if (isSingleFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
     const { chainId, id } = action.payload
@@ -251,7 +251,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
     console.warn('appzi: single fulfillment', openSince)
-    openNpsAppziSometimes({ traded: true, pendingFor: timeSinceInSeconds(openSince) })
+    openNpsAppziSometimes({ traded: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {
@@ -263,7 +263,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
     console.warn('appzi: batch expiration', openSince)
-    openNpsAppziSometimes({ expired: true, pendingFor: timeSinceInSeconds(openSince) })
+    openNpsAppziSometimes({ expired: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   } else if (isSingleExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const { chainId, id } = action.payload
@@ -272,7 +272,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
     console.warn('appzi: single expiration', openSince)
-    openNpsAppziSometimes({ expired: true, pendingFor: timeSinceInSeconds(openSince) })
+    openNpsAppziSometimes({ expired: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   }
 
   return next(action)
