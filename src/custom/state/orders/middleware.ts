@@ -241,7 +241,6 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orders = store.getState().orders[chainId]
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
-    console.warn('appzi: batch fulfillment', openSince)
     openNpsAppziSometimes({ traded: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   } else if (isSingleFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
@@ -250,7 +249,6 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orders = store.getState().orders[chainId]
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
-    console.warn('appzi: single fulfillment', openSince)
     openNpsAppziSometimes({ traded: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
@@ -262,7 +260,6 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orders = store.getState().orders[chainId]
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
-    console.warn('appzi: batch expiration', openSince)
     openNpsAppziSometimes({ expired: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   } else if (isSingleExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
@@ -271,7 +268,6 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orders = store.getState().orders[chainId]
     const openSince = _getOrderById(orders, id)?.order?.openSince
 
-    console.warn('appzi: single expiration', openSince)
     openNpsAppziSometimes({ expired: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
   }
 
