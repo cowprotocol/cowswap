@@ -243,9 +243,11 @@ export default function Swap({
   // eth-flow action handler cbs
   // and state
   const {
+    isModalOpen: showNativeWrapModal,
     openModal: openNativeWrapModal,
     closeModal: dismissNativeWrapModal,
-    isModalOpen: showNativeWrapModal,
+    forceWrap,
+    setForceWrap,
   } = useEthFlowActionHandlers()
 
   const {
@@ -260,7 +262,11 @@ export default function Swap({
     // is native token swap, use the wrapped equivalent as input currency
     isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount,
     // should override and get wrapCallback?
-    isNativeInSwap
+    isNativeInSwap,
+    // forces wrap regardless of state of native in
+    // e.g user is in eth-flow and wants to wrap even tho they have enough WETH
+    // to save their previous amount for later
+    forceWrap
   )
   const showWrap: boolean = !isNativeInSwap && wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
@@ -879,7 +885,7 @@ export default function Swap({
               ) : (
                 <ButtonPrimary
                   disabled={Boolean(wrapInputError)}
-                  onClick={openNativeWrapModal}
+                  onClick={() => openNativeWrapModal()}
                   buttonSize={ButtonSize.BIG}
                 >
                   {wrapInputError ??
@@ -1082,11 +1088,16 @@ export default function Swap({
               native={native}
               wrapped={wrappedToken}
               isNativeIn={isNativeIn}
-              callback={() => {
-                if (!swapInputError && isNativeIn) {
-                  openNativeWrapModal()
+              nativeInput={nativeInput}
+              forceWrapCallback={setForceWrap}
+              wrapCallback={(forceWrap?: boolean) => {
+                if (isNativeIn) {
+                  openNativeWrapModal(forceWrap)
                 }
               }}
+              switchToWrappedCurrencyCallback={() =>
+                onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId || SupportedChainId.MAINNET])
+              }
             />
           )}
         </Wrapper>
