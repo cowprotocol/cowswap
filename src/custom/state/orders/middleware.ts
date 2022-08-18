@@ -10,6 +10,8 @@ import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sou
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'utils/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
+import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
+import { timeSinceInSeconds } from 'utils/time'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -30,6 +32,8 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 // const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch) // disabled because doesn't work on `if`
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
+const isSingleExpireOrderAction = isAnyOf(OrderActions.expireOrder)
+const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
@@ -221,12 +225,48 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 }
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
-  if (isBatchFulfillOrderAction(action) || isSingleFulfillOrderAction(action)) {
+  if (isBatchFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
-    openNpsAppziSometimes({ traded: true })
-  } else if (isExpireOrdersAction(action)) {
+    const {
+      chainId,
+      ordersData: [{ id }],
+    } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const openSince = _getOrderById(orders, id)?.order?.openSince
+
+    console.warn('appzi: batch fulfillment', openSince)
+    openNpsAppziSometimes({ traded: true, pendingFor: timeSinceInSeconds(openSince) })
+  } else if (isSingleFulfillOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when there's a successful trade
+    const { chainId, id } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const openSince = _getOrderById(orders, id)?.order?.openSince
+
+    console.warn('appzi: single fulfillment', openSince)
+    openNpsAppziSometimes({ traded: true, pendingFor: timeSinceInSeconds(openSince) })
+  } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
-    openNpsAppziSometimes({ expired: true })
+    const {
+      chainId,
+      ids: [id],
+    } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const openSince = _getOrderById(orders, id)?.order?.openSince
+
+    console.warn('appzi: batch expiration', openSince)
+    openNpsAppziSometimes({ expired: true, pendingFor: timeSinceInSeconds(openSince) })
+  } else if (isSingleExpireOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when the order expired
+    const { chainId, id } = action.payload
+
+    const orders = store.getState().orders[chainId]
+    const openSince = _getOrderById(orders, id)?.order?.openSince
+
+    console.warn('appzi: single expiration', openSince)
+    openNpsAppziSometimes({ expired: true, pendingFor: timeSinceInSeconds(openSince) })
   }
 
   return next(action)
