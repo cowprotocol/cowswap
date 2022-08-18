@@ -819,7 +819,13 @@ export default function Swap({
                   }}
                 >
                   {/* ETH-FLOW TOGGLE */}
-                  {isNativeIn && <EthWrapToggle />}
+                  {isNativeIn && (
+                    <EthWrapToggle
+                      wrappedSymbol={
+                        WRAPPED_NATIVE_CURRENCY[chainId || SupportedChainId.MAINNET].symbol || 'native wrapped currency'
+                      }
+                    />
+                  )}
 
                   {trade && (
                     <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
