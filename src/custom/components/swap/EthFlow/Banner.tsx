@@ -1,18 +1,21 @@
-import { ArrowDown, ArrowUp } from 'react-feather'
+import { ChevronDown, ChevronUp } from 'react-feather'
 import styled from 'styled-components/macro'
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Separator } from 'theme'
 import { Props } from '.'
 import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 import ethFlowIcon from 'assets/svg/ethFlow.svg'
+import { useWeb3React } from '@web3-react/core'
+import { useCurrencyBalances } from 'state/connection/hooks'
 
 const BannerWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg7};
   border: 1px solid ghostwhite;
   border-radius: ${({ theme }) => theme.buttonOutlined.borderRadius};
-  padding: 10px 12px;
+  padding: 10px 14px;
   margin: 12px 0 8px;
+  font-size: 13px;
 `
 
 const ClosedBannerWrapper = styled.div`
@@ -23,7 +26,6 @@ const ClosedBannerWrapper = styled.div`
   justify-content: stretch;
 
   > strong {
-    font-size: 14px;
     font-weight: 600;
   }
 
@@ -40,10 +42,10 @@ const BannerInnerWrapper = styled.div`
   display: grid;
   grid-template-rows: auto;
   align-items: center;
-  justify-content: center;
+  justify-content: stretch;
   width: 100%;
 
-  font-size: 14px;
+  text-align: left;
 
   > p {
     padding: 0 10px;
@@ -53,6 +55,7 @@ const BannerInnerWrapper = styled.div`
 
 const WrapEthCta = styled(BannerInnerWrapper)`
   flex-flow: row nowrap;
+  text-align: center;
   > span {
     cursor: pointer;
     font-weight: bold;
@@ -60,12 +63,46 @@ const WrapEthCta = styled(BannerInnerWrapper)`
   }
 `
 
-type BannerProps = Pick<Props, 'native' | 'wrapped' | 'isNativeIn'> & {
-  callback: () => void
+const SpanCta = styled.span`
+  > small {
+    display: block;
+    margin: 5px 0 0;
+    font-weight: 400;
+  }
+`
+
+type BannerProps = Pick<Props, 'native' | 'wrapped' | 'isNativeIn' | 'nativeInput'> & {
+  wrapCallback: (forceWrap?: boolean) => void
+  forceWrapCallback: (force: boolean) => void
+  switchToWrappedCurrencyCallback: (() => void) | undefined
 }
 
-export default function Banner({ native, wrapped, isNativeIn, callback }: BannerProps) {
+export default function Banner({
+  native,
+  wrapped,
+  isNativeIn,
+  nativeInput,
+  wrapCallback,
+  switchToWrappedCurrencyCallback,
+}: BannerProps) {
+  const { account } = useWeb3React()
+  const [nativeBalance, wrappedBalance] = useCurrencyBalances(account ?? undefined, [native, wrapped])
+
   const [open, setOpen] = useState(false)
+  const hasEnoughWrappedBalance = useMemo(() => {
+    if (!wrappedBalance || wrappedBalance.equalTo('0')) return false
+    if (!nativeInput || !nativeBalance || nativeBalance.equalTo('0')) return true
+
+    return wrappedBalance.greaterThan(nativeInput)
+  }, [nativeInput, nativeBalance, wrappedBalance])
+
+  const handleForceWrap = useCallback(
+    (e) => {
+      e.stopPropagation()
+      wrapCallback(true)
+    },
+    [wrapCallback]
+  )
 
   if (!isNativeIn) return null
 
@@ -73,18 +110,30 @@ export default function Banner({ native, wrapped, isNativeIn, callback }: Banner
     <BannerWrapper>
       <ClosedBannerWrapper>
         <img alt="eth-flow-icon" src={ethFlowIcon} />
-        <strong>Wrap your {native.symbol} to benefit from the classic CowSwap experience!</strong>
+        <strong>
+          {hasEnoughWrappedBalance
+            ? `Switch to the classic ${wrapped.symbol} experience and benefit!`
+            : `Wrap your ${native.symbol} and use the classic ${wrapped.symbol} experience!`}
+        </strong>
         {open ? (
-          <ArrowUp size={20} onClick={() => setOpen(false)} />
+          <ChevronUp size={20} onClick={() => setOpen(false)} />
         ) : (
-          <ArrowDown size={20} onClick={() => setOpen(true)} />
+          <ChevronDown size={20} onClick={() => setOpen(true)} />
         )}
       </ClosedBannerWrapper>
       {open && (
         <BannerInnerWrapper>
           <p>
-            You will be prompted to wrap your {native.symbol} to {wrapped.symbol} before placing your order. This way,
-            you&apos;ll benefit from:
+            {!hasEnoughWrappedBalance && (
+              <>
+                You will be prompted to{' '}
+                <strong>
+                  wrap your {native.symbol} to {wrapped.symbol}
+                </strong>{' '}
+                before placing your order.
+              </>
+            )}{' '}
+            This way, you&apos;ll take of advantage of:
           </p>
           <ul>
             <li>Lower overall fees</li>
@@ -92,8 +141,23 @@ export default function Banner({ native, wrapped, isNativeIn, callback }: Banner
             <li>No fees for failed transactions</li>
           </ul>
           <Separator />
-          <WrapEthCta onClick={callback}>
-            <span>Wrap my {native.symbol}</span>
+          <WrapEthCta>
+            {hasEnoughWrappedBalance ? (
+              <>
+                <SpanCta onClick={switchToWrappedCurrencyCallback}>
+                  Switch to {wrapped.symbol}{' '}
+                  <small>
+                    or{' '}
+                    <u>
+                      {' '}
+                      <SpanCta onClick={handleForceWrap}>wrap my {native.symbol} anyway</SpanCta>
+                    </u>
+                  </small>
+                </SpanCta>
+              </>
+            ) : (
+              <SpanCta onClick={() => wrapCallback()}>Wrap my {native.symbol} and swap</SpanCta>
+            )}
           </WrapEthCta>
         </BannerInnerWrapper>
       )}
