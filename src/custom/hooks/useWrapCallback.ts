@@ -41,6 +41,7 @@ interface WrapUnwrapCallback {
   wrapType: WrapType
   execute?: (params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
   inputError?: string
+  forceWrap?: boolean
 }
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
@@ -203,7 +204,8 @@ export default function useWrapCallback(
   inputCurrency?: Currency | null,
   outputCurrency?: Currency | null,
   inputAmount?: CurrencyAmount<Currency>,
-  isEthTradeOverride?: boolean
+  isEthTradeOverride?: boolean,
+  forceWrap?: boolean
 ): WrapUnwrapCallback {
   const { chainId: connectedChainId, account } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
@@ -225,8 +227,10 @@ export default function useWrapCallback(
     const isWrappingEther = inputCurrency.isNative && (isEthTradeOverride || weth.equals(outputCurrency))
     const isUnwrappingWeth = weth.equals(inputCurrency) && outputCurrency.isNative
     // is an native currency trade but wrapped token has enough balance
+    // if forceWrap is TRUE then this is bypassed to show wrap flow
+    // e.g user wants to keep old balance as is and wrap what theyre selling
     const hasEnoughWrappedBalanceForSwap =
-      isEthTradeOverride && wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount)
+      !forceWrap && isEthTradeOverride && wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount)
 
     if ((!isWrappingEther && !isUnwrappingWeth) || hasEnoughWrappedBalanceForSwap) {
       return NOT_APPLICABLE
@@ -251,6 +255,7 @@ export default function useWrapCallback(
     balance,
     wrappedBalance,
     inputAmount,
+    forceWrap,
     addTransaction,
     openTransactionConfirmationModal,
     closeModals,
