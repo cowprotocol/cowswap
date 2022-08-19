@@ -26,7 +26,6 @@ import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'utils/analytics'
-import { MakeOptional } from 'types'
 import { OptionalApproveCallbackParams } from './useApproveCallback'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -75,14 +74,8 @@ function _handleGasEstimateError(error: any) {
   )
   return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
 }
-function _getWrapUnwrapCallback(
-  params: MakeOptional<GetWrapUnwrapCallback, 'openTransactionConfirmationModal' | 'closeModals'>
-): WrapUnwrapCallback
-function _getWrapUnwrapCallback(
-  params:
-    | GetWrapUnwrapCallback
-    | MakeOptional<GetWrapUnwrapCallback, 'openTransactionConfirmationModal' | 'closeModals'>
-): WrapUnwrapCallback {
+
+function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallback {
   const {
     chainId,
     isWrap,
@@ -204,24 +197,8 @@ function _getWrapUnwrapCallback(
  * @param typedValue the user input value
  */
 export default function useWrapCallback(
-  openTransactionConfirmationModal?: (message: string, operationType: OperationType) => void,
-  closeModals?: () => void,
-  inputCurrency?: Currency | null,
-  outputCurrency?: Currency | null,
-  inputAmount?: CurrencyAmount<Currency>,
-  isEthTradeOverride?: boolean
-): WrapUnwrapCallback
-export default function useWrapCallback(
   openTransactionConfirmationModal: (message: string, operationType: OperationType) => void,
   closeModals: () => void,
-  inputCurrency?: Currency | null,
-  outputCurrency?: Currency | null,
-  inputAmount?: CurrencyAmount<Currency>,
-  isEthTradeOverride?: boolean
-): WrapUnwrapCallback
-export default function useWrapCallback(
-  openTransactionConfirmationModal: ((message: string, operationType: OperationType) => void) | undefined,
-  closeModals: (() => void) | undefined,
   inputCurrency?: Currency | null,
   outputCurrency?: Currency | null,
   inputAmount?: CurrencyAmount<Currency>,

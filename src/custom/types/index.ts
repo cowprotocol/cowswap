@@ -18,5 +18,3 @@ export interface WithCancel {
 export interface RetryResult<T> extends WithCancel {
   promise: Promise<T>
 }
-
-export type MakeOptional<Type, Key extends keyof Type> = Omit<Type, Key> & Partial<Pick<Type, Key>>

@@ -23,7 +23,6 @@ import { useWeb3React } from '@web3-react/core'
 import { ApproveCallback, OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
-import { MakeOptional } from 'types'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -62,6 +61,7 @@ export function useApproveCallback({
   amountToApprove,
   spender,
   amountToCheckAgainstAllowance,
+<<<<<<< HEAD
 }: MakeOptional<ApproveCallbackParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback
 export function useApproveCallback({
   openTransactionConfirmationModal,
@@ -80,6 +80,10 @@ export function useApproveCallback({
   | ApproveCallbackParams
   | MakeOptional<ApproveCallbackParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback {
   const { account, chainId } = useWeb3React()
+=======
+}: ApproveCallbackParams): ApproveCallback {
+  const { account, chainId } = useActiveWeb3React()
+>>>>>>> 191277376 (revert approve/wrap hook signature overloads)
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
