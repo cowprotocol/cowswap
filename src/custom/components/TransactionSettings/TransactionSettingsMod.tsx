@@ -26,7 +26,7 @@ import {
   PERCENTAGE_PRECISION,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'utils/analytics'
-import { useIsUserNativeEthFlow } from 'state/ethFlow/hooks'
+import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
@@ -116,7 +116,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
-  const isUserNativeEthFlow = useIsUserNativeEthFlow()
+  const shouldShowEthFlowSlippage = useShowNativeEthFlowSlippageWarning()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
@@ -154,11 +154,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   }
 
   const tooLow =
-    !isUserNativeEthFlow &&
+    !shouldShowEthFlowSlippage &&
     userSlippageTolerance !== 'auto' &&
     userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
-    !isUserNativeEthFlow &&
+    !shouldShowEthFlowSlippage &&
     userSlippageTolerance !== 'auto' &&
     userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
 
@@ -225,7 +225,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <Trans>Auto</Trans>
           </Option>
           <OptionCustom
-            active={userSlippageTolerance !== 'auto' || !isUserNativeEthFlow}
+            active={userSlippageTolerance !== 'auto' || !shouldShowEthFlowSlippage}
             warning={!!slippageError}
             tabIndex={-1}
           >
@@ -238,10 +238,10 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 </SlippageEmojiContainer>
               ) : null}
               <Input
-                disabled={isUserNativeEthFlow}
+                disabled={shouldShowEthFlowSlippage}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={
-                  isUserNativeEthFlow
+                  shouldShowEthFlowSlippage
                     ? ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
                     : slippageInput.length > 0
                     ? slippageInput
