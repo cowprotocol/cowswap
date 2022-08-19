@@ -94,7 +94,11 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
+import {
+  useEthFlowActionHandlers,
+  useIsUserNativeEthFlow,
+  useShowNativeEthFlowSlippageWarning,
+} from 'state/ethFlow/hooks'
 import EthWrapToggle from 'components/swap/EthWethWrap/Toggle'
 
 // const AlertWrapper = styled.div`
@@ -247,6 +251,7 @@ export default function Swap({
     closeModal: dismissNativeWrapModal,
     isModalOpen: showNativeWrapModal,
   } = useEthFlowActionHandlers()
+  const isUserNativeEthFlow = useIsUserNativeEthFlow()
 
   const {
     wrapType,
