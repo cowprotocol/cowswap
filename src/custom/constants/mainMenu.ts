@@ -58,6 +58,7 @@ export const FAQ_MENU: InternalLink[] = [
 
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
+  { title: 'Limit order', url: Routes.LIMIT_ORDER + '/WETH/USDC' },
   { title: 'Account', url: Routes.ACCOUNT },
   {
     kind: MenuItemKind.DROP_DOWN,
