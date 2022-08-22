@@ -2,7 +2,6 @@ import { Trans } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ExtLink,
-  CardsWrapper,
   Card,
   CardActions,
   BalanceDisplay,
@@ -213,7 +212,7 @@ export default function Profile() {
           <CardsSpinner size="24px" />
         </CardsLoader>
       ) : (
-        <CardsWrapper>
+        <>
           {hasVCowBalance && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
@@ -290,7 +289,7 @@ export default function Profile() {
             openModal={openModal}
             closeModal={closeModal}
           />
-        </CardsWrapper>
+        </>
       )}
     </>
   )

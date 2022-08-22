@@ -13,6 +13,7 @@ import {
   RemoveTokens,
   LeftSection,
   ClearSearchInput,
+  Overview,
 } from './styled'
 import { TokenSearchInput } from 'components/Tokens/styled'
 import { useAllTokens } from 'hooks/Tokens'
@@ -25,7 +26,6 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import usePrevious from 'hooks/usePrevious'
 import { useWeb3React } from '@web3-react/core'
-import { CardsWrapper } from '../styled'
 import { supportedChainId } from 'utils/supportedChainId'
 import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
 import useDebounce from 'hooks/useDebounce'
@@ -149,7 +149,7 @@ export default function TokensOverview() {
   }, [chainId, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <CardsWrapper useFlex={false} padding={'20px 30px 30px'}>
+    <Overview useFlex={false} padding={'20px 30px 30px'}>
       <AccountHeading>
         <LeftSection>
           <MenuWrapper ref={node as any}>
@@ -202,6 +202,6 @@ export default function TokensOverview() {
       </AccountHeading>
 
       {renderTableContent()}
-    </CardsWrapper>
+    </Overview>
   )
 }

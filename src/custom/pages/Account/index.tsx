@@ -5,6 +5,7 @@ import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 import { Content } from 'components/Page'
 import { Routes } from 'constants/routes'
 import { Loading } from 'components/FlashingLoading'
+import { Container, CardsWrapper } from './styled'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
@@ -17,7 +18,7 @@ const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/er
 function _getPropsFromRoute(route: string) {
   switch (route) {
     case Routes.ACCOUNT:
-      return ['account-general', 'General']
+      return ['account-overview', 'Overview']
     case Routes.ACCOUNT_AFFILIATE:
       return ['account-affiliate', 'Affiliate']
     case Routes.ACCOUNT_GOVERNANCE:
@@ -27,6 +28,19 @@ function _getPropsFromRoute(route: string) {
     default:
       return []
   }
+}
+
+// Note: As we build these single pages, we will remove this component in the future
+const Overview = () => {
+  return (
+    <Container>
+      <CardsWrapper>
+        <Balances />
+        <Governance />
+      </CardsWrapper>
+      <Affiliate />
+    </Container>
+  )
 }
 
 export default function Account() {
@@ -40,10 +54,10 @@ export default function Account() {
           <Content>
             <h2 id={id}>{name}</h2>
             <Switch>
-              <Route exact path={Routes.ACCOUNT} component={Balances} />
-              <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} />
+              <Route exact path={Routes.ACCOUNT} component={Overview} />
+              {/* <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} /> */}
               <Route exact strict path={Routes.ACCOUNT_TOKENS} component={TokensOverview} />
-              <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} />
+              {/* <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} /> */}
               <Route component={NotFound} />
             </Switch>
           </Content>
