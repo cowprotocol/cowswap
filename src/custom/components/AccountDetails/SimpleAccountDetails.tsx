@@ -32,7 +32,7 @@ export default function SimpleAccountDetails({
 
   return (
     <SimpleWrapper {...styleProps}>
-      {!!pendingTransactions.length || !!confirmedTransactions.length ? (
+      {pendingTransactions.length || confirmedTransactions.length ? (
         <LowerSectionSimple>
           <div>
             {activitiesGroupedByDate.map(({ date, activities }) => (
