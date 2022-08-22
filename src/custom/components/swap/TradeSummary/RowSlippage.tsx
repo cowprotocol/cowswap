@@ -14,6 +14,7 @@ import { formatSmart } from 'utils/format'
 import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
+import { Text } from 'rebass'
 
 export interface RowSlippageProps {
   trade?: TradeGp
@@ -46,12 +47,14 @@ export function RowSlippage({
       <RowFixed>
         <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           {showEthFlowSlippageWarning ? (
-            <Trans>
-              Slippage tolerance{' '}
-              <ThemedText.Warn display="inline-block" override>
-                (modified)
-              </ThemedText.Warn>
-            </Trans>
+            <Text fontWeight={500} fontSize={14}>
+              <Trans>
+                Slippage tolerance{' '}
+                <ThemedText.Warn display="inline-block" override>
+                  (modified)
+                </ThemedText.Warn>
+              </Trans>
+            </Text>
           ) : showSettingOnClick ? (
             <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
               <Trans>Slippage tolerance</Trans>

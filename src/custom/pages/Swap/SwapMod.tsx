@@ -1033,9 +1033,9 @@ export default function Swap({
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                       <Trans>
-                        {showNativeEthFlowSlippageWarning
-                          ? 'Swap'
-                          : `Wrap ${trade?.inputAmount.currency.name} and swap`}
+                        {isNativeIn && !isUserNativeEthFlow
+                          ? `Wrap ${trade?.inputAmount.currency.name} and swap`
+                          : 'Swap'}
                       </Trans>
                     </SwapButton>
                     {/* <Text fontSize={16} fontWeight={500}>
@@ -1077,7 +1077,7 @@ export default function Swap({
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                   {swapInputError || (
                     <Trans>
-                      {isNativeIn
+                      {isNativeIn && !isUserNativeEthFlow
                         ? wrappedToken.symbol
                           ? 'Swap with ' + wrappedToken.symbol
                           : 'Wrap and swap'
