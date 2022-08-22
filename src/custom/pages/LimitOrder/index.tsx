@@ -2,6 +2,7 @@ import { CurrencyInputPanelProps } from '@src/custom/components/CurrencyInputPan
 import * as styledEl from './styled'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { GNO_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
+import { ReceiveAmount } from 'pages/LimitOrder/pureComponents/ReceiveAmount'
 import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
 
 const defaultProps: CurrencyInputPanelProps = {
@@ -22,6 +23,8 @@ export function LimitOrderPage() {
         <div>Limit Orders</div>
       </styledEl.Header>
       <CurrencyInputPanel currency={defaultProps.currency!} />
+      <styledEl.DestCurrencyInputPanel currency={defaultProps.currency!} />
+      <ReceiveAmount />
     </styledEl.Container>
   )
 }
