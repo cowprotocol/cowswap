@@ -456,6 +456,7 @@ export interface CurrencyInputPanelProps extends WithClassName {
   loading?: boolean
   customBalanceText?: string
   disableCurrencySelect?: boolean
+  balanceAmount?: CurrencyAmount<Currency>
 }
 
 export default function CurrencyInputPanel({
@@ -474,6 +475,7 @@ export default function CurrencyInputPanel({
   fiatValue,
   priceImpact,
   priceImpactLoading,
+  balanceAmount,
   hideBalance = false,
   pair = null, // used for double token logo
   hideInput = false,
@@ -484,7 +486,7 @@ export default function CurrencyInputPanel({
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined) || balanceAmount
   const theme = useTheme()
 
   const handleDismissSearch = useCallback(() => {
