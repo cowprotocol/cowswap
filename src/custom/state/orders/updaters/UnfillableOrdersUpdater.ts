@@ -48,6 +48,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
     validTo: timestamp(order.validTo),
+    userAddress: order.owner,
+    receiver: order.receiver,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
