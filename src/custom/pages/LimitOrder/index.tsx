@@ -5,6 +5,7 @@ import { GNO_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
 import { ReceiveAmount } from 'pages/LimitOrder/pureComponents/ReceiveAmount'
 import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from 'pages/LimitOrder/pureComponents/CurrencyArrowSeparator'
+import { TradeRates } from 'pages/LimitOrder/pureComponents/TradeRates'
 
 const defaultProps: CurrencyInputPanelProps = {
   id: 'CurrencyInputPanel',
@@ -27,6 +28,7 @@ export function LimitOrderPage() {
       <CurrencyArrowSeparator isLoading={false} />
       <styledEl.DestCurrencyInputPanel currency={defaultProps.currency!} />
       <ReceiveAmount />
+      <TradeRates />
     </styledEl.Container>
   )
 }
