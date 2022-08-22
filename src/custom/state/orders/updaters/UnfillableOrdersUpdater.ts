@@ -18,15 +18,12 @@ import { GpPriceStrategy } from 'state/gas/atoms'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
- *
- * @param chainId
- * @param order
  */
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
-    // this order sell amount is sellAmountAfterFees..
+    // this order sell amount is sellAmountAfterFees
     // this is an issue as it will be adjusted again in the backend
     // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
     // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
