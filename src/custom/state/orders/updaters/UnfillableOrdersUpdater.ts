@@ -97,7 +97,6 @@ export function UnfillableOrdersUpdater(): null {
     }
 
     const startTime = Date.now()
-    console.debug('[UnfillableOrdersUpdater] Checking new market price for orders....')
     try {
       isUpdating.current = true
 
@@ -106,7 +105,6 @@ export function UnfillableOrdersUpdater(): null {
       const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
       if (pending.length === 0) {
-        // console.debug('[UnfillableOrdersUpdater] No orders to update')
         return
       } else {
         console.debug(
@@ -138,7 +136,7 @@ export function UnfillableOrdersUpdater(): null {
       )
     } finally {
       isUpdating.current = false
-      console.debug(`[UnfillableOrdersUpdater] Checked canceled orders in ${Date.now() - startTime}ms`)
+      console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag])
 
