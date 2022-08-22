@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
-import { loadingOpacityMixin } from '@src/components/Loader/styled'
-import Input from '@src/components/NumericalInput'
+import { loadingOpacityMixin } from 'components/Loader/styled'
+import Input from 'components/NumericalInput'
 
 export const Wrapper = styled.div`
   background: #ffffff;
