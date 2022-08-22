@@ -824,7 +824,7 @@ export default function Swap({
                   }}
                 >
                   {/* ETH-FLOW TOGGLE */}
-                  {isNativeIn && (
+                  {account && !swapInputError && isNativeIn && (
                     <EthWrapToggle
                       wrappedSymbol={
                         WRAPPED_NATIVE_CURRENCY[chainId || SupportedChainId.MAINNET].symbol || 'native wrapped currency'
