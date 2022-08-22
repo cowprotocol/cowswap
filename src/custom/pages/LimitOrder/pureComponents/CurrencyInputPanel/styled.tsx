@@ -3,8 +3,8 @@ import { loadingOpacityMixin } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
 
 export const Wrapper = styled.div`
-  background: #ffffff;
-  border: 2px solid #afcbda;
+  background: ${({ theme }) => theme.currencyInput!.background};
+  border: ${({ theme }) => theme.currencyInput!.border};
   border-radius: 20px;
 
   padding: 1rem;
