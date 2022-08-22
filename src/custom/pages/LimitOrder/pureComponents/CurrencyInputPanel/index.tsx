@@ -3,17 +3,21 @@ import * as styledEl from './styled'
 import { CurrencySelectButton } from '../CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 
-export interface CurrencyInputPanelProps {
+interface BuiltItProps {
+  className: string
+}
+
+export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   currency: Currency
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const loading = false
-  const { currency } = props
+  const { currency, className } = props
   const [sourceCurrencyValue, setSourceCurrencyValue] = useState('1')
 
   return (
-    <styledEl.Wrapper>
+    <styledEl.Wrapper className={className}>
       <styledEl.CurrencyInputBox>
         <div>
           <CurrencySelectButton currency={currency} />

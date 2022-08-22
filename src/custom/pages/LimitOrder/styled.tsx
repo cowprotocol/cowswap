@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -18,4 +19,9 @@ export const Header = styled.div`
 
   font-weight: 500;
   font-size: 16px;
+`
+
+export const DestCurrencyInputPanel = styled(CurrencyInputPanel)`
+  border-radius: 20px 20px 0 0;
+  border-bottom: 0;
 `
