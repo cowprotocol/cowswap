@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ExtLink,
@@ -218,7 +219,9 @@ export default function Profile() {
               <BalanceDisplay hAlign="left">
                 <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
                 <span>
-                  <i>Total vCOW balance</i>
+                  <i>
+                    <Trans>Total vCOW balance</Trans>
+                  </i>
                   <b>
                     <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
                     <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>

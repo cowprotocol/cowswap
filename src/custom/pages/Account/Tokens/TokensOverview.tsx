@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-restricted-imports
+import { Trans, t } from '@lingui/macro'
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
-import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import {
   Menu,
@@ -10,7 +11,6 @@ import {
   Subtitle,
   AccountHeading,
   RemoveTokens,
-  WrongNetwork,
   LeftSection,
   ClearSearchInput,
 } from './styled'
@@ -27,7 +27,6 @@ import usePrevious from 'hooks/usePrevious'
 import { useWeb3React } from '@web3-react/core'
 import { CardsWrapper } from '../styled'
 import { supportedChainId } from 'utils/supportedChainId'
-import Web3Status from 'components/Web3Status'
 import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
@@ -102,11 +101,7 @@ export default function TokensOverview() {
     }
 
     if (!isChainSupported) {
-      return (
-        <WrongNetwork>
-          <Web3Status />
-        </WrongNetwork>
-      )
+      return <Trans>Unsupported network</Trans>
     }
 
     return (
@@ -192,7 +187,7 @@ export default function TokensOverview() {
           <TokenSearchInput
             type="text"
             id="token-search-input"
-            placeholder={`Search name/symbol or paste address`}
+            placeholder={t`Search name/symbol or paste address`}
             autoComplete="off"
             value={query}
             onChange={handleSearch}

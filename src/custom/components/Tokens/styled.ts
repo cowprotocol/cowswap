@@ -55,6 +55,10 @@ export const ResponsiveGrid = styled.div`
   text-align: left;
   border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.primary1))};
   grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    grid-template-columns: 50px minmax(80px, 100px) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
+  `};
 `
 
 export const LinkWrapper = styled(Link)`
@@ -231,6 +235,9 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   font-weight: 400;
   font-size: 14px;
   white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;

@@ -40,6 +40,10 @@ export const Menu = styled.div`
   min-width: 250px;
   z-index: 99;
   padding: 12px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    transform: translateX(-30%) translateY(105%);
+  `}
 `
 
 export const MenuItem = styled.div<{ active: boolean }>`

@@ -25,11 +25,11 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
-import { useWeb3React } from '@web3-react/core'
+// import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { MouseoverTooltip } from 'components/Tooltip'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { isAddress } from 'utils'
+import useFilterTokens from 'hooks/useFilterTokens'
 
 const MAX_ITEMS = 10
 
@@ -71,7 +71,7 @@ export default function TokenTable({
   prevQuery,
   debouncedQuery,
 }: TokenTableParams) {
-  const { account } = useWeb3React()
+  // const { account } = useWeb3React()
   const native = useNativeCurrency()
 
   const toggleWalletModal = useToggleWalletModal()
@@ -89,32 +89,7 @@ export default function TokenTable({
     }
   }, [query, page, setPage, prevQuery])
 
-  const tokensData = useMemo(() => {
-    // only calc anything if we actually have more than 1 token in list
-    // and the user is actively searching tokens
-    if (rawTokensData.length === 0 || !debouncedQuery.length) {
-      return rawTokensData
-    }
-
-    // if user is searching by address
-    const searchAddress = isAddress(query)
-    const queryParts = debouncedQuery
-      .toLowerCase()
-      .split(/\+s/)
-      .filter((s) => s.length)
-
-    return rawTokensData.filter((token: Token) => {
-      if (searchAddress) {
-        // first search by address if its address
-        return 'address' in token && searchAddress.toLowerCase() === token.address.toLowerCase()
-      } else {
-        // else search by symbol or name
-        return [token.name?.toLowerCase(), token.symbol?.toLowerCase()].some((tokenPart: string | undefined) =>
-          queryParts.some((queryPart: string) => tokenPart?.includes(queryPart))
-        )
-      }
-    })
-  }, [rawTokensData, debouncedQuery, query])
+  const tokensData = useFilterTokens(rawTokensData, debouncedQuery)
 
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
@@ -244,7 +219,7 @@ export default function TokenTable({
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
                 <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
               </ClickableText>
-              <ClickableText disabled={!account} onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
+              <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
               <Label>Value</Label>
