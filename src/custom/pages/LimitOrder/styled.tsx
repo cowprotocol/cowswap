@@ -6,10 +6,10 @@ export const Container = styled.div`
   width: 100%;
   padding: 12px 10px;
 
-  border: 3px solid #000000;
+  border: 3px solid ${({ theme }) => theme.black};
   border-radius: 16px;
-  box-shadow: 4px 4px 0 #000000;
-  background: #d5e9f0;
+  box-shadow: 4px 4px 0 ${({ theme }) => theme.black};
+  background: ${({ theme }) => theme.bg1};
 `
 
 export const Header = styled.div`
