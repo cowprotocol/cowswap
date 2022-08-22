@@ -4,6 +4,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { GNO_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
 import { ReceiveAmount } from 'pages/LimitOrder/pureComponents/ReceiveAmount'
 import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
+import { CurrencyArrowSeparator } from 'pages/LimitOrder/pureComponents/CurrencyArrowSeparator'
 
 const defaultProps: CurrencyInputPanelProps = {
   id: 'CurrencyInputPanel',
@@ -23,6 +24,7 @@ export function LimitOrderPage() {
         <div>Limit Orders</div>
       </styledEl.Header>
       <CurrencyInputPanel currency={defaultProps.currency!} />
+      <CurrencyArrowSeparator isLoading={false} />
       <styledEl.DestCurrencyInputPanel currency={defaultProps.currency!} />
       <ReceiveAmount />
     </styledEl.Container>
