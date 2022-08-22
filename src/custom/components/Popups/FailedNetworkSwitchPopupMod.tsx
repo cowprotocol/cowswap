@@ -26,7 +26,7 @@ export default function FailedNetworkSwitchPopup({
   const chainInfo = getChainInfo(chainId)
   const theme = useContext(ThemeContext)
 
-  const getErrorMessage = useMemo(() => {
+  const errorMessage = useMemo(() => {
     return isUnsupportedNetwork
       ? 'Please connect your wallet to one of our supported networks: ' +
           NETWORK_SELECTOR_CHAINS.map((chainId) => getChainInfo(chainId)?.label)
@@ -42,7 +42,7 @@ export default function FailedNetworkSwitchPopup({
       </div>
       <AutoColumn gap="8px">
         <ThemedText.Body fontWeight={500} color={isUnsupportedNetwork ? theme.text2 : theme.text1}>
-          <Trans>{getErrorMessage}</Trans>
+          <Trans>{errorMessage}</Trans>
         </ThemedText.Body>
       </AutoColumn>
     </RowNoFlex>
