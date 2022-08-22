@@ -1,3 +1,27 @@
+import { CurrencyInputPanelProps } from '@src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod'
+import * as styledEl from './styled'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+import { GNO_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
+import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
+
+const defaultProps: CurrencyInputPanelProps = {
+  id: 'CurrencyInputPanel',
+  value: '1200',
+  onUserInput: (value) => {
+    // TODO
+  },
+  currency: GNO_GNOSIS_CHAIN,
+  showMaxButton: true,
+  balanceAmount: CurrencyAmount.fromRawAmount(GNO_GNOSIS_CHAIN, 250 * 10 ** 18),
+}
+
 export function LimitOrderPage() {
-  return <div>Limit Orders</div>
+  return (
+    <styledEl.Container>
+      <styledEl.Header>
+        <div>Limit Orders</div>
+      </styledEl.Header>
+      <CurrencyInputPanel currency={defaultProps.currency!} />
+    </styledEl.Container>
+  )
 }
