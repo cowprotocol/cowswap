@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ReactComponent as DropDown } from '@src/assets/images/dropdown.svg'
+import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 
 export const CurrencySelectWrapper = styled.button`
   display: flex;

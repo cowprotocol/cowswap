@@ -4,7 +4,7 @@ import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInpu
 export const Container = styled.div`
   max-width: 460px;
   width: 100%;
-  padding: 12px 6px;
+  padding: 12px 10px;
 
   border: 3px solid #000000;
   border-radius: 16px;
@@ -16,6 +16,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 12px 4px;
+  margin: 5px 0 15px 0;
 
   font-weight: 500;
   font-size: 16px;

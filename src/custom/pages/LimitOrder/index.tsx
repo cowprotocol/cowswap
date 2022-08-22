@@ -1,22 +1,10 @@
-import { CurrencyInputPanelProps } from '@src/custom/components/CurrencyInputPanel/CurrencyInputPanelMod'
 import * as styledEl from './styled'
-import { CurrencyAmount } from '@uniswap/sdk-core'
-import { GNO_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
-import { ReceiveAmount } from 'pages/LimitOrder/pureComponents/ReceiveAmount'
-import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from 'pages/LimitOrder/pureComponents/CurrencyArrowSeparator'
-import { TradeRates } from 'pages/LimitOrder/pureComponents/TradeRates'
-
-const defaultProps: CurrencyInputPanelProps = {
-  id: 'CurrencyInputPanel',
-  value: '1200',
-  onUserInput: (value) => {
-    // TODO
-  },
-  currency: GNO_GNOSIS_CHAIN,
-  showMaxButton: true,
-  balanceAmount: CurrencyAmount.fromRawAmount(GNO_GNOSIS_CHAIN, 250 * 10 ** 18),
-}
+import { GNO_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
+import { ReceiveAmount } from './pureComponents/ReceiveAmount'
+import { CurrencyInputPanel } from './pureComponents/CurrencyInputPanel'
+import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
+import { TradeRates } from './pureComponents/TradeRates'
+import { TradeButton } from './pureComponents/TradeButton'
 
 export function LimitOrderPage() {
   return (
@@ -24,11 +12,12 @@ export function LimitOrderPage() {
       <styledEl.Header>
         <div>Limit Orders</div>
       </styledEl.Header>
-      <CurrencyInputPanel currency={defaultProps.currency!} />
+      <CurrencyInputPanel currency={GNO_GNOSIS_CHAIN} />
       <CurrencyArrowSeparator isLoading={false} />
-      <styledEl.DestCurrencyInputPanel currency={defaultProps.currency!} />
+      <styledEl.DestCurrencyInputPanel currency={WETH_GNOSIS_CHAIN} />
       <ReceiveAmount />
       <TradeRates />
+      <TradeButton>Trade</TradeButton>
     </styledEl.Container>
   )
 }
