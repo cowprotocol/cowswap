@@ -38,6 +38,10 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
     width: 100%;
     text-align: center;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 14px;
+  `}
 `
 
 const StyledClose = styled(X)`

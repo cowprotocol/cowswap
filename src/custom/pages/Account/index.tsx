@@ -6,6 +6,9 @@ import { Content } from 'components/Page'
 import { Routes } from 'constants/routes'
 import { Loading } from 'components/FlashingLoading'
 import { Container, CardsWrapper } from './styled'
+import { useWeb3React } from '@web3-react/core'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
@@ -32,8 +35,12 @@ function _getPropsFromRoute(route: string) {
 
 // Note: As we build these single pages, we will remove this component in the future
 const Overview = () => {
+  const { chainId } = useWeb3React()
+
   return (
     <Container>
+      {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
+
       <CardsWrapper>
         <Balances />
         <Governance />
