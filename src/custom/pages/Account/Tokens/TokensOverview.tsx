@@ -48,7 +48,7 @@ const PageView = {
 }
 
 export default function TokensOverview() {
-  const { chainId, provider } = useWeb3React()
+  const { chainId, provider, account } = useWeb3React()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
@@ -56,6 +56,7 @@ export default function TokensOverview() {
 
   const prevChainId = usePrevious(chainId)
   const prevSelectedView = usePrevious(selectedView)
+  const prevAccount = usePrevious(account)
 
   const isChainSupported = supportedChainId(chainId)
 
@@ -151,10 +152,10 @@ export default function TokensOverview() {
 
   // reset table to page 1 on chain change or on table view change
   useEffect(() => {
-    if (chainId !== prevChainId || selectedView !== prevSelectedView) {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
       setPage(1)
     }
-  }, [chainId, prevChainId, prevSelectedView, selectedView])
+  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView])
 
   return (
     <Overview useFlex={false} padding={'20px 30px 30px'}>
