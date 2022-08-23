@@ -150,7 +150,7 @@ export default function TokensOverview() {
     setQuery('')
   }, [])
 
-  // reset table to page 1 on chain change or on table view change
+  // reset table to page 1 on chain, account or view change
   useEffect(() => {
     if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
       setPage(1)

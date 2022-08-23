@@ -14,6 +14,7 @@ import {
   TableButton,
   ApproveLabel,
   CustomLimit,
+  BalanceValue,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { formatMax, formatSmart } from 'utils/format'
@@ -28,6 +29,7 @@ import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
+import Loader from 'components/Loader'
 
 type DataRowParams = {
   tokenData: Token
@@ -103,6 +105,13 @@ const DataRow = ({
   const noBalance = !balance || balance?.equalTo(0)
   const noAllowance = !currentAllowance || currentAllowance.equalTo(0)
 
+  // This is so we only create fiat value request if there is a blance
+  const fiatValue = useMemo(() => {
+    if (!balance && account) return <Loader />
+    else if (noBalance) return <BalanceValue hasBalance={false}>0</BalanceValue>
+    else return <FiatBalanceCell balance={balance} />
+  }, [account, balance, noBalance])
+
   const displayApproveContent = useMemo(() => {
     if (isPendingApprove) {
       return <CardsSpinner />
@@ -173,9 +182,7 @@ const DataRow = ({
         <BalanceCell balance={balance} />
       </Cell>
 
-      <Cell>
-        <FiatBalanceCell balance={balance} />
-      </Cell>
+      <Cell>{fiatValue}</Cell>
 
       <Cell>
         <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)} color={theme.green1}>
