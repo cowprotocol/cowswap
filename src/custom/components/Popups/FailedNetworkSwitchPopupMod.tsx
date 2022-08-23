@@ -8,9 +8,9 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 
-import { NETWORK_SELECTOR_CHAINS } from 'components/Header/NetworkSelector/NetworkSelectorMod'
 import { getChainInfo } from 'constants/chainInfo'
 import { useMemo } from 'react'
+import UnsupportedNetworkMessage from 'components/UnsupportedNetworkMessage'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -27,12 +27,14 @@ export default function FailedNetworkSwitchPopup({
   const theme = useContext(ThemeContext)
 
   const errorMessage = useMemo(() => {
-    return isUnsupportedNetwork
-      ? 'Please connect your wallet to one of our supported networks: ' +
-          NETWORK_SELECTOR_CHAINS.map((chainId) => getChainInfo(chainId)?.label)
-            .filter(Boolean)
-            .join(', ')
-      : `Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on ${chainInfo?.label}, you must change the network in your wallet.`
+    return isUnsupportedNetwork ? (
+      <UnsupportedNetworkMessage />
+    ) : (
+      <Trans>
+        Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfo?.label}, you must
+        change the network in your wallet.
+      </Trans>
+    )
   }, [chainInfo, isUnsupportedNetwork])
 
   return (
