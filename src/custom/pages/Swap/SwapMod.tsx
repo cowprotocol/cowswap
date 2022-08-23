@@ -2,7 +2,7 @@
 // TODO: understand why and re-enable rules-of-hooks
 import { Trans } from '@lingui/macro'
 // import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
@@ -34,9 +34,6 @@ import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import { ArrowWrapper /*, SwapCallbackError*/, Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import TokenWarningModal from 'components/TokenWarningModal'
-import { TOKEN_SHORTHANDS } from 'constants/tokens'
-import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { ApprovalState /*, useApprovalOptimizedTrade*/, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
@@ -47,7 +44,6 @@ import useWrapCallback, { /*WrapErrorText, */ WrapType } from 'hooks/useWrapCall
 import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
-  useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
@@ -61,7 +57,6 @@ import { ButtonSize, LinkStyledButton, ThemedText } from 'theme'
 // import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeSlippageAdjustedAmounts /*, warningSeverity */ } from 'utils/prices'
-import { supportedChainId } from 'utils/supportedChainId'
 // import AppBody from 'pages/AppBody'
 
 // MOD imports
@@ -88,6 +83,7 @@ import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/mis
 import { AlertWrapper } from './styleds' // mod
 import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
+import { ImportTokenModal } from './components/ImportTokenModal'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -113,50 +109,7 @@ export default function Swap({
 }: SwapProps) {
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
-  const loadedUrlParams = useDefaultsFromURLSearch()
   const previousChainId = usePrevious(chainId)
-
-  // token warning stuff
-  const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId),
-    useCurrency(loadedUrlParams?.[Field.OUTPUT]?.currencyId),
-  ]
-  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(
-    process.env.REACT_APP_DISABLE_TOKEN_WARNING === 'true' // mod
-  )
-  const urlLoadedTokens: Token[] = useMemo(
-    () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
-    [loadedInputCurrency, loadedOutputCurrency]
-  )
-  const handleConfirmTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-  }, [])
-
-  // dismiss warning if all imported tokens are in active lists
-  const defaultTokens = useAllTokens()
-  const importTokensNotInDefault = useMemo(() => {
-    // We should return an empty array until the defaultTokens are loaded
-    // Otherwise WETH will be in urlLoadedTokens but defaultTokens will be empty
-    // Fix for https://github.com/cowprotocol/cowswap/issues/534
-    if (!Object.keys(defaultTokens).length) return []
-    return (
-      urlLoadedTokens &&
-      urlLoadedTokens
-        .filter((token: Token) => {
-          return !Boolean(token.address in defaultTokens)
-        })
-        .filter((token: Token) => {
-          // Any token addresses that are loaded from the shorthands map do not need to show the import URL
-          const supported = supportedChainId(chainId)
-          if (!supported) return true
-          return !Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
-            const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][supported]
-            return shorthandTokenAddress && shorthandTokenAddress === token.address
-          })
-        })
-    )
-  }, [chainId, defaultTokens, urlLoadedTokens])
-
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
@@ -301,12 +254,6 @@ export default function Swap({
     },
     [onUserInput]
   )
-
-  // reset if they close warning without tokens in params
-  const handleDismissTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-    history.push('/swap/')
-  }, [history])
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -598,12 +545,7 @@ export default function Swap({
 
   return (
     <>
-      <TokenWarningModal
-        isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
-        tokens={importTokensNotInDefault}
-        onConfirm={handleConfirmTokenWarning}
-        onDismiss={handleDismissTokenWarning}
-      />
+      <ImportTokenModal chainId={chainId!} history={history} />
       <TransactionConfirmationModal
         attemptingTxn={true}
         isOpen={showTransactionConfirmationModal}
