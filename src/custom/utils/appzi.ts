@@ -46,6 +46,8 @@ type AppziCustomSettings = {
   waitedTooLong?: true
   expired?: true
   traded?: true
+  orderId?: string
+  explorerUrl?: string
 }
 
 type AppziSettings = {
