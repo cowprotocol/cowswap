@@ -18,3 +18,12 @@ export function formatDateWithTimezone(date: Date | number | undefined | null): 
 
   return `${_date.toLocaleString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`
 }
+
+export function timeSinceInSeconds(timestamp?: number): number | undefined {
+  if (!timestamp) {
+    return
+  }
+  const timeDelta = Date.now() - timestamp
+
+  return Math.floor(timeDelta / 1000)
+}
