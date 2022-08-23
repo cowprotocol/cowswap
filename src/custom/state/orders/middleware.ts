@@ -1,8 +1,10 @@
-import { Middleware, isAnyOf } from '@reduxjs/toolkit'
+import { Middleware, isAnyOf, MiddlewareAPI, Dispatch, AnyAction } from '@reduxjs/toolkit'
 
 import { addPopup } from 'state/application/reducer'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
+
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
 import { registerOnWindow } from 'utils/misc'
@@ -238,18 +240,12 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       ordersData: [{ id }],
     } = action.payload
 
-    const orders = store.getState().orders[chainId]
-    const openSince = _getOrderById(orders, id)?.order?.openSince
-
-    openNpsAppziSometimes({ traded: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
+    _triggerNps(store, chainId, id, { traded: true })
   } else if (isSingleFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
     const { chainId, id } = action.payload
 
-    const orders = store.getState().orders[chainId]
-    const openSince = _getOrderById(orders, id)?.order?.openSince
-
-    openNpsAppziSometimes({ traded: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
+    _triggerNps(store, chainId, id, { traded: true })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {
@@ -257,21 +253,27 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       ids: [id],
     } = action.payload
 
-    const orders = store.getState().orders[chainId]
-    const openSince = _getOrderById(orders, id)?.order?.openSince
-
-    openNpsAppziSometimes({ expired: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
+    _triggerNps(store, chainId, id, { expired: true })
   } else if (isSingleExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const { chainId, id } = action.payload
 
-    const orders = store.getState().orders[chainId]
-    const openSince = _getOrderById(orders, id)?.order?.openSince
-
-    openNpsAppziSometimes({ expired: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
+    _triggerNps(store, chainId, id, { expired: true })
   }
 
   return next(action)
+}
+
+function _triggerNps(
+  store: MiddlewareAPI<Dispatch<AnyAction>>,
+  chainId: ChainId,
+  id: string,
+  npsParams: Parameters<typeof openNpsAppziSometimes>[0]
+) {
+  const orders = store.getState().orders[chainId]
+  const openSince = _getOrderById(orders, id)?.order?.openSince
+
+  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince) })
 }
 
 function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
