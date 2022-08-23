@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId, SupportedChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from 'constants/chains'
 import { OrderKind, QuoteQuery } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
@@ -67,15 +67,15 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
   }
 }
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
-function getPriceStrategyUrl(): Record<SupportedChainId, string> {
+function getPriceStrategyUrl(): Record<ChainId, string> {
   const environment = environmentName !== 'production' ? 'barn' : environmentName
   const url = STRATEGY_URL_BASE + environment + '/strategies'
 
   return {
-    [SupportedChainId.MAINNET]: url + '/strategy-1.json',
-    [SupportedChainId.RINKEBY]: url + '/strategy-4.json',
-    [SupportedChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
-    [SupportedChainId.GOERLI]: url + '/strategy-5.json',
+    [ChainId.MAINNET]: url + '/strategy-1.json',
+    [ChainId.RINKEBY]: url + '/strategy-4.json',
+    [ChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
+    [ChainId.GOERLI]: url + '/strategy-5.json',
   }
 }
 
@@ -559,7 +559,7 @@ export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS)
   const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
   const json = await response.json()
 
-  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
+  if (chainId === ChainId.GNOSIS_CHAIN) {
     // Different endpoint for GChain with a different format. Need to transform it
     return _transformGChainGasPrices(json)
   }
