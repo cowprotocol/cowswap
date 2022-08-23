@@ -26,6 +26,7 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import usePrevious from 'hooks/usePrevious'
 import { useWeb3React } from '@web3-react/core'
+import { CardsLoader, CardsSpinner } from '../styled'
 import { supportedChainId } from 'utils/supportedChainId'
 import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
 import useDebounce from 'hooks/useDebounce'
@@ -47,7 +48,7 @@ const PageView = {
 }
 
 export default function TokensOverview() {
-  const { chainId } = useWeb3React()
+  const { chainId, provider } = useWeb3React()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
@@ -100,7 +101,13 @@ export default function TokensOverview() {
       tokensData = favouriteTokens
     }
 
-    if (!isChainSupported) {
+    if (!provider) {
+      return (
+        <CardsLoader style={{ minHeight: '200px' }}>
+          <CardsSpinner size="24px" />
+        </CardsLoader>
+      )
+    } else if (!isChainSupported) {
       return <Trans>Unsupported network</Trans>
     }
 
@@ -123,6 +130,7 @@ export default function TokensOverview() {
     isChainSupported,
     page,
     prevQuery,
+    provider,
     query,
     selectedView,
   ])
@@ -150,56 +158,58 @@ export default function TokensOverview() {
 
   return (
     <Overview useFlex={false} padding={'20px 30px 30px'}>
-      <AccountHeading>
-        <LeftSection>
-          <MenuWrapper ref={node as any}>
-            <MenuButton onClick={toggleMenu}>
-              <Subtitle>
-                <Trans>{PageView[selectedView].label}</Trans>
-              </Subtitle>
-              <StyledChevronDown size={14} />
-            </MenuButton>
+      {isChainSupported && (
+        <AccountHeading>
+          <LeftSection>
+            <MenuWrapper ref={node as any}>
+              <MenuButton onClick={toggleMenu}>
+                <Subtitle>
+                  <Trans>{PageView[selectedView].label}</Trans>
+                </Subtitle>
+                <StyledChevronDown size={14} />
+              </MenuButton>
 
-            {isMenuOpen ? (
-              <Menu>
-                {Object.entries(PageView).map(([key, value]) => (
-                  <MenuItem
-                    key={key}
-                    active={selectedView === key}
-                    onClick={() => handleMenuClick(key as PageViewKeys)}
-                  >
-                    <span>{value.label}</span>
-                    {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                  </MenuItem>
-                ))}
-              </Menu>
-            ) : null}
-          </MenuWrapper>
+              {isMenuOpen ? (
+                <Menu>
+                  {Object.entries(PageView).map(([key, value]) => (
+                    <MenuItem
+                      key={key}
+                      active={selectedView === key}
+                      onClick={() => handleMenuClick(key as PageViewKeys)}
+                    >
+                      <span>{value.label}</span>
+                      {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              ) : null}
+            </MenuWrapper>
 
-          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-            <RemoveTokens onClick={handleRestoreTokens}>
-              (<Trans>Restore defaults</Trans>)
-            </RemoveTokens>
-          )}
-        </LeftSection>
+            {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+              <RemoveTokens onClick={handleRestoreTokens}>
+                (<Trans>Restore defaults</Trans>)
+              </RemoveTokens>
+            )}
+          </LeftSection>
 
-        <SearchInputFormatter>
-          <TokenSearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t`Search name/symbol or paste address`}
-            autoComplete="off"
-            value={query}
-            onChange={handleSearch}
-          />
+          <SearchInputFormatter>
+            <TokenSearchInput
+              type="text"
+              id="token-search-input"
+              placeholder={t`Search name/symbol or paste address`}
+              autoComplete="off"
+              value={query}
+              onChange={handleSearch}
+            />
 
-          {!!query.length && (
-            <ClearSearchInput>
-              <CloseIcon size={24} onClick={handleSearchClear} />
-            </ClearSearchInput>
-          )}
-        </SearchInputFormatter>
-      </AccountHeading>
+            {!!query.length && (
+              <ClearSearchInput>
+                <CloseIcon size={24} onClick={handleSearchClear} />
+              </ClearSearchInput>
+            )}
+          </SearchInputFormatter>
+        </AccountHeading>
+      )}
 
       {renderTableContent()}
     </Overview>

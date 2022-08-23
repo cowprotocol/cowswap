@@ -42,7 +42,8 @@ export const Menu = styled.div`
   padding: 12px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    transform: translateX(-30%) translateY(105%);
+    left: 50%;
+    transform: translateX(-50%) translateY(105%);
   `}
 `
 
