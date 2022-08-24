@@ -7,7 +7,6 @@ import { ButtonPrimary } from 'components/Button'
 import WrappingVisualisation from './WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/connection/hooks'
-import { useIsTransactionPending } from 'state/enhancedTransactions/hooks'
 
 import { useGasPrices } from 'state/gas/hooks'
 import { _isLowBalanceCheck, _getAvailableTransactions, _estimateTxCost } from './helpers'
@@ -18,6 +17,9 @@ import { CloseIcon, ThemedText } from 'theme'
 import { RowBetween } from 'components/Row'
 import { useIsExpertMode } from 'state/user/hooks'
 import { delay } from 'utils/misc'
+import { useSingleActivityState } from 'hooks/useActivityDerivedState'
+import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { useWeb3React } from '@web3-react/core'
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -92,11 +94,17 @@ export interface Props {
 }
 
 enum EthFlowState {
-  SwapReady,
-  WrapAndApproveNeeded,
-  ApproveNeeded,
-  WrapNeeded,
-  Loading,
+  SwapReady, // 0
+  WrapAndApproveNeeded, // 1
+  WrapAndApprovePending, // 2
+  ApproveNeeded, // 3
+  WrapNeeded, // 4
+  ApprovePending, // 5
+  ApproveFailed, // 6
+  WrapFailed, // 7
+  WrapPending, // 8
+  WrapAndApproveFailed, // 9
+  Loading, // 10
 }
 
 export default function EthWethWrap({
@@ -119,21 +127,25 @@ export default function EthWethWrap({
   wrapCallback,
   swapCallback,
 }: Props) {
-  const [loading, setLoading] = useState(false)
-  const [wrapError, setWrapError] = useState<Error | null>(null)
-  const [approveError, setApproveError] = useState<Error | null>(null)
   const [pendingHashMap, setPendingHashMap] = useState<{ approveHash?: string; wrapHash?: string }>({
     approveHash: undefined,
     wrapHash: undefined,
   })
 
+  const { chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
 
   // maintain own local state of approve/wrap states
+  const [loading, setLoading] = useState(false)
+  // APPROVE STATE
+  const approveState = useSingleActivityState({ chainId, id: pendingHashMap.approveHash || '' })
   const [approveSubmitted, setApproveSubmitted] = useState(false)
+  const [approveError, setApproveError] = useState<Error | null>(null)
+  // WRAP STATE
+  const wrapState = useSingleActivityState({ chainId, id: pendingHashMap.wrapHash || '' })
   const [wrapSubmitted, setWrapSubmitted] = useState(false)
-  const isApprovePending = useIsTransactionPending(pendingHashMap.approveHash)
-  const isWrapPending = useIsTransactionPending(pendingHashMap.wrapHash)
+  const [wrapError, setWrapError] = useState<Error | null>(null)
+  // BALANCES
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
 
   // wrap/unwrap/native/wrapped related constants
@@ -163,32 +175,20 @@ export default function EthWethWrap({
       _getDerivedEthFlowState({
         approveError,
         wrapError,
-        approveSubmitted,
-        wrapSubmitted,
-        isApprovePending,
-        isWrapPending,
+        approveState,
+        wrapState,
         needsApproval,
         needsWrap,
         isExpertMode,
       }),
-    [
-      isExpertMode,
-      approveError,
-      approveSubmitted,
-      isApprovePending,
-      isWrapPending,
-      needsApproval,
-      needsWrap,
-      wrapError,
-      wrapSubmitted,
-    ]
+    [isExpertMode, approveError, approveState, needsApproval, needsWrap, wrapError, wrapState]
   )
 
   // loading if either approving or wrap pending
   // and set loading local state accordingly..
   useEffect(() => {
-    setLoading(isApprovePending || isWrapPending)
-  }, [isApprovePending, isWrapPending])
+    setLoading(state === EthFlowState.Loading)
+  }, [state])
 
   const handleError = useCallback(
     (error: any, type: 'WRAP' | 'APPROVE') => {
@@ -210,7 +210,6 @@ export default function EthWethWrap({
   const handleWrap = useCallback(async () => {
     if (!wrapCallback) return
     setWrapError(null)
-    setLoading(true)
     setWrapSubmitted(false)
 
     try {
@@ -235,7 +234,6 @@ export default function EthWethWrap({
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
     setApproveError(null)
-    setLoading(true)
     setApproveSubmitted(false)
 
     try {
@@ -351,8 +349,8 @@ export default function EthWethWrap({
       _buildActionButton({
         approveError,
         wrapError,
-        isApprovePending,
-        isWrapPending,
+        approveState,
+        wrapState,
         isNativeIn,
         nativeSymbol,
         wrappedSymbol,
@@ -363,6 +361,7 @@ export default function EthWethWrap({
         handleSwap,
         handleWrap,
         handleApprove,
+        handleMountInExpertMode,
       }),
     [
       // errors
@@ -371,8 +370,8 @@ export default function EthWethWrap({
       // state
       state,
       loading,
-      isApprovePending,
-      isWrapPending,
+      approveState,
+      wrapState,
       // misc
       isExpertMode,
       isNativeIn,
@@ -383,6 +382,7 @@ export default function EthWethWrap({
       handleSwap,
       handleWrap,
       handleApprove,
+      handleMountInExpertMode,
     ]
   )
 
@@ -438,50 +438,81 @@ export default function EthWethWrap({
   )
 }
 
-type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'wrapSubmitted' | 'approveSubmitted' | 'isExpertMode'> &
+type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> &
   Pick<Props, 'needsApproval' | 'needsWrap'> & {
     approveError: Error | null
     wrapError: Error | null
-    approveSubmitted: boolean
-    wrapSubmitted: boolean
-    isApprovePending: boolean
-    isWrapPending: boolean
+    approveState: ActivityDerivedState | null
+    wrapState: ActivityDerivedState | null
   }
 
 // returns derived ethflow state from current props
 function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
-  const {
-    approveError,
-    wrapError,
-    approveSubmitted,
-    wrapSubmitted,
-    isApprovePending,
-    isWrapPending,
-    needsApproval,
-    needsWrap,
-    isExpertMode,
-  } = params
+  const { approveError, wrapError, approveState, wrapState, needsApproval, needsWrap, isExpertMode } = params
   // approve state
-  const approveSentAndSuccessful = !approveError && approveSubmitted && !isApprovePending
+  const approveExpired = approveState?.isExpired
+  const approvePending = approveState?.isPending
+  const approveSentAndSuccessful = Boolean(!approveError && approveState?.isConfirmed)
+  const approveNeeded = needsApproval && !approveSentAndSuccessful
   const approveFinished = !needsApproval || approveSentAndSuccessful
   // wrap state
-  const wrapSentAndSuccessful = !wrapError && wrapSubmitted && !isWrapPending
+  const wrapExpired = wrapState?.isExpired
+  const wrapPending = wrapState?.isPending
+  const wrapSentAndSuccessful = Boolean(!wrapError && wrapState?.isConfirmed)
+  const wrapNeeded = needsWrap && !wrapSentAndSuccessful
   const wrapFinished = !needsWrap || wrapSentAndSuccessful
 
-  let state = EthFlowState.Loading
-  if (approveFinished && wrapFinished) {
-    state = EthFlowState.SwapReady
-  } else if (isExpertMode && needsWrap && !wrapSentAndSuccessful && needsApproval && !approveSentAndSuccessful) {
-    state = EthFlowState.WrapAndApproveNeeded
-  } else if (needsWrap && !wrapSentAndSuccessful) {
-    state = EthFlowState.WrapNeeded
-  } else if (needsApproval && !approveSentAndSuccessful) {
-    state = EthFlowState.ApproveNeeded
-  } else {
-    state = EthFlowState.Loading
+  // PENDING states
+  if (wrapPending || approvePending) {
+    // expertMode only - both operations pending
+    if (isExpertMode && wrapPending && approvePending) {
+      return EthFlowState.WrapAndApprovePending
+    }
+    // Only wrap is pending
+    else if (wrapPending) {
+      return EthFlowState.WrapPending
+    }
+    // Only approve is pending
+    else return EthFlowState.ApprovePending
   }
-
-  return state
+  // FAILED states
+  else if (approveExpired || wrapExpired) {
+    // expertMode only - BOTH operations failed
+    if (isExpertMode && approveExpired && wrapExpired) {
+      return EthFlowState.WrapAndApproveFailed
+    }
+    // Only wrap failed
+    else if (wrapExpired) {
+      return EthFlowState.WrapFailed
+    }
+    // Only approve failed
+    else return EthFlowState.ApproveFailed
+  }
+  // NEEDED state
+  else if (approveNeeded || wrapNeeded) {
+    // in expertMode and we need to wrap and swap
+    if (isExpertMode && approveNeeded && wrapNeeded) {
+      return EthFlowState.WrapAndApproveNeeded
+    }
+    // Only wrap needed
+    else if (wrapNeeded) {
+      // if (wrapPending) return EthFlowState.WrapPending
+      return EthFlowState.WrapNeeded
+    }
+    // Only approve needed
+    else {
+      // if (approvePending) return EthFlowState.ApprovePending
+      return EthFlowState.ApproveNeeded
+    }
+  }
+  // BOTH successful, ready to swap
+  else if (approveFinished && wrapFinished) {
+    return EthFlowState.SwapReady
+  }
+  // LOADING
+  else {
+    return EthFlowState.Loading
+  }
 }
 
 type ModalTextContentProps = {
@@ -496,64 +527,93 @@ type ModalTextContentProps = {
 
 // returns modal content: header and descriptions based on state
 function _getModalTextContent(params: ModalTextContentProps) {
-  const { wrappedSymbol, nativeSymbol, state, isExpertMode, isNative, wrapSubmitted, approveSubmitted } = params
+  const { wrappedSymbol, nativeSymbol, state, isExpertMode, isNative /*, wrapSubmitted, approveSubmitted */ } = params
   // common text
   const swapHeader = `Swap ${wrappedSymbol}`
   const swapDescription = `Click "Swap" to submit an off-chain transaction and swap your ${wrappedSymbol}`
+  const signatureRequiredDescription = 'Transaction signature required, please check your connected wallet'
+  const transactionInProgress = 'Transaction in progress...'
+  // wrap
   const wrapHeader = isNative ? `Wrap your ${nativeSymbol}` : `Unwrap your ${wrappedSymbol}`
+  const wrapInstructions = `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
+    isNative ? nativeSymbol : wrappedSymbol
+  } into ${isNative ? wrappedSymbol : nativeSymbol}`
+  // approve
+  const approveHeader = `Approve ${wrappedSymbol}`
+  const approveInstructions = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
+  // both
+  const bothHeader = `${isNative ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`} and Approve`
+  const bothInstructions = `2 pending on-chain transactions: ${
+    isNative ? `${nativeSymbol} wrap` : `${wrappedSymbol} unwrap`
+  } and approve. Please check your connected wallet for both signature requests`
 
-  let header = '',
-    description: string | null = null
+  let header = ''
+  let description: string | null = null
+
   // in expert mode we start the logic right away
   // and sometimes there can be 2 simultaneous transactions
-  if (isExpertMode) {
-    if (state === EthFlowState.WrapAndApproveNeeded) {
-      header = `${isNative ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol} and Approve`
-      description = `2 pending on-chain transactions: ${
-        isNative ? nativeSymbol + ' wrap' : wrappedSymbol + ' unwrap'
-      } and approve. Please check your connected wallet for both signature requests`
-      // Hide description on submission, pending tx visual is enough
-      if (wrapSubmitted && approveSubmitted) {
-        description = null
-      }
-    } else if (state === EthFlowState.WrapNeeded) {
-      header = wrapHeader
-      if (!wrapSubmitted) {
-        description = `Transaction signature required, please check your connected wallet`
-      } else {
-        // Hide description on submission, pending tx visual is enough
-        description = null
-      }
-    } else if (state === EthFlowState.ApproveNeeded) {
-      header = `Approving ${wrappedSymbol}`
-      description = `${wrappedSymbol} approval transaction in progress`
-      if (!approveSubmitted) {
-        description = 'Transaction signature required, please check your connected wallet'
-      } else {
-        // Hide description on submission, pending tx visual is enough
-        description = null
-      }
-    } else {
-      header = swapHeader
-      description = null
+
+  switch (state) {
+    case EthFlowState.WrapAndApproveFailed: {
+      header = 'Wrap and Approve failed!'
+      description =
+        'Both wrap and approve operations failed. Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again'
+      break
     }
-  } else {
-    // pending wrap operation
-    if (state === EthFlowState.WrapNeeded) {
-      header = wrapHeader
-      description = `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
-        isNative ? nativeSymbol : wrappedSymbol
-      } into ${isNative ? wrappedSymbol : nativeSymbol}`
-      // pending approve operation
-    } else if (state === EthFlowState.ApproveNeeded) {
-      header = `Approve ${wrappedSymbol}`
-      description = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
-    } else {
-      // swap operation
+    case EthFlowState.WrapFailed: {
+      header = `Wrap ${nativeSymbol} failed!`
+      description = `Wrap operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Wrap ${nativeSymbol}" to try again`
+      break
+    }
+    case EthFlowState.ApproveFailed: {
+      header = `Approve ${wrappedSymbol} failed!`
+      description = `Approve operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Approve ${wrappedSymbol}" to try again`
+      break
+    }
+
+    case EthFlowState.WrapAndApproveNeeded:
+    case EthFlowState.WrapAndApprovePending: {
+      header = bothHeader
+      // pending vs non-pending text
+      if (state === EthFlowState.WrapAndApprovePending) {
+        description = 'Transactions in progress...'
+      } else {
+        description = bothInstructions
+      }
+      break
+    }
+
+    case EthFlowState.WrapPending:
+    case EthFlowState.ApprovePending: {
+      header = state === EthFlowState.WrapPending ? wrapHeader : approveHeader
+      description = transactionInProgress
+
+      break
+    }
+
+    case EthFlowState.WrapNeeded:
+    case EthFlowState.ApproveNeeded: {
+      ;[header, description] =
+        state === EthFlowState.WrapNeeded ? [wrapHeader, wrapInstructions] : [approveHeader, approveInstructions]
+
+      if (isExpertMode) {
+        description = signatureRequiredDescription
+      }
+      break
+    }
+
+    case EthFlowState.SwapReady: {
       header = swapHeader
-      description = swapDescription
+      description = isExpertMode ? null : swapDescription
+      break
+    }
+    default: {
+      header = 'Loading operation'
+      description = 'Operation in progress!'
+      break
     }
   }
+
   return { header, description }
 }
 
@@ -570,8 +630,8 @@ function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, is
 function _buildActionButton({
   approveError,
   wrapError,
-  isApprovePending,
-  isWrapPending,
+  approveState,
+  wrapState,
   isNativeIn,
   nativeSymbol,
   wrappedSymbol,
@@ -582,57 +642,81 @@ function _buildActionButton({
   handleSwap,
   handleWrap,
   handleApprove,
+  handleMountInExpertMode,
 }: Pick<Props, 'isNativeIn'> &
-  Pick<DerivedEthFlowStateProps, 'approveError' | 'wrapError' | 'isApprovePending' | 'isWrapPending' | 'isExpertMode'> &
+  Pick<DerivedEthFlowStateProps, 'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'> &
   Pick<ModalTextContentProps, 'nativeSymbol' | 'wrappedSymbol' | 'state'> & {
     isWrap: boolean
     loading: boolean
     handleSwap: (showSwapModal?: boolean) => Promise<void>
     handleApprove: () => Promise<void>
     handleWrap: () => Promise<void>
+    handleMountInExpertMode: () => Promise<void>
   }) {
+  // async, pre-receipt errors (e.g user rejected TX)
   const hasErrored = !!(approveError || wrapError)
-  let actionButton
-  if (isExpertMode || state === EthFlowState.SwapReady) {
-    actionButton = isExpertMode ? null : (
-      <ButtonPrimary disabled={loading || hasErrored} padding="0.5rem" maxWidth="70%" onClick={() => handleSwap(true)}>
-        {loading ? <Loader /> : <Trans>Swap</Trans>}
-      </ButtonPrimary>
-    )
-  } else {
-    if (state === EthFlowState.WrapNeeded) {
-      // show wrap button
-      actionButton = (
-        <ButtonPrimary disabled={isWrapPending || hasErrored} padding="0.5rem" maxWidth="70%" onClick={handleWrap}>
-          {isWrapPending ? (
-            <Loader />
-          ) : (
-            <Trans>{isNativeIn || isWrap ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol}</Trans>
-          )}
-        </ButtonPrimary>
-      )
-    } else if (state === EthFlowState.ApproveNeeded) {
-      // show approval button
-      actionButton = (
-        <ButtonPrimary
-          disabled={isApprovePending || hasErrored}
-          padding="0.5rem"
-          maxWidth="70%"
-          onClick={handleApprove}
-        >
-          {isApprovePending ? <Loader /> : <Trans>Approve {wrappedSymbol}</Trans>}
-        </ButtonPrimary>
-      )
-    } else {
-      actionButton = (
-        <ButtonPrimary disabled padding="0.5rem" maxWidth="70%">
-          <Loader />
-        </ButtonPrimary>
-      )
-    }
+
+  let label = ''
+  let showButton = !isExpertMode
+  let showLoader = loading
+  // dynamic props for cta button
+  const buttonProps: {
+    disabled: boolean
+    onClick: (() => Promise<void>) | undefined
+  } = {
+    disabled: false,
+    onClick: undefined,
   }
 
-  return <ButtonWrapper>{actionButton}</ButtonWrapper>
+  switch (state) {
+    // an operation has failed after submitting
+    case EthFlowState.WrapAndApproveFailed:
+      label = 'Wrap and approve'
+      showButton = true
+      buttonProps.onClick = handleMountInExpertMode
+      break
+    case EthFlowState.WrapFailed:
+      label = `Wrap ${nativeSymbol}`
+      showButton = true
+      buttonProps.onClick = handleWrap
+      break
+    case EthFlowState.ApproveFailed:
+      label = `Approve ${wrappedSymbol}`
+      showButton = true
+      buttonProps.onClick = handleApprove
+      break
+    // non failures
+    case EthFlowState.WrapNeeded:
+      label = isNativeIn || isWrap ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol
+      buttonProps.onClick = handleWrap
+      buttonProps.disabled = Boolean(wrapState?.isPending)
+      break
+    case EthFlowState.ApproveNeeded:
+      label = 'Approve ' + wrappedSymbol
+      buttonProps.onClick = handleApprove
+      buttonProps.disabled = Boolean(approveState?.isPending)
+      break
+    case EthFlowState.SwapReady:
+      label = 'Swap'
+      buttonProps.onClick = () => handleSwap(true)
+      buttonProps.disabled = loading || hasErrored
+      break
+    // loading = default
+    default:
+      buttonProps.disabled = true
+      showLoader = true
+      break
+  }
+
+  return (
+    showButton && (
+      <ButtonWrapper>
+        <ButtonPrimary padding="0.5rem" maxWidth="70%" {...buttonProps}>
+          {showLoader ? <Loader /> : <Trans>{label}</Trans>}
+        </ButtonPrimary>
+      </ButtonWrapper>
+    )
+  )
 }
 
 type RemainingTxAndCostsParams = Pick<Props, 'isNativeIn' | 'nativeInput' | 'native'> & {
