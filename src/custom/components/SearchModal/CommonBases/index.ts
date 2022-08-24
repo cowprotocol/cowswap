@@ -79,7 +79,8 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
   `};
 
   overflow-y: auto;
-  max-height: 150px;
+  max-height: 135px;
+  padding-bottom: 20px;
 `
 
 export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`

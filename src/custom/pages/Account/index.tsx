@@ -9,6 +9,7 @@ import { Container, CardsWrapper } from './styled'
 import { useWeb3React } from '@web3-react/core'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { Title } from 'components/Page'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
@@ -59,7 +60,7 @@ export default function Account() {
       <Suspense fallback={Loading}>
         <AccountPageWrapper>
           <Content>
-            <h2 id={id}>{name}</h2>
+            <Title id={id}>{name}</Title>
             <Switch>
               <Route exact path={Routes.ACCOUNT} component={Overview} />
               {/* <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} /> */}
