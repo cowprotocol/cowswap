@@ -29,7 +29,6 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
 import { AutoRow } from 'components/Row'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
-import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import { ArrowWrapper /*, SwapCallbackError*/, Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
@@ -64,7 +63,6 @@ import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
-import TradeGp from 'state/swap/TradeGp'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
@@ -83,6 +81,9 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { ImportTokenModal } from './components/ImportTokenModal'
 import { CompatibilityIssuesWarning } from './components/CompatibilityIssuesWarning'
+import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 
 export default function Swap({
   history,
@@ -243,20 +244,8 @@ export default function Swap({
     [onUserInput]
   )
 
-  // modal and loading
-  const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
-    showConfirm: boolean
-    tradeToConfirm: TradeGp | undefined
-    attemptingTxn: boolean
-    swapErrorMessage: string | undefined
-    txHash: string | undefined
-  }>({
-    showConfirm: false,
-    tradeToConfirm: undefined,
-    attemptingTxn: false,
-    swapErrorMessage: undefined,
-    txHash: undefined,
-  })
+  const { showConfirm, tradeToConfirm, swapErrorMessage } = useAtomValue(swapConfirmAtom)
+  const setSwapState = useUpdateAtom(swapConfirmAtom)
 
   const formattedAmounts = useMemo(
     () => ({
@@ -333,6 +322,7 @@ export default function Swap({
         })
     }
   }, [
+    setSwapState,
     approveCallback,
     gatherPermitSignature,
     showConfirm,
@@ -432,7 +422,17 @@ export default function Swap({
           txHash: undefined,
         })
       })
-  }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
+  }, [
+    setSwapState,
+    swapCallback,
+    priceImpact,
+    tradeToConfirm,
+    showConfirm,
+    recipient,
+    recipientAddress,
+    account,
+    trade,
+  ])
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -444,18 +444,6 @@ export default function Swap({
     (approvalState === ApprovalState.NOT_APPROVED ||
       approvalState === ApprovalState.PENDING ||
       (approvalSubmitted && approvalState === ApprovalState.APPROVED))
-
-  const handleConfirmDismiss = useCallback(() => {
-    setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
-    // if there was a tx hash, we want to clear the input
-    if (txHash) {
-      onUserInput(Field.INPUT, '')
-    }
-  }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
-
-  const handleAcceptChanges = useCallback(() => {
-    setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
-  }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
     (inputCurrency) => {
@@ -497,9 +485,18 @@ export default function Swap({
 
   const { ErrorMessage } = useErrorMessage()
 
+  const confirmSwapProps: ConfirmSwapModalSetupProps = {
+    trade,
+    recipient,
+    allowedSlippage,
+    handleSwap,
+    onUserInput,
+    priceImpact,
+  }
+
   return (
     <>
-      <ImportTokenModal chainId={chainId!} history={history} />
+      {chainId && <ImportTokenModal chainId={chainId} history={history} />}
       <TransactionConfirmationModal
         attemptingTxn={true}
         isOpen={showTransactionConfirmationModal}
@@ -514,20 +511,7 @@ export default function Swap({
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode || recipientToggleVisible ? 'expertMode' : ''}>
-          <ConfirmSwapModal
-            isOpen={showConfirm}
-            trade={trade}
-            originalTrade={tradeToConfirm}
-            onAcceptChanges={handleAcceptChanges}
-            attemptingTxn={attemptingTxn}
-            txHash={txHash}
-            recipient={recipient}
-            allowedSlippage={allowedSlippage}
-            priceImpact={priceImpact}
-            onConfirm={handleSwap}
-            swapErrorMessage={swapErrorMessage}
-            onDismiss={handleConfirmDismiss}
-          />
+          <ConfirmSwapModalSetup {...confirmSwapProps} />
 
           <AutoColumn gap={'md'}>
             <div style={{ display: 'relative' }}>
