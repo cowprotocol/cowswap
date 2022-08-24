@@ -13,48 +13,22 @@ import { _isLowBalanceCheck, _getAvailableTransactions, _estimateTxCost } from '
 import { Trans } from '@lingui/macro'
 import SimpleAccountDetails from '../../AccountDetails/SimpleAccountDetails'
 import Loader from 'components/Loader'
-import { CloseIcon, ThemedText } from 'theme'
-import { RowBetween } from 'components/Row'
 import { useIsExpertMode } from 'state/user/hooks'
 import { delay } from 'utils/misc'
 import { useSingleActivityState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { useWeb3React } from '@web3-react/core'
+import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 
-const Wrapper = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
-  align-items: center;
-  color: ${({ theme }) => theme.text1};
-  justify-content: center;
-  width: 100%;
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-  font-size: smaller;
-  overflow: hidden;
-
-  margin: 0 auto;
-  padding: 24px 24px;
-  background: ${({ theme }) => theme.bg4};
-
-  > h2 {
-    color: ${({ theme }) => theme.wallet.color};
-  }
-
-  > ${ButtonPrimary} {
-    background: #62d9ff;
-    width: 100%;
-    padding: 6px;
-    margin: 6px auto 0;
-
-    &:disabled {
-      background-color: ${({ theme }) => theme.disabled};
-    }
-  }
+const EthFlowModal = styled(ConfirmationModalContent)`
+  padding: 22px;
 `
 
 const ModalMessage = styled.p`
   display: flex;
   flex-flow: row wrap;
   padding: 0;
+  margin-top: 40px;
   width: 100%;
   color: ${({ theme }) => theme.wallet.color};
 `
@@ -64,8 +38,11 @@ const ButtonWrapper = styled.div`
   flex-flow: row nowrap;
   justify-content: center;
   gap: 16px;
-  width: 100%;
   margin-top: 8px;
+  > button {
+    min-width: 90%;
+    min-height: 60px;
+  }
 `
 
 // used to avoid jarring UI effect from race between closing modal after successful operation(s)
@@ -183,7 +160,20 @@ export default function EthWethWrap({
       }),
     [isExpertMode, approveError, approveState, needsApproval, needsWrap, wrapError, wrapState]
   )
-
+  // get modal text content: header and descriptions
+  const { header, description } = useMemo(
+    () =>
+      _getModalTextContent({
+        wrappedSymbol,
+        nativeSymbol,
+        state,
+        isExpertMode,
+        isNative,
+        wrapSubmitted,
+        approveSubmitted,
+      }),
+    [approveSubmitted, isExpertMode, isNative, nativeSymbol, state, wrapSubmitted, wrappedSymbol]
+  )
   // loading if either approving or wrap pending
   // and set loading local state accordingly..
   useEffect(() => {
@@ -206,7 +196,6 @@ export default function EthWethWrap({
     },
     [onDismiss]
   )
-
   const handleWrap = useCallback(async () => {
     if (!wrapCallback) return
     setWrapError(null)
@@ -230,7 +219,6 @@ export default function EthWethWrap({
       }
     }
   }, [handleError, isUnwrap, isWrap, onDismiss, wrapCallback])
-
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
     setApproveError(null)
@@ -249,7 +237,6 @@ export default function EthWethWrap({
       setApproveSubmitted(false)
     }
   }, [approveCallback, handleError])
-
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
       try {
@@ -263,7 +250,6 @@ export default function EthWethWrap({
     },
     [swapCallback, onDismiss]
   )
-
   const handleMountInExpertMode = useCallback(async () => {
     setWrapError(null)
     setApproveError(null)
@@ -302,21 +288,6 @@ export default function EthWethWrap({
       }
     }
   }, [needsApproval, needsWrap, wrapCallback, approveCallback, handleError, handleSwap, isNativeIn, onDismiss])
-
-  // get modal text content: header and descriptions
-  const { header, description } = useMemo(
-    () =>
-      _getModalTextContent({
-        wrappedSymbol,
-        nativeSymbol,
-        state,
-        isExpertMode,
-        isNative,
-        wrapSubmitted,
-        approveSubmitted,
-      }),
-    [approveSubmitted, isExpertMode, isNative, nativeSymbol, state, wrapSubmitted, wrappedSymbol]
-  )
 
   // expert mode only: swap/wrap/unwrap on mount
   useEffect(() => {
@@ -385,56 +356,81 @@ export default function EthWethWrap({
       handleMountInExpertMode,
     ]
   )
+  const topContent = useCallback(
+    () => (
+      <>
+        {description && (
+          <ModalMessage>
+            <Trans>{description}</Trans>
+          </ModalMessage>
+        )}
+        {balanceChecks?.isLowBalance && (
+          <ModalMessage>
+            <span>
+              <Trans>
+                At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
+                {!balanceChecks.txsRemaining ? (
+                  <strong>insufficient for any further on-chain transactions.</strong>
+                ) : (
+                  <>
+                    sufficient for{' '}
+                    <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
+                  </>
+                )}
+              </Trans>
+            </span>
+          </ModalMessage>
+        )}
+      </>
+    ),
+    [balanceChecks, description, nativeSymbol]
+  )
+
+  const bottomContent = useCallback(
+    () => (
+      <>
+        <WrappingVisualisation
+          nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
+          nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
+          native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
+          wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
+          wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
+          wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
+          nativeInput={nativeInput}
+          chainId={chainId}
+        />
+        <SimpleAccountDetails
+          pendingTransactions={Object.values(pendingHashMap)}
+          confirmedTransactions={[]}
+          $margin="12px 0 0"
+        />
+        {renderActionButton()}
+      </>
+    ),
+    [
+      isUnwrap,
+      isWrap,
+      native,
+      nativeBalance,
+      nativeInput,
+      nativeSymbol,
+      pendingHashMap,
+      renderActionButton,
+      wrapped,
+      wrappedBalance,
+      wrappedSymbol,
+      chainId,
+    ]
+  )
 
   return (
-    <Wrapper>
-      <RowBetween marginBottom={20}>
-        <ThemedText.MediumHeader>
-          <Trans>{header}</Trans>
-        </ThemedText.MediumHeader>
-        <CloseIcon onClick={onDismiss} />
-      </RowBetween>
-
-      {description && (
-        <ModalMessage>
-          <span>
-            <Trans>{description}</Trans>
-          </span>
-        </ModalMessage>
-      )}
-      {balanceChecks?.isLowBalance && (
-        <ModalMessage>
-          <span>
-            <Trans>
-              At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
-              {!balanceChecks.txsRemaining ? (
-                <strong>insufficient for any further on-chain transactions.</strong>
-              ) : (
-                <>
-                  sufficient for{' '}
-                  <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
-                </>
-              )}
-            </Trans>
-          </span>
-        </ModalMessage>
-      )}
-      <WrappingVisualisation
-        nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
-        nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
-        native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
-        wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
-        wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
-        wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
-        nativeInput={nativeInput}
-      />
-      <SimpleAccountDetails
-        pendingTransactions={Object.values(pendingHashMap)}
-        confirmedTransactions={[]}
-        $margin="12px 0 0"
-      />
-      {renderActionButton()}
-    </Wrapper>
+    <EthFlowModal
+      title={header}
+      titleSize={20}
+      onDismiss={onDismiss}
+      topContent={topContent}
+      bottomContent={bottomContent}
+    />
   )
 }
 
@@ -654,6 +650,18 @@ function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, is
   }
 }
 
+/* function _getCurrencyUriForLogo({
+  isWrap,
+  isNativeIn,
+  wrapped,
+  native,
+  chainId,
+}: Pick<Props, 'isNativeIn' | 'native' | 'wrapped'> & { chainId?: number; isWrap: boolean }) {
+  if (!wrapped.logoURI && chainId) return CHAIN_INFO[chainId].logoUrl
+
+  return isWrap || isNativeIn ? wrapped.logoURI : chainId ? CHAIN_INFO[chainId].logoUrl : undefined
+} */
+
 // conditionally renders the correct action button depending on the proposed action and current eth-flow state
 function _buildActionButton({
   approveError,
@@ -752,7 +760,7 @@ type RemainingTxAndCostsParams = Pick<Props, 'isNativeIn' | 'nativeInput' | 'nat
 }
 
 function useRemainingTxsAndCosts({ native, isNativeIn, nativeBalance, nativeInput }: RemainingTxAndCostsParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const gasPrice = useGasPrices(chainId)
   // returns the cost of 1 tx and multi txs
   const txCosts = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
