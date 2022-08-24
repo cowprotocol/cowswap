@@ -7,7 +7,6 @@ import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 // import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
-import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -63,7 +62,6 @@ import { computeSlippageAdjustedAmounts /*, warningSeverity */ } from 'utils/pri
 import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { HashLink } from 'react-router-hash-link'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
 import TradeGp from 'state/swap/TradeGp'
@@ -84,11 +82,7 @@ import { AlertWrapper } from './styleds' // mod
 import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { ImportTokenModal } from './components/ImportTokenModal'
-
-// const AlertWrapper = styled.div`
-//   max-width: 460px;
-//   width: 100%;
-// `
+import { CompatibilityIssuesWarning } from './components/CompatibilityIssuesWarning'
 
 export default function Swap({
   history,
@@ -149,6 +143,10 @@ export default function Swap({
     currencies,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
+  const currencyIn = currencies[Field.INPUT]
+  const currencyOut = currencies[Field.OUTPUT]
+
+  const swapIsUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
   // detects trade load
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
@@ -211,21 +209,12 @@ export default function Swap({
             [Field.OUTPUT]: parsedAmount,
           }
         : {
-            // [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-            // [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
             [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmountWithoutFee,
             [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmountWithoutFee,
           },
     [independentField, parsedAmount, showWrap, trade]
   )
 
-  // const [routeNotFound, routeIsLoading, routeIsSyncing] = useMemo(
-  //   () => [!trade?.swaps, TradeState.LOADING === tradeState, TradeState.SYNCING === tradeState],
-  //   [trade, tradeState]
-  // )
-
-  // const fiatValueInput = useUSDCValue(trade?.inputAmount)
-  // const fiatValueOutput = useUSDCValue(trade?.outputAmount)
   const fiatValueInput = useHigherUSDValue(trade?.inputAmountWithoutFee)
   const fiatValueOutput = useHigherUSDValue(trade?.outputAmountWithoutFee)
 
@@ -258,7 +247,6 @@ export default function Swap({
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
-    // tradeToConfirm: Trade<Currency, Currency, TradeType> | undefined
     tradeToConfirm: TradeGp | undefined
     attemptingTxn: boolean
     swapErrorMessage: string | undefined
@@ -280,18 +268,6 @@ export default function Swap({
     }),
     [dependentField, independentField, parsedAmounts, showWrap, typedValue]
   )
-
-  /* const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
-  )
-
-  const approvalOptimizedTrade = useApprovalOptimizedTrade(trade, allowedSlippage)
-  const approvalOptimizedTradeString =
-    approvalOptimizedTrade instanceof V2Trade
-      ? 'V2SwapRouter'
-      : approvalOptimizedTrade instanceof V3Trade
-      ? 'V3SwapRouter'
-      : 'SwapRouter'*/
 
   // check whether the user has approved the router on the input token
   const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
@@ -463,29 +439,13 @@ export default function Swap({
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
-  // warnings on the greater of fiat value price impact and execution price impact
-  /* const priceImpactSeverity = useMemo(() => {
-    const executionPriceImpact = trade?.priceImpact
-    return warningSeverity(
-      executionPriceImpact && priceImpact
-        ? executionPriceImpact.greaterThan(priceImpact)
-          ? executionPriceImpact
-          : priceImpact
-        : executionPriceImpact ?? priceImpact
-    )
-  }, [priceImpact, trade])
-
-  const isArgentWallet = useIsArgentWallet() */
-
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    // !isArgentWallet &&
     !swapInputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
       approvalState === ApprovalState.PENDING ||
       (approvalSubmitted && approvalState === ApprovalState.APPROVED))
-  // && !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
@@ -517,11 +477,7 @@ export default function Swap({
     [onCurrencySelection]
   )
 
-  const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
-
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
-
-  // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
   const [exactInLabel, exactOutLabel] = useMemo(
     () => [
@@ -930,49 +886,24 @@ export default function Swap({
                   }
                 }}
                 id="swap-button"
-                disabled={!isValid /*|| routeIsSyncing || routeIsLoading || priceImpactTooHigh*/ || !!swapCallbackError}
-                // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
+                disabled={!isValid || !!swapCallbackError}
               >
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                   {swapInputError || <Trans>Swap</Trans>}
                 </SwapButton>
-                {/* <Text fontSize={20} fontWeight={500}>
-                    {swapInputError ? (
-                      swapInputError
-                    ) : routeIsSyncing || routeIsLoading ? (
-                      <Trans>Swap</Trans>
-                    ) : priceImpactSeverity > 2 ? (
-                      <Trans>Swap Anyway</Trans>
-                    ) : priceImpactTooHigh ? (
-                      <Trans>Price Impact Too High</Trans>
-                    ) : (
-                      <Trans>Swap</Trans>
-                    )}
-                  </Text> */}
               </ButtonError>
             )}
             {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>
-      {/*<SwitchLocaleLink />*/}
-      {!swapIsUnsupported ? null : !isSupportedWallet ? (
-        <UnsupportedCurrencyFooter
-          show={swapIsUnsupported}
-          currencies={[currencies[Field.INPUT], currencies[Field.OUTPUT]]}
-          showDetailsText="Read more about unsupported wallets"
-          detailsText={
-            <>
-              <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
-              <p>
-                Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
-              </p>
-            </>
-          }
-          detailsTitle="This wallet is not yet supported"
+      {currencyIn && currencyOut && (
+        <CompatibilityIssuesWarning
+          currencyIn={currencyIn}
+          currencyOut={currencyOut}
+          isSupportedWallet={isSupportedWallet}
+          swapIsUnsupported={swapIsUnsupported}
         />
-      ) : (
-        <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}
       <AlertWrapper>
         <NetworkAlert />
