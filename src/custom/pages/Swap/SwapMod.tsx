@@ -136,7 +136,7 @@ export default function Swap({
   // swap state
   const { independentField, typedValue, recipient, INPUT, OUTPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
   const {
-    v2Trade, // trade: { state: tradeState, trade },
+    v2Trade,
     allowedSlippage,
     currencyBalances,
     parsedAmount,
@@ -227,7 +227,6 @@ export default function Swap({
   const hideUnknownImpactWarning = !trade || !!onWrap || !priceImpactError || priceImpactLoading
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
-  // const isValid = !swapInputError
   const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
@@ -383,7 +382,6 @@ export default function Swap({
         txHash: undefined,
       })
     },
-    //openTransactionConfirmationModal,
     closeModals,
   })
 
@@ -534,9 +532,6 @@ export default function Swap({
           <AutoColumn gap={'md'}>
             <div style={{ display: 'relative' }}>
               <CurrencyInputPanel
-                // label={
-                //   independentField === Field.OUTPUT && !showWrap ? <Trans>From (at most)</Trans> : <Trans>From</Trans>
-                // }
                 label={
                   exactInLabel && (
                     <FeeInformationTooltip
@@ -562,22 +557,7 @@ export default function Swap({
                 otherCurrency={currencies[Field.OUTPUT]}
                 showCommonBases={true}
                 id="swap-currency-input"
-                // loading={independentField === Field.OUTPUT && routeIsSyncing}
               />
-              {/* UNI ARROW SWITCHER */}
-              {/*
-              <ArrowWrapper clickable>
-                <ArrowDown
-                  size="16"
-                  onClick={() => {
-                    setApprovalSubmitted(false) // reset 2 step UI for approvals
-                    onSwitchTokens()
-                  }}
-                  color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.text1 : theme.text3}
-                />
-              </ArrowWrapper>
-              */}
-              {/* GP ARROW SWITCHER */}
               <AutoColumn
                 justify="space-between"
                 style={{ margin: `${isExpertMode || recipientToggleVisible ? 10 : 3}px 0` }}
@@ -597,7 +577,6 @@ export default function Swap({
               <CurrencyInputPanel
                 value={formattedAmounts[Field.OUTPUT]}
                 onUserInput={handleTypeOutput}
-                // label={independentField === Field.INPUT && !showWrap ? <Trans>To (at least)</Trans> : <Trans>To</Trans>}
                 label={
                   exactOutLabel && (
                     <FeeInformationTooltip
@@ -623,7 +602,6 @@ export default function Swap({
                 otherCurrency={currencies[Field.INPUT]}
                 showCommonBases={true}
                 id="swap-currency-output"
-                // loading={independentField === Field.INPUT && routeIsSyncing}
               />
             </div>
 
@@ -640,18 +618,6 @@ export default function Swap({
                 <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
               </>
             ) : null}
-            {/*
-            {!showWrap && userHasSpecifiedInputOutput && (trade || routeIsLoading || routeIsSyncing) && (
-              <SwapDetailsDropdown
-                trade={trade}
-                syncing={routeIsSyncing}
-                loading={routeIsLoading}
-                showInverted={showInverted}
-                setShowInverted={setShowInverted}
-                allowedSlippage={allowedSlippage}
-              />
-            )}
-            */}
             {!showWrap && (
               <Card padding={showWrap ? '.25rem 1rem 0 1rem' : '0px'} $borderRadius={'20px'}>
                 <AutoColumn
@@ -734,14 +700,12 @@ export default function Swap({
                 <ThemedText.Main mb="4px">
                   <Trans>Insufficient liquidity for this trade.</Trans>
                 </ThemedText.Main>
-                {/* {singleHopOnly && <ThemedText.Main mb="4px">Try enabling multi-hop trades.</ThemedText.Main>} */}
               </GreyCard>
             ) : quote?.error === 'zero-price' ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <ThemedText.Main mb="4px">
                   <Trans>Invalid price. Try increasing input/output amount.</Trans>
                 </ThemedText.Main>
-                {/* {singleHopOnly && <ThemedText.Main mb="4px">Try enabling multi-hop trades.</ThemedText.Main>} */}
               </GreyCard>
             ) : quote?.error === 'transfer-eth-to-smart-contract' ? (
               <GreyCard style={{ textAlign: 'center' }}>
@@ -751,7 +715,6 @@ export default function Swap({
                     not currently supported
                   </Trans>
                 </ThemedText.Main>
-                {/* {singleHopOnly && <ThemedText.Main mb="4px">Try enabling multi-hop trades.</ThemedText.Main>} */}
               </GreyCard>
             ) : quote?.error === 'fetch-quote-error' ? (
               <GreyCard style={{ textAlign: 'center' }}>
@@ -847,25 +810,12 @@ export default function Swap({
                     id="swap-button"
                     disabled={
                       !isValid ||
-                      // routeIsSyncing ||
-                      // routeIsLoading ||
                       (approvalState !== ApprovalState.APPROVED && signatureState !== UseERC20PermitState.SIGNED)
-                      // priceImpactTooHigh
                     }
-                    // error={isValid && priceImpactSeverity > 2}
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
                       <Trans>Swap</Trans>
                     </SwapButton>
-                    {/* <Text fontSize={16} fontWeight={500}>
-                        {priceImpactTooHigh ? (
-                          <Trans>High Price Impact</Trans>
-                        ) : trade && priceImpactSeverity > 2 ? (
-                          <Trans>Swap Anyway</Trans>
-                        ) : (
-                          <Trans>Swap</Trans>
-                        )}
-                      </Text> */}
                   </ButtonError>
                 </AutoColumn>
               </AutoRow>
