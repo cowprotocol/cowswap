@@ -14,6 +14,7 @@ const WrappingVisualisation = ({
   wrappedBalance,
   wrappedSymbol,
   nativeInput,
+  chainId,
 }: {
   nativeSymbol: string
   nativeBalance: CurrencyAmount<Currency> | undefined
@@ -22,15 +23,28 @@ const WrappingVisualisation = ({
   wrappedBalance: CurrencyAmount<Currency> | undefined
   wrappedSymbol: string
   wrapped: Currency
+  chainId?: number
 }) => (
   <WrapCardContainer>
     {/* To Wrap */}
-    <WrapCard symbol={nativeSymbol} balance={nativeBalance} currency={native} amountToWrap={nativeInput} />
+    <WrapCard
+      symbol={nativeSymbol}
+      balance={nativeBalance}
+      currency={native}
+      amountToWrap={nativeInput}
+      chainId={chainId}
+    />
 
     <ArrowRight size={18} color={COLOUR_SHEET.primary1} />
 
     {/* Wrap Outcome */}
-    <WrapCard symbol={wrappedSymbol} balance={wrappedBalance} currency={wrapped} amountToWrap={nativeInput} />
+    <WrapCard
+      symbol={wrappedSymbol}
+      balance={wrappedBalance}
+      currency={wrapped}
+      amountToWrap={nativeInput}
+      chainId={chainId}
+    />
   </WrapCardContainer>
 )
 

@@ -3,6 +3,9 @@ import styled from 'styled-components/macro'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { CHAIN_INFO } from 'constants/chainInfo'
+import { WRAPPED_NATIVE_CURRENCY } from '@src/custom/constants/tokens'
 
 const BalanceLabel = styled.p<{ background?: string }>`
   display: flex;
@@ -31,7 +34,7 @@ const WrapCardWrapper = styled.div`
 export const WrapCardContainer = styled.div`
   position: relative;
   ${({ theme }) => theme.flexRowNoWrap}
-  border: 2px solid ${({ theme }) => theme.bg1};
+  border: 1px solid ${({ theme }) => theme.bg2};
   border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
   margin: 12px 0;
   width: 100%;
@@ -40,12 +43,12 @@ export const WrapCardContainer = styled.div`
 
   > ${WrapCardWrapper} {
     &:nth-of-type(1) {
-      background-color: ${({ theme }) => theme.bg2};
-      color: ${({ theme }) => theme.text2};
+      background-color: ${({ theme }) => theme.bg1};
     }
 
     &:nth-of-type(2) {
-      background-color: ${({ theme }) => theme.bg1};
+      color: ${({ theme }) => theme.text2};
+      background-color: ${({ theme }) => theme.bg2};
     }
 
     > ${BalanceLabel}:last-of-type {
@@ -70,19 +73,30 @@ export const WrapCardContainer = styled.div`
   }
 `
 
+const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
+  filter: invert(1);
+`
+
 interface WrapCardProps {
   symbol: string
   balance?: CurrencyAmount<Currency>
   amountToWrap?: CurrencyAmount<Currency>
   currency: Currency
+  chainId?: number
 }
 
 export function WrapCard(props: WrapCardProps) {
-  const { symbol, balance, amountToWrap, currency } = props
+  const { symbol, balance, amountToWrap, currency, chainId } = props
+  const hasLogoUri = currency.isNative || Boolean(currency instanceof WrappedTokenInfo && currency.logoURI)
+
   return (
     <WrapCardWrapper>
       {/* logo */}
-      <CurrencyLogo currency={currency} size="24px" />
+      {!hasLogoUri && chainId && currency.equals(WRAPPED_NATIVE_CURRENCY[chainId]) ? (
+        <BackupTokenImg alt="token-img" src={CHAIN_INFO[chainId].logoUrl} />
+      ) : (
+        <CurrencyLogo currency={currency} size="24px" />
+      )}
       {/* amount to wrap/unwrap */}
       <BalanceLabel>
         <strong>
