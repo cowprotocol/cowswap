@@ -18,15 +18,12 @@ import { GpPriceStrategy } from 'state/gas/atoms'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
- *
- * @param chainId
- * @param order
  */
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
-    // this order sell amount is sellAmountAfterFees..
+    // this order sell amount is sellAmountAfterFees
     // this is an issue as it will be adjusted again in the backend
     // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
     // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
@@ -51,6 +48,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
     validTo: timestamp(order.validTo),
+    userAddress: order.owner,
+    receiver: order.receiver,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
@@ -98,7 +97,6 @@ export function UnfillableOrdersUpdater(): null {
     }
 
     const startTime = Date.now()
-    console.debug('[UnfillableOrdersUpdater] Checking new market price for orders....')
     try {
       isUpdating.current = true
 
@@ -107,7 +105,6 @@ export function UnfillableOrdersUpdater(): null {
       const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
       if (pending.length === 0) {
-        // console.debug('[UnfillableOrdersUpdater] No orders to update')
         return
       } else {
         console.debug(
@@ -139,7 +136,7 @@ export function UnfillableOrdersUpdater(): null {
       )
     } finally {
       isUpdating.current = false
-      console.debug(`[UnfillableOrdersUpdater] Checked canceled orders in ${Date.now() - startTime}ms`)
+      console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag])
 
