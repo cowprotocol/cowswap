@@ -538,7 +538,7 @@ function _getModalTextContent(params: ModalTextContentProps) {
   const approveHeader = `Approve ${wrappedSymbol}`
   const approveInstructions = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
   // both
-  const bothHeader = `${isNative ? 'Wrap' : 'Unwrap'} and approve`
+  const bothHeader = `Wrap and approve`
   const bothInstructions = `2 pending on-chain transactions: ${
     isNative ? `${nativeSymbol} wrap` : `${wrappedSymbol} unwrap`
   } and approve. Please check your connected wallet for both signature requests`
