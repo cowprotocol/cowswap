@@ -532,7 +532,7 @@ function _getModalTextContent(params: ModalTextContentProps) {
   const swapHeader = `Swap ${wrappedSymbol}`
   const swapDescription = `Click "Swap" to submit an off-chain transaction and swap your ${wrappedSymbol}`
   const signatureRequiredDescription = 'Transaction signature required, please check your connected wallet'
-  const transactionInProgress = 'Transaction in progress...'
+  const transactionInProgress = 'Transaction in progress. See below for live status updates'
   // wrap
   const wrapHeader = isNative ? `Wrap your ${nativeSymbol}` : `Unwrap your ${wrappedSymbol}`
   const wrapInstructions = `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
@@ -542,18 +542,18 @@ function _getModalTextContent(params: ModalTextContentProps) {
   const approveHeader = `Approve ${wrappedSymbol}`
   const approveInstructions = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
   // both
-  const bothHeader = `${isNative ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`} and Approve`
+  const bothHeader = `${isNative ? 'Wrap' : 'Unwrap'} and approve`
   const bothInstructions = `2 pending on-chain transactions: ${
     isNative ? `${nativeSymbol} wrap` : `${wrappedSymbol} unwrap`
   } and approve. Please check your connected wallet for both signature requests`
 
   let header = ''
   let description: string | null = null
-
-  // in expert mode we start the logic right away
-  // and sometimes there can be 2 simultaneous transactions
-
   switch (state) {
+    /**
+     * FAILED operations
+     * wrap/approve/both in expertMode failed
+     */
     case EthFlowState.WrapAndApproveFailed: {
       header = 'Wrap and Approve failed!'
       description =
@@ -571,42 +571,70 @@ function _getModalTextContent(params: ModalTextContentProps) {
       break
     }
 
-    case EthFlowState.WrapAndApproveNeeded:
+    /**
+     * PENDING operations
+     * wrap/approve/both in expertMode
+     */
     case EthFlowState.WrapAndApprovePending: {
       header = bothHeader
-      // pending vs non-pending text
-      if (state === EthFlowState.WrapAndApprovePending) {
-        description = 'Transactions in progress...'
-      } else {
-        description = bothInstructions
+      description = 'Transactions in progress. See below for live status updates of each operation'
+      break
+    }
+    case EthFlowState.WrapPending:
+    case EthFlowState.ApprovePending: {
+      description = transactionInProgress
+      // wrap only
+      if (state === EthFlowState.WrapPending) {
+        header = wrapHeader
+      }
+      // approve only
+      else {
+        header = approveHeader
       }
       break
     }
 
-    case EthFlowState.WrapPending:
-    case EthFlowState.ApprovePending: {
-      header = state === EthFlowState.WrapPending ? wrapHeader : approveHeader
-      description = transactionInProgress
-
+    /**
+     * NEEDS operations
+     * need to wrap/approve/both in expertMode
+     */
+    case EthFlowState.WrapAndApproveNeeded: {
+      header = bothHeader
+      description = bothInstructions
       break
     }
-
     case EthFlowState.WrapNeeded:
     case EthFlowState.ApproveNeeded: {
-      ;[header, description] =
-        state === EthFlowState.WrapNeeded ? [wrapHeader, wrapInstructions] : [approveHeader, approveInstructions]
+      // wrap only
+      if (state === EthFlowState.WrapNeeded) {
+        header = wrapHeader
+        description = wrapInstructions
+      }
+      // approve only
+      else {
+        header = approveHeader
+        description = approveInstructions
+      }
 
+      // in expert mode tx popups are automatic
+      // so we show user message to check wallet popup
       if (isExpertMode) {
         description = signatureRequiredDescription
       }
       break
     }
 
+    /**
+     * SWAP operation ready
+     */
     case EthFlowState.SwapReady: {
       header = swapHeader
       description = isExpertMode ? null : swapDescription
       break
     }
+
+    // show generic operation loading as default
+    // to shut TS up
     default: {
       header = 'Loading operation'
       description = 'Operation in progress!'
