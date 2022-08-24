@@ -191,7 +191,7 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <TableButton disabled={noBalance} onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
+        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
           Sell
         </TableButton>
       </Cell>
