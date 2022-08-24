@@ -6,8 +6,9 @@ import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Order } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
+import { ActivityDescriptors, ActivityStatus, ActivityType, useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { ChainId } from '../state/lists/actions'
 
 export function useActivityDerivedState({
   chainId,
@@ -23,6 +24,13 @@ export function useActivityDerivedState({
     () => getActivityDerivedState({ chainId, activityData: activity, allowsOffchainSigning, gnosisSafeInfo }),
     [chainId, activity, allowsOffchainSigning, gnosisSafeInfo]
   )
+}
+
+export function useSingleActivityState(params: { chainId?: ChainId; id: string }) {
+  const { chainId, id = '' } = params
+  const singleActivity = useSingleActivityDescriptor({ chainId, id })
+
+  return useActivityDerivedState({ chainId, activity: singleActivity as ActivityDescriptors })
 }
 
 function getActivityDerivedState(props: {
