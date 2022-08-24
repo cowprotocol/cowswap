@@ -1,4 +1,4 @@
-import { HelpCircle } from 'components/Page'
+import { HelpCircle, SectionTitle } from 'components/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import Web3Status from 'components/Web3Status'
@@ -59,6 +59,7 @@ export default function Affiliate() {
     <Wrapper>
       <GridWrap>
         <CardHead>
+          <SectionTitle>Affiliate Program</SectionTitle>
           {account && (
             <Loader isLoading={isLoading}>
               <StyledContainer>

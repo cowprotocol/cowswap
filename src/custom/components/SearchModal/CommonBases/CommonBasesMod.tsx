@@ -49,6 +49,7 @@ export const StyledScrollarea = styled.div`
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
+  padding: 0 20px;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -95,7 +96,7 @@ export default function CommonBases({ chainId, onSelect, selectedCurrency }: Com
 
   return tokens.length > 0 ? (
     <MobileWrapper gap="md" showOverflow={tokens.length > MAX_LENGTH_OVERFLOW}>
-      <AutoRow>
+      <AutoRow padding="0 20px">
         <Text fontWeight={500} fontSize={14}>
           {/* <Trans>Common bases</Trans> */}
           <Trans>Favourite tokens</Trans>
