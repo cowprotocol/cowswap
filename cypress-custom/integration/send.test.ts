@@ -1,1 +1,1 @@
-import '../../cypress/integration/send.test'
+import '../../cypress/e2e/send.test'

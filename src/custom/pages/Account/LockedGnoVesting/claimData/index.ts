@@ -2,6 +2,8 @@ import { SupportedChainId } from 'constants/chains'
 import mainnetIndex from './mainnet.json'
 import rinkebyIndex from './rinkeby.json'
 import gnosisChainIndex from './gnosisChain.json'
+import goerliIndex from './goerli.json'
+import { supportedChainId } from 'utils/supportedChainId'
 
 interface Claim {
   index: number
@@ -13,18 +15,24 @@ const indexFiles = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.RINKEBY]: rinkebyIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
+  [SupportedChainId.GOERLI]: goerliIndex,
 }
 
 const chainNames = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.RINKEBY]: 'rinkeby',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
+  [SupportedChainId.GOERLI]: 'goerli',
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'
 
 export const fetchClaim = async (address: string, chainId: SupportedChainId): Promise<Claim | null> => {
   const lowerCaseAddress = address.toLowerCase()
+
+  if (!supportedChainId(chainId)) {
+    return null
+  }
 
   const indexFile = indexFiles[chainId]
   const chainName = chainNames[chainId]

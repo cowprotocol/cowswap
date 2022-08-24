@@ -1,7 +1,10 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
+// import { EventName, ModalName } from 'components/AmplitudeAnalytics/constants'
+// import { Trace } from 'components/AmplitudeAnalytics/Trace'
+// import { sendEvent } from 'components/analytics'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
@@ -9,13 +12,12 @@ import useToggle from 'hooks/useToggle'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
-import { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 // import { Edit } from 'react-feather'
-import ReactGA from 'react-ga4'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
-import { useAllTokenBalances } from 'state/wallet/hooks'
+import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
 import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
@@ -31,6 +33,7 @@ import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/sty
 // MOD imports
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.'
+import { searchByAddressAnalytics } from 'utils/analytics'
 
 /* const ContentWrapper = styled(Column)`
   width: 100%;
@@ -45,6 +48,7 @@ export const Footer = styled.div`
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background-color: ${({ theme }) => theme.bg1};
+  // border-top: 1px solid ${({ theme }) => theme.bg2};
 `
 
 export interface CurrencySearchProps {
@@ -76,8 +80,10 @@ export function CurrencySearch({
   setImportToken,
   FooterButtonTextComponent, // MOD
 }: CurrencySearchProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useTheme()
+
+  const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false)
 
   // refs for fixed size lists
   const fixedList = useRef<FixedSizeList>()
@@ -94,15 +100,16 @@ export function CurrencySearch({
 
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
 
-  const network = useNetworkName() // mod
+  const network = useNetworkName() // MOD
 
   useEffect(() => {
     if (isAddressSearch) {
-      ReactGA.event({
-        category: 'Currency Select',
-        action: 'Search by address',
-        label: isAddressSearch,
-      })
+      // sendEvent({
+      //   category: 'Currency Select',
+      //   action: 'Search by address',
+      //   label: isAddressSearch,
+      // })
+      searchByAddressAnalytics(isAddressSearch) // MOD
     }
   }, [isAddressSearch])
 
@@ -110,21 +117,26 @@ export function CurrencySearch({
     return Object.values(allTokens).filter(getTokenFilter(debouncedQuery))
   }, [allTokens, debouncedQuery])
 
-  const balances = useAllTokenBalances()
+  const [balances, balancesIsLoading] = useAllTokenBalances()
   const sortedTokens: Token[] = useMemo(() => {
-    return filteredTokens.sort(tokenComparator.bind(null, balances))
-  }, [balances, filteredTokens])
+    void balancesIsLoading // creates a new array once balances load to update hooks
+    return [...filteredTokens].sort(tokenComparator.bind(null, balances))
+  }, [balances, filteredTokens, balancesIsLoading])
 
   const filteredSortedTokens = useSortTokensByQuery(debouncedQuery, sortedTokens)
 
   const native = useNativeCurrency()
 
   const filteredSortedTokensWithETH: Currency[] = useMemo(() => {
-    if (!native) return filteredSortedTokens
+    // Use Celo ERC20 Implementation and exclude the native asset
+    if (!native) {
+      return filteredSortedTokens
+    }
 
     const s = debouncedQuery.toLowerCase().trim()
     if (native.symbol?.toLowerCase()?.indexOf(s) !== -1) {
-      return native ? [native, ...filteredSortedTokens] : filteredSortedTokens
+      // Always bump the native token to the top of the list.
+      return native ? [native, ...filteredSortedTokens.filter((t) => !t.equals(native))] : filteredSortedTokens
     }
     return filteredSortedTokens
   }, [debouncedQuery, native, filteredSortedTokens])
@@ -144,7 +156,7 @@ export function CurrencySearch({
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
-  const handleInput = useCallback((event) => {
+  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
@@ -180,7 +192,16 @@ export function CurrencySearch({
     filteredTokens.length === 0 || (debouncedQuery.length > 2 && !isAddressSearch) ? debouncedQuery : undefined
   )
 
+  // Timeout token loader after 3 seconds to avoid hanging in a loading state.
+  useEffect(() => {
+    const tokenLoaderTimer = setTimeout(() => {
+      setTokenLoaderTimerElapsed(true)
+    }, 3000)
+    return () => clearTimeout(tokenLoaderTimer)
+  }, [])
+
   return (
+    // <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
     <ContentWrapper>
       <PaddedColumn gap="16px">
         <RowBetween>
@@ -202,7 +223,13 @@ export function CurrencySearch({
           />
         </Row>
         {showCommonBases && (
-          <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
+          <CommonBases
+            chainId={chainId}
+            onSelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            // searchQuery={searchQuery}
+            // isAddressSearch={isAddressSearch}
+          />
         )}
       </PaddedColumn>
       <Separator />
@@ -225,6 +252,9 @@ export function CurrencySearch({
                 showImportView={showImportView}
                 setImportToken={setImportToken}
                 showCurrencyAmount={showCurrencyAmount}
+                isLoading={balancesIsLoading && !tokenLoaderTimerElapsed}
+                searchQuery={searchQuery}
+                isAddressSearch={isAddressSearch}
               />
             )}
           </AutoSizer>
@@ -260,5 +290,6 @@ export function CurrencySearch({
         </Row>
       </Footer>
     </ContentWrapper>
+    // </Trace>
   )
 }

@@ -1,12 +1,7 @@
 import styled from 'styled-components/macro'
 import { ButtonPrimary } from '../Button'
 import FeedbackIcon from './../../assets/cow-swap/feedback.svg'
-import ReactAppzi from 'react-appzi'
-
-const FEEDBACK_ENABLED = process.env.NODE_ENV === 'production'
-if (FEEDBACK_ENABLED) {
-  ReactAppzi.initialize('5ju0G')
-}
+import { isAppziEnabled, openFeedbackAppzi } from 'utils/appzi'
 
 const Wrapper = styled(ButtonPrimary)`
   border-radius: 46px;
@@ -68,27 +63,14 @@ const Wrapper = styled(ButtonPrimary)`
     object-fit: contain;
   }
 `
-const APPZI_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
-
-declare global {
-  interface Window {
-    appzi?: {
-      openWidget: (key: string) => void
-    }
-  }
-}
-
-function openWidget() {
-  window.appzi?.openWidget(APPZI_KEY)
-}
 
 export default function Appzi() {
-  if (!FEEDBACK_ENABLED) {
+  if (!isAppziEnabled) {
     return null
   }
 
   return (
-    <Wrapper onClick={openWidget}>
+    <Wrapper onClick={openFeedbackAppzi}>
       <img src={FeedbackIcon} alt="Provide Feedback" />
     </Wrapper>
   )

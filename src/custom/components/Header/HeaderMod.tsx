@@ -2,7 +2,7 @@
 import useScrollPosition from '@react-hook/window-scroll'
 // import { CHAIN_INFO } from 'constants/chains'
 // import { SupportedChainId } from '@src/constants/chains'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import { useWeb3React } from '@web3-react/core'
 // import useTheme from 'hooks/useTheme'
 import { darken } from 'polished'
 import { NavLink } from 'react-router-dom'
@@ -78,7 +78,7 @@ export const HeaderControls = styled.div`
     justify-self: center;
     max-width: 960px;
     padding: 1rem;
-    z-index: 99;
+    z-index: 1;
     height: 72px;
     border-radius: 12px 12px 0 0;
   `};
@@ -316,7 +316,7 @@ export const StyledMenuButton = styled.button`
 `
 
 export default function Header({ children }: PropsWithChildren<void>) {
-  /* const { account, chainId } = useActiveWeb3React()
+  /* const { account, chainId } = useWeb3React()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const [darkMode] = useDarkModeManager()

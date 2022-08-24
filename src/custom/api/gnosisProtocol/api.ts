@@ -30,9 +30,9 @@ import * as Sentry from '@sentry/browser'
 import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
-import { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { GpPriceStrategy } from 'state/gas/atoms'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -40,6 +40,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
       [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
       [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
       [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
+      [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://barn.api.cow.fi/goerli/api',
     }
   }
 
@@ -48,6 +49,7 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
     [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://api.cow.fi/rinkeby/api',
     [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
+    [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://api.cow.fi/goerli/api',
   }
 }
 
@@ -73,6 +75,7 @@ function getPriceStrategyUrl(): Record<SupportedChainId, string> {
     [SupportedChainId.MAINNET]: url + '/strategy-1.json',
     [SupportedChainId.RINKEBY]: url + '/strategy-4.json',
     [SupportedChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
+    [SupportedChainId.GOERLI]: url + '/strategy-5.json',
   }
 }
 
@@ -294,7 +297,7 @@ function _handleError<P extends Context>(error: any, response: Response, params:
   Sentry.captureException(sentryError, {
     tags,
     // TODO: change/remove this in context update pr
-    contexts: { params: { ...params } },
+    contexts: { params },
   })
 
   return error?.baseError || error

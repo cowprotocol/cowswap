@@ -5,7 +5,7 @@ import AccountDetails from 'components/AccountDetails'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { OrderStatus } from 'state/orders/actions'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { transparentize } from 'polished'
 
 const SideBar = styled.div`
@@ -152,7 +152,7 @@ export interface OrdersPanelProps {
 
 export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
   const walletInfo = useWalletInfo()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()
@@ -168,10 +168,10 @@ export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps
     }
   }, [allRecentActivity])
 
-  const { active, activeNetwork, ensName } = walletInfo
+  const { active, ensName } = walletInfo
   const ENSName = ensName
 
-  if (!activeNetwork && !active) {
+  if (!active) {
     return null
   }
 

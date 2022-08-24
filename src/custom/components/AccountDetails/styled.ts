@@ -231,7 +231,7 @@ export const LowerSection = styled.div`
     }
   }
 
-  ${LinkStyledButton},${StyledLink} {
+  ${LinkStyledButton}, ${StyledLink} {
     opacity: 0.7;
     color: ${({ theme }) => theme.text1};
 
@@ -239,8 +239,9 @@ export const LowerSection = styled.div`
     font-size: 14px;
 
     &:hover {
-      opacity: 1;
+      color: ${({ theme }) => theme.textLink};
     }
+  }
 `
 
 const NetworkCardUni = styled(YellowCard)`
@@ -270,4 +271,10 @@ export const NetworkCard = styled(NetworkCardUni)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 auto 12px;
   `};
+`
+
+export const UnsupportedNetworkMsg = styled.span`
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.4;
 `

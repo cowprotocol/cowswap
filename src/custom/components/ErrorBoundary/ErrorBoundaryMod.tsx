@@ -1,24 +1,18 @@
-import { Trans } from '@lingui/macro'
 import React, { ErrorInfo } from 'react'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 
-import store, { AppState } from 'state/index'
-import { ExternalLink, ThemedText } from 'theme/index'
-import { userAgent } from '@src/utils/userAgent'
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
-
 // MOD imports
-import Page, { Title } from 'components/Page'
+import Page from 'components/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
-import CowError from 'assets/cow-swap/CowError.png'
 // import { UniIcon, LogoImage } from '../Header'
 import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
-import { DISCORD_LINK, CODE_LINK } from 'constants/index'
 import { Routes } from 'constants/routes'
+import { reportError } from 'utils/analytics'
+import { ChunkLoadError } from 'components/ErrorBoundary/ChunkLoadError'
+import { ErrorWithStackTrace } from 'components/ErrorBoundary/ErrorWithStackTrace'
 
 /* const FallbackWrapper = styled.div`
   display: flex;
@@ -33,28 +27,6 @@ const BodyWrapper = styled.div<{ margin?: string }>`
   width: 100%;
   white-space: ;
 ` */
-
-const CodeBlockWrapper = styled.div`
-  background: ${({ theme }) => theme.bg4};
-  overflow: auto;
-  white-space: pre;
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 16px;
-  padding: 16px;
-  color: ${({ theme }) => theme.text2};
-
-  /* MOD */
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 12px;
-    width: auto;
-  `};
-`
-
-const LinkWrapper = styled.div`
-  color: ${({ theme }) => theme.blue1};
-  padding: 6px 24px;
-`
 
 /* const SomethingWentWrongWrapper = styled.div`
   padding: 6px 24px;
@@ -100,23 +72,6 @@ const Wrapper = styled(Page)`
   }
 `
 
-const StyledTitle = styled(Title)`
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    text-align: center;
-  }
-`
-
-const FlexContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 0 0.5rem 0;
-
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToMedium}px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`
 const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
@@ -136,14 +91,6 @@ const FooterWrapper = styled(HeaderWrapper)`
   position: relative;
   top: auto;
 `
-
-const StyledParagraph = styled.p`
-  overflow-x: auto;
-`
-
-function truncate(value?: string): string | undefined {
-  return value ? value.slice(0, 1000) : undefined
-}
 
 async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
   const ready = await navigator.serviceWorker.ready
@@ -181,7 +128,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    ReactGA.event('exception', { description: error.toString() + errorInfo.toString(), fatal: true })
+    reportError(error, errorInfo)
   }
 
   render() {
@@ -189,7 +136,6 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
     const { error } = this.state
 
     if (error !== null) {
-      const encodedBody = encodeURIComponent(issueBody(error))
       return (
         // TODO: the strcture changed in the original file. We might want to re-use some stuff
         <AppWrapper>
@@ -203,47 +149,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
             </HeaderRow>
           </HeaderWrapper>
           <Wrapper>
-            <FlexContainer>
-              <StyledTitle>
-                <Trans> Something went wrong</Trans>
-              </StyledTitle>
-              <img src={CowError} alt="CowSwap Error" height="125" />
-            </FlexContainer>
-            <AutoColumn gap={'md'}>
-              <CodeBlockWrapper>
-                <code>
-                  <ThemedText.Main fontSize={10} color={'text1'}>
-                    <StyledParagraph>{error.stack}</StyledParagraph>
-                  </ThemedText.Main>
-                </code>
-              </CodeBlockWrapper>
-              <AutoRow>
-                <LinkWrapper>
-                  <ExternalLink
-                    id="create-github-issue-link"
-                    href={
-                      CODE_LINK +
-                      `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                        `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
-                      )}`
-                    }
-                  >
-                    <ThemedText.Link fontSize={16}>
-                      <Trans>Create an issue on GitHub</Trans>
-                      <span>↗</span>
-                    </ThemedText.Link>
-                  </ExternalLink>
-                </LinkWrapper>
-                <LinkWrapper>
-                  <ExternalLink id="get-support-on-discord" href={DISCORD_LINK}>
-                    <ThemedText.Link fontSize={16}>
-                      <Trans>Get support on Discord</Trans>
-                      <span>↗</span>
-                    </ThemedText.Link>
-                  </ExternalLink>
-                </LinkWrapper>
-              </AutoRow>
-            </AutoColumn>
+            {error?.name === 'ChunkLoadError' ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}
           </Wrapper>
           <FooterWrapper>
             <Footer />
@@ -253,70 +159,4 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
     }
     return this.props.children
   }
-}
-
-function getRelevantState(): null | keyof AppState {
-  const path = window.location.hash
-  if (!path.startsWith('#/')) {
-    return null
-  }
-  const pieces = path.substring(2).split(/[/\\?]/)
-  switch (pieces[0]) {
-    case 'swap':
-      return 'swap'
-    /* case 'add':
-      if (pieces[1] === 'v2') return 'mint'
-      else return 'mintV3'
-    case 'remove':
-      if (pieces[1] === 'v2') return 'burn'
-      else return 'burnV3' */
-  }
-  return null
-}
-
-function issueBody(error: Error): string {
-  const relevantState = getRelevantState()
-  const deviceData = userAgent
-  return `## URL
-  
-${window.location.href}
-
-${
-  relevantState
-    ? `## \`${relevantState}\` state
-    
-\`\`\`json
-${JSON.stringify(store.getState()[relevantState], null, 2)}
-\`\`\`
-`
-    : ''
-}
-${
-  error.name &&
-  `## Error
-
-\`\`\`
-${error.name}${error.message && `: ${truncate(error.message)}`}
-\`\`\`
-`
-}
-${
-  error.stack &&
-  `## Stacktrace
-
-\`\`\`
-${truncate(error.stack)}
-\`\`\`
-`
-}
-${
-  deviceData &&
-  `## Device data
-
-\`\`\`json
-${JSON.stringify(deviceData, null, 2)}
-\`\`\`
-`
-}
-`
 }

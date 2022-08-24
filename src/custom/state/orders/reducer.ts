@@ -4,9 +4,6 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addOrUpdateOrders,
   addPendingOrder,
-  preSignOrders,
-  updatePresignGnosisSafeTx,
-  removeOrder,
   cancelOrder,
   cancelOrdersBatch,
   clearOrders,
@@ -15,10 +12,13 @@ import {
   fulfillOrder,
   fulfillOrdersBatch,
   OrderStatus,
+  preSignOrders,
+  removeOrder,
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
   updateLastCheckedBlock,
+  updatePresignGnosisSafeTx,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
@@ -158,12 +158,15 @@ export default createReducer(initialState, (builder) =>
       const { order, id, chainId } = action.payload
 
       const orderStateList = order.status === OrderStatus.PRESIGNATURE_PENDING ? 'presignaturePending' : 'pending'
+      order.openSince = order.status === OrderStatus.PRESIGNATURE_PENDING ? undefined : Date.now()
 
       addOrderToState(state, chainId, id, orderStateList, order)
     })
     .addCase(preSignOrders, (state, action) => {
       prefillState(state, action)
       const { ids, chainId } = action.payload
+
+      const now = Date.now()
 
       ids.forEach((id) => {
         const orderObject = getOrderById(state, chainId, id)
@@ -172,6 +175,7 @@ export default createReducer(initialState, (builder) =>
           deleteOrderById(state, chainId, id)
 
           orderObject.order.status = OrderStatus.PENDING
+          orderObject.order.openSince = now
 
           addOrderToState(state, chainId, id, 'pending', orderObject.order)
         }

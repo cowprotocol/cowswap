@@ -1,42 +1,34 @@
-import { useActiveWeb3React } from 'hooks/web3' // mod
+import { useWeb3React } from '@web3-react/core' // mod
 import { useEffect } from 'react'
-import ReactGA from 'react-ga4'
 import { RouteComponentProps } from 'react-router-dom'
-import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
-
-import { GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from 'components/analytics'
-
-function reportWebVitals({ name, delta, id }: Metric) {
-  ReactGA._gaCommandSendTiming('Web Vitals', name, Math.round(name === 'CLS' ? delta * 1000 : delta), id)
-}
+import { persistClientId, reportWebVitals, onChainIdChange, onPathNameChange, onWalletChange } from 'utils/analytics'
+import { useWalletInfo } from 'hooks/useWalletInfo'
+import { getConnectionName, getIsMetaMask, getConnection } from 'connection/utils'
 
 // tracks web vitals and pageviews
 export default function GoogleAnalyticsReporter({ location: { pathname, search } }: RouteComponentProps): null {
-  useEffect(() => {
-    getFCP(reportWebVitals)
-    getFID(reportWebVitals)
-    getLCP(reportWebVitals)
-    getCLS(reportWebVitals)
-  }, [])
+  const { chainId, connector, account } = useWeb3React()
 
-  const { chainId } = useActiveWeb3React()
+  const connection = getConnection(connector)
+  const isMetaMask = getIsMetaMask()
+
   useEffect(() => {
-    // cd1 - custom dimension 1 - chainId
-    ReactGA.set({ cd1: chainId ?? 0 })
+    onChainIdChange(chainId)
   }, [chainId])
 
+  const walletInfo = useWalletInfo()
+  const walletName = walletInfo?.walletName || getConnectionName(connection.type, isMetaMask)
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `${pathname}${search}` })
+    onWalletChange(account ? walletName : 'Disconnected')
+  }, [walletName, account])
+
+  useEffect(() => {
+    onPathNameChange(pathname, search)
   }, [pathname, search])
 
   useEffect(() => {
-    // typed as 'any' in react-ga4 -.-
-    ReactGA.ga((tracker: any) => {
-      if (!tracker) return
-
-      const clientId = tracker.get('clientId')
-      window.localStorage.setItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY, clientId)
-    })
+    persistClientId()
+    reportWebVitals()
   }, [])
   return null
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices } from './hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'
 import { getGasPrices } from 'api/gnosisProtocol/api'
 
@@ -9,7 +9,7 @@ function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
 }
 
 export default function GasUpdater(): null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const gas = useGasPrices(chainId)
   const updateGasPrices = useUpdateGasPrices()
 

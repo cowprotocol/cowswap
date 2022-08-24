@@ -1,4 +1,4 @@
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import { getProfileData } from 'api/gnosisProtocol'
 import { ProfileData } from 'api/gnosisProtocol/api'
@@ -18,7 +18,7 @@ const emptyState: FetchProfileState = {
 const FETCH_INTERVAL_IN_MINUTES = 5
 
 export default function useFetchProfile(): FetchProfileState {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const [profile, setProfile] = useState<FetchProfileState>(emptyState)
 
   useEffect(() => {

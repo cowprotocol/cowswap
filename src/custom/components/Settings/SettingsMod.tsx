@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import { useWeb3React } from '@web3-react/core'
 // import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useCallback, useContext, useRef, useState } from 'react'
 import { Settings, X } from 'react-feather'
@@ -9,7 +9,7 @@ import { Settings, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { useModalOpen, useToggleSettingsMenu } from 'state/application/hooks'
+import { useModalIsOpen, useToggleSettingsMenu } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ThemedText } from 'theme'
@@ -20,7 +20,12 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import TransactionSettings from 'components/TransactionSettings'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
+import {
+  showExpertModeConfirmationAnalytics,
+  toggleExpertModeAnalytics,
+  toggleRecepientAddressAnalytics,
+} from 'utils/analytics'
 
 // MOD imports
 import { SettingsTabProp } from '.'
@@ -120,21 +125,17 @@ export const ModalContentWrapper = styled.div`
 `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
-  // const { chainId } = useActiveWeb3React()
+  // const { chainId } = useWeb3React()
 
   const node = useRef<HTMLDivElement>()
-  const open = useModalOpen(ApplicationModal.SETTINGS)
+  const open = useModalIsOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
 
   const theme = useContext(ThemeContext)
 
   const [expertMode, toggleExpertModeAux] = useExpertModeManager()
   const toggleExpertMode = useCallback(() => {
-    ReactGA.event({
-      category: 'Expert mode',
-      action: expertMode ? 'Disable Expert Mode' : 'Enable Expert Mode',
-    })
-
+    toggleExpertModeAnalytics(!expertMode)
     toggleExpertModeAux()
   }, [toggleExpertModeAux, expertMode])
 
@@ -143,11 +144,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
       const isVisible = value ?? !recipientToggleVisible
-      ReactGA.event({
-        category: 'Recipient address',
-        action: 'Toggle Recipient Address',
-        label: isVisible ? 'Enabled' : 'Disabled',
-      })
+      toggleRecepientAddressAnalytics(isVisible)
       toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible]
@@ -160,10 +157,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const setShowConfirmation = useCallback(
     (showConfirmation: boolean) => {
       if (showConfirmation) {
-        ReactGA.event({
-          category: 'Expert mode',
-          action: 'Show Confirmation',
-        })
+        showExpertModeConfirmationAnalytics()
       }
 
       setShowConfirmationAux(showConfirmation)
@@ -310,6 +304,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
               <Toggle
                 id="toggle-recipient-mode-button"
                 isActive={recipientToggleVisible || expertMode}
+                isDisabled={expertMode}
                 toggle={() => (expertMode ? null : toggleRecipientVisibility())}
                 className={expertMode ? 'disabled' : ''}
               />

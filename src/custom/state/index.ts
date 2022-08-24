@@ -6,16 +6,17 @@ import { load, save } from 'redux-localstorage-simple'
 import application from 'state/application/reducer'
 // import burn from './burn/reducer'
 // import burnV3 from './burn/v3/reducer'
+import connection from 'state/connection/reducer'
 // import { api as dataApi } from './data/slice'
 import { updateVersion } from 'state/global/actions'
 import lists from 'state/lists/reducer'
-import logs from '@src/state/logs/slice'
+import logs from 'state/logs/slice'
 // import mint from './mint/reducer'
 // import mintV3 from './mint/v3/reducer'
 // import { routingApi } from './routing/slice'
-import swap from '@src/state/swap/reducer'
+import swap from 'state/swap/reducer'
 // import transactions from './transactions/reducer'
-import user from '@src/state/user/reducer'
+import user from 'state/user/reducer'
 
 // MOD imports
 import orders from 'state/orders/reducer'
@@ -27,13 +28,15 @@ import enhancedTransactions from 'state/enhancedTransactions/reducer'
 import claim from 'state/claim/reducer'
 import cowToken from 'state/cowToken/reducer'
 
-import { popupMiddleware, soundMiddleware } from './orders/middleware'
+import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
 import { cowTokenMiddleware } from 'state/cowToken/middleware'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { priceMiddleware } from 'state/price/middleware'
 
 const UNISWAP_REDUCERS = {
   application,
   user,
+  connection,
   // transactions,
   swap,
   /* mint,
@@ -71,7 +74,9 @@ const store = configureStore({
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
       .concat(cowTokenMiddleware)
-      .concat(soundMiddleware),
+      .concat(soundMiddleware)
+      .concat(appziMiddleware)
+      .concat(priceMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
 

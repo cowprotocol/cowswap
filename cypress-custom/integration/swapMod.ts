@@ -1,6 +1,8 @@
+const GNO = '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532'
+
 describe('Swap (mod)', () => {
   beforeEach(() => {
-    cy.visit('/swap')
+    cy.visit('/#/swap')
   })
 
   it('starts with an Native/USDC swap and quotes it', () => {
@@ -12,22 +14,22 @@ describe('Swap (mod)', () => {
 
   it('can enter an amount into input', () => {
     cy.get('#swap-currency-input .token-amount-input')
-      .clear()
-      .type('0.001', { delay: 400, force: true })
+      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('0.001')
       .should('have.value', '0.001')
   })
 
   it('zero swap amount', () => {
     cy.get('#swap-currency-input .token-amount-input')
-      .clear()
-      .type('0.0', { delay: 400, force: true })
+      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('0.0')
       .should('have.value', '0.0')
   })
 
   it('invalid swap amount', () => {
     cy.get('#swap-currency-input .token-amount-input')
-      .clear()
-      .type('\\', { delay: 400, force: true })
+      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('\\')
       .should('have.value', '')
   })
 
@@ -60,8 +62,8 @@ describe('Swap (mod)', () => {
   it('can find GNO and swap Native for GNO', () => {
     cy.get('#swap-currency-output .open-currency-select-button').click()
     cy.get('#token-search-input').type('GNO')
-    cy.get('.token-item-0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c').should('be.visible')
-    cy.get('.token-item-0xd0Dab4E640D95E9E8A47545598c33e31bDb53C7c').click({ force: true })
+    cy.get(`.token-item-${GNO}`).should('be.visible')
+    cy.get(`.token-item-${GNO}`).click({ force: true })
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('{selectall}{backspace}{selectall}{backspace}').type('0.5')
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')

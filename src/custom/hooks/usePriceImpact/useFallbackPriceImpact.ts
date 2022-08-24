@@ -10,7 +10,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { useQuote } from 'state/price/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
@@ -50,7 +50,7 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
     OUTPUT: { currencyId: buyToken },
   } = useSwapState()
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const lastQuote = useQuote({ token: sellToken, chainId })
 
   const [loading, setLoading] = useState(false)

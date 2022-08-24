@@ -1,4 +1,3 @@
-import React /*, { useMemo } */ from 'react'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
   createGlobalStyle,
@@ -118,7 +117,7 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function theme(darkMode: boolean): DefaultTheme {
+export function getTheme(darkMode: boolean): DefaultTheme {
   return {
     ...colors(darkMode),
 
@@ -149,7 +148,7 @@ export function theme(darkMode: boolean): DefaultTheme {
 // export default function ThemeProvider({ children }: { children: React.ReactNode }) {
 //   const darkMode = useIsDarkMode()
 
-//   const themeObject = useMemo(() => theme(darkMode), [darkMode])
+//   const themeObject = useMemo(() => getTheme(darkMode), [darkMode])
 
 //   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 // }

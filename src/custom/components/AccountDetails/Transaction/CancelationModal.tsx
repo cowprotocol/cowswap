@@ -15,6 +15,7 @@ import { CancellationSummary } from './styled'
 import { Routes } from 'constants/routes'
 
 import { shortenOrderId } from 'utils'
+import { NavHashLink } from 'react-router-hash-link'
 
 type RequestCancellationModalProps = {
   onDismiss: () => void
@@ -49,9 +50,9 @@ function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Ele
               <p>
                 This means that a solver might already have included the order in a solution even if this cancellation
                 is successful. Read more in the{' '}
-                <a target="_blank" rel="noreferrer" href={`${Routes.FAQ_TRADING}#can-i-cancel-an-order`}>
+                <NavHashLink target="_blank" rel="noreferrer" to={`${Routes.FAQ_TRADING}#can-i-cancel-an-order`}>
                   FAQ
-                </a>
+                </NavHashLink>
                 .
               </p>
             </>

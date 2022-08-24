@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount, MaxUint256, Percent } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'
@@ -30,7 +30,7 @@ export function useApproveCallbackFromTrade({
   allowedSlippage,
   amountToCheckAgainstAllowance,
 }: ApproveCallbackFromTradeParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const amountToApprove = useMemo(() => {
     if (trade) {
@@ -70,7 +70,7 @@ export function useApproveCallbackFromClaim({
   claim,
   investmentAmount,
 }: ApproveCallbackFromClaimParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const supportedChain = supportedChainId(chainId)
 
   const vCowContract = chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined
@@ -93,6 +93,44 @@ export function useApproveCallbackFromClaim({
     openTransactionConfirmationModal,
     closeModals,
     spender: vCowContract,
+    amountToApprove: approveAmounts?.amountToApprove,
+    amountToCheckAgainstAllowance: approveAmounts?.amountToCheckAgainstAllowance,
+  })
+}
+
+type ApproveCallbackFromBalanceParams = Omit<
+  ApproveCallbackParams,
+  'spender' | 'amountToApprove' | 'amountToCheckAgainstAllowance'
+> & {
+  token: Token
+  balance?: CurrencyAmount<Currency>
+}
+
+export function useApproveCallbackFromBalance({
+  openTransactionConfirmationModal,
+  closeModals,
+  token,
+  balance,
+}: ApproveCallbackFromBalanceParams) {
+  const { chainId } = useWeb3React()
+  const supportedChain = supportedChainId(chainId)
+
+  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
+
+  const approveAmounts = useMemo(() => {
+    if (supportedChain) {
+      return {
+        amountToApprove: CurrencyAmount.fromRawAmount(token, MaxUint256),
+        amountToCheckAgainstAllowance: balance,
+      }
+    }
+    return undefined
+  }, [balance, supportedChain, token])
+
+  return useApproveCallback({
+    openTransactionConfirmationModal,
+    closeModals,
+    spender: vaultRelayer,
     amountToApprove: approveAmounts?.amountToApprove,
     amountToCheckAgainstAllowance: approveAmounts?.amountToCheckAgainstAllowance,
   })

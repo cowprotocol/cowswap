@@ -9,13 +9,13 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 // import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
@@ -42,9 +42,9 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
 // import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useStablecoinPrice'
 import useWrapCallback, { /*WrapErrorText, */ WrapType } from 'hooks/useWrapCallback'
-import { useCloseModals, useModalOpen, useOpenModal, useWalletModalToggle } from 'state/application/hooks'
+import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -86,20 +86,13 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
+import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
+import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
 //   width: 100%;
 // `
-
-function reportAnalytics(action: string, label?: string, value?: number) {
-  ReactGA.event({
-    category: 'Swap',
-    action,
-    label,
-    value,
-  })
-}
 
 export default function Swap({
   history,
@@ -118,7 +111,7 @@ export default function Swap({
   className,
   allowsOffchainSigning,
 }: SwapProps) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const previousChainId = usePrevious(chainId)
@@ -167,14 +160,14 @@ export default function Swap({
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   // Transaction confirmation modal
   const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
-  const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
   const openTransactionConfirmationModal = useCallback(
     (message: string, operationType: OperationType) => {
@@ -187,7 +180,7 @@ export default function Swap({
 
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
-  const showCowSubsidyModal = useModalOpen(ApplicationModal.COW_SUBSIDY)
+  const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
@@ -280,8 +273,8 @@ export default function Swap({
 
   // const fiatValueInput = useUSDCValue(trade?.inputAmount)
   // const fiatValueOutput = useUSDCValue(trade?.outputAmount)
-  const fiatValueInput = useHigherUSDValue(trade?.inputAmount)
-  const fiatValueOutput = useHigherUSDValue(trade?.outputAmount)
+  const fiatValueInput = useHigherUSDValue(trade?.inputAmountWithoutFee)
+  const fiatValueOutput = useHigherUSDValue(trade?.outputAmountWithoutFee)
 
   const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
@@ -386,25 +379,26 @@ export default function Swap({
 
     if (approveRequired) {
       const symbol = v2Trade?.inputAmount?.currency.symbol
-      reportAnalytics('Send Token Approval to Wallet', symbol)
+      approvalAnalytics('Send', symbol)
       return approveCallback()
         .then(() => {
-          reportAnalytics('Sign Token Approval', symbol)
+          approvalAnalytics('Sign', symbol)
         })
         .catch((error) => {
           console.error('Error setting the allowance for token', error)
 
-          let swapErrorMessage, actionAnalytics, errorCode
+          let swapErrorMessage, errorCode
           if (isRejectRequestProviderError(error)) {
             swapErrorMessage = 'User rejected approving the token'
-            actionAnalytics = 'Reject Token Approval'
+            approvalAnalytics('Reject', symbol)
           } else {
             swapErrorMessage = getProviderErrorMessage(error)
-            actionAnalytics = 'Signing Error for Token Approval'
 
             if (error?.code && typeof error.code === 'number') {
               errorCode = error.code
             }
+
+            approvalAnalytics('Error', symbol, errorCode)
           }
 
           setSwapState({
@@ -414,7 +408,6 @@ export default function Swap({
             swapErrorMessage,
             txHash: undefined,
           })
-          reportAnalytics(actionAnalytics, symbol, errorCode)
         })
     }
   }, [
@@ -480,35 +473,34 @@ export default function Swap({
     }
 
     const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-    reportAnalytics('Send Order to Wallet', marketLabel)
+    swapAnalytics('Send', marketLabel)
 
     setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
 
-        let actionAnalytics
         if (recipient === null) {
-          actionAnalytics = 'Signed: Swap'
+          signSwapAnalytics('Sign', marketLabel)
         } else {
-          actionAnalytics =
-            (recipientAddress ?? recipient) === account ? 'Signed: Swap and Send to Self' : 'Signed: Swap and Send'
+          ;(recipientAddress ?? recipient) === account
+            ? signSwapAnalytics('SignAndSend', marketLabel)
+            : signSwapAnalytics('SignToSelf', marketLabel)
         }
-        reportAnalytics(actionAnalytics, marketLabel)
       })
       .catch((error) => {
-        let swapErrorMessage, actionAnalytics, errorCode
+        let swapErrorMessage, errorCode
         if (isRejectRequestProviderError(error)) {
           swapErrorMessage = 'User rejected signing the order'
-          actionAnalytics = 'Reject Swap'
+          swapAnalytics('Reject', marketLabel)
         } else {
           swapErrorMessage = getProviderErrorMessage(error)
-          actionAnalytics = 'Signing Swap Error'
 
           if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
           }
           console.error('Error Signing Order', error)
+          swapAnalytics('Error', marketLabel, errorCode)
         }
 
         setSwapState({
@@ -518,7 +510,6 @@ export default function Swap({
           swapErrorMessage,
           txHash: undefined,
         })
-        reportAnalytics(actionAnalytics, marketLabel, errorCode)
       })
   }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
 
@@ -571,7 +562,7 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     maxInputAmount && onUserInput(Field.INPUT, maxInputAmount.toExact())
-    reportAnalytics('Set Maximun Sell Tokens')
+    setMaxSellTokensAnalytics()
   }, [maxInputAmount, onUserInput])
 
   const handleOutputSelect = useCallback(
@@ -580,6 +571,8 @@ export default function Swap({
   )
 
   const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
+
+  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
 
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
@@ -663,7 +656,7 @@ export default function Swap({
                 }
                 value={formattedAmounts[Field.INPUT]}
                 showMaxButton={showMaxButton}
-                currency={currencies[Field.INPUT]}
+                currency={currencies[Field.INPUT] ?? null}
                 onUserInput={handleTypeInput}
                 onMax={handleMaxInput}
                 fiatValue={fiatValueInput ?? undefined}
@@ -727,7 +720,7 @@ export default function Swap({
                 fiatValue={fiatValueOutput ?? undefined}
                 priceImpact={onWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
-                currency={currencies[Field.OUTPUT]}
+                currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
                 showCommonBases={true}
@@ -876,6 +869,12 @@ export default function Swap({
               <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
               </ButtonPrimary>
+            ) : isReadonlyGnosisSafeUser ? (
+              <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+                <ThemedText.Main mb="4px">
+                  <Trans>Read Only</Trans>
+                </ThemedText.Main>
+              </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">
@@ -909,7 +908,7 @@ export default function Swap({
                         {approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED ? (
                           <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
                         ) : (
-                          <Trans>Allow CowSwap to use your {currencies[Field.INPUT]?.symbol}</Trans>
+                          <Trans>Allow CoW Swap to use your {currencies[Field.INPUT]?.symbol}</Trans>
                         )}
                         {approvalState === ApprovalState.PENDING ? (
                           <Loader stroke="white" />
@@ -1022,7 +1021,7 @@ export default function Swap({
           showDetailsText="Read more about unsupported wallets"
           detailsText={
             <>
-              <p>CowSwap requires offline signatures, which is currently not supported by some wallets.</p>
+              <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
               <p>
                 Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
               </p>

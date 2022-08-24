@@ -1,29 +1,28 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
-// import { Connector } from '@web3-react/types'
+import { useWeb3React } from '@web3-react/core'
+import { getConnection } from 'connection/utils'
 import { darken, lighten } from 'polished'
 // import { useMemo } from 'react'
 import { Activity } from 'react-feather'
+import { useAppSelector } from 'state/hooks'
 import styled, { css } from 'styled-components/macro'
-import { AbstractConnector } from 'web3-react-abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
-// import { NetworkContextName } from '../../constants/misc'
-import useENSName from 'hooks/useENSName'
 import { useHasSocks } from 'hooks/useSocksBalance'
-import { useWalletModalToggle } from 'state/application/hooks'
-// import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
-// import { TransactionDetails } from '../../state/transactions/reducer'
+import { useToggleWalletModal } from 'state/application/hooks'
+// import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+// import { TransactionDetails } from 'state/transactions/types'
 import { shortenAddress } from 'utils'
 // import { ButtonSecondary } from 'components/Button'
-// import StatusIcon from '../Identicon/StatusIcon'
+import StatusIcon from 'components/Identicon/StatusIcon'
 import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { Web3StatusGeneric as Web3StatusGenericUni, WrappedStatusIcon } from '@src/components/Web3Status'
+import { useCloseFollowTxPopupIfNot } from 'state/application/hooks'
+import { Web3StatusGeneric as Web3StatusGenericUni } from '@src/components/Web3Status'
+import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
 
 /* const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -40,7 +39,6 @@ export const Web3StatusGeneric = styled(Web3StatusGenericUni)`
   margin-left: 0px;
   margin-right: 0px;
 `
-
 const Web3StatusError = styled(Web3StatusGeneric)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
@@ -125,9 +123,9 @@ const NetworkIcon = styled(Activity)`
 `
 
 // we want the latest one to come first, so return negative if a is after b
-export function newTransactionsFirst(a: EnhancedTransactionDetails, b: EnhancedTransactionDetails) {
-  return b.addedTime - a.addedTime
-}
+// function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+//   return b.addedTime - a.addedTime
+// }
 
 function Sock() {
   return (
@@ -137,42 +135,39 @@ function Sock() {
   )
 }
 
-/* function WrappedStatusIcon({ connector }: { connector: AbstractConnector | Connector }) {
-  return (
-    <IconWrapper size={16}>
-      <StatusIcon connector={connector} />
-    </IconWrapper>
-  )
-} */
+export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
+  const { account, connector, chainId, ENSName } = useWeb3React()
+  const connectionType = getConnection(connector).type
 
-export function Web3StatusInner({
-  pendingCount,
-  StatusIconComponent,
-  thereWasAProvider, //mod
-}: {
-  pendingCount?: number
-  StatusIconComponent: (props: { connector: AbstractConnector }) => JSX.Element | null
-  thereWasAProvider: boolean //mod
-}) {
-  const { account, connector, error } = useWeb3React()
+  const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
-  const { ENSName } = useENSName(account ?? undefined)
+  // const allTransactions = useAllTransactions()
 
-  /* const allTransactions = useAllTransactions()
+  // const sortedRecentTransactions = useMemo(() => {
+  //   const txs = Object.values(allTransactions)
+  //   return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+  // }, [allTransactions])
 
-  const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
-  }, [allTransactions])
+  // const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
 
-  const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
-
-  const hasPendingTransactions = !!pending.length */
+  // const hasPendingTransactions = !!pending.length
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
+  useCloseFollowTxPopupIfNot(hasPendingTransactions)
 
-  if (account) {
+  if (!chainId) {
+    return null
+  } else if (error) {
+    return (
+      <Web3StatusError /* onClick={toggleWalletModal} */>
+        <NetworkIcon />
+        <Text>
+          <Trans>Error</Trans>
+        </Text>
+      </Web3StatusError>
+    )
+  } else if (account) {
     return (
       <Web3StatusConnected
         id="web3-status-connected"
@@ -181,10 +176,11 @@ export function Web3StatusInner({
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>
-              {/* <Trans>{pending?.length} Pending</Trans> */}
-              <Trans>{pendingCount} Pending</Trans>
-            </Text>{' '}
+            <FollowPendingTxPopup>
+              <Text>
+                <Trans>{pendingCount} Pending</Trans>
+              </Text>{' '}
+            </FollowPendingTxPopup>
             <Loader stroke="white" />
           </RowBetween>
         ) : (
@@ -193,26 +189,7 @@ export function Web3StatusInner({
             <Text>{ENSName || shortenAddress(account)}</Text>
           </>
         )}
-        {/* {!hasPendingTransactions && connector && <WrappedStatusIcon connector={connector} />} */}
-        {!hasPendingTransactions && connector && <WrappedStatusIcon connector={connector} />}
-      </Web3StatusConnected>
-    )
-  } else if (error) {
-    return (
-      <Web3StatusError onClick={toggleWalletModal}>
-        <NetworkIcon />
-        <Text>{error instanceof UnsupportedChainIdError ? <Trans>Wrong Network</Trans> : <Trans>Error</Trans>}</Text>
-      </Web3StatusError>
-    )
-  } else if (thereWasAProvider) {
-    return (
-      <Web3StatusConnected pending clickDisabled={true}>
-        <RowBetween>
-          <Text>
-            <Trans>Connecting</Trans>...
-          </Text>{' '}
-          <Loader stroke="white" />
-        </RowBetween>
+        {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>
     )
   } else {
@@ -227,10 +204,7 @@ export function Web3StatusInner({
 }
 
 /* export default function Web3Status() {
-  const { active, account } = useWeb3React()
-  const contextNetwork = useWeb3React(NetworkContextName)
-
-  const { ENSName } = useENSName(account ?? undefined)
+  const { ENSName } = useWeb3React()
 
   const allTransactions = useAllTransactions()
 
@@ -245,9 +219,7 @@ export function Web3StatusInner({
   return (
     <>
       <Web3StatusInner />
-      {(contextNetwork.active || active) && (
         <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
-      )}
     </>
   )
 } */

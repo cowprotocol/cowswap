@@ -6,6 +6,8 @@ import { ChainId } from 'state/lists/actions/actionsMod'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { COW } from 'constants/tokens'
 import { transparentize } from 'polished'
+import { useWeb3React } from '@web3-react/core'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: ${({ theme }) => theme.bg4};
@@ -92,10 +94,15 @@ interface CowBalanceButtonProps {
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 
 export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
+  const { chainId } = useWeb3React()
   const { balance, isLoading } = useCombinedBalance()
 
   const formattedBalance = formatSmartLocaleAware(balance, 0)
   const formattedMaxBalance = formatMax(balance, COW_DECIMALS)
+
+  if (!supportedChainId(chainId)) {
+    return null
+  }
 
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>

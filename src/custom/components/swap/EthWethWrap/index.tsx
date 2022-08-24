@@ -8,12 +8,12 @@ import { ButtonSecondary, ButtonPrimary } from 'components/Button'
 import Loader from 'components/Loader'
 import WrappingVisualisation from './WrappingVisualisation'
 
-import { useCurrencyBalances } from 'state/wallet/hooks'
+import { useCurrencyBalances } from 'state/connection/hooks'
 import { useIsTransactionPending } from 'state/enhancedTransactions/hooks'
 
 import Modal from 'components/Modal'
 import { useGasPrices } from 'state/gas/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { _isLowBalanceCheck, _setNativeLowBalanceError, _getAvailableTransactions, _estimateTxCost } from './helpers'
 import { Trans } from '@lingui/macro'
 
@@ -140,7 +140,7 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [pendingHash, setPendingHash] = useState<string | undefined>()
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const gasPrice = useGasPrices(chainId)
 
   // returns the cost of 1 tx and multi txs
@@ -203,7 +203,7 @@ export default function EthWethWrap({ account, native, nativeInput, wrapped, wra
           <ModalMessage>
             <span>
               <Trans>
-                CowSwap is a gasless exchange. <strong>{nativeSymbol}</strong> however, is required for paying{' '}
+                CoW Swap is a gasless exchange. <strong>{nativeSymbol}</strong> however, is required for paying{' '}
                 <strong>
                   on-chain transaction costs associated with enabling tokens and the wrapping/unwrapping of{' '}
                   {nativeSymbol}/{wrappedSymbol}

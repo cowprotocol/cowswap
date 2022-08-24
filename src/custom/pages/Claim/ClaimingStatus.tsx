@@ -10,7 +10,7 @@ import {
 } from 'pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
@@ -38,7 +38,7 @@ const COW_TWEET_TEMPLATE =
 type ClaimNavProps = Pick<ClaimCommonTypes, 'handleChangeAccount'>
 
 export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
 
   const { setClaimStatus } = useClaimDispatchers()

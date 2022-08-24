@@ -15,14 +15,15 @@ import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
 import { formatDateWithTimezone } from 'utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
+import { claimAnalytics } from 'utils/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -40,16 +41,8 @@ interface Props {
   loading: boolean
 }
 
-function reportAnalytics(action: string, value?: number) {
-  ReactGA.event({
-    category: 'Claim COW for Locked GNO',
-    action,
-    value,
-  })
-}
-
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
-  const { chainId = ChainId.MAINNET, account } = useActiveWeb3React()
+  const { chainId = ChainId.MAINNET, account } = useWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
   const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
@@ -58,7 +51,12 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const claimableFormatted = formatSmartLocaleAware(vested.subtract(claimed), AMOUNT_PRECISION) || '0'
   const previousAccount = usePrevious(account)
 
-  const canClaim = !loading && unvested.greaterThan(0) && status === ClaimStatus.INITIAL
+  const canClaim =
+    !loading &&
+    unvested.greaterThan(0) &&
+    status === ClaimStatus.INITIAL &&
+    MERKLE_DROP_CONTRACT_ADDRESSES[chainId] &&
+    TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
   const isClaimPending = status === ClaimStatus.SUBMITTED
 
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -83,10 +81,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
-    reportAnalytics('Send Transaction to Wallet')
+    claimAnalytics('Send')
     claimCallback()
       .then((tx) => {
-        reportAnalytics('Sign Transaction')
+        claimAnalytics('Sign')
         setStatus(ClaimStatus.SUBMITTED)
         return tx.wait()
       })
@@ -99,13 +97,12 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }, 5000)
       })
       .catch((error) => {
-        let errorMessage, actionAnalytics, errorCode
-        if (isRejectRequestProviderError(error)) {
+        let errorMessage, errorCode
+        const isRejected = isRejectRequestProviderError(error)
+        if (isRejected) {
           errorMessage = 'User rejected signing COW claim transaction'
-          actionAnalytics = 'Reject Signing Transaction'
         } else {
           errorMessage = getProviderErrorMessage(error)
-          actionAnalytics = 'Error Signing Transaction'
 
           if (error?.code && typeof error.code === 'number') {
             errorCode = error.code
@@ -114,7 +111,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        reportAnalytics(actionAnalytics, errorCode)
+        claimAnalytics(isRejected ? 'Reject' : 'Error', errorCode)
         handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])

@@ -1,11 +1,10 @@
 import jazzicon from '@metamask/jazzicon'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import useENSAvatar from 'hooks/useENSAvatar'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-// import Davatar, { Image } from '@davatar/react'
 import { IdenticonProps } from 'components/Identicon'
 
 export const StyledIdenticon = styled.div`
@@ -23,7 +22,7 @@ const StyledAvatar = styled.img`
 `
 
 export default function Identicon({ account: customAccount, size = 16 }: IdenticonProps) {
-  const { account: chainAccount /*, library*/ } = useActiveWeb3React()
+  const { account: chainAccount } = useWeb3React()
   const account = customAccount || chainAccount
 
   const { avatar } = useENSAvatar(account ?? undefined, false)
@@ -54,14 +53,13 @@ export default function Identicon({ account: customAccount, size = 16 }: Identic
         <span ref={iconRef} />
       )}
     </StyledIdenticon>
-    // TODO: revisit if previous changes should be re-applied
-    /*<StyledIdenticon>
-      {/!*{account && supportsENS ? (*!/}
-      {avatar && fetchable ? (
-        <Davatar address={avatar} size={size} provider={library} />
-      ) : (
-        <Image address={account} size={size} />
-      )}
-    </StyledIdenticon>*/
   )
+  // TODO: revisit if previous changes should be re-applied
+  //   <StyledIdenticon>
+  //     {avatar && fetchable ? (
+  //       <StyledAvatar alt="avatar" src={avatar} onError={() => setFetchable(false)}></StyledAvatar>
+  //     ) : (
+  //       <span ref={iconRef} />
+  //     )}
+  //   </StyledIdenticon>
 }

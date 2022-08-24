@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
 import { Web3StatusInner, Web3StatusConnected, Text } from './Web3StatusMod'
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { getStatusIcon } from 'components/AccountDetails'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { OrderStatus } from 'state/orders/actions'
@@ -55,16 +53,11 @@ export const Wrapper = styled.div`
   }
 `
 
-const isPending = (data: TransactionAndOrder) =>
+export const isPending = (data: TransactionAndOrder) =>
   data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
 
 const isConfirmed = (data: TransactionAndOrder) =>
   data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
-
-function StatusIcon({ connector }: { connector: AbstractConnector }): JSX.Element | null {
-  const walletInfo = useWalletInfo()
-  return getStatusIcon(connector, walletInfo)
-}
 
 export default function Web3Status() {
   const walletInfo = useWalletInfo()
@@ -83,18 +76,14 @@ export default function Web3Status() {
     }
   }, [allRecentActivity])
 
-  const { active, activeNetwork, ensName } = walletInfo
-  if (!activeNetwork && !active && !latestProvider) {
+  const { active, ensName } = walletInfo
+  if (!active && !latestProvider) {
     return null
   }
 
   return (
     <Wrapper>
-      <Web3StatusInner
-        pendingCount={pendingActivity.length}
-        StatusIconComponent={StatusIcon}
-        thereWasAProvider={!!latestProvider}
-      />
+      <Web3StatusInner pendingCount={pendingActivity.length} />
       <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />
     </Wrapper>
   )

@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import useENS from 'hooks/useENS'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'state/claim/hooks/utils'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
@@ -32,8 +31,7 @@ import usePrevious from 'hooks/usePrevious'
 import { getProviderErrorMessage } from 'utils/misc'
 
 export default function Claim() {
-  const { account, chainId } = useActiveWeb3React()
-  const { error } = useWeb3React()
+  const { account, chainId } = useWeb3React()
 
   // get previous account
   const previousAccount = usePrevious(account)
@@ -78,7 +76,7 @@ export default function Claim() {
   const { address: resolvedAddress, name: resolvedENS } = useENS(inputAddress)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   // error handling modals
   const { handleCloseError, handleSetError, ErrorModal } = useErrorModal()
 
@@ -197,11 +195,6 @@ export default function Claim() {
       setActiveClaimAccount(account)
     }
 
-    // handle unsupported network
-    if (error instanceof UnsupportedChainIdError) {
-      handleAccountChange()
-    }
-
     // properly reset the user to the claims table and initial investment flow
     resetClaimUi()
     // Depending on chainId even though it's not used because we want to reset the state on network change
@@ -213,7 +206,6 @@ export default function Claim() {
     isSearchUsed,
     setActiveClaimAccount,
     resetClaimUi,
-    error,
     handleAccountChange,
   ])
 

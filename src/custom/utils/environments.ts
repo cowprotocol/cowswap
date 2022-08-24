@@ -35,7 +35,7 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
     isEns: domainEnsRegex?.test(host) || pathEnsRegex?.test(path) || false,
 
     // Environment used for Backend workflow
-    //  Latest stable version pointing to the DEV api
+    // The latest stable version pointing to the DEV api
     isBarn: domainBarnRegex?.test(host) || false,
   }
 }
@@ -65,6 +65,8 @@ export const environmentName = (function () {
   }
 })()
 
+const isProdLike = isProd || isEns || isStaging || isBarn
+
 registerOnWindow({ environment: environmentName })
 
-export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns }
+export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike }

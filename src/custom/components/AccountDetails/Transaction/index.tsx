@@ -1,22 +1,17 @@
-import React, { useMemo } from 'react'
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { getEtherscanLink } from 'utils'
+import { useWeb3React } from '@web3-react/core'
 import { RowFixed } from 'components/Row'
 
 import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
-import { useWalletInfo } from 'hooks/useWalletInfo'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { getSafeWebUrl } from 'api/gnosisSafe'
-import { getExplorerOrderLink } from 'utils/explorer'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
-
-import { ActivityDetails } from './ActivityDetails'
 
 import { StatusDetails } from './StatusDetails'
 // import { StateIcon } from './StateIcon'
 import { Order } from 'state/orders/actions'
-import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
+import { ActivityDetails } from './ActivityDetails'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
@@ -77,93 +72,11 @@ export interface ActivityDerivedState {
   gnosisSafeInfo?: SafeInfoResponse
 }
 
-function getActivityLinkUrl(params: {
-  chainId: number
-  id: string
-  enhancedTransaction?: EnhancedTransactionDetails
-  order?: Order
-}): string | undefined {
-  const { chainId, id, enhancedTransaction, order } = params
-
-  if (enhancedTransaction) {
-    const { transactionHash, safeTransaction } = enhancedTransaction
-
-    if (transactionHash) {
-      // Is an Ethereum transaction: Etherscan link
-      return getEtherscanLink(chainId, transactionHash, 'transaction')
-    } else if (safeTransaction && safeTransaction) {
-      // Its a safe transaction: Gnosis Safe Web link
-      const { safe } = safeTransaction
-      return getSafeWebUrl(chainId, safe) ?? undefined
-    }
-  } else if (order) {
-    // Its an order: GP Explorer link
-    return getExplorerOrderLink(chainId, id)
-  }
-
-  return undefined
-}
-
-function getActivityDerivedState(props: {
-  chainId?: number
-  activityData: ActivityDescriptors | null
-  allowsOffchainSigning: boolean
-  gnosisSafeInfo?: SafeInfoResponse
-}): ActivityDerivedState | null {
-  const { chainId, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
-  if (activityData === null || chainId === undefined) {
-    return null
-  }
-
-  const { id, activity, status, type, summary } = activityData
-  const isTransaction = type === ActivityType.TX
-  const isOrder = type === ActivityType.ORDER
-  const order = isOrder ? (activity as Order) : undefined
-  const enhancedTransaction = isTransaction ? (activity as EnhancedTransactionDetails) : undefined
-
-  // Calculate some convenient status flags
-  const isPending = status === ActivityStatus.PENDING
-  const isCancellable = allowsOffchainSigning && isPending && isOrder
-
-  const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
-
-  return {
-    id,
-    status,
-    type,
-    summary,
-    activityLinkUrl,
-
-    // Convenient flags
-    isTransaction,
-    isOrder,
-    isPending,
-    isPresignaturePending: status === ActivityStatus.PRESIGNATURE_PENDING,
-    isConfirmed: status === ActivityStatus.CONFIRMED,
-    isExpired: status === ActivityStatus.EXPIRED,
-    isCancelling: status === ActivityStatus.CANCELLING,
-    isCancelled: status === ActivityStatus.CANCELLED,
-    isCancellable,
-    isUnfillable: isCancellable && (activity as Order).isUnfillable,
-
-    // Convenient casting
-    order,
-    enhancedTransaction,
-
-    // Gnosis Safe
-    gnosisSafeInfo,
-  }
-}
-
-export default function Activity({ activity: activityData }: { activity: ActivityDescriptors }) {
-  const { chainId } = useActiveWeb3React()
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
+export default function Activity({ activity }: { activity: ActivityDescriptors }) {
+  const { chainId } = useWeb3React()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
-  const activityDerivedState = useMemo(
-    () => getActivityDerivedState({ chainId, activityData, allowsOffchainSigning, gnosisSafeInfo }),
-    [chainId, activityData, allowsOffchainSigning, gnosisSafeInfo]
-  )
+  const activityDerivedState = useActivityDerivedState({ chainId, activity })
 
   if (!activityDerivedState || !chainId) return null
   const { activityLinkUrl } = activityDerivedState

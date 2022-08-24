@@ -37,7 +37,7 @@ export default function CanUserClaimMessage({
         <IntroDescription>
           <p>
             <Trans>
-              Thank you for being a supporter of CowSwap and the CoW protocol. As an important member of the CowSwap
+              Thank you for being a supporter of CoW Swap and the CoW protocol. As an important member of the CoW Swap
               Community you may claim vCOW to be used for voting and governance. You can claim your tokens until{' '}
               <i>{formatDateWithTimezone(airdropDeadline)}.</i>
             </Trans>

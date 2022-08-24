@@ -65,7 +65,6 @@ declare module 'styled-components' {
     // css snippets
     logo: {
       src?: string
-      srcIcon?: string
       alt?: string
     }
     util: {
@@ -98,7 +97,8 @@ declare module 'styled-components' {
     cowToken: {
       background: FlattenSimpleInterpolation
       boxShadow: FlattenSimpleInterpolation
-    },
+    }
+    dancingCow: FlattenSimpleInterpolation
     iconGradientBorder: FlattenSimpleInterpolation
     card: {
       background: FlattenSimpleInterpolation

@@ -11,24 +11,44 @@ import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
 
-export interface MAIN_MENU_TYPE {
-  title: string
-  url?: string
-  externalURL?: boolean
-  items?: {
-    sectionTitle?: string
-    links: {
-      title?: string
-      url?: string // If URL is an internal route
-      externalURL?: boolean // If URL is external
-      icon?: string // If icon uses a regular <img /> tag
-      iconSVG?: string // If icon is a <SVG> inline component
-      action?: string // Special purpose flag for non-regular links
-    }[]
-  }[]
+export enum MenuItemKind {
+  DROP_DOWN = 'DROP_DOWN',
+  EXTERNAL_LINK = 'EXTERNAL_LINK',
+  DARK_MODE_BUTTON = 'DARK_MODE_BUTTON',
 }
 
-export const FAQ_MENU = [
+export interface BasicMenuLink {
+  title: string
+  url: string
+  icon?: string // If icon uses a regular <img /> tag
+  iconSVG?: string // If icon is a <SVG> inline component
+}
+export interface InternalLink extends BasicMenuLink {
+  kind?: undefined
+}
+
+export interface ExternalLink extends BasicMenuLink {
+  kind: MenuItemKind.EXTERNAL_LINK
+}
+
+export type DarkModeLink = { kind: MenuItemKind.DARK_MODE_BUTTON }
+
+export type MenuLink = InternalLink | ExternalLink | DarkModeLink
+
+export interface DropDownSubItem {
+  sectionTitle?: string
+  links: MenuLink[]
+}
+
+export interface DropDownItem {
+  kind: MenuItemKind.DROP_DOWN
+  title: string
+  items: DropDownSubItem[]
+}
+
+export type MenuTreeItem = InternalLink | ExternalLink | DropDownItem
+
+export const FAQ_MENU: InternalLink[] = [
   { title: 'Overview', url: Routes.FAQ },
   { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
   { title: 'Token', url: Routes.FAQ_TOKEN },
@@ -36,10 +56,11 @@ export const FAQ_MENU = [
   { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
 ]
 
-export const MAIN_MENU = [
+export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
   { title: 'Account', url: Routes.ACCOUNT },
   {
+    kind: MenuItemKind.DROP_DOWN,
     title: 'FAQ',
     items: [
       {
@@ -48,28 +69,29 @@ export const MAIN_MENU = [
     ],
   },
   {
+    kind: MenuItemKind.DROP_DOWN,
     title: 'More',
     items: [
       {
         sectionTitle: 'Overview',
         links: [
-          { title: 'Documentation', url: DOCS_LINK, externalURL: true, iconSVG: IMAGE_DOCS },
+          { title: 'Documentation', url: DOCS_LINK, iconSVG: IMAGE_DOCS, kind: MenuItemKind.EXTERNAL_LINK },
           { title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
-          { title: 'Statistics', url: DUNE_DASHBOARD_LINK, externalURL: true, iconSVG: IMAGE_PIE },
-          { title: 'Contract', url: CONTRACTS_CODE_LINK, externalURL: true, iconSVG: IMAGE_CODE },
+          { title: 'Statistics', url: DUNE_DASHBOARD_LINK, iconSVG: IMAGE_PIE, kind: MenuItemKind.EXTERNAL_LINK },
+          { title: 'Contract', url: CONTRACTS_CODE_LINK, iconSVG: IMAGE_CODE, kind: MenuItemKind.EXTERNAL_LINK },
         ],
       },
       {
         sectionTitle: 'Community',
         links: [
-          { title: 'Discord', url: DISCORD_LINK, externalURL: true, iconSVG: IMAGE_DISCORD },
-          { title: 'Twitter', url: TWITTER_LINK, externalURL: true, iconSVG: IMAGE_TWITTER },
+          { title: 'Discord', url: DISCORD_LINK, iconSVG: IMAGE_DISCORD, kind: MenuItemKind.EXTERNAL_LINK },
+          { title: 'Twitter', url: TWITTER_LINK, iconSVG: IMAGE_TWITTER, kind: MenuItemKind.EXTERNAL_LINK },
         ],
       },
       {
         sectionTitle: 'Other',
         links: [
-          { action: 'setColorMode' },
+          { kind: MenuItemKind.DARK_MODE_BUTTON },
           { title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
           { title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
           { title: 'Terms and Conditions', url: Routes.TERMS_CONDITIONS, iconSVG: IMAGE_DOCS },

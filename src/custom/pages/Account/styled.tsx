@@ -236,12 +236,21 @@ export const ProfileGridWrap = styled(GridWrap)`
   `};
 `
 
-export const CardsWrapper = styled.div`
-  display: flex;
-  flex-flow: row wrap;
+export const CardsWrapper = styled.div<{ padding?: string; useFlex?: boolean }>`
+  background: ${({ theme }) => transparentize(0.12, theme.bg1)};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
+
+  ${({ useFlex = true }) =>
+    useFlex &&
+    `
+      display: flex;
+      flex-flow: column nowrap;
+  `};
+
   gap: 16px;
   margin: 16px 0 16px 0;
-  padding: 0;
+  padding: ${({ padding = '0px' }) => padding};
   z-index: 2;
 
   > div {
@@ -264,19 +273,23 @@ export const CardsWrapper = styled.div`
   `};
 `
 
-export const Card = styled.div<{ showLoader?: boolean }>`
+export const Card = styled.div<{ showLoader?: boolean; useStyles?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
-  border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.cardBorder};
   align-items: flex-end;
+  ${({ theme, useStyles = false }) =>
+    useStyles &&
+    `
+    background: ${transparentize(0.3, theme.bg1)};
+    border-radius: 16px;
+    border: 1px solid ${theme.cardBorder};
+  `};
 
   ${({ showLoader, theme }) =>
     showLoader &&
@@ -653,7 +666,36 @@ export const CardsLoader = styled.div`
   height: 100px;
 `
 export const CardsSpinner = styled(SpinnerLoader)`
+  margin-left: 30px;
   & path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: ${({ theme }) => (theme.darkMode ? theme.text1 : theme.primary1)};
   }
 `
+
+interface TimeProps {
+  date: string | undefined
+}
+
+export const TimeFormatted = ({ date }: TimeProps) => {
+  if (!date) return null
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+  const _date = new Date(date)
+  const monthName = months[_date.getMonth()]
+  const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  return <StyledTime>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</StyledTime>
+}

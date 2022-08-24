@@ -30,12 +30,17 @@ const WRAPPED_LIST = 'wrapped.tokensoft.eth'
 // Rinkeby Default
 const RINKEBY_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/rinkeby-token-list.json'
 
+// Goerli Default
+// TODO: This should be reverted back to main before merge
+const GOERLI_LIST = RAW_CODE_LINK + '/cypress-goerli/src/custom/tokens/goerli-token-list.json'
+
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
 
 export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   [ChainId.MAINNET]: [BA_LIST],
   [ChainId.RINKEBY]: [BA_LIST],
+  [ChainId.GOERLI]: [BA_LIST],
   [ChainId.GNOSIS_CHAIN]: [BA_LIST],
 }
 
@@ -63,12 +68,14 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       COW_DAO_LIST,
     ],
   }),
-
   [ChainId.RINKEBY]: buildNetworkDefaultLists({
     chainId: ChainId.RINKEBY,
     networkLists: [RINKEBY_LIST, COMPOUND_LIST],
   }),
-
+  [ChainId.GOERLI]: buildNetworkDefaultLists({
+    chainId: ChainId.GOERLI,
+    networkLists: [GOERLI_LIST, COMPOUND_LIST],
+  }),
   [ChainId.GNOSIS_CHAIN]: buildNetworkDefaultLists({
     chainId: ChainId.GNOSIS_CHAIN,
     networkLists: [COW_DAO_LIST, HONEY_SWAP_XDAI],
@@ -85,5 +92,6 @@ export const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MA
 export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
   [ChainId.MAINNET]: [COW_DAO_LIST, UNI_LIST, GEMINI_LIST],
   [ChainId.RINKEBY]: [COW_DAO_LIST, UNI_LIST, RINKEBY_LIST],
+  [ChainId.GOERLI]: [COW_DAO_LIST, GOERLI_LIST],
   [ChainId.GNOSIS_CHAIN]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
 }

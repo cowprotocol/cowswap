@@ -7,7 +7,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { getEtherscanLink } from 'utils'
 import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 
 import github from 'assets/external/github-logo.png'
 import etherscan from 'assets/external/etherscan-logo.svg'
@@ -42,7 +42,7 @@ const VERSIONS: Record<
       }
     },
   },
-  'Settlement contract': {
+  'Settlement Contract': {
     version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
       return {
@@ -95,7 +95,7 @@ const LogoWrapper = styled.img`
 `
 
 const Version = ({ className }: { className?: string }) => {
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useActiveWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
   return (
     <StyledPolling className={className}>
       {/* it's hardcoded anyways */}

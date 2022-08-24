@@ -1,1 +1,1 @@
-import '../../cypress/integration/landing.test'
+import '../../cypress/e2e/landing.test'

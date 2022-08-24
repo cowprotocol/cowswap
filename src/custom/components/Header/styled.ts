@@ -91,6 +91,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
         css`
           position: absolute;
           top: 0;
+          z-index: 3;
 
           &::before {
             content: '';
@@ -243,7 +244,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 100;
+    z-index: 3;
     background: ${({ theme }) => theme.bg4};
     outline: 0;
     padding: 60px 8px;
@@ -293,22 +294,21 @@ export const TwitterLink = styled(StyledMenuButton)`
 `
 
 export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
-  width: 190px;
-  height: 48px;
+  width: 131px;
+  height: 41px;
   background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
   margin: 0 32px 0 0;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 34px;
+    width: 106px;
   `}
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
       isMobileMenuOpen &&
       css`
-        background: ${({ theme }) => `url(${theme.logo.srcIcon}) no-repeat left/contain`};
         height: 34px;
       `
     }

@@ -27,7 +27,7 @@ import ENS_ABI from 'abis/ens-registrar.json'
 //   V3_MIGRATOR_ADDRESSES,
 // } from 'constants/addresses'
 // import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 // import { useMemo } from 'react'
 // import { NonfungiblePositionManager, Quoter, TickLens, UniswapInterfaceMulticall } from 'types/v3'
 // import { V3Migrator } from 'types/v3/V3Migrator'
@@ -52,21 +52,21 @@ export function useContract<T extends Contract = Contract>(
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
-  const { library, account, chainId } = useActiveWeb3React()
+  const { provider, account, chainId } = useWeb3React()
 
   return useMemo(() => {
-    if (!addressOrAddressMap || !ABI || !library || !chainId) return null
+    if (!addressOrAddressMap || !ABI || !provider || !chainId) return null
     let address: string | undefined
     if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
     else address = addressOrAddressMap[chainId]
     if (!address) return null
     try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [addressOrAddressMap, ABI, library, chainId, withSignerIfPossible, account]) as T
+  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as T
 }
 
 export function useV2MigratorContract() {
@@ -78,7 +78,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return useContract<Weth>(
     chainId ? WRAPPED_NATIVE_CURRENCY[chainId]?.address : undefined,
     WETH_ABI,
@@ -100,12 +100,13 @@ export function useArgentWalletDetectorContract() {
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean) {
   // return useContract<EnsRegistrar>(ENS_REGISTRAR_ADDRESSES, ENS_ABI, withSignerIfPossible)
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   let address: string | undefined
   if (chainId) {
     switch (chainId) {
       case ChainId.MAINNET:
       case ChainId.RINKEBY:
+      case ChainId.GOERLI:
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
         break
       case ChainId.GNOSIS_CHAIN:
@@ -148,12 +149,12 @@ export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean):
   )
 }
 
-export function useV3Quoter() {
-  return useContract<Quoter>(QUOTER_ADDRESSES, QuoterABI)
+export function useQuoter(useQuoterV2: boolean) {
+  return useContract<Quoter | QuoterV2>(QUOTER_ADDRESSES, useQuoterV2 ? QuoterV2ABI : QuoterABI)
 }
 
 export function useTickLens(): TickLens | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const address = chainId ? TICK_LENS_ADDRESSES[chainId] : undefined
   return useContract(address, TickLensABI) as TickLens | null
-} */
+}*/

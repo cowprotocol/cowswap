@@ -1,23 +1,23 @@
 // import { Trans } from '@lingui/macro'
-// import { Connector } from '@web3-react/types'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
-// import { useCallback, useContext } from 'react'
+// import { useWeb3React } from '@web3-react/core'
+// import CopyHelper from 'components/AccountDetails/Copy'
+// import { getConnection, getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from 'connection/utils'
+// import { Context, useCallback, useContext } from 'react'
 // import { ExternalLink as LinkIcon } from 'react-feather'
 // import { useAppDispatch } from 'state/hooks'
+// import { updateSelectedWallet } from 'state/user/reducer'
+// import { DefaultTheme } from 'styled-components/macro'
 import styled /* , { ThemeContext } */ from 'styled-components/macro'
-// import { AbstractConnector } from 'web3-react-abstract-connector'
+// import { isMobile } from 'utils/userAgent'
 
 import { ReactComponent as Close } from 'assets/images/x.svg'
-// import { injected, portis, walletlink } from 'connectors'
-// import { SUPPORTED_WALLETS } from 'constants/wallet'
-// import { clearAllTransactions } from '../../state/transactions/actions'
+// import { clearAllTransactions } from '../../state/transactions/reducer'
 import { ExternalLink /* , LinkStyledButton, ThemedText */ } from 'theme'
 // import { shortenAddress } from 'utils'
 // import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { ButtonSecondary } from 'components/Button'
 // import StatusIcon from '../Identicon/StatusIcon'
 // import { AutoRow } from '../Row'
-// import Copy from './Copy'
 // import Transaction from '@src/components/AccountDetails/Transaction'
 
 import Activity from 'components/AccountDetails/Transaction' // MOD
@@ -240,22 +240,20 @@ export default function AccountDetails({
   ENSName,
   openOptions,
 }: AccountDetailsProps) {
-  const { chainId, account, connector } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const { chainId, account, connector } = useWeb3React()
+  const connectionType = getConnection(connector).type
+
+  const theme = useContext(ThemeContext as Context<DefaultTheme>)
   const dispatch = useAppDispatch()
 
+  const isMetaMask = getIsMetaMask()
+  const isCoinbaseWallet = getIsCoinbaseWallet()
+  const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
+
   function formatConnectorName() {
-    const { ethereum } = window
-    const isMetaMask = !!(ethereum && ethereum.isMetaMask)
-    const name = Object.keys(SUPPORTED_WALLETS)
-      .filter(
-        (k) =>
-          SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK'))
-      )
-      .map((k) => SUPPORTED_WALLETS[k].name)[0]
     return (
       <WalletName>
-        <Trans>Connected with {name}</Trans>
+        <Trans>Connected with</Trans> {getConnectionName(connectionType, isMetaMask)}
       </WalletName>
     )
   }
@@ -279,43 +277,41 @@ export default function AccountDetails({
               <AccountGroupingRow>
                 {formatConnectorName()}
                 <div>
-                  {connector !== injected && connector !== walletlink && (
-                    <WalletAction
-                      style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
-                      onClick={() => {
-                        ;(connector as any).close()
-                      }}
-                    >
-                      <Trans>Disconnect</Trans>
-                    </WalletAction>
+                  {!isInjectedMobileBrowser && (
+                    <>
+                      <WalletAction
+                        style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
+                        onClick={() => {
+                          if (connector.deactivate) {
+                            connector.deactivate()
+                          } else {
+                            connector.resetState()
+                          }
+
+                          dispatch(updateSelectedWallet({ wallet: undefined }))
+                          openOptions()
+                        }}
+                      >
+                        <Trans>Disconnect</Trans>
+                      </WalletAction>
+                      <WalletAction
+                        style={{ fontSize: '.825rem', fontWeight: 400 }}
+                        onClick={() => {
+                          openOptions()
+                        }}
+                      >
+                        <Trans>Change</Trans>
+                      </WalletAction>
+                    </>
                   )}
-                  <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400 }}
-                    onClick={() => {
-                      openOptions()
-                    }}
-                  >
-                    <Trans>Change</Trans>
-                  </WalletAction>
                 </div>
               </AccountGroupingRow>
-              <AccountGroupingRow id="web3-account-identifier-row">
+              <AccountGroupingRow data-testid="web3-account-identifier-row">
                 <AccountControl>
-                  {ENSName ? (
-                    <>
-                      <div>
-                        {connector && <WrappedStatusIcon connector={connector} />}
-                        <p> {ENSName}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        {connector && <WrappedStatusIcon connector={connector} />}
-                        <p> {account && shortenAddress(account)}</p>
-                      </div>
-                    </>
-                  )}
+                  <div>
+                    <StatusIcon connectionType={connectionType} />
+                    <p>{ENSName ? ENSName : account && shortenAddress(account)}</p>
+                  </div>
                 </AccountControl>
               </AccountGroupingRow>
               <AccountGroupingRow>
@@ -324,11 +320,11 @@ export default function AccountDetails({
                     <AccountControl>
                       <div>
                         {account && (
-                          <Copy toCopy={account}>
+                          <CopyHelper toCopy={account} iconPosition="left">
                             <span style={{ marginLeft: '4px' }}>
                               <Trans>Copy Address</Trans>
                             </span>
-                          </Copy>
+                          </CopyHelper>
                         )}
                         {chainId && account && (
                           <AddressLink
@@ -350,11 +346,11 @@ export default function AccountDetails({
                     <AccountControl>
                       <div>
                         {account && (
-                          <Copy toCopy={account}>
+                          <CopyHelper toCopy={account} iconPosition="left">
                             <span style={{ marginLeft: '4px' }}>
                               <Trans>Copy Address</Trans>
                             </span>
-                          </Copy>
+                          </CopyHelper>
                         )}
                         {chainId && account && (
                           <AddressLink

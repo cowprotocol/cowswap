@@ -17,6 +17,7 @@ import { HeaderText } from '@src/components/WalletModal/Option'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { ModalContentWrapper } from 'components/Settings/SettingsMod'
+import { NPS_KEY } from 'utils/appzi'
 
 export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
@@ -108,12 +109,13 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
+export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean, colorsTheme: Colors) {
+  const background = cowSwapBackground(darkMode, shouldBlurBackground)
+
   return {
     body: {
       background: css`
-        background: rgba(164, 211, 227, 1);
-        background: url(data:image/svg+xml;base64,${cowSwapBackground(darkMode)}) no-repeat 100% / cover fixed,
+        background: url(data:image/svg+xml;base64,${background}) no-repeat 100% / cover fixed,
           ${darkMode
             ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
             : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
@@ -123,10 +125,9 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     logo: {
       src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
-      srcIcon: `data:image/svg+xml;base64,${cowSwapLogo(darkMode, true)}`,
-      alt: 'CowSwap Logo',
-      width: '208px',
-      height: '50px',
+      alt: 'CoW Swap Logo',
+      width: '137px',
+      height: '44px',
     },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
@@ -180,6 +181,24 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
       `,
     },
+    dancingCow: css`
+      background: url(${Cursor1}), no-repeat;
+      animation: dancingCow 1s infinite;
+      @keyframes dancingCow {
+        0% {
+          background: url(${Cursor1}), no-repeat;
+        }
+        25% {
+          background: url(${Cursor2}), no-repeat;
+        }
+        50% {
+          background: url(${Cursor3}), no-repeat;
+        }
+        75% {
+          background: url(${Cursor4}), no-repeat;
+        }
+      }
+    `,
     card: {
       background: css`
         background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
@@ -281,7 +300,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       text: colorsTheme.black,
     },
     wallet: {
-      color: darkMode ? colorsTheme.text1 : colorsTheme.text1,
+      color: colorsTheme.text1,
       background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
@@ -390,16 +409,169 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // Appzi Container override
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    body[class^='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+  div[id*='appzi-wfo-'] {
+    display: none!important; // Force hiding Appzi container when not opened
+  }
+
+  body[class*='appzi-f-w-open-'] {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      overflow: hidden;
+    `}
+  }
+
+  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+    z-index: 2147483004!important;
+    display: block!important;
+
+    // Appzi NPS override =============================
+    &.appzi-nps-${NPS_KEY} {
+      width: 100%!important;
+      max-width: 500px!important;
+      height: 100%!important;
+      max-height: 460px!important;
+      top: 0!important;
+      bottom: 0!important;
+      margin: auto!important;
+      transform: none!important;
+      left: 0!important;
+      right: 0!important;
+      z-index: 2147483004!important;
+      padding: 12px 0!important;
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        max-height: 100%!important;
+        max-width: 100%!important;
+        padding: 0!important;
+      `}
+
+      &::before {
+        content: "";
+        background: ${({ theme }) => transparentize(0.6, theme.bg1)};
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        backdrop-filter: blur(3px);
+        z-index: -1;
+      }
+
+      > div[data-appzi-dom] {
+        right: 10px;
+        top: 21px;
+        position: absolute;
+        z-index: 99999;
+        width: 100%!important;
+        left: initial!important;
+        bottom: initial;
+        margin: 0 0 0 auto;
+        height: 42px!important;
+      }
+
+      > div[data-appzi-dom] > div {
+        background-size: 26px 26px!important;
+        height: 42px!important;
+        width: 42px!important;
+        position: relative;
+        top: 0!important;
+        right: 0!important;
+        left: initial!important;
+        margin: 0 0 0 auto!important;
+
+        ${({ theme }) => theme.mediaWidth.upToSmall`
+          top: 10px!important;
+          right: 10px!important;
+        `}
+      }
+
+      #nps-l {
+        font-size: 18px!important;
+        line-height: 1.2!important;
+      }
+
+      #nps-wrapper-inner > div {
+        max-width: 100%!important;
+
+      }
+
+      .digit {
+        font-size: 15px!important;
+        height: 30px!important;
+        width: 30px!important;
+        line-height: 30px!important;
+      }
+
+      .nps {
+        max-width: 100%!important;
+        width: 100%!important;
+
+        > div {
+          margin: 0!important;
+        }
+
+        > div span {
+          color: ${({ theme }) => theme.text1}!important;
+        }
+
+        > div > div {
+          justify-content: space-between!important;
+          display: flex!important;
+          width: 100%!important;
+         }
+      }
+    }
+    // ===================================================
+
+    > div[data-appzi-dom] > div {
+      opacity: 1!important;
+    }
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
       transform: none!important;
       left: 16px!important;
       bottom: 72px!important;
       top: initial!important;
       right: initial!important;
       position: fixed!important;
-    }
-  `}
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      transform: none !important;
+      left: 0 !important;
+      bottom: initial !important;
+      top: 0 !important;
+      right: initial !important;
+      position: fixed !important;
+      height: 100%!important;
+      width: 100%!important;
+      overflow-x: hidden!important;
+      overflow-y: auto!important;
+      opacity: 1!important;
+      transition: none!important;
+
+      > div[data-appzi-dom='1'] {
+        position: fixed!important;
+        top: 10px!important;
+        right: 0!important;
+        height: 30px!important;
+        width: 30px!important;
+        z-index: 2147483004!important;
+      }
+
+      > div[data-appzi-dom='1'] > div {
+        position: fixed!important;
+        top: 10px !important;
+        right: 15px !important;
+        opacity: 1 !important;
+      }
+    `}
+  }
+
+  body.noScroll div[id*='appzi-wfo-'] {
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      display: none!important;
+    `}
+  }
 
   // START - Modal overrides
   ${HeaderText} {

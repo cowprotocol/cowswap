@@ -21,7 +21,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   1: '',
   // 3: 'ropsten.',
   4: 'rinkeby.',
-  // 5: 'goerli.',
+  5: 'goerli.',
   // 42: 'kovan.',
   100: 'xdai.',
 }
@@ -136,4 +136,8 @@ export function formatOrderId(orderId: string): string {
 // converts a basis points value to a sdk percent
 export function basisPointsToPercent(num: number): Percent {
   return new Percent(JSBI.BigInt(num), JSBI.BigInt(10000))
+}
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
 }

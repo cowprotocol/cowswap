@@ -18,6 +18,7 @@ function _getExplorerUrlByEnvironment() {
   return {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.RINKEBY]: `${baseUrl}/rinkeby`,
+    [ChainId.GOERLI]: `${baseUrl}/goerli`,
     [ChainId.GNOSIS_CHAIN]: `${baseUrl}/xdai`,
   }
 }
@@ -44,4 +45,23 @@ export function getExplorerAddressLink(chainId: ChainId, address: string): strin
   const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/address/${address}`
+}
+
+enum Explorers {
+  Explorer = 'Explorer',
+  Blockscout = 'Blockscout',
+  Etherscan = 'Etherscan',
+}
+
+// Used for GA ExternalLink detection
+export function detectExplorer(href: string) {
+  if (href.includes('explorer')) {
+    return Explorers.Explorer
+  } else if (href.includes('blockscout')) {
+    return Explorers.Blockscout
+  } else if (href.includes('etherscan')) {
+    return Explorers.Etherscan
+  } else {
+    return undefined
+  }
 }

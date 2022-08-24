@@ -3,6 +3,7 @@ import { CurrencyAmount, Currency, TradeType, Price, Percent, Fraction } from '@
 import { Trade } from '@uniswap/v2-sdk'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 
+const ONE = new Fraction('1')
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
 
 export type TradeWithFee = Omit<Trade<Currency, Currency, TradeType>, 'nextMidPrice' | 'exactIn' | 'exactOut'> & {
@@ -48,44 +49,15 @@ export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
     return trade.outputAmount
   }
 
-  const priceDisplayed = trade.executionPrice.invert().asFraction
-  const slippage = new Fraction('1').add(pct)
-  // slippage is applied to PRICE
-  const slippagePrice = priceDisplayed.multiply(slippage)
-  // newly constructed price with slippage applied
-  const minPrice = new Price<Currency, Currency>(
-    trade.executionPrice.quoteCurrency,
-    trade.executionPrice.baseCurrency,
-    slippagePrice.denominator,
-    slippagePrice.numerator
-  )
-
-  const minimumAmountOut = minPrice.invert().quote(trade.inputAmountWithFee)
-
-  return minimumAmountOut
+  return trade.outputAmount.multiply(ONE.subtract(pct))
 }
 
 export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
   if (trade.tradeType === TradeType.EXACT_INPUT) {
     return trade.inputAmount
   }
-  const priceDisplayed = trade.executionPrice.invert().asFraction
-  const slippage = new Fraction('1').subtract(pct)
-  // slippage is applied to the price
-  const slippagePrice = priceDisplayed.multiply(slippage)
-  // construct new price using slippage price
-  const maxPrice = new Price<Currency, Currency>(
-    trade.executionPrice.quoteCurrency,
-    trade.executionPrice.baseCurrency,
-    slippagePrice.denominator,
-    slippagePrice.numerator
-  )
 
-  // fee is in sell token so we
-  // add fee to the calculated input
-  const maximumAmountIn = maxPrice.invert().quote(trade.outputAmount).add(trade.fee.feeAsCurrency)
-
-  return maximumAmountIn
+  return trade.inputAmountWithFee.multiply(ONE.add(pct))
 }
 
 interface TradeGpConstructor {
@@ -97,6 +69,7 @@ interface TradeGpConstructor {
   fee: FeeForTrade
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
+  quoteId?: number
 }
 
 /**
@@ -128,6 +101,13 @@ export default class TradeGp {
    */
   readonly executionPrice: Price<Currency, Currency>
 
+  /**
+   * The id returned by CoW Swap's quote backend, if any
+   *
+   * Note that it won't be set for fast quotes, nor for quotes from other sources (paraswap, 0x, etc)
+   */
+  readonly quoteId?: number
+
   public constructor({
     inputAmount,
     inputAmountWithFee,
@@ -137,6 +117,7 @@ export default class TradeGp {
     fee,
     executionPrice,
     tradeType,
+    quoteId,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
@@ -146,6 +127,7 @@ export default class TradeGp {
     this.outputAmount = outputAmount
     this.fee = fee
     this.executionPrice = executionPrice
+    this.quoteId = quoteId
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance

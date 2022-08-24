@@ -1,15 +1,16 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
+import { useWeb3React } from '@web3-react/core'
+// import { sendEvent } from 'components/analytics'
 // import Card from 'components/Card'
 // import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useListColor } from 'hooks/useColor'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
-import ReactGA from 'react-ga4'
+// import ReactGA from 'react-ga4'
 import { usePopper } from 'react-popper'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import styled from 'styled-components/macro'
@@ -26,7 +27,7 @@ import { ButtonEmpty, ButtonPrimary } from 'components/Button'
 import Column, { AutoColumn } from 'components/Column'
 import ListLogo from 'components/ListLogo'
 import Row, { RowBetween, RowFixed } from 'components/Row'
-import ListToggle from 'components/Toggle/ListToggle'
+import Toggle from 'components/Toggle'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/SearchModal/styleds'
 
@@ -34,6 +35,7 @@ import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/
 import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'utils/analytics'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -108,7 +110,7 @@ const ListRow = memo(function ListRow({
 }: // }: { listUrl: string }) {
 ListRowProps & { listUrl: string }) {
   // We default to a chainId if none is available
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
   const listsByUrl = useAppSelector((state) => state.lists[chainId].byUrl)
@@ -141,48 +143,29 @@ ListRowProps & { listUrl: string }) {
 
   const handleAcceptListUpdate = useCallback(() => {
     if (!pending) return
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Update List from List Select',
-      label: listUrl,
-    })
+    updateListAnalytics('List Select', listUrl)
     dispatch(acceptListUpdate(listUrl))
     // }, [dispatch, listUrl, pending])
   }, [acceptListUpdate, dispatch, listUrl, pending])
 
   const handleRemoveList = useCallback(() => {
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Start Remove List',
-      label: listUrl,
-    })
+    removeListAnalytics('Start', listUrl)
+
     if (window.prompt(t`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
-      ReactGA.event({
-        category: 'Lists',
-        action: 'Confirm Remove List',
-        label: listUrl,
-      })
+      removeListAnalytics('Confirm', listUrl)
       dispatch(removeList(listUrl))
     }
     // }, [dispatch, listUrl])
   }, [dispatch, listUrl, removeList])
 
   const handleEnableList = useCallback(() => {
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Enable List',
-      label: listUrl,
-    })
+    toggleListAnalytics(true, listUrl)
     dispatch(enableList(listUrl))
     // }, [dispatch, listUrl])
   }, [dispatch, enableList, listUrl])
 
   const handleDisableList = useCallback(() => {
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Disable List',
-      label: listUrl,
-    })
+    toggleListAnalytics(false, listUrl)
     dispatch(disableList(listUrl))
     // }, [dispatch, listUrl])
   }, [disableList, dispatch, listUrl])
@@ -208,7 +191,7 @@ ListRowProps & { listUrl: string }) {
         </Row>
         <RowFixed mt="4px">
           <StyledListUrlText active={isActive} mr="6px">
-            <Trans>{list.tokens.length} tokens</Trans>
+            <Trans>{activeTokensOnThisChain} tokens</Trans>
           </StyledListUrlText>
           <StyledMenu ref={node as any}>
             <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
@@ -234,7 +217,7 @@ ListRowProps & { listUrl: string }) {
           </StyledMenu>
         </RowFixed>
       </Column>
-      <ListToggle
+      <Toggle
         isActive={isActive}
         bgColor={listColor}
         toggle={() => {
@@ -278,7 +261,7 @@ export function ManageLists({
   unsupportedListUrls: string[]
   listRowProps: ListRowProps
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useTheme()
 
   const [listUrlInput, setListUrlInput] = useState<string>('')
@@ -302,7 +285,7 @@ export function ManageLists({
   // sort by active but only if not visible
   const activeListUrls = useActiveListUrls()
 
-  const handleInput = useCallback((e) => {
+  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setListUrlInput(e.target.value)
   }, [])
 
@@ -312,47 +295,92 @@ export function ManageLists({
     return uriToHttp(listUrlInput).length > 0 || Boolean(parseENSAddress(listUrlInput))
   }, [listUrlInput])
 
-  const sortedLists = useMemo(
+  // const sortedLists = useMemo(() => {
+  //   const listUrls = Object.keys(lists)
+  //   return listUrls
+  //     .filter((listUrl) => {
+  //       // only show loaded lists, hide unsupported lists
+  //       return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+  //     })
+  //     .sort((listUrlA, listUrlB) => {
+  //       const { current: listA } = lists[listUrlA]
+  //       const { current: listB } = lists[listUrlB]
+
+  //       // first filter on active lists
+  //       if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
+  //         return -1
+  //       }
+  //       if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
+  //         return 1
+  //       }
+
+  //       if (listA && listB) {
+  //         if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
+  //           return -1
+  //         }
+  //         if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
+  //           return 1
+  //         }
+  //         return listA.name.toLowerCase() < listB.name.toLowerCase()
+  //           ? -1
+  //           : listA.name.toLowerCase() === listB.name.toLowerCase()
+  //           ? 0
+  //           : 1
+  //       }
+  //       if (listA) return -1
+  //       if (listB) return 1
+  //       return 0
+  //     })
+  // }, [lists, activeListUrls, tokenCountByListName])
+
+  // Mod: Sort only on initial component load to avoid jumping UI issues
+  // Next time the component is loaded, the lists will be sorted
+  const sortedLists = useMemo(() => {
+    const listsUrls = Object.keys(lists)
+
+    return listsUrls.sort((listUrlA, listUrlB) => {
+      const { current: listA } = lists[listUrlA]
+      const { current: listB } = lists[listUrlB]
+
+      // first filter on active lists
+      if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
+        return -1
+      }
+      if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
+        return 1
+      }
+
+      if (listA && listB) {
+        if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
+          return -1
+        }
+        if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
+          return 1
+        }
+        return listA.name.toLowerCase() < listB.name.toLowerCase()
+          ? -1
+          : listA.name.toLowerCase() === listB.name.toLowerCase()
+          ? 0
+          : 1
+      }
+      if (listA) return -1
+      if (listB) return 1
+      return 0
+    })
+    // This is fine to have empty dependencies here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const filteredLists = useMemo(
     () => {
-      const listUrls = Object.keys(lists)
-      return listUrls
-        .filter((listUrl) => {
-          // only show loaded lists, hide unsupported lists
-          // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
-          return Boolean(lists[listUrl].current) && !Boolean(unsupportedListUrls.includes(listUrl))
-        })
-        .sort((listUrlA, listUrlB) => {
-          const { current: listA } = lists[listUrlA]
-          const { current: listB } = lists[listUrlB]
-
-          // first filter on active lists
-          if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
-            return -1
-          }
-          if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
-            return 1
-          }
-
-          if (listA && listB) {
-            if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
-              return -1
-            }
-            if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
-              return 1
-            }
-            return listA.name.toLowerCase() < listB.name.toLowerCase()
-              ? -1
-              : listA.name.toLowerCase() === listB.name.toLowerCase()
-              ? 0
-              : 1
-          }
-          if (listA) return -1
-          if (listB) return 1
-          return 0
-        })
+      return sortedLists.filter((listUrl) => {
+        // only show loaded lists, hide unsupported lists
+        // return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+        return Boolean(lists[listUrl]?.current) && !Boolean(unsupportedListUrls.includes(listUrl))
+      })
     },
     // [lists, activeListUrls, tokenCountByListName]
-    [lists, unsupportedListUrls, activeListUrls, tokenCountByListName]
+    [sortedLists, lists, unsupportedListUrls]
   )
 
   // temporary fetched list for import flow
@@ -447,7 +475,7 @@ export function ManageLists({
       <Separator />
       <ListContainer>
         <AutoColumn gap="md">
-          {sortedLists.map((listUrl) => (
+          {filteredLists.map((listUrl) => (
             // <ListRow key={listUrl} listUrl={listUrl} />
             <ListRow key={listUrl} listUrl={listUrl} {...listRowProps} />
           ))}
