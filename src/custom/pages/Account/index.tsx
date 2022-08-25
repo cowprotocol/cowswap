@@ -40,7 +40,7 @@ const Overview = () => {
 
   return (
     <Container>
-      {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
+      {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
 
       <CardsWrapper>
         <Balances />

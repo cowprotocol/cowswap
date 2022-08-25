@@ -20,7 +20,6 @@ export interface BannerProps {
 
 const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
   width: 100%;
-  min-height: 40px;
   padding: 8px;
   border-radius: 12px;
   margin: 0 0 16px 0;

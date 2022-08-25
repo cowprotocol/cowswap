@@ -203,7 +203,7 @@ export function CurrencySearch({
   return (
     // <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
     <ContentWrapper>
-      <PaddedColumn gap="16px">
+      <PaddedColumn style={{ padding: 0 }} gap="16px">
         <PaddedRow>
           <Text fontWeight={500} fontSize={16}>
             <Trans>Select a token</Trans>

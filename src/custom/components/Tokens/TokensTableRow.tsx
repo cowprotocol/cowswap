@@ -105,7 +105,7 @@ const DataRow = ({
   const hasZeroBalance = !balance || balance?.equalTo(0)
   const hasNoAllowance = !currentAllowance || currentAllowance.equalTo(0)
 
-  // This is so we only create fiat value request if there is a blance
+  // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
       return <Loader />

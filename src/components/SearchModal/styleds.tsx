@@ -17,7 +17,7 @@ export const Checkbox = styled.input`
 `
 
 export const PaddedColumn = styled(AutoColumn)`
-  padding: 0;
+  padding: 20px;
 `
 
 export const PaddedRow = styled(RowBetween)`
