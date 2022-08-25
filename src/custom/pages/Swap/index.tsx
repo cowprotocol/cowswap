@@ -382,7 +382,7 @@ const TradeLoading = ({ showButton = false }: TradeLoadingProps) => {
   )
 }
 
-interface SwapButtonProps extends TradeLoadingProps {
+export interface SwapButtonProps extends TradeLoadingProps {
   showLoading: boolean
   children: React.ReactNode
 }

@@ -7,13 +7,12 @@ import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 // import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
-import { MouseoverTooltip } from 'components/Tooltip'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
+import { ArrowDown } from 'react-feather'
 // import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -21,12 +20,9 @@ import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
 
 import AddressInputPanel from 'components/AddressInputPanel'
-import { ButtonConfirmed /*, ButtonError, ButtonLight, ButtonPrimary*/ } from 'components/Button'
 import Card, { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import CurrencyLogo from 'components/CurrencyLogo'
-import Loader from 'components/Loader'
 import { AutoRow } from 'components/Row'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper /*, SwapCallbackError*/, Wrapper } from 'components/swap/styleds'
@@ -34,7 +30,6 @@ import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { ApprovalState /*, useApprovalOptimizedTrade*/, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
-import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
 // import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useStablecoinPrice'
@@ -77,13 +72,14 @@ import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
-import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
+import { swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { ImportTokenModal } from './components/ImportTokenModal'
 import { CompatibilityIssuesWarning } from './components/CompatibilityIssuesWarning'
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
+import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 
 export default function Swap({
   history,
@@ -244,8 +240,9 @@ export default function Swap({
     [onUserInput]
   )
 
-  const { showConfirm, tradeToConfirm, swapErrorMessage } = useAtomValue(swapConfirmAtom)
+  const swapConfirmState = useAtomValue(swapConfirmAtom)
   const setSwapState = useUpdateAtom(swapConfirmAtom)
+  const { showConfirm, tradeToConfirm, swapErrorMessage } = swapConfirmState
 
   const formattedAmounts = useMemo(
     () => ({
@@ -266,70 +263,6 @@ export default function Swap({
     allowedSlippage,
   })
   const transactionDeadline = useTransactionDeadline()
-  const prevApprovalState = usePrevious(approvalState) // mod
-  const {
-    state: signatureState,
-    // signatureData,
-    gatherPermitSignature,
-  } = useERC20PermitFromTrade(trade, allowedSlippage, transactionDeadline)
-
-  const handleApprove = useCallback(async () => {
-    let approveRequired = false // mod
-    if (signatureState === UseERC20PermitState.NOT_SIGNED && gatherPermitSignature) {
-      try {
-        await gatherPermitSignature()
-      } catch (error) {
-        // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
-        if (!isRejectRequestProviderError(error)) {
-          approveRequired = true
-        }
-      }
-    } else {
-      approveRequired = true
-    }
-
-    if (approveRequired) {
-      const symbol = v2Trade?.inputAmount?.currency.symbol
-      approvalAnalytics('Send', symbol)
-      return approveCallback()
-        .then(() => {
-          approvalAnalytics('Sign', symbol)
-        })
-        .catch((error) => {
-          console.error('Error setting the allowance for token', error)
-
-          let swapErrorMessage, errorCode
-          if (isRejectRequestProviderError(error)) {
-            swapErrorMessage = 'User rejected approving the token'
-            approvalAnalytics('Reject', symbol)
-          } else {
-            swapErrorMessage = getProviderErrorMessage(error)
-
-            if (error?.code && typeof error.code === 'number') {
-              errorCode = error.code
-            }
-
-            approvalAnalytics('Error', symbol, errorCode)
-          }
-
-          setSwapState({
-            attemptingTxn: false,
-            tradeToConfirm,
-            showConfirm,
-            swapErrorMessage,
-            txHash: undefined,
-          })
-        })
-    }
-  }, [
-    setSwapState,
-    approveCallback,
-    gatherPermitSignature,
-    showConfirm,
-    signatureState,
-    tradeToConfirm,
-    v2Trade?.inputAmount?.currency.symbol,
-  ])
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -340,17 +273,6 @@ export default function Swap({
       history.replace(location.pathname)
     }
   }, [chainId, history, location.pathname, previousChainId])
-
-  // mark when a user has submitted an approval, reset onTokenSelection for input field
-  useEffect(() => {
-    if (approvalState === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
-      // mod
-    } else if (prevApprovalState === ApprovalState.PENDING && approvalState === ApprovalState.NOT_APPROVED) {
-      // user canceled the approval tx, reset the UI
-      setApprovalSubmitted(false)
-    }
-  }, [approvalState, approvalSubmitted, prevApprovalState])
 
   const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
     () => maxAmountSpend(currencyBalances[Field.INPUT]),
@@ -492,6 +414,25 @@ export default function Swap({
     handleSwap,
     onUserInput,
     priceImpact,
+  }
+
+  const approveButtonProps: ApproveButtonProps = {
+    trade,
+    currencyIn,
+    allowedSlippage,
+    transactionDeadline,
+    setSwapState,
+    swapConfirmState,
+    SwapButton,
+    isExpertMode,
+    handleSwap,
+    isValid,
+    isGettingNewQuote,
+    swapBlankState,
+    approvalState,
+    approveCallback,
+    approvalSubmitted,
+    setApprovalSubmitted,
   }
 
   return (
@@ -723,84 +664,7 @@ export default function Swap({
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
                 <AutoColumn style={{ width: '100%' }} gap="12px">
-                  <ButtonConfirmed
-                    buttonSize={ButtonSize.BIG}
-                    onClick={handleApprove}
-                    disabled={
-                      approvalState !== ApprovalState.NOT_APPROVED ||
-                      approvalSubmitted ||
-                      signatureState === UseERC20PermitState.SIGNED
-                    }
-                    width="100%"
-                    marginBottom={10}
-                    altDisabledStyle={approvalState === ApprovalState.PENDING} // show solid button while waiting
-                    confirmed={
-                      approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED
-                    }
-                  >
-                    <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-                      <span
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-evenly',
-                          width: '100%',
-                          fontSize: '13px',
-                        }}
-                      >
-                        <CurrencyLogo currency={currencies[Field.INPUT]} size={'20px'} style={{ flexShrink: 0 }} />
-                        {/* we need to shorten this string on mobile */}
-                        {approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED ? (
-                          <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
-                        ) : (
-                          <Trans>Allow CoW Swap to use your {currencies[Field.INPUT]?.symbol}</Trans>
-                        )}
-                        {approvalState === ApprovalState.PENDING ? (
-                          <Loader stroke="white" />
-                        ) : (approvalSubmitted && approvalState === ApprovalState.APPROVED) ||
-                          signatureState === UseERC20PermitState.SIGNED ? (
-                          <CheckCircle size="20" color={theme.green1} />
-                        ) : (
-                          <MouseoverTooltip
-                            text={
-                              <Trans>
-                                You must give the CoW Protocol smart contracts permission to use your{' '}
-                                {currencies[Field.INPUT]?.symbol}. You only have to do this once per token.
-                              </Trans>
-                            }
-                          >
-                            <HelpCircle size="20" color={'white'} />
-                          </MouseoverTooltip>
-                        )}
-                      </span>
-                    </AutoRow>
-                  </ButtonConfirmed>
-                  <ButtonError
-                    buttonSize={ButtonSize.BIG}
-                    onClick={() => {
-                      if (isExpertMode) {
-                        handleSwap()
-                      } else {
-                        setSwapState({
-                          tradeToConfirm: trade,
-                          attemptingTxn: false,
-                          swapErrorMessage: undefined,
-                          showConfirm: true,
-                          txHash: undefined,
-                        })
-                      }
-                    }}
-                    width="100%"
-                    id="swap-button"
-                    disabled={
-                      !isValid ||
-                      (approvalState !== ApprovalState.APPROVED && signatureState !== UseERC20PermitState.SIGNED)
-                    }
-                  >
-                    <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                      <Trans>Swap</Trans>
-                    </SwapButton>
-                  </ButtonError>
+                  <ApproveButton {...approveButtonProps} />
                 </AutoColumn>
               </AutoRow>
             ) : (
