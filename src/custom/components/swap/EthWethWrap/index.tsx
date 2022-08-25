@@ -8,8 +8,6 @@ import WrappingVisualisation from './WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/connection/hooks'
 
-import { useGasPrices } from 'state/gas/hooks'
-import { _isLowBalanceCheck, _getAvailableTransactions, _estimateTxCost } from './helpers'
 import { Trans } from '@lingui/macro'
 import SimpleAccountDetails from '../../AccountDetails/SimpleAccountDetails'
 import Loader from 'components/Loader'
@@ -20,6 +18,7 @@ import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { useWeb3React } from '@web3-react/core'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import { transparentize } from 'polished'
+import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
 
 const EthFlowModal = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -147,9 +146,8 @@ export default function EthWethWrap({
 
   // user safety checks to make sure any on-chain native currency operations are economically safe
   // shows user warning with remaining available TXs if a certain threshold is reached
-  const { balanceChecks } = useRemainingTxsAndCosts({
+  const { balanceChecks } = useRemainingNativeTxsAndCosts({
     native,
-    isNativeIn,
     nativeBalance,
     nativeInput,
   })
@@ -748,31 +746,4 @@ function _buildActionButton({
       </ButtonWrapper>
     )
   )
-}
-
-type RemainingTxAndCostsParams = Pick<Props, 'isNativeIn' | 'nativeInput' | 'native'> & {
-  nativeBalance: CurrencyAmount<Currency> | undefined
-}
-
-function useRemainingTxsAndCosts({ native, isNativeIn, nativeBalance, nativeInput }: RemainingTxAndCostsParams) {
-  const { chainId } = useWeb3React()
-  const gasPrice = useGasPrices(chainId)
-  // returns the cost of 1 tx and multi txs
-  const txCosts = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
-  // does the user have a lower than set threshold balance? show error
-  const balanceChecks: { isLowBalance: boolean; txsRemaining: string | null } | undefined = useMemo(() => {
-    const { multiTxCost, singleTxCost } = txCosts
-
-    return {
-      isLowBalance: _isLowBalanceCheck({
-        threshold: multiTxCost,
-        nativeInput,
-        balance: nativeBalance,
-        txCost: singleTxCost,
-      }),
-      txsRemaining: _getAvailableTransactions({ nativeBalance, nativeInput, singleTxCost }),
-    }
-  }, [txCosts, nativeBalance, nativeInput])
-
-  return { balanceChecks, ...txCosts }
 }
