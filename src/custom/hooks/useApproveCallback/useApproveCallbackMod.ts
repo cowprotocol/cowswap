@@ -61,29 +61,8 @@ export function useApproveCallback({
   amountToApprove,
   spender,
   amountToCheckAgainstAllowance,
-<<<<<<< HEAD
-}: MakeOptional<ApproveCallbackParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback
-export function useApproveCallback({
-  openTransactionConfirmationModal,
-  closeModals,
-  amountToApprove,
-  spender,
-  amountToCheckAgainstAllowance,
-}: ApproveCallbackParams): ApproveCallback
-export function useApproveCallback({
-  openTransactionConfirmationModal,
-  closeModals,
-  amountToApprove,
-  spender,
-  amountToCheckAgainstAllowance,
-}:
-  | ApproveCallbackParams
-  | MakeOptional<ApproveCallbackParams, 'openTransactionConfirmationModal' | 'closeModals'>): ApproveCallback {
-  const { account, chainId } = useWeb3React()
-=======
 }: ApproveCallbackParams): ApproveCallback {
-  const { account, chainId } = useActiveWeb3React()
->>>>>>> 191277376 (revert approve/wrap hook signature overloads)
+  const { account, chainId } = useWeb3React()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
