@@ -1,27 +1,34 @@
+import { useState } from 'react'
 import styled from 'styled-components/macro'
-import ToggleUni, { ToggleProps as TogglePropsUni, ToggleElement } from '@src/components/Toggle'
-import { transparentize } from 'polished'
+import { WithClassName } from 'types'
+import { ToggleElement } from '@src/components/Toggle' // Mod
+import { darken } from 'polished'
 
-export type ToggleProps = TogglePropsUni & {
-  togglesOnly?: boolean
-}
+const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
+  align-items: center;
+  background: ${({ theme }) => theme.bg1};
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  outline: none;
+  padding: 0.4rem 0.4rem;
+  width: fit-content;
+`
 
-const WrappedToggle = styled(ToggleUni)<Pick<ToggleProps, 'togglesOnly'>>`
-  background: ${({ theme }) => theme.bg6};
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.bg2)};
-  border-radius: 30px;
+// Mod
+const WrappedToggle = styled(Wrapper)`
+  background: ${({ theme }) => (theme.darkMode ? theme.bg3 : darken(0.05, theme.bg3))};
 
   ${ToggleElement} {
     color: ${({ theme }) => theme.text1};
     border: 2px solid transparent;
-    border-radius: 30px;
     transition: border 0.2s ease-in-out;
     background: ${({ theme }) => theme.primary1};
 
-    ${({ togglesOnly }) => togglesOnly && `padding: 10px;`}
-
     &:hover {
       color: ${({ theme }) => theme.text1};
+      border: 2px solid ${({ theme }) => theme.text1};
     }
   }
 
@@ -38,7 +45,25 @@ const WrappedToggle = styled(ToggleUni)<Pick<ToggleProps, 'togglesOnly'>>`
   }
 `
 
-export default function Toggle(props: ToggleProps) {
-  const { togglesOnly, checked, unchecked } = props
-  return <WrappedToggle {...props} checked={togglesOnly ? null : checked} unchecked={togglesOnly ? null : unchecked} />
+export interface ToggleProps extends WithClassName {
+  id?: string
+  bgColor?: string
+  isActive: boolean
+  toggle: () => void
+  isDisabled?: boolean // Mod
+}
+
+export default function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }: ToggleProps) {
+  const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
+
+  const switchToggle = () => {
+    toggle()
+    if (!isDisabled && isInitialToggleLoad) setIsInitialToggleLoad(false)
+  }
+
+  return (
+    <WrappedToggle id={id} isActive={isActive} onClick={switchToggle} className={className}>
+      <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
+    </WrappedToggle>
+  )
 }
