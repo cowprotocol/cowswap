@@ -39,7 +39,7 @@ export enum WrapType {
 
 interface WrapUnwrapCallback {
   wrapType: WrapType
-  execute?: ({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
+  execute?: (params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
   inputError?: string
 }
 
@@ -97,7 +97,7 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
   // Create wrap/unwrap callback if sufficient balance
   let wrapUnwrapCallback:
-    | (({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
+    | ((params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
     | undefined
   if (sufficientBalance && inputAmount) {
     let wrapUnwrap: () => Promise<TransactionResponse>
@@ -134,7 +134,8 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     }
 
     const operationMessage = getOperationMessage(operationType, chainId)
-    wrapUnwrapCallback = async ({ useModals }: Pick<OptionalApproveCallbackParams, 'useModals'>) => {
+    wrapUnwrapCallback = async (params = { useModals: true }) => {
+      const { useModals } = params
       try {
         useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
         wrapAnalytics('Send', operationMessage)

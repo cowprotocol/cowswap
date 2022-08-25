@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { _estimateTxCost, _isLowBalanceCheck, _getAvailableTransactions } from 'components/swap/EthWethWrap/helpers'
 import { useGasPrices } from 'state/gas/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { Props } from 'components/swap/EthWethWrap'
 
 type RemainingTxAndCostsParams = Pick<Props, 'nativeInput' | 'native'> & {
@@ -14,7 +14,7 @@ export default function useRemainingNativeTxsAndCosts({
   nativeBalance,
   nativeInput,
 }: RemainingTxAndCostsParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const gasPrice = useGasPrices(chainId)
   // returns the cost of 1 tx and multi txs
   const txCosts = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])

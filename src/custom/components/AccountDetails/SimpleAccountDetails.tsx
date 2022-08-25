@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'hooks/useRecentActivity'
 import { supportedChainId } from 'utils/supportedChainId'
 import { LowerSectionSimple, Wrapper } from './styled'
@@ -23,7 +23,7 @@ export default function SimpleAccountDetails({
   confirmedTransactions = [],
   ...styleProps
 }: SimpleAccountDetailsProps) {
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId)
 
   const activities =
