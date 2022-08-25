@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import Loader from 'components/Loader'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
@@ -282,8 +281,6 @@ export default function TokenTable({
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
-      ) : !debouncedQuery ? (
-        <Loader />
       ) : (
         <small>{'No results found :('}</small>
       )}

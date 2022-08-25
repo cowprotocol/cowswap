@@ -220,6 +220,11 @@ const userSlice = createSlice({
       state.recipientToggleVisible = action.payload.recipientToggleVisible
       state.timestamp = currentTimestamp()
     },
+    initFavouriteTokens(state, { payload: { chainId } }) {
+      if (!state.favouriteTokens?.[chainId]) {
+        state.favouriteTokens = _initialSavedTokensState()
+      }
+    },
     toggleFavouriteToken(state, { payload: { serializedToken } }) {
       const { chainId, address } = serializedToken
 
@@ -295,5 +300,6 @@ export const {
   toggleURLWarning,
   toggleFavouriteToken,
   removeAllFavouriteTokens,
+  initFavouriteTokens,
 } = userSlice.actions
 export default userSlice.reducer

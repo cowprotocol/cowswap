@@ -19,7 +19,7 @@ import { TokenSearchInput } from 'components/Tokens/styled'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
 import TokensTable from 'components/Tokens/TokensTable'
-import { useFavouriteTokens, useRemoveAllFavouriteTokens } from 'state/user/hooks'
+import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens } from 'state/user/hooks'
 import { useAllTokenBalances } from 'state/connection/hooks'
 import { Check } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
@@ -48,6 +48,7 @@ const PageView = {
 }
 
 export default function TokensOverview() {
+  useInitFavouriteTokens()
   const { chainId, provider, account } = useWeb3React()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -188,7 +189,7 @@ export default function TokensOverview() {
 
             {selectedView === PageViewKeys.FAVORITE_TOKENS && (
               <RemoveTokens onClick={handleRestoreTokens}>
-                (<Trans>Restore defaults</Trans>)
+                (<Trans>Reset favourites</Trans>)
               </RemoveTokens>
             )}
           </LeftSection>
