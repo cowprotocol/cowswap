@@ -46,7 +46,7 @@ export const _getAvailableTransactions = ({
 
   // USER_BALANCE - (USER_WRAP_AMT + 1_TX_CST) / 1_TX_COST = AVAILABLE_TXS
   const txsAvailable = nativeBalance.subtract(nativeInput.add(singleTxCost)).divide(singleTxCost)
-  return txsAvailable.lessThan('1') ? null : txsAvailable.toSignificant(1)
+  return txsAvailable.lessThan('1') ? null : txsAvailable.quotient.toString()
 }
 
 export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, native: Currency | undefined) {

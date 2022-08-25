@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'hooks/useRecentActivity'
 import { supportedChainId } from 'utils/supportedChainId'
-import { LowerSectionSimple, Wrapper, NoActivityMessage } from './styled'
+import { LowerSectionSimple, Wrapper } from './styled'
 import { renderActivities } from './AccountDetailsMod'
 import { AccountDetailsProps } from '.'
 import styled from 'styled-components/macro'
@@ -30,21 +30,17 @@ export default function SimpleAccountDetails({
     useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) }) || []
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
 
+  if (!pendingTransactions.length && !confirmedTransactions.length) return null
+
   return (
     <SimpleWrapper {...styleProps}>
-      {pendingTransactions.length || confirmedTransactions.length ? (
-        <LowerSectionSimple>
-          <div>
-            {activitiesGroupedByDate.map(({ date, activities }) => (
-              <Fragment key={date.getTime()}>{renderActivities(activities)}</Fragment>
-            ))}
-          </div>
-        </LowerSectionSimple>
-      ) : (
-        <LowerSectionSimple>
-          <NoActivityMessage>Your activity will appear here...</NoActivityMessage>
-        </LowerSectionSimple>
-      )}
+      <LowerSectionSimple>
+        <div>
+          {activitiesGroupedByDate.map(({ date, activities }) => (
+            <Fragment key={date.getTime()}>{renderActivities(activities)}</Fragment>
+          ))}
+        </div>
+      </LowerSectionSimple>
     </SimpleWrapper>
   )
 }

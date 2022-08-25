@@ -19,6 +19,7 @@ import { useSingleActivityState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { useWeb3React } from '@web3-react/core'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+import { transparentize } from 'polished'
 
 const EthFlowModal = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -31,6 +32,13 @@ const ModalMessage = styled.p`
   margin-top: 40px;
   width: 100%;
   color: ${({ theme }) => theme.wallet.color};
+`
+
+const LowBalanceMessage = styled(ModalMessage)`
+  margin: 0 0 8px;
+  background-color: ${({ theme }) => transparentize(0.2, theme.warning)};
+  padding: 8px 12px;
+  border-radius: 10px;
 `
 
 const ButtonWrapper = styled.div`
@@ -364,26 +372,25 @@ export default function EthWethWrap({
             <Trans>{description}</Trans>
           </ModalMessage>
         )}
-        {balanceChecks?.isLowBalance && (
-          <ModalMessage>
-            <span>
-              <Trans>
-                At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
-                {!balanceChecks.txsRemaining ? (
-                  <strong>insufficient for any further on-chain transactions.</strong>
-                ) : (
-                  <>
-                    sufficient for{' '}
-                    <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
-                  </>
-                )}
-              </Trans>
-            </span>
-          </ModalMessage>
+        {/* Warn user if native balance low for on-chain operations EXCEPT if state is ready to swap */}
+        {state !== EthFlowState.SwapReady && balanceChecks?.isLowBalance && (
+          <LowBalanceMessage>
+            <Trans>
+              At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
+              {!balanceChecks.txsRemaining ? (
+                <strong>insufficient for any further on-chain transactions.</strong>
+              ) : (
+                <>
+                  sufficient for{' '}
+                  <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
+                </>
+              )}
+            </Trans>
+          </LowBalanceMessage>
         )}
       </>
     ),
-    [balanceChecks, description, nativeSymbol]
+    [state, balanceChecks, description, nativeSymbol]
   )
 
   const bottomContent = useCallback(
@@ -400,7 +407,7 @@ export default function EthWethWrap({
           chainId={chainId}
         />
         <SimpleAccountDetails
-          pendingTransactions={Object.values(pendingHashMap)}
+          pendingTransactions={Object.values(pendingHashMap).filter(Boolean)}
           confirmedTransactions={[]}
           $margin="12px 0 0"
         />
@@ -650,18 +657,6 @@ function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, is
   }
 }
 
-/* function _getCurrencyUriForLogo({
-  isWrap,
-  isNativeIn,
-  wrapped,
-  native,
-  chainId,
-}: Pick<Props, 'isNativeIn' | 'native' | 'wrapped'> & { chainId?: number; isWrap: boolean }) {
-  if (!wrapped.logoURI && chainId) return CHAIN_INFO[chainId].logoUrl
-
-  return isWrap || isNativeIn ? wrapped.logoURI : chainId ? CHAIN_INFO[chainId].logoUrl : undefined
-} */
-
 // conditionally renders the correct action button depending on the proposed action and current eth-flow state
 function _buildActionButton({
   approveError,
@@ -766,8 +761,6 @@ function useRemainingTxsAndCosts({ native, isNativeIn, nativeBalance, nativeInpu
   const txCosts = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
   // does the user have a lower than set threshold balance? show error
   const balanceChecks: { isLowBalance: boolean; txsRemaining: string | null } | undefined = useMemo(() => {
-    if (!isNativeIn) return undefined
-
     const { multiTxCost, singleTxCost } = txCosts
 
     return {
@@ -779,7 +772,7 @@ function useRemainingTxsAndCosts({ native, isNativeIn, nativeBalance, nativeInpu
       }),
       txsRemaining: _getAvailableTransactions({ nativeBalance, nativeInput, singleTxCost }),
     }
-  }, [isNativeIn, txCosts, nativeBalance, nativeInput])
+  }, [txCosts, nativeBalance, nativeInput])
 
   return { balanceChecks, ...txCosts }
 }
