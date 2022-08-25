@@ -13,7 +13,8 @@ import TradeGp from 'state/swap/TradeGp'
 
 export enum SwapButtonState {
   swapIsUnsupported,
-  walletIsSupported,
+  walletIsUnsupported,
+  wrapError,
   shouldWrapNativeToken,
   shouldUnwrapNativeToken,
   switchToWeth,
@@ -23,6 +24,7 @@ export enum SwapButtonState {
   transferToSmartContract,
   fetchQuoteError,
   offlineBrowser,
+  loading,
   walletIsNotConnected,
   readonlyGnosisSafeUser,
   needApprove,
@@ -30,16 +32,16 @@ export enum SwapButtonState {
   swapError,
   expertModeSwap,
   regularSwap,
-  loading,
 }
 
 export interface SwapButtonStateInput {
-  inputCurrencyId: string | undefined
-  outputCurrencyId: string | undefined
-  currencyIn: Currency | null
-  currencyOut: Currency | null
+  inputCurrencyId: string | undefined | null
+  outputCurrencyId: string | undefined | null
+  currencyIn: Currency | undefined | null
+  currencyOut: Currency | undefined | null
   wrapType: WrapType
-  quoteError: QuoteError | null
+  wrapInputError: string | undefined
+  quoteError: QuoteError | undefined | null
   inputError?: ReactNode
   approvalState: ApprovalState
   approvalSubmitted: boolean
@@ -47,7 +49,7 @@ export interface SwapButtonStateInput {
   impactWarningAccepted: boolean
   isGettingNewQuote: boolean
   swapCallbackError: string | null
-  trade: TradeGp | null
+  trade: TradeGp | undefined | null
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -76,6 +78,7 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     swapCallbackError,
     trade,
     isGettingNewQuote,
+    wrapInputError,
   } = input
 
   const { chainId, account } = useWeb3React()
@@ -106,11 +109,15 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     return SwapButtonState.swapIsUnsupported
   }
 
-  if (isSupportedWallet) {
-    return SwapButtonState.walletIsSupported
+  if (!isSupportedWallet) {
+    return SwapButtonState.walletIsUnsupported
   }
 
   if (showWrap) {
+    if (wrapInputError) {
+      return SwapButtonState.wrapError
+    }
+
     if (wrapType === WrapType.WRAP) {
       return SwapButtonState.shouldWrapNativeToken
     }

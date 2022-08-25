@@ -15,12 +15,11 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 // import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
-import { Text } from 'rebass'
 // import { TradeState } from 'state/routing/types'
 import { ThemeContext } from 'styled-components/macro'
 
 import AddressInputPanel from 'components/AddressInputPanel'
-import Card, { GreyCard } from 'components/Card'
+import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { AutoRow } from 'components/Row'
@@ -28,13 +27,13 @@ import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWith
 import { ArrowWrapper /*, SwapCallbackError*/, Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
-import { ApprovalState /*, useApprovalOptimizedTrade*/, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
+import { /*, useApprovalOptimizedTrade*/ useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import useENSAddress from 'hooks/useENSAddress'
 // import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useStablecoinPrice'
 import useWrapCallback, { /*WrapErrorText, */ WrapType } from 'hooks/useWrapCallback'
-import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
+import { useCloseModals, useModalIsOpen, useOpenModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDerivedSwapInfo,
@@ -46,7 +45,7 @@ import {
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
 import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
-import { ButtonSize, LinkStyledButton, ThemedText } from 'theme'
+import { LinkStyledButton } from 'theme'
 // import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeSlippageAdjustedAmounts /*, warningSeverity */ } from 'utils/prices'
@@ -57,7 +56,7 @@ import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/in
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { SwapProps, ButtonError, ButtonPrimary } from '.' // mod
+import { SwapProps } from '.' // mod
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
@@ -67,29 +66,25 @@ import TransactionConfirmationModal, { OperationType } from 'components/Transact
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
-import { GpEther } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
 import { swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { ImportTokenModal } from './components/ImportTokenModal'
 import { CompatibilityIssuesWarning } from './components/CompatibilityIssuesWarning'
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
-import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
+import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
+import { useSwapButtonState } from 'pages/Swap/helpers/useSwapButtonState'
+import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
 
 export default function Swap({
   history,
   location,
   TradeBasicDetails,
   EthWethWrapMessage,
-  SwitchToWethBtn,
-  FeesExceedFromAmountMessage,
   BottomGrouping,
-  SwapButton,
   ArrowWrapperLoader,
   Price,
   HighFeeWarning,
@@ -102,9 +97,6 @@ export default function Swap({
   const { isSupportedWallet } = useWalletInfo()
   const previousChainId = usePrevious(chainId)
   const theme = useContext(ThemeContext)
-
-  // toggle wallet when disconnected
-  const toggleWalletModal = useToggleWalletModal()
 
   // Transaction confirmation modal
   const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
@@ -359,14 +351,6 @@ export default function Swap({
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
-  // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-  // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    !swapInputError &&
-    (approvalState === ApprovalState.NOT_APPROVED ||
-      approvalState === ApprovalState.PENDING ||
-      (approvalSubmitted && approvalState === ApprovalState.APPROVED))
-
   const handleInputSelect = useCallback(
     (inputCurrency) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -385,8 +369,6 @@ export default function Swap({
     [onCurrencySelection]
   )
 
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
-
   const [exactInLabel, exactOutLabel] = useMemo(
     () => [
       independentField === Field.OUTPUT && !showWrap && trade ? <Trans>From (incl. fee)</Trans> : null,
@@ -395,7 +377,6 @@ export default function Swap({
     [independentField, showWrap, trade]
   )
 
-  const swapBlankState = !swapInputError && !trade
   let amountBeforeFees: string | undefined
   if (trade) {
     if (trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)) {
@@ -423,16 +404,51 @@ export default function Swap({
     transactionDeadline,
     setSwapState,
     swapConfirmState,
-    SwapButton,
     isExpertMode,
     handleSwap,
     isValid,
-    isGettingNewQuote,
-    swapBlankState,
     approvalState,
     approveCallback,
     approvalSubmitted,
     setApprovalSubmitted,
+  }
+
+  const swapButtonState = useSwapButtonState({
+    inputCurrencyId: INPUT.currencyId,
+    outputCurrencyId: OUTPUT.currencyId,
+    currencyIn,
+    currencyOut,
+    wrapType,
+    wrapInputError,
+    quoteError: quote?.error,
+    inputError: swapInputError,
+    approvalState,
+    approvalSubmitted,
+    feeWarningAccepted,
+    impactWarningAccepted,
+    isGettingNewQuote,
+    swapCallbackError,
+    trade,
+  })
+
+  const swapButtonProps: SwapButtonProps = {
+    swapButtonState,
+    approveButtonProps,
+    chainId,
+    wrappedToken,
+    handleSwap,
+    doSwap: () => {
+      setSwapState({
+        tradeToConfirm: trade,
+        attemptingTxn: false,
+        swapErrorMessage: undefined,
+        showConfirm: true,
+        txHash: undefined,
+      })
+    },
+    onWrap,
+    wrapType,
+    swapInputError,
   }
 
   return (
@@ -591,106 +607,7 @@ export default function Swap({
             padding="5px 15px"
           />
           <BottomGrouping>
-            {swapIsUnsupported ? (
-              <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-                <ThemedText.Main mb="4px">
-                  <Trans>Unsupported Token</Trans>
-                </ThemedText.Main>
-              </ButtonPrimary>
-            ) : !isSupportedWallet ? (
-              <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={!isSupportedWallet}>
-                <Text fontSize={20} fontWeight={500}>
-                  <Trans>Wallet Unsupported</Trans>
-                </Text>
-              </ButtonError>
-            ) : showWrap ? (
-              <ButtonPrimary
-                disabled={Boolean(wrapInputError)}
-                onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
-                buttonSize={ButtonSize.BIG}
-              >
-                {wrapInputError ??
-                  (wrapType === WrapType.WRAP ? (
-                    <Trans>Wrap</Trans>
-                  ) : wrapType === WrapType.UNWRAP ? (
-                    <Trans>Unwrap</Trans>
-                  ) : null)}
-              </ButtonPrimary>
-            ) : !swapInputError && isNativeIn ? (
-              <SwitchToWethBtn wrappedToken={wrappedToken} />
-            ) : quote?.error === 'fee-exceeds-sell-amount' ? (
-              <FeesExceedFromAmountMessage />
-            ) : quote?.error === 'insufficient-liquidity' ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <ThemedText.Main mb="4px">
-                  <Trans>Insufficient liquidity for this trade.</Trans>
-                </ThemedText.Main>
-              </GreyCard>
-            ) : quote?.error === 'zero-price' ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <ThemedText.Main mb="4px">
-                  <Trans>Invalid price. Try increasing input/output amount.</Trans>
-                </ThemedText.Main>
-              </GreyCard>
-            ) : quote?.error === 'transfer-eth-to-smart-contract' ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <ThemedText.Main mb="4px">
-                  <Trans>
-                    Buying {GpEther.onChain(chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is
-                    not currently supported
-                  </Trans>
-                </ThemedText.Main>
-              </GreyCard>
-            ) : quote?.error === 'fetch-quote-error' ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <ThemedText.Main mb="4px">
-                  <Trans>Error loading price. Try again later.</Trans>
-                </ThemedText.Main>
-              </GreyCard>
-            ) : quote?.error === 'offline-browser' ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
-              </GreyCard>
-            ) : !account ? (
-              <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
-              </ButtonPrimary>
-            ) : isReadonlyGnosisSafeUser ? (
-              <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-                <ThemedText.Main mb="4px">
-                  <Trans>Read Only</Trans>
-                </ThemedText.Main>
-              </ButtonPrimary>
-            ) : showApproveFlow ? (
-              <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-                <AutoColumn style={{ width: '100%' }} gap="12px">
-                  <ApproveButton {...approveButtonProps} />
-                </AutoColumn>
-              </AutoRow>
-            ) : (
-              <ButtonError
-                buttonSize={ButtonSize.BIG}
-                onClick={() => {
-                  if (isExpertMode) {
-                    handleSwap()
-                  } else {
-                    setSwapState({
-                      tradeToConfirm: trade,
-                      attemptingTxn: false,
-                      swapErrorMessage: undefined,
-                      showConfirm: true,
-                      txHash: undefined,
-                    })
-                  }
-                }}
-                id="swap-button"
-                disabled={!isValid || !!swapCallbackError}
-              >
-                <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                  {swapInputError || <Trans>Swap</Trans>}
-                </SwapButton>
-              </ButtonError>
-            )}
+            <SwapButton {...swapButtonProps} />
             {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
           </BottomGrouping>
         </Wrapper>

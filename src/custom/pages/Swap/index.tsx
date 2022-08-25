@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import styled, { DefaultTheme } from 'styled-components/macro'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
-
-import { ButtonSize, ThemedText } from 'theme/index'
 
 import SwapMod from './SwapMod'
 import { AutoRow, RowBetween } from 'components/Row'
-import { Wrapper as WrapperUni, Dots, Container } from 'components/swap/styleds'
+import { Wrapper as WrapperUni, Container } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
@@ -20,9 +17,8 @@ import {
   ButtonLight as ButtonLightMod,
 } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
-import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, LONG_LOAD_THRESHOLD } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { Repeat } from 'react-feather'
 import { Trans } from '@lingui/macro'
 import TradePrice from 'components/swap/TradePrice'
@@ -287,115 +283,6 @@ function EthWethWrapMessage(props: EthWethWrapProps) {
   )
 }
 
-interface SwitchToWethBtnProps {
-  wrappedToken: Token
-}
-
-function SwitchToWethBtn({ wrappedToken }: SwitchToWethBtnProps) {
-  const replaceSwapState = useReplaceSwapState()
-  const { independentField, typedValue, OUTPUT } = useSwapState()
-
-  return (
-    <ButtonPrimary
-      buttonSize={ButtonSize.BIG}
-      id="swap-button"
-      onClick={() =>
-        replaceSwapState({
-          inputCurrencyId: wrappedToken.address,
-          outputCurrencyId: OUTPUT.currencyId ?? undefined,
-          typedValue,
-          recipient: null,
-          field: independentField,
-        })
-      }
-    >
-      <ThemedText.Main mb="4px">Switch to {wrappedToken.symbol}</ThemedText.Main>
-    </ButtonPrimary>
-  )
-}
-
-function FeesExceedFromAmountMessage() {
-  return (
-    <RowBetween>
-      <ButtonError buttonSize={ButtonSize.BIG} error id="swap-button" disabled>
-        <Text fontSize={20} fontWeight={500}>
-          Fees exceed from amount
-        </Text>
-      </ButtonError>
-    </RowBetween>
-  )
-}
-
-const fadeIn = `
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-`
-
-const CenteredDots = styled(Dots)<{ smaller?: boolean }>`
-  vertical-align: ${({ smaller = false }) => (smaller ? 'normal' : 'super')};
-`
-
-const LongLoadText = styled.span`
-  animation: fadeIn 0.42s ease-in;
-
-  ${fadeIn}
-`
-
-type TradeLoadingProps = {
-  showButton?: boolean
-}
-
-const TradeLoading = ({ showButton = false }: TradeLoadingProps) => {
-  const [isLongLoad, setIsLongLoad] = useState<boolean>(false)
-
-  // change message if user waiting too long
-  useEffect(() => {
-    const timeout = setTimeout(() => setIsLongLoad(true), LONG_LOAD_THRESHOLD)
-
-    return () => clearTimeout(timeout)
-  }, [])
-
-  const InsideContent = useCallback(
-    () => (
-      <ThemedText.Main display="flex" alignItems="center" maxHeight={20}>
-        <Text fontSize={isLongLoad ? 14 : 40} fontWeight={500}>
-          {isLongLoad && <LongLoadText>Hang in there. Calculating best price </LongLoadText>}
-          <CenteredDots smaller={isLongLoad} />
-        </Text>
-      </ThemedText.Main>
-    ),
-    [isLongLoad]
-  )
-
-  return showButton ? (
-    <ButtonError id="swap-button" buttonSize={ButtonSize.BIG} disabled={true} maxHeight={60}>
-      {InsideContent()}
-    </ButtonError>
-  ) : (
-    InsideContent()
-  )
-}
-
-export interface SwapButtonProps extends TradeLoadingProps {
-  showLoading: boolean
-  children: React.ReactNode
-}
-
-const SwapButton = ({ children, showLoading, showButton = false }: SwapButtonProps) =>
-  showLoading ? (
-    <TradeLoading showButton={showButton} />
-  ) : (
-    <Text fontSize={16} fontWeight={500}>
-      {children}
-    </Text>
-  )
-
 export default function Swap(props: RouteComponentProps) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
@@ -403,11 +290,7 @@ export default function Swap(props: RouteComponentProps) {
       <SwapModWrapper
         TradeBasicDetails={TradeBasicDetails}
         EthWethWrapMessage={EthWethWrapMessage}
-        SwitchToWethBtn={SwitchToWethBtn}
-        FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
         BottomGrouping={BottomGrouping}
-        SwapButton={SwapButton}
-        TradeLoading={TradeLoading}
         ArrowWrapperLoader={ArrowWrapperLoader}
         Price={Price}
         HighFeeWarning={HighFeeWarning}
@@ -423,11 +306,7 @@ export default function Swap(props: RouteComponentProps) {
 export interface SwapProps extends RouteComponentProps {
   TradeBasicDetails: React.FC<TradeBasicDetailsProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
-  SwitchToWethBtn: React.FC<SwitchToWethBtnProps>
-  FeesExceedFromAmountMessage: React.FC
   BottomGrouping: React.FC
-  TradeLoading: React.FC<TradeLoadingProps>
-  SwapButton: React.FC<SwapButtonProps>
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   Price: React.FC<PriceProps>
   HighFeeWarning: React.FC<WarningProps>

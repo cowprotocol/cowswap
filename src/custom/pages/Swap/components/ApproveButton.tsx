@@ -7,7 +7,6 @@ import { Trans } from '@lingui/macro'
 import Loader from '@src/components/Loader'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { ButtonError, SwapButtonProps } from 'pages/Swap'
 import { ButtonSize } from 'theme'
 import { useCallback, useContext, useEffect } from 'react'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
@@ -19,6 +18,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { SwapConfirmState } from 'pages/Swap/state/swapConfirmAtom'
 import { ThemeContext } from 'styled-components/macro'
 import usePrevious from '@src/hooks/usePrevious'
+import { ButtonError } from 'components/Button'
 
 export interface ApproveButtonProps {
   currencyIn: Currency | undefined | null
@@ -27,16 +27,14 @@ export interface ApproveButtonProps {
   transactionDeadline: BigNumber | undefined
   setSwapState: (state: SwapConfirmState) => void
   swapConfirmState: SwapConfirmState
-  SwapButton: React.FC<SwapButtonProps>
   isExpertMode: boolean
   handleSwap: () => void
   isValid: boolean
-  isGettingNewQuote: boolean
-  swapBlankState: boolean
   approvalState: ApprovalState
   approveCallback: (params?: OptionalApproveCallbackParams) => Promise<void>
   approvalSubmitted: boolean
   setApprovalSubmitted: (state: boolean) => void
+  children?: React.ReactNode
 }
 
 export function ApproveButton(props: ApproveButtonProps) {
@@ -47,16 +45,14 @@ export function ApproveButton(props: ApproveButtonProps) {
     setSwapState,
     swapConfirmState,
     currencyIn,
-    SwapButton,
     isExpertMode,
     handleSwap,
     isValid,
-    isGettingNewQuote,
-    swapBlankState,
     approvalState,
     approveCallback,
     approvalSubmitted,
     setApprovalSubmitted,
+    children,
   } = props
 
   const theme = useContext(ThemeContext)
@@ -215,9 +211,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           !isValid || (approvalState !== ApprovalState.APPROVED && signatureState !== UseERC20PermitState.SIGNED)
         }
       >
-        <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-          <Trans>Swap</Trans>
-        </SwapButton>
+        {children}
       </ButtonError>
     </>
   )
