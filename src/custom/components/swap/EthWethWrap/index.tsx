@@ -2,23 +2,30 @@ import { useState, useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { transparentize } from 'polished'
+import { Trans } from '@lingui/macro'
 
 import { ButtonPrimary } from 'components/Button'
-import WrappingVisualisation from './WrappingVisualisation'
+import WrappingVisualisation, { WrappingVisualisationParams } from 'components/swap/EthWethWrap/WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/connection/hooks'
 
-import { Trans } from '@lingui/macro'
-import SimpleAccountDetails from '../../AccountDetails/SimpleAccountDetails'
+import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails'
 import Loader from 'components/Loader'
 import { useIsExpertMode } from 'state/user/hooks'
 import { delay } from 'utils/misc'
 import { useSingleActivityState } from 'hooks/useActivityDerivedState'
-import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { useWeb3React } from '@web3-react/core'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
-import { transparentize } from 'polished'
 import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
+import {
+  ActionButtonParams,
+  EthFlowState,
+  _getActionButtonProps,
+  _getCurrencyForVisualiser,
+  _getDerivedEthFlowState,
+  _getModalTextContent,
+} from 'components/swap/EthWethWrap/helpers'
 
 const EthFlowModal = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -77,19 +84,7 @@ export interface Props {
   swapCallback: (showConfirmModal?: boolean) => void
 }
 
-enum EthFlowState {
-  SwapReady, // 0
-  WrapAndApproveNeeded, // 1
-  WrapAndApprovePending, // 2
-  ApproveNeeded, // 3
-  WrapNeeded, // 4
-  ApprovePending, // 5
-  ApproveFailed, // 6
-  WrapFailed, // 7
-  WrapPending, // 8
-  WrapAndApproveFailed, // 9
-  Loading, // 10
-}
+type PendingHashMap = { approveHash?: string; wrapHash?: string }
 
 export default function EthWethWrap({
   account,
@@ -111,7 +106,7 @@ export default function EthWethWrap({
   wrapCallback,
   swapCallback,
 }: Props) {
-  const [pendingHashMap, setPendingHashMap] = useState<{ approveHash?: string; wrapHash?: string }>({
+  const [pendingHashMap, setPendingHashMap] = useState<PendingHashMap>({
     approveHash: undefined,
     wrapHash: undefined,
   })
@@ -320,430 +315,168 @@ export default function EthWethWrap({
     }
   }, [approveSubmitted, handleSwap, isExpertMode, state, wrapSubmitted])
 
-  // conditionally renders the correct action button depending on the proposed action and current eth-flow state
-  const renderActionButton = useCallback(
-    () =>
-      _buildActionButton({
-        approveError,
-        wrapError,
-        approveState,
-        wrapState,
-        isNativeIn,
-        nativeSymbol,
-        wrappedSymbol,
-        isExpertMode,
-        state,
-        isWrap,
-        loading,
-        handleSwap,
-        handleWrap,
-        handleApprove,
-        handleMountInExpertMode,
-      }),
-    [
-      // errors
-      approveError,
-      wrapError,
-      // state
-      state,
-      loading,
-      approveState,
-      wrapState,
-      // misc
-      isExpertMode,
-      isNativeIn,
-      isWrap,
-      nativeSymbol,
-      wrappedSymbol,
-      // cbs
-      handleSwap,
-      handleWrap,
-      handleApprove,
-      handleMountInExpertMode,
-    ]
-  )
-  const topContent = useCallback(
+  const TopModalContent = useCallback(
     () => (
-      <>
-        {description && (
-          <ModalMessage>
-            <Trans>{description}</Trans>
-          </ModalMessage>
-        )}
-        {/* Warn user if native balance low for on-chain operations EXCEPT if state is ready to swap */}
-        {state !== EthFlowState.SwapReady && balanceChecks?.isLowBalance && (
-          <LowBalanceMessage>
-            <Trans>
-              At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
-              {!balanceChecks.txsRemaining ? (
-                <strong>insufficient for any further on-chain transactions.</strong>
-              ) : (
-                <>
-                  sufficient for{' '}
-                  <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
-                </>
-              )}
-            </Trans>
-          </LowBalanceMessage>
-        )}
-      </>
+      <EthFlowModalTopContent
+        description={description}
+        state={state}
+        balanceChecks={balanceChecks}
+        nativeSymbol={nativeSymbol}
+      />
     ),
     [state, balanceChecks, description, nativeSymbol]
   )
 
-  const bottomContent = useCallback(
-    () => (
-      <>
-        <WrappingVisualisation
-          nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
-          nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
-          native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
-          wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
-          wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
-          wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
-          nativeInput={nativeInput}
-          chainId={chainId}
-        />
-        <SimpleAccountDetails
-          pendingTransactions={Object.values(pendingHashMap).filter(Boolean)}
-          confirmedTransactions={[]}
-          $margin="12px 0 0"
-        />
-        {renderActionButton()}
-      </>
-    ),
-    [
-      isUnwrap,
-      isWrap,
-      native,
-      nativeBalance,
-      nativeInput,
-      nativeSymbol,
-      pendingHashMap,
-      renderActionButton,
-      wrapped,
-      wrappedBalance,
-      wrappedSymbol,
+  const BottomModalContent = useCallback(() => {
+    const params = {
       chainId,
-    ]
-  )
+      pendingHashMap,
+      approveError,
+      wrapError,
+      approveState,
+      wrapState,
+      isNativeIn,
+      native,
+      wrapped,
+      nativeInput,
+      nativeBalance,
+      wrappedBalance,
+      nativeSymbol,
+      wrappedSymbol,
+      isWrap,
+      isUnwrap,
+      isExpertMode,
+      state,
+      loading,
+      handleSwap,
+      handleWrap,
+      handleApprove,
+      handleMountInExpertMode,
+    }
+    return <EthFlowModalBottomContent {...params} />
+  }, [
+    approveError,
+    approveState,
+    chainId,
+    isExpertMode,
+    isNativeIn,
+    isUnwrap,
+    isWrap,
+    loading,
+    native,
+    nativeBalance,
+    nativeInput,
+    nativeSymbol,
+    pendingHashMap,
+    state,
+    wrapError,
+    wrapState,
+    wrapped,
+    wrappedBalance,
+    wrappedSymbol,
+    // cbs
+    handleApprove,
+    handleMountInExpertMode,
+    handleSwap,
+    handleWrap,
+  ])
 
   return (
     <EthFlowModal
       title={header}
       titleSize={20}
       onDismiss={onDismiss}
-      topContent={topContent}
-      bottomContent={bottomContent}
+      topContent={TopModalContent}
+      bottomContent={BottomModalContent}
     />
   )
 }
 
-type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> &
-  Pick<Props, 'needsApproval' | 'needsWrap'> & {
-    approveError: Error | null
-    wrapError: Error | null
-    approveState: ActivityDerivedState | null
-    wrapState: ActivityDerivedState | null
-  }
-
-// returns derived ethflow state from current props
-function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
-  const { approveError, wrapError, approveState, wrapState, needsApproval, needsWrap, isExpertMode } = params
-  // approve state
-  const approveExpired = approveState?.isExpired
-  const approvePending = approveState?.isPending
-  const approveSentAndSuccessful = Boolean(!approveError && approveState?.isConfirmed)
-  const approveNeeded = needsApproval && !approveSentAndSuccessful
-  const approveFinished = !needsApproval || approveSentAndSuccessful
-  // wrap state
-  const wrapExpired = wrapState?.isExpired
-  const wrapPending = wrapState?.isPending
-  const wrapSentAndSuccessful = Boolean(!wrapError && wrapState?.isConfirmed)
-  const wrapNeeded = needsWrap && !wrapSentAndSuccessful
-  const wrapFinished = !needsWrap || wrapSentAndSuccessful
-
-  // PENDING states
-  if (wrapPending || approvePending) {
-    // expertMode only - both operations pending
-    if (isExpertMode && wrapPending && approvePending) {
-      return EthFlowState.WrapAndApprovePending
-    }
-    // Only wrap is pending
-    else if (wrapPending) {
-      return EthFlowState.WrapPending
-    }
-    // Only approve is pending
-    else return EthFlowState.ApprovePending
-  }
-  // FAILED states
-  else if (approveExpired || wrapExpired) {
-    // expertMode only - BOTH operations failed
-    if (isExpertMode && approveExpired && wrapExpired) {
-      return EthFlowState.WrapAndApproveFailed
-    }
-    // Only wrap failed
-    else if (wrapExpired) {
-      return EthFlowState.WrapFailed
-    }
-    // Only approve failed
-    else return EthFlowState.ApproveFailed
-  }
-  // NEEDED state
-  else if (approveNeeded || wrapNeeded) {
-    // in expertMode and we need to wrap and swap
-    if (isExpertMode && approveNeeded && wrapNeeded) {
-      return EthFlowState.WrapAndApproveNeeded
-    }
-    // Only wrap needed
-    else if (wrapNeeded) {
-      // if (wrapPending) return EthFlowState.WrapPending
-      return EthFlowState.WrapNeeded
-    }
-    // Only approve needed
-    else {
-      // if (approvePending) return EthFlowState.ApprovePending
-      return EthFlowState.ApproveNeeded
-    }
-  }
-  // BOTH successful, ready to swap
-  else if (approveFinished && wrapFinished) {
-    return EthFlowState.SwapReady
-  }
-  // LOADING
-  else {
-    return EthFlowState.Loading
-  }
-}
-
-type ModalTextContentProps = {
-  wrappedSymbol: string
-  nativeSymbol: string
+type TopContentParams = {
+  description: string | null
   state: EthFlowState
-  isExpertMode: boolean
-  isNative: boolean
-  wrapSubmitted: boolean
-  approveSubmitted: boolean
+  balanceChecks: ReturnType<typeof useRemainingNativeTxsAndCosts>['balanceChecks']
+  nativeSymbol: string
 }
 
-// returns modal content: header and descriptions based on state
-function _getModalTextContent(params: ModalTextContentProps) {
-  const { wrappedSymbol, nativeSymbol, state, isExpertMode, isNative /*, wrapSubmitted, approveSubmitted */ } = params
-  // common text
-  const swapHeader = `Swap ${wrappedSymbol}`
-  const swapDescription = `Click "Swap" to submit an off-chain transaction and swap your ${wrappedSymbol}`
-  const signatureRequiredDescription = 'Transaction signature required, please check your connected wallet'
-  const transactionInProgress = 'Transaction in progress. See below for live status updates'
-  // wrap
-  const wrapHeader = isNative ? `Wrap your ${nativeSymbol}` : `Unwrap your ${wrappedSymbol}`
-  const wrapInstructions = `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
-    isNative ? nativeSymbol : wrappedSymbol
-  } into ${isNative ? wrappedSymbol : nativeSymbol}`
-  // approve
-  const approveHeader = `Approve ${wrappedSymbol}`
-  const approveInstructions = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
-  // both
-  const bothHeader = `Wrap and approve`
-  const bothInstructions = `2 pending on-chain transactions: ${
-    isNative ? `${nativeSymbol} wrap` : `${wrappedSymbol} unwrap`
-  } and approve. Please check your connected wallet for both signature requests`
-
-  let header = ''
-  let description: string | null = null
-  switch (state) {
-    /**
-     * FAILED operations
-     * wrap/approve/both in expertMode failed
-     */
-    case EthFlowState.WrapAndApproveFailed: {
-      header = 'Wrap and Approve failed!'
-      description =
-        'Both wrap and approve operations failed. Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again'
-      break
-    }
-    case EthFlowState.WrapFailed: {
-      header = `Wrap ${nativeSymbol} failed!`
-      description = `Wrap operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Wrap ${nativeSymbol}" to try again`
-      break
-    }
-    case EthFlowState.ApproveFailed: {
-      header = `Approve ${wrappedSymbol} failed!`
-      description = `Approve operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Approve ${wrappedSymbol}" to try again`
-      break
-    }
-
-    /**
-     * PENDING operations
-     * wrap/approve/both in expertMode
-     */
-    case EthFlowState.WrapAndApprovePending: {
-      header = bothHeader
-      description = 'Transactions in progress. See below for live status updates of each operation'
-      break
-    }
-    case EthFlowState.WrapPending:
-    case EthFlowState.ApprovePending: {
-      description = transactionInProgress
-      // wrap only
-      if (state === EthFlowState.WrapPending) {
-        header = wrapHeader
-      }
-      // approve only
-      else {
-        header = approveHeader
-      }
-      break
-    }
-
-    /**
-     * NEEDS operations
-     * need to wrap/approve/both in expertMode
-     */
-    case EthFlowState.WrapAndApproveNeeded: {
-      header = bothHeader
-      description = bothInstructions
-      break
-    }
-    case EthFlowState.WrapNeeded:
-    case EthFlowState.ApproveNeeded: {
-      // wrap only
-      if (state === EthFlowState.WrapNeeded) {
-        header = wrapHeader
-        description = wrapInstructions
-      }
-      // approve only
-      else {
-        header = approveHeader
-        description = approveInstructions
-      }
-
-      // in expert mode tx popups are automatic
-      // so we show user message to check wallet popup
-      if (isExpertMode) {
-        description = signatureRequiredDescription
-      }
-      break
-    }
-
-    /**
-     * SWAP operation ready
-     */
-    case EthFlowState.SwapReady: {
-      header = swapHeader
-      description = isExpertMode ? null : swapDescription
-      break
-    }
-
-    // show generic operation loading as default
-    // to shut TS up
-    default: {
-      header = 'Loading operation'
-      description = 'Operation in progress!'
-      break
-    }
-  }
-
-  return { header, description }
-}
-
-// returns proper prop for visualiser: which currency is shown on left vs right (wrapped vs unwrapped)
-function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, isUnwrap: boolean) {
-  if (isWrap || isUnwrap) {
-    return isWrap ? native : wrapped
-  } else {
-    return native
-  }
-}
-
-// conditionally renders the correct action button depending on the proposed action and current eth-flow state
-function _buildActionButton({
-  approveError,
-  wrapError,
-  approveState,
-  wrapState,
-  isNativeIn,
-  nativeSymbol,
-  wrappedSymbol,
-  isExpertMode,
-  state,
-  isWrap,
-  loading,
-  handleSwap,
-  handleWrap,
-  handleApprove,
-  handleMountInExpertMode,
-}: Pick<Props, 'isNativeIn'> &
-  Pick<DerivedEthFlowStateProps, 'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'> &
-  Pick<ModalTextContentProps, 'nativeSymbol' | 'wrappedSymbol' | 'state'> & {
-    isWrap: boolean
-    loading: boolean
-    handleSwap: (showSwapModal?: boolean) => Promise<void>
-    handleApprove: () => Promise<void>
-    handleWrap: () => Promise<void>
-    handleMountInExpertMode: () => Promise<void>
-  }) {
-  // async, pre-receipt errors (e.g user rejected TX)
-  const hasErrored = !!(approveError || wrapError)
-
-  let label = ''
-  let showButton = !isExpertMode
-  let showLoader = loading
-  // dynamic props for cta button
-  const buttonProps: {
-    disabled: boolean
-    onClick: (() => Promise<void>) | undefined
-  } = {
-    disabled: false,
-    onClick: undefined,
-  }
-
-  switch (state) {
-    // an operation has failed after submitting
-    case EthFlowState.WrapAndApproveFailed:
-      label = 'Wrap and approve'
-      showButton = true
-      buttonProps.onClick = handleMountInExpertMode
-      break
-    case EthFlowState.WrapFailed:
-      label = `Wrap ${nativeSymbol}`
-      showButton = true
-      buttonProps.onClick = handleWrap
-      break
-    case EthFlowState.ApproveFailed:
-      label = `Approve ${wrappedSymbol}`
-      showButton = true
-      buttonProps.onClick = handleApprove
-      break
-    // non failures
-    case EthFlowState.WrapNeeded:
-      label = isNativeIn || isWrap ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol
-      buttonProps.onClick = handleWrap
-      buttonProps.disabled = Boolean(wrapState?.isPending)
-      break
-    case EthFlowState.ApproveNeeded:
-      label = 'Approve ' + wrappedSymbol
-      buttonProps.onClick = handleApprove
-      buttonProps.disabled = Boolean(approveState?.isPending)
-      break
-    case EthFlowState.SwapReady:
-      label = 'Swap'
-      buttonProps.onClick = () => handleSwap(true)
-      buttonProps.disabled = loading || hasErrored
-      break
-    // loading = default
-    default:
-      buttonProps.disabled = true
-      showLoader = true
-      break
-  }
-
+function EthFlowModalTopContent({ description, state, balanceChecks, nativeSymbol }: TopContentParams) {
   return (
-    showButton && (
-      <ButtonWrapper>
-        <ButtonPrimary padding="0.5rem" maxWidth="70%" {...buttonProps}>
-          {showLoader ? <Loader /> : <Trans>{label}</Trans>}
-        </ButtonPrimary>
-      </ButtonWrapper>
-    )
+    <>
+      {description && (
+        <ModalMessage>
+          <Trans>{description}</Trans>
+        </ModalMessage>
+      )}
+      {/* Warn user if native balance low for on-chain operations EXCEPT if state is ready to swap */}
+      {state !== EthFlowState.SwapReady && balanceChecks?.isLowBalance && (
+        <LowBalanceMessage>
+          <Trans>
+            At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
+            {!balanceChecks.txsRemaining ? (
+              <strong>insufficient for any further on-chain transactions.</strong>
+            ) : (
+              <>
+                sufficient for{' '}
+                <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
+              </>
+            )}
+          </Trans>
+        </LowBalanceMessage>
+      )}
+    </>
+  )
+}
+
+function ActionButton({ showButton, showLoader, buttonProps, label }: ReturnType<typeof _getActionButtonProps>) {
+  if (!showButton) return null
+  return (
+    <ButtonWrapper>
+      <ButtonPrimary padding="0.5rem" maxWidth="70%" {...buttonProps}>
+        {showLoader ? <Loader /> : <Trans>{label}</Trans>}
+      </ButtonPrimary>
+    </ButtonWrapper>
+  )
+}
+
+type BottomContentParams = ActionButtonParams &
+  WrappingVisualisationParams & {
+    isUnwrap: boolean
+    pendingHashMap: PendingHashMap
+  }
+
+function EthFlowModalBottomContent(params: BottomContentParams) {
+  const {
+    nativeSymbol,
+    wrappedSymbol,
+    isWrap,
+    isUnwrap,
+    pendingHashMap,
+    nativeBalance,
+    wrappedBalance,
+    native,
+    wrapped,
+    nativeInput,
+    chainId,
+  } = params
+  const actionButtonProps = _getActionButtonProps(params)
+  return (
+    <>
+      <WrappingVisualisation
+        nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
+        nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
+        native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
+        wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
+        wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
+        wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
+        nativeInput={nativeInput}
+        chainId={chainId}
+      />
+      <SimpleAccountDetails
+        pendingTransactions={Object.values(pendingHashMap).filter(Boolean)}
+        confirmedTransactions={[]}
+        $margin="12px 0 0"
+      />
+      <ActionButton {...actionButtonProps} />
+    </>
   )
 }

@@ -20,6 +20,8 @@ export default function useRemainingNativeTxsAndCosts({
   const txCosts = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])
   // does the user have a lower than set threshold balance? show error
   const balanceChecks: { isLowBalance: boolean; txsRemaining: string | null } | undefined = useMemo(() => {
+    // we only check this for native currencies, otherwise stop
+    if (!nativeInput?.currency.isNative) return undefined
     const { multiTxCost, singleTxCost } = txCosts
 
     return {

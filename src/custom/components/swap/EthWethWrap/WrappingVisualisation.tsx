@@ -6,6 +6,17 @@ import { colors } from 'theme'
 
 const COLOUR_SHEET = colors(false)
 
+export type WrappingVisualisationParams = {
+  nativeSymbol: string
+  nativeBalance: CurrencyAmount<Currency> | undefined
+  native: Currency
+  nativeInput: CurrencyAmount<Currency> | undefined
+  wrappedBalance: CurrencyAmount<Currency> | undefined
+  wrappedSymbol: string
+  wrapped: Currency
+  chainId?: number
+}
+
 const WrappingVisualisation = ({
   nativeSymbol,
   nativeBalance,
@@ -15,16 +26,7 @@ const WrappingVisualisation = ({
   wrappedSymbol,
   nativeInput,
   chainId,
-}: {
-  nativeSymbol: string
-  nativeBalance: CurrencyAmount<Currency> | undefined
-  native: Currency
-  nativeInput: CurrencyAmount<Currency> | undefined
-  wrappedBalance: CurrencyAmount<Currency> | undefined
-  wrappedSymbol: string
-  wrapped: Currency
-  chainId?: number
-}) => (
+}: WrappingVisualisationParams) => (
   <WrapCardContainer>
     {/* To Wrap */}
     <WrapCard
