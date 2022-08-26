@@ -204,6 +204,7 @@ export function EthWethWrap({
     },
     [onDismiss]
   )
+
   const handleWrap = useCallback(async () => {
     if (!wrapCallback) return
     setWrapError(null)
@@ -227,6 +228,7 @@ export function EthWethWrap({
       }
     }
   }, [handleError, isUnwrap, isWrap, onDismiss, wrapCallback])
+
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
     setApproveError(null)
@@ -245,6 +247,7 @@ export function EthWethWrap({
       setApproveSubmitted(false)
     }
   }, [approveCallback, handleError])
+
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
       try {
@@ -258,6 +261,7 @@ export function EthWethWrap({
     },
     [swapCallback, onDismiss]
   )
+
   const handleMountInExpertMode = useCallback(async () => {
     setWrapError(null)
     setApproveError(null)

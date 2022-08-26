@@ -650,7 +650,7 @@ export default function Swap({
         isNativeIn={isNativeIn}
         {...nativeRest}
         // state
-        needsApproval={showApproveFlow && !!approveCallback}
+        needsApproval={approvalState !== ApprovalState.APPROVED}
         needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
         // modal state
         modalIsOpen={showNativeWrapModal}

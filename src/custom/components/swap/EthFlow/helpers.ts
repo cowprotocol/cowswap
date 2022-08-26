@@ -74,11 +74,12 @@ export enum EthFlowState {
   ApproveNeeded, // 3
   WrapNeeded, // 4
   ApprovePending, // 5
-  ApproveFailed, // 6
-  WrapFailed, // 7
-  WrapPending, // 8
-  WrapAndApproveFailed, // 9
-  Loading, // 10
+  ApproveInsufficient, // 6
+  ApproveFailed, // 7
+  WrapFailed, // 8
+  WrapPending, // 9
+  WrapAndApproveFailed, // 10
+  Loading, // 11
 }
 
 export type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> &
@@ -96,7 +97,7 @@ export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
   const approveExpired = approveState?.isExpired
   const approvePending = approveState?.isPending
   const approveSentAndSuccessful = Boolean(!approveError && approveState?.isConfirmed)
-  const approveNeeded = needsApproval && !approveSentAndSuccessful
+  const approveInsufficient = needsApproval && approveSentAndSuccessful
   const approveFinished = !needsApproval || approveSentAndSuccessful
   // wrap state
   const wrapExpired = wrapState?.isExpired
@@ -131,10 +132,16 @@ export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
     // Only approve failed
     else return EthFlowState.ApproveFailed
   }
+
+  // INSUFFICIENT approve state
+  else if (approveInsufficient) {
+    return EthFlowState.ApproveInsufficient
+  }
+
   // NEEDED state
-  else if (approveNeeded || wrapNeeded) {
+  else if (needsApproval || wrapNeeded) {
     // in expertMode and we need to wrap and swap
-    if (isExpertMode && approveNeeded && wrapNeeded) {
+    if (isExpertMode && needsApproval && wrapNeeded) {
       return EthFlowState.WrapAndApproveNeeded
     }
     // Only wrap needed
@@ -234,6 +241,13 @@ export function _getModalTextContent(params: ModalTextContentProps) {
       else {
         header = approveHeader
       }
+      break
+    }
+
+    case EthFlowState.ApproveInsufficient: {
+      header = 'Approval amount insufficient!'
+      description =
+        'Approval amount insufficient for input amount. Check that you are approving an amount equal to or greater than the input amount'
       break
     }
 
@@ -364,7 +378,12 @@ export function _getActionButtonProps({
       buttonProps.disabled = Boolean(wrapState?.isPending)
       break
     case EthFlowState.ApproveNeeded:
+    case EthFlowState.ApproveInsufficient:
       label = 'Approve ' + wrappedSymbol
+      // Show button if approve insufficient (applies to expertMode)
+      if (state === EthFlowState.ApproveInsufficient) {
+        showButton = true
+      }
       buttonProps.onClick = handleApprove
       buttonProps.disabled = Boolean(approveState?.isPending)
       break
