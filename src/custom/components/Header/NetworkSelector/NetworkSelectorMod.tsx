@@ -28,7 +28,7 @@ import {
 } from '@src/components/Header/NetworkSelector'
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
-import { supportedChainId } from 'utils/supportedChainId'
+import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
@@ -223,8 +223,6 @@ const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     // case SupportedChainId.CELO:
     // case SupportedChainId.CELO_ALFAJORES:
     //   return <Trans>Portal Bridge</Trans>
-    case SupportedChainId.RINKEBY:
-      return <Trans>Faucet</Trans>
     default:
       return <Trans>Bridge</Trans>
   }
@@ -323,16 +321,14 @@ export const getChainNameFromId = (id: string | number) => {
   return CHAIN_IDS_TO_NAMES[id as SupportedChainId] || ''
 }
 
-export const NETWORK_SELECTOR_CHAINS = [
+export const NETWORK_SELECTOR_CHAINS: SupportedChainId[] = SUPPORTED_CHAIN_IDS
+/* const NETWORK_SELECTOR_CHAINS = [
   SupportedChainId.MAINNET,
-  SupportedChainId.RINKEBY,
-  SupportedChainId.GNOSIS_CHAIN,
-  SupportedChainId.GOERLI,
-  // SupportedChainId.POLYGON,
-  // SupportedChainId.OPTIMISM,
-  // SupportedChainId.ARBITRUM_ONE,
-  // SupportedChainId.CELO,
-]
+  SupportedChainId.POLYGON,
+  SupportedChainId.OPTIMISM,
+  SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.CELO,
+] */
 
 export default function NetworkSelector() {
   const dispatch = useAppDispatch()
