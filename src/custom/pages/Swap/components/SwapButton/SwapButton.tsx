@@ -52,7 +52,7 @@ export function SwapButton(props: SwapButtonProps) {
       </ButtonPrimary>
     ),
     [SwapButtonState.walletIsUnsupported]: (
-      <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={true}>
+      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
         <Text fontSize={20} fontWeight={500}>
           <Trans>Wallet Unsupported</Trans>
         </Text>
@@ -140,24 +140,24 @@ export function SwapButton(props: SwapButtonProps) {
       </AutoRow>
     ),
     [SwapButtonState.swapDisabled]: (
-      <ButtonError buttonSize={ButtonSize.BIG} id="swap-button" disabled={true}>
+      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
         <styledEl.SwapButtonBox>{swapInputError || <Trans>Swap</Trans>}</styledEl.SwapButtonBox>
       </ButtonError>
     ),
     [SwapButtonState.swapError]: (
-      <ButtonError buttonSize={ButtonSize.BIG} id="swap-button">
+      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
         <styledEl.SwapButtonBox>{swapInputError}</styledEl.SwapButtonBox>
       </ButtonError>
     ),
     [SwapButtonState.expertModeSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={handleSwap} id="swap-button">
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={handleSwap}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>
       </ButtonError>
     ),
     [SwapButtonState.regularSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={doSwap} id="swap-button">
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={doSwap}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>
@@ -165,5 +165,5 @@ export function SwapButton(props: SwapButtonProps) {
     ),
   }
 
-  return map[swapButtonState]
+  return <div id="swap-button">{map[swapButtonState]}</div>
 }
