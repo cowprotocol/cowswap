@@ -15,13 +15,13 @@ import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/Approve
 import * as styledEl from './styled'
 import { WrapType } from 'hooks/useWrapCallback'
 import { TransactionResponse } from '@ethersproject/providers'
+import { HandleSwapCallback } from 'pages/Swap/helpers/useHandleSwap'
 
 export interface SwapButtonProps {
   swapButtonState: SwapButtonState
   chainId: number | undefined
   wrappedToken: Token
-  handleSwap: () => void
-  doSwap: () => void
+  handleSwap: HandleSwapCallback
   approveButtonProps: ApproveButtonProps
   onWrap?: () => Promise<TransactionResponse>
   wrapType: WrapType
@@ -29,17 +29,8 @@ export interface SwapButtonProps {
 }
 
 export function SwapButton(props: SwapButtonProps) {
-  const {
-    swapButtonState,
-    chainId,
-    onWrap,
-    wrappedToken,
-    approveButtonProps,
-    swapInputError,
-    handleSwap,
-    doSwap,
-    wrapType,
-  } = props
+  const { swapButtonState, chainId, onWrap, wrappedToken, approveButtonProps, swapInputError, handleSwap, wrapType } =
+    props
   const doWrap = () => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))
   const toggleWalletModal = useToggleWalletModal()
 
@@ -150,14 +141,14 @@ export function SwapButton(props: SwapButtonProps) {
       </ButtonError>
     ),
     [SwapButtonState.expertModeSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={handleSwap}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={() => handleSwap()}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>
       </ButtonError>
     ),
     [SwapButtonState.regularSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={doSwap}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={() => handleSwap({ openConfirm: true })}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>

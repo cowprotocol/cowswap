@@ -5,12 +5,13 @@ import { Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
+import { HandleSwapCallback } from 'pages/Swap/helpers/useHandleSwap'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
   recipient: string | null
   allowedSlippage: Percent
-  handleSwap: () => void
+  handleSwap: HandleSwapCallback
   onUserInput: (field: Field, txHash: string) => void
   priceImpact?: Percent
 }

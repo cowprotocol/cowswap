@@ -60,7 +60,7 @@ const _computeInputAmountForSignature = (params: {
   }
 }
 
-interface SwapCallbackParams {
+export interface SwapCallbackParams {
   trade?: TradeGp // trade to execute, required
   allowedSlippage?: Percent // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
@@ -153,13 +153,13 @@ async function _swap(params: SwapParams): Promise<string> {
 
   // Log the trade
   console.trace(
-    `[useSwapCallback] >> Trading ${tradeType} 
+    `[useSwapCallback] >> Trading ${tradeType}
       1. Original Input = ${inputAmountWithSlippage.toExact()}
       2. Fee = ${fee?.feeAsCurrency?.toExact() || '0'}
       3. Input Adjusted for Fee = ${inputAmountWithFee.toExact()}
       4. Expected Output = ${expectedOutputAmount.toExact()}
       4b. Output with SLIPPAGE = ${outputAmountWithSlippage.toExact()}
-      5. Price = ${executionPrice.toFixed()} 
+      5. Price = ${executionPrice.toFixed()}
       6. Details: `,
     {
       expectedInputAmount: expectedInputAmount.toExact(),

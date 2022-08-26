@@ -8,7 +8,6 @@ import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 // import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import { useWeb3React } from '@web3-react/core'
-import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
@@ -21,7 +20,6 @@ import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { AutoRow } from 'components/Row'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { /*, SwapCallbackError*/ Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
@@ -65,18 +63,18 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
-import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
-import { swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
+import { setMaxSellTokensAnalytics } from 'utils/analytics'
 import { ImportTokenModal } from './components/ImportTokenModal'
 import { CompatibilityIssuesWarning } from './components/CompatibilityIssuesWarning'
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import { useSwapButtonState } from 'pages/Swap/helpers/useSwapButtonState'
 import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
+import { useHandleSwap } from 'pages/Swap/helpers/useHandleSwap'
 
 export default function Swap({
   history,
@@ -232,8 +230,8 @@ export default function Swap({
   )
 
   const swapConfirmState = useAtomValue(swapConfirmAtom)
-  const setSwapState = useUpdateAtom(swapConfirmAtom)
-  const { showConfirm, tradeToConfirm, swapErrorMessage } = swapConfirmState
+
+  const { swapErrorMessage } = swapConfirmState
 
   const formattedAmounts = useMemo(
     () => ({
@@ -271,81 +269,14 @@ export default function Swap({
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback({
+  const { swapCallback: handleSwap, swapCallbackError } = useHandleSwap({
     trade,
-    allowedSlippage,
-    recipientAddressOrName: recipient,
-    openTransactionConfirmationModal: () => {
-      setSwapState({
-        tradeToConfirm: trade,
-        attemptingTxn: true,
-        swapErrorMessage: undefined,
-        showConfirm: true,
-        txHash: undefined,
-      })
-    },
-    closeModals,
-  })
-
-  const handleSwap = useCallback(() => {
-    if (!swapCallback) {
-      return
-    }
-    if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
-      return
-    }
-
-    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-    swapAnalytics('Send', marketLabel)
-
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
-    swapCallback()
-      .then((hash) => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
-
-        if (recipient === null) {
-          signSwapAnalytics('Sign', marketLabel)
-        } else {
-          ;(recipientAddress ?? recipient) === account
-            ? signSwapAnalytics('SignAndSend', marketLabel)
-            : signSwapAnalytics('SignToSelf', marketLabel)
-        }
-      })
-      .catch((error) => {
-        let swapErrorMessage, errorCode
-        if (isRejectRequestProviderError(error)) {
-          swapErrorMessage = 'User rejected signing the order'
-          swapAnalytics('Reject', marketLabel)
-        } else {
-          swapErrorMessage = getProviderErrorMessage(error)
-
-          if (error?.code && typeof error.code === 'number') {
-            errorCode = error.code
-          }
-          console.error('Error Signing Order', error)
-          swapAnalytics('Error', marketLabel, errorCode)
-        }
-
-        setSwapState({
-          attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
-          swapErrorMessage,
-          txHash: undefined,
-        })
-      })
-  }, [
-    setSwapState,
-    swapCallback,
-    priceImpact,
-    tradeToConfirm,
-    showConfirm,
+    account,
     recipient,
     recipientAddress,
-    account,
-    trade,
-  ])
+    priceImpact,
+    allowedSlippage,
+  })
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -401,7 +332,6 @@ export default function Swap({
     currencyIn,
     allowedSlippage,
     transactionDeadline,
-    setSwapState,
     swapConfirmState,
     isExpertMode,
     handleSwap,
@@ -436,15 +366,6 @@ export default function Swap({
     chainId,
     wrappedToken,
     handleSwap,
-    doSwap: () => {
-      setSwapState({
-        tradeToConfirm: trade,
-        attemptingTxn: false,
-        swapErrorMessage: undefined,
-        showConfirm: true,
-        txHash: undefined,
-      })
-    },
     onWrap,
     wrapType,
     swapInputError,

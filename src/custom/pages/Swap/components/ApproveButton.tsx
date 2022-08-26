@@ -15,20 +15,21 @@ import { useERC20PermitFromTrade } from 'hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency, Percent } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
-import { SwapConfirmState } from 'pages/Swap/state/swapConfirmAtom'
+import { swapConfirmAtom, SwapConfirmState } from 'pages/Swap/state/swapConfirmAtom'
 import { ThemeContext } from 'styled-components/macro'
 import usePrevious from '@src/hooks/usePrevious'
 import { ButtonError } from 'components/Button'
+import { HandleSwapCallback } from 'pages/Swap/helpers/useHandleSwap'
+import { useUpdateAtom } from 'jotai/utils'
 
 export interface ApproveButtonProps {
   currencyIn: Currency | undefined | null
   trade: TradeGp | undefined
   allowedSlippage: Percent
   transactionDeadline: BigNumber | undefined
-  setSwapState: (state: SwapConfirmState) => void
   swapConfirmState: SwapConfirmState
   isExpertMode: boolean
-  handleSwap: () => void
+  handleSwap: HandleSwapCallback
   isValid: boolean
   approvalState: ApprovalState
   approveCallback: (params?: OptionalApproveCallbackParams) => Promise<void>
@@ -42,7 +43,6 @@ export function ApproveButton(props: ApproveButtonProps) {
     trade,
     allowedSlippage,
     transactionDeadline,
-    setSwapState,
     swapConfirmState,
     currencyIn,
     isExpertMode,
@@ -56,6 +56,7 @@ export function ApproveButton(props: ApproveButtonProps) {
   } = props
 
   const theme = useContext(ThemeContext)
+  const setSwapState = useUpdateAtom(swapConfirmAtom)
 
   const { showConfirm, tradeToConfirm } = swapConfirmState
 
