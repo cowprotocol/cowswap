@@ -12,19 +12,17 @@ import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { ArrowDown } from 'react-feather'
 // import ReactGA from 'react-ga4'
 // import { RouteComponentProps } from 'react-router-dom'
 // import { TradeState } from 'state/routing/types'
 import { ThemeContext } from 'styled-components/macro'
 
-import AddressInputPanel from 'components/AddressInputPanel'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { AutoRow } from 'components/Row'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
-import { ArrowWrapper /*, SwapCallbackError*/, Wrapper } from 'components/swap/styleds'
+import { /*, SwapCallbackError*/ Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { /*, useApprovalOptimizedTrade*/ useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -78,6 +76,7 @@ import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import { useSwapButtonState } from 'pages/Swap/helpers/useSwapButtonState'
 import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
+import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 
 export default function Swap({
   history,
@@ -547,17 +546,7 @@ export default function Swap({
             </div>
 
             {recipient !== null && !showWrap ? (
-              <>
-                <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                  <ArrowWrapper clickable={false}>
-                    <ArrowDown size="16" color={theme.text2} />
-                  </ArrowWrapper>
-                  <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                    <Trans>- Remove recipient</Trans>
-                  </LinkStyledButton>
-                </AutoRow>
-                <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
-              </>
+              <RemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
             ) : null}
             {!showWrap && (
               <Card padding={showWrap ? '.25rem 1rem 0 1rem' : '0px'} $borderRadius={'20px'}>
