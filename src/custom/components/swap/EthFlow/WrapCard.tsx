@@ -5,7 +5,7 @@ import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { CHAIN_INFO } from 'constants/chainInfo'
-import { WRAPPED_NATIVE_CURRENCY } from '@src/custom/constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 const BalanceLabel = styled.p<{ background?: string }>`
   display: flex;

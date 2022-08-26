@@ -87,12 +87,12 @@ import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import CowSubsidyModal from 'components/CowSubsidyModal'
+import EthFlowModal from 'components/swap/EthFlow'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
 import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
-import { GpModal } from 'components/Modal'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 // const AlertWrapper = styled.div`
@@ -104,8 +104,6 @@ export default function Swap({
   history,
   location,
   TradeBasicDetails,
-  EthWethWrapMessage,
-  SwitchToWethBtn,
   FeesExceedFromAmountMessage,
   BottomGrouping,
   SwapButton,
@@ -641,26 +639,27 @@ export default function Swap({
       />
       {/* CoWmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
+
       {/* Native wrapping modal */}
-      <GpModal isOpen={showNativeWrapModal} onDismiss={dismissNativeWrapModal}>
-        <EthWethWrapMessage
-          account={account ?? undefined}
-          native={native}
-          wrapped={wrappedToken}
-          nativeInput={showWrap ? parsedAmount : nativeInput}
-          // native currency state
-          isNativeIn={isNativeIn}
-          {...nativeRest}
-          // state
-          needsApproval={showApproveFlow && !!approveCallback}
-          needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
-          // cbs
-          onDismiss={dismissNativeWrapModal}
-          approveCallback={approveCallback}
-          wrapCallback={onWrap}
-          swapCallback={handleNativeWrapAndSwap}
-        />
-      </GpModal>
+      <EthFlowModal
+        account={account ?? undefined}
+        native={native}
+        wrapped={wrappedToken}
+        nativeInput={showWrap ? parsedAmount : nativeInput}
+        // native currency state
+        isNativeIn={isNativeIn}
+        {...nativeRest}
+        // state
+        needsApproval={showApproveFlow && !!approveCallback}
+        needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
+        // modal state
+        modalIsOpen={showNativeWrapModal}
+        // cbs
+        onDismiss={dismissNativeWrapModal}
+        approveCallback={approveCallback}
+        wrapCallback={onWrap}
+        swapCallback={handleNativeWrapAndSwap}
+      />
 
       <AffiliateStatusCheck />
       <StyledAppBody className={className}>

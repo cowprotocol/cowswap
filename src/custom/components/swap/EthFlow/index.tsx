@@ -6,7 +6,7 @@ import { transparentize } from 'polished'
 import { Trans } from '@lingui/macro'
 
 import { ButtonPrimary } from 'components/Button'
-import WrappingVisualisation, { WrappingVisualisationParams } from 'components/swap/EthWethWrap/WrappingVisualisation'
+import WrappingVisualisation, { WrappingVisualisationParams } from 'components/swap/EthFlow/WrappingVisualisation'
 
 import { useCurrencyBalances } from 'state/connection/hooks'
 
@@ -25,9 +25,10 @@ import {
   _getCurrencyForVisualiser,
   _getDerivedEthFlowState,
   _getModalTextContent,
-} from 'components/swap/EthWethWrap/helpers'
+} from 'components/swap/EthFlow/helpers'
+import { GpModal } from '../../Modal'
 
-const EthFlowModal = styled(ConfirmationModalContent)`
+const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;
 `
 
@@ -77,6 +78,9 @@ export interface Props {
   needsApproval: boolean
   needsWrap: boolean
 
+  // modal state
+  modalIsOpen: boolean
+
   // cbs
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
@@ -86,7 +90,7 @@ export interface Props {
 
 type PendingHashMap = { approveHash?: string; wrapHash?: string }
 
-export default function EthWethWrap({
+export function EthWethWrap({
   account,
   native,
   wrapped,
@@ -99,6 +103,9 @@ export default function EthWethWrap({
   // state
   needsApproval,
   needsWrap,
+
+  // modal state
+  modalIsOpen,
 
   // cbs
   onDismiss,
@@ -382,13 +389,21 @@ export default function EthWethWrap({
   ])
 
   return (
-    <EthFlowModal
+    <EthFlowModalContent
       title={header}
       titleSize={20}
       onDismiss={onDismiss}
       topContent={TopModalContent}
       bottomContent={BottomModalContent}
     />
+  )
+}
+
+export default function EthFlowModal(props: Props) {
+  return (
+    <GpModal isOpen={props.modalIsOpen} onDismiss={props.onDismiss}>
+      <EthWethWrap {...props} />
+    </GpModal>
   )
 }
 

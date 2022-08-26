@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useGasPrices } from 'state/gas/hooks'
-import { Props } from 'components/swap/EthWethWrap'
+import { Props } from 'components/swap/EthFlow'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 
 export const MINIMUM_TXS = '10'

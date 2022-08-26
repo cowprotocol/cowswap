@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import { _estimateTxCost, _isLowBalanceCheck, _getAvailableTransactions } from 'components/swap/EthWethWrap/helpers'
+import { _estimateTxCost, _isLowBalanceCheck, _getAvailableTransactions } from 'components/swap/EthFlow/helpers'
 import { useGasPrices } from 'state/gas/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { Props } from 'components/swap/EthWethWrap'
+import { Props } from 'components/swap/EthFlow'
 
 type RemainingTxAndCostsParams = Pick<Props, 'nativeInput' | 'native'> & {
   nativeBalance: CurrencyAmount<Currency> | undefined
