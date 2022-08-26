@@ -6,11 +6,11 @@ import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
 import { TradeRates } from './pureComponents/TradeRates'
 import { TradeButton } from './pureComponents/TradeButton'
 
-export function LimitOrderPage() {
+export function NewSwapPage() {
   return (
     <styledEl.Container>
       <styledEl.Header>
-        <div>Limit Orders</div>
+        <div>New Swap</div>
       </styledEl.Header>
       <CurrencyInputPanel currency={GNO_GNOSIS_CHAIN} />
       <CurrencyArrowSeparator isLoading={false} />

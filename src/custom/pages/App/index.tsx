@@ -19,7 +19,7 @@ import { Loading } from 'components/FlashingLoading'
 // Sync routes
 import Account from 'pages/Account'
 import Swap from 'pages/Swap'
-import { LimitOrderPage } from 'pages/LimitOrder'
+import { NewSwapPage } from 'pages/LimitOrder'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -97,12 +97,7 @@ export default function App() {
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
             <Route exact strict path={Routes.SWAP} component={Swap} />
-            <Route
-              exact
-              strict
-              path={Routes.LIMIT_ORDER + '/:inputCurrency/:outputCurrency'}
-              component={LimitOrderPage}
-            />
+            <Route exact strict path={Routes.NEW_SWAP} component={NewSwapPage} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />

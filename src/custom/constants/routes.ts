@@ -2,7 +2,7 @@
 export enum Routes {
   HOME = '/',
   SWAP = '/swap',
-  LIMIT_ORDER = '/limit-order',
+  NEW_SWAP = '/new-swap',
   SWAP_OUTPUT_CURRENCY = '/swap/:outputCurrency',
   SEND = '/send',
   ACCOUNT = '/account',
