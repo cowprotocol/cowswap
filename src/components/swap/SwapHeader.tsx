@@ -12,9 +12,15 @@ const StyledSwapHeader = styled.div`
   color: ${({ theme }) => theme.text2};
 `
 
-export default function SwapHeader({ allowedSlippage }: { allowedSlippage: Percent }) {
+export default function SwapHeader({
+  allowedSlippage,
+  className = '',
+}: {
+  allowedSlippage: Percent
+  className?: string
+}) {
   return (
-    <StyledSwapHeader>
+    <StyledSwapHeader className={className}>
       <RowBetween>
         <RowFixed>
           <ThemedText.Black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>

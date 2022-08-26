@@ -1,6 +1,6 @@
-import { ReceiveAmountBox, ReceiveAmountValue } from 'pages/LimitOrder/pureComponents/ReceiveAmount/styled'
+import { ReceiveAmountBox, ReceiveAmountValue } from 'pages/NewSwap/pureComponents/ReceiveAmount/styled'
 import React from 'react'
-import { ReceiveAmountInfo } from 'pages/LimitOrder/pureComponents/ReceiveAmountInfo'
+import { ReceiveAmountInfo } from 'pages/NewSwap/pureComponents/ReceiveAmountInfo'
 import * as styledEl from './styled'
 
 export function ReceiveAmount() {

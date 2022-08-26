@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
-import { CurrencyInputPanel } from 'pages/LimitOrder/pureComponents/CurrencyInputPanel'
+import { CurrencyInputPanel } from 'pages/NewSwap/pureComponents/CurrencyInputPanel'
+import SwapHeader from '@src/components/swap/SwapHeader'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -25,4 +26,8 @@ export const Header = styled.div`
 export const DestCurrencyInputPanel = styled(CurrencyInputPanel)`
   border-radius: 20px 20px 0 0;
   border-bottom: 0;
+`
+
+export const SwapHeaderStyled = styled(SwapHeader)`
+  padding: 0 0.25rem 0.5rem 0.25rem;
 `

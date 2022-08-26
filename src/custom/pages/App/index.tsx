@@ -19,7 +19,7 @@ import { Loading } from 'components/FlashingLoading'
 // Sync routes
 import Account from 'pages/Account'
 import Swap from 'pages/Swap'
-import { NewSwapPage } from 'pages/LimitOrder'
+import { NewSwapPage } from 'pages/NewSwap'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE

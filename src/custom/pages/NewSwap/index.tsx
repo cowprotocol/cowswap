@@ -5,13 +5,15 @@ import { CurrencyInputPanel } from './pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
 import { TradeRates } from './pureComponents/TradeRates'
 import { TradeButton } from './pureComponents/TradeButton'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 
 export function NewSwapPage() {
+  const { allowedSlippage } = useDerivedSwapInfo()
+
   return (
     <styledEl.Container>
-      <styledEl.Header>
-        <div>New Swap</div>
-      </styledEl.Header>
+      <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
+
       <CurrencyInputPanel currency={GNO_GNOSIS_CHAIN} />
       <CurrencyArrowSeparator isLoading={false} />
       <styledEl.DestCurrencyInputPanel currency={WETH_GNOSIS_CHAIN} />
