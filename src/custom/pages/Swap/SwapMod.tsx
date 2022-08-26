@@ -99,7 +99,7 @@ import {
   useShowNativeEthFlowSlippageWarning,
   useIsUserNativeEthFlow,
 } from 'state/ethFlow/hooks'
-import Banner from 'components/swap/EthWethWrap/Banner'
+import Banner from 'components/swap/EthFlow/Banner'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
