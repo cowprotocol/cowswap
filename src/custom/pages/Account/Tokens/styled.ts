@@ -1,7 +1,6 @@
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
-import { PageWrapper } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
 import { Card } from 'pages/Account/styled'
 import { darken, transparentize } from 'polished'
@@ -85,7 +84,7 @@ export const Wrapper = styled.div`
   }
 
   > div:not(:first-child) {
-    margin: 2rem 0;
+    margin-top: 2rem;
   }
 
   ${Content} {
@@ -114,11 +113,13 @@ export const Wrapper = styled.div`
   }
 `
 
-export const AccountPageWrapper = styled(PageWrapper)`
+export const AccountPageWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   border: none;
   background: none;
+  padding: 0 24px 24px;
+  margin-bottom: 0;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0;

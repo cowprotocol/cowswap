@@ -21,7 +21,7 @@ export const Wrapper = styled(Page)`
 
   max-width: 910px;
   width: 100%;
-  min-height: auto;
+  min-height: unset;
   padding-top: 16px;
   display: flex;
   justify-content: flex-end;
@@ -433,13 +433,14 @@ export const BannerCard = styled(BannerExplainer)`
   }
 `
 
-export const CardActions = styled.div<{ justify?: string }>`
+export const CardActions = styled.div<{ justify?: string; content?: string }>`
   width: 100%;
   display: flex;
   flex-flow: row wrap;
   justify-content: ${({ justify }) => justify || 'space-between'};
   align-items: flex-end;
   margin: auto 0 0;
+  align-content: ${({ content }) => content || 'unset'};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
@@ -447,6 +448,10 @@ export const CardActions = styled.div<{ justify?: string }>`
     flex-flow: column wrap;
     gap: 32px 0;
     margin: 12px 0;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    align-content: center;
   `};
 
   > a,
