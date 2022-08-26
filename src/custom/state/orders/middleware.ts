@@ -275,7 +275,7 @@ function _triggerNps(
   const openSince = _getOrderById(orders, orderId)?.order?.openSince
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
 
-  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), orderId, explorerUrl })
+  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), explorerUrl, chainId })
 }
 
 function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {

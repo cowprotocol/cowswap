@@ -194,8 +194,8 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
       openNpsAppziSometimes({
         waitedTooLong: true,
         secondsSinceOpen: timeSinceInSeconds(openSince),
-        orderId,
         explorerUrl,
+        chainId,
       })
       // Break the loop, don't need to show more than once
       break
