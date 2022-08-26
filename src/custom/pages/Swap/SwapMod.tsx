@@ -99,7 +99,7 @@ import {
   useIsUserNativeEthFlow,
   useShowNativeEthFlowSlippageWarning,
 } from 'state/ethFlow/hooks'
-import EthWrapToggle from 'components/swap/EthWethWrap/Toggle'
+import EthFlowToggle from 'components/swap/EthFlow/Toggle'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -825,7 +825,7 @@ export default function Swap({
                 >
                   {/* ETH-FLOW TOGGLE */}
                   {account && !swapInputError && isNativeIn && (
-                    <EthWrapToggle
+                    <EthFlowToggle
                       wrappedSymbol={
                         WRAPPED_NATIVE_CURRENCY[chainId || SupportedChainId.MAINNET].symbol || 'native wrapped currency'
                       }
