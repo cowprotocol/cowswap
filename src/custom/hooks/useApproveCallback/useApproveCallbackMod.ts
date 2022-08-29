@@ -23,6 +23,7 @@ import { useWeb3React } from '@web3-react/core'
 import { ApproveCallback, OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
+import usePrevious from 'hooks/usePrevious'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -69,7 +70,7 @@ export function useApproveCallback({
   const spenderCurrency = useCurrency(spender)
 
   // check the current approval status
-  const approvalState: ApprovalState = useMemo(() => {
+  const approvalStateBase: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
     if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
@@ -82,6 +83,9 @@ export function useApproveCallback({
         : ApprovalState.NOT_APPROVED
       : ApprovalState.APPROVED
   }, [amountToApprove, amountToCheckAgainstAllowance, currentAllowance, pendingApproval, spender])
+
+  // ApprovalState is sometimes incorrectly returned AFTER a successful approval
+  const approvalState = useAuxApprovalState(approvalStateBase, currentAllowance)
 
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
@@ -252,6 +256,27 @@ export function useApproveCallback({
   )
 
   return { approvalState, approve, revokeApprove, isPendingApproval: pendingApproval }
+}
+
+/**
+ *
+ * ApprovalState is sometimes incorrectly returned AFTER a successful approval
+ * causing incorrect UI display around the app because of incorrect pending check
+ *
+ * Solution: we check the prev approval state and also check if the allowance has been updated
+ */
+function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance: CurrencyAmount<Currency> | undefined) {
+  const previousApprovalState = usePrevious(approvalStateBase)
+  const currentAllowanceString = currentAllowance?.quotient.toString()
+  const previousAllowanceString = usePrevious(currentAllowanceString)
+  // Has allowance actually updated?
+  const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString
+
+  return useMemo(() => {
+    return previousApprovalState === ApprovalState.PENDING && allowanceHasNotChanged
+      ? ApprovalState.PENDING
+      : approvalStateBase
+  }, [previousApprovalState, allowanceHasNotChanged, approvalStateBase])
 }
 
 /* export function useApprovalOptimizedTrade(
