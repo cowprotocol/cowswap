@@ -15,7 +15,7 @@ import {
   ButtonPrimary as ButtonPrimaryMod,
   ButtonLight as ButtonLightMod,
 } from 'components/Button'
-import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
+import { Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { Trans } from '@lingui/macro'
 import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
@@ -160,7 +160,6 @@ export default function Swap(props: RouteComponentProps) {
   return (
     <Container>
       <SwapModWrapper
-        ArrowWrapperLoader={ArrowWrapperLoader}
         HighFeeWarning={HighFeeWarning}
         NoImpactWarning={NoImpactWarning}
         allowsOffchainSigning={allowsOffchainSigning}
@@ -172,7 +171,6 @@ export default function Swap(props: RouteComponentProps) {
 }
 
 export interface SwapProps extends RouteComponentProps {
-  ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   HighFeeWarning: React.FC<WarningProps>
   NoImpactWarning: React.FC<WarningProps>
   FeesDiscount: React.FC<FeesDiscountProps>

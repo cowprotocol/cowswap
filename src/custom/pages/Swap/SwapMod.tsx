@@ -79,11 +79,11 @@ import { Price } from './components/Price'
 import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
 import EthWethWrap from 'components/swap/EthWethWrap'
 import { BottomGrouping } from 'pages/Swap/styled'
+import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 
 export default function Swap({
   history,
   location,
-  ArrowWrapperLoader,
   HighFeeWarning,
   NoImpactWarning,
   FeesDiscount,
