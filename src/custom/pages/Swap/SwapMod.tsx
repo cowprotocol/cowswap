@@ -19,7 +19,7 @@ import { ThemeContext } from 'styled-components/macro'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import { AutoRow } from 'components/Row'
+import { AutoRow, RowBetween } from 'components/Row'
 import { /*, SwapCallbackError*/ Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 // import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
@@ -77,11 +77,11 @@ import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 import { useHandleSwap } from 'pages/Swap/hooks/useHandleSwap'
 import { Price } from './components/Price'
 import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
+import EthWethWrap from 'components/swap/EthWethWrap'
 
 export default function Swap({
   history,
   location,
-  EthWethWrapMessage,
   BottomGrouping,
   ArrowWrapperLoader,
   HighFeeWarning,
@@ -489,13 +489,15 @@ export default function Swap({
                 </AutoColumn>
                 {/* ETH exactIn && wrapCallback returned us cb */}
                 {isNativeIn && isSupportedWallet && onWrap && (
-                  <EthWethWrapMessage
-                    account={account ?? undefined}
-                    native={native}
-                    nativeInput={nativeInput}
-                    wrapped={wrappedToken}
-                    wrapCallback={onWrap}
-                  />
+                  <RowBetween>
+                    <EthWethWrap
+                      account={account ?? undefined}
+                      native={native}
+                      nativeInput={nativeInput}
+                      wrapped={wrappedToken}
+                      wrapCallback={onWrap}
+                    />
+                  </RowBetween>
                 )}
               </Card>
             )}

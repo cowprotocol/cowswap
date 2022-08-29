@@ -3,7 +3,7 @@ import styled, { DefaultTheme } from 'styled-components/macro'
 import { BoxProps, Text } from 'rebass'
 
 import SwapMod from './SwapMod'
-import { AutoRow, RowBetween } from 'components/Row'
+import { AutoRow } from 'components/Row'
 import { Wrapper as WrapperUni, Container } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
@@ -15,7 +15,6 @@ import {
   ButtonPrimary as ButtonPrimaryMod,
   ButtonLight as ButtonLightMod,
 } from 'components/Button'
-import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { Trans } from '@lingui/macro'
 import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
@@ -167,20 +166,11 @@ export const LightGreyText = styled.span`
   color: ${({ theme }) => theme.text4};
 `
 
-function EthWethWrapMessage(props: EthWethWrapProps) {
-  return (
-    <RowBetween>
-      <EthWethWrap {...props} />
-    </RowBetween>
-  )
-}
-
 export default function Swap(props: RouteComponentProps) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
     <Container>
       <SwapModWrapper
-        EthWethWrapMessage={EthWethWrapMessage}
         BottomGrouping={BottomGrouping}
         ArrowWrapperLoader={ArrowWrapperLoader}
         HighFeeWarning={HighFeeWarning}
@@ -194,7 +184,6 @@ export default function Swap(props: RouteComponentProps) {
 }
 
 export interface SwapProps extends RouteComponentProps {
-  EthWethWrapMessage: React.FC<EthWethWrapProps>
   BottomGrouping: React.FC
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   HighFeeWarning: React.FC<WarningProps>
