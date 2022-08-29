@@ -15,19 +15,17 @@ import { useERC20PermitFromTrade } from 'hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency, Percent } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
-import { swapConfirmAtom, SwapConfirmState } from 'pages/Swap/state/swapConfirmAtom'
 import { ThemeContext } from 'styled-components/macro'
 import usePrevious from '@src/hooks/usePrevious'
 import { ButtonError } from 'components/Button'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 
 export interface ApproveButtonProps {
   currencyIn: Currency | undefined | null
   trade: TradeGp | undefined
   allowedSlippage: Percent
   transactionDeadline: BigNumber | undefined
-  swapConfirmState: SwapConfirmState
   isExpertMode: boolean
   handleSwap: HandleSwapCallback
   isValid: boolean
@@ -43,7 +41,6 @@ export function ApproveButton(props: ApproveButtonProps) {
     trade,
     allowedSlippage,
     transactionDeadline,
-    swapConfirmState,
     currencyIn,
     isExpertMode,
     handleSwap,
@@ -56,9 +53,6 @@ export function ApproveButton(props: ApproveButtonProps) {
   } = props
 
   const theme = useContext(ThemeContext)
-  const setSwapState = useUpdateAtom(swapConfirmAtom)
-
-  const { showConfirm, tradeToConfirm } = swapConfirmState
 
   const {
     state: signatureState,
@@ -78,6 +72,8 @@ export function ApproveButton(props: ApproveButtonProps) {
       setApprovalSubmitted(false)
     }
   }, [approvalState, approvalSubmitted, prevApprovalState, setApprovalSubmitted])
+
+  const { setSwapError, openSwapConfirmModal } = useSwapConfirmManager()
 
   const handleApprove = useCallback(async () => {
     let approveRequired = false // mod
@@ -119,23 +115,15 @@ export function ApproveButton(props: ApproveButtonProps) {
             approvalAnalytics('Error', symbol, errorCode)
           }
 
-          setSwapState({
-            attemptingTxn: false,
-            tradeToConfirm,
-            showConfirm,
-            swapErrorMessage,
-            txHash: undefined,
-          })
+          setSwapError(swapErrorMessage)
         })
     }
   }, [
-    setSwapState,
     approveCallback,
     gatherPermitSignature,
-    showConfirm,
     signatureState,
-    tradeToConfirm,
     trade?.inputAmount?.currency.symbol,
+    setSwapError,
     // v2Trade?.inputAmount?.currency.symbol, // TODO: doublecheck
   ])
 
@@ -197,13 +185,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           if (isExpertMode) {
             handleSwap()
           } else {
-            setSwapState({
-              tradeToConfirm: trade,
-              attemptingTxn: false,
-              swapErrorMessage: undefined,
-              showConfirm: true,
-              txHash: undefined,
-            })
+            openSwapConfirmModal(trade!)
           }
         }}
         width="100%"

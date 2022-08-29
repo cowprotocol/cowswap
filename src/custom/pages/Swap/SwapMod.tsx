@@ -332,7 +332,6 @@ export default function Swap({
     currencyIn,
     allowedSlippage,
     transactionDeadline,
-    swapConfirmState,
     isExpertMode,
     handleSwap,
     isValid,

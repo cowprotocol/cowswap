@@ -5,9 +5,8 @@ import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/mis
 import { SwapCallbackParams, useSwapCallback } from 'hooks/useSwapCallback'
 import { Percent } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 import { useCloseModals } from 'state/application/hooks'
+import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 
 export interface HandleSwapInput {
   trade: TradeGp | undefined
@@ -29,37 +28,21 @@ export function useHandleSwap(input: HandleSwapInput): {
   swapCallback: HandleSwapCallback
 } {
   const { trade, recipient, account, recipientAddress, priceImpact, allowedSlippage } = input
-  const swapConfirmState = useAtomValue(swapConfirmAtom)
-  const setSwapState = useUpdateAtom(swapConfirmAtom)
-  const { showConfirm, tradeToConfirm } = swapConfirmState
   const closeModals = useCloseModals()
   const swapCallbackState: SwapCallbackParams = {
     trade,
     allowedSlippage,
     recipientAddressOrName: recipient,
-    openTransactionConfirmationModal: () => {
-      setSwapState({
-        tradeToConfirm: trade,
-        attemptingTxn: true,
-        swapErrorMessage: undefined,
-        showConfirm: true,
-        txHash: undefined,
-      })
-    },
     closeModals,
   }
   const { callback, error: swapCallbackError } = useSwapCallback(swapCallbackState)
 
+  const { openSwapConfirmModal, setSwapError, transactionSent, sendTransaction } = useSwapConfirmManager()
+
   const swapCallback = useCallback(
     (input?: HandleSwapType) => {
       if (input?.openConfirm) {
-        setSwapState({
-          tradeToConfirm: trade,
-          attemptingTxn: false,
-          swapErrorMessage: undefined,
-          showConfirm: true,
-          txHash: undefined,
-        })
+        openSwapConfirmModal(trade!)
         return
       }
 
@@ -74,10 +57,10 @@ export function useHandleSwap(input: HandleSwapInput): {
       const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
       swapAnalytics('Send', marketLabel)
 
-      setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+      sendTransaction(trade!)
       callback()
         .then((hash) => {
-          setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+          transactionSent(hash)
 
           if (recipient === null) {
             signSwapAnalytics('Sign', marketLabel)
@@ -102,16 +85,21 @@ export function useHandleSwap(input: HandleSwapInput): {
             swapAnalytics('Error', marketLabel, errorCode)
           }
 
-          setSwapState({
-            attemptingTxn: false,
-            tradeToConfirm,
-            showConfirm,
-            swapErrorMessage,
-            txHash: undefined,
-          })
+          setSwapError(swapErrorMessage)
         })
     },
-    [setSwapState, callback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade]
+    [
+      openSwapConfirmModal,
+      setSwapError,
+      sendTransaction,
+      transactionSent,
+      callback,
+      priceImpact,
+      recipient,
+      recipientAddress,
+      account,
+      trade,
+    ]
   )
 
   return { swapCallback, swapCallbackError }
