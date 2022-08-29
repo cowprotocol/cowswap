@@ -80,16 +80,9 @@ import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
 import EthWethWrap from 'components/swap/EthWethWrap'
 import { BottomGrouping } from 'pages/Swap/styled'
 import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
+import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 
-export default function Swap({
-  history,
-  location,
-  HighFeeWarning,
-  NoImpactWarning,
-  FeesDiscount,
-  className,
-  allowsOffchainSigning,
-}: SwapProps) {
+export default function Swap({ history, location, FeesDiscount, className, allowsOffchainSigning }: SwapProps) {
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
   const previousChainId = usePrevious(chainId)

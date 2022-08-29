@@ -17,7 +17,6 @@ import {
 } from 'components/Button'
 import { Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { Trans } from '@lingui/macro'
-import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -159,20 +158,12 @@ export default function Swap(props: RouteComponentProps) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
     <Container>
-      <SwapModWrapper
-        HighFeeWarning={HighFeeWarning}
-        NoImpactWarning={NoImpactWarning}
-        allowsOffchainSigning={allowsOffchainSigning}
-        FeesDiscount={FeesDiscount}
-        {...props}
-      />
+      <SwapModWrapper allowsOffchainSigning={allowsOffchainSigning} FeesDiscount={FeesDiscount} {...props} />
     </Container>
   )
 }
 
 export interface SwapProps extends RouteComponentProps {
-  HighFeeWarning: React.FC<WarningProps>
-  NoImpactWarning: React.FC<WarningProps>
   FeesDiscount: React.FC<FeesDiscountProps>
   className?: string
   allowsOffchainSigning: boolean
