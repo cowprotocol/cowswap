@@ -9,7 +9,6 @@ import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
 import Card, { GreyCard } from 'components/Card'
 import { Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { useWalletInfo } from 'hooks/useWalletInfo'
 
 const SwapModWrapper = styled(SwapMod)`
   ${(props) => props.className} {
@@ -66,15 +65,9 @@ const SwapModWrapper = styled(SwapMod)`
 `
 
 export default function Swap(props: RouteComponentProps) {
-  const { allowsOffchainSigning } = useWalletInfo()
   return (
     <Container>
-      <SwapModWrapper allowsOffchainSigning={allowsOffchainSigning} {...props} />
+      <SwapModWrapper {...props} />
     </Container>
   )
-}
-
-export interface SwapProps extends RouteComponentProps {
-  className?: string
-  allowsOffchainSigning: boolean
 }

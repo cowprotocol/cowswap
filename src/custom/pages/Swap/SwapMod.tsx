@@ -52,7 +52,7 @@ import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/in
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { SwapProps } from '.' // mod
+// mod
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
@@ -82,10 +82,11 @@ import { BottomGrouping } from 'pages/Swap/styled'
 import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
+import { RouteComponentProps } from 'react-router-dom'
 
-export default function Swap({ history, location, className, allowsOffchainSigning }: SwapProps) {
+export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
-  const { isSupportedWallet } = useWalletInfo()
+  const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
   const previousChainId = usePrevious(chainId)
   const theme = useContext(ThemeContext)
 
