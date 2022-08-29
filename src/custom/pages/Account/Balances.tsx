@@ -1,7 +1,7 @@
+import { Trans } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ExtLink,
-  CardsWrapper,
   Card,
   CardActions,
   BalanceDisplay,
@@ -15,7 +15,6 @@ import { getBlockExplorerUrl } from 'utils'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
@@ -205,94 +204,90 @@ export default function Profile() {
       <TransactionConfirmationModal />
       <ErrorModal />
 
-      {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-
-      <CardsWrapper>
-        {isCardsLoading ? (
-          <CardsWrapper>
-            <CardsLoader>
-              <CardsSpinner size="24px" />
-            </CardsLoader>
-          </CardsWrapper>
-        ) : (
-          <>
-            {hasVCowBalance && (
-              <Card showLoader={isVCowLoading || isSwapPending}>
-                <BalanceDisplay hAlign="left">
-                  <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
-                  <span>
-                    <i>Total vCOW balance</i>
-                    <b>
-                      <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
-                      <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
-                        <HelpCircle size={14} />
-                      </MouseoverTooltipContent>
-                    </b>
-                  </span>
-                </BalanceDisplay>
-                <ConvertWrapper>
-                  <BalanceDisplay titleSize={18} altColor={true}>
-                    <i>
-                      Vested{' '}
-                      <MouseoverTooltipContent content={tooltipText.vested} wrap>
-                        <HelpCircle size={14} />
-                      </MouseoverTooltipContent>
-                    </i>
-                    <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
-                  </BalanceDisplay>
-                  <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                    {renderConvertToCowContent()}
-                  </ButtonPrimary>
-                </ConvertWrapper>
-
-                <CardActions>
-                  <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
-                    View contract ↗
-                  </ExtLink>
-                  <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
-                    <div title="Click to copy token contract address">Copy contract</div>
-                  </CopyHelper>
-                </CardActions>
-              </Card>
-            )}
-
-            <Card>
-              <BalanceDisplay titleSize={26}>
-                <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+      {isCardsLoading ? (
+        <CardsLoader style={{ minHeight: '200px' }}>
+          <CardsSpinner size="24px" />
+        </CardsLoader>
+      ) : (
+        <>
+          {hasVCowBalance && (
+            <Card showLoader={isVCowLoading || isSwapPending}>
+              <BalanceDisplay hAlign="left">
+                <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
                 <span>
-                  <i>Available COW balance</i>
-                  <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
+                  <i>
+                    <Trans>Total vCOW balance</Trans>
+                  </i>
+                  <b>
+                    <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
+                    <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
+                      <HelpCircle size={14} />
+                    </MouseoverTooltipContent>
+                  </b>
                 </span>
               </BalanceDisplay>
+              <ConvertWrapper>
+                <BalanceDisplay titleSize={18} altColor={true}>
+                  <i>
+                    Vested{' '}
+                    <MouseoverTooltipContent content={tooltipText.vested} wrap>
+                      <HelpCircle size={14} />
+                    </MouseoverTooltipContent>
+                  </i>
+                  <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
+                </BalanceDisplay>
+                <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
+                  {renderConvertToCowContent()}
+                </ButtonPrimary>
+              </ConvertWrapper>
+
               <CardActions>
-                <ExtLink
-                  title="View contract"
-                  href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}
-                >
+                <ExtLink href={getBlockExplorerUrl(chainId, V_COW_CONTRACT_ADDRESS[chainId], 'token')}>
                   View contract ↗
                 </ExtLink>
-
-                {isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
-
-                {!isMetaMask && (
-                  <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
-                    <div title="Click to copy token contract address">Copy contract</div>
-                  </CopyHelper>
-                )}
-
-                <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+                <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
+                  <div title="Click to copy token contract address">Copy contract</div>
+                </CopyHelper>
               </CardActions>
             </Card>
+          )}
 
-            <LockedGnoVesting
-              {...lockedGnoBalances}
-              loading={isLockedGnoLoading}
-              openModal={openModal}
-              closeModal={closeModal}
-            />
-          </>
-        )}
-      </CardsWrapper>
+          <Card>
+            <BalanceDisplay titleSize={26}>
+              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+              <span>
+                <i>Available COW balance</i>
+                <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
+              </span>
+            </BalanceDisplay>
+            <CardActions>
+              <ExtLink
+                title="View contract"
+                href={getBlockExplorerUrl(chainId, COW_CONTRACT_ADDRESS[chainId], 'token')}
+              >
+                View contract ↗
+              </ExtLink>
+
+              {isMetaMask && <AddToMetamask shortLabel currency={currencyCOW} />}
+
+              {!isMetaMask && (
+                <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                  <div title="Click to copy token contract address">Copy contract</div>
+                </CopyHelper>
+              )}
+
+              <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+            </CardActions>
+          </Card>
+
+          <LockedGnoVesting
+            {...lockedGnoBalances}
+            loading={isLockedGnoLoading}
+            openModal={openModal}
+            closeModal={closeModal}
+          />
+        </>
+      )}
     </>
   )
 }

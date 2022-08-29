@@ -19,7 +19,7 @@ export default function BalanceCell({ balance }: BalanceCellProps) {
 
   return (
     <BalanceValue title={formatMax(balance, balance.currency.decimals)} hasBalance={!!hasBalance}>
-      <div>{formattedBalance}</div>
+      {formattedBalance}
     </BalanceValue>
   )
 }

@@ -34,7 +34,6 @@ import {
   WalletSecondaryActions,
   WalletNameAddress,
   WalletWrapper,
-  UnsupportedNetworkMsg,
 } from './styled'
 import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
 import { MouseoverTooltip } from 'components/Tooltip'
@@ -52,8 +51,7 @@ import {
   walletConnectConnection,
 } from 'connection'
 import { isMobile } from 'utils/userAgent'
-import { NETWORK_SELECTOR_CHAINS } from 'components/Header/NetworkSelector/NetworkSelectorMod'
-import { getChainInfo } from 'constants/chainInfo'
+import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -245,16 +243,7 @@ export default function AccountDetails({
       ) : (
         <LowerSection>
           <NoActivityMessage>
-            {chainId ? (
-              <span>Your activity will appear here...</span>
-            ) : (
-              <UnsupportedNetworkMsg>
-                Please connect your wallet to one of our supported networks{' '}
-                {NETWORK_SELECTOR_CHAINS.map((chainId) => getChainInfo(chainId)?.label)
-                  .filter(Boolean)
-                  .join(', ')}
-              </UnsupportedNetworkMsg>
-            )}
+            {chainId ? <span>Your activity will appear here...</span> : <UnsupporthedNetworkMessage />}
           </NoActivityMessage>
         </LowerSection>
       )}

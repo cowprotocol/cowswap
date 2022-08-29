@@ -63,7 +63,7 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
     &::after {
       content: '';
       display: block;
-      background: linear-gradient(to top, #163861 0%, rgba(22, 56, 97, 0) 100%);
+      // background: linear-gradient(to top, #163861 0%, rgba(22, 56, 97, 0) 100%);
       pointer-events: none;
       height: 40px;
       width: 100%;
@@ -79,7 +79,8 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
   `};
 
   overflow-y: auto;
-  max-height: 150px;
+  max-height: 135px;
+  padding-bottom: 20px;
 `
 
 export const BaseWrapper = styled(BaseWrapperMod)<{ disable?: boolean }>`
