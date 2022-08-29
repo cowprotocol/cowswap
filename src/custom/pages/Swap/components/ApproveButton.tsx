@@ -19,7 +19,7 @@ import { swapConfirmAtom, SwapConfirmState } from 'pages/Swap/state/swapConfirmA
 import { ThemeContext } from 'styled-components/macro'
 import usePrevious from '@src/hooks/usePrevious'
 import { ButtonError } from 'components/Button'
-import { HandleSwapCallback } from 'pages/Swap/helpers/useHandleSwap'
+import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 import { useUpdateAtom } from 'jotai/utils'
 
 export interface ApproveButtonProps {

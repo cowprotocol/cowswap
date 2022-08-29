@@ -71,10 +71,10 @@ import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/co
 import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
-import { useSwapButtonState } from 'pages/Swap/helpers/useSwapButtonState'
+import { useSwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
 import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
-import { useHandleSwap } from 'pages/Swap/helpers/useHandleSwap'
+import { useHandleSwap } from 'pages/Swap/hooks/useHandleSwap'
 
 export default function Swap({
   history,

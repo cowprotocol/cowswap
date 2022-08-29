@@ -1,4 +1,4 @@
-import { SwapButtonState } from 'pages/Swap/helpers/useSwapButtonState'
+import { SwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
 import { ReactNode } from 'react'
 import { ThemedText, ButtonSize } from 'theme'
 import { Trans } from '@lingui/macro'
@@ -15,7 +15,7 @@ import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/Approve
 import * as styledEl from './styled'
 import { WrapType } from 'hooks/useWrapCallback'
 import { TransactionResponse } from '@ethersproject/providers'
-import { HandleSwapCallback } from 'pages/Swap/helpers/useHandleSwap'
+import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 
 export interface SwapButtonProps {
   swapButtonState: SwapButtonState
