@@ -30,8 +30,8 @@ import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyI
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
-import { Price } from 'pages/Swap'
 import { WarningProps } from 'components/SwapWarnings'
+import { Price } from 'pages/Swap/components/Price'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -78,7 +78,7 @@ export default function SwapModalHeader({
   HighFeeWarning,
   NoImpactWarning,
   allowsOffchainSigning,
-}: /* 
+}: /*
 {
   trade: InterfaceTrade<Currency, Currency, TradeType>
   allowedSlippage: Percent

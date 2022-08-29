@@ -75,6 +75,7 @@ import { useSwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
 import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 import { useHandleSwap } from 'pages/Swap/hooks/useHandleSwap'
+import { Price } from './components/Price'
 
 export default function Swap({
   history,
@@ -83,7 +84,6 @@ export default function Swap({
   EthWethWrapMessage,
   BottomGrouping,
   ArrowWrapperLoader,
-  Price,
   HighFeeWarning,
   NoImpactWarning,
   FeesDiscount,

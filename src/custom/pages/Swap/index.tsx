@@ -19,9 +19,7 @@ import {
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
-import { Repeat } from 'react-feather'
 import { Trans } from '@lingui/macro'
-import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
@@ -36,6 +34,7 @@ import { StyledInfo } from './styleds'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
+import { LowerSectionWrapper } from 'pages/Swap/styled'
 
 interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
@@ -137,60 +136,6 @@ const SwapModWrapper = styled(SwapMod)`
   }
 `
 
-const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
-  ...props,
-  align: 'center',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  minHeight: 24,
-}))`
-  > .price-container {
-    display: flex;
-    gap: 5px;
-  }
-`
-
-const PriceSwitcher = styled(AutoRow)`
-  flex-flow: row nowrap;
-  gap: 4px;
-  min-width: 55px;
-
-  > svg {
-    cursor: pointer;
-    border-radius: 20px;
-    background: ${({ theme }) => theme.bg4};
-    padding: 4px;
-  }
-`
-
-interface PriceProps extends BoxProps {
-  trade: TradeGp
-  theme: DefaultTheme
-  showInverted: boolean
-  setShowInverted: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-export const Price: React.FC<PriceProps> = ({
-  trade,
-  theme,
-  showInverted,
-  setShowInverted,
-  ...boxProps
-}: PriceProps) => {
-  return (
-    <LowerSectionWrapper {...boxProps}>
-      <Text fontWeight={500} fontSize={14} color={theme.text2}>
-        <PriceSwitcher>
-          <Trans>Price</Trans>
-          <Repeat size={20} onClick={() => setShowInverted((prev) => !prev)} />
-        </PriceSwitcher>
-      </Text>
-      <div className="price-container">
-        <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
-      </div>
-    </LowerSectionWrapper>
-  )
-}
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme
 }
@@ -292,7 +237,6 @@ export default function Swap(props: RouteComponentProps) {
         EthWethWrapMessage={EthWethWrapMessage}
         BottomGrouping={BottomGrouping}
         ArrowWrapperLoader={ArrowWrapperLoader}
-        Price={Price}
         HighFeeWarning={HighFeeWarning}
         NoImpactWarning={NoImpactWarning}
         allowsOffchainSigning={allowsOffchainSigning}
@@ -308,7 +252,6 @@ export interface SwapProps extends RouteComponentProps {
   EthWethWrapMessage: React.FC<EthWethWrapProps>
   BottomGrouping: React.FC
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
-  Price: React.FC<PriceProps>
   HighFeeWarning: React.FC<WarningProps>
   NoImpactWarning: React.FC<WarningProps>
   FeesDiscount: React.FC<FeesDiscountProps>
