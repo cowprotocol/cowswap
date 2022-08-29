@@ -1,5 +1,5 @@
 import { SwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { ThemedText, ButtonSize } from 'theme'
 import { Trans } from '@lingui/macro'
 import { ButtonError, ButtonPrimary } from 'components/Button'
@@ -9,12 +9,9 @@ import { AutoRow } from 'components/Row'
 import { GreyCard } from 'components/Card'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
-import { useToggleWalletModal } from 'state/application/hooks'
 import { AutoColumn } from 'components/Column'
 import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import * as styledEl from './styled'
-import { WrapType } from 'hooks/useWrapCallback'
-import { TransactionResponse } from '@ethersproject/providers'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 
 export interface SwapButtonProps {
@@ -23,16 +20,25 @@ export interface SwapButtonProps {
   wrappedToken: Token
   handleSwap: HandleSwapCallback
   approveButtonProps: ApproveButtonProps
-  onWrap?: () => Promise<TransactionResponse>
-  wrapType: WrapType
+  onWrap: () => void
+  openSwapConfirm: () => void
+  onSwap: () => void
+  toggleWalletModal: () => void
   swapInputError?: ReactNode
 }
 
-export function SwapButton(props: SwapButtonProps) {
-  const { swapButtonState, chainId, onWrap, wrappedToken, approveButtonProps, swapInputError, handleSwap, wrapType } =
-    props
-  const doWrap = () => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))
-  const toggleWalletModal = useToggleWalletModal()
+export const SwapButton: React.FC<SwapButtonProps> = (props: SwapButtonProps) => {
+  const {
+    swapButtonState,
+    chainId,
+    onWrap,
+    wrappedToken,
+    approveButtonProps,
+    swapInputError,
+    openSwapConfirm,
+    onSwap,
+    toggleWalletModal,
+  } = props
 
   const map: { [key in SwapButtonState]: JSX.Element } = {
     [SwapButtonState.swapIsUnsupported]: (
@@ -55,12 +61,12 @@ export function SwapButton(props: SwapButtonProps) {
       </ButtonPrimary>
     ),
     [SwapButtonState.shouldWrapNativeToken]: (
-      <ButtonPrimary onClick={doWrap} buttonSize={ButtonSize.BIG}>
+      <ButtonPrimary onClick={onWrap} buttonSize={ButtonSize.BIG}>
         <Trans>Wrap</Trans>
       </ButtonPrimary>
     ),
     [SwapButtonState.shouldUnwrapNativeToken]: (
-      <ButtonPrimary onClick={doWrap} buttonSize={ButtonSize.BIG}>
+      <ButtonPrimary onClick={onWrap} buttonSize={ButtonSize.BIG}>
         <Trans>Unwrap</Trans>
       </ButtonPrimary>
     ),
@@ -141,14 +147,14 @@ export function SwapButton(props: SwapButtonProps) {
       </ButtonError>
     ),
     [SwapButtonState.expertModeSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={() => handleSwap()}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={onSwap}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>
       </ButtonError>
     ),
     [SwapButtonState.regularSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={() => handleSwap({ openConfirm: true })}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={openSwapConfirm}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>

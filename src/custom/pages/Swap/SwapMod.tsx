@@ -17,7 +17,7 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
-import { useCloseModals, useModalIsOpen, useOpenModal } from 'state/application/hooks'
+import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDerivedSwapInfo,
@@ -66,6 +66,7 @@ import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
+import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -296,6 +297,9 @@ export default function Swap({ history, location, className }: RouteComponentPro
 
   const { ErrorMessage } = useErrorMessage()
 
+  const { openSwapConfirmModal } = useSwapConfirmManager()
+  const toggleWalletModal = useToggleWalletModal()
+
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
     trade,
     recipient,
@@ -343,8 +347,16 @@ export default function Swap({ history, location, className }: RouteComponentPro
     chainId,
     wrappedToken,
     handleSwap,
-    onWrap,
-    wrapType,
+    onWrap() {
+      onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))
+    },
+    openSwapConfirm() {
+      openSwapConfirmModal(trade!)
+    },
+    onSwap() {
+      handleSwap()
+    },
+    toggleWalletModal,
     swapInputError,
   }
 
