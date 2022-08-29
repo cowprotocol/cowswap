@@ -1,6 +1,5 @@
 import { RouteComponentProps } from 'react-router-dom'
-import styled, { DefaultTheme } from 'styled-components/macro'
-import { BoxProps, Text } from 'rebass'
+import styled from 'styled-components/macro'
 
 import SwapMod from './SwapMod'
 import { AutoRow } from 'components/Row'
@@ -16,15 +15,7 @@ import {
   ButtonLight as ButtonLightMod,
 } from 'components/Button'
 import { Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { Trans } from '@lingui/macro'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-
-import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfo } from './styleds'
-import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
-
-import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { LowerSectionWrapper } from 'pages/Swap/styled'
 
 export const ButtonError = styled(ButtonErrorMod)`
   > div,
@@ -110,45 +101,6 @@ const SwapModWrapper = styled(SwapMod)`
   }
 `
 
-interface FeesDiscountProps extends BoxProps {
-  theme: DefaultTheme
-}
-
-const DarkSpan = styled.span`
-  padding: 2px 8px;
-  background-color: ${({ theme }) => theme.bg4};
-  border-radius: 5px;
-  color: ${({ theme }) => theme.text1};
-`
-
-export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...boxProps }: FeesDiscountProps) => {
-  const { subsidy } = useCowBalanceAndSubsidy()
-
-  return (
-    <LowerSectionWrapper {...boxProps}>
-      <Text fontWeight={500} fontSize={14} color={theme.text2} alignItems={'center'}>
-        <AutoRow>
-          <Trans>Fees discount</Trans>{' '}
-          <MouseoverTooltipContent
-            content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
-            bgColor={theme.bg1}
-            color={theme.text1}
-            wrap
-          >
-            <StyledInfo />
-          </MouseoverTooltipContent>
-        </AutoRow>
-      </Text>
-
-      <div className="price-container">
-        <DarkSpan onClick={onClick} style={{ cursor: 'pointer' }}>
-          {subsidy?.discount || 0}% discount
-        </DarkSpan>
-      </div>
-    </LowerSectionWrapper>
-  )
-}
-
 export const LightGreyText = styled.span`
   font-weight: 400;
   color: ${({ theme }) => theme.text4};
@@ -158,13 +110,12 @@ export default function Swap(props: RouteComponentProps) {
   const { allowsOffchainSigning } = useWalletInfo()
   return (
     <Container>
-      <SwapModWrapper allowsOffchainSigning={allowsOffchainSigning} FeesDiscount={FeesDiscount} {...props} />
+      <SwapModWrapper allowsOffchainSigning={allowsOffchainSigning} {...props} />
     </Container>
   )
 }
 
 export interface SwapProps extends RouteComponentProps {
-  FeesDiscount: React.FC<FeesDiscountProps>
   className?: string
   allowsOffchainSigning: boolean
 }
