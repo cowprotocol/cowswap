@@ -3,49 +3,13 @@ import styled from 'styled-components/macro'
 
 import SwapMod from './SwapMod'
 import { AutoRow } from 'components/Row'
-import { Wrapper as WrapperUni, Container } from 'components/swap/styleds'
+import { Container, Wrapper as WrapperUni } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import { ClickableText } from 'pages/Pool/styleds'
 import { InputContainer } from 'components/AddressInputPanel'
-import { GreyCard } from 'components/Card'
-import Card from 'components/Card'
-import {
-  ButtonError as ButtonErrorMod,
-  ButtonPrimary as ButtonPrimaryMod,
-  ButtonLight as ButtonLightMod,
-} from 'components/Button'
+import Card, { GreyCard } from 'components/Card'
 import { Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-
-export const ButtonError = styled(ButtonErrorMod)`
-  > div,
-  > div > div {
-    width: 100%;
-    word-break: break-all;
-    text-align: center;
-    align-items: center;
-  }
-`
-
-export const ButtonPrimary = styled(ButtonPrimaryMod)`
-  > div,
-  > div > div {
-    width: 100%;
-    word-break: break-all;
-    text-align: center;
-    align-items: center;
-  }
-`
-
-export const ButtonLight = styled(ButtonLightMod)`
-  > div,
-  > div > div {
-    width: 100%;
-    word-break: break-all;
-    text-align: center;
-    align-items: center;
-  }
-`
 
 const SwapModWrapper = styled(SwapMod)`
   ${(props) => props.className} {
@@ -99,11 +63,6 @@ const SwapModWrapper = styled(SwapMod)`
       z-index: 2;
     }
   }
-`
-
-export const LightGreyText = styled.span`
-  font-weight: 400;
-  color: ${({ theme }) => theme.text4};
 `
 
 export default function Swap(props: RouteComponentProps) {

@@ -24,3 +24,7 @@ export const BottomGrouping = styled.div`
     stroke: ${({ theme }) => theme.text2};
   }
 `
+export const LightGreyText = styled.span`
+  font-weight: 400;
+  color: ${({ theme }) => theme.text4};
+`
