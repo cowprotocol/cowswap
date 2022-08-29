@@ -28,6 +28,7 @@ import ms from 'ms.macro'
 import { openNpsAppziSometimes } from 'utils/appzi'
 import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { supportedChainId } from 'utils/supportedChainId'
 
 const PENDING_TOO_LONG_TIME = ms`5 min`
 
@@ -204,7 +205,8 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
 
   const pending = usePendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
