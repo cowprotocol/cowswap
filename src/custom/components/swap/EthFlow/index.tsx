@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, Token, CurrencyAmount } from '@uniswap/sdk-core'
@@ -14,19 +14,21 @@ import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails
 import Loader from 'components/Loader'
 import { useIsExpertMode } from 'state/user/hooks'
 import { delay } from 'utils/misc'
-import { useSingleActivityState } from 'hooks/useActivityDerivedState'
 import { useWeb3React } from '@web3-react/core'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
 import {
   ActionButtonParams,
   EthFlowState,
+  useEthFlowStatesAndSetters,
   _getActionButtonProps,
   _getCurrencyForVisualiser,
   _getDerivedEthFlowState,
   _getModalTextContent,
 } from 'components/swap/EthFlow/helpers'
-import { GpModal } from '../../Modal'
+import { GpModal } from 'components/Modal'
+import { ApprovalState } from 'hooks/useApproveCallback'
+import { WrapType } from 'hooks/useWrapCallback'
 
 const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -65,7 +67,6 @@ const ButtonWrapper = styled.div`
 const MODAL_CLOSE_DELAY = 1000 // 1s
 
 export interface Props {
-  account?: string
   native: Currency
   wrapped: Token & { logoURI: string }
   nativeInput?: CurrencyAmount<Currency>
@@ -75,8 +76,8 @@ export interface Props {
   isWrappedOut: boolean
 
   // state
-  needsApproval: boolean
-  needsWrap: boolean
+  approvalState: ApprovalState
+  wrapState: WrapType
 
   // modal state
   modalIsOpen: boolean
@@ -88,10 +89,9 @@ export interface Props {
   swapCallback: (showConfirmModal?: boolean) => void
 }
 
-type PendingHashMap = { approveHash?: string; wrapHash?: string }
+export type PendingHashMap = { approveHash?: string; wrapHash?: string }
 
 export function EthWethWrap({
-  account,
   native,
   wrapped,
   nativeInput,
@@ -99,38 +99,42 @@ export function EthWethWrap({
   isNativeOut,
   isWrappedIn,
   isWrappedOut,
-
-  // state
-  needsApproval,
-  needsWrap,
-
-  // modal state
-  modalIsOpen,
+  // state from hooks
+  approvalState,
+  wrapState,
 
   // cbs
   onDismiss,
   approveCallback,
   wrapCallback,
   swapCallback,
-}: Props) {
-  const [pendingHashMap, setPendingHashMap] = useState<PendingHashMap>({
-    approveHash: undefined,
-    wrapHash: undefined,
-  })
-
-  const { chainId } = useWeb3React()
+}: Omit<Props, 'modalIsOpen'>) {
+  const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
+  const {
+    // track current pending operations
+    pendingHashMap,
+    setPendingHashMap,
+    // general loading
+    loading,
+    setLoading,
+    // APPROVE
+    approvalDerivedState,
+    approveSubmitted,
+    approveError,
+    setApproveSubmitted,
+    setApproveError,
+    // WRAPPING
+    wrapDerivedState,
+    wrapSubmitted,
+    wrapError,
+    setWrapSubmitted,
+    setWrapError,
+  } = useEthFlowStatesAndSetters({ chainId, approvalState, wrapState })
 
-  // maintain own local state of approve/wrap states
-  const [loading, setLoading] = useState(false)
-  // APPROVE STATE
-  const approveState = useSingleActivityState({ chainId, id: pendingHashMap.approveHash || '' })
-  const [approveSubmitted, setApproveSubmitted] = useState(false)
-  const [approveError, setApproveError] = useState<Error | null>(null)
-  // WRAP STATE
-  const wrapState = useSingleActivityState({ chainId, id: pendingHashMap.wrapHash || '' })
-  const [wrapSubmitted, setWrapSubmitted] = useState(false)
-  const [wrapError, setWrapError] = useState<Error | null>(null)
+  const needsApproval = approvalState === ApprovalState.NOT_APPROVED
+  const needsWrap = !!wrapCallback
+
   // BALANCES
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
 
@@ -160,13 +164,13 @@ export function EthWethWrap({
       _getDerivedEthFlowState({
         approveError,
         wrapError,
-        approveState,
-        wrapState,
+        approveState: approvalDerivedState,
+        wrapState: wrapDerivedState,
         needsApproval,
         needsWrap,
         isExpertMode,
       }),
-    [isExpertMode, approveError, approveState, needsApproval, needsWrap, wrapError, wrapState]
+    [isExpertMode, approveError, needsApproval, needsWrap, wrapError, approvalDerivedState, wrapDerivedState]
   )
   // get modal text content: header and descriptions
   const { header, description } = useMemo(
@@ -186,7 +190,7 @@ export function EthWethWrap({
   // and set loading local state accordingly..
   useEffect(() => {
     setLoading(state === EthFlowState.Loading)
-  }, [state])
+  }, [setLoading, state])
 
   const handleError = useCallback(
     (error: any, type: 'WRAP' | 'APPROVE') => {
@@ -202,7 +206,7 @@ export function EthWethWrap({
       setLoading(false)
       onDismiss()
     },
-    [onDismiss]
+    [onDismiss, setApproveError, setLoading, setWrapError]
   )
 
   const handleWrap = useCallback(async () => {
@@ -227,7 +231,7 @@ export function EthWethWrap({
         onDismiss()
       }
     }
-  }, [handleError, isUnwrap, isWrap, onDismiss, wrapCallback])
+  }, [handleError, isUnwrap, isWrap, onDismiss, setPendingHashMap, setWrapError, setWrapSubmitted, wrapCallback])
 
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
@@ -246,7 +250,7 @@ export function EthWethWrap({
       handleError(error, 'APPROVE')
       setApproveSubmitted(false)
     }
-  }, [approveCallback, handleError])
+  }, [approveCallback, handleError, setApproveError, setApproveSubmitted, setPendingHashMap])
 
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
@@ -299,7 +303,22 @@ export function EthWethWrap({
         onDismiss()
       }
     }
-  }, [needsApproval, needsWrap, wrapCallback, approveCallback, handleError, handleSwap, isNativeIn, onDismiss])
+  }, [
+    needsApproval,
+    needsWrap,
+    wrapCallback,
+    approveCallback,
+    setWrapError,
+    handleError,
+    handleSwap,
+    isNativeIn,
+    onDismiss,
+    setApproveError,
+    setLoading,
+    setApproveSubmitted,
+    setWrapSubmitted,
+    setPendingHashMap,
+  ])
 
   // expert mode only: swap/wrap/unwrap on mount
   useEffect(() => {
@@ -324,7 +343,7 @@ export function EthWethWrap({
         delay(MODAL_CLOSE_DELAY).then(() => handleSwap(true))
       }
     }
-  }, [approveSubmitted, handleSwap, isExpertMode, state, wrapSubmitted])
+  }, [approveSubmitted, handleSwap, isExpertMode, state, wrapSubmitted, setApproveSubmitted, setWrapSubmitted])
 
   const TopModalContent = useCallback(
     () => (
@@ -344,8 +363,8 @@ export function EthWethWrap({
       pendingHashMap,
       approveError,
       wrapError,
-      approveState,
-      wrapState,
+      approveState: approvalDerivedState,
+      wrapState: wrapDerivedState,
       isNativeIn,
       native,
       wrapped,
@@ -367,7 +386,7 @@ export function EthWethWrap({
     return <EthFlowModalBottomContent {...params} />
   }, [
     approveError,
-    approveState,
+    approvalDerivedState,
     chainId,
     isExpertMode,
     isNativeIn,
@@ -381,7 +400,7 @@ export function EthWethWrap({
     pendingHashMap,
     state,
     wrapError,
-    wrapState,
+    wrapDerivedState,
     wrapped,
     wrappedBalance,
     wrappedSymbol,
@@ -405,7 +424,7 @@ export function EthWethWrap({
 
 export default function EthFlowModal(props: Props) {
   return (
-    <GpModal isOpen={props.modalIsOpen} onDismiss={props.onDismiss}>
+    <GpModal isOpen onDismiss={props.onDismiss}>
       <EthWethWrap {...props} />
     </GpModal>
   )
