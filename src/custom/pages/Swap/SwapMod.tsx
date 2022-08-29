@@ -641,25 +641,26 @@ export default function Swap({
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
 
       {/* Native wrapping modal */}
-      <EthFlowModal
-        account={account ?? undefined}
-        native={native}
-        wrapped={wrappedToken}
-        nativeInput={showWrap ? parsedAmount : nativeInput}
-        // native currency state
-        isNativeIn={isNativeIn}
-        {...nativeRest}
-        // state
-        needsApproval={approvalState !== ApprovalState.APPROVED}
-        needsWrap={wrapType !== WrapType.NOT_APPLICABLE && !!onWrap}
-        // modal state
-        modalIsOpen={showNativeWrapModal}
-        // cbs
-        onDismiss={dismissNativeWrapModal}
-        approveCallback={approveCallback}
-        wrapCallback={onWrap}
-        swapCallback={handleNativeWrapAndSwap}
-      />
+      {showNativeWrapModal && (
+        <EthFlowModal
+          native={native}
+          wrapped={wrappedToken}
+          nativeInput={showWrap ? parsedAmount : nativeInput}
+          // native currency state
+          isNativeIn={isNativeIn}
+          {...nativeRest}
+          // state
+          approvalState={approvalState}
+          wrapState={wrapType}
+          // modal state
+          modalIsOpen={showNativeWrapModal}
+          // cbs
+          onDismiss={dismissNativeWrapModal}
+          approveCallback={approveCallback}
+          wrapCallback={wrapType !== WrapType.NOT_APPLICABLE ? onWrap : undefined}
+          swapCallback={handleNativeWrapAndSwap}
+        />
+      )}
 
       <AffiliateStatusCheck />
       <StyledAppBody className={className}>
