@@ -24,6 +24,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'utils/analytics'
+import { ButtonSize } from '@src/custom/theme'
 
 enum ClaimStatus {
   INITIAL,
@@ -181,7 +182,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
               <Trans>Successfully claimed</Trans>
             </ButtonPrimary>
           ) : (
-            <ButtonPrimary onClick={handleClaim} disabled={!canClaim}>
+            <ButtonPrimary buttonSize={ButtonSize.SMALL} onClick={handleClaim} disabled={!canClaim}>
               {isClaimPending ? (
                 'Claiming COW...'
               ) : (

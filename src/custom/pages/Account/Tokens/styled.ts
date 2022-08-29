@@ -1,10 +1,9 @@
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
-import { PageWrapper } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
 import { Card } from 'pages/Account/styled'
-import { darken } from 'polished'
+import { darken, transparentize } from 'polished'
 
 export const MenuWrapper = styled.div`
   position: relative;
@@ -64,7 +63,7 @@ export const MenuItem = styled.div<{ active: boolean }>`
 
 export const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 160px auto;
+  grid-template-columns: 120px auto;
   flex-direction: column;
 
   margin: 0 1rem;
@@ -76,11 +75,6 @@ export const Wrapper = styled.div`
   `}
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-width: ${MEDIA_WIDTHS.upToSmall}px;
-  `}
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    max-width: ${MEDIA_WIDTHS.upToExtraSmall}px;
     display: flex;
     flex-flow: column wrap;
   `}
@@ -90,7 +84,7 @@ export const Wrapper = styled.div`
   }
 
   > div:not(:first-child) {
-    margin: 2rem 0;
+    margin-top: 2rem;
   }
 
   ${Content} {
@@ -119,11 +113,13 @@ export const Wrapper = styled.div`
   }
 `
 
-export const AccountPageWrapper = styled(PageWrapper)`
+export const AccountPageWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   border: none;
   background: none;
+  padding: 0 24px 24px;
+  margin-bottom: 0;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0;
@@ -196,4 +192,42 @@ export const ClearSearchInput = styled.div`
   top: 40%;
   transform: translateY(-50%);
   cursor: pointer;
+`
+
+export const Overview = styled.div<{ padding?: string; useFlex?: boolean }>`
+  background: ${({ theme }) => transparentize(0.12, theme.bg1)};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
+
+  ${({ useFlex = true }) =>
+    useFlex &&
+    `
+      display: flex;
+      flex-flow: column nowrap;
+  `};
+
+  gap: 16px;
+  margin: 16px 0 16px 0;
+  padding: ${({ padding = '0px' }) => padding};
+  z-index: 2;
+
+  > div {
+    flex: 1 1 200px;
+  }
+  > div:last-child:nth-child(odd) {
+    flex: 1 1 100%;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    flex-flow: column wrap;
+    padding: 0.8rem;
+
+    > div {
+      flex: 1 1 100%;
+    }
+    > div:last-child:nth-child(odd) {
+      flex: 1 1 100%;
+    }
+  `};
 `

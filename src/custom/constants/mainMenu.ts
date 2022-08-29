@@ -56,9 +56,22 @@ export const FAQ_MENU: InternalLink[] = [
   { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
 ]
 
+export const ACCOUNT_MENU: InternalLink[] = [
+  { title: 'Overview', url: Routes.ACCOUNT },
+  { title: 'Tokens', url: Routes.ACCOUNT_TOKENS },
+]
+
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
-  { title: 'Account', url: Routes.ACCOUNT },
+  {
+    kind: MenuItemKind.DROP_DOWN,
+    title: 'Account',
+    items: [
+      {
+        links: ACCOUNT_MENU,
+      },
+    ],
+  },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'FAQ',

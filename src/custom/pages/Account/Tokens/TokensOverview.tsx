@@ -13,19 +13,20 @@ import {
   RemoveTokens,
   LeftSection,
   ClearSearchInput,
+  Overview,
 } from './styled'
 import { TokenSearchInput } from 'components/Tokens/styled'
 import { useAllTokens } from 'hooks/Tokens'
 import { isTruthy } from 'utils/misc'
 import TokensTable from 'components/Tokens/TokensTable'
-import { useFavouriteTokens, useRemoveAllFavouriteTokens } from 'state/user/hooks'
+import { useFavouriteTokens, useRemoveAllFavouriteTokens, useInitFavouriteTokens } from 'state/user/hooks'
 import { useAllTokenBalances } from 'state/connection/hooks'
 import { Check } from 'react-feather'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import usePrevious from 'hooks/usePrevious'
 import { useWeb3React } from '@web3-react/core'
-import { CardsWrapper, CardsLoader, CardsSpinner } from '../styled'
+import { CardsLoader, CardsSpinner } from '../styled'
 import { supportedChainId } from 'utils/supportedChainId'
 import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
 import useDebounce from 'hooks/useDebounce'
@@ -47,7 +48,8 @@ const PageView = {
 }
 
 export default function TokensOverview() {
-  const { chainId, provider } = useWeb3React()
+  useInitFavouriteTokens()
+  const { chainId, provider, account } = useWeb3React()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
@@ -55,6 +57,7 @@ export default function TokensOverview() {
 
   const prevChainId = usePrevious(chainId)
   const prevSelectedView = usePrevious(selectedView)
+  const prevAccount = usePrevious(account)
 
   const isChainSupported = supportedChainId(chainId)
 
@@ -148,15 +151,15 @@ export default function TokensOverview() {
     setQuery('')
   }, [])
 
-  // reset table to page 1 on chain change or on table view change
+  // reset table to page 1 on chain, account or view change
   useEffect(() => {
-    if (chainId !== prevChainId || selectedView !== prevSelectedView) {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
       setPage(1)
     }
-  }, [chainId, prevChainId, prevSelectedView, selectedView])
+  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <CardsWrapper useFlex={false} padding={'20px 30px 30px'}>
+    <Overview useFlex={false} padding={'20px 30px 30px'}>
       {isChainSupported && (
         <AccountHeading>
           <LeftSection>
@@ -186,7 +189,7 @@ export default function TokensOverview() {
 
             {selectedView === PageViewKeys.FAVORITE_TOKENS && (
               <RemoveTokens onClick={handleRestoreTokens}>
-                (<Trans>Restore defaults</Trans>)
+                (<Trans>Reset favourites</Trans>)
               </RemoveTokens>
             )}
           </LeftSection>
@@ -211,6 +214,6 @@ export default function TokensOverview() {
       )}
 
       {renderTableContent()}
-    </CardsWrapper>
+    </Overview>
   )
 }

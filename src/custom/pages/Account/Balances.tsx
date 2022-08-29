@@ -2,7 +2,6 @@ import { Trans } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ExtLink,
-  CardsWrapper,
   Card,
   CardActions,
   BalanceDisplay,
@@ -16,7 +15,6 @@ import { getBlockExplorerUrl } from 'utils'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
@@ -206,14 +204,12 @@ export default function Profile() {
       <TransactionConfirmationModal />
       <ErrorModal />
 
-      {chainId && chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-
       {isCardsLoading ? (
         <CardsLoader style={{ minHeight: '200px' }}>
           <CardsSpinner size="24px" />
         </CardsLoader>
       ) : (
-        <CardsWrapper>
+        <>
           {hasVCowBalance && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
@@ -290,7 +286,7 @@ export default function Profile() {
             openModal={openModal}
             closeModal={closeModal}
           />
-        </CardsWrapper>
+        </>
       )}
     </>
   )

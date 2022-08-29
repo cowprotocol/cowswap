@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 
-export const SideMenu = styled.div`
+export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 16px;
@@ -15,7 +15,7 @@ export const SideMenu = styled.div`
   width: 100%;
   padding: 38px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
   padding: 0;
   position: relative;
 `}
@@ -28,7 +28,7 @@ export const SideMenu = styled.div`
     padding: 0;
     font-size: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
     background: ${({ theme }) => transparentize(0.9, theme.text1)};
     border-radius: 16px;
     padding: 12px;
@@ -50,7 +50,7 @@ export const SideMenu = styled.div`
     transition: opacity 0.2s ease-in-out;
     display: block;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
     margin: 0;
   `}
 
@@ -60,7 +60,7 @@ export const SideMenu = styled.div`
     }
 
     &.active {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
       background: ${({ theme }) => transparentize(0.9, theme.text1)};
       border-radius: 16px;
     `}
