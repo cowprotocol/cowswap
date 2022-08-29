@@ -31,7 +31,7 @@ import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XD
 import TradeGp from './TradeGp'
 
 import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
-import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER, USDC } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
 
 import { isWrappingTrade } from './utils'
 
@@ -394,15 +394,12 @@ export function queryParametersToSwapState(
 ): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
-  let typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
+  const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
   const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
-  const validChainId = supportedChainId(chainId)
 
   if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
-    // Defaults to 1 ETH -> USDC
+    // Defaults to having the wrapped native currency selected
     inputCurrency = defaultInputCurrency // 'ETH' // mod
-    outputCurrency = validChainId ? USDC[validChainId].address : 'USDC' // mod
-    typedValue = '1'
   } else if (inputCurrency === outputCurrency) {
     // clear output if identical
     outputCurrency = ''
