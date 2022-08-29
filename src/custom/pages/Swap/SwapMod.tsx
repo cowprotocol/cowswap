@@ -76,11 +76,11 @@ import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/Sw
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 import { useHandleSwap } from 'pages/Swap/hooks/useHandleSwap'
 import { Price } from './components/Price'
+import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
 
 export default function Swap({
   history,
   location,
-  TradeBasicDetails,
   EthWethWrapMessage,
   BottomGrouping,
   ArrowWrapperLoader,

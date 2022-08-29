@@ -1,6 +1,5 @@
 import { RouteComponentProps } from 'react-router-dom'
 import styled, { DefaultTheme } from 'styled-components/macro'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
 
 import SwapMod from './SwapMod'
@@ -18,15 +17,8 @@ import {
 } from 'components/Button'
 import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { Trans } from '@lingui/macro'
-import TradeGp from 'state/swap/TradeGp'
-import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
-import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
-import { RowFee } from 'components/swap/TradeSummary/RowFee'
-import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 import { HighFeeWarning, WarningProps, NoImpactWarning } from 'components/SwapWarnings'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -35,11 +27,6 @@ import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { LowerSectionWrapper } from 'pages/Swap/styled'
-
-interface TradeBasicDetailsProp extends BoxProps {
-  trade?: TradeGp
-  fee: CurrencyAmount<Currency>
-}
 
 const BottomGrouping = styled.div`
   > div > button {
@@ -180,46 +167,6 @@ export const LightGreyText = styled.span`
   color: ${({ theme }) => theme.text4};
 `
 
-function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
-  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
-  const [isExpertMode] = useExpertModeManager()
-  const { allowsOffchainSigning } = useWalletInfo()
-
-  // trades are null when there is a fee quote error e.g
-  // so we can take both
-  const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
-
-  return (
-    <LowerSectionWrapper {...boxProps}>
-      {/* Fees */}
-      {(trade || fee) && (
-        <RowFee
-          trade={trade}
-          showHelpers={true}
-          allowsOffchainSigning={allowsOffchainSigning}
-          fee={fee}
-          feeFiatValue={feeFiatValue}
-        />
-      )}
-
-      {isExpertMode && trade && (
-        <>
-          {/* Slippage */}
-          <RowSlippage allowedSlippage={allowedSlippage} />
-
-          {/* Min/Max received */}
-          <RowReceivedAfterSlippage
-            trade={trade}
-            allowedSlippage={allowedSlippage}
-            showHelpers={true}
-            allowsOffchainSigning={allowsOffchainSigning}
-          />
-        </>
-      )}
-    </LowerSectionWrapper>
-  )
-}
-
 function EthWethWrapMessage(props: EthWethWrapProps) {
   return (
     <RowBetween>
@@ -233,7 +180,6 @@ export default function Swap(props: RouteComponentProps) {
   return (
     <Container>
       <SwapModWrapper
-        TradeBasicDetails={TradeBasicDetails}
         EthWethWrapMessage={EthWethWrapMessage}
         BottomGrouping={BottomGrouping}
         ArrowWrapperLoader={ArrowWrapperLoader}
@@ -248,7 +194,6 @@ export default function Swap(props: RouteComponentProps) {
 }
 
 export interface SwapProps extends RouteComponentProps {
-  TradeBasicDetails: React.FC<TradeBasicDetailsProp>
   EthWethWrapMessage: React.FC<EthWethWrapProps>
   BottomGrouping: React.FC
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
