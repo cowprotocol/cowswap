@@ -27,17 +27,6 @@ import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { LowerSectionWrapper } from 'pages/Swap/styled'
 
-const BottomGrouping = styled.div`
-  > div > button {
-    align-self: stretch;
-  }
-
-  div > svg,
-  div > svg > path {
-    stroke: ${({ theme }) => theme.text2};
-  }
-`
-
 export const ButtonError = styled(ButtonErrorMod)`
   > div,
   > div > div {
@@ -171,7 +160,6 @@ export default function Swap(props: RouteComponentProps) {
   return (
     <Container>
       <SwapModWrapper
-        BottomGrouping={BottomGrouping}
         ArrowWrapperLoader={ArrowWrapperLoader}
         HighFeeWarning={HighFeeWarning}
         NoImpactWarning={NoImpactWarning}
@@ -184,7 +172,6 @@ export default function Swap(props: RouteComponentProps) {
 }
 
 export interface SwapProps extends RouteComponentProps {
-  BottomGrouping: React.FC
   ArrowWrapperLoader: React.FC<ArrowWrapperLoaderProps>
   HighFeeWarning: React.FC<WarningProps>
   NoImpactWarning: React.FC<WarningProps>

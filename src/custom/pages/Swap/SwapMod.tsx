@@ -78,11 +78,11 @@ import { useHandleSwap } from 'pages/Swap/hooks/useHandleSwap'
 import { Price } from './components/Price'
 import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
 import EthWethWrap from 'components/swap/EthWethWrap'
+import { BottomGrouping } from 'pages/Swap/styled'
 
 export default function Swap({
   history,
   location,
-  BottomGrouping,
   ArrowWrapperLoader,
   HighFeeWarning,
   NoImpactWarning,

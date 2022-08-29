@@ -13,3 +13,14 @@ export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
     gap: 5px;
   }
 `
+
+export const BottomGrouping = styled.div`
+  > div > button {
+    align-self: stretch;
+  }
+
+  div > svg,
+  div > svg > path {
+    stroke: ${({ theme }) => theme.text2};
+  }
+`
