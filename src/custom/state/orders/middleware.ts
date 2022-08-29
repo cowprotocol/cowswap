@@ -14,6 +14,7 @@ import { orderAnalytics } from 'utils/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'
+import { getExplorerOrderLink } from 'utils/explorer'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -267,13 +268,14 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 function _triggerNps(
   store: MiddlewareAPI<Dispatch<AnyAction>>,
   chainId: ChainId,
-  id: string,
+  orderId: string,
   npsParams: Parameters<typeof openNpsAppziSometimes>[0]
 ) {
   const orders = store.getState().orders[chainId]
-  const openSince = _getOrderById(orders, id)?.order?.openSince
+  const openSince = _getOrderById(orders, orderId)?.order?.openSince
+  const explorerUrl = getExplorerOrderLink(chainId, orderId)
 
-  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince) })
+  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), explorerUrl, chainId })
 }
 
 function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
