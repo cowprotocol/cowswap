@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useGasPrices } from 'state/gas/hooks'
-import { Props } from 'components/swap/EthFlow'
+import { PendingHashMap, Props } from 'components/swap/EthFlow'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { useSingleActivityState } from 'hooks/useActivityDerivedState'
+import { ApprovalState } from 'hooks/useApproveCallback'
 
 export const MINIMUM_TXS = '10'
 export const AVG_APPROVE_COST_GWEI = '50000'
@@ -82,13 +85,14 @@ export enum EthFlowState {
   Loading, // 11
 }
 
-export type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> &
-  Pick<Props, 'needsApproval' | 'needsWrap'> & {
-    approveError: Error | null
-    wrapError: Error | null
-    approveState: ActivityDerivedState | null
-    wrapState: ActivityDerivedState | null
-  }
+export type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> & {
+  approveError: Error | null
+  wrapError: Error | null
+  approveState: ActivityDerivedState | null
+  wrapState: ActivityDerivedState | null
+  needsApproval: boolean | undefined
+  needsWrap: boolean | undefined
+}
 
 // returns derived ethflow state from current props
 export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
@@ -96,13 +100,13 @@ export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
   // approve state
   const approveExpired = approveState?.isExpired
   const approvePending = approveState?.isPending
-  const approveSentAndSuccessful = Boolean(!approveError && approveState?.isConfirmed)
-  const approveInsufficient = needsApproval && approveSentAndSuccessful
+  const approveSentAndSuccessful = Boolean(!approveError && !approvePending && approveState?.isConfirmed)
+  const approveInsufficient = approveSentAndSuccessful && needsApproval
   const approveFinished = !needsApproval || approveSentAndSuccessful
   // wrap state
   const wrapExpired = wrapState?.isExpired
   const wrapPending = wrapState?.isPending
-  const wrapSentAndSuccessful = Boolean(!wrapError && wrapState?.isConfirmed)
+  const wrapSentAndSuccessful = Boolean(!wrapError && !wrapPending && wrapState?.isConfirmed)
   const wrapNeeded = needsWrap && !wrapSentAndSuccessful
   const wrapFinished = !needsWrap || wrapSentAndSuccessful
 
@@ -132,26 +136,22 @@ export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
     // Only approve failed
     else return EthFlowState.ApproveFailed
   }
-
-  // INSUFFICIENT approve state
-  else if (approveInsufficient) {
-    return EthFlowState.ApproveInsufficient
-  }
-
-  // NEEDED state
+  // NEEDS wrap/approve state
   else if (needsApproval || wrapNeeded) {
+    // INSUFFICIENT approve state
+    if (approveInsufficient) {
+      return EthFlowState.ApproveInsufficient
+    }
     // in expertMode and we need to wrap and swap
-    if (isExpertMode && needsApproval && wrapNeeded) {
+    else if (isExpertMode && needsApproval && wrapNeeded) {
       return EthFlowState.WrapAndApproveNeeded
     }
     // Only wrap needed
     else if (wrapNeeded) {
-      // if (wrapPending) return EthFlowState.WrapPending
       return EthFlowState.WrapNeeded
     }
     // Only approve needed
     else {
-      // if (approvePending) return EthFlowState.ApprovePending
       return EthFlowState.ApproveNeeded
     }
   }
@@ -360,6 +360,8 @@ export function _getActionButtonProps({
       label = 'Wrap and approve'
       showButton = true
       buttonProps.onClick = handleMountInExpertMode
+      // disable button on load (after clicking)
+      buttonProps.disabled = showLoader
       break
     case EthFlowState.WrapFailed:
       label = `Wrap ${nativeSymbol}`
@@ -404,5 +406,58 @@ export function _getActionButtonProps({
     showButton,
     showLoader,
     buttonProps,
+  }
+}
+
+/**
+ * useEthFlowStatesAndSetters
+ *
+ * @returns all ETH-FLOW states and setters related to wrap/approve
+ */
+export function useEthFlowStatesAndSetters({
+  chainId,
+  approvalState,
+  wrapState,
+}: Pick<Props, 'approvalState' | 'wrapState'> & {
+  chainId?: number
+}) {
+  const [pendingHashMap, setPendingHashMap] = useState<PendingHashMap>({
+    approveHash: undefined,
+    wrapHash: undefined,
+  })
+  // maintain own local state of approve/wrap states
+  const [loading, setLoading] = useState(false)
+  // APPROVE STATE - use activity state and derive isPending based on both the hook and activity state
+  const approvalActivityState = useSingleActivityState({ chainId, id: pendingHashMap.approveHash || '' })
+  const approvalDerivedState = !!approvalActivityState
+    ? {
+        ...approvalActivityState,
+        isPending: approvalActivityState?.isPending || approvalState === ApprovalState.PENDING,
+      }
+    : null
+  const [approveSubmitted, setApproveSubmitted] = useState(false)
+  const [approveError, setApproveError] = useState<Error | null>(null)
+  // WRAP STATE
+  const wrapActivityState = useSingleActivityState({ chainId, id: pendingHashMap.wrapHash || '' })
+  const [wrapSubmitted, setWrapSubmitted] = useState(false)
+  const [wrapError, setWrapError] = useState<Error | null>(null)
+
+  return {
+    pendingHashMap,
+    setPendingHashMap,
+    loading,
+    setLoading,
+    // APPROVE
+    approvalDerivedState,
+    approveSubmitted,
+    setApproveSubmitted,
+    approveError,
+    setApproveError,
+    // WRAPPING
+    wrapDerivedState: wrapActivityState,
+    wrapSubmitted,
+    setWrapSubmitted,
+    wrapError,
+    setWrapError,
   }
 }
