@@ -24,7 +24,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'utils/analytics'
-import { ButtonSize } from '@src/custom/theme'
+import { ButtonSize } from 'theme'
 
 enum ClaimStatus {
   INITIAL,
