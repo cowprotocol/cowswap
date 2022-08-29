@@ -14,6 +14,7 @@ import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
+import { supportedChainId } from 'utils/supportedChainId'
 
 function _getTokenFromMapping(
   address: string,
@@ -140,7 +141,8 @@ function _filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | n
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId: _chainId } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
