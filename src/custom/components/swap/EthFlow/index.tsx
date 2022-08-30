@@ -198,8 +198,7 @@ export function EthWethWrap({
 
       if (type === 'WRAP') {
         setWrapError(error)
-      }
-      if (type === 'APPROVE') {
+      } else if (type === 'APPROVE') {
         setApproveError(error)
       }
 

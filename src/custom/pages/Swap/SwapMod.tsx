@@ -596,6 +596,15 @@ export default function Swap({
     [onCurrencySelection]
   )
 
+  // native wrap modal can have 2 modals: transaction confirmation and eth-flow
+  // so we close BOTH on closing 1
+  const handleTransactionConfirmationModalDismiss = showNativeWrapModal
+    ? () => {
+        closeModals()
+        dismissNativeWrapModal()
+      }
+    : closeModals
+
   const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
 
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
@@ -634,7 +643,7 @@ export default function Swap({
         attemptingTxn={true}
         isOpen={showTransactionConfirmationModal}
         pendingText={transactionConfirmationModalMsg}
-        onDismiss={closeModals}
+        onDismiss={handleTransactionConfirmationModalDismiss}
         operationType={operationType}
       />
       {/* CoWmunity Fees Discount Modal */}
