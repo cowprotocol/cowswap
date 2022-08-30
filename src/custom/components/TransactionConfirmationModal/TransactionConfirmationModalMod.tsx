@@ -64,11 +64,11 @@ export const Wrapper = styled.div`
   }
   /* -- mod -- */
 `
-const Section = styled(AutoColumn)<{ inline?: boolean }>`
+export const Section = styled(AutoColumn)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '0' : '0')};
 `
 
-const BottomSection = styled(Section)`
+export const BottomSection = styled(Section)`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
@@ -209,6 +209,7 @@ export function ConfirmationModalContent({
   title,
   titleSize, // mod
   styles, // mod
+  className, // mod
   bottomContent,
   onDismiss,
   topContent,
@@ -220,7 +221,7 @@ export function ConfirmationModalContent({
   bottomContent?: () => ReactNode | undefined
 } */
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Section>
         {/* <RowBetween> */}
         <GPModalHeader>

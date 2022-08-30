@@ -135,8 +135,9 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
 
     const operationMessage = getOperationMessage(operationType, chainId)
     wrapUnwrapCallback = async (params = { useModals: true }) => {
+      const { useModals } = params
       try {
-        params?.useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
+        useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
         wrapAnalytics('Send', operationMessage)
 
         const txReceipt = await wrapUnwrap()
@@ -146,11 +147,11 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
           hash: txReceipt.hash,
           summary,
         })
-        params?.useModals && closeModals?.()
+        useModals && closeModals?.()
 
         return txReceipt
       } catch (error) {
-        params?.useModals && closeModals?.()
+        useModals && closeModals?.()
 
         const isRejected = isRejectRequestProviderError(error)
         const action = isRejected ? 'Reject' : 'Error'
