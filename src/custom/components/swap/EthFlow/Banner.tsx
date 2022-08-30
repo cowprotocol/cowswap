@@ -1,10 +1,11 @@
-import { ArrowDown, ArrowUp, Copy } from 'react-feather'
+import { ArrowDown, ArrowUp } from 'react-feather'
 import styled from 'styled-components/macro'
 import { useState } from 'react'
 import { Separator } from 'theme'
 import { Props } from '.'
 import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
 import { PERCENTAGE_PRECISION } from 'constants/index'
+import ethFlowIcon from 'assets/svg/ethFlow.svg'
 
 const BannerWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg7};
@@ -17,8 +18,9 @@ const BannerWrapper = styled.div`
 const ClosedBannerWrapper = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 0.7fr auto 0.7fr;
+  grid-template-columns: repeat(3, auto);
   align-items: center;
+  justify-content: stretch;
 
   > strong {
     font-size: 14px;
@@ -70,7 +72,7 @@ export default function Banner({ native, wrapped, isNativeIn, callback }: Banner
   return (
     <BannerWrapper>
       <ClosedBannerWrapper>
-        <Copy size={18} />
+        <img alt="eth-flow-icon" src={ethFlowIcon} />
         <strong>Wrap your {native.symbol} to benefit from the classic CowSwap experience!</strong>
         {open ? (
           <ArrowUp size={20} onClick={() => setOpen(false)} />
