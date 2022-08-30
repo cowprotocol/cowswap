@@ -1077,16 +1077,18 @@ export default function Swap({
             {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
           </BottomGrouping>
           {/* ETH-FLOW BANNER */}
-          <Banner
-            native={native}
-            wrapped={wrappedToken}
-            isNativeIn={isNativeIn}
-            callback={() => {
-              if (!swapInputError && isNativeIn) {
-                openNativeWrapModal()
-              }
-            }}
-          />
+          {account && !swapInputError && trade && (
+            <Banner
+              native={native}
+              wrapped={wrappedToken}
+              isNativeIn={isNativeIn}
+              callback={() => {
+                if (!swapInputError && isNativeIn) {
+                  openNativeWrapModal()
+                }
+              }}
+            />
+          )}
         </Wrapper>
       </StyledAppBody>
       {/*<SwitchLocaleLink />*/}
