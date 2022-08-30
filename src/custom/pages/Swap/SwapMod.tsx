@@ -94,11 +94,7 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import {
-  useEthFlowActionHandlers,
-  useShowNativeEthFlowSlippageWarning,
-  useIsUserNativeEthFlow,
-} from 'state/ethFlow/hooks'
+import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 import Banner from 'components/swap/EthFlow/Banner'
 
 // const AlertWrapper = styled.div`
@@ -217,7 +213,6 @@ export default function Swap({
 
   // shows slippage (modified) warning when nativeEthFlow is enabled
   const showNativeEthFlowSlippageWarning = useShowNativeEthFlowSlippageWarning()
-  const isUserNativeEthFlow = useIsUserNativeEthFlow()
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
@@ -828,8 +823,8 @@ export default function Swap({
                   )}
 
                   {!isExpertMode &&
-                    showNativeEthFlowSlippageWarning &&
-                    !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
+                    (showNativeEthFlowSlippageWarning ||
+                      !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && (
                       <RowSlippage
                         trade={trade}
                         allowedSlippage={allowedSlippage}
@@ -1023,7 +1018,7 @@ export default function Swap({
                     // error={isValid && priceImpactSeverity > 2}
                   >
                     <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                      <Trans>{isNativeIn && !isUserNativeEthFlow ? `Wrap and swap` : 'Swap'}</Trans>
+                      <Trans>Swap</Trans>
                     </SwapButton>
                     {/* <Text fontSize={16} fontWeight={500}>
                         {priceImpactTooHigh ? (
@@ -1062,15 +1057,7 @@ export default function Swap({
                 // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                  {swapInputError || (
-                    <Trans>
-                      {isNativeIn
-                        ? wrappedToken.symbol
-                          ? 'Swap with ' + wrappedToken.symbol
-                          : 'Wrap and swap'
-                        : 'Swap'}
-                    </Trans>
-                  )}
+                  {swapInputError || <Trans>Swap</Trans>}
                 </SwapButton>
                 {/* <Text fontSize={20} fontWeight={500}>
                     {swapInputError ? (
