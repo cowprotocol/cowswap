@@ -3,7 +3,16 @@ import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 import TradeGp from 'state/swap/TradeGp'
 
-export function useSwapConfirmManager() {
+export interface SwapConfirmManager {
+  setSwapError(swapErrorMessage: string): void
+  openSwapConfirmModal(tradeToConfirm: TradeGp): void
+  acceptRateUpdates(tradeToConfirm: TradeGp): void
+  closeSwapConfirm(): void
+  sendTransaction(tradeToConfirm: TradeGp): void
+  transactionSent(txHash: string): void
+}
+
+export function useSwapConfirmManager(): SwapConfirmManager {
   const [swapConfirmState, setSwapConfirmState] = useAtom(swapConfirmAtom)
 
   return useMemo(

@@ -17,11 +17,7 @@ export interface HandleSwapInput {
   allowedSlippage: Percent | undefined
 }
 
-export interface HandleSwapType {
-  openConfirm?: boolean
-}
-
-export type HandleSwapCallback = (input?: HandleSwapType) => void
+export type HandleSwapCallback = () => void
 
 export function useHandleSwap(input: HandleSwapInput): {
   swapCallbackError: string | null
@@ -39,68 +35,60 @@ export function useHandleSwap(input: HandleSwapInput): {
 
   const { openSwapConfirmModal, setSwapError, transactionSent, sendTransaction } = useSwapConfirmManager()
 
-  const swapCallback = useCallback(
-    (input?: HandleSwapType) => {
-      if (input?.openConfirm) {
-        openSwapConfirmModal(trade!)
-        return
-      }
+  const swapCallback = useCallback(() => {
+    if (!callback) {
+      return
+    }
 
-      if (!callback) {
-        return
-      }
+    if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
+      return
+    }
 
-      if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
-        return
-      }
+    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+    swapAnalytics('Send', marketLabel)
 
-      const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-      swapAnalytics('Send', marketLabel)
+    sendTransaction(trade!)
+    callback()
+      .then((hash) => {
+        transactionSent(hash)
 
-      sendTransaction(trade!)
-      callback()
-        .then((hash) => {
-          transactionSent(hash)
+        if (recipient === null) {
+          signSwapAnalytics('Sign', marketLabel)
+        } else {
+          ;(recipientAddress ?? recipient) === account
+            ? signSwapAnalytics('SignAndSend', marketLabel)
+            : signSwapAnalytics('SignToSelf', marketLabel)
+        }
+      })
+      .catch((error) => {
+        let swapErrorMessage, errorCode
+        if (isRejectRequestProviderError(error)) {
+          swapErrorMessage = 'User rejected signing the order'
+          swapAnalytics('Reject', marketLabel)
+        } else {
+          swapErrorMessage = getProviderErrorMessage(error)
 
-          if (recipient === null) {
-            signSwapAnalytics('Sign', marketLabel)
-          } else {
-            ;(recipientAddress ?? recipient) === account
-              ? signSwapAnalytics('SignAndSend', marketLabel)
-              : signSwapAnalytics('SignToSelf', marketLabel)
+          if (error?.code && typeof error.code === 'number') {
+            errorCode = error.code
           }
-        })
-        .catch((error) => {
-          let swapErrorMessage, errorCode
-          if (isRejectRequestProviderError(error)) {
-            swapErrorMessage = 'User rejected signing the order'
-            swapAnalytics('Reject', marketLabel)
-          } else {
-            swapErrorMessage = getProviderErrorMessage(error)
+          console.error('Error Signing Order', error)
+          swapAnalytics('Error', marketLabel, errorCode)
+        }
 
-            if (error?.code && typeof error.code === 'number') {
-              errorCode = error.code
-            }
-            console.error('Error Signing Order', error)
-            swapAnalytics('Error', marketLabel, errorCode)
-          }
-
-          setSwapError(swapErrorMessage)
-        })
-    },
-    [
-      openSwapConfirmModal,
-      setSwapError,
-      sendTransaction,
-      transactionSent,
-      callback,
-      priceImpact,
-      recipient,
-      recipientAddress,
-      account,
-      trade,
-    ]
-  )
+        setSwapError(swapErrorMessage)
+      })
+  }, [
+    openSwapConfirmModal,
+    setSwapError,
+    sendTransaction,
+    transactionSent,
+    callback,
+    priceImpact,
+    recipient,
+    recipientAddress,
+    account,
+    trade,
+  ])
 
   return { swapCallback, swapCallbackError }
 }

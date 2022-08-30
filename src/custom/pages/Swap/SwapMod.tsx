@@ -13,7 +13,6 @@ import { AutoRow, RowBetween } from 'components/Row'
 import { Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
-import useENSAddress from 'hooks/useENSAddress'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
@@ -57,7 +56,6 @@ import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import { useSwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
 import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
-import { useHandleSwap } from 'pages/Swap/hooks/useHandleSwap'
 import { Price } from './components/Price'
 import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
 import EthWethWrap from 'components/swap/EthWethWrap'
@@ -67,6 +65,9 @@ import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
+import { swapFlow } from 'pages/Swap/swapFlow'
+import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -163,7 +164,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     isNativeInSwap
   )
   const showWrap: boolean = !isNativeInSwap && wrapType !== WrapType.NOT_APPLICABLE
-  const { address: recipientAddress } = useENSAddress(recipient)
   const trade = showWrap ? undefined : tradeCurrentVersion
 
   const parsedAmounts = useMemo(
@@ -248,14 +248,15 @@ export default function Swap({ history, location, className }: RouteComponentPro
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const { swapCallback: handleSwap, swapCallbackError } = useHandleSwap({
-    trade,
-    account,
-    recipient,
-    recipientAddress,
-    priceImpact,
-    allowedSlippage,
-  })
+  const swapFlowContext = useSwapFlowContext()
+  const handleSwap = useCallback(() => {
+    if (!swapFlowContext) return
+
+    logSwapFlow('Start swap flow')
+    swapFlow(swapFlowContext)
+  }, [swapFlowContext])
+
+  const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
