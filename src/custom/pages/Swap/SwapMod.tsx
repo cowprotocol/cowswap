@@ -1090,13 +1090,9 @@ export default function Swap({
               isNativeIn={isNativeIn}
               nativeInput={nativeInput}
               forceWrapCallback={setForceWrap}
-              wrapCallback={(forceWrap?: boolean) => {
-                if (isNativeIn) {
-                  openNativeWrapModal(forceWrap)
-                }
-              }}
+              wrapCallback={(forceWrap?: boolean) => openNativeWrapModal(forceWrap)}
               switchToWrappedCurrencyCallback={() =>
-                onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId || SupportedChainId.MAINNET])
+                chainId && onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
               }
             />
           )}

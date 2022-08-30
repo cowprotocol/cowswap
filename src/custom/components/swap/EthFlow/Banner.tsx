@@ -150,7 +150,7 @@ export default function Banner({
                     or{' '}
                     <u>
                       {' '}
-                      <SpanCta onClick={handleForceWrap}>wrap my {native.symbol} anyway</SpanCta>
+                      <SpanCta onClick={handleForceWrap}>wrap my {native.symbol} anyway and swap</SpanCta>
                     </u>
                   </small>
                 </SpanCta>
