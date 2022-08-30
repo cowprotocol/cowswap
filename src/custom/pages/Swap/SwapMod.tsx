@@ -1032,7 +1032,15 @@ export default function Swap({
                 // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>
-                  {swapInputError || <Trans>{isNativeIn ? 'Wrap and swap' : 'Swap'}</Trans>}
+                  {swapInputError || (
+                    <Trans>
+                      {isNativeIn
+                        ? wrappedToken.symbol
+                          ? 'Swap with ' + wrappedToken.symbol
+                          : 'Wrap and swap'
+                        : 'Swap'}
+                    </Trans>
+                  )}
                 </SwapButton>
                 {/* <Text fontSize={20} fontWeight={500}>
                     {swapInputError ? (
