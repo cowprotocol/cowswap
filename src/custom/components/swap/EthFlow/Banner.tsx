@@ -13,9 +13,10 @@ const BannerWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg7};
   border: 1px solid ghostwhite;
   border-radius: ${({ theme }) => theme.buttonOutlined.borderRadius};
-  padding: 10px 14px;
+  padding: 12px 14px;
   margin: 12px 0 8px;
   font-size: 13px;
+  cursor: pointer;
 `
 
 const ClosedBannerWrapper = styled.div`
@@ -107,7 +108,7 @@ export default function Banner({
   if (!isNativeIn) return null
 
   return (
-    <BannerWrapper>
+    <BannerWrapper onClick={() => setOpen((state) => !state)}>
       <ClosedBannerWrapper>
         <img alt="eth-flow-icon" src={ethFlowIcon} />
         <strong>
@@ -115,11 +116,7 @@ export default function Banner({
             ? `Switch to the classic ${wrapped.symbol} experience and benefit!`
             : `Wrap your ${native.symbol} and use the classic ${wrapped.symbol} experience!`}
         </strong>
-        {open ? (
-          <ChevronUp size={20} onClick={() => setOpen(false)} />
-        ) : (
-          <ChevronDown size={20} onClick={() => setOpen(true)} />
-        )}
+        {open ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </ClosedBannerWrapper>
       {open && (
         <BannerInnerWrapper>
