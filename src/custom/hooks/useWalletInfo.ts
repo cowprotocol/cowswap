@@ -114,5 +114,11 @@ export function useWalletInfo(): ConnectedWalletInfo {
 export function useIsGnosisSafeApp(): boolean {
   const { walletName } = useWalletMetaData()
 
+  return walletName === GNOSIS_SAFE_APP_NAME
+}
+
+export function useIsGnosisSafeWallet(): boolean {
+  const { walletName } = useWalletMetaData()
+
   return !!walletName?.startsWith('Gnosis Safe')
 }
