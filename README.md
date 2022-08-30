@@ -164,4 +164,4 @@ The plan:
 1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
 2. Deploy a new version to production
 
-`emergency.js` is not cached by browser and loaded before all.
+`emergency.js` is not cached by browser and loaded before all
