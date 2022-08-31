@@ -9,7 +9,6 @@ import { WalletConnect } from '@web3-react/walletconnect'
 import { SupportedChainId } from 'constants/chains'
 import Fortmatic from 'fortmatic'
 
-// import UNISWAP_LOGO_URL from 'assets/svg/logo.svg'
 import COWSWAP_LOGO_URL from 'assets/cow-swap/cow.svg'
 import { RPC_URLS } from 'constants/networks'
 
