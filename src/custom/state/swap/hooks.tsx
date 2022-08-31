@@ -474,12 +474,7 @@ export function useReplaceSwapState() {
   )
 }
 
-interface CurrencyWithAddress {
-  currency?: Currency | null
-  address?: string | null
-}
-
-export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
+export function useDetectNativeToken(currencies: { [field in Field]?: Currency | null }, chainId?: ChainId) {
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
@@ -491,12 +486,11 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
 
     // TODO: check the new native currency function
     const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
+    const inputCurrency = currencies.INPUT
+    const outputCurrency = currencies.OUTPUT
 
-    const [isNativeIn, isNativeOut] = [!!input?.currency?.isNative, !!output?.currency?.isNative]
-    const [isWrappedIn, isWrappedOut] = [
-      !!input?.currency?.equals(wrappedToken),
-      !!output?.currency?.equals(wrappedToken),
-    ]
+    const [isNativeIn, isNativeOut] = [!!inputCurrency?.isNative, !!outputCurrency?.isNative]
+    const [isWrappedIn, isWrappedOut] = [!!inputCurrency?.equals(wrappedToken), !!outputCurrency?.equals(wrappedToken)]
 
     return {
       isNativeIn: isNativeIn && !isWrappedOut,
@@ -506,7 +500,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
       wrappedToken,
       native,
     }
-  }, [input, output, chainId])
+  }, [currencies, chainId])
 }
 
 export function useIsFeeGreaterThanInput({ address, chainId }: { address?: string | null; chainId?: ChainId }): {

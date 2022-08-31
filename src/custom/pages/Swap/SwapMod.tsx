@@ -132,11 +132,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
-  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(
-    { currency: currencies.INPUT, address: INPUT.currencyId },
-    { currency: currencies.OUTPUT, address: OUTPUT.currencyId },
-    chainId
-  )
+  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(currencies, chainId)
   // Is user swapping Eth as From token and not wrapping to WETH?
   const isNativeInSwap = isNativeIn
 

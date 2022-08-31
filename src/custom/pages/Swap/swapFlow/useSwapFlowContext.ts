@@ -76,11 +76,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const currencyOut = currencies[Field.OUTPUT]
 
   const { address: recipientAddress } = useENSAddress(recipient)
-  const { isNativeIn } = useDetectNativeToken(
-    { currency: currencyIn, address: INPUT.currencyId },
-    { currency: currencyOut, address: OUTPUT.currencyId },
-    chainId
-  )
+  const { isNativeIn } = useDetectNativeToken(currencies, chainId)
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const transactionAdder = useTransactionAdder()
