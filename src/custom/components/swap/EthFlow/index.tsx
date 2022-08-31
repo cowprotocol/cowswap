@@ -261,11 +261,10 @@ export function EthWethWrap({
   }, [approveCallback, handleError, setApproveError, setApproveSubmitted, setPendingHashMap])
 
   const handleSwap = useCallback(
-    async (showSwapModal?: boolean) => {
-        // TODO: MERGE async ({ showConfirm, straightSwap, forceWrapNative }: EthFlowSwapCallbackParams) => {
-        try {
-        // TODO: MERGE swapCallback({ showConfirm, straightSwap, forceWrapNative })
-        showSwapModal ? openSwapConfirm() : closeSwapConfirm()
+    async ({ showConfirm }: EthFlowSwapCallbackParams) => {
+      // TODO: sync with Dave about merge
+      try {
+        showConfirm ? openSwapConfirm() : closeSwapConfirm()
       } catch (error) {
         throw error
       } finally {
@@ -300,8 +299,7 @@ export function EthWethWrap({
         needsWrap && setWrapSubmitted(true)
       } else {
         // user doesn't need either, in expert mode we just start swap w/o forced wrapping
-        // TODO: MERGE handleSwap({ showConfirm: false, straightSwap: true, forceWrapNative: false })
-        handleSwap(true)
+        handleSwap({ showConfirm: false, straightSwap: true, forceWrapNative: false })
       }
     } catch (error) {
       needsWrap && handleError(error, 'WRAP')
@@ -351,8 +349,7 @@ export function EthWethWrap({
         setApproveSubmitted(false)
         // call the swap handle cb after 1s artificial delay
         // to not create jarring UI changes: confirmed tx update and modal closing
-        // TODO: MERGE delay(MODAL_CLOSE_DELAY).then(() => handleSwap({ showConfirm: true, straightSwap: false }))
-        delay(MODAL_CLOSE_DELAY).then(() => handleSwap(true))
+        delay(MODAL_CLOSE_DELAY).then(() => handleSwap({ showConfirm: true, straightSwap: false }))
       }
     }
   }, [isExpertMode, state, isWrapOrUnwrap, operationSubmitted, handleSwap, setApproveSubmitted, setWrapSubmitted])
