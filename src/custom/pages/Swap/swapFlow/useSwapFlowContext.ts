@@ -135,6 +135,14 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const isSellEth = ETHER.onChain(chainId).equals(v2Trade.inputAmount.currency)
   const isGnosisSafeWallet = !!gnosisSafeInfo
 
+  const sellToken = v2Trade.inputAmount.currency.wrapped
+  const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : v2Trade.outputAmount.currency.wrapped
+
+  // TODO: mismatch with the original code related to wrap native token
+  if (!sellToken || !buyToken) {
+    return null
+  }
+
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
     recipient,
@@ -147,9 +155,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     transactionAdder,
     amount: inputAmountWithSlippage,
   }
-
-  const sellToken = v2Trade.inputAmount.currency.wrapped
-  const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : v2Trade.outputAmount.currency.wrapped
 
   const validTo = calculateValidTo(deadline)
   const kind = v2Trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY

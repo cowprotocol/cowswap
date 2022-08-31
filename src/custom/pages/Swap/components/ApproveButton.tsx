@@ -20,6 +20,7 @@ import usePrevious from '@src/hooks/usePrevious'
 import { ButtonError } from 'components/Button'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import { TransactionResponse } from '@ethersproject/providers'
 
 export interface ApproveButtonProps {
   currencyIn: Currency | undefined | null
@@ -30,7 +31,7 @@ export interface ApproveButtonProps {
   handleSwap: HandleSwapCallback
   isValid: boolean
   approvalState: ApprovalState
-  approveCallback: (params?: OptionalApproveCallbackParams) => Promise<void>
+  approveCallback: (params?: OptionalApproveCallbackParams) => Promise<TransactionResponse | undefined>
   approvalSubmitted: boolean
   setApprovalSubmitted: (state: boolean) => void
   children?: React.ReactNode

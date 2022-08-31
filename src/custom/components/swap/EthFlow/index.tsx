@@ -87,7 +87,8 @@ export interface Props {
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
   wrapCallback: ((params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>) | undefined
-  swapCallback: (showConfirmModal?: boolean) => void
+  openSwapConfirm(): void
+  closeSwapConfirm(): void
 }
 
 export type PendingHashMap = { approveHash?: string; wrapHash?: string }
@@ -108,7 +109,8 @@ export function EthWethWrap({
   onDismiss,
   approveCallback,
   wrapCallback,
-  swapCallback,
+  openSwapConfirm,
+  closeSwapConfirm,
 }: Omit<Props, 'modalIsOpen'>) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -255,7 +257,7 @@ export function EthWethWrap({
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
       try {
-        swapCallback(!!showSwapModal)
+        !!showSwapModal ? openSwapConfirm() : closeSwapConfirm()
       } catch (error) {
         throw error
       } finally {
@@ -263,7 +265,7 @@ export function EthWethWrap({
         onDismiss()
       }
     },
-    [swapCallback, onDismiss]
+    [openSwapConfirm, closeSwapConfirm, onDismiss]
   )
 
   const handleMountInExpertMode = useCallback(async () => {

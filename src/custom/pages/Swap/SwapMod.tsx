@@ -9,7 +9,7 @@ import { ThemeContext } from 'styled-components/macro'
 import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import { AutoRow, RowBetween } from 'components/Row'
+import { AutoRow } from 'components/Row'
 import { Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -58,7 +58,6 @@ import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/Sw
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 import { Price } from './components/Price'
 import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
-import EthWethWrap from 'components/swap/EthWethWrap'
 import { BottomGrouping } from 'pages/Swap/styled'
 import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
@@ -68,6 +67,8 @@ import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 import { swapFlow } from 'pages/Swap/swapFlow'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import EthFlowModal from 'components/swap/EthFlow'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -94,6 +95,12 @@ export default function Swap({ history, location, className }: RouteComponentPro
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
+
+  // Native wrap modals
+  const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
+  const openNativeWrapModal = () => setOpenNativeWrapModal(true)
+  const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
+
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
@@ -125,7 +132,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
-  const { isNativeIn, native, wrappedToken } = useDetectNativeToken(
+  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(
     { currency: currencies.INPUT, address: INPUT.currencyId },
     { currency: currencies.OUTPUT, address: OUTPUT.currencyId },
     chainId
@@ -158,8 +165,8 @@ export default function Swap({ history, location, className }: RouteComponentPro
     closeModals,
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
-    // if native input !== NATIVE_TOKEN, validation fails
-    nativeInput || parsedAmount,
+    // is native token swap, use the wrapped equivalent as input currency
+    isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount,
     // should override and get wrapCallback?
     isNativeInSwap
   )
@@ -229,6 +236,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     closeModals,
     trade,
     allowedSlippage,
+    isNativeFlow: isNativeInSwap,
   })
   const transactionDeadline = useTransactionDeadline()
 
@@ -257,6 +265,25 @@ export default function Swap({ history, location, className }: RouteComponentPro
   }, [swapFlowContext])
 
   const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
+
+  // handle swap when native token is detected as sell token
+  const handleNativeWrapAndSwap = (submitSwap = false) => {
+    if (!chainId) throw new Error('Need to be connected')
+
+    // switch to wrapped native currency
+    onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+    // set swap state
+    openSwapConfirmModal(trade!)
+  }
+
+  // native wrap modal can have 2 modals: transaction confirmation and eth-flow
+  // so we close BOTH on closing 1
+  const handleTransactionConfirmationModalDismiss = showNativeWrapModal
+    ? () => {
+        closeModals()
+        dismissNativeWrapModal()
+      }
+    : closeModals
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -298,7 +325,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
 
   const { ErrorMessage } = useErrorMessage()
 
-  const { openSwapConfirmModal } = useSwapConfirmManager()
+  const { openSwapConfirmModal, closeSwapConfirm } = useSwapConfirmManager()
   const toggleWalletModal = useToggleWalletModal()
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
@@ -325,8 +352,8 @@ export default function Swap({ history, location, className }: RouteComponentPro
   }
 
   const swapButtonState = useSwapButtonState({
-    inputCurrencyId: INPUT.currencyId,
-    outputCurrencyId: OUTPUT.currencyId,
+    isNativeIn,
+    wrappedToken,
     currencyIn,
     currencyOut,
     wrapType,
@@ -349,7 +376,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     wrappedToken,
     handleSwap,
     onWrap() {
-      onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))
+      openNativeWrapModal()
     },
     openSwapConfirm() {
       openSwapConfirmModal(trade!)
@@ -368,13 +395,37 @@ export default function Swap({ history, location, className }: RouteComponentPro
         attemptingTxn={true}
         isOpen={showTransactionConfirmationModal}
         pendingText={transactionConfirmationModalMsg}
-        onDismiss={closeModals}
+        onDismiss={handleTransactionConfirmationModalDismiss}
         operationType={operationType}
       />
       {/* CoWmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
 
       <AffiliateStatusCheck />
+
+      {/* Native wrapping modal */}
+      {showNativeWrapModal && (
+        <EthFlowModal
+          native={native}
+          wrapped={wrappedToken}
+          nativeInput={showWrap ? parsedAmount : nativeInput}
+          // native currency state
+          isNativeIn={isNativeIn}
+          {...nativeRest}
+          // state
+          approvalState={approvalState}
+          wrapState={wrapType}
+          // modal state
+          modalIsOpen={showNativeWrapModal}
+          // cbs
+          onDismiss={dismissNativeWrapModal}
+          approveCallback={approveCallback}
+          wrapCallback={wrapType !== WrapType.NOT_APPLICABLE ? onWrap : undefined}
+          openSwapConfirm={handleNativeWrapAndSwap}
+          closeSwapConfirm={closeSwapConfirm}
+        />
+      )}
+
       <StyledAppBody className={className}>
         <SwapHeader allowedSlippage={allowedSlippage} />
         <Wrapper id="swap-page" className={isExpertMode || recipientToggleVisible ? 'expertMode' : ''}>
@@ -478,18 +529,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
                   {/* TODO: check cow balance and set here, else don't show */}
                   <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />
                 </AutoColumn>
-                {/* ETH exactIn && wrapCallback returned us cb */}
-                {isNativeIn && isSupportedWallet && onWrap && (
-                  <RowBetween>
-                    <EthWethWrap
-                      account={account ?? undefined}
-                      native={native}
-                      nativeInput={nativeInput}
-                      wrapped={wrappedToken}
-                      wrapCallback={onWrap}
-                    />
-                  </RowBetween>
-                )}
               </Card>
             )}
           </AutoColumn>

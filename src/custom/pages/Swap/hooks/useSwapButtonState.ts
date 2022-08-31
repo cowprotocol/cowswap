@@ -1,7 +1,6 @@
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useDetectNativeToken } from 'state/swap/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { WrapType } from 'hooks/useWrapCallback'
 import { ReactNode } from 'react'
@@ -17,7 +16,6 @@ export enum SwapButtonState {
   wrapError,
   shouldWrapNativeToken,
   shouldUnwrapNativeToken,
-  switchToWeth,
   feesExceedFromAmount,
   insufficientLiquidity,
   zeroPrice,
@@ -32,11 +30,11 @@ export enum SwapButtonState {
   swapError,
   expertModeSwap,
   regularSwap,
+  swapWithWrappedToken,
+  wrapAndSwap,
 }
 
 export interface SwapButtonStateInput {
-  inputCurrencyId: string | undefined | null
-  outputCurrencyId: string | undefined | null
   currencyIn: Currency | undefined | null
   currencyOut: Currency | undefined | null
   wrapType: WrapType
@@ -50,6 +48,8 @@ export interface SwapButtonStateInput {
   isGettingNewQuote: boolean
   swapCallbackError: string | null
   trade: TradeGp | undefined | null
+  isNativeIn: boolean
+  wrappedToken: Token
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -66,8 +66,6 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
   const {
     currencyIn,
     currencyOut,
-    inputCurrencyId,
-    outputCurrencyId,
     wrapType,
     inputError,
     quoteError,
@@ -79,15 +77,12 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     trade,
     isGettingNewQuote,
     wrapInputError,
+    isNativeIn,
+    wrappedToken,
   } = input
 
-  const { chainId, account } = useWeb3React()
+  const { account } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
-  const { isNativeIn } = useDetectNativeToken(
-    { currency: currencyIn, address: inputCurrencyId },
-    { currency: currencyOut, address: outputCurrencyId },
-    chainId
-  )
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const [isExpertMode] = useExpertModeManager()
   const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
@@ -113,6 +108,7 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     return SwapButtonState.walletIsUnsupported
   }
 
+  // TODO: check
   if (showWrap) {
     if (wrapInputError) {
       return SwapButtonState.wrapError
@@ -125,10 +121,6 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     if (wrapType === WrapType.UNWRAP) {
       return SwapButtonState.shouldUnwrapNativeToken
     }
-  }
-
-  if (!inputError && isNativeIn) {
-    return SwapButtonState.switchToWeth
   }
 
   if (quoteError) {
@@ -149,7 +141,7 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     return SwapButtonState.readonlyGnosisSafeUser
   }
 
-  if (showApproveFlow) {
+  if (!isNativeIn && showApproveFlow) {
     return SwapButtonState.needApprove
   }
 
@@ -159,6 +151,14 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
 
   if (!isValid || !!swapCallbackError) {
     return SwapButtonState.swapDisabled
+  }
+
+  if (isNativeIn) {
+    if (wrappedToken.symbol) {
+      return SwapButtonState.swapWithWrappedToken
+    }
+
+    return SwapButtonState.wrapAndSwap
   }
 
   if (isExpertMode) {

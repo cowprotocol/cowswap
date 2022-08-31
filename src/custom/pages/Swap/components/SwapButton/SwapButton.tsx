@@ -70,7 +70,20 @@ export const SwapButton: React.FC<SwapButtonProps> = (props: SwapButtonProps) =>
         <Trans>Unwrap</Trans>
       </ButtonPrimary>
     ),
-    [SwapButtonState.switchToWeth]: <styledEl.SwitchToWethBtn wrappedToken={wrappedToken} />,
+    [SwapButtonState.swapWithWrappedToken]: (
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={onWrap}>
+        <styledEl.SwapButtonBox>
+          <Trans>Swap with {wrappedToken.symbol}</Trans>
+        </styledEl.SwapButtonBox>
+      </ButtonError>
+    ),
+    [SwapButtonState.wrapAndSwap]: (
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={onWrap}>
+        <styledEl.SwapButtonBox>
+          <Trans>Wrap and swap</Trans>
+        </styledEl.SwapButtonBox>
+      </ButtonError>
+    ),
     [SwapButtonState.feesExceedFromAmount]: <styledEl.FeesExceedFromAmountMessage />,
     [SwapButtonState.insufficientLiquidity]: (
       <GreyCard style={{ textAlign: 'center' }}>
