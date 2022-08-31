@@ -53,7 +53,7 @@ import {
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 
-const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
@@ -104,7 +104,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo
   return null
 }
 
-interface AccountDetailsProps {
+export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
