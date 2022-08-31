@@ -21,7 +21,7 @@ export const Wrapper = styled(Page)`
 
   max-width: 910px;
   width: 100%;
-  min-height: auto;
+  min-height: unset;
   padding-top: 16px;
   display: flex;
   justify-content: flex-end;
@@ -236,34 +236,22 @@ export const ProfileGridWrap = styled(GridWrap)`
   `};
 `
 
-export const CardsWrapper = styled.div<{ padding?: string; useFlex?: boolean }>`
-  background: ${({ theme }) => transparentize(0.12, theme.bg1)};
-  border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.cardBorder};
-
-  ${({ useFlex = true }) =>
-    useFlex &&
-    `
-      display: flex;
-      flex-flow: column nowrap;
-  `};
-
+export const CardsWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
   gap: 16px;
   margin: 16px 0 16px 0;
-  padding: ${({ padding = '0px' }) => padding};
+  padding: 0;
   z-index: 2;
-
   > div {
     flex: 1 1 300px;
   }
   > div:last-child:nth-child(odd) {
     flex: 1 1 100%;
   }
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
-
     > div {
       flex: 1 1 100%;
     }
@@ -273,29 +261,23 @@ export const CardsWrapper = styled.div<{ padding?: string; useFlex?: boolean }>`
   `};
 `
 
-export const Card = styled.div<{ showLoader?: boolean; useStyles?: boolean }>`
+export const Card = styled.div<{ showLoader?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
   min-height: 192px;
   margin: 0;
+  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.cardBorder};
   align-items: flex-end;
-  ${({ theme, useStyles = false }) =>
-    useStyles &&
-    `
-    background: ${transparentize(0.3, theme.bg1)};
-    border-radius: 16px;
-    border: 1px solid ${theme.cardBorder};
-  `};
-
   ${({ showLoader, theme }) =>
     showLoader &&
     css`
       position: relative;
-
       overflow: hidden;
       &::after {
         position: absolute;
@@ -314,22 +296,18 @@ export const Card = styled.div<{ showLoader?: boolean; useStyles?: boolean }>`
         animation: shimmer 2s infinite;
         content: '';
       }
-
       @keyframes shimmer {
         100% {
           transform: translateX(100%);
         }
       }
     `}
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 130px;
     padding: 24px 16px;
   `};
-
   ${ButtonPrimary} {
     height: 52px;
-
     > svg {
       height: 100%;
       width: auto;
@@ -338,7 +316,6 @@ export const Card = styled.div<{ showLoader?: boolean; useStyles?: boolean }>`
       transform: translateX(0);
       transition: transform 0.2s ease-in-out;
     }
-
     &:hover > svg {
       transform: translateX(2px);
     }
@@ -456,13 +433,14 @@ export const BannerCard = styled(BannerExplainer)`
   }
 `
 
-export const CardActions = styled.div`
+export const CardActions = styled.div<{ justify?: string; content?: string }>`
   width: 100%;
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: ${({ justify }) => justify || 'space-between'};
   align-items: flex-end;
   margin: auto 0 0;
+  align-content: ${({ content }) => content || 'unset'};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
@@ -470,6 +448,10 @@ export const CardActions = styled.div`
     flex-flow: column wrap;
     gap: 32px 0;
     margin: 12px 0;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    align-content: center;
   `};
 
   > a,
@@ -653,6 +635,20 @@ export const VestingBreakdown = styled.div`
 
 export const BannerCardContent = styled.span`
   z-index: 2;
+
+  > b {
+    text-align: left !important;
+  }
+
+  a:last-child {
+    margin-left: 15px;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    a:last-child {
+      margin-left: auto;
+    }
+  `};
 `
 
 export const BannerCardSvg = styled(SVG)`

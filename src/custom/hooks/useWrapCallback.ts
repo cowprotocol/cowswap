@@ -26,6 +26,7 @@ import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'utils/analytics'
+import { OptionalApproveCallbackParams } from './useApproveCallback'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -38,13 +39,13 @@ export enum WrapType {
 
 interface WrapUnwrapCallback {
   wrapType: WrapType
-  execute?: () => Promise<TransactionResponse>
+  execute?: (params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>
   inputError?: string
 }
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
-interface GetWrapUnwrapCallback {
+export interface GetWrapUnwrapCallback {
   chainId?: ChainId
   isWrap: boolean
   balance?: CurrencyAmount<Currency>
@@ -95,7 +96,9 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
   const inputError = isZero ? t`Enter an amount` : !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 
   // Create wrap/unwrap callback if sufficient balance
-  let wrapUnwrapCallback: (() => Promise<TransactionResponse>) | undefined
+  let wrapUnwrapCallback:
+    | ((params?: Pick<OptionalApproveCallbackParams, 'useModals'>) => Promise<TransactionResponse>)
+    | undefined
   if (sufficientBalance && inputAmount) {
     let wrapUnwrap: () => Promise<TransactionResponse>
     let summary: string
@@ -131,9 +134,10 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
     }
 
     const operationMessage = getOperationMessage(operationType, chainId)
-    wrapUnwrapCallback = async () => {
+    wrapUnwrapCallback = async (params = { useModals: true }) => {
+      const { useModals } = params
       try {
-        openTransactionConfirmationModal(confirmationMessage, operationType)
+        useModals && openTransactionConfirmationModal?.(confirmationMessage, operationType)
         wrapAnalytics('Send', operationMessage)
 
         const txReceipt = await wrapUnwrap()
@@ -143,11 +147,11 @@ function _getWrapUnwrapCallback(params: GetWrapUnwrapCallback): WrapUnwrapCallba
           hash: txReceipt.hash,
           summary,
         })
-        closeModals()
+        useModals && closeModals?.()
 
         return txReceipt
       } catch (error) {
-        closeModals()
+        useModals && closeModals?.()
 
         const isRejected = isRejectRequestProviderError(error)
         const action = isRejected ? 'Reject' : 'Error'
@@ -205,6 +209,7 @@ export default function useWrapCallback(
   const chainId = supportedChainId(connectedChainId)
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const wrappedBalance = useCurrencyBalance(account ?? undefined, inputCurrency?.wrapped)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   /* const inputAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, inputCurrency ?? undefined),
@@ -219,8 +224,11 @@ export default function useWrapCallback(
 
     const isWrappingEther = inputCurrency.isNative && (isEthTradeOverride || weth.equals(outputCurrency))
     const isUnwrappingWeth = weth.equals(inputCurrency) && outputCurrency.isNative
+    // is an native currency trade but wrapped token has enough balance
+    const hasEnoughWrappedBalanceForSwap =
+      isEthTradeOverride && wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount)
 
-    if (!isWrappingEther && !isUnwrappingWeth) {
+    if ((!isWrappingEther && !isUnwrappingWeth) || hasEnoughWrappedBalanceForSwap) {
       return NOT_APPLICABLE
     } else {
       return _getWrapUnwrapCallback({
@@ -241,6 +249,7 @@ export default function useWrapCallback(
     outputCurrency,
     isEthTradeOverride,
     balance,
+    wrappedBalance,
     inputAmount,
     addTransaction,
     openTransactionConfirmationModal,

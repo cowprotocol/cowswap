@@ -1,4 +1,4 @@
-import { ExtLink, BannerCard, BannerCardContent, BannerCardSvg } from './styled'
+import { ExtLink, BannerCard, BannerCardContent, BannerCardSvg, CardActions } from './styled'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 
 export default function Governance() {
@@ -7,11 +7,11 @@ export default function Governance() {
       <BannerCardContent>
         <b>CoW DAO Governance</b>
         <small>Use your (v)COW balance to vote on important proposals or participate in forum discussions.</small>
-        <span>
+        <CardActions content="flex-start" justify="flex-start">
           {' '}
           <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
           <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
-        </span>
+        </CardActions>
       </BannerCardContent>
       <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
     </BannerCard>

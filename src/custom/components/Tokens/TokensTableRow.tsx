@@ -14,6 +14,7 @@ import {
   TableButton,
   ApproveLabel,
   CustomLimit,
+  BalanceValue,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { formatMax, formatSmart } from 'utils/format'
@@ -28,6 +29,7 @@ import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
+import Loader from 'components/Loader'
 
 type DataRowParams = {
   tokenData: Token
@@ -100,13 +102,24 @@ const DataRow = ({
   const isPendingOnchainApprove = approvalState === ApprovalState.PENDING
   const isPendingApprove = !isApproved && (approving || isPendingOnchainApprove)
 
-  const noBalance = !balance || balance?.equalTo(0)
-  const noAllowance = !currentAllowance || currentAllowance.equalTo(0)
+  const hasZeroBalance = !balance || balance?.equalTo(0)
+  const hasNoAllowance = !currentAllowance || currentAllowance.equalTo(0)
+
+  // This is so we only create fiat value request if there is a balance
+  const fiatValue = useMemo(() => {
+    if (!balance && account) {
+      return <Loader />
+    } else if (hasZeroBalance) {
+      return <BalanceValue hasBalance={false}>0</BalanceValue>
+    } else {
+      return <FiatBalanceCell balance={balance} />
+    }
+  }, [account, balance, hasZeroBalance])
 
   const displayApproveContent = useMemo(() => {
     if (isPendingApprove) {
       return <CardsSpinner />
-    } else if (!isApproved && !noAllowance) {
+    } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
           <TableButton onClick={handleApprove} color={theme.primary1}>
@@ -120,7 +133,7 @@ const DataRow = ({
           </ApproveLabel>
         </CustomLimit>
       )
-    } else if (!isApproved || noAllowance) {
+    } else if (!isApproved || hasNoAllowance) {
       return (
         <TableButton onClick={handleApprove} color={theme.primary1}>
           Approve
@@ -129,7 +142,7 @@ const DataRow = ({
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, noAllowance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.primary1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -173,9 +186,7 @@ const DataRow = ({
         <BalanceCell balance={balance} />
       </Cell>
 
-      <Cell>
-        <FiatBalanceCell balance={balance} />
-      </Cell>
+      <Cell>{fiatValue}</Cell>
 
       <Cell>
         <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)} color={theme.green1}>
@@ -184,7 +195,7 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <TableButton disabled={noBalance} onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
+        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
           Sell
         </TableButton>
       </Cell>

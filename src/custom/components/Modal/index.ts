@@ -16,7 +16,7 @@ export const GpModal = styled(Modal)<{
     max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
     z-index: 100;
-    padding: ${({ padding = 'none' }) => `${padding}`};
+    padding: ${({ padding = '0px' }) => `${padding}`};
     margin: auto;
     transition: max-width 0.4s ease;
 
