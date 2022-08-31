@@ -815,18 +815,24 @@ export default function Swap({
                 </Text>
               </ButtonError>
             ) : showWrap ? (
-              <ButtonPrimary
-                disabled={Boolean(wrapInputError)}
-                onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
-                buttonSize={ButtonSize.BIG}
-              >
-                {wrapInputError ??
-                  (wrapType === WrapType.WRAP ? (
-                    <Trans>Wrap</Trans>
-                  ) : wrapType === WrapType.UNWRAP ? (
-                    <Trans>Unwrap</Trans>
-                  ) : null)}
-              </ButtonPrimary>
+              !account ? (
+                <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                  <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+                </ButtonPrimary>
+              ) : (
+                <ButtonPrimary
+                  disabled={Boolean(wrapInputError)}
+                  onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
+                  buttonSize={ButtonSize.BIG}
+                >
+                  {wrapInputError ??
+                    (wrapType === WrapType.WRAP ? (
+                      <Trans>Wrap</Trans>
+                    ) : wrapType === WrapType.UNWRAP ? (
+                      <Trans>Unwrap</Trans>
+                    ) : null)}
+                </ButtonPrimary>
+              )
             ) : !swapInputError && isNativeIn ? (
               <SwitchToWethBtn wrappedToken={wrappedToken} />
             ) : quote?.error === 'fee-exceeds-sell-amount' ? (
