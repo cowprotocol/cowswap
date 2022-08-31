@@ -718,7 +718,7 @@ export default function Swap({
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={onWrap ? undefined : priceImpact}
+                priceImpact={showWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}
@@ -815,18 +815,24 @@ export default function Swap({
                 </Text>
               </ButtonError>
             ) : showWrap ? (
-              <ButtonPrimary
-                disabled={Boolean(wrapInputError)}
-                onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
-                buttonSize={ButtonSize.BIG}
-              >
-                {wrapInputError ??
-                  (wrapType === WrapType.WRAP ? (
-                    <Trans>Wrap</Trans>
-                  ) : wrapType === WrapType.UNWRAP ? (
-                    <Trans>Unwrap</Trans>
-                  ) : null)}
-              </ButtonPrimary>
+              !account ? (
+                <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                  <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+                </ButtonPrimary>
+              ) : (
+                <ButtonPrimary
+                  disabled={Boolean(wrapInputError)}
+                  onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
+                  buttonSize={ButtonSize.BIG}
+                >
+                  {wrapInputError ??
+                    (wrapType === WrapType.WRAP ? (
+                      <Trans>Wrap</Trans>
+                    ) : wrapType === WrapType.UNWRAP ? (
+                      <Trans>Unwrap</Trans>
+                    ) : null)}
+                </ButtonPrimary>
+              )
             ) : !swapInputError && isNativeIn ? (
               <SwitchToWethBtn wrappedToken={wrappedToken} />
             ) : quote?.error === 'fee-exceeds-sell-amount' ? (

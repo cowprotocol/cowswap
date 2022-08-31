@@ -219,7 +219,7 @@ export default function AccountDetails({
         </AccountGroupingRow>
       </InfoCard>
 
-      {!!pendingTransactions.length || !!confirmedTransactions.length ? (
+      {activityTotalCount ? (
         <LowerSection>
           <span>
             {' '}
