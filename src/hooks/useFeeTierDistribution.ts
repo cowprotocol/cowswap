@@ -1,14 +1,15 @@
-import { skipToken } from '@reduxjs/toolkit/query/react'
-import { Currency, Token } from '@uniswap/sdk-core'
+// import { skipToken } from '@reduxjs/toolkit/query/react'
+import { Currency /*Token*/ } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { sendEvent } from 'components/analytics'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
-import ms from 'ms.macro'
-import { useMemo } from 'react'
-import { useFeeTierDistributionQuery } from 'state/data/enhanced'
-import { FeeTierDistributionQuery } from 'state/data/generated'
+// import { sendEvent } from 'components/analytics'
+// import useBlockNumber from 'lib/hooks/useBlockNumber'
+// import ms from 'ms.macro'
+// import { useMemo } from 'react'
+// import { useFeeTierDistributionQuery } from 'state/data/enhanced'
+// NOTE: Modding original file because we no longer generate the file below
+// import { FeeTierDistributionQuery } from 'state/data/generated'
 
-import { PoolState, usePool } from './usePools'
+// import { PoolState, usePool } from './usePools'
 
 // maximum number of blocks past which we consider the data stale
 const MAX_DATA_BLOCK_AGE = 20
@@ -26,7 +27,9 @@ export function useFeeTierDistribution(
   currencyA: Currency | undefined,
   currencyB: Currency | undefined
 ): FeeTierDistribution {
-  const { isFetching, isLoading, isUninitialized, isError, distributions } = usePoolTVL(
+  // MOD: bogus return because this is not in use
+  return { isLoading: false, isError: false }
+  /* const { isFetching, isLoading, isUninitialized, isError, distributions } = usePoolTVL(
     currencyA?.wrapped,
     currencyB?.wrapped
   )
@@ -86,11 +89,10 @@ export function useFeeTierDistribution(
     poolStateLow,
     poolStateMedium,
     poolStateHigh,
-  ])
+  ]) */
 }
-
-function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
-  const latestBlock = useBlockNumber()
+/* function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
+  // const latestBlock = useBlockNumber()
 
   const { isLoading, isFetching, isUninitialized, isError, data } = useFeeTierDistributionQuery(
     token0 && token1 ? { token0: token0.address.toLowerCase(), token1: token1.address.toLowerCase() } : skipToken,
@@ -183,4 +185,4 @@ function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
       distributions,
     }
   }, [_meta, asToken0, asToken1, isLoading, isError, isFetching, isUninitialized, latestBlock])
-}
+} */
