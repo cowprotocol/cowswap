@@ -46,6 +46,7 @@ const ModalMessage = styled.p`
 const LowBalanceMessage = styled(ModalMessage)`
   margin: 0 0 8px;
   background-color: ${({ theme }) => transparentize(0.2, theme.warning)};
+  color: ${({ theme }) => theme.text2};
   padding: 8px 12px;
   border-radius: 10px;
 `
@@ -454,7 +455,7 @@ function EthFlowModalTopContent({ description, state, balanceChecks, nativeSymbo
             ) : (
               <>
                 sufficient for{' '}
-                <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>.
+                <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>
               </>
             )}
           </Trans>
