@@ -20,6 +20,7 @@ export interface SwapButtonProps {
   wrappedToken: Token
   handleSwap: HandleSwapCallback
   approveButtonProps: ApproveButtonProps
+  wrapInputError: string | undefined
   onWrap: () => void
   openSwapConfirm: () => void
   onSwap: () => void
@@ -35,6 +36,7 @@ export const SwapButton: React.FC<SwapButtonProps> = (props: SwapButtonProps) =>
     wrappedToken,
     approveButtonProps,
     swapInputError,
+    wrapInputError,
     openSwapConfirm,
     onSwap,
     toggleWalletModal,
@@ -57,7 +59,7 @@ export const SwapButton: React.FC<SwapButtonProps> = (props: SwapButtonProps) =>
     ),
     [SwapButtonState.wrapError]: (
       <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-        Wrap error {/*TODO: inconsistency with the original code*/}
+        {wrapInputError}
       </ButtonPrimary>
     ),
     [SwapButtonState.shouldWrapNativeToken]: (

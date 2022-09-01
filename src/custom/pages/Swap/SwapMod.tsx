@@ -15,7 +15,7 @@ import SwapHeader from 'components/swap/SwapHeader'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
-import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
+import { useWrapType, useWrapUnwrapError, WrapType } from 'hooks/useWrapCallback'
 import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
@@ -83,7 +83,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
-  const openTransactionConfirmationModal = useCallback(
+  const openSwapConfirmModalCallback = useCallback(
     (message: string, operationType: OperationType) => {
       setTransactionConfirmationModalMsg(message)
       setOperationType(operationType)
@@ -107,7 +107,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const [recipientToggleVisible] = useRecipientToggleManager()
 
   // swap state
-  const { independentField, typedValue, recipient, INPUT, OUTPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
+  const { independentField, typedValue, recipient, INPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
   const {
     v2Trade,
     allowedSlippage,
@@ -127,14 +127,10 @@ export default function Swap({ history, location, className }: RouteComponentPro
     chainId,
   })
 
-  // Log all trade information
-  // logTradeDetails(v2Trade, allowedSlippage)
-
   // Checks if either currency is native ETH
-  // MOD: adds this hook
-  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(currencies, chainId)
+  const { isNativeIn, isWrappedOut, native, wrappedToken, ...nativeRest } = useDetectNativeToken(currencies, chainId)
   // Is user swapping Eth as From token and not wrapping to WETH?
-  const isNativeInSwap = isNativeIn
+  const isNativeInSwap = isNativeIn && !isWrappedOut
 
   // Is fee greater than input?
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -142,32 +138,20 @@ export default function Swap({ history, location, className }: RouteComponentPro
     address: INPUT.currencyId,
   })
 
-  const tradeCurrentVersion = v2Trade
-
   // nativeInput only applies to useWrapCallback and any function that is native
   // currency specific - use slippage/fee adjusted native currency for exactOUT orders
   // and direct input for exactIn orders
-  const nativeInput = !!(tradeCurrentVersion?.tradeType === TradeType.EXACT_INPUT)
-    ? tradeCurrentVersion?.inputAmount
+  const nativeInput = !!(v2Trade?.tradeType === TradeType.EXACT_INPUT)
+    ? v2Trade?.inputAmount
     : // else use the slippage + fee adjusted amount
-      computeSlippageAdjustedAmounts(tradeCurrentVersion, allowedSlippage).INPUT
+      computeSlippageAdjustedAmounts(v2Trade, allowedSlippage).INPUT
 
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError,
-  } = useWrapCallback(
-    openTransactionConfirmationModal,
-    closeModals,
-    currencies[Field.INPUT],
-    currencies[Field.OUTPUT],
-    // is native token swap, use the wrapped equivalent as input currency
-    isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount,
-    // should override and get wrapCallback?
-    isNativeInSwap
-  )
-  const showWrap: boolean = !isNativeInSwap && wrapType !== WrapType.NOT_APPLICABLE
-  const trade = showWrap ? undefined : tradeCurrentVersion
+  const wrapUnrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
+  const wrapType = useWrapType()
+  const wrapInputError = useWrapUnwrapError(wrapType, wrapUnrapAmount)
+  const showWrap = wrapType !== WrapType.NOT_APPLICABLE
+
+  const trade = showWrap ? undefined : v2Trade
 
   const parsedAmounts = useMemo(
     () =>
@@ -186,13 +170,13 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const fiatValueInput = useHigherUSDValue(trade?.inputAmountWithoutFee)
   const fiatValueOutput = useHigherUSDValue(trade?.outputAmountWithoutFee)
 
-  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: !!onWrap })
+  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping: showWrap })
   const { priceImpact, error: priceImpactError, loading: priceImpactLoading } = priceImpactParams
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
   const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
   // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
-  const hideUnknownImpactWarning = !trade || !!onWrap || !priceImpactError || priceImpactLoading
+  const hideUnknownImpactWarning = !trade || showWrap || !priceImpactError || priceImpactLoading
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
@@ -228,7 +212,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   // check whether the user has approved the router on the input token
   const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
     openTransactionConfirmationModal: (message: string) =>
-      openTransactionConfirmationModal(message, OperationType.APPROVE_TOKEN),
+      openSwapConfirmModalCallback(message, OperationType.APPROVE_TOKEN),
     closeModals,
     trade,
     allowedSlippage,
@@ -348,7 +332,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   }
 
   const swapButtonState = useSwapButtonState({
-    isNativeIn,
+    isNativeIn: isNativeInSwap,
     wrappedToken,
     currencyIn,
     currencyOut,
@@ -371,6 +355,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     chainId,
     wrappedToken,
     handleSwap,
+    wrapInputError,
     onWrap() {
       openNativeWrapModal()
     },
@@ -402,21 +387,16 @@ export default function Swap({ history, location, className }: RouteComponentPro
       {/* Native wrapping modal */}
       {showNativeWrapModal && (
         <EthFlowModal
-          native={native}
-          wrapped={wrappedToken}
           nativeInput={showWrap ? parsedAmount : nativeInput}
-          // native currency state
-          isNativeIn={isNativeIn}
-          {...nativeRest}
+          wrapUnrapAmount={wrapUnrapAmount}
           // state
           approvalState={approvalState}
-          wrapState={wrapType}
           // modal state
           modalIsOpen={showNativeWrapModal}
           // cbs
+          openSwapConfirmModalCallback={openSwapConfirmModalCallback}
           onDismiss={dismissNativeWrapModal}
           approveCallback={approveCallback}
-          wrapCallback={wrapType !== WrapType.NOT_APPLICABLE ? onWrap : undefined}
           openSwapConfirm={handleNativeWrapAndSwap}
           closeSwapConfirm={closeSwapConfirm}
         />
@@ -493,7 +473,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={onWrap ? undefined : priceImpact}
+                priceImpact={!showWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}

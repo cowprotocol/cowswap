@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, NativeCurrency, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 // import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // import { useBestTrade } from 'hooks/useBestTrade'
@@ -50,8 +50,10 @@ export * from '@src/state/swap/hooks'
   return useAppSelector((state) => state.swap)
 } */
 
+export type Currencies = { [field in Field]?: Currency | null }
+
 interface DerivedSwapInfo {
-  currencies: { [field in Field]?: Currency | null }
+  currencies: Currencies
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: ReactNode
@@ -474,7 +476,19 @@ export function useReplaceSwapState() {
   )
 }
 
-export function useDetectNativeToken(currencies: { [field in Field]?: Currency | null }, chainId?: ChainId) {
+export interface CurrenciesNativityInfo {
+  isNativeIn: boolean
+  isNativeOut: boolean
+  isWrappedIn: boolean
+  isWrappedOut: boolean
+  wrappedToken: Token & { logoURI: string }
+  native: NativeCurrency
+}
+
+export function useDetectNativeToken(
+  currencies: { [field in Field]?: Currency | null },
+  chainId?: ChainId
+): CurrenciesNativityInfo {
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
@@ -493,8 +507,8 @@ export function useDetectNativeToken(currencies: { [field in Field]?: Currency |
     const [isWrappedIn, isWrappedOut] = [!!inputCurrency?.equals(wrappedToken), !!outputCurrency?.equals(wrappedToken)]
 
     return {
-      isNativeIn: isNativeIn && !isWrappedOut,
-      isNativeOut: isNativeOut && !isWrappedIn,
+      isNativeIn,
+      isNativeOut,
       isWrappedIn,
       isWrappedOut,
       wrappedToken,

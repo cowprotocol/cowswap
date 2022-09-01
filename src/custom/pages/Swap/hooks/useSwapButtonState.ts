@@ -11,27 +11,27 @@ import { useExpertModeManager } from '@src/state/user/hooks'
 import TradeGp from 'state/swap/TradeGp'
 
 export enum SwapButtonState {
-  swapIsUnsupported,
-  walletIsUnsupported,
-  wrapError,
-  shouldWrapNativeToken,
-  shouldUnwrapNativeToken,
-  feesExceedFromAmount,
-  insufficientLiquidity,
-  zeroPrice,
-  transferToSmartContract,
-  fetchQuoteError,
-  offlineBrowser,
-  loading,
-  walletIsNotConnected,
-  readonlyGnosisSafeUser,
-  needApprove,
-  swapDisabled,
-  swapError,
-  expertModeSwap,
-  regularSwap,
-  swapWithWrappedToken,
-  wrapAndSwap,
+  swapIsUnsupported = 'swapIsUnsupported',
+  walletIsUnsupported = 'walletIsUnsupported',
+  wrapError = 'wrapError',
+  shouldWrapNativeToken = 'shouldWrapNativeToken',
+  shouldUnwrapNativeToken = 'shouldUnwrapNativeToken',
+  feesExceedFromAmount = 'feesExceedFromAmount',
+  insufficientLiquidity = 'insufficientLiquidity',
+  zeroPrice = 'zeroPrice',
+  transferToSmartContract = 'transferToSmartContract',
+  fetchQuoteError = 'fetchQuoteError',
+  offlineBrowser = 'offlineBrowser',
+  loading = 'loading',
+  walletIsNotConnected = 'walletIsNotConnected',
+  readonlyGnosisSafeUser = 'readonlyGnosisSafeUser',
+  needApprove = 'needApprove',
+  swapDisabled = 'swapDisabled',
+  swapError = 'swapError',
+  expertModeSwap = 'expertModeSwap',
+  regularSwap = 'regularSwap',
+  swapWithWrappedToken = 'swapWithWrappedToken',
+  wrapAndSwap = 'wrapAndSwap',
 }
 
 export interface SwapButtonStateInput {
@@ -87,8 +87,6 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
   const [isExpertMode] = useExpertModeManager()
   const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
-  const showWrap = !isNativeIn && wrapType !== WrapType.NOT_APPLICABLE
-
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
@@ -108,19 +106,16 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     return SwapButtonState.walletIsUnsupported
   }
 
-  // TODO: check
-  if (showWrap) {
-    if (wrapInputError) {
-      return SwapButtonState.wrapError
-    }
+  if (wrapType !== WrapType.NOT_APPLICABLE && wrapInputError) {
+    return SwapButtonState.wrapError
+  }
 
-    if (wrapType === WrapType.WRAP) {
-      return SwapButtonState.shouldWrapNativeToken
-    }
+  if (wrapType === WrapType.WRAP) {
+    return SwapButtonState.shouldWrapNativeToken
+  }
 
-    if (wrapType === WrapType.UNWRAP) {
-      return SwapButtonState.shouldUnwrapNativeToken
-    }
+  if (wrapType === WrapType.UNWRAP) {
+    return SwapButtonState.shouldUnwrapNativeToken
   }
 
   if (quoteError) {

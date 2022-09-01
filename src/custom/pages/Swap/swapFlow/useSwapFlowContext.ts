@@ -76,7 +76,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const currencyOut = currencies[Field.OUTPUT]
 
   const { address: recipientAddress } = useENSAddress(recipient)
-  const { isNativeIn } = useDetectNativeToken(currencies, chainId)
+  const { isNativeIn, isWrappedOut } = useDetectNativeToken(currencies, chainId)
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const transactionAdder = useTransactionAdder()
@@ -94,7 +94,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     !isWrappingEther && !isUnwrappingWeth ? WrapType.NOT_APPLICABLE : isWrappingEther ? WrapType.WRAP : WrapType.UNWRAP
 
   const isWrapping = wrapType !== WrapType.NOT_APPLICABLE
-  const showWrap = !isNativeIn && isWrapping
+  const showWrap = isNativeIn && !isWrappedOut && isWrapping
 
   const parsedAmounts = useMemo(
     () =>

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { transparentize } from 'polished'
 import { Trans } from '@lingui/macro'
 
@@ -28,7 +28,8 @@ import {
 } from 'components/swap/EthFlow/helpers'
 import { GpModal } from 'components/Modal'
 import { ApprovalState } from 'hooks/useApproveCallback'
-import { WrapType } from 'hooks/useWrapCallback'
+import { useWrapCallback, OpenSwapConfirmModalCallback, useHasEnoughWrappedBalanceForSwap } from 'hooks/useWrapCallback'
+import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
 
 const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -68,25 +69,16 @@ const ButtonWrapper = styled.div`
 const MODAL_CLOSE_DELAY = 1000 // 1s
 
 export interface Props {
-  native: Currency
-  wrapped: Token & { logoURI: string }
   nativeInput?: CurrencyAmount<Currency>
-  isNativeIn: boolean
-  isNativeOut: boolean
-  isWrappedIn: boolean
-  isWrappedOut: boolean
-
+  wrapUnrapAmount?: CurrencyAmount<Currency>
   // state
   approvalState: ApprovalState
-  wrapState: WrapType
-
   // modal state
   modalIsOpen: boolean
-
   // cbs
+  openSwapConfirmModalCallback: OpenSwapConfirmModalCallback
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
-  wrapCallback: ((params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>) | undefined
   openSwapConfirm(): void
   closeSwapConfirm(): void
 }
@@ -94,21 +86,14 @@ export interface Props {
 export type PendingHashMap = { approveHash?: string; wrapHash?: string }
 
 export function EthWethWrap({
-  native,
-  wrapped,
   nativeInput,
-  isNativeIn,
-  isNativeOut,
-  isWrappedIn,
-  isWrappedOut,
+  wrapUnrapAmount,
   // state from hooks
   approvalState,
-  wrapState,
-
   // cbs
+  openSwapConfirmModalCallback,
   onDismiss,
   approveCallback,
-  wrapCallback,
   openSwapConfirm,
   closeSwapConfirm,
 }: Omit<Props, 'modalIsOpen'>) {
@@ -133,25 +118,36 @@ export function EthWethWrap({
     wrapError,
     setWrapSubmitted,
     setWrapError,
-  } = useEthFlowStatesAndSetters({ chainId, approvalState, wrapState })
+  } = useEthFlowStatesAndSetters({ chainId, approvalState })
+
+  const { currencies } = useDerivedSwapInfo()
+  const {
+    isNativeIn,
+    isNativeOut,
+    isWrappedIn,
+    isWrappedOut,
+    native,
+    wrappedToken: wrapped,
+  } = useDetectNativeToken(currencies, chainId)
+  const isNativeInSwap = isNativeIn && !isWrappedOut
+  const isNativeOutSwap = isNativeOut && !isWrappedIn
 
   const needsApproval = approvalState === ApprovalState.NOT_APPROVED
-  const needsWrap = !!wrapCallback
 
   // BALANCES
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
 
   // wrap/unwrap/native/wrapped related constants
   const { isWrap, isUnwrap, isNative, wrappedSymbol, nativeSymbol } = useMemo(() => {
-    const isWrap = !isNativeIn && isWrappedOut
+    const isWrap = !isNativeInSwap && isWrappedOut
     return {
       isWrap,
-      isUnwrap: !isNativeOut && isWrappedIn,
-      isNative: isNativeIn || isWrap,
+      isUnwrap: !isNativeOutSwap && isWrappedIn,
+      isNative: isNativeInSwap || isWrap,
       wrappedSymbol: wrapped.symbol || 'wrapped native token',
       nativeSymbol: native.symbol || 'native token',
     }
-  }, [isNativeIn, isNativeOut, isWrappedIn, isWrappedOut, native.symbol, wrapped.symbol])
+  }, [isNativeInSwap, isNativeOutSwap, isWrappedIn, isWrappedOut, native.symbol, wrapped.symbol])
 
   // user safety checks to make sure any on-chain native currency operations are economically safe
   // shows user warning with remaining available TXs if a certain threshold is reached
@@ -160,6 +156,9 @@ export function EthWethWrap({
     nativeBalance,
     nativeInput,
   })
+
+  const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnrapAmount)
+  const needsWrap = isNativeIn && !hasEnoughWrappedBalanceForSwap
 
   // get derived EthFlow state
   const state = useMemo(
@@ -194,6 +193,12 @@ export function EthWethWrap({
   useEffect(() => {
     setLoading(state === EthFlowState.Loading)
   }, [setLoading, state])
+
+  const wrapCallback = useWrapCallback(
+    // is native token swap, use the wrapped equivalent as input currency
+    wrapUnrapAmount,
+    openSwapConfirmModalCallback
+  )
 
   const handleError = useCallback(
     (error: any, type: 'WRAP' | 'APPROVE') => {
@@ -301,19 +306,19 @@ export function EthWethWrap({
       setApproveSubmitted(false)
       setWrapSubmitted(false)
     } finally {
-      if (!isNativeIn) {
+      if (!isNativeInSwap) {
         onDismiss()
       }
     }
   }, [
     needsApproval,
-    needsWrap,
     wrapCallback,
+    needsWrap,
     approveCallback,
     setWrapError,
     handleError,
     handleSwap,
-    isNativeIn,
+    isNativeInSwap,
     onDismiss,
     setApproveError,
     setLoading,
@@ -367,7 +372,7 @@ export function EthWethWrap({
       wrapError,
       approveState: approvalDerivedState,
       wrapState: wrapDerivedState,
-      isNativeIn,
+      isNativeIn: isNativeInSwap,
       native,
       wrapped,
       nativeInput,
@@ -391,7 +396,7 @@ export function EthWethWrap({
     approvalDerivedState,
     chainId,
     isExpertMode,
-    isNativeIn,
+    isNativeInSwap,
     isUnwrap,
     isWrap,
     loading,

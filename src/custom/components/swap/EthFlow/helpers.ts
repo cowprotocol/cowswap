@@ -311,10 +311,13 @@ export function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: bool
   }
 }
 
-export type ActionButtonParams = Pick<Props, 'isNativeIn'> &
-  Pick<DerivedEthFlowStateProps, 'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'> &
+export type ActionButtonParams = Pick<
+  DerivedEthFlowStateProps,
+  'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'
+> &
   Pick<ModalTextContentProps, 'nativeSymbol' | 'wrappedSymbol' | 'state'> & {
     isWrap: boolean
+    isNativeIn: boolean
     loading: boolean
     handleSwap: (showSwapModal?: boolean) => Promise<void>
     handleApprove: () => Promise<void>
@@ -417,8 +420,7 @@ export function _getActionButtonProps({
 export function useEthFlowStatesAndSetters({
   chainId,
   approvalState,
-  wrapState,
-}: Pick<Props, 'approvalState' | 'wrapState'> & {
+}: Pick<Props, 'approvalState'> & {
   chainId?: number
 }) {
   const [pendingHashMap, setPendingHashMap] = useState<PendingHashMap>({
