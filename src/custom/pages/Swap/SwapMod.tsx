@@ -96,7 +96,6 @@ import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 export default function Swap({
   history,
-  location,
   TradeBasicDetails,
   EthWethWrapMessage,
   SwitchToWethBtn,
@@ -114,7 +113,6 @@ export default function Swap({
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const previousChainId = usePrevious(chainId)
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
