@@ -379,7 +379,7 @@ export default function NetworkSelector() {
   )
 
   useEffect(() => {
-    if (!chainId || !previousChainId) return
+    if (!chainId) return
 
     // when network change originates from wallet or dropdown selector, just update URL
     if (chainId !== previousChainId && chainId !== urlChainId) {
