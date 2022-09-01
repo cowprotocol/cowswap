@@ -10,6 +10,8 @@ import { useWeb3React } from '@web3-react/core'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Title } from 'components/Page'
+import { PageName } from 'components/AmplitudeAnalytics/constants'
+import { Trace } from 'components/AmplitudeAnalytics/Trace'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
@@ -39,15 +41,17 @@ const Overview = () => {
   const { chainId } = useWeb3React()
 
   return (
-    <Container>
-      {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
+    <Trace page={PageName.ACCOUNT_OVERVIEW_PAGE} shouldLogImpression>
+      <Container>
+        {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
 
-      <CardsWrapper>
-        <Balances />
-        <Governance />
-      </CardsWrapper>
-      <Affiliate />
-    </Container>
+        <CardsWrapper>
+          <Balances />
+          <Governance />
+        </CardsWrapper>
+        <Affiliate />
+      </Container>
+    </Trace>
   )
 }
 

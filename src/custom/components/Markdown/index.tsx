@@ -8,6 +8,10 @@ import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 import { LinkScrollable, Link } from 'components/Link'
 
+// AmplitudeAnalytics
+import { PageName } from 'components/AmplitudeAnalytics/constants'
+import { Trace } from 'components/AmplitudeAnalytics/Trace'
+
 interface MarkdownParams extends WithClassName {
   contentFile: string
   title?: ReactNode
@@ -27,12 +31,14 @@ const MarkdownContent = (props: ReactMarkdownPropsBase & { children: string }) =
 export function MarkdownPage({ contentFile, title, className }: MarkdownParams) {
   const { error, file } = useFetchFile(contentFile)
   return (
-    <Wrapper className={className}>
-      {title && <Title>{title}</Title>}
-      <Content>
-        {file && <MarkdownContent>{file}</MarkdownContent>}
-        {error && <MarkdownContent>{error}</MarkdownContent>}
-      </Content>
-    </Wrapper>
+    <Trace page={PageName.TOC_PAGE} shouldLogImpression>
+      <Wrapper className={className}>
+        {title && <Title>{title}</Title>}
+        <Content>
+          {file && <MarkdownContent>{file}</MarkdownContent>}
+          {error && <MarkdownContent>{error}</MarkdownContent>}
+        </Content>
+      </Wrapper>
+    </Trace>
   )
 }
