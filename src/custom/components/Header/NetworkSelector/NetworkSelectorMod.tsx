@@ -277,21 +277,21 @@ function Row({
       <ActiveRowWrapper>
         {rowContent}
         <ActiveRowLinkList>
-          {bridge ? (
+          {bridge && (
             <ExternalLink href={bridge}>
               <BridgeLabel chainId={chainId} /> <LinkOutCircle />
             </ExternalLink>
-          ) : null}
-          {explorer ? (
+          )}
+          {explorer && (
             <ExternalLink href={explorer}>
               <ExplorerLabel chainId={chainId} /> <LinkOutCircle />
             </ExternalLink>
-          ) : null}
-          {helpCenterUrl ? (
+          )}
+          {helpCenterUrl && (
             <ExternalLink href={helpCenterUrl}>
               <Trans>Help Center</Trans> <LinkOutCircle />
             </ExternalLink>
-          ) : null}
+          )}
 
           {supportedChainId(chainId) && (
             <ExternalLink href={getExplorerBaseUrl(chainId)}>
