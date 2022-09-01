@@ -128,7 +128,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   })
 
   // Checks if either currency is native ETH
-  const { isNativeIn, isWrappedOut, native, wrappedToken, ...nativeRest } = useDetectNativeToken(currencies, chainId)
+  const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken(currencies, chainId)
   // Is user swapping Eth as From token and not wrapping to WETH?
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
@@ -247,7 +247,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
 
   // handle swap when native token is detected as sell token
-  const handleNativeWrapAndSwap = (submitSwap = false) => {
+  const handleNativeWrapAndSwap = () => {
     if (!chainId) throw new Error('Need to be connected')
 
     // switch to wrapped native currency
