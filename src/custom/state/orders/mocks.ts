@@ -1,12 +1,6 @@
-import { useEffect, useRef } from 'react'
-import { batch } from 'react-redux'
 import { Token } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus, OrderKind } from './actions'
-import { useActiveWeb3React } from 'hooks/web3'
-import { useAddPendingOrder, usePendingOrders, useFulfillOrder } from './hooks'
-import { useCombinedActiveList } from 'state/lists/hooks'
-import { registerOnWindow } from 'utils/misc'
 import { RADIX_DECIMAL } from 'constants/index'
 
 const randomNumberInRange = (min: number, max: number) => {
@@ -80,94 +74,4 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     receiver: owner.replace('0x', ''),
     apiAdditionalInfo: undefined,
   }
-}
-
-// add more orders if less than minPendingOrders currently
-const useAddOrdersOnMount = (minPendingOrders = 5) => {
-  const { account, chainId, library } = useActiveWeb3React()
-
-  const pendingOrders = usePendingOrders({ chainId })
-
-  // ref, so we don't rerun useEffect
-  const pendingOrdersRef = useRef(pendingOrders)
-  pendingOrdersRef.current = pendingOrders
-
-  const addOrder = useAddPendingOrder()
-
-  const lists = useCombinedActiveList()
-
-  useEffect(() => {
-    const addNOrders = (ordersNum: number) => {
-      if (!account || !chainId || !library) return
-      const tokenMap = lists[chainId]
-
-      const tokenList = Object.values(tokenMap)
-      if (tokenList.length === 0) return
-
-      const newTempOrders = Array.from({ length: ordersNum }, () => {
-        const [sellToken, buyToken] = getTwoRandomElementsFromArray(tokenList)
-
-        return generateOrder({
-          owner: account,
-          sellToken: sellToken.token,
-          buyToken: buyToken.token,
-        })
-      })
-
-      batch(() => {
-        newTempOrders.forEach((order) => {
-          addOrder({ order, id: order.id, chainId })
-        })
-      })
-    }
-    registerOnWindow({ addNOrders })
-
-    // don't just keep adding orders when there's already enough pending
-    if (pendingOrdersRef.current.length >= minPendingOrders) return
-
-    addNOrders(10)
-  }, [account, addOrder, chainId, library, lists, minPendingOrders])
-}
-
-const useFulfillOrdersRandomly = (interval = 30000 /* ms */) => {
-  const { chainId } = useActiveWeb3React()
-  const pendingOrders = usePendingOrders({ chainId })
-
-  // ref, so we don't rerun useEffect
-  const pendingOrdersRef = useRef(pendingOrders)
-  pendingOrdersRef.current = pendingOrders
-
-  const fulfillOrder = useFulfillOrder()
-
-  useEffect(() => {
-    if (!chainId) return
-
-    const fulfillRandomOrder = () => {
-      // no more pending orders
-      // but don't clearInterval so we can restart when there are new orders
-      if (pendingOrdersRef.current.length === 0) return
-
-      const randomOrder = getRandomElementFromArray(pendingOrdersRef.current)
-
-      batch(() => {
-        fulfillOrder({ chainId, id: randomOrder.id, fulfillmentTime: new Date().toISOString(), transactionHash: '0x0' })
-      })
-    }
-    registerOnWindow({ fulfillRandomOrder })
-
-    const intervalId = setInterval(fulfillRandomOrder, interval)
-
-    return () => clearInterval(intervalId)
-  }, [chainId, fulfillOrder, interval])
-}
-
-interface EventUpdaterProps {
-  minPendingOrders?: number
-}
-
-export function EventUpdater({ minPendingOrders }: EventUpdaterProps): null {
-  useAddOrdersOnMount(minPendingOrders)
-  useFulfillOrdersRandomly()
-
-  return null
 }

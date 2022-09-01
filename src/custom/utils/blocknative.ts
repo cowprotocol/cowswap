@@ -1,5 +1,5 @@
 import BlocknativeSdk from 'bnc-sdk'
-import { getSupportedChainIds } from 'connectors'
+import { getSupportedChainIds } from 'connection'
 
 const BLOCKNATIVE_API_KEY = process.env.REACT_APP_BLOCKNATIVE_API_KEY
 

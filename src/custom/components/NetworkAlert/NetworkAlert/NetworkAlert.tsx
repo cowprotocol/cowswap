@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
-import { CHAIN_INFO } from 'constants/chainInfo'
+import { useWeb3React } from '@web3-react/core'
+import { getChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { ArrowUpRight } from 'react-feather'
-import { useDarkModeManager } from '@src/state/user/hooks'
+import { useDarkModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, HideSmall } from 'theme'
 
@@ -11,7 +11,6 @@ import { AutoRow } from 'components/Row'
 
 // mod imports
 import useTheme from 'hooks/useTheme'
-import { useWeb3React } from 'web3-react-core'
 
 const L2Icon = styled.img`
   width: 24px;
@@ -65,7 +64,11 @@ type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
       'radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)',
     [SupportedChainId.POLYGON_MUMBAI]:
       'radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)',
-    [SupportedChainId.OPTIMISM]:
+    [SupportedChainId.CELO]:
+      'radial-gradient(182.71% 150.59% at 2.81% 7.69%, rgba(90, 190, 170, 0.15) 0%, rgba(80, 160, 40, 0.15) 100%)',
+    [SupportedChainId.CELO_ALFAJORES]:
+      'radial-gradient(182.71% 150.59% at 2.81% 7.69%, rgba(90, 190, 170, 0.15) 0%, rgba(80, 160, 40, 0.15) 100%)',
+      [SupportedChainId.OPTIMISM]:
       'radial-gradient(948% 292% at 42% 0%, rgba(255, 58, 212, 0.01) 0%, rgba(255, 255, 255, 0.04) 100%),radial-gradient(98% 96% at 2% 0%, rgba(255, 39, 39, 0.01) 0%, rgba(235, 0, 255, 0.01) 96%)',
     [SupportedChainId.OPTIMISTIC_KOVAN]:
       'radial-gradient(948% 292% at 42% 0%, rgba(255, 58, 212, 0.04) 0%, rgba(255, 255, 255, 0.04) 100%),radial-gradient(98% 96% at 2% 0%, rgba(255, 39, 39, 0.04) 0%, rgba(235, 0, 255, 0.01 96%)',
@@ -79,7 +82,11 @@ type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
       'radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)',
     [SupportedChainId.POLYGON_MUMBAI]:
       'radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)',
-    [SupportedChainId.OPTIMISM]:
+    [SupportedChainId.CELO]:
+      'radial-gradient(182.71% 150.59% at 2.81% 7.69%, rgba(63, 208, 137, 0.15) 0%, rgba(49, 205, 50, 0.15) 100%)',
+    [SupportedChainId.CELO_ALFAJORES]:
+      'radial-gradient(182.71% 150.59% at 2.81% 7.69%, rgba(63, 208, 137, 0.15) 0%, rgba(49, 205, 50, 0.15) 100%)',
+      [SupportedChainId.OPTIMISM]:
       'radial-gradient(92% 105% at 50% 7%, rgba(255, 58, 212, 0.04) 0%, rgba(255, 255, 255, 0.03) 100%),radial-gradient(100% 97% at 0% 12%, rgba(235, 0, 255, 0.1) 0%, rgba(243, 19, 19, 0.1) 100%), hsla(0, 0%, 100%, 0.1)',
     [SupportedChainId.OPTIMISTIC_KOVAN]:
       'radial-gradient(92% 105% at 50% 7%, rgba(255, 58, 212, 0.04) 0%, rgba(255, 255, 255, 0.03) 100%),radial-gradient(100% 97% at 0% 12%, rgba(235, 0, 255, 0.1) 0%, rgba(243, 19, 19, 0.1) 100%), hsla(0, 0%, 100%, 0.1)',
@@ -145,6 +152,8 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
 /* const TEXT_COLORS: { [chainId in NetworkAlertChains]: string } = {
   [SupportedChainId.POLYGON]: 'rgba(130, 71, 229)',
   [SupportedChainId.POLYGON_MUMBAI]: 'rgba(130, 71, 229)',
+  [SupportedChainId.CELO]: 'rgba(53, 178, 97)',
+  [SupportedChainId.CELO_ALFAJORES]: 'rgba(53, 178, 97)',
   [SupportedChainId.OPTIMISM]: '#ff3856',
   [SupportedChainId.OPTIMISTIC_KOVAN]: '#ff3856',
   [SupportedChainId.ARBITRUM_ONE]: '#0490ed',
@@ -156,16 +165,16 @@ function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertCh
 }
 
 export function NetworkAlert() {
-  const { active, chainId } = useWeb3React() // mod
+  const { isActive, chainId } = useWeb3React() // mod
   const [darkMode] = useDarkModeManager()
 
   const theme = useTheme() // mod
 
-  if (!shouldShowAlert(chainId) || !active) {
+  if (!shouldShowAlert(chainId) || !isActive) {
     return null
   }
 
-  const { label, logoUrl, bridge } = CHAIN_INFO[chainId]
+  const { label, logoUrl, bridge } = getChainInfo(chainId)
   const textColor = /*TEXT_COLORS[chainId]  mod */ theme.text1
 
   return bridge ? (

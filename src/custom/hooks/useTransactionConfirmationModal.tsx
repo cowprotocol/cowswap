@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
-import { useOpenModal, useCloseModals, useModalOpen } from 'state/application/hooks'
+import { useOpenModal, useCloseModals, useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 
 export default function useTransactionConfirmationModal(
@@ -11,7 +11,7 @@ export default function useTransactionConfirmationModal(
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModal = useCloseModals()
-  const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
   const openModal = useCallback(
     (message: string, operationType: OperationType) => {
       setTransactionConfirmationModalMsg(message)

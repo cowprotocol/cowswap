@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 
 import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
@@ -27,7 +27,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
 export function CancelledOrdersUpdater(): null {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
 
   const cancelled = useCancelledOrders({ chainId })
 

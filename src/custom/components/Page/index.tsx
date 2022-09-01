@@ -49,6 +49,10 @@ export const Title = styled.h1`
 export const SectionTitle = styled(Title)`
   font-size: 21px;
   margin: 12px 0 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+  `}
 `
 
 export const Content = styled.div`

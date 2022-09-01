@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import { useVCowContract } from 'hooks/useContract'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { V_COW, COW } from 'constants/tokens'
@@ -13,10 +13,11 @@ import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useTokenBalance } from 'state/connection/hooks'
 // import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 import { SupportedChainId } from 'constants/chains'
 import JSBI from 'jsbi'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -36,7 +37,7 @@ interface SwapVCowCallbackParams {
  * Hook that parses the result input with BigNumber value to CurrencyAmount
  */
 function useParseVCowResult(result: Result | undefined) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const vCowToken = chainId ? V_COW[chainId] : undefined
 
@@ -54,7 +55,7 @@ function useParseVCowResult(result: Result | undefined) {
  */
 export function useVCowData(): VCowData {
   const vCowContract = useVCowContract()
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
 
   const { loading: isVestedLoading, result: vestedResult } = useSingleCallResult(vCowContract, 'swappableBalanceOf', [
     account ?? undefined,
@@ -88,7 +89,7 @@ export function useVCowData(): VCowData {
  * Hook used to swap vCow to Cow token
  */
 export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const vCowContract = useVCowContract()
 
   const addTransaction = useTransactionAdder()
@@ -159,7 +160,7 @@ export function useSwapVCowStatus() {
  * Hook that returns COW balance
  */
 export function useCowBalance() {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const cowToken = chainId ? COW[chainId] : undefined
   return useTokenBalance(account || undefined, cowToken)
 }
@@ -168,7 +169,7 @@ export function useCowBalance() {
  * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
 export function useCombinedBalance() {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const { total: vCowBalance } = useVCowData()
   // const { allocated, claimed } = useCowFromLockedGnoBalances()
   const cowBalance = useCowBalance()
@@ -186,7 +187,7 @@ export function useCombinedBalance() {
 
     const isLoading = account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance) ? true : false
 
-    const cow = COW[chainId || SupportedChainId.MAINNET]
+    const cow = COW[supportedChainId(chainId) || SupportedChainId.MAINNET]
 
     if (account) {
       if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)

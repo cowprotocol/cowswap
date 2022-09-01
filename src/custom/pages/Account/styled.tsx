@@ -21,7 +21,7 @@ export const Wrapper = styled(Page)`
 
   max-width: 910px;
   width: 100%;
-  min-height: auto;
+  min-height: unset;
   padding-top: 16px;
   display: flex;
   justify-content: flex-end;
@@ -243,18 +243,15 @@ export const CardsWrapper = styled.div`
   margin: 16px 0 16px 0;
   padding: 0;
   z-index: 2;
-
   > div {
     flex: 1 1 300px;
   }
   > div:last-child:nth-child(odd) {
     flex: 1 1 100%;
   }
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
-
     > div {
       flex: 1 1 100%;
     }
@@ -277,12 +274,10 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.cardBorder};
   align-items: flex-end;
-
   ${({ showLoader, theme }) =>
     showLoader &&
     css`
       position: relative;
-
       overflow: hidden;
       &::after {
         position: absolute;
@@ -301,22 +296,18 @@ export const Card = styled.div<{ showLoader?: boolean }>`
         animation: shimmer 2s infinite;
         content: '';
       }
-
       @keyframes shimmer {
         100% {
           transform: translateX(100%);
         }
       }
     `}
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 130px;
     padding: 24px 16px;
   `};
-
   ${ButtonPrimary} {
     height: 52px;
-
     > svg {
       height: 100%;
       width: auto;
@@ -325,7 +316,6 @@ export const Card = styled.div<{ showLoader?: boolean }>`
       transform: translateX(0);
       transition: transform 0.2s ease-in-out;
     }
-
     &:hover > svg {
       transform: translateX(2px);
     }
@@ -443,13 +433,14 @@ export const BannerCard = styled(BannerExplainer)`
   }
 `
 
-export const CardActions = styled.div`
+export const CardActions = styled.div<{ justify?: string; content?: string }>`
   width: 100%;
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: ${({ justify }) => justify || 'space-between'};
   align-items: flex-end;
   margin: auto 0 0;
+  align-content: ${({ content }) => content || 'unset'};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
@@ -457,6 +448,10 @@ export const CardActions = styled.div`
     flex-flow: column wrap;
     gap: 32px 0;
     margin: 12px 0;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    align-content: center;
   `};
 
   > a,
@@ -640,6 +635,20 @@ export const VestingBreakdown = styled.div`
 
 export const BannerCardContent = styled.span`
   z-index: 2;
+
+  > b {
+    text-align: left !important;
+  }
+
+  a:last-child {
+    margin-left: 15px;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    a:last-child {
+      margin-left: auto;
+    }
+  `};
 `
 
 export const BannerCardSvg = styled(SVG)`
@@ -653,7 +662,36 @@ export const CardsLoader = styled.div`
   height: 100px;
 `
 export const CardsSpinner = styled(SpinnerLoader)`
+  margin-left: 30px;
   & path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: ${({ theme }) => (theme.darkMode ? theme.text1 : theme.primary1)};
   }
 `
+
+interface TimeProps {
+  date: string | undefined
+}
+
+export const TimeFormatted = ({ date }: TimeProps) => {
+  if (!date) return null
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+  const _date = new Date(date)
+  const monthName = months[_date.getMonth()]
+  const hours = _date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  return <StyledTime>{`${_date.getDate()} ${monthName} ${_date.getFullYear()} - ${hours}`}</StyledTime>
+}

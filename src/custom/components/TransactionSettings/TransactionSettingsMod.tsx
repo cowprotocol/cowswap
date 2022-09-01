@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 // import ms from 'ms.macro'
 import { darken } from 'polished'
-import { useCallback, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -13,7 +13,6 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
-// import ReactGA from 'react-ga4'
 
 // MOD imports
 import {
@@ -111,7 +110,7 @@ export interface TransactionSettingsProps {
 // const THREE_DAYS_IN_SECONDS = ms`3 days` / 1000
 
 export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
   const userSlippageTolerance = useUserSlippageTolerance()
@@ -125,32 +124,29 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
-  const parseSlippageInput = useCallback(
-    (value: string) => {
-      // populate what the user typed and clear the error
-      setSlippageInput(value)
-      setSlippageError(false)
+  function parseSlippageInput(value: string) {
+    // populate what the user typed and clear the error
+    setSlippageInput(value)
+    setSlippageError(false)
 
-      if (value.length === 0) {
+    if (value.length === 0) {
+      slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
+      setUserSlippageTolerance('auto')
+    } else {
+      const parsed = Math.floor(Number.parseFloat(value) * 100)
+
+      if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
         slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
-      } else {
-        const parsed = Math.floor(Number.parseFloat(value) * 100)
-
-        if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
-          slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
-          setUserSlippageTolerance('auto')
-          if (value !== '.') {
-            setSlippageError(SlippageError.InvalidInput)
-          }
-        } else {
-          slippageToleranceAnalytics('Custom', parsed)
-          setUserSlippageTolerance(new Percent(parsed, 10_000))
+        if (value !== '.') {
+          setSlippageError(SlippageError.InvalidInput)
         }
+      } else {
+        slippageToleranceAnalytics('Custom', parsed)
+        setUserSlippageTolerance(new Percent(parsed, 10_000))
       }
-    },
-    [setUserSlippageTolerance]
-  )
+    }
+  }
 
   const tooLow =
     userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))

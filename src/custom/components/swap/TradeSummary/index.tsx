@@ -9,7 +9,7 @@ import { RowFee } from './RowFee'
 import { RowSlippage } from './RowSlippage'
 import { RowReceivedAfterSlippage } from './RowReceivedAfterSlippage'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useHigherUSDValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 
 const Wrapper = styled.div`
   ${RowFixed} {

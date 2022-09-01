@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
-import loadingCowGif from 'assets/cow-swap/cow-load.gif'
+import loadingCowWebp from 'assets/cow-swap/cow-load.webp'
 import { ArrowDown } from 'react-feather'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
 import { useIsQuoteRefreshing, useIsBestQuoteLoading } from 'state/price/hooks'
@@ -132,7 +132,7 @@ export function ArrowWrapperLoader({ onSwitchTokens, setApprovalSubmitted }: Arr
   }
 
   const showLoader = useMemo(
-    () => Boolean(loadingCowGif) && (showCowLoader || showQuoteLoader),
+    () => Boolean(loadingCowWebp) && (showCowLoader || showQuoteLoader),
     [showCowLoader, showQuoteLoader]
   )
 
@@ -141,7 +141,7 @@ export function ArrowWrapperLoader({ onSwitchTokens, setApprovalSubmitted }: Arr
       <ArrowDownIcon />
       {showLoader && (
         <div>
-          <img src={loadingCowGif} alt="Loading prices..." />
+          <img src={loadingCowWebp} alt="Loading prices..." />
         </div>
       )}
     </Wrapper>

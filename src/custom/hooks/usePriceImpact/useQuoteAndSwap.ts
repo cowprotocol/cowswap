@@ -6,7 +6,7 @@ import { useTradeExactInWithFee } from 'state/swap/extension'
 import { QuoteInformationObject } from 'state/price/reducer'
 
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -53,7 +53,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     setLoading,
     validTo,
   } = params
-  const { chainId: preChain } = useActiveWeb3React()
+  const { chainId: preChain } = useWeb3React()
   const { account } = useWalletInfo()
   const strategy = useGetGpPriceStrategy()
 
@@ -123,7 +123,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
 
 // calculates a new Quote and inverse swap values
 export default function useExactInSwap({ quote, outputCurrency, parsedAmount }: ExactInSwapParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const isWrapping = isWrappingTrade(parsedAmount?.currency, outputCurrency, chainId)
 

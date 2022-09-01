@@ -22,9 +22,9 @@ cypress.env.json
 
 # builds
 /build
+/dts
 /cosmos-export
 /dist
-/dts
 
 # misc
 .DS_Store

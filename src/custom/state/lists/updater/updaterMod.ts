@@ -1,12 +1,13 @@
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
+import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { /* ARBITRUM_LIST, OPTIMISM_LIST, */ DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useInterval from 'lib/hooks/useInterval'
 import { useCallback, useEffect } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { useAllLists } from 'state/lists/hooks'
 
+// import { isCelo } from '../../constants/tokens'
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { acceptListUpdate /* , enableList  */ } from 'state/lists/actions'
@@ -17,7 +18,7 @@ import { useActiveListUrls } from 'state/lists/hooks'
 import { updateVersion } from 'state/global/actions'
 
 export default function Updater(): null {
-  const { chainId: connectedChainId, library } = useActiveWeb3React() // MOD: chainId
+  const { chainId: connectedChainId, provider } = useWeb3React() // MOD: chainId
   // chainId returns number or undefined we need to map against supported chains
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
@@ -43,9 +44,12 @@ export default function Updater(): null {
     if (chainId && [SupportedChainId.ARBITRUM_ONE, SupportedChainId.ARBITRUM_RINKEBY].includes(chainId)) {
       dispatch(enableList(ARBITRUM_LIST))
     }
+    if (chainId && isCelo(chainId)) {
+      dispatch(enableList(CELO_LIST))
+    }
   }, [chainId, dispatch]) */
-  // fetch all lists every 10 minutes, but only after we initialize library
-  useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
+  // fetch all lists every 10 minutes, but only after we initialize provider
+  useInterval(fetchAllListsCallback, provider ? 1000 * 60 * 10 : null)
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
@@ -55,7 +59,7 @@ export default function Updater(): null {
         fetchList(listUrl).catch((error) => console.debug('list added fetching error', error))
       }
     })
-  }, [dispatch, fetchList, library, lists])
+  }, [dispatch, fetchList, lists])
 
   // if any lists from unsupported lists are loaded, check them too (in case new updates since last visit)
   useEffect(() => {
@@ -65,7 +69,7 @@ export default function Updater(): null {
         fetchList(listUrl).catch((error) => console.debug('list added fetching error', error))
       }
     })
-  }, [chainId, dispatch, fetchList, library, lists])
+  }, [chainId, dispatch, fetchList, lists])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {

@@ -1,11 +1,11 @@
 import useSWR from 'swr'
 
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { getOrders, OrderMetaData } from 'api/gnosisProtocol/api'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'constants/index'
 
 export function useGpOrders(account?: string | null, refreshInterval?: number): OrderMetaData[] | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const { data } = useSWR<OrderMetaData[]>(
     ['orders', account, chainId],

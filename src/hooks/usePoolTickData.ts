@@ -1,15 +1,17 @@
-import { skipToken } from '@reduxjs/toolkit/query/react'
+// import { skipToken } from '@reduxjs/toolkit/query/react'
 import { Currency } from '@uniswap/sdk-core'
 import { FeeAmount, nearestUsableTick, Pool, TICK_SPACINGS, tickToPrice } from '@uniswap/v3-sdk'
+import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from '@src/constants/chains'
 import { ZERO_ADDRESS } from 'constants/misc'
 import JSBI from 'jsbi'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
-import ms from 'ms.macro'
+// import ms from 'ms.macro'
 import { useEffect, useMemo, useState } from 'react'
-import { useAllV3TicksQuery } from 'state/data/enhanced'
+// import { useAllV3TicksQuery } from 'state/data/enhanced'
 import computeSurroundingTicks from 'utils/computeSurroundingTicks'
 
+import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
 import { useTickLens } from './useContract'
 import { PoolState, usePool } from './usePools'
 
@@ -54,9 +56,17 @@ function useTicksFromTickLens(
   // Find nearest valid tick for pool in case tick is not initialized.
   const activeTick = pool?.tickCurrent && tickSpacing ? nearestUsableTick(pool?.tickCurrent, tickSpacing) : undefined
 
+  const { chainId } = useWeb3React()
+
   const poolAddress =
     currencyA && currencyB && feeAmount && poolState === PoolState.EXISTS
-      ? Pool.getAddress(currencyA?.wrapped, currencyB?.wrapped, feeAmount)
+      ? Pool.getAddress(
+          currencyA?.wrapped,
+          currencyB?.wrapped,
+          feeAmount,
+          undefined,
+          chainId ? V3_CORE_FACTORY_ADDRESSES[chainId] : undefined
+        )
       : undefined
 
   // it is also possible to grab all tick data but it is extremely slow
@@ -140,12 +150,29 @@ function useTicksFromSubgraph(
   currencyB: Currency | undefined,
   feeAmount: FeeAmount | undefined
 ) {
+  // MOD: bogus return because this is not in use
+  return {
+    isLoading: false,
+    isError: false,
+    isUninitialized: false,
+    error: '',
+    data: { ticks: undefined },
+  }
+  /* const { chainId } = useWeb3React()
   const poolAddress =
-    currencyA && currencyB && feeAmount ? Pool.getAddress(currencyA?.wrapped, currencyB?.wrapped, feeAmount) : undefined
+    currencyA && currencyB && feeAmount
+      ? Pool.getAddress(
+          currencyA?.wrapped,
+          currencyB?.wrapped,
+          feeAmount,
+          undefined,
+          chainId ? V3_CORE_FACTORY_ADDRESSES[chainId] : undefined
+        )
+      : undefined
 
   return useAllV3TicksQuery(poolAddress ? { poolAddress: poolAddress?.toLowerCase(), skip: 0 } : skipToken, {
     pollingInterval: ms`30s`,
-  })
+  }) */
 }
 
 // Fetches all ticks for a given pool

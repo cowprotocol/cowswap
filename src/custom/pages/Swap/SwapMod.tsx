@@ -9,7 +9,7 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 // import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
@@ -42,9 +42,9 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from 'hooks/useERC20Permit'
 // import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /*, useUSDCValue*/ } from 'hooks/useStablecoinPrice'
 import useWrapCallback, { /*WrapErrorText, */ WrapType } from 'hooks/useWrapCallback'
-import { useCloseModals, useModalOpen, useOpenModal, useWalletModalToggle } from 'state/application/hooks'
+import { useCloseModals, useModalIsOpen, useOpenModal, useToggleWalletModal } from 'state/application/hooks'
 import { Field } from 'state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -87,6 +87,7 @@ import CowSubsidyModal from 'components/CowSubsidyModal'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { AlertWrapper } from './styleds' // mod
 import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAnalytics } from 'utils/analytics'
+import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -110,7 +111,7 @@ export default function Swap({
   className,
   allowsOffchainSigning,
 }: SwapProps) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const previousChainId = usePrevious(chainId)
@@ -159,14 +160,14 @@ export default function Swap({
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
 
   // Transaction confirmation modal
   const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
   const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
-  const showTransactionConfirmationModal = useModalOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
 
   const openTransactionConfirmationModal = useCallback(
     (message: string, operationType: OperationType) => {
@@ -179,7 +180,7 @@ export default function Swap({
 
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
-  const showCowSubsidyModal = useModalOpen(ApplicationModal.COW_SUBSIDY)
+  const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
 
@@ -571,6 +572,8 @@ export default function Swap({
 
   const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
 
+  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+
   // const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
   const [exactInLabel, exactOutLabel] = useMemo(
@@ -715,7 +718,7 @@ export default function Swap({
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={onWrap ? undefined : priceImpact}
+                priceImpact={showWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}
@@ -812,18 +815,24 @@ export default function Swap({
                 </Text>
               </ButtonError>
             ) : showWrap ? (
-              <ButtonPrimary
-                disabled={Boolean(wrapInputError)}
-                onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
-                buttonSize={ButtonSize.BIG}
-              >
-                {wrapInputError ??
-                  (wrapType === WrapType.WRAP ? (
-                    <Trans>Wrap</Trans>
-                  ) : wrapType === WrapType.UNWRAP ? (
-                    <Trans>Unwrap</Trans>
-                  ) : null)}
-              </ButtonPrimary>
+              !account ? (
+                <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
+                  <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+                </ButtonPrimary>
+              ) : (
+                <ButtonPrimary
+                  disabled={Boolean(wrapInputError)}
+                  onClick={() => onWrap && onWrap().catch((error) => console.error('Error ' + wrapType, error))}
+                  buttonSize={ButtonSize.BIG}
+                >
+                  {wrapInputError ??
+                    (wrapType === WrapType.WRAP ? (
+                      <Trans>Wrap</Trans>
+                    ) : wrapType === WrapType.UNWRAP ? (
+                      <Trans>Unwrap</Trans>
+                    ) : null)}
+                </ButtonPrimary>
+              )
             ) : !swapInputError && isNativeIn ? (
               <SwitchToWethBtn wrappedToken={wrappedToken} />
             ) : quote?.error === 'fee-exceeds-sell-amount' ? (
@@ -865,6 +874,12 @@ export default function Swap({
             ) : !account ? (
               <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
                 <SwapButton showLoading={swapBlankState || isGettingNewQuote}>Connect Wallet</SwapButton>
+              </ButtonPrimary>
+            ) : isReadonlyGnosisSafeUser ? (
+              <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+                <ThemedText.Main mb="4px">
+                  <Trans>Read Only</Trans>
+                </ThemedText.Main>
               </ButtonPrimary>
             ) : showApproveFlow ? (
               <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>

@@ -15,7 +15,7 @@ import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
 import { formatDateWithTimezone } from 'utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
@@ -24,6 +24,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'utils/analytics'
+import { ButtonSize } from 'theme'
 
 enum ClaimStatus {
   INITIAL,
@@ -42,7 +43,7 @@ interface Props {
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
-  const { chainId = ChainId.MAINNET, account } = useActiveWeb3React()
+  const { chainId = ChainId.MAINNET, account } = useWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
   const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
@@ -181,7 +182,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
               <Trans>Successfully claimed</Trans>
             </ButtonPrimary>
           ) : (
-            <ButtonPrimary onClick={handleClaim} disabled={!canClaim}>
+            <ButtonPrimary buttonSize={ButtonSize.SMALL} onClick={handleClaim} disabled={!canClaim}>
               {isClaimPending ? (
                 'Claiming COW...'
               ) : (

@@ -29,7 +29,7 @@ import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
 import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
@@ -147,7 +147,7 @@ function AccountDetails({ isClaimer, label, account, connectedAccount }: Account
 }
 
 export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modalCbs }: InvestmentFlowProps) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
     useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()

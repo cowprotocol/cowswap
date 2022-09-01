@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { Currency, Percent, TradeType, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { SwapCallbackState /*, useSwapCallback as useLibSwapCallBack */ } from 'lib/hooks/swap/useSwapCallback'
 import { /* ReactNode, */ useMemo } from 'react'
 
@@ -25,7 +25,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { usePresignOrder, PresignOrder } from 'hooks/usePresignOrder'
-import { Web3Provider, ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { useAppData } from 'hooks/useAppData'
 import { useAddAppDataToUploadQueue } from 'state/appData/hooks'
 
@@ -73,7 +73,7 @@ interface SwapParams {
   account: string
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
-  library: Web3Provider | (JsonRpcProvider & { provider?: ExternalProvider | undefined })
+  provider: JsonRpcProvider
 
   // Trade details and derived data
   trade: TradeGp
@@ -112,7 +112,7 @@ async function _swap(params: SwapParams): Promise<string> {
     account,
     allowsOffchainSigning,
     isGnosisSafeWallet,
-    library,
+    provider,
 
     // Trade details and derived data
     trade,
@@ -208,7 +208,7 @@ async function _swap(params: SwapParams): Promise<string> {
     validTo,
     recipient,
     recipientAddressOrName,
-    signer: library.getSigner(),
+    signer: provider.getSigner(),
     allowsOffchainSigning,
     appDataHash,
     quoteId: trade.quoteId,
@@ -267,7 +267,7 @@ async function _swap(params: SwapParams): Promise<string> {
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   signatureData: SignatureData | undefined | null
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: ReactNode | null } {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
 
   const deadline = useTransactionDeadline()
 
@@ -342,7 +342,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     openTransactionConfirmationModal,
     closeModals,
   } = params
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
@@ -365,7 +365,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
   return useMemo(() => {
     if (
       !trade ||
-      !library ||
+      !provider ||
       !account ||
       !chainId ||
       !inputAmountWithSlippage ||
@@ -398,7 +398,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
       account,
       allowsOffchainSigning,
       isGnosisSafeWallet: !!gnosisSafeInfo,
-      library,
+      provider,
 
       // Trade details and derived data
       trade,
@@ -432,7 +432,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     }
   }, [
     trade,
-    library,
+    provider,
     account,
     chainId,
     inputAmountWithSlippage,

@@ -1,6 +1,6 @@
 import { Field } from 'state/swap/actions'
 
-import { useHigherUSDValue } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 
 import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
 import { ParsedAmounts } from './types'
