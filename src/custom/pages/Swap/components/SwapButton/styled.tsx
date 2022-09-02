@@ -93,7 +93,7 @@ export function SwitchToWethBtn({ wrappedToken }: { wrappedToken: Token }) {
           outputCurrencyId: OUTPUT.currencyId ?? undefined,
           typedValue,
           recipient: null,
-          field: independentField,
+          independentField,
         })
       }
     >

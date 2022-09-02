@@ -266,7 +266,7 @@ export function useDefaultsFromURLSearch(): SwapState {
     dispatch(
       replaceSwapState({
         typedValue: parsedSwapState.typedValue,
-        field: parsedSwapState.independentField,
+        independentField: parsedSwapState.independentField,
         inputCurrencyId,
         outputCurrencyId,
         recipient: parsedSwapState.recipient,

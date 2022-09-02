@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 
-export const CurrencySelectWrapper = styled.button`
+export const CurrencySelectWrapper = styled.button<{ isLoading: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -10,7 +10,8 @@ export const CurrencySelectWrapper = styled.button`
   gap: 0.5rem;
   border: 0;
   outline: none;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme, isLoading }) => (isLoading ? theme.primary1 : theme.bg1)};
+  opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   border-radius: 16px;
   padding: 8px;
   transition: background-color 0.15s;
@@ -29,9 +30,9 @@ export const ArrowDown = styled(DropDown)`
   }
 `
 
-export const CurrencySymbol = styled.div`
+export const CurrencySymbol = styled.div<{ stubbed?: boolean }>`
   font-size: 18px;
   font-weight: 500;
-  text-transform: uppercase;
+  text-transform: ${({ stubbed }) => (stubbed ? 'none' : 'uppercase')};
   color: ${({ theme }) => theme.text1};
 `

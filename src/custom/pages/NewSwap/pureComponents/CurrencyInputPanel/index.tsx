@@ -8,7 +8,7 @@ interface BuiltItProps {
 }
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
-  currency: Currency
+  currency?: Currency
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
