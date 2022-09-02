@@ -32,9 +32,9 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
     <styledEl.Container>
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
-      <CurrencyInputPanel currency={currencyIn} />
+      <CurrencyInputPanel field={Field.INPUT} currency={currencyIn} />
       <CurrencyArrowSeparator isLoading={false} />
-      <styledEl.DestCurrencyInputPanel currency={currencyOut} />
+      <styledEl.DestCurrencyInputPanel field={Field.OUTPUT} currency={currencyOut} />
       <ReceiveAmount />
       <TradeRates />
       <TradeButton>Trade</TradeButton>

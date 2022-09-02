@@ -4,13 +4,14 @@ import * as styledEl from './styled'
 
 export interface CurrencySelectButtonProps {
   currency?: Currency
+  onClick?(): void
 }
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
-  const { currency } = props
+  const { currency, onClick } = props
 
   return (
-    <styledEl.CurrencySelectWrapper isLoading={!currency}>
+    <styledEl.CurrencySelectWrapper onClick={onClick} isLoading={!currency}>
       {currency ? <CurrencyLogo currency={currency} size={'24px'} /> : <div></div>}
       <styledEl.CurrencySymbol stubbed={!currency}>
         {currency ? currency.symbol : 'Select a token'}
