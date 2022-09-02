@@ -4,10 +4,10 @@ import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import { /*Lazy,*/ Suspense, /* PropsWithChildren, */ ReactNode } from 'react'
 import { /*Redirect,*/ Route, Switch, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
 import Polling from 'components/Header/Polling'
+import { useAnalyticsReporter } from 'components/analytics'
 
 import DarkModeQueryParamReader from 'theme'
 /* import AddLiquidity from './AddLiquidity'
@@ -81,10 +81,10 @@ const Marginer = styled.div`
 
 export default function App(props?: { children?: ReactNode }) {
   const location = useLocation()
+  useAnalyticsReporter(location)
 
   return (
     <ErrorBoundary>
-      <Route component={GoogleAnalyticsReporter} />
       <Route component={DarkModeQueryParamReader} />
       <Route component={ApeModeQueryParamReader} />
       <AppWrapper>

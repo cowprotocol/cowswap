@@ -1,7 +1,7 @@
-import { Category, reportEvent } from './index'
+import { Category, sendEvent } from '../index'
 
 export function changeWalletAnalytics(walletName: string) {
-  reportEvent({
+  sendEvent({
     category: Category.WALLET,
     action: 'Change Wallet',
     label: walletName,
@@ -10,7 +10,7 @@ export function changeWalletAnalytics(walletName: string) {
 
 type AddTokenActions = 'Succeeded' | 'Failed'
 export function addTokenToMetamaskAnalytics(action: AddTokenActions, symbol: string | undefined) {
-  reportEvent({
+  sendEvent({
     category: Category.WALLET,
     action: `Add token to Metamask ${action}`,
     label: symbol,

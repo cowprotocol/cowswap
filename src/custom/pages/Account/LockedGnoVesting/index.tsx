@@ -23,7 +23,7 @@ import usePrevious from 'hooks/usePrevious'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
-import { claimAnalytics } from 'utils/analytics'
+import { claimAnalytics } from 'components/analytics'
 import { ButtonSize } from 'theme'
 
 enum ClaimStatus {

@@ -35,7 +35,7 @@ import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/
 import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
-import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'utils/analytics'
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'components/analytics'
 
 const Wrapper = styled(Column)`
   width: 100%;

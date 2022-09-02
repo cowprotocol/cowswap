@@ -25,7 +25,7 @@ import { getOperationMessage, OperationType } from '../components/TransactionCon
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
 // import ReactGA from 'react-ga4'
 import { isRejectRequestProviderError } from '../utils/misc'
-import { wrapAnalytics } from 'utils/analytics'
+import { wrapAnalytics } from 'components/analytics'
 import { OptionalApproveCallbackParams } from './useApproveCallback'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)

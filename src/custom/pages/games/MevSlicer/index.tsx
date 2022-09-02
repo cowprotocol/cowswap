@@ -3,7 +3,7 @@ import Page, { Content } from 'components/Page'
 import styled from 'styled-components/macro'
 
 import ninjaCowImg from 'assets/cow-swap/ninja-cow.png'
-import { gameAnalytics } from 'utils/analytics'
+import { gameAnalytics } from 'components/analytics'
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 

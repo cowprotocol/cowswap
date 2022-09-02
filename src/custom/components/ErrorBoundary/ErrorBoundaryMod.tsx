@@ -10,7 +10,7 @@ import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
 import { Routes } from 'constants/routes'
-import { reportError } from 'utils/analytics'
+import { sendError } from 'components/analytics'
 import { ChunkLoadError } from 'components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'components/ErrorBoundary/ErrorWithStackTrace'
 
@@ -128,7 +128,7 @@ export default class ErrorBoundary extends React.Component<unknown, ErrorBoundar
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    reportError(error, errorInfo)
+    sendError(error, errorInfo)
   }
 
   render() {

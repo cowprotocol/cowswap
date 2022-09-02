@@ -33,7 +33,7 @@ import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'components/Sear
 // MOD imports
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.'
-import { searchByAddressAnalytics } from 'utils/analytics'
+import { searchByAddressAnalytics } from 'components/analytics'
 
 /* const ContentWrapper = styled(Column)`
   width: 100%;

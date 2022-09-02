@@ -13,7 +13,7 @@ import { isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
-import { priceOutOfRangeAnalytics } from 'utils/analytics'
+import { priceOutOfRangeAnalytics } from 'components/analytics'
 import { GpPriceStrategy } from 'state/gas/atoms'
 
 /**

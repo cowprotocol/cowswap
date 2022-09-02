@@ -1,6 +1,6 @@
 import React, { HTMLProps } from 'react'
 import { StyledLink, handleClickExternalLink } from './baseTheme'
-import { externalLinkAnalytics } from 'utils/analytics'
+import { externalLinkAnalytics } from 'components/analytics'
 
 export * from '@src/theme/components'
 

@@ -33,7 +33,7 @@ import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
-import { toggleDarkModeAnalytics } from 'utils/analytics'
+import { toggleDarkModeAnalytics } from 'components/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
