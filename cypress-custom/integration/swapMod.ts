@@ -5,11 +5,11 @@ describe('Swap (mod)', () => {
     cy.visit('/#/swap')
   })
 
-  it('starts with an Native/USDC swap and quotes it', () => {
-    cy.get('#swap-currency-input .token-amount-input').should('have.value', '1')
+  it('starts with wrapped native selected', () => {
+    cy.get('#swap-currency-input .token-amount-input').should('not.have.value')
     cy.get('#swap-currency-input .token-symbol-container').should('contain.text', 'WETH')
-    cy.get('#swap-currency-output .token-amount-input').should('not.have.value', '')
-    cy.get('#swap-currency-output .token-symbol-container').should('contain.text', 'USDC')
+    cy.get('#swap-currency-output .token-amount-input').should('not.have.value')
+    cy.get('#swap-currency-output .token-symbol-container').should('contain.text', 'Select a token')
   })
 
   it('can enter an amount into input', () => {
