@@ -15,6 +15,20 @@ interface NewSwapPageProps {
   allowedSlippage: Percent
 }
 
+function swapPagePropsChecker(prev: NewSwapPageProps, next: NewSwapPageProps): boolean {
+  const isInputCurrencyEqual =
+    prev.currencies.INPUT && next.currencies.INPUT
+      ? prev.currencies.INPUT.equals(next.currencies.INPUT)
+      : prev.currencies.INPUT === next.currencies.INPUT
+
+  const isOutputCurrencyEqual =
+    prev.currencies.OUTPUT && next.currencies.OUTPUT
+      ? prev.currencies.OUTPUT.equals(next.currencies.OUTPUT)
+      : prev.currencies.OUTPUT === next.currencies.OUTPUT
+
+  return prev.allowedSlippage.equalTo(next.allowedSlippage) && isInputCurrencyEqual && isOutputCurrencyEqual
+}
+
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
   const { currencies, allowedSlippage } = props
   const currencyIn = currencies[Field.INPUT] || undefined
@@ -40,7 +54,7 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
       <TradeButton>Trade</TradeButton>
     </styledEl.Container>
   )
-})
+}, swapPagePropsChecker)
 
 export function NewSwapPage() {
   const { allowedSlippage, currencies } = useDerivedSwapInfo()
