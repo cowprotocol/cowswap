@@ -386,12 +386,8 @@ export function validatedRecipient(recipient: any): string | null {
   return null
 } */
 
-// mod: defaultInputCurrency and chainId parameters
-export function queryParametersToSwapState(
-  parsedQs: ParsedQs,
-  defaultInputCurrency = '',
-  chainId: SupportedChainId | undefined = undefined
-): SwapState {
+// mod: defaultInputCurrency parameters
+export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurrency = ''): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
@@ -422,18 +418,19 @@ export function queryParametersToSwapState(
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId } = useWeb3React()
+  const { chainId: _chainId } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 
   // TODO: check whether we can use the new function for native currency
   // This is not a great fix for setting a default token
   // but it is better and easiest considering updating default files
-  const defaultInputToken = WETH[supportedChainId(chainId) || SupportedChainId.MAINNET].address // mod
+  const defaultInputToken = WETH[chainId || SupportedChainId.MAINNET].address // mod
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId) // mod
-  }, [chainId, defaultInputToken, parsedQs]) // mod
+    return queryParametersToSwapState(parsedQs, defaultInputToken) // mod
+  }, [defaultInputToken, parsedQs]) // mod
 
   useEffect(() => {
     if (!chainId) return
@@ -451,7 +448,7 @@ export function useDefaultsFromURLSearch(): SwapState {
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, parsedQs])
+  }, [dispatch, chainId])
 
   return parsedSwapState
 }
