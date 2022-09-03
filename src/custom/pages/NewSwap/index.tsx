@@ -5,40 +5,18 @@ import { CurrencyInputPanel } from './pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
 import { TradeRates } from './pureComponents/TradeRates'
 import { TradeButton } from './pureComponents/TradeButton'
-import { Currencies, useDerivedSwapInfo } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
 import { Field } from 'state/swap/actions'
-import { Percent } from '@uniswap/sdk-core'
 import { useSetupSwapState } from 'pages/NewSwap/hooks/useSetupSwapState'
-
-interface NewSwapPageProps {
-  currencies: Currencies
-  allowedSlippage: Percent
-}
-
-function swapPagePropsChecker(prev: NewSwapPageProps, next: NewSwapPageProps): boolean {
-  const isInputCurrencyEqual =
-    prev.currencies.INPUT && next.currencies.INPUT
-      ? prev.currencies.INPUT.equals(next.currencies.INPUT)
-      : prev.currencies.INPUT === next.currencies.INPUT
-
-  const isOutputCurrencyEqual =
-    prev.currencies.OUTPUT && next.currencies.OUTPUT
-      ? prev.currencies.OUTPUT.equals(next.currencies.OUTPUT)
-      : prev.currencies.OUTPUT === next.currencies.OUTPUT
-
-  return prev.allowedSlippage.equalTo(next.allowedSlippage) && isInputCurrencyEqual && isOutputCurrencyEqual
-}
+import { useCurrencyBalance } from '@src/state/connection/hooks'
+import { useWeb3React } from '@web3-react/core'
+import { CurrencyInfo, NewSwapPageProps } from 'pages/NewSwap/typings'
+import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
+import { useGetQuoteAndStatus } from 'state/price/hooks'
 
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
-  const { currencies, allowedSlippage } = props
-  const currencyIn = currencies[Field.INPUT] || undefined
-  const currencyOut = currencies[Field.OUTPUT] || undefined
-
-  // const { INPUT } = useSwapState()
-  // const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
-  //   token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
-  //   chainId,
-  // })
+  const { allowedSlippage, typedValue, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo } = props
 
   console.log('SWAP PAGE RENDER: ', props)
 
@@ -46,9 +24,9 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
     <styledEl.Container>
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
-      <CurrencyInputPanel field={Field.INPUT} currency={currencyIn} />
-      <CurrencyArrowSeparator isLoading={false} />
-      <styledEl.DestCurrencyInputPanel field={Field.OUTPUT} currency={currencyOut} />
+      <CurrencyInputPanel currencyInfo={inputCurrencyInfo} typedValue={typedValue} />
+      <CurrencyArrowSeparator isLoading={isGettingNewQuote} />
+      <styledEl.DestCurrencyInputPanel currencyInfo={outputCurrencyInfo} typedValue={''} />
       <ReceiveAmount />
       <TradeRates />
       <TradeButton>Trade</TradeButton>
@@ -57,13 +35,37 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
 }, swapPagePropsChecker)
 
 export function NewSwapPage() {
-  const { allowedSlippage, currencies } = useDerivedSwapInfo()
+  const { chainId, account } = useWeb3React()
+  const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
+
+  const { typedValue, INPUT } = useSwapState()
+  const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
+    token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
+    chainId,
+  })
+
+  const inputCurrencyInfo: CurrencyInfo = {
+    field: Field.INPUT,
+    currency: currencies.INPUT || null,
+    balance: useCurrencyBalance(account ?? undefined, currencies.INPUT) || null,
+    fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
+  }
+
+  const outputCurrencyInfo: CurrencyInfo = {
+    field: Field.OUTPUT,
+    currency: currencies.OUTPUT || null,
+    balance: useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null,
+    fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
+  }
 
   useSetupSwapState()
 
   const props: NewSwapPageProps = {
     allowedSlippage,
-    currencies,
+    typedValue,
+    isGettingNewQuote,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
   }
 
   return <NewSwapPageInner {...props} />

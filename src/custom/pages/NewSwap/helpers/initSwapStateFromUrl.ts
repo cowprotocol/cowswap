@@ -14,7 +14,9 @@ export function initSwapStateFromUrl(
   const defaultOutputToken = USDC[chainId]?.address
 
   const typedValue =
-    tradeStateFromUrl.amount && !isNaN(parseFloat(tradeStateFromUrl.amount)) ? tradeStateFromUrl.amount : ''
+    (tradeStateFromUrl.amount && !isNaN(parseFloat(tradeStateFromUrl.amount)) ? tradeStateFromUrl.amount : '') ||
+    persistedSwapState.typedValue ||
+    ''
 
   const independentField =
     tradeStateFromUrl.independentField === 'output' ? Field.OUTPUT : persistedSwapState.independentField || Field.INPUT

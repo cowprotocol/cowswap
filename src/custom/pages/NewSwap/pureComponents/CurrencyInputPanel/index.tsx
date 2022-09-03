@@ -1,34 +1,43 @@
 import { useCallback, useState } from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '../CurrencySelectButton'
-import { Currency } from '@uniswap/sdk-core'
-import CurrencySearchModal from '@src/components/SearchModal/CurrencySearchModal'
-import { useAppDispatch } from '@src/state/hooks'
-import { Field, selectCurrency } from '@src/state/swap/actions'
+import { Currency, Percent } from '@uniswap/sdk-core'
+import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
+import { formatSmartAmount } from 'utils/format'
+import { CurrencyInfo } from 'pages/NewSwap/typings'
+import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
+import { useSwapActionHandlers } from 'state/swap/hooks'
+import { Trans } from '@lingui/macro'
 
 interface BuiltItProps {
   className: string
 }
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
-  field: Field
-  typedValue?: string
-  currency?: Currency
+  currencyInfo: CurrencyInfo
+  typedValue: string
+  priceImpact?: Percent
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const loading = false
-  const { currency, className, field, typedValue } = props
-  const [sourceCurrencyValue, setSourceCurrencyValue] = useState(typedValue || '1')
+  const priceImpactLoading = false
+  const { currencyInfo, className, typedValue, priceImpact } = props
+  const { field, currency, balance, fiatAmount } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
 
-  const dispatch = useAppDispatch()
+  const { onCurrencySelection, onUserInput: onUserInputDispatch } = useSwapActionHandlers()
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
-      const currencyId = currency.isToken ? currency.address : currency.isNative ? 'ETH' : ''
-      dispatch(selectCurrency({ field, currencyId }))
+      onCurrencySelection(field, currency)
     },
-    [dispatch, field]
+    [onCurrencySelection, field]
+  )
+  const onUserInput = useCallback(
+    (typedValue: string) => {
+      onUserInputDispatch(field, typedValue)
+    },
+    [onUserInputDispatch, field]
   )
 
   return (
@@ -36,20 +45,22 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       <styledEl.Wrapper className={className}>
         <styledEl.CurrencyInputBox>
           <div>
-            <CurrencySelectButton onClick={() => setCurrencySearchModalOpen(true)} currency={currency} />
+            <CurrencySelectButton onClick={() => setCurrencySearchModalOpen(true)} currency={currency || undefined} />
           </div>
           <div>
-            <styledEl.NumericalInput
-              value={sourceCurrencyValue}
-              onUserInput={setSourceCurrencyValue}
-              $loading={loading}
-            />
+            <styledEl.NumericalInput value={typedValue} onUserInput={onUserInput} $loading={loading} />
           </div>
           <div>
-            <styledEl.BalanceText>Balance: 0 WXDAI</styledEl.BalanceText>
+            {balance && (
+              <styledEl.BalanceText>
+                <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+              </styledEl.BalanceText>
+            )}
           </div>
           <div>
-            <styledEl.BalanceText>≈ $22.82</styledEl.BalanceText>
+            <styledEl.BalanceText>
+              <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatAmount} priceImpact={priceImpact} />
+            </styledEl.BalanceText>
           </div>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
