@@ -14,9 +14,10 @@ import { CurrencyInfo, NewSwapPageProps } from 'pages/NewSwap/typings'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
+import { useSwapCurrenciesViewAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesViewAmounts'
 
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
-  const { allowedSlippage, typedValue, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo } = props
+  const { allowedSlippage, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo } = props
 
   console.log('SWAP PAGE RENDER: ', props)
 
@@ -24,9 +25,9 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
     <styledEl.Container>
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
-      <CurrencyInputPanel currencyInfo={inputCurrencyInfo} typedValue={typedValue} />
+      <CurrencyInputPanel currencyInfo={inputCurrencyInfo} />
       <CurrencyArrowSeparator isLoading={isGettingNewQuote} />
-      <styledEl.DestCurrencyInputPanel currencyInfo={outputCurrencyInfo} typedValue={''} />
+      <styledEl.DestCurrencyInputPanel currencyInfo={outputCurrencyInfo} />
       <ReceiveAmount />
       <TradeRates />
       <TradeButton>Trade</TradeButton>
@@ -36,9 +37,10 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
 
 export function NewSwapPage() {
   const { chainId, account } = useWeb3React()
+  const { INPUT } = useSwapState()
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
+  const { INPUT: inputViewAmount, OUTPUT: outputViewAmount } = useSwapCurrenciesViewAmounts()
 
-  const { typedValue, INPUT } = useSwapState()
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
     token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
     chainId,
@@ -47,6 +49,7 @@ export function NewSwapPage() {
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
+    viewAmount: inputViewAmount,
     balance: useCurrencyBalance(account ?? undefined, currencies.INPUT) || null,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
   }
@@ -54,6 +57,7 @@ export function NewSwapPage() {
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
+    viewAmount: outputViewAmount,
     balance: useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
   }
@@ -62,7 +66,6 @@ export function NewSwapPage() {
 
   const props: NewSwapPageProps = {
     allowedSlippage,
-    typedValue,
     isGettingNewQuote,
     inputCurrencyInfo,
     outputCurrencyInfo,

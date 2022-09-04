@@ -5,7 +5,6 @@ export interface NewSwapPageProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
-  typedValue: string
   isGettingNewQuote: boolean
 }
 
@@ -19,6 +18,7 @@ export interface TradeStateFromUrl {
 
 export interface CurrencyInfo {
   field: Field
+  viewAmount: string
   currency: Currency | null
   balance: CurrencyAmount<Currency> | null
   fiatAmount: CurrencyAmount<Currency> | null

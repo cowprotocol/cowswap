@@ -15,15 +15,14 @@ interface BuiltItProps {
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyInfo
-  typedValue: string
   priceImpact?: Percent
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const loading = false
   const priceImpactLoading = false
-  const { currencyInfo, className, typedValue, priceImpact } = props
-  const { field, currency, balance, fiatAmount } = currencyInfo
+  const { currencyInfo, className, priceImpact } = props
+  const { field, currency, balance, fiatAmount, viewAmount } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
 
   const { onCurrencySelection, onUserInput: onUserInputDispatch } = useSwapActionHandlers()
@@ -48,7 +47,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             <CurrencySelectButton onClick={() => setCurrencySearchModalOpen(true)} currency={currency || undefined} />
           </div>
           <div>
-            <styledEl.NumericalInput value={typedValue} onUserInput={onUserInput} $loading={loading} />
+            <styledEl.NumericalInput value={viewAmount} onUserInput={onUserInput} $loading={loading} />
           </div>
           <div>
             {balance && (

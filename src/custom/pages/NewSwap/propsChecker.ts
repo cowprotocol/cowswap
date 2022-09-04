@@ -10,14 +10,14 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
     prev.currency && next.currency ? prev.currency.equals(next.currency) : prev.currency === next.currency
   const isBalanceEqual = isCurrencyAmountEqual(prev.balance, next.balance)
   const isFiatAmountEqual = isCurrencyAmountEqual(prev.fiatAmount, next.fiatAmount)
+  const isViewAmountEqual = prev.viewAmount === next.viewAmount
 
-  return isCurrencyEqual && isBalanceEqual && isFiatAmountEqual
+  return isCurrencyEqual && isBalanceEqual && isFiatAmountEqual && isViewAmountEqual
 }
 
 export function swapPagePropsChecker(prev: NewSwapPageProps, next: NewSwapPageProps): boolean {
   return (
     prev.allowedSlippage.equalTo(next.allowedSlippage) &&
-    prev.typedValue === next.typedValue &&
     isCurrencyInfoEqual(prev.inputCurrencyInfo, next.inputCurrencyInfo) &&
     isCurrencyInfoEqual(prev.outputCurrencyInfo, next.outputCurrencyInfo)
   )
