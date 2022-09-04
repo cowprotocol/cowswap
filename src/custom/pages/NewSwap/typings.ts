@@ -1,11 +1,13 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 export interface NewSwapPageProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
   isGettingNewQuote: boolean
+  priceImpactParams: PriceImpact
 }
 
 export interface TradeStateFromUrl {

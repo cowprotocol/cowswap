@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '../CurrencySelectButton'
-import { Currency, Percent } from '@uniswap/sdk-core'
+import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { formatSmartAmount } from 'utils/format'
 import { CurrencyInfo } from 'pages/NewSwap/typings'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { useSwapActionHandlers } from 'state/swap/hooks'
 import { Trans } from '@lingui/macro'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 interface BuiltItProps {
   className: string
@@ -15,13 +16,13 @@ interface BuiltItProps {
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyInfo
-  priceImpact?: Percent
+  priceImpactParams?: PriceImpact
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const loading = false
-  const priceImpactLoading = false
-  const { currencyInfo, className, priceImpact } = props
+  const { currencyInfo, className, priceImpactParams } = props
+  const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
 

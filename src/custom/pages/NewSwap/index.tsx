@@ -14,10 +14,13 @@ import { CurrencyInfo, NewSwapPageProps } from 'pages/NewSwap/typings'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { useSwapCurrenciesViewAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesViewAmounts'
+import { useSwapCurrenciesAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesAmounts'
+import usePriceImpact from 'hooks/usePriceImpact'
+import { formatSmartAmount } from 'utils/format'
+import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
-  const { allowedSlippage, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo } = props
+  const { allowedSlippage, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo, priceImpactParams } = props
 
   console.log('SWAP PAGE RENDER: ', props)
 
@@ -27,7 +30,7 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
 
       <CurrencyInputPanel currencyInfo={inputCurrencyInfo} />
       <CurrencyArrowSeparator isLoading={isGettingNewQuote} />
-      <styledEl.DestCurrencyInputPanel currencyInfo={outputCurrencyInfo} />
+      <styledEl.DestCurrencyInputPanel currencyInfo={outputCurrencyInfo} priceImpactParams={priceImpactParams} />
       <ReceiveAmount />
       <TradeRates />
       <TradeButton>Trade</TradeButton>
@@ -39,17 +42,25 @@ export function NewSwapPage() {
   const { chainId, account } = useWeb3React()
   const { INPUT } = useSwapState()
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
-  const { INPUT: inputViewAmount, OUTPUT: outputViewAmount } = useSwapCurrenciesViewAmounts()
+  const wrapType = useWrapType()
+  const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
+  const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
 
-  const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
+  const { isGettingNewQuote } = useGetQuoteAndStatus({
     token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
     chainId,
+  })
+
+  const priceImpactParams = usePriceImpact({
+    abTrade: trade,
+    parsedAmounts,
+    isWrapping: isWrapUnwrapMode,
   })
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
-    viewAmount: inputViewAmount,
+    viewAmount: formatSmartAmount(parsedAmounts.INPUT) || '',
     balance: useCurrencyBalance(account ?? undefined, currencies.INPUT) || null,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
   }
@@ -57,7 +68,7 @@ export function NewSwapPage() {
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
-    viewAmount: outputViewAmount,
+    viewAmount: formatSmartAmount(parsedAmounts.OUTPUT) || '',
     balance: useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
   }
@@ -69,6 +80,7 @@ export function NewSwapPage() {
     isGettingNewQuote,
     inputCurrencyInfo,
     outputCurrencyInfo,
+    priceImpactParams,
   }
 
   return <NewSwapPageInner {...props} />
