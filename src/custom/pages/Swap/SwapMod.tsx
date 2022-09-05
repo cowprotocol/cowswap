@@ -53,7 +53,7 @@ import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/co
 import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
-import { useSwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
+import { getSwapButtonState } from 'pages/Swap/helpers/getSwapButtonState'
 import { SwapButton, SwapButtonProps } from 'pages/Swap/components/SwapButton/SwapButton'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 import { Price } from './components/Price'
@@ -69,6 +69,7 @@ import { swapFlow } from 'pages/Swap/swapFlow'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import EthFlowModal from 'components/swap/EthFlow'
+import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -126,6 +127,9 @@ export default function Swap({ history, location, className }: RouteComponentPro
     token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
     chainId,
   })
+
+  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+  const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
   // Checks if either currency is native ETH
   const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken(currencies, chainId)
@@ -331,11 +335,14 @@ export default function Swap({ history, location, className }: RouteComponentPro
     setApprovalSubmitted,
   }
 
-  const swapButtonState = useSwapButtonState({
+  const swapButtonState = getSwapButtonState({
+    account,
+    isSupportedWallet,
+    isReadonlyGnosisSafeUser,
+    isExpertMode,
+    isSwapSupported,
     isNativeIn: isNativeInSwap,
     wrappedToken,
-    currencyIn,
-    currencyOut,
     wrapType,
     wrapInputError,
     quoteError: quote?.error,

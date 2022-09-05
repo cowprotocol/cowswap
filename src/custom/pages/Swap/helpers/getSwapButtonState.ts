@@ -1,13 +1,8 @@
-import { Currency, Token } from '@uniswap/sdk-core'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useWeb3React } from '@web3-react/core'
-import { WrapType } from 'hooks/useWrapCallback'
+import { Token } from '@uniswap/sdk-core'
+import { WrapType } from '@src/hooks/useWrapCallback'
 import { ReactNode } from 'react'
 import { QuoteError } from 'state/price/actions'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { ApprovalState } from 'hooks/useApproveCallback'
-import { useExpertModeManager } from '@src/state/user/hooks'
+import { ApprovalState } from '@src/hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
 
 export enum SwapButtonState {
@@ -35,8 +30,11 @@ export enum SwapButtonState {
 }
 
 export interface SwapButtonStateInput {
-  currencyIn: Currency | undefined | null
-  currencyOut: Currency | undefined | null
+  account: string | undefined
+  isSupportedWallet: boolean
+  isReadonlyGnosisSafeUser: boolean
+  isExpertMode: boolean
+  isSwapSupported: boolean
   wrapType: WrapType
   wrapInputError: string | undefined
   quoteError: QuoteError | undefined | null
@@ -62,51 +60,29 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
   'unsupported-token': null,
 }
 
-export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState {
-  const {
-    currencyIn,
-    currencyOut,
-    wrapType,
-    inputError,
-    quoteError,
-    approvalState,
-    approvalSubmitted,
-    feeWarningAccepted,
-    impactWarningAccepted,
-    swapCallbackError,
-    trade,
-    isGettingNewQuote,
-    wrapInputError,
-    isNativeIn,
-    wrappedToken,
-  } = input
-
-  const { account } = useWeb3React()
-  const { isSupportedWallet } = useWalletInfo()
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
-  const [isExpertMode] = useExpertModeManager()
-  const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
+export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState {
+  const { wrapType, quoteError, approvalState } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    !inputError &&
+    !input.inputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
       approvalState === ApprovalState.PENDING ||
-      (approvalSubmitted && approvalState === ApprovalState.APPROVED))
+      (input.approvalSubmitted && approvalState === ApprovalState.APPROVED))
 
-  const isValid = !inputError && feeWarningAccepted && impactWarningAccepted
-  const swapBlankState = !inputError && !trade
+  const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
+  const swapBlankState = !input.inputError && !input.trade
 
-  if (isSwapSupported) {
+  if (input.isSwapSupported) {
     return SwapButtonState.swapIsUnsupported
   }
 
-  if (!isSupportedWallet) {
+  if (!input.isSupportedWallet) {
     return SwapButtonState.walletIsUnsupported
   }
 
-  if (wrapType !== WrapType.NOT_APPLICABLE && wrapInputError) {
+  if (wrapType !== WrapType.NOT_APPLICABLE && input.wrapInputError) {
     return SwapButtonState.wrapError
   }
 
@@ -124,39 +100,39 @@ export function useSwapButtonState(input: SwapButtonStateInput): SwapButtonState
     if (quoteErrorState) return quoteErrorState
   }
 
-  if (swapBlankState || isGettingNewQuote) {
+  if (swapBlankState || input.isGettingNewQuote) {
     return SwapButtonState.loading
   }
 
-  if (!account) {
+  if (!input.account) {
     return SwapButtonState.walletIsNotConnected
   }
 
-  if (isReadonlyGnosisSafeUser) {
+  if (input.isReadonlyGnosisSafeUser) {
     return SwapButtonState.readonlyGnosisSafeUser
   }
 
-  if (!isNativeIn && showApproveFlow) {
+  if (!input.isNativeIn && showApproveFlow) {
     return SwapButtonState.needApprove
   }
 
-  if (inputError) {
+  if (input.inputError) {
     return SwapButtonState.swapError
   }
 
-  if (!isValid || !!swapCallbackError) {
+  if (!isValid || !!input.swapCallbackError) {
     return SwapButtonState.swapDisabled
   }
 
-  if (isNativeIn) {
-    if (wrappedToken.symbol) {
+  if (input.isNativeIn) {
+    if (input.wrappedToken.symbol) {
       return SwapButtonState.swapWithWrappedToken
     }
 
     return SwapButtonState.wrapAndSwap
   }
 
-  if (isExpertMode) {
+  if (input.isExpertMode) {
     return SwapButtonState.expertModeSwap
   }
 

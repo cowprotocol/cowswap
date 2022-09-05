@@ -1,4 +1,4 @@
-import { SwapButtonState } from 'pages/Swap/hooks/useSwapButtonState'
+import { SwapButtonState } from 'pages/Swap/helpers/getSwapButtonState'
 import React, { ReactNode } from 'react'
 import { ThemedText, ButtonSize } from 'theme'
 import { Trans } from '@lingui/macro'
