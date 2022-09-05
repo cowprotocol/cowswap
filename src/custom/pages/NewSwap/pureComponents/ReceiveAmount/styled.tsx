@@ -23,6 +23,6 @@ export const ReceiveAmountValue = styled.span`
 
 export const QuestionHelperWrapped = styled(QuestionHelper)`
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: bottom;
   line-height: 0;
 `

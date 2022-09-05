@@ -2,12 +2,12 @@ import styled from 'styled-components/macro'
 import { loadingOpacityMixin } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean }>`
+  padding: 1rem;
   background: ${({ theme }) => theme.currencyInput!.background};
   border: ${({ theme }) => theme.currencyInput!.border};
-  border-radius: 20px;
-
-  padding: 1rem;
+  border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '20px 20px 0 0' : '20px')};
+  border-bottom: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '0' : 'auto')};
 `
 
 export const CurrencyInputBox = styled.div`

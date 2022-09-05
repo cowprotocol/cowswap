@@ -1,6 +1,5 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { ReceiveAmount } from './pureComponents/ReceiveAmount'
 import { CurrencyInputPanel } from './pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
 import { TradeRates } from './pureComponents/TradeRates'
@@ -18,6 +17,7 @@ import { useSwapCurrenciesAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesA
 import usePriceImpact from 'hooks/usePriceImpact'
 import { formatSmartAmount } from 'utils/format'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
+import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
   const { allowedSlippage, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo, priceImpactParams } = props
@@ -30,8 +30,7 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
 
       <CurrencyInputPanel currencyInfo={inputCurrencyInfo} />
       <CurrencyArrowSeparator isLoading={isGettingNewQuote} />
-      <styledEl.DestCurrencyInputPanel currencyInfo={outputCurrencyInfo} priceImpactParams={priceImpactParams} />
-      <ReceiveAmount />
+      <CurrencyInputPanel currencyInfo={outputCurrencyInfo} priceImpactParams={priceImpactParams} />
       <TradeRates />
       <TradeButton>Trade</TradeButton>
     </styledEl.Container>
@@ -40,7 +39,7 @@ const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
 
 export function NewSwapPage() {
   const { chainId, account } = useWeb3React()
-  const { INPUT } = useSwapState()
+  const { INPUT, independentField } = useSwapState()
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
@@ -63,6 +62,7 @@ export function NewSwapPage() {
     viewAmount: formatSmartAmount(parsedAmounts.INPUT) || '',
     balance: useCurrencyBalance(account ?? undefined, currencies.INPUT) || null,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
+    receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -71,6 +71,7 @@ export function NewSwapPage() {
     viewAmount: formatSmartAmount(parsedAmounts.OUTPUT) || '',
     balance: useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
+    receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
 
   useSetupSwapState()

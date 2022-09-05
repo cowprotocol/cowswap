@@ -1,9 +1,22 @@
 import { CurrencyInfo, NewSwapPageProps } from 'pages/NewSwap/typings'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { Fraction } from '@uniswap/sdk-core'
+import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 
 function isFractionEqual(prev?: Fraction | null, next?: Fraction | null): boolean {
   return prev && next ? prev.equalTo(next) : prev === next
+}
+
+function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveAmountInfo | null): boolean {
+  if (!prev || !next) {
+    return prev === next
+  }
+
+  return (
+    prev.feeAmount === next.feeAmount &&
+    prev.amountBeforeFees === next.amountBeforeFees &&
+    prev.amountAfterFees === next.amountAfterFees
+  )
 }
 
 function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
@@ -13,7 +26,13 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
   const isFiatAmountEqual = isFractionEqual(prev.fiatAmount, next.fiatAmount)
   const isViewAmountEqual = prev.viewAmount === next.viewAmount
 
-  return isCurrencyEqual && isBalanceEqual && isFiatAmountEqual && isViewAmountEqual
+  return (
+    isCurrencyEqual &&
+    isBalanceEqual &&
+    isFiatAmountEqual &&
+    isViewAmountEqual &&
+    isReceiveAmountInfoEqual(prev.receiveAmountInfo, next.receiveAmountInfo)
+  )
 }
 
 function isPriceImpactEqual(prev: PriceImpact, next: PriceImpact): boolean {

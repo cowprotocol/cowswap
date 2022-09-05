@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 
 export interface NewSwapPageProps {
   inputCurrencyInfo: CurrencyInfo
@@ -21,6 +22,7 @@ export interface TradeStateFromUrl {
 export interface CurrencyInfo {
   field: Field
   viewAmount: string
+  receiveAmountInfo: ReceiveAmountInfo | null
   currency: Currency | null
   balance: CurrencyAmount<Currency> | null
   fiatAmount: CurrencyAmount<Currency> | null
