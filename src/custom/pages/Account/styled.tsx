@@ -88,6 +88,12 @@ export const GridWrap = styled.div<Partial<CSS.Properties & { horizontal?: boole
         grid-column-end: 2;
       }
   `}
+
+  @supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */
+    display: flex;
+    flex-direction: column;
+  }
 `
 
 export const CardHead = styled.div`
