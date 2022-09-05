@@ -10,6 +10,10 @@ interface SDKError {
   transaction?: string
 }
 
+if (!BLOCKNATIVE_API_KEY) {
+  console.warn('[blocknative] Missing BLOCKNATIVE_API_KEY')
+}
+
 export const sdk = !BLOCKNATIVE_API_KEY
   ? {}
   : getSupportedChainIds().reduce<Record<number, BlocknativeSdk | null>>((acc, networkId) => {
@@ -19,14 +23,14 @@ export const sdk = !BLOCKNATIVE_API_KEY
           networkId,
           name: 'bnc_' + networkId,
           onerror: (error: SDKError) => {
-            console.log(error)
+            console.log('[blocknative]', error)
           },
         })
       } catch (error) {
-        console.error('Instantiating BlocknativeSdk failed', error)
+        console.error('[blocknative] Instantiating BlocknativeSdk failed', error)
       }
 
-      console.info(`BlocknativeSdk initialized on chain ${networkId}`)
+      console.info(`[blocknative] BlocknativeSdk initialized on chain ${networkId}`)
 
       return acc
     }, {})
