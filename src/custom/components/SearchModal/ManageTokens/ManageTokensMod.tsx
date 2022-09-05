@@ -13,7 +13,7 @@ import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } fro
 import { isAddress } from 'utils'
 
 import useTheme from 'hooks/useTheme'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 // import ImportRow from 'components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
@@ -21,6 +21,7 @@ import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/sty
 // MOD imports
 import { ImportTokensRowProps } from '.' // mod
 import useNetworkName from 'hooks/useNetworkName'
+import { getBlockExplorerUrl as getExplorerLink } from 'utils'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -86,7 +87,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
         <RowBetween key={token.address} width="100%">
           <RowFixed>
             <CurrencyLogo currency={token} size={'20px'} />
-            <ExternalLink href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)}>
+            <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
               <ThemedText.Main ml={'10px'} fontWeight={600}>
                 {token.symbol}
               </ThemedText.Main>
@@ -94,7 +95,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
           </RowFixed>
           <RowFixed>
             <TrashIcon onClick={() => removeToken(chainId, token.address)} />
-            <ExternalLinkIcon href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)} />
+            <ExternalLinkIcon href={getExplorerLink(chainId, token.address, 'address')} />
           </RowFixed>
         </RowBetween>
       ))
