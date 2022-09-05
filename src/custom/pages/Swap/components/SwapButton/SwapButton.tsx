@@ -4,7 +4,7 @@ import { ThemedText, ButtonSize } from 'theme'
 import { Trans } from '@lingui/macro'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import { Text } from 'rebass'
-import { Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { AutoRow } from 'components/Row'
 import { GreyCard } from 'components/Card'
 import { GpEther } from 'constants/tokens'
@@ -14,31 +14,31 @@ import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/Approve
 import * as styledEl from './styled'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 
-export interface SwapButtonProps {
+export interface SwapButtonContext {
   swapButtonState: SwapButtonState
   chainId: number | undefined
   wrappedToken: Token
   handleSwap: HandleSwapCallback
   approveButtonProps: ApproveButtonProps
+  wrapUnrapAmount: CurrencyAmount<Currency> | undefined
   wrapInputError: string | undefined
   onWrap: () => void
   openSwapConfirm: () => void
-  onSwap: () => void
   toggleWalletModal: () => void
   swapInputError?: ReactNode
 }
 
-export const SwapButton: React.FC<SwapButtonProps> = (props: SwapButtonProps) => {
+export const SwapButton: React.FC<SwapButtonContext> = (props: SwapButtonContext) => {
   const {
     swapButtonState,
     chainId,
     onWrap,
+    handleSwap,
     wrappedToken,
     approveButtonProps,
     swapInputError,
     wrapInputError,
     openSwapConfirm,
-    onSwap,
     toggleWalletModal,
   } = props
 
@@ -162,7 +162,7 @@ export const SwapButton: React.FC<SwapButtonProps> = (props: SwapButtonProps) =>
       </ButtonError>
     ),
     [SwapButtonState.expertModeSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={onSwap}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={handleSwap}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>

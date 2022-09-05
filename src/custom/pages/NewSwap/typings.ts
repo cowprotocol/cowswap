@@ -2,8 +2,10 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
+import { SwapButtonContext } from 'pages/Swap/components/SwapButton/SwapButton'
 
 export interface NewSwapPageProps {
+  swapButtonProps: SwapButtonContext
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent

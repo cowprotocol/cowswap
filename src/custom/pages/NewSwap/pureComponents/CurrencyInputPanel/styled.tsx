@@ -12,7 +12,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean }>`
 
 export const CurrencyInputBox = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto;
   gap: 0.75rem;
 
   > :last-child {
@@ -30,4 +30,21 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const BalanceText = styled.span`
   font-weight: 400;
   font-size: 14px;
+`
+
+export const SetMaxBtn = styled.button`
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 4px;
+
+  background: none;
+  border: none;
+  outline: none;
+  color: ${({ theme }) => theme.primary4};
+  font-weight: 500;
+  font-size: 14px;
+
+  :hover {
+    opacity: 0.85;
+  }
 `

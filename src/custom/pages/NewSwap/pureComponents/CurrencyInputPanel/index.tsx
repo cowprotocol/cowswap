@@ -12,6 +12,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmount } from 'pages/NewSwap/pureComponents/ReceiveAmount'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { setMaxSellTokensAnalytics } from 'utils/analytics'
 
 interface BuiltItProps {
   className: string
@@ -20,14 +21,16 @@ interface BuiltItProps {
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
+  showSetMax?: boolean
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const loading = false
-  const { currencyInfo, className, priceImpactParams } = props
+  const { currencyInfo, className, priceImpactParams, showSetMax = false } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
+  const [typedValue, setTypedValue] = useState('')
 
   const subsidyAndBalance = useCowBalanceAndSubsidy()
   const { allowsOffchainSigning } = useWalletInfo()
@@ -41,10 +44,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
   const onUserInput = useCallback(
     (typedValue: string) => {
+      setTypedValue(typedValue)
       onUserInputDispatch(field, typedValue)
     },
     [onUserInputDispatch, field]
   )
+  const handleMaxInput = useCallback(() => {
+    balance && onUserInput(balance.toExact())
+    setMaxSellTokensAnalytics()
+  }, [balance, onUserInput])
 
   return (
     <>
@@ -54,13 +62,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             <CurrencySelectButton onClick={() => setCurrencySearchModalOpen(true)} currency={currency || undefined} />
           </div>
           <div>
-            <styledEl.NumericalInput value={viewAmount} onUserInput={onUserInput} $loading={loading} />
+            <styledEl.NumericalInput value={viewAmount || typedValue} onUserInput={onUserInput} $loading={loading} />
           </div>
           <div>
             {balance && (
-              <styledEl.BalanceText>
-                <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
-              </styledEl.BalanceText>
+              <>
+                <styledEl.BalanceText>
+                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                </styledEl.BalanceText>
+                {showSetMax && <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>}
+              </>
             )}
           </div>
           <div>

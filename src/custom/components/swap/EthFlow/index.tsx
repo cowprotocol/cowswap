@@ -30,6 +30,7 @@ import { GpModal } from 'components/Modal'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useWrapCallback, OpenSwapConfirmModalCallback, useHasEnoughWrappedBalanceForSwap } from 'hooks/useWrapCallback'
 import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
+import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 
 const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -68,19 +69,16 @@ const ButtonWrapper = styled.div`
 // and the UI update showing confirmed actions
 const MODAL_CLOSE_DELAY = 1000 // 1s
 
-export interface Props {
+export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   wrapUnrapAmount?: CurrencyAmount<Currency>
   // state
   approvalState: ApprovalState
-  // modal state
-  modalIsOpen: boolean
   // cbs
   openSwapConfirmModalCallback: OpenSwapConfirmModalCallback
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
   openSwapConfirm(): void
-  closeSwapConfirm(): void
 }
 
 export type PendingHashMap = { approveHash?: string; wrapHash?: string }
@@ -95,8 +93,7 @@ export function EthWethWrap({
   onDismiss,
   approveCallback,
   openSwapConfirm,
-  closeSwapConfirm,
-}: Omit<Props, 'modalIsOpen'>) {
+}: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
   const {
@@ -119,6 +116,7 @@ export function EthWethWrap({
     setWrapSubmitted,
     setWrapError,
   } = useEthFlowStatesAndSetters({ chainId, approvalState })
+  const { closeSwapConfirm } = useSwapConfirmManager()
 
   const { currencies } = useDerivedSwapInfo()
   const {
@@ -429,7 +427,7 @@ export function EthWethWrap({
   )
 }
 
-export default function EthFlowModal(props: Props) {
+export default function EthFlowModal(props: EthFlowProps) {
   return (
     <GpModal isOpen onDismiss={props.onDismiss}>
       <EthWethWrap {...props} />
