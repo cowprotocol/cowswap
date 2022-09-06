@@ -112,7 +112,7 @@ which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A
 
 The format of the JSON follows this typescript format: <src/custom/utils/metadata.ts>
 
-To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [chat.cowswap.exchange/](https://chat.cowswap.exchange/). For more details, check out the environment file (<.env>)
+To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [CoW Swap's Discord channel](https://discord.com/invite/cowprotocol/). For more details, check out the environment file (<.env>)
 
 ### Supported networks
 
