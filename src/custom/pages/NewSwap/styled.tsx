@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
-import { CurrencyInputPanel } from 'pages/NewSwap/pureComponents/CurrencyInputPanel'
 import SwapHeader from '@src/components/swap/SwapHeader'
+import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -25,11 +25,16 @@ export const Header = styled.div`
   font-size: 16px;
 `
 
-export const DestCurrencyInputPanel = styled(CurrencyInputPanel)`
-  border-radius: 20px 20px 0 0;
-  border-bottom: 0;
+export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  margin: ${({ withRecipient }) => (withRecipient ? '10px' : '0')};
 `
 
 export const SwapHeaderStyled = styled(SwapHeader)`
   padding: 0 0.25rem 0.5rem 0.25rem;
+`
+
+export const RemoveRecipientStyled = styled(RemoveRecipient)`
+  margin: 10px 0;
 `

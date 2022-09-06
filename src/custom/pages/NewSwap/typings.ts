@@ -6,12 +6,14 @@ import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 
 export interface SwapFormProps {
+  recipient: string | null
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
   isGettingNewQuote: boolean
-  subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
+  showRecipientControls: boolean
+  subsidyAndBalance: BalanceAndSubsidy
   priceImpactParams: PriceImpact
   swapActions: SwapActions
 }

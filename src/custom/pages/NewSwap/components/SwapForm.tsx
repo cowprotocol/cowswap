@@ -5,6 +5,7 @@ import { CurrencyInputPanel } from 'pages/NewSwap/pureComponents/CurrencyInputPa
 import { CurrencyArrowSeparator } from 'pages/NewSwap/pureComponents/CurrencyArrowSeparator'
 import { TradeRates } from 'pages/NewSwap/pureComponents/TradeRates'
 import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
+import { AddRecipient } from 'pages/NewSwap/pureComponents/AddRecipient'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {
   const {
@@ -16,8 +17,10 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
     priceImpactParams,
     allowsOffchainSigning,
     subsidyAndBalance,
+    showRecipientControls,
+    recipient,
   } = props
-  const { onSwitchTokens } = swapActions
+  const { onSwitchTokens, onChangeRecipient } = swapActions
 
   console.log('SWAP PAGE RENDER: ', props)
 
@@ -32,7 +35,14 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
         currencyInfo={inputCurrencyInfo}
         showSetMax={true}
       />
-      <CurrencyArrowSeparator onSwitchTokens={onSwitchTokens} isLoading={isGettingNewQuote} />
+      <styledEl.CurrencySeparatorBox withRecipient={showRecipientControls}>
+        <CurrencyArrowSeparator
+          onSwitchTokens={onSwitchTokens}
+          withRecipient={showRecipientControls}
+          isLoading={isGettingNewQuote}
+        />
+        {showRecipientControls && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
+      </styledEl.CurrencySeparatorBox>
       <CurrencyInputPanel
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}
@@ -40,6 +50,9 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
         currencyInfo={outputCurrencyInfo}
         priceImpactParams={priceImpactParams}
       />
+      {showRecipientControls && recipient !== null && (
+        <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
+      )}
       <TradeRates />
     </>
   )

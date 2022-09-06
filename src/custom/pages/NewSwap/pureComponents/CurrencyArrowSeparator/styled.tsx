@@ -2,9 +2,10 @@ import styled from 'styled-components/macro'
 import { ArrowDown } from 'react-feather'
 import { loadingAnimationMixin } from './style-mixins'
 
-export const Box = styled.div`
+export const Box = styled.div<{ withRecipient: boolean }>`
+  display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
+  margin: ${({ withRecipient }) => (withRecipient ? '0' : '-12px auto')};
   cursor: pointer;
-  margin: -12px auto;
   position: relative;
   z-index: 2;
 

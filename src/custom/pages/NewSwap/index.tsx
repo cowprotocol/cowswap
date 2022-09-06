@@ -39,6 +39,7 @@ import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useExpertModeManager } from '@src/state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { SwapForm } from 'pages/NewSwap/components/SwapForm'
+import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -54,6 +55,7 @@ export function NewSwapPage() {
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
+  const showRecipientControls = useShowRecipientControls()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -105,6 +107,7 @@ export function NewSwapPage() {
   })
 
   const swapFormProps: SwapFormProps = {
+    recipient,
     allowedSlippage,
     isGettingNewQuote,
     inputCurrencyInfo,
@@ -113,6 +116,7 @@ export function NewSwapPage() {
     swapActions,
     subsidyAndBalance,
     allowsOffchainSigning,
+    showRecipientControls,
   }
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {

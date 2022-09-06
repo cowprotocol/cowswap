@@ -56,6 +56,10 @@ function isPriceImpactEqual(prev: PriceImpact, next: PriceImpact): boolean {
 export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): boolean {
   return (
     prev.allowedSlippage.equalTo(next.allowedSlippage) &&
+    prev.showRecipientControls === next.showRecipientControls &&
+    prev.recipient === next.recipient &&
+    prev.allowsOffchainSigning === next.allowsOffchainSigning &&
+    genericPropsChecker(prev.subsidyAndBalance, next.subsidyAndBalance) &&
     isCurrencyInfoEqual(prev.inputCurrencyInfo, next.inputCurrencyInfo) &&
     isCurrencyInfoEqual(prev.outputCurrencyInfo, next.outputCurrencyInfo) &&
     isPriceImpactEqual(prev.priceImpactParams, next.priceImpactParams)
