@@ -5,9 +5,8 @@ CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
-- 🐮**Official Website**🐮: <https://cowswap.exchange/>
+- 🐮**Official Website**🐮: <https://swap.cow.fi/>
 
-  - ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
   - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/cowprotocol/cowswap/releases) section.
 
 - Protocol: <https://cow.fi>
@@ -93,7 +92,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 
 | Name             | Environment variable                     | Type                         | Description                                                                                                        |
 | ---------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cowswap.exchange/) price estimation. Used for all price estimation.                    |
+| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation.                              |
 | **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
 | **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
 | **Coingecko**    | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
@@ -158,7 +157,7 @@ To update its content:
 
 ## Service worker
 
-In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)  
+In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)
 The plan:
 
 1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
