@@ -200,9 +200,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     swapFlow(swapFlowContext)
   }, [swapFlowContext])
 
-  // errors
-  const [showInverted, setShowInverted] = useState<boolean>(false)
-
   const handleInputSelect = useCallback(
     (inputCurrency) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals

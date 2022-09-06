@@ -184,9 +184,9 @@ export function NewSwapPage() {
   return (
     <>
       <styledEl.Container>
+        <NewSwapModals {...swapModalsProps} />
+        <AffiliateStatusCheck />
         <styledEl.ContainerBox>
-          <NewSwapModals {...swapModalsProps} />
-          <AffiliateStatusCheck />
           <SwapForm {...swapFormProps} />
           <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />
