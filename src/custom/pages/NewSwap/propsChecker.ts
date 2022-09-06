@@ -1,4 +1,4 @@
-import { CurrencyInfo, NewSwapPageProps } from 'pages/NewSwap/typings'
+import { CurrencyInfo, SwapFormProps } from 'pages/NewSwap/typings'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { Fraction } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
@@ -53,7 +53,7 @@ function isPriceImpactEqual(prev: PriceImpact, next: PriceImpact): boolean {
   )
 }
 
-export function swapPagePropsChecker(prev: NewSwapPageProps, next: NewSwapPageProps): boolean {
+export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): boolean {
   return (
     prev.allowedSlippage.equalTo(next.allowedSlippage) &&
     isCurrencyInfoEqual(prev.inputCurrencyInfo, next.inputCurrencyInfo) &&

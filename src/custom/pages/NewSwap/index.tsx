@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
 import * as styledEl from './styled'
-import { CurrencyInputPanel } from './pureComponents/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
-import { TradeRates } from './pureComponents/TradeRates'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
@@ -14,9 +11,8 @@ import { Field } from 'state/swap/actions'
 import { useSetupSwapState } from 'pages/NewSwap/hooks/useSetupSwapState'
 import { useCurrencyBalance } from '@src/state/connection/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { CurrencyInfo, NewSwapPageProps } from 'pages/NewSwap/typings'
+import { CurrencyInfo, SwapFormProps } from 'pages/NewSwap/typings'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
-import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { useSwapCurrenciesAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesAmounts'
 import usePriceImpact from 'hooks/usePriceImpact'
@@ -42,45 +38,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useExpertModeManager } from '@src/state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-
-const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
-  const {
-    swapActions,
-    allowedSlippage,
-    isGettingNewQuote,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
-    priceImpactParams,
-    allowsOffchainSigning,
-    subsidyAndBalance,
-  } = props
-  const { onSwitchTokens } = swapActions
-
-  console.log('SWAP PAGE RENDER: ', props)
-
-  return (
-    <>
-      <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
-
-      <CurrencyInputPanel
-        swapActions={swapActions}
-        subsidyAndBalance={subsidyAndBalance}
-        allowsOffchainSigning={allowsOffchainSigning}
-        currencyInfo={inputCurrencyInfo}
-        showSetMax={true}
-      />
-      <CurrencyArrowSeparator onSwitchTokens={onSwitchTokens} isLoading={isGettingNewQuote} />
-      <CurrencyInputPanel
-        swapActions={swapActions}
-        subsidyAndBalance={subsidyAndBalance}
-        allowsOffchainSigning={allowsOffchainSigning}
-        currencyInfo={outputCurrencyInfo}
-        priceImpactParams={priceImpactParams}
-      />
-      <TradeRates />
-    </>
-  )
-}, swapPagePropsChecker)
+import { SwapForm } from 'pages/NewSwap/components/SwapForm'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -146,7 +104,7 @@ export function NewSwapPage() {
     openNativeWrapModal,
   })
 
-  const swapPageProps: NewSwapPageProps = {
+  const swapFormProps: SwapFormProps = {
     allowedSlippage,
     isGettingNewQuote,
     inputCurrencyInfo,
@@ -207,7 +165,7 @@ export function NewSwapPage() {
         <styledEl.ContainerBox>
           <NewSwapModals {...swapModalsProps} />
           <AffiliateStatusCheck />
-          <NewSwapPageInner {...swapPageProps} />
+          <SwapForm {...swapFormProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButton {...swapButtonContext} />
         </styledEl.ContainerBox>

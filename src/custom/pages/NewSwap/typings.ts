@@ -5,7 +5,7 @@ import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 
-export interface NewSwapPageProps {
+export interface SwapFormProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
