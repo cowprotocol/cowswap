@@ -2,13 +2,18 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
+import { SwapActions } from 'state/swap/hooks'
+import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 
 export interface NewSwapPageProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
   isGettingNewQuote: boolean
+  subsidyAndBalance: BalanceAndSubsidy
+  allowsOffchainSigning: boolean
   priceImpactParams: PriceImpact
+  swapActions: SwapActions
 }
 
 export interface TradeStateFromUrl {

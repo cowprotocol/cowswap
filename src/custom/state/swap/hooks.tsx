@@ -52,6 +52,13 @@ export * from '@src/state/swap/hooks'
 
 export type Currencies = { [field in Field]?: Currency | null }
 
+export interface SwapActions {
+  onCurrencySelection: (field: Field, currency: Currency) => void
+  onSwitchTokens: () => void
+  onUserInput: (field: Field, typedValue: string) => void
+  onChangeRecipient: (recipient: string | null) => void
+}
+
 interface DerivedSwapInfo {
   currencies: Currencies
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
@@ -61,12 +68,7 @@ interface DerivedSwapInfo {
   allowedSlippage: Percent
 }
 
-export function useSwapActionHandlers(): {
-  onCurrencySelection: (field: Field, currency: Currency) => void
-  onSwitchTokens: () => void
-  onUserInput: (field: Field, typedValue: string) => void
-  onChangeRecipient: (recipient: string | null) => void
-} {
+export function useSwapActionHandlers(): SwapActions {
   const dispatch = useAppDispatch()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {

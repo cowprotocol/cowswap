@@ -6,13 +6,12 @@ import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { formatSmartAmount } from 'utils/format'
 import { CurrencyInfo } from 'pages/NewSwap/typings'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
-import { useSwapActionHandlers } from 'state/swap/hooks'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmount } from 'pages/NewSwap/pureComponents/ReceiveAmount'
-import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { setMaxSellTokensAnalytics } from 'utils/analytics'
+import { SwapActions } from 'state/swap/hooks'
 
 interface BuiltItProps {
   className: string
@@ -22,20 +21,28 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
   showSetMax?: boolean
+  allowsOffchainSigning: boolean
+  swapActions: SwapActions
+  subsidyAndBalance: BalanceAndSubsidy
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const loading = false
-  const { currencyInfo, className, priceImpactParams, showSetMax = false } = props
+  const {
+    currencyInfo,
+    className,
+    priceImpactParams,
+    showSetMax = false,
+    swapActions,
+    allowsOffchainSigning,
+    subsidyAndBalance,
+  } = props
+  const { onUserInput: onUserInputDispatch, onCurrencySelection } = swapActions
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState('')
 
-  const subsidyAndBalance = useCowBalanceAndSubsidy()
-  const { allowsOffchainSigning } = useWalletInfo()
-
-  const { onCurrencySelection, onUserInput: onUserInputDispatch } = useSwapActionHandlers()
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
       onCurrencySelection(field, currency)

@@ -1,16 +1,14 @@
 import React from 'react'
 import loadingCowWebp from 'assets/cow-swap/cow-load.webp'
 import * as styledEl from './styled'
-import { useSwapActionHandlers } from 'state/swap/hooks'
 
 export interface CurrencyArrowSeparatorProps {
   isLoading: boolean
+  onSwitchTokens(): void
 }
 
 export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
-  const { isLoading } = props
-
-  const { onSwitchTokens } = useSwapActionHandlers()
+  const { isLoading, onSwitchTokens } = props
 
   return (
     <styledEl.Box onClick={onSwitchTokens}>
