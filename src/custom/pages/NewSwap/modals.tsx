@@ -1,7 +1,7 @@
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
 import EthFlowModal, { EthFlowProps } from 'components/swap/EthFlow'
 import React from 'react'
-import { swapModalPropsChecker } from 'pages/NewSwap/propsChecker'
+import { genericPropsChecker } from 'pages/NewSwap/propsChecker'
 import { ImportTokenModal } from 'pages/Swap/components/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
@@ -31,4 +31,4 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
     </>
   )
-}, swapModalPropsChecker)
+}, genericPropsChecker)

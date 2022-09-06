@@ -3,15 +3,18 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { Fraction } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 import { SwapButtonContext } from 'pages/Swap/components/SwapButton/SwapButton'
-import { NewSwapModalsProps } from 'pages/NewSwap/modals'
 
 function isFractionEqual(prev?: Fraction | null, next?: Fraction | null): boolean {
   return prev && next ? prev.equalTo(next) : prev === next
 }
 
-function isSwapButtonPropsEqual(prev: SwapButtonContext, next: SwapButtonContext): boolean {
+export function isSwapButtonPropsEqual(prev: SwapButtonContext, next: SwapButtonContext): boolean {
   return (
     prev.swapButtonState === next.swapButtonState &&
+    prev.chainId === next.chainId &&
+    prev.wrappedToken.address === next.wrappedToken.address &&
+    prev.wrapInputError === next.wrapInputError &&
+    isFractionEqual(prev.wrapUnrapAmount, next.wrapUnrapAmount) &&
     prev.approveButtonProps.approvalState === next.approveButtonProps.approvalState
   )
 }
@@ -55,11 +58,10 @@ export function swapPagePropsChecker(prev: NewSwapPageProps, next: NewSwapPagePr
     prev.allowedSlippage.equalTo(next.allowedSlippage) &&
     isCurrencyInfoEqual(prev.inputCurrencyInfo, next.inputCurrencyInfo) &&
     isCurrencyInfoEqual(prev.outputCurrencyInfo, next.outputCurrencyInfo) &&
-    isPriceImpactEqual(prev.priceImpactParams, next.priceImpactParams) &&
-    isSwapButtonPropsEqual(prev.swapButtonProps, next.swapButtonProps)
+    isPriceImpactEqual(prev.priceImpactParams, next.priceImpactParams)
   )
 }
 
-export function swapModalPropsChecker(prev: NewSwapModalsProps, next: NewSwapModalsProps): boolean {
+export function genericPropsChecker(prev: any, next: any): boolean {
   return JSON.stringify(prev) === JSON.stringify(next)
 }

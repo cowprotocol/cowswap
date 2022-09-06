@@ -5,8 +5,10 @@ import SwapHeader from '@src/components/swap/SwapHeader'
 export const Container = styled.div`
   max-width: 460px;
   width: 100%;
-  padding: 12px 10px;
+`
 
+export const ContainerBox = styled.div`
+  padding: 12px 10px;
   border: 3px solid ${({ theme }) => theme.black};
   border-radius: 16px;
   box-shadow: 4px 4px 0 ${({ theme }) => theme.black};

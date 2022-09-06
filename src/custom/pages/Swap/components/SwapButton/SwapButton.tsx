@@ -13,6 +13,7 @@ import { AutoColumn } from 'components/Column'
 import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import * as styledEl from './styled'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
+import { isSwapButtonPropsEqual } from 'pages/NewSwap/propsChecker'
 
 export interface SwapButtonContext {
   swapButtonState: SwapButtonState
@@ -28,7 +29,7 @@ export interface SwapButtonContext {
   swapInputError?: ReactNode
 }
 
-export const SwapButton: React.FC<SwapButtonContext> = (props: SwapButtonContext) => {
+export const SwapButton = React.memo(function (props: SwapButtonContext) {
   const {
     swapButtonState,
     chainId,
@@ -41,6 +42,8 @@ export const SwapButton: React.FC<SwapButtonContext> = (props: SwapButtonContext
     openSwapConfirm,
     toggleWalletModal,
   } = props
+
+  console.log('RENDER SWAP BUTTON: ', props)
 
   const map: { [key in SwapButtonState]: JSX.Element } = {
     [SwapButtonState.swapIsUnsupported]: (
@@ -178,4 +181,4 @@ export const SwapButton: React.FC<SwapButtonContext> = (props: SwapButtonContext
   }
 
   return <div id="swap-button">{map[swapButtonState]}</div>
-}
+}, isSwapButtonPropsEqual)

@@ -35,39 +35,45 @@ import { EthFlowProps } from 'components/swap/EthFlow'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import {
+  NewSwapWarningsBottom,
+  NewSwapWarningsBottomProps,
+  NewSwapWarningsTop,
+  NewSwapWarningsTopProps,
+} from 'pages/NewSwap/warnings'
+import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+import { useExpertModeManager } from '@src/state/user/hooks'
 
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
-  const {
-    allowedSlippage,
-    isGettingNewQuote,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
-    priceImpactParams,
-    swapButtonProps,
-  } = props
+  const { allowedSlippage, isGettingNewQuote, inputCurrencyInfo, outputCurrencyInfo, priceImpactParams } = props
 
   console.log('SWAP PAGE RENDER: ', props)
 
   return (
-    <styledEl.Container>
+    <>
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
       <CurrencyInputPanel currencyInfo={inputCurrencyInfo} showSetMax={true} />
       <CurrencyArrowSeparator isLoading={isGettingNewQuote} />
       <CurrencyInputPanel currencyInfo={outputCurrencyInfo} priceImpactParams={priceImpactParams} />
       <TradeRates />
-      <SwapButton {...swapButtonProps} />
-    </styledEl.Container>
+    </>
   )
 }, swapPagePropsChecker)
 
 export function NewSwapPage() {
+  useSetupSwapState()
+
   const { chainId, account } = useWeb3React()
   const { INPUT, independentField, recipient } = useSwapState()
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const swapFlowContext = useSwapFlowContext()
+  const { isSupportedWallet } = useWalletInfo()
+  const swapIsUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
+  const [isExpertMode] = useExpertModeManager()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -140,10 +146,7 @@ export function NewSwapPage() {
     openNativeWrapModal,
   })
 
-  useSetupSwapState()
-
   const swapPageProps: NewSwapPageProps = {
-    swapButtonProps: swapButtonContext,
     allowedSlippage,
     isGettingNewQuote,
     inputCurrencyInfo,
@@ -180,11 +183,37 @@ export function NewSwapPage() {
     ethFlowProps,
   }
 
+  const swapWarningsTopProps: NewSwapWarningsTopProps = {
+    trade,
+    account,
+    feeWarningAccepted,
+    impactWarningAccepted,
+    // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
+    hideUnknownImpactWarning: !trade || isWrapUnwrapMode || !priceImpactParams.error || priceImpactParams.loading,
+    isExpertMode,
+    setFeeWarningAccepted,
+    setImpactWarningAccepted,
+  }
+
+  const swapWarningsBottomProps: NewSwapWarningsBottomProps = {
+    isSupportedWallet,
+    swapIsUnsupported,
+    currencyIn: currencies.INPUT || undefined,
+    currencyOut: currencies.OUTPUT || undefined,
+  }
+
   return (
     <>
-      <NewSwapModals {...swapModalsProps} />
-      <AffiliateStatusCheck />
-      <NewSwapPageInner {...swapPageProps} />
+      <styledEl.Container>
+        <styledEl.ContainerBox>
+          <NewSwapModals {...swapModalsProps} />
+          <AffiliateStatusCheck />
+          <NewSwapPageInner {...swapPageProps} />
+          <NewSwapWarningsTop {...swapWarningsTopProps} />
+          <SwapButton {...swapButtonContext} />
+        </styledEl.ContainerBox>
+        <NewSwapWarningsBottom {...swapWarningsBottomProps} />
+      </styledEl.Container>
     </>
   )
 }
