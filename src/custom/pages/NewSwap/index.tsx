@@ -40,6 +40,7 @@ import { useExpertModeManager } from '@src/state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { SwapForm } from 'pages/NewSwap/components/SwapForm'
 import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
+import { TradeRates, TradeRatesProps } from 'pages/NewSwap/pureComponents/TradeRates'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -107,7 +108,6 @@ export function NewSwapPage() {
   })
 
   const swapFormProps: SwapFormProps = {
-    trade: trade || null,
     recipient,
     allowedSlippage,
     isGettingNewQuote,
@@ -164,6 +164,12 @@ export function NewSwapPage() {
     currencyOut: currencies.OUTPUT || undefined,
   }
 
+  const tradeRatesProps: TradeRatesProps = {
+    trade,
+    isExpertMode,
+    allowedSlippage,
+  }
+
   return (
     <>
       <styledEl.Container>
@@ -171,6 +177,7 @@ export function NewSwapPage() {
           <NewSwapModals {...swapModalsProps} />
           <AffiliateStatusCheck />
           <SwapForm {...swapFormProps} />
+          <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButton {...swapButtonContext} />
         </styledEl.ContainerBox>

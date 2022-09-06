@@ -3,13 +3,11 @@ import { SwapFormProps } from 'pages/NewSwap/typings'
 import * as styledEl from 'pages/NewSwap/styled'
 import { CurrencyInputPanel } from 'pages/NewSwap/pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from 'pages/NewSwap/pureComponents/CurrencyArrowSeparator'
-import { TradeRates } from 'pages/NewSwap/pureComponents/TradeRates'
 import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
 import { AddRecipient } from 'pages/NewSwap/pureComponents/AddRecipient'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {
   const {
-    trade,
     swapActions,
     allowedSlippage,
     isGettingNewQuote,
@@ -54,7 +52,6 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       {showRecipientControls && recipient !== null && (
         <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
       )}
-      <TradeRates trade={trade} />
     </>
   )
 }, swapPagePropsChecker)
