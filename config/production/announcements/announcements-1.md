@@ -1,1 +1,1 @@
-Heads up, `CoW Swap` will soon move to a new domain, from `cowswap.exchange` to `swap.cow.fi`
+Heads up, `CoW Swap` will soon move to a new domain: from `cowswap.exchange` to `swap.cow.fi`
