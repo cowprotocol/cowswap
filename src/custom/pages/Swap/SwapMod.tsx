@@ -343,7 +343,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={!showWrap ? undefined : priceImpact}
+                priceImpact={showWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}
