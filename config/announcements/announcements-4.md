@@ -1,1 +1,1 @@
-Heads up, `CoW Swap` will soon move to a new domain: from `cowswap.exchange` to `swap.cow.fi`. Keep in mind your local settings won't be copied over!
+Heads up, **CoW Swap** will soon move to a new domain: from **[cowswap.exchange](https://cowswap.exchange)** to **[swap.cow.fi](https://swap.cow.fi)**. Keep in mind your local settings won't be copied over!
