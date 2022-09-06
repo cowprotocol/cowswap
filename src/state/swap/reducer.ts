@@ -5,6 +5,7 @@ import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies
 import { queryParametersToSwapState } from './hooks'
 
 export interface SwapState {
+  chainId: number | null
   readonly independentField: Field
   readonly typedValue: string
   readonly [Field.INPUT]: {
@@ -17,26 +18,25 @@ export interface SwapState {
   readonly recipient: string | null
 }
 
-const initialState: SwapState = queryParametersToSwapState(parsedQueryString())
+const initialState: SwapState = queryParametersToSwapState(parsedQueryString(), null)
 
 export default createReducer<SwapState>(initialState, (builder) =>
   builder
-    .addCase(
-      replaceSwapState,
-      (state, { payload: { typedValue, recipient, independentField, inputCurrencyId, outputCurrencyId } }) => {
-        return {
-          [Field.INPUT]: {
-            currencyId: inputCurrencyId ?? null,
-          },
-          [Field.OUTPUT]: {
-            currencyId: outputCurrencyId ?? null,
-          },
-          independentField,
-          typedValue,
-          recipient,
-        }
+    .addCase(replaceSwapState, (state, { payload }) => {
+      const { chainId, typedValue, recipient, independentField, inputCurrencyId, outputCurrencyId } = payload
+      return {
+        chainId,
+        [Field.INPUT]: {
+          currencyId: inputCurrencyId ?? null,
+        },
+        [Field.OUTPUT]: {
+          currencyId: outputCurrencyId ?? null,
+        },
+        independentField,
+        typedValue,
+        recipient,
       }
-    )
+    })
     .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
       if (currencyId === state[otherField].currencyId) {

@@ -6,6 +6,7 @@ export enum Field {
 }
 
 export interface ReplaceSwapStatePayload {
+  chainId: number | null
   independentField: Field
   typedValue: string
   inputCurrencyId?: string

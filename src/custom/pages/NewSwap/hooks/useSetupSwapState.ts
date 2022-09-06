@@ -24,9 +24,14 @@ export function useSetupSwapState() {
   useEffect(() => {
     if (!chainId) return
 
-    const swapState = initSwapStateFromUrl(chainId, tradeStateFromUrl, persistedSwapState)
+    const isPersistedStateValid = persistedSwapState && persistedSwapState.chainId === chainId
+    const swapState = initSwapStateFromUrl(
+      chainId,
+      tradeStateFromUrl,
+      isPersistedStateValid ? persistedSwapState : null
+    )
 
-    console.log('Set swap state from url: ', swapState)
+    console.log('Set swap state from url: ', { chainId, swapState })
     dispatch(replaceSwapState(swapState))
   }, [dispatch, tradeStateFromUrl, persistedSwapState, chainId])
 }

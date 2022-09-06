@@ -396,6 +396,7 @@ export function queryParametersToSwapState(
   const recipient = validatedRecipient(parsedQs.recipient)
 
   return {
+    chainId: chainId || null,
     [Field.INPUT]: {
       currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
@@ -430,6 +431,7 @@ export function useDefaultsFromURLSearch(): SwapState {
 
     dispatch(
       replaceSwapState({
+        chainId,
         typedValue: parsedSwapState.typedValue,
         independentField: parsedSwapState.independentField,
         inputCurrencyId,
@@ -449,6 +451,7 @@ export function useReplaceSwapState() {
   const dispatch = useAppDispatch()
   return useCallback(
     (newState: {
+      chainId: number | null
       independentField: Field
       typedValue: string
       inputCurrencyId?: string | undefined

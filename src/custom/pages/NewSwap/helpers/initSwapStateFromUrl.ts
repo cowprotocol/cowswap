@@ -8,28 +8,29 @@ import { SwapState } from 'state/swap/reducer'
 export function initSwapStateFromUrl(
   chainId: SupportedChainId,
   tradeStateFromUrl: TradeStateFromUrl,
-  persistedSwapState: SwapState
+  persistedSwapState: SwapState | null
 ): ReplaceSwapStatePayload {
   const defaultInputToken = WETH[chainId]?.address
   const defaultOutputToken = USDC[chainId]?.address
 
   const typedValue =
     (tradeStateFromUrl.amount && !isNaN(parseFloat(tradeStateFromUrl.amount)) ? tradeStateFromUrl.amount : '') ||
-    persistedSwapState.typedValue ||
-    ''
+    persistedSwapState?.typedValue ||
+    '1'
 
   const independentField =
-    tradeStateFromUrl.independentField === 'output' ? Field.OUTPUT : persistedSwapState.independentField || Field.INPUT
+    tradeStateFromUrl.independentField === 'output' ? Field.OUTPUT : persistedSwapState?.independentField || Field.INPUT
 
-  const recipient = validatedRecipient(tradeStateFromUrl.recipient) || persistedSwapState.recipient
+  const recipient = validatedRecipient(tradeStateFromUrl.recipient) || persistedSwapState?.recipient || null
 
   const inputCurrencyId =
-    tradeStateFromUrl.inputCurrency || persistedSwapState.INPUT.currencyId || defaultInputToken || undefined
+    tradeStateFromUrl.inputCurrency || persistedSwapState?.INPUT?.currencyId || defaultInputToken || undefined
 
   const outputCurrencyId =
-    tradeStateFromUrl.outputCurrency || persistedSwapState.OUTPUT.currencyId || defaultOutputToken || undefined
+    tradeStateFromUrl.outputCurrency || persistedSwapState?.OUTPUT?.currencyId || defaultOutputToken || undefined
 
   return {
+    chainId,
     inputCurrencyId,
     outputCurrencyId,
     typedValue,
