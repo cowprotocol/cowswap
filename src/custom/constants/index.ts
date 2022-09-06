@@ -34,7 +34,8 @@ export const APP_DATA_HASH = getAppDataHash()
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const PRODUCTION_URL = 'cowswap.exchange'
+export const PRODUCTION_URL = 'swap.cow.fi'
+// TODO: update barn url to whatever we decide to use
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
