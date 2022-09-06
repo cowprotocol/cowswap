@@ -13,9 +13,9 @@ interface SDKError {
 
 if (!BLOCKNATIVE_API_KEY) {
   console.warn('[blocknative] Missing BLOCKNATIVE_API_KEY')
-  const sentryError = constructSentryError(new Error(), { message: 'Blocknative API key not set' })
+  const { sentryError, tags } = constructSentryError(new Error(), { message: 'Blocknative API key not set' })
   Sentry.captureException(sentryError, {
-    tags: sentryError.tags,
+    tags,
   })
 }
 
@@ -33,18 +33,18 @@ export const sdk = !BLOCKNATIVE_API_KEY
           name: 'bnc_' + networkId,
           onerror: (error: SDKError) => {
             console.log('[blocknative]', error)
-            const sentryError = constructSentryError(error, { message: 'Blocknative SDK error' })
+            const { sentryError, tags } = constructSentryError(error, { message: 'Blocknative SDK error' })
             Sentry.captureException(sentryError, {
-              tags: sentryError.tags,
+              tags,
               contexts: { params },
             })
           },
         })
       } catch (error) {
         console.error('[blocknative] Instantiating BlocknativeSdk failed', error)
-        const sentryError = constructSentryError(error, { message: 'Instantiating BlocknativeSdk failed' })
+        const { sentryError, tags } = constructSentryError(error, { message: 'Instantiating BlocknativeSdk failed' })
         Sentry.captureException(sentryError, {
-          tags: sentryError.tags,
+          tags,
           contexts: { params },
         })
       }
