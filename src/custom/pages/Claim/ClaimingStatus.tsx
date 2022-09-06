@@ -125,7 +125,7 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
                 <SVG src={twitterImage} description="Twitter" />
               </SuccessBanner>
             </ExternalLink>
-            <ExternalLink href="https://chat.cowswap.exchange/">
+            <ExternalLink href="https://discord.com/invite/cowprotocol/">
               <SuccessBanner type={'Discord'}>
                 <span>
                   <Trans>Join Discord</Trans>
