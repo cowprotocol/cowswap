@@ -65,7 +65,7 @@ import { swapFlow } from 'pages/Swap/swapFlow'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import EthFlowModal from 'components/swap/EthFlow'
-import { useSwapButtonContext } from 'pages/NewSwap/hooks/useSwapButtonContext'
+import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
