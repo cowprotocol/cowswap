@@ -62,6 +62,7 @@ import { swapFlow } from 'pages/Swap/swapFlow'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
+import { Routes } from 'constants/routes'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -257,7 +258,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} history={history} />}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.SWAP)} />}
       {confirmSwapProps && <ConfirmSwapModalSetup {...confirmSwapProps} />}
       {/* CoWmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />

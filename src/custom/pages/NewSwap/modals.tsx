@@ -6,6 +6,7 @@ import { ImportTokenModal } from 'pages/Swap/components/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { useHistory } from 'react-router-dom'
+import { Routes } from 'constants/routes'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined
@@ -25,7 +26,7 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} history={history} />}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.NEW_SWAP)} />}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
