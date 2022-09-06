@@ -61,7 +61,7 @@ function calculateValidTo(deadline: number): number {
 
 export function useSwapFlowContext(): SwapFlowContext | null {
   const { account, chainId, provider } = useWeb3React()
-  const { independentField, recipient, INPUT, OUTPUT } = useSwapState()
+  const { independentField, recipient } = useSwapState()
   const { v2Trade, currencies, parsedAmount, allowedSlippage } = useDerivedSwapInfo()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
@@ -173,7 +173,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     buyToken,
     validTo,
     // TODO: add validation from original code
-    recipient: recipient === null ? account : recipientAddress!,
+    recipient: recipient === null ? account : recipientAddress || '',
     recipientAddressOrName: recipientAddress || null,
     signer: provider.getSigner(),
     allowsOffchainSigning,

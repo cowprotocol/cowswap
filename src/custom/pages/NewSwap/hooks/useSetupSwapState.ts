@@ -19,6 +19,7 @@ export function useSetupSwapState() {
   const dispatch = useAppDispatch()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const swapState = useSwapState()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const persistedSwapState = useMemo(() => swapState, [])
 
   useEffect(() => {

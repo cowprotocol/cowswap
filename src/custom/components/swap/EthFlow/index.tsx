@@ -195,12 +195,12 @@ export function EthWethWrap({
 
   const { onCurrencySelection } = useSwapActionHandlers()
   const { openSwapConfirmModal } = useSwapConfirmManager()
-  const openSwapConfirm = () => {
+  const openSwapConfirm = useCallback(() => {
     if (!chainId || !trade) return
 
     onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
     openSwapConfirmModal(trade)
-  }
+  }, [chainId, trade, onCurrencySelection, openSwapConfirmModal])
 
   const handleError = useCallback(
     (error: any, type: 'WRAP' | 'APPROVE') => {

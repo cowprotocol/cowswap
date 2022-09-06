@@ -186,7 +186,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           if (isExpertMode) {
             handleSwap()
           } else {
-            openSwapConfirmModal(trade!)
+            trade && openSwapConfirmModal(trade)
           }
         }}
         width="100%"

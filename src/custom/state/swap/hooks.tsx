@@ -374,7 +374,11 @@ export function validatedRecipient(recipient: any): string | null {
 } */
 
 // mod: defaultInputCurrency parameters
-export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurrency = ''): SwapState {
+export function queryParametersToSwapState(
+  parsedQs: ParsedQs,
+  defaultInputCurrency = '',
+  chainId: number | null
+): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
@@ -417,8 +421,8 @@ export function useDefaultsFromURLSearch(): SwapState {
   const defaultInputToken = WETH[chainId || SupportedChainId.MAINNET].address // mod
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken) // mod
-  }, [defaultInputToken, parsedQs]) // mod
+    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId || null) // mod
+  }, [defaultInputToken, parsedQs, chainId]) // mod
 
   useEffect(() => {
     if (!chainId) return
