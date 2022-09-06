@@ -31,7 +31,7 @@ export const Price: React.FC<PriceProps> = ({ trade, ...boxProps }: PriceProps) 
 
   return (
     <LowerSectionWrapper {...boxProps}>
-      <Text fontWeight={500} fontSize={13} color={theme.text2}>
+      <Text fontWeight={500} fontSize={13}>
         <PriceSwitcher>
           <Trans>Price</Trans>
           <Repeat size={20} onClick={() => setShowInverted((prev) => !prev)} />

@@ -81,7 +81,7 @@ export function RowFee({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text1}>
           Fees {includeGasMessage}
         </ThemedText.Black>
         {showHelpers && (
