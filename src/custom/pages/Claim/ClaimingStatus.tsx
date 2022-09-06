@@ -33,7 +33,7 @@ import { ClaimCommonTypes } from './types'
 import { Routes } from 'constants/routes'
 
 const COW_TWEET_TEMPLATE =
-  'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
+  'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'handleChangeAccount'>
 
