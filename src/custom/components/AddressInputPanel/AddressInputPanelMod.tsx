@@ -1,16 +1,21 @@
+import { Trans } from '@lingui/macro'
 // eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
-import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
+import { /*styled,*/ DefaultTheme, ThemeContext } from 'styled-components/macro'
 
-import useENS from '../../hooks/useENS'
+import useENS from 'hooks/useENS'
 import { ExternalLink, ThemedText } from 'theme'
-import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
+// import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
+import { AutoColumn } from 'components/Column'
+import { RowBetween } from 'components/Row'
 
-export const InputPanel = styled.div`
+// MOD
+import { getBlockExplorerUrl as getExplorerLink } from 'utils'
+import { ContainerRow, Input, InputContainer, InputPanel } from '@src/components/AddressInputPanel'
+
+/* const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: 1.25rem;
@@ -19,7 +24,7 @@ export const InputPanel = styled.div`
   width: 100%;
 `
 
-export const ContainerRow = styled.div<{ error: boolean }>`
+const ContainerRow = styled.div<{ error: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +40,7 @@ export const InputContainer = styled.div`
   padding: 1rem;
 `
 
-export const Input = styled.input<{ error?: boolean }>`
+const Input = styled.input<{ error?: boolean }>`
   font-size: 1.25rem;
   outline: none;
   border: none;
@@ -66,7 +71,7 @@ export const Input = styled.input<{ error?: boolean }>`
   ::placeholder {
     color: ${({ theme }) => theme.text4};
   }
-`
+` */
 
 export default function AddressInputPanel({
   id,
@@ -111,10 +116,7 @@ export default function AddressInputPanel({
                 {label ?? <Trans>Recipient</Trans>}
               </ThemedText.Black>
               {address && chainId && (
-                <ExternalLink
-                  href={getExplorerLink(chainId, name ?? address, ExplorerDataType.ADDRESS)}
-                  style={{ fontSize: '14px' }}
-                >
+                <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>
                 </ExternalLink>
               )}
