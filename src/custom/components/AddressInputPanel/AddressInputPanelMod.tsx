@@ -7,9 +7,12 @@ import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
 import useENS from 'hooks/useENS'
 import { ExternalLink, ThemedText } from 'theme'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
+
+// MOD imports
+import { getBlockExplorerUrl as getExplorerLink } from 'utils'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -49,9 +52,11 @@ const Input = styled.input<{ error?: boolean }>`
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
+
   ::placeholder {
     color: ${({ theme }) => theme.text4};
   }
+
   padding: 0px;
   -webkit-appearance: textfield;
 
@@ -112,10 +117,7 @@ export default function AddressInputPanel({
                 {label ?? <Trans>Recipient</Trans>}
               </ThemedText.Black>
               {address && chainId && (
-                <ExternalLink
-                  href={getExplorerLink(chainId, name ?? address, ExplorerDataType.ADDRESS)}
-                  style={{ fontSize: '14px' }}
-                >
+                <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>
                 </ExternalLink>
               )}
