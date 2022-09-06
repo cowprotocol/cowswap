@@ -107,6 +107,7 @@ export function NewSwapPage() {
   })
 
   const swapFormProps: SwapFormProps = {
+    trade: trade || null,
     recipient,
     allowedSlippage,
     isGettingNewQuote,

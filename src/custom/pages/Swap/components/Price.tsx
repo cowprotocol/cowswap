@@ -3,9 +3,10 @@ import { Trans } from '@lingui/macro'
 import { Repeat } from 'react-feather'
 import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
-import styled, { DefaultTheme } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { LowerSectionWrapper } from 'pages/Swap/styled'
 import { AutoRow } from 'components/Row'
+import { useContext, useState } from 'react'
 
 const PriceSwitcher = styled(AutoRow)`
   flex-flow: row nowrap;
@@ -22,18 +23,12 @@ const PriceSwitcher = styled(AutoRow)`
 
 interface PriceProps extends BoxProps {
   trade: TradeGp
-  theme: DefaultTheme
-  showInverted: boolean
-  setShowInverted: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const Price: React.FC<PriceProps> = ({
-  trade,
-  theme,
-  showInverted,
-  setShowInverted,
-  ...boxProps
-}: PriceProps) => {
+export const Price: React.FC<PriceProps> = ({ trade, ...boxProps }: PriceProps) => {
+  const theme = useContext(ThemeContext)
+  const [showInverted, setShowInverted] = useState<boolean>(false)
+
   return (
     <LowerSectionWrapper {...boxProps}>
       <Text fontWeight={500} fontSize={14} color={theme.text2}>

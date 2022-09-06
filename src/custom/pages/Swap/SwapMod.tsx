@@ -364,9 +364,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     padding: '0 8px',
                   }}
                 >
-                  {trade && (
-                    <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
-                  )}
+                  {trade && <Price trade={trade} />}
 
                   {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                     <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />

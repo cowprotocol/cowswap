@@ -27,7 +27,6 @@ const StyledPriceContainer = styled.button`
   justify-content: center;
   padding: 0;
   grid-template-columns: 1fr auto;
-  grid-gap: 0.25rem;
   /* display: flex;
   flex-direction: row;
   text-align: left;

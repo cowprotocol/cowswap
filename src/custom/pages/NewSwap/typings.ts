@@ -4,9 +4,11 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
+import TradeGp from 'state/swap/TradeGp'
 
 export interface SwapFormProps {
   recipient: string | null
+  trade: TradeGp | null
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent

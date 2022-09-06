@@ -1,10 +1,11 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { PriceSwitchButton } from './styled'
 import { InfoIcon } from 'components/InfoIcon'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 import { useOpenModal } from 'state/application/hooks'
-import { ApplicationModal } from '@src/state/application/reducer'
+import { ApplicationModal } from 'state/application/reducer'
+import { Price } from 'pages/Swap/components/Price'
+import TradeGp from 'state/swap/TradeGp'
 
 const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -12,23 +13,21 @@ const GASLESS_FEE_TOOLTIP_MSG =
 const SUBSIDY_INFO_MESSAGE_EXTENDED =
   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
 
-// TODO: implement clicks
-export function TradeRates() {
+export interface TradeRatesProps {
+  trade: TradeGp | null
+}
+
+export function TradeRates(props: TradeRatesProps) {
+  const { trade } = props
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
   return (
     <styledEl.Box>
-      <styledEl.Row>
-        <div>
-          <span>Price</span> <PriceSwitchButton size={20} />
-        </div>
-        <div>
-          <span>
-            <styledEl.LightText>1 USDC</styledEl.LightText> = 1.0002 WXDAI{' '}
-            <styledEl.LightText>(≈$0.99)</styledEl.LightText>
-          </span>
-        </div>
-      </styledEl.Row>
+      {trade && (
+        <styledEl.Row>
+          <Price trade={trade} />
+        </styledEl.Row>
+      )}
       <styledEl.Row>
         <div>
           <span>Fees (incl. gas costs)</span>

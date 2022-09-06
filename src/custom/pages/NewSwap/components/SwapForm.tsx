@@ -9,6 +9,7 @@ import { AddRecipient } from 'pages/NewSwap/pureComponents/AddRecipient'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {
   const {
+    trade,
     swapActions,
     allowedSlippage,
     isGettingNewQuote,
@@ -53,7 +54,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       {showRecipientControls && recipient !== null && (
         <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
       )}
-      <TradeRates />
+      <TradeRates trade={trade} />
     </>
   )
 }, swapPagePropsChecker)
