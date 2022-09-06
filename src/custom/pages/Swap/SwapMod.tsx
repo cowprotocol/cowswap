@@ -25,7 +25,7 @@ import {
   useHighFeeWarning,
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
-import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
+import { useExpertModeManager, useRecipientToggleManager, useUserSlippageTolerance } from 'state/user/hooks'
 import { LinkStyledButton } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -87,6 +87,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   // swap state
   const { independentField, typedValue, recipient, INPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
   const { v2Trade, allowedSlippage, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
+  const userAllowedSlippage = useUserSlippageTolerance()
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
@@ -369,7 +370,15 @@ export default function Swap({ history, location, className }: RouteComponentPro
                   {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                     <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
                   )}
-                  {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
+                  {(isFeeGreater || trade) && fee && (
+                    <TradeBasicDetails
+                      allowedSlippage={userAllowedSlippage}
+                      isExpertMode={isExpertMode}
+                      allowsOffchainSigning={allowsOffchainSigning}
+                      trade={trade}
+                      fee={fee}
+                    />
+                  )}
                   {/* FEES DISCOUNT */}
                   {/* TODO: check cow balance and set here, else don't show */}
                   <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />

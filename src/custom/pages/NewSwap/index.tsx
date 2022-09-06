@@ -3,6 +3,7 @@ import * as styledEl from './styled'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
+  useIsFeeGreaterThanInput,
   useSwapActionHandlers,
   useSwapState,
   useUnknownImpactWarning,
@@ -36,7 +37,7 @@ import {
 } from 'pages/NewSwap/warnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { useExpertModeManager } from '@src/state/user/hooks'
+import { useExpertModeManager, useUserSlippageTolerance } from '@src/state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { SwapForm } from 'pages/NewSwap/components/SwapForm'
 import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
@@ -57,6 +58,7 @@ export function NewSwapPage() {
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
   const showRecipientControls = useShowRecipientControls()
+  const userAllowedSlippage = useUserSlippageTolerance()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -68,6 +70,10 @@ export function NewSwapPage() {
   const { isGettingNewQuote } = useGetQuoteAndStatus({
     token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
     chainId,
+  })
+  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
+    chainId,
+    address: INPUT.currencyId,
   })
 
   const inputCurrencyInfo: CurrencyInfo = {
@@ -168,6 +174,11 @@ export function NewSwapPage() {
     trade,
     isExpertMode,
     allowedSlippage,
+    allowsOffchainSigning,
+    userAllowedSlippage,
+    isFeeGreater,
+    fee,
+    discount: subsidyAndBalance.subsidy.discount || 0,
   }
 
   return (

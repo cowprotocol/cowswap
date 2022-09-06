@@ -4,6 +4,7 @@ import QuestionHelper from 'components/QuestionHelper'
 
 export const Box = styled.div`
   margin: 15px 10px;
+  font-size: 13px;
 `
 
 export const Row = styled.div`

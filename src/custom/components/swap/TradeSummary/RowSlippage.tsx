@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Percent } from '@uniswap/sdk-core'
-import { ThemeContext } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { ThemedText } from 'theme'
 
@@ -12,6 +12,15 @@ import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 
+const ClickableSlippage = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+`
+
 export interface RowSlippageProps {
   allowedSlippage: Percent
   fontWeight?: number
@@ -19,9 +28,10 @@ export interface RowSlippageProps {
   rowHeight?: number
   showSettingOnClick?: boolean
 }
+
 export function RowSlippage({
   allowedSlippage,
-  fontSize = 14,
+  fontSize = 13,
   fontWeight = 500,
   rowHeight,
   showSettingOnClick = true,
@@ -35,7 +45,7 @@ export function RowSlippage({
       <RowFixed>
         <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
           {showSettingOnClick ? (
-            <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+            <ClickableText fontWeight={500} fontSize={fontSize} color={theme.text2} onClick={toggleSettings}>
               <Trans>Slippage tolerance</Trans>
             </ClickableText>
           ) : (
@@ -60,11 +70,9 @@ export function RowSlippage({
         </MouseoverTooltipContent>
       </RowFixed>
       <ThemedText.Black textAlign="right" fontSize={fontSize} color={theme.text1}>
-        {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
-        ) : (
-          <span>{displaySlippage}</span>
-        )}
+        <ClickableSlippage onClick={() => (showSettingOnClick ? toggleSettings() : null)}>
+          {displaySlippage}
+        </ClickableSlippage>
       </ThemedText.Black>
     </RowBetween>
   )

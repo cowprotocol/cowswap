@@ -8,55 +8,59 @@ import { Price } from 'pages/Swap/components/Price'
 import TradeGp from 'state/swap/TradeGp'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
-import { Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { genericPropsChecker } from 'pages/NewSwap/propsChecker'
-
-const GASLESS_FEE_TOOLTIP_MSG =
-  'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
+import { TradeBasicDetails } from 'pages/Swap/components/TradeBasicDetails'
 
 const SUBSIDY_INFO_MESSAGE_EXTENDED =
   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
 
 export interface TradeRatesProps {
+  trade: TradeGp | undefined
   isExpertMode: boolean
   allowedSlippage: Percent
-  trade: TradeGp | undefined
+  allowsOffchainSigning: boolean
+  userAllowedSlippage: Percent | string
+  isFeeGreater: boolean
+  discount: number
+  fee: CurrencyAmount<Currency> | null
 }
 
 export const TradeRates = React.memo(function (props: TradeRatesProps) {
-  const { trade, isExpertMode, allowedSlippage } = props
+  const {
+    isFeeGreater,
+    fee,
+    trade,
+    isExpertMode,
+    allowedSlippage,
+    allowsOffchainSigning,
+    userAllowedSlippage,
+    discount,
+  } = props
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
   return (
     <styledEl.Box>
-      {trade && (
-        <styledEl.Row>
-          <Price trade={trade} />
-        </styledEl.Row>
-      )}
+      {trade && <Price trade={trade} />}
       {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-        <styledEl.Row>
-          <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
-        </styledEl.Row>
+        <RowSlippage allowedSlippage={allowedSlippage} fontWeight={400} rowHeight={24} />
       )}
-      <styledEl.Row>
-        <div>
-          <span>Fees (incl. gas costs)</span>
-          <InfoIcon content={GASLESS_FEE_TOOLTIP_MSG} />
-        </div>
-        <div>
-          <span>
-            0.0007 USDC <styledEl.LightText>({'≈$ <0.01'})</styledEl.LightText>
-          </span>
-        </div>
-      </styledEl.Row>
+      {(isFeeGreater || trade) && fee && (
+        <TradeBasicDetails
+          allowedSlippage={userAllowedSlippage}
+          isExpertMode={isExpertMode}
+          allowsOffchainSigning={allowsOffchainSigning}
+          trade={trade}
+          fee={fee}
+        />
+      )}
       <styledEl.Row>
         <div>
           <span>Fees discount</span>
           <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
         </div>
         <div>
-          <styledEl.Discount onClick={openCowSubsidyModal}>0% discount</styledEl.Discount>
+          <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
         </div>
       </styledEl.Row>
     </styledEl.Box>

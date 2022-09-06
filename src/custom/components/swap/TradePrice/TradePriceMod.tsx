@@ -72,7 +72,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
       }}
       // title={text}
     >
-      <Text fontWeight={500} fontSize={14} color={theme.text1}>
+      <Text fontWeight={500} fontSize={13} color={theme.text1}>
         {/* {text} */}
         <LightGreyText>{baseText}</LightGreyText>
         <span title={`${fullFormattedPrice} ${label}`}>{quoteText}</span>

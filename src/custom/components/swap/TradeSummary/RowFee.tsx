@@ -52,7 +52,7 @@ export function RowFee({
   feeFiatValue,
   allowsOffchainSigning,
   showHelpers,
-  fontSize = 14,
+  fontSize = 13,
   fontWeight = 500,
   rowHeight,
 }: RowFeeProps) {
