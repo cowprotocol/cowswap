@@ -28,9 +28,11 @@ import {
 } from 'components/swap/EthFlow/helpers'
 import { GpModal } from 'components/Modal'
 import { ApprovalState } from 'hooks/useApproveCallback'
-import { useWrapCallback, OpenSwapConfirmModalCallback, useHasEnoughWrappedBalanceForSwap } from 'hooks/useWrapCallback'
-import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
+import { useWrapCallback, useHasEnoughWrappedBalanceForSwap } from 'hooks/useWrapCallback'
+import { useDerivedSwapInfo, useDetectNativeToken, useSwapActionHandlers } from 'state/swap/hooks'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import { Field } from '@src/state/swap/actions'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -74,11 +76,8 @@ export interface EthFlowProps {
   wrapUnrapAmount?: CurrencyAmount<Currency>
   // state
   approvalState: ApprovalState
-  // cbs
-  openSwapConfirmModalCallback: OpenSwapConfirmModalCallback
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
-  openSwapConfirm(): void
 }
 
 export type PendingHashMap = { approveHash?: string; wrapHash?: string }
@@ -88,11 +87,8 @@ export function EthWethWrap({
   wrapUnrapAmount,
   // state from hooks
   approvalState,
-  // cbs
-  openSwapConfirmModalCallback,
   onDismiss,
   approveCallback,
-  openSwapConfirm,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -118,7 +114,7 @@ export function EthWethWrap({
   } = useEthFlowStatesAndSetters({ chainId, approvalState })
   const { closeSwapConfirm } = useSwapConfirmManager()
 
-  const { currencies } = useDerivedSwapInfo()
+  const { currencies, v2Trade: trade } = useDerivedSwapInfo()
   const {
     isNativeIn,
     isNativeOut,
@@ -194,9 +190,17 @@ export function EthWethWrap({
 
   const wrapCallback = useWrapCallback(
     // is native token swap, use the wrapped equivalent as input currency
-    wrapUnrapAmount,
-    openSwapConfirmModalCallback
+    wrapUnrapAmount
   )
+
+  const { onCurrencySelection } = useSwapActionHandlers()
+  const { openSwapConfirmModal } = useSwapConfirmManager()
+  const openSwapConfirm = () => {
+    if (!chainId || !trade) return
+
+    onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+    openSwapConfirmModal(trade)
+  }
 
   const handleError = useCallback(
     (error: any, type: 'WRAP' | 'APPROVE') => {

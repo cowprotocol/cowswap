@@ -11,7 +11,6 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { AutoRow } from 'components/Row'
 import { Wrapper } from 'components/swap/styleds'
 import SwapHeader from 'components/swap/SwapHeader'
-import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
@@ -38,7 +37,6 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { StyledAppBody } from './styleds'
 import { ApplicationModal } from 'state/application/reducer'
-import { OperationType } from 'components/TransactionConfirmationModal'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
@@ -59,11 +57,9 @@ import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
-import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 import { swapFlow } from 'pages/Swap/swapFlow'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
-import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
 
@@ -72,21 +68,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
   const previousChainId = usePrevious(chainId)
   const theme = useContext(ThemeContext)
-
-  // Transaction confirmation modal
-  const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
-  const [transactionConfirmationModalMsg, setTransactionConfirmationModalMsg] = useState<string>()
-  const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const closeModals = useCloseModals()
-
-  const openSwapConfirmModalCallback = useCallback(
-    (message: string, operationType: OperationType) => {
-      setTransactionConfirmationModalMsg(message)
-      setOperationType(operationType)
-      openTransactionConfirmationModalAux()
-    },
-    [setTransactionConfirmationModalMsg, openTransactionConfirmationModalAux]
-  )
 
   // Cow subsidy modal
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
@@ -164,7 +146,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const { ErrorMessage } = useErrorMessage()
-  const { openSwapConfirmModal } = useSwapConfirmManager()
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -193,16 +174,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     [dependentField, independentField, parsedAmounts, showWrap, typedValue]
   )
 
-  // check whether the user has approved the router on the input token
-  const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
-    openTransactionConfirmationModal: (message: string) =>
-      openSwapConfirmModalCallback(message, OperationType.APPROVE_TOKEN),
-    closeModals,
-    trade,
-    allowedSlippage,
-    isNativeFlow: isNativeInSwap,
-  })
-
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
@@ -226,16 +197,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     logSwapFlow('Start swap flow')
     swapFlow(swapFlowContext)
   }, [swapFlowContext])
-
-  // handle swap when native token is detected as sell token
-  const handleNativeWrapAndSwap = () => {
-    if (!chainId || !trade) throw new Error('Need to be connected')
-
-    // switch to wrapped native currency
-    onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
-    // set swap state
-    openSwapConfirmModal(trade)
-  }
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -281,18 +242,15 @@ export default function Swap({ history, location, className }: RouteComponentPro
     allowedSlippage,
     handleSwap,
     priceImpact,
-    operationType,
-    swapConfirmMessage: transactionConfirmationModalMsg || '',
     dismissNativeWrapModal,
   }
 
-  const swapButtonProps: SwapButtonContext = useSwapButtonContext({
+  const swapButtonContext: SwapButtonContext = useSwapButtonContext({
     swapFlowContext,
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
-    openSwapConfirmModalCallback,
     openNativeWrapModal,
   })
 
@@ -311,12 +269,9 @@ export default function Swap({ history, location, className }: RouteComponentPro
           nativeInput={showWrap ? parsedAmount : nativeInput}
           wrapUnrapAmount={wrapUnrapAmount}
           // state
-          approvalState={approvalState}
-          // cbs
-          openSwapConfirmModalCallback={openSwapConfirmModalCallback}
+          approvalState={swapButtonContext.approveButtonProps.approvalState}
           onDismiss={dismissNativeWrapModal}
-          approveCallback={approveCallback}
-          openSwapConfirm={handleNativeWrapAndSwap}
+          approveCallback={swapButtonContext.approveButtonProps.approveCallback}
         />
       )}
 
@@ -440,7 +395,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
             padding="5px 15px"
           />
           <BottomGrouping>
-            <SwapButton {...swapButtonProps} />
+            <SwapButton {...swapButtonContext} />
             {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
           </BottomGrouping>
         </Wrapper>

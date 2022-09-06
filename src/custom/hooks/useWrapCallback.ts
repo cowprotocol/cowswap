@@ -18,6 +18,7 @@ import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
+import { useTransactionConfirmModal } from 'pages/Swap/hooks/useTransactionConfirmModal'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -90,10 +91,7 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
   return isZero ? t`Enter an amount` : !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 }
 
-export function useWrapUnwrapContext(
-  inputAmount: CurrencyAmount<Currency> | undefined,
-  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
-): WrapUnwrapContext | null {
+export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
   const { chainId } = useWeb3React()
   const { currencies } = useDerivedSwapInfo()
   const closeModals = useCloseModals()
@@ -103,11 +101,15 @@ export function useWrapUnwrapContext(
   const addTransaction = useTransactionAdder()
   const wrapType = isNativeIn ? WrapType.WRAP : WrapType.UNWRAP
   const isWrap = isNativeIn
+  const openTxConfirmationModal = useTransactionConfirmModal()
 
   if (!wethContract || !chainId || !inputAmount) {
     return null
   }
 
+  const openTransactionConfirmationModal = (pendingText: string, operationType: OperationType) => {
+    openTxConfirmationModal({ operationType, pendingText })
+  }
   const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
   const operationType = isWrap ? OperationType.WRAP_ETHER : OperationType.UNWRAP_WETH
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
@@ -132,11 +134,8 @@ export function useWrapUnwrapContext(
 /**
  * Given the selected input and output currency, return a wrap callback
  */
-export function useWrapCallback(
-  inputAmount: CurrencyAmount<Currency> | undefined,
-  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
-): WrapUnwrapCallback | null {
-  const context = useWrapUnwrapContext(inputAmount, openTransactionConfirmationModal)
+export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapCallback | null {
+  const context = useWrapUnwrapContext(inputAmount)
 
   if (!context) {
     return null

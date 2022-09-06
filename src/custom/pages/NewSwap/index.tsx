@@ -1,15 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import * as styledEl from './styled'
 import { CurrencyInputPanel } from './pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from './pureComponents/CurrencyArrowSeparator'
 import { TradeRates } from './pureComponents/TradeRates'
-import {
-  useDerivedSwapInfo,
-  useHighFeeWarning,
-  useSwapActionHandlers,
-  useSwapState,
-  useUnknownImpactWarning,
-} from 'state/swap/hooks'
+import { useDerivedSwapInfo, useHighFeeWarning, useSwapState, useUnknownImpactWarning } from 'state/swap/hooks'
 import { Field } from 'state/swap/actions'
 import { useSetupSwapState } from 'pages/NewSwap/hooks/useSetupSwapState'
 import { useCurrencyBalance } from '@src/state/connection/hooks'
@@ -26,14 +20,11 @@ import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'pages/New
 import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
-import { OperationType } from 'components/TransactionConfirmationModal'
-import { useModalIsOpen, useOpenModal } from 'state/application/hooks'
+import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from '@src/state/application/reducer'
 import { NewSwapModals, NewSwapModalsProps } from 'pages/NewSwap/modals'
 import { ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
-import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import {
   NewSwapWarningsBottom,
@@ -106,35 +97,14 @@ export function NewSwapPage() {
   }
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-  const [swapConfirmMessage, setSwapConfirmMessage] = useState<string>('')
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
-  const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
-
-  const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
   const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
 
-  const openSwapConfirmModalCallback = useCallback(
-    (message: string, operationType: OperationType) => {
-      setSwapConfirmMessage(message)
-      setOperationType(operationType)
-      openTransactionConfirmationModalAux()
-    },
-    [setSwapConfirmMessage, openTransactionConfirmationModalAux]
-  )
   const openNativeWrapModal = () => setOpenNativeWrapModal(true)
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
-
-  const { onCurrencySelection } = useSwapActionHandlers()
-  const { openSwapConfirmModal } = useSwapConfirmManager()
-  const handleNativeWrapAndSwap = () => {
-    if (!chainId || !trade) throw new Error('Need to be connected')
-
-    onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
-    openSwapConfirmModal(trade)
-  }
 
   const swapButtonContext = useSwapButtonContext({
     swapFlowContext,
@@ -142,7 +112,6 @@ export function NewSwapPage() {
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
-    openSwapConfirmModalCallback,
     openNativeWrapModal,
   })
 
@@ -160,8 +129,6 @@ export function NewSwapPage() {
     allowedSlippage,
     handleSwap: swapButtonContext.handleSwap,
     priceImpact: priceImpactParams.priceImpact,
-    operationType,
-    swapConfirmMessage,
     dismissNativeWrapModal,
   }
 
@@ -169,10 +136,8 @@ export function NewSwapPage() {
     nativeInput: parsedAmounts.INPUT,
     wrapUnrapAmount: swapButtonContext.wrapUnrapAmount,
     approvalState: swapButtonContext.approveButtonProps.approvalState,
-    openSwapConfirmModalCallback,
     onDismiss: dismissNativeWrapModal,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,
-    openSwapConfirm: handleNativeWrapAndSwap,
   }
 
   const swapModalsProps: NewSwapModalsProps = {

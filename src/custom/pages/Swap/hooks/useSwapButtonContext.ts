@@ -1,26 +1,27 @@
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useDerivedSwapInfo, useDetectNativeToken, useSwapState } from '@src/state/swap/hooks'
-import useTransactionDeadline from '@src/hooks/useTransactionDeadline'
-import { useExpertModeManager } from '@src/state/user/hooks'
-import { useCloseModals, useToggleWalletModal } from '@src/state/application/hooks'
+import { useDerivedSwapInfo, useDetectNativeToken, useSwapState } from 'state/swap/hooks'
+import useTransactionDeadline from 'hooks/useTransactionDeadline'
+import { useExpertModeManager } from 'state/user/hooks'
+import { useCloseModals, useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
-import { Field } from '@src/state/swap/actions'
+import { Field } from 'state/swap/actions'
 import { TradeType } from '@uniswap/sdk-core'
-import { computeSlippageAdjustedAmounts } from '@src/utils/prices'
-import { useWrapType, useWrapUnwrapError } from '@src/hooks/useWrapCallback'
+import { computeSlippageAdjustedAmounts } from 'utils/prices'
+import { useWrapType, useWrapUnwrapError } from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import { swapFlow } from 'pages/Swap/swapFlow'
-import { useApproveCallbackFromTrade } from '@src/hooks/useApproveCallback'
+import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { useIsSwapUnsupported } from '@src/hooks/useIsSwapUnsupported'
+import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import { getSwapButtonState } from 'pages/Swap/helpers/getSwapButtonState'
 import { SwapButtonContext } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { OperationType } from '@src/components/TransactionConfirmationModal'
+import { OperationType } from 'components/TransactionConfirmationModal'
 import { SwapFlowContext } from 'pages/Swap/swapFlow/types'
+import { useTransactionConfirmModal } from 'pages/Swap/hooks/useTransactionConfirmModal'
 
 export interface SwapButtonInput {
   swapFlowContext: SwapFlowContext | null
@@ -28,7 +29,6 @@ export interface SwapButtonInput {
   impactWarningAccepted: boolean
   approvalSubmitted: boolean
   setApprovalSubmitted(value: boolean): void
-  openSwapConfirmModalCallback(message: string, operationType: OperationType): void
   openNativeWrapModal(): void
 }
 
@@ -39,7 +39,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
-    openSwapConfirmModalCallback,
     openNativeWrapModal,
   } = input
 
@@ -52,6 +51,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const { INPUT } = useSwapState()
+  const setTransactionConfirm = useTransactionConfirmModal()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -83,8 +83,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
 
   const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
-    openTransactionConfirmationModal: (message: string) =>
-      openSwapConfirmModalCallback(message, OperationType.APPROVE_TOKEN),
+    openTransactionConfirmationModal(pendingText: string) {
+      setTransactionConfirm({ operationType: OperationType.APPROVE_TOKEN, pendingText })
+    },
     closeModals,
     trade,
     allowedSlippage,

@@ -7,36 +7,27 @@ import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
-import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
+import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { useSwapActionHandlers } from 'state/swap/hooks'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useCloseModals } from 'state/application/hooks'
+import { transactionConfirmAtom } from 'pages/Swap/state/transactionConfirmAtom'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
   recipient: string | null
   allowedSlippage: Percent
   handleSwap: HandleSwapCallback
-  operationType: OperationType
   priceImpact?: Percent
-  swapConfirmMessage: string // TODO: move to atom
   dismissNativeWrapModal(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const {
-    trade,
-    recipient,
-    allowedSlippage,
-    priceImpact,
-    handleSwap,
-    operationType,
-    swapConfirmMessage,
-    dismissNativeWrapModal,
-  } = props
+  const { trade, recipient, allowedSlippage, priceImpact, handleSwap, dismissNativeWrapModal } = props
 
   const swapConfirmState = useAtomValue(swapConfirmAtom)
+  const { operationType, pendingText } = useAtomValue(transactionConfirmAtom)
   const { acceptRateUpdates, closeSwapConfirm } = useSwapConfirmManager()
   const { onUserInput } = useSwapActionHandlers()
   const closeModals = useCloseModals()
@@ -75,7 +66,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
       <TransactionConfirmationModal
         attemptingTxn={true}
         isOpen={showTransactionConfirmationModal}
-        pendingText={swapConfirmMessage}
+        pendingText={pendingText}
         onDismiss={onDismiss}
         operationType={operationType}
       />
