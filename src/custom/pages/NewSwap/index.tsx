@@ -27,13 +27,14 @@ import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useSwapButtonContext } from 'pages/NewSwap/hooks/useSwapButtonContext'
 import { OperationType } from 'components/TransactionConfirmationModal'
-import { useOpenModal } from 'state/application/hooks'
+import { useModalIsOpen, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from '@src/state/application/reducer'
 import { NewSwapModals, NewSwapModalsProps } from 'pages/NewSwap/modals'
 import { ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 const NewSwapPageInner = React.memo(function (props: NewSwapPageProps) {
   const {
@@ -104,6 +105,7 @@ export function NewSwapPage() {
   const [operationType, setOperationType] = useState<OperationType>(OperationType.WRAP_ETHER)
 
   const openTransactionConfirmationModalAux = useOpenModal(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
   const { impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning(priceImpactParams)
@@ -171,15 +173,18 @@ export function NewSwapPage() {
   }
 
   const swapModalsProps: NewSwapModalsProps = {
+    chainId,
     showNativeWrapModal,
+    showCowSubsidyModal,
     confirmSwapProps,
     ethFlowProps,
   }
 
   return (
     <>
-      <NewSwapPageInner {...swapPageProps} />
       <NewSwapModals {...swapModalsProps} />
+      <AffiliateStatusCheck />
+      <NewSwapPageInner {...swapPageProps} />
     </>
   )
 }

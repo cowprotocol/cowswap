@@ -3,6 +3,8 @@ import * as styledEl from './styled'
 import { PriceSwitchButton } from './styled'
 import { InfoIcon } from 'components/InfoIcon'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
+import { useOpenModal } from 'state/application/hooks'
+import { ApplicationModal } from '@src/state/application/reducer'
 
 const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -12,6 +14,8 @@ const SUBSIDY_INFO_MESSAGE_EXTENDED =
 
 // TODO: implement clicks
 export function TradeRates() {
+  const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
+
   return (
     <styledEl.Box>
       <styledEl.Row>
@@ -42,7 +46,7 @@ export function TradeRates() {
           <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
         </div>
         <div>
-          <styledEl.Discount>0% discount</styledEl.Discount>
+          <styledEl.Discount onClick={openCowSubsidyModal}>0% discount</styledEl.Discount>
         </div>
       </styledEl.Row>
     </styledEl.Box>
