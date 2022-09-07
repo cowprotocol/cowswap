@@ -29,156 +29,143 @@ export interface SwapButtonContext {
   swapInputError?: ReactNode
 }
 
-export const SwapButton = React.memo(function (props: SwapButtonContext) {
-  const {
-    swapButtonState,
-    chainId,
-    onWrap,
-    handleSwap,
-    wrappedToken,
-    approveButtonProps,
-    swapInputError,
-    wrapInputError,
-    openSwapConfirm,
-    toggleWalletModal,
-  } = props
+const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext) => JSX.Element } = {
+  [SwapButtonState.swapIsUnsupported]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <ThemedText.Main mb="4px">
+        <Trans>Unsupported Token</Trans>
+      </ThemedText.Main>
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.walletIsUnsupported]: () => (
+    <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+      <Text fontSize={20} fontWeight={500}>
+        <Trans>Wallet Unsupported</Trans>
+      </Text>
+    </ButtonError>
+  ),
+  [SwapButtonState.wrapError]: (props: SwapButtonContext) => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      {props.wrapInputError}
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.shouldWrapNativeToken]: (props: SwapButtonContext) => (
+    <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
+      <Trans>Wrap</Trans>
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.shouldUnwrapNativeToken]: (props: SwapButtonContext) => (
+    <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
+      <Trans>Unwrap</Trans>
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.swapWithWrappedToken]: (props: SwapButtonContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
+      <styledEl.SwapButtonBox>
+        <Trans>Swap with {props.wrappedToken.symbol}</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.wrapAndSwap]: (props: SwapButtonContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
+      <styledEl.SwapButtonBox>
+        <Trans>Wrap and swap</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.feesExceedFromAmount]: () => <styledEl.FeesExceedFromAmountMessage />,
+  [SwapButtonState.insufficientLiquidity]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <ThemedText.Main mb="4px">
+        <Trans>Insufficient liquidity for this trade.</Trans>
+      </ThemedText.Main>
+    </GreyCard>
+  ),
+  [SwapButtonState.zeroPrice]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <ThemedText.Main mb="4px">
+        <Trans>Invalid price. Try increasing input/output amount.</Trans>
+      </ThemedText.Main>
+    </GreyCard>
+  ),
+  [SwapButtonState.transferToSmartContract]: (props: SwapButtonContext) => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <ThemedText.Main mb="4px">
+        <Trans>
+          Buying {GpEther.onChain(props.chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is not
+          currently supported
+        </Trans>
+      </ThemedText.Main>
+    </GreyCard>
+  ),
+  [SwapButtonState.fetchQuoteError]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <ThemedText.Main mb="4px">
+        <Trans>Error loading price. Try again later.</Trans>
+      </ThemedText.Main>
+    </GreyCard>
+  ),
+  [SwapButtonState.offlineBrowser]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
+    </GreyCard>
+  ),
+  [SwapButtonState.loading]: () => (
+    <ButtonPrimary buttonSize={ButtonSize.BIG}>
+      <styledEl.SwapButtonBox showLoading={true}></styledEl.SwapButtonBox>
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.walletIsNotConnected]: (props: SwapButtonContext) => (
+    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={props.toggleWalletModal}>
+      <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.readonlyGnosisSafeUser]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <ThemedText.Main mb="4px">
+        <Trans>Read Only</Trans>
+      </ThemedText.Main>
+    </ButtonPrimary>
+  ),
+  [SwapButtonState.needApprove]: (props: SwapButtonContext) => (
+    <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
+      <AutoColumn style={{ width: '100%' }} gap="12px">
+        <ApproveButton {...props.approveButtonProps}>
+          <styledEl.SwapButtonBox>
+            <Trans>Swap</Trans>
+          </styledEl.SwapButtonBox>
+        </ApproveButton>
+      </AutoColumn>
+    </AutoRow>
+  ),
+  [SwapButtonState.swapDisabled]: (props: SwapButtonContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+      <styledEl.SwapButtonBox>{props.swapInputError || <Trans>Swap</Trans>}</styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.swapError]: (props: SwapButtonContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+      <styledEl.SwapButtonBox>{props.swapInputError}</styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.expertModeSwap]: (props: SwapButtonContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
+      <styledEl.SwapButtonBox>
+        <Trans>Swap</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.regularSwap]: (props: SwapButtonContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+      <styledEl.SwapButtonBox>
+        <Trans>Swap</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+}
 
+export const SwapButton = React.memo(function (props: SwapButtonContext) {
   console.log('RENDER SWAP BUTTON: ', props)
 
-  const map: { [key in SwapButtonState]: JSX.Element } = {
-    [SwapButtonState.swapIsUnsupported]: (
-      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-        <ThemedText.Main mb="4px">
-          <Trans>Unsupported Token</Trans>
-        </ThemedText.Main>
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.walletIsUnsupported]: (
-      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
-        <Text fontSize={20} fontWeight={500}>
-          <Trans>Wallet Unsupported</Trans>
-        </Text>
-      </ButtonError>
-    ),
-    [SwapButtonState.wrapError]: (
-      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-        {wrapInputError}
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.shouldWrapNativeToken]: (
-      <ButtonPrimary onClick={onWrap} buttonSize={ButtonSize.BIG}>
-        <Trans>Wrap</Trans>
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.shouldUnwrapNativeToken]: (
-      <ButtonPrimary onClick={onWrap} buttonSize={ButtonSize.BIG}>
-        <Trans>Unwrap</Trans>
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.swapWithWrappedToken]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={onWrap}>
-        <styledEl.SwapButtonBox>
-          <Trans>Swap with {wrappedToken.symbol}</Trans>
-        </styledEl.SwapButtonBox>
-      </ButtonError>
-    ),
-    [SwapButtonState.wrapAndSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={onWrap}>
-        <styledEl.SwapButtonBox>
-          <Trans>Wrap and swap</Trans>
-        </styledEl.SwapButtonBox>
-      </ButtonError>
-    ),
-    [SwapButtonState.feesExceedFromAmount]: <styledEl.FeesExceedFromAmountMessage />,
-    [SwapButtonState.insufficientLiquidity]: (
-      <GreyCard style={{ textAlign: 'center' }}>
-        <ThemedText.Main mb="4px">
-          <Trans>Insufficient liquidity for this trade.</Trans>
-        </ThemedText.Main>
-      </GreyCard>
-    ),
-    [SwapButtonState.zeroPrice]: (
-      <GreyCard style={{ textAlign: 'center' }}>
-        <ThemedText.Main mb="4px">
-          <Trans>Invalid price. Try increasing input/output amount.</Trans>
-        </ThemedText.Main>
-      </GreyCard>
-    ),
-    [SwapButtonState.transferToSmartContract]: (
-      <GreyCard style={{ textAlign: 'center' }}>
-        <ThemedText.Main mb="4px">
-          <Trans>
-            Buying {GpEther.onChain(chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is not
-            currently supported
-          </Trans>
-        </ThemedText.Main>
-      </GreyCard>
-    ),
-    [SwapButtonState.fetchQuoteError]: (
-      <GreyCard style={{ textAlign: 'center' }}>
-        <ThemedText.Main mb="4px">
-          <Trans>Error loading price. Try again later.</Trans>
-        </ThemedText.Main>
-      </GreyCard>
-    ),
-    [SwapButtonState.offlineBrowser]: (
-      <GreyCard style={{ textAlign: 'center' }}>
-        <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
-      </GreyCard>
-    ),
-    [SwapButtonState.loading]: (
-      <ButtonPrimary buttonSize={ButtonSize.BIG}>
-        <styledEl.SwapButtonBox showLoading={true}></styledEl.SwapButtonBox>
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.walletIsNotConnected]: (
-      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
-        <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.readonlyGnosisSafeUser]: (
-      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-        <ThemedText.Main mb="4px">
-          <Trans>Read Only</Trans>
-        </ThemedText.Main>
-      </ButtonPrimary>
-    ),
-    [SwapButtonState.needApprove]: (
-      <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
-        <AutoColumn style={{ width: '100%' }} gap="12px">
-          <ApproveButton {...approveButtonProps}>
-            <styledEl.SwapButtonBox>
-              <Trans>Swap</Trans>
-            </styledEl.SwapButtonBox>
-          </ApproveButton>
-        </AutoColumn>
-      </AutoRow>
-    ),
-    [SwapButtonState.swapDisabled]: (
-      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
-        <styledEl.SwapButtonBox>{swapInputError || <Trans>Swap</Trans>}</styledEl.SwapButtonBox>
-      </ButtonError>
-    ),
-    [SwapButtonState.swapError]: (
-      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
-        <styledEl.SwapButtonBox>{swapInputError}</styledEl.SwapButtonBox>
-      </ButtonError>
-    ),
-    [SwapButtonState.expertModeSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={handleSwap}>
-        <styledEl.SwapButtonBox>
-          <Trans>Swap</Trans>
-        </styledEl.SwapButtonBox>
-      </ButtonError>
-    ),
-    [SwapButtonState.regularSwap]: (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={openSwapConfirm}>
-        <styledEl.SwapButtonBox>
-          <Trans>Swap</Trans>
-        </styledEl.SwapButtonBox>
-      </ButtonError>
-    ),
-  }
-
-  return <div id="swap-button">{map[swapButtonState]}</div>
+  return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
 }, isSwapButtonPropsEqual)
