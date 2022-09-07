@@ -393,12 +393,11 @@ export default function Swap({ history, location, className }: RouteComponentPro
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>
-      {currencyIn && currencyOut && (
+      {currencyIn && currencyOut && isSwapUnsupported && (
         <CompatibilityIssuesWarning
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          swapIsUnsupported={isSwapUnsupported}
         />
       )}
       <AlertWrapper>

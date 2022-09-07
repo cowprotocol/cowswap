@@ -66,12 +66,11 @@ export const NewSwapWarningsBottom = React.memo(function (props: NewSwapWarnings
 
   return (
     <>
-      {currencyIn && currencyOut && (
+      {currencyIn && currencyOut && swapIsUnsupported && (
         <CompatibilityIssuesWarning
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          swapIsUnsupported={swapIsUnsupported}
         />
       )}
 
