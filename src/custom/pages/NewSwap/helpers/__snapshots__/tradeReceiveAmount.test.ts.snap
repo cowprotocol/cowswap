@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Helpers to build ReceiveAmountInfo getInputReceiveAmountInfo() When tradeType is EXACT_INPUT and inputAmountWithFee less than trade fee amount Then amountBeforeFees should be zero 1`] = `
+Object {
+  "amountAfterFees": "0",
+  "amountBeforeFees": "0",
+  "feeAmount": "3",
+  "type": "from",
+}
+`;
+
+exports[`Helpers to build ReceiveAmountInfo getOutputReceiveAmountInfo() Should match a snapshot 1`] = `
+Object {
+  "amountAfterFees": "250",
+  "amountBeforeFees": "247",
+  "feeAmount": "-3",
+  "type": "to",
+}
+`;
