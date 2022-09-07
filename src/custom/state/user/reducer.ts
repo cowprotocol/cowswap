@@ -90,17 +90,21 @@ function serializeToken(token: Token): SerializedToken {
   }
 }
 
+function _initialStatePerChain(chainId: number) {
+  return COMMON_BASES[chainId].reduce(
+    (acc2, curr) => {
+      acc2[curr.wrapped.address] = serializeToken(curr.wrapped)
+      return acc2
+    },
+    {} as {
+      [address: string]: SerializedToken
+    }
+  )
+}
+
 function _initialSavedTokensState() {
   return ALL_SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
-    acc[chain] = COMMON_BASES[chain].reduce(
-      (acc2, curr) => {
-        acc2[curr.wrapped.address] = serializeToken(curr.wrapped)
-        return acc2
-      },
-      {} as {
-        [address: string]: SerializedToken
-      }
-    )
+    acc[chain] = _initialStatePerChain(chain)
     return acc
   }, {} as UserState['favouriteTokens'])
 }
@@ -216,6 +220,11 @@ const userSlice = createSlice({
       state.recipientToggleVisible = action.payload.recipientToggleVisible
       state.timestamp = currentTimestamp()
     },
+    initFavouriteTokens(state, { payload: { chainId } }) {
+      if (!state.favouriteTokens?.[chainId]) {
+        state.favouriteTokens = _initialSavedTokensState()
+      }
+    },
     toggleFavouriteToken(state, { payload: { serializedToken } }) {
       const { chainId, address } = serializedToken
 
@@ -230,7 +239,7 @@ const userSlice = createSlice({
       }
     },
     removeAllFavouriteTokens(state, { payload: { chainId } }) {
-      state.favouriteTokens = _initialSavedTokensState()
+      state.favouriteTokens[chainId] = _initialStatePerChain(chainId)
     },
   },
   extraReducers: (builder) => {
@@ -291,5 +300,6 @@ export const {
   toggleURLWarning,
   toggleFavouriteToken,
   removeAllFavouriteTokens,
+  initFavouriteTokens,
 } = userSlice.actions
 export default userSlice.reducer

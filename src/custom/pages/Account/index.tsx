@@ -5,6 +5,11 @@ import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 import { Content } from 'components/Page'
 import { Routes } from 'constants/routes'
 import { Loading } from 'components/FlashingLoading'
+import { Container, CardsWrapper } from './styled'
+import { useWeb3React } from '@web3-react/core'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import { SupportedChainId as ChainId } from 'constants/chains'
+import { Title } from 'components/Page'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
@@ -17,7 +22,7 @@ const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/er
 function _getPropsFromRoute(route: string) {
   switch (route) {
     case Routes.ACCOUNT:
-      return ['account-general', 'General']
+      return ['account-overview', 'Overview']
     case Routes.ACCOUNT_AFFILIATE:
       return ['account-affiliate', 'Affiliate']
     case Routes.ACCOUNT_GOVERNANCE:
@@ -29,6 +34,23 @@ function _getPropsFromRoute(route: string) {
   }
 }
 
+// Note: As we build these single pages, we will remove this component in the future
+const Overview = () => {
+  const { chainId } = useWeb3React()
+
+  return (
+    <Container>
+      {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
+
+      <CardsWrapper>
+        <Balances />
+        <Governance />
+      </CardsWrapper>
+      <Affiliate />
+    </Container>
+  )
+}
+
 export default function Account() {
   const { pathname } = useLocation()
   const [id, name] = _getPropsFromRoute(pathname)
@@ -38,12 +60,12 @@ export default function Account() {
       <Suspense fallback={Loading}>
         <AccountPageWrapper>
           <Content>
-            <h2 id={id}>{name}</h2>
+            <Title id={id}>{name}</Title>
             <Switch>
-              <Route exact path={Routes.ACCOUNT} component={Balances} />
-              <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} />
+              <Route exact path={Routes.ACCOUNT} component={Overview} />
+              {/* <Route exact strict path={Routes.ACCOUNT_GOVERNANCE} component={Governance} /> */}
               <Route exact strict path={Routes.ACCOUNT_TOKENS} component={TokensOverview} />
-              <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} />
+              {/* <Route exact strict path={Routes.ACCOUNT_AFFILIATE} component={Affiliate} /> */}
               <Route component={NotFound} />
             </Switch>
           </Content>

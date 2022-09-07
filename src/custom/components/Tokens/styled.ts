@@ -12,12 +12,40 @@ export const TokenSearchInput = styled(SearchInput)`
   margin-bottom: 16px;
   font-size: 14px;
   max-width: 500px;
+  align-self: flex-end;
+  border-radius: 0;
+  box-shadow: none !important;
+  border-bottom: 1px solid ${({ theme }) => theme.primary1} !important;
+
+  ::placeholder {
+    font-size: 14px !important;
+    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? 'white' : theme.text1)} !important;
+  }
+
+  :focus::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? 'white' : theme.text1)} !important;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-width: 350px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+    font-size: 12px !important;
+    align-self: flex-start;
+    max-width: 100%;
+
+    ::placeholder {
+      font-size: 12px !important;
+    }
+  `};
 `
 
 export const Wrapper = styled.div`
   width: 100%;
   border: none;
-  padding: 0 1rem;
+  padding: 0;
 `
 
 export const ResponsiveGrid = styled.div`
@@ -27,6 +55,10 @@ export const ResponsiveGrid = styled.div`
   text-align: left;
   border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.primary1))};
   grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    grid-template-columns: 50px minmax(80px, 100px) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
+  `};
 `
 
 export const LinkWrapper = styled(Link)`
@@ -203,6 +235,9 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   font-weight: 400;
   font-size: 14px;
   white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;
