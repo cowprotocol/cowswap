@@ -5,53 +5,10 @@ import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { defaultCurrencyInputPanelProps } from 'pages/NewSwap/pureComponents/CurrencyInputPanel/defaultCurrencyInputProps'
 
 const currency = COW[SupportedChainId.MAINNET]
-const balance = CurrencyAmount.fromRawAmount(currency, 250 * 10 ** 18)
-
-const defaultProps: CurrencyInputPanelProps = {
-  showSetMax: true,
-  allowsOffchainSigning: true,
-  currencyInfo: {
-    field: Field.INPUT,
-    viewAmount: '20',
-    receiveAmountInfo: {
-      type: 'from',
-      amountBeforeFees: '30',
-      amountAfterFees: '20',
-      feeAmount: '10',
-    },
-    currency,
-    balance,
-    fiatAmount: CurrencyAmount.fromRawAmount(currency, 12 * 10 ** 18),
-  },
-  swapActions: {
-    onCurrencySelection() {
-      /**/
-    },
-    onSwitchTokens() {
-      /**/
-    },
-    onUserInput() {
-      /**/
-    },
-    onChangeRecipient() {
-      /**/
-    },
-  },
-  priceImpactParams: {
-    priceImpact: new Percent(2, 10_000),
-    loading: false,
-    error: 'fetch-quote-error',
-  },
-  subsidyAndBalance: {
-    subsidy: {
-      tier: 2,
-      discount: 10,
-    },
-    balance,
-  },
-}
+const defaultProps = defaultCurrencyInputPanelProps
 
 function useCustomProps(): Partial<CurrencyInputPanelProps> {
   const [showSetMax] = useValue('showSetMax', { defaultValue: defaultProps.showSetMax })
