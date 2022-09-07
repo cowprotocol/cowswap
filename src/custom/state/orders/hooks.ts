@@ -16,6 +16,7 @@ import {
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   Order,
+  EthFlowOrder,
   preSignOrders,
   removeOrder,
   requestOrderCancellation,
@@ -25,6 +26,7 @@ import {
   updateLastCheckedBlock,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
+  addPendingEthFlowOrder,
 } from './actions'
 import {
   getDefaultNetworkState,
@@ -40,7 +42,8 @@ import {
 import { isTruthy } from 'utils/misc'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
-import { deserializeToken, serializeToken } from '@src/state/user/hooks'
+import { deserializeToken, serializeToken } from 'state/user/hooks'
+import { NativeCurrency } from '@uniswap/sdk-core'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
@@ -86,7 +89,9 @@ interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
 }
 
 type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
-export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
+export type AddOrderCallback<T extends GetRemoveOrderParams = AddUnserialisedPendingOrderParams> = (
+  addOrderParams: T
+) => void
 export type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
 export type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
@@ -101,8 +106,12 @@ export type UpdatePresignGnosisSafeTxCallback = (
 export type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
 export type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
-
 export type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
+
+export interface AddUnserialisedPendingEthFlowOrderParams extends Omit<AddUnserialisedPendingOrderParams, 'order'> {
+  order: EthFlowOrder
+}
+export type AddEthFlowOrderCallback = (orderParams: AddUnserialisedPendingEthFlowOrderParams) => void
 
 function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
@@ -133,6 +142,7 @@ function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined)
       ...serialisedOrder,
       inputToken: deserialisedInputToken,
       outputToken: deserialisedOutputToken,
+      isEthFlowOrder: !!orderObject.isEthFlowOrder,
     }
   } else {
     orderObject?.order &&
@@ -319,10 +329,14 @@ export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
   )
 }
 
-export const useAddPendingOrder = (): AddOrderCallback => {
+export const useAddPendingOrder = <
+  T extends
+    | AddUnserialisedPendingOrderParams
+    | AddUnserialisedPendingEthFlowOrderParams = AddUnserialisedPendingOrderParams
+>(): AddOrderCallback<T> => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
-    (addOrderParams: AddUnserialisedPendingOrderParams) => {
+    (addOrderParams: AddUnserialisedPendingOrderParams | AddUnserialisedPendingEthFlowOrderParams) => {
       const serialisedSellToken = serializeToken(addOrderParams.order.inputToken)
       const serialisedBuyToken = serializeToken(addOrderParams.order.outputToken)
       const order: SerializedOrder = {
@@ -330,11 +344,15 @@ export const useAddPendingOrder = (): AddOrderCallback => {
         inputToken: serialisedSellToken,
         outputToken: serialisedBuyToken,
       }
-      const params: AddPendingOrderParams = {
+      const params: AddPendingOrderParams | AddPendingOrderParams = {
         ...addOrderParams,
         order,
       }
-      return dispatch(addPendingOrder(params))
+      return dispatch(
+        addOrderParams.order.inputToken instanceof NativeCurrency
+          ? addPendingEthFlowOrder(params)
+          : addPendingOrder(params)
+      )
     },
     [dispatch]
   )

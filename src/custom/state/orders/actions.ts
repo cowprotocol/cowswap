@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
 import { OrderID, OrderMetaData } from '@cow/api/gnosisProtocol'
 import { OrderCreation } from 'utils/signatures'
-import { Token } from '@uniswap/sdk-core'
+import { NativeCurrency, Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { SerializedToken } from '@src/state/user/types'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
@@ -47,6 +47,9 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
 
   // For tracking how long an order has been pending
   openSince?: number
+
+  // eth flow order?
+  isEthFlowOrder?: boolean
 }
 
 /**
@@ -75,6 +78,12 @@ export interface Order extends BaseOrder {
   outputToken: Token // for dapp use only, readable by user
 }
 
+export interface EthFlowOrder extends BaseOrder {
+  inputToken: NativeCurrency // for dapp use only, readable by user
+  outputToken: Token // for dapp use only, readable by user
+  isEthFlowOrder: true
+}
+
 /**
  * Order used for persisting it in the state.
  * The only difference with Order is that all it's fields are serializable
@@ -83,6 +92,16 @@ export interface SerializedOrder extends BaseOrder {
   inputToken: SerializedToken // for dapp use only, readable by user
   outputToken: SerializedToken // for dapp use only, readable by user
 }
+
+export type SerializedNativeCurrency = Omit<SerializedToken, 'address'>
+export interface SerializedEthFlowOrder extends Omit<SerializedOrder, 'inputToken'> {
+  inputToken: SerializedNativeCurrency
+}
+
+export interface AddPendingEthFlowOrderParams extends Omit<AddPendingOrderParams, 'order'> {
+  order: SerializedEthFlowOrder
+}
+export const addPendingEthFlowOrder = createAction<AddPendingEthFlowOrderParams>('order/addPendingEthFlowOrder')
 
 export interface AddPendingOrderParams {
   id: OrderID

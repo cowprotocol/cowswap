@@ -17,6 +17,7 @@ import {
 import { useCallback } from 'react'
 import { logSwapFlow } from '@cow/modules/swap/services/swapFlow/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
+import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
@@ -26,7 +27,7 @@ import { SwapButtonsContext } from '@cow/modules/swap/containers/SwapButtons'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
-import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
+import { useEthFlowContext, useSwapFlowContext } from '@cow/modules/swap/hooks/useFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
@@ -59,8 +60,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const { INPUT } = useSwapState()
   const setTransactionConfirm = useTransactionConfirmModal()
-  const swapFlowContext = useSwapFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
+  const swapFlowContext = useSwapFlowContext()
+  const ethFlowContext = useEthFlowContext()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -84,13 +86,17 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
 
   const handleSwap = useCallback(() => {
-    if (!swapFlowContext) return
-
+    if (isNativeInSwap && ethFlowContext) {
+      ethFlow(ethFlowContext, priceImpactParams)
+    } else if (swapFlowContext) {
+      swapFlow(swapFlowContext, priceImpactParams)
+    } else {
+      return
+    }
     logSwapFlow('Start swap flow')
-    swapFlow(swapFlowContext, priceImpactParams)
-  }, [swapFlowContext, priceImpactParams])
+  }, [ethFlowContext, swapFlowContext, priceImpactParams, isNativeInSwap])
 
-  const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
+  const swapCallbackError = swapFlowContext || ethFlowContext ? null : 'Missing dependencies'
   const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
 
   const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({

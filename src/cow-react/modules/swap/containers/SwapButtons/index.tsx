@@ -64,13 +64,6 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <Trans>Unwrap</Trans>
     </ButtonPrimary>
   ),
-  [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
-      <styledEl.SwapButtonBox>
-        <Trans>Swap with {props.wrappedToken.symbol}</Trans>
-      </styledEl.SwapButtonBox>
-    </ButtonError>
-  ),
   [SwapButtonState.FeesExceedFromAmount]: () => <styledEl.FeesExceedFromAmountMessage />,
   [SwapButtonState.InsufficientLiquidity]: () => (
     <GreyCard style={{ textAlign: 'center' }}>

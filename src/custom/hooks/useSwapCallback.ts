@@ -40,7 +40,7 @@ export function calculateValidTo(deadline: number): number {
   return Math.min(validTo, MAX_VALID_TO_EPOCH)
 }
 
-const _computeInputAmountForSignature = (params: {
+export const computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
   inputWithSlippage: CurrencyAmount<Currency>
   fee?: CurrencyAmount<Currency>
@@ -67,7 +67,7 @@ export interface SwapCallbackParams {
   closeModals: () => void
 }
 
-interface SwapParams {
+export interface SwapParams {
   chainId: number
   account: string
   allowsOffchainSigning: boolean
@@ -191,7 +191,7 @@ async function _swap(params: SwapParams & OptionalForceWrapNative): Promise<stri
     account,
     chainId,
     // unadjusted inputAmount
-    inputAmount: _computeInputAmountForSignature({
+    inputAmount: computeInputAmountForSignature({
       input: trade.inputAmountWithFee,
       inputWithSlippage: inputAmountWithSlippage,
       fee: trade.fee?.feeAsCurrency,

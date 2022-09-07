@@ -8,8 +8,12 @@ import {
   initFavouriteTokens,
 } from 'state/user/reducer'
 import { calculateValidTo } from 'hooks/useSwapCallback'
-import { useUserTransactionTTL, serializeToken, deserializeToken } from '@src/state/user/hooks'
+import { useUserTransactionTTL, serializeToken } from 'state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
+import { SerializedToken } from 'state/user/types'
+import { SerializedNativeCurrency } from 'state/orders/actions'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { isAddress } from 'utils'
 
 export * from '@src/state/user/hooks'
 
@@ -70,4 +74,22 @@ export function useInitFavouriteTokens(): void {
       dispatch(initFavouriteTokens({ chainId }))
     }
   }, [chainId, dispatch])
+}
+
+function _isErcToken(token: any): token is Token {
+  return 'address' in token && !!isAddress(token.address)
+}
+
+export function deserializeToken(serializedToken: SerializedToken | SerializedNativeCurrency): Token {
+  if (_isErcToken(serializedToken)) {
+    return new Token(
+      serializedToken.chainId,
+      serializedToken.address,
+      serializedToken.decimals,
+      serializedToken.symbol,
+      serializedToken.name
+    )
+  } else {
+    return NATIVE_CURRENCY_BUY_TOKEN[serializedToken.chainId]
+  }
 }

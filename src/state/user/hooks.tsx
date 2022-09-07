@@ -1,4 +1,4 @@
-import { Percent, Token } from '@uniswap/sdk-core'
+import { NativeCurrency, Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { L2_CHAIN_IDS } from '@src/constants/chains'
@@ -32,11 +32,16 @@ import {
 } from './reducer'
 import { SerializedPair, SerializedToken } from './types'
 import { useSwapActionHandlers } from '../swap/hooks'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 
-export function serializeToken(token: Token): SerializedToken {
+export function serializeToken(token: Token | NativeCurrency): SerializedToken {
+  const address = token instanceof Token ? token.address : NATIVE_CURRENCY_BUY_TOKEN[token.chainId].symbol
+  if (!address) {
+    throw new Error(`Serializing token failed! No address for token: ${JSON.stringify(token, undefined, 2)}`)
+  }
   return {
     chainId: token.chainId,
-    address: token.address,
+    address,
     decimals: token.decimals,
     symbol: token.symbol,
     name: token.name,

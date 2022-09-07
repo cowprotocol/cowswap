@@ -1,14 +1,15 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import { SwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
-import { PostOrderParams } from 'utils/trade'
-import { AddOrderCallback } from 'state/orders/hooks'
+import { EthFlowOrderParams, PostOrderParams } from 'utils/trade'
+import { AddEthFlowOrderCallback, AddOrderCallback } from 'state/orders/hooks'
 import { GPv2Settlement } from '@cow/abis/types'
 import { AppDispatch } from 'state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/swapFlow/steps/analytics'
+import { CoWSwapEthFlow } from '@cow/abis/types/ethflow'
 
-export interface SwapFlowContext {
+type CommonFlowContext = {
   context: {
     chainId: number
     trade: TradeGp
@@ -21,13 +22,27 @@ export interface SwapFlowContext {
   }
   callbacks: {
     closeModals: () => void
-    addOrderCallback: AddOrderCallback
     addAppDataToUploadQueue: (params: AddAppDataToUploadQueueParams) => void
   }
   dispatch: AppDispatch
-  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   swapConfirmManager: SwapConfirmManager
-  postOrderParams: PostOrderParams
-  settlementContract: GPv2Settlement
   appDataInfo: AppDataInfo
+}
+
+export type SwapFlowContext = CommonFlowContext & {
+  callbacks: {
+    addOrderCallback: AddOrderCallback
+  }
+  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
+  orderParams: PostOrderParams
+  contract: GPv2Settlement
+}
+
+export type EthFlowContext = CommonFlowContext & {
+  callbacks: {
+    addOrderCallback: AddEthFlowOrderCallback
+  }
+  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
+  orderParams: EthFlowOrderParams
+  contract: CoWSwapEthFlow
 }

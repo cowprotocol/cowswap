@@ -381,6 +381,8 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
     validTo,
     partiallyFillable: false,
     priceQuality,
+    onchainOrder: true,
+    signingScheme: 'eip1271',
   }
 
   const finalParams: QuoteQuery =
