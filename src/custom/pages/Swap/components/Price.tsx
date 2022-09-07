@@ -21,6 +21,10 @@ const PriceSwitcher = styled(AutoRow)`
   }
 `
 
+const StyledRepeat = styled(Repeat)`
+  box-sizing: border-box;
+`
+
 interface PriceProps extends BoxProps {
   trade: TradeGp
 }
@@ -33,7 +37,7 @@ export const Price: React.FC<PriceProps> = ({ trade, ...boxProps }: PriceProps) 
       <Text fontWeight={500} fontSize={13}>
         <PriceSwitcher>
           <Trans>Price</Trans>
-          <Repeat size={20} onClick={() => setShowInverted((prev) => !prev)} />
+          <StyledRepeat size={20} onClick={() => setShowInverted((prev) => !prev)} />
         </PriceSwitcher>
       </Text>
       <div className="price-container">
