@@ -23,6 +23,7 @@ export function initSwapStateFromUrl(
 
   const recipient = validatedRecipient(tradeStateFromUrl.recipient) || persistedSwapState?.recipient || null
 
+  // TODO: should we validate inputCurrency/outputCurrency? Now, if you set invalid value, you will see empty currency in UI
   const inputCurrencyId =
     tradeStateFromUrl.inputCurrency || persistedSwapState?.INPUT?.currencyId || defaultInputToken || undefined
 
