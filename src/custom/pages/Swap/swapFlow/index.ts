@@ -4,8 +4,8 @@ import { signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from './steps/presignOrderStep'
 import { addPendingOrderStep } from 'pages/Swap/swapFlow/steps/addPendingOrderStep'
 import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
-import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
+import { getSwapErrorMessage } from 'pages/Swap/swapFlow/steps/swapErrorHelper'
 
 export async function swapFlow(input: SwapFlowContext) {
   logSwapFlow('STEP 1: confirm price impact')
@@ -52,13 +52,5 @@ export async function swapFlow(input: SwapFlowContext) {
     swapFlowAnalytics.error(error, swapErrorMessage, input.swapFlowAnalyticsContext)
 
     input.swapConfirmManager.setSwapError(swapErrorMessage)
-  }
-}
-
-function getSwapErrorMessage(error: Error): string {
-  if (isRejectRequestProviderError(error)) {
-    return 'User rejected signing the order'
-  } else {
-    return getProviderErrorMessage(error)
   }
 }

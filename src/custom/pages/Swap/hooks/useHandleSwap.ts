@@ -19,6 +19,9 @@ export interface HandleSwapInput {
 
 export type HandleSwapCallback = () => void
 
+/**
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
+ */
 export function useHandleSwap(input: HandleSwapInput): {
   swapCallbackError: string | null
   swapCallback: HandleSwapCallback
