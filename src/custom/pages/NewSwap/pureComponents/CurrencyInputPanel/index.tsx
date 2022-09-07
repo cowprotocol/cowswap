@@ -18,10 +18,10 @@ interface BuiltItProps {
 }
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
-  currencyInfo: CurrencyInfo
-  priceImpactParams?: PriceImpact
   showSetMax?: boolean
   allowsOffchainSigning: boolean
+  currencyInfo: CurrencyInfo
+  priceImpactParams?: PriceImpact
   swapActions: SwapActions
   subsidyAndBalance: BalanceAndSubsidy
 }
