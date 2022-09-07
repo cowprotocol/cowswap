@@ -101,7 +101,7 @@ export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
 export const DUNE_DASHBOARD_LINK = 'https://dune.com/gnosis.protocol/Gnosis-Protocol-V2'
-export const TWITTER_LINK = 'https://twitter.com/mevprotection'
+export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
 export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
 export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
@@ -173,10 +173,10 @@ export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
 }
 // These are used for Account sidebar menu
 export const ACCOUNT_MENU_LINKS = [
-  { title: 'General', url: '/account' },
+  { title: 'Overview', url: '/account' },
   { title: 'Tokens', url: '/account/tokens' },
-  { title: 'Governance', url: '/account/governance' },
-  { title: 'Affiliate', url: '/account/affiliate' },
+  // { title: 'Governance', url: '/account/governance' },
+  // { title: 'Affiliate', url: '/account/affiliate' },
 ]
 
 // These are used for FAQ sidebar menu

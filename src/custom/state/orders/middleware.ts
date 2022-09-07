@@ -1,8 +1,10 @@
-import { Middleware, isAnyOf } from '@reduxjs/toolkit'
+import { Middleware, isAnyOf, MiddlewareAPI, Dispatch, AnyAction } from '@reduxjs/toolkit'
 
 import { addPopup } from 'state/application/reducer'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
+
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
 import { registerOnWindow } from 'utils/misc'
@@ -10,6 +12,9 @@ import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sou
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'utils/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
+import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
+import { timeSinceInSeconds } from 'utils/time'
+import { getExplorerOrderLink } from 'utils/explorer'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -30,10 +35,12 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 // const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch) // disabled because doesn't work on `if`
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
+const isSingleExpireOrderAction = isAnyOf(OrderActions.expireOrder)
+const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
-// a corresponsing Popup action is dispatched
+// a corresponding Popup action is dispatched
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -44,16 +51,13 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // use current state to lookup orders' data
     const orders = store.getState().orders[chainId]
+    const orderObject = _getOrderById(orders, id)
 
-    if (!orders) return
-
-    const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
-
-    const orderObject =
-      pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
-
+    if (!orderObject) {
+      return result
+    }
     // look up Order.summary for Popup
-    const summary = orderObject?.order.summary
+    const summary = orderObject.order.summary
 
     let popup: PopupPayload
     if (isPendingOrderAction(action)) {
@@ -104,7 +108,9 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     // use current state to lookup orders' data
     const orders = store.getState().orders[chainId]
 
-    if (!orders) return
+    if (!orders) {
+      return result
+    }
 
     const { pending, fulfilled, expired, cancelled } = orders
 
@@ -196,11 +202,15 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     const orders = store.getState().orders[chainId]
 
     // no orders were executed/expired
-    if (!orders) return result
+    if (!orders) {
+      return result
+    }
 
     const updatedElements = isBatchFulfillOrderAction(action) ? action.payload.ordersData : action.payload.ids
     // no orders were executed/expired
-    if (updatedElements.length === 0) return result
+    if (updatedElements.length === 0) {
+      return result
+    }
   }
 
   let cowSound
@@ -224,11 +234,56 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 }
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
-  if (isBatchFulfillOrderAction(action) || isSingleFulfillOrderAction(action) || isExpireOrdersAction(action)) {
+  if (isBatchFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
-    // Or the order has expired
-    openNpsAppziSometimes()
+    const {
+      chainId,
+      ordersData: [{ id }],
+    } = action.payload
+
+    _triggerNps(store, chainId, id, { traded: true })
+  } else if (isSingleFulfillOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when there's a successful trade
+    const { chainId, id } = action.payload
+
+    _triggerNps(store, chainId, id, { traded: true })
+  } else if (isBatchExpireOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when the order expired
+    const {
+      chainId,
+      ids: [id],
+    } = action.payload
+
+    _triggerNps(store, chainId, id, { expired: true })
+  } else if (isSingleExpireOrderAction(action)) {
+    // Shows NPS feedback (or attempts to) when the order expired
+    const { chainId, id } = action.payload
+
+    _triggerNps(store, chainId, id, { expired: true })
   }
 
   return next(action)
+}
+
+function _triggerNps(
+  store: MiddlewareAPI<Dispatch<AnyAction>>,
+  chainId: ChainId,
+  orderId: string,
+  npsParams: Parameters<typeof openNpsAppziSometimes>[0]
+) {
+  const orders = store.getState().orders[chainId]
+  const openSince = _getOrderById(orders, orderId)?.order?.openSince
+  const explorerUrl = getExplorerOrderLink(chainId, orderId)
+
+  openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), explorerUrl, chainId })
+}
+
+function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
+  if (!orders) {
+    return
+  }
+
+  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
+
+  return pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
 }

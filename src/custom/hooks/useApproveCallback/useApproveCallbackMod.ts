@@ -20,9 +20,10 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
-import { OptionalApproveCallbackParams } from '.'
+import { ApproveCallback, OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
+import usePrevious from 'hooks/usePrevious'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -61,7 +62,7 @@ export function useApproveCallback({
   amountToApprove,
   spender,
   amountToCheckAgainstAllowance,
-}: ApproveCallbackParams) {
+}: ApproveCallbackParams): ApproveCallback {
   const { account, chainId } = useWeb3React()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -69,7 +70,7 @@ export function useApproveCallback({
   const spenderCurrency = useCurrency(spender)
 
   // check the current approval status
-  const approvalState: ApprovalState = useMemo(() => {
+  const approvalStateBase: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
     if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
@@ -83,11 +84,16 @@ export function useApproveCallback({
       : ApprovalState.APPROVED
   }, [amountToApprove, amountToCheckAgainstAllowance, currentAllowance, pendingApproval, spender])
 
+  // ApprovalState is sometimes incorrectly returned AFTER a successful approval
+  const approvalState = useAuxApprovalState(approvalStateBase, currentAllowance)
+
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(
-    async (optionalParams?: OptionalApproveCallbackParams): Promise<void> => {
+    async (
+      optionalParams: OptionalApproveCallbackParams = { useModals: true }
+    ): Promise<TransactionResponse | undefined> => {
       if (approvalState !== ApprovalState.NOT_APPROVED) {
         console.error('approve was called unnecessarily')
         return
@@ -132,10 +138,11 @@ export function useApproveCallback({
         })
       })
 
-      openTransactionConfirmationModal(
-        optionalParams?.modalMessage || `Approving ${amountToApprove.currency.symbol} for trading`,
-        OperationType.APPROVE_TOKEN
-      )
+      optionalParams.useModals &&
+        openTransactionConfirmationModal?.(
+          optionalParams?.modalMessage || `Approving ${amountToApprove.currency.symbol} for trading`,
+          OperationType.APPROVE_TOKEN
+        )
       return (
         tokenContract
           .approve(spender, useExact ? amountToApprove.quotient.toString() : MaxUint256, {
@@ -147,12 +154,15 @@ export function useApproveCallback({
               summary: optionalParams?.transactionSummary || 'Approve ' + amountToApprove.currency.symbol,
               approval: { tokenAddress: token.address, spender },
             })
+            return response
           })
           // .catch((error: Error) => {
           //   console.debug('Failed to approve token', error)
           //   throw error
           // })
-          .finally(closeModals)
+          .finally(() => {
+            optionalParams.useModals && closeModals?.()
+          })
       )
     },
     [
@@ -169,7 +179,7 @@ export function useApproveCallback({
   )
 
   const revokeApprove = useCallback(
-    async (optionalParams?: OptionalApproveCallbackParams): Promise<void> => {
+    async (optionalParams: OptionalApproveCallbackParams = { useModals: true }): Promise<void> => {
       if (approvalState === ApprovalState.NOT_APPROVED) {
         console.error('Revoke approve was called unnecessarily')
         return
@@ -206,10 +216,11 @@ export function useApproveCallback({
         })
       })
 
-      openTransactionConfirmationModal(
-        optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
-        OperationType.REVOKE_APPROVE_TOKEN
-      )
+      optionalParams.useModals &&
+        openTransactionConfirmationModal?.(
+          optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
+          OperationType.REVOKE_APPROVE_TOKEN
+        )
       return (
         tokenContract
           .approve(spender, '0', {
@@ -226,7 +237,9 @@ export function useApproveCallback({
           //   console.debug('Failed to approve token', error)
           //   throw error
           // })
-          .finally(closeModals)
+          .finally(() => {
+            optionalParams.useModals && closeModals?.()
+          })
       )
     },
     [
@@ -243,6 +256,27 @@ export function useApproveCallback({
   )
 
   return { approvalState, approve, revokeApprove, isPendingApproval: pendingApproval }
+}
+
+/**
+ *
+ * ApprovalState is sometimes incorrectly returned AFTER a successful approval
+ * causing incorrect UI display around the app because of incorrect pending check
+ *
+ * Solution: we check the prev approval state and also check if the allowance has been updated
+ */
+function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance: CurrencyAmount<Currency> | undefined) {
+  const previousApprovalState = usePrevious(approvalStateBase)
+  const currentAllowanceString = currentAllowance?.quotient.toString()
+  const previousAllowanceString = usePrevious(currentAllowanceString)
+  // Has allowance actually updated?
+  const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString
+
+  return useMemo(() => {
+    return previousApprovalState === ApprovalState.PENDING && allowanceHasNotChanged
+      ? ApprovalState.PENDING
+      : approvalStateBase
+  }, [previousApprovalState, allowanceHasNotChanged, approvalStateBase])
 }
 
 /* export function useApprovalOptimizedTrade(

@@ -24,11 +24,11 @@ import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToke
 import { ButtonText, CloseIcon, /* , IconWrapper, */ ThemedText } from 'theme'
 import { isAddress } from 'utils'
 import Column from 'components/Column'
-import Row, { RowBetween /* , RowFixed */ } from 'components/Row'
+import Row /* RowBetween , RowFixed */ from 'components/Row'
 import CommonBases from 'components/SearchModal/CommonBases'
 import CurrencyList from 'components/SearchModal/CurrencyList'
 import ImportRow from 'components/SearchModal/ImportRow'
-import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/styleds'
+import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'components/SearchModal/styleds'
 
 // MOD imports
 import useNetworkName from 'hooks/useNetworkName'
@@ -203,14 +203,14 @@ export function CurrencySearch({
   return (
     // <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
     <ContentWrapper>
-      <PaddedColumn gap="16px">
-        <RowBetween>
+      <PaddedColumn style={{ padding: 0 }} gap="16px">
+        <PaddedRow>
           <Text fontWeight={500} fontSize={16}>
             <Trans>Select a token</Trans>
           </Text>
           <CloseIcon onClick={onDismiss} />
-        </RowBetween>
-        <Row>
+        </PaddedRow>
+        <Row padding="0px 20px">
           <SearchInput
             type="text"
             id="token-search-input"

@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import ReactAppzi from 'react-appzi'
 import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'utils/userAgent'
-import { isProdLike } from 'utils/environments'
+import { environmentName, isProdLike } from 'utils/environments'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -40,8 +40,18 @@ declare global {
 }
 
 type AppziCustomSettings = {
+  // triggers to control when and which NPS is selected
   userTradedOrWaitedForLong?: true
   isTestNps?: true // to trigger test rather than prod NPS
+  // general data regarding the circumstances that caused the modal to be shown
+  secondsSinceOpen?: number // how long has this order been open (in seconds)?
+  waitedTooLong?: true
+  expired?: true
+  traded?: true
+  // extra contextual data for statistics/debugging
+  explorerUrl?: string
+  env?: string
+  chainId?: number
 }
 
 type AppziSettings = {
@@ -123,9 +133,9 @@ const NPS_DATA = isProdLike ? PROD_NPS_DATA : TEST_NPS_DATA
  * It'll display only if the trigger rules are met
  * Check https://portal.appzi.com/portals/5ju0G/configs/55872789-593b-4c6c-9e49-9b5c7693e90a/trigger
  */
-export function openNpsAppziSometimes() {
+export function openNpsAppziSometimes(data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>) {
   applyOnceRestyleAppziNps()
-  updateAppziSettings({ data: NPS_DATA })
+  updateAppziSettings({ data: { env: environmentName, ...data, ...NPS_DATA } })
 }
 
 initialize()

@@ -570,6 +570,7 @@ export interface ConfirmationModalContentProps {
   title: ReactNode
   titleSize?: number
   styles?: React.CSSProperties
+  className?: string // mod
   onDismiss: () => void
   topContent: () => ReactNode
   bottomContent?: () => ReactNode | undefined

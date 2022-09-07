@@ -13,6 +13,13 @@ import {
   IconWrapper,
 } from './AccountDetailsMod'
 import { YellowCard } from 'components/Card'
+import {
+  StatusLabelWrapper,
+  Summary,
+  TransactionWrapper,
+  TransactionStatusText as ActivityDetailsText,
+  SummaryInner,
+} from './Transaction/styled'
 
 export const WalletActions = styled.div`
   display: flex;
@@ -244,6 +251,45 @@ export const LowerSection = styled.div`
   }
 `
 
+export const LowerSectionSimple = styled(LowerSection)`
+  padding: 0 12px;
+  > div {
+    padding: 0;
+
+    ${StyledLink} {
+      align-self: center;
+      margin: 7px 0 0;
+      font-size: 12px;
+    }
+    ${TransactionWrapper} {
+      padding: 10px 15px;
+
+      // target the activity comp
+      > div > ${ActivityDetailsText} > ${Summary} {
+        grid-template-columns: auto;
+
+        > span {
+          display: none;
+        }
+
+        > ${SummaryInner} {
+          ${({ theme }) => theme.mediaWidth.upToSmall`
+            margin: 16px 0;
+          `}
+
+          > b {
+            display: none;
+          }
+        }
+      }
+
+      > ${StatusLabelWrapper} {
+        margin: auto;
+      }
+    }
+  }
+`
+
 const NetworkCardUni = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
@@ -271,10 +317,4 @@ export const NetworkCard = styled(NetworkCardUni)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 auto 12px;
   `};
-`
-
-export const UnsupportedNetworkMsg = styled.span`
-  max-width: 450px;
-  margin: 0 auto;
-  line-height: 1.4;
 `

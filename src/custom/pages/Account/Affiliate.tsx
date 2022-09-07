@@ -1,4 +1,4 @@
-import { HelpCircle } from 'components/Page'
+import { HelpCircle, SectionTitle } from 'components/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import Web3Status from 'components/Web3Status'
@@ -8,6 +8,7 @@ import Copy from 'components/Copy/CopyMod'
 import { RefreshCcw } from 'react-feather'
 import AddressSelector from './AddressSelector'
 import {
+  Wrapper,
   GridWrap,
   CardHead,
   StyledContainer,
@@ -18,7 +19,6 @@ import {
   FlexCol,
   Loader,
   TimeFormatted,
-  CardsWrapper,
 } from './styled'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatInt, formatDecimal } from './utils'
@@ -56,9 +56,10 @@ export default function Affiliate() {
   const isTradesTooltipVisible = account && chainId === ChainId.MAINNET && !!profileData?.totalTrades
 
   return (
-    <CardsWrapper padding={'20px 30px 30px'}>
+    <Wrapper>
       <GridWrap>
         <CardHead>
+          <SectionTitle>Affiliate Program</SectionTitle>
           {account && (
             <Loader isLoading={isLoading}>
               <StyledContainer>
@@ -204,6 +205,6 @@ export default function Affiliate() {
         </GridWrap>
         {!account && <Web3Status />}
       </GridWrap>
-    </CardsWrapper>
+    </Wrapper>
   )
 }
