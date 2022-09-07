@@ -51,7 +51,7 @@ export function NewSwapPage() {
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
-  const swapIsUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
+  const isSwapUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
@@ -162,7 +162,7 @@ export function NewSwapPage() {
 
   const swapWarningsBottomProps: NewSwapWarningsBottomProps = {
     isSupportedWallet,
-    swapIsUnsupported,
+    swapIsUnsupported: isSwapUnsupported,
     currencyIn: currencies.INPUT || undefined,
     currencyOut: currencies.OUTPUT || undefined,
   }

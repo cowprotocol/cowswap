@@ -89,7 +89,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
-  const swapIsUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
+  const isSwapUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
   // Checks if either currency is native ETH
   const { isNativeIn, isWrappedOut } = useDetectNativeToken(currencies, chainId)
@@ -398,7 +398,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          swapIsUnsupported={swapIsUnsupported}
+          swapIsUnsupported={isSwapUnsupported}
         />
       )}
       <AlertWrapper>
