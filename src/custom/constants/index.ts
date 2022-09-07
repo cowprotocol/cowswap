@@ -1,5 +1,6 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
-
+// TODO: get the networks.json when contracts deployed
+import { CoWSwapEthFlow } from '@cowprotocol/ethflowcontract/networks.json'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -39,6 +40,13 @@ export const BARN_URL = `barn.${PRODUCTION_URL}`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
+
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
+  [ChainId.MAINNET]: CoWSwapEthFlow[ChainId.MAINNET].address,
+  [ChainId.RINKEBY]: CoWSwapEthFlow[ChainId.RINKEBY].address,
+  [ChainId.GNOSIS_CHAIN]: CoWSwapEthFlow[ChainId.GNOSIS_CHAIN].address,
+  [ChainId.GOERLI]: CoWSwapEthFlow[ChainId.GOERLI].address,
+}
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,

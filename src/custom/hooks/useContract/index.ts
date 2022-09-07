@@ -4,12 +4,13 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
+import COWSWAP_ETHFLOW_ABI from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 import V_COW_ABI from 'abis/vCow.json'
 import ENS_ABI from 'abis/ens-registrar.json'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
-import { Erc20, GPv2Settlement, VCow } from 'abis/types'
+import { CoWSwapEthFlow, Erc20, GPv2Settlement, VCow } from 'abis/types'
 
 import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
@@ -20,6 +21,16 @@ export * from '@src/hooks/useContract'
 export * from './useContractMod'
 
 // Custom (non-MOD) hooks
+
+export function useCoWSwapEthFlowContract(): CoWSwapEthFlow | null {
+  const { chainId } = useWeb3React()
+  return useContract<CoWSwapEthFlow>(
+    // TODO: get the networks.json when contracts deployed
+    chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[chainId] : undefined,
+    COWSWAP_ETHFLOW_ABI,
+    true
+  )
+}
 
 export function useGP2SettlementContract(): GPv2Settlement | null {
   const { chainId } = useWeb3React()
