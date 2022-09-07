@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import SwapHeader from '@src/components/swap/SwapHeader'
+import SwapHeader from 'components/swap/SwapHeader'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
 
 export const Container = styled.div`
