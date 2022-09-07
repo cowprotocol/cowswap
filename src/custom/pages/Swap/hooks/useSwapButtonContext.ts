@@ -20,11 +20,10 @@ import { getSwapButtonState } from 'pages/Swap/helpers/getSwapButtonState'
 import { SwapButtonContext } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { OperationType } from 'components/TransactionConfirmationModal'
-import { SwapFlowContext } from 'pages/Swap/swapFlow/types'
 import { useTransactionConfirmModal } from 'pages/Swap/hooks/useTransactionConfirmModal'
+import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 
 export interface SwapButtonInput {
-  swapFlowContext: SwapFlowContext | null
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   approvalSubmitted: boolean
@@ -33,14 +32,8 @@ export interface SwapButtonInput {
 }
 
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext {
-  const {
-    swapFlowContext,
-    feeWarningAccepted,
-    impactWarningAccepted,
-    approvalSubmitted,
-    setApprovalSubmitted,
-    openNativeWrapModal,
-  } = input
+  const { feeWarningAccepted, impactWarningAccepted, approvalSubmitted, setApprovalSubmitted, openNativeWrapModal } =
+    input
 
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
@@ -52,6 +45,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const { INPUT } = useSwapState()
   const setTransactionConfirm = useTransactionConfirmModal()
+  const swapFlowContext = useSwapFlowContext()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]

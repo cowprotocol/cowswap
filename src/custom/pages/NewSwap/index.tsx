@@ -20,7 +20,6 @@ import usePriceImpact from 'hooks/usePriceImpact'
 import { formatSmartAmount } from 'utils/format'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
-import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
 import { useModalIsOpen } from 'state/application/hooks'
@@ -51,7 +50,6 @@ export function NewSwapPage() {
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
-  const swapFlowContext = useSwapFlowContext()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
   const swapIsUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
@@ -105,7 +103,6 @@ export function NewSwapPage() {
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
 
   const swapButtonContext = useSwapButtonContext({
-    swapFlowContext,
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,

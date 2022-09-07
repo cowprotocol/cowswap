@@ -57,9 +57,6 @@ import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
-import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
-import { swapFlow } from 'pages/Swap/swapFlow'
-import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
 import { Routes } from 'constants/routes'
@@ -192,14 +189,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const swapFlowContext = useSwapFlowContext()
-  const handleSwap = useCallback(() => {
-    if (!swapFlowContext) return
-
-    logSwapFlow('Start swap flow')
-    swapFlow(swapFlowContext)
-  }, [swapFlowContext])
-
   const handleInputSelect = useCallback(
     (inputCurrency) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -235,23 +224,22 @@ export default function Swap({ history, location, className }: RouteComponentPro
     }
   }
 
-  const confirmSwapProps: ConfirmSwapModalSetupProps = {
-    trade,
-    recipient,
-    allowedSlippage,
-    handleSwap,
-    priceImpact,
-    dismissNativeWrapModal,
-  }
-
   const swapButtonContext: SwapButtonContext = useSwapButtonContext({
-    swapFlowContext,
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
   })
+
+  const confirmSwapProps: ConfirmSwapModalSetupProps = {
+    trade,
+    recipient,
+    allowedSlippage,
+    handleSwap: swapButtonContext.handleSwap,
+    priceImpact,
+    dismissNativeWrapModal,
+  }
 
   return (
     <>
