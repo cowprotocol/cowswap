@@ -26,7 +26,7 @@ partition "Confirm price impact" {
 }
 
 #f4f1eb:Send GA event 'Swap Order';
-#b2e0f7:Show transaction confirmation modal with **pending state**: "Almost there! Follow these steps...";
+#b2e0f7:Show transaction confirmation modal with **pending state:** \n "Almost there! Follow these steps...";
 partition "Sign and post order" {
   start
   if (Is wallet allows offchain signing?) then (yes)
