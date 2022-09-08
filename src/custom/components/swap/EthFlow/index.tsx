@@ -136,6 +136,8 @@ export function EthWethWrap({
   const needsApproval = approvalState === ApprovalState.NOT_APPROVED
   const needsWrap = !!wrapCallback
 
+  const operationSubmitted = approveSubmitted || wrapSubmitted
+
   // BALANCES
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
 
@@ -150,6 +152,8 @@ export function EthWethWrap({
       nativeSymbol: native.symbol || 'native token',
     }
   }, [isNativeIn, isNativeOut, isWrappedIn, isWrappedOut, native.symbol, wrapped.symbol])
+
+  const isWrapOrUnwrap = isWrap || isUnwrap
 
   // user safety checks to make sure any on-chain native currency operations are economically safe
   // shows user warning with remaining available TXs if a certain threshold is reached
@@ -225,13 +229,8 @@ export function EthWethWrap({
     } catch (error) {
       handleError(error, 'WRAP')
       setWrapSubmitted(false)
-    } finally {
-      // is pure wrap/unwrap operation, close modal
-      if (isWrap || isUnwrap) {
-        onDismiss()
-      }
     }
-  }, [handleError, isUnwrap, isWrap, onDismiss, setPendingHashMap, setWrapError, setWrapSubmitted, wrapCallback])
+  }, [handleError, setPendingHashMap, setWrapError, setWrapSubmitted, wrapCallback])
 
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
@@ -298,10 +297,6 @@ export function EthWethWrap({
       needsApproval && handleError(error, 'APPROVE')
       setApproveSubmitted(false)
       setWrapSubmitted(false)
-    } finally {
-      if (!isNativeIn) {
-        onDismiss()
-      }
     }
   }, [
     needsApproval,
@@ -311,8 +306,6 @@ export function EthWethWrap({
     setWrapError,
     handleError,
     handleSwap,
-    isNativeIn,
-    onDismiss,
     setApproveError,
     setLoading,
     setApproveSubmitted,
@@ -324,16 +317,23 @@ export function EthWethWrap({
   useEffect(() => {
     if (isExpertMode) {
       handleMountInExpertMode()
-    } else if (isWrap || isUnwrap) {
+    } else if (isWrapOrUnwrap) {
       // is a pure wrap/unwrap, just start the tx
       handleWrap()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // pure wrap/unwrap - close modal after finish
+  useEffect(() => {
+    if (isWrapOrUnwrap && state === EthFlowState.SwapReady) {
+      onDismiss()
+    }
+  }, [isWrapOrUnwrap, onDismiss, state])
+
   // expert mode only: auto close the wrapping modals and set swap page to WrappedNative <> ERC20
   useEffect(() => {
-    if (isExpertMode && (wrapSubmitted || approveSubmitted)) {
+    if (isExpertMode && !isWrapOrUnwrap && operationSubmitted) {
       if (state === EthFlowState.SwapReady) {
         // reset the submission state
         setWrapSubmitted(false)
@@ -343,7 +343,7 @@ export function EthWethWrap({
         delay(MODAL_CLOSE_DELAY).then(() => handleSwap(true))
       }
     }
-  }, [approveSubmitted, handleSwap, isExpertMode, state, wrapSubmitted, setApproveSubmitted, setWrapSubmitted])
+  }, [isExpertMode, state, isWrapOrUnwrap, operationSubmitted, handleSwap, setApproveSubmitted, setWrapSubmitted])
 
   const TopModalContent = useCallback(
     () => (
