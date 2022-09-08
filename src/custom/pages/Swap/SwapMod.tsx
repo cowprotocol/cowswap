@@ -83,7 +83,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const [recipientToggleVisible] = useRecipientToggleManager()
 
   // swap state
-  const { independentField, typedValue, recipient, INPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
+  const { independentField, typedValue, recipient, INPUT } = useSwapState()
   const { v2Trade, allowedSlippage, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
   const userAllowedSlippage = useUserSlippageTolerance()
   const currencyIn = currencies[Field.INPUT]
