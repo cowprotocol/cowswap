@@ -264,7 +264,7 @@ export function EthWethWrap({
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
       try {
-        !!showSwapModal ? openSwapConfirm() : closeSwapConfirm()
+        showSwapModal ? openSwapConfirm() : closeSwapConfirm()
       } catch (error) {
         throw error
       } finally {
