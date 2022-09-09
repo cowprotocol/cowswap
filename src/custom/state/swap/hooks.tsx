@@ -462,7 +462,7 @@ export function useReplaceSwapState() {
   )
 }
 
-export interface CurrenciesNativityInfo {
+export interface NativeCurrenciesInfo {
   isNativeIn: boolean
   isNativeOut: boolean
   isWrappedIn: boolean
@@ -474,7 +474,7 @@ export interface CurrenciesNativityInfo {
 export function useDetectNativeToken(
   currencies: { [field in Field]?: Currency | null },
   chainId?: ChainId
-): CurrenciesNativityInfo {
+): NativeCurrenciesInfo {
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(

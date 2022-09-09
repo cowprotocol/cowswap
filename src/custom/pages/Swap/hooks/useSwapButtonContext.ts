@@ -62,9 +62,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     ? trade?.inputAmount
     : // else use the slippage + fee adjusted amount
       computeSlippageAdjustedAmounts(trade, allowedSlippage).INPUT
-  const wrapUnrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
+  const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
-  const wrapInputError = useWrapUnwrapError(wrapType, wrapUnrapAmount)
+  const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
 
   const handleSwap = useCallback(() => {
     if (!swapFlowContext) return
@@ -131,7 +131,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     wrappedToken,
     handleSwap,
     wrapInputError,
-    wrapUnrapAmount,
+    wrapUnwrapAmount,
     onWrap() {
       openNativeWrapModal()
     },

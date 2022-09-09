@@ -110,7 +110,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     : // else use the slippage + fee adjusted amount
       computeSlippageAdjustedAmounts(v2Trade, allowedSlippage).INPUT
 
-  const wrapUnrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
 
@@ -254,7 +253,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
       {showNativeWrapModal && (
         <EthFlowModal
           nativeInput={showWrap ? parsedAmount : nativeInput}
-          wrapUnrapAmount={wrapUnrapAmount}
+          wrapUnwrapAmount={swapButtonContext.wrapUnwrapAmount}
           // state
           approvalState={swapButtonContext.approveButtonProps.approvalState}
           onDismiss={dismissNativeWrapModal}

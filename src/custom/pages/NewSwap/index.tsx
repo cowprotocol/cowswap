@@ -134,7 +134,7 @@ export function NewSwapPage() {
 
   const ethFlowProps: EthFlowProps = {
     nativeInput: parsedAmounts.INPUT,
-    wrapUnrapAmount: swapButtonContext.wrapUnrapAmount,
+    wrapUnwrapAmount: swapButtonContext.wrapUnwrapAmount,
     approvalState: swapButtonContext.approveButtonProps.approvalState,
     onDismiss: dismissNativeWrapModal,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,

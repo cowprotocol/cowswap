@@ -73,7 +73,7 @@ const MODAL_CLOSE_DELAY = 1000 // 1s
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
-  wrapUnrapAmount?: CurrencyAmount<Currency>
+  wrapUnwrapAmount?: CurrencyAmount<Currency>
   // state
   approvalState: ApprovalState
   onDismiss: () => void
@@ -84,7 +84,7 @@ export type PendingHashMap = { approveHash?: string; wrapHash?: string }
 
 export function EthWethWrap({
   nativeInput,
-  wrapUnrapAmount,
+  wrapUnwrapAmount,
   // state from hooks
   approvalState,
   onDismiss,
@@ -124,7 +124,6 @@ export function EthWethWrap({
     wrappedToken: wrapped,
   } = useDetectNativeToken(currencies, chainId)
   const isNativeInSwap = isNativeIn && !isWrappedOut
-  const isNativeOutSwap = isNativeOut && !isWrappedIn
 
   const needsApproval = approvalState === ApprovalState.NOT_APPROVED
 
@@ -133,15 +132,15 @@ export function EthWethWrap({
 
   // wrap/unwrap/native/wrapped related constants
   const { isWrap, isUnwrap, isNative, wrappedSymbol, nativeSymbol } = useMemo(() => {
-    const isWrap = !isNativeInSwap && isWrappedOut
+    const isWrap = isNativeIn && isWrappedOut
     return {
       isWrap,
-      isUnwrap: !isNativeOutSwap && isWrappedIn,
-      isNative: isNativeInSwap || isWrap,
+      isUnwrap: isNativeOut && isWrappedIn,
+      isNative: isNativeIn,
       wrappedSymbol: wrapped.symbol || 'wrapped native token',
       nativeSymbol: native.symbol || 'native token',
     }
-  }, [isNativeInSwap, isNativeOutSwap, isWrappedIn, isWrappedOut, native.symbol, wrapped.symbol])
+  }, [isNativeIn, isNativeOut, isWrappedIn, isWrappedOut, native.symbol, wrapped.symbol])
 
   // user safety checks to make sure any on-chain native currency operations are economically safe
   // shows user warning with remaining available TXs if a certain threshold is reached
@@ -151,7 +150,7 @@ export function EthWethWrap({
     nativeInput,
   })
 
-  const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnrapAmount)
+  const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const needsWrap = isNativeIn && !hasEnoughWrappedBalanceForSwap
 
   // get derived EthFlow state
@@ -190,7 +189,7 @@ export function EthWethWrap({
 
   const wrapCallback = useWrapCallback(
     // is native token swap, use the wrapped equivalent as input currency
-    wrapUnrapAmount
+    wrapUnwrapAmount
   )
 
   const { onCurrencySelection } = useSwapActionHandlers()
