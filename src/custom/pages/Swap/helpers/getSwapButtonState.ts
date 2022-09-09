@@ -74,6 +74,10 @@ export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
 
+  if (!input.account) {
+    return SwapButtonState.WalletIsNotConnected
+  }
+
   if (input.isSwapSupported) {
     return SwapButtonState.SwapIsUnsupported
   }
@@ -102,10 +106,6 @@ export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState
 
   if (swapBlankState || input.isGettingNewQuote) {
     return SwapButtonState.Loading
-  }
-
-  if (!input.account) {
-    return SwapButtonState.WalletIsNotConnected
   }
 
   if (input.isReadonlyGnosisSafeUser) {
