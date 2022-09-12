@@ -1,10 +1,13 @@
 import { atom } from 'jotai'
 import { atomWithStorage, useUpdateAtom, useAtomValue, selectAtom } from 'jotai/utils'
+import { OrderID } from 'api/gnosisProtocol'
 
 export { useUpdateAtom, useAtomValue, selectAtom }
 
+type LastOrderPopupClosed = OrderID | null
 type FollowPendingTxPopup = {
   showPopup: boolean
+  lastOrderPopupClosed: LastOrderPopupClosed
   hidePopupPermanently: boolean
 }
 
@@ -12,8 +15,9 @@ type FollowPendingTxPopup = {
  * Base atom that store the popup state that indicate how to follow a pending tx
  */
 export const followPendingTxPopupAtom = atomWithStorage<FollowPendingTxPopup>('followPendingTxPopup', {
-  hidePopupPermanently: false,
   showPopup: false,
+  lastOrderPopupClosed: null,
+  hidePopupPermanently: false,
 })
 
 export const handleFollowPendingTxPopupAtom = atom(null, (_get, set, showPopup: boolean) => {
@@ -24,7 +28,13 @@ export const handleHidePopupPermanentlyAtom = atom(null, (_get, set, hidePopupPe
   set(followPendingTxPopupAtom, (prev) => ({ ...prev, hidePopupPermanently }))
 })
 
-export const showFollowTxPopupAtom = selectAtom(
-  followPendingTxPopupAtom,
-  ({ showPopup, hidePopupPermanently }) => showPopup && !hidePopupPermanently
-)
+export const handleCloseOrderPopupAtom = atom(null, (_get, set, orderIdClosed: OrderID) => {
+  set(followPendingTxPopupAtom, (prev) => ({ ...prev, lastOrderPopupClosed: orderIdClosed }))
+})
+
+export const showFollowTxPopupAtom = (orderId?: LastOrderPopupClosed) =>
+  selectAtom(followPendingTxPopupAtom, ({ lastOrderPopupClosed, showPopup, hidePopupPermanently }) => {
+    const orderPopupHasBeenClosed = lastOrderPopupClosed === orderId
+
+    return showPopup && !orderPopupHasBeenClosed && !hidePopupPermanently
+  })

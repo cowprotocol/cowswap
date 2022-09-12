@@ -13,34 +13,44 @@ import {
 import FollowPendingTxPopupUI from './FollowPendingTxPopupUI'
 import { isPending } from 'components/Web3Status'
 
-function isAnOrder(element: TransactionAndOrder): element is Order & { addedTime: number } {
+interface AddedOrder extends Order {
+  addedTime: number
+}
+
+function isAnOrder(element: TransactionAndOrder): element is AddedOrder {
   return 'inputToken' in element && 'outputToken' in element
+}
+
+export const useLastPendingOrderId = (): AddedOrder | undefined => {
+  const allRecentActivity = useRecentActivity()
+  const lastPendingOrder = useMemo(() => {
+    const pendings = allRecentActivity.filter(isPending)
+    const lastOrder = pendings[pendings.length - 1]
+
+    return (isAnOrder(lastOrder) && lastOrder) || undefined
+  }, [allRecentActivity])
+
+  return lastPendingOrder
 }
 
 const FollowPendingTxPopup: React.FC = ({ children }): JSX.Element => {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const setHidePendingTxPopupPermanently = useUpdateAtom(handleHidePopupPermanentlyAtom)
-  const showFollowPendingTxPopup = useAtomValue(showFollowTxPopupAtom)
   const isExpertMode = useIsExpertMode()
-  const allRecentActivity = useRecentActivity()
-  const isTherePendingOrder = useMemo(() => {
-    if (!isExpertMode) return
-    const pendings = allRecentActivity.filter(isPending)
-
-    return isAnOrder(pendings[pendings.length - 1])
-  }, [allRecentActivity, isExpertMode])
+  const lastPendingOrder = useLastPendingOrderId()
+  const showFollowPendingTxPopup = useAtomValue(showFollowTxPopupAtom())
 
   useEffect(() => {
-    if (isExpertMode && isTherePendingOrder) {
+    if (isExpertMode && lastPendingOrder) {
       setShowFollowPendingTxPopup(true)
     }
-  }, [isExpertMode, isTherePendingOrder, setShowFollowPendingTxPopup])
+  }, [isExpertMode, lastPendingOrder, setShowFollowPendingTxPopup])
 
   return (
     <FollowPendingTxPopupUI
       show={showFollowPendingTxPopup}
       onCheck={() => setHidePendingTxPopupPermanently(true)}
-      onClose={() => setShowFollowPendingTxPopup(false)}
+      onClose={() => lastPendingOrder && setShowFollowPendingTxPopup(false)}
     >
       {children}
     </FollowPendingTxPopupUI>
