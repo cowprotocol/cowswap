@@ -32,9 +32,7 @@ export const handleCloseOrderPopupAtom = atom(null, (_get, set, orderIdClosed: O
   set(followPendingTxPopupAtom, (prev) => ({ ...prev, lastOrderPopupClosed: orderIdClosed }))
 })
 
-export const showFollowTxPopupAtom = (orderId?: LastOrderPopupClosed) =>
-  selectAtom(followPendingTxPopupAtom, ({ lastOrderPopupClosed, showPopup, hidePopupPermanently }) => {
-    const orderPopupHasBeenClosed = lastOrderPopupClosed === orderId
-
-    return showPopup && !orderPopupHasBeenClosed && !hidePopupPermanently
-  })
+export const showFollowTxPopupAtom = selectAtom(
+  followPendingTxPopupAtom,
+  ({ showPopup, hidePopupPermanently }) => showPopup && !hidePopupPermanently
+)
