@@ -20,6 +20,7 @@ import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
 import {
   ActionButtonParams,
   EthFlowState,
+  EthFlowSwapCallbackParams,
   useEthFlowStatesAndSetters,
   _getActionButtonProps,
   _getCurrencyForVisualiser,
@@ -87,7 +88,7 @@ export interface Props {
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
   wrapCallback: ((params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>) | undefined
-  swapCallback: (showConfirmModal?: boolean) => void
+  swapCallback: (params: EthFlowSwapCallbackParams) => void
 }
 
 export type PendingHashMap = { approveHash?: string; wrapHash?: string }
@@ -252,9 +253,9 @@ export function EthWethWrap({
   }, [approveCallback, handleError, setApproveError, setApproveSubmitted, setPendingHashMap])
 
   const handleSwap = useCallback(
-    async (showSwapModal?: boolean) => {
+    async ({ showConfirm, straightSwap, forceWrapNative }: EthFlowSwapCallbackParams) => {
       try {
-        swapCallback(!!showSwapModal)
+        swapCallback({ showConfirm, straightSwap, forceWrapNative })
       } catch (error) {
         throw error
       } finally {
@@ -288,9 +289,8 @@ export function EthWethWrap({
         needsApproval && setApproveSubmitted(true)
         needsWrap && setWrapSubmitted(true)
       } else {
-        // user doesn't need either, in expert mode we just start swap
-        // and pass true to show swap confirmation modal
-        handleSwap(true)
+        // user doesn't need either, in expert mode we just start swap w/o forced wrapping
+        handleSwap({ showConfirm: false, straightSwap: true, forceWrapNative: false })
       }
     } catch (error) {
       needsWrap && handleError(error, 'WRAP')
@@ -340,7 +340,7 @@ export function EthWethWrap({
         setApproveSubmitted(false)
         // call the swap handle cb after 1s artificial delay
         // to not create jarring UI changes: confirmed tx update and modal closing
-        delay(MODAL_CLOSE_DELAY).then(() => handleSwap(true))
+        delay(MODAL_CLOSE_DELAY).then(() => handleSwap({ showConfirm: true, straightSwap: false }))
       }
     }
   }, [isExpertMode, state, isWrapOrUnwrap, operationSubmitted, handleSwap, setApproveSubmitted, setWrapSubmitted])
