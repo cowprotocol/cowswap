@@ -510,7 +510,7 @@ function EthFlowModalBottomContent(params: BottomContentParams) {
         chainId={chainId}
       />
       <SimpleAccountDetails
-        pendingTransactions={Object.values(pendingHashMap).filter(Boolean)}
+        pendingTransactions={Object.values(pendingHashMap).filter(Boolean).reverse()}
         confirmedTransactions={[]}
         $margin="12px 0 0"
       />
