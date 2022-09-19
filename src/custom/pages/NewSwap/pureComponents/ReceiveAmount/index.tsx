@@ -1,4 +1,3 @@
-import React from 'react'
 import { ReceiveAmountInfoTooltip } from 'pages/NewSwap/pureComponents/ReceiveAmountInfo'
 import * as styledEl from './styled'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'

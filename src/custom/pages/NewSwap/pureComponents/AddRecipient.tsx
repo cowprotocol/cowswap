@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { LinkStyledButton } from '@src/theme'
+import { LinkStyledButton } from 'theme'
 
 export interface AddRecipientProps {
   onChangeRecipient(value: string | null): void

@@ -14,7 +14,7 @@ function useCustomProps(): CurrencySelectButtonProps {
 
   const currency = currencyRaw === COW_TOKEN.symbol ? COW_TOKEN : GNO_TOKEN
 
-  return { currency }
+  return { currency, loading: false }
 }
 
 const Custom = () => {

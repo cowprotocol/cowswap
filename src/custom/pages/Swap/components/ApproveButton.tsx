@@ -37,6 +37,7 @@ export interface ApproveButtonProps {
   children?: React.ReactNode
 }
 
+// TODO: should be refactored (need to separate context/logic/view)
 export function ApproveButton(props: ApproveButtonProps) {
   const {
     trade,
@@ -55,11 +56,11 @@ export function ApproveButton(props: ApproveButtonProps) {
 
   const theme = useContext(ThemeContext)
 
-  const {
-    state: signatureState,
-    // signatureData,
-    gatherPermitSignature,
-  } = useERC20PermitFromTrade(trade, allowedSlippage, transactionDeadline)
+  const { state: signatureState, gatherPermitSignature } = useERC20PermitFromTrade(
+    trade,
+    allowedSlippage,
+    transactionDeadline
+  )
 
   const prevApprovalState = usePrevious(approvalState)
 
@@ -93,7 +94,6 @@ export function ApproveButton(props: ApproveButtonProps) {
 
     if (approveRequired) {
       const symbol = trade?.inputAmount?.currency.symbol
-      // const symbol = v2Trade?.inputAmount?.currency.symbol // TODO: double check
       approvalAnalytics('Send', symbol)
       return approveCallback()
         .then(() => {
@@ -119,14 +119,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           setSwapError(swapErrorMessage)
         })
     }
-  }, [
-    approveCallback,
-    gatherPermitSignature,
-    signatureState,
-    trade?.inputAmount?.currency.symbol,
-    setSwapError,
-    // v2Trade?.inputAmount?.currency.symbol, // TODO: doublecheck
-  ])
+  }, [approveCallback, gatherPermitSignature, signatureState, trade?.inputAmount?.currency.symbol, setSwapError])
 
   return (
     <>

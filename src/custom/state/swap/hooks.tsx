@@ -297,12 +297,12 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       inputError = <Trans>Connect Wallet</Trans>
     }
 
-    if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-      inputError = inputError ?? <Trans>Select a token</Trans>
-    }
-
     if (!parsedAmount) {
       inputError = inputError ?? <Trans>Enter an amount</Trans>
+    }
+
+    if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
+      inputError = inputError ?? <Trans>Select a token</Trans>
     }
 
     const formattedTo = isAddress(to)
@@ -462,7 +462,7 @@ export function useReplaceSwapState() {
   )
 }
 
-export interface CurrenciesNativityInfo {
+export interface NativeCurrenciesInfo {
   isNativeIn: boolean
   isNativeOut: boolean
   isWrappedIn: boolean
@@ -474,7 +474,7 @@ export interface CurrenciesNativityInfo {
 export function useDetectNativeToken(
   currencies: { [field in Field]?: Currency | null },
   chainId?: ChainId
-): CurrenciesNativityInfo {
+): NativeCurrenciesInfo {
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
