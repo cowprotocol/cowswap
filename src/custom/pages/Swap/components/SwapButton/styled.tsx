@@ -81,21 +81,24 @@ export const SwapButtonBox = ({ children, showLoading = false, showButton = fals
 
 export function SwitchToWethBtn({ wrappedToken }: { wrappedToken: Token }) {
   const replaceSwapState = useReplaceSwapState()
-  const { independentField, typedValue, OUTPUT } = useSwapState()
+  const { chainId, independentField, typedValue, OUTPUT } = useSwapState()
 
   return (
     <ButtonPrimary
       buttonSize={ButtonSize.BIG}
       id="swap-button"
-      onClick={() =>
+      onClick={() => {
+        if (!chainId) return
+
         replaceSwapState({
+          chainId,
           inputCurrencyId: wrappedToken.address,
           outputCurrencyId: OUTPUT.currencyId ?? undefined,
           typedValue,
           recipient: null,
-          field: independentField,
+          independentField,
         })
-      }
+      }}
     >
       <ThemedText.Main mb="4px">Switch to {wrappedToken.symbol}</ThemedText.Main>
     </ButtonPrimary>

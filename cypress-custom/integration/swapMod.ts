@@ -67,7 +67,7 @@ describe('Swap (mod)', () => {
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('{selectall}{backspace}{selectall}{backspace}').type('0.5')
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
-    cy.get('#swap-button').click()
+    cy.get('#swap-button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
 

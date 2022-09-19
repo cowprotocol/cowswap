@@ -64,8 +64,6 @@ export interface SwapCallbackParams {
   trade?: TradeGp // trade to execute, required
   allowedSlippage?: Percent // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  forceWrapNative?: boolean
-  openTransactionConfirmationModal: () => void
   closeModals: () => void
 }
 
@@ -97,13 +95,13 @@ interface SwapParams {
 
   // Ui actions
   addPendingOrder: AddOrderCallback
-  openTransactionConfirmationModal: () => void
   closeModals: () => void
 }
 
 /**
  * Internal swap function that does the actual swap logic.
  *
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
  * @param params All the required swap dependencies
  * @returns
  */
@@ -136,7 +134,6 @@ async function _swap(params: SwapParams): Promise<string> {
 
     // Ui actions
     addPendingOrder,
-    openTransactionConfirmationModal,
     closeModals,
   } = params
 
@@ -183,9 +180,6 @@ async function _swap(params: SwapParams): Promise<string> {
 
   // Wrap ETH if necessary
   const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmountWithSlippage) : undefined
-
-  // Show confirmation modal
-  openTransactionConfirmationModal()
 
   // Post order
   const postOrderPromise = signAndPostOrder({
@@ -328,6 +322,7 @@ async function _swap(params: SwapParams): Promise<string> {
  *
  * This callback will return the UID
  *
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
  * @param params
  * @returns
  */
@@ -336,14 +331,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
   callback: null | (() => Promise<string>)
   error: string | null
 } {
-  const {
-    trade,
-    allowedSlippage = INITIAL_ALLOWED_SLIPPAGE_PERCENT,
-    recipientAddressOrName,
-    forceWrapNative = true,
-    openTransactionConfirmationModal,
-    closeModals,
-  } = params
+  const { trade, allowedSlippage = INITIAL_ALLOWED_SLIPPAGE_PERCENT, recipientAddressOrName, closeModals } = params
   const { account, chainId, provider } = useWeb3React()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
@@ -361,8 +349,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     trade,
     allowedSlippage
   )
-  const wrapEtherCb = useWrapEther()
-  const wrapEther = forceWrapNative ? wrapEtherCb : null
+  const wrapEther = useWrapEther()
   const presignOrder = usePresignOrder()
 
   return useMemo(() => {
@@ -392,7 +379,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     const sellToken = trade.inputAmount.currency.wrapped
     const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
 
-    if (!sellToken || !buyToken || (forceWrapNative && isSellEth && !wrapEtherCb)) {
+    if (!sellToken || !buyToken || (isSellEth && !wrapEther)) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
 
@@ -425,7 +412,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
       // Ui actions
       addPendingOrder,
       closeModals,
-      openTransactionConfirmationModal,
     }
 
     return {
@@ -441,8 +427,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     inputAmountWithSlippage,
     outputAmountWithSlippage,
     recipient,
-    forceWrapNative,
-    wrapEtherCb,
     recipientAddressOrName,
     allowedSlippage,
     deadline,
@@ -450,7 +434,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     gnosisSafeInfo,
     wrapEther,
     addPendingOrder,
-    openTransactionConfirmationModal,
     closeModals,
     presignOrder,
     appDataHash,

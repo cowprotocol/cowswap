@@ -9,7 +9,7 @@ import { StyledInfo } from 'pages/Swap/styleds'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
-import { LightGreyText } from 'pages/Swap'
+import { LightGreyText } from 'pages/Swap/styled'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -52,7 +52,7 @@ export function RowFee({
   feeFiatValue,
   allowsOffchainSigning,
   showHelpers,
-  fontSize = 14,
+  fontSize = 13,
   fontWeight = 500,
   rowHeight,
 }: RowFeeProps) {
@@ -81,7 +81,7 @@ export function RowFee({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text1}>
           Fees {includeGasMessage}
         </ThemedText.Black>
         {showHelpers && (

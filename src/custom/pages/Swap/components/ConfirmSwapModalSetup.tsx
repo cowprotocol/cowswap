@@ -3,51 +3,73 @@ import { useCallback } from 'react'
 import TradeGp from 'state/swap/TradeGp'
 import { Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
-import { HandleSwapCallback } from 'pages/Swap/helpers/useHandleSwap'
+import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
+import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
+import { useSwapActionHandlers } from 'state/swap/hooks'
+import { useModalIsOpen } from 'state/application/hooks'
+import { ApplicationModal } from 'state/application/reducer'
+import { useCloseModals } from 'state/application/hooks'
+import { transactionConfirmAtom } from 'pages/Swap/state/transactionConfirmAtom'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
   recipient: string | null
   allowedSlippage: Percent
   handleSwap: HandleSwapCallback
-  onUserInput: (field: Field, txHash: string) => void
   priceImpact?: Percent
+  dismissNativeWrapModal(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { trade, recipient, allowedSlippage, priceImpact, handleSwap, onUserInput } = props
+  const { trade, recipient, allowedSlippage, priceImpact, handleSwap, dismissNativeWrapModal } = props
 
-  const { showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash } = useAtomValue(swapConfirmAtom)
-  const setSwapState = useUpdateAtom(swapConfirmAtom)
+  const swapConfirmState = useAtomValue(swapConfirmAtom)
+  const { operationType, pendingText } = useAtomValue(transactionConfirmAtom)
+  const { acceptRateUpdates, closeSwapConfirm } = useSwapConfirmManager()
+  const { onUserInput } = useSwapActionHandlers()
+  const closeModals = useCloseModals()
+  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+
+  const onDismiss = useCallback(() => {
+    closeModals()
+    dismissNativeWrapModal()
+  }, [closeModals, dismissNativeWrapModal])
 
   const handleAcceptChanges = useCallback(() => {
-    setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
-  }, [setSwapState, attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
+    trade && acceptRateUpdates(trade)
+  }, [acceptRateUpdates, trade])
 
   const handleConfirmDismiss = useCallback(() => {
-    setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
+    closeSwapConfirm()
     // if there was a tx hash, we want to clear the input
-    if (txHash) {
+    if (swapConfirmState.txHash) {
       onUserInput(Field.INPUT, '')
     }
-  }, [setSwapState, attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
+  }, [closeSwapConfirm, onUserInput, swapConfirmState.txHash])
 
   return (
-    <ConfirmSwapModal
-      isOpen={showConfirm}
-      trade={trade}
-      originalTrade={tradeToConfirm}
-      onAcceptChanges={handleAcceptChanges}
-      attemptingTxn={attemptingTxn}
-      txHash={txHash}
-      recipient={recipient}
-      allowedSlippage={allowedSlippage}
-      priceImpact={priceImpact}
-      onConfirm={handleSwap}
-      swapErrorMessage={swapErrorMessage}
-      onDismiss={handleConfirmDismiss}
-    />
+    <>
+      <ConfirmSwapModal
+        swapConfirmState={swapConfirmState}
+        trade={trade}
+        onAcceptChanges={handleAcceptChanges}
+        recipient={recipient}
+        allowedSlippage={allowedSlippage}
+        priceImpact={priceImpact}
+        onConfirm={handleSwap}
+        onDismiss={handleConfirmDismiss}
+      />
+
+      <TransactionConfirmationModal
+        attemptingTxn={true}
+        isOpen={showTransactionConfirmationModal}
+        pendingText={pendingText}
+        onDismiss={onDismiss}
+        operationType={operationType}
+      />
+    </>
   )
 }

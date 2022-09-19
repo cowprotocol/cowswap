@@ -10,15 +10,16 @@ import { ThemeContext } from 'styled-components/macro'
 export interface RemoveRecipientProps {
   recipient: string
   onChangeRecipient(recipient: string | null): void
+  className?: string
 }
 
 export function RemoveRecipient(props: RemoveRecipientProps) {
-  const { recipient, onChangeRecipient } = props
+  const { recipient, onChangeRecipient, className } = props
   const theme = useContext(ThemeContext)
 
   return (
     <>
-      <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
+      <AutoRow className={className} justify="space-between" style={{ padding: '0 1rem' }}>
         <ArrowWrapper clickable={false}>
           <ArrowDown size="16" color={theme.text2} />
         </ArrowWrapper>

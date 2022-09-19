@@ -6,20 +6,15 @@ export interface CompatibilityIssuesWarningProps {
   currencyIn: Currency
   currencyOut: Currency
   isSupportedWallet: boolean
-  swapIsUnsupported: boolean
 }
 
 export function CompatibilityIssuesWarning(props: CompatibilityIssuesWarningProps) {
-  const { currencyIn, currencyOut, isSupportedWallet, swapIsUnsupported } = props
+  const { currencyIn, currencyOut, isSupportedWallet } = props
   const currenciesPair = [currencyIn, currencyOut]
-
-  if (!swapIsUnsupported) {
-    return null
-  }
 
   return !isSupportedWallet ? (
     <UnsupportedCurrencyFooter
-      show={swapIsUnsupported}
+      show={true}
       currencies={currenciesPair}
       showDetailsText="Read more about unsupported wallets"
       detailsText={
@@ -33,6 +28,6 @@ export function CompatibilityIssuesWarning(props: CompatibilityIssuesWarningProp
       detailsTitle="This wallet is not yet supported"
     />
   ) : (
-    <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={currenciesPair} />
+    <UnsupportedCurrencyFooter show={true} currencies={currenciesPair} />
   )
 }

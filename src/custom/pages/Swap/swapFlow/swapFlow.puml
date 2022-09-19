@@ -1,0 +1,60 @@
+@startuml
+note: Swap flow
+
+start
+note right: Context \n - chainId: number \n - trade: TradeGp \n - inputAmountWithSlippage: CurrencyAmount<Currency> \n - outputAmountWithSlippage: CurrencyAmount<Currency> \n - priceImpact?: Percent;
+partition "Confirm price impact" {
+  start
+  if (Is price impact less than **10%**?) then (yes)
+    if (Is price impact less than **5%**?) then (yes)
+    else (no)
+      :Soft confirmation of price impact;
+      if (Is price impact accepted by user?) then (yes)
+      else (no)
+        #pink:Abort swap;
+        stop;
+      endif;
+    endif;
+  else (no)
+    :Confirmation of price impact via typing 'confirm' word;
+      if (Is price impact accepted by user?) then (yes)
+      else (no)
+        #pink:Abort swap;
+        stop;
+      endif;
+  endif;
+}
+
+#f4f1eb:Send GA event 'Swap Order';
+#b2e0f7:Show transaction confirmation modal with **pending state:** \n "Almost there! Follow these steps...";
+partition "Sign and post order" {
+  start
+  if (Is wallet allows offchain signing?) then (yes)
+    :Sign order by wallet;
+  else (no)
+    :Use **PRESIGN** signing scheme;
+  endif;
+  :Send order to backend **POST: /orders**;
+}
+
+if (Is wallet allows offchain signing?) then (yes)
+else (no)
+  partition "Presign order" {
+    :Estimate **setPreSignature** contract method;
+    note right: Use a **150K** gas as a fallback;
+    :Send transaction for presigning with a **gasLimit** from the previous estimation;
+  }
+endif;
+if (Are there any errors after "Sign and post" and "Presign" activities?) then (no)
+else (yes)
+  #f4f1eb:Send GA event 'Error' or 'Reject';
+  #pink:Show transaction confirmation modal with **error state**;
+  stop;
+endif;
+:Add pending order to redux orders state;
+:Add app data to upload queue (**IPFS**);
+#palegreen:Show transaction confirmation modal with **successful state**;
+#f4f1eb:Send GA event 'Sign Order';
+stop;
+
+@enduml
