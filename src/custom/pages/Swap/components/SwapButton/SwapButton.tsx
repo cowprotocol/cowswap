@@ -1,6 +1,6 @@
 import { SwapButtonState } from 'pages/Swap/helpers/getSwapButtonState'
 import React, { ReactNode } from 'react'
-import { ThemedText, ButtonSize } from 'theme'
+import { ButtonSize } from 'theme'
 import { Trans } from '@lingui/macro'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import { Text } from 'rebass'
@@ -32,9 +32,7 @@ export interface SwapButtonContext {
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext) => JSX.Element } = {
   [SwapButtonState.SwapIsUnsupported]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      <ThemedText.Main mb="4px">
-        <Trans>Unsupported Token</Trans>
-      </ThemedText.Main>
+      <Trans>Unsupported Token</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.WalletIsUnsupported]: () => (
@@ -76,38 +74,30 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
   [SwapButtonState.FeesExceedFromAmount]: () => <styledEl.FeesExceedFromAmountMessage />,
   [SwapButtonState.InsufficientLiquidity]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
-      <ThemedText.Main mb="4px">
-        <Trans>Insufficient liquidity for this trade.</Trans>
-      </ThemedText.Main>
+      <Trans>Insufficient liquidity for this trade.</Trans>
     </GreyCard>
   ),
   [SwapButtonState.ZeroPrice]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
-      <ThemedText.Main mb="4px">
-        <Trans>Invalid price. Try increasing input/output amount.</Trans>
-      </ThemedText.Main>
+      <Trans>Invalid price. Try increasing input/output amount.</Trans>
     </GreyCard>
   ),
   [SwapButtonState.TransferToSmartContract]: (props: SwapButtonContext) => (
     <GreyCard style={{ textAlign: 'center' }}>
-      <ThemedText.Main mb="4px">
-        <Trans>
-          Buying {GpEther.onChain(props.chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is not
-          currently supported
-        </Trans>
-      </ThemedText.Main>
+      <Trans>
+        Buying {GpEther.onChain(props.chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is not
+        currently supported
+      </Trans>
     </GreyCard>
   ),
   [SwapButtonState.FetchQuoteError]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
-      <ThemedText.Main mb="4px">
-        <Trans>Error loading price. Try again later.</Trans>
-      </ThemedText.Main>
+      <Trans>Error loading price. Try again later.</Trans>
     </GreyCard>
   ),
   [SwapButtonState.OfflineBrowser]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
-      <ThemedText.Main mb="4px">Error loading price. You are currently offline.</ThemedText.Main>
+      <Trans>Error loading price. You are currently offline.</Trans>
     </GreyCard>
   ),
   [SwapButtonState.Loading]: () => (
@@ -122,9 +112,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
   ),
   [SwapButtonState.ReadonlyGnosisSafeUser]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      <ThemedText.Main mb="4px">
-        <Trans>Read Only</Trans>
-      </ThemedText.Main>
+      <Trans>Read Only</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.NeedApprove]: (props: SwapButtonContext) => (
