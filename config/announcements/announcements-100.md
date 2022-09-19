@@ -1,1 +1,1 @@
-Heads up, **CoW Swap** will soon move to a new domain: from **[cowswap.exchange](https://cowswap.exchange)** to **[swap.cow.fi](https://swap.cow.fi)**. Keep in mind your local settings won't be copied over!
+**CoW Swap** moved to a new domain **[swap.cow.fi](https://swap.cow.fi)**. Read more about it **[here](<tweet link>)**
