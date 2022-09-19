@@ -20,12 +20,11 @@ import {
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-  useDetectNativeToken,
   useIsFeeGreaterThanInput,
   useHighFeeWarning,
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
-import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
+import { useExpertModeManager, useRecipientToggleManager, useUserSlippageTolerance } from 'state/user/hooks'
 import { LinkStyledButton } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -57,11 +56,9 @@ import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
-import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
-import { swapFlow } from 'pages/Swap/swapFlow'
-import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
+import { Routes } from 'constants/routes'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -85,17 +82,13 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const [recipientToggleVisible] = useRecipientToggleManager()
 
   // swap state
-  const { independentField, typedValue, recipient, INPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
+  const { independentField, typedValue, recipient, INPUT } = useSwapState()
   const { v2Trade, allowedSlippage, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
+  const userAllowedSlippage = useUserSlippageTolerance()
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
-  const swapIsUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
-
-  // Checks if either currency is native ETH
-  const { isNativeIn, isWrappedOut } = useDetectNativeToken(currencies, chainId)
-  // Is user swapping Eth as From token and not wrapping to WETH?
-  const isNativeInSwap = isNativeIn && !isWrappedOut
+  const isSwapUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
   // Is fee greater than input?
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -111,7 +104,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     : // else use the slippage + fee adjusted amount
       computeSlippageAdjustedAmounts(v2Trade, allowedSlippage).INPUT
 
-  const wrapUnrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
 
@@ -190,17 +182,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
   )
   const showMaxButton = Boolean(maxInputAmount?.greaterThan(0) && !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount))
 
-  const swapFlowContext = useSwapFlowContext()
-  const handleSwap = useCallback(() => {
-    if (!swapFlowContext) return
-
-    logSwapFlow('Start swap flow')
-    swapFlow(swapFlowContext)
-  }, [swapFlowContext])
-
-  // errors
-  const [showInverted, setShowInverted] = useState<boolean>(false)
-
   const handleInputSelect = useCallback(
     (inputCurrency) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -236,27 +217,27 @@ export default function Swap({ history, location, className }: RouteComponentPro
     }
   }
 
-  const confirmSwapProps: ConfirmSwapModalSetupProps = {
-    trade,
-    recipient,
-    allowedSlippage,
-    handleSwap,
-    priceImpact,
-    dismissNativeWrapModal,
-  }
-
   const swapButtonContext: SwapButtonContext = useSwapButtonContext({
-    swapFlowContext,
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   })
+
+  const confirmSwapProps: ConfirmSwapModalSetupProps = {
+    trade,
+    recipient,
+    allowedSlippage,
+    handleSwap: swapButtonContext.handleSwap,
+    priceImpact,
+    dismissNativeWrapModal,
+  }
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} history={history} />}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.SWAP)} />}
       {confirmSwapProps && <ConfirmSwapModalSetup {...confirmSwapProps} />}
       {/* CoWmunity Fees Discount Modal */}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
@@ -267,7 +248,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
       {showNativeWrapModal && (
         <EthFlowModal
           nativeInput={showWrap ? parsedAmount : nativeInput}
-          wrapUnrapAmount={wrapUnrapAmount}
+          wrapUnwrapAmount={swapButtonContext.wrapUnwrapAmount}
           // state
           approvalState={swapButtonContext.approveButtonProps.approvalState}
           onDismiss={dismissNativeWrapModal}
@@ -344,7 +325,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                 showMaxButton={false}
                 hideBalance={false}
                 fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={!showWrap ? undefined : priceImpact}
+                priceImpact={showWrap ? undefined : priceImpact}
                 priceImpactLoading={priceImpactLoading}
                 currency={currencies[Field.OUTPUT] ?? null}
                 onCurrencySelect={handleOutputSelect}
@@ -364,14 +345,20 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     padding: '0 8px',
                   }}
                 >
-                  {trade && (
-                    <Price trade={trade} theme={theme} showInverted={showInverted} setShowInverted={setShowInverted} />
-                  )}
+                  {trade && <Price trade={trade} />}
 
                   {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                     <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
                   )}
-                  {(isFeeGreater || trade) && fee && <TradeBasicDetails trade={trade} fee={fee} />}
+                  {(isFeeGreater || trade) && fee && (
+                    <TradeBasicDetails
+                      allowedSlippage={userAllowedSlippage}
+                      isExpertMode={isExpertMode}
+                      allowsOffchainSigning={allowsOffchainSigning}
+                      trade={trade}
+                      fee={fee}
+                    />
+                  )}
                   {/* FEES DISCOUNT */}
                   {/* TODO: check cow balance and set here, else don't show */}
                   <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />
@@ -400,12 +387,11 @@ export default function Swap({ history, location, className }: RouteComponentPro
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>
-      {currencyIn && currencyOut && (
+      {currencyIn && currencyOut && isSwapUnsupported && (
         <CompatibilityIssuesWarning
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          swapIsUnsupported={swapIsUnsupported}
         />
       )}
       <AlertWrapper>

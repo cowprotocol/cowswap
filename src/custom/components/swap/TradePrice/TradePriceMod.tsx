@@ -27,7 +27,6 @@ const StyledPriceContainer = styled.button`
   justify-content: center;
   padding: 0;
   grid-template-columns: 1fr auto;
-  grid-gap: 0.25rem;
   /* display: flex;
   flex-direction: row;
   text-align: left;
@@ -73,7 +72,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
       }}
       // title={text}
     >
-      <Text fontWeight={500} fontSize={14} color={theme.text1}>
+      <Text fontWeight={500} fontSize={13} color={theme.text1}>
         {/* {text} */}
         <LightGreyText>{baseText}</LightGreyText>
         <span title={`${fullFormattedPrice} ${label}`}>{quoteText}</span>

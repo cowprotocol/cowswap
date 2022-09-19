@@ -3,13 +3,14 @@ import * as styledEl from './styled'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
+  useIsFeeGreaterThanInput,
   useSwapActionHandlers,
   useSwapState,
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
 import { Field } from 'state/swap/actions'
 import { useSetupSwapState } from 'pages/NewSwap/hooks/useSetupSwapState'
-import { useCurrencyBalance } from '@src/state/connection/hooks'
+import { useCurrencyBalance } from 'state/connection/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyInfo, SwapFormProps } from 'pages/NewSwap/typings'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
@@ -19,11 +20,10 @@ import usePriceImpact from 'hooks/usePriceImpact'
 import { formatSmartAmount } from 'utils/format'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
-import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
 import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
 import { useModalIsOpen } from 'state/application/hooks'
-import { ApplicationModal } from '@src/state/application/reducer'
+import { ApplicationModal } from 'state/application/reducer'
 import { NewSwapModals, NewSwapModalsProps } from 'pages/NewSwap/modals'
 import { ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
@@ -36,9 +36,11 @@ import {
 } from 'pages/NewSwap/warnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { useExpertModeManager } from '@src/state/user/hooks'
+import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { SwapForm } from 'pages/NewSwap/components/SwapForm'
+import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
+import { TradeRates, TradeRatesProps } from 'pages/NewSwap/pureComponents/TradeRates'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -48,12 +50,13 @@ export function NewSwapPage() {
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
-  const swapFlowContext = useSwapFlowContext()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
-  const swapIsUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
+  const isSwapUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
+  const showRecipientControls = useShowRecipientControls()
+  const userAllowedSlippage = useUserSlippageTolerance()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -65,6 +68,10 @@ export function NewSwapPage() {
   const { isGettingNewQuote } = useGetQuoteAndStatus({
     token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
     chainId,
+  })
+  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
+    chainId,
+    address: INPUT.currencyId,
   })
 
   const inputCurrencyInfo: CurrencyInfo = {
@@ -96,15 +103,16 @@ export function NewSwapPage() {
   const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
 
   const swapButtonContext = useSwapButtonContext({
-    swapFlowContext,
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   })
 
   const swapFormProps: SwapFormProps = {
+    recipient,
     allowedSlippage,
     isGettingNewQuote,
     inputCurrencyInfo,
@@ -113,6 +121,7 @@ export function NewSwapPage() {
     swapActions,
     subsidyAndBalance,
     allowsOffchainSigning,
+    showRecipientControls,
   }
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
@@ -126,7 +135,7 @@ export function NewSwapPage() {
 
   const ethFlowProps: EthFlowProps = {
     nativeInput: parsedAmounts.INPUT,
-    wrapUnrapAmount: swapButtonContext.wrapUnrapAmount,
+    wrapUnwrapAmount: swapButtonContext.wrapUnwrapAmount,
     approvalState: swapButtonContext.approveButtonProps.approvalState,
     onDismiss: dismissNativeWrapModal,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,
@@ -154,18 +163,30 @@ export function NewSwapPage() {
 
   const swapWarningsBottomProps: NewSwapWarningsBottomProps = {
     isSupportedWallet,
-    swapIsUnsupported,
+    swapIsUnsupported: isSwapUnsupported,
     currencyIn: currencies.INPUT || undefined,
     currencyOut: currencies.OUTPUT || undefined,
+  }
+
+  const tradeRatesProps: TradeRatesProps = {
+    trade,
+    isExpertMode,
+    allowedSlippage,
+    allowsOffchainSigning,
+    userAllowedSlippage,
+    isFeeGreater,
+    fee,
+    discount: subsidyAndBalance.subsidy.discount || 0,
   }
 
   return (
     <>
       <styledEl.Container>
+        <NewSwapModals {...swapModalsProps} />
+        <AffiliateStatusCheck />
         <styledEl.ContainerBox>
-          <NewSwapModals {...swapModalsProps} />
-          <AffiliateStatusCheck />
           <SwapForm {...swapFormProps} />
+          <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButton {...swapButtonContext} />
         </styledEl.ContainerBox>

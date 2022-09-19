@@ -2,9 +2,10 @@ import styled from 'styled-components/macro'
 import { ArrowDown } from 'react-feather'
 import { loadingAnimationMixin } from './style-mixins'
 
-export const Box = styled.div`
+export const Box = styled.div<{ withRecipient: boolean }>`
+  display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
+  margin: ${({ withRecipient }) => (withRecipient ? '0' : '-12px auto')};
   cursor: pointer;
-  margin: -12px auto;
   position: relative;
   z-index: 2;
 
@@ -18,6 +19,8 @@ export const Box = styled.div`
 export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   position: absolute;
   height: 100%;
+  width: 100%;
+  text-align: center;
   transform-style: preserve-3d;
   transform-origin: center right;
   transition: transform 0.25s;
@@ -30,7 +33,6 @@ export const ArrowDownIcon = styled(ArrowDown)`
 
   height: 75%;
   margin-top: 3px;
-  margin-left: 1px;
 `
 
 export const CowImg = styled.img`

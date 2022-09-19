@@ -22369,11 +22369,6 @@ xmlhttprequest-ssl@~1.6.3:
   resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.6.3.tgz#03b713873b01659dfa2c1c5d056065b27ddc2de6"
   integrity sha512-3XfeQE/wNkvrIktn2Kf0869fC0BN6UpydVasGIeSm2B1Llihf7/0UfZM+eCkOw3P7bP4+qPgqhm7ZoxuJtFU0Q==
 
-xstate@^4.33.4:
-  version "4.33.4"
-  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.33.4.tgz#ff6831b95947c5185a455f8bc4570b21f547278a"
-  integrity sha512-3giWybQ8XvAr+3tDENlGduR4XREmiUOVxKRjdqFEe6g8eD8UrYhTth3OyLHX/sR9r/9GY2t/LbjfkCC8XFfv4Q==
-
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"

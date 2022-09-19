@@ -20,26 +20,27 @@ import { getSwapButtonState } from 'pages/Swap/helpers/getSwapButtonState'
 import { SwapButtonContext } from 'pages/Swap/components/SwapButton/SwapButton'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { OperationType } from 'components/TransactionConfirmationModal'
-import { SwapFlowContext } from 'pages/Swap/swapFlow/types'
 import { useTransactionConfirmModal } from 'pages/Swap/hooks/useTransactionConfirmModal'
+import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 export interface SwapButtonInput {
-  swapFlowContext: SwapFlowContext | null
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   approvalSubmitted: boolean
+  priceImpactParams: PriceImpact
   setApprovalSubmitted(value: boolean): void
   openNativeWrapModal(): void
 }
 
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext {
   const {
-    swapFlowContext,
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   } = input
 
   const { account, chainId } = useWeb3React()
@@ -52,6 +53,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const { INPUT } = useSwapState()
   const setTransactionConfirm = useTransactionConfirmModal()
+  const swapFlowContext = useSwapFlowContext()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -68,16 +70,16 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     ? trade?.inputAmount
     : // else use the slippage + fee adjusted amount
       computeSlippageAdjustedAmounts(trade, allowedSlippage).INPUT
-  const wrapUnrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
+  const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
-  const wrapInputError = useWrapUnwrapError(wrapType, wrapUnrapAmount)
+  const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
 
   const handleSwap = useCallback(() => {
     if (!swapFlowContext) return
 
     logSwapFlow('Start swap flow')
-    swapFlow(swapFlowContext)
-  }, [swapFlowContext])
+    swapFlow(swapFlowContext, priceImpactParams)
+  }, [swapFlowContext, priceImpactParams])
 
   const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
   const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
@@ -137,7 +139,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     wrappedToken,
     handleSwap,
     wrapInputError,
-    wrapUnrapAmount,
+    wrapUnwrapAmount,
     onWrap() {
       openNativeWrapModal()
     },

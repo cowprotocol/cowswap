@@ -1,9 +1,7 @@
 import { BoxProps } from 'rebass'
 import TradeGp from 'state/swap/TradeGp'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
-import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { LowerSectionWrapper } from 'pages/Swap/styled'
 import { RowFee } from 'components/swap/TradeSummary/RowFee'
@@ -11,14 +9,18 @@ import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
 
 interface TradeBasicDetailsProp extends BoxProps {
+  allowedSlippage: Percent | string
+  isExpertMode: boolean
+  allowsOffchainSigning: boolean
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
 }
 
-export function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
-  const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
-  const [isExpertMode] = useExpertModeManager()
-  const { allowsOffchainSigning } = useWalletInfo()
+export function TradeBasicDetails(props: TradeBasicDetailsProp) {
+  const { trade, allowedSlippage, isExpertMode, allowsOffchainSigning, fee, ...boxProps } = props
+  const allowedSlippagePercent = !(allowedSlippage instanceof Percent)
+    ? INITIAL_ALLOWED_SLIPPAGE_PERCENT
+    : allowedSlippage
 
   // trades are null when there is a fee quote error e.g
   // so we can take both
@@ -40,12 +42,12 @@ export function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetails
       {isExpertMode && trade && (
         <>
           {/* Slippage */}
-          <RowSlippage allowedSlippage={allowedSlippage} />
+          <RowSlippage allowedSlippage={allowedSlippagePercent} />
 
           {/* Min/Max received */}
           <RowReceivedAfterSlippage
             trade={trade}
-            allowedSlippage={allowedSlippage}
+            allowedSlippage={allowedSlippagePercent}
             showHelpers={true}
             allowsOffchainSigning={allowsOffchainSigning}
           />

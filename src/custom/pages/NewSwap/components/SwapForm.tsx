@@ -3,8 +3,8 @@ import { SwapFormProps } from 'pages/NewSwap/typings'
 import * as styledEl from 'pages/NewSwap/styled'
 import { CurrencyInputPanel } from 'pages/NewSwap/pureComponents/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from 'pages/NewSwap/pureComponents/CurrencyArrowSeparator'
-import { TradeRates } from 'pages/NewSwap/pureComponents/TradeRates'
 import { swapPagePropsChecker } from 'pages/NewSwap/propsChecker'
+import { AddRecipient } from 'pages/NewSwap/pureComponents/AddRecipient'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {
   const {
@@ -16,8 +16,11 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
     priceImpactParams,
     allowsOffchainSigning,
     subsidyAndBalance,
+    showRecipientControls,
+    recipient,
   } = props
-  const { onSwitchTokens } = swapActions
+  const { onSwitchTokens, onChangeRecipient } = swapActions
+  const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
   console.log('SWAP PAGE RENDER: ', props)
 
@@ -26,21 +29,32 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
       <CurrencyInputPanel
+        loading={currenciesLoadingInProgress}
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
         currencyInfo={inputCurrencyInfo}
         showSetMax={true}
       />
-      <CurrencyArrowSeparator onSwitchTokens={onSwitchTokens} isLoading={isGettingNewQuote} />
+      <styledEl.CurrencySeparatorBox withRecipient={showRecipientControls}>
+        <CurrencyArrowSeparator
+          onSwitchTokens={onSwitchTokens}
+          withRecipient={showRecipientControls}
+          isLoading={isGettingNewQuote}
+        />
+        {showRecipientControls && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
+      </styledEl.CurrencySeparatorBox>
       <CurrencyInputPanel
+        loading={currenciesLoadingInProgress}
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
         currencyInfo={outputCurrencyInfo}
         priceImpactParams={priceImpactParams}
       />
-      <TradeRates />
+      {showRecipientControls && recipient !== null && (
+        <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
+      )}
     </>
   )
 }, swapPagePropsChecker)

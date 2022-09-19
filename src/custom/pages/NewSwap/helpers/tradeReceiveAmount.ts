@@ -12,7 +12,6 @@ export interface ReceiveAmountInfo {
 export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   return {
     type: 'from',
-    // TODO: why we don't check the same for OUTPUT currency?
     amountBeforeFees:
       trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)
         ? '0'
