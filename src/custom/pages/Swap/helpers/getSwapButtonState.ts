@@ -1,8 +1,8 @@
 import { Token } from '@uniswap/sdk-core'
-import { WrapType } from '@src/hooks/useWrapCallback'
+import { WrapType } from 'hooks/useWrapCallback'
 import { ReactNode } from 'react'
 import { QuoteError } from 'state/price/actions'
-import { ApprovalState } from '@src/hooks/useApproveCallback'
+import { ApprovalState } from 'hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
 
 export enum SwapButtonState {
