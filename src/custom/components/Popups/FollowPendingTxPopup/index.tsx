@@ -25,10 +25,6 @@ function isAnOrder(element: TransactionAndOrder): element is AddedOrder {
   return 'inputToken' in element && 'outputToken' in element
 }
 
-function _cutOrderId(orderId: OrderID) {
-  return orderId.slice(0, 10)
-}
-
 export const useLastPendingOrder = (): { lastPendingOrder: AddedOrder | null; onClose: () => void } => {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const setLastOrderClosed = useUpdateAtom(handleCloseOrderPopupAtom)
@@ -43,7 +39,7 @@ export const useLastPendingOrder = (): { lastPendingOrder: AddedOrder | null; on
   }, [allRecentActivity])
 
   const onClose = useCallback(() => {
-    lastPendingOrder && setLastOrderClosed(_cutOrderId(lastPendingOrder.id))
+    lastPendingOrder && setLastOrderClosed(lastPendingOrder.id)
     setShowFollowPendingTxPopup(false)
   }, [lastPendingOrder, setLastOrderClosed, setShowFollowPendingTxPopup])
 
@@ -72,7 +68,7 @@ const useShowingPopupFirstTime = (orderId: OrderID | undefined) => {
       selectAtom(followPendingTxPopupAtom, ({ lastOrderPopupClosed }) => {
         if (!orderId) return
 
-        return lastOrderPopupClosed === _cutOrderId(orderId)
+        return lastOrderPopupClosed === orderId
       }),
     [orderId]
   )
