@@ -1,5 +1,5 @@
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'pages/NewSwap/pureComponents/CurrencyInputPanel'
-import { Field } from '@src/state/swap/actions'
+import { Field } from 'state/swap/actions'
 import { COW } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'

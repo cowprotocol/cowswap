@@ -11,7 +11,7 @@ import usePrevious from '@src/hooks/usePrevious'
  * The state is populated in a cascade:
  * 1. Try setting swap state from URL
  * 2. Try setting swap state from Redux cache (localStorage)
- * 3. Fill swap state by default values WETH/USDC
+ * 3. Fill swap state by default values
  *
  * Also, swap state updates on every location.search changes
  */
