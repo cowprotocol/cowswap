@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useGasPrices } from 'state/gas/hooks'
-import { PendingHashMap, Props } from 'components/swap/EthFlow'
+import { PendingHashMap, EthFlowProps } from 'components/swap/EthFlow'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { useSingleActivityState } from 'hooks/useActivityDerivedState'
 import { ApprovalState } from 'hooks/useApproveCallback'
@@ -311,10 +311,13 @@ export function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: bool
   }
 }
 
-export type ActionButtonParams = Pick<Props, 'isNativeIn'> &
-  Pick<DerivedEthFlowStateProps, 'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'> &
+export type ActionButtonParams = Pick<
+  DerivedEthFlowStateProps,
+  'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'
+> &
   Pick<ModalTextContentProps, 'nativeSymbol' | 'wrappedSymbol' | 'state'> & {
     isWrap: boolean
+    isNativeIn: boolean
     loading: boolean
     handleSwap: (showSwapModal?: boolean) => Promise<void>
     handleApprove: () => Promise<void>
@@ -417,8 +420,7 @@ export function _getActionButtonProps({
 export function useEthFlowStatesAndSetters({
   chainId,
   approvalState,
-  wrapState,
-}: Pick<Props, 'approvalState' | 'wrapState'> & {
+}: Pick<EthFlowProps, 'approvalState'> & {
   chainId?: number
 }) {
   const [pendingHashMap, setPendingHashMap] = useState<PendingHashMap>({

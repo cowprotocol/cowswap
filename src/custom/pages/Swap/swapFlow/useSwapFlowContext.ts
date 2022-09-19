@@ -1,12 +1,8 @@
 import { SwapFlowContext } from 'pages/Swap/swapFlow/types'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
-import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
-import { Field } from 'state/swap/actions'
-import usePriceImpact from 'hooks/usePriceImpact'
-import { useMemo } from 'react'
-import { WrapType } from 'hooks/useWrapCallback'
-import { GpEther as ETHER, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
+import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useCloseModals } from 'state/application/hooks'
 import { useAddPendingOrder } from 'state/orders/hooks'
@@ -16,8 +12,6 @@ import { AppDispatch } from 'state'
 import { SwapFlowAnalyticsContext } from 'pages/Swap/swapFlow/steps/analytics'
 import useENSAddress from 'hooks/useENSAddress'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
-import { WrapEthInput } from 'pages/Swap/swapFlow/steps/wrapEthStep'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useWETHContract } from 'hooks/useContract'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { PostOrderParams } from 'utils/trade'
@@ -61,8 +55,8 @@ function calculateValidTo(deadline: number): number {
 
 export function useSwapFlowContext(): SwapFlowContext | null {
   const { account, chainId, provider } = useWeb3React()
-  const { independentField, recipient, INPUT, OUTPUT } = useSwapState()
-  const { v2Trade, currencies, parsedAmount, allowedSlippage } = useDerivedSwapInfo()
+  const { recipient } = useSwapState()
+  const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
 
@@ -72,56 +66,21 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const dispatch = useDispatch<AppDispatch>()
 
-  const currencyIn = currencies[Field.INPUT]
-  const currencyOut = currencies[Field.OUTPUT]
-
   const { address: recipientAddress } = useENSAddress(recipient)
-  const { isNativeIn } = useDetectNativeToken(
-    { currency: currencyIn, address: INPUT.currencyId },
-    { currency: currencyOut, address: OUTPUT.currencyId },
-    chainId
-  )
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
-  const transactionAdder = useTransactionAdder()
   const swapConfirmManager = useSwapConfirmManager()
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
-    v2Trade,
+    trade,
     allowedSlippage
   )
-  const weth = chainId ? WRAPPED_NATIVE_CURRENCY[chainId] : null
-  const isWrappingEther = weth && currencyOut && currencyIn?.isNative && weth.equals(currencyOut)
-  const isUnwrappingWeth = weth && currencyIn && weth.equals(currencyIn) && currencyOut?.isNative
-  // TODO: doesn't match to the original code
-  const wrapType =
-    !isWrappingEther && !isUnwrappingWeth ? WrapType.NOT_APPLICABLE : isWrappingEther ? WrapType.WRAP : WrapType.UNWRAP
-
-  const isWrapping = wrapType !== WrapType.NOT_APPLICABLE
-  const showWrap = !isNativeIn && isWrapping
-
-  const parsedAmounts = useMemo(
-    () =>
-      showWrap
-        ? {
-            [Field.INPUT]: parsedAmount,
-            [Field.OUTPUT]: parsedAmount,
-          }
-        : {
-            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : v2Trade?.inputAmountWithoutFee,
-            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : v2Trade?.outputAmountWithoutFee,
-          },
-    [independentField, parsedAmount, showWrap, v2Trade]
-  )
-
-  const priceImpactParams = usePriceImpact({ abTrade: v2Trade, parsedAmounts, isWrapping })
-  const { priceImpact } = priceImpactParams
 
   if (
     !chainId ||
     !account ||
     !provider ||
-    !v2Trade ||
+    !trade ||
     !appData ||
     !wethContract ||
     !settlementContract ||
@@ -131,28 +90,26 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     return null
   }
 
-  const isBuyEth = ETHER.onChain(chainId).equals(v2Trade.outputAmount.currency)
-  const isSellEth = ETHER.onChain(chainId).equals(v2Trade.inputAmount.currency)
+  const isBuyEth = ETHER.onChain(chainId).equals(trade.outputAmount.currency)
   const isGnosisSafeWallet = !!gnosisSafeInfo
+
+  const sellToken = trade.inputAmount.currency.wrapped
+  const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
+
+  // TODO: mismatch with the original code related to wrap native token
+  if (!sellToken || !buyToken) {
+    return null
+  }
 
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
     recipient,
     recipientAddress,
-    trade: v2Trade,
+    trade,
   }
-
-  const wrapEthInput: WrapEthInput = {
-    weth: wethContract,
-    transactionAdder,
-    amount: inputAmountWithSlippage,
-  }
-
-  const sellToken = v2Trade.inputAmount.currency.wrapped
-  const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : v2Trade.outputAmount.currency.wrapped
 
   const validTo = calculateValidTo(deadline)
-  const kind = v2Trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
+  const kind = trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY
 
   const postOrderParams: PostOrderParams = {
     kind,
@@ -160,36 +117,34 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     chainId,
     // unadjusted inputAmount
     inputAmount: _computeInputAmountForSignature({
-      input: v2Trade.inputAmountWithFee,
+      input: trade.inputAmountWithFee,
       inputWithSlippage: inputAmountWithSlippage,
-      fee: v2Trade.fee.feeAsCurrency,
+      fee: trade.fee.feeAsCurrency,
       kind,
     }),
     outputAmount: outputAmountWithSlippage,
-    sellAmountBeforeFee: v2Trade.inputAmountWithoutFee,
-    feeAmount: v2Trade.fee.feeAsCurrency,
+    sellAmountBeforeFee: trade.inputAmountWithoutFee,
+    feeAmount: trade.fee.feeAsCurrency,
     sellToken,
     buyToken,
     validTo,
     // TODO: add validation from original code
-    recipient: recipient === null ? account : recipientAddress!,
+    recipient: recipient === null ? account : recipientAddress || '',
     recipientAddressOrName: recipientAddress || null,
     signer: provider.getSigner(),
     allowsOffchainSigning,
     appDataHash: appData.hash,
-    quoteId: v2Trade.quoteId,
+    quoteId: trade.quoteId,
   }
 
   return {
     context: {
       chainId,
-      trade: v2Trade,
-      priceImpact,
+      trade,
       inputAmountWithSlippage,
       outputAmountWithSlippage,
     },
     flags: {
-      isSellEth,
       allowsOffchainSigning,
       isGnosisSafeWallet,
     },
@@ -201,7 +156,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     dispatch,
     swapFlowAnalyticsContext,
     swapConfirmManager,
-    wrapEthInput,
     postOrderParams,
     settlementContract,
     appDataInfo: appData,

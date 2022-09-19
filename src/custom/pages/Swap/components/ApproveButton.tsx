@@ -20,6 +20,7 @@ import usePrevious from '@src/hooks/usePrevious'
 import { ButtonError } from 'components/Button'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import { TransactionResponse } from '@ethersproject/providers'
 
 export interface ApproveButtonProps {
   currencyIn: Currency | undefined | null
@@ -30,12 +31,13 @@ export interface ApproveButtonProps {
   handleSwap: HandleSwapCallback
   isValid: boolean
   approvalState: ApprovalState
-  approveCallback: (params?: OptionalApproveCallbackParams) => Promise<void>
+  approveCallback: (params?: OptionalApproveCallbackParams) => Promise<TransactionResponse | undefined>
   approvalSubmitted: boolean
   setApprovalSubmitted: (state: boolean) => void
   children?: React.ReactNode
 }
 
+// TODO: should be refactored (need to separate context/logic/view)
 export function ApproveButton(props: ApproveButtonProps) {
   const {
     trade,
@@ -54,11 +56,11 @@ export function ApproveButton(props: ApproveButtonProps) {
 
   const theme = useContext(ThemeContext)
 
-  const {
-    state: signatureState,
-    // signatureData,
-    gatherPermitSignature,
-  } = useERC20PermitFromTrade(trade, allowedSlippage, transactionDeadline)
+  const { state: signatureState, gatherPermitSignature } = useERC20PermitFromTrade(
+    trade,
+    allowedSlippage,
+    transactionDeadline
+  )
 
   const prevApprovalState = usePrevious(approvalState)
 
@@ -92,7 +94,6 @@ export function ApproveButton(props: ApproveButtonProps) {
 
     if (approveRequired) {
       const symbol = trade?.inputAmount?.currency.symbol
-      // const symbol = v2Trade?.inputAmount?.currency.symbol // TODO: double check
       approvalAnalytics('Send', symbol)
       return approveCallback()
         .then(() => {
@@ -118,14 +119,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           setSwapError(swapErrorMessage)
         })
     }
-  }, [
-    approveCallback,
-    gatherPermitSignature,
-    signatureState,
-    trade?.inputAmount?.currency.symbol,
-    setSwapError,
-    // v2Trade?.inputAmount?.currency.symbol, // TODO: doublecheck
-  ])
+  }, [approveCallback, gatherPermitSignature, signatureState, trade?.inputAmount?.currency.symbol, setSwapError])
 
   return (
     <>
@@ -185,7 +179,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           if (isExpertMode) {
             handleSwap()
           } else {
-            openSwapConfirmModal(trade!)
+            trade && openSwapConfirmModal(trade)
           }
         }}
         width="100%"

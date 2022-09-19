@@ -1,7 +1,6 @@
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import { SwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
-import { WrapEthInput } from 'pages/Swap/swapFlow/steps/wrapEthStep'
 import { PostOrderParams } from 'utils/trade'
 import { AddOrderCallback } from 'state/orders/hooks'
 import { GPv2Settlement } from 'abis/types'
@@ -15,10 +14,8 @@ export interface SwapFlowContext {
     trade: TradeGp
     inputAmountWithSlippage: CurrencyAmount<Currency>
     outputAmountWithSlippage: CurrencyAmount<Currency>
-    priceImpact?: Percent
   }
   flags: {
-    isSellEth: boolean
     allowsOffchainSigning: boolean
     isGnosisSafeWallet: boolean
   }
@@ -30,7 +27,6 @@ export interface SwapFlowContext {
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   swapConfirmManager: SwapConfirmManager
-  wrapEthInput: WrapEthInput
   postOrderParams: PostOrderParams
   settlementContract: GPv2Settlement
   appDataInfo: AppDataInfo
