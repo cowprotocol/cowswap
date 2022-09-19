@@ -29,7 +29,7 @@ export enum SwapButtonState {
   WrapAndSwap = 'WrapAndSwap',
 }
 
-export interface SwapButtonStateInput {
+export interface SwapButtonStateParams {
   account: string | undefined
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
@@ -60,7 +60,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
   'unsupported-token': null,
 }
 
-export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState {
+export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
   const { wrapType, quoteError, approvalState } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
