@@ -6,15 +6,14 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useDefaultsFromURLSearch } from 'state/swap/hooks'
 import TokenWarningModal from '@src/components/TokenWarningModal'
-import { History } from 'history'
 
 export interface ImportTokenModalProps {
   chainId: number
-  history: History
+  onDismiss(): void
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps) {
-  const { chainId, history } = props
+  const { chainId, onDismiss } = props
 
   const loadedUrlParams = useDefaultsFromURLSearch()
   // token warning stuff
@@ -64,8 +63,8 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
   // reset if they close warning without tokens in params
   const handleDismissTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
-    history.push('/swap/')
-  }, [history])
+    onDismiss()
+  }, [onDismiss])
 
   return (
     <TokenWarningModal

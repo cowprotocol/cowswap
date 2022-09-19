@@ -19,6 +19,9 @@ export interface HandleSwapInput {
 
 export type HandleSwapCallback = () => void
 
+/**
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
+ */
 export function useHandleSwap(input: HandleSwapInput): {
   swapCallbackError: string | null
   swapCallback: HandleSwapCallback
@@ -33,10 +36,10 @@ export function useHandleSwap(input: HandleSwapInput): {
   }
   const { callback, error: swapCallbackError } = useSwapCallback(swapCallbackState)
 
-  const { openSwapConfirmModal, setSwapError, transactionSent, sendTransaction } = useSwapConfirmManager()
+  const { setSwapError, transactionSent, sendTransaction } = useSwapConfirmManager()
 
   const swapCallback = useCallback(() => {
-    if (!callback) {
+    if (!callback || !trade) {
       return
     }
 
@@ -44,10 +47,10 @@ export function useHandleSwap(input: HandleSwapInput): {
       return
     }
 
-    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+    const marketLabel = [trade.inputAmount.currency.symbol, trade.outputAmount.currency.symbol].join(',')
     swapAnalytics('Send', marketLabel)
 
-    sendTransaction(trade!)
+    sendTransaction(trade)
     callback()
       .then((hash) => {
         transactionSent(hash)
@@ -78,7 +81,6 @@ export function useHandleSwap(input: HandleSwapInput): {
         setSwapError(swapErrorMessage)
       })
   }, [
-    openSwapConfirmModal,
     setSwapError,
     sendTransaction,
     transactionSent,

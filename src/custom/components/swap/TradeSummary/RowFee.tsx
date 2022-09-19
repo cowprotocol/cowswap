@@ -52,7 +52,7 @@ export function RowFee({
   feeFiatValue,
   allowsOffchainSigning,
   showHelpers,
-  fontSize = 14,
+  fontSize = 13,
   fontWeight = 500,
   rowHeight,
 }: RowFeeProps) {
@@ -81,7 +81,7 @@ export function RowFee({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text1}>
           Fees {includeGasMessage}
         </ThemedText.Black>
         {showHelpers && (

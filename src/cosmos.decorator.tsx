@@ -11,6 +11,7 @@ import { MetaMask } from '@web3-react/metamask'
 import { BlockNumberProvider } from '@src/lib/hooks/useBlockNumber'
 
 const Wrapper = styled(Flex)`
+  font-family: 'Inter var', sans-serif;
   padding: 1.2rem 0.6rem;
   justify-content: center;
   align-items: center;
