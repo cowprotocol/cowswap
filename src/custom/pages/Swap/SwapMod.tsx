@@ -10,7 +10,7 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { useWeb3React } from '@web3-react/core'
-import { useSwapCallback } from 'hooks/useSwapCallback'
+import { OptionalForceWrapNative, useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 // import JSBI from 'jsbi'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
@@ -94,6 +94,7 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { EthFlowSwapCallbackParams } from 'components/swap/EthFlow/helpers'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -465,69 +466,74 @@ export default function Swap({
     closeModals,
   })
 
-  const handleSwap = useCallback(() => {
-    if (!swapCallback) {
-      return
-    }
-    if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
-      return
-    }
+  const handleSwap = useCallback(
+    (params?: OptionalForceWrapNative) => {
+      if (!swapCallback) {
+        return
+      }
+      if (priceImpact && !confirmPriceImpactWithoutFee(priceImpact)) {
+        return
+      }
 
-    const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
-    swapAnalytics('Send', marketLabel)
+      const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+      swapAnalytics('Send', marketLabel)
 
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
-    swapCallback()
-      .then((hash) => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+      setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+      swapCallback(params)
+        .then((hash) => {
+          setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
 
-        if (recipient === null) {
-          signSwapAnalytics('Sign', marketLabel)
-        } else {
-          ;(recipientAddress ?? recipient) === account
-            ? signSwapAnalytics('SignAndSend', marketLabel)
-            : signSwapAnalytics('SignToSelf', marketLabel)
-        }
-      })
-      .catch((error) => {
-        let swapErrorMessage, errorCode
-        if (isRejectRequestProviderError(error)) {
-          swapErrorMessage = 'User rejected signing the order'
-          swapAnalytics('Reject', marketLabel)
-        } else {
-          swapErrorMessage = getProviderErrorMessage(error)
-
-          if (error?.code && typeof error.code === 'number') {
-            errorCode = error.code
+          if (recipient === null) {
+            signSwapAnalytics('Sign', marketLabel)
+          } else {
+            ;(recipientAddress ?? recipient) === account
+              ? signSwapAnalytics('SignAndSend', marketLabel)
+              : signSwapAnalytics('SignToSelf', marketLabel)
           }
-          console.error('Error Signing Order', error)
-          swapAnalytics('Error', marketLabel, errorCode)
-        }
-
-        setSwapState({
-          attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
-          swapErrorMessage,
-          txHash: undefined,
         })
-      })
-  }, [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade])
+        .catch((error) => {
+          let swapErrorMessage, errorCode
+          if (isRejectRequestProviderError(error)) {
+            swapErrorMessage = 'User rejected signing the order'
+            swapAnalytics('Reject', marketLabel)
+          } else {
+            swapErrorMessage = getProviderErrorMessage(error)
+
+            if (error?.code && typeof error.code === 'number') {
+              errorCode = error.code
+            }
+            console.error('Error Signing Order', error)
+            swapAnalytics('Error', marketLabel, errorCode)
+          }
+
+          setSwapState({
+            attemptingTxn: false,
+            tradeToConfirm,
+            showConfirm,
+            swapErrorMessage,
+            txHash: undefined,
+          })
+        })
+    },
+    [swapCallback, priceImpact, tradeToConfirm, showConfirm, recipient, recipientAddress, account, trade]
+  )
 
   // handle swap when native token is detected as sell token
-  const handleNativeWrapAndSwap = (submitSwap = false) => {
+  const handleNativeWrapAndSwap = ({ showConfirm = false, straightSwap }: EthFlowSwapCallbackParams) => {
     if (!chainId) throw new Error('Need to be connected')
 
     // switch to wrapped native currency
     onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
-    // set swap state
-    setSwapState({
-      tradeToConfirm: trade,
-      attemptingTxn: false,
-      swapErrorMessage: undefined,
-      showConfirm: submitSwap,
-      txHash: undefined,
-    })
+    // swap straight away or show confirmation modal
+    !!straightSwap
+      ? handleSwap({ forceWrapNative: false })
+      : setSwapState({
+          tradeToConfirm: trade,
+          attemptingTxn: false,
+          swapErrorMessage: undefined,
+          showConfirm,
+          txHash: undefined,
+        })
   }
 
   // errors

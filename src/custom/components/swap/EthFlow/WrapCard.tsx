@@ -21,7 +21,6 @@ const WrapCardWrapper = styled.div`
   justify-content: center;
   flex: 1;
   padding: 8px;
-  border-radius: 0 6px 6px 0;
 
   > img {
     width: 32px;
@@ -34,21 +33,22 @@ const WrapCardWrapper = styled.div`
 export const WrapCardContainer = styled.div`
   position: relative;
   ${({ theme }) => theme.flexRowNoWrap}
-  border: 1px solid ${({ theme }) => theme.bg2};
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
   margin: 12px 0;
   width: 100%;
   min-height: 140px;
   overflow: hidden;
 
   > ${WrapCardWrapper} {
+    border: 1px solid ${({ theme }) => theme.bg2};
     &:nth-of-type(1) {
       background-color: ${({ theme }) => theme.bg1};
+      border-radius: 16px 0 0 16px;
     }
 
     &:nth-of-type(2) {
       color: ${({ theme }) => theme.text2};
       background-color: ${({ theme }) => theme.bg2};
+      border-radius: 0 16px 16px 0;
     }
 
     > ${BalanceLabel}:last-of-type {
