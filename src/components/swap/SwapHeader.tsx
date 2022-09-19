@@ -12,13 +12,7 @@ const StyledSwapHeader = styled.div`
   color: ${({ theme }) => theme.text2};
 `
 
-export default function SwapHeader({
-  allowedSlippage,
-  className = '',
-}: {
-  allowedSlippage: Percent
-  className?: string
-}) {
+export default function SwapHeader({ allowedSlippage, className }: { allowedSlippage: Percent; className?: string }) {
   return (
     <StyledSwapHeader className={className}>
       <RowBetween>
