@@ -105,7 +105,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         selectedCurrency={currency}
         otherSelectedCurrency={currency}
         showCommonBases={true}
-        showCurrencyAmount={false}
+        showCurrencyAmount={true}
         disableNonToken={false}
       />
     </>
