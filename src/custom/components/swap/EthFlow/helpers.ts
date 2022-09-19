@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useGasPrices } from 'state/gas/hooks'
-import { PendingHashMap, Props } from 'components/swap/EthFlow'
+import { PendingHashMap, EthFlowProps } from 'components/swap/EthFlow'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { useSingleActivityState } from 'hooks/useActivityDerivedState'
 import { ApprovalState } from 'hooks/useApproveCallback'
@@ -420,7 +420,7 @@ export function _getActionButtonProps({
 export function useEthFlowStatesAndSetters({
   chainId,
   approvalState,
-}: Pick<Props, 'approvalState'> & {
+}: Pick<EthFlowProps, 'approvalState'> & {
   chainId?: number
 }) {
   const [pendingHashMap, setPendingHashMap] = useState<PendingHashMap>({

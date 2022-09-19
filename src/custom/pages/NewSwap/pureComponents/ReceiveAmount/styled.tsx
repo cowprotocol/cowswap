@@ -7,7 +7,7 @@ export const ReceiveAmountBox = styled.div`
 
   padding: 1rem;
   border-radius: 0 0 15px 15px;
-  border: ${({ theme }) => theme.currencyInput!.border};
+  border: ${({ theme }) => theme.currencyInput?.border};
 
   font-size: 14px;
   font-weight: 600;
@@ -23,6 +23,6 @@ export const ReceiveAmountValue = styled.span`
 
 export const QuestionHelperWrapped = styled(QuestionHelper)`
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: bottom;
   line-height: 0;
 `

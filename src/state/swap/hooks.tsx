@@ -219,7 +219,7 @@ export function validatedRecipient(recipient: any): string | null {
   return null
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
+export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: number | null): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
@@ -236,6 +236,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
   const recipient = validatedRecipient(parsedQs.recipient)
 
   return {
+    chainId,
     [Field.INPUT]: {
       currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
@@ -255,8 +256,8 @@ export function useDefaultsFromURLSearch(): SwapState {
   const parsedQs = useParsedQueryString()
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs)
-  }, [parsedQs])
+    return queryParametersToSwapState(parsedQs, chainId || 1)
+  }, [chainId, parsedQs])
 
   useEffect(() => {
     if (!chainId) return
@@ -265,8 +266,9 @@ export function useDefaultsFromURLSearch(): SwapState {
 
     dispatch(
       replaceSwapState({
+        chainId,
         typedValue: parsedSwapState.typedValue,
-        field: parsedSwapState.independentField,
+        independentField: parsedSwapState.independentField,
         inputCurrencyId,
         outputCurrencyId,
         recipient: parsedSwapState.recipient,

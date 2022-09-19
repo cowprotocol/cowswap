@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
-import { useContext, useState, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 // import { InterfaceTrade } from 'state/routing/types'
@@ -94,8 +94,6 @@ SwapModalHeaderProps) {
   )
 
   const theme = useContext(ThemeContext)
-
-  const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // const fiatValueInput = useUSDCValue(trade.inputAmount)
   // const fiatValueOutput = useUSDCValue(trade.outputAmount)
@@ -236,14 +234,7 @@ SwapModalHeaderProps) {
           />
         </AuxInformationContainer>
       )}
-      <Price
-        trade={trade}
-        theme={theme}
-        showInverted={showInverted}
-        setShowInverted={setShowInverted}
-        width="90%"
-        margin="auto"
-      />
+      <Price trade={trade} width="90%" margin="auto" />
       {/*<RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween>*/}
