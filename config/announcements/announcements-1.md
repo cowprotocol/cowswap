@@ -1,1 +1,1 @@
-**CoW Swap’s** new official URL is **[swap.cow.fi](https://swap.cow.fi)**. Be sure to check that you’re on the right site before you trade, and check your saved preferences. Read our Twitter announcement **[here](<tweet link>)**
+**CoW Swap’s** new official URL is **[swap.cow.fi](https://swap.cow.fi)**. Read our Twitter announcement **[here](<tweet link>)**.
