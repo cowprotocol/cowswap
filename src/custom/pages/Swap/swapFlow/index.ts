@@ -6,10 +6,11 @@ import { addPendingOrderStep } from 'pages/Swap/swapFlow/steps/addPendingOrderSt
 import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import { getSwapErrorMessage } from 'pages/Swap/swapFlow/steps/swapErrorHelper'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
-export async function swapFlow(input: SwapFlowContext) {
+export async function swapFlow(input: SwapFlowContext, priceImpactParams: PriceImpact) {
   logSwapFlow('STEP 1: confirm price impact')
-  if (input.context.priceImpact && !confirmPriceImpactWithoutFee(input.context.priceImpact)) return
+  if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) return
 
   logSwapFlow('STEP 2: send transaction')
   swapFlowAnalytics.swap(input.swapFlowAnalyticsContext)

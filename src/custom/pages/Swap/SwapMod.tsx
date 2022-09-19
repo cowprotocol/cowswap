@@ -223,6 +223,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   })
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {

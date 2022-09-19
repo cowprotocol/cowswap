@@ -2,8 +2,6 @@ import { SwapFlowContext } from 'pages/Swap/swapFlow/types'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
-import usePriceImpact from 'hooks/usePriceImpact'
-import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useCloseModals } from 'state/application/hooks'
@@ -25,7 +23,6 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
-import { useSwapCurrenciesAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesAmounts'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -73,20 +70,11 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
-  const wrapType = useWrapType()
-  const isWrapUnwrap = wrapType !== WrapType.NOT_APPLICABLE
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
     allowedSlippage
   )
-
-  const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
-  const priceImpactParams = usePriceImpact({
-    abTrade: trade,
-    parsedAmounts,
-    isWrapping: isWrapUnwrap,
-  })
 
   if (
     !chainId ||
@@ -153,7 +141,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     context: {
       chainId,
       trade,
-      priceImpact: priceImpactParams.priceImpact,
       inputAmountWithSlippage,
       outputAmountWithSlippage,
     },

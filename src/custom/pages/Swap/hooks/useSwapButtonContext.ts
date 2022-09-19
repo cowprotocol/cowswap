@@ -22,18 +22,26 @@ import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useTransactionConfirmModal } from 'pages/Swap/hooks/useTransactionConfirmModal'
 import { useSwapFlowContext } from 'pages/Swap/swapFlow/useSwapFlowContext'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   approvalSubmitted: boolean
+  priceImpactParams: PriceImpact
   setApprovalSubmitted(value: boolean): void
   openNativeWrapModal(): void
 }
 
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext {
-  const { feeWarningAccepted, impactWarningAccepted, approvalSubmitted, setApprovalSubmitted, openNativeWrapModal } =
-    input
+  const {
+    feeWarningAccepted,
+    impactWarningAccepted,
+    approvalSubmitted,
+    setApprovalSubmitted,
+    openNativeWrapModal,
+    priceImpactParams,
+  } = input
 
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
@@ -70,8 +78,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     if (!swapFlowContext) return
 
     logSwapFlow('Start swap flow')
-    swapFlow(swapFlowContext)
-  }, [swapFlowContext])
+    swapFlow(swapFlowContext, priceImpactParams)
+  }, [swapFlowContext, priceImpactParams])
 
   const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
   const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod

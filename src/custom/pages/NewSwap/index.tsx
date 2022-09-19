@@ -108,6 +108,7 @@ export function NewSwapPage() {
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   })
 
   const swapFormProps: SwapFormProps = {
