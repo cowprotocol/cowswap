@@ -207,7 +207,7 @@ export default function Swap({
 
   // detects trade load
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
-    token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
+    token: INPUT.currencyId,
     chainId,
   })
 
