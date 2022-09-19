@@ -10,10 +10,11 @@ import { isL2ChainId } from 'utils/chains'
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { useUserAddedTokens } from 'state/user/hooks' */
-import { /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
+import { useCombinedActiveList, /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
 
 // MOD imports
 import { useTokensFromMap } from '@src/hooks/Tokens'
+import { useThrottle } from 'hooks/useThrottle'
 
 export * from '@src/hooks/Tokens'
 
@@ -85,7 +86,7 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
     }
 
     const listUrl = getChainInfo(chainId).defaultListUrl
-    
+
     const { current: list } = listsByUrl[listUrl]
     if (!list) {
       return {}
@@ -177,3 +178,10 @@ export function useCurrency(currencyId?: string | null): Currency | null | undef
   const tokens = useAllTokens()
   return useCurrencyFromMap(tokens, currencyId)
 } */
+
+export function useAllTokens(): { [address: string]: Token } {
+  const allTokens = useCombinedActiveList()
+  const tokensFromMap = useTokensFromMap(allTokens, true)
+
+  return useThrottle(tokensFromMap, 1000)
+}

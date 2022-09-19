@@ -101,6 +101,7 @@ interface SwapParams {
 /**
  * Internal swap function that does the actual swap logic.
  *
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
  * @param params All the required swap dependencies
  * @returns
  */
@@ -321,6 +322,7 @@ async function _swap(params: SwapParams): Promise<string> {
  *
  * This callback will return the UID
  *
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
  * @param params
  * @returns
  */

@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import { SwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import { PostOrderParams } from 'utils/trade'
@@ -14,7 +14,6 @@ export interface SwapFlowContext {
     trade: TradeGp
     inputAmountWithSlippage: CurrencyAmount<Currency>
     outputAmountWithSlippage: CurrencyAmount<Currency>
-    priceImpact?: Percent
   }
   flags: {
     allowsOffchainSigning: boolean

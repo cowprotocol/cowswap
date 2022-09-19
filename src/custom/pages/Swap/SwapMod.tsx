@@ -20,7 +20,6 @@ import {
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-  useDetectNativeToken,
   useIsFeeGreaterThanInput,
   useHighFeeWarning,
   useUnknownImpactWarning,
@@ -83,18 +82,13 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const [recipientToggleVisible] = useRecipientToggleManager()
 
   // swap state
-  const { independentField, typedValue, recipient, INPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
+  const { independentField, typedValue, recipient, INPUT } = useSwapState()
   const { v2Trade, allowedSlippage, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
   const userAllowedSlippage = useUserSlippageTolerance()
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
-  const swapIsUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
-
-  // Checks if either currency is native ETH
-  const { isNativeIn, isWrappedOut } = useDetectNativeToken(currencies, chainId)
-  // Is user swapping Eth as From token and not wrapping to WETH?
-  const isNativeInSwap = isNativeIn && !isWrappedOut
+  const isSwapUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
   // Is fee greater than input?
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -110,7 +104,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     : // else use the slippage + fee adjusted amount
       computeSlippageAdjustedAmounts(v2Trade, allowedSlippage).INPUT
 
-  const wrapUnrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
 
@@ -230,6 +223,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   })
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
@@ -254,7 +248,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
       {showNativeWrapModal && (
         <EthFlowModal
           nativeInput={showWrap ? parsedAmount : nativeInput}
-          wrapUnrapAmount={wrapUnrapAmount}
+          wrapUnwrapAmount={swapButtonContext.wrapUnwrapAmount}
           // state
           approvalState={swapButtonContext.approveButtonProps.approvalState}
           onDismiss={dismissNativeWrapModal}
@@ -393,12 +387,11 @@ export default function Swap({ history, location, className }: RouteComponentPro
           </BottomGrouping>
         </Wrapper>
       </StyledAppBody>
-      {currencyIn && currencyOut && (
+      {currencyIn && currencyOut && isSwapUnsupported && (
         <CompatibilityIssuesWarning
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          swapIsUnsupported={swapIsUnsupported}
         />
       )}
       <AlertWrapper>
