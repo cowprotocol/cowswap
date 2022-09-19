@@ -24,16 +24,25 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   }
 `
 
-export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
+export const ArrowDown = styled(DropDown)`
   margin: 0 5px;
 
   path {
-    stroke: ${({ stubbed, theme }) => (stubbed ? theme.text2 : theme.text1)};
+    stroke: ${({ theme }) => theme.text1};
     stroke-width: 1.5px;
   }
 `
 
-export const CurrencySymbol = styled.div<{ stubbed?: boolean }>`
+export const ArrowDownStubbed = styled(DropDown)`
+  margin: 0 5px;
+
+  path {
+    stroke: ${({ theme }) => theme.text2};
+    stroke-width: 1.5px;
+  }
+`
+
+export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
   font-size: 18px;
   font-weight: 500;
   text-transform: ${({ stubbed }) => (stubbed ? 'none' : 'uppercase')};

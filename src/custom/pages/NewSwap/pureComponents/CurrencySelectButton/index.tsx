@@ -11,14 +11,15 @@ export interface CurrencySelectButtonProps {
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
   const { currency, onClick, loading } = props
+  const stubbed = !currency || false
 
   return (
-    <styledEl.CurrencySelectWrapper onClick={onClick} isLoading={loading} stubbed={!currency}>
+    <styledEl.CurrencySelectWrapper onClick={onClick} isLoading={loading} stubbed={stubbed}>
       {currency ? <CurrencyLogo currency={currency} size={'24px'} /> : <div></div>}
-      <styledEl.CurrencySymbol stubbed={!currency}>
+      <styledEl.CurrencySymbol stubbed={stubbed}>
         {currency ? currency.symbol : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>
-      <styledEl.ArrowDown stubbed={!currency} />
+      {stubbed ? <styledEl.ArrowDownStubbed /> : <styledEl.ArrowDown />}
     </styledEl.CurrencySelectWrapper>
   )
 }
