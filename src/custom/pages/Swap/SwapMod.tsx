@@ -20,7 +20,6 @@ import {
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-  useDetectNativeToken,
   useIsFeeGreaterThanInput,
   useHighFeeWarning,
   useUnknownImpactWarning,
@@ -90,11 +89,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const currencyOut = currencies[Field.OUTPUT]
 
   const isSwapUnsupported = useIsSwapUnsupported(currencyIn, currencyOut)
-
-  // Checks if either currency is native ETH
-  const { isNativeIn, isWrappedOut } = useDetectNativeToken(currencies, chainId)
-  // Is user swapping Eth as From token and not wrapping to WETH?
-  const isNativeInSwap = isNativeIn && !isWrappedOut
 
   // Is fee greater than input?
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
