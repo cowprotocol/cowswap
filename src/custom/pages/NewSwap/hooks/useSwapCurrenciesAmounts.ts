@@ -1,5 +1,5 @@
-import { Field } from '@src/state/swap/actions'
-import { useSwapState } from '@src/state/swap/hooks'
+import { Field } from 'state/swap/actions'
+import { useSwapState } from 'state/swap/hooks'
 import { WrapType } from 'hooks/useWrapCallback'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { ParsedAmounts } from 'hooks/usePriceImpact/types'

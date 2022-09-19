@@ -88,7 +88,11 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
   const sufficientBalance = !!(inputAmount && balance && !balance.lessThan(inputAmount))
   const isZero = balance && !inputAmount
 
-  return isZero ? t`Enter an amount` : !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
+  if (isZero) {
+    return t`Enter an amount`
+  }
+
+  return !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 }
 
 export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
@@ -142,13 +146,13 @@ export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefine
   }
 
   return (params?: WrapUnwrapCallbackParams) => {
-    return wrapUnwrapCallback(context, params || { useModals: true })
+    return wrapUnwrapCallback(context, params)
   }
 }
 
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
-  params: WrapUnwrapCallbackParams
+  params: WrapUnwrapCallbackParams = { useModals: true }
 ): Promise<TransactionResponse> {
   const { useModals } = params
   const {

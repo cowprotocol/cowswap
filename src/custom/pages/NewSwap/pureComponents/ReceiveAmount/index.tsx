@@ -1,5 +1,3 @@
-import { ReceiveAmountBox, ReceiveAmountValue } from 'pages/NewSwap/pureComponents/ReceiveAmount/styled'
-import React from 'react'
 import { ReceiveAmountInfoTooltip } from 'pages/NewSwap/pureComponents/ReceiveAmountInfo'
 import * as styledEl from './styled'
 import { ReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
@@ -18,7 +16,7 @@ export function ReceiveAmount(props: ReceiveAmountProps) {
   const { type, amountAfterFees } = props.receiveAmountInfo
 
   return (
-    <ReceiveAmountBox>
+    <styledEl.ReceiveAmountBox>
       <div>
         <span>
           <Trans>{type === 'from' ? 'From (incl. fee)' : 'Receive (incl. fee)'}</Trans>
@@ -27,8 +25,8 @@ export function ReceiveAmount(props: ReceiveAmountProps) {
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />
       </div>
       <div>
-        <ReceiveAmountValue>{amountAfterFees}</ReceiveAmountValue>
+        <styledEl.ReceiveAmountValue>{amountAfterFees}</styledEl.ReceiveAmountValue>
       </div>
-    </ReceiveAmountBox>
+    </styledEl.ReceiveAmountBox>
   )
 }

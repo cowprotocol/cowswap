@@ -394,7 +394,7 @@ export default function Swap({ history }: RouteComponentProps) {
     [onCurrencySelection]
   )
 
-  const swapIsUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
+  const isSwapUnsupported = useIsSwapUnsupported(currencies[Field.INPUT], currencies[Field.OUTPUT])
 
   const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
@@ -503,7 +503,7 @@ export default function Swap({ history }: RouteComponentProps) {
                 />
               )}
               <div>
-                {swapIsUnsupported ? (
+                {isSwapUnsupported ? (
                   <ButtonPrimary disabled={true}>
                     <ThemedText.Main mb="4px">
                       <Trans>Unsupported Asset</Trans>
@@ -659,9 +659,9 @@ export default function Swap({ history }: RouteComponentProps) {
           <NetworkAlert />
         </AlertWrapper>
         <SwitchLocaleLink />
-        {!swapIsUnsupported ? null : (
+        {!isSwapUnsupported ? null : (
           <UnsupportedCurrencyFooter
-            show={swapIsUnsupported}
+            show={isSwapUnsupported}
             currencies={[currencies[Field.INPUT], currencies[Field.OUTPUT]]}
           />
         )}

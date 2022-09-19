@@ -8,17 +8,18 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
 import { StyledInfo } from 'pages/Swap/styleds'
-import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 
-const ClickableSlippage = styled.button`
+const ClickableText = styled.button`
   background: none;
   border: none;
   outline: none;
   padding: 0;
   margin: 0;
   font-weight: 500;
+  font-size: 13px;
+  color: ${({ theme }) => theme.text1};
 `
 
 export interface RowSlippageProps {
@@ -43,9 +44,9 @@ export function RowSlippage({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight}>
           {showSettingOnClick ? (
-            <ClickableText fontWeight={500} fontSize={fontSize} color={theme.text2} onClick={toggleSettings}>
+            <ClickableText onClick={toggleSettings}>
               <Trans>Slippage tolerance</Trans>
             </ClickableText>
           ) : (
@@ -70,9 +71,7 @@ export function RowSlippage({
         </MouseoverTooltipContent>
       </RowFixed>
       <ThemedText.Black textAlign="right" fontSize={fontSize} color={theme.text1}>
-        <ClickableSlippage onClick={() => (showSettingOnClick ? toggleSettings() : null)}>
-          {displaySlippage}
-        </ClickableSlippage>
+        <ClickableText onClick={() => (showSettingOnClick ? toggleSettings() : null)}>{displaySlippage}</ClickableText>
       </ThemedText.Black>
     </RowBetween>
   )

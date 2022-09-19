@@ -19,6 +19,8 @@ export const Box = styled.div<{ withRecipient: boolean }>`
 export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   position: absolute;
   height: 100%;
+  width: 100%;
+  text-align: center;
   transform-style: preserve-3d;
   transform-origin: center right;
   transition: transform 0.25s;
@@ -31,7 +33,6 @@ export const ArrowDownIcon = styled(ArrowDown)`
 
   height: 75%;
   margin-top: 3px;
-  margin-left: 1px;
 `
 
 export const CowImg = styled.img`
