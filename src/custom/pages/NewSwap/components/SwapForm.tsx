@@ -20,6 +20,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
     recipient,
   } = props
   const { onSwitchTokens, onChangeRecipient } = swapActions
+  const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
   console.log('SWAP PAGE RENDER: ', props)
 
@@ -28,6 +29,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
       <CurrencyInputPanel
+        loading={currenciesLoadingInProgress}
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
@@ -43,6 +45,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
         {showRecipientControls && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
       </styledEl.CurrencySeparatorBox>
       <CurrencyInputPanel
+        loading={currenciesLoadingInProgress}
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}

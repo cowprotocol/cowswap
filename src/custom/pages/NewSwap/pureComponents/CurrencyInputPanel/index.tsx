@@ -18,6 +18,7 @@ interface BuiltItProps {
 }
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
+  loading: boolean
   showSetMax?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
@@ -27,8 +28,8 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
-  const loading = false
   const {
+    loading,
     currencyInfo,
     className,
     priceImpactParams,
@@ -66,7 +67,11 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       <styledEl.Wrapper className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
         <styledEl.CurrencyInputBox>
           <div>
-            <CurrencySelectButton onClick={() => setCurrencySearchModalOpen(true)} currency={currency || undefined} />
+            <CurrencySelectButton
+              onClick={() => setCurrencySearchModalOpen(true)}
+              currency={currency || undefined}
+              loading={loading}
+            />
           </div>
           <div>
             <styledEl.NumericalInput value={viewAmount || typedValue} onUserInput={onUserInput} $loading={loading} />
