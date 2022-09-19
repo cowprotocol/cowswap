@@ -98,6 +98,8 @@ interface SwapParams {
   closeModals: () => void
 }
 
+export type OptionalForceWrapNative = { forceWrapNative?: boolean }
+
 /**
  * Internal swap function that does the actual swap logic.
  *
@@ -105,7 +107,7 @@ interface SwapParams {
  * @param params All the required swap dependencies
  * @returns
  */
-async function _swap(params: SwapParams): Promise<string> {
+async function _swap(params: SwapParams & OptionalForceWrapNative): Promise<string> {
   const {
     chainId,
     account,
@@ -126,16 +128,18 @@ async function _swap(params: SwapParams): Promise<string> {
     recipientAddressOrName,
     recipient,
     appDataHash,
+    forceWrapNative = true,
     addAppDataToUploadQueue,
 
     // Callbacks
-    wrapEther,
     presignOrder,
 
     // Ui actions
     addPendingOrder,
     closeModals,
   } = params
+
+  const wrapEther = forceWrapNative ? params.wrapEther : null
 
   const {
     executionPrice,
@@ -328,7 +332,7 @@ async function _swap(params: SwapParams): Promise<string> {
  */
 export function useSwapCallback(params: SwapCallbackParams): {
   state: SwapCallbackState
-  callback: null | (() => Promise<string>)
+  callback: null | ((params?: OptionalForceWrapNative) => Promise<string>)
   error: string | null
 } {
   const { trade, allowedSlippage = INITIAL_ALLOWED_SLIPPAGE_PERCENT, recipientAddressOrName, closeModals } = params
@@ -416,7 +420,8 @@ export function useSwapCallback(params: SwapCallbackParams): {
 
     return {
       state: SwapCallbackState.VALID,
-      callback: () => _swap(swapParams),
+      callback: (params?: OptionalForceWrapNative) =>
+        _swap({ ...swapParams, forceWrapNative: params?.forceWrapNative }),
       error: null,
     }
   }, [

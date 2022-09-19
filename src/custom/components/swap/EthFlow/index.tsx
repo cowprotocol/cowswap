@@ -20,6 +20,7 @@ import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
 import {
   ActionButtonParams,
   EthFlowState,
+  EthFlowSwapCallbackParams,
   useEthFlowStatesAndSetters,
   _getActionButtonProps,
   _getCurrencyForVisualiser,
@@ -127,6 +128,8 @@ export function EthWethWrap({
 
   const needsApproval = approvalState === ApprovalState.NOT_APPROVED
 
+  const operationSubmitted = approveSubmitted || wrapSubmitted
+
   // BALANCES
   const [nativeBalance, wrappedBalance] = useCurrencyBalances(account, [native, wrapped])
 
@@ -141,6 +144,8 @@ export function EthWethWrap({
       nativeSymbol: native.symbol || 'native token',
     }
   }, [isNativeIn, isNativeOut, isWrappedIn, isWrappedOut, native.symbol, wrapped.symbol])
+
+  const isWrapOrUnwrap = isWrap || isUnwrap
 
   // user safety checks to make sure any on-chain native currency operations are economically safe
   // shows user warning with remaining available TXs if a certain threshold is reached
@@ -233,13 +238,8 @@ export function EthWethWrap({
     } catch (error) {
       handleError(error, 'WRAP')
       setWrapSubmitted(false)
-    } finally {
-      // is pure wrap/unwrap operation, close modal
-      if (isWrap || isUnwrap) {
-        onDismiss()
-      }
     }
-  }, [handleError, isUnwrap, isWrap, onDismiss, setPendingHashMap, setWrapError, setWrapSubmitted, wrapCallback])
+  }, [handleError, setPendingHashMap, setWrapError, setWrapSubmitted, wrapCallback])
 
   const handleApprove = useCallback(async () => {
     if (!approveCallback) return
@@ -262,7 +262,9 @@ export function EthWethWrap({
 
   const handleSwap = useCallback(
     async (showSwapModal?: boolean) => {
-      try {
+        // TODO: MERGE async ({ showConfirm, straightSwap, forceWrapNative }: EthFlowSwapCallbackParams) => {
+        try {
+        // TODO: MERGE swapCallback({ showConfirm, straightSwap, forceWrapNative })
         showSwapModal ? openSwapConfirm() : closeSwapConfirm()
       } catch (error) {
         throw error
@@ -297,8 +299,8 @@ export function EthWethWrap({
         needsApproval && setApproveSubmitted(true)
         needsWrap && setWrapSubmitted(true)
       } else {
-        // user doesn't need either, in expert mode we just start swap
-        // and pass true to show swap confirmation modal
+        // user doesn't need either, in expert mode we just start swap w/o forced wrapping
+        // TODO: MERGE handleSwap({ showConfirm: false, straightSwap: true, forceWrapNative: false })
         handleSwap(true)
       }
     } catch (error) {
@@ -306,10 +308,6 @@ export function EthWethWrap({
       needsApproval && handleError(error, 'APPROVE')
       setApproveSubmitted(false)
       setWrapSubmitted(false)
-    } finally {
-      if (!isNativeInSwap) {
-        onDismiss()
-      }
     }
   }, [
     needsApproval,
@@ -319,8 +317,6 @@ export function EthWethWrap({
     setWrapError,
     handleError,
     handleSwap,
-    isNativeInSwap,
-    onDismiss,
     setApproveError,
     setLoading,
     setApproveSubmitted,
@@ -332,26 +328,34 @@ export function EthWethWrap({
   useEffect(() => {
     if (isExpertMode) {
       handleMountInExpertMode()
-    } else if (isWrap || isUnwrap) {
+    } else if (isWrapOrUnwrap) {
       // is a pure wrap/unwrap, just start the tx
       handleWrap()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // pure wrap/unwrap - close modal after finish
+  useEffect(() => {
+    if (isWrapOrUnwrap && state === EthFlowState.SwapReady) {
+      onDismiss()
+    }
+  }, [isWrapOrUnwrap, onDismiss, state])
+
   // expert mode only: auto close the wrapping modals and set swap page to WrappedNative <> ERC20
   useEffect(() => {
-    if (isExpertMode && (wrapSubmitted || approveSubmitted)) {
+    if (isExpertMode && !isWrapOrUnwrap && operationSubmitted) {
       if (state === EthFlowState.SwapReady) {
         // reset the submission state
         setWrapSubmitted(false)
         setApproveSubmitted(false)
         // call the swap handle cb after 1s artificial delay
         // to not create jarring UI changes: confirmed tx update and modal closing
+        // TODO: MERGE delay(MODAL_CLOSE_DELAY).then(() => handleSwap({ showConfirm: true, straightSwap: false }))
         delay(MODAL_CLOSE_DELAY).then(() => handleSwap(true))
       }
     }
-  }, [approveSubmitted, handleSwap, isExpertMode, state, wrapSubmitted, setApproveSubmitted, setWrapSubmitted])
+  }, [isExpertMode, state, isWrapOrUnwrap, operationSubmitted, handleSwap, setApproveSubmitted, setWrapSubmitted])
 
   const TopModalContent = useCallback(
     () => (
@@ -518,7 +522,7 @@ function EthFlowModalBottomContent(params: BottomContentParams) {
         chainId={chainId}
       />
       <SimpleAccountDetails
-        pendingTransactions={Object.values(pendingHashMap).filter(Boolean)}
+        pendingTransactions={Object.values(pendingHashMap).filter(Boolean).reverse()}
         confirmedTransactions={[]}
         $margin="12px 0 0"
       />
