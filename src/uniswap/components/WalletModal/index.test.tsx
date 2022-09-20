@@ -1,10 +1,10 @@
 /**
  * @jest-environment ./custom-test-env.js
  */
-import * as connectionUtils from '@uni_src/connection/utils'
-import { ApplicationModal } from '@uni_src/state/application/reducer'
+import * as connectionUtils from 'connection/utils'
+import { ApplicationModal } from 'state/application/reducer'
 
-import { render, screen } from '../../test-utils'
+import { render, screen } from 'test-utils'
 import WalletModal from './index'
 
 afterEach(() => {

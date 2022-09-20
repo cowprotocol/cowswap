@@ -151,8 +151,8 @@
     "build:analyze": "cross-env REACT_APP_ANALYZE_BUNDLE=true yarn craco build && yarn writeVersion",
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
     "ipfs:publish": "ipfs-deploy build -p pinata -O",
-    "test": "NODE_PATH=src/uniswap-override craco test --env=jsdom",
-    "test:debug": "NODE_PATH=src/uniswap-override craco --inspect-brk test --runInBand --no-cache",
+    "test": "NODE_PATH=src:src/uniswap-override:src/uniswap craco test --env=jsdom --filter=jest-filter.js",
+    "test:debug": "NODE_PATH=src:src/uniswap-override:src/uniswap craco --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
     "serve": "serve build -l 3000",
@@ -179,7 +179,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "@uni_src/(.*)": "<rootDir>/src/$1"
+      "@uni_src/(.*)": "<rootDir>/src/uniswap/$1"
     }
   },
   "eslintConfig": {
