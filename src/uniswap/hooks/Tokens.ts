@@ -1,11 +1,11 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { getChainInfo } from '@src/constants/chainInfo'
+import { getChainInfo } from '@uni_src/constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
-import { isL2ChainId } from '@src/utils/chains'
+import { isL2ChainId } from '@uni_src/utils/chains'
 
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'

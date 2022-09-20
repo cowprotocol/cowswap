@@ -3,8 +3,8 @@ import styled from 'styled-components/macro'
 import { Token } from '@uniswap/sdk-core'
 import { RowBetween } from 'components/Row'
 import { TokenList } from '@uniswap/token-lists'
-import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
-import { SearchInput, Separator } from '@src/components/SearchModal/styleds'
+import { CurrencyModalView } from '@uni_src/components/SearchModal/CurrencySearchModal'
+import { SearchInput, Separator } from '@uni_src/components/SearchModal/styleds'
 import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`

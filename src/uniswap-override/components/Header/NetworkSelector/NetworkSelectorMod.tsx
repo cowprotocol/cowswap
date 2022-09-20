@@ -25,7 +25,7 @@ import {
   ActiveRowWrapper,
   FlyoutHeader,
   LinkOutCircle,
-} from '@src/components/Header/NetworkSelector'
+} from '@uni_src/components/Header/NetworkSelector'
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'

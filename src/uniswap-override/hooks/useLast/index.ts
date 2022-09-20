@@ -1,6 +1,6 @@
-import useLast from '@src/hooks/useLast'
+import useLast from '@uni_src/hooks/useLast'
 
-export * from '@src/hooks/useLast'
+export * from '@uni_src/hooks/useLast'
 
 function isDefined<T>(x: T | null | undefined): x is T {
   return x !== null && x !== undefined

@@ -61,7 +61,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { ClaimInfo } from 'state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
 
-export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
+export { useUserClaimData, useUserHasAvailableClaim } from '@uni_src/state/claim/hooks'
 
 const CLAIMS_REPO_BRANCH = 'gip-13'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`

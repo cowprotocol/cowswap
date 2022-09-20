@@ -5,7 +5,7 @@ const fs = require('fs')
 const path = require('path')
 
 const file = path.resolve(__dirname, '../src/uniswap-override/abis/types/index.ts')
-const output = 'export * from "@src/abis/types";\n'
+const output = 'export * from "@uni_src/abis/types";\n'
 
 fs.appendFile(file, output, function (err) {
   if (err) {

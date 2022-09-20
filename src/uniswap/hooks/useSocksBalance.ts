@@ -1,7 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { SOCKS_CONTROLLER_ADDRESSES } from 'constants/addresses'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@uni_src/constants/chains'
 import { useMemo } from 'react'
 import { useTokenBalance } from 'state/connection/hooks'
 

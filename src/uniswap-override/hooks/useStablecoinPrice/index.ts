@@ -22,7 +22,7 @@ import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { useDetectNativeToken } from 'state/swap/hooks'
 
-export * from '@src/hooks/useStablecoinPrice'
+export * from '@uni_src/hooks/useStablecoinPrice'
 
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {

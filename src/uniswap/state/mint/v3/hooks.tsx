@@ -17,7 +17,7 @@ import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ReactNode, useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch, useAppSelector } from '@uni_src/state/hooks'
 import { getTickToPrice } from 'utils/getTickToPrice'
 import { replaceURLParam } from 'utils/routes'
 

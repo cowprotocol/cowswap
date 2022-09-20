@@ -1,6 +1,6 @@
 // import { Trans } from '@lingui/macro'
 import { Currency, Price } from '@uniswap/sdk-core'
-// import useStablecoinPrice from '@src/hooks/useStablecoinPrice'
+// import useStablecoinPrice from '@uni_src/hooks/useStablecoinPrice'
 import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'

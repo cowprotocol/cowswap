@@ -1,4 +1,4 @@
-import { Colors as ColorsUniswap } from '@src/theme/styled'
+import { Colors as ColorsUniswap } from '@uni_src/theme/styled'
 import { ButtonSize } from 'theme'
 
 // Override colors

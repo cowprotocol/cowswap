@@ -1,10 +1,10 @@
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
 import { useWeb3React } from '@web3-react/core'
-import { SupportedChainId } from '@src/constants/chains'
-import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST, UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
+import { SupportedChainId } from '@uni_src/constants/chains'
+import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST, UNSUPPORTED_LIST_URLS } from '@uni_src/constants/lists'
 import useInterval from 'lib/hooks/useInterval'
 import { useCallback, useEffect } from 'react'
-import { useAppDispatch } from '@src/state/hooks'
+import { useAppDispatch } from '@uni_src/state/hooks'
 import { useAllLists } from 'state/lists/hooks'
 
 import { isCelo } from '../../constants/tokens'

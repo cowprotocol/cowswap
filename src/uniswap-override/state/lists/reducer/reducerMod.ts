@@ -7,7 +7,7 @@ import {
   DEFAULT_NETWORK_FOR_LISTS,
   UNSUPPORTED_LIST_URLS,
 } from 'constants/lists'
-// import { DEFAULT_LIST_OF_LISTS } from '@src/constants/lists'
+// import { DEFAULT_LIST_OF_LISTS } from '@uni_src/constants/lists'
 
 // MOD imports
 import { TokenList } from '@uniswap/token-lists'

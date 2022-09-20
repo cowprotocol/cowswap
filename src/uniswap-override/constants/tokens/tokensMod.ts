@@ -12,9 +12,9 @@ import {
   WRAPPED_NATIVE_CURRENCY as UNI_WRAPPED_NATIVE_CURRENCY,
   TOKEN_SHORTHANDS as UNI_TOKEN_SHORTHANDS,
   USDC as UNI_USDC,
-} from '@src/constants/tokens'
+} from '@uni_src/constants/tokens'
 
-export * from '@src/constants/tokens'
+export * from '@uni_src/constants/tokens'
 
 /* export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,

@@ -1,4 +1,4 @@
-import useDebounce from '@src/hooks/useDebounce'
+import useDebounce from '@uni_src/hooks/useDebounce'
 import { useEffect, useState } from 'react'
 
 // modified from https://usehooks.com/useDebounce/

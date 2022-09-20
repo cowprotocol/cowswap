@@ -6,7 +6,7 @@ import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
 import { useCallback } from 'react'
 import { useAppDispatch } from 'state/hooks'
 
-import { fetchTokenList } from '@src/state/lists/actions'
+import { fetchTokenList } from '@uni_src/state/lists/actions'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()

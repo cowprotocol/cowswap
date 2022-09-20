@@ -6,7 +6,7 @@ import { precacheAndRoute } from 'workbox-precaching'
 import { PrecacheEntry } from 'workbox-precaching/_types'
 import { registerRoute, Route } from 'workbox-routing'
 import { CacheFirst } from 'workbox-strategies'
-import { version as WEB_VERSION } from '@src/../../package.json'
+import { version as WEB_VERSION } from '@uni_src/../../package.json'
 
 import { DocumentRoute } from './document'
 import { toURL } from './utils'

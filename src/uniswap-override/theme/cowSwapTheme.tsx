@@ -9,12 +9,12 @@ import {
   themeVariables as baseThemeVariables,
 } from 'theme/baseTheme'
 
-import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
+import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@uni_src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Routes } from 'constants/routes'
 import { useLocation } from 'react-router-dom'
 
-export { MEDIA_WIDTHS, ThemedText } from '@src/theme'
+export { MEDIA_WIDTHS, ThemedText } from '@uni_src/theme'
 
 export function colors(darkMode: boolean): Colors {
   return colorsBaseTheme(darkMode)

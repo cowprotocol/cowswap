@@ -8,9 +8,9 @@ import { useLayoutEffect, useState } from 'react'
 import { hex } from 'wcag-contrast' */
 
 // MOD imports
-import { getColorFromUriPath } from '@src/hooks/useColor'
+import { getColorFromUriPath } from '@uni_src/hooks/useColor'
 
-export * from '@src/hooks/useColor'
+export * from '@uni_src/hooks/useColor'
 
 /* function URIForEthToken(address: string) {
   return `https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/${address}/logo.png`

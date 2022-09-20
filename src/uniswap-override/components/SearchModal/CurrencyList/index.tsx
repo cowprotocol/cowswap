@@ -12,7 +12,7 @@ import { t } from '@lingui/macro'
 import { TagInfo } from 'state/lists/wrappedTokenInfo'
 import { formatSmart } from 'utils/format'
 import Column from 'components/Column'
-import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
+import { MenuItem as MenuItemMod } from '@uni_src/components/SearchModal/styleds'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {

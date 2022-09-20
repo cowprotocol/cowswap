@@ -27,7 +27,7 @@ import { WithClassName } from 'types'
 import { formatMax, formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
-import { TextWrapper } from '@src/components/HoverInlineText' // mod
+import { TextWrapper } from '@uni_src/components/HoverInlineText' // mod
 import { CurrencySearchModal } from '.' // mod
 import { isSupportedChain } from 'utils/supportedChainId' //mod
 

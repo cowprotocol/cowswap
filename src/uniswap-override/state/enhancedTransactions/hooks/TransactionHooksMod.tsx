@@ -9,8 +9,8 @@ import { /* useAppDispatch,*/ useAppSelector } from 'state/hooks'
 
 // MOD imports
 import { EnhancedTransactionDetails } from '../reducer'
-// import { TransactionDetails } from '@src/state/transactions/reducer'
-// import { TransactionType } from '@src/state/transactions/actions'
+// import { TransactionDetails } from '@uni_src/state/transactions/reducer'
+// import { TransactionType } from '@uni_src/state/transactions/actions'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 /* export function useTransactionAdder(): (response: TransactionResponse, info: TransactionInfo) => void {

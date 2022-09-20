@@ -15,7 +15,7 @@ export {
   escapeRegExp,
   isTokenOnList,
   formattedFeeAmount,
-} from '@src/utils'
+} from '@uni_src/utils'
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   1: '',

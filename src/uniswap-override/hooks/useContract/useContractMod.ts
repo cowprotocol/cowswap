@@ -35,7 +35,7 @@ import { useWeb3React } from '@web3-react/core'
 // import { getContract } from 'utils'
 
 // MOD imports
-import { useContract } from '@src/hooks/useContract'
+import { useContract } from '@uni_src/hooks/useContract'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 /* const { abi: IUniswapV2PairABI } = IUniswapV2PairJson

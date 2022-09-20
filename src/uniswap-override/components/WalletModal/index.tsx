@@ -6,7 +6,7 @@ import { Trans } from '@lingui/macro'
 import { Routes } from 'constants/routes'
 import { StyledInternalLink } from 'theme/components'
 
-// export * from '@src/components/WalletModal'
+// export * from '@uni_src/components/WalletModal'
 
 const TermsWrapper = styled.div`
   color: ${({ theme }) => theme.text1};

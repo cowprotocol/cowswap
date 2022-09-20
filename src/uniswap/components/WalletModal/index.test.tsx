@@ -1,8 +1,8 @@
 /**
  * @jest-environment ./custom-test-env.js
  */
-import * as connectionUtils from '@src/connection/utils'
-import { ApplicationModal } from '@src/state/application/reducer'
+import * as connectionUtils from '@uni_src/connection/utils'
+import { ApplicationModal } from '@uni_src/state/application/reducer'
 
 import { render, screen } from '../../test-utils'
 import WalletModal from './index'
@@ -22,7 +22,7 @@ jest.mock('utils/userAgent', () => ({
   },
 }))
 
-jest.mock('@src/state/application/hooks', () => {
+jest.mock('@uni_src/state/application/hooks', () => {
   return {
     useModalIsOpen: (_modal: ApplicationModal) => true,
     useToggleWalletModal: () => {

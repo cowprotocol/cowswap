@@ -1,12 +1,12 @@
 import { createAction } from '@reduxjs/toolkit'
-import { DEFAULT_TXN_DISMISS_MS } from '@src/constants/misc'
-import { useToggleModal } from '@src/state/application/hooks'
+import { DEFAULT_TXN_DISMISS_MS } from '@uni_src/constants/misc'
+import { useToggleModal } from '@uni_src/state/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { addPopup, ApplicationModal, PopupContent } from 'state/application/reducer'
 import { useAppDispatch } from 'state/hooks'
 import { handleFollowPendingTxPopupAtom, showFollowTxPopupAtom, useUpdateAtom, useAtomValue } from './atoms'
 
-export * from '@src/state/application/hooks'
+export * from '@uni_src/state/application/hooks'
 
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 

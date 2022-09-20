@@ -6,7 +6,7 @@ import { useToken } from 'hooks/Tokens'
 import { usePool } from 'hooks/usePools'
 import { useV3PositionFees } from 'hooks/useV3PositionFees'
 import { ReactNode, useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch, useAppSelector } from '@uni_src/state/hooks'
 import { PositionDetails } from 'types/position'
 import { unwrappedToken } from 'utils/unwrappedToken'
 

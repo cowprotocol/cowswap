@@ -14,9 +14,9 @@ import { Erc20, GPv2Settlement, VCow } from 'abis/types'
 import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
 
-import { useContract } from '@src/hooks/useContract'
+import { useContract } from '@uni_src/hooks/useContract'
 
-export * from '@src/hooks/useContract'
+export * from '@uni_src/hooks/useContract'
 export * from './useContractMod'
 
 // Custom (non-MOD) hooks

@@ -1,7 +1,7 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { WETH9, Token } from '@uniswap/sdk-core'
 import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rinkeby/constants'
-import { DAI, USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
+import { DAI, USDC_MAINNET, USDT, WBTC } from '@uni_src/constants/tokens'
 import {
   USDC_GNOSIS_CHAIN,
   /*USDT_GNOSIS_CHAIN,*/ WBTC_GNOSIS_CHAIN,

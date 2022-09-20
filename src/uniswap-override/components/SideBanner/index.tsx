@@ -6,7 +6,7 @@ import ReactConfetti from 'react-confetti'
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import { CloseIcon, ExternalLink } from 'theme'
-import { IS_SIDE_BANNER_VISIBLE_KEY } from '@src/constants/misc'
+import { IS_SIDE_BANNER_VISIBLE_KEY } from '@uni_src/constants/misc'
 
 const WIDTH = 440
 const HEIGHT = 440

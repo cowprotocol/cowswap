@@ -18,7 +18,7 @@ import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { ButtonSecondary } from '../Button'
 import StatusIcon from '../Identicon/StatusIcon'
 import { AutoRow } from '../Row'
-import Transaction from '@src/components/AccountDetails/Transaction'
+import Transaction from '@uni_src/components/AccountDetails/Transaction'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

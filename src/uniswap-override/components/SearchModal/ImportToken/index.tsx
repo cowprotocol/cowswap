@@ -12,7 +12,7 @@ import { ExternalLink } from 'theme/components'
 import ListLogo from 'components/ListLogo'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { PaddedColumn } from '@src/components/SearchModal/styleds'
+import { PaddedColumn } from '@uni_src/components/SearchModal/styleds'
 
 export interface CardComponentProps extends Pick<ImportProps, 'list'> {
   chainId?: number

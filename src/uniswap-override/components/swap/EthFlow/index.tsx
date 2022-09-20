@@ -32,7 +32,7 @@ import { ApprovalState } from 'hooks/useApproveCallback'
 import { useWrapCallback } from 'hooks/useWrapCallback'
 import { useDerivedSwapInfo, useDetectNativeToken, useSwapActionHandlers } from 'state/swap/hooks'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
-import { Field } from '@src/state/swap/actions'
+import { Field } from '@uni_src/state/swap/actions'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 

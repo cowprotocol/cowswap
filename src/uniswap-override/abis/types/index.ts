@@ -10,4 +10,4 @@ export { GPv2Settlement__factory } from "./factories/GPv2Settlement__factory";
 export { MerkleDrop__factory } from "./factories/MerkleDrop__factory";
 export { TokenDistro__factory } from "./factories/TokenDistro__factory";
 export { VCow__factory } from "./factories/VCow__factory";
-export * from "@src/abis/types";
+export * from "@uni_src/abis/types";

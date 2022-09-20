@@ -5,7 +5,7 @@ import { initSwapStateFromUrl } from 'pages/NewSwap/helpers/initSwapStateFromUrl
 import { replaceSwapState } from 'state/swap/actions'
 import { useTradeStateFromUrl } from 'pages/NewSwap/hooks/useTradeStateFromUrl'
 import { useSwapState } from 'state/swap/hooks'
-import usePrevious from '@src/hooks/usePrevious'
+import usePrevious from '@uni_src/hooks/usePrevious'
 
 /**
  * The state is populated in a cascade:

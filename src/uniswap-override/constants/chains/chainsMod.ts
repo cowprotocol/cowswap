@@ -2,10 +2,10 @@
  * List of all the networks supported by the CoW Swap Interface
  */
 
-import { CHAIN_IDS_TO_NAMES as UNI_CHAIN_IDS_TO_NAMES } from '@src/constants/chains'
+import { CHAIN_IDS_TO_NAMES as UNI_CHAIN_IDS_TO_NAMES } from '@uni_src/constants/chains'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export * from '@src/constants/chains'
+export * from '@uni_src/constants/chains'
 export { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /* export enum SupportedChainId {

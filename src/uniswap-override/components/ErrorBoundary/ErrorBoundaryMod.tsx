@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 // MOD imports
 import Page from 'components/Page'
-import { MEDIA_WIDTHS } from '@src/theme'
+import { MEDIA_WIDTHS } from '@uni_src/theme'
 // import { UniIcon, LogoImage } from '../Header'
 import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'

@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ReactNode, useCallback } from 'react'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch, useAppSelector } from '@uni_src/state/hooks'
 
 import { useTotalSupply } from '../../hooks/useTotalSupply'
 import { useV2Pair } from '../../hooks/useV2Pairs'

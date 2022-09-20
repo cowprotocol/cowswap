@@ -1,4 +1,4 @@
-import { useSwapState } from '@src/state/swap/hooks'
+import { useSwapState } from '@uni_src/state/swap/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

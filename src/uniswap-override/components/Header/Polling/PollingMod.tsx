@@ -25,9 +25,9 @@ import {
   StyledPolling,
   StyledPollingDot,
   StyledPollingNumber,
-} from '@src/components/Header/Polling'
+} from '@uni_src/components/Header/Polling'
 
-export * from '@src/components/Header/Polling'
+export * from '@uni_src/components/Header/Polling'
 
 /* export const StyledPolling = styled.div<{ warning: boolean }>`
   position: fixed;

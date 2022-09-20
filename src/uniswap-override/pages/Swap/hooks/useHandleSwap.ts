@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
+import confirmPriceImpactWithoutFee from '@uni_src/components/swap/confirmPriceImpactWithoutFee'
 import { signSwapAnalytics, swapAnalytics } from 'utils/analytics'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { SwapCallbackParams, useSwapCallback } from 'hooks/useSwapCallback'

@@ -1,6 +1,6 @@
 import { /* Currency, */ Token } from '@uniswap/sdk-core'
 /* import { useWeb3React } from '@web3-react/core'
-import { getChainInfo } from '@src/constants/chainInfo'
+import { getChainInfo } from '@uni_src/constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
@@ -13,10 +13,10 @@ import { useUserAddedTokens } from 'state/user/hooks' */
 import { useCombinedActiveList, /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
 
 // MOD imports
-import { useTokensFromMap } from '@src/hooks/Tokens'
+import { useTokensFromMap } from '@uni_src/hooks/Tokens'
 import { useThrottle } from 'hooks/useThrottle'
 
-export * from '@src/hooks/Tokens'
+export * from '@uni_src/hooks/Tokens'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 /* export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {

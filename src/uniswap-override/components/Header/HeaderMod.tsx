@@ -1,7 +1,7 @@
 // import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
 // import { CHAIN_INFO } from 'constants/chains'
-// import { SupportedChainId } from '@src/constants/chains'
+// import { SupportedChainId } from '@uni_src/constants/chains'
 // import { useWeb3React } from '@web3-react/core'
 // import useTheme from 'hooks/useTheme'
 import { darken } from 'polished'

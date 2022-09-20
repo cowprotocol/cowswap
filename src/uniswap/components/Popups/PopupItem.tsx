@@ -5,8 +5,8 @@ import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useRemovePopup } from '../../state/application/hooks'
-import { PopupContent } from '@src/state/application/reducer'
-import FailedNetworkSwitchPopup from '@src/components/Popups/FailedNetworkSwitchPopup'
+import { PopupContent } from '@uni_src/state/application/reducer'
+import FailedNetworkSwitchPopup from '@uni_src/components/Popups/FailedNetworkSwitchPopup'
 import TransactionPopup from './TransactionPopup'
 
 export const StyledClose = styled(X)`

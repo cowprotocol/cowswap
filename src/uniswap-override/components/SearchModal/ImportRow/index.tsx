@@ -3,7 +3,7 @@ import { Token } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import ImportRowMod, { TokenSection } from './ImportRowMod'
 import { AutoRow } from 'components/Row'
-import { StyledListLogo } from '@src/components/ListLogo'
+import { StyledListLogo } from '@uni_src/components/ListLogo'
 
 interface ImportRowProps {
   token: Token

@@ -9,7 +9,7 @@ import Modal from 'components/Modal'
 import { AutoRow, RowBetween } from 'components/Row'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
-import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from '@src/theme'
+import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from '@uni_src/theme'
 
 import { useUnsupportedTokens } from '../../hooks/Tokens'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'

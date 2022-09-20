@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { BodyWrapper as BodyWrapperMod } from '@src/pages/AppBody'
+import { BodyWrapper as BodyWrapperMod } from '@uni_src/pages/AppBody'
 import { transparentize } from 'polished'
 
 export const BodyWrapper = styled(BodyWrapperMod)`

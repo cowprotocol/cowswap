@@ -1,6 +1,6 @@
-import { userAgent } from '@src/utils/userAgent'
+import { userAgent } from '@uni_src/utils/userAgent'
 
-export * from '@src/utils/userAgent'
+export * from '@uni_src/utils/userAgent'
 
 function getBrowserMajorVersion() {
   const major = userAgent.browser.version?.split('.')[0]

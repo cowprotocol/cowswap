@@ -18,7 +18,7 @@ import { ExternalLink /* , LinkStyledButton, ThemedText */ } from 'theme'
 import { ButtonSecondary } from 'components/Button'
 // import StatusIcon from '../Identicon/StatusIcon'
 // import { AutoRow } from '../Row'
-// import Transaction from '@src/components/AccountDetails/Transaction'
+// import Transaction from '@uni_src/components/AccountDetails/Transaction'
 
 import Activity from 'components/AccountDetails/Transaction' // MOD
 import { ActivityDescriptors } from 'hooks/useRecentActivity' // MOD

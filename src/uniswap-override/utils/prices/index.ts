@@ -4,7 +4,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { Field } from 'state/swap/actions'
 
 // There's no MOD file as originals aren't touched, only new functions added
-export * from '@src/utils/prices'
+export * from '@uni_src/utils/prices'
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
 export function computeSlippageAdjustedAmounts(

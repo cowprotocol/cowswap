@@ -22,7 +22,7 @@ import { SwapState } from 'state/swap/reducer'
 import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 // MOD
-import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
+import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@uni_src/state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
@@ -40,11 +40,11 @@ import {
   parseTokenAmountURLParameter,
   parseIndependentFieldURLParameter,
   validatedRecipient,
-} from '@src/state/swap/hooks'
+} from '@uni_src/state/swap/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { supportedChainId } from 'utils/supportedChainId'
 
-export * from '@src/state/swap/hooks'
+export * from '@uni_src/state/swap/hooks'
 
 /* export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)

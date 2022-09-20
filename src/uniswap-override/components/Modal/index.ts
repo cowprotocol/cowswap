@@ -1,9 +1,9 @@
 import styled from 'styled-components/macro'
-import Modal from '@src/components/Modal'
+import Modal from '@uni_src/components/Modal'
 import { HeaderRow, ContentWrapper, CloseIcon, HoverText } from 'components/WalletModal/WalletModalMod'
 
-export * from '@src/components/Modal'
-export { default } from '@src/components/Modal'
+export * from '@uni_src/components/Modal'
+export { default } from '@uni_src/components/Modal'
 
 export const GpModal = styled(Modal)<{
   maxWidth?: number | string

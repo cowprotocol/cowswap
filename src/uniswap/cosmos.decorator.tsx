@@ -8,7 +8,7 @@ import { LanguageProvider } from 'i18n'
 import { HashRouter } from 'react-router-dom'
 import { initializeConnector, Web3ReactProvider } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
-import { BlockNumberProvider } from '@src/lib/hooks/useBlockNumber'
+import { BlockNumberProvider } from '@uni_src/lib/hooks/useBlockNumber'
 
 const Wrapper = styled(Flex)`
   font-family: 'Inter var', sans-serif;

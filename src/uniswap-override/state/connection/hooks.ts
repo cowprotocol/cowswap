@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useFavouriteTokens } from 'state/user/hooks'
 
-export * from '@src/state/connection/hooks'
+export * from '@uni_src/state/connection/hooks'
 
 // mimics useAllBalances
 export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {

@@ -21,7 +21,7 @@ import { RowBetween } from 'components/Row'
 
 // MOD imports
 import { useCloseFollowTxPopupIfNot } from 'state/application/hooks'
-import { Web3StatusGeneric as Web3StatusGenericUni } from '@src/components/Web3Status'
+import { Web3StatusGeneric as Web3StatusGenericUni } from '@uni_src/components/Web3Status'
 import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
 
 /* const IconWrapper = styled.div<{ size?: number }>`

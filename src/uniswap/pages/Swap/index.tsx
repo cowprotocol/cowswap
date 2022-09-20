@@ -8,10 +8,10 @@ import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
-import SwapDetailsDropdown from '@src/components/swap/SwapDetailsDropdown'
+import SwapDetailsDropdown from '@uni_src/components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { useSwapCallback } from '@src/hooks/useSwapCallback'
+import { useSwapCallback } from '@uni_src/hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
 import { Context, useCallback, useContext, useEffect, useMemo, useState } from 'react'
@@ -30,14 +30,18 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from '../../components/Loader'
 import { AutoRow } from '../../components/Row'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
-import ConfirmSwapModal from '@src/components/swap/ConfirmSwapModal'
+import ConfirmSwapModal from '@uni_src/components/swap/ConfirmSwapModal'
 import { ArrowWrapper, SwapCallbackError, Wrapper } from '../../components/swap/styleds'
 import SwapHeader from '../../components/swap/SwapHeader'
 import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
-import { ApprovalState, useApprovalOptimizedTrade, useApproveCallbackFromTrade } from '@src/hooks/useApproveCallback'
+import {
+  ApprovalState,
+  useApprovalOptimizedTrade,
+  useApproveCallbackFromTrade,
+} from '@uni_src/hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from '../../hooks/useERC20Permit'
 import useIsArgentWallet from '../../hooks/useIsArgentWallet'
@@ -51,7 +55,7 @@ import {
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-} from '@src/state/swap/hooks'
+} from '@uni_src/state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { LinkStyledButton, ThemedText } from 'theme'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'

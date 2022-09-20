@@ -24,7 +24,7 @@ import { UnsupportedToken } from 'api/gnosisProtocol'
 import { isAddress } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
-import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
+import { TokenAddressMap, combineMaps } from '@uni_src/state/lists/hooks'
 import { shallowEqual } from 'react-redux'
 
 /* export type TokenAddressMap = ChainTokenMap

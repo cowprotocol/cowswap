@@ -15,11 +15,11 @@ import { useMemo /* , useState */ } from 'react'
 // import useIsArgentWallet from './useIsArgentWallet'
 
 // MOD imports
-import { PermitInfo, SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
+import { PermitInfo, SignatureData, UseERC20PermitState } from '@uni_src/hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
 import { GP_VAULT_RELAYER } from 'uniswap-override/constants'
 
-export * from '@src/hooks/useERC20Permit'
+export * from '@uni_src/hooks/useERC20Permit'
 
 /* export enum PermitType {
   AMOUNT = 1,

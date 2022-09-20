@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 
-export * from '@src/state/transactions/hooks'
+export * from '@uni_src/state/transactions/hooks'
 
 // watch for submissions to claim
 // return null if not done loading, return undefined if not found

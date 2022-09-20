@@ -2,7 +2,7 @@ import React, { HTMLProps } from 'react'
 import { StyledLink, handleClickExternalLink } from './baseTheme'
 import { externalLinkAnalytics } from 'utils/analytics'
 
-export * from '@src/theme/components'
+export * from '@uni_src/theme/components'
 
 /**
  * Outbound link that handles firing google analytics events

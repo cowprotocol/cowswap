@@ -9,7 +9,7 @@ import {
   ReplacementType,
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { SerializableTransactionReceipt } from '@src/state/transactions/types'
+import { SerializableTransactionReceipt } from '@uni_src/state/transactions/types'
 
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',

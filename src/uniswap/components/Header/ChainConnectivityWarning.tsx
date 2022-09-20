@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { getChainInfoOrDefault, L2ChainInfo } from 'constants/chainInfo'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@uni_src/constants/chains'
 import { useWeb3React } from '@web3-react/core'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'

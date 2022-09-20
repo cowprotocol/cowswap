@@ -5,9 +5,9 @@ import styled from 'styled-components/macro'
 import { Edit } from 'react-feather'
 import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
 import { DefaultTheme } from 'styled-components/macro'
-import { SearchInput, Separator } from '@src/components/SearchModal/styleds'
+import { SearchInput, Separator } from '@uni_src/components/SearchModal/styleds'
 import { transparentize } from 'polished'
-import Column from '@src/components/Column'
+import Column from '@uni_src/components/Column'
 
 export const ContentWrapper = styled(Column)`
   width: 100%;

@@ -53,7 +53,7 @@ module.exports = {
   webpack: {
     plugins,
     alias: {
-      '@src': path.resolve(__dirname, 'src/uniswap'),
+      '@uni_src': path.resolve(__dirname, 'src/uniswap'),
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js/lib/bn.js'),
     },
     // https://webpack.js.org/configuration

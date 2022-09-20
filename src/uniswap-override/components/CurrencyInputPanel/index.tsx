@@ -3,7 +3,7 @@ import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
 import { useIsQuoteRefreshing } from 'state/price/hooks'
 
 import CurrencyInputPanelMod, { CurrencyInputPanelProps, Wrapper } from './CurrencyInputPanelMod'
-import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
+import CurrencySearchModalUni from '@uni_src/components/SearchModal/CurrencySearchModal'
 
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
 

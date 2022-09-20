@@ -1,14 +1,14 @@
 import { Trans } from '@lingui/macro'
 import CowError from 'assets/cow-swap/CowError.png'
-import { AutoColumn } from '@src/components/Column'
-import { MEDIA_WIDTHS, ThemedText } from '@src/theme'
-import { AutoRow } from '@src/components/Row'
+import { AutoColumn } from '@uni_src/components/Column'
+import { MEDIA_WIDTHS, ThemedText } from '@uni_src/theme'
+import { AutoRow } from '@uni_src/components/Row'
 import { ExternalLink } from 'theme'
 import { CODE_LINK, DISCORD_LINK } from 'constants/index'
 import React from 'react'
 import styled from 'styled-components/macro'
 import { Title } from 'components/Page'
-import { userAgent } from '@src/utils/userAgent'
+import { userAgent } from '@uni_src/utils/userAgent'
 import store, { AppState } from 'state'
 
 const FlexContainer = styled.div`

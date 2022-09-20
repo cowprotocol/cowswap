@@ -2,7 +2,7 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { RAW_CODE_LINK } from '.'
 
-export * from '@src/constants/lists'
+export * from '@uni_src/constants/lists'
 
 export type NetworkLists = {
   [chain in ChainId]: string[]

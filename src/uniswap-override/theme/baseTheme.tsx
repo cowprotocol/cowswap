@@ -1,5 +1,5 @@
 import { Colors } from 'theme/styled'
-import { colors as colorsUniswap } from '@src/theme'
+import { colors as colorsUniswap } from '@uni_src/theme'
 import { ButtonSize } from 'theme'
 
 import { createGlobalStyle, css } from 'styled-components/macro'
@@ -13,14 +13,14 @@ import Cursor3 from 'assets/cow-swap/cursor3.gif'
 import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 // Modal override items
-import { HeaderText } from '@src/components/WalletModal/Option'
+import { HeaderText } from '@uni_src/components/WalletModal/Option'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { ModalContentWrapper } from 'components/Settings/SettingsMod'
 import { NPS_KEY } from 'utils/appzi'
 
-export { ThemedText } from '@src/theme'
-export * from '@src/theme/components'
+export { ThemedText } from '@uni_src/theme'
+export * from '@uni_src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
   return {

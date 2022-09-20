@@ -1,9 +1,9 @@
-import { AutoRow } from '@src/components/Row'
+import { AutoRow } from '@uni_src/components/Row'
 import { ArrowWrapper } from 'components/swap/styleds'
 import { ArrowDown } from 'react-feather'
-import { LinkStyledButton } from '@src/theme'
+import { LinkStyledButton } from '@uni_src/theme'
 import { Trans } from '@lingui/macro'
-import AddressInputPanel from '@src/components/AddressInputPanel'
+import AddressInputPanel from '@uni_src/components/AddressInputPanel'
 import { useContext } from 'react'
 import { ThemeContext } from 'styled-components/macro'
 

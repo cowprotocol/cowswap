@@ -1,7 +1,7 @@
 import WalletConnectProvider from '@walletconnect/ethereum-provider'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
-import useENSName from '@src/hooks/useENSName'
+import useENSName from '@uni_src/hooks/useENSName'
 import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
 import { getConnection } from 'connection/utils'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'

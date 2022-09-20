@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { getChainInfo } from '@src/constants/chainInfo'
-import { SupportedChainId } from '@src/constants/chains'
+import { getChainInfo } from '@uni_src/constants/chainInfo'
+import { SupportedChainId } from '@uni_src/constants/chains'
 import { ArrowUpRight } from 'react-feather'
-import { useDarkModeManager } from '@src/state/user/hooks'
+import { useDarkModeManager } from '@uni_src/state/user/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, HideSmall } from 'theme'
 

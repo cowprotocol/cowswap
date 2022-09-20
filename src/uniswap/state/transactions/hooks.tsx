@@ -2,7 +2,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch, useAppSelector } from '@uni_src/state/hooks'
 
 import { addTransaction } from './reducer'
 import { TransactionDetails, TransactionInfo, TransactionType } from './types'

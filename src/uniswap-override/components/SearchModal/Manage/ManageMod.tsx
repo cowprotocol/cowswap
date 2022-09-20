@@ -8,10 +8,10 @@ import { Text } from 'rebass'
 // import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
 
-import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
+import { CurrencyModalView } from '@uni_src/components/SearchModal/CurrencySearchModal'
 import { ManageLists } from 'components/SearchModal/ManageLists'
 import ManageTokens from 'components/SearchModal/ManageTokens'
-import { PaddedColumn, Separator } from '@src/components/SearchModal/styleds'
+import { PaddedColumn, Separator } from '@uni_src/components/SearchModal/styleds'
 
 // MOD imports
 import { ManageProps, Wrapper } from './index' // mod

@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
-import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { L2_CHAIN_IDS } from '@uni_src/constants/chains'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import { useMemo } from 'react'
 import { useAppSelector } from 'state/hooks'

@@ -13,9 +13,9 @@ import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg'
 import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg'
 import GoerliLogo from 'assets/cow-swap/network-goerli-logo.svg'
 import GnosisChainLogo from 'assets/cow-swap/network-gnosis-chain-logo.svg'
-import { CHAIN_INFO as UNI_CHAIN_INFO, NetworkType } from '@src/constants/chainInfo'
+import { CHAIN_INFO as UNI_CHAIN_INFO, NetworkType } from '@uni_src/constants/chainInfo'
 
-export * from '@src/constants/chainInfo'
+export * from '@uni_src/constants/chainInfo'
 
 /* export enum NetworkType {
   L1,

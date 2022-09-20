@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
-import { ToggleElement } from '@src/components/Toggle' // Mod
+import { ToggleElement } from '@uni_src/components/Toggle' // Mod
 import { darken } from 'polished'
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`

@@ -1,14 +1,14 @@
 import { ManageLists as ManageListsMod, ListContainer } from './ManageListsMod'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useWeb3React } from '@web3-react/core'
-import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
+import { CurrencyModalView } from '@uni_src/components/SearchModal/CurrencySearchModal'
 import { TokenList } from '@uniswap/token-lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'state/lists/actions'
 import { supportedChainId } from 'utils/supportedChainId'
 import Row, { RowFixed, RowBetween } from 'components/Row'
 import CardUni from 'components/Card'
 import styled from 'styled-components/macro'
-import { TextDot } from '@src/components/SearchModal/styleds'
+import { TextDot } from '@uni_src/components/SearchModal/styleds'
 
 export interface ListRowProps {
   acceptListUpdate: (url: string) => ReturnType<typeof acceptListUpdate>

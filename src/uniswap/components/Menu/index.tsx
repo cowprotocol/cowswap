@@ -2,7 +2,7 @@
 import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PrivacyPolicyModal } from 'components/PrivacyPolicy'
-import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { L2_CHAIN_IDS } from '@uni_src/constants/chains'
 import { LOCALE_LABEL, SUPPORTED_LOCALES, SupportedLocale } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useLocationLinkProps } from 'hooks/useLocationLinkProps'

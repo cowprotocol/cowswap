@@ -7,9 +7,9 @@ import {
   networkConnection,
   walletConnectConnection,
 } from 'connection'
-import { getChainInfo } from '@src/constants/chainInfo'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@src/constants/chains'
-import { RPC_URLS } from '@src/constants/networks'
+import { getChainInfo } from '@uni_src/constants/chainInfo'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@uni_src/constants/chains'
+import { RPC_URLS } from '@uni_src/constants/networks'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {

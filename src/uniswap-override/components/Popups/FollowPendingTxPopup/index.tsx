@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 
-import { useIsExpertMode } from '@src/state/user/hooks'
+import { useIsExpertMode } from '@uni_src/state/user/hooks'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { Order } from 'state/orders/actions'
 import {
