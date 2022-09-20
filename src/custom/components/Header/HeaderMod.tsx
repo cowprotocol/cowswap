@@ -40,7 +40,7 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   position: relative;
   border-bottom: ${({ theme }) => theme.header.border};
   padding: 1rem;
-  z-index: 4;
+  z-index: 2;
   /*position: relative;
   /!* Background slide effect on scroll. *!/
   background-image: ${({ theme }) => `linear-gradient(to bottom, transparent 50%, ${theme.bg0} 50% )}}`};

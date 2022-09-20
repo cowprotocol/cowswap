@@ -31,7 +31,7 @@ import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XD
 import TradeGp from './TradeGp'
 
 import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
-import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER, USDC } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
 
 import { isWrappingTrade } from './utils'
 
@@ -386,23 +386,16 @@ export function validatedRecipient(recipient: any): string | null {
   return null
 } */
 
-// mod: defaultInputCurrency and chainId parameters
-export function queryParametersToSwapState(
-  parsedQs: ParsedQs,
-  defaultInputCurrency = '',
-  chainId: SupportedChainId | undefined = undefined
-): SwapState {
+// mod: defaultInputCurrency parameters
+export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurrency = ''): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
-  let typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
+  const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
   const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
-  const validChainId = supportedChainId(chainId)
 
   if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
-    // Defaults to 1 ETH -> USDC
+    // Defaults to having the wrapped native currency selected
     inputCurrency = defaultInputCurrency // 'ETH' // mod
-    outputCurrency = validChainId ? USDC[validChainId].address : 'USDC' // mod
-    typedValue = '1'
   } else if (inputCurrency === outputCurrency) {
     // clear output if identical
     outputCurrency = ''
@@ -425,18 +418,19 @@ export function queryParametersToSwapState(
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId } = useWeb3React()
+  const { chainId: _chainId } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 
   // TODO: check whether we can use the new function for native currency
   // This is not a great fix for setting a default token
   // but it is better and easiest considering updating default files
-  const defaultInputToken = WETH[supportedChainId(chainId) || SupportedChainId.MAINNET].address // mod
+  const defaultInputToken = WETH[chainId || SupportedChainId.MAINNET].address // mod
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId) // mod
-  }, [chainId, defaultInputToken, parsedQs]) // mod
+    return queryParametersToSwapState(parsedQs, defaultInputToken) // mod
+  }, [defaultInputToken, parsedQs]) // mod
 
   useEffect(() => {
     if (!chainId) return
@@ -454,7 +448,7 @@ export function useDefaultsFromURLSearch(): SwapState {
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, parsedQs])
+  }, [dispatch, chainId])
 
   return parsedSwapState
 }
@@ -474,12 +468,16 @@ export function useReplaceSwapState() {
   )
 }
 
-interface CurrencyWithAddress {
-  currency?: Currency | null
-  address?: string | null
-}
+export function useDetectNativeToken() {
+  const { chainId } = useWeb3React()
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState()
 
-export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
+  const input = useCurrency(inputCurrencyId)
+  const output = useCurrency(outputCurrencyId)
+
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
@@ -492,11 +490,8 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
     // TODO: check the new native currency function
     const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
-    const [isNativeIn, isNativeOut] = [!!input?.currency?.isNative, !!output?.currency?.isNative]
-    const [isWrappedIn, isWrappedOut] = [
-      !!input?.currency?.equals(wrappedToken),
-      !!output?.currency?.equals(wrappedToken),
-    ]
+    const [isNativeIn, isNativeOut] = [!!input?.isNative, !!output?.isNative]
+    const [isWrappedIn, isWrappedOut] = [!!input?.equals(wrappedToken), !!output?.equals(wrappedToken)]
 
     return {
       isNativeIn: isNativeIn && !isWrappedOut,
@@ -505,6 +500,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
       isWrappedOut,
       wrappedToken,
       native,
+      isWrapOrUnwrap: (isNativeIn && isWrappedOut) || (isNativeOut && isWrappedIn),
     }
   }, [input, output, chainId])
 }

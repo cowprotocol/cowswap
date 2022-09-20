@@ -19,6 +19,8 @@ import {
   TransactionWrapper,
   TransactionStatusText as ActivityDetailsText,
   SummaryInner,
+  TransactionInnerDetail,
+  TextAlert,
 } from './Transaction/styled'
 
 export const WalletActions = styled.div`
@@ -262,7 +264,7 @@ export const LowerSectionSimple = styled(LowerSection)`
       font-size: 12px;
     }
     ${TransactionWrapper} {
-      padding: 10px 15px;
+      padding: 15px;
 
       // target the activity comp
       > div > ${ActivityDetailsText} > ${Summary} {
@@ -273,6 +275,21 @@ export const LowerSectionSimple = styled(LowerSection)`
         }
 
         > ${SummaryInner} {
+          // Gnosis safe
+          > ${TransactionInnerDetail} {
+            padding: 0;
+            border: none;
+            margin-top: 10px;
+            > a {
+              align-self: flex-start;
+            }
+            > span:last-of-type {
+              margin: 3px 0 0px;
+            }
+            > ${TextAlert} {
+              margin: 10px 0 6px;
+            }
+          }
           ${({ theme }) => theme.mediaWidth.upToSmall`
             margin: 16px 0;
           `}
