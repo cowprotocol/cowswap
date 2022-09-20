@@ -53,7 +53,7 @@ module.exports = {
   webpack: {
     plugins,
     alias: {
-      '@src': path.resolve(__dirname, 'src'),
+      '@src': path.resolve(__dirname, 'src/uniswap'),
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js/lib/bn.js'),
     },
     // https://webpack.js.org/configuration
@@ -61,7 +61,11 @@ module.exports = {
       ...webpackConfig,
       resolve: {
         ...webpackConfig.resolve,
-        modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
+        modules: [
+          path.resolve(__dirname, 'src/uniswap-override'),
+          ...webpackConfig.resolve.modules,
+          path.resolve(__dirname, 'src/uniswap'),
+        ],
       },
     }),
   },

@@ -25,10 +25,10 @@ const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Rinkeby Default
-const RINKEBY_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/rinkeby-token-list.json'
+const RINKEBY_LIST = RAW_CODE_LINK + '/main/src/uniswap-override/tokens/rinkeby-token-list.json'
 
 // Goerli Default
-const GOERLI_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/goerli-token-list.json'
+const GOERLI_LIST = RAW_CODE_LINK + '/main/src/uniswap-override/tokens/goerli-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'

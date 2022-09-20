@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import Page, { Title, Content, GdocsListStyle } from 'components/Page'
-import { ButtonPrimary } from 'custom/components/Button'
+import { ButtonPrimary } from 'uniswap-override/components/Button'
 import cow404IMG from 'assets/cow-swap/cow-404.png'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
 

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 import Page, { GdocsListStyle } from 'components/Page'
-import { ButtonPrimary } from 'custom/components/Button'
+import { ButtonPrimary } from 'uniswap-override/components/Button'
 import { BannerExplainer } from 'pages/Claim/styled'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'

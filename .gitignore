@@ -1,17 +1,17 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # generated contract types
-/src/types/v3
-/src/abis/types
-/src/lib/locales/**/*.js
-/src/lib/locales/**/en-US.po
-/src/lib/locales/**/pseudo.po
-/src/locales/**/*.js
-/src/locales/**/*.ts
-/src/locales/**/*.json
-/src/locales/**/en-US.po
-/src/locales/**/pseudo.po
-/src/state/data/generated.ts
+/src/uniswap/types/v3
+/src/uniswap/abis/types
+/src/uniswap/lib/locales/**/*.js
+/src/uniswap/lib/locales/**/en-US.po
+/src/uniswap/lib/locales/**/pseudo.po
+/src/uniswap/locales/**/*.js
+/src/uniswap/locales/**/*.ts
+/src/uniswap/locales/**/*.json
+/src/uniswap/locales/**/en-US.po
+/src/uniswap/locales/**/pseudo.po
+/src/uniswap/state/data/generated.ts
 
 # dependencies
 /node_modules

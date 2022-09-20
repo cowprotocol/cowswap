@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 
-import { version as WEB_VERSION } from '@src/../package.json'
+import { version as WEB_VERSION } from '@src/../../package.json'
 import { version as CONTRACTS_VERSION } from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getEtherscanLink } from 'utils'

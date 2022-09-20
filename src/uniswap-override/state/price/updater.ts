@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { DEFAULT_DECIMALS } from 'custom/constants'
+import { DEFAULT_DECIMALS } from 'uniswap-override/constants'
 
 import { UnsupportedToken } from 'api/gnosisProtocol'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'

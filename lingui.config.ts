@@ -1,7 +1,7 @@
 const linguiConfig = {
   catalogs: [
     {
-      path: '<rootDir>/src/locales/{locale}',
+      path: '<rootDir>/src/uniswap/locales/{locale}',
       include: ['<rootDir>/src'],
     },
   ],

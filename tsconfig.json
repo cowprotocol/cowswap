@@ -9,10 +9,10 @@
     "node_modules",
     "cypress",
     "src/**/*.test.ts",
-    "src/page/App.tsx",
-    "src/state/routing/slice.ts",
-    "src/hooks/useBestTrade.ts",
-    "src/state/routing/useRoutingAPITrade.ts"
+    "src/uniswap/page/App.tsx",
+    "src/uniswap/state/routing/slice.ts",
+    "src/uniswap/hooks/useBestTrade.ts",
+    "src/uniswap/state/routing/useRoutingAPITrade.ts"
   ],
   "include": [
     "src/**/*"
