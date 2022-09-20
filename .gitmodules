@@ -1,0 +1,3 @@
+[submodule "src/uniswap"]
+	path = src/uniswap
+	url = git@github.com:Uniswap/interface.git
