@@ -139,6 +139,8 @@ export function NewSwapPage() {
     approvalState: swapButtonContext.approveButtonProps.approvalState,
     onDismiss: dismissNativeWrapModal,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,
+    handleSwapCallback: swapButtonContext.handleSwap,
+    hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
   }
 
   const swapModalsProps: NewSwapModalsProps = {

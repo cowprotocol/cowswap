@@ -1,11 +1,11 @@
 import { SwapFlowContext } from 'pages/Swap/swapFlow/types'
 
 export function logSwapFlow(...args: any[]) {
-  console.log('%c [SWAP FLOW] ', ...args, 'color: #1c5dbf')
+  console.log('%c [SWAP FLOW] ', 'font-weight: bold; color: #1c5dbf', args)
 }
 
 export function logSwapFlowError(...args: any[]) {
-  console.log('%c [SWAP FLOW ERROR] ', ...args, 'color: #1c5dbf')
+  console.log('%c [SWAP FLOW ERROR] ', 'font-weight: bold; color: #1c5dbf', args)
 }
 
 export function traceTrading(input: SwapFlowContext) {

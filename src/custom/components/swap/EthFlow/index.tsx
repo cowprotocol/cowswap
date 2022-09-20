@@ -29,11 +29,12 @@ import {
 } from 'components/swap/EthFlow/helpers'
 import { GpModal } from 'components/Modal'
 import { ApprovalState } from 'hooks/useApproveCallback'
-import { useWrapCallback, useHasEnoughWrappedBalanceForSwap } from 'hooks/useWrapCallback'
+import { useWrapCallback } from 'hooks/useWrapCallback'
 import { useDerivedSwapInfo, useDetectNativeToken, useSwapActionHandlers } from 'state/swap/hooks'
 import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import { Field } from '@src/state/swap/actions'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
 
 const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -79,6 +80,8 @@ export interface EthFlowProps {
   approvalState: ApprovalState
   onDismiss: () => void
   approveCallback: (params?: { useModals: boolean }) => Promise<TransactionResponse | undefined>
+  handleSwapCallback: HandleSwapCallback
+  hasEnoughWrappedBalanceForSwap: boolean
 }
 
 export type PendingHashMap = { approveHash?: string; wrapHash?: string }
@@ -90,6 +93,8 @@ export function EthWethWrap({
   approvalState,
   onDismiss,
   approveCallback,
+  handleSwapCallback,
+  hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -155,8 +160,8 @@ export function EthWethWrap({
     nativeInput,
   })
 
-  const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
-  const needsWrap = isNativeIn && !hasEnoughWrappedBalanceForSwap
+  const needsWrapBeforeSwap = isNativeInSwap && !hasEnoughWrappedBalanceForSwap
+  const needsWrap = needsWrapBeforeSwap || isWrapOrUnwrap
 
   // get derived EthFlow state
   const state = useMemo(
@@ -261,10 +266,16 @@ export function EthWethWrap({
   }, [approveCallback, handleError, setApproveError, setApproveSubmitted, setPendingHashMap])
 
   const handleSwap = useCallback(
-    async ({ showConfirm }: EthFlowSwapCallbackParams) => {
-      // TODO: sync with Dave about merge
+    async ({ showConfirm, straightSwap }: EthFlowSwapCallbackParams) => {
+      if (!chainId) return
+
       try {
-        showConfirm ? openSwapConfirm() : closeSwapConfirm()
+        if (straightSwap) {
+          onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+          handleSwapCallback()
+        } else {
+          showConfirm ? openSwapConfirm() : closeSwapConfirm()
+        }
       } catch (error) {
         throw error
       } finally {
@@ -272,7 +283,7 @@ export function EthWethWrap({
         onDismiss()
       }
     },
-    [openSwapConfirm, closeSwapConfirm, onDismiss]
+    [chainId, openSwapConfirm, closeSwapConfirm, onDismiss, handleSwapCallback]
   )
 
   const handleMountInExpertMode = useCallback(async () => {

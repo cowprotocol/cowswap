@@ -8,7 +8,7 @@ import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
 import { Field } from 'state/swap/actions'
 import { TradeType } from '@uniswap/sdk-core'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { useWrapType, useWrapUnwrapError } from 'hooks/useWrapCallback'
+import { useHasEnoughWrappedBalanceForSwap, useWrapType, useWrapUnwrapError } from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
 import { logSwapFlow } from 'pages/Swap/swapFlow/logger'
 import { swapFlow } from 'pages/Swap/swapFlow'
@@ -73,6 +73,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
+  const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
 
   const handleSwap = useCallback(() => {
     if (!swapFlowContext) return
@@ -140,6 +141,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
     handleSwap,
     wrapInputError,
     wrapUnwrapAmount,
+    hasEnoughWrappedBalanceForSwap,
     onWrap() {
       openNativeWrapModal()
     },

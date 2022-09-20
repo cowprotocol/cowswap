@@ -26,6 +26,7 @@ export interface SwapButtonContext {
   onWrap: () => void
   openSwapConfirm: () => void
   toggleWalletModal: () => void
+  hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
 }
 
