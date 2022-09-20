@@ -38,7 +38,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { SwapForm } from 'pages/NewSwap/components/SwapForm'
+import { SwapForm } from 'pages/NewSwap/pureComponents/SwapForm'
 import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
 import { TradeRates, TradeRatesProps } from 'pages/NewSwap/pureComponents/TradeRates'
 

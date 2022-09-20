@@ -1,4 +1,4 @@
-import { SwapForm } from 'pages/NewSwap/components/SwapForm'
+import { SwapForm } from 'pages/NewSwap/pureComponents/SwapForm'
 import { SwapFormProps } from 'pages/NewSwap/typings'
 import { defaultCurrencyInputPanelProps } from 'pages/NewSwap/pureComponents/CurrencyInputPanel/defaultCurrencyInputProps'
 import { GNO } from 'constants/tokens'
