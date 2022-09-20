@@ -297,12 +297,12 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       inputError = <Trans>Connect Wallet</Trans>
     }
 
-    if (!parsedAmount) {
-      inputError = inputError ?? <Trans>Enter an amount</Trans>
-    }
-
     if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
       inputError = inputError ?? <Trans>Select a token</Trans>
+    }
+
+    if (!parsedAmount) {
+      inputError = inputError ?? <Trans>Enter an amount</Trans>
     }
 
     const formattedTo = isAddress(to)
