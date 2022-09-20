@@ -283,7 +283,7 @@ export function EthWethWrap({
         onDismiss()
       }
     },
-    [chainId, openSwapConfirm, closeSwapConfirm, onDismiss, handleSwapCallback]
+    [chainId, openSwapConfirm, closeSwapConfirm, onCurrencySelection, onDismiss, handleSwapCallback]
   )
 
   const handleMountInExpertMode = useCallback(async () => {
