@@ -169,4 +169,3 @@ The plan:
 ## Feature flags
 
 `localStorage.setItem('enableNewSwap', '1')` - enable refactored swap interface
-
