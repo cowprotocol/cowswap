@@ -85,8 +85,8 @@ export enum EthFlowState {
   ApprovePending, // 5
   ApproveInsufficient, // 6
   ApproveFailed, // 7
-  WrapFailed, // 8
-  WrapPending, // 9
+  WrapUnwrapFailed, // 8
+  WrapUnwrapPending, // 9
   WrapAndApproveFailed, // 10
   Loading, // 11
 }
@@ -124,7 +124,7 @@ export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
     }
     // Only wrap is pending
     else if (wrapPending) {
-      return EthFlowState.WrapPending
+      return EthFlowState.WrapUnwrapPending
     }
     // Only approve is pending
     else return EthFlowState.ApprovePending
@@ -137,7 +137,7 @@ export function _getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
     }
     // Only wrap failed
     else if (wrapExpired) {
-      return EthFlowState.WrapFailed
+      return EthFlowState.WrapUnwrapFailed
     }
     // Only approve failed
     else return EthFlowState.ApproveFailed
@@ -216,9 +216,12 @@ export function _getModalTextContent(params: ModalTextContentProps) {
         'Both wrap and approve operations failed. Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again'
       break
     }
-    case EthFlowState.WrapFailed: {
-      header = `Wrap ${nativeSymbol} failed!`
-      description = `Wrap operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Wrap ${nativeSymbol}" to try again`
+    case EthFlowState.WrapUnwrapFailed: {
+      const prefix = isNative ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`
+      header = `${prefix} failed!`
+      description = `${
+        isNative ? 'Wrap' : 'Unwrap'
+      } operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "${prefix}" to try again`
       break
     }
     case EthFlowState.ApproveFailed: {
@@ -236,11 +239,11 @@ export function _getModalTextContent(params: ModalTextContentProps) {
       description = 'Transactions in progress. See below for live status updates of each operation'
       break
     }
-    case EthFlowState.WrapPending:
+    case EthFlowState.WrapUnwrapPending:
     case EthFlowState.ApprovePending: {
       description = transactionInProgress
       // wrap only
-      if (state === EthFlowState.WrapPending) {
+      if (state === EthFlowState.WrapUnwrapPending) {
         header = wrapHeader
       }
       // approve only
@@ -372,8 +375,8 @@ export function _getActionButtonProps({
       // disable button on load (after clicking)
       buttonProps.disabled = showLoader
       break
-    case EthFlowState.WrapFailed:
-      label = `Wrap ${nativeSymbol}`
+    case EthFlowState.WrapUnwrapFailed:
+      label = isNativeIn ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`
       showButton = true
       buttonProps.onClick = handleWrap
       break
