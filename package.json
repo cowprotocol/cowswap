@@ -203,7 +203,7 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@cowprotocol/ethflowcontract": "git+https://github.com/cowprotocol/ethflowcontract.git#d0f652f",
+    "@cowprotocol/ethflowcontract": "git+https://github.com/cowprotocol/ethflowcontract.git#2ed5216",
     "@amplitude/analytics-browser": "^0.5.1",
     "@babel/runtime": "^7.17.0",
     "@coinbase/wallet-sdk": "^3.3.0",
