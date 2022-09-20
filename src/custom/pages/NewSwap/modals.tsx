@@ -22,7 +22,7 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
   const closeModals = useCloseModals()
   const history = useHistory()
 
-  console.log('RENDER SWAP MODALS: ', props)
+  console.debug('RENDER SWAP MODALS: ', props)
 
   return (
     <>

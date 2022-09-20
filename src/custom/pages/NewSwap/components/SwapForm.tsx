@@ -22,7 +22,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
   const { onSwitchTokens, onChangeRecipient } = swapActions
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
-  console.log('SWAP PAGE RENDER: ', props)
+  console.debug('SWAP PAGE RENDER: ', props)
 
   return (
     <>

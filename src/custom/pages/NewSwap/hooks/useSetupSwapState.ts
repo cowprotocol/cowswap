@@ -37,7 +37,7 @@ export function useSetupSwapState() {
       shouldUsePersistedState ? persistedSwapState : null
     )
 
-    console.log('Set swap state from url: ', { chainId, swapState, shouldUsePersistedState })
+    console.debug('Set swap state from url: ', { chainId, swapState, shouldUsePersistedState })
     dispatch(replaceSwapState(swapState))
   }, [dispatch, tradeStateFromUrl, persistedSwapState, chainId, account, previousAccount])
 }

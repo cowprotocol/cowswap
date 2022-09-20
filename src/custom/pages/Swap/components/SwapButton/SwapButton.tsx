@@ -154,7 +154,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
 }
 
 export const SwapButton = React.memo(function (props: SwapButtonContext) {
-  console.log('RENDER SWAP BUTTON: ', props)
+  console.debug('RENDER SWAP BUTTON: ', props)
 
   return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
 }, isSwapButtonPropsEqual)

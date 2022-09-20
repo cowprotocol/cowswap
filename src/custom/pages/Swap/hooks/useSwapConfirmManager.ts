@@ -19,7 +19,7 @@ export function useSwapConfirmManager(): SwapConfirmManager {
     () => ({
       setSwapError(swapErrorMessage: string) {
         const state = { ...swapConfirmState, swapErrorMessage }
-        console.log('[Swap confirm state] setSwapError: ', state)
+        console.debug('[Swap confirm state] setSwapError: ', state)
         setSwapConfirmState(state)
       },
       openSwapConfirmModal(tradeToConfirm: TradeGp) {
@@ -30,17 +30,17 @@ export function useSwapConfirmManager(): SwapConfirmManager {
           showConfirm: true,
           txHash: undefined,
         }
-        console.log('[Swap confirm state] openSwapConfirmModal: ', state)
+        console.debug('[Swap confirm state] openSwapConfirmModal: ', state)
         setSwapConfirmState(state)
       },
       acceptRateUpdates(tradeToConfirm: TradeGp) {
         const state = { ...swapConfirmState, tradeToConfirm }
-        console.log('[Swap confirm state] acceptRateUpdates: ', state)
+        console.debug('[Swap confirm state] acceptRateUpdates: ', state)
         setSwapConfirmState(state)
       },
       closeSwapConfirm() {
         const state = { ...swapConfirmState, showConfirm: false }
-        console.log('[Swap confirm state] closeSwapConfirm: ', state)
+        console.debug('[Swap confirm state] closeSwapConfirm: ', state)
         setSwapConfirmState(state)
       },
       sendTransaction(tradeToConfirm: TradeGp) {
@@ -51,12 +51,12 @@ export function useSwapConfirmManager(): SwapConfirmManager {
           showConfirm: true,
           txHash: undefined,
         }
-        console.log('[Swap confirm state] sendTransaction: ', state)
+        console.debug('[Swap confirm state] sendTransaction: ', state)
         setSwapConfirmState(state)
       },
       transactionSent(txHash: string) {
         const state = { ...swapConfirmState, attemptingTxn: false, swapErrorMessage: undefined, txHash }
-        console.log('[Swap confirm state] transactionSent: ', state)
+        console.debug('[Swap confirm state] transactionSent: ', state)
         setSwapConfirmState(state)
       },
     }),
