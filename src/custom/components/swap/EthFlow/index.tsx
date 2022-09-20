@@ -120,15 +120,8 @@ export function EthWethWrap({
   } = useEthFlowStatesAndSetters({ chainId, approvalState })
   const { closeSwapConfirm } = useSwapConfirmManager()
 
-  const { currencies, v2Trade: trade } = useDerivedSwapInfo()
-  const {
-    isNativeIn,
-    isNativeOut,
-    isWrappedIn,
-    isWrappedOut,
-    native,
-    wrappedToken: wrapped,
-  } = useDetectNativeToken(currencies, chainId)
+  const { v2Trade: trade } = useDerivedSwapInfo()
+  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut, native, wrappedToken: wrapped } = useDetectNativeToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const needsApproval = approvalState === ApprovalState.NOT_APPROVED

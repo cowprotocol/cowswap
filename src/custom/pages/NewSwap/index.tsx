@@ -66,7 +66,7 @@ export function NewSwapPage() {
   })
 
   const { isGettingNewQuote } = useGetQuoteAndStatus({
-    token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
+    token: INPUT.currencyId,
     chainId,
   })
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({

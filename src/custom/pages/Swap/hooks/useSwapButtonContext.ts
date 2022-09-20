@@ -59,11 +59,11 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const currencyOut = currencies[Field.OUTPUT]
 
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
-    token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
+    token: INPUT.currencyId,
     chainId,
   })
 
-  const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken(currencies, chainId)
+  const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const nativeInput = !!(trade?.tradeType === TradeType.EXACT_INPUT)
