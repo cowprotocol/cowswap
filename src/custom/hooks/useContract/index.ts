@@ -1,7 +1,11 @@
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { GP_SETTLEMENT_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import {
+  COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
+  GP_SETTLEMENT_CONTRACT_ADDRESS,
+  V_COW_CONTRACT_ADDRESS,
+} from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 import COWSWAP_ETHFLOW_ABI from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
@@ -22,7 +26,7 @@ export * from './useContractMod'
 
 // Custom (non-MOD) hooks
 
-export function useCoWSwapEthFlowContract(): CoWSwapEthFlow | null {
+export function useEthFlowContract(): CoWSwapEthFlow | null {
   const { chainId } = useWeb3React()
   return useContract<CoWSwapEthFlow>(
     // TODO: get the networks.json when contracts deployed
