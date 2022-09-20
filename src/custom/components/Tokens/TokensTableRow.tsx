@@ -166,7 +166,7 @@ const DataRow = ({
           <ResponsiveLogo currency={tokenData} />
         </RowFixed>
 
-        <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+        <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
           <TokenText>
             <LargeOnly style={{ marginLeft: '10px' }}>
               <Label>{tokenData.symbol}</Label>
