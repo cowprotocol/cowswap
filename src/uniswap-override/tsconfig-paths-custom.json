@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
     "paths": {
-      "@uni_src/*": [
-        "uniswap/*"
-      ],
-      "*": [
-        "uniswap-override/*",
-        "uniswap/*",
-        "*",
-      ]
+      "@uni_src/*": ["uniswap/*"],
+      "*": ["uniswap-override/*", "uniswap/*", "*"]
     }
   }
 }
