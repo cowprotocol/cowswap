@@ -29,6 +29,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
       <CurrencyInputPanel
+        id="swap-currency-input"
         loading={currenciesLoadingInProgress}
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}
@@ -45,6 +46,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
         {showRecipientControls && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
       </styledEl.CurrencySeparatorBox>
       <CurrencyInputPanel
+        id="swap-currency-output"
         loading={currenciesLoadingInProgress}
         swapActions={swapActions}
         subsidyAndBalance={subsidyAndBalance}

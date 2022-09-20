@@ -18,6 +18,7 @@ interface BuiltItProps {
 }
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
+  id: string
   loading: boolean
   showSetMax?: boolean
   allowsOffchainSigning: boolean
@@ -29,6 +30,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const {
+    id,
     loading,
     currencyInfo,
     className,
@@ -64,7 +66,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   return (
     <>
-      <styledEl.Wrapper className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
+      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
@@ -74,7 +76,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
           <div>
-            <styledEl.NumericalInput value={viewAmount || typedValue} onUserInput={onUserInput} $loading={loading} />
+            <styledEl.NumericalInput
+              className="token-amount-input"
+              value={viewAmount || typedValue}
+              onUserInput={onUserInput}
+              $loading={loading}
+            />
           </div>
           <div>
             {balance && (

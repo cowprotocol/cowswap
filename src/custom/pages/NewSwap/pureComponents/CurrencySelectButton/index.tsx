@@ -14,9 +14,14 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
   const stubbed = !currency || false
 
   return (
-    <styledEl.CurrencySelectWrapper onClick={onClick} isLoading={loading} stubbed={stubbed}>
+    <styledEl.CurrencySelectWrapper
+      className="open-currency-select-button"
+      onClick={onClick}
+      isLoading={loading}
+      stubbed={stubbed}
+    >
       {currency ? <CurrencyLogo currency={currency} size={'24px'} /> : <div></div>}
-      <styledEl.CurrencySymbol stubbed={stubbed}>
+      <styledEl.CurrencySymbol className="token-symbol-container" stubbed={stubbed}>
         {currency ? currency.symbol : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>
       {stubbed ? <styledEl.ArrowDownStubbed /> : <styledEl.ArrowDown />}
