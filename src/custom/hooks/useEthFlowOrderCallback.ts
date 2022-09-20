@@ -8,11 +8,11 @@ import { useWeb3React } from '@web3-react/core'
 import { getOrderParams, PostOrderParams } from '../utils/trade'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const PRESIGN_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
+const ETHFLOW_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 
 export type EthFlowORder = (orderParams: PostOrderParams) => Promise<ContractTransaction>
 
-export function useEthFlowOrder(): EthFlowORder | null {
+export function useEthFlowOrderCallback(): EthFlowORder | null {
   const { chainId } = useWeb3React()
   const ethFlowContract = useEthFlowContract()
 
@@ -29,18 +29,44 @@ export function useEthFlowOrder(): EthFlowORder | null {
 
       const { order: mappedOrderParams, quoteId } = getOrderParams(orderParams)
 
+      if (!quoteId) {
+        throw Error('EthFlowContract quoteId missing!')
+      }
+
+      /* 
+        buyToken: string;
+        receiver: string;
+        sellAmount: BigNumber | Bytes | bigint | string | number;
+        buyAmount: BigNumber | Bytes | bigint | string | number;
+        appData: Bytes | string;
+        feeAmount: BigNumber | Bytes | bigint | string | number;
+        validTo: BigNumber | Bytes | bigint | string | number;
+        partiallyFillable: boolean;
+        quoteId: BigNumber | Bytes | bigint | string | number;
+      */
+
       const estimatedGas = await ethFlowContract.estimateGas
-        .createOrder({ ...mappedOrderParams, quoteId })
+        .createOrder({
+          ...mappedOrderParams,
+          quoteId,
+          appData: mappedOrderParams.appData.toString(),
+          validTo: mappedOrderParams.validTo.toString(),
+        })
         .catch((error) => {
           console.error(
-            '[usePresignOrder] Error estimating createOrder gas. Using default ' + PRESIGN_GAS_LIMIT_DEFAULT,
+            '[useEthFlowOrder] Error estimating createOrder gas. Using default ' + ETHFLOW_GAS_LIMIT_DEFAULT,
             error
           )
-          return PRESIGN_GAS_LIMIT_DEFAULT
+          return ETHFLOW_GAS_LIMIT_DEFAULT
         })
 
       const txReceipt = await ethFlowContract.createOrder(
-        { ...mappedOrderParams, quoteId },
+        {
+          ...mappedOrderParams,
+          quoteId,
+          appData: mappedOrderParams.appData.toString(),
+          validTo: mappedOrderParams.validTo.toString(),
+        },
         {
           gasLimit: calculateGasMargin(estimatedGas),
         }
