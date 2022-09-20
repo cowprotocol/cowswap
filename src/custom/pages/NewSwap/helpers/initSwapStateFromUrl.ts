@@ -5,6 +5,13 @@ import { TradeStateFromUrl } from 'pages/NewSwap/typings'
 import { SupportedChainId } from 'constants/chains'
 import { SwapState } from 'state/swap/reducer'
 
+function calculateIndependentField(urlValue: string | null, persistedValue?: Field): Field {
+  if (urlValue === 'input') return Field.INPUT
+  if (urlValue === 'output') return Field.OUTPUT
+
+  return persistedValue || Field.INPUT
+}
+
 export function initSwapStateFromUrl(
   chainId: SupportedChainId,
   tradeStateFromUrl: TradeStateFromUrl,
@@ -17,8 +24,10 @@ export function initSwapStateFromUrl(
     persistedSwapState?.typedValue ||
     '1'
 
-  const independentField =
-    tradeStateFromUrl.independentField === 'output' ? Field.OUTPUT : persistedSwapState?.independentField || Field.INPUT
+  const independentField = calculateIndependentField(
+    tradeStateFromUrl.independentField,
+    persistedSwapState?.independentField
+  )
 
   const recipient = validatedRecipient(tradeStateFromUrl.recipient) || persistedSwapState?.recipient || null
 

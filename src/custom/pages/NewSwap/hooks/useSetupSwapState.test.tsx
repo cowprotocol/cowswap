@@ -90,7 +90,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
           currencyId: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
         },
         OUTPUT: {
-          currencyId: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+          currencyId: null,
         },
         chainId: 137,
         independentField: 'INPUT',
@@ -107,7 +107,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
           currencyId: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
         },
         OUTPUT: {
-          currencyId: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          currencyId: null,
         },
         chainId: 1,
         independentField: 'INPUT',
@@ -163,7 +163,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
         },
         chainId: 1,
         independentField: 'INPUT',
-        recipient: null,
+        recipient: urlState.recipient,
         typedValue: newUrlState.amount,
       })
     })
@@ -180,7 +180,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
             currencyId: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
           },
           OUTPUT: {
-            currencyId: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            currencyId: null,
           },
           chainId: 137,
           independentField: 'INPUT',

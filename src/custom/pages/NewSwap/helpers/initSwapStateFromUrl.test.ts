@@ -2,7 +2,7 @@ import { initSwapStateFromUrl } from './initSwapStateFromUrl'
 import { Field } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
 import { TradeStateFromUrl } from '../typings'
-import { USDC, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
 describe('initSwapStateFromUrl() - builds a swap state considering URL params, persisted redux state and default values', () => {
   it('When URL contains valid values, then should apply them to the state', () => {
@@ -68,7 +68,7 @@ describe('initSwapStateFromUrl() - builds a swap state considering URL params, p
     const state = initSwapStateFromUrl(chainId, stateFromUrl, null)
 
     expect(state.inputCurrencyId).toBe(WETH[chainId]?.address)
-    expect(state.outputCurrencyId).toBe(USDC[chainId]?.address)
+    expect(state.outputCurrencyId).toBe(undefined)
     expect(state.typedValue).toBe('1')
     expect(state.recipient).toBe(null)
     expect(state.independentField).toBe(Field.INPUT)
