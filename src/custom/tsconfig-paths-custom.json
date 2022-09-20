@@ -1,17 +1,9 @@
 {
   "compilerOptions": {
     "paths": {
-      "@src/*": [
-        "*"
-      ],
-      "@uni_src/*": [
-        "src/uniswap/src"
-      ],
-      "*": [
-        "custom/*",
-        "*",
-        "src/uniswap/src"
-      ]
+      "@src/*": ["*"],
+      "@uni_src/*": ["src/uniswap/src"],
+      "*": ["custom/*", "*", "src/uniswap/src"]
     }
   }
 }
