@@ -468,12 +468,16 @@ export function useReplaceSwapState() {
   )
 }
 
-interface CurrencyWithAddress {
-  currency?: Currency | null
-  address?: string | null
-}
+export function useDetectNativeToken() {
+  const { chainId } = useWeb3React()
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState()
 
-export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
+  const input = useCurrency(inputCurrencyId)
+  const output = useCurrency(outputCurrencyId)
+
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
@@ -486,11 +490,8 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
     // TODO: check the new native currency function
     const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
-    const [isNativeIn, isNativeOut] = [!!input?.currency?.isNative, !!output?.currency?.isNative]
-    const [isWrappedIn, isWrappedOut] = [
-      !!input?.currency?.equals(wrappedToken),
-      !!output?.currency?.equals(wrappedToken),
-    ]
+    const [isNativeIn, isNativeOut] = [!!input?.isNative, !!output?.isNative]
+    const [isWrappedIn, isWrappedOut] = [!!input?.equals(wrappedToken), !!output?.equals(wrappedToken)]
 
     return {
       isNativeIn: isNativeIn && !isWrappedOut,
@@ -499,6 +500,7 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
       isWrappedOut,
       wrappedToken,
       native,
+      isWrapOrUnwrap: (isNativeIn && isWrappedOut) || (isNativeOut && isWrappedIn),
     }
   }, [input, output, chainId])
 }

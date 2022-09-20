@@ -195,7 +195,7 @@ export default function Swap({
   const [recipientToggleVisible] = useRecipientToggleManager()
 
   // swap state
-  const { independentField, typedValue, recipient, INPUT, OUTPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
+  const { independentField, typedValue, recipient, INPUT } = useSwapState() // MOD: adds INPUT/OUTPUT
   const {
     v2Trade, // trade: { state: tradeState, trade },
     allowedSlippage,
@@ -207,7 +207,7 @@ export default function Swap({
 
   // detects trade load
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
-    token: currencies.INPUT?.isNative ? currencies.INPUT.wrapped.address : INPUT.currencyId,
+    token: INPUT.currencyId,
     chainId,
   })
 
@@ -216,11 +216,7 @@ export default function Swap({
 
   // Checks if either currency is native ETH
   // MOD: adds this hook
-  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken(
-    { currency: currencies.INPUT, address: INPUT.currencyId },
-    { currency: currencies.OUTPUT, address: OUTPUT.currencyId },
-    chainId
-  )
+  const { isNativeIn, native, wrappedToken, ...nativeRest } = useDetectNativeToken()
   // Is user swapping Eth as From token and not wrapping to WETH?
   const isNativeInSwap = isNativeIn
 
