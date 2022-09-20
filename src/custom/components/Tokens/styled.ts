@@ -212,6 +212,7 @@ export const Cell = styled.div<{ center?: boolean }>`
   display: flex;
   padding: 1rem 0;
   justify-content: ${({ center }) => (center ? 'center' : 'flex-start')};
+  align-items: center;
 
   > * {
     max-width: 100%;

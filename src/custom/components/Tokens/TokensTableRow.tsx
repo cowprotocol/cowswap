@@ -21,7 +21,7 @@ import { formatMax, formatSmart } from 'utils/format'
 import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import { CardsSpinner } from 'pages/Account/styled'
+import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
@@ -30,6 +30,8 @@ import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
 import Loader from 'components/Loader'
+import { getBlockExplorerUrl } from 'utils'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 type DataRowParams = {
   tokenData: Token
@@ -50,7 +52,7 @@ const DataRow = ({
   openTransactionConfirmationModal,
   toggleWalletModal,
 }: DataRowParams) => {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET } = useWeb3React()
 
   const theme = useTheme()
 
@@ -164,22 +166,24 @@ const DataRow = ({
           <ResponsiveLogo currency={tokenData} />
         </RowFixed>
 
-        <TokenText>
-          <LargeOnly style={{ marginLeft: '10px' }}>
-            <Label>{tokenData.symbol}</Label>
-          </LargeOnly>
+        <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <TokenText>
+            <LargeOnly style={{ marginLeft: '10px' }}>
+              <Label>{tokenData.symbol}</Label>
+            </LargeOnly>
 
-          <HideLarge style={{ marginLeft: '10px' }}>
-            <RowFixed>
-              <Label fontWeight={400} ml="8px" color={theme.text1}>
-                {tokenData.name}
-              </Label>
-              <Label ml="8px" color={theme.primary5}>
-                ({tokenData.symbol})
-              </Label>
-            </RowFixed>
-          </HideLarge>
-        </TokenText>
+            <HideLarge style={{ marginLeft: '10px' }}>
+              <RowFixed>
+                <Label fontWeight={400} ml="8px" color={theme.text1}>
+                  {tokenData.name}
+                </Label>
+                <Label ml="8px" color={theme.primary5}>
+                  ({tokenData.symbol})
+                </Label>
+              </RowFixed>
+            </HideLarge>
+          </TokenText>
+        </ExtLink>
       </Cell>
 
       <Cell>
