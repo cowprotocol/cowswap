@@ -57,24 +57,13 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const {
-    kind,
-    chainId,
-    inputAmount,
-    outputAmount,
-    sellToken,
-    buyToken,
-    feeAmount,
-    validTo,
-    account,
-    signer,
-    recipient,
-    allowsOffchainSigning,
-    appDataHash,
-    sellAmountBeforeFee,
-    quoteId,
-  } = params
+export function getOrderParams(params: PostOrderParams): {
+  summary: string
+  quoteId: number | undefined
+  order: UnsignedOrder
+} {
+  const { kind, inputAmount, outputAmount, sellToken, buyToken, feeAmount, validTo, recipient, appDataHash, quoteId } =
+    params
 
   // fee adjusted input amount
   const sellAmount = inputAmount.quotient.toString(RADIX_DECIMAL)
@@ -85,18 +74,30 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   const summary = _getSummary(params)
   const receiver = recipient
 
-  const unsignedOrder: UnsignedOrder = {
-    sellToken: sellToken.address,
-    buyToken: buyToken.address,
-    sellAmount,
-    buyAmount,
-    validTo,
-    appData: appDataHash,
-    feeAmount: feeAmount?.quotient.toString() || '0',
-    kind,
-    receiver,
-    partiallyFillable: false, // Always fill or kill
+  return {
+    summary,
+    quoteId,
+    order: {
+      sellToken: sellToken.address,
+      buyToken: buyToken.address,
+      sellAmount,
+      buyAmount,
+      validTo,
+      appData: appDataHash,
+      feeAmount: feeAmount?.quotient.toString() || '0',
+      kind,
+      receiver,
+      partiallyFillable: false, // Always fill or kill
+    },
   }
+}
+
+export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
+  const { chainId, sellToken, buyToken, account, signer, allowsOffchainSigning, sellAmountBeforeFee } = params
+
+  // Prepare order
+  const { summary, quoteId, order: unsignedOrder } = getOrderParams(params)
+  const receiver = unsignedOrder.receiver
 
   let signingScheme: SigningScheme
   let signature: string | undefined
