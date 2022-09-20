@@ -27,6 +27,9 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     "deleteOrder((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64))": FunctionFragment;
     "isValidSignature(bytes32,bytes)": FunctionFragment;
     "orders(bytes32)": FunctionFragment;
+    "unwrap(uint256)": FunctionFragment;
+    "wrap(uint256)": FunctionFragment;
+    "wrapAll()": FunctionFragment;
     "wrappedNativeToken()": FunctionFragment;
   };
 
@@ -72,6 +75,12 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "orders", values: [BytesLike]): string;
   encodeFunctionData(
+    functionFragment: "unwrap",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "wrap", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "wrapAll", values?: undefined): string;
+  encodeFunctionData(
     functionFragment: "wrappedNativeToken",
     values?: undefined
   ): string;
@@ -93,6 +102,9 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "orders", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "unwrap", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "wrap", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "wrapAll", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "wrappedNativeToken",
     data: BytesLike
@@ -258,6 +270,20 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string, number] & { owner: string; validTo: number }>;
 
+    unwrap(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    wrap(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    wrapAll(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     wrappedNativeToken(overrides?: CallOverrides): Promise<[string]>;
   };
 
@@ -304,6 +330,20 @@ export class CoWSwapEthFlow extends BaseContract {
     overrides?: CallOverrides
   ): Promise<[string, number] & { owner: string; validTo: number }>;
 
+  unwrap(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  wrap(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  wrapAll(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   wrappedNativeToken(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
@@ -349,6 +389,12 @@ export class CoWSwapEthFlow extends BaseContract {
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<[string, number] & { owner: string; validTo: number }>;
+
+    unwrap(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    wrap(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    wrapAll(overrides?: CallOverrides): Promise<void>;
 
     wrappedNativeToken(overrides?: CallOverrides): Promise<string>;
   };
@@ -540,6 +586,20 @@ export class CoWSwapEthFlow extends BaseContract {
 
     orders(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
+    unwrap(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    wrap(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    wrapAll(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     wrappedNativeToken(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
@@ -585,6 +645,20 @@ export class CoWSwapEthFlow extends BaseContract {
     orders(
       arg0: BytesLike,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    unwrap(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    wrap(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    wrapAll(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     wrappedNativeToken(
