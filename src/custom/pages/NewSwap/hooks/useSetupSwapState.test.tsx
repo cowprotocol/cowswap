@@ -1,23 +1,24 @@
-import { unmountComponentAtNode } from 'react-dom'
 import { useSetupSwapState } from 'pages/NewSwap/hooks/useSetupSwapState'
 import { useSwapState } from 'state/swap/hooks'
 import { waitFor } from '@testing-library/react'
-import { mockedConnector, mockedWeb3Render } from 'test-utils'
+import { mockedConnector, WithMockedWeb3 } from 'test-utils'
 import { createHashHistory } from 'history'
 import { Field, replaceSwapState, ReplaceSwapStatePayload } from '@src/state/swap/actions'
 import store from 'state'
-
-function TestComponent() {
-  useSetupSwapState()
-  const swapState = useSwapState()
-
-  return <div id="result">{JSON.stringify(swapState)}</div>
-}
+import { renderHook } from '@testing-library/react-hooks'
 
 describe('useSetupSwapState() - hook to setup a swap state considering URL and localStorage', () => {
   const history = createHashHistory()
 
-  let container: HTMLDivElement | undefined = undefined
+  function setUp() {
+    return renderHook(
+      () => {
+        useSetupSwapState()
+        return useSwapState()
+      },
+      { wrapper: WithMockedWeb3 }
+    )
+  }
 
   function setWeb3Context(chainId = 1, account = '0x3a7dc718eaf31f0a55988161f3d75d7ca785b034') {
     mockedConnector.getActions().update({
@@ -29,15 +30,6 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
   function resetWeb3Context() {
     mockedConnector.getActions().resetState()
   }
-
-  function getRenderedState() {
-    return JSON.parse(container?.querySelector('#result')?.textContent || '{}')
-  }
-
-  beforeEach(() => {
-    container = document.createElement('div')
-    document.body.appendChild(container)
-  })
 
   afterEach(() => {
     resetWeb3Context()
@@ -52,19 +44,13 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
         recipient: null,
       })
     )
-
-    if (!container) return
-
-    unmountComponentAtNode(container)
-    container.remove()
-    container = undefined
   })
 
   it('When web3 context is not set, then the swap state should be empty', async () => {
-    mockedWeb3Render(<TestComponent />, container)
+    const { result } = setUp()
 
     await waitFor(() => {
-      expect(getRenderedState()).toEqual({
+      expect(result.current).toEqual({
         INPUT: {
           currencyId: 'ETH',
         },
@@ -82,10 +68,10 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
   it('When chainId changed, should reset the swap state regarding a new chainId', async () => {
     setWeb3Context(137) // Polygon
 
-    mockedWeb3Render(<TestComponent />, container)
+    const { result } = setUp()
 
     await waitFor(() => {
-      expect(getRenderedState()).toEqual({
+      expect(result.current).toEqual({
         INPUT: {
           currencyId: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
         },
@@ -102,7 +88,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
     setWeb3Context(1) // Ethereum mainnet
 
     await waitFor(() => {
-      expect(getRenderedState()).toEqual({
+      expect(result.current).toEqual({
         INPUT: {
           currencyId: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
         },
@@ -127,10 +113,11 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
       independentField: 'output',
     }
     history.push('/swap?' + new URLSearchParams(urlState))
-    mockedWeb3Render(<TestComponent />, container)
+
+    const { result } = setUp()
 
     await waitFor(() => {
-      expect(getRenderedState()).toEqual({
+      expect(result.current).toEqual({
         INPUT: {
           currencyId: urlState.inputCurrency,
         },
@@ -154,7 +141,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
     history.push('/swap?' + new URLSearchParams(newUrlState))
 
     await waitFor(() => {
-      expect(getRenderedState()).toEqual({
+      expect(result.current).toEqual({
         INPUT: {
           currencyId: newUrlState.inputCurrency,
         },
@@ -172,10 +159,11 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
   describe('When web3 context is set', () => {
     it('And there are no URL params and no persisted swap state, then the swap state should be filled by default', async () => {
       setWeb3Context(137) // polygon
-      mockedWeb3Render(<TestComponent />, container)
+
+      const { result } = setUp()
 
       await waitFor(() => {
-        expect(getRenderedState()).toEqual({
+        expect(result.current).toEqual({
           INPUT: {
             currencyId: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
           },
@@ -200,10 +188,11 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
         independentField: 'output',
       }
       history.push('/swap?' + new URLSearchParams(urlState))
-      mockedWeb3Render(<TestComponent />, container)
+
+      const { result } = setUp()
 
       await waitFor(() => {
-        expect(getRenderedState()).toEqual({
+        expect(result.current).toEqual({
           INPUT: {
             currencyId: urlState.inputCurrency,
           },
@@ -230,10 +219,10 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
       }
       store.dispatch(replaceSwapState(cachedSwapState))
 
-      mockedWeb3Render(<TestComponent />, container)
+      const { result } = setUp()
 
       await waitFor(() => {
-        expect(getRenderedState()).toEqual({
+        expect(result.current).toEqual({
           INPUT: {
             currencyId: cachedSwapState.inputCurrencyId,
           },

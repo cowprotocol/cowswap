@@ -3,8 +3,7 @@ import { Connector } from '@web3-react/types'
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from 'state'
-import { ReactElement, ReactNode } from 'react'
-import { render } from '@testing-library/react'
+import { ReactNode } from 'react'
 
 export * from '../test-utils'
 
@@ -33,6 +32,3 @@ export function WithMockedWeb3({ children }: { children?: ReactNode }) {
     </HashRouter>
   )
 }
-
-export const mockedWeb3Render = (ui: ReactElement, container?: HTMLElement) =>
-  render(ui, { wrapper: WithMockedWeb3, container })
