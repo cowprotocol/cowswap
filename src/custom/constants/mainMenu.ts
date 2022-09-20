@@ -63,7 +63,6 @@ export const ACCOUNT_MENU: InternalLink[] = [
 
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
-  { title: 'New Swap', url: Routes.NEW_SWAP },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
@@ -114,3 +113,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
     ],
   },
 ]
+
+if (localStorage.getItem('enableNewSwap')) {
+  MAIN_MENU.splice(1, 0, { title: 'New Swap', url: Routes.NEW_SWAP })
+}
