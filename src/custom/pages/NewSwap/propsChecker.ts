@@ -14,7 +14,7 @@ export function isSwapButtonPropsEqual(prev: SwapButtonContext, next: SwapButton
     prev.chainId === next.chainId &&
     prev.wrappedToken.address === next.wrappedToken.address &&
     prev.wrapInputError === next.wrapInputError &&
-    isFractionEqual(prev.wrapUnrapAmount, next.wrapUnrapAmount) &&
+    isFractionEqual(prev.wrapUnwrapAmount, next.wrapUnwrapAmount) &&
     prev.approveButtonProps.approvalState === next.approveButtonProps.approvalState
   )
 }

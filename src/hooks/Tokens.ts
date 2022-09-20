@@ -11,7 +11,6 @@ import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/l
 import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'
 import { useUserAddedTokens } from 'state/user/hooks'
 import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
-import { useThrottle } from 'hooks/useThrottle'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
@@ -52,9 +51,7 @@ export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: bo
 
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useCombinedActiveList()
-  const tokensFromMap = useTokensFromMap(allTokens, true)
-
-  return useThrottle(tokensFromMap, 1000)
+  return useTokensFromMap(allTokens, true)
 }
 
 type BridgeInfo = Record<

@@ -51,7 +51,7 @@ export function NewSwapPage() {
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
-  const swapIsUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
+  const isSwapUnsupported = useIsSwapUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
@@ -108,6 +108,7 @@ export function NewSwapPage() {
     approvalSubmitted,
     setApprovalSubmitted,
     openNativeWrapModal,
+    priceImpactParams,
   })
 
   const swapFormProps: SwapFormProps = {
@@ -134,10 +135,12 @@ export function NewSwapPage() {
 
   const ethFlowProps: EthFlowProps = {
     nativeInput: parsedAmounts.INPUT,
-    wrapUnrapAmount: swapButtonContext.wrapUnrapAmount,
+    wrapUnwrapAmount: swapButtonContext.wrapUnwrapAmount,
     approvalState: swapButtonContext.approveButtonProps.approvalState,
     onDismiss: dismissNativeWrapModal,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,
+    handleSwapCallback: swapButtonContext.handleSwap,
+    hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
   }
 
   const swapModalsProps: NewSwapModalsProps = {
@@ -162,7 +165,7 @@ export function NewSwapPage() {
 
   const swapWarningsBottomProps: NewSwapWarningsBottomProps = {
     isSupportedWallet,
-    swapIsUnsupported,
+    swapIsUnsupported: isSwapUnsupported,
     currencyIn: currencies.INPUT || undefined,
     currencyOut: currencies.OUTPUT || undefined,
   }

@@ -36,7 +36,7 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
     setImpactWarningAccepted,
   } = props
 
-  console.log('SWAP WARNING RENDER TOP: ', props)
+  console.debug('SWAP WARNING RENDER TOP: ', props)
 
   return (
     <>
@@ -62,16 +62,15 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
 export const NewSwapWarningsBottom = React.memo(function (props: NewSwapWarningsBottomProps) {
   const { isSupportedWallet, swapIsUnsupported, currencyIn, currencyOut } = props
 
-  console.log('SWAP WARNING RENDER BOTTOM: ', props)
+  console.debug('SWAP WARNING RENDER BOTTOM: ', props)
 
   return (
     <>
-      {currencyIn && currencyOut && (
+      {currencyIn && currencyOut && swapIsUnsupported && (
         <CompatibilityIssuesWarning
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          swapIsUnsupported={swapIsUnsupported}
         />
       )}
 

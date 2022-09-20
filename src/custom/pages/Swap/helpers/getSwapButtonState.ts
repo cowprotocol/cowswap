@@ -1,35 +1,35 @@
 import { Token } from '@uniswap/sdk-core'
-import { WrapType } from '@src/hooks/useWrapCallback'
+import { WrapType } from 'hooks/useWrapCallback'
 import { ReactNode } from 'react'
 import { QuoteError } from 'state/price/actions'
-import { ApprovalState } from '@src/hooks/useApproveCallback'
+import { ApprovalState } from 'hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
 
 export enum SwapButtonState {
-  swapIsUnsupported = 'swapIsUnsupported',
-  walletIsUnsupported = 'walletIsUnsupported',
-  wrapError = 'wrapError',
-  shouldWrapNativeToken = 'shouldWrapNativeToken',
-  shouldUnwrapNativeToken = 'shouldUnwrapNativeToken',
-  feesExceedFromAmount = 'feesExceedFromAmount',
-  insufficientLiquidity = 'insufficientLiquidity',
-  zeroPrice = 'zeroPrice',
-  transferToSmartContract = 'transferToSmartContract',
-  fetchQuoteError = 'fetchQuoteError',
-  offlineBrowser = 'offlineBrowser',
-  loading = 'loading',
-  walletIsNotConnected = 'walletIsNotConnected',
-  readonlyGnosisSafeUser = 'readonlyGnosisSafeUser',
-  needApprove = 'needApprove',
-  swapDisabled = 'swapDisabled',
-  swapError = 'swapError',
-  expertModeSwap = 'expertModeSwap',
-  regularSwap = 'regularSwap',
-  swapWithWrappedToken = 'swapWithWrappedToken',
-  wrapAndSwap = 'wrapAndSwap',
+  SwapIsUnsupported = 'SwapIsUnsupported',
+  WalletIsUnsupported = 'WalletIsUnsupported',
+  WrapError = 'WrapError',
+  ShouldWrapNativeToken = 'ShouldWrapNativeToken',
+  ShouldUnwrapNativeToken = 'ShouldUnwrapNativeToken',
+  FeesExceedFromAmount = 'FeesExceedFromAmount',
+  InsufficientLiquidity = 'InsufficientLiquidity',
+  ZeroPrice = 'ZeroPrice',
+  TransferToSmartContract = 'TransferToSmartContract',
+  FetchQuoteError = 'FetchQuoteError',
+  OfflineBrowser = 'OfflineBrowser',
+  Loading = 'Loading',
+  WalletIsNotConnected = 'WalletIsNotConnected',
+  ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
+  NeedApprove = 'NeedApprove',
+  SwapDisabled = 'SwapDisabled',
+  SwapError = 'SwapError',
+  ExpertModeSwap = 'ExpertModeSwap',
+  RegularSwap = 'RegularSwap',
+  SwapWithWrappedToken = 'SwapWithWrappedToken',
+  WrapAndSwap = 'WrapAndSwap',
 }
 
-export interface SwapButtonStateInput {
+export interface SwapButtonStateParams {
   account: string | undefined
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
@@ -51,16 +51,16 @@ export interface SwapButtonStateInput {
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
-  'fee-exceeds-sell-amount': SwapButtonState.feesExceedFromAmount,
-  'insufficient-liquidity': SwapButtonState.insufficientLiquidity,
-  'zero-price': SwapButtonState.zeroPrice,
-  'transfer-eth-to-smart-contract': SwapButtonState.transferToSmartContract,
-  'fetch-quote-error': SwapButtonState.fetchQuoteError,
-  'offline-browser': SwapButtonState.offlineBrowser,
+  'fee-exceeds-sell-amount': SwapButtonState.FeesExceedFromAmount,
+  'insufficient-liquidity': SwapButtonState.InsufficientLiquidity,
+  'zero-price': SwapButtonState.ZeroPrice,
+  'transfer-eth-to-smart-contract': SwapButtonState.TransferToSmartContract,
+  'fetch-quote-error': SwapButtonState.FetchQuoteError,
+  'offline-browser': SwapButtonState.OfflineBrowser,
   'unsupported-token': null,
 }
 
-export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState {
+export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
   const { wrapType, quoteError, approvalState } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
@@ -74,24 +74,28 @@ export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
 
+  if (!input.account) {
+    return SwapButtonState.WalletIsNotConnected
+  }
+
   if (input.isSwapSupported) {
-    return SwapButtonState.swapIsUnsupported
+    return SwapButtonState.SwapIsUnsupported
   }
 
   if (!input.isSupportedWallet) {
-    return SwapButtonState.walletIsUnsupported
+    return SwapButtonState.WalletIsUnsupported
   }
 
   if (wrapType !== WrapType.NOT_APPLICABLE && input.wrapInputError) {
-    return SwapButtonState.wrapError
+    return SwapButtonState.WrapError
   }
 
   if (wrapType === WrapType.WRAP) {
-    return SwapButtonState.shouldWrapNativeToken
+    return SwapButtonState.ShouldWrapNativeToken
   }
 
   if (wrapType === WrapType.UNWRAP) {
-    return SwapButtonState.shouldUnwrapNativeToken
+    return SwapButtonState.ShouldUnwrapNativeToken
   }
 
   if (quoteError) {
@@ -101,40 +105,36 @@ export function getSwapButtonState(input: SwapButtonStateInput): SwapButtonState
   }
 
   if (swapBlankState || input.isGettingNewQuote) {
-    return SwapButtonState.loading
-  }
-
-  if (!input.account) {
-    return SwapButtonState.walletIsNotConnected
+    return SwapButtonState.Loading
   }
 
   if (input.isReadonlyGnosisSafeUser) {
-    return SwapButtonState.readonlyGnosisSafeUser
+    return SwapButtonState.ReadonlyGnosisSafeUser
   }
 
   if (!input.isNativeIn && showApproveFlow) {
-    return SwapButtonState.needApprove
+    return SwapButtonState.NeedApprove
   }
 
   if (input.inputError) {
-    return SwapButtonState.swapError
+    return SwapButtonState.SwapError
   }
 
   if (!isValid || !!input.swapCallbackError) {
-    return SwapButtonState.swapDisabled
+    return SwapButtonState.SwapDisabled
   }
 
   if (input.isNativeIn) {
     if (input.wrappedToken.symbol) {
-      return SwapButtonState.swapWithWrappedToken
+      return SwapButtonState.SwapWithWrappedToken
     }
 
-    return SwapButtonState.wrapAndSwap
+    return SwapButtonState.WrapAndSwap
   }
 
   if (input.isExpertMode) {
-    return SwapButtonState.expertModeSwap
+    return SwapButtonState.ExpertModeSwap
   }
 
-  return SwapButtonState.regularSwap
+  return SwapButtonState.RegularSwap
 }

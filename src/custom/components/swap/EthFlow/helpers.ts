@@ -70,6 +70,12 @@ export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, nativ
   }
 }
 
+export type EthFlowSwapCallbackParams = {
+  showConfirm: boolean
+  straightSwap?: boolean
+  forceWrapNative?: boolean
+}
+
 export enum EthFlowState {
   SwapReady, // 0
   WrapAndApproveNeeded, // 1
@@ -319,7 +325,7 @@ export type ActionButtonParams = Pick<
     isWrap: boolean
     isNativeIn: boolean
     loading: boolean
-    handleSwap: (showSwapModal?: boolean) => Promise<void>
+    handleSwap: ({ showConfirm, straightSwap }: EthFlowSwapCallbackParams) => Promise<void>
     handleApprove: () => Promise<void>
     handleWrap: () => Promise<void>
     handleMountInExpertMode: () => Promise<void>
@@ -394,7 +400,7 @@ export function _getActionButtonProps({
       break
     case EthFlowState.SwapReady:
       label = 'Swap'
-      buttonProps.onClick = () => handleSwap(true)
+      buttonProps.onClick = () => handleSwap({ showConfirm: true })
       buttonProps.disabled = loading || hasErrored
       break
     // loading = default
