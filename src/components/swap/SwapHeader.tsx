@@ -12,6 +12,7 @@ const StyledSwapHeader = styled.div`
   color: ${({ theme }) => theme.text2};
 `
 
+// Mod: temporarily added className parameter. Must be deleted after replacing Swap by New Swap
 export default function SwapHeader({ allowedSlippage, className }: { allowedSlippage: Percent; className?: string }) {
   return (
     <StyledSwapHeader className={className}>

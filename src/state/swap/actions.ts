@@ -5,6 +5,7 @@ export enum Field {
   OUTPUT = 'OUTPUT',
 }
 
+// Mod: interface for replaceSwapState() action. Added chainId parameter, field renamed to independentField
 export interface ReplaceSwapStatePayload {
   chainId: number | null
   independentField: Field

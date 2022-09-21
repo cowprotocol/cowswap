@@ -108,6 +108,7 @@ export default function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
+              {/*Mod: theme.text2 => theme.text1*/}
               <ThemedText.Black color={theme.text1} fontWeight={500} fontSize={14}>
                 {label ?? <Trans>Recipient</Trans>}
               </ThemedText.Black>

@@ -15,15 +15,12 @@ export default function confirmPriceImpactWithoutFee(priceImpactWithoutFee: Perc
         )}%. Please type the word "confirm" to continue with this swap.`
       ) === 'confirm'
     )
-  }
-
-  if (!priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) {
+  } else if (!priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) {
     return window.confirm(
       `This swap has a price impact of at least ${ALLOWED_PRICE_IMPACT_HIGH.toFixed(
         0
       )}%. Please confirm that you would like to continue with this swap.`
     )
   }
-
   return true
 }
