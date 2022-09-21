@@ -125,9 +125,9 @@ To have the interface default to a different network when a wallet is not connec
 2. Define your own list of supported networks:
 
 ```ini
-REACT_APP_SUPPORTED_CHAIN_IDS="1,4,5,100"
+REACT_APP_SUPPORTED_CHAIN_IDS="1,100,5"
 REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_4=https://rinkeby.infura.io/v3/{YOUR_INFURA_KEY}
+REACT_APP_NETWORK_URL_5=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
 ```
 
@@ -158,7 +158,7 @@ To update its content:
 
 ## Service worker
 
-In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)  
+In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)
 The plan:
 
 1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`

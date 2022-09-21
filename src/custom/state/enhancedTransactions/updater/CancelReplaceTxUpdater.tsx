@@ -5,6 +5,7 @@ import { replaceTransaction } from 'state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { useWeb3React } from '@web3-react/core'
+import { supportedChainId } from 'utils/supportedChainId'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
   for (const hash of pendingHashes) {
@@ -56,7 +57,8 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 }
 
 export default function CancelReplaceTxUpdater(): null {
-  const { chainId, provider, account } = useWeb3React()
+  const { chainId: _chainId, provider, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)
