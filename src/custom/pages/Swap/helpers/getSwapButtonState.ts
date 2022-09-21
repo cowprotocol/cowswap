@@ -74,12 +74,18 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
 
-  if (!input.account) {
-    return SwapButtonState.WalletIsNotConnected
+  if (quoteError) {
+    const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
+
+    if (quoteErrorState) return quoteErrorState
   }
 
   if (input.isSwapSupported) {
     return SwapButtonState.SwapIsUnsupported
+  }
+
+  if (!input.account) {
+    return SwapButtonState.WalletIsNotConnected
   }
 
   if (!input.isSupportedWallet) {
@@ -96,12 +102,6 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   if (wrapType === WrapType.UNWRAP) {
     return SwapButtonState.ShouldUnwrapNativeToken
-  }
-
-  if (quoteError) {
-    const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
-
-    if (quoteErrorState) return quoteErrorState
   }
 
   if (swapBlankState || input.isGettingNewQuote) {

@@ -56,6 +56,5 @@ export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
   font-size: 18px;
   font-weight: 500;
   white-space: nowrap;
-  text-transform: ${({ stubbed }) => (stubbed ? 'none' : 'uppercase')};
   color: ${({ stubbed, theme }) => (stubbed ? theme.text2 : theme.text1)};
 `
