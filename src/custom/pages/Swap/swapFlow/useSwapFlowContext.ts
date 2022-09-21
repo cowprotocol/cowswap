@@ -66,7 +66,8 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const dispatch = useDispatch<AppDispatch>()
 
-  const { address: recipientAddress } = useENSAddress(recipient)
+  const { address: ensRecipientAddress } = useENSAddress(recipient)
+  const recipientAddress = ensRecipientAddress || recipient
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
