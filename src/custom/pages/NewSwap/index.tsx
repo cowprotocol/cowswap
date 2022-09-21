@@ -39,8 +39,8 @@ import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { SwapForm } from 'pages/NewSwap/pureComponents/SwapForm'
 import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
 import { TradeRates, TradeRatesProps } from 'pages/NewSwap/pureComponents/TradeRates'
-import { tokenViewAmount } from 'pages/NewSwap/helpers/tokenViewAmount'
 import { useTradePricesUpdate } from 'pages/NewSwap/hooks/useTradePricesUpdate'
+import { tokenViewAmount } from 'pages/NewSwap/helpers/tokenViewAmount'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -78,7 +78,7 @@ export function NewSwapPage() {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
     rawAmount: parsedAmounts.INPUT || null,
-    viewAmount: tokenViewAmount(parsedAmounts.INPUT, inputCurrencyBalance),
+    viewAmount: tokenViewAmount(parsedAmounts.INPUT, inputCurrencyBalance, independentField === Field.INPUT),
     balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
@@ -88,7 +88,7 @@ export function NewSwapPage() {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
     rawAmount: parsedAmounts.OUTPUT || null,
-    viewAmount: tokenViewAmount(parsedAmounts.OUTPUT, outputCurrencyBalance),
+    viewAmount: tokenViewAmount(parsedAmounts.OUTPUT, outputCurrencyBalance, independentField === Field.OUTPUT),
     balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,

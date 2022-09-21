@@ -4,8 +4,13 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 export function tokenViewAmount(
   amount: CurrencyAmount<Currency> | undefined,
-  balance: CurrencyAmount<Currency> | null
+  balance: CurrencyAmount<Currency> | null,
+  isIndependentField: boolean
 ): string {
+  if (isIndependentField) {
+    return amount?.toExact() || ''
+  }
+
   const maxBalance = balance ? maxAmountSpend(balance) : undefined
   const isInputCurrencyHasMaxAmount = !!(maxBalance && amount?.equalTo(maxBalance))
 
