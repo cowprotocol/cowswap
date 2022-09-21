@@ -2,8 +2,8 @@ import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 
-import { ThemedText } from '../../theme'
-import { RowBetween, RowFixed } from '../Row'
+import { ThemedText } from 'theme'
+import { RowBetween, RowFixed } from 'components/Row'
 import SettingsTab from 'components/Settings'
 
 const StyledSwapHeader = styled.div`
@@ -12,9 +12,9 @@ const StyledSwapHeader = styled.div`
   color: ${({ theme }) => theme.text2};
 `
 
-export default function SwapHeader({ allowedSlippage }: { allowedSlippage: Percent }) {
+export default function SwapHeader({ allowedSlippage, className }: { allowedSlippage: Percent; className?: string }) {
   return (
-    <StyledSwapHeader>
+    <StyledSwapHeader className={className}>
       <RowBetween>
         <RowFixed>
           <ThemedText.Black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>

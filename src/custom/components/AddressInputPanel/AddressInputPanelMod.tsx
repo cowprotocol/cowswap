@@ -5,11 +5,11 @@ import { useWeb3React } from '@web3-react/core'
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
-import useENS from '../../hooks/useENS'
+import useENS from 'hooks/useENS'
 import { ExternalLink, ThemedText } from 'theme'
-import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
+import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { AutoColumn } from 'components/Column'
+import { RowBetween } from 'components/Row'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -108,7 +108,7 @@ export default function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <ThemedText.Black color={theme.text2} fontWeight={500} fontSize={14}>
+              <ThemedText.Black color={theme.text1} fontWeight={500} fontSize={14}>
                 {label ?? <Trans>Recipient</Trans>}
               </ThemedText.Black>
               {address && chainId && (
