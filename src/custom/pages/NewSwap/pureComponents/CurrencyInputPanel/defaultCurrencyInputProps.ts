@@ -20,6 +20,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
       type: 'from',
       amountBeforeFees: '30',
       amountAfterFees: '20',
+      amountAfterFeesRaw: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
       feeAmount: '10',
     },
     currency,

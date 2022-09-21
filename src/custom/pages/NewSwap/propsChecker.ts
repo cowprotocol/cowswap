@@ -28,6 +28,7 @@ function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveA
   return (
     prev.feeAmount === next.feeAmount &&
     prev.amountBeforeFees === next.amountBeforeFees &&
+    isFractionEqual(prev.amountAfterFeesRaw, next.amountAfterFeesRaw) &&
     prev.amountAfterFees === next.amountAfterFees
   )
 }
