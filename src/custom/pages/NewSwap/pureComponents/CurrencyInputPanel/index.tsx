@@ -96,9 +96,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             )}
           </div>
           <div>
-            <styledEl.BalanceText>
+            <styledEl.FiatAmountText>
               <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatAmount} priceImpact={priceImpact} />
-            </styledEl.BalanceText>
+            </styledEl.FiatAmountText>
           </div>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>

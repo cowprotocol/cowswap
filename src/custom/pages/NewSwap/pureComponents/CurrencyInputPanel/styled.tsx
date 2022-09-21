@@ -25,7 +25,18 @@ export const CurrencyInputBox = styled.div<{ flexibleWidth: boolean }>`
   }
 
   @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    ${({ flexibleWidth }) =>
+      flexibleWidth
+        ? `
     display: block;
+    `
+        : `
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: start;
+    margin-top: 0;
+    gap: 0.5rem;
+    `}
   }
 `
 
@@ -33,10 +44,24 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   width: 100%;
   background: none;
 
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    margin: 20px 0 8px;
+    text-align: left;
+  }
+
   ${loadingOpacityMixin}
 `
 
 export const BalanceText = styled.span`
+  font-weight: 400;
+  font-size: 14px;
+
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    opacity: 0.75;
+  }
+`
+
+export const FiatAmountText = styled.span`
   font-weight: 400;
   font-size: 14px;
 `
