@@ -13,7 +13,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 - Protocol: <https://cow.fi>
 - Docs: <https://docs.cow.fi>
 - Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
-- Twitter: [@MEVprotection](https://twitter.com/MEVprotection)
+- Twitter: [@CoWSwap](https://twitter.com/CoWSwap)
 - Discord: <https://discord.com/invite/cowprotocol>
 
 Please see the:

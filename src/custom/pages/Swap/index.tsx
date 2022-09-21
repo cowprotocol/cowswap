@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import styled, { DefaultTheme } from 'styled-components/macro'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { BoxProps, Text } from 'rebass'
 
 import { ButtonSize, ThemedText } from 'theme/index'
@@ -19,8 +19,6 @@ import {
   ButtonPrimary as ButtonPrimaryMod,
   ButtonLight as ButtonLightMod,
 } from 'components/Button'
-import EthWethWrap, { Props as EthWethWrapProps } from 'components/swap/EthWethWrap'
-import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
 import { ArrowWrapperLoader, ArrowWrapperLoaderProps, Wrapper as ArrowWrapper } from 'components/ArrowWrapperLoader'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT, LONG_LOAD_THRESHOLD } from 'constants/index'
 import { Repeat } from 'react-feather'
@@ -279,41 +277,6 @@ function TradeBasicDetails({ trade, fee, ...boxProps }: TradeBasicDetailsProp) {
   )
 }
 
-function EthWethWrapMessage(props: EthWethWrapProps) {
-  return (
-    <RowBetween>
-      <EthWethWrap {...props} />
-    </RowBetween>
-  )
-}
-
-interface SwitchToWethBtnProps {
-  wrappedToken: Token
-}
-
-function SwitchToWethBtn({ wrappedToken }: SwitchToWethBtnProps) {
-  const replaceSwapState = useReplaceSwapState()
-  const { independentField, typedValue, OUTPUT } = useSwapState()
-
-  return (
-    <ButtonPrimary
-      buttonSize={ButtonSize.BIG}
-      id="swap-button"
-      onClick={() =>
-        replaceSwapState({
-          inputCurrencyId: wrappedToken.address,
-          outputCurrencyId: OUTPUT.currencyId ?? undefined,
-          typedValue,
-          recipient: null,
-          field: independentField,
-        })
-      }
-    >
-      <ThemedText.Main mb="4px">Switch to {wrappedToken.symbol}</ThemedText.Main>
-    </ButtonPrimary>
-  )
-}
-
 function FeesExceedFromAmountMessage() {
   return (
     <RowBetween>
@@ -402,8 +365,6 @@ export default function Swap(props: RouteComponentProps) {
     <Container>
       <SwapModWrapper
         TradeBasicDetails={TradeBasicDetails}
-        EthWethWrapMessage={EthWethWrapMessage}
-        SwitchToWethBtn={SwitchToWethBtn}
         FeesExceedFromAmountMessage={FeesExceedFromAmountMessage}
         BottomGrouping={BottomGrouping}
         SwapButton={SwapButton}
@@ -422,8 +383,6 @@ export default function Swap(props: RouteComponentProps) {
 
 export interface SwapProps extends RouteComponentProps {
   TradeBasicDetails: React.FC<TradeBasicDetailsProp>
-  EthWethWrapMessage: React.FC<EthWethWrapProps>
-  SwitchToWethBtn: React.FC<SwitchToWethBtnProps>
   FeesExceedFromAmountMessage: React.FC
   BottomGrouping: React.FC
   TradeLoading: React.FC<TradeLoadingProps>
