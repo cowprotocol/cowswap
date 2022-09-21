@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import { loadingOpacityMixin } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
+import { MEDIA_WIDTHS } from 'theme'
 
 export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean }>`
   padding: 1rem;
@@ -10,13 +11,21 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean }>`
   border-bottom: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '0' : 'auto')};
 `
 
-export const CurrencyInputBox = styled.div`
+export const CurrencyInputBox = styled.div<{ flexibleWidth: boolean }>`
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: ${({ flexibleWidth }) => (flexibleWidth ? 'min-content auto' : 'auto auto')};
   gap: 0.75rem;
+
+  :last-child {
+    margin-top: 0.75rem;
+  }
 
   > :last-child {
     text-align: right;
+  }
+
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    display: block;
   }
 `
 

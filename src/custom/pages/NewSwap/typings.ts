@@ -29,6 +29,7 @@ export interface TradeStateFromUrl {
 export interface CurrencyInfo {
   field: Field
   viewAmount: string
+  rawAmount: CurrencyAmount<Currency> | null
   receiveAmountInfo: ReceiveAmountInfo | null
   currency: Currency | null
   balance: CurrencyAmount<Currency> | null

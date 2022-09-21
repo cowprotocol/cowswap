@@ -17,7 +17,6 @@ import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { useSwapCurrenciesAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesAmounts'
 import usePriceImpact from 'hooks/usePriceImpact'
-import { formatSmartAmount } from 'utils/format'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'pages/NewSwap/helpers/tradeReceiveAmount'
 import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
@@ -41,6 +40,7 @@ import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { SwapForm } from 'pages/NewSwap/pureComponents/SwapForm'
 import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
 import { TradeRates, TradeRatesProps } from 'pages/NewSwap/pureComponents/TradeRates'
+import { tokenViewAmount } from 'pages/NewSwap/helpers/tokenViewAmount'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -74,11 +74,15 @@ export function NewSwapPage() {
     address: INPUT.currencyId,
   })
 
+  const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
+  const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
-    viewAmount: formatSmartAmount(parsedAmounts.INPUT) || '',
-    balance: useCurrencyBalance(account ?? undefined, currencies.INPUT) || null,
+    rawAmount: parsedAmounts.INPUT || null,
+    viewAmount: tokenViewAmount(parsedAmounts.INPUT, inputCurrencyBalance),
+    balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
   }
@@ -86,8 +90,9 @@ export function NewSwapPage() {
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
-    viewAmount: formatSmartAmount(parsedAmounts.OUTPUT) || '',
-    balance: useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null,
+    rawAmount: parsedAmounts.OUTPUT || null,
+    viewAmount: tokenViewAmount(parsedAmounts.OUTPUT, outputCurrencyBalance),
+    balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,
   }

@@ -12,6 +12,7 @@ import { ReceiveAmount } from 'pages/NewSwap/pureComponents/ReceiveAmount'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { setMaxSellTokensAnalytics } from 'utils/analytics'
 import { SwapActions } from 'state/swap/hooks'
+import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 interface BuiltItProps {
   className: string
@@ -44,7 +45,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
-  const [typedValue, setTypedValue] = useState('')
 
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -54,20 +54,20 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
   const onUserInput = useCallback(
     (typedValue: string) => {
-      setTypedValue(typedValue)
       onUserInputDispatch(field, typedValue)
     },
     [onUserInputDispatch, field]
   )
   const handleMaxInput = useCallback(() => {
-    balance && onUserInput(balance.toExact())
+    const maxBalance = maxAmountSpend(balance || undefined)
+    maxBalance && onUserInput(maxBalance.toExact())
     setMaxSellTokensAnalytics()
   }, [balance, onUserInput])
 
   return (
     <>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
-        <styledEl.CurrencyInputBox>
+        <styledEl.CurrencyInputBox flexibleWidth={true}>
           <div>
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
@@ -78,11 +78,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             <styledEl.NumericalInput
               className="token-amount-input"
-              value={viewAmount || typedValue}
+              value={viewAmount}
               onUserInput={onUserInput}
               $loading={loading}
             />
           </div>
+        </styledEl.CurrencyInputBox>
+        <styledEl.CurrencyInputBox flexibleWidth={false}>
           <div>
             {balance && (
               <>

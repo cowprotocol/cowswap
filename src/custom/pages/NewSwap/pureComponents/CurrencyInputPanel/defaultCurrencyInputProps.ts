@@ -24,6 +24,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
     },
     currency,
     balance,
+    rawAmount: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
     fiatAmount: CurrencyAmount.fromRawAmount(currency, 12 * 10 ** 18),
   },
   swapActions: {
