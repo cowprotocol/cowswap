@@ -60,6 +60,7 @@ export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): 
     prev.allowedSlippage.equalTo(next.allowedSlippage) &&
     prev.showRecipientControls === next.showRecipientControls &&
     prev.recipient === next.recipient &&
+    prev.isTradePriceUpdating === next.isTradePriceUpdating &&
     prev.allowsOffchainSigning === next.allowsOffchainSigning &&
     genericPropsChecker(prev.subsidyAndBalance, next.subsidyAndBalance) &&
     isCurrencyInfoEqual(prev.inputCurrencyInfo, next.inputCurrencyInfo) &&

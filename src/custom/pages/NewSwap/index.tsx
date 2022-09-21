@@ -14,7 +14,6 @@ import { useCurrencyBalance } from 'state/connection/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyInfo, SwapFormProps } from 'pages/NewSwap/typings'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
-import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { useSwapCurrenciesAmounts } from 'pages/NewSwap/hooks/useSwapCurrenciesAmounts'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
@@ -41,6 +40,7 @@ import { SwapForm } from 'pages/NewSwap/pureComponents/SwapForm'
 import { useShowRecipientControls } from 'pages/NewSwap/hooks/useShowRecipientControls'
 import { TradeRates, TradeRatesProps } from 'pages/NewSwap/pureComponents/TradeRates'
 import { tokenViewAmount } from 'pages/NewSwap/helpers/tokenViewAmount'
+import { useTradePricesUpdate } from 'pages/NewSwap/hooks/useTradePricesUpdate'
 
 export function NewSwapPage() {
   useSetupSwapState()
@@ -65,10 +65,7 @@ export function NewSwapPage() {
     isWrapping: isWrapUnwrapMode,
   })
 
-  const { isGettingNewQuote } = useGetQuoteAndStatus({
-    token: INPUT.currencyId,
-    chainId,
-  })
+  const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
     chainId,
     address: INPUT.currencyId,
@@ -119,7 +116,7 @@ export function NewSwapPage() {
   const swapFormProps: SwapFormProps = {
     recipient,
     allowedSlippage,
-    isGettingNewQuote,
+    isTradePriceUpdating,
     inputCurrencyInfo,
     outputCurrencyInfo,
     priceImpactParams,

@@ -10,7 +10,7 @@ export interface SwapFormProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
-  isGettingNewQuote: boolean
+  isTradePriceUpdating: boolean
   allowsOffchainSigning: boolean
   showRecipientControls: boolean
   subsidyAndBalance: BalanceAndSubsidy
