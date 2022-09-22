@@ -3,10 +3,12 @@ import { OrderID } from 'api/gnosisProtocol'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addOrUpdateOrders,
+  addPendingEthFlowOrder,
   addPendingOrder,
   cancelOrder,
   cancelOrdersBatch,
   clearOrders,
+  EthFlowOrder,
   expireOrder,
   expireOrdersBatch,
   fulfillOrder,
@@ -16,6 +18,7 @@ import {
   removeOrder,
   requestOrderCancellation,
   SerializedOrder,
+  SerializedEthFlowOrder,
   setIsOrderUnfillable,
   updateLastCheckedBlock,
   updatePresignGnosisSafeTx,
@@ -25,10 +28,16 @@ import { Writable } from 'types'
 
 export interface OrderObject {
   id: OrderID
-  order: SerializedOrder
+  order: SerializedOrder | SerializedEthFlowOrder
+  isEthFlowOrder?: boolean
 }
 
 type V2Order = Omit<OrderObject['order'], 'inputToken' | 'outputToken'>
+
+export interface EthFlowOrderObject {
+  id: string
+  order: EthFlowOrder
+}
 
 // Previous order state, to use in checks
 // in case users have older, stale state and we need to handle
@@ -126,19 +135,20 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.cancelled[id]
 }
 
-function addOrderToState(
+function addOrderToState<O extends SerializedOrder | SerializedEthFlowOrder = SerializedOrder>(
   state: Required<OrdersState>,
   chainId: ChainId,
   id: string,
   status: OrderTypeKeys,
-  order: SerializedOrder
+  order: O,
+  isEthFlowOrder?: boolean
 ): void {
   // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
   // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png
   // by creating a new object instead of trying to edit the existing one
   // Seems to be due to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
   // but only happened on Chrome
-  state[chainId][status] = { ...state[chainId][status], [id]: { order, id } }
+  state[chainId][status] = { ...state[chainId][status], [id]: { order, id, isEthFlowOrder } }
 }
 
 function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {
@@ -161,6 +171,15 @@ export default createReducer(initialState, (builder) =>
       order.openSince = order.status === OrderStatus.PRESIGNATURE_PENDING ? undefined : Date.now()
 
       addOrderToState(state, chainId, id, orderStateList, order)
+    })
+    .addCase(addPendingEthFlowOrder, (state, action) => {
+      prefillState(state, action)
+      const { order, id, chainId } = action.payload
+
+      const orderStateList = 'pending'
+      order.openSince = Date.now()
+
+      addOrderToState(state, chainId, id, orderStateList, order, true)
     })
     .addCase(preSignOrders, (state, action) => {
       prefillState(state, action)

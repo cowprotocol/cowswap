@@ -96,6 +96,7 @@ import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useEthFlowActionHandlers, useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 import Banner from 'components/swap/EthFlow/Banner'
+import { useEthFlowSwapCallback } from 'hooks/useEthFlowSwapCallback'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -479,6 +480,68 @@ export default function Swap({
     //openTransactionConfirmationModal,
     closeModals,
   })
+
+  const { callback: ethFlowSwapCallback, error: ethFlowSwapCallbackError } = useEthFlowSwapCallback({
+    trade,
+    allowedSlippage,
+    recipientAddressOrName: recipient,
+    openTransactionConfirmationModal: () => {
+      setSwapState({
+        tradeToConfirm: trade,
+        attemptingTxn: true,
+        swapErrorMessage: undefined,
+        showConfirm: true,
+        txHash: undefined,
+      })
+    },
+    closeModals,
+  })
+
+  const handleEthFlowSwap = useCallback(() => {
+    if (!ethFlowSwapCallback || (priceImpact && !confirmPriceImpactWithoutFee(priceImpact))) {
+      return
+    }
+
+    // const marketLabel = [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol].join(',')
+    // swapAnalytics('Send', marketLabel)
+
+    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    ethFlowSwapCallback()
+      .then((hash) => {
+        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+
+        // if (recipient === null) {
+        //   signSwapAnalytics('Sign', marketLabel)
+        // } else {
+        //   ;(recipientAddress ?? recipient) === account
+        //     ? signSwapAnalytics('SignAndSend', marketLabel)
+        //     : signSwapAnalytics('SignToSelf', marketLabel)
+        // }
+      })
+      .catch((error) => {
+        let swapErrorMessage /* , errorCode */
+        if (isRejectRequestProviderError(error)) {
+          swapErrorMessage = 'User rejected signing the EthFlow order'
+          // swapAnalytics('Reject', marketLabel)
+        } else {
+          swapErrorMessage = getProviderErrorMessage(error)
+
+          if (error?.code && typeof error.code === 'number') {
+            // errorCode = error.code
+          }
+          console.error('Error Signing EthFlow Order', error)
+          // swapAnalytics('Error', marketLabel, errorCode)
+        }
+
+        setSwapState({
+          attemptingTxn: false,
+          tradeToConfirm,
+          showConfirm,
+          swapErrorMessage,
+          txHash: undefined,
+        })
+      })
+  }, [ethFlowSwapCallback, priceImpact, showConfirm, tradeToConfirm])
 
   const handleSwap = useCallback(() => {
     if (!swapCallback) {
@@ -1042,8 +1105,8 @@ export default function Swap({
               <ButtonError
                 buttonSize={ButtonSize.BIG}
                 onClick={() => {
-                  if (!swapInputError && isNativeIn) {
-                    openNativeWrapModal()
+                  if (isNativeIn && !ethFlowSwapCallbackError) {
+                    handleEthFlowSwap()
                   } else {
                     if (isExpertMode) {
                       handleSwap()

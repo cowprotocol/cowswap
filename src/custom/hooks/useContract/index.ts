@@ -8,7 +8,7 @@ import {
 } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import COWSWAP_ETHFLOW_ABI from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
+import { abi as COWSWAP_ETHFLOW_ABI } from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 import V_COW_ABI from 'abis/vCow.json'
 import ENS_ABI from 'abis/ens-registrar.json'

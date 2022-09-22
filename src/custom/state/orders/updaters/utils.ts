@@ -58,6 +58,8 @@ type PopupData = {
 }
 
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
+  // TODO: revert this after backend eth flow implementation
+  if (orderFromStore.isEthFlowOrder) return null
   // Get order from API
   let orderFromApi: OrderMetaData | null = null
   try {
