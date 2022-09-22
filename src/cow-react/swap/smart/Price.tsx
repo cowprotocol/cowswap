@@ -4,7 +4,7 @@ import { Repeat } from 'react-feather'
 import TradePrice from 'components/swap/TradePrice'
 import TradeGp from 'state/swap/TradeGp'
 import styled from 'styled-components/macro'
-import { LowerSectionWrapper } from 'pages/Swap/styled'
+import { LowerSectionWrapper } from 'cow-react/swap/dumb/styled'
 import { AutoRow } from 'components/Row'
 import { useState } from 'react'
 

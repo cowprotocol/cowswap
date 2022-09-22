@@ -51,7 +51,7 @@ import { SwapButton, SwapButtonContext } from 'cow-react/swap/dumb/SwapButton/Sw
 import { RemoveRecipient } from 'cow-react/swap/smart/RemoveRecipient'
 import { Price } from 'cow-react/swap/smart/Price'
 import { TradeBasicDetails } from 'cow-react/swap/smart/TradeBasicDetails'
-import { BottomGrouping } from 'pages/Swap/styled'
+import { BottomGrouping } from 'cow-react/swap/dumb/styled'
 import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'cow-react/swap/smart/FeesDiscount'
