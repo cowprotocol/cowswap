@@ -13,7 +13,7 @@ import { AutoColumn } from 'components/Column'
 import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import * as styledEl from './styled'
 import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
-import { isSwapButtonPropsEqual } from 'pages/NewSwap/propsChecker'
+import { isSwapButtonPropsEqual } from 'cow-react/pages/NewSwap/propsChecker'
 
 export interface SwapButtonContext {
   swapButtonState: SwapButtonState
