@@ -1,4 +1,4 @@
-import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
+import { swapConfirmAtom } from 'cow-react/swap/state/swapConfirmAtom'
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 import TradeGp from 'state/swap/TradeGp'

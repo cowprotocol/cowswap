@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { transactionConfirmAtom, TransactionConfirmState } from 'pages/Swap/state/transactionConfirmAtom'
+import { transactionConfirmAtom, TransactionConfirmState } from 'cow-react/swap/state/transactionConfirmAtom'
 import { useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useCallback } from 'react'

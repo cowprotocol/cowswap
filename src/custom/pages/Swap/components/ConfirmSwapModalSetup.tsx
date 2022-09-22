@@ -4,7 +4,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { useAtomValue } from 'jotai/utils'
-import { swapConfirmAtom } from 'pages/Swap/state/swapConfirmAtom'
+import { swapConfirmAtom } from 'cow-react/swap/state/swapConfirmAtom'
 import { HandleSwapCallback } from '@src/cow-react/swap/hooks/useHandleSwap'
 import { useSwapConfirmManager } from '@src/cow-react/swap/hooks/useSwapConfirmManager'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
@@ -12,7 +12,7 @@ import { useSwapActionHandlers } from 'state/swap/hooks'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useCloseModals } from 'state/application/hooks'
-import { transactionConfirmAtom } from 'pages/Swap/state/transactionConfirmAtom'
+import { transactionConfirmAtom } from 'cow-react/swap/state/transactionConfirmAtom'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
