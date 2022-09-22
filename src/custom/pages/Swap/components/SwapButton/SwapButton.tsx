@@ -12,7 +12,7 @@ import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
 import { ApproveButton, ApproveButtonProps } from 'pages/Swap/components/ApproveButton'
 import * as styledEl from './styled'
-import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
+import { HandleSwapCallback } from '@src/cow-react/swap/hooks/useHandleSwap'
 import { isSwapButtonPropsEqual } from 'cow-react/pages/NewSwap/propsChecker'
 
 export interface SwapButtonContext {

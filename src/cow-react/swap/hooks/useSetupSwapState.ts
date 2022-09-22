@@ -3,7 +3,7 @@ import { useAppDispatch } from 'state/hooks'
 import { useEffect, useMemo } from 'react'
 import { initSwapStateFromUrl } from 'cow-react/pages/NewSwap/helpers/initSwapStateFromUrl'
 import { replaceSwapState } from 'state/swap/actions'
-import { useTradeStateFromUrl } from 'cow-react/pages/NewSwap/hooks/useTradeStateFromUrl'
+import { useTradeStateFromUrl } from 'cow-react/swap/hooks/useTradeStateFromUrl'
 import { useSwapState } from 'state/swap/hooks'
 import usePrevious from 'hooks/usePrevious'
 

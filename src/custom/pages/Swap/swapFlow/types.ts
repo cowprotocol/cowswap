@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
-import { SwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import { SwapConfirmManager } from '@src/cow-react/swap/hooks/useSwapConfirmManager'
 import { PostOrderParams } from 'utils/trade'
 import { AddOrderCallback } from 'state/orders/hooks'
 import { GPv2Settlement } from 'abis/types'

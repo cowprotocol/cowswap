@@ -17,7 +17,7 @@ import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { useTransactionConfirmModal } from 'pages/Swap/hooks/useTransactionConfirmModal'
+import { useTransactionConfirmModal } from '@src/cow-react/swap/hooks/useTransactionConfirmModal'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
