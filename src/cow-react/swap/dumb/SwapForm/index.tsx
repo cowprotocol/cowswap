@@ -1,10 +1,10 @@
 import React from 'react'
 import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
 import * as styledEl from 'cow-react/pages/NewSwap/styled'
-import { CurrencyInputPanel } from 'cow-react/pages/NewSwap/pureComponents/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from 'cow-react/pages/NewSwap/pureComponents/CurrencyArrowSeparator'
+import { CurrencyInputPanel } from 'cow-react/swap/dumb/CurrencyInputPanel'
+import { CurrencyArrowSeparator } from 'cow-react/swap/dumb/CurrencyArrowSeparator'
 import { swapPagePropsChecker } from 'cow-react/pages/NewSwap/propsChecker'
-import { AddRecipient } from 'cow-react/pages/NewSwap/pureComponents/AddRecipient'
+import { AddRecipient } from 'cow-react/swap/dumb/AddRecipient'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {

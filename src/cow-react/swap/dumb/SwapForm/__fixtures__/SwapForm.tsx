@@ -1,6 +1,6 @@
-import { SwapForm } from 'cow-react/pages/NewSwap/pureComponents/SwapForm'
+import { SwapForm } from 'cow-react/swap/dumb/SwapForm'
 import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
-import { defaultCurrencyInputPanelProps } from 'cow-react/pages/NewSwap/pureComponents/CurrencyInputPanel/defaultCurrencyInputProps'
+import { defaultCurrencyInputPanelProps } from 'cow-react/swap/dumb/CurrencyInputPanel/defaultCurrencyInputProps'
 import { GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { Percent } from '@uniswap/sdk-core'

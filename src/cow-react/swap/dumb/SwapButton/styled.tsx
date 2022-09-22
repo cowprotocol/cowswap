@@ -7,7 +7,7 @@ import { Text } from 'rebass'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import { Token } from '@uniswap/sdk-core'
 import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
-import { RowBetween } from '@src/components/Row'
+import { RowBetween } from 'components/Row'
 
 const fadeIn = `
   @keyframes fadeIn {

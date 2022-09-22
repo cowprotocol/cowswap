@@ -1,4 +1,4 @@
-import { TradeRates, TradeRatesProps } from 'cow-react/pages/NewSwap/pureComponents/TradeRates'
+import { TradeRates, TradeRatesProps } from 'cow-react/swap/dumb/TradeRates'
 import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
