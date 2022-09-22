@@ -69,7 +69,7 @@ describe('initSwapStateFromUrl() - builds a swap state considering URL params, p
 
     expect(state.inputCurrencyId).toBe(WETH[chainId]?.address)
     expect(state.outputCurrencyId).toBe(undefined)
-    expect(state.typedValue).toBe('1')
+    expect(state.typedValue).toBe('')
     expect(state.recipient).toBe(null)
     expect(state.independentField).toBe(Field.INPUT)
   })

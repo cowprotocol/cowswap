@@ -81,7 +81,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
         chainId: 137,
         independentField: 'INPUT',
         recipient: null,
-        typedValue: '1',
+        typedValue: '',
       })
     })
 
@@ -98,7 +98,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
         chainId: 1,
         independentField: 'INPUT',
         recipient: null,
-        typedValue: '1',
+        typedValue: '',
       })
     })
   })
@@ -173,7 +173,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
           chainId: 137,
           independentField: 'INPUT',
           recipient: null,
-          typedValue: '1',
+          typedValue: '',
         })
       })
     })

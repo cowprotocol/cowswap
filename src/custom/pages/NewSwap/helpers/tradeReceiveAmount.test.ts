@@ -31,13 +31,14 @@ describe('Helpers to build ReceiveAmountInfo', () => {
           })
         )
 
-        expect(value).toEqual({
+        expect(value.amountAfterFeesRaw.toExact()).toBe('0')
+        expect({ ...value, amountAfterFeesRaw: null }).toEqual({
+          amountAfterFeesRaw: null,
           amountAfterFees: '0',
           amountBeforeFees: '0',
           feeAmount: '3',
           type: 'from',
         })
-        expect(value.amountBeforeFees).toBe('0')
       })
     })
   })
@@ -58,8 +59,10 @@ describe('Helpers to build ReceiveAmountInfo', () => {
         })
       )
 
-      expect(value).toEqual({
+      expect(value.amountAfterFeesRaw.toExact()).toBe('250')
+      expect({ ...value, amountAfterFeesRaw: null }).toEqual({
         amountAfterFees: '250',
+        amountAfterFeesRaw: null,
         amountBeforeFees: '247',
         feeAmount: '-3',
         type: 'to',
