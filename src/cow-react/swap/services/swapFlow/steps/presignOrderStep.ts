@@ -1,8 +1,8 @@
-import { calculateGasMargin } from '@src/utils/calculateGasMargin'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { GPv2Settlement } from 'abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
-import { logSwapFlow, logSwapFlowError } from 'pages/Swap/swapFlow/logger'
+import { logSwapFlow, logSwapFlowError } from 'cow-react/swap/services/swapFlow/logger'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const PRESIGN_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
