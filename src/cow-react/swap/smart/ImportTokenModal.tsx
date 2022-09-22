@@ -1,11 +1,11 @@
-import { useAllTokens, useCurrency } from '@src/hooks/Tokens'
-import { Field } from '@src/state/swap/actions'
+import { useAllTokens, useCurrency } from 'hooks/Tokens'
+import { Field } from 'state/swap/actions'
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useMemo, useState } from 'react'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { useDefaultsFromURLSearch } from 'state/swap/hooks'
-import TokenWarningModal from '@src/components/TokenWarningModal'
+import TokenWarningModal from 'components/TokenWarningModal'
 
 export interface ImportTokenModalProps {
   chainId: number

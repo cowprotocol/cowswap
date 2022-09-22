@@ -18,12 +18,12 @@ import { useSwapCurrenciesAmounts } from 'cow-react/swap/hooks/useSwapCurrencies
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'cow-react/swap/helpers/tradeReceiveAmount'
-import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
+import { SwapButton } from 'cow-react/swap/dumb/SwapButton/SwapButton'
 import { useSwapButtonContext } from 'cow-react/swap/hooks/useSwapButtonContext'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { NewSwapModals, NewSwapModalsProps } from 'cow-react/pages/NewSwap/modals'
-import { ConfirmSwapModalSetupProps } from 'pages/Swap/components/ConfirmSwapModalSetup'
+import { NewSwapModals, NewSwapModalsProps } from 'cow-react/swap/dumb/modals'
+import { ConfirmSwapModalSetupProps } from 'cow-react/swap/smart/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import {
@@ -31,14 +31,14 @@ import {
   NewSwapWarningsBottomProps,
   NewSwapWarningsTop,
   NewSwapWarningsTopProps,
-} from 'cow-react/pages/NewSwap/warnings'
+} from 'cow-react/swap/dumb/warnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { SwapForm } from 'cow-react/pages/NewSwap/pureComponents/SwapForm'
+import { SwapForm } from 'cow-react/swap/dumb/SwapForm'
 import { useShowRecipientControls } from 'cow-react/swap/hooks/useShowRecipientControls'
-import { TradeRates, TradeRatesProps } from 'cow-react/pages/NewSwap/pureComponents/TradeRates'
+import { TradeRates, TradeRatesProps } from 'cow-react/swap/dumb/TradeRates'
 import { useTradePricesUpdate } from 'cow-react/swap/hooks/useTradePricesUpdate'
 import { tokenViewAmount } from 'cow-react/swap/helpers/tokenViewAmount'
 

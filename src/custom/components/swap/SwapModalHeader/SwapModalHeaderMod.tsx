@@ -31,7 +31,7 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
-import { Price } from 'pages/Swap/components/Price'
+import { Price } from 'cow-react/swap/smart/Price'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
