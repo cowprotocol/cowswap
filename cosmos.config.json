@@ -1,5 +1,9 @@
 {
-  "watchDirs": ["src"],
+  "fixturesDir": "cosmos",
+  "fixtureFileSuffix": "cosmos",
+  "watchDirs": [
+    "src/cow-react"
+  ],
   "webpack": {
     "configPath": "./cosmos.webpack.config",
     "overridePath": "cosmos.override.js"
