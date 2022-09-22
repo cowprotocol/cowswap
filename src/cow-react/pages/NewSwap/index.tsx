@@ -17,12 +17,9 @@ import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSwapCurrenciesAmounts } from 'cow-react/swap/hooks/useSwapCurrenciesAmounts'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
-import {
-  getInputReceiveAmountInfo,
-  getOutputReceiveAmountInfo,
-} from 'cow-react/pages/NewSwap/helpers/tradeReceiveAmount'
+import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'cow-react/swap/helpers/tradeReceiveAmount'
 import { SwapButton } from 'pages/Swap/components/SwapButton/SwapButton'
-import { useSwapButtonContext } from '@src/cow-react/swap/hooks/useSwapButtonContext'
+import { useSwapButtonContext } from 'cow-react/swap/hooks/useSwapButtonContext'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { NewSwapModals, NewSwapModalsProps } from 'cow-react/pages/NewSwap/modals'
@@ -43,7 +40,7 @@ import { SwapForm } from 'cow-react/pages/NewSwap/pureComponents/SwapForm'
 import { useShowRecipientControls } from 'cow-react/swap/hooks/useShowRecipientControls'
 import { TradeRates, TradeRatesProps } from 'cow-react/pages/NewSwap/pureComponents/TradeRates'
 import { useTradePricesUpdate } from 'cow-react/swap/hooks/useTradePricesUpdate'
-import { tokenViewAmount } from 'cow-react/pages/NewSwap/helpers/tokenViewAmount'
+import { tokenViewAmount } from 'cow-react/swap/helpers/tokenViewAmount'
 
 export function NewSwapPage() {
   useSetupSwapState()
