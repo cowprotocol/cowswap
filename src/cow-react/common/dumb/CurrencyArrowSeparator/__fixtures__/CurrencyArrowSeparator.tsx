@@ -1,4 +1,4 @@
-import { CurrencyArrowSeparator, CurrencyArrowSeparatorProps } from 'cow-react/swap/dumb/CurrencyArrowSeparator'
+import { CurrencyArrowSeparator, CurrencyArrowSeparatorProps } from 'cow-react/common/dumb/CurrencyArrowSeparator'
 
 const defaultProps: CurrencyArrowSeparatorProps = {
   isLoading: false,

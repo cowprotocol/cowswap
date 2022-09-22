@@ -1,6 +1,6 @@
 import { SwapForm } from 'cow-react/swap/dumb/SwapForm'
 import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
-import { defaultCurrencyInputPanelProps } from 'cow-react/swap/dumb/CurrencyInputPanel/defaultCurrencyInputProps'
+import { defaultCurrencyInputPanelProps } from 'cow-react/common/dumb/CurrencyInputPanel/defaultCurrencyInputProps'
 import { GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { Percent } from '@uniswap/sdk-core'
@@ -20,7 +20,20 @@ const defaultProps: SwapFormProps = {
   },
   subsidyAndBalance: defaultCurrencyInputPanelProps.subsidyAndBalance,
   priceImpactParams: defaultCurrencyInputPanelProps.priceImpactParams,
-  swapActions: defaultCurrencyInputPanelProps.swapActions,
+  swapActions: {
+    onCurrencySelection() {
+      /**/
+    },
+    onSwitchTokens() {
+      /**/
+    },
+    onUserInput() {
+      /**/
+    },
+    onChangeRecipient() {
+      /**/
+    },
+  },
 }
 
 export default {

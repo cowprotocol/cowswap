@@ -1,18 +1,18 @@
 import React, { useCallback, useState } from 'react'
 import * as styledEl from './styled'
-import { CurrencySelectButton } from '../CurrencySelectButton'
+import { CurrencySelectButton } from '../../../swap/dumb/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { formatSmartAmount } from 'utils/format'
-import { CurrencyInfo } from 'cow-react/pages/NewSwap/typings'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmount } from 'cow-react/swap/dumb/ReceiveAmount'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { setMaxSellTokensAnalytics } from 'utils/analytics'
-import { SwapActions } from 'state/swap/hooks'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
+import { Field } from 'state/swap/actions'
+import { CurrencyInfo } from 'cow-react/common/dumb/CurrencyInputPanel/typings'
 
 interface BuiltItProps {
   className: string
@@ -25,8 +25,9 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
-  swapActions: SwapActions
   subsidyAndBalance: BalanceAndSubsidy
+  onCurrencySelection: (field: Field, currency: Currency) => void
+  onUserInput: (field: Field, typedValue: string) => void
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
@@ -37,11 +38,11 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     className,
     priceImpactParams,
     showSetMax = false,
-    swapActions,
+    onCurrencySelection,
+    onUserInput,
     allowsOffchainSigning,
     subsidyAndBalance,
   } = props
-  const { onUserInput: onUserInputDispatch, onCurrencySelection } = swapActions
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
@@ -53,18 +54,18 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     },
     [onCurrencySelection, field]
   )
-  const onUserInput = useCallback(
+  const onUserInputDispatch = useCallback(
     (typedValue: string) => {
       setTypedValue(typedValue)
-      onUserInputDispatch(field, typedValue)
+      onUserInput(field, typedValue)
     },
-    [onUserInputDispatch, field]
+    [onUserInput, field]
   )
   const handleMaxInput = useCallback(() => {
     const maxBalance = maxAmountSpend(balance || undefined)
-    maxBalance && onUserInput(maxBalance.toExact())
+    maxBalance && onUserInputDispatch(maxBalance.toExact())
     setMaxSellTokensAnalytics()
-  }, [balance, onUserInput])
+  }, [balance, onUserInputDispatch])
 
   return (
     <>
@@ -81,7 +82,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             <styledEl.NumericalInput
               className="token-amount-input"
               value={typedValue || viewAmount}
-              onUserInput={onUserInput}
+              onUserInput={onUserInputDispatch}
               $loading={loading}
             />
           </div>
