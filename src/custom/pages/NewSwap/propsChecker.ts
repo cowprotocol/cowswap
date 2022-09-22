@@ -13,6 +13,7 @@ export function isSwapButtonPropsEqual(prev: SwapButtonContext, next: SwapButton
     prev.swapButtonState === next.swapButtonState &&
     prev.chainId === next.chainId &&
     prev.wrappedToken.address === next.wrappedToken.address &&
+    prev.swapInputError === next.swapInputError &&
     prev.wrapInputError === next.wrapInputError &&
     isFractionEqual(prev.wrapUnwrapAmount, next.wrapUnwrapAmount) &&
     prev.approveButtonProps.approvalState === next.approveButtonProps.approvalState
@@ -27,6 +28,7 @@ function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveA
   return (
     prev.feeAmount === next.feeAmount &&
     prev.amountBeforeFees === next.amountBeforeFees &&
+    isFractionEqual(prev.amountAfterFeesRaw, next.amountAfterFeesRaw) &&
     prev.amountAfterFees === next.amountAfterFees
   )
 }
@@ -36,12 +38,14 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
     prev.currency && next.currency ? prev.currency.equals(next.currency) : prev.currency === next.currency
   const isBalanceEqual = isFractionEqual(prev.balance, next.balance)
   const isFiatAmountEqual = isFractionEqual(prev.fiatAmount, next.fiatAmount)
+  const isRawAmountEqual = isFractionEqual(prev.rawAmount, next.rawAmount)
   const isViewAmountEqual = prev.viewAmount === next.viewAmount
 
   return (
     isCurrencyEqual &&
     isBalanceEqual &&
     isFiatAmountEqual &&
+    isRawAmountEqual &&
     isViewAmountEqual &&
     isReceiveAmountInfoEqual(prev.receiveAmountInfo, next.receiveAmountInfo)
   )
@@ -58,6 +62,7 @@ export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): 
     prev.allowedSlippage.equalTo(next.allowedSlippage) &&
     prev.showRecipientControls === next.showRecipientControls &&
     prev.recipient === next.recipient &&
+    prev.isTradePriceUpdating === next.isTradePriceUpdating &&
     prev.allowsOffchainSigning === next.allowsOffchainSigning &&
     genericPropsChecker(prev.subsidyAndBalance, next.subsidyAndBalance) &&
     isCurrencyInfoEqual(prev.inputCurrencyInfo, next.inputCurrencyInfo) &&

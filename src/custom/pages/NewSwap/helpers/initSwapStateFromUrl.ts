@@ -22,7 +22,7 @@ export function initSwapStateFromUrl(
   const typedValue =
     (tradeStateFromUrl.amount && !isNaN(parseFloat(tradeStateFromUrl.amount)) ? tradeStateFromUrl.amount : '') ||
     persistedSwapState?.typedValue ||
-    '1'
+    ''
 
   const independentField = calculateIndependentField(
     tradeStateFromUrl.independentField,

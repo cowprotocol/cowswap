@@ -66,7 +66,8 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const dispatch = useDispatch<AppDispatch>()
 
-  const { address: recipientAddress } = useENSAddress(recipient)
+  const { address: ensRecipientAddress } = useENSAddress(recipient)
+  const recipientAddress = ensRecipientAddress || recipient
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
@@ -96,7 +97,6 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const sellToken = trade.inputAmount.currency.wrapped
   const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
 
-  // TODO: mismatch with the original code related to wrap native token
   if (!sellToken || !buyToken) {
     return null
   }
@@ -128,8 +128,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     sellToken,
     buyToken,
     validTo,
-    // TODO: add validation from original code
-    recipient: recipient === null ? account : recipientAddress || '',
+    recipient: recipientAddress || recipient || account,
     recipientAddressOrName: recipientAddress || null,
     signer: provider.getSigner(),
     allowsOffchainSigning,

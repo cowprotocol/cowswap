@@ -12,6 +12,7 @@ import { ReceiveAmount } from 'pages/NewSwap/pureComponents/ReceiveAmount'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { setMaxSellTokensAnalytics } from 'utils/analytics'
 import { SwapActions } from 'state/swap/hooks'
+import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 interface BuiltItProps {
   className: string
@@ -44,7 +45,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
-  const [typedValue, setTypedValue] = useState('')
+  const [typedValue, setTypedValue] = useState(viewAmount)
 
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -60,14 +61,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     [onUserInputDispatch, field]
   )
   const handleMaxInput = useCallback(() => {
-    balance && onUserInput(balance.toExact())
+    const maxBalance = maxAmountSpend(balance || undefined)
+    maxBalance && onUserInput(maxBalance.toExact())
     setMaxSellTokensAnalytics()
   }, [balance, onUserInput])
 
   return (
     <>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
-        <styledEl.CurrencyInputBox>
+        <styledEl.CurrencyInputBox flexibleWidth={true}>
           <div>
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
@@ -78,15 +80,17 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             <styledEl.NumericalInput
               className="token-amount-input"
-              value={viewAmount || typedValue}
+              value={typedValue || viewAmount}
               onUserInput={onUserInput}
               $loading={loading}
             />
           </div>
+        </styledEl.CurrencyInputBox>
+        <styledEl.CurrencyInputBox flexibleWidth={false}>
           <div>
             {balance && (
               <>
-                <styledEl.BalanceText>
+                <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
                 </styledEl.BalanceText>
                 {showSetMax && <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>}
@@ -94,9 +98,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             )}
           </div>
           <div>
-            <styledEl.BalanceText>
+            <styledEl.FiatAmountText>
               <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatAmount} priceImpact={priceImpact} />
-            </styledEl.BalanceText>
+            </styledEl.FiatAmountText>
           </div>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>

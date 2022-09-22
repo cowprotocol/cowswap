@@ -8,7 +8,6 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
-import { supportedChainId } from 'utils/supportedChainId'
 import { formatSmart } from 'utils/format'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from '@src/utils/calculateGasMargin'
@@ -61,10 +60,7 @@ export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<C
 }
 
 export function useWrapType(): WrapType {
-  const { currencies } = useDerivedSwapInfo()
-  const { chainId: connectedChainId } = useWeb3React()
-  const chainId = supportedChainId(connectedChainId)
-  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useDetectNativeToken(currencies, chainId)
+  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useDetectNativeToken()
 
   const isWrap = isNativeIn && isWrappedOut
   const isUnwrap = isWrappedIn && isNativeOut
@@ -97,11 +93,10 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
 
 export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
   const { chainId } = useWeb3React()
-  const { currencies } = useDerivedSwapInfo()
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
   const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const { isNativeIn } = useDetectNativeToken(currencies, chainId)
+  const { isNativeIn } = useDetectNativeToken()
   const addTransaction = useTransactionAdder()
   const wrapType = isNativeIn ? WrapType.WRAP : WrapType.UNWRAP
   const isWrap = isNativeIn

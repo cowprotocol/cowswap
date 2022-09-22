@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import SwapHeader from 'components/swap/SwapHeader'
 import { RemoveRecipient } from 'pages/Swap/components/RemoveRecipient'
+import { MEDIA_WIDTHS } from 'theme'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -13,6 +14,11 @@ export const ContainerBox = styled.div`
   border-radius: 16px;
   box-shadow: 4px 4px 0 ${({ theme }) => theme.black};
   background: ${({ theme }) => theme.bg1};
+
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    box-shadow: none;
+    border: 0;
+  }
 `
 
 export const Header = styled.div`

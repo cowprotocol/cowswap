@@ -5,6 +5,7 @@ import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies
 import { queryParametersToSwapState } from './hooks'
 
 export interface SwapState {
+  // Mod: added chainId
   chainId: number | null
   readonly independentField: Field
   readonly typedValue: string
@@ -18,10 +19,12 @@ export interface SwapState {
   readonly recipient: string | null
 }
 
+// Mod: added second parameter
 const initialState: SwapState = queryParametersToSwapState(parsedQueryString(), null)
 
 export default createReducer<SwapState>(initialState, (builder) =>
   builder
+    // Mod: ranamed field => independentField, added chainId
     .addCase(replaceSwapState, (state, { payload }) => {
       const { chainId, typedValue, recipient, independentField, inputCurrencyId, outputCurrencyId } = payload
       return {

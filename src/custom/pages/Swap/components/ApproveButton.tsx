@@ -167,7 +167,7 @@ export function ApproveButton(props: ApproveButtonProps) {
                   </Trans>
                 }
               >
-                <HelpCircle size="20" color={'white'} />
+                <HelpCircle size="20" color={theme.black} />
               </MouseoverTooltip>
             )}
           </span>

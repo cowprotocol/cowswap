@@ -31,12 +31,13 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
 export const ArrowDownIcon = styled(ArrowDown)`
   stroke: ${({ theme }) => theme.swap.arrowDown.color};
 
-  height: 75%;
-  margin-top: 3px;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
 `
 
 export const CowImg = styled.img`
   width: 100%;
   border-radius: 10px;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.bg4};
 `

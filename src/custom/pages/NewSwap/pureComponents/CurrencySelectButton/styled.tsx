@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
+import { MEDIA_WIDTHS } from 'theme'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed: boolean }>`
   display: flex;
@@ -11,7 +12,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   border: 0;
   outline: none;
   background-color: ${({ theme, stubbed }) => (stubbed ? theme.primary1 : theme.bg1)};
-  box-shadow: 0 6px 10px rgb(0 0 0 / 8%);
+  box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 10px rgb(0 0 0 / 8%)' : 'none')};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   border-radius: 16px;
   padding: 8px;
@@ -22,6 +23,11 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
     box-shadow: none !important;
     transform: scale(0.99);
   }
+
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    width: 100%;
+    justify-content: start;
+  }
 `
 
 export const ArrowDown = styled(DropDown)`
@@ -30,6 +36,10 @@ export const ArrowDown = styled(DropDown)`
   path {
     stroke: ${({ theme }) => theme.text1};
     stroke-width: 1.5px;
+  }
+
+  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+    margin-left: auto;
   }
 `
 
@@ -45,6 +55,6 @@ export const ArrowDownStubbed = styled(DropDown)`
 export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
   font-size: 18px;
   font-weight: 500;
-  text-transform: ${({ stubbed }) => (stubbed ? 'none' : 'uppercase')};
+  white-space: nowrap;
   color: ${({ stubbed, theme }) => (stubbed ? theme.text2 : theme.text1)};
 `

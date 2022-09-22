@@ -102,7 +102,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
     </GreyCard>
   ),
   [SwapButtonState.Loading]: () => (
-    <ButtonPrimary buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <styledEl.SwapButtonBox showLoading={true}></styledEl.SwapButtonBox>
     </ButtonPrimary>
   ),

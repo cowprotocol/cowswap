@@ -176,6 +176,12 @@ export default function Swap({ history, location, className }: RouteComponentPro
     }
   }, [chainId, history, location.pathname, previousChainId])
 
+  // Reset recipient once on page load
+  useEffect(() => {
+    onChangeRecipient(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const maxInputAmount: CurrencyAmount<Currency> | undefined = useMemo(
     () => maxAmountSpend(currencyBalances[Field.INPUT]),
     [currencyBalances]

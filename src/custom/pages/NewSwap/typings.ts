@@ -10,7 +10,7 @@ export interface SwapFormProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   allowedSlippage: Percent
-  isGettingNewQuote: boolean
+  isTradePriceUpdating: boolean
   allowsOffchainSigning: boolean
   showRecipientControls: boolean
   subsidyAndBalance: BalanceAndSubsidy
@@ -29,6 +29,7 @@ export interface TradeStateFromUrl {
 export interface CurrencyInfo {
   field: Field
   viewAmount: string
+  rawAmount: CurrencyAmount<Currency> | null
   receiveAmountInfo: ReceiveAmountInfo | null
   currency: Currency | null
   balance: CurrencyAmount<Currency> | null

@@ -1,4 +1,4 @@
-import { SwapForm } from 'pages/NewSwap/components/SwapForm'
+import { SwapForm } from 'pages/NewSwap/pureComponents/SwapForm'
 import { SwapFormProps } from 'pages/NewSwap/typings'
 import { defaultCurrencyInputPanelProps } from 'pages/NewSwap/pureComponents/CurrencyInputPanel/defaultCurrencyInputProps'
 import { GNO } from 'constants/tokens'
@@ -8,7 +8,7 @@ import { Percent } from '@uniswap/sdk-core'
 const defaultProps: SwapFormProps = {
   recipient: '0x000',
   allowedSlippage: new Percent(12, 10_000),
-  isGettingNewQuote: false,
+  isTradePriceUpdating: false,
   allowsOffchainSigning: true,
   showRecipientControls: true,
   inputCurrencyInfo: {
