@@ -18,8 +18,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ThemeContext } from 'styled-components/macro'
 import usePrevious from '@src/hooks/usePrevious'
 import { ButtonError } from 'components/Button'
-import { HandleSwapCallback } from 'pages/Swap/hooks/useHandleSwap'
-import { useSwapConfirmManager } from 'pages/Swap/hooks/useSwapConfirmManager'
+import { HandleSwapCallback } from '@src/cow-react/swap/hooks/useHandleSwap'
+import { useSwapConfirmManager } from '@src/cow-react/swap/hooks/useSwapConfirmManager'
 import { TransactionResponse } from '@ethersproject/providers'
 
 export interface ApproveButtonProps {

@@ -57,7 +57,7 @@ import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from 'pages/Swap/components/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
 import EthFlowModal from 'components/swap/EthFlow'
-import { useSwapButtonContext } from 'pages/Swap/hooks/useSwapButtonContext'
+import { useSwapButtonContext } from '@src/cow-react/swap/hooks/useSwapButtonContext'
 import { Routes } from 'constants/routes'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
