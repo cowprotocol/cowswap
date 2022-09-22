@@ -1,12 +1,12 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
-import { SwapConfirmManager } from '@src/cow-react/swap/hooks/useSwapConfirmManager'
+import { SwapConfirmManager } from 'cow-react/swap/hooks/useSwapConfirmManager'
 import { PostOrderParams } from 'utils/trade'
 import { AddOrderCallback } from 'state/orders/hooks'
 import { GPv2Settlement } from 'abis/types'
 import { AppDispatch } from 'state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import { SwapFlowAnalyticsContext } from 'pages/Swap/swapFlow/steps/analytics'
+import { SwapFlowAnalyticsContext } from 'cow-react/swap/services/swapFlow/steps/analytics'
 
 export interface SwapFlowContext {
   context: {
