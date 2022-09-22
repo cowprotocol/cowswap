@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { PriceImpact } from 'hooks/usePriceImpact'
-import { ReceiveAmountInfo } from 'cow-react/pages/NewSwap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfo } from 'cow-react/swap/helpers/tradeReceiveAmount'
 import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 

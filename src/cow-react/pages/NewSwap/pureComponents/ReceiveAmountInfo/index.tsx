@@ -1,6 +1,6 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { ReceiveAmountInfo } from 'cow-react/pages/NewSwap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfo } from 'cow-react/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
