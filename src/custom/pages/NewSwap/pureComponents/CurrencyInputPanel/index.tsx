@@ -45,6 +45,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
+  const [typedValue, setTypedValue] = useState(viewAmount)
 
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -54,6 +55,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
   const onUserInput = useCallback(
     (typedValue: string) => {
+      setTypedValue(typedValue)
       onUserInputDispatch(field, typedValue)
     },
     [onUserInputDispatch, field]
@@ -78,7 +80,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             <styledEl.NumericalInput
               className="token-amount-input"
-              value={viewAmount}
+              value={typedValue || viewAmount}
               onUserInput={onUserInput}
               $loading={loading}
             />
