@@ -45,7 +45,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   background: none;
 
   @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    margin: 20px 0 8px;
+    margin: 20px 0 0 8px;
     text-align: left;
   }
 

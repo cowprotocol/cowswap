@@ -12,7 +12,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   border: 0;
   outline: none;
   background-color: ${({ theme, stubbed }) => (stubbed ? theme.primary1 : theme.bg1)};
-  box-shadow: 0 6px 10px rgb(0 0 0 / 8%);
+  box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 10px rgb(0 0 0 / 8%)' : 'none')};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   border-radius: 16px;
   padding: 8px;
