@@ -21,6 +21,4 @@ const Custom = () => {
   return <CurrencySelectButton {...useCustomProps()} />
 }
 
-export default {
-  Custom: <Custom />,
-}
+export default Custom
