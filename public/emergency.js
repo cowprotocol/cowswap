@@ -1,6 +1,6 @@
 // Redirect from the outdated domain
-if (location.host === 'cowswap.exchange') {
-  location.href = 'https://swap.cow.fi'
+if (window.location.host === 'cowswap.exchange') {
+  window.location.href = 'https://swap.cow.fi'
 }
 
 /**
