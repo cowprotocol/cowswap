@@ -8,6 +8,4 @@ const defaultProps: CurrencyArrowSeparatorProps = {
   },
 }
 
-export default {
-  Default: <CurrencyArrowSeparator {...defaultProps} />,
-}
+export default <CurrencyArrowSeparator {...defaultProps} />
