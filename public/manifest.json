@@ -1,7 +1,7 @@
 {
   "background_color": "#fff",
   "display": "standalone",
-  "homepage_url": "https://cowswap.exchange",
+  "homepage_url": "https://swap.cow.fi",
   "description": "CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV",
   "iconPath": "favicon.png",
   "icons": [

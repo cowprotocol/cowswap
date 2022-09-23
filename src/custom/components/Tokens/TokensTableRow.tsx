@@ -14,13 +14,14 @@ import {
   TableButton,
   ApproveLabel,
   CustomLimit,
+  BalanceValue,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { formatMax, formatSmart } from 'utils/format'
 import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import { CardsSpinner } from 'pages/Account/styled'
+import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
@@ -28,6 +29,9 @@ import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
 import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
+import Loader from 'components/Loader'
+import { getBlockExplorerUrl } from 'utils'
+import { SupportedChainId as ChainId } from 'constants/chains'
 
 type DataRowParams = {
   tokenData: Token
@@ -48,7 +52,7 @@ const DataRow = ({
   openTransactionConfirmationModal,
   toggleWalletModal,
 }: DataRowParams) => {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET } = useWeb3React()
 
   const theme = useTheme()
 
@@ -100,13 +104,24 @@ const DataRow = ({
   const isPendingOnchainApprove = approvalState === ApprovalState.PENDING
   const isPendingApprove = !isApproved && (approving || isPendingOnchainApprove)
 
-  const noBalance = !balance || balance?.equalTo(0)
-  const noAllowance = !currentAllowance || currentAllowance.equalTo(0)
+  const hasZeroBalance = !balance || balance?.equalTo(0)
+  const hasNoAllowance = !currentAllowance || currentAllowance.equalTo(0)
+
+  // This is so we only create fiat value request if there is a balance
+  const fiatValue = useMemo(() => {
+    if (!balance && account) {
+      return <Loader />
+    } else if (hasZeroBalance) {
+      return <BalanceValue hasBalance={false}>0</BalanceValue>
+    } else {
+      return <FiatBalanceCell balance={balance} />
+    }
+  }, [account, balance, hasZeroBalance])
 
   const displayApproveContent = useMemo(() => {
     if (isPendingApprove) {
       return <CardsSpinner />
-    } else if (!isApproved && !noAllowance) {
+    } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
           <TableButton onClick={handleApprove} color={theme.primary1}>
@@ -120,7 +135,7 @@ const DataRow = ({
           </ApproveLabel>
         </CustomLimit>
       )
-    } else if (!isApproved || noAllowance) {
+    } else if (!isApproved || hasNoAllowance) {
       return (
         <TableButton onClick={handleApprove} color={theme.primary1}>
           Approve
@@ -129,7 +144,7 @@ const DataRow = ({
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, noAllowance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.primary1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -151,31 +166,31 @@ const DataRow = ({
           <ResponsiveLogo currency={tokenData} />
         </RowFixed>
 
-        <TokenText>
-          <LargeOnly style={{ marginLeft: '10px' }}>
-            <Label>{tokenData.symbol}</Label>
-          </LargeOnly>
+        <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <TokenText>
+            <LargeOnly style={{ marginLeft: '10px' }}>
+              <Label>{tokenData.symbol}</Label>
+            </LargeOnly>
 
-          <HideLarge style={{ marginLeft: '10px' }}>
-            <RowFixed>
-              <Label fontWeight={400} ml="8px" color={theme.text1}>
-                {tokenData.name}
-              </Label>
-              <Label ml="8px" color={theme.primary5}>
-                ({tokenData.symbol})
-              </Label>
-            </RowFixed>
-          </HideLarge>
-        </TokenText>
+            <HideLarge style={{ marginLeft: '10px' }}>
+              <RowFixed>
+                <Label fontWeight={400} ml="8px" color={theme.text1}>
+                  {tokenData.name}
+                </Label>
+                <Label ml="8px" color={theme.primary5}>
+                  ({tokenData.symbol})
+                </Label>
+              </RowFixed>
+            </HideLarge>
+          </TokenText>
+        </ExtLink>
       </Cell>
 
       <Cell>
         <BalanceCell balance={balance} />
       </Cell>
 
-      <Cell>
-        <FiatBalanceCell balance={balance} />
-      </Cell>
+      <Cell>{fiatValue}</Cell>
 
       <Cell>
         <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)} color={theme.green1}>
@@ -184,7 +199,7 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <TableButton disabled={noBalance} onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
+        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
           Sell
         </TableButton>
       </Cell>

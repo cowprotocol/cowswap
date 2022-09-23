@@ -1,9 +1,10 @@
 import { SupportedChainId } from 'constants/chains'
 import { ClientError, gql, GraphQLClient } from 'graphql-request'
-import { EnsNamesQuery } from 'state/data/generated'
+import { EnsNamesQuery } from 'pages/Account/ens/types'
 
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {
   [SupportedChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+  [SupportedChainId.GOERLI]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
   [SupportedChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
 }
 

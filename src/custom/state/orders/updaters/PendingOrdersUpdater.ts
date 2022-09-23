@@ -27,6 +27,8 @@ import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import ms from 'ms.macro'
 import { openNpsAppziSometimes } from 'utils/appzi'
 import { timeSinceInSeconds } from 'utils/time'
+import { getExplorerOrderLink } from 'utils/explorer'
+import { supportedChainId } from 'utils/supportedChainId'
 
 const PENDING_TOO_LONG_TIME = ms`5 min`
 
@@ -120,18 +122,7 @@ async function _updateOrders({
   if (!pending.length) {
     return
   } else {
-    // Check if there is any order pending for a long time
-    // If so, trigger appzi
-    const now = Date.now()
-    for (const { openSince } of pending) {
-      // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
-      if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
-        // Trigger NPS display, controlled by Appzi
-        openNpsAppziSometimes({ waitedTooLong: true, secondsSinceOpen: timeSinceInSeconds(openSince) })
-        // Break the loop, don't need to show more than once
-        break
-      }
-    }
+    _triggerNps(pending, chainId)
   }
 
   // Iterate over pending orders fetching API data
@@ -191,8 +182,31 @@ async function _updateOrders({
   await _updatePresignGnosisSafeTx(chainId, orders, getSafeInfo, updatePresignGnosisSafeTx)
 }
 
+function _triggerNps(pending: Order[], chainId: ChainId) {
+  // Check if there is any order pending for a long time
+  // If so, trigger appzi
+  const now = Date.now()
+
+  for (const { openSince, id: orderId } of pending) {
+    // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
+    if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
+      const explorerUrl = getExplorerOrderLink(chainId, orderId)
+      // Trigger NPS display, controlled by Appzi
+      openNpsAppziSometimes({
+        waitedTooLong: true,
+        secondsSinceOpen: timeSinceInSeconds(openSince),
+        explorerUrl,
+        chainId,
+      })
+      // Break the loop, don't need to show more than once
+      break
+    }
+  }
+}
+
 export function PendingOrdersUpdater(): null {
-  const { chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
 
   const pending = usePendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises

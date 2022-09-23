@@ -31,8 +31,7 @@ const WRAPPED_LIST = 'wrapped.tokensoft.eth'
 const RINKEBY_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/rinkeby-token-list.json'
 
 // Goerli Default
-// TODO: This should be reverted back to main before merge
-const GOERLI_LIST = RAW_CODE_LINK + '/cypress-goerli/src/custom/tokens/goerli-token-list.json'
+const GOERLI_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/goerli-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'

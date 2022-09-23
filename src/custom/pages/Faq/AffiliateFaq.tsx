@@ -8,6 +8,10 @@ import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
 import { Routes } from 'constants/routes'
+import { BARN_URL, PRODUCTION_URL } from 'constants/index'
+
+const PROD = `https://${PRODUCTION_URL}`
+const BARN = `https://${BARN_URL}`
 
 export default function AffiliateFaq() {
   const { toc, faqRef } = useToC()
@@ -152,14 +156,14 @@ export default function AffiliateFaq() {
           <ul>
             <li>
               The production version:{' '}
-              <ExternalLinkFaq href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
-                https://cowswap.exchange
+              <ExternalLinkFaq href={PROD} target="_blank" rel="noopener noreferrer">
+                {PROD}
               </ExternalLinkFaq>
             </li>
             <li>
               The public test version:{' '}
-              <ExternalLinkFaq href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
-                https://barn.cowswap.exchange
+              <ExternalLinkFaq href={BARN} target="_blank" rel="noopener noreferrer">
+                {BARN}
               </ExternalLinkFaq>
             </li>
           </ul>
@@ -170,12 +174,12 @@ export default function AffiliateFaq() {
 
           <p>
             Thus, when accessing{' '}
-            <ExternalLinkFaq href="https://cowswap.exchange" target="_blank" rel="noopener noreferrer">
-              https://cowswap.exchange
+            <ExternalLinkFaq href={PROD} target="_blank" rel="noopener noreferrer">
+              {PROD}
             </ExternalLinkFaq>{' '}
             you will see orders/trades placed only using this interface. The same is true for orders/trades placed on{' '}
-            <ExternalLinkFaq href="https://barn.cowswap.exchange" target="_blank" rel="noopener noreferrer">
-              https://barn.cowswap.exchange
+            <ExternalLinkFaq href={BARN} target="_blank" rel="noopener noreferrer">
+              {BARN}
             </ExternalLinkFaq>
             .
           </p>

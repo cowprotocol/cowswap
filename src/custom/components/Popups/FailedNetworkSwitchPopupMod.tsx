@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { CHAIN_INFO } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import { useContext } from 'react'
 import { AlertCircle } from 'react-feather'
@@ -8,6 +7,10 @@ import styled, { ThemeContext } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
+
+import { getChainInfo } from 'constants/chainInfo'
+import { useMemo } from 'react'
+import UnsupportedNetworkMessage from 'components/UnsupportedNetworkMessage'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -20,8 +23,19 @@ export default function FailedNetworkSwitchPopup({
   chainId: SupportedChainId
   isUnsupportedNetwork?: boolean
 }) {
-  const chainInfo = CHAIN_INFO[chainId]
+  const chainInfo = getChainInfo(chainId)
   const theme = useContext(ThemeContext)
+
+  const errorMessage = useMemo(() => {
+    return isUnsupportedNetwork ? (
+      <UnsupportedNetworkMessage />
+    ) : (
+      <Trans>
+        Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfo?.label}, you must
+        change the network in your wallet.
+      </Trans>
+    )
+  }, [chainInfo, isUnsupportedNetwork])
 
   return (
     <RowNoFlex>
@@ -30,11 +44,7 @@ export default function FailedNetworkSwitchPopup({
       </div>
       <AutoColumn gap="8px">
         <ThemedText.Body fontWeight={500} color={isUnsupportedNetwork ? theme.text2 : theme.text1}>
-          <Trans>
-            {isUnsupportedNetwork
-              ? `Please connect your wallet to one of the supported networks: Ethereum Mainnet or Gnosis Chain.`
-              : `Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on ${chainInfo.label}, you must change the network in your wallet.`}
-          </Trans>
+          <Trans>{errorMessage}</Trans>
         </ThemedText.Body>
       </AutoColumn>
     </RowNoFlex>

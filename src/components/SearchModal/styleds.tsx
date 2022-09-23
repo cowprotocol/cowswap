@@ -20,6 +20,11 @@ export const PaddedColumn = styled(AutoColumn)`
   padding: 20px;
 `
 
+export const PaddedRow = styled(RowBetween)`
+  padding: 20px;
+  padding-bottom: 0;
+`
+
 export const MenuItem = styled(RowBetween)`
   padding: 4px 20px;
   height: 56px;
