@@ -63,6 +63,7 @@ export const ACCOUNT_MENU: InternalLink[] = [
 
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
+  { title: 'Limit orders', url: Routes.LIMIT_ORDER },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',

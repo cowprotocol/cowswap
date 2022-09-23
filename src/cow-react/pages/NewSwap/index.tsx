@@ -12,7 +12,7 @@ import { Field } from 'state/swap/actions'
 import { useSetupSwapState } from 'cow-react/swap/hooks/useSetupSwapState'
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { CurrencyInfo, SwapFormProps } from 'cow-react/pages/NewSwap/typings'
+import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSwapCurrenciesAmounts } from 'cow-react/swap/hooks/useSwapCurrenciesAmounts'
 import usePriceImpact from 'hooks/usePriceImpact'
@@ -41,6 +41,7 @@ import { useShowRecipientControls } from 'cow-react/swap/hooks/useShowRecipientC
 import { TradeRates, TradeRatesProps } from 'cow-react/swap/dumb/TradeRates'
 import { useTradePricesUpdate } from 'cow-react/swap/hooks/useTradePricesUpdate'
 import { tokenViewAmount } from 'cow-react/swap/helpers/tokenViewAmount'
+import { CurrencyInfo } from 'cow-react/common/dumb/CurrencyInputPanel/typings'
 
 export function NewSwapPage() {
   useSetupSwapState()

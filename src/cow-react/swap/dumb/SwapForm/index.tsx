@@ -1,10 +1,10 @@
 import React from 'react'
 import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
 import * as styledEl from 'cow-react/pages/NewSwap/styled'
-import { CurrencyInputPanel } from 'cow-react/swap/dumb/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from 'cow-react/swap/dumb/CurrencyArrowSeparator'
+import { CurrencyInputPanel } from 'cow-react/common/dumb/CurrencyInputPanel'
+import { CurrencyArrowSeparator } from 'cow-react/common/dumb/CurrencyArrowSeparator'
 import { swapPagePropsChecker } from 'cow-react/pages/NewSwap/propsChecker'
-import { AddRecipient } from 'cow-react/swap/dumb/AddRecipient'
+import { AddRecipient } from 'cow-react/common/dumb/AddRecipient'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {
@@ -34,7 +34,8 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <CurrencyInputPanel
         id="swap-currency-input"
         loading={currenciesLoadingInProgress}
-        swapActions={swapActions}
+        onCurrencySelection={swapActions.onCurrencySelection}
+        onUserInput={swapActions.onUserInput}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
         currencyInfo={inputCurrencyInfo}
@@ -51,7 +52,8 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <CurrencyInputPanel
         id="swap-currency-output"
         loading={currenciesLoadingInProgress}
-        swapActions={swapActions}
+        onCurrencySelection={swapActions.onCurrencySelection}
+        onUserInput={swapActions.onUserInput}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
         currencyInfo={outputCurrencyInfo}

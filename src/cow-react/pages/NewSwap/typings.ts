@@ -1,9 +1,8 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { Field } from 'state/swap/actions'
 import { PriceImpact } from 'hooks/usePriceImpact'
-import { ReceiveAmountInfo } from 'cow-react/swap/helpers/tradeReceiveAmount'
 import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
+import { CurrencyInfo } from 'cow-react/common/dumb/CurrencyInputPanel/typings'
 
 export interface SwapFormProps {
   recipient: string | null
@@ -24,16 +23,6 @@ export interface TradeStateFromUrl {
   amount: string | null
   independentField: string | null
   recipient: string | null
-}
-
-export interface CurrencyInfo {
-  field: Field
-  viewAmount: string
-  rawAmount: CurrencyAmount<Currency> | null
-  receiveAmountInfo: ReceiveAmountInfo | null
-  currency: Currency | null
-  balance: CurrencyAmount<Currency> | null
-  fiatAmount: CurrencyAmount<Currency> | null
 }
 
 export interface CurrenciesBalances {

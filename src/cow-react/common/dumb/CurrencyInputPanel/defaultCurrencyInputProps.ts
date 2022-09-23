@@ -1,4 +1,4 @@
-import { CurrencyInputPanelProps } from 'cow-react/swap/dumb/CurrencyInputPanel/index'
+import { CurrencyInputPanelProps } from 'cow-react/common/dumb/CurrencyInputPanel/index'
 import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { COW } from 'constants/tokens'
@@ -28,19 +28,11 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
     rawAmount: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
     fiatAmount: CurrencyAmount.fromRawAmount(currency, 12 * 10 ** 18),
   },
-  swapActions: {
-    onCurrencySelection() {
-      /**/
-    },
-    onSwitchTokens() {
-      /**/
-    },
-    onUserInput() {
-      /**/
-    },
-    onChangeRecipient() {
-      /**/
-    },
+  onCurrencySelection() {
+    /**/
+  },
+  onUserInput() {
+    /**/
   },
   priceImpactParams: {
     priceImpact: new Percent(2, 10_000),
