@@ -8,11 +8,17 @@ import ToC from './ToC'
 import { FaqMenu } from './Menu'
 import { Routes } from 'constants/routes'
 
+import { Helmet } from 'react-helmet'
+import { APP_TITLE } from 'constants/index'
+
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()
 
   return (
     <Wrapper ref={faqRef}>
+      <Helmet>
+        <title>Token FAQ - {APP_TITLE}</title>
+      </Helmet>
       <FaqMenu />
       <Page>
         <ToC toc={toc} name="Token FAQ" />

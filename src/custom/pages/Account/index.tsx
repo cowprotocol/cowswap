@@ -11,6 +11,9 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Title } from 'components/Page'
 
+import { Helmet } from 'react-helmet'
+import { APP_TITLE } from 'constants/index'
+
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
 const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
@@ -40,6 +43,10 @@ const Overview = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>Account Overview - {APP_TITLE}</title>
+      </Helmet>
+
       {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
 
       <CardsWrapper>

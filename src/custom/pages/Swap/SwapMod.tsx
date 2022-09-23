@@ -68,7 +68,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 // import AppBody from 'pages/AppBody'
 
 // MOD imports
-import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT, APP_TITLE } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { HashLink } from 'react-router-hash-link'
@@ -94,6 +94,7 @@ import { approvalAnalytics, swapAnalytics, setMaxSellTokensAnalytics, signSwapAn
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { Helmet } from 'react-helmet'
 
 // const AlertWrapper = styled.div`
 //   max-width: 460px;
@@ -633,6 +634,9 @@ export default function Swap({
 
   return (
     <>
+      <Helmet>
+        <title>{APP_TITLE}</title>
+      </Helmet>
       <TokenWarningModal
         isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
         tokens={importTokensNotInDefault}

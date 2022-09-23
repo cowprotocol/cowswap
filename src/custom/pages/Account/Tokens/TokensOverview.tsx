@@ -33,6 +33,9 @@ import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import { CloseIcon } from 'theme'
 
+import { Helmet } from 'react-helmet'
+import { APP_TITLE } from 'constants/index'
+
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
   FAVORITE_TOKENS = 'FAVORITE_TOKENS',
@@ -160,6 +163,9 @@ export default function TokensOverview() {
 
   return (
     <Overview useFlex={false} padding={'20px 30px 30px'}>
+      <Helmet>
+        <title>Tokens Overview - {APP_TITLE}</title>
+      </Helmet>
       {isChainSupported && (
         <AccountHeading>
           <LeftSection>
