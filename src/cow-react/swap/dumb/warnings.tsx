@@ -1,6 +1,6 @@
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
-import { CompatibilityIssuesWarning } from 'cow-react/swap/smart/CompatibilityIssuesWarning'
+import { CompatibilityIssuesWarning } from 'cow-react/swap/dumb/CompatibilityIssuesWarning'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
