@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 // import { Trade } from '@uniswap/router-sdk'
 import { /* Currency,  */ Percent /* , TradeType */ } from '@uniswap/sdk-core'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 // import { InterfaceTrade } from 'state/routing/types'
 // import { tradeMeaningfullyDiffers } from 'utils/tradeMeaningFullyDiffer'
 
@@ -16,13 +16,14 @@ import SwapModalHeader from 'components/swap/SwapModalHeader'
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { SwapConfirmState } from 'pages/Swap/state/swapConfirmAtom'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
  * @param tradeA trade A
  * @param tradeB trade B
  */
-/* 
+/*
 function tradeMeaningfullyDiffers(
   ...args:
     | [V2Trade<Currency, Currency, TradeType>, V2Trade<Currency, Currency, TradeType>]
@@ -42,35 +43,26 @@ function tradeMeaningfullyDiffers(tradeA: TradeGp, tradeB: TradeGp): boolean {
 
 export default function ConfirmSwapModal({
   trade,
-  originalTrade,
+  swapConfirmState,
   onAcceptChanges,
   allowedSlippage,
   onConfirm,
   onDismiss,
   recipient,
-  priceImpact, // mod
-  swapErrorMessage,
-  isOpen,
-  attemptingTxn,
-  txHash,
-  PendingTextComponent, // mod
+  priceImpact,
+  PendingTextComponent,
 }: {
-  isOpen: boolean
-  // trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
-  // originalTrade: Trade<Currency, Currency, TradeType> | undefined
+  swapConfirmState: SwapConfirmState
   trade: TradeGp | undefined
-  originalTrade: TradeGp | undefined
-  attemptingTxn: boolean
-  txHash: string | undefined
   recipient: string | null
   priceImpact?: Percent
   allowedSlippage: Percent
   onAcceptChanges: () => void
   onConfirm: () => void
-  swapErrorMessage: ReactNode | undefined
   onDismiss: () => void
   PendingTextComponent: (props: { trade: TradeGp | undefined }) => JSX.Element // mod
 }) {
+  const { swapErrorMessage, showConfirm, attemptingTxn, txHash, tradeToConfirm: originalTrade } = swapConfirmState
   const { allowsOffchainSigning } = useWalletInfo()
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
@@ -124,7 +116,7 @@ export default function ConfirmSwapModal({
 
   return (
     <TransactionConfirmationModal
-      isOpen={isOpen}
+      isOpen={showConfirm}
       onDismiss={onDismiss}
       attemptingTxn={attemptingTxn}
       hash={txHash}

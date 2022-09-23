@@ -113,3 +113,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
     ],
   },
 ]
+
+if (localStorage.getItem('enableNewSwap')) {
+  MAIN_MENU.splice(1, 0, { title: 'New Swap', url: Routes.NEW_SWAP })
+}

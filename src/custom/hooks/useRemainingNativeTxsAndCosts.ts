@@ -3,10 +3,11 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { _estimateTxCost, _isLowBalanceCheck, _getAvailableTransactions } from 'components/swap/EthFlow/helpers'
 import { useGasPrices } from 'state/gas/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { Props } from 'components/swap/EthFlow'
 
-type RemainingTxAndCostsParams = Pick<Props, 'nativeInput' | 'native'> & {
+type RemainingTxAndCostsParams = {
   nativeBalance: CurrencyAmount<Currency> | undefined
+  nativeInput: CurrencyAmount<Currency> | undefined
+  native: Currency | undefined
 }
 
 export default function useRemainingNativeTxsAndCosts({
