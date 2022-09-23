@@ -1,5 +1,5 @@
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
-import { useExpertModeManager, useIsRecipientToggleVisible } from '@src/state/user/hooks'
+import { useExpertModeManager, useIsRecipientToggleVisible } from 'state/user/hooks'
 import { useMemo } from 'react'
 
 export function useShowRecipientControls(): boolean {
