@@ -2,7 +2,7 @@
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
-import { Suspense, lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Routes } from 'constants/routes'
 
@@ -13,7 +13,7 @@ import { version } from '@src/../package.json'
 import { environmentName } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
-import { DUNE_DASHBOARD_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 
 // Sync routes
@@ -73,7 +73,7 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   `}
 
   ${({ theme, location }) => theme.mediaWidth.upToMedium`
-    padding: ${location.pathname === Routes.SWAP ? '0 0 16px' : '0 16px 16px'};
+    padding: ${[Routes.SWAP, Routes.NEW_SWAP].includes(location.pathname as Routes) ? '0 0 16px' : '0 16px 16px'};
   `}
 `
 
