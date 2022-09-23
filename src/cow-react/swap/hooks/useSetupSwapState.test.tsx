@@ -1,9 +1,9 @@
-import { useSetupSwapState } from 'pages/NewSwap/hooks/useSetupSwapState'
+import { useSetupSwapState } from './useSetupSwapState'
 import { useSwapState } from 'state/swap/hooks'
 import { waitFor } from '@testing-library/react'
 import { mockedConnector, WithMockedWeb3 } from 'test-utils'
 import { createHashHistory } from 'history'
-import { Field, replaceSwapState, ReplaceSwapStatePayload } from '@src/state/swap/actions'
+import { Field, replaceSwapState, ReplaceSwapStatePayload } from 'state/swap/actions'
 import store from 'state'
 import { renderHook } from '@testing-library/react-hooks'
 
