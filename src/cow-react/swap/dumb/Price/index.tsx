@@ -25,7 +25,7 @@ const StyledRepeat = styled(Repeat)`
   box-sizing: border-box;
 `
 
-interface PriceProps extends BoxProps {
+export interface PriceProps extends BoxProps {
   trade: TradeGp
 }
 
