@@ -36,6 +36,4 @@ const defaultProps: SwapFormProps = {
   },
 }
 
-export default {
-  Default: <SwapForm {...defaultProps} />,
-}
+export default <SwapForm {...defaultProps} />

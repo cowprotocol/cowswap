@@ -32,6 +32,4 @@ const defaultProps: TradeRatesProps = {
   fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
 }
 
-export default {
-  Custom: <TradeRates {...defaultProps} />,
-}
+export default <TradeRates {...defaultProps} />
