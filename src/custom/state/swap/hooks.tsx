@@ -6,7 +6,7 @@ import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { useAppDispatch /* , useAppSelector */ } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
 // import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 
@@ -22,7 +22,7 @@ import { SwapState } from 'state/swap/reducer'
 import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 // MOD
-import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
+import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
@@ -43,12 +43,13 @@ import {
 } from '@src/state/swap/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { supportedChainId } from 'utils/supportedChainId'
+import { AppState } from 'state'
 
 export * from '@src/state/swap/hooks'
 
-/* export function useSwapState(): AppState['swap'] {
+export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
-} */
+}
 
 export type Currencies = { [field in Field]?: Currency | null }
 
