@@ -1,10 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
-import { queryParametersToSwapState } from './hooks'
+import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
+import { queryParametersToSwapState } from 'state/swap/hooks'
 
 export interface SwapState {
+  // Mod: added chainId
+  chainId: number | null
   readonly independentField: Field
   readonly typedValue: string
   readonly [Field.INPUT]: {
@@ -17,26 +19,27 @@ export interface SwapState {
   readonly recipient: string | null
 }
 
-const initialState: SwapState = queryParametersToSwapState(parsedQueryString())
+// Mod: added second parameter
+const initialState: SwapState = queryParametersToSwapState(parsedQueryString(), '', null)
 
 export default createReducer<SwapState>(initialState, (builder) =>
   builder
-    .addCase(
-      replaceSwapState,
-      (state, { payload: { typedValue, recipient, field, inputCurrencyId, outputCurrencyId } }) => {
-        return {
-          [Field.INPUT]: {
-            currencyId: inputCurrencyId ?? null,
-          },
-          [Field.OUTPUT]: {
-            currencyId: outputCurrencyId ?? null,
-          },
-          independentField: field,
-          typedValue,
-          recipient,
-        }
+    // Mod: ranamed field => independentField, added chainId
+    .addCase(replaceSwapState, (state, { payload }) => {
+      const { chainId, typedValue, recipient, independentField, inputCurrencyId, outputCurrencyId } = payload
+      return {
+        chainId,
+        [Field.INPUT]: {
+          currencyId: inputCurrencyId ?? null,
+        },
+        [Field.OUTPUT]: {
+          currencyId: outputCurrencyId ?? null,
+        },
+        independentField,
+        typedValue,
+        recipient,
       }
-    )
+    })
     .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
       if (currencyId === state[otherField].currencyId) {

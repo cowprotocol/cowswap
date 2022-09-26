@@ -52,7 +52,7 @@ describe('useSetupSwapState() - hook to setup a swap state considering URL and l
     await waitFor(() => {
       expect(result.current).toEqual({
         INPUT: {
-          currencyId: 'ETH',
+          currencyId: null,
         },
         OUTPUT: {
           currencyId: null,
