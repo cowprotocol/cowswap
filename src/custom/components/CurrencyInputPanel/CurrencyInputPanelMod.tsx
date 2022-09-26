@@ -604,9 +604,9 @@ export default function CurrencyInputPanel({
             </FiatRow>
           )}
         </Container>
-        {onCurrencySelect && (
+        {onCurrencySelect && modalOpen && (
           <CurrencySearchModal
-            isOpen={modalOpen}
+            isOpen={true}
             onDismiss={handleDismissSearch}
             onCurrencySelect={onCurrencySelect}
             selectedCurrency={currency}

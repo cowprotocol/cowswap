@@ -1,5 +1,6 @@
 // import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 import { useMemo, useCallback } from 'react'
+import memoizeOne from 'memoize-one'
 import { useAppSelector, useAppDispatch } from 'state/hooks'
 
 import sortByListPriority from 'utils/listSort'
@@ -24,8 +25,9 @@ import { UnsupportedToken } from 'api/gnosisProtocol'
 import { isAddress } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
-import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
+import { TokenAddressMap } from '@src/state/lists/hooks'
 import { shallowEqual } from 'react-redux'
+import { Mutable } from '../reducer'
 
 /* export type TokenAddressMap = ChainTokenMap
 
@@ -106,7 +108,7 @@ export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
  * @param map1 the base token map
  * @param map2 the map of additioanl tokens to add to the base map
  */
-/* export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
+function _combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
   const chainIds = Object.keys(
     Object.keys(map1)
       .concat(Object.keys(map2))
@@ -124,7 +126,9 @@ export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
     }
     return memo
   }, {}) as TokenAddressMap
-} */
+}
+
+export const combineMaps = memoizeOne(_combineMaps)
 
 // merge tokens contained within lists from urls
 export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {
@@ -171,9 +175,11 @@ export function useInactiveListUrls(): string[] {
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   const lists = useAllLists()
   const allActiveListUrls = useActiveListUrls()
-  return Object.keys(lists).filter(
-    (url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS[chainId].includes(url)
-  )
+  return useMemo(() => {
+    return Object.keys(lists).filter(
+      (url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS[chainId].includes(url)
+    )
+  }, [chainId, allActiveListUrls, lists])
 }
 
 // get all the tokens from active lists, combine with local default tokens
@@ -182,7 +188,10 @@ export function useCombinedActiveList(): TokenAddressMap {
   const activeListUrls = useActiveListUrls()
   const activeTokens = useCombinedTokenMapFromUrls(activeListUrls)
   const defaultTokenMap = listToTokenMap(DEFAULT_TOKEN_LIST)
-  return combineMaps(activeTokens, defaultTokenMap)
+
+  return useMemo(() => {
+    return combineMaps(activeTokens, defaultTokenMap)
+  }, [activeTokens, defaultTokenMap])
 }
 
 // all tokens from inactive lists

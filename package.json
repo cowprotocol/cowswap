@@ -260,6 +260,7 @@
     "jsbi": "^3.1.4",
     "lightweight-charts": "^3.3.0",
     "make-plural": "^7.0.0",
+    "memoize-one": "^6.0.0",
     "ms.macro": "^2.0.0",
     "multicodec": "^3.0.1",
     "multihashes": "^4.0.2",
