@@ -36,7 +36,7 @@ export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
 export const PRODUCTION_URL = 'swap.cow.fi'
 // TODO: update barn url to whatever we decide to use
-export const BARN_URL = `barn.${PRODUCTION_URL}`
+export const BARN_URL = `barn.cow.fi`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
