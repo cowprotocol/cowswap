@@ -65,7 +65,6 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       COINGECKO_LIST,
       KLEROS_LIST,
       GEMINI_LIST,
-      COW_DAO_LIST,
     ],
   }),
   [ChainId.RINKEBY]: buildNetworkDefaultLists({
