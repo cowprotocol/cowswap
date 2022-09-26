@@ -56,7 +56,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const themeObject = useMemo(() => {
     // Page background must be blurred for all pages besides Swap page
     const shouldBlurBackground =
-      location.pathname.length > 1 && !([Routes.SWAP, Routes.NEW_SWAP] as string[]).includes(location.pathname)
+      location.pathname.length > 1 && !([Routes.SWAP] as string[]).includes(location.pathname)
 
     return theme(darkMode, shouldBlurBackground)
   }, [darkMode, location.pathname])
