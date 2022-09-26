@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalance'
 import { useMemo } from 'react'
 
-import { useAllTokens } from '../../hooks/Tokens'
+import { useAllTokens } from 'hooks/Tokens'
 import { useFavouriteTokens } from 'state/user/hooks'
 
 export * from '@src/state/connection/hooks'

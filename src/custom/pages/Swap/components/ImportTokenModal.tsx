@@ -1,4 +1,4 @@
-import { useAllTokens, useCurrency } from '@src/hooks/Tokens'
+import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { Field } from '@src/state/swap/actions'
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useMemo, useState } from 'react'

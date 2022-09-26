@@ -1,8 +1,8 @@
-import { /* Currency, */ Token } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
+import { useCurrencyFromMap } from 'lib/hooks/useCurrency'
 /* import { useWeb3React } from '@web3-react/core'
 import { getChainInfo } from '@src/constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
-import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
 import { isL2ChainId } from 'utils/chains'
@@ -173,15 +173,15 @@ export function useToken(tokenAddress?: string | null): Token | null | undefined
   const tokens = useAllTokens()
   return useTokenFromMapOrNetwork(tokens, tokenAddress)
 }
+*/
 
 export function useCurrency(currencyId?: string | null): Currency | null | undefined {
   const tokens = useAllTokens()
   return useCurrencyFromMap(tokens, currencyId)
-} */
+}
 
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useCombinedActiveList()
   const tokensFromMap = useTokensFromMap(allTokens, true)
-
   return useThrottle(tokensFromMap, 1000)
 }
