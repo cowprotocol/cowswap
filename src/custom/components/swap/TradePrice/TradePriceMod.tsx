@@ -8,7 +8,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 // MOD imports
 import { formatMax, formatSmart } from 'utils/format' // mod
-import { LightGreyText } from 'pages/Swap/styled'
+import { LightGreyText } from 'cow-react/swap/dumb/styled'
 
 export interface TradePriceProps {
   price: Price<Currency, Currency>

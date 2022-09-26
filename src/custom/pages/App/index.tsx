@@ -19,13 +19,14 @@ import { Loading } from 'components/FlashingLoading'
 // Sync routes
 import Account from 'pages/Account'
 import Swap from 'pages/Swap'
-import { NewSwapPage } from 'pages/NewSwap'
+import { NewSwapPage } from 'cow-react/pages/NewSwap'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
+const LimitOrders = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'cow-react/pages/LimitOrders'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
@@ -98,6 +99,7 @@ export default function App() {
             <Redirect from="/profile" to={Routes.ACCOUNT} />
             <Route exact strict path={Routes.SWAP} component={Swap} />
             <Route exact strict path={Routes.NEW_SWAP} component={NewSwapPage} />
+            <Route exact strict path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
