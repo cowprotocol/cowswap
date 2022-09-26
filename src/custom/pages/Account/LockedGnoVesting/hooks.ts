@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from 'abis/types'
@@ -22,7 +22,7 @@ const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const initialAllocation = useRef(CurrencyAmount.fromRawAmount(COW, 0))
   const [allocation, setAllocation] = useState(initialAllocation.current)
 
@@ -46,7 +46,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 }
 
 export const useCowFromLockedGnoBalances = () => {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const allocated = useAllocation()
   const vested = allocated
     .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
@@ -76,7 +76,7 @@ export function useClaimCowFromLockedGnoCallback({
   closeModal,
   isFirstClaim,
 }: ClaimCallbackParams): () => Promise<ContractTransaction> {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const merkleDrop = useMerkleDropContract()
   const tokenDistro = useTokenDistroContract()
 

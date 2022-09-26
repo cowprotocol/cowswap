@@ -15,13 +15,14 @@ import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
 import { isWrappingTrade } from 'state/swap/utils'
 import { useOrderValidTo } from 'state/user/hooks'
 import { isAddress } from 'utils'
+import useENSAddress from 'hooks/useENSAddress'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -62,11 +63,18 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     buyToken: currentBuyToken,
     kind: currentKind,
     userAddress: currentUserAddress,
+    receiver: currentReceiver,
   } = currentParams
-  const { amount, buyToken, sellToken, kind, userAddress } = quoteInfo
+  const { amount, buyToken, sellToken, kind, userAddress, receiver } = quoteInfo
+  const hasSameReceiver = currentReceiver && receiver ? currentReceiver === receiver : true
+
   // cache the base quote params without quoteInfo user address to check
   const paramsWithoutAddress =
-    sellToken === currentSellToken && buyToken === currentBuyToken && amount === currentAmount && kind === currentKind
+    sellToken === currentSellToken &&
+    buyToken === currentBuyToken &&
+    amount === currentAmount &&
+    kind === currentKind &&
+    hasSameReceiver
   // 2 checks: if there's a quoteInfo user address (meaning quote was already calculated once) and one without
   // in case user is not connected
   return userAddress ? currentUserAddress === userAddress && paramsWithoutAddress : paramsWithoutAddress
@@ -123,15 +131,18 @@ function unsupportedTokenNeedsRecheck(
 
 export default function FeesUpdater(): null {
   const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
 
   const {
     INPUT: { currencyId: sellToken },
     OUTPUT: { currencyId: buyToken },
     independentField,
     typedValue: rawTypedValue,
-    recipient: receiver,
+    recipient,
   } = useSwapState()
+
+  const { address: ensRecipientAddress } = useENSAddress(recipient)
+  const receiver = ensRecipientAddress || recipient
 
   // Debounce the typed value to not refetch the fee too often
   // Fee API calculation/call
@@ -175,6 +186,9 @@ export default function FeesUpdater(): null {
 
     // Native wrap trade, return
     if (isWrappingTrade(sellCurrency, buyCurrency, chainId)) return
+
+    // Quotes api fails when receiver is not address
+    if (receiver && !isAddress(receiver)) return
 
     // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY

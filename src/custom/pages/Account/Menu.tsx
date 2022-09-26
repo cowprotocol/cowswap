@@ -4,7 +4,7 @@ import { ACCOUNT_MENU_LINKS } from 'constants/index'
 
 export function AccountMenu() {
   return (
-    <SideMenu>
+    <SideMenu isAccountPage={true}>
       <ul>
         {ACCOUNT_MENU_LINKS.map(({ title, url }, i) => (
           <li key={i}>

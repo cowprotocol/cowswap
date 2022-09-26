@@ -1,19 +1,18 @@
 [![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
-CowSwap is the first trading interface built on top of CoW Protocol.
+CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
-- 🐮**Official Website**🐮: <https://cowswap.exchange/>
+- 🐮**Official Website**🐮: <https://swap.cow.fi/>
 
-  - ENS Website (alternative): <https://cowswap.eth.link>, or <https://cowswap.eth/> if you have MetaMask or an ENS compatible browser.
   - The website can also be run locally, or from IPFS. Every release will have an IPFS hash associated, available in the [Releases](https://github.com/cowprotocol/cowswap/releases) section.
 
 - Protocol: <https://cow.fi>
 - Docs: <https://docs.cow.fi>
-- Stats: <https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2>
-- Twitter: [@MEVprotection](https://twitter.com/MEVprotection)
+- Stats: <https://dune.com/cowprotocol/Gnosis-Protocol-V2>
+- Twitter: [@CoWSwap](https://twitter.com/CoWSwap)
 - Discord: <https://discord.com/invite/cowprotocol>
 
 Please see the:
@@ -87,13 +86,13 @@ Modify the environment variables in `.env.production`, or override them in build
 
 ### Price feeds
 
-CowSwap tries to find the best price available on-chain using some price feeds.
+CoW Swap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
 
 | Name             | Environment variable                     | Type                         | Description                                                                                                        |
 | ---------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cowswap.exchange/) price estimation. Used for all price estimation.                    |
+| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation.                              |
 | **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
 | **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
 | **Coingecko**    | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
@@ -107,13 +106,13 @@ This metadata will be sent to the smart contract as a hexadecimal value in an or
 Any web app or client using CoW Protocol can upload to IPFS a metadata JSON and use the digest hex to attach that
 information to the order.
 
-For example, CowSwap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ
+For example, CoW Swap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ
 which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37` (See
 [CID Explorer](https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ) for more details).
 
 The format of the JSON follows this typescript format: <src/custom/utils/metadata.ts>
 
-To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [chat.cowswap.exchange/](https://chat.cowswap.exchange/). For more details, check out the environment file (<.env>)
+To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [CoW Swap's Discord channel](https://discord.com/invite/cowprotocol/). For more details, check out the environment file (<.env>)
 
 ### Supported networks
 
@@ -125,9 +124,9 @@ To have the interface default to a different network when a wallet is not connec
 2. Define your own list of supported networks:
 
 ```ini
-REACT_APP_SUPPORTED_CHAIN_IDS="1,4,5,100"
+REACT_APP_SUPPORTED_CHAIN_IDS="1,100,5"
 REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_4=https://rinkeby.infura.io/v3/{YOUR_INFURA_KEY}
+REACT_APP_NETWORK_URL_5=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
 ```
 
@@ -155,3 +154,17 @@ To update its content:
 1. Edit the list of pages in <./src/custom/sitemap.js>
 2. Run `yarn sitemap`
 3. Commit the changes to git
+
+## Service worker
+
+In case of problems with the service worker cache you force a reset using [emergency.js](public/emergency.js)
+The plan:
+
+1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
+2. Deploy a new version to production
+
+`emergency.js` is not cached by browser and loaded before all.
+
+## Feature flags
+
+`localStorage.setItem('enableNewSwap', '1')` - enable refactored swap interface

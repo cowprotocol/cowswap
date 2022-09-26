@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Percent /*, TradeType */ } from '@uniswap/sdk-core'
 // import { Trade as V2Trade } from '@uniswap/v2-sdk'
 // import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 // import JSBI from 'jsbi'
 // import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMemo /* , useState */ } from 'react'
@@ -142,7 +142,7 @@ export function useERC20Permit(
   }
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */
-/* const { account, chainId, library } = useActiveWeb3React()
+/* const { account, chainId, provider } = useWeb3React()
   const tokenAddress = currencyAmount?.currency?.isToken ? currencyAmount.currency.address : undefined
   const eip2612Contract = useEIP2612Contract(tokenAddress)
   const isArgentWallet = useIsArgentWallet()
@@ -161,7 +161,7 @@ export function useERC20Permit(
       !account ||
       !chainId ||
       !transactionDeadline ||
-      !library ||
+      !provider ||
       !tokenNonceState.valid ||
       !tokenAddress ||
       !spender ||
@@ -237,7 +237,7 @@ export function useERC20Permit(
           message,
         })
 
-        return library
+        return provider
           .send('eth_signTypedData_v4', [account, data])
           .then(splitSignature)
           .then((signature) => {
@@ -264,7 +264,7 @@ export function useERC20Permit(
     chainId,
     isArgentWallet,
     transactionDeadline,
-    library,
+    provider,
     tokenNonceState.loading,
     tokenNonceState.valid,
     tokenNonceState.result,
@@ -285,7 +285,7 @@ export function useERC20PermitFromTrade(
   allowedSlippage: Percent,
   transactionDeadline: BigNumber | undefined
 ) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   /* const swapRouterAddress = chainId
     ? // v2 router does not support
       trade instanceof V2Trade

@@ -1,6 +1,8 @@
 import { Plural, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
+import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
+import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
@@ -50,6 +52,12 @@ export interface ImportProps {
   CardComponent: (props: CardComponentProps) => JSX.Element // mod
 }
 
+const formatAnalyticsEventProperties = (tokens: Token[]) => ({
+  token_symbols: tokens.map((token) => token?.symbol),
+  token_addresses: tokens.map((token) => token?.address),
+  token_chain_ids: tokens.map((token) => token?.chainId),
+})
+
 export function ImportToken(props: ImportProps) {
   const { tokens, list, onBack, onDismiss, handleCurrencySelect } = props
   const theme = useTheme()
@@ -87,18 +95,25 @@ export function ImportToken(props: ImportProps) {
         {tokens.map((token) => (
           <TokenImportCard token={token} list={list} key={'import' + token.address} />
         ))}
-        <ButtonPrimary
-          altDisabledStyle={true}
-          $borderRadius="20px"
-          padding="10px 1rem"
-          onClick={() => {
-            tokens.map((token) => addToken(token))
-            handleCurrencySelect && handleCurrencySelect(tokens[0])
-          }}
-          className=".token-dismiss-button"
+        <TraceEvent
+          events={[Event.onClick]}
+          name={EventName.TOKEN_IMPORTED}
+          properties={formatAnalyticsEventProperties(tokens)}
+          element={ElementName.IMPORT_TOKEN_BUTTON}
         >
-          <Trans>Import</Trans>
-        </ButtonPrimary>
+          <ButtonPrimary
+            altDisabledStyle={true}
+            $borderRadius="20px"
+            padding="10px 1rem"
+            onClick={() => {
+              tokens.map((token) => addToken(token))
+              handleCurrencySelect && handleCurrencySelect(tokens[0])
+            }}
+            className=".token-dismiss-button"
+          >
+            <Trans>Import</Trans>
+          </ButtonPrimary>
+        </TraceEvent>
       </AutoColumn>
     </Wrapper>
   )

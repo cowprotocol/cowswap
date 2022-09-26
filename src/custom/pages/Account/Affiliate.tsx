@@ -1,4 +1,4 @@
-import { HelpCircle } from 'components/Page'
+import { HelpCircle, SectionTitle } from 'components/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import Web3Status from 'components/Web3Status'
@@ -8,6 +8,7 @@ import Copy from 'components/Copy/CopyMod'
 import { RefreshCcw } from 'react-feather'
 import AddressSelector from './AddressSelector'
 import {
+  Wrapper,
   GridWrap,
   CardHead,
   StyledContainer,
@@ -18,19 +19,18 @@ import {
   FlexCol,
   Loader,
   TimeFormatted,
-  CardsWrapper,
 } from './styled'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatInt, formatDecimal } from './utils'
 import useReferralLink from 'hooks/useReferralLink'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import useFetchProfile from 'hooks/useFetchProfile'
 import useTimeAgo from 'hooks/useTimeAgo'
 import NotificationBanner from 'components/NotificationBanner'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { useAffiliateAddress } from 'state/affiliate/hooks'
 
-const NotificationMessages = ({ error, chainId }: { error: unknown; chainId: ChainId }) => (
+const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: ChainId }) => (
   <>
     {error && (
       <NotificationBanner isVisible level="error" canClose={false}>
@@ -47,7 +47,7 @@ const NotificationMessages = ({ error, chainId }: { error: unknown; chainId: Cha
 
 export default function Affiliate() {
   const referralLink = useReferralLink()
-  const { account, chainId = ChainId.MAINNET, error } = useActiveWeb3React()
+  const { account, chainId = ChainId.MAINNET /* , error */ } = useWeb3React()
   const { profileData, isLoading } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const hasOrders = useHasOrders(account)
@@ -56,9 +56,10 @@ export default function Affiliate() {
   const isTradesTooltipVisible = account && chainId === ChainId.MAINNET && !!profileData?.totalTrades
 
   return (
-    <CardsWrapper padding={'20px 30px 30px'}>
+    <Wrapper>
       <GridWrap>
         <CardHead>
+          <SectionTitle>Affiliate Program</SectionTitle>
           {account && (
             <Loader isLoading={isLoading}>
               <StyledContainer>
@@ -90,7 +91,7 @@ export default function Affiliate() {
           )}
         </CardHead>
 
-        <NotificationMessages error={error} chainId={chainId} />
+        <NotificationMessages /* error={error} */ chainId={chainId} />
 
         <ChildWrapper>
           <Txt fs={16}>
@@ -204,6 +205,6 @@ export default function Affiliate() {
         </GridWrap>
         {!account && <Web3Status />}
       </GridWrap>
-    </CardsWrapper>
+    </Wrapper>
   )
 }

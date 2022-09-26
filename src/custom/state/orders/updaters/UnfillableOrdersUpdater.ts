@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 
-import { useActiveWeb3React } from 'hooks/web3'
-
+import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order } from 'state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
@@ -11,22 +10,21 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { getBestQuote } from 'utils/price'
 import { isOrderUnfillable } from 'state/orders/utils'
-import useGetGpPriceStrategy, { GpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { priceOutOfRangeAnalytics } from 'utils/analytics'
+import { GpPriceStrategy } from 'state/gas/atoms'
+import { supportedChainId } from 'utils/supportedChainId'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
- *
- * @param chainId
- * @param order
  */
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
-    // this order sell amount is sellAmountAfterFees..
+    // this order sell amount is sellAmountAfterFees
     // this is an issue as it will be adjusted again in the backend
     // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
     // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
@@ -51,6 +49,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
     validTo: timestamp(order.validTo),
+    userAddress: order.owner,
+    receiver: order.receiver,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
@@ -63,7 +63,9 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId: _chainId, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
+
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   // check which GP Quote API to use (NEW/LEGACY)
@@ -98,7 +100,6 @@ export function UnfillableOrdersUpdater(): null {
     }
 
     const startTime = Date.now()
-    console.debug('[UnfillableOrdersUpdater] Checking new market price for orders....')
     try {
       isUpdating.current = true
 
@@ -107,7 +108,6 @@ export function UnfillableOrdersUpdater(): null {
       const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
 
       if (pending.length === 0) {
-        // console.debug('[UnfillableOrdersUpdater] No orders to update')
         return
       } else {
         console.debug(
@@ -139,7 +139,7 @@ export function UnfillableOrdersUpdater(): null {
       )
     } finally {
       isUpdating.current = false
-      console.debug(`[UnfillableOrdersUpdater] Checked canceled orders in ${Date.now() - startTime}ms`)
+      console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag])
 

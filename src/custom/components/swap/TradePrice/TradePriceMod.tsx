@@ -1,6 +1,6 @@
 // import { Trans } from '@lingui/macro'
 import { Currency, Price } from '@uniswap/sdk-core'
-// import useUSDCPrice from '@src/hooks/useUSDCPrice'
+// import useStablecoinPrice from '@src/hooks/useStablecoinPrice'
 import { useCallback, useContext } from 'react'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -8,13 +8,13 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 // MOD imports
 import { formatMax, formatSmart } from 'utils/format' // mod
-import { LightGreyText } from 'pages/Swap'
+import { LightGreyText } from 'cow-react/swap/dumb/styled'
 
 export interface TradePriceProps {
   price: Price<Currency, Currency>
   showInverted: boolean
-  fiatValue?: string // mod
   setShowInverted: (showInverted: boolean) => void
+  fiatValue?: string // mod
 }
 
 const StyledPriceContainer = styled.button`
@@ -27,7 +27,6 @@ const StyledPriceContainer = styled.button`
   justify-content: center;
   padding: 0;
   grid-template-columns: 1fr auto;
-  grid-gap: 0.25rem;
   /* display: flex;
   flex-direction: row;
   text-align: left;
@@ -39,7 +38,12 @@ const StyledPriceContainer = styled.button`
 export default function TradePrice({ price, showInverted, fiatValue, setShowInverted }: TradePriceProps) {
   const theme = useContext(ThemeContext)
 
-  // const usdcPrice = useUSDCPrice(showInverted ? price.baseCurrency : price.quoteCurrency)
+  // const usdcPrice = useStablecoinPrice(showInverted ? price.baseCurrency : price.quoteCurrency)
+  // /*
+  //  * calculate needed amount of decimal prices, for prices between 0.95-1.05 use 4 decimal places
+  //  */
+  // const p = Number(usdcPrice?.toFixed())
+  // const visibleDecimalPlaces = p < 1.05 ? 4 : 2
 
   let formattedPrice: string
   try {
@@ -68,7 +72,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
       }}
       // title={text}
     >
-      <Text fontWeight={500} fontSize={14} color={theme.text1}>
+      <Text fontWeight={500} fontSize={13} color={theme.text1}>
         {/* {text} */}
         <LightGreyText>{baseText}</LightGreyText>
         <span title={`${fullFormattedPrice} ${label}`}>{quoteText}</span>
@@ -76,7 +80,7 @@ export default function TradePrice({ price, showInverted, fiatValue, setShowInve
       </Text>{' '}
       {/* {usdcPrice && (
         <ThemedText.DarkGray>
-          <Trans>(${usdcPrice.toSignificant(6, { groupSeparator: ',' })})</Trans>
+          <Trans>(${usdcPrice.toFixed(visibleDecimalPlaces, { groupSeparator: ',' })})</Trans>
         </ThemedText.DarkGray>
       )} */}
     </StyledPriceContainer>

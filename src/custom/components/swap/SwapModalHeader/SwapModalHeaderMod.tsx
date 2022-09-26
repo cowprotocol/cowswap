@@ -1,12 +1,12 @@
 import { Trans } from '@lingui/macro'
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
-import { useContext, useState, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 // import { InterfaceTrade } from 'state/routing/types'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useUSDCPrice'
+import { useHigherUSDValue /* , useUSDCValue */ } from 'hooks/useStablecoinPrice'
 import { ThemedText } from 'theme'
 import { isAddress, shortenAddress } from 'utils'
 // import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
@@ -30,8 +30,8 @@ import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyI
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
-import { Price } from 'pages/Swap'
 import { WarningProps } from 'components/SwapWarnings'
+import { Price } from 'cow-react/swap/dumb/Price'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -78,7 +78,7 @@ export default function SwapModalHeader({
   HighFeeWarning,
   NoImpactWarning,
   allowsOffchainSigning,
-}: /* 
+}: /*
 {
   trade: InterfaceTrade<Currency, Currency, TradeType>
   allowedSlippage: Percent
@@ -94,8 +94,6 @@ SwapModalHeaderProps) {
   )
 
   const theme = useContext(ThemeContext)
-
-  const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // const fiatValueInput = useUSDCValue(trade.inputAmount)
   // const fiatValueOutput = useUSDCValue(trade.outputAmount)
@@ -236,14 +234,7 @@ SwapModalHeaderProps) {
           />
         </AuxInformationContainer>
       )}
-      <Price
-        trade={trade}
-        theme={theme}
-        showInverted={showInverted}
-        setShowInverted={setShowInverted}
-        width="90%"
-        margin="auto"
-      />
+      <Price trade={trade} width="90%" margin="auto" />
       {/*<RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween>*/}

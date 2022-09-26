@@ -1,25 +1,24 @@
-import { Trans } from '@lingui/macro'
+//Mod import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
-import { useBestTrade } from 'hooks/useBestTrade'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { useWeb3React } from '@web3-react/core'
+// Mod import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
+// Mod import { useBestTrade } from 'hooks/useBestTrade'
+// Mod import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { InterfaceTrade, TradeState } from 'state/routing/types'
-import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+// Mod import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
-import { useCurrency } from '../../hooks/Tokens'
-import useENS from '../../hooks/useENS'
+// Mod import { useCurrency } from '../../hooks/Tokens'
+// Mod import useENS from '../../hooks/useENS'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
-import { isAddress } from 'utils'
-import { AppState } from 'state'
-import { useCurrencyBalances } from '../wallet/hooks'
+import { isAddress } from '../../utils'
+// Mod import { useCurrencyBalances } from '../connection/hooks'
+import { AppState } from '../index'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
-import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
@@ -34,8 +33,6 @@ export function useSwapActionHandlers(): {
   const dispatch = useAppDispatch()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
-      currencySelectAnalytics(field, currency.symbol)
-
       dispatch(
         selectCurrency({
           field,
@@ -47,13 +44,11 @@ export function useSwapActionHandlers(): {
   )
 
   const onSwitchTokens = useCallback(() => {
-    switchTokensAnalytics()
     dispatch(switchCurrencies())
   }, [dispatch])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      changeSwapAmountAnalytics(field, Number(typedValue))
       dispatch(typeInput({ field, typedValue }))
     },
     [dispatch]
@@ -92,7 +87,9 @@ export function useDerivedSwapInfo(): {
   }
   allowedSlippage: Percent
 } {
-  const { account } = useActiveWeb3React()
+  return undefined as any
+  /* Mod: this hooks is not used
+  const { account } = useWeb3React()
 
   const {
     independentField,
@@ -189,6 +186,7 @@ export function useDerivedSwapInfo(): {
     }),
     [allowedSlippage, currencies, currencyBalances, inputError, parsedAmount, trade]
   )
+   */
 }
 
 export function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
@@ -221,7 +219,8 @@ export function validatedRecipient(recipient: any): string | null {
   return null
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
+// Mod: added chainId parameter
+export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: number | null): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
@@ -238,6 +237,8 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
   const recipient = validatedRecipient(parsedQs.recipient)
 
   return {
+    // Mod: added chainId parameter
+    chainId,
     [Field.INPUT]: {
       currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
@@ -252,13 +253,14 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs)
-  }, [parsedQs])
+    // Mod: added chainId parameter
+    return queryParametersToSwapState(parsedQs, chainId || 1)
+  }, [chainId, parsedQs])
 
   useEffect(() => {
     if (!chainId) return
@@ -267,8 +269,11 @@ export function useDefaultsFromURLSearch(): SwapState {
 
     dispatch(
       replaceSwapState({
+        // Mod: added chainId parameter
+        chainId,
         typedValue: parsedSwapState.typedValue,
-        field: parsedSwapState.independentField,
+        // Mod: field renamed to independentField
+        independentField: parsedSwapState.independentField,
         inputCurrencyId,
         outputCurrencyId,
         recipient: parsedSwapState.recipient,

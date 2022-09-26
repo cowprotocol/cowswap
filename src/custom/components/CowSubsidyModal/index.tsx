@@ -5,7 +5,7 @@ import {
   ConfirmationModalContentProps,
   ConfirmationModalProps,
 } from 'components/TransactionConfirmationModal'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { GpModal } from 'components/Modal'
 import { AutoColumn } from 'components/Column'
 import { Text } from 'rebass'
@@ -42,7 +42,7 @@ export default function CowSubsidyModal({
   onDismiss,
   ...restProps
 }: Pick<ConfirmationModalProps, 'isOpen'> & Omit<ConfirmationModalContentProps, 'title' | 'topContent'>) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const { subsidy, balance } = useCowBalanceAndSubsidy()
 

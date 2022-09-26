@@ -1,7 +1,6 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
-import { WalletInfo, SUPPORTED_WALLETS as SUPPORTED_WALLETS_UNISWAP } from 'constants/wallet'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
@@ -32,27 +31,12 @@ export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const APP_DATA_HASH = getAppDataHash()
-export const DEFAULT_APP_CODE = 'CowSwap'
+export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const PRODUCTION_URL = 'cowswap.exchange'
+export const PRODUCTION_URL = 'swap.cow.fi'
+// TODO: update barn url to whatever we decide to use
 export const BARN_URL = `barn.${PRODUCTION_URL}`
-
-// Allow WALLET_LINK to be activated on mobile
-// since COINBASE_LINK is limited to use only 1 deeplink on mobile
-SUPPORTED_WALLETS_UNISWAP.WALLET_LINK = {
-  ...SUPPORTED_WALLETS_UNISWAP.WALLET_LINK,
-  mobile: true,
-}
-const DISABLED_WALLETS = /^(?:Portis|COINBASE_LINK)$/i
-
-// Re-export only the supported wallets
-export const SUPPORTED_WALLETS = Object.keys(SUPPORTED_WALLETS_UNISWAP).reduce((acc, key) => {
-  if (!DISABLED_WALLETS.test(key)) {
-    acc[key] = SUPPORTED_WALLETS_UNISWAP[key]
-  }
-  return acc
-}, {} as { [key: string]: WalletInfo })
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -117,8 +101,8 @@ export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOS
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/gnosis.protocol/Gnosis-Protocol-V2'
-export const TWITTER_LINK = 'https://twitter.com/mevprotection'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/Gnosis-Protocol-V2'
+export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
 export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
 export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
@@ -190,10 +174,10 @@ export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
 }
 // These are used for Account sidebar menu
 export const ACCOUNT_MENU_LINKS = [
-  { title: 'General', url: '/account' },
+  { title: 'Overview', url: '/account' },
   { title: 'Tokens', url: '/account/tokens' },
-  { title: 'Governance', url: '/account/governance' },
-  { title: 'Affiliate', url: '/account/affiliate' },
+  // { title: 'Governance', url: '/account/governance' },
+  // { title: 'Affiliate', url: '/account/affiliate' },
 ]
 
 // These are used for FAQ sidebar menu

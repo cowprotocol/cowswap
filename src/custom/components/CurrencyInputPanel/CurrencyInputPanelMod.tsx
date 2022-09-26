@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
+import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
@@ -12,7 +12,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 import useTheme from 'hooks/useTheme'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance } from 'state/connection/hooks'
 import { ThemedText } from 'theme'
 import { ButtonGray } from 'components/Button'
 import CurrencyLogo, { StyledLogo } from 'components/CurrencyLogo'
@@ -29,6 +29,7 @@ import { AMOUNT_PRECISION } from 'constants/index'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
 import { TextWrapper } from '@src/components/HoverInlineText' // mod
 import { CurrencySearchModal } from '.' // mod
+import { isSupportedChain } from 'utils/supportedChainId' //mod
 
 export const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -54,7 +55,7 @@ const FixedContainer = styled.div`
   z-index: 2;
 `
 
-export const Container = styled.div<{ hideInput: boolean; showAux?: boolean }>`
+export const Container = styled.div<{ hideInput: boolean; disabled?: boolean; showAux?: boolean }>`
   border-radius: ${({ hideInput, showAux = false }) => (showAux ? '20px 20px 0 0' : hideInput ? '16px' : '20px')};
   border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg2)};
   background-color: ${({ theme }) => theme.bg1};
@@ -63,6 +64,14 @@ export const Container = styled.div<{ hideInput: boolean; showAux?: boolean }>`
   :hover {
     border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg3)};
   }
+  ${({ theme, hideInput, disabled }) =>
+    !disabled &&
+    `
+      :focus,
+      :hover {
+        border: 1px solid ${hideInput ? ' transparent' : theme.bg3};
+      }
+    `}
 `
 
 // mod - due to circular dependencies and lazy loading
@@ -447,6 +456,7 @@ export interface CurrencyInputPanelProps extends WithClassName {
   loading?: boolean
   customBalanceText?: string
   disableCurrencySelect?: boolean
+  balanceAmount?: CurrencyAmount<Currency>
 }
 
 export default function CurrencyInputPanel({
@@ -465,6 +475,7 @@ export default function CurrencyInputPanel({
   fiatValue,
   priceImpact,
   priceImpactLoading,
+  balanceAmount,
   hideBalance = false,
   pair = null, // used for double token logo
   hideInput = false,
@@ -474,13 +485,15 @@ export default function CurrencyInputPanel({
   ...rest
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
-  const { account } = useActiveWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const { account, chainId } = useWeb3React()
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined) || balanceAmount
   const theme = useTheme()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
+
+  const chainAllowed = isSupportedChain(chainId)
 
   return (
     <>
@@ -495,9 +508,10 @@ export default function CurrencyInputPanel({
             </AutoColumn>
           </FixedContainer>
         )}
-        <Container hideInput={hideInput} showAux={!!label}>
+        <Container disabled={!chainAllowed} hideInput={hideInput} showAux={!!label}>
           <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={!onCurrencySelect}>
             <CurrencySelect
+              disabled={!chainAllowed}
               visible={currency !== undefined}
               selected={!!currency}
               hideInput={hideInput}
@@ -536,6 +550,7 @@ export default function CurrencyInputPanel({
             </CurrencySelect>
             {!hideInput && (
               <StyledNumericalInput
+                disabled={!chainAllowed}
                 className="token-amount-input"
                 value={value}
                 onUserInput={onUserInput}

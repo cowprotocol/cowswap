@@ -3,7 +3,7 @@ import { combineReducers, createStore } from 'redux'
 
 import price from 'state/price/reducer' // MOD
 
-export * from '@src/lib/state/multicall'
+export * from 'lib/state/multicall'
 
 const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer, price })

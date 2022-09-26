@@ -1,6 +1,6 @@
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { RowFixed } from 'components/Row'
 
 import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
@@ -73,7 +73,7 @@ export interface ActivityDerivedState {
 }
 
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
   const activityDerivedState = useActivityDerivedState({ chainId, activity })

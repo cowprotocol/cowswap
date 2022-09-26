@@ -22,7 +22,7 @@ import { EXPECTED_EXECUTION_TIME, getPercentage } from 'components/OrderProgress
 import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
-import loadingCowGif from 'assets/cow-swap/cow-load.gif'
+import loadingCowWebp from 'assets/cow-swap/cow-load.webp'
 import cowGraph from 'assets/images/cow-graph.svg'
 import ammsGraphEth from 'assets/images/amms-graph.svg'
 import ammsGraphGC from 'assets/images/amms-graph-gc.svg'
@@ -30,7 +30,7 @@ import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
 import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
 import { getExplorerOrderLink } from 'utils/explorer'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -66,7 +66,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   })
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
-  const { isSmartContractWallet } = useWalletInfo()
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
@@ -132,7 +132,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusGraph>
                 <img src={cowGraph} alt="Loading for a CoW..." />
                 <p>
-                  <strong>CowSwap</strong> can save you gas costs and get a better price if another trader takes the
+                  <strong>CoW Swap</strong> can save you gas costs and get a better price if another trader takes the
                   opposite side of your trade.
                 </p>
               </StatusGraph>
@@ -161,7 +161,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   alt="Finding the best price ..."
                 />
                 <p>
-                  <strong>CowSwap</strong> searches all on-chain liquidity sources to find you the best price.
+                  <strong>CoW Swap</strong> searches all on-chain liquidity sources to find you the best price.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
@@ -202,7 +202,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             <ProgressBarInnerWrapper>
               <DelayedProgress percentage={percentage}>
                 <WarningLogo>
-                  <img src={loadingCowGif} alt="Loading prices..." />
+                  <img src={loadingCowWebp} alt="Loading prices..." />
                 </WarningLogo>
               </DelayedProgress>
             </ProgressBarInnerWrapper>
@@ -228,7 +228,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   Your price: $1300.55 (<span>+8%</span>)
                 </p>*/}
                 <p>
-                  <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
@@ -241,7 +241,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             <ProgressBarInnerWrapper>
               <DelayedProgress percentage={percentage}>
                 <WarningLogo>
-                  <img src={loadingCowGif} alt="Loading prices..." />
+                  <img src={loadingCowWebp} alt="Loading prices..." />
                 </WarningLogo>
               </DelayedProgress>
             </ProgressBarInnerWrapper>
@@ -262,7 +262,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               <StatusGraph>
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
-                  <strong>CowSwap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>

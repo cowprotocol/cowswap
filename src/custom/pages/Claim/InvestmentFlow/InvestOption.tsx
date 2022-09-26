@@ -20,8 +20,8 @@ import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import ImportantIcon from 'assets/cow-swap/important.svg'
 import { ApprovalState, useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
-import { useCurrencyBalance } from 'state/wallet/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useCurrencyBalance } from 'state/connection/hooks'
+import { useWeb3React } from '@web3-react/core'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { StyledNumericalInput } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 
@@ -33,7 +33,7 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
 import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { useGasPrices } from 'state/gas/hooks'
-import { AVG_APPROVE_COST_GWEI } from 'components/swap/EthWethWrap/helpers'
+import { AVG_APPROVE_COST_GWEI } from 'components/swap/EthFlow/helpers'
 import { EnhancedUserClaimData } from '../types'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
@@ -70,7 +70,7 @@ type InvestOptionProps = {
 export default function InvestOption({ claim, openModal, closeModal }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost, index } = claim
 
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
 

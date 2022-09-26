@@ -1,32 +1,19 @@
 import { nanoid } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { MAINNET_PROVIDER } from 'constants/networks'
 import getTokenList from 'lib/hooks/useTokenList/fetchTokenList'
 import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
 import { useCallback } from 'react'
 import { useAppDispatch } from 'state/hooks'
 
-import { getNetworkLibrary } from 'connectors'
 import { fetchTokenList } from 'state/lists/actions'
+import { useWeb3React } from '@web3-react/core'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
-  const { chainId, library } = useActiveWeb3React()
   const dispatch = useAppDispatch()
 
-  const ensResolver = useCallback(
-    async (ensName: string) => {
-      if (!library || chainId !== 1) {
-        const networkLibrary = getNetworkLibrary()
-        const network = await networkLibrary.getNetwork()
-        if (networkLibrary && network.chainId === 1) {
-          return resolveENSContentHash(ensName, networkLibrary)
-        }
-        throw new Error('Could not construct Ethereum ENS resolver')
-      }
-      return resolveENSContentHash(ensName, library)
-    },
-    [chainId, library]
-  )
+  // Mod
+  const { chainId } = useWeb3React()
 
   // note: prevent dispatch if using for list search or unsupported list
   return useCallback(
@@ -34,7 +21,7 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
       const requestId = nanoid()
       // Mod: add chainId
       sendDispatch && dispatch(fetchTokenList.pending({ requestId, url: listUrl, chainId }))
-      return getTokenList(listUrl, ensResolver)
+      return getTokenList(listUrl, (ensName: string) => resolveENSContentHash(ensName, MAINNET_PROVIDER))
         .then((tokenList) => {
           // Mod: add chainId
           sendDispatch && dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId, chainId }))
@@ -49,7 +36,7 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
         })
     },
     // Mod: add chainId
-    // [dispatch, ensResolver]
-    [chainId, dispatch, ensResolver]
+    // [dispatch]
+    [chainId, dispatch]
   )
 }

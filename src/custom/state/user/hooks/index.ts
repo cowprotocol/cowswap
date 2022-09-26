@@ -1,10 +1,15 @@
 import { useCallback, useMemo } from 'react'
 import { Token } from '@uniswap/sdk-core'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
-import { toggleURLWarning, toggleFavouriteToken, removeAllFavouriteTokens } from 'state/user/actions'
+import {
+  toggleURLWarning,
+  toggleFavouriteToken,
+  removeAllFavouriteTokens,
+  initFavouriteTokens,
+} from 'state/user/reducer'
 import { calculateValidTo } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL, serializeToken, deserializeToken } from '@src/state/user/hooks'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 
 export * from '@src/state/user/hooks'
 
@@ -19,7 +24,7 @@ export function useOrderValidTo() {
 }
 
 export function useFavouriteTokens(): Token[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const serializedTokensMap = useAppSelector(({ user: { favouriteTokens } }) => favouriteTokens)
 
   return useMemo(() => {
@@ -42,7 +47,7 @@ export function useToggleFavouriteToken(): (token: Token) => void {
 }
 
 export function useRemoveAllFavouriteTokens(): () => void {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
 
   return useCallback(() => {
@@ -50,4 +55,19 @@ export function useRemoveAllFavouriteTokens(): () => void {
       dispatch(removeAllFavouriteTokens({ chainId }))
     }
   }, [dispatch, chainId])
+}
+
+export function useSelectedWallet(): string | undefined {
+  return useAppSelector(({ user: { selectedWallet } }) => selectedWallet)
+}
+
+export function useInitFavouriteTokens(): void {
+  const { chainId } = useWeb3React()
+  const dispatch = useAppDispatch()
+
+  return useMemo(() => {
+    if (chainId) {
+      dispatch(initFavouriteTokens({ chainId }))
+    }
+  }, [chainId, dispatch])
 }

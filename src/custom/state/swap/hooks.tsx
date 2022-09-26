@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { Currency, CurrencyAmount, NativeCurrency, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 // import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // import { useBestTrade } from 'hooks/useBestTrade'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -15,13 +15,11 @@ import { useCurrency } from 'hooks/Tokens'
 import useENS from 'hooks/useENS'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isAddress } from 'utils'
-// import { AppState } from 'state'
-import { useCurrencyBalances } from 'state/wallet/hooks'
-import {
-  Field,
-  replaceSwapState /* , selectCurrency, setRecipient, switchCurrencies, typeInput */,
-} from 'state/swap/actions'
+import { useCurrencyBalances } from 'state/connection/hooks'
+// import { AppState } from '../index'
+import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
+import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 // MOD
 import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
@@ -33,7 +31,7 @@ import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XD
 import TradeGp from './TradeGp'
 
 import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
-import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER, USDC } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
 
 import { isWrappingTrade } from './utils'
 
@@ -44,6 +42,7 @@ import {
   validatedRecipient,
 } from '@src/state/swap/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { supportedChainId } from 'utils/supportedChainId'
 
 export * from '@src/state/swap/hooks'
 
@@ -51,8 +50,17 @@ export * from '@src/state/swap/hooks'
   return useAppSelector((state) => state.swap)
 } */
 
+export type Currencies = { [field in Field]?: Currency | null }
+
+export interface SwapActions {
+  onCurrencySelection: (field: Field, currency: Currency) => void
+  onSwitchTokens: () => void
+  onUserInput: (field: Field, typedValue: string) => void
+  onChangeRecipient: (recipient: string | null) => void
+}
+
 interface DerivedSwapInfo {
-  currencies: { [field in Field]?: Currency | null }
+  currencies: Currencies
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: ReactNode
@@ -60,15 +68,12 @@ interface DerivedSwapInfo {
   allowedSlippage: Percent
 }
 
-/* export function useSwapActionHandlers(): {
-  onCurrencySelection: (field: Field, currency: Currency) => void
-  onSwitchTokens: () => void
-  onUserInput: (field: Field, typedValue: string) => void
-  onChangeRecipient: (recipient: string | null) => void
-} {
+export function useSwapActionHandlers(): SwapActions {
   const dispatch = useAppDispatch()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
+      currencySelectAnalytics(field, currency.symbol)
+
       dispatch(
         selectCurrency({
           field,
@@ -80,11 +85,13 @@ interface DerivedSwapInfo {
   )
 
   const onSwitchTokens = useCallback(() => {
+    switchTokensAnalytics()
     dispatch(switchCurrencies())
   }, [dispatch])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
+      changeSwapAmountAnalytics(field, Number(typedValue))
       dispatch(typeInput({ field, typedValue }))
     },
     [dispatch]
@@ -103,13 +110,7 @@ interface DerivedSwapInfo {
     onUserInput,
     onChangeRecipient,
   }
-} */
-
-/* const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
-  '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
-  '0xf164fC0Ec4E93095b804a4795bBe1e041497b92a': true, // v2 router 01
-  '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D': true, // v2 router 02
-} */
+}
 
 /**
  * useHighFeeWarning
@@ -208,18 +209,8 @@ function _computeUnknownPriceImpactAcceptedState({
 }
 
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(): /* {
-  currencies: { [field in Field]?: Currency | null }
-  currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
-  parsedAmount: CurrencyAmount<Currency> | undefined
-  inputError?: ReactNode
-  trade: {
-    trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
-    state: TradeState
-  }
-  allowedSlippage: Percent
-} */ DerivedSwapInfo {
-  const { account, chainId } = useActiveWeb3React() // MOD: chainId
+export function useDerivedSwapInfo(): DerivedSwapInfo {
+  const { account, chainId } = useWeb3React() // MOD: chainId
 
   const {
     independentField,
@@ -245,13 +236,6 @@ export function useDerivedSwapInfo(): /* {
     [inputCurrency, isExactIn, outputCurrency, typedValue]
   )
 
-  /* const trade = useBestTrade(
-    isExactIn ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT,
-    parsedAmount,
-    (isExactIn ? outputCurrency : inputCurrency) ?? undefined
-  ) */
-
-  // -- MOD --
   const { quote } = useGetQuoteAndStatus({
     token: inputCurrencyId,
     chainId,
@@ -389,22 +373,20 @@ export function validatedRecipient(recipient: any): string | null {
   return null
 } */
 
-// mod: defaultInputCurrency and chainId parameters
+// mod: defaultInputCurrency parameters
 export function queryParametersToSwapState(
   parsedQs: ParsedQs,
   defaultInputCurrency = '',
-  chainId: SupportedChainId | undefined = undefined
+  chainId: number | null
 ): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
-  let typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
+  const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
   const independentField = parseIndependentFieldURLParameter(parsedQs.exactField)
 
   if (inputCurrency === '' && outputCurrency === '' && typedValue === '' && independentField === Field.INPUT) {
-    // Defaults to 1 ETH -> USDC
+    // Defaults to having the wrapped native currency selected
     inputCurrency = defaultInputCurrency // 'ETH' // mod
-    outputCurrency = chainId ? USDC[chainId].address : 'USDC' // mod
-    typedValue = '1'
   } else if (inputCurrency === outputCurrency) {
     // clear output if identical
     outputCurrency = ''
@@ -413,6 +395,7 @@ export function queryParametersToSwapState(
   const recipient = validatedRecipient(parsedQs.recipient)
 
   return {
+    chainId: chainId || null,
     [Field.INPUT]: {
       currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
@@ -427,18 +410,19 @@ export function queryParametersToSwapState(
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId } = useActiveWeb3React()
+  const { chainId: _chainId } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 
   // TODO: check whether we can use the new function for native currency
   // This is not a great fix for setting a default token
   // but it is better and easiest considering updating default files
-  const defaultInputToken = WETH[chainId || 1].address // mod
+  const defaultInputToken = WETH[chainId || SupportedChainId.MAINNET].address // mod
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId) // mod
-  }, [chainId, defaultInputToken, parsedQs]) // mod
+    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId || null) // mod
+  }, [defaultInputToken, parsedQs, chainId]) // mod
 
   useEffect(() => {
     if (!chainId) return
@@ -447,8 +431,9 @@ export function useDefaultsFromURLSearch(): SwapState {
 
     dispatch(
       replaceSwapState({
+        chainId,
         typedValue: parsedSwapState.typedValue,
-        field: parsedSwapState.independentField,
+        independentField: parsedSwapState.independentField,
         inputCurrencyId,
         outputCurrencyId,
         recipient: parsedSwapState.recipient,
@@ -456,7 +441,7 @@ export function useDefaultsFromURLSearch(): SwapState {
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, parsedQs])
+  }, [dispatch, chainId])
 
   return parsedSwapState
 }
@@ -466,7 +451,8 @@ export function useReplaceSwapState() {
   const dispatch = useAppDispatch()
   return useCallback(
     (newState: {
-      field: Field
+      chainId: number | null
+      independentField: Field
       typedValue: string
       inputCurrencyId?: string | undefined
       outputCurrencyId?: string | undefined
@@ -476,33 +462,48 @@ export function useReplaceSwapState() {
   )
 }
 
-interface CurrencyWithAddress {
-  currency?: Currency | null
-  address?: string | null
+export interface NativeCurrenciesInfo {
+  isNativeIn: boolean
+  isNativeOut: boolean
+  isWrappedIn: boolean
+  isWrappedOut: boolean
+  wrappedToken: Token & { logoURI: string }
+  native: NativeCurrency
 }
 
-export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
+export function useDetectNativeToken() {
+  const { chainId } = useWeb3React()
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState()
+
+  const input = useCurrency(inputCurrencyId)
+  const output = useCurrency(outputCurrencyId)
+
   return useMemo(() => {
+    const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
-      WETH[chainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
+      WETH[activeChainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
       {
-        logoURI: chainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
+        logoURI: activeChainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
       }
     )
 
     // TODO: check the new native currency function
-    const native = ETHER.onChain(chainId || DEFAULT_NETWORK_FOR_LISTS)
+    const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
-    const [isNativeIn, isNativeOut] = [input?.currency?.isNative, output?.currency?.isNative]
-    const [isWrappedIn, isWrappedOut] = [input?.currency?.equals(wrappedToken), output?.currency?.equals(wrappedToken)]
+    const [isNativeIn, isNativeOut] = [!!input?.isNative, !!output?.isNative]
+    const [isWrappedIn, isWrappedOut] = [!!input?.equals(wrappedToken), !!output?.equals(wrappedToken)]
 
     return {
-      isNativeIn: isNativeIn && !isWrappedOut,
-      isNativeOut: isNativeOut && !isWrappedIn,
+      isNativeIn,
+      isNativeOut,
       isWrappedIn,
       isWrappedOut,
       wrappedToken,
       native,
+      isWrapOrUnwrap: (isNativeIn && isWrappedOut) || (isNativeOut && isWrappedIn),
     }
   }, [input, output, chainId])
 }

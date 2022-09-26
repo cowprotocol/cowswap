@@ -1,9 +1,9 @@
 import { Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
+import { useWeb3React } from '@web3-react/core'
 import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { SupportedLocale } from 'constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
@@ -18,8 +18,6 @@ import {
   addSerializedPair,
   addSerializedToken,
   removeSerializedToken,
-  SerializedPair,
-  SerializedToken,
   updateHideClosedPositions,
   // TODO: mod, move to mod file
   updateRecipientToggleVisible,
@@ -31,8 +29,8 @@ import {
   updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
-} from './actions'
-// TODO: mod, move to mod file
+} from './reducer'
+import { SerializedPair, SerializedToken } from './types'
 import { useSwapActionHandlers } from '../swap/hooks'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -247,7 +245,7 @@ export function useUserSlippageToleranceWithDefault(defaultSlippageTolerance: Pe
 }
 
 export function useUserTransactionTTL(): [number, (slippage: number) => void] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
   const userDeadline = useAppSelector((state) => state.user.userDeadline)
   const onL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId))
@@ -284,7 +282,7 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 }
 
 export function useUserAddedTokens(): Token[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
 
   return useMemo(() => {
@@ -341,7 +339,7 @@ export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
  * Returns all the pairs of tokens that are tracked by the user for the current chain ID.
  */
 export function useTrackedTokenPairs(): [Token, Token][] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const tokens = useAllTokens()
 
   // pinned pairs

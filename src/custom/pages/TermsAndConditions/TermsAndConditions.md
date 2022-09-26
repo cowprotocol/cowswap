@@ -1,4 +1,4 @@
-**CowSwap Terms & Conditions**
+**CoW Swap Terms & Conditions**
 
 <i><b>Last updated: August 2021</b></i>
 
@@ -8,7 +8,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 
 **1. WHO WE ARE AND HOW TO CONTACT US**
 
-1.  CowSwap is operated by GnosisDAO (”**we**” or “**us**”). We are an
+1.  CoW Swap is operated by GnosisDAO (”**we**” or “**us**”). We are an
     Ethereum based organisation managed by community members. To contact
     us, please write to us via the
     GnosisDAO subcategory of <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">forum.cow.fi</a>.
@@ -82,9 +82,9 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 
 **5. FEES**
 
-Cowswap does not levy any fees on users of the Platform, however the
+CoW Swap does not levy any fees on users of the Platform, however the
 user incurs a fee on the Protocol level, which is shown to the user on
-the Cowswap interface when the user places their trade.
+the CoW Swap interface when the user places their trade.
 
 **6. WE MAY MAKE CHANGES TO OR SUSPEND OR WITHDRAW OUR PLATFORM**
 

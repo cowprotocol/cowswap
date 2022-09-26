@@ -1,15 +1,14 @@
-import { useMemo, Fragment } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { SupportedChainId } from 'constants/chains'
 import { useClaimState } from 'state/claim/hooks'
-import useChangeNetworks from 'hooks/useChangeNetworks'
-import { useActiveWeb3React } from 'hooks/web3'
+// import useChangeNetworks from 'hooks/useChangeNetworks'
+import { useWeb3React } from '@web3-react/core'
 import NotificationBanner from 'components/NotificationBanner'
 import { AlertTriangle } from 'react-feather'
 import { ClaimInfo } from 'state/claim/reducer'
-import { CHAIN_INFO } from 'constants/chainInfo'
 
-const ChainSpan = styled.span``
+// const ChainSpan = styled.span``
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -68,8 +67,7 @@ function _shouldNotDisplayBannerForChain(
 }
 
 function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
-  const { account, library, chainId } = useActiveWeb3React()
-  const { handleChainSwitch } = useChangeNetworks({ library, chainId })
+  const { account, chainId } = useWeb3React()
 
   const { claimInfoPerAccount, activeClaimAccount } = useClaimState()
 
@@ -100,7 +98,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
       <Wrapper>
         <AlertTriangle />
         <div>This account has available claims on</div>
-        <div>
+        {/* <div>
           {chainsWithClaims.map((chainId, index, array) => {
             const changeNetworksCallback = () =>
               handleChainSwitch(chainId, { skipToggle: true, skipWalletToggle: false }) // true to avoid opening the dropdown
@@ -112,7 +110,7 @@ function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
               </Fragment>
             )
           })}
-        </div>
+        </div> */}
       </Wrapper>
     </NotificationBanner>
   )

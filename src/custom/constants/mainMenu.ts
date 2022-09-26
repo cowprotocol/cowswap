@@ -56,9 +56,23 @@ export const FAQ_MENU: InternalLink[] = [
   { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
 ]
 
+export const ACCOUNT_MENU: InternalLink[] = [
+  { title: 'Overview', url: Routes.ACCOUNT },
+  { title: 'Tokens', url: Routes.ACCOUNT_TOKENS },
+]
+
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
-  { title: 'Account', url: Routes.ACCOUNT },
+  { title: 'Limit orders', url: Routes.LIMIT_ORDER },
+  {
+    kind: MenuItemKind.DROP_DOWN,
+    title: 'Account',
+    items: [
+      {
+        links: ACCOUNT_MENU,
+      },
+    ],
+  },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'FAQ',
@@ -100,3 +114,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
     ],
   },
 ]
+
+if (localStorage.getItem('enableNewSwap')) {
+  MAIN_MENU.splice(1, 0, { title: 'New Swap', url: Routes.NEW_SWAP })
+}

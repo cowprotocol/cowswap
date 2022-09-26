@@ -6,14 +6,15 @@ import { load, save } from 'redux-localstorage-simple'
 import application from 'state/application/reducer'
 // import burn from './burn/reducer'
 // import burnV3 from './burn/v3/reducer'
+import connection from 'state/connection/reducer'
 // import { api as dataApi } from './data/slice'
 import { updateVersion } from 'state/global/actions'
 import lists from 'state/lists/reducer'
-import logs from '@src/state/logs/slice'
+import logs from 'state/logs/slice'
 // import mint from './mint/reducer'
 // import mintV3 from './mint/v3/reducer'
 // import { routingApi } from './routing/slice'
-import swap from '@src/state/swap/reducer'
+import swap from 'state/swap/reducer'
 // import transactions from './transactions/reducer'
 import user from 'state/user/reducer'
 
@@ -35,6 +36,7 @@ import { priceMiddleware } from 'state/price/middleware'
 const UNISWAP_REDUCERS = {
   application,
   user,
+  connection,
   // transactions,
   swap,
   /* mint,
@@ -61,7 +63,7 @@ const reducers = {
   cowToken,
 }
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile', 'swap']
 
 const store = configureStore({
   reducer: reducers,

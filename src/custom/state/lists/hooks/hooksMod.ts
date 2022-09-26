@@ -13,7 +13,7 @@ import { UNSUPPORTED_LIST_URLS, DEFAULT_NETWORK_FOR_LISTS } from 'constants/list
 import { TokenList } from '@uniswap/token-lists'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,
@@ -25,12 +25,13 @@ import { isAddress } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
+import { shallowEqual } from 'react-redux'
 
 /* export type TokenAddressMap = ChainTokenMap
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>
-} 
+}
 */
 
 /**
@@ -66,7 +67,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
   }, {}) as TokenAddressMap
     listCache?.set(list, map)
     return map
-  } 
+  }
 */
 
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
@@ -94,10 +95,10 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
 // export function useAllLists(): AppState['lists']['byUrl'] {
 export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
   // MOD: adds { chainId } support to the hooks
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   // return useAppSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  return useAppSelector((state) => state.lists[chainId]?.byUrl || {})
+  return useAppSelector((state) => state.lists[chainId]?.byUrl, shallowEqual)
 }
 
 /**
@@ -155,16 +156,18 @@ export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAd
 // filter out unsupported lists
 export function useActiveListUrls(): string[] | undefined {
   // MOD: adds { chainId } support to the hooks
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
-  return useAppSelector((state) => state.lists[chainId]?.activeListUrls)?.filter(
-    (url) => !UNSUPPORTED_LIST_URLS[chainId]?.includes(url)
-  )
+  const activeListUrls = useAppSelector((state) => state.lists[chainId]?.activeListUrls, shallowEqual)
+
+  return useMemo(() => {
+    return activeListUrls?.filter((url) => !UNSUPPORTED_LIST_URLS[chainId]?.includes(url))
+  }, [chainId, activeListUrls])
 }
 
 export function useInactiveListUrls(): string[] {
   // MOD: adds { chainId } support to the hooks
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   const lists = useAllLists()
   const allActiveListUrls = useActiveListUrls()
@@ -198,7 +201,7 @@ export function useDefaultTokenList(): TokenAddressMap {
 // list of tokens not supported on interface for various reasons, used to show warnings and prevent swaps and adds
 export function useUnsupportedTokenList(): TokenAddressMap {
   // MOD: adds { chainId } support to the hooks
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   // get hard-coded broken tokens
   const brokenListMap = useMemo(() => listToTokenMap(BROKEN_LIST), [])
@@ -222,7 +225,7 @@ export function useIsListActive(url: string): boolean {
 }
 
 export function useGpUnsupportedTokens(): UnsupportedToken | null {
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   return useAppSelector((state) => (chainId ? state.lists[chainId]?.gpUnsupportedTokens : null))
 }
@@ -240,7 +243,7 @@ export function useRemoveGpUnsupportedToken() {
 }
 
 export function useIsUnsupportedTokenFromLists() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const allUnsupportedTokens = useUnsupportedTokenList()
 
   return useCallback(
@@ -258,7 +261,7 @@ export function useIsUnsupportedTokenFromLists() {
 }
 
 export function useIsUnsupportedTokenGp() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const gpUnsupportedTokens = useGpUnsupportedTokens()
 
   return useCallback(

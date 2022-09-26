@@ -9,7 +9,7 @@ import {
   ReplacementType,
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { SerializableTransactionReceipt } from '@src/state/transactions/actions'
+import { SerializableTransactionReceipt } from '@src/state/transactions/types'
 
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',
@@ -144,11 +144,20 @@ export default createReducer(initialState, (builder) =>
     .addCase(replaceTransaction, (transactions, { payload: { chainId, oldHash, newHash, type } }) => {
       const allTxs = transactions[chainId] ?? {}
       if (!allTxs[oldHash]) {
-        console.error('Attempted to replace an unknown transaction.')
+        console.warn('[replaceTransaction] Attempted to replace an unknown transaction.', {
+          chainId,
+          oldHash,
+          newHash,
+        })
         return
       }
 
       if (allTxs[newHash]) {
+        console.warn('[replaceTransaction] The new replacement hash was already added.', {
+          chainId,
+          oldHash,
+          newHash,
+        })
         return
       }
 

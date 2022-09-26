@@ -10,7 +10,7 @@ import {
 } from 'pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
@@ -33,12 +33,12 @@ import { ClaimCommonTypes } from './types'
 import { Routes } from 'constants/routes'
 
 const COW_TWEET_TEMPLATE =
-  'I just joined the 🐮 CoWmunity @MEVprotection and claimed my first vCOW tokens! Join me at https://cowswap.exchange/'
+  'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'handleChangeAccount'>
 
 export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
 
   const { setClaimStatus } = useClaimDispatchers()
@@ -125,7 +125,7 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
                 <SVG src={twitterImage} description="Twitter" />
               </SuccessBanner>
             </ExternalLink>
-            <ExternalLink href="https://chat.cowswap.exchange/">
+            <ExternalLink href="https://discord.com/invite/cowprotocol/">
               <SuccessBanner type={'Discord'}>
                 <span>
                   <Trans>Join Discord</Trans>

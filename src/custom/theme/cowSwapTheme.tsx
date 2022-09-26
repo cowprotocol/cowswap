@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react'
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, css } from 'styled-components/macro'
+import { css, DefaultTheme, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { Colors } from 'theme/styled'
 import {
   colors as colorsBaseTheme,
-  themeVariables as baseThemeVariables,
   FixedGlobalStyle as FixedGlobalStyleBase,
   ThemedGlobalStyle as ThemedGlobalStyleBase,
+  themeVariables as baseThemeVariables,
 } from 'theme/baseTheme'
 
-import { theme as themeUniswap, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
+import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Routes } from 'constants/routes'
 import { useLocation } from 'react-router-dom'
@@ -40,7 +40,7 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 export function theme(darkmode: boolean, shouldBlurBackground: boolean): DefaultTheme {
   const colorsTheme = colors(darkmode)
   return {
-    ...themeUniswap(darkmode),
+    ...getTheme(darkmode),
     ...colorsTheme,
 
     // Overide Theme
@@ -55,7 +55,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   const themeObject = useMemo(() => {
     // Page background must be blurred for all pages besides Swap page
-    const shouldBlurBackground = location.pathname.length > 1 && location.pathname !== Routes.SWAP
+    const shouldBlurBackground =
+      location.pathname.length > 1 && !([Routes.SWAP, Routes.NEW_SWAP] as string[]).includes(location.pathname)
 
     return theme(darkMode, shouldBlurBackground)
   }, [darkMode, location.pathname])

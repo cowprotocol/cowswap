@@ -1,25 +1,34 @@
 import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useWeb3React } from '@web3-react/core'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'
 import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import TradeGp from 'state/swap/TradeGp'
 
-import { ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
+import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
 
 import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
+import { TransactionResponse } from '@ethersproject/providers'
 
 export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
-type ApproveCallbackFromTradeParams = Pick<
+export type ApproveCallbackFromTradeParams = Pick<
   ApproveCallbackParams,
   'openTransactionConfirmationModal' | 'closeModals' | 'amountToCheckAgainstAllowance'
 > & {
   trade: TradeGp | undefined
   allowedSlippage: Percent
+  isNativeFlow?: boolean
+}
+
+export type ApproveCallback = {
+  approvalState: ApprovalState
+  approve: (optionalParams?: OptionalApproveCallbackParams | undefined) => Promise<TransactionResponse | undefined>
+  revokeApprove: (optionalParams?: OptionalApproveCallbackParams | undefined) => Promise<void>
+  isPendingApproval: boolean
 }
 
 // export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
@@ -29,16 +38,17 @@ export function useApproveCallbackFromTrade({
   trade,
   allowedSlippage,
   amountToCheckAgainstAllowance,
-}: ApproveCallbackFromTradeParams) {
-  const { chainId } = useActiveWeb3React()
+  isNativeFlow,
+}: ApproveCallbackFromTradeParams): ApproveCallback {
+  const { chainId } = useWeb3React()
 
   const amountToApprove = useMemo(() => {
     if (trade) {
       const slippageForTrade = computeSlippageAdjustedAmounts(trade, allowedSlippage)
-      return slippageForTrade[Field.INPUT]
+      return isNativeFlow ? slippageForTrade[Field.INPUT]?.wrapped : slippageForTrade[Field.INPUT]
     }
     return undefined
-  }, [trade, allowedSlippage])
+  }, [trade, allowedSlippage, isNativeFlow])
 
   const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
 
@@ -54,6 +64,7 @@ export function useApproveCallbackFromTrade({
 export type OptionalApproveCallbackParams = {
   transactionSummary?: string
   modalMessage?: string
+  useModals?: boolean
 }
 
 type ApproveCallbackFromClaimParams = Omit<
@@ -70,7 +81,7 @@ export function useApproveCallbackFromClaim({
   claim,
   investmentAmount,
 }: ApproveCallbackFromClaimParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const supportedChain = supportedChainId(chainId)
 
   const vCowContract = chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined
@@ -112,7 +123,7 @@ export function useApproveCallbackFromBalance({
   token,
   balance,
 }: ApproveCallbackFromBalanceParams) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const supportedChain = supportedChainId(chainId)
 
   const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined

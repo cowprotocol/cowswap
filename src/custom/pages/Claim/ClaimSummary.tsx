@@ -7,9 +7,9 @@ import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } fr
 import { ClaimCommonTypes } from './types'
 import { ClaimStatus } from 'state/claim/actions'
 import { AMOUNT_PRECISION } from 'constants/index'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useTokenBalance } from 'state/connection/hooks'
 import { V_COW } from 'constants/tokens'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
@@ -17,7 +17,7 @@ type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
 }
 
 export function ClaimSummary({ hasClaims, isClaimed, unclaimedAmount }: ClaimSummaryProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
 
   const vCow = chainId ? V_COW[chainId] : undefined

@@ -1,6 +1,6 @@
 import { ManageLists as ManageListsMod, ListContainer } from './ManageListsMod'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
 import { TokenList } from '@uniswap/token-lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'state/lists/actions'
@@ -73,7 +73,7 @@ export const ManageLists = (props: {
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
 }) => {
-  const { chainId: connectedChainId } = useActiveWeb3React()
+  const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
   const listRowProps = {

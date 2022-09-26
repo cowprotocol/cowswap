@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import Loader from 'components/Loader'
 import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
@@ -17,24 +16,18 @@ import {
   PaginationText,
   IndexLabel,
   InfoCircle,
-  TokenSearchInput,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { useWalletModalToggle } from 'state/application/hooks'
+import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { OrderKind } from '@cowprotocol/contracts'
-import { PageViewKeys } from 'pages/Account/Tokens/TokensOverview'
 import { MouseoverTooltip } from 'components/Tooltip'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import useDebounce from 'hooks/useDebounce'
-import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/CurrencySearch'
-import { isAddress } from 'utils'
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
+import useFilterTokens from 'hooks/useFilterTokens'
 
 const MAX_ITEMS = 10
 
@@ -43,17 +36,22 @@ enum SORT_FIELD {
   BALANCE = 'balance',
 }
 
-type BalanceType = {
-  [tokenAddress: string]: CurrencyAmount<Token> | undefined
-}
+type BalanceType = [
+  {
+    [tokenAddress: string]: CurrencyAmount<Token> | undefined
+  },
+  boolean
+]
 
 type TokenTableParams = {
   tokensData: Token[] | undefined
   maxItems?: number
   balances?: BalanceType
-  selectedView?: PageViewKeys
   page: number
   setPage: (page: number) => void
+  query: string
+  prevQuery: string
+  debouncedQuery: string
 }
 
 export enum TableType {
@@ -65,26 +63,17 @@ export default function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
   balances,
-  selectedView,
   page,
   setPage,
+  query,
+  prevQuery,
+  debouncedQuery,
 }: TokenTableParams) {
-  const { account } = useActiveWeb3React()
+  // const { account } = useWeb3React()
   const native = useNativeCurrency()
 
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
-  // search - takes precedence re:filtering
-  const [query, setQuery] = useState<string>('')
-  const debouncedQuery = useDebounce(query, 300)
-
-  const prevQuery = usePrevious(debouncedQuery)
-
-  const handleChange = useCallback((event) => {
-    const input = event.target.value
-    const checksummedInput = isAddress(input)
-    setQuery(checksummedInput || input)
-  }, [])
 
   // reset pagination when user is in a page > 1, searching and deletes query
   useEffect(() => {
@@ -98,15 +87,7 @@ export default function TokenTable({
     }
   }, [query, page, setPage, prevQuery])
 
-  const tokensData = useMemo(() => {
-    // only calc anything if we actually have more than 1 token in list
-    // and the user is actively searching tokens
-    if (rawTokensData.length > 1 && debouncedQuery) {
-      return rawTokensData.filter(getTokenFilter(debouncedQuery))
-    } else {
-      return rawTokensData
-    }
-  }, [rawTokensData, debouncedQuery])
+  const tokensData = useFilterTokens(rawTokensData, debouncedQuery)
 
   // sorting
   const [sortField, setSortField] = useState<SORT_FIELD | null>(null)
@@ -156,8 +137,8 @@ export default function TokenTable({
               // If the sort field is Balance
               if (!balances) return 0
 
-              const balanceA = balances[tokenA.address]
-              const balanceB = balances[tokenB.address]
+              const balanceA = balances[0][tokenA.address]
+              const balanceB = balances[0][tokenB.address]
               const balanceComp = balanceComparator(balanceA, balanceB)
 
               return applyDirection(balanceComp > 0, sortDirection)
@@ -228,16 +209,6 @@ export default function TokenTable({
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
-      <SearchInputFormatter>
-        <TokenSearchInput
-          type="text"
-          id="token-search-input"
-          placeholder={`Search name/symbol or paste address`}
-          autoComplete="off"
-          value={query}
-          onChange={handleChange}
-        />
-      </SearchInputFormatter>
       {tokensData && sortedTokens.length !== 0 ? (
         <AutoColumn>
           <Table ref={tableRef}>
@@ -246,7 +217,7 @@ export default function TokenTable({
               <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
                 <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
               </ClickableText>
-              <ClickableText disabled={!account} onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)}>
+              <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
               <Label>Value</Label>
@@ -275,7 +246,7 @@ export default function TokenTable({
                       key={data.address}
                       handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
-                      balance={balances && balances[data.address]}
+                      balance={balances && balances[0][data.address]}
                       openTransactionConfirmationModal={openModal}
                       closeModals={closeModal}
                       index={getTokenIndex(i)}
@@ -310,8 +281,6 @@ export default function TokenTable({
             </ArrowButton>
           </PageButtons>
         </AutoColumn>
-      ) : !debouncedQuery ? (
-        <Loader />
       ) : (
         <small>{'No results found :('}</small>
       )}

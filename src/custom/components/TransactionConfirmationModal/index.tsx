@@ -1,5 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
@@ -8,12 +8,10 @@ import { CloseIcon } from 'theme'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
-import { RowBetween, RowFixed } from 'components/Row'
-import MetaMaskLogo from 'assets/images/metamask.png'
+import { RowBetween } from 'components/Row'
 import { getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
-import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
@@ -25,6 +23,8 @@ import { Routes } from 'constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import AddToMetamask from 'components/AddToMetamask' // mod
+import { supportedChainId } from 'utils/supportedChainId'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -150,13 +150,6 @@ const ButtonCustom = styled.button`
     color: inherit;
     text-decoration: none;
   }
-`
-
-const CheckCircleCustom = styled(CheckCircle)`
-  height: auto;
-  width: 20px;
-  max-height: 100%;
-  margin: 0 10px 0 0;
 `
 
 const UpperSection = styled.div`
@@ -456,9 +449,9 @@ export function ConfirmationPendingContent({
   operationType: OperationType
   chainId: number
 }) {
-  const { connector } = useActiveWeb3React()
+  const { connector } = useWeb3React()
   const walletInfo = useWalletInfo()
-  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = useWalletInfo()
+  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = walletInfo
 
   const walletType = useMemo((): WalletType => {
     if (gnosisSafeInfo) {
@@ -532,12 +525,14 @@ export function TransactionSubmittedContent({
   currencyToAdd?: Currency | undefined
 }) {
   const theme = useContext(ThemeContext)
-  const { library } = useActiveWeb3React()
-  const { addToken, success } = useAddTokenToMetamask(currencyToAdd)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
+
+  if (!supportedChainId(chainId)) {
+    return null
+  }
 
   return (
     <Wrapper>
@@ -546,7 +541,7 @@ export function TransactionSubmittedContent({
         <Text fontWeight={500} fontSize={20}>
           {getTitleStatus(activityDerivedState)}
         </Text>
-        {chainId && hash && (
+        {supportedChainId(chainId) && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
             <Text fontWeight={500} fontSize={14} color={theme.primary1}>
               {getExplorerLabel(chainId, hash, 'transaction')} ↗
@@ -557,25 +552,12 @@ export function TransactionSubmittedContent({
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
         <ButtonGroup>
-          {currencyToAdd && library?.provider?.isMetaMask && (
-            <ButtonCustom onClick={addToken}>
-              {!success ? (
-                <RowFixed>
-                  <StyledIcon src={MetaMaskLogo} /> Add {currencyToAdd.symbol} to Metamask
-                </RowFixed>
-              ) : (
-                <RowFixed>
-                  <CheckCircleCustom size={'16px'} stroke={theme.green1} />
-                  Added {currencyToAdd.symbol}{' '}
-                </RowFixed>
-              )}
-            </ButtonCustom>
-          )}
+          <AddToMetamask shortLabel currency={currencyToAdd} />
 
           <ButtonCustom>
             <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
               <StyledIcon src={GameIcon} alt="Play CowGame" />
-              Play the Cow Runner Game!
+              Play the CoW Runner Game!
             </InternalLink>
           </ButtonCustom>
         </ButtonGroup>
@@ -588,6 +570,7 @@ export interface ConfirmationModalContentProps {
   title: ReactNode
   titleSize?: number
   styles?: React.CSSProperties
+  className?: string // mod
   onDismiss: () => void
   topContent: () => ReactNode
   bottomContent?: () => ReactNode | undefined

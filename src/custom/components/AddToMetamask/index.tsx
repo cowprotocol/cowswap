@@ -1,12 +1,14 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { useActiveWeb3React } from 'hooks/web3'
-import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
+import { useWeb3React } from '@web3-react/core'
+import { getIsMetaMask } from 'connection/utils'
 import { CheckCircle } from 'react-feather'
 import { RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
+import { addTokenToMetamaskAnalytics } from 'utils/analytics'
+import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 
 export type AddToMetamaskProps = {
   currency: Currency | undefined
@@ -62,10 +64,34 @@ const CheckCircleCustom = styled(CheckCircle)`
 export default function AddToMetamask(props: AddToMetamaskProps) {
   const { currency, shortLabel } = props
   const theme = useContext(ThemeContext)
-  const { library } = useActiveWeb3React()
-  const { addToken, success } = useAddTokenToMetamask(currency)
+  const { connector } = useWeb3React()
+  const isMetamask = getIsMetaMask()
 
-  if (!currency || !library?.provider?.isMetaMask) {
+  const [success, setSuccess] = useState<boolean | undefined>()
+
+  const token = currency?.wrapped
+  const logoURL = useCurrencyLogoURIs(token)[0]
+
+  const addToken = useCallback(() => {
+    if (!token?.symbol || !connector.watchAsset) return
+    connector
+      .watchAsset({
+        address: token.address,
+        symbol: token.symbol,
+        decimals: token.decimals,
+        image: logoURL,
+      })
+      .then(() => {
+        addTokenToMetamaskAnalytics('Succeeded', token.symbol)
+        setSuccess(true)
+      })
+      .catch(() => {
+        addTokenToMetamaskAnalytics('Failed', token.symbol)
+        setSuccess(false)
+      })
+  }, [connector, logoURL, token])
+
+  if (!currency || !isMetamask) {
     return null
   }
 

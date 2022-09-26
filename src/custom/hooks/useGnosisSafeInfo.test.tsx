@@ -1,12 +1,12 @@
 import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
-import { gnosisSafe } from 'connectors'
-import { useWeb3React } from 'web3-react-core'
 import { useGnosisSafeInfo } from './useGnosisSafeInfo'
 import { waitFor } from '@testing-library/react'
 import { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import { useWeb3React, Web3ContextType } from '@web3-react/core'
+import { GnosisSafe } from '@web3-react/gnosis-safe'
 
-jest.mock('web3-react-core')
+jest.mock('@web3-react/core')
 
 const safeInfoMock: SafeInfo = {
   safeAddress: '0xaaa',
@@ -24,15 +24,24 @@ function TestComponent() {
 
 function mockWeb3React({ active }: { active: boolean }) {
   const mockUseWeb3React = useWeb3React as jest.MockedFunction<typeof useWeb3React>
-
-  jest.spyOn(gnosisSafe, 'getSafeInfo').mockResolvedValue(safeInfoMock)
-  mockUseWeb3React.mockReturnValue({
-    active,
-    connector: gnosisSafe,
-    activate: jest.fn(),
-    setError: jest.fn(),
-    deactivate: jest.fn(),
+  const gnosisSafe = new GnosisSafe({
+    actions: {
+      startActivation: () => () => undefined,
+      update: () => undefined,
+      resetState: () => undefined,
+    },
   })
+
+  gnosisSafe.sdk = {
+    safe: {
+      getInfo: () => Promise.resolve(safeInfoMock),
+    },
+  } as any
+
+  mockUseWeb3React.mockReturnValue({
+    isActive: active,
+    connector: gnosisSafe,
+  } as any as Web3ContextType<any>)
 }
 
 describe('useGnosisSafeInfo - hook to get info from Gnosis safe', () => {

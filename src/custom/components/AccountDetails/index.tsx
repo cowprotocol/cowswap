@@ -1,14 +1,15 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
-import { useActiveWeb3React } from 'hooks/web3'
+import { useWeb3React } from '@web3-react/core'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import Copy from 'components/Copy'
+import { updateSelectedWallet } from 'state/user/reducer'
+import { useAppDispatch } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 
-import { SUPPORTED_WALLETS, STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { getEtherscanLink } from 'utils'
-import { injected, walletconnect, walletlink, fortmatic, WalletProvider } from 'connectors'
+import { getConnection, getConnectionName, getIsMetaMask, getIsCoinbaseWallet } from 'connection/utils'
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
 import FortmaticIcon from 'assets/images/fortmaticIcon.png'
@@ -41,43 +42,28 @@ import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useR
 import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
-import { gnosisSafe } from 'connectors'
+import { Connector } from '@web3-react/types'
+import {
+  coinbaseWalletConnection,
+  ConnectionType,
+  fortmaticConnection,
+  injectedConnection,
+  walletConnectConnection,
+} from 'connection'
+import { isMobile } from 'utils/userAgent'
+import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 
-const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
-type AbstractConnector = Pick<ReturnType<typeof useActiveWeb3React>, 'connector'>['connector']
+export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo?: ConnectedWalletInfo, size?: number) {
+  if (!connector) {
+    return null
+  }
 
-export function getWalletName(connector?: AbstractConnector): string {
-  const { ethereum } = window
-  const isMetaMask = !!(ethereum && ethereum.isMetaMask)
+  const connectionType = getConnection(connector)
 
-  const walletTuple = Object.entries(SUPPORTED_WALLETS).filter(
-    ([walletType, { connector: walletConnector }]) =>
-      walletConnector === connector && (connector !== injected || isMetaMask === (walletType === 'METAMASK'))
-  )
-  return walletTuple[0]?.[1]?.name || 'Unknown wallet'
-}
-
-export function formatConnectorName(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo) {
-  const name = walletInfo?.walletName || getWalletName(connector)
-  // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
-  // This to avoid confusion for instance when using Metamask mobile
-  // When name is not set, it defaults to WalletConnect already
-  const walletConnectSuffix =
-    walletInfo?.provider === WalletProvider.WALLET_CONNECT && walletInfo?.walletName ? ' (via WalletConnect)' : ''
-
-  return (
-    <WalletName>
-      Connected with {name} {walletConnectSuffix}
-    </WalletName>
-  )
-}
-
-// TODO: look into StatusIcon.tsx, could be re-used here
-
-export function getStatusIcon(connector?: AbstractConnector, walletInfo?: ConnectedWalletInfo, size?: number) {
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
     return (
@@ -94,21 +80,21 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
         <img src={walletInfo.icon} alt={`${walletInfo?.walletName || 'wallet'} logo`} />
       </IconWrapper>
     )
-  } else if (connector === injected) {
+  } else if (connectionType === injectedConnection) {
     return <Identicon size={size} />
-  } else if (connector === walletconnect) {
+  } else if (connectionType === walletConnectConnection) {
     return (
       <IconWrapper size={16}>
         <img src={WalletConnectIcon} alt={'wallet connect logo'} />
       </IconWrapper>
     )
-  } else if (connector === walletlink) {
+  } else if (connectionType === coinbaseWalletConnection) {
     return (
       <IconWrapper size={16}>
         <img src={CoinbaseWalletIcon} alt={'coinbase wallet logo'} />
       </IconWrapper>
     )
-  } else if (connector === fortmatic) {
+  } else if (connectionType === fortmaticConnection) {
     return (
       <IconWrapper size={16}>
         <img src={FortmaticIcon} alt={'fortmatic logo'} />
@@ -118,7 +104,7 @@ export function getStatusIcon(connector?: AbstractConnector, walletInfo?: Connec
   return null
 }
 
-interface AccountDetailsProps {
+export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
@@ -133,11 +119,12 @@ export default function AccountDetails({
   toggleWalletModal,
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
-  const { account, connector, chainId: connectedChainId } = useActiveWeb3React()
+  const { account, connector, chainId: connectedChainId } = useWeb3React()
+  const connection = getConnection(connector)
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
 
-  const explorerOrdersLink = account && connectedChainId && getExplorerAddressLink(connectedChainId, account)
+  const explorerOrdersLink = account && chainId && getExplorerAddressLink(chainId, account)
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
 
   const activities =
@@ -145,9 +132,34 @@ export default function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const dispatch = useAppDispatch()
+
+  const isMetaMask = getIsMetaMask()
+  const isCoinbaseWallet = getIsCoinbaseWallet()
+  const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
+
+  function formatConnectorName() {
+    const name = walletInfo?.walletName || getConnectionName(connection.type, getIsMetaMask())
+    // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
+    // This to avoid confusion for instance when using Metamask mobile
+    // When name is not set, it defaults to WalletConnect already
+    const walletConnectSuffix =
+      getConnection(connector) === walletConnectConnection && walletInfo?.walletName ? ' (via WalletConnect)' : ''
+
+    return (
+      <WalletName>
+        <Trans>Connected with</Trans> {name} {walletConnectSuffix}
+      </WalletName>
+    )
+  }
+
   const handleDisconnectClick = () => {
-    ;(connector as any).close()
-    localStorage.removeItem(STORAGE_KEY_LAST_PROVIDER)
+    if (connector.deactivate) {
+      connector.deactivate()
+    } else {
+      connector.resetState()
+    }
+    dispatch(updateSelectedWallet({ wallet: undefined }))
     handleCloseOrdersPanel()
     toggleWalletModal()
   }
@@ -172,23 +184,27 @@ export default function AccountDetails({
               {chainId && NETWORK_LABELS[chainId] && (
                 <NetworkCard title={NETWORK_LABELS[chainId]}>{NETWORK_LABELS[chainId]}</NetworkCard>
               )}{' '}
-              {formatConnectorName(connector, walletInfo)}
+              {formatConnectorName()}
             </WalletActions>
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              {connector !== injected && connector !== walletlink && connector !== gnosisSafe && (
-                <WalletAction onClick={handleDisconnectClick}>
-                  <Trans>Disconnect</Trans>
-                </WalletAction>
+              {!isInjectedMobileBrowser && (
+                <>
+                  <WalletAction onClick={handleDisconnectClick}>
+                    <Trans>Disconnect</Trans>
+                  </WalletAction>
+
+                  {connection.type !== ConnectionType.GNOSIS_SAFE && (
+                    <WalletAction onClick={toggleWalletModal}>
+                      <Trans>Change Wallet</Trans>
+                    </WalletAction>
+                  )}
+                </>
               )}
-              {connector !== gnosisSafe && (
-                <WalletAction onClick={toggleWalletModal}>
-                  <Trans>Change Wallet</Trans>
-                </WalletAction>
-              )}
+
               {chainId && account && (
                 <AddressLink
                   hasENS={!!ENSName}
@@ -203,7 +219,7 @@ export default function AccountDetails({
         </AccountGroupingRow>
       </InfoCard>
 
-      {!!pendingTransactions.length || !!confirmedTransactions.length ? (
+      {activityTotalCount ? (
         <LowerSection>
           <span>
             {' '}
@@ -226,7 +242,9 @@ export default function AccountDetails({
         </LowerSection>
       ) : (
         <LowerSection>
-          <NoActivityMessage>Your activity will appear here...</NoActivityMessage>
+          <NoActivityMessage>
+            {chainId ? <span>Your activity will appear here...</span> : <UnsupporthedNetworkMessage />}
+          </NoActivityMessage>
         </LowerSection>
       )}
     </Wrapper>

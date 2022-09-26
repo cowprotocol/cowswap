@@ -1,24 +1,26 @@
-import { /*Currency,*/ Token } from '@uniswap/sdk-core'
-/* import { CHAIN_INFO } from 'constants/chainInfo'
-import { L2_CHAIN_IDS, SupportedChainId, SupportedL2ChainId } from 'constants/chains'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { /* Currency, */ Token } from '@uniswap/sdk-core'
+/* import { useWeb3React } from '@web3-react/core'
+import { getChainInfo } from '@src/constants/chainInfo'
+import { SupportedChainId } from 'constants/chains'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
+import { isL2ChainId } from 'utils/chains'
 
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { useUserAddedTokens } from 'state/user/hooks' */
-import { /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
+import { useCombinedActiveList, /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
 
 // MOD imports
 import { useTokensFromMap } from '@src/hooks/Tokens'
+import { useThrottle } from 'hooks/useThrottle'
 
 export * from '@src/hooks/Tokens'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
-/* function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
-  const { chainId } = useActiveWeb3React()
+/* export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
+  const { chainId } = useWeb3React()
   const userAddedTokens = useUserAddedTokens()
 
   return useMemo(() => {
@@ -68,14 +70,14 @@ type BridgeInfo = Record<
 > */
 
 export function useUnsupportedTokens(): { [address: string]: Token } {
-  // const { chainId } = useActiveWeb3React()
+  // const { chainId } = useWeb3React()
   // const listsByUrl = useAllLists()
   const unsupportedTokensMap = useUnsupportedTokenList()
   const unsupportedTokens = useTokensFromMap(unsupportedTokensMap, false)
 
   // checks the default L2 lists to see if `bridgeInfo` has an L1 address value that is unsupported
   /* const l2InferredBlockedTokens: typeof unsupportedTokens = useMemo(() => {
-    if (!chainId || !L2_CHAIN_IDS.includes(chainId)) {
+    if (!chainId || !isL2ChainId(chainId)) {
       return {}
     }
 
@@ -83,7 +85,8 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
       return {}
     }
 
-    const listUrl = CHAIN_INFO[chainId as SupportedL2ChainId].defaultListUrl
+    const listUrl = getChainInfo(chainId).defaultListUrl
+
     const { current: list } = listsByUrl[listUrl]
     if (!list) {
       return {}
@@ -113,7 +116,7 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
 /* export function useSearchInactiveTokenLists(search: string | undefined, minResults = 10): WrappedTokenInfo[] {
   const lists = useAllLists()
   const inactiveUrls = useInactiveListUrls()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const activeTokens = useAllTokens()
   return useMemo(() => {
     if (!search || search.trim().length === 0) return []
@@ -125,11 +128,15 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
       if (!list) continue
       for (const tokenInfo of list.tokens) {
         if (tokenInfo.chainId === chainId && tokenFilter(tokenInfo)) {
-          const wrapped: WrappedTokenInfo = new WrappedTokenInfo(tokenInfo, list)
-          if (!(wrapped.address in activeTokens) && !addressSet[wrapped.address]) {
-            addressSet[wrapped.address] = true
-            result.push(wrapped)
-            if (result.length >= minResults) return result
+          try {
+            const wrapped: WrappedTokenInfo = new WrappedTokenInfo(tokenInfo, list)
+            if (!(wrapped.address in activeTokens) && !addressSet[wrapped.address]) {
+              addressSet[wrapped.address] = true
+              result.push(wrapped)
+              if (result.length >= minResults) return result
+            }
+          } catch {
+            continue
           }
         }
       }
@@ -171,3 +178,10 @@ export function useCurrency(currencyId?: string | null): Currency | null | undef
   const tokens = useAllTokens()
   return useCurrencyFromMap(tokens, currencyId)
 } */
+
+export function useAllTokens(): { [address: string]: Token } {
+  const allTokens = useCombinedActiveList()
+  const tokensFromMap = useTokensFromMap(allTokens, true)
+
+  return useThrottle(tokensFromMap, 1000)
+}
