@@ -5,6 +5,7 @@ import { replaceTransaction } from 'state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { useWeb3React } from '@web3-react/core'
+import { supportedChainId } from 'utils/supportedChainId'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
   for (const hash of pendingHashes) {
@@ -12,25 +13,29 @@ function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Disp
       const blocknativeSdk = sdk[chainId]
 
       if (!blocknativeSdk) {
+        console.error('[CancelReplaceTxUpdater][watchTxChanges] No blocknative sdk for chainId', chainId)
         return
       }
 
       const { emitter } = blocknativeSdk.transaction(hash)
+      console.info('[CancelReplaceTxUpdater][watchTxChanges]', { chainId, hash })
       const currentHash = hash
 
       emitter.on('txSpeedUp', (e) => {
-        if ('hash' in e && typeof e.hash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash, type: 'speedup' }))
+        console.info('[CancelReplaceTxUpdater][watchTxChanges][txSpeedUp event]', { ...e })
+        if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'speedup' }))
         }
       })
 
       emitter.on('txCancel', (e) => {
-        if ('hash' in e && typeof e.hash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.hash, type: 'cancel' }))
+        console.info('[CancelReplaceTxUpdater][watchTxChanges][txCancel event]', { ...e })
+        if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
         }
       })
     } catch (error) {
-      console.error('Failed to watch', hash, error)
+      console.error('[CancelReplaceTxUpdater][watchTxChanges] Failed to watch tx', { hash }, error)
     }
   }
 }
@@ -46,20 +51,20 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
     try {
       blocknativeSdk.unsubscribe(hash)
     } catch (error) {
-      console.error('Failed to unsubscribe', hash)
+      console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
     }
   }
 }
 
 export default function CancelReplaceTxUpdater(): null {
-  const { chainId, provider, account } = useWeb3React()
+  const { chainId: _chainId, provider, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)
 
   useEffect(() => {
     if (!chainId || !provider) return
-
     // Watch the mempool for cancellation/replacement of tx
     watchTxChanges(pendingHashes, chainId, dispatch)
 

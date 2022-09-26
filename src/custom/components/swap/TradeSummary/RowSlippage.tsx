@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Percent } from '@uniswap/sdk-core'
-import { ThemeContext } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { ThemedText } from 'theme'
 
@@ -8,9 +8,19 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
 import { StyledInfo } from 'pages/Swap/styleds'
-import { ClickableText } from 'pages/Pool/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
+
+const ClickableText = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: ${({ theme }) => theme.text1};
+`
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -19,9 +29,10 @@ export interface RowSlippageProps {
   rowHeight?: number
   showSettingOnClick?: boolean
 }
+
 export function RowSlippage({
   allowedSlippage,
-  fontSize = 14,
+  fontSize = 13,
   fontWeight = 500,
   rowHeight,
   showSettingOnClick = true,
@@ -33,9 +44,9 @@ export function RowSlippage({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight}>
           {showSettingOnClick ? (
-            <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+            <ClickableText onClick={toggleSettings}>
               <Trans>Slippage tolerance</Trans>
             </ClickableText>
           ) : (
@@ -60,11 +71,7 @@ export function RowSlippage({
         </MouseoverTooltipContent>
       </RowFixed>
       <ThemedText.Black textAlign="right" fontSize={fontSize} color={theme.text1}>
-        {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
-        ) : (
-          <span>{displaySlippage}</span>
-        )}
+        <ClickableText onClick={() => (showSettingOnClick ? toggleSettings() : null)}>{displaySlippage}</ClickableText>
       </ThemedText.Black>
     </RowBetween>
   )

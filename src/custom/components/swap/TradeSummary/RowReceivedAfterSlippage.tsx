@@ -27,7 +27,7 @@ export interface RowReceivedAfterSlippageProps {
 export function RowReceivedAfterSlippage({
   trade,
   allowedSlippage,
-  fontSize = 14,
+  fontSize = 13,
   fontWeight = 500,
   rowHeight,
   showHelpers = true,
@@ -50,7 +50,7 @@ export function RowReceivedAfterSlippage({
   return (
     <RowBetween height={rowHeight}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text2}>
+        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text1}>
           {trade.tradeType === TradeType.EXACT_INPUT ? (
             <Trans>Minimum received (incl. fee)</Trans>
           ) : (

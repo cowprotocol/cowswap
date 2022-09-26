@@ -11,6 +11,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
+import { supportedChainId } from 'utils/supportedChainId'
 
 /**
  * Updater for cancelled orders.
@@ -27,7 +28,8 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
 export function CancelledOrdersUpdater(): null {
-  const { chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
 
   const cancelled = useCancelledOrders({ chainId })
 

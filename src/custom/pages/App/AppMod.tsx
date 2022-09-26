@@ -1,3 +1,4 @@
+import { initializeAnalytics } from 'components/AmplitudeAnalytics'
 import Loader from 'components/Loader'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
@@ -82,6 +83,8 @@ const Marginer = styled.div`
 export default function App(props?: { children?: ReactNode }) {
   const location = useLocation()
   useAnalyticsReporter(location)
+
+  initializeAnalytics()
 
   return (
     <ErrorBoundary>

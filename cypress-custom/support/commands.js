@@ -3,8 +3,10 @@ function _clickOnToken(inputOrOutput) {
 }
 
 function _selectTokenFromSelector(tokenAddress, inputOrOutput) {
-  cy.get('.token-item-' + tokenAddress).should('be.visible')
-  cy.get('.token-item-' + tokenAddress).click({ force: true })
+  cy.get('.token-item-' + tokenAddress)
+    .scrollIntoView()
+    .should('be.visible')
+    .click({ force: true })
   cy.get(`#swap-currency-${inputOrOutput} .token-amount-input`).should('be.visible')
 }
 

@@ -1,3 +1,8 @@
+// Redirect from the outdated domain
+if (window.location.host === 'cowswap.exchange') {
+  window.location.href = 'https://swap.cow.fi'
+}
+
 /**
  * In case of problems with the service worker cache we can urgently reset the cache.
  * Just set resetCacheInCaseOfEmergency to true and release a new version

@@ -60,12 +60,10 @@ const _computeInputAmountForSignature = (params: {
   }
 }
 
-interface SwapCallbackParams {
+export interface SwapCallbackParams {
   trade?: TradeGp // trade to execute, required
   allowedSlippage?: Percent // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  forceWrapNative?: boolean
-  openTransactionConfirmationModal: () => void
   closeModals: () => void
 }
 
@@ -97,17 +95,19 @@ interface SwapParams {
 
   // Ui actions
   addPendingOrder: AddOrderCallback
-  openTransactionConfirmationModal: () => void
   closeModals: () => void
 }
+
+export type OptionalForceWrapNative = { forceWrapNative?: boolean }
 
 /**
  * Internal swap function that does the actual swap logic.
  *
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
  * @param params All the required swap dependencies
  * @returns
  */
-async function _swap(params: SwapParams): Promise<string> {
+async function _swap(params: SwapParams & OptionalForceWrapNative): Promise<string> {
   const {
     chainId,
     account,
@@ -128,17 +128,18 @@ async function _swap(params: SwapParams): Promise<string> {
     recipientAddressOrName,
     recipient,
     appDataHash,
+    forceWrapNative = true,
     addAppDataToUploadQueue,
 
     // Callbacks
-    wrapEther,
     presignOrder,
 
     // Ui actions
     addPendingOrder,
-    openTransactionConfirmationModal,
     closeModals,
   } = params
+
+  const wrapEther = forceWrapNative ? params.wrapEther : null
 
   const {
     executionPrice,
@@ -154,13 +155,13 @@ async function _swap(params: SwapParams): Promise<string> {
 
   // Log the trade
   console.trace(
-    `[useSwapCallback] >> Trading ${tradeType} 
+    `[useSwapCallback] >> Trading ${tradeType}
       1. Original Input = ${inputAmountWithSlippage.toExact()}
       2. Fee = ${fee?.feeAsCurrency?.toExact() || '0'}
       3. Input Adjusted for Fee = ${inputAmountWithFee.toExact()}
       4. Expected Output = ${expectedOutputAmount.toExact()}
       4b. Output with SLIPPAGE = ${outputAmountWithSlippage.toExact()}
-      5. Price = ${executionPrice.toFixed()} 
+      5. Price = ${executionPrice.toFixed()}
       6. Details: `,
     {
       expectedInputAmount: expectedInputAmount.toExact(),
@@ -183,9 +184,6 @@ async function _swap(params: SwapParams): Promise<string> {
 
   // Wrap ETH if necessary
   const wrapPromise = isSellEth && wrapEther ? wrapEther(inputAmountWithSlippage) : undefined
-
-  // Show confirmation modal
-  openTransactionConfirmationModal()
 
   // Post order
   const postOrderPromise = signAndPostOrder({
@@ -328,22 +326,16 @@ async function _swap(params: SwapParams): Promise<string> {
  *
  * This callback will return the UID
  *
+ * @deprecated, use `src/custom/pages/Swap/swapFlow/index.ts`
  * @param params
  * @returns
  */
 export function useSwapCallback(params: SwapCallbackParams): {
   state: SwapCallbackState
-  callback: null | (() => Promise<string>)
+  callback: null | ((params?: OptionalForceWrapNative) => Promise<string>)
   error: string | null
 } {
-  const {
-    trade,
-    allowedSlippage = INITIAL_ALLOWED_SLIPPAGE_PERCENT,
-    recipientAddressOrName,
-    forceWrapNative = true,
-    openTransactionConfirmationModal,
-    closeModals,
-  } = params
+  const { trade, allowedSlippage = INITIAL_ALLOWED_SLIPPAGE_PERCENT, recipientAddressOrName, closeModals } = params
   const { account, chainId, provider } = useWeb3React()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
@@ -361,8 +353,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     trade,
     allowedSlippage
   )
-  const wrapEtherCb = useWrapEther()
-  const wrapEther = forceWrapNative ? wrapEtherCb : null
+  const wrapEther = useWrapEther()
   const presignOrder = usePresignOrder()
 
   return useMemo(() => {
@@ -392,7 +383,7 @@ export function useSwapCallback(params: SwapCallbackParams): {
     const sellToken = trade.inputAmount.currency.wrapped
     const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
 
-    if (!sellToken || !buyToken || (forceWrapNative && isSellEth && !wrapEtherCb)) {
+    if (!sellToken || !buyToken || (isSellEth && !wrapEther)) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
 
@@ -425,12 +416,12 @@ export function useSwapCallback(params: SwapCallbackParams): {
       // Ui actions
       addPendingOrder,
       closeModals,
-      openTransactionConfirmationModal,
     }
 
     return {
       state: SwapCallbackState.VALID,
-      callback: () => _swap(swapParams),
+      callback: (params?: OptionalForceWrapNative) =>
+        _swap({ ...swapParams, forceWrapNative: params?.forceWrapNative }),
       error: null,
     }
   }, [
@@ -441,8 +432,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     inputAmountWithSlippage,
     outputAmountWithSlippage,
     recipient,
-    forceWrapNative,
-    wrapEtherCb,
     recipientAddressOrName,
     allowedSlippage,
     deadline,
@@ -450,7 +439,6 @@ export function useSwapCallback(params: SwapCallbackParams): {
     gnosisSafeInfo,
     wrapEther,
     addPendingOrder,
-    openTransactionConfirmationModal,
     closeModals,
     presignOrder,
     appDataHash,

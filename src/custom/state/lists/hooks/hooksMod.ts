@@ -25,12 +25,13 @@ import { isAddress } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAddressMap, combineMaps } from '@src/state/lists/hooks'
+import { shallowEqual } from 'react-redux'
 
 /* export type TokenAddressMap = ChainTokenMap
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>
-} 
+}
 */
 
 /**
@@ -66,7 +67,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
   }, {}) as TokenAddressMap
     listCache?.set(list, map)
     return map
-  } 
+  }
 */
 
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
@@ -97,7 +98,7 @@ export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
   const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   // return useAppSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  return useAppSelector((state) => state.lists[chainId]?.byUrl || {})
+  return useAppSelector((state) => state.lists[chainId]?.byUrl, shallowEqual)
 }
 
 /**
@@ -157,9 +158,11 @@ export function useActiveListUrls(): string[] | undefined {
   // MOD: adds { chainId } support to the hooks
   const { chainId: connectedChainId } = useWeb3React()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
-  return useAppSelector((state) => state.lists[chainId]?.activeListUrls)?.filter(
-    (url) => !UNSUPPORTED_LIST_URLS[chainId]?.includes(url)
-  )
+  const activeListUrls = useAppSelector((state) => state.lists[chainId]?.activeListUrls, shallowEqual)
+
+  return useMemo(() => {
+    return activeListUrls?.filter((url) => !UNSUPPORTED_LIST_URLS[chainId]?.includes(url))
+  }, [chainId, activeListUrls])
 }
 
 export function useInactiveListUrls(): string[] {

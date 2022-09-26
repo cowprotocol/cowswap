@@ -34,7 +34,8 @@ export const APP_DATA_HASH = getAppDataHash()
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const PRODUCTION_URL = 'cowswap.exchange'
+export const PRODUCTION_URL = 'swap.cow.fi'
+// TODO: update barn url to whatever we decide to use
 export const BARN_URL = `barn.${PRODUCTION_URL}`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
@@ -100,7 +101,7 @@ export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOS
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/gnosis.protocol/Gnosis-Protocol-V2'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/Gnosis-Protocol-V2'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
 export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'

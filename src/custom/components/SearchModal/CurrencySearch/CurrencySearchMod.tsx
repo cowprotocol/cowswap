@@ -2,8 +2,8 @@
 import { t, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-// import { EventName, ModalName } from 'components/AmplitudeAnalytics/constants'
-// import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { EventName, ModalName } from 'components/AmplitudeAnalytics/constants'
+import { Trace } from 'components/AmplitudeAnalytics/Trace'
 // import { sendEvent } from 'components/analytics'
 import useDebounce from 'hooks/useDebounce'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
@@ -201,81 +201,81 @@ export function CurrencySearch({
   }, [])
 
   return (
-    // <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
-    <ContentWrapper>
-      <PaddedColumn style={{ padding: 0 }} gap="16px">
-        <PaddedRow>
-          <Text fontWeight={500} fontSize={16}>
-            <Trans>Select a token</Trans>
-          </Text>
-          <CloseIcon onClick={onDismiss} />
-        </PaddedRow>
-        <Row padding="0px 20px">
-          <SearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t`Search name or paste address`}
-            autoComplete="off"
-            value={searchQuery}
-            ref={inputRef as RefObject<HTMLInputElement>}
-            onChange={handleInput}
-            onKeyDown={handleEnter}
-          />
-        </Row>
-        {showCommonBases && (
-          <CommonBases
-            chainId={chainId}
-            onSelect={handleCurrencySelect}
-            selectedCurrency={selectedCurrency}
-            // searchQuery={searchQuery}
-            // isAddressSearch={isAddressSearch}
-          />
+    <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
+      <ContentWrapper>
+        <PaddedColumn style={{ padding: 0 }} gap="16px">
+          <PaddedRow>
+            <Text fontWeight={500} fontSize={16}>
+              <Trans>Select a token</Trans>
+            </Text>
+            <CloseIcon onClick={onDismiss} />
+          </PaddedRow>
+          <Row padding="0px 20px">
+            <SearchInput
+              type="text"
+              id="token-search-input"
+              placeholder={t`Search name or paste address`}
+              autoComplete="off"
+              value={searchQuery}
+              ref={inputRef as RefObject<HTMLInputElement>}
+              onChange={handleInput}
+              onKeyDown={handleEnter}
+            />
+          </Row>
+          {showCommonBases && (
+            <CommonBases
+              chainId={chainId}
+              onSelect={handleCurrencySelect}
+              selectedCurrency={selectedCurrency}
+              searchQuery={searchQuery}
+              isAddressSearch={isAddressSearch}
+            />
+          )}
+        </PaddedColumn>
+        <Separator />
+        {searchToken && !searchTokenIsAdded ? (
+          <Column style={{ padding: '20px 0', height: '100%' }}>
+            <ImportRow token={searchToken} showImportView={showImportView} setImportToken={setImportToken} />
+          </Column>
+        ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 ? (
+          <div style={{ flex: '1' }}>
+            <AutoSizer disableWidth>
+              {({ height }) => (
+                <CurrencyList
+                  height={height}
+                  currencies={disableNonToken ? filteredSortedTokens : filteredSortedTokensWithETH}
+                  otherListTokens={filteredInactiveTokens}
+                  onCurrencySelect={handleCurrencySelect}
+                  otherCurrency={otherSelectedCurrency}
+                  selectedCurrency={selectedCurrency}
+                  fixedListRef={fixedList}
+                  showImportView={showImportView}
+                  setImportToken={setImportToken}
+                  showCurrencyAmount={showCurrencyAmount}
+                  isLoading={balancesIsLoading && !tokenLoaderTimerElapsed}
+                  searchQuery={searchQuery}
+                  isAddressSearch={isAddressSearch}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        ) : isAddressSearch ? (
+          <Column style={{ padding: '20px', height: '100%' }}>
+            <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
+              <Trans>No tokens found with this address in {network} network</Trans>
+            </ThemedText.Main>
+          </Column>
+        ) : (
+          <Column style={{ padding: '20px', height: '100%' }}>
+            <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
+              <Trans>Enter valid token name or address</Trans>
+            </ThemedText.Main>
+          </Column>
         )}
-      </PaddedColumn>
-      <Separator />
-      {searchToken && !searchTokenIsAdded ? (
-        <Column style={{ padding: '20px 0', height: '100%' }}>
-          <ImportRow token={searchToken} showImportView={showImportView} setImportToken={setImportToken} />
-        </Column>
-      ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 ? (
-        <div style={{ flex: '1' }}>
-          <AutoSizer disableWidth>
-            {({ height }) => (
-              <CurrencyList
-                height={height}
-                currencies={disableNonToken ? filteredSortedTokens : filteredSortedTokensWithETH}
-                otherListTokens={filteredInactiveTokens}
-                onCurrencySelect={handleCurrencySelect}
-                otherCurrency={otherSelectedCurrency}
-                selectedCurrency={selectedCurrency}
-                fixedListRef={fixedList}
-                showImportView={showImportView}
-                setImportToken={setImportToken}
-                showCurrencyAmount={showCurrencyAmount}
-                isLoading={balancesIsLoading && !tokenLoaderTimerElapsed}
-                searchQuery={searchQuery}
-                isAddressSearch={isAddressSearch}
-              />
-            )}
-          </AutoSizer>
-        </div>
-      ) : isAddressSearch ? (
-        <Column style={{ padding: '20px', height: '100%' }}>
-          <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
-            <Trans>No tokens found with this address in {network} network</Trans>
-          </ThemedText.Main>
-        </Column>
-      ) : (
-        <Column style={{ padding: '20px', height: '100%' }}>
-          <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
-            <Trans>Enter valid token name or address</Trans>
-          </ThemedText.Main>
-        </Column>
-      )}
-      <Footer>
-        <Row justify="center">
-          <ButtonText onClick={showManageView} color={theme.primary1} className="list-token-manage-button">
-            {/* 
+        <Footer>
+          <Row justify="center">
+            <ButtonText onClick={showManageView} color={theme.primary1} className="list-token-manage-button">
+              {/* 
             <RowFixed>
               <IconWrapper size="16px" marginRight="6px" stroke={theme.primaryText1}>
                 <Edit />
@@ -285,11 +285,11 @@ export function CurrencySearch({
               </ThemedText.Main>
             </RowFixed>
           */}
-            <FooterButtonTextComponent theme={theme} />
-          </ButtonText>
-        </Row>
-      </Footer>
-    </ContentWrapper>
-    // </Trace>
+              <FooterButtonTextComponent theme={theme} />
+            </ButtonText>
+          </Row>
+        </Footer>
+      </ContentWrapper>
+    </Trace>
   )
 }
