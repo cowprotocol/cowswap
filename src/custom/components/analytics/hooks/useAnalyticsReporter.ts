@@ -12,19 +12,29 @@ export function sendTiming(timingCategory: any, timingVar: any, timingValue: any
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
 }
 
-function reportWebVitals({ name, delta, id }: Metric) {
+function sendWebVitals({ name, delta, id }: Metric) {
   sendTiming('Web Vitals', name, Math.round(name === 'CLS' ? delta * 1000 : delta), id)
+}
+
+export function reportWebVitals() {
+  getFCP(sendWebVitals)
+  getFID(sendWebVitals)
+  getLCP(sendWebVitals)
+  getCLS(sendWebVitals)
+}
+
+export function initGATracker() {
+  // typed as 'any' in react-ga4 -.-
+  googleAnalytics.ga((tracker: any) => {
+    if (!tracker) return
+
+    const clientId = tracker.get('clientId')
+    window.localStorage.setItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY, clientId)
+  })
 }
 
 // tracks web vitals and pageviews
 export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location']) {
-  useEffect(() => {
-    getFCP(reportWebVitals)
-    getFID(reportWebVitals)
-    getLCP(reportWebVitals)
-    getCLS(reportWebVitals)
-  }, [])
-
   // Handle chain id custom dimension
   const { chainId, connector } = useWeb3React()
   useEffect(() => {
@@ -49,12 +59,7 @@ export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['
   }, [pathname, search])
 
   useEffect(() => {
-    // typed as 'any' in react-ga4 -.-
-    googleAnalytics.ga((tracker: any) => {
-      if (!tracker) return
-
-      const clientId = tracker.get('clientId')
-      window.localStorage.setItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY, clientId)
-    })
+    reportWebVitals()
+    initGATracker()
   }, [])
 }
