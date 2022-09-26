@@ -63,7 +63,6 @@ export const ACCOUNT_MENU: InternalLink[] = [
 
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
-  { title: 'Limit orders', url: Routes.LIMIT_ORDER },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
@@ -117,4 +116,8 @@ export const MAIN_MENU: MenuTreeItem[] = [
 
 if (localStorage.getItem('enableNewSwap')) {
   MAIN_MENU.splice(1, 0, { title: 'New Swap', url: Routes.NEW_SWAP })
+}
+
+if (localStorage.getItem('enableLimitOrders')) {
+  MAIN_MENU.splice(2, 0, { title: 'Limit orders', url: Routes.LIMIT_ORDER })
 }
