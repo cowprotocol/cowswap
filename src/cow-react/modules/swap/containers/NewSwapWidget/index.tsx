@@ -189,7 +189,7 @@ export function NewSwapWidget() {
 
   return (
     <>
-      <styledEl.Container>
+      <styledEl.Container id="new-swap-widget">
         <NewSwapModals {...swapModalsProps} />
         <AffiliateStatusCheck />
         <styledEl.ContainerBox>
