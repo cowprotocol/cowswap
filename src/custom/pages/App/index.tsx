@@ -10,7 +10,7 @@ import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { version } from '@src/../package.json'
-import { environmentName } from 'utils/environments'
+import { environmentName, isBarn } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
@@ -23,6 +23,8 @@ import { NewSwapPage } from 'cow-react/pages/NewSwap'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
+
+const isNewSwapEnabled = localStorage.getItem('enableNewSwap') || isBarn
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
@@ -74,7 +76,7 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   `}
 
   ${({ theme, location }) => theme.mediaWidth.upToMedium`
-    padding: ${[Routes.SWAP, Routes.NEW_SWAP].includes(location.pathname as Routes) ? '0 0 16px' : '0 16px 16px'};
+    padding: ${[Routes.SWAP].includes(location.pathname as Routes) ? '0 0 16px' : '0 16px 16px'};
   `}
 `
 
@@ -97,8 +99,7 @@ export default function App() {
           <Switch>
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
-            <Route exact strict path={Routes.SWAP} component={Swap} />
-            <Route exact strict path={Routes.NEW_SWAP} component={NewSwapPage} />
+            <Route exact strict path={Routes.SWAP} component={isNewSwapEnabled ? NewSwapPage : Swap} />
             <Route exact strict path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
