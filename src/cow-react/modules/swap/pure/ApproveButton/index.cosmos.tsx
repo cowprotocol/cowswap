@@ -18,30 +18,6 @@ const defaultProps: ApproveButtonProps = {
   },
 }
 
-// function useCustomProps(props: Partial<ApproveButtonProps> = {}): ApproveButtonProps {
-//   const [currencyRaw] = useSelect('currency', {
-//     options: [COW_TOKEN.symbol || '', GNO_TOKEN.symbol || ''],
-//     defaultValue: COW_TOKEN.symbol || '',
-//   })
-//   const currency = currencyRaw === COW_TOKEN.symbol ? COW_TOKEN : GNO_TOKEN
-
-//   const [disabled] = useValue('disabled', { defaultValue: defaultProps.disabled ?? false })
-//   const [isConfirmed] = useValue('isConfirmed', { defaultValue: defaultProps.isConfirmed ?? false })
-//   const [isPending] = useValue('isPending', { defaultValue: defaultProps.isPending ?? false })
-//   const [recentlyApproved] = useValue('recentlyApproved', { defaultValue: defaultProps.recentlyApproved ?? false })
-
-//   return {
-//     currency,
-//     disabled,
-//     isConfirmed,
-//     isPending,
-//     recentlyApproved,
-//     onClick() {
-//       console.log('Click!')
-//     },
-//   }
-// }
-
 const Custom = (props: Partial<ApproveButtonProps> = {}) => {
   const [currencyRaw] = useSelect('currency', {
     options: [COW_TOKEN.symbol || '', GNO_TOKEN.symbol || ''],
