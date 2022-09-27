@@ -12,7 +12,7 @@ import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { setMaxSellTokensAnalytics } from 'utils/analytics'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Field } from 'state/swap/actions'
-import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from 'cow-react/pure/CurrencyInputPanel/typings'
 
 interface BuiltItProps {
   className: string

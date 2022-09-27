@@ -1,11 +1,11 @@
-import { CurrencyInputPanel, CurrencyInputPanelProps } from 'cow-react/common/pure/CurrencyInputPanel'
+import { CurrencyInputPanel, CurrencyInputPanelProps } from 'cow-react/modules/common/pure/CurrencyInputPanel'
 import { Field } from 'state/swap/actions'
 import { COW } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 import { PriceImpact } from 'hooks/usePriceImpact'
-import { defaultCurrencyInputPanelProps } from 'cow-react/common/pure/CurrencyInputPanel/defaultCurrencyInputProps'
+import { defaultCurrencyInputPanelProps } from 'cow-react/modules/common/pure/CurrencyInputPanel/defaultCurrencyInputProps'
 
 const currency = COW[SupportedChainId.MAINNET]
 const defaultProps = defaultCurrencyInputPanelProps

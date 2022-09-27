@@ -19,7 +19,7 @@ import { useShowRecipientControls } from 'cow-react/modules/swap/hooks/useShowRe
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useTradePricesUpdate } from 'cow-react/modules/swap/hooks/useTradePricesUpdate'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from 'cow-react/modules/common/pure/CurrencyInputPanel/typings'
 import { Field } from 'state/swap/actions'
 import { tokenViewAmount } from 'cow-react/modules/swap/helpers/tokenViewAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
