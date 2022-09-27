@@ -15,9 +15,9 @@ import { swapFlow } from 'cow-react/modules/swap/services/swapFlow'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { ApproveButtonsProps } from 'cow-react/modules/swap/containers/SwapButton/ApproveButtons'
+import { ApproveButtonsProps } from 'cow-react/modules/swap/containers/SwapButtons/ApproveButtons'
 import { getSwapButtonState } from 'cow-react/modules/swap/helpers/getSwapButtonState'
-import { SwapButtonContext } from 'cow-react/modules/swap/containers/SwapButton'
+import { SwapButtonsContext } from 'cow-react/modules/swap/containers/SwapButtons'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useTransactionConfirmModal } from 'cow-react/modules/swap/hooks/useTransactionConfirmModal'
@@ -33,7 +33,7 @@ export interface SwapButtonInput {
   openNativeWrapModal(): void
 }
 
-export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext {
+export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
   const {
     feeWarningAccepted,
     impactWarningAccepted,

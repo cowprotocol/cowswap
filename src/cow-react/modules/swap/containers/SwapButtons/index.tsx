@@ -16,7 +16,7 @@ import { isSwapButtonPropsEqual } from 'cow-react/modules/swap/containers/NewSwa
 
 import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
 
-export interface SwapButtonContext {
+export interface SwapButtonsContext {
   swapButtonState: SwapButtonState
   chainId: number | undefined
   wrappedToken: Token
@@ -31,7 +31,7 @@ export interface SwapButtonContext {
   swapInputError?: ReactNode
 }
 
-const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext) => JSX.Element } = {
+const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
   [SwapButtonState.SwapIsUnsupported]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <Trans>Unsupported Token</Trans>
@@ -44,29 +44,29 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
       </Text>
     </ButtonError>
   ),
-  [SwapButtonState.WrapError]: (props: SwapButtonContext) => (
+  [SwapButtonState.WrapError]: (props: SwapButtonsContext) => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       {props.wrapInputError}
     </ButtonPrimary>
   ),
-  [SwapButtonState.ShouldWrapNativeToken]: (props: SwapButtonContext) => (
+  [SwapButtonState.ShouldWrapNativeToken]: (props: SwapButtonsContext) => (
     <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
       <Trans>Wrap</Trans>
     </ButtonPrimary>
   ),
-  [SwapButtonState.ShouldUnwrapNativeToken]: (props: SwapButtonContext) => (
+  [SwapButtonState.ShouldUnwrapNativeToken]: (props: SwapButtonsContext) => (
     <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
       <Trans>Unwrap</Trans>
     </ButtonPrimary>
   ),
-  [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonContext) => (
+  [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
       <styledEl.SwapButtonBox>
         <Trans>Swap with {props.wrappedToken.symbol}</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.WrapAndSwap]: (props: SwapButtonContext) => (
+  [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
       <styledEl.SwapButtonBox>
         <Trans>Wrap and swap</Trans>
@@ -84,7 +84,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
       <Trans>Invalid price. Try increasing input/output amount.</Trans>
     </GreyCard>
   ),
-  [SwapButtonState.TransferToSmartContract]: (props: SwapButtonContext) => (
+  [SwapButtonState.TransferToSmartContract]: (props: SwapButtonsContext) => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>
         Buying {GpEther.onChain(props.chainId || SupportedChainId.MAINNET).symbol} with smart contract wallets is not
@@ -107,7 +107,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
       <styledEl.SwapButtonBox showLoading={true}></styledEl.SwapButtonBox>
     </ButtonPrimary>
   ),
-  [SwapButtonState.WalletIsNotConnected]: (props: SwapButtonContext) => (
+  [SwapButtonState.WalletIsNotConnected]: (props: SwapButtonsContext) => (
     <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={props.toggleWalletModal}>
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
@@ -117,7 +117,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
       <Trans>Read Only</Trans>
     </ButtonPrimary>
   ),
-  [SwapButtonState.NeedApprove]: (props: SwapButtonContext) => (
+  [SwapButtonState.NeedApprove]: (props: SwapButtonsContext) => (
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">
         <ApproveButtons {...props.approveButtonProps}>
@@ -128,24 +128,24 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
       </AutoColumn>
     </AutoRow>
   ),
-  [SwapButtonState.SwapDisabled]: (props: SwapButtonContext) => (
+  [SwapButtonState.SwapDisabled]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
       <styledEl.SwapButtonBox>{props.swapInputError || <Trans>Swap</Trans>}</styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.SwapError]: (props: SwapButtonContext) => (
+  [SwapButtonState.SwapError]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
       <styledEl.SwapButtonBox>{props.swapInputError}</styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.ExpertModeSwap]: (props: SwapButtonContext) => (
+  [SwapButtonState.ExpertModeSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
       <styledEl.SwapButtonBox>
         <Trans>Swap</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.RegularSwap]: (props: SwapButtonContext) => (
+  [SwapButtonState.RegularSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
         <Trans>Swap</Trans>
@@ -154,7 +154,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
   ),
 }
 
-export const SwapButton = React.memo(function (props: SwapButtonContext) {
+export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
   console.debug('RENDER SWAP BUTTON: ', props)
 
   return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
