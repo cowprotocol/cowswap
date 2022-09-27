@@ -29,7 +29,7 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.NEW_SWAP)} />}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.SWAP)} />}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
