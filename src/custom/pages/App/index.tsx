@@ -26,7 +26,7 @@ const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RAT
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
-const LimitOrders = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'cow-react/pages/LimitOrders'))
+const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'cow-react/pages/LimitOrders'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))

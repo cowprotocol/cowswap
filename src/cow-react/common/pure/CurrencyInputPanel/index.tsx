@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import * as styledEl from './styled'
-import { CurrencySelectButton } from '../../../modules/swap/pure/CurrencySelectButton'
+import { CurrencySelectButton } from 'cow-react/modules/swap/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { formatSmartAmount } from 'utils/format'
