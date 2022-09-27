@@ -4,10 +4,9 @@ import { OrderID } from 'api/gnosisProtocol'
 
 export { useUpdateAtom, useAtomValue, selectAtom }
 
-type LastOrderPopupClosed = OrderID | null
 type FollowPendingTxPopup = {
   showPopup: boolean
-  lastOrderPopupClosed: LastOrderPopupClosed
+  lastOrderPopupClosed: OrderID | undefined
   hidePopupPermanently: boolean
 }
 
@@ -16,7 +15,7 @@ type FollowPendingTxPopup = {
  */
 export const followPendingTxPopupAtom = atomWithStorage<FollowPendingTxPopup>('followPendingTxPopup', {
   showPopup: false,
-  lastOrderPopupClosed: null,
+  lastOrderPopupClosed: undefined,
   hidePopupPermanently: false,
 })
 
