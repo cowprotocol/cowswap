@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
-import { CurrencyInfo } from 'cow-react/common/dumb/CurrencyInputPanel/typings'
+import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
 
 export interface SwapFormProps {
   recipient: string | null

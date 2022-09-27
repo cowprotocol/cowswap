@@ -1,4 +1,4 @@
-import { CurrencySelectButton, CurrencySelectButtonProps } from 'cow-react/modules/swap/dumb/CurrencySelectButton/index'
+import { CurrencySelectButton, CurrencySelectButtonProps } from 'cow-react/modules/swap/pure/CurrencySelectButton/index'
 import { useSelect } from 'react-cosmos/fixture'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'

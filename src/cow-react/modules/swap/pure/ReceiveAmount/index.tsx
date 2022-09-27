@@ -1,4 +1,4 @@
-import { ReceiveAmountInfoTooltip } from 'cow-react/modules/swap/dumb/ReceiveAmountInfo'
+import { ReceiveAmountInfoTooltip } from 'cow-react/modules/swap/pure/ReceiveAmountInfo'
 import * as styledEl from './styled'
 import { ReceiveAmountInfo } from 'cow-react/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'

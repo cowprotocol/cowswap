@@ -1,7 +1,7 @@
 import { BoxProps, Text } from 'rebass'
 import styled, { DefaultTheme } from 'styled-components/macro'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { LowerSectionWrapper } from 'cow-react/modules/swap/dumb/styled'
+import { LowerSectionWrapper } from 'cow-react/modules/swap/pure/styled'
 import { AutoRow } from 'components/Row'
 import { Trans } from '@lingui/macro'
 import { MouseoverTooltipContent } from 'components/Tooltip'

@@ -21,11 +21,11 @@ import {
   getInputReceiveAmountInfo,
   getOutputReceiveAmountInfo,
 } from 'cow-react/modules/swap/helpers/tradeReceiveAmount'
-import { SwapButton } from 'cow-react/modules/swap/dumb/SwapButton/SwapButton'
+import { SwapButton } from 'cow-react/modules/swap/pure/SwapButton/SwapButton'
 import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButtonContext'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { NewSwapModals, NewSwapModalsProps } from 'cow-react/modules/swap/dumb/NewSwapModals'
+import { NewSwapModals, NewSwapModalsProps } from 'cow-react/modules/swap/pure/NewSwapModals'
 import { ConfirmSwapModalSetupProps } from 'cow-react/modules/swap/smart/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -34,17 +34,17 @@ import {
   NewSwapWarningsBottomProps,
   NewSwapWarningsTop,
   NewSwapWarningsTopProps,
-} from 'cow-react/modules/swap/dumb/warnings'
+} from 'cow-react/modules/swap/pure/warnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { SwapForm } from 'cow-react/modules/swap/dumb/SwapForm'
+import { SwapForm } from 'cow-react/modules/swap/pure/SwapForm'
 import { useShowRecipientControls } from 'cow-react/modules/swap/hooks/useShowRecipientControls'
-import { TradeRates, TradeRatesProps } from 'cow-react/modules/swap/dumb/TradeRates'
+import { TradeRates, TradeRatesProps } from 'cow-react/modules/swap/pure/TradeRates'
 import { useTradePricesUpdate } from 'cow-react/modules/swap/hooks/useTradePricesUpdate'
 import { tokenViewAmount } from 'cow-react/modules/swap/helpers/tokenViewAmount'
-import { CurrencyInfo } from 'cow-react/common/dumb/CurrencyInputPanel/typings'
+import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
 
 export function NewSwapPage() {
   useSetupSwapState()
