@@ -1,10 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { useIsGnosisSafeWallet } from 'hooks/useWalletInfo'
 import { getSafeInfo } from '@cow/api/gnosisSafe'
 import { useWeb3React } from '@web3-react/core'
 import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'
 import { useUpdateAtom } from 'jotai/utils'
 import { useSafeWalletContract } from 'hooks/useContract'
+import { usePendingOrders } from '../orders/hooks'
+import { Order } from 'state/orders/actions'
+import usePrevious from '@src/hooks/usePrevious'
 
 export default function Updater(): null {
   const { account, chainId, provider } = useWeb3React()
@@ -22,19 +25,69 @@ export default function Updater(): null {
   return null
 }
 
-export function UpdaterExecutionDate(): null {
+type SafePendingTx = Record<string, string> // safeTxHash, orderId
+
+const _getSafeTxs = (pendingOrders: Order[]) => {
+  return pendingOrders.reduce((accumulator, order) => {
+    if (order.presignGnosisSafeTxHash) {
+      accumulator[order.presignGnosisSafeTxHash] = order.id
+    }
+    return accumulator
+  }, {} as SafePendingTx)
+}
+
+const _getJoinedHash = (pendingOrders: Order[]) => {
+  return pendingOrders.reduce((accumulator, order) => {
+    if (order.presignGnosisSafeTx && order.presignGnosisSafeTxHash) {
+      accumulator += order.presignGnosisSafeTxHash
+    }
+    return accumulator
+  }, '')
+}
+
+/**
+ * This will help to have the most accurate date of the execution of an order.
+ * Since the safe API has a slight delay the progress bar is not displayed properly
+ */
+export function UpdaterSafeExecutionDate(): null {
   const isSafeWallet = useIsGnosisSafeWallet()
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const safeWalletContract = useSafeWalletContract(account)
+  const pending = usePendingOrders({ chainId })
+  const txHashJoined = _getJoinedHash(pending)
+  const previousTxHashJoined = usePrevious(txHashJoined)
+  const pendingTxsRef = useRef(pending)
+
+  const listenerEvent = useCallback(
+    (txHash: string) => {
+      if (!chainId) return
+      const safeOrders = _getSafeTxs(pendingTxsRef.current)
+
+      if (txHash in safeOrders) {
+        const found = pendingTxsRef.current.find((o) => o.id === safeOrders[txHash] && o.presignGnosisSafeTxHash)
+        console.log('__OVERWRITE:', found)
+        // found &&
+        //   updatePresignGnosisSafeTx({ orderId: found.id, chainId, safeTransaction: { ...found.presignGnosisSafeTx } })
+      }
+    },
+    [chainId]
+  )
 
   useEffect(() => {
-    if (!isSafeWallet || !safeWalletContract) return
+    if (!isSafeWallet || previousTxHashJoined === txHashJoined) return
 
-    const updateMock = (txHash: string, payment: number) => console.log('__executionSuccess', txHash, payment)
-    safeWalletContract.on('ExecutionSuccess', (txHash, payment) => updateMock)
+    pendingTxsRef.current = pending
+  }, [isSafeWallet, pending, previousTxHashJoined, txHashJoined])
 
-    // return () => safeWalletContract.removeListener('ExecutionSuccess', updateMock)
-  }, [account, isSafeWallet, safeWalletContract])
+  useEffect(() => {
+    if (!isSafeWallet || !safeWalletContract || !previousTxHashJoined) return
+
+    safeWalletContract.on('ExecutionSuccess', listenerEvent)
+
+    return () => {
+      safeWalletContract.removeListener('ExecutionSuccess', listenerEvent)
+    }
+  }, [isSafeWallet, safeWalletContract, listenerEvent, previousTxHashJoined])
 
   return null
 }
