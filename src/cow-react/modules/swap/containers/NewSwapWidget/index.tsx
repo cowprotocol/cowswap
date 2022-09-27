@@ -34,7 +34,7 @@ import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButton
 import { SwapFormProps } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
 import { ConfirmSwapModalSetupProps } from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
-import { NewSwapModals, NewSwapModalsProps } from 'cow-react/modules/swap/pure/NewSwapModals'
+import { NewSwapModals, NewSwapModalsProps } from 'cow-react/modules/swap/containers/NewSwapModals'
 import {
   NewSwapWarningsBottom,
   NewSwapWarningsBottomProps,
