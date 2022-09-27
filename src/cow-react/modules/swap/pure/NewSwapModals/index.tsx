@@ -1,8 +1,11 @@
-import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'cow-react/modules/swap/smart/ConfirmSwapModalSetup'
+import {
+  ConfirmSwapModalSetup,
+  ConfirmSwapModalSetupProps,
+} from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
 import EthFlowModal, { EthFlowProps } from 'components/swap/EthFlow'
 import React from 'react'
 import { genericPropsChecker } from 'cow-react/pages/NewSwap/propsChecker'
-import { ImportTokenModal } from 'cow-react/modules/swap/smart/ImportTokenModal'
+import { ImportTokenModal } from 'cow-react/modules/swap/containers/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { useHistory } from 'react-router-dom'

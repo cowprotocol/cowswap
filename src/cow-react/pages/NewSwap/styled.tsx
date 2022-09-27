@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import SwapHeader from 'components/swap/SwapHeader'
-import { RemoveRecipient } from 'cow-react/modules/swap/smart/RemoveRecipient'
+import { RemoveRecipient } from 'cow-react/modules/swap/containers/RemoveRecipient'
 import { MEDIA_WIDTHS } from 'theme'
 
 export const Container = styled.div`

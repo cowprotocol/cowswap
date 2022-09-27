@@ -26,7 +26,7 @@ import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButton
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { NewSwapModals, NewSwapModalsProps } from 'cow-react/modules/swap/pure/NewSwapModals'
-import { ConfirmSwapModalSetupProps } from 'cow-react/modules/swap/smart/ConfirmSwapModalSetup'
+import { ConfirmSwapModalSetupProps } from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import {
