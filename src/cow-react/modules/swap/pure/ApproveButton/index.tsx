@@ -16,14 +16,14 @@ export interface ApproveButtonProps {
   disabled: boolean
   isPending: boolean
   isConfirmed: boolean
-  recentlyApproved: boolean
+  isRecentlyApproved: boolean
 
   onClick: () => void
 }
 
 // TODO: should be refactored (need to separate context/logic/view)
 export function ApproveButton(props: ApproveButtonProps) {
-  const { currency, disabled, isPending, isConfirmed, recentlyApproved, onClick } = props
+  const { currency, disabled, isPending, isConfirmed, isRecentlyApproved, onClick } = props
 
   const theme = useContext(ThemeContext)
   const symbol = currency?.symbol
@@ -55,7 +55,7 @@ export function ApproveButton(props: ApproveButtonProps) {
 
           {isPending ? (
             <Loader stroke="white" />
-          ) : recentlyApproved ? (
+          ) : isRecentlyApproved ? (
             <CheckCircle size="20" color={theme.green1} />
           ) : (
             <MouseoverTooltip

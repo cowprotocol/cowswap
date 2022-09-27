@@ -136,7 +136,7 @@ export function ApproveButtons(props: ApproveButtonsProps) {
         disabled={approvalState !== ApprovalState.NOT_APPROVED || approvalSubmitted || hasPermittableTokenSignature}
         isPending={isPending}
         isConfirmed={isConfirmed}
-        recentlyApproved={recentlyApproved}
+        isRecentlyApproved={recentlyApproved}
       />
 
       <SwapButton disabled={!isValid || !isConfirmed} onClick={onSwapButtonClick}>
