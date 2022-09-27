@@ -48,6 +48,10 @@ export interface DropDownItem {
 
 export type MenuTreeItem = InternalLink | ExternalLink | DropDownItem
 
+export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
+  return !!(item.title && item.url)
+}
+
 export const FAQ_MENU: InternalLink[] = [
   { title: 'Overview', url: Routes.FAQ },
   { title: 'Protocol', url: Routes.FAQ_PROTOCOL },

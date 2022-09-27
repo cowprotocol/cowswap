@@ -2,15 +2,7 @@ import { HeaderLinks as Wrapper, StyledNavLink } from '../styled'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
-import {
-  MAIN_MENU,
-  MenuTreeItem,
-  MenuItemKind,
-  InternalLink,
-  ExternalLink,
-  DropDownItem,
-  MenuLink,
-} from 'constants/mainMenu'
+import { MenuTreeItem, MenuItemKind, InternalLink, ExternalLink, DropDownItem, MenuLink } from 'constants/mainMenu'
 import { ExternalLink as ExternalLinkComponent } from 'theme/components'
 
 // Assets
@@ -150,14 +142,21 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
 }
 
 export interface MenuTreeProps extends ContextProps {
+  items: MenuTreeItem[]
   isMobileMenuOpen: boolean
 }
 
-export function MenuTree({ isMobileMenuOpen, darkMode, toggleDarkMode, handleMobileMenuOnClick }: MenuTreeProps) {
+export function MenuTree({
+  items,
+  isMobileMenuOpen,
+  darkMode,
+  toggleDarkMode,
+  handleMobileMenuOnClick,
+}: MenuTreeProps) {
   const context = { darkMode, toggleDarkMode, handleMobileMenuOnClick }
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
-      {MAIN_MENU.map((menuItem, index) => (
+      {items.map((menuItem, index) => (
         <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
       ))}
     </Wrapper>
