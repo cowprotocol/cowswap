@@ -18,7 +18,7 @@ export interface ApproveButtonProps {
   isConfirmed: boolean
   recentlyApproved: boolean
 
-  onClick: () => Promise<void>
+  onClick: () => void
 }
 
 // TODO: should be refactored (need to separate context/logic/view)
