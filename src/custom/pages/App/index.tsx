@@ -100,7 +100,7 @@ export default function App() {
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
             <Route exact strict path={Routes.SWAP} component={isNewSwapEnabled ? NewSwapPage : Swap} />
-            <Route exact strict path={Routes.LIMIT_ORDER} component={LimitOrders} />
+            <Route path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
