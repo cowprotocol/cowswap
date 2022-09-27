@@ -15,9 +15,9 @@ import { swapFlow } from 'cow-react/modules/swap/services/swapFlow'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { ApproveButtonProps } from '@src/cow-react/modules/swap/containers/ApproveErrorButtons'
+import { ApproveButtonsProps } from 'cow-react/modules/swap/containers/SwapButton/ApproveButtons'
 import { getSwapButtonState } from 'cow-react/modules/swap/helpers/getSwapButtonState'
-import { SwapButtonContext } from 'cow-react/modules/swap/pure/SwapButton/SwapButton'
+import { SwapButtonContext } from 'cow-react/modules/swap/containers/SwapButton'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useTransactionConfirmModal } from 'cow-react/modules/swap/hooks/useTransactionConfirmModal'
@@ -98,7 +98,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonContext 
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
 
-  const approveButtonProps: ApproveButtonProps = {
+  const approveButtonProps: ApproveButtonsProps = {
     trade,
     currencyIn,
     allowedSlippage,

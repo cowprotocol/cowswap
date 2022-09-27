@@ -10,17 +10,18 @@ import { GreyCard } from 'components/Card'
 import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
-import { ApproveButton, ApproveButtonProps } from '@src/cow-react/modules/swap/containers/ApproveErrorButtons'
 import * as styledEl from './styled'
 import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 import { isSwapButtonPropsEqual } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
+
+import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
 
 export interface SwapButtonContext {
   swapButtonState: SwapButtonState
   chainId: number | undefined
   wrappedToken: Token
   handleSwap: HandleSwapCallback
-  approveButtonProps: ApproveButtonProps
+  approveButtonProps: ApproveButtonsProps
   wrapUnwrapAmount: CurrencyAmount<Currency> | undefined
   wrapInputError: string | undefined
   onWrap: () => void
@@ -119,11 +120,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonContext)
   [SwapButtonState.NeedApprove]: (props: SwapButtonContext) => (
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">
-        <ApproveButton {...props.approveButtonProps}>
+        <ApproveButtons {...props.approveButtonProps}>
           <styledEl.SwapButtonBox>
             <Trans>Swap</Trans>
           </styledEl.SwapButtonBox>
-        </ApproveButton>
+        </ApproveButtons>
       </AutoColumn>
     </AutoRow>
   ),

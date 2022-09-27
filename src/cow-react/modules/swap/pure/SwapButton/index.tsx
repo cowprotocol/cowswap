@@ -1,14 +1,13 @@
 import { ButtonSize } from 'theme'
 import { ButtonError } from 'components/Button'
 
-export interface ErrorButtonProps {
+export interface SwapButtonProps {
   disabled: boolean
   onClick: () => void
   children?: React.ReactNode
 }
 
-// TODO: should be refactored (need to separate context/logic/view)
-export function ErrorButton(props: ErrorButtonProps) {
+export function SwapButton(props: SwapButtonProps) {
   const { disabled, onClick, children } = props
 
   return (

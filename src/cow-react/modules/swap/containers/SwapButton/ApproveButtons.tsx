@@ -10,14 +10,14 @@ import { useERC20PermitFromTrade } from 'hooks/useERC20Permit'
 import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfirmManager'
 import { ApproveButton } from 'cow-react/modules/swap/pure/ApproveButton'
-import { ErrorButton } from 'cow-react/modules/swap/pure/ErrorButton'
+import { SwapButton } from 'cow-react/modules/swap/pure/SwapButton'
 import usePrevious from 'hooks/usePrevious'
 
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { approvalAnalytics } from 'utils/analytics'
 import TradeGp from 'state/swap/TradeGp'
 
-export interface ApproveErrorButtonsProps {
+export interface ApproveButtonsProps {
   currencyIn: Currency | undefined | null
   trade: TradeGp | undefined
   allowedSlippage: Percent
@@ -33,7 +33,7 @@ export interface ApproveErrorButtonsProps {
 }
 
 // TODO: should be refactored (need to separate context/logic/view)
-export function ApproveErrorButtons(props: ApproveErrorButtonsProps) {
+export function ApproveButtons(props: ApproveButtonsProps) {
   const {
     trade,
     allowedSlippage,
@@ -139,9 +139,9 @@ export function ApproveErrorButtons(props: ApproveErrorButtonsProps) {
         recentlyApproved={recentlyApproved}
       />
 
-      <ErrorButton disabled={!isValid || !isConfirmed} onClick={onSwapButtonClick}>
+      <SwapButton disabled={!isValid || !isConfirmed} onClick={onSwapButtonClick}>
         {children}
-      </ErrorButton>
+      </SwapButton>
     </>
   )
 }

@@ -44,7 +44,7 @@ import {
 import { TradeRates, TradeRatesProps } from 'cow-react/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from 'cow-react/modules/swap/pure/SwapForm'
-import { SwapButton } from 'cow-react/modules/swap/pure/SwapButton/SwapButton'
+import { SwapButton } from 'cow-react/modules/swap/containers/SwapButton'
 
 export function NewSwapWidget() {
   useSetupSwapState()

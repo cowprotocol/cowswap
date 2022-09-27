@@ -50,7 +50,7 @@ import {
 } from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
 import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from 'cow-react/modules/swap/state/swapConfirmAtom'
-import { SwapButton, SwapButtonContext } from 'cow-react/modules/swap/pure/SwapButton/SwapButton'
+import { SwapButton, SwapButtonContext } from 'cow-react/modules/swap/containers/SwapButton'
 import { RemoveRecipient } from 'cow-react/modules/swap/containers/RemoveRecipient'
 import { Price } from 'cow-react/modules/swap/pure/Price'
 import { TradeBasicDetails } from 'cow-react/modules/swap/containers/TradeBasicDetails'
