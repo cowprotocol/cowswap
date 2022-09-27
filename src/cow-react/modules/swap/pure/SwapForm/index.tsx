@@ -1,9 +1,9 @@
 import React from 'react'
-import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
-import * as styledEl from 'cow-react/pages/NewSwap/styled'
+import { SwapFormProps } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
+import * as styledEl from 'cow-react/modules/swap/containers/NewSwapWidget/styled'
 import { CurrencyInputPanel } from 'cow-react/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from 'cow-react/common/pure/CurrencyArrowSeparator'
-import { swapPagePropsChecker } from 'cow-react/pages/NewSwap/propsChecker'
+import { swapPagePropsChecker } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
 import { AddRecipient } from 'cow-react/common/pure/AddRecipient'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 

@@ -4,7 +4,7 @@ import { CompatibilityIssuesWarning } from 'cow-react/modules/swap/pure/Compatib
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
-import { genericPropsChecker } from 'cow-react/pages/NewSwap/propsChecker'
+import { genericPropsChecker } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
 
 export interface NewSwapWarningsTopProps {
   trade: TradeGp | undefined

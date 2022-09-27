@@ -4,7 +4,7 @@ import {
 } from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
 import EthFlowModal, { EthFlowProps } from 'components/swap/EthFlow'
 import React from 'react'
-import { genericPropsChecker } from 'cow-react/pages/NewSwap/propsChecker'
+import { genericPropsChecker } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
 import { ImportTokenModal } from 'cow-react/modules/swap/containers/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'

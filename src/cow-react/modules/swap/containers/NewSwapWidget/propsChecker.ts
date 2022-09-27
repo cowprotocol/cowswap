@@ -1,4 +1,4 @@
-import { SwapFormProps } from 'cow-react/pages/NewSwap/typings'
+import { SwapFormProps } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { Fraction } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from 'cow-react/modules/swap/helpers/tradeReceiveAmount'

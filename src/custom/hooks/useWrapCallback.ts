@@ -10,14 +10,14 @@ import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
 import { formatSmart } from 'utils/format'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
-import { calculateGasMargin } from '@src/utils/calculateGasMargin'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'utils/analytics'
 import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { useTransactionConfirmModal } from '@src/cow-react/swap/hooks/useTransactionConfirmModal'
+import { useTransactionConfirmModal } from 'cow-react/modules/swap/hooks/useTransactionConfirmModal'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')

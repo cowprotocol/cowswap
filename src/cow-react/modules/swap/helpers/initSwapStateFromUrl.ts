@@ -1,7 +1,7 @@
 import { validatedRecipient } from 'state/swap/hooks'
 import { Field, ReplaceSwapStatePayload } from 'state/swap/actions'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
-import { TradeStateFromUrl } from 'cow-react/pages/NewSwap/typings'
+import { TradeStateFromUrl } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
 import { SupportedChainId } from 'constants/chains'
 import { SwapState } from 'state/swap/reducer'
 
