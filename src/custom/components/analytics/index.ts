@@ -40,17 +40,10 @@ export function outboundLink(
 
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   googleAnalytics.initialize(GOOGLE_ANALYTICS_ID, {
-    legacyDimensionMetric: true,
     gaOptions: {
       storage: 'none',
       storeGac: false,
       clientId: storedClientId ?? undefined,
-    },
-    gtagOptions: {
-      custom_map: {
-        dimension1: 'chainId',
-        dimension2: 'walletName',
-      },
     },
   })
   googleAnalytics.set({
