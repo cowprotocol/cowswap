@@ -9,6 +9,7 @@ import ToC from './ToC'
 import { FaqMenu } from './Menu'
 import { Routes } from 'constants/routes'
 import { BARN_URL, PRODUCTION_URL } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -23,6 +24,7 @@ export default function AffiliateFaq() {
   return (
     <Trace page={PageName.FAQ_AFFILIATE_PAGE} shouldLogImpression>
       <Wrapper ref={faqRef}>
+        <PageTitle title="Affiliate FAQ" />
         <FaqMenu />
         <Page>
           <ToC toc={toc} name="Affiliate Program FAQ" />

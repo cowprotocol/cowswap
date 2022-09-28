@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 import { useEffect } from 'react'
 import { gameAnalytics } from 'components/analytics'
+import PageTitle from 'components/PageTitle'
 
 const Wrapper = styled(Page)`
   min-height: initial;
@@ -37,6 +38,7 @@ export default function CowRunnerPage() {
 
   return (
     <Wrapper>
+      <PageTitle title="CoW Runner" />
       <p>
         Run! ...and try not getting sandwiched{' '}
         <span role="img" aria-label="sandwich-icon">

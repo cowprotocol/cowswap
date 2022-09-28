@@ -62,6 +62,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButtonContext'
 import { Routes } from 'constants/routes'
+import PageTitle from 'components/PageTitle'
 
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
@@ -250,6 +251,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
   return (
     <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
       <>
+        <PageTitle />
         {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.SWAP)} />}
         {confirmSwapProps && <ConfirmSwapModalSetup {...confirmSwapProps} />}
         {/* CoWmunity Fees Discount Modal */}

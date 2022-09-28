@@ -17,6 +17,7 @@ import { StyledInternalLink } from 'theme'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
+import PageTitle from 'components/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -57,6 +58,7 @@ export default function Faq() {
   return (
     <Trace page={PageName.FAQ_OVERVIEW_PAGE} shouldLogImpression>
       <Wrapper ref={faqRef}>
+        <PageTitle title="General FAQ" />
         <FaqMenu />
         <Page>
           <ToC toc={toc} name="General FAQ" />
