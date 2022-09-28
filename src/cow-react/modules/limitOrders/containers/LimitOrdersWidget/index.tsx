@@ -1,5 +1,4 @@
 import * as styledEl from './styled'
-import { useHistory } from 'react-router-dom'
 import { CurrencyInputPanel } from 'cow-react/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from 'cow-react/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from 'cow-react/common/pure/AddRecipient'
@@ -12,19 +11,17 @@ import { Field } from 'state/swap/actions'
 import { ButtonSize } from 'theme'
 import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { Currency } from '@uniswap/sdk-core'
-import { parameterizeLimitOrdersRoute } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
 import { useWeb3React } from '@web3-react/core'
 import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/useSetupLimitOrdersState'
-import { useAtom } from 'jotai'
-import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
 
   const { chainId } = useWeb3React()
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
-  const history = useHistory()
-  const [state, setState] = useAtom(limitOrdersAtom)
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
+    useLimitOrdersTradeState()
+  const stateManager = useLimitOrdersStateManager()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -60,31 +57,33 @@ export function LimitOrdersWidget() {
     (field: Field, currency: Currency) => {
       const inputCurrencyId = (field === Field.INPUT ? currency.symbol : inputCurrency?.symbol) || ''
       const outputCurrencyId = (field === Field.OUTPUT ? currency.symbol : outputCurrency?.symbol) || ''
-      const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId)
 
-      history.push(route)
+      stateManager.navigate(chainId, inputCurrencyId, outputCurrencyId)
     },
-    [history, chainId, inputCurrency, outputCurrency]
+    [stateManager, chainId, inputCurrency, outputCurrency]
   )
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      const inputCurrencyAmount = field === Field.INPUT ? typedValue : state.inputCurrencyAmount
-      const outputCurrencyAmount = field === Field.OUTPUT ? typedValue : state.outputCurrencyAmount
-
-      setState({ ...state, inputCurrencyAmount, outputCurrencyAmount })
+      if (field === Field.INPUT) {
+        stateManager.setInputCurrencyAmount(typedValue)
+      } else {
+        stateManager.setOutputCurrencyAmount(typedValue)
+      }
     },
-    [setState, state]
+    [stateManager]
   )
 
   const onSwitchTokens = useCallback(() => {
-    const route = parameterizeLimitOrdersRoute(chainId, state.outputCurrencyId, state.inputCurrencyId)
+    const { inputCurrencyId, outputCurrencyId } = stateManager.state
+    stateManager.navigate(chainId, outputCurrencyId, inputCurrencyId)
+  }, [stateManager, chainId])
 
-    history.push(route)
-  }, [history, state, chainId])
-
-  const onChangeRecipient = () => {
-    //
-  }
+  const onChangeRecipient = useCallback(
+    (recipient: string | null) => {
+      stateManager.setRecipient(recipient)
+    },
+    [stateManager]
+  )
 
   console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
@@ -126,6 +125,9 @@ export function LimitOrdersWidget() {
           currencyInfo={outputCurrencyInfo}
           priceImpactParams={priceImpactParams}
         />
+        {recipient !== null && (
+          <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
+        )}
         <styledEl.TradeButtonBox>
           <ButtonPrimary disabled={false} buttonSize={ButtonSize.BIG}>
             <Trans>Trade</Trans>
