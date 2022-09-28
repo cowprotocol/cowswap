@@ -1,6 +1,5 @@
-import { Trans } from '@lingui/macro'
 // eslint-disable-next-line no-restricted-imports
-import { t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
@@ -11,7 +10,7 @@ import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
 
-const InputPanel = styled.div`
+export const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: 1.25rem;
@@ -20,7 +19,7 @@ const InputPanel = styled.div`
   width: 100%;
 `
 
-const ContainerRow = styled.div<{ error: boolean }>`
+export const ContainerRow = styled.div<{ error: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,7 +35,7 @@ export const InputContainer = styled.div`
   padding: 1rem;
 `
 
-const Input = styled.input<{ error?: boolean }>`
+export const Input = styled.input<{ error?: boolean }>`
   font-size: 1.25rem;
   outline: none;
   border: none;
