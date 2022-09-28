@@ -242,7 +242,7 @@ const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     // case SupportedChainId.CELO_ALFAJORES:
     //   return <Trans>Blockscout</Trans>
     case SupportedChainId.GNOSIS_CHAIN:
-      return <Trans>Blockscout</Trans>
+      return <Trans>Gnosisscan</Trans>
     default:
       return <Trans>Etherscan</Trans>
   }

@@ -12,7 +12,7 @@ import ms from 'ms.macro'
 import { useEffect, useState } from 'react'
 // import styled, { keyframes } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
-import { ExplorerDataType /*, getExplorerLink*/ } from 'utils/getExplorerLink'
+// import { ExplorerDataType , getExplorerLink } from 'utils/getExplorerLink'
 
 import { MouseoverTooltip } from 'components/Tooltip'
 import { ChainConnectivityWarning } from 'components/Header/ChainConnectivityWarning'
@@ -173,9 +173,7 @@ export default function Polling() {
           </ExternalLink>
           <StyledPollingNumber breathe={isMounting} hovering={isHover}>
             <ExternalLink
-              href={
-                chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), ExplorerDataType.BLOCK) : ''
-              }
+              href={chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), 'block') : ''}
             >
               <MouseoverTooltip
                 text={<Trans>The most recent block number on this network. Prices update on every block.</Trans>}

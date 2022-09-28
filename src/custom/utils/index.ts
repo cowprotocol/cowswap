@@ -17,79 +17,45 @@ export {
   formattedFeeAmount,
 } from '@src/utils'
 
-const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
-  1: '',
-  // 3: 'ropsten.',
-  4: 'rinkeby.',
-  5: 'goerli.',
-  // 42: 'kovan.',
-  100: 'xdai.',
+const ETHERSCAN_URLS: { [chainId in ChainId]: string } = {
+  1: 'etherscan.io',
+  // 3: 'ropsten.etherscan.io',
+  4: 'rinkeby.etherscan.io',
+  5: 'goerli.etherscan.io',
+  // 42: 'kovan.etherscan.io',
+  100: 'gnosisscan.io',
 }
 
 export type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
+  const url = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1]
+
+  const basePath = `https://${url}`
 
   switch (type) {
     case 'transaction': {
-      return `${prefix}/tx/${data}`
+      return `${basePath}/tx/${data}`
     }
     case 'token': {
-      return `${prefix}/token/${data}`
+      return `${basePath}/token/${data}`
     }
     case 'block': {
-      return `${prefix}/block/${data}`
+      return `${basePath}/block/${data}`
     }
     case 'token-transfer': {
-      return `${prefix}/address/${data}#tokentxns`
+      return `${basePath}/address/${data}#tokentxns`
     }
     case 'address':
     default: {
-      return `${prefix}/address/${data}`
+      return `${basePath}/address/${data}`
     }
   }
-}
-
-function getBlockscoutUrlPrefix(chainId: ChainId): string {
-  switch (chainId) {
-    case ChainId.GNOSIS_CHAIN:
-      return 'poa/xdai'
-
-    default:
-      return ''
-  }
-}
-
-function getBlockscoutUrlSuffix(type: BlockExplorerLinkType, data: string): string {
-  switch (type) {
-    case 'transaction':
-      return `tx/${data}`
-    case 'block':
-      return `blocks/${data}/transactions`
-    case 'address':
-      return `address/${data}/transactions`
-    case 'token-transfer':
-      return `address/${data}/token-transfers`
-    case 'token':
-      return `tokens/${data}/token-transfers`
-  }
-}
-
-function getBlockscoutUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  return `https://blockscout.com/${getBlockscoutUrlPrefix(chainId)}/${getBlockscoutUrlSuffix(type, data)}`
 }
 
 // Get the right block explorer URL by chainId
 export function getBlockExplorerUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  switch (chainId) {
-    // Check if chain is xDAI to use Blockscout
-    case ChainId.GNOSIS_CHAIN:
-      return getBlockscoutUrl(chainId, data, type)
-    // Otherwise always use Etherscan for other chains
-    default:
-      return getEtherscanUrl(chainId, data, type)
-  }
+  return getEtherscanUrl(chainId, data, type)
 }
 
 export function isGpOrder(data: string, type: BlockExplorerLinkType) {
@@ -101,11 +67,7 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: BlockExpl
     // Explorer for GP orders:
     //    If a transaction has the size of the GP orderId, then it's a meta-tx
     return getExplorerOrderLink(chainId, data)
-  } else if (chainId === ChainId.GNOSIS_CHAIN) {
-    // Blockscout in xDAI
-    return getBlockscoutUrl(chainId, data, type)
   } else {
-    // Etherscan in xDAI
     return getEtherscanUrl(chainId, data, type)
   }
 }
@@ -114,7 +76,7 @@ export function getExplorerLabel(chainId: ChainId, data: string, type: BlockExpl
   if (isGpOrder(data, type)) {
     return 'View on Explorer'
   } else if (chainId === ChainId.GNOSIS_CHAIN) {
-    return 'View on Blockscout'
+    return 'View on Gnosisscan'
   } else {
     return 'View on Etherscan'
   }
