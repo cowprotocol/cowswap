@@ -42,22 +42,25 @@ import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { AlertWrapper } from './styleds'
 import { setMaxSellTokensAnalytics } from 'components/analytics'
-import { ImportTokenModal } from 'cow-react/swap/smart/ImportTokenModal'
-import { CompatibilityIssuesWarning } from 'cow-react/swap/dumb/CompatibilityIssuesWarning'
-import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'cow-react/swap/smart/ConfirmSwapModalSetup'
+import { ImportTokenModal } from 'cow-react/modules/swap/containers/ImportTokenModal'
+import { CompatibilityIssuesWarning } from 'cow-react/modules/swap/pure/CompatibilityIssuesWarning'
+import {
+  ConfirmSwapModalSetup,
+  ConfirmSwapModalSetupProps,
+} from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
 import { useAtomValue } from 'jotai/utils'
-import { swapConfirmAtom } from 'cow-react/swap/state/swapConfirmAtom'
-import { SwapButton, SwapButtonContext } from 'cow-react/swap/dumb/SwapButton/SwapButton'
-import { RemoveRecipient } from 'cow-react/swap/smart/RemoveRecipient'
-import { Price } from 'cow-react/swap/dumb/Price'
-import { TradeBasicDetails } from 'cow-react/swap/smart/TradeBasicDetails'
-import { BottomGrouping } from 'cow-react/swap/dumb/styled'
+import { swapConfirmAtom } from 'cow-react/modules/swap/state/swapConfirmAtom'
+import { SwapButtons, SwapButtonsContext } from 'cow-react/modules/swap/containers/SwapButtons'
+import { RemoveRecipient } from 'cow-react/modules/swap/containers/RemoveRecipient'
+import { Price } from 'cow-react/modules/swap/pure/Price'
+import { TradeBasicDetails } from 'cow-react/modules/swap/containers/TradeBasicDetails'
+import { BottomGrouping } from 'cow-react/modules/swap/pure/styled'
 import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
-import { FeesDiscount } from 'cow-react/swap/smart/FeesDiscount'
+import { FeesDiscount } from 'cow-react/modules/swap/containers/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
 import EthFlowModal from 'components/swap/EthFlow'
-import { useSwapButtonContext } from 'cow-react/swap/hooks/useSwapButtonContext'
+import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButtonContext'
 import { Routes } from 'constants/routes'
 
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
@@ -226,7 +229,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     }
   }
 
-  const swapButtonContext: SwapButtonContext = useSwapButtonContext({
+  const swapButtonsContext: SwapButtonsContext = useSwapButtonContext({
     feeWarningAccepted,
     impactWarningAccepted,
     approvalSubmitted,
@@ -239,7 +242,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
     trade,
     recipient,
     allowedSlippage,
-    handleSwap: swapButtonContext.handleSwap,
+    handleSwap: swapButtonsContext.handleSwap,
     priceImpact,
     dismissNativeWrapModal,
   }
@@ -258,13 +261,13 @@ export default function Swap({ history, location, className }: RouteComponentPro
         {showNativeWrapModal && (
           <EthFlowModal
             nativeInput={showWrap ? parsedAmount : nativeInput}
-            wrapUnwrapAmount={swapButtonContext.wrapUnwrapAmount}
+            wrapUnwrapAmount={swapButtonsContext.wrapUnwrapAmount}
             // state
-            approvalState={swapButtonContext.approveButtonProps.approvalState}
+            approvalState={swapButtonsContext.approveButtonProps.approvalState}
             onDismiss={dismissNativeWrapModal}
-            approveCallback={swapButtonContext.approveButtonProps.approveCallback}
-            handleSwapCallback={swapButtonContext.handleSwap}
-            hasEnoughWrappedBalanceForSwap={swapButtonContext.hasEnoughWrappedBalanceForSwap}
+            approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
+            handleSwapCallback={swapButtonsContext.handleSwap}
+            hasEnoughWrappedBalanceForSwap={swapButtonsContext.hasEnoughWrappedBalanceForSwap}
           />
         )}
 
@@ -398,7 +401,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
               padding="5px 15px"
             />
             <BottomGrouping>
-              <SwapButton {...swapButtonContext} />
+              <SwapButtons {...swapButtonsContext} />
               {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
             </BottomGrouping>
           </Wrapper>

@@ -2,7 +2,7 @@
 
 <i><b>Last updated: August 2021</b></i>
 
-Please read these Terms carefully before using our Platform. By using our Platform, you confirm that you accept these Terms and agree to comply with them. If you do not agree, you must not use our Platform. If you think that there is an error in these Terms, please contact us via the GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a> to discuss.
+Please read these Terms carefully before using our Platform. By using our Platform, you confirm that you accept these Terms and agree to comply with them. If you do not agree, you must not use our Platform. If you think that there is an error in these Terms, please contact us via the GnosisDAO subcategory of <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">forum.cow.fi</a> to discuss.
 
 **TERMS AND CONDITIONS (“TERMS”)**
 
@@ -11,7 +11,7 @@ Please read these Terms carefully before using our Platform. By using our Platfo
 1.  CoW Swap is operated by GnosisDAO (”**we**” or “**us**”). We are an
     Ethereum based organisation managed by community members. To contact
     us, please write to us via the
-    GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
+    GnosisDAO subcategory of <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">forum.cow.fi</a>.
 2.  We use open source products and developer materials from Gnosis
     Limited and affiliated persons and entities (“**Affiliates**”) as
     well as other third parties to provide a Platform to CoW Protocol
@@ -203,7 +203,7 @@ professional advisors.
     with the content standards set out in these Terms. If you wish to link to or make
     any use of content on our interface other than that set out above,
     please contact us at the GnosisDAO
-    subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>.
+    subcategory of <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">forum.cow.fi</a>.
 
 **13. YOUR WARRANTIES AND REPRESENTATIONS TO US**
 
@@ -303,7 +303,7 @@ professional advisors.
     arises out of or in connection with
     the present Terms between you and us (a “**Dispute**”),
     you agree to seek to resolve the matter with us amicably by
-    referring the matter to GnosisDAO subcategory of <a href="https://forum.gnosis.io/" target="_blank" rel="noopener nofollow">forum.gnosis.io</a>
+    referring the matter to GnosisDAO subcategory of <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">forum.cow.fi</a>
     with a detailed description, the date and time the issue arose, your
     handle to contact you on and the outcome you are seeking.
 2.  Your right to take legal action remains unaffected by the existence
