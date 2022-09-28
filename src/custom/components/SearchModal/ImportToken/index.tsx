@@ -10,9 +10,12 @@ import { RowFixed } from 'components/Row'
 import { ThemedText } from 'theme'
 import { ExternalLink } from 'theme/components'
 import ListLogo from 'components/ListLogo'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { PaddedColumn } from '@src/components/SearchModal/styleds'
+
+// MOD import
+import { getEtherscanLink as getExplorerLink } from 'utils'
 
 export interface CardComponentProps extends Pick<ImportProps, 'list'> {
   chainId?: number
@@ -64,7 +67,7 @@ function CardComponent({ theme, key, token, chainId, list }: CardComponentProps)
           </ThemedText.DarkGray>
         </AutoColumn>
         {chainId && (
-          <ExternalLink href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)}>
+          <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
             <AddressText fontSize={12}>{token.address}</AddressText>
           </ExternalLink>
         )}

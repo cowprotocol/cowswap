@@ -35,7 +35,6 @@ import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 import { ExternalLink } from 'theme'
 import { ExplorerLink } from 'components/ExplorerLink'
-import { ExplorerDataType } from 'utils/getExplorerLink'
 
 import { BadgeVariant } from 'components/Badge'
 import { OperationType } from 'components/TransactionConfirmationModal'
@@ -134,7 +133,7 @@ function AccountDetails({ isClaimer, label, account, connectedAccount }: Account
       <span>
         <b>{label}</b>
         <i>
-          <ExplorerLink id={account} label={account} type={ExplorerDataType.ADDRESS} />
+          <ExplorerLink id={account} label={account} type={'address'} />
         </i>
         {account === connectedAccount ? (
           <Badge variant={BadgeVariant.POSITIVE}>&nbsp; Connected account</Badge>
