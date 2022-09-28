@@ -23,12 +23,12 @@ describe('Detect environments using host and path', () => {
   describe('Is production', () => {
     const isProduction = { ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true }
 
-    it('cowswap.exchange', () => {
-      expect(checkEnvironment('cowswap.exchange', '')).toEqual(isProduction)
+    it('swap.cow.fi', () => {
+      expect(checkEnvironment('swap.cow.fi', '')).toEqual(isProduction)
     })
 
-    it('CowSwap.exchange', () => {
-      expect(checkEnvironment('CowSwap.exchange', '')).toEqual(isProduction)
+    it('swap.cow.fi', () => {
+      expect(checkEnvironment('swap.cow.fi', '')).toEqual(isProduction)
     })
   })
 
@@ -63,8 +63,8 @@ describe('Detect environments using host and path', () => {
   describe('Is Barn', () => {
     const isBarn = { ...DEFAULT_ENVIRONMENTS_CHECKS, isBarn: true }
 
-    it('barn.cowswap.exchange', () => {
-      expect(checkEnvironment('barn.cowswap.exchange', '')).toEqual(isBarn)
+    it('barn.cow.fi', () => {
+      expect(checkEnvironment('barn.cow.fi', '')).toEqual(isBarn)
     })
   })
 

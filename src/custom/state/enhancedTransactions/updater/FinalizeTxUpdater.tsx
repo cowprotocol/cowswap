@@ -15,6 +15,7 @@ import { Dispatch } from 'redux'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
+import { supportedChainId } from 'utils/supportedChainId'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -163,7 +164,8 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 }
 
 export default function Updater(): null {
-  const { chainId, provider, account } = useWeb3React()
+  const { chainId: _chainId, provider, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''
 

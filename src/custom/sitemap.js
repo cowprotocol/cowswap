@@ -3,7 +3,7 @@ const { renderSitemap } = require('simple-sitemap-renderer')
 const fs = require('fs')
 
 const OUTPUT_FILE = 'public/sitemap.xml'
-const PRODUCTION_URL = 'https://cowswap.exchange'
+const PRODUCTION_URL = 'https://swap.cow.fi'
 
 const PAGES = [
   // Main pages

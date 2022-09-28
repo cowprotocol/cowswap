@@ -33,6 +33,8 @@ import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import { CloseIcon } from 'theme'
 import PageTitle from 'components/PageTitle'
+import { PageName } from 'components/AmplitudeAnalytics/constants'
+import { Trace } from 'components/AmplitudeAnalytics/Trace'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -160,62 +162,64 @@ export default function TokensOverview() {
   }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView])
 
   return (
-    <Overview useFlex={false} padding={'20px 30px 30px'}>
-      <PageTitle title="Tokens Overview" />
-      {isChainSupported && (
-        <AccountHeading>
-          <LeftSection>
-            <MenuWrapper ref={node as any}>
-              <MenuButton onClick={toggleMenu}>
-                <Subtitle>
-                  <Trans>{PageView[selectedView].label}</Trans>
-                </Subtitle>
-                <StyledChevronDown size={14} />
-              </MenuButton>
+    <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
+      <Overview useFlex={false} padding={'20px 30px 30px'}>
+        <PageTitle title="Tokens Overview" />
+        {isChainSupported && (
+          <AccountHeading>
+            <LeftSection>
+              <MenuWrapper ref={node as any}>
+                <MenuButton onClick={toggleMenu}>
+                  <Subtitle>
+                    <Trans>{PageView[selectedView].label}</Trans>
+                  </Subtitle>
+                  <StyledChevronDown size={14} />
+                </MenuButton>
 
-              {isMenuOpen ? (
-                <Menu>
-                  {Object.entries(PageView).map(([key, value]) => (
-                    <MenuItem
-                      key={key}
-                      active={selectedView === key}
-                      onClick={() => handleMenuClick(key as PageViewKeys)}
-                    >
-                      <span>{value.label}</span>
-                      {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              ) : null}
-            </MenuWrapper>
+                {isMenuOpen ? (
+                  <Menu>
+                    {Object.entries(PageView).map(([key, value]) => (
+                      <MenuItem
+                        key={key}
+                        active={selectedView === key}
+                        onClick={() => handleMenuClick(key as PageViewKeys)}
+                      >
+                        <span>{value.label}</span>
+                        {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                ) : null}
+              </MenuWrapper>
 
-            {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-              <RemoveTokens onClick={handleRestoreTokens}>
-                (<Trans>Reset favourites</Trans>)
-              </RemoveTokens>
-            )}
-          </LeftSection>
+              {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+                <RemoveTokens onClick={handleRestoreTokens}>
+                  (<Trans>Reset favourites</Trans>)
+                </RemoveTokens>
+              )}
+            </LeftSection>
 
-          <SearchInputFormatter>
-            <TokenSearchInput
-              type="text"
-              id="token-search-input"
-              placeholder={t`Search name/symbol or paste address`}
-              autoComplete="off"
-              value={query}
-              onChange={handleSearch}
-            />
+            <SearchInputFormatter>
+              <TokenSearchInput
+                type="text"
+                id="token-search-input"
+                placeholder={t`Search name/symbol or paste address`}
+                autoComplete="off"
+                value={query}
+                onChange={handleSearch}
+              />
 
-            {!!query.length && (
-              <ClearSearchInput>
-                <CloseIcon size={24} onClick={handleSearchClear} />
-              </ClearSearchInput>
-            )}
-          </SearchInputFormatter>
-        </AccountHeading>
-      )}
+              {!!query.length && (
+                <ClearSearchInput>
+                  <CloseIcon size={24} onClick={handleSearchClear} />
+                </ClearSearchInput>
+              )}
+            </SearchInputFormatter>
+          </AccountHeading>
+        )}
 
-      {renderTableContent()}
-    </Overview>
+        {renderTableContent()}
+      </Overview>
+    </Trace>
   )
 }

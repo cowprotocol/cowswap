@@ -9,21 +9,8 @@ import { WalletConnect } from '@web3-react/walletconnect'
 import { SupportedChainId } from 'constants/chains'
 import Fortmatic from 'fortmatic'
 
-import UNISWAP_LOGO_URL from 'assets/svg/logo.svg'
+import COWSWAP_LOGO_URL from 'assets/cow-swap/cow.svg'
 import { RPC_URLS } from 'constants/networks'
-
-// Mod
-export function getSupportedChainIds(): number[] {
-  const supportedChainIdsEnv = process.env.REACT_APP_SUPPORTED_CHAIN_IDS
-
-  if (!supportedChainIdsEnv) {
-    throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
-  }
-
-  const chainIds = supportedChainIdsEnv.split(',').map((chainId) => Number(chainId.trim()))
-
-  return chainIds
-}
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
@@ -99,8 +86,8 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<Coinba
       actions,
       options: {
         url: RPC_URLS[SupportedChainId.MAINNET],
-        appName: 'Uniswap',
-        appLogoUrl: UNISWAP_LOGO_URL,
+        appName: 'CoW Swap',
+        appLogoUrl: COWSWAP_LOGO_URL,
         reloadOnDisconnect: false,
       },
       onError,

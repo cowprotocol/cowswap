@@ -113,3 +113,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
     ],
   },
 ]
+
+if (localStorage.getItem('enableLimitOrders')) {
+  MAIN_MENU.splice(1, 0, { title: 'Limit orders', url: Routes.LIMIT_ORDER })
+}

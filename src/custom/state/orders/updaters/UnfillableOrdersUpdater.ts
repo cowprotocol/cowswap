@@ -15,6 +15,7 @@ import { getPromiseFulfilledValue } from 'utils/misc'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
 import { GpPriceStrategy } from 'state/gas/atoms'
+import { supportedChainId } from 'utils/supportedChainId'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -62,7 +63,9 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
+
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   // check which GP Quote API to use (NEW/LEGACY)

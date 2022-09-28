@@ -127,7 +127,7 @@ export function useApproveCallback({
       const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
         // general fallback for tokens who restrict approval amounts
         useExact = true
-        return tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString()).catch((error) => {
+        return tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString()).catch((error: Error) => {
           console.log(
             '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
               APPROVE_GAS_LIMIT_DEFAULT.toString(),

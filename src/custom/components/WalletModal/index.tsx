@@ -4,6 +4,7 @@ import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
 import { Trans } from '@lingui/macro'
 import { Routes } from 'constants/routes'
+import { StyledInternalLink } from 'theme/components'
 
 // export * from '@src/components/WalletModal'
 
@@ -16,8 +17,10 @@ function CustomTerms() {
     <TermsWrapper>
       <Trans>
         By connecting a wallet, you agree to GnosisDAO&apos;s{' '}
-        <ExternalLink href={Routes.TERMS_CONDITIONS}>Terms &amp; Conditions</ExternalLink> and acknowledge that you have
-        read, understood, and agree to them.{' '}
+        <StyledInternalLink style={{ marginRight: 5 }} to={Routes.TERMS_CONDITIONS} target="_blank">
+          Terms &amp; Conditions
+        </StyledInternalLink>
+        and acknowledge that you have read, understood, and agree to them.{' '}
       </Trans>
     </TermsWrapper>
   )
