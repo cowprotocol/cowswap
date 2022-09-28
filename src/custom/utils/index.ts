@@ -17,21 +17,21 @@ export {
   formattedFeeAmount,
 } from '@src/utils'
 
-const ETHERSCAN_URLS: { [chainId in ChainId]: { prefix: string; domain: string } } = {
-  1: { prefix: '', domain: 'etherscan.io' },
-  // 3:{prefix: 'ropsten.', domain: 'etherscan.io'},
-  4: { prefix: 'rinkeby.', domain: 'etherscan.io' },
-  5: { prefix: 'goerli.', domain: 'etherscan.io' },
-  // 42:{prefix: 'kovan.', domain: 'etherscan.io'},
-  100: { prefix: '', domain: 'gnosisscan.io' },
+const ETHERSCAN_URLS: { [chainId in ChainId]: string } = {
+  1: 'etherscan.io',
+  // 3: 'ropsten.etherscan.io',
+  4: 'rinkeby.etherscan.io',
+  5: 'goerli.etherscan.io',
+  // 42: 'kovan.etherscan.io',
+  100: 'gnosisscan.io',
 }
 
 export type BlockExplorerLinkType = 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
 
 function getEtherscanUrl(chainId: ChainId, data: string, type: BlockExplorerLinkType): string {
-  const { prefix, domain } = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1]
+  const url = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1]
 
-  const basePath = `https://${prefix}${domain}`
+  const basePath = `https://${url}`
 
   switch (type) {
     case 'transaction': {
