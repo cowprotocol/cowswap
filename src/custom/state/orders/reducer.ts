@@ -22,6 +22,7 @@ import {
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
+import { noOverwriteExecutionDateIfExists } from '@src/custom/api/gnosisSafe'
 
 export interface OrderObject {
   id: OrderID
@@ -187,7 +188,10 @@ export default createReducer(initialState, (builder) =>
 
       const orderObject = getOrderById(state, chainId, orderId)
       if (orderObject) {
-        orderObject.order.presignGnosisSafeTx = safeTransaction
+        orderObject.order.presignGnosisSafeTx = noOverwriteExecutionDateIfExists(
+          orderObject.order.presignGnosisSafeTx,
+          safeTransaction
+        )
       }
     })
     .addCase(removeOrder, (state, action) => {

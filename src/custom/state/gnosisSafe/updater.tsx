@@ -1,13 +1,16 @@
 import { useEffect, useCallback, useRef } from 'react'
+import { TransactionResponse } from '@ethersproject/abstract-provider'
+import { BigNumber } from '@ethersproject/bignumber'
 import { useIsGnosisSafeWallet } from 'hooks/useWalletInfo'
 import { getSafeInfo } from '@cow/api/gnosisSafe'
 import { useWeb3React } from '@web3-react/core'
 import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'
 import { useUpdateAtom } from 'jotai/utils'
 import { useSafeWalletContract } from 'hooks/useContract'
-import { usePendingOrders } from '../orders/hooks'
+import { usePendingOrders, useUpdatePresignGnosisSafeTx } from '../orders/hooks'
 import { Order } from 'state/orders/actions'
 import usePrevious from '@src/hooks/usePrevious'
+import { whenWasMined } from '@src/custom/utils/blocks'
 
 export default function Updater(): null {
   const { account, chainId, provider } = useWeb3React()
@@ -51,26 +54,37 @@ const _getJoinedHash = (pendingOrders: Order[]) => {
  */
 export function UpdaterSafeExecutionDate(): null {
   const isSafeWallet = useIsGnosisSafeWallet()
-  const { account, chainId } = useWeb3React()
+  const { account, chainId, provider } = useWeb3React()
   const safeWalletContract = useSafeWalletContract(account)
   const pending = usePendingOrders({ chainId })
   const txHashJoined = _getJoinedHash(pending)
   const previousTxHashJoined = usePrevious(txHashJoined)
   const pendingTxsRef = useRef(pending)
+  const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
 
   const listenerEvent = useCallback(
-    (txHash: string) => {
-      if (!chainId) return
+    async (txHash: string, _payment: BigNumber, event: TransactionResponse) => {
+      if (!chainId || !provider) return
       const safeOrders = _getSafeTxs(pendingTxsRef.current)
+      let executionDate = new Date()
+      try {
+        executionDate = await whenWasMined(provider, event.blockNumber as number)
+      } catch (error) {
+        console.error(`Unable to obtain when mining block ${event.blockNumber}`, error)
+      }
 
       if (txHash in safeOrders) {
-        const found = pendingTxsRef.current.find((o) => o.id === safeOrders[txHash] && o.presignGnosisSafeTxHash)
-        console.log('__OVERWRITE:', found)
-        // found &&
-        //   updatePresignGnosisSafeTx({ orderId: found.id, chainId, safeTransaction: { ...found.presignGnosisSafeTx } })
+        const found = pendingTxsRef.current.find((o) => o.id === safeOrders[txHash])
+
+        found?.presignGnosisSafeTx &&
+          updatePresignGnosisSafeTx({
+            orderId: found.id,
+            chainId,
+            safeTransaction: { ...found.presignGnosisSafeTx, executionDate: executionDate.toISOString() },
+          })
       }
     },
-    [chainId]
+    [chainId, provider, updatePresignGnosisSafeTx]
   )
 
   useEffect(() => {

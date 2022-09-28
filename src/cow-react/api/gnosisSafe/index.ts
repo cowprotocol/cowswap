@@ -86,4 +86,17 @@ export function getSafeInfo(chainId: number, safeAddress: string, library: Web3P
   return client.getSafeInfo(safeAddress)
 }
 
+// Utility to hold executionDate written by an ExecutionSuccess event listener
+export function noOverwriteExecutionDateIfExists(
+  previousSafeInfo: SafeMultisigTransactionResponse | undefined,
+  newSafeInfo: SafeMultisigTransactionResponse
+) {
+  if (!previousSafeInfo) return newSafeInfo
+
+  return {
+    ...newSafeInfo,
+    executionDate: previousSafeInfo.executionDate ?? newSafeInfo.executionDate,
+  }
+}
+
 registerOnWindow({ getSafeTransaction, getSafeInfo })
