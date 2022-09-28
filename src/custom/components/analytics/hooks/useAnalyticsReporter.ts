@@ -37,7 +37,7 @@ export function initGATracker() {
 // tracks web vitals and pageviews
 export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location']) {
   // Handle chain id custom dimension
-  const { chainId, connector } = useWeb3React()
+  const { chainId, connector, account } = useWeb3React()
   useEffect(() => {
     // custom dimension 1 - chainId
     googleAnalytics.setDimension(Dimensions.chainId, chainId)
@@ -52,8 +52,8 @@ export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['
 
   useEffect(() => {
     // custom dimension 2 - walletname
-    googleAnalytics.setDimension(Dimensions.walletName, walletName)
-  }, [walletName])
+    googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
+  }, [account, walletName])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)

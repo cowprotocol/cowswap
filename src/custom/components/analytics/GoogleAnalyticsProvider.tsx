@@ -1,6 +1,7 @@
 import ReactGA from 'react-ga4'
 import { ErrorInfo } from 'react'
 import { GaOptions, InitOptions, UaEventOptions } from 'react-ga4/types/ga4'
+import { debounce } from 'utils/misc'
 
 export enum Dimensions {
   chainId = 'chainId',
@@ -36,7 +37,7 @@ export default class GoogleAnalyticsProvider {
     const output: { [key: string]: any } = {}
 
     for (const [key, value] of Object.entries(this.dimensions)) {
-      if (key in DIMENSION_MAP) {
+      if (key in DIMENSION_MAP && value !== undefined) {
         output[DIMENSION_MAP[key as DimensionKey]] = value
       }
     }
@@ -76,9 +77,15 @@ export default class GoogleAnalyticsProvider {
     ReactGA.outboundLink({ label }, hitCallback)
   }
 
-  public pageview(path?: string, _?: string[], title?: string) {
-    ReactGA.pageview(path, _, title)
+  public _pageview(page_path?: string, _?: string[], title?: string) {
+    ReactGA.send({ hitType: 'pageview', page_path, title, ...this.parseDimensions() })
   }
+
+  // debounced because otherwise it will be called 2 times
+  // setTimeout because it will show the title of previous page until Helmet is loaded
+  public pageview = debounce((page_path?: string, _?: string[], title?: string) => {
+    setTimeout(() => this._pageview(page_path, _, title), 1000)
+  })
 
   public ga(...args: any[]) {
     ReactGA.ga(...args)
