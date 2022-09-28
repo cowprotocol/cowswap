@@ -19,7 +19,7 @@ import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from './useWalletInfo'
 import { useAppData } from 'hooks/useAppData'
 import { useAddAppDataToUploadQueue } from 'state/appData/hooks'
-import { MAX_VALID_TO_EPOCH, SwapCallbackParams, SwapParams } from './useSwapCallback'
+import { calculateValidTo, SwapCallbackParams, SwapParams } from './useSwapCallback'
 import { EthFlowSwapCallback, useEthFlowOrder } from './useEthFlowOrder'
 
 type EthFlowSwapCallbackParams = SwapCallbackParams
@@ -63,6 +63,7 @@ async function _ethFlowSwap(params: EthFlowSwapParams): Promise<string> {
     addPendingOrder,
     openTransactionConfirmationModal,
     closeModals,
+    deadline,
   } = params
 
   const {
@@ -75,7 +76,7 @@ async function _ethFlowSwap(params: EthFlowSwapParams): Promise<string> {
   } = trade
 
   const kind = OrderKind.SELL
-  const validTo = MAX_VALID_TO_EPOCH
+  const validTo = calculateValidTo(deadline)
 
   // Log the trade
   console.trace(
