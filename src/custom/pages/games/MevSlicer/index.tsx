@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 import ninjaCowImg from 'assets/cow-swap/ninja-cow.png'
 import { gameAnalytics } from 'components/analytics'
 
+import PageTitle from 'components/PageTitle'
+
 const GAME_URL = 'https://mevslicer.netlify.app/'
 
 const Wrapper = styled(Page)`
@@ -48,6 +50,7 @@ function openGame() {
 export default function MevSlicer() {
   return (
     <Wrapper>
+      <PageTitle title="Mev Slicer" />
       <p>This CoW doesn&apos;t run away any more! Not from MEV!</p>
       <p>
         Now is the time to take some action! -{' '}

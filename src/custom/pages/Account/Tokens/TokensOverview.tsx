@@ -32,6 +32,7 @@ import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/C
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import { CloseIcon } from 'theme'
+import PageTitle from 'components/PageTitle'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 
@@ -163,6 +164,7 @@ export default function TokensOverview() {
   return (
     <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
       <Overview useFlex={false} padding={'20px 30px 30px'}>
+        <PageTitle title="Tokens Overview" />
         {isChainSupported && (
           <AccountHeading>
             <LeftSection>
