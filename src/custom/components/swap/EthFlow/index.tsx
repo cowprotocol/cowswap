@@ -44,7 +44,6 @@ const ModalMessage = styled.p`
   display: flex;
   flex-flow: row wrap;
   padding: 0;
-  margin-top: 40px;
   width: 100%;
   color: ${({ theme }) => theme.wallet.color};
 `
@@ -171,7 +170,7 @@ export function EthWethWrap({
     [isExpertMode, approveError, needsApproval, needsWrap, wrapError, approvalDerivedState, wrapDerivedState]
   )
   // get modal text content: header and descriptions
-  const { header, description } = useMemo(
+  const { header, descriptions } = useMemo(
     () =>
       _getModalTextContent({
         wrappedSymbol,
@@ -361,13 +360,13 @@ export function EthWethWrap({
   const TopModalContent = useCallback(
     () => (
       <EthFlowModalTopContent
-        description={description}
+        descriptions={descriptions}
         state={state}
         balanceChecks={balanceChecks}
         nativeSymbol={nativeSymbol}
       />
     ),
-    [state, balanceChecks, description, nativeSymbol]
+    [state, balanceChecks, descriptions, nativeSymbol]
   )
 
   const BottomModalContent = useCallback(() => {
@@ -444,18 +443,22 @@ export default function EthFlowModal(props: EthFlowProps) {
 }
 
 type TopContentParams = {
-  description: string | null
+  descriptions: string[] | null
   state: EthFlowState
   balanceChecks: ReturnType<typeof useRemainingNativeTxsAndCosts>['balanceChecks']
   nativeSymbol: string
 }
 
-function EthFlowModalTopContent({ description, state, balanceChecks, nativeSymbol }: TopContentParams) {
+function EthFlowModalTopContent({ descriptions, state, balanceChecks, nativeSymbol }: TopContentParams) {
   return (
     <>
-      {description && (
+      {descriptions && (
         <ModalMessage>
-          <Trans>{description}</Trans>
+          {descriptions.map((description, index) => (
+            <p key={index}>
+              <Trans>{description}</Trans>
+            </p>
+          ))}
         </ModalMessage>
       )}
       {/* Warn user if native balance low for on-chain operations EXCEPT if state is ready to swap */}

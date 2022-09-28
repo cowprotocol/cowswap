@@ -184,27 +184,18 @@ export type ModalTextContentProps = {
 // returns modal content: header and descriptions based on state
 export function _getModalTextContent(params: ModalTextContentProps) {
   const { wrappedSymbol, nativeSymbol, state, isExpertMode, isNative /*, wrapSubmitted, approveSubmitted */ } = params
-  // common text
-  const swapHeader = `Swap ${wrappedSymbol}`
-  const swapDescription = `Click "Swap" to submit an off-chain transaction and swap your ${wrappedSymbol}`
-  const signatureRequiredDescription = 'Transaction signature required, please check your connected wallet'
-  const transactionInProgress = 'Transaction in progress. See below for live status updates'
+
   // wrap
   const wrapHeader = isNative ? `Wrap your ${nativeSymbol}` : `Unwrap your ${wrappedSymbol}`
-  const wrapInstructions = `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
-    isNative ? nativeSymbol : wrappedSymbol
-  } into ${isNative ? wrappedSymbol : nativeSymbol}`
+
   // approve
   const approveHeader = `Approve ${wrappedSymbol}`
-  const approveInstructions = `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`
+
   // both
   const bothHeader = `Wrap and approve`
-  const bothInstructions = `2 pending on-chain transactions: ${
-    isNative ? `${nativeSymbol} wrap` : `${wrappedSymbol} unwrap`
-  } and approve. Please check your connected wallet for both signature requests`
 
   let header = ''
-  let description: string | null = null
+  let descriptions: string[] | null = null
   switch (state) {
     /**
      * FAILED operations
@@ -212,21 +203,28 @@ export function _getModalTextContent(params: ModalTextContentProps) {
      */
     case EthFlowState.WrapAndApproveFailed: {
       header = 'Wrap and Approve failed!'
-      description =
-        'Both wrap and approve operations failed. Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again'
+      descriptions = [
+        'Both wrap and approve operations failed.',
+        `Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again`,
+      ]
+
       break
     }
     case EthFlowState.WrapUnwrapFailed: {
       const prefix = isNative ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`
       header = `${prefix} failed!`
-      description = `${
-        isNative ? 'Wrap' : 'Unwrap'
-      } operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "${prefix}" to try again`
+      descriptions = [
+        `${isNative ? 'Wrap' : 'Unwrap'} operation failed.`,
+        `Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "${prefix}" to try again`,
+      ]
       break
     }
     case EthFlowState.ApproveFailed: {
       header = `Approve ${wrappedSymbol} failed!`
-      description = `Approve operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Approve ${wrappedSymbol}" to try again`
+      descriptions = [
+        `Approve operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet`,
+        `Click "Approve ${wrappedSymbol}" to try again`,
+      ]
       break
     }
 
@@ -236,12 +234,12 @@ export function _getModalTextContent(params: ModalTextContentProps) {
      */
     case EthFlowState.WrapAndApprovePending: {
       header = bothHeader
-      description = 'Transactions in progress. See below for live status updates of each operation'
+      descriptions = ['Transactions in progress', 'See below for live status updates of each operation']
       break
     }
     case EthFlowState.WrapUnwrapPending:
     case EthFlowState.ApprovePending: {
-      description = transactionInProgress
+      descriptions = ['Transaction in progress. See below for live status updates']
       // wrap only
       if (state === EthFlowState.WrapUnwrapPending) {
         header = wrapHeader
@@ -255,8 +253,11 @@ export function _getModalTextContent(params: ModalTextContentProps) {
 
     case EthFlowState.ApproveInsufficient: {
       header = 'Approval amount insufficient!'
-      description =
-        'Approval amount insufficient for input amount. Check that you are approving an amount equal to or greater than the input amount'
+      descriptions = [
+        'Approval amount insufficient for input amount',
+        'Check that you are approving an amount equal to or greater than the input amount',
+      ]
+
       break
     }
 
@@ -266,7 +267,11 @@ export function _getModalTextContent(params: ModalTextContentProps) {
      */
     case EthFlowState.WrapAndApproveNeeded: {
       header = bothHeader
-      description = bothInstructions
+      descriptions = [
+        `2 pending on-chain transactions: ${
+          isNative ? `${nativeSymbol} wrap` : `${wrappedSymbol} unwrap`
+        } and approve. Please check your connected wallet for both signature requests`,
+      ]
       break
     }
     case EthFlowState.WrapNeeded:
@@ -274,18 +279,24 @@ export function _getModalTextContent(params: ModalTextContentProps) {
       // wrap only
       if (state === EthFlowState.WrapNeeded) {
         header = wrapHeader
-        description = wrapInstructions
+        descriptions = [
+          `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
+            isNative ? nativeSymbol : wrappedSymbol
+          } into ${isNative ? wrappedSymbol : nativeSymbol}`,
+        ]
       }
       // approve only
       else {
         header = approveHeader
-        description = approveInstructions
+        descriptions = [
+          `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`,
+        ]
       }
 
       // in expert mode tx popups are automatic
       // so we show user message to check wallet popup
       if (isExpertMode) {
-        description = signatureRequiredDescription
+        descriptions = ['Transaction signature required, please check your connected wallet']
       }
       break
     }
@@ -294,8 +305,13 @@ export function _getModalTextContent(params: ModalTextContentProps) {
      * SWAP operation ready
      */
     case EthFlowState.SwapReady: {
-      header = swapHeader
-      description = isExpertMode ? null : swapDescription
+      header = `No need to wrap ${nativeSymbol}`
+      descriptions = isExpertMode
+        ? null
+        : [
+            `You have enough ${wrappedSymbol} for this trade, so you don't need to wrap any more ${nativeSymbol} to continue with this trade.`,
+            `Press SWAP to use ${wrappedSymbol} in your trade.`,
+          ]
       break
     }
 
@@ -303,12 +319,12 @@ export function _getModalTextContent(params: ModalTextContentProps) {
     // to shut TS up
     default: {
       header = 'Loading operation'
-      description = 'Operation in progress!'
+      descriptions = ['Operation in progress!']
       break
     }
   }
 
-  return { header, description }
+  return { header, descriptions }
 }
 
 // returns proper prop for visualiser: which currency is shown on left vs right (wrapped vs unwrapped)
