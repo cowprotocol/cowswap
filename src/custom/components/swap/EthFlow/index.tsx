@@ -511,20 +511,23 @@ function EthFlowModalBottomContent(params: BottomContentParams) {
     wrapped,
     nativeInput,
     chainId,
+    state,
   } = params
   const actionButtonProps = _getActionButtonProps(params)
   return (
     <>
-      <WrappingVisualisation
-        nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
-        nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
-        native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
-        wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
-        wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
-        wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
-        nativeInput={nativeInput}
-        chainId={chainId}
-      />
+      {state !== EthFlowState.SwapReady && (
+        <WrappingVisualisation
+          nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
+          nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
+          native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
+          wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
+          wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
+          wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
+          nativeInput={nativeInput}
+          chainId={chainId}
+        />
+      )}
       <SimpleAccountDetails
         pendingTransactions={Object.values(pendingHashMap).filter(Boolean).reverse()}
         confirmedTransactions={[]}

@@ -186,7 +186,8 @@ export function _getModalTextContent(params: ModalTextContentProps) {
   const { wrappedSymbol, nativeSymbol, state, isExpertMode, isNative /*, wrapSubmitted, approveSubmitted */ } = params
 
   // wrap
-  const wrapHeader = isNative ? `Wrap your ${nativeSymbol}` : `Unwrap your ${wrappedSymbol}`
+  const wrapUnwrapLabel = isNative ? 'Wrap' : 'Unwrap'
+  const wrapHeader = `${wrapUnwrapLabel} your ${isNative ? nativeSymbol : wrappedSymbol} first`
 
   // approve
   const approveHeader = `Approve ${wrappedSymbol}`
@@ -214,7 +215,7 @@ export function _getModalTextContent(params: ModalTextContentProps) {
       const prefix = isNative ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`
       header = `${prefix} failed!`
       descriptions = [
-        `${isNative ? 'Wrap' : 'Unwrap'} operation failed.`,
+        `${wrapUnwrapLabel} operation failed.`,
         `Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "${prefix}" to try again`,
       ]
       break
@@ -280,9 +281,10 @@ export function _getModalTextContent(params: ModalTextContentProps) {
       if (state === EthFlowState.WrapNeeded) {
         header = wrapHeader
         descriptions = [
-          `Submit an on-chain ${isNative ? 'wrap' : 'unwrap'} transaction to convert your ${
-            isNative ? nativeSymbol : wrappedSymbol
-          } into ${isNative ? wrappedSymbol : nativeSymbol}`,
+          `The current version of CoW Swap can't use the native ${nativeSymbol} directly to execute this trade.`,
+          `CoW Swap works with a wrapped version of it. This means you will need to submit an on-chain transaction to ${wrapUnwrapLabel.toLowerCase()} it into ${
+            isNative ? wrappedSymbol : nativeSymbol
+          }`,
         ]
       }
       // approve only
@@ -310,7 +312,7 @@ export function _getModalTextContent(params: ModalTextContentProps) {
         ? null
         : [
             `You have enough ${wrappedSymbol} for this trade, so you don't need to wrap any more ${nativeSymbol} to continue with this trade.`,
-            `Press SWAP to use ${wrappedSymbol} in your trade.`,
+            `Press SWAP to use ${wrappedSymbol} and continue trading.`,
           ]
       break
     }
