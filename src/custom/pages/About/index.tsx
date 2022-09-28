@@ -9,9 +9,7 @@ import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
 import { Routes } from 'constants/routes'
-
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 
@@ -31,9 +29,7 @@ const Wrapper = styled(Page)`
 export default function About() {
   return (
     <Wrapper>
-      <Helmet>
-        <title>About - {APP_TITLE}</title>
-      </Helmet>
+      <PageTitle title="About" />
 
       <Title>About</Title>
 

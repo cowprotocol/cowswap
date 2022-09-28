@@ -17,9 +17,7 @@ import { StyledInternalLink } from 'theme'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
-
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 export interface TocSection {
   section: TocItem
@@ -55,9 +53,7 @@ export default function Faq() {
   const { toc, faqRef } = useToC()
   return (
     <Wrapper ref={faqRef}>
-      <Helmet>
-        <title>General FAQ - {APP_TITLE}</title>
-      </Helmet>
+      <PageTitle title="General FAQ" />
       <FaqMenu />
       <Page>
         <ToC toc={toc} name="General FAQ" />

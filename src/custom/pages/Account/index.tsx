@@ -10,9 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Title } from 'components/Page'
-
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
@@ -43,9 +41,7 @@ const Overview = () => {
 
   return (
     <Container>
-      <Helmet>
-        <title>Account Overview - {APP_TITLE}</title>
-      </Helmet>
+      <PageTitle title="Account Overview" />
 
       {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
 

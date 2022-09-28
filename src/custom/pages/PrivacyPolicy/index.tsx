@@ -2,8 +2,7 @@ import contentFile from './PrivacyPolicy.md'
 import { MarkdownPage } from 'components/Markdown'
 import { GdocsListStyle } from 'components/Page'
 import styled from 'styled-components/macro'
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 const Wrapper = styled(MarkdownPage)`
   ${GdocsListStyle}
@@ -12,9 +11,7 @@ const Wrapper = styled(MarkdownPage)`
 export default function PrivacyPolicy() {
   return (
     <>
-      <Helmet>
-        <title>Privacy Policy - {APP_TITLE}</title>
-      </Helmet>
+      <PageTitle title="Privacy Policy" />
       <Wrapper contentFile={contentFile} />
     </>
   )

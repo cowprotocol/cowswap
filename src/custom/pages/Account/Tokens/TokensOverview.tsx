@@ -32,9 +32,7 @@ import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/C
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import { CloseIcon } from 'theme'
-
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -163,9 +161,7 @@ export default function TokensOverview() {
 
   return (
     <Overview useFlex={false} padding={'20px 30px 30px'}>
-      <Helmet>
-        <title>Tokens Overview - {APP_TITLE}</title>
-      </Helmet>
+      <PageTitle title="Tokens Overview" />
       {isChainSupported && (
         <AccountHeading>
           <LeftSection>

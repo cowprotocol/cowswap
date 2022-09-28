@@ -6,18 +6,14 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
-
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from 'constants/index'
+import PageTitle from 'components/PageTitle'
 
 export default function ProtocolFaq() {
   const { toc, faqRef } = useToC()
 
   return (
     <Wrapper ref={faqRef}>
-      <Helmet>
-        <title>Protocol FAQ - {APP_TITLE}</title>
-      </Helmet>
+      <PageTitle title="Protocol FAQ" />
       <FaqMenu />
       <Page>
         <ToC toc={toc} name="Protocol FAQ" />
