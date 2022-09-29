@@ -1,34 +1,11 @@
 import { PropsWithChildren } from 'react'
 
 import styled, { css } from 'styled-components/macro'
-import AppBody from 'pages/AppBody'
 import { WithClassName } from 'types'
-import { useIsDarkMode } from 'state/user/hooks'
-import SVG from 'react-inlinesvg'
-import { questionIcon } from 'assets/cow-swap/question'
 import { transparentize } from 'polished'
+import { Widget } from 'cow-react/modules/application/dumb/Widget'
 
-const HelpCircleWrapper = styled.div`
-  > svg {
-    opacity: 0.5;
-    transition: opacity 0.2s ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-`
-
-export function HelpCircle({ size }: { size: number }) {
-  const darkMode = useIsDarkMode()
-  return (
-    <HelpCircleWrapper>
-      <SVG width={size ? size : 14} height={size ? size : 14} src={questionIcon(darkMode)} />
-    </HelpCircleWrapper>
-  )
-}
-
-export const PageWrapper = styled(AppBody)`
+export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
   max-width: ${({ theme }) => theme.appBody.maxWidth.content};
   min-height: 500px;
@@ -197,6 +174,6 @@ export const GdocsListStyle = css`
 
 export type PageProps = PropsWithChildren<WithClassName>
 
-export default function Page(props: PageProps) {
+export function Page(props: PageProps) {
   return <PageWrapper className={props?.className}>{props?.children}</PageWrapper>
 }

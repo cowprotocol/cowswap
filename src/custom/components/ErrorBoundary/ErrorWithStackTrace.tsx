@@ -7,7 +7,7 @@ import { ExternalLink } from 'theme'
 import { CODE_LINK, DISCORD_LINK } from 'constants/index'
 import React from 'react'
 import styled from 'styled-components/macro'
-import { Title } from 'components/Page'
+import { Title } from 'cow-react/modules/application/dumb/Page'
 import { userAgent } from '@src/utils/userAgent'
 import store, { AppState } from 'state'
 

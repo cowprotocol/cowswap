@@ -5,7 +5,7 @@ type PageTitleProps = {
   title?: string
 }
 
-function PageTitle({ title }: PageTitleProps) {
+export function PageTitle({ title }: PageTitleProps) {
   return (
     <Helmet>
       <title>
@@ -15,5 +15,3 @@ function PageTitle({ title }: PageTitleProps) {
     </Helmet>
   )
 }
-
-export default PageTitle

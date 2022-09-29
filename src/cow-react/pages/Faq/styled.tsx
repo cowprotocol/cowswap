@@ -1,6 +1,6 @@
 import { ExternalLink as ExternalLinkTheme } from 'theme'
 import styled from 'styled-components/macro'
-import { Content } from 'components/Page'
+import { Content } from 'cow-react/modules/application/dumb/Page'
 import { ButtonPrimary } from 'components/Button'
 import { transparentize } from 'polished'
 

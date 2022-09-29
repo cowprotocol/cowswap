@@ -1,8 +1,8 @@
 import contentFile from './PrivacyPolicy.md'
 import { MarkdownPage } from 'components/Markdown'
-import { GdocsListStyle } from 'components/Page'
+import { GdocsListStyle } from 'cow-react/modules/application/dumb/Page'
 import styled from 'styled-components/macro'
-import PageTitle from 'components/PageTitle'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 const Wrapper = styled(MarkdownPage)`
   ${GdocsListStyle}

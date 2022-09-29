@@ -1,4 +1,4 @@
-import Page, { Content } from 'components/Page'
+import { Page, Content } from 'cow-react/modules/application/dumb/Page'
 import { LinkScrollable } from 'components/Link'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
@@ -6,7 +6,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
-import PageTitle from 'components/PageTitle'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'

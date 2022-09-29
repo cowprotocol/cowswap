@@ -32,7 +32,7 @@ import { ContentWrapper as SearchInputFormatter } from 'components/SearchModal/C
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import { CloseIcon } from 'theme'
-import PageTitle from 'components/PageTitle'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 

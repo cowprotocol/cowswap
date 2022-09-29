@@ -3,7 +3,7 @@ import React, { ErrorInfo } from 'react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-import Page from 'components/Page'
+import Page from 'cow-react/modules/application/dumb/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
 // import { UniIcon, LogoImage } from '../Header'
 import { UniIcon, LogoImage } from 'components/Header/styled' // mod
