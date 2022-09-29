@@ -9,7 +9,7 @@ import V_COW_ABI from 'cow-react/abis/vCow.json'
 import ENS_ABI from 'abis/ens-registrar.json'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
-import { Erc20, GPv2Settlement, VCow } from 'abis/types'
+import { GPv2Settlement, VCow, Erc20 } from 'cow-react/abis/types'
 
 import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'

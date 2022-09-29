@@ -6,7 +6,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { VCow as VCowType } from 'abis/types'
+import { VCow as VCowType } from 'cow-react/abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
