@@ -4,7 +4,7 @@ import { Settings } from 'react-feather'
 import { RemoveRecipient } from 'cow-react/modules/swap/containers/RemoveRecipient'
 
 export const Container = styled.div`
-  max-width: 460px;
+  // max-width: 460px;
   width: 100%;
 `
 
