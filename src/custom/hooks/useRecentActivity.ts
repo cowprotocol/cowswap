@@ -270,7 +270,8 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 
 export function useRecentActivityLastPendingOrder() {
   const allRecentActivity = useRecentActivity()
-  const lastPendingOrder = useMemo(() => {
+
+  return useMemo(() => {
     const pendings = allRecentActivity.filter(isPending)
     const lastOrder = pendings[pendings.length - 1]
 
@@ -278,6 +279,4 @@ export function useRecentActivityLastPendingOrder() {
 
     return lastOrder
   }, [allRecentActivity])
-
-  return lastPendingOrder
 }

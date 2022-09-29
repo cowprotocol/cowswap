@@ -15,7 +15,7 @@ import {
 import FollowPendingTxPopupUI from './FollowPendingTxPopupUI'
 import { OrderID } from 'api/gnosisProtocol'
 
-export const useLastPendingOrder = (): { lastPendingOrder: AddedOrder | null; onClose: () => void } => {
+export function useLastPendingOrder(): { lastPendingOrder: AddedOrder | null; onClose: () => void } {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const setLastOrderClosed = useUpdateAtom(handleCloseOrderPopupAtom)
   const lastPendingOrder = useRecentActivityLastPendingOrder()
