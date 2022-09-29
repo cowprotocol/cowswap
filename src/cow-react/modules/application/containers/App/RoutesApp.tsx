@@ -3,7 +3,7 @@ import { Suspense, lazy } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 
 import AnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'

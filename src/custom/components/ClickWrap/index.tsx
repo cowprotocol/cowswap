@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { NavLink } from 'react-router-dom'
 import { ButtonPrimary, ButtonOutlined } from 'components/Button'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 
 const Wrapper = styled.div`
   display: flex;

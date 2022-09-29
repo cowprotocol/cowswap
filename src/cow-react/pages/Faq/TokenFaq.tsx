@@ -6,7 +6,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
