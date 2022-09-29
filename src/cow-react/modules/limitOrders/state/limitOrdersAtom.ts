@@ -3,8 +3,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
-import { parameterizeLimitOrdersRoute } from '@src/cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
+import { parameterizeLimitOrdersRoute } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
 import { useHistory } from 'react-router-dom'
+import { TRADE_DEADLINE_DEFAULT } from 'cow-react/modules/limitOrders/const/trade'
 
 export interface LimitOrdersState {
   readonly chainId: number | null
@@ -13,6 +14,7 @@ export interface LimitOrdersState {
   readonly inputCurrencyAmount: string | null
   readonly outputCurrencyAmount: string | null
   readonly recipient: string | null
+  readonly deadline: number | null
 }
 
 export interface LimitOrdersStateManager {
@@ -36,6 +38,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
     recipient: null,
+    deadline: TRADE_DEADLINE_DEFAULT,
   }
 }
 

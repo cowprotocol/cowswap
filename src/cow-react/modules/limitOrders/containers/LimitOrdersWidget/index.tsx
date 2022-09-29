@@ -16,6 +16,8 @@ import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/us
 import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
 import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
+import { useAtomValue } from 'jotai/utils'
+import { limitOrdersQuoteAtom } from 'cow-react/modules/limitOrders/state/limitOrdersQuoteAtom'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
@@ -24,6 +26,7 @@ export function LimitOrdersWidget() {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
     useLimitOrdersTradeState()
   const stateManager = useLimitOrdersStateManager()
+  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -55,7 +58,8 @@ export function LimitOrdersWidget() {
     fiatAmount: null,
     receiveAmountInfo: null,
   }
-  const tradeContext = useTradeFlowContext()
+
+  const tradeContext = useTradeFlowContext(limitOrdersQuote)
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
@@ -93,7 +97,7 @@ export function LimitOrdersWidget() {
     tradeContext && tradeFlow(tradeContext)
   }, [tradeContext])
 
-  console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
+  console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   return (
     <styledEl.Container>

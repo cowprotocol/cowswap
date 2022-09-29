@@ -26,6 +26,7 @@ export function useLimitOrdersStateFromUrl(): LimitOrdersState {
 
     return {
       chainId: chainIdAsNumber || null,
+      deadline: null,
       inputCurrencyAmount: null,
       outputCurrencyAmount: null,
       inputCurrencyId: inputCurrencyId || null,
