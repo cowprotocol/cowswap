@@ -65,7 +65,7 @@ import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { Widget } from 'cow-react/modules/application/dumb/Widget'
+import { Widget } from 'cow-react/modules/application/pure/Widget'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()

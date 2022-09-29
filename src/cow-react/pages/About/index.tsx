@@ -1,4 +1,4 @@
-import { Page, Title, Content, GdocsListStyle } from 'cow-react/modules/application/dumb/Page'
+import { Page, Title, Content, GdocsListStyle } from 'cow-react/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'

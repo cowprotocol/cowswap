@@ -1,4 +1,4 @@
-import { Page, Content } from 'cow-react/modules/application/dumb/Page'
+import { Page, Content } from 'cow-react/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 import { useEffect } from 'react'

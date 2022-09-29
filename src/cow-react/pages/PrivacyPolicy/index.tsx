@@ -1,6 +1,6 @@
 import contentFile from './PrivacyPolicy.md'
 import { MarkdownPage } from 'components/Markdown'
-import { GdocsListStyle } from 'cow-react/modules/application/dumb/Page'
+import { GdocsListStyle } from 'cow-react/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 

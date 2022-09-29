@@ -1,4 +1,4 @@
-import { Page, Content } from 'cow-react/modules/application/dumb/Page'
+import { Page, Content } from 'cow-react/modules/application/pure/Page'
 import { LinkScrollable } from 'components/Link'
 import { Link } from 'react-router-dom'
 
