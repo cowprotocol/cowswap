@@ -6,18 +6,18 @@ import { lazy, Suspense } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Routes } from 'constants/routes'
 
-import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
+import AnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { version } from '@src/../package.json'
 import { environmentName, isBarn } from 'utils/environments'
-import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
+import RedirectAnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 
 // Sync routes
-import Account from 'pages/Account'
+import Account from 'cow-react/pages/Account'
 import Swap from 'pages/Swap'
 import { NewSwapPage } from 'cow-react/pages/NewSwap'
 
@@ -27,21 +27,21 @@ const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RAT
 const isNewSwapEnabled = localStorage.getItem('enableNewSwap') || isBarn
 
 // Async routes
-const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
+const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'cow-react/pages/PrivacyPolicy'))
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'cow-react/pages/LimitOrders'))
-const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
-const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
-const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
-const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
-const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
-const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
+const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'cow-react/pages/CookiePolicy'))
+const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'cow-react/pages/TermsAndConditions'))
+const About = lazy(() => import(/* webpackChunkName: "about" */ 'cow-react/pages/About'))
+const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'cow-react/pages/error/NotFound'))
+const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'cow-react/pages/games/CowRunner'))
+const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'cow-react/pages/games/MevSlicer'))
 
 // FAQ pages
-const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
-const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pages/Faq/ProtocolFaq'))
-const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
-const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
-const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'pages/Faq/AffiliateFaq'))
+const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'cow-react/pages/Faq'))
+const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'cow-react/pages/Faq/ProtocolFaq'))
+const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'cow-react/pages/Faq/TokenFaq'))
+const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'cow-react/pages/Faq/TradingFaq'))
+const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'cow-react/pages/Faq/AffiliateFaq'))
 
 if (SENTRY_DSN) {
   Sentry.init({

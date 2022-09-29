@@ -2,7 +2,7 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Content } from 'components/Page'
 import { ThemedText, MEDIA_WIDTHS } from 'theme'
-import { Card } from 'pages/Account/styled'
+import { Card } from 'cow-react/pages/Account/styled'
 import { darken, transparentize } from 'polished'
 
 export const MenuWrapper = styled.div`

@@ -53,7 +53,7 @@ import {
   setIsTouched,
   setClaimsCount,
 } from '../actions'
-import { EnhancedUserClaimData } from 'pages/Claim/types'
+import { EnhancedUserClaimData } from 'cow-react/pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'

@@ -14,7 +14,7 @@ import {
   VCowPrices,
 } from 'state/claim/hooks/index'
 
-import { EnhancedUserClaimData, InvestmentAmounts } from 'pages/Claim/types'
+import { EnhancedUserClaimData, InvestmentAmounts } from 'cow-react/pages/Claim/types'
 import { InvestClaim } from 'state/claim/reducer'
 import { ClaimInput } from 'state/claim/hooks/index'
 

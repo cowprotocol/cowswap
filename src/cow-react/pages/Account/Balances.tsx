@@ -9,7 +9,7 @@ import {
   VestingBreakdown,
   CardsLoader,
   CardsSpinner,
-} from 'pages/Account/styled'
+} from 'cow-react/pages/Account/styled'
 import { useWeb3React } from '@web3-react/core'
 import { getBlockExplorerUrl } from 'utils'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
@@ -35,7 +35,7 @@ import { SwapVCowStatus } from 'state/cowToken/actions'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import usePrevious from 'hooks/usePrevious'
 import LockedGnoVesting from './LockedGnoVesting'
-import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
+import { useCowFromLockedGnoBalances } from 'cow-react/pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
 

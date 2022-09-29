@@ -15,12 +15,12 @@ import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 
 // Account pages
-const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
-const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
-const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
-const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/Affiliate'))
+const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'cow-react/pages/Account/Balances'))
+const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'cow-react/pages/Account/Tokens'))
+const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'cow-react/pages/Account/Governance'))
+const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'cow-react/pages/Account/Affiliate'))
 // Not found catch
-const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
+const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'cow-react/pages/error/NotFound'))
 
 function _getPropsFromRoute(route: string) {
   switch (route) {
