@@ -58,7 +58,7 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { warningSeverity } from '../../utils/prices'
 import { supportedChainId } from '../../utils/supportedChainId'
-import AppBody from 'pages/AppBody'
+import { Widget } from '@src/cow-react/modules/application/dumb/Widget'
 
 const AlertWrapper = styled.div`
   max-width: 460px;
@@ -407,7 +407,7 @@ export default function Swap({ history }: RouteComponentProps) {
           onConfirm={handleConfirmTokenWarning}
           onDismiss={handleDismissTokenWarning}
         />
-        <AppBody>
+        <Widget>
           <SwapHeader allowedSlippage={allowedSlippage} />
           <Wrapper id="swap-page">
             <ConfirmSwapModal
@@ -654,7 +654,7 @@ export default function Swap({ history }: RouteComponentProps) {
               </div>
             </AutoColumn>
           </Wrapper>
-        </AppBody>
+        </Widget>
         <AlertWrapper>
           <NetworkAlert />
         </AlertWrapper>
