@@ -7,7 +7,7 @@ import { ThemedText } from 'theme'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
-import { StyledInfo } from 'pages/Swap/styleds'
+import { StyledInfo } from 'cow-react/pages/Swap/styleds'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 

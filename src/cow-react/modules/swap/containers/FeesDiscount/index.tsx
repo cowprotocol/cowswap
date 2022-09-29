@@ -6,7 +6,7 @@ import { AutoRow } from 'components/Row'
 import { Trans } from '@lingui/macro'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
-import { StyledInfo } from 'pages/Swap/styleds'
+import { StyledInfo } from 'cow-react/pages/Swap/styleds'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme
