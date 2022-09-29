@@ -12,7 +12,7 @@ import { Integrations } from '@sentry/tracing'
 import { version } from '@src/../package.json'
 import { environmentName, isBarn } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
-import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
+import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'cow-react/api/gnosisProtocol/errors/QuoteError'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 

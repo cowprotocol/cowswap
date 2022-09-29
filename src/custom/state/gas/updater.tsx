@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices } from './hooks'
 import { useWeb3React } from '@web3-react/core'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'
-import { getGasPrices } from 'api/gnosisProtocol/api'
+import { getGasPrices } from 'cow-react/api/gnosisProtocol/api'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold

@@ -4,7 +4,7 @@ import { NetworkID } from 'paraswap'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
-import { LegacyPriceQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { LegacyPriceQuoteParams } from 'cow-react/api/gnosisProtocol/legacy/types'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 
 // copy/pasting as the library types correspond to the internal types, not API response

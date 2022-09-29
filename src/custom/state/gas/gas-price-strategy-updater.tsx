@@ -4,7 +4,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { gasPriceStrategyAtom } from 'state/gas/atoms'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
-import { getPriceStrategy } from 'api/gnosisProtocol/api'
+import { getPriceStrategy } from 'cow-react/api/gnosisProtocol/api'
 import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
 
 const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
