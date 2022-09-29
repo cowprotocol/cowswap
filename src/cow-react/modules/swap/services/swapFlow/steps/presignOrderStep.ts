@@ -1,5 +1,5 @@
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { GPv2Settlement } from 'abis/types'
+import { GPv2Settlement } from 'cow-react/abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { logSwapFlow, logSwapFlowError } from 'cow-react/modules/swap/services/swapFlow/logger'
