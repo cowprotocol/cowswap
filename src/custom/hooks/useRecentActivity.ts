@@ -7,9 +7,13 @@ import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getDateTimestamp } from 'utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
+import { isPending } from 'components/Web3Status'
 
+export interface AddedOrder extends Order {
+  addedTime: number
+}
 export type TransactionAndOrder =
-  | (Order & { addedTime: number })
+  | AddedOrder
   | (EnhancedTransactionDetails & {
       id: string
       status: OrderStatus
@@ -32,6 +36,10 @@ export enum ActivityStatus {
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
+}
+
+export function isAnOrder(element: TransactionAndOrder): element is AddedOrder {
+  return 'inputToken' in element && 'outputToken' in element
 }
 
 /**
@@ -258,4 +266,17 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
     // For easier handling later, transform into a list of objects with nested lists
     return { date: new Date(timestamp), activities: mapByTimestamp[timestamp] }
   })
+}
+
+export function useRecentActivityLastPendingOrder() {
+  const allRecentActivity = useRecentActivity()
+
+  return useMemo(() => {
+    const pendings = allRecentActivity.filter(isPending)
+    const lastOrder = pendings[pendings.length - 1]
+
+    if (!lastOrder || !isAnOrder(lastOrder)) return null
+
+    return lastOrder
+  }, [allRecentActivity])
 }
