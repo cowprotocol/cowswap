@@ -14,6 +14,8 @@ import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/useSetupLimitOrdersState'
 import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
+import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
@@ -53,6 +55,8 @@ export function LimitOrdersWidget() {
     fiatAmount: null,
     receiveAmountInfo: null,
   }
+  const tradeContext = useTradeFlowContext()
+
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
       const inputCurrencyId = (field === Field.INPUT ? currency.symbol : inputCurrency?.symbol) || ''
@@ -84,6 +88,10 @@ export function LimitOrdersWidget() {
     },
     [stateManager]
   )
+
+  const doTrade = useCallback(() => {
+    tradeContext && tradeFlow(tradeContext)
+  }, [tradeContext])
 
   console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
@@ -129,7 +137,7 @@ export function LimitOrdersWidget() {
           <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
         )}
         <styledEl.TradeButtonBox>
-          <ButtonPrimary disabled={false} buttonSize={ButtonSize.BIG}>
+          <ButtonPrimary onClick={doTrade} disabled={false} buttonSize={ButtonSize.BIG}>
             <Trans>Trade</Trans>
           </ButtonPrimary>
         </styledEl.TradeButtonBox>
