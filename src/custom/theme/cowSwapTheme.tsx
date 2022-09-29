@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, css } from 'styled-components/macro'
+import { css, DefaultTheme, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { Colors } from 'theme/styled'
 import {
   colors as colorsBaseTheme,
-  themeVariables as baseThemeVariables,
   FixedGlobalStyle as FixedGlobalStyleBase,
   ThemedGlobalStyle as ThemedGlobalStyleBase,
+  themeVariables as baseThemeVariables,
 } from 'theme/baseTheme'
 
 import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
@@ -55,7 +55,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   const themeObject = useMemo(() => {
     // Page background must be blurred for all pages besides Swap page
-    const shouldBlurBackground = location.pathname.length > 1 && location.pathname !== Routes.SWAP
+    const shouldBlurBackground =
+      location.pathname.length > 1 && !([Routes.SWAP] as string[]).includes(location.pathname)
 
     return theme(darkMode, shouldBlurBackground)
   }, [darkMode, location.pathname])

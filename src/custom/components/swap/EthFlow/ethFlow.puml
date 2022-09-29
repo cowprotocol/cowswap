@@ -1,0 +1,51 @@
+@startuml
+start
+:;
+note right: The flow launches only when a trade contains only ETH/WETH (wrap/unwrap flow);
+if (Is expert mode enabled?) then (yes)
+  partition "Expert mode flow" {
+    if (Needs approval?) then (yes)
+    :**Approve token**;
+    note left: Should be described more;
+    else (no)
+    endif;
+    if (Has enough wrapped native token balance for trade?) then (no)
+    :**Wrap native token**;
+      note right: See **"Wrap/unwrap flow"** -->
+    else (yes)
+    endif;
+    :Set wrapped native token as input currency;
+    :Open swap confirmation modal;
+    if (Is swap confirmed?) then (yes)
+      #palegreen:Run swap flow \n (See: swapFlow.puml);
+      stop;
+    else (no)
+      #pink:Abort swap;
+      stop;
+    endif;
+  }
+else (no)
+partition "Wrap/unwrap flow" {
+  #b2e0f7:Show transaction confirmation modal with **pending state:** \n "Almost there! Follow these steps...";
+  #f4f1eb:Send GA event 'Send Order';
+  if (Is input currency native?) then (yes (Wrap flow))
+  :Send transaction with **deposit** call of WETH contract;
+  else (no (Unwrap flow))
+  :Send transaction with **withdraw** call of WETH contract;
+  endif;
+
+  #f4f1eb:Send GA event 'Sign Order';
+  :Add a new transaction to **redux enhancedTransactions state**;
+  :Close all modals;
+
+  if (Are there any errors?) then (yes)
+  #f4f1eb:Send GA event 'Error' or 'Reject';
+  #pink:Show transaction confirmation modal with **error state**;
+  stop;
+  else (no)
+  stop;
+  endif;
+}
+endif;
+@enduml
+

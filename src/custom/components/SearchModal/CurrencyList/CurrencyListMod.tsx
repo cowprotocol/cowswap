@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-// import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
-// import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
+import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
+import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'components/Card'
 import QuestionHelper from 'components/QuestionHelper'
 import useTheme from 'hooks/useTheme'
@@ -132,6 +132,7 @@ function CurrencyRow({
   otherSelected,
   style,
   showCurrencyAmount,
+  eventProperties,
   isUnsupported, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
@@ -142,7 +143,7 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
   showCurrencyAmount?: boolean
-  // eventProperties: Record<string, unknown>
+  eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
@@ -156,43 +157,43 @@ function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
-    //   <TraceEvent
-    //   events={[Event.onClick, Event.onKeyPress]}
-    //   name={EventName.TOKEN_SELECTED}
-    //   properties={{ is_imported_by_user: customAdded, ...eventProperties }}
-    //   element={ElementName.TOKEN_SELECTOR_ROW}
-    // >
-    <MenuItem
-      tabIndex={0}
-      style={style}
-      className={`token-item token-item-${key}`}
-      onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect() : null)}
-      onClick={() => (isSelected ? null : onSelect())}
-      disabled={isSelected}
-      selected={otherSelected}
+    <TraceEvent
+      events={[Event.onClick, Event.onKeyPress]}
+      name={EventName.TOKEN_SELECTED}
+      properties={{ is_imported_by_user: customAdded, ...eventProperties }}
+      element={ElementName.TOKEN_SELECTOR_ROW}
     >
-      <CurrencyLogo currency={currency} size={'24px'} />
-      <Column>
-        <Text title={currency.name} fontWeight={500}>
-          {currency.symbol}
-        </Text>
-        <ThemedText.DarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
-          {!currency.isNative && !isOnSelectedList && customAdded ? (
-            <Trans>{currency.name} • Added by user</Trans>
-          ) : (
-            currency.name
-          )}
-        </ThemedText.DarkGray>
-      </Column>
-      {/* <TokenTags currency={currency} /> */}
-      <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} />
-      {showCurrencyAmount && (
-        <RowFixed style={{ justifySelf: 'flex-end' }}>
-          {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
-        </RowFixed>
-      )}
-    </MenuItem>
-    // </TraceEvent>
+      <MenuItem
+        tabIndex={0}
+        style={style}
+        className={`token-item token-item-${key}`}
+        onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect() : null)}
+        onClick={() => (isSelected ? null : onSelect())}
+        disabled={isSelected}
+        selected={otherSelected}
+      >
+        <CurrencyLogo currency={currency} size={'24px'} />
+        <Column>
+          <Text title={currency.name} fontWeight={500}>
+            {currency.symbol}
+          </Text>
+          <ThemedText.DarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
+            {!currency.isNative && !isOnSelectedList && customAdded ? (
+              <Trans>{currency.name} • Added by user</Trans>
+            ) : (
+              currency.name
+            )}
+          </ThemedText.DarkGray>
+        </Column>
+        {/* <TokenTags currency={currency} /> */}
+        <TokenTagsComponent currency={currency} isUnsupported={isUnsupported} />
+        {showCurrencyAmount && (
+          <RowFixed style={{ justifySelf: 'flex-end' }}>
+            {balance ? <BalanceComponent balance={balance} /> : account ? <Loader /> : null}
+          </RowFixed>
+        )}
+      </MenuItem>
+    </TraceEvent>
   )
 }
 
@@ -233,24 +234,24 @@ interface TokenRowProps {
   style: CSSProperties
 }
 
-// const formatAnalyticsEventProperties = (
-//   token: Token,
-//   index: number,
-//   data: any[],
-//   searchQuery: string,
-//   isAddressSearch: string | false
-// ) => ({
-//   token_symbol: token?.symbol,
-//   token_address: token?.address,
-//   is_suggested_token: false,
-//   is_selected_from_list: true,
-//   scroll_position: '',
-//   token_list_index: index,
-//   token_list_length: data.length,
-//   ...(isAddressSearch === false
-//     ? { search_token_symbol_input: searchQuery }
-//     : { search_token_address_input: isAddressSearch }),
-// })
+const formatAnalyticsEventProperties = (
+  token: Token,
+  index: number,
+  data: any[],
+  searchQuery: string,
+  isAddressSearch: string | false
+) => ({
+  token_symbol: token?.symbol,
+  token_address: token?.address,
+  is_suggested_token: false,
+  is_selected_from_list: true,
+  scroll_position: '',
+  token_list_index: index,
+  token_list_length: data.length,
+  ...(isAddressSearch === false
+    ? { search_token_symbol_input: searchQuery }
+    : { search_token_address_input: isAddressSearch }),
+})
 
 export default function CurrencyList({
   height,
@@ -264,8 +265,8 @@ export default function CurrencyList({
   setImportToken,
   showCurrencyAmount,
   isLoading,
-  // searchQuery,
-  // isAddressSearch,
+  searchQuery,
+  isAddressSearch,
   BalanceComponent = Balance, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
 }: {
@@ -338,7 +339,7 @@ export default function CurrencyList({
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
             isUnsupported={isUnsupported}
             showCurrencyAmount={showCurrencyAmount}
-            // eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
+            eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />
         )
       } else {
@@ -354,8 +355,8 @@ export default function CurrencyList({
       showImportView,
       showCurrencyAmount,
       isLoading,
-      // isAddressSearch,
-      // searchQuery,
+      isAddressSearch,
+      searchQuery,
       checkIsUnsupported,
       BalanceComponent,
       TokenTagsComponent,

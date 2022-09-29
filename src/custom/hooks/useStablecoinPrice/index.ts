@@ -20,6 +20,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
+import { useDetectNativeToken } from 'state/swap/hooks'
 
 export * from '@src/hooks/useStablecoinPrice'
 
@@ -285,8 +286,11 @@ export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | 
 }
 
 export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
-  const gpUsdPrice = useUSDCValue(currencyAmount)
-  const coingeckoUsdPrice = useCoingeckoUsdValue(currencyAmount)
+  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const checkedCurrencyAmount = isWrapOrUnwrap ? undefined : currencyAmount
+  // if iswrap or unwrap use undefined values to not run expensive calculation
+  const gpUsdPrice = useUSDCValue(checkedCurrencyAmount)
+  const coingeckoUsdPrice = useCoingeckoUsdValue(checkedCurrencyAmount)
 
   /* TODO: review this capturing - it's super noisy in sentry 
   if (!!currencyAmount) {

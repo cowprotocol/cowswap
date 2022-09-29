@@ -1,12 +1,12 @@
 import { Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, NativeCurrency, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 // import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // import { useBestTrade } from 'hooks/useBestTrade'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { useAppDispatch /* , useAppSelector */ } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
 // import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
 
@@ -22,7 +22,7 @@ import { SwapState } from 'state/swap/reducer'
 import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
 
 // MOD
-import { useSwapState, BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
+import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
@@ -43,15 +43,25 @@ import {
 } from '@src/state/swap/hooks'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { supportedChainId } from 'utils/supportedChainId'
+import { AppState } from 'state'
 
 export * from '@src/state/swap/hooks'
 
-/* export function useSwapState(): AppState['swap'] {
+export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
-} */
+}
+
+export type Currencies = { [field in Field]?: Currency | null }
+
+export interface SwapActions {
+  onCurrencySelection: (field: Field, currency: Currency) => void
+  onSwitchTokens: () => void
+  onUserInput: (field: Field, typedValue: string) => void
+  onChangeRecipient: (recipient: string | null) => void
+}
 
 interface DerivedSwapInfo {
-  currencies: { [field in Field]?: Currency | null }
+  currencies: Currencies
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: ReactNode
@@ -59,12 +69,7 @@ interface DerivedSwapInfo {
   allowedSlippage: Percent
 }
 
-export function useSwapActionHandlers(): {
-  onCurrencySelection: (field: Field, currency: Currency) => void
-  onSwitchTokens: () => void
-  onUserInput: (field: Field, typedValue: string) => void
-  onChangeRecipient: (recipient: string | null) => void
-} {
+export function useSwapActionHandlers(): SwapActions {
   const dispatch = useAppDispatch()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
@@ -205,17 +210,7 @@ function _computeUnknownPriceImpactAcceptedState({
 }
 
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(): /* {
-  currencies: { [field in Field]?: Currency | null }
-  currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
-  parsedAmount: CurrencyAmount<Currency> | undefined
-  inputError?: ReactNode
-  trade: {
-    trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
-    state: TradeState
-  }
-  allowedSlippage: Percent
-} */ DerivedSwapInfo {
+export function useDerivedSwapInfo(): DerivedSwapInfo {
   const { account, chainId } = useWeb3React() // MOD: chainId
 
   const {
@@ -242,13 +237,6 @@ export function useDerivedSwapInfo(): /* {
     [inputCurrency, isExactIn, outputCurrency, typedValue]
   )
 
-  /* const trade = useBestTrade(
-    isExactIn ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT,
-    parsedAmount,
-    (isExactIn ? outputCurrency : inputCurrency) ?? undefined
-  ) */
-
-  // -- MOD --
   const { quote } = useGetQuoteAndStatus({
     token: inputCurrencyId,
     chainId,
@@ -387,7 +375,11 @@ export function validatedRecipient(recipient: any): string | null {
 } */
 
 // mod: defaultInputCurrency parameters
-export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurrency = ''): SwapState {
+export function queryParametersToSwapState(
+  parsedQs: ParsedQs,
+  defaultInputCurrency = '',
+  chainId: number | null
+): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount)
@@ -404,6 +396,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, defaultInputCurre
   const recipient = validatedRecipient(parsedQs.recipient)
 
   return {
+    chainId: chainId || null,
     [Field.INPUT]: {
       currencyId: inputCurrency === '' ? null : inputCurrency ?? null,
     },
@@ -429,8 +422,8 @@ export function useDefaultsFromURLSearch(): SwapState {
   const defaultInputToken = WETH[chainId || SupportedChainId.MAINNET].address // mod
 
   const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken) // mod
-  }, [defaultInputToken, parsedQs]) // mod
+    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId || null) // mod
+  }, [defaultInputToken, parsedQs, chainId]) // mod
 
   useEffect(() => {
     if (!chainId) return
@@ -439,8 +432,9 @@ export function useDefaultsFromURLSearch(): SwapState {
 
     dispatch(
       replaceSwapState({
+        chainId,
         typedValue: parsedSwapState.typedValue,
-        field: parsedSwapState.independentField,
+        independentField: parsedSwapState.independentField,
         inputCurrencyId,
         outputCurrencyId,
         recipient: parsedSwapState.recipient,
@@ -458,7 +452,8 @@ export function useReplaceSwapState() {
   const dispatch = useAppDispatch()
   return useCallback(
     (newState: {
-      field: Field
+      chainId: number | null
+      independentField: Field
       typedValue: string
       inputCurrencyId?: string | undefined
       outputCurrencyId?: string | undefined
@@ -468,12 +463,25 @@ export function useReplaceSwapState() {
   )
 }
 
-interface CurrencyWithAddress {
-  currency?: Currency | null
-  address?: string | null
+export interface NativeCurrenciesInfo {
+  isNativeIn: boolean
+  isNativeOut: boolean
+  isWrappedIn: boolean
+  isWrappedOut: boolean
+  wrappedToken: Token & { logoURI: string }
+  native: NativeCurrency
 }
 
-export function useDetectNativeToken(input?: CurrencyWithAddress, output?: CurrencyWithAddress, chainId?: ChainId) {
+export function useDetectNativeToken() {
+  const { chainId } = useWeb3React()
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState()
+
+  const input = useCurrency(inputCurrencyId)
+  const output = useCurrency(outputCurrencyId)
+
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
@@ -486,16 +494,17 @@ export function useDetectNativeToken(input?: CurrencyWithAddress, output?: Curre
     // TODO: check the new native currency function
     const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
-    const [isNativeIn, isNativeOut] = [input?.currency?.isNative, output?.currency?.isNative]
-    const [isWrappedIn, isWrappedOut] = [input?.currency?.equals(wrappedToken), output?.currency?.equals(wrappedToken)]
+    const [isNativeIn, isNativeOut] = [!!input?.isNative, !!output?.isNative]
+    const [isWrappedIn, isWrappedOut] = [!!input?.equals(wrappedToken), !!output?.equals(wrappedToken)]
 
     return {
-      isNativeIn: isNativeIn && !isWrappedOut,
-      isNativeOut: isNativeOut && !isWrappedIn,
+      isNativeIn,
+      isNativeOut,
       isWrappedIn,
       isWrappedOut,
       wrappedToken,
       native,
+      isWrapOrUnwrap: (isNativeIn && isWrappedOut) || (isNativeOut && isWrappedIn),
     }
   }, [input, output, chainId])
 }

@@ -14,7 +14,7 @@ import { isL2ChainId } from 'utils/chains'
 
 import Circle from 'assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { TransactionSummary } from 'components/AccountDetails/TransactionSummary'
 import { /* ButtonLight */ ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
@@ -34,6 +34,7 @@ import {
 } from '.'
 import { SupportedChainId } from 'constants/chains'
 import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
+import { getEtherscanLink as getExplorerLink } from 'utils'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -64,11 +65,11 @@ export const Wrapper = styled.div`
   }
   /* -- mod -- */
 `
-const Section = styled(AutoColumn)<{ inline?: boolean }>`
+export const Section = styled(AutoColumn)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '0' : '0')};
 `
 
-const BottomSection = styled(Section)`
+export const BottomSection = styled(Section)`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
@@ -209,6 +210,7 @@ export function ConfirmationModalContent({
   title,
   titleSize, // mod
   styles, // mod
+  className, // mod
   bottomContent,
   onDismiss,
   topContent,
@@ -220,7 +222,7 @@ export function ConfirmationModalContent({
   bottomContent?: () => ReactNode | undefined
 } */
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Section>
         {/* <RowBetween> */}
         <GPModalHeader>
@@ -343,7 +345,7 @@ function L2Content({
             {transaction ? <TransactionSummary info={transaction.info} /> : pendingText}
           </Text>
           {chainId && hash ? (
-            <ExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}>
+            <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
                 <Trans>View on Explorer</Trans>
               </Text>

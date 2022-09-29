@@ -124,9 +124,9 @@ To have the interface default to a different network when a wallet is not connec
 2. Define your own list of supported networks:
 
 ```ini
-REACT_APP_SUPPORTED_CHAIN_IDS="1,4,5,100"
+REACT_APP_SUPPORTED_CHAIN_IDS="1,100,5"
 REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_4=https://rinkeby.infura.io/v3/{YOUR_INFURA_KEY}
+REACT_APP_NETWORK_URL_5=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
 REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
 ```
 
@@ -164,3 +164,8 @@ The plan:
 2. Deploy a new version to production
 
 `emergency.js` is not cached by browser and loaded before all.
+
+## Feature flags
+
+`localStorage.setItem('enableNewSwap', '1')` - enable refactored swap interface
+`localStorage.setItem('enableLimitOrders', '1')` - enable limit orders page (WORK IN PROGRESS)

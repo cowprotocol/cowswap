@@ -2,7 +2,7 @@
 import AppMod from './AppMod'
 import styled from 'styled-components/macro'
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
-import { Suspense, lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Routes } from 'constants/routes'
 
@@ -10,21 +10,25 @@ import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { version } from '@src/../package.json'
-import { environmentName } from 'utils/environments'
+import { environmentName, isBarn } from 'utils/environments'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
-import { DUNE_DASHBOARD_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 
 // Sync routes
 import Account from 'pages/Account'
 import Swap from 'pages/Swap'
+import { NewSwapPage } from 'cow-react/pages/NewSwap'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
+const isNewSwapEnabled = localStorage.getItem('enableNewSwap') || isBarn
+
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
+const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'cow-react/pages/LimitOrders'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
@@ -72,7 +76,7 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   `}
 
   ${({ theme, location }) => theme.mediaWidth.upToMedium`
-    padding: ${location.pathname === Routes.SWAP ? '0 0 16px' : '0 16px 16px'};
+    padding: ${[Routes.SWAP].includes(location.pathname as Routes) ? '0 0 16px' : '0 16px 16px'};
   `}
 `
 
@@ -95,7 +99,8 @@ export default function App() {
           <Switch>
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
-            <Route exact strict path={Routes.SWAP} component={Swap} />
+            <Route exact strict path={Routes.SWAP} component={isNewSwapEnabled ? NewSwapPage : Swap} />
+            <Route exact strict path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />

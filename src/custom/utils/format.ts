@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { formatSmart as _formatSmart } from '@cowprotocol/cow-js'
 import { Currency, CurrencyAmount, Percent, Fraction } from '@uniswap/sdk-core'
 import {
+  AMOUNT_PRECISION,
   DEFAULT_DECIMALS,
   DEFAULT_PRECISION,
   DEFAULT_SMALL_LIMIT,
@@ -142,6 +143,12 @@ export function formatSmart(
 export function formatSmartLocaleAware(...params: Parameters<typeof formatSmart>): ReturnType<typeof formatSmart> {
   const [value, decimalsToShow, options = {}] = params
   return formatSmart(value, decimalsToShow, { ...options, isLocaleAware: true, thousandSeparator: true })
+}
+
+export function formatSmartAmount(
+  value: CurrencyAmount<Currency> | Percent | BigNumber | Fraction | null | undefined
+): string | undefined {
+  return formatSmart(value, AMOUNT_PRECISION)
 }
 
 /**
