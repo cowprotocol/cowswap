@@ -6,11 +6,13 @@ import { debounce } from 'utils/misc'
 export enum Dimensions {
   chainId = 'chainId',
   walletName = 'walletName',
+  customBrowserType = 'customBrowserType',
 }
 
 const DIMENSION_MAP = {
   [Dimensions.chainId]: 'dimension1',
   [Dimensions.walletName]: 'dimension2',
+  [Dimensions.customBrowserType]: 'dimension3',
 }
 
 type DimensionKey = keyof typeof DIMENSION_MAP
@@ -22,7 +24,7 @@ export default class GoogleAnalyticsProvider {
   dimensions: { [key in DimensionKey]: any }
 
   constructor() {
-    this.dimensions = { chainId: '', walletName: '' }
+    this.dimensions = { chainId: '', walletName: '', customBrowserType: '' }
   }
 
   public sendEvent(event: string | UaEventOptions, params?: any) {
@@ -37,7 +39,7 @@ export default class GoogleAnalyticsProvider {
     const output: { [key: string]: any } = {}
 
     for (const [key, value] of Object.entries(this.dimensions)) {
-      if (key in DIMENSION_MAP && value !== undefined) {
+      if (key in DIMENSION_MAP && value) {
         output[DIMENSION_MAP[key as DimensionKey]] = value
       }
     }
