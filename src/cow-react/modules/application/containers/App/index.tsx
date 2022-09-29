@@ -1,5 +1,3 @@
-import 'cow-react/utils/sentry'
-
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
@@ -25,7 +23,6 @@ const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  // MOD
   min-height: 100vh;
 `
 

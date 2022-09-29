@@ -1,7 +1,9 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
 import 'polyfills'
+
 import 'components/analytics'
+import 'cow-react/utils/sentry'
 
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { StrictMode } from 'react'
