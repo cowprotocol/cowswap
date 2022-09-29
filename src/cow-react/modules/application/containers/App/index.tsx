@@ -87,7 +87,7 @@ function createRedirectExternal(url: string) {
   }
 }
 
-export default function App() {
+export function App() {
   return (
     <>
       <RedirectAnySwapAffectedUsers />
