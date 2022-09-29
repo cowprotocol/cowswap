@@ -19,6 +19,7 @@ import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useL
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
 import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
+import { limitOrdersQuoteAtom } from 'cow-react/modules/limitOrders/state/limitOrdersQuoteAtom'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -32,6 +33,7 @@ export function LimitOrdersWidget() {
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
+  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -63,7 +65,7 @@ export function LimitOrdersWidget() {
     fiatAmount: null,
     receiveAmountInfo: null,
   }
-  const tradeContext = useTradeFlowContext()
+  const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
@@ -91,7 +93,7 @@ export function LimitOrdersWidget() {
     tradeContext && tradeFlow(tradeContext)
   }, [tradeContext])
 
-  console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
+  console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   return (
     <styledEl.Container>
