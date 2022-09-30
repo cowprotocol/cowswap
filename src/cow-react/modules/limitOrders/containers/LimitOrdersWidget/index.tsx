@@ -17,11 +17,13 @@ import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useO
 import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
 import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useParameterizeLimitOrdersInMenu } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersInMenu'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
   useResetStateWithSymbolDuplication()
+  useParameterizeLimitOrdersInMenu()
 
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
