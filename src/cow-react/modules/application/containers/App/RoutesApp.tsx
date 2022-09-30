@@ -1,28 +1,19 @@
-/* eslint-disable react/display-name */
-import AppMod from './AppMod'
-import styled from 'styled-components/macro'
+import Loader from 'components/Loader'
+import { Suspense, lazy } from 'react'
+import { Route, Switch, Redirect } from 'react-router-dom'
+
 import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
-import { lazy, Suspense } from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 
 import AnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers'
-import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
-import { version } from '@src/../package.json'
-import { environmentName, isBarn } from 'utils/environments'
-import RedirectAnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
-import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'cow-react/api/gnosisProtocol/errors/QuoteError'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 
-// Sync routes
 import Account from 'cow-react/pages/Account'
 import Swap from 'cow-react/pages/Swap'
 import { NewSwapPage } from 'cow-react/pages/NewSwap'
 
-const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
-const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
+import { isBarn } from 'utils/environments'
 
 const isNewSwapEnabled = localStorage.getItem('enableNewSwap') || isBarn
 
@@ -43,43 +34,6 @@ const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'cow-reac
 const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'cow-react/pages/Faq/TradingFaq'))
 const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ 'cow-react/pages/Faq/AffiliateFaq'))
 
-if (SENTRY_DSN) {
-  Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
-    integrations: [new Integrations.BrowserTracing()],
-    release: 'CowSwap@v' + version,
-    environment: environmentName,
-    ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS],
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE ? Number(SENTRY_TRACES_SAMPLE_RATE) : 1.0,
-  })
-}
-
-export const Wrapper = styled(AppMod)``
-
-export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  padding-top: 10vh;
-  align-items: center;
-  justify-content: center;
-  flex: auto;
-  z-index: 1;
-
-  ${({ theme }) => theme.mediaWidth.upToExtraLarge`
-    padding-top: 5vh;
-    align-items: flex-start;
-  `}
-
-  ${({ theme, location }) => theme.mediaWidth.upToMedium`
-    padding: ${[Routes.SWAP].includes(location.pathname as Routes) ? '0 0 16px' : '0 16px 16px'};
-  `}
-`
-
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
@@ -87,11 +41,10 @@ function createRedirectExternal(url: string) {
   }
 }
 
-export default function App() {
+export function RoutesApp() {
   return (
-    <>
-      <RedirectAnySwapAffectedUsers />
-      <Wrapper>
+    <Suspense fallback={<Loader />}>
+      <Switch>
         {/* Optimistic routes */}
         <Route strict path={Routes.ACCOUNT} component={Account} />
         {/* Lazy routes */}
@@ -124,7 +77,7 @@ export default function App() {
             <Route component={NotFound} />
           </Switch>
         </Suspense>
-      </Wrapper>
-    </>
+      </Switch>
+    </Suspense>
   )
 }

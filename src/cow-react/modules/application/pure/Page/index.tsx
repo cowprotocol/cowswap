@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { WithClassName } from 'types'
 import { transparentize } from 'polished'
-import { Widget } from 'cow-react/modules/application/dumb/Widget'
+import { Widget } from 'cow-react/modules/application/pure/Widget'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;

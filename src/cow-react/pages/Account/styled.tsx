@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components/macro'
-import { Page, GdocsListStyle } from 'cow-react/modules/application/dumb/Page'
+import { Page, GdocsListStyle } from 'cow-react/modules/application/pure/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import { BannerExplainer } from 'cow-react/pages/Claim/styled'
 import * as CSS from 'csstype'

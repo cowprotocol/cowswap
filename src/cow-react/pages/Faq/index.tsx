@@ -9,8 +9,8 @@ import {
   MEV_TOTAL,
   FLASHBOTS_LINK,
 } from 'constants/index'
-import { Page, Content } from 'cow-react/modules/application/dumb/Page'
-import { Routes } from 'constants/routes'
+import { Page, Content } from 'cow-react/modules/application/pure/Page'
+import { Routes } from 'cow-react/constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
 import { StyledInternalLink } from 'theme'

@@ -60,12 +60,12 @@ import { FeesDiscount } from 'cow-react/modules/swap/containers/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButtonContext'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { Widget } from 'cow-react/modules/application/dumb/Widget'
+import { Widget } from 'cow-react/modules/application/pure/Widget'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()

@@ -9,7 +9,7 @@ import { ImportTokenModal } from 'cow-react/modules/swap/containers/ImportTokenM
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { useHistory } from 'react-router-dom'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined

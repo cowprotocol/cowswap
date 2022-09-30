@@ -30,7 +30,7 @@ import { shortenAddress } from 'utils'
 import CopyHelper from 'components/Copy'
 import { ButtonSecondary } from 'components/Button'
 import { ClaimCommonTypes } from './types'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'

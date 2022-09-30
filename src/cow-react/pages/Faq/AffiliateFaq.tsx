@@ -1,4 +1,4 @@
-import { Page, Content } from 'cow-react/modules/application/dumb/Page'
+import { Page, Content } from 'cow-react/modules/application/pure/Page'
 import { LinkScrollable } from 'components/Link'
 import { Link } from 'react-router-dom'
 
@@ -7,7 +7,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
-import { Routes } from 'constants/routes'
+import { Routes } from 'cow-react/constants/routes'
 import { BARN_URL, PRODUCTION_URL } from 'constants/index'
 import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 

@@ -10,7 +10,7 @@ import {
 } from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
-import { environmentName, isBarn, isDev, isLocal, isPr } from '../../../custom/utils/environments'
+import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
   ApiErrorCodes,

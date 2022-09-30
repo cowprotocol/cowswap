@@ -1,4 +1,4 @@
-import { SectionTitle } from 'cow-react/modules/application/dumb/Page'
+import { SectionTitle } from 'cow-react/modules/application/pure/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import Web3Status from 'components/Web3Status'
