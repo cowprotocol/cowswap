@@ -7,7 +7,7 @@ import {
 } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useLimitOrdersNavigate } from '@src/cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 export function useSetupLimitOrdersState() {
   const tradeStateFromUrl = useLimitOrdersStateFromUrl()
