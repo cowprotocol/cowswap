@@ -9,6 +9,7 @@ import GoogleAnalyticsProvider from './GoogleAnalyticsProvider'
 
 // Mod imports
 import { ErrorInfo } from 'react'
+import { Dimensions } from './GoogleAnalyticsProvider'
 
 export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
 
@@ -40,27 +41,16 @@ export function outboundLink(
 
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   googleAnalytics.initialize(GOOGLE_ANALYTICS_ID, {
-    legacyDimensionMetric: true,
     gaOptions: {
       storage: 'none',
       storeGac: false,
       clientId: storedClientId ?? undefined,
     },
-    gtagOptions: {
-      custom_map: {
-        dimension1: 'chainId',
-        dimension2: 'walletName',
-      },
-    },
   })
-  googleAnalytics.set({
-    anonymizeIp: true,
-    customBrowserType: !isMobile
-      ? 'desktop'
-      : 'web3' in window || 'ethereum' in window
-      ? 'mobileWeb3'
-      : 'mobileRegular',
-  })
+  googleAnalytics.setDimension(
+    Dimensions.customBrowserType,
+    !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
+  )
 } else {
   googleAnalytics.initialize('test', { gtagOptions: { debug_mode: true } })
 }

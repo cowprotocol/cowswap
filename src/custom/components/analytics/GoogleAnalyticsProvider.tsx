@@ -1,13 +1,50 @@
 import ReactGA from 'react-ga4'
 import { ErrorInfo } from 'react'
 import { GaOptions, InitOptions, UaEventOptions } from 'react-ga4/types/ga4'
+import { debounce } from 'utils/misc'
+
+export enum Dimensions {
+  chainId = 'chainId',
+  walletName = 'walletName',
+  customBrowserType = 'customBrowserType',
+}
+
+const DIMENSION_MAP = {
+  [Dimensions.chainId]: 'dimension1',
+  [Dimensions.walletName]: 'dimension2',
+  [Dimensions.customBrowserType]: 'dimension3',
+}
+
+type DimensionKey = keyof typeof DIMENSION_MAP
 
 /**
  * Google Analytics Provider containing all methods used throughout app to log events to Google Analytics.
  */
 export default class GoogleAnalyticsProvider {
+  dimensions: { [key in DimensionKey]: any }
+
+  constructor() {
+    this.dimensions = { chainId: '', walletName: '', customBrowserType: '' }
+  }
+
   public sendEvent(event: string | UaEventOptions, params?: any) {
+    if (typeof event === 'object') {
+      event = { ...event, ...this.parseDimensions() }
+    }
+
     ReactGA.event(event, params)
+  }
+
+  private parseDimensions() {
+    const output: { [key: string]: any } = {}
+
+    for (const [key, value] of Object.entries(this.dimensions)) {
+      if (key in DIMENSION_MAP && value) {
+        output[DIMENSION_MAP[key as DimensionKey]] = value
+      }
+    }
+
+    return output
   }
 
   public sendError(error: Error, errorInfo: ErrorInfo) {
@@ -42,9 +79,15 @@ export default class GoogleAnalyticsProvider {
     ReactGA.outboundLink({ label }, hitCallback)
   }
 
-  public pageview(path?: string, _?: string[], title?: string) {
-    ReactGA.pageview(path, _, title)
+  public _pageview(page_path?: string, _?: string[], title?: string) {
+    ReactGA.send({ hitType: 'pageview', page_path, title, ...this.parseDimensions() })
   }
+
+  // debounced because otherwise it will be called 2 times
+  // setTimeout because it will show the title of previous page until Helmet is loaded
+  public pageview = debounce((page_path?: string, _?: string[], title?: string) => {
+    setTimeout(() => this._pageview(page_path, _, title), 1000)
+  })
 
   public ga(...args: any[]) {
     ReactGA.ga(...args)
@@ -52,5 +95,9 @@ export default class GoogleAnalyticsProvider {
 
   public gaCommandSendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
     ReactGA._gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
+  }
+
+  public setDimension(key: DimensionKey, value: any) {
+    this.dimensions[key] = value
   }
 }

@@ -7,6 +7,7 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { getConnectionName, getIsMetaMask, getConnection } from 'connection/utils'
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
+import { Dimensions } from '../GoogleAnalyticsProvider'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
@@ -36,10 +37,10 @@ export function initGATracker() {
 // tracks web vitals and pageviews
 export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location']) {
   // Handle chain id custom dimension
-  const { chainId, connector } = useWeb3React()
+  const { chainId, connector, account } = useWeb3React()
   useEffect(() => {
     // custom dimension 1 - chainId
-    googleAnalytics.set({ chainId: chainId ?? 0 })
+    googleAnalytics.setDimension(Dimensions.chainId, chainId)
   }, [chainId])
 
   // Handle wallet name custom dimension
@@ -51,8 +52,8 @@ export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['
 
   useEffect(() => {
     // custom dimension 2 - walletname
-    googleAnalytics.set({ walletName })
-  }, [walletName])
+    googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
+  }, [account, walletName])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)
