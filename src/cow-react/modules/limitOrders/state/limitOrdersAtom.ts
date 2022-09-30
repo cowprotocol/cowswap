@@ -3,8 +3,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
-import { parameterizeLimitOrdersRoute } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
-import { useHistory } from 'react-router-dom'
 
 export interface LimitOrdersState {
   readonly chainId: number | null
@@ -21,11 +19,6 @@ export interface LimitOrdersStateManager {
   setInputCurrencyAmount(inputCurrencyAmount: string | null): void
   setOutputCurrencyAmount(outputCurrencyAmount: string | null): void
   setRecipient(recipient: string | null): void
-  navigate(
-    chainId: SupportedChainId | null | undefined,
-    inputCurrencyId: string | null,
-    outputCurrencyId: string | null
-  ): void
 }
 
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersState {
@@ -42,7 +35,6 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
 export const limitOrdersAtom = atomWithStorage<LimitOrdersState>('limit-orders-atom', getDefaultLimitOrdersState(null))
 
 export const useLimitOrdersStateManager = (): LimitOrdersStateManager => {
-  const history = useHistory()
   const [state, setState] = useAtom(limitOrdersAtom)
 
   return useMemo(() => {
@@ -60,15 +52,6 @@ export const useLimitOrdersStateManager = (): LimitOrdersStateManager => {
       setRecipient(recipient: string | null) {
         setState({ ...state, recipient })
       },
-      navigate(
-        chainId: SupportedChainId | null | undefined,
-        inputCurrencyId: string | null,
-        outputCurrencyId: string | null
-      ) {
-        const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId)
-
-        history.push(route)
-      },
     }
-  }, [history, state, setState])
+  }, [state, setState])
 }

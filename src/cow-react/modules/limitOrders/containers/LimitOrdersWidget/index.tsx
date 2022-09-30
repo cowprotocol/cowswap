@@ -15,6 +15,7 @@ import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/us
 import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useOnCurrencySelection'
 import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
+import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -26,6 +27,7 @@ export function LimitOrdersWidget() {
     useLimitOrdersTradeState()
   const stateManager = useLimitOrdersStateManager()
   const onCurrencySelection = useOnCurrencySelection()
+  const limitOrdersNavigate = useLimitOrdersNavigate()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -70,8 +72,8 @@ export function LimitOrdersWidget() {
 
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = stateManager.state
-    stateManager.navigate(chainId, outputCurrencyId, inputCurrencyId)
-  }, [stateManager, chainId])
+    limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
+  }, [limitOrdersNavigate, stateManager, chainId])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
