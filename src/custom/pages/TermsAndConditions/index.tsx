@@ -1,6 +1,12 @@
 import contentFile from './TermsAndConditions.md'
 import { MarkdownPage } from 'components/Markdown'
+import PageTitle from 'components/PageTitle'
 
 export default function TermsAndConditions() {
-  return <MarkdownPage contentFile={contentFile} />
+  return (
+    <>
+      <PageTitle title="ToC" />
+      <MarkdownPage contentFile={contentFile} />
+    </>
+  )
 }

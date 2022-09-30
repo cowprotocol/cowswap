@@ -10,7 +10,7 @@ import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSum
 import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
-import { orderAnalytics } from 'utils/analytics'
+import { orderAnalytics } from 'components/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'

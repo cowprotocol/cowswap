@@ -1,4 +1,4 @@
-import { signSwapAnalytics, swapAnalytics } from 'utils/analytics'
+import { signSwapAnalytics, swapAnalytics } from 'components/analytics'
 import TradeGp from 'state/swap/TradeGp'
 import { USER_SWAP_REJECTED_ERROR } from 'cow-react/modules/swap/services/swapFlow/steps/swapErrorHelper'
 

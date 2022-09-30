@@ -6,6 +6,7 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
+import PageTitle from 'components/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -17,6 +18,7 @@ export default function ProtocolFaq() {
   return (
     <Trace page={PageName.FAQ_PROTOCOL_PAGE} shouldLogImpression>
       <Wrapper ref={faqRef}>
+        <PageTitle title="Protocol FAQ" />
         <FaqMenu />
         <Page>
           <ToC toc={toc} name="Protocol FAQ" />

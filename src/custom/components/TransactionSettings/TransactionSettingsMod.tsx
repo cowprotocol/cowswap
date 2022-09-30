@@ -24,7 +24,7 @@ import {
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
 } from 'constants/index'
-import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'utils/analytics'
+import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 

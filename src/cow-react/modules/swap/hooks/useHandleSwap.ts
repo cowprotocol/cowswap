@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
-import { signSwapAnalytics, swapAnalytics } from 'utils/analytics'
+import { signSwapAnalytics, swapAnalytics } from 'components/analytics'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { SwapCallbackParams, useSwapCallback } from 'hooks/useSwapCallback'
 import { Percent } from '@uniswap/sdk-core'

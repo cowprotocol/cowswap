@@ -1,9 +1,9 @@
-import { Category, reportEvent } from './index'
+import { Category, sendEvent } from '../index'
 import { detectExplorer } from 'utils/explorer'
 
 type GameType = 'CoW Runner' | 'MEV Slicer'
 export function gameAnalytics(gameType: GameType) {
-  reportEvent({
+  sendEvent({
     category: Category.GAMES,
     action: `Playing ${gameType} game`,
   })
@@ -13,7 +13,7 @@ export function externalLinkAnalytics(href: string) {
   const explorer = detectExplorer(href)
 
   if (explorer) {
-    reportEvent({
+    sendEvent({
       category: Category.EXTERNAL_LINK,
       action: `View on ${explorer}`,
       label: href,

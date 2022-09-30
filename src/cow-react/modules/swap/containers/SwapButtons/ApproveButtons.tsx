@@ -14,7 +14,7 @@ import { SwapButton } from 'cow-react/modules/swap/pure/SwapButton'
 import usePrevious from 'hooks/usePrevious'
 
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
-import { approvalAnalytics } from 'utils/analytics'
+import { approvalAnalytics } from 'components/analytics'
 import TradeGp from 'state/swap/TradeGp'
 
 export interface ApproveButtonsProps {

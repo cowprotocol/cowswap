@@ -1,7 +1,7 @@
-import { Category, reportEvent } from './index'
+import { Category, sendEvent } from '../index'
 
 export function toggleDarkModeAnalytics(darkMode: boolean) {
-  reportEvent({
+  sendEvent({
     category: Category.THEME,
     action: 'Toggle dark/light mode',
     label: `${darkMode ? 'Dark' : 'Light'} mode`,
