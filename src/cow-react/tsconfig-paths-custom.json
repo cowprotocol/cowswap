@@ -1,16 +1,9 @@
 {
   "compilerOptions": {
     "paths": {
-      "@cow/*": [
-        "cow-react/*"
-      ],
-      "@src/*": [
-        "*"
-      ],
-      "*": [
-        "custom/*",
-        "*"
-      ]
+      "@cow/*": ["cow-react/*"],
+      "@src/*": ["*"],
+      "*": ["custom/*", "*"]
     }
   }
 }
