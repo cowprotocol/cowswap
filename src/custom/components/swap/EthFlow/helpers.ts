@@ -187,7 +187,11 @@ export function _getModalTextContent(params: ModalTextContentProps) {
 
   // wrap
   const wrapUnwrapLabel = isNative ? 'Wrap' : 'Unwrap'
-  const wrapHeader = `${wrapUnwrapLabel} your ${isNative ? nativeSymbol : wrappedSymbol} first`
+  const wrapHeader = `Swap with Wrapped ${nativeSymbol}`
+
+  const ethFlowDescription = `The current version of CoW Swap can’t yet use native ${nativeSymbol} to execute a trade (Look out for that feature coming soon!).`
+
+  const useYourWrappedBalance = `For now, use your existing ${wrappedSymbol} balance to continue this trade.`
 
   // approve
   const approveHeader = `Approve ${wrappedSymbol}`
@@ -197,6 +201,7 @@ export function _getModalTextContent(params: ModalTextContentProps) {
 
   let header = ''
   let descriptions: string[] | null = null
+
   switch (state) {
     /**
      * FAILED operations
@@ -277,21 +282,16 @@ export function _getModalTextContent(params: ModalTextContentProps) {
     }
     case EthFlowState.WrapNeeded:
     case EthFlowState.ApproveNeeded: {
-      // wrap only
       if (state === EthFlowState.WrapNeeded) {
+        // wrap only
         header = wrapHeader
-        descriptions = [
-          `The current version of CoW Swap can't use the native ${nativeSymbol} directly to execute this trade.`,
-          `CoW Swap works with a wrapped version of it. This means you will need to submit an on-chain transaction to ${wrapUnwrapLabel.toLowerCase()} it into ${
-            isNative ? wrappedSymbol : nativeSymbol
-          }`,
-        ]
-      }
-      // approve only
-      else {
+        descriptions = [ethFlowDescription, 'TODO: You dont have enough wrapped token...']
+      } else {
+        // approve only
         header = approveHeader
         descriptions = [
-          `Give CoW Protocol permission to swap your ${wrappedSymbol} via an on-chain ERC20 Approve transaction`,
+          ethFlowDescription,
+          `Additionally, it's also required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
         ]
       }
 
@@ -311,6 +311,7 @@ export function _getModalTextContent(params: ModalTextContentProps) {
       descriptions = isExpertMode
         ? null
         : [
+            useYourWrappedBalance,
             `You have enough ${wrappedSymbol} for this trade, so you don't need to wrap any more ${nativeSymbol} to continue with this trade.`,
             `Press SWAP to use ${wrappedSymbol} and continue trading.`,
           ]
