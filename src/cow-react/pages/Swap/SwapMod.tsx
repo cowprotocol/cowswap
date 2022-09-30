@@ -34,7 +34,6 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { formatSmart } from 'utils/format'
 import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
-import { StyledAppBody } from './styleds'
 import { ApplicationModal } from 'state/application/reducer'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import usePriceImpact from 'hooks/usePriceImpact'
@@ -62,10 +61,11 @@ import { RouteComponentProps } from 'react-router-dom'
 import EthFlowModal from 'components/swap/EthFlow'
 import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButtonContext'
 import { Routes } from 'constants/routes'
-import PageTitle from 'components/PageTitle'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { Widget } from 'cow-react/modules/application/dumb/Widget'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -273,7 +273,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
           />
         )}
 
-        <StyledAppBody className={className}>
+        <Widget className={className}>
           <SwapHeader allowedSlippage={allowedSlippage} />
           <Wrapper id="swap-page" className={isExpertMode || recipientToggleVisible ? 'expertMode' : ''}>
             <AutoColumn gap={'md'}>
@@ -407,7 +407,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
               {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
             </BottomGrouping>
           </Wrapper>
-        </StyledAppBody>
+        </Widget>
         {currencyIn && currencyOut && isSwapUnsupported && (
           <CompatibilityIssuesWarning
             currencyIn={currencyIn}

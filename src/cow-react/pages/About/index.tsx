@@ -1,4 +1,4 @@
-import Page, { Title, Content, GdocsListStyle } from 'components/Page'
+import { Page, Title, Content, GdocsListStyle } from 'cow-react/modules/application/dumb/Page'
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
@@ -9,11 +9,11 @@ import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
 import { Routes } from 'constants/routes'
-import PageTitle from 'components/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 

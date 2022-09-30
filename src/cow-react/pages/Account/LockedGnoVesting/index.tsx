@@ -10,7 +10,6 @@ import {
   ExtLink,
 } from 'cow-react/pages/Account/styled'
 import { ButtonPrimary } from 'custom/components/Button'
-import { HelpCircle } from 'components/Page'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import cowImage from 'assets/cow-swap/cow_v2.svg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
@@ -32,6 +31,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'components/analytics'
 import { ButtonSize } from 'theme'
+import { HelpCircle } from 'cow-react/modules/shared/dumb/HelpCircle'
 
 enum ClaimStatus {
   INITIAL,

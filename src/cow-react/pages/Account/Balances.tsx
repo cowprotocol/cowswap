@@ -15,7 +15,6 @@ import { getBlockExplorerUrl } from 'utils'
 import { formatMax, formatSmartLocaleAware } from 'utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { HelpCircle } from 'components/Page'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
 import SVG from 'react-inlinesvg'
@@ -38,6 +37,7 @@ import LockedGnoVesting from './LockedGnoVesting'
 import { useCowFromLockedGnoBalances } from 'cow-react/pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
+import { HelpCircle } from 'cow-react/modules/shared/dumb/HelpCircle'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 

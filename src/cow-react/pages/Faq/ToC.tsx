@@ -1,4 +1,4 @@
-import { Content, Title } from 'components/Page'
+import { Content, Title } from 'cow-react/modules/application/dumb/Page'
 import { LinkScrollable } from 'components/Link'
 import { TocSection } from '.'
 import { PageIndex } from './styled'

@@ -9,7 +9,7 @@ import {
   MEV_TOTAL,
   FLASHBOTS_LINK,
 } from 'constants/index'
-import Page, { Content } from 'components/Page'
+import { Page, Content } from 'cow-react/modules/application/dumb/Page'
 import { Routes } from 'constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
@@ -17,7 +17,7 @@ import { StyledInternalLink } from 'theme'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
-import PageTitle from 'components/PageTitle'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'

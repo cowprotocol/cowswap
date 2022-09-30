@@ -1,4 +1,4 @@
-import { HelpCircle, SectionTitle } from 'components/Page'
+import { SectionTitle } from 'cow-react/modules/application/dumb/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import Web3Status from 'components/Web3Status'
@@ -29,6 +29,7 @@ import useTimeAgo from 'hooks/useTimeAgo'
 import NotificationBanner from 'components/NotificationBanner'
 import { useHasOrders } from 'api/gnosisProtocol/hooks'
 import { useAffiliateAddress } from 'state/affiliate/hooks'
+import { HelpCircle } from 'cow-react/modules/shared/dumb/HelpCircle'
 
 const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: ChainId }) => (
   <>
