@@ -2,7 +2,14 @@ import { HeaderLinks as Wrapper, StyledNavLink } from '../styled'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
-import { MenuTreeItem, MenuItemKind, InternalLink, ExternalLink, DropDownItem, MenuLink } from 'constants/mainMenu'
+import {
+  MenuTreeItem,
+  MenuItemKind,
+  InternalLink,
+  ExternalLink,
+  DropDownItem,
+  MenuLink,
+} from 'cow-react/modules/mainMenu/constants/mainMenu'
 import { ExternalLink as ExternalLinkComponent } from 'theme/components'
 
 // Assets
