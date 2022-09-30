@@ -11,7 +11,7 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import PageTitle from 'cow-react/modules/application/containers/PageTitle'
+import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'cow-react/pages/Account/Balances'))
