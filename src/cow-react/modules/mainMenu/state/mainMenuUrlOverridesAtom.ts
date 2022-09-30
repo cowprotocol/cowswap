@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { MainMenuItemId } from 'cow-react/modules/mainMenu/constants/mainMenu'
+import { MainMenuItemId } from '../constants/mainMenu'
 
 /**
  * key - BasicMenuLink.id

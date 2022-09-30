@@ -1,7 +1,8 @@
-import { HeaderLinks as Wrapper, StyledNavLink } from '../styled'
+import { HeaderLinks as Wrapper, StyledNavLink } from 'components/Header/styled'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
+import { ExternalLink as ExternalLinkComponent } from 'theme/components'
 import {
   MenuTreeItem,
   MenuItemKind,
@@ -9,9 +10,8 @@ import {
   ExternalLink,
   DropDownItem,
   MenuLink,
-} from 'cow-react/modules/mainMenu/constants/mainMenu'
-import { MainMenuUrlOverrides } from 'cow-react/modules/mainMenu/state/mainMenuUrlOverridesAtom'
-import { ExternalLink as ExternalLinkComponent } from 'theme/components'
+} from '../../constants/mainMenu'
+import { MainMenuUrlOverrides } from '../../state/mainMenuUrlOverridesAtom'
 
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'

@@ -25,18 +25,15 @@ import {
   HeaderControls,
   HeaderElement,
 } from './styled'
-import { MenuTree } from './MenuTree'
 import MobileMenuIcon from './MobileMenuIcon'
 import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
+import { MainMenu } from 'cow-react/modules/mainMenu'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'utils/analytics'
-import { useAtomValue } from 'jotai/utils'
-import { mainMenuUrlOverridesAtom } from 'cow-react/modules/mainMenu/state/mainMenuUrlOverridesAtom'
-import { MAIN_MENU } from 'cow-react/modules/mainMenu/constants/mainMenu'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -89,8 +86,6 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  const mainMenuUrlOverrides = useAtomValue(mainMenuUrlOverridesAtom)
-
   // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
@@ -106,9 +101,7 @@ export default function Header() {
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <MenuTree
-            items={MAIN_MENU}
-            itemsOverrides={mainMenuUrlOverrides}
+          <MainMenu
             isMobileMenuOpen={isMobileMenuOpen}
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
