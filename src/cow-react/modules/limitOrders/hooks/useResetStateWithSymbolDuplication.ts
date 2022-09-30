@@ -2,13 +2,10 @@ import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
-import {
-  getDefaultLimitOrdersState,
-  limitOrdersAtom,
-  useLimitOrdersStateManager,
-} from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { getDefaultLimitOrdersState, limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useAreThereTokensWithSameSymbol } from 'cow-react/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
 import { useAtomValue } from 'jotai/utils'
+import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 const alertMessage = (
   doubledSymbol: string
@@ -29,7 +26,7 @@ export function useResetStateWithSymbolDuplication() {
   const { chainId } = useWeb3React()
   const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-  const stateManager = useLimitOrdersStateManager()
+  const limitOrdersNavigate = useLimitOrdersNavigate()
 
   useEffect(() => {
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
@@ -41,7 +38,7 @@ export function useResetStateWithSymbolDuplication() {
       alert(alertMessage(doubledSymbol || ''))
 
       const defaultState = getDefaultLimitOrdersState(chainId)
-      stateManager.navigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
+      limitOrdersNavigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
     }
-  }, [stateManager, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
+  }, [limitOrdersNavigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
 }

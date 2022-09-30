@@ -3,8 +3,8 @@ import { Field } from 'state/swap/actions'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useAreThereTokensWithSameSymbol } from 'cow-react/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
-import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
@@ -13,9 +13,9 @@ import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/us
  */
 export function useOnCurrencySelection(): (field: Field, currency: Currency) => void {
   const { chainId } = useWeb3React()
-  const stateManager = useLimitOrdersStateManager()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const limitOrdersNavigate = useLimitOrdersNavigate()
 
   const resolveCurrencyAddressOrSymbol = useCallback(
     (currency: Currency | null): string | null => {
@@ -31,11 +31,11 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency) => 
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       if (field === Field.INPUT) {
-        stateManager.navigate(chainId, tokenSymbolOrAddress, resolveCurrencyAddressOrSymbol(outputCurrency))
+        limitOrdersNavigate(chainId, tokenSymbolOrAddress, resolveCurrencyAddressOrSymbol(outputCurrency))
       } else {
-        stateManager.navigate(chainId, resolveCurrencyAddressOrSymbol(inputCurrency), tokenSymbolOrAddress)
+        limitOrdersNavigate(chainId, resolveCurrencyAddressOrSymbol(inputCurrency), tokenSymbolOrAddress)
       }
     },
-    [stateManager, chainId, inputCurrency, outputCurrency, resolveCurrencyAddressOrSymbol]
+    [limitOrdersNavigate, chainId, inputCurrency, outputCurrency, resolveCurrencyAddressOrSymbol]
   )
 }
