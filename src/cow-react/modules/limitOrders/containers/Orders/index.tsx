@@ -1,5 +1,5 @@
-import * as styledEl from '../../pure/Orders'
+import { OrdersPure } from '../../pure/Orders'
 
 export function Orders() {
-  return <styledEl.Orders>Orders</styledEl.Orders>
+  return <OrdersPure />
 }
