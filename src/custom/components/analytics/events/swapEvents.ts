@@ -1,9 +1,9 @@
-import { Category, reportEvent } from './index'
+import { Category, sendEvent } from '../index'
 import { Field } from 'state/swap/actions'
 import { debounce } from 'utils/misc'
 
 export function currencySelectAnalytics(field: Field, label: string | undefined) {
-  reportEvent({
+  sendEvent({
     category: Category.CURRENCY_SELECT,
     action: `Change ${field} token`,
     label,
@@ -11,14 +11,14 @@ export function currencySelectAnalytics(field: Field, label: string | undefined)
 }
 
 export function setMaxSellTokensAnalytics() {
-  reportEvent({
+  sendEvent({
     category: Category.SWAP,
     action: 'Set Maximun Sell Tokens',
   })
 }
 
 function _changeSwapAmountAnalytics(field: Field, value: number) {
-  reportEvent({
+  sendEvent({
     category: Category.SWAP,
     action: `Change ${field} field amount`,
     value,
@@ -30,14 +30,14 @@ export const changeSwapAmountAnalytics = debounce(([field, value]: [Field, numbe
 }, 2000)
 
 export function switchTokensAnalytics() {
-  reportEvent({
+  sendEvent({
     category: Category.SWAP,
     action: 'Switch INPUT/OUTPUT tokens',
   })
 }
 
 export function initialPriceLoadAnalytics() {
-  reportEvent({
+  sendEvent({
     category: Category.SWAP,
     action: 'Initial Price estimation',
   })

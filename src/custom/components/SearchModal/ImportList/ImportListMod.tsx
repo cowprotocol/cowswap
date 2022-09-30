@@ -25,7 +25,7 @@ import { Checkbox, PaddedColumn, TextDot } from 'components/SearchModal/styleds'
 // MOD imports
 import { Card } from 'components/SearchModal/ManageLists' // mod
 import { ImportProps } from '.'
-import { addListAnalytics } from 'utils/analytics'
+import { addListAnalytics } from 'components/analytics'
 
 const Wrapper = styled.div`
   position: relative;

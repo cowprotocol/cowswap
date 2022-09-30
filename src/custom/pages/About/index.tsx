@@ -9,6 +9,7 @@ import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
 import { Routes } from 'constants/routes'
+import PageTitle from 'components/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -33,6 +34,7 @@ export default function About() {
   return (
     <Trace page={PageName.ABOUT_PAGE} shouldLogImpression>
       <Wrapper>
+        <PageTitle title="About" />
         <Title>About</Title>
 
         <Content>

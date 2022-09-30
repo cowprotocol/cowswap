@@ -25,7 +25,7 @@ import {
   showExpertModeConfirmationAnalytics,
   toggleExpertModeAnalytics,
   toggleRecepientAddressAnalytics,
-} from 'utils/analytics'
+} from 'components/analytics'
 
 // MOD imports
 import { SettingsTabProp } from '.'

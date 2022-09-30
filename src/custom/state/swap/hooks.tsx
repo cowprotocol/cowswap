@@ -20,7 +20,7 @@ import { useCurrencyBalances } from 'state/connection/hooks'
 // import { AppState } from '../index'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
-import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
+import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'components/analytics'
 
 // MOD
 import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
