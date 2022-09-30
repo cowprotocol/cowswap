@@ -8,17 +8,19 @@ import { QuoteResolver } from 'cow-react/modules/limitOrders/containers/QuoteRes
 
 export default function LimitOrderPage() {
   return (
-    <QuoteResolver />
-    <styledEl.PageWrapper>
-      <styledEl.Column>
-        <LimitOrdersWidget />
-        <InfoPopup />
-      </styledEl.Column>
+    <>
+      <QuoteResolver />
+      <styledEl.PageWrapper>
+        <styledEl.Column>
+          <LimitOrdersWidget />
+          <InfoPopup />
+        </styledEl.Column>
 
-      <styledEl.Column>
-        <Chart />
-        <Orders />
-      </styledEl.Column>
-    </styledEl.PageWrapper>
+        <styledEl.Column>
+          <Chart />
+          <Orders />
+        </styledEl.Column>
+      </styledEl.PageWrapper>
+    </>
   )
 }
