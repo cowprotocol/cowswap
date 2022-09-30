@@ -20,12 +20,12 @@ export function useLimitOrdersStateFromUrl(): LimitOrdersState {
     const { chainId, inputCurrencyId, outputCurrencyId } = params as LimitOrdersStateFromUrl
     const chainIdAsNumber = chainId ? parseInt(chainId) : null
 
-    if (chainId && currentChainId && currentChainId !== chainIdAsNumber) {
+    if (currentChainId && currentChainId !== chainIdAsNumber) {
       return getDefaultLimitOrdersState(currentChainId)
     }
 
     return {
-      chainId: chainIdAsNumber || null,
+      chainId: chainIdAsNumber,
       inputCurrencyAmount: null,
       outputCurrencyAmount: null,
       inputCurrencyId: inputCurrencyId || null,
