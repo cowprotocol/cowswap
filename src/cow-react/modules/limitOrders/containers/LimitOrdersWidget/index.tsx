@@ -69,9 +69,9 @@ export function LimitOrdersWidget() {
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
-        updateLimitOrdersState({ inputCurrencyId: typedValue })
+        updateLimitOrdersState({ inputCurrencyAmount: typedValue })
       } else {
-        updateLimitOrdersState({ outputCurrencyId: typedValue })
+        updateLimitOrdersState({ outputCurrencyAmount: typedValue })
       }
     },
     [updateLimitOrdersState]
