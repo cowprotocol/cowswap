@@ -2,15 +2,21 @@ import { Routes } from 'constants/routes'
 import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
-import { useMemo } from 'react'
+import { useEffect } from 'react'
+import { useSetAtom } from 'jotai'
+import { mainMenuUrlOverridesAtom } from 'cow-react/modules/mainMenu/state/mainMenuUrlOverridesAtom'
+import { MainMenuItemId } from 'cow-react/modules/mainMenu/constants/mainMenu'
 
-export function useParameterizeLimitOrdersRoute(): string {
+export function useParameterizeLimitOrdersInMenu() {
   const { chainId } = useWeb3React()
   const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
+  const overrideMainMenu = useSetAtom(mainMenuUrlOverridesAtom)
 
-  return useMemo(() => {
-    return parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId)
-  }, [chainId, inputCurrencyId, outputCurrencyId])
+  useEffect(() => {
+    const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId)
+
+    overrideMainMenu({ [MainMenuItemId.LIMIT_ORDERS]: route })
+  }, [overrideMainMenu, chainId, inputCurrencyId, outputCurrencyId])
 }
 
 /**

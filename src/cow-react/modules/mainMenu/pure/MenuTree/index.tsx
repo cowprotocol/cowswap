@@ -1,9 +1,17 @@
-import { HeaderLinks as Wrapper, StyledNavLink } from '../styled'
+import { HeaderLinks as Wrapper, StyledNavLink } from 'components/Header/styled'
 import MenuDropdown from 'components/MenuDropdown'
 import { MenuTitle, MenuSection } from 'components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
-import { MenuTreeItem, MenuItemKind, InternalLink, ExternalLink, DropDownItem, MenuLink } from 'constants/mainMenu'
 import { ExternalLink as ExternalLinkComponent } from 'theme/components'
+import {
+  MenuTreeItem,
+  MenuItemKind,
+  InternalLink,
+  ExternalLink,
+  DropDownItem,
+  MenuLink,
+} from '../../constants/mainMenu'
+import { MainMenuUrlOverrides } from '../../state/mainMenuUrlOverridesAtom'
 
 // Assets
 import IMAGE_MOON from 'assets/cow-swap/moon.svg'
@@ -123,10 +131,11 @@ const DropDown = ({ item, context }: DropdownProps) => {
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem
   context: ContextProps
+  overrides: MainMenuUrlOverrides
 }
 
 function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
-  const { menuItem, context } = props
+  const { menuItem, context, overrides } = props
 
   switch (menuItem.kind) {
     case MenuItemKind.DROP_DOWN:
@@ -135,7 +144,12 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
     case undefined: // INTERNAL
     case MenuItemKind.EXTERNAL_LINK: // EXTERNAL
       // Render Internal/External links
-      return <InternalExternalLink link={menuItem} handleMobileMenuOnClick={context.handleMobileMenuOnClick} />
+      return (
+        <InternalExternalLink
+          link={{ ...menuItem, url: overrides[menuItem.id] || menuItem.url }}
+          handleMobileMenuOnClick={context.handleMobileMenuOnClick}
+        />
+      )
     default:
       return null
   }
@@ -143,11 +157,13 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps) {
 
 export interface MenuTreeProps extends ContextProps {
   items: MenuTreeItem[]
+  itemsOverrides: MainMenuUrlOverrides
   isMobileMenuOpen: boolean
 }
 
 export function MenuTree({
   items,
+  itemsOverrides,
   isMobileMenuOpen,
   darkMode,
   toggleDarkMode,
@@ -156,9 +172,9 @@ export function MenuTree({
   const context = { darkMode, toggleDarkMode, handleMobileMenuOnClick }
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
-      {items.map((menuItem, index) => (
-        <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
-      ))}
+      {items.map((menuItem, index) => {
+        return <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} overrides={itemsOverrides} />
+      })}
     </Wrapper>
   )
 }

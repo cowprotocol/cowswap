@@ -20,11 +20,13 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
 import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
 import { limitOrdersQuoteAtom } from 'cow-react/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { useParameterizeLimitOrdersInMenu } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersInMenu'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
   useResetStateWithSymbolDuplication()
+  useParameterizeLimitOrdersInMenu()
 
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
