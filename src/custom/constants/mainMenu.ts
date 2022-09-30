@@ -18,6 +18,7 @@ export enum MenuItemKind {
 }
 
 export interface BasicMenuLink {
+  id: string
   title: string
   url: string
   icon?: string // If icon uses a regular <img /> tag
@@ -53,20 +54,20 @@ export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
 }
 
 export const FAQ_MENU: InternalLink[] = [
-  { title: 'Overview', url: Routes.FAQ },
-  { title: 'Protocol', url: Routes.FAQ_PROTOCOL },
-  { title: 'Token', url: Routes.FAQ_TOKEN },
-  { title: 'Trading', url: Routes.FAQ_TRADING },
-  { title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
+  { id: 'FQA-Overview', title: 'Overview', url: Routes.FAQ },
+  { id: 'FQA-Protocol', title: 'Protocol', url: Routes.FAQ_PROTOCOL },
+  { id: 'FQA-Token', title: 'Token', url: Routes.FAQ_TOKEN },
+  { id: 'FQA-Trading', title: 'Trading', url: Routes.FAQ_TRADING },
+  { id: 'FQA-Affiliate', title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
 ]
 
 export const ACCOUNT_MENU: InternalLink[] = [
-  { title: 'Overview', url: Routes.ACCOUNT },
-  { title: 'Tokens', url: Routes.ACCOUNT_TOKENS },
+  { id: 'Account-Overview', title: 'Overview', url: Routes.ACCOUNT },
+  { id: 'Account-Tokens', title: 'Tokens', url: Routes.ACCOUNT_TOKENS },
 ]
 
 export const MAIN_MENU: MenuTreeItem[] = [
-  { title: 'Swap', url: Routes.SWAP },
+  { id: 'Swap', title: 'Swap', url: Routes.SWAP },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
@@ -92,26 +93,61 @@ export const MAIN_MENU: MenuTreeItem[] = [
       {
         sectionTitle: 'Overview',
         links: [
-          { title: 'Documentation', url: DOCS_LINK, iconSVG: IMAGE_DOCS, kind: MenuItemKind.EXTERNAL_LINK },
-          { title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
-          { title: 'Statistics', url: DUNE_DASHBOARD_LINK, iconSVG: IMAGE_PIE, kind: MenuItemKind.EXTERNAL_LINK },
-          { title: 'Contract', url: CONTRACTS_CODE_LINK, iconSVG: IMAGE_CODE, kind: MenuItemKind.EXTERNAL_LINK },
+          {
+            id: 'More-Documentation',
+            title: 'Documentation',
+            url: DOCS_LINK,
+            iconSVG: IMAGE_DOCS,
+            kind: MenuItemKind.EXTERNAL_LINK,
+          },
+          { id: 'More-About', title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
+          {
+            id: 'More-Statistics',
+            title: 'Statistics',
+            url: DUNE_DASHBOARD_LINK,
+            iconSVG: IMAGE_PIE,
+            kind: MenuItemKind.EXTERNAL_LINK,
+          },
+          {
+            id: 'More-Contract',
+            title: 'Contract',
+            url: CONTRACTS_CODE_LINK,
+            iconSVG: IMAGE_CODE,
+            kind: MenuItemKind.EXTERNAL_LINK,
+          },
         ],
       },
       {
         sectionTitle: 'Community',
         links: [
-          { title: 'Discord', url: DISCORD_LINK, iconSVG: IMAGE_DISCORD, kind: MenuItemKind.EXTERNAL_LINK },
-          { title: 'Twitter', url: TWITTER_LINK, iconSVG: IMAGE_TWITTER, kind: MenuItemKind.EXTERNAL_LINK },
+          {
+            id: 'More-Discord',
+            title: 'Discord',
+            url: DISCORD_LINK,
+            iconSVG: IMAGE_DISCORD,
+            kind: MenuItemKind.EXTERNAL_LINK,
+          },
+          {
+            id: 'More-Twitter',
+            title: 'Twitter',
+            url: TWITTER_LINK,
+            iconSVG: IMAGE_TWITTER,
+            kind: MenuItemKind.EXTERNAL_LINK,
+          },
         ],
       },
       {
         sectionTitle: 'Other',
         links: [
           { kind: MenuItemKind.DARK_MODE_BUTTON },
-          { title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
-          { title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
-          { title: 'Terms and Conditions', url: Routes.TERMS_CONDITIONS, iconSVG: IMAGE_DOCS },
+          { id: 'Other-CoW Runner', title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
+          { id: 'Other-MEV Slicer', title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
+          {
+            id: 'Other-Terms and Conditions',
+            title: 'Terms and Conditions',
+            url: Routes.TERMS_CONDITIONS,
+            iconSVG: IMAGE_DOCS,
+          },
         ],
       },
     ],
@@ -119,5 +155,5 @@ export const MAIN_MENU: MenuTreeItem[] = [
 ]
 
 if (localStorage.getItem('enableLimitOrders')) {
-  MAIN_MENU.splice(1, 0, { title: 'Limit orders', url: Routes.LIMIT_ORDER })
+  MAIN_MENU.splice(1, 0, { id: 'Limit orders', title: 'Limit orders', url: Routes.LIMIT_ORDER })
 }
