@@ -35,5 +35,5 @@ export function useSetupLimitOrdersState() {
 
     console.log('UPDATE LIMIT ORDERS STATE:', newState)
     updateLimitOrdersState(newState)
-  }, [updateLimitOrdersState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
+  }, [updateLimitOrdersState, state.recipient, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
 }
