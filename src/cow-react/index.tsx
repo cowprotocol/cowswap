@@ -3,7 +3,7 @@ import 'inter-ui'
 import 'polyfills'
 
 import 'components/analytics'
-import 'cow-react/utils/sentry'
+import '@cow/utils/sentry'
 
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { StrictMode } from 'react'
@@ -14,7 +14,7 @@ import { HashRouter } from 'react-router-dom'
 import Blocklist from 'components/Blocklist'
 import Web3Provider from 'components/Web3Provider'
 import { LanguageProvider } from 'i18n'
-import { App } from 'cow-react/modules/application/containers/App'
+import { App } from '@cow/modules/application/containers/App'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import store from 'state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
@@ -25,7 +25,7 @@ import { nodeRemoveChildFix } from 'utils/node'
 import { Provider as AtomProvider } from 'jotai'
 
 import Popups from 'components/Popups'
-import { Updaters } from 'cow-react/modules/application/containers/App/Updaters'
+import { Updaters } from '@cow/modules/application/containers/App/Updaters'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

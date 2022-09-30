@@ -31,10 +31,10 @@ import { GpModal } from 'components/Modal'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useWrapCallback } from 'hooks/useWrapCallback'
 import { useDerivedSwapInfo, useDetectNativeToken, useSwapActionHandlers } from 'state/swap/hooks'
-import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfirmManager'
+import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { Field } from 'state/swap/actions'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
+import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
 
 const EthFlowModalContent = styled(ConfirmationModalContent)`
   padding: 22px;

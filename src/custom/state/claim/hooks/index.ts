@@ -6,7 +6,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { VCow as VCowType } from 'cow-react/abis/types'
+import { VCow as VCowType } from '@cow/abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
@@ -53,7 +53,7 @@ import {
   setIsTouched,
   setClaimsCount,
 } from '../actions'
-import { EnhancedUserClaimData } from 'cow-react/pages/Claim/types'
+import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'

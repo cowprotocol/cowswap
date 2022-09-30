@@ -8,7 +8,7 @@ import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
 import { SOLVER_ADDRESS as defaultUserAddress } from 'constants/index'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
-import { LegacyPriceQuoteParams } from 'cow-react/api/gnosisProtocol/legacy/types'
+import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 
 type ParaSwapPriceQuote = OptimalRate
 

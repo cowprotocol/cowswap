@@ -3,7 +3,7 @@ import { Integrations } from '@sentry/tracing'
 
 import { version } from '@src/../package.json'
 import { environmentName } from 'utils/environments'
-import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'cow-react/api/gnosisProtocol/errors/QuoteError'
+import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from '@cow/api/gnosisProtocol/errors/QuoteError'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE

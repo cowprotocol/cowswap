@@ -1,9 +1,9 @@
-import { Page, Content } from 'cow-react/modules/application/pure/Page'
+import { Page, Content } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 import { useEffect } from 'react'
 import { gameAnalytics } from 'components/analytics'
-import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 const Wrapper = styled(Page)`
   min-height: initial;

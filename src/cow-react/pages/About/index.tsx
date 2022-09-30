@@ -1,4 +1,4 @@
-import { Page, Title, Content, GdocsListStyle } from 'cow-react/modules/application/pure/Page'
+import { Page, Title, Content, GdocsListStyle } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
@@ -8,12 +8,12 @@ import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'assets/cow-swap/gasless.png'
 import mevIMG from 'assets/cow-swap/mev.png'
-import { Routes } from 'cow-react/constants/routes'
+import { Routes } from '@cow/constants/routes'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 

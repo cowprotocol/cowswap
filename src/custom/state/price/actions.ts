@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { LegacyFeeQuoteParams } from 'cow-react/api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { QuoteInformationObject } from './reducer'
 

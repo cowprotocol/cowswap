@@ -7,7 +7,7 @@ import {
   CowSpinner,
   BannersWrapper,
   SuccessBanner,
-} from 'cow-react/pages/Claim/styled'
+} from '@cow/pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { useWeb3React } from '@web3-react/core'
@@ -30,7 +30,7 @@ import { shortenAddress } from 'utils'
 import CopyHelper from 'components/Copy'
 import { ButtonSecondary } from 'components/Button'
 import { ClaimCommonTypes } from './types'
-import { Routes } from 'cow-react/constants/routes'
+import { Routes } from '@cow/constants/routes'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'

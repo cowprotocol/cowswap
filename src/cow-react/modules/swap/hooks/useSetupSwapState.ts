@@ -1,9 +1,9 @@
 import { useWeb3React } from '@web3-react/core'
 import { useAppDispatch } from 'state/hooks'
 import { useEffect, useMemo } from 'react'
-import { initSwapStateFromUrl } from 'cow-react/modules/swap/helpers/initSwapStateFromUrl'
+import { initSwapStateFromUrl } from '@cow/modules/swap/helpers/initSwapStateFromUrl'
 import { replaceSwapState } from 'state/swap/actions'
-import { useTradeStateFromUrl } from 'cow-react/modules/swap/hooks/useTradeStateFromUrl'
+import { useTradeStateFromUrl } from '@cow/modules/swap/hooks/useTradeStateFromUrl'
 import { useSwapState } from 'state/swap/hooks'
 import usePrevious from 'hooks/usePrevious'
 

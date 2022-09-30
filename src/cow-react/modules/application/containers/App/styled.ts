@@ -1,6 +1,6 @@
 import * as CSS from 'csstype'
 
-import { Routes } from 'cow-react/constants/routes'
+import { Routes } from '@cow/constants/routes'
 import styled from 'styled-components/macro'
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`

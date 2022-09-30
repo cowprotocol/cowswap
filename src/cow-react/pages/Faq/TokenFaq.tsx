@@ -1,4 +1,4 @@
-import { Page, Content } from 'cow-react/modules/application/pure/Page'
+import { Page, Content } from '@cow/modules/application/pure/Page'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
 import { Link } from 'react-router-dom'
@@ -6,8 +6,8 @@ import { Footer } from '.'
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
-import { Routes } from 'cow-react/constants/routes'
-import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
+import { Routes } from '@cow/constants/routes'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'

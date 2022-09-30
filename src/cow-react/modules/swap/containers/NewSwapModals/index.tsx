@@ -1,15 +1,12 @@
-import {
-  ConfirmSwapModalSetup,
-  ConfirmSwapModalSetupProps,
-} from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
+import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import EthFlowModal, { EthFlowProps } from 'components/swap/EthFlow'
 import React from 'react'
-import { genericPropsChecker } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
-import { ImportTokenModal } from 'cow-react/modules/swap/containers/ImportTokenModal'
+import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
+import { ImportTokenModal } from '@cow/modules/swap/containers/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { useHistory } from 'react-router-dom'
-import { Routes } from 'cow-react/constants/routes'
+import { Routes } from '@cow/constants/routes'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined

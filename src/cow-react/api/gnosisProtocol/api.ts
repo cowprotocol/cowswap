@@ -15,13 +15,13 @@ import OperatorError, {
   ApiErrorCodeDetails,
   ApiErrorCodes,
   ApiErrorObject,
-} from 'cow-react/api/gnosisProtocol/errors/OperatorError'
+} from '@cow/api/gnosisProtocol/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
   GpQuoteErrorDetails,
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
-} from 'cow-react/api/gnosisProtocol/errors/QuoteError'
+} from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 

@@ -2,8 +2,8 @@ import { lazy, Suspense } from 'react'
 import { Switch, Route, useLocation } from 'react-router-dom'
 import { AccountMenu } from './Menu'
 import { Wrapper, AccountPageWrapper } from './Tokens/styled'
-import { Content, Title } from 'cow-react/modules/application/pure/Page'
-import { Routes } from 'cow-react/constants/routes'
+import { Content, Title } from '@cow/modules/application/pure/Page'
+import { Routes } from '@cow/constants/routes'
 import { Loading } from 'components/FlashingLoading'
 import { Container, CardsWrapper } from './styled'
 import { useWeb3React } from '@web3-react/core'
@@ -11,15 +11,15 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
-import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 // Account pages
-const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'cow-react/pages/Account/Balances'))
-const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'cow-react/pages/Account/Tokens'))
-const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'cow-react/pages/Account/Governance'))
-const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ 'cow-react/pages/Account/Affiliate'))
+const Balances = lazy(() => import(/* webpackChunkName: "account" */ '@cow/pages/Account/Balances'))
+const TokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ '@cow/pages/Account/Tokens'))
+const Governance = lazy(() => import(/* webpackChunkName: "governance" */ '@cow/pages/Account/Governance'))
+const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ '@cow/pages/Account/Affiliate'))
 // Not found catch
-const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'cow-react/pages/error/NotFound'))
+const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ '@cow/pages/error/NotFound'))
 
 function _getPropsFromRoute(route: string) {
   switch (route) {

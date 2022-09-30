@@ -1,14 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useCallback, useState, useEffect } from 'react'
 import SVG from 'react-inlinesvg'
-import {
-  Card,
-  BalanceDisplay,
-  ConvertWrapper,
-  VestingBreakdown,
-  CardActions,
-  ExtLink,
-} from 'cow-react/pages/Account/styled'
+import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from '@cow/pages/Account/styled'
 import { ButtonPrimary } from 'custom/components/Button'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import cowImage from 'assets/cow-swap/cow_v2.svg'
@@ -31,7 +24,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'components/analytics'
 import { ButtonSize } from 'theme'
-import { HelpCircle } from 'cow-react/modules/shared/dumb/HelpCircle'
+import { HelpCircle } from '@cow/modules/shared/dumb/HelpCircle'
 
 enum ClaimStatus {
   INITIAL,

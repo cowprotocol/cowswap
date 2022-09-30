@@ -1,4 +1,4 @@
-import { SwapButtonState } from 'cow-react/modules/swap/helpers/getSwapButtonState'
+import { SwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import React, { ReactNode } from 'react'
 import { ButtonSize } from 'theme'
 import { Trans } from '@lingui/macro'
@@ -11,8 +11,8 @@ import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
 import * as styledEl from './styled'
-import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
-import { genericPropsChecker } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
+import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
+import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
 
 import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
 

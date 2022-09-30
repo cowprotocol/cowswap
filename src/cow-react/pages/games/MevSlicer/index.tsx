@@ -1,11 +1,11 @@
 import { ButtonPrimary } from 'components/Button/ButtonMod'
-import { Page, Content } from 'cow-react/modules/application/pure/Page'
+import { Page, Content } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 
 import ninjaCowImg from 'assets/cow-swap/ninja-cow.png'
 import { gameAnalytics } from 'components/analytics'
 
-import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 
