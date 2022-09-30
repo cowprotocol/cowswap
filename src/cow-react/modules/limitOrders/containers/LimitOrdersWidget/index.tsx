@@ -17,6 +17,8 @@ import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useO
 import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
 import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
+import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -61,6 +63,7 @@ export function LimitOrdersWidget() {
     fiatAmount: null,
     receiveAmountInfo: null,
   }
+  const tradeContext = useTradeFlowContext()
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
@@ -83,6 +86,10 @@ export function LimitOrdersWidget() {
     },
     [updateLimitOrdersState]
   )
+
+  const doTrade = useCallback(() => {
+    tradeContext && tradeFlow(tradeContext)
+  }, [tradeContext])
 
   console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
@@ -128,7 +135,7 @@ export function LimitOrdersWidget() {
           <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
         )}
         <styledEl.TradeButtonBox>
-          <ButtonPrimary disabled={false} buttonSize={ButtonSize.BIG}>
+          <ButtonPrimary onClick={doTrade} disabled={false} buttonSize={ButtonSize.BIG}>
             <Trans>Trade</Trans>
           </ButtonPrimary>
         </styledEl.TradeButtonBox>
