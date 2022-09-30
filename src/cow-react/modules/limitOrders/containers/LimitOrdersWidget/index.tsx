@@ -12,10 +12,11 @@ import { ButtonSize } from 'theme'
 import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useWeb3React } from '@web3-react/core'
 import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/useSetupLimitOrdersState'
-import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { limitOrdersAtom, updateLimitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useOnCurrencySelection'
 import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
 import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -25,7 +26,8 @@ export function LimitOrdersWidget() {
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
     useLimitOrdersTradeState()
-  const stateManager = useLimitOrdersStateManager()
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
 
@@ -62,24 +64,24 @@ export function LimitOrdersWidget() {
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
-        stateManager.setInputCurrencyAmount(typedValue)
+        updateLimitOrdersState({ inputCurrencyId: typedValue })
       } else {
-        stateManager.setOutputCurrencyAmount(typedValue)
+        updateLimitOrdersState({ outputCurrencyId: typedValue })
       }
     },
-    [stateManager]
+    [updateLimitOrdersState]
   )
 
   const onSwitchTokens = useCallback(() => {
-    const { inputCurrencyId, outputCurrencyId } = stateManager.state
+    const { inputCurrencyId, outputCurrencyId } = state
     limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
-  }, [limitOrdersNavigate, stateManager, chainId])
+  }, [limitOrdersNavigate, state, chainId])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      stateManager.setRecipient(recipient)
+      updateLimitOrdersState({ recipient })
     },
-    [stateManager]
+    [updateLimitOrdersState]
   )
 
   console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })

@@ -1,14 +1,17 @@
 import { useLimitOrdersStateFromUrl } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersStateFromUrl'
 import {
   getDefaultLimitOrdersState,
+  limitOrdersAtom,
   LimitOrdersState,
-  useLimitOrdersStateManager,
+  updateLimitOrdersAtom,
 } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 export function useSetupLimitOrdersState() {
   const tradeStateFromUrl = useLimitOrdersStateFromUrl()
-  const { state, setState } = useLimitOrdersStateManager()
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   const chainIdWasChanged = tradeStateFromUrl.chainId !== state.chainId
 
@@ -21,10 +24,9 @@ export function useSetupLimitOrdersState() {
   useEffect(() => {
     if (shouldSkipUpdate) return
 
-    const newState: LimitOrdersState = chainIdWasChanged
+    const newState: Partial<LimitOrdersState> = chainIdWasChanged
       ? getDefaultLimitOrdersState(tradeStateFromUrl.chainId)
       : {
-          ...state,
           chainId: tradeStateFromUrl.chainId,
           recipient: tradeStateFromUrl.recipient || state.recipient,
           inputCurrencyId: tradeStateFromUrl.inputCurrencyId,
@@ -32,6 +34,6 @@ export function useSetupLimitOrdersState() {
         }
 
     console.log('UPDATE LIMIT ORDERS STATE:', newState)
-    setState(newState)
-  }, [setState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
+    updateLimitOrdersState(newState)
+  }, [updateLimitOrdersState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
 }
