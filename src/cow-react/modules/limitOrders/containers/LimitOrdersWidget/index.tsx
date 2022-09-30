@@ -16,6 +16,7 @@ import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/
 import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useOnCurrencySelection'
 import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
 
+// TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
   useResetStateWithSymbolDuplication()
