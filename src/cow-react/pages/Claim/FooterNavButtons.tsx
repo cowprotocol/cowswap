@@ -12,7 +12,7 @@ import { ClaimStatus } from 'state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
 import { useWeb3React } from '@web3-react/core'
 import { ClaimAddressProps } from './ClaimAddress'
-import { ClaimCommonTypes } from 'pages/Claim/types'
+import { ClaimCommonTypes } from 'cow-react/pages/Claim/types'
 
 type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {

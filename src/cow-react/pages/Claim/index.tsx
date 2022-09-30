@@ -15,7 +15,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import Confetti from 'components/Confetti'
 import Loader from 'components/Loader'
 
-import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
+import { PageWrapper, InnerPageWrapper } from 'cow-react/pages/Claim/styled'
 import CanUserClaimMessage from './CanUserClaimMessage'
 import ClaimAddress from './ClaimAddress'
 import ClaimNav from './ClaimNav'

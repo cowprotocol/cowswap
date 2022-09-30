@@ -7,7 +7,7 @@ import {
   CowSpinner,
   BannersWrapper,
   SuccessBanner,
-} from 'pages/Claim/styled'
+} from 'cow-react/pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { useWeb3React } from '@web3-react/core'

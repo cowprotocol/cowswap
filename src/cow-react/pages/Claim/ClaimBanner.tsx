@@ -4,7 +4,7 @@ import { ClaimBanner as ClaimBannerWrapper } from './styled'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import { ClaimStatus } from 'state/claim/actions'
 import SVG from 'react-inlinesvg'
-import { ClaimCommonTypes } from 'pages/Claim/types'
+import { ClaimCommonTypes } from 'cow-react/pages/Claim/types'
 import useNetworkName from 'hooks/useNetworkName'
 
 type ClaimBannerProps = Pick<ClaimCommonTypes, 'hasClaims'> & {

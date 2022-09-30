@@ -1,6 +1,6 @@
 import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo, useClaimLinks } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
-import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
+import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'cow-react/pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
@@ -10,7 +10,7 @@ import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hoo
 
 import { CustomLightSpinner } from 'theme'
 import Circle from 'assets/images/blue-loader.svg'
-import { Countdown } from 'pages/Claim/Countdown'
+import { Countdown } from 'cow-react/pages/Claim/Countdown'
 import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
 import { useEffect } from 'react'
 import { AMOUNT_PRECISION } from 'constants/index'
