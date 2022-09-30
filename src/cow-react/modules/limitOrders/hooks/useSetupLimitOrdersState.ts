@@ -7,11 +7,13 @@ import {
 } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useLimitOrdersNavigate } from '@src/cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 export function useSetupLimitOrdersState() {
   const tradeStateFromUrl = useLimitOrdersStateFromUrl()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const limitOrdersNavigate = useLimitOrdersNavigate()
 
   const chainIdWasChanged = tradeStateFromUrl.chainId !== state.chainId
 
@@ -35,5 +37,19 @@ export function useSetupLimitOrdersState() {
 
     console.log('UPDATE LIMIT ORDERS STATE:', newState)
     updateLimitOrdersState(newState)
-  }, [updateLimitOrdersState, state.recipient, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
+    if (chainIdWasChanged) {
+      limitOrdersNavigate(
+        tradeStateFromUrl.chainId,
+        newState.inputCurrencyId || null,
+        newState.outputCurrencyId || null
+      )
+    }
+  }, [
+    limitOrdersNavigate,
+    updateLimitOrdersState,
+    state.recipient,
+    tradeStateFromUrl,
+    shouldSkipUpdate,
+    chainIdWasChanged,
+  ])
 }
