@@ -514,9 +514,10 @@ function EthFlowModalBottomContent(params: BottomContentParams) {
     state,
   } = params
   const actionButtonProps = _getActionButtonProps(params)
+  const showWrapPreview = state !== EthFlowState.SwapReady && state !== EthFlowState.ApproveNeeded
   return (
     <>
-      {state !== EthFlowState.SwapReady && (
+      {showWrapPreview && (
         <WrappingVisualisation
           nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
           nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
