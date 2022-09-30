@@ -22,6 +22,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
+  // TODO: Not yet defined/discussed, but we might want to store more info the appData related to limit orders
   const appData = useAppData({ chainId, allowedSlippage })
 
   if (
