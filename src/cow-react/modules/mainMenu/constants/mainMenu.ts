@@ -17,8 +17,29 @@ export enum MenuItemKind {
   DARK_MODE_BUTTON = 'DARK_MODE_BUTTON',
 }
 
+export enum MainMenuItemId {
+  SWAP = 'SWAP',
+  LIMIT_ORDERS = 'LIMIT_ORDERS',
+  FAQ_OVERVIEW = 'FAQ_OVERVIEW',
+  FAQ_PROTOCOL = 'FAQ_PROTOCOL',
+  FAQ_TOKEN = 'FAQ_TOKEN',
+  FAQ_TRADING = 'FAQ_TRADING',
+  FAQ_AFFILIATE = 'FAQ_AFFILIATE',
+  ACCOUNT_OVERVIEW = 'ACCOUNT_OVERVIEW',
+  ACCOUNT_TOKENS = 'ACCOUNT_TOKENS',
+  MORE_DOCUMENTATION = 'MORE_DOCUMENTATION',
+  MORE_ABOUT = 'MORE_ABOUT',
+  MORE_STATISTICS = 'MORE_STATISTICS',
+  MORE_CONTRACT = 'MORE_CONTRACT',
+  MORE_DISCORD = 'MORE_DISCORD',
+  MORE_TWITTER = 'MORE_TWITTER',
+  OTHER_COW_RUNNER = 'OTHER_COW_RUNNER',
+  OTHER_MEV_SLICER = 'OTHER_MEV_SLICER',
+  OTHER_TERMS_AND_CONDITIONS = 'OTHER_TERMS_AND_CONDITIONS',
+}
+
 export interface BasicMenuLink {
-  id: string
+  id: MainMenuItemId
   title: string
   url: string
   icon?: string // If icon uses a regular <img /> tag
@@ -54,20 +75,20 @@ export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
 }
 
 export const FAQ_MENU: InternalLink[] = [
-  { id: 'FQA-Overview', title: 'Overview', url: Routes.FAQ },
-  { id: 'FQA-Protocol', title: 'Protocol', url: Routes.FAQ_PROTOCOL },
-  { id: 'FQA-Token', title: 'Token', url: Routes.FAQ_TOKEN },
-  { id: 'FQA-Trading', title: 'Trading', url: Routes.FAQ_TRADING },
-  { id: 'FQA-Affiliate', title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
+  { id: MainMenuItemId.FAQ_OVERVIEW, title: 'Overview', url: Routes.FAQ },
+  { id: MainMenuItemId.FAQ_PROTOCOL, title: 'Protocol', url: Routes.FAQ_PROTOCOL },
+  { id: MainMenuItemId.FAQ_TOKEN, title: 'Token', url: Routes.FAQ_TOKEN },
+  { id: MainMenuItemId.FAQ_TRADING, title: 'Trading', url: Routes.FAQ_TRADING },
+  { id: MainMenuItemId.FAQ_AFFILIATE, title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
 ]
 
 export const ACCOUNT_MENU: InternalLink[] = [
-  { id: 'Account-Overview', title: 'Overview', url: Routes.ACCOUNT },
-  { id: 'Account-Tokens', title: 'Tokens', url: Routes.ACCOUNT_TOKENS },
+  { id: MainMenuItemId.ACCOUNT_OVERVIEW, title: 'Overview', url: Routes.ACCOUNT },
+  { id: MainMenuItemId.ACCOUNT_TOKENS, title: 'Tokens', url: Routes.ACCOUNT_TOKENS },
 ]
 
 export const MAIN_MENU: MenuTreeItem[] = [
-  { id: 'Swap', title: 'Swap', url: Routes.SWAP },
+  { id: MainMenuItemId.SWAP, title: 'Swap', url: Routes.SWAP },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
@@ -94,22 +115,22 @@ export const MAIN_MENU: MenuTreeItem[] = [
         sectionTitle: 'Overview',
         links: [
           {
-            id: 'More-Documentation',
+            id: MainMenuItemId.MORE_DOCUMENTATION,
             title: 'Documentation',
             url: DOCS_LINK,
             iconSVG: IMAGE_DOCS,
             kind: MenuItemKind.EXTERNAL_LINK,
           },
-          { id: 'More-About', title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
+          { id: MainMenuItemId.MORE_ABOUT, title: 'About', url: Routes.ABOUT, iconSVG: IMAGE_INFO },
           {
-            id: 'More-Statistics',
+            id: MainMenuItemId.MORE_STATISTICS,
             title: 'Statistics',
             url: DUNE_DASHBOARD_LINK,
             iconSVG: IMAGE_PIE,
             kind: MenuItemKind.EXTERNAL_LINK,
           },
           {
-            id: 'More-Contract',
+            id: MainMenuItemId.MORE_CONTRACT,
             title: 'Contract',
             url: CONTRACTS_CODE_LINK,
             iconSVG: IMAGE_CODE,
@@ -121,14 +142,14 @@ export const MAIN_MENU: MenuTreeItem[] = [
         sectionTitle: 'Community',
         links: [
           {
-            id: 'More-Discord',
+            id: MainMenuItemId.MORE_DISCORD,
             title: 'Discord',
             url: DISCORD_LINK,
             iconSVG: IMAGE_DISCORD,
             kind: MenuItemKind.EXTERNAL_LINK,
           },
           {
-            id: 'More-Twitter',
+            id: MainMenuItemId.MORE_TWITTER,
             title: 'Twitter',
             url: TWITTER_LINK,
             iconSVG: IMAGE_TWITTER,
@@ -140,10 +161,10 @@ export const MAIN_MENU: MenuTreeItem[] = [
         sectionTitle: 'Other',
         links: [
           { kind: MenuItemKind.DARK_MODE_BUTTON },
-          { id: 'Other-CoW Runner', title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
-          { id: 'Other-MEV Slicer', title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
+          { id: MainMenuItemId.OTHER_COW_RUNNER, title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
+          { id: MainMenuItemId.OTHER_MEV_SLICER, title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
           {
-            id: 'Other-Terms and Conditions',
+            id: MainMenuItemId.OTHER_TERMS_AND_CONDITIONS,
             title: 'Terms and Conditions',
             url: Routes.TERMS_CONDITIONS,
             iconSVG: IMAGE_DOCS,
@@ -155,5 +176,5 @@ export const MAIN_MENU: MenuTreeItem[] = [
 ]
 
 if (localStorage.getItem('enableLimitOrders')) {
-  MAIN_MENU.splice(1, 0, { id: 'Limit orders', title: 'Limit orders', url: Routes.LIMIT_ORDER })
+  MAIN_MENU.splice(1, 0, { id: MainMenuItemId.LIMIT_ORDERS, title: 'Limit orders', url: Routes.LIMIT_ORDER })
 }

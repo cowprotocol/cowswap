@@ -34,7 +34,9 @@ import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
-import { useParameterizedMainMenu } from 'cow-react/common/hooks/useParameterizedMainMenu'
+import { useAtomValue } from 'jotai/utils'
+import { mainMenuUrlOverridesAtom } from 'cow-react/modules/mainMenu/state/mainMenuUrlOverridesAtom'
+import { MAIN_MENU } from 'cow-react/modules/mainMenu/constants/mainMenu'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -87,7 +89,7 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  const parameterizedMainMenu = useParameterizedMainMenu()
+  const mainMenuUrlOverrides = useAtomValue(mainMenuUrlOverridesAtom)
 
   // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
@@ -105,7 +107,8 @@ export default function Header() {
             </UniIcon>
           </Title>
           <MenuTree
-            items={parameterizedMainMenu}
+            items={MAIN_MENU}
+            itemsOverrides={mainMenuUrlOverrides}
             isMobileMenuOpen={isMobileMenuOpen}
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
