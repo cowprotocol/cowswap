@@ -14,7 +14,7 @@ import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useSta
 import { stringToCurrency } from 'state/swap/extension'
 import { OrderKind } from 'state/orders/actions'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { useGetCoingeckoUsdPrice } from 'api/coingecko'
+import { useGetCoingeckoUsdPrice } from 'cow-react/api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 // import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'

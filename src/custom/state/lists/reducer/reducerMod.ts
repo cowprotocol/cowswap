@@ -24,7 +24,7 @@ import {
 } from 'state/lists/actions'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getChainIdValues } from 'utils/misc'
-import { UnsupportedToken } from 'api/gnosisProtocol'
+import { UnsupportedToken } from 'cow-react/api/gnosisProtocol'
 
 // Mod: change state shape - adds network map
 export type ListsStateByNetwork = {

@@ -11,7 +11,7 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { useQuote } from 'state/price/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams } from 'cow-react/api/gnosisProtocol/legacy/types'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
 

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
-import { UnsupportedToken } from 'api/gnosisProtocol'
-import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import { UnsupportedToken } from 'cow-react/api/gnosisProtocol'
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'cow-react/api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/contracts'
 
 import { useSwapState } from 'state/swap/hooks'

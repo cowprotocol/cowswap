@@ -10,18 +10,18 @@ import {
 } from 'utils/signatures'
 import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
-import { environmentName, isBarn, isDev, isLocal, isPr } from '../../utils/environments'
+import { environmentName, isBarn, isDev, isLocal, isPr } from '../../../custom/utils/environments'
 import OperatorError, {
   ApiErrorCodeDetails,
   ApiErrorCodes,
   ApiErrorObject,
-} from 'api/gnosisProtocol/errors/OperatorError'
+} from 'cow-react/api/gnosisProtocol/errors/OperatorError'
 import QuoteError, {
   GpQuoteErrorCodes,
   GpQuoteErrorDetails,
   GpQuoteErrorObject,
   mapOperatorErrorToQuoteError,
-} from 'api/gnosisProtocol/errors/QuoteError'
+} from 'cow-react/api/gnosisProtocol/errors/QuoteError'
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 

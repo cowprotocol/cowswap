@@ -27,7 +27,7 @@ import { useWeb3React } from '@web3-react/core'
 import useFetchProfile from 'hooks/useFetchProfile'
 import useTimeAgo from 'hooks/useTimeAgo'
 import NotificationBanner from 'components/NotificationBanner'
-import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { useHasOrders } from 'cow-react/api/gnosisProtocol/hooks'
 import { useAffiliateAddress } from 'state/affiliate/hooks'
 import { HelpCircle } from 'cow-react/modules/shared/dumb/HelpCircle'
 
