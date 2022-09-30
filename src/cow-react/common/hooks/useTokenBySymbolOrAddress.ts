@@ -1,9 +1,9 @@
-import { useAllTokens } from 'hooks/Tokens'
 import { Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
+import { useAllTokensList } from 'cow-react/common/hooks/useAllTokensList'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | null {
-  const tokens = useAllTokens()
+  const tokens = useAllTokensList()
 
   return useMemo(() => {
     if (!symbolOrAddress) {
@@ -11,8 +11,8 @@ export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Toke
     }
 
     return (
-      Object.values(tokens).find(
-        (item) => item.address.toLowerCase() === symbolOrAddress || item.symbol === symbolOrAddress
+      tokens.find(
+        (item) => item.address.toLowerCase() === symbolOrAddress.toLowerCase() || item.symbol === symbolOrAddress
       ) || null
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -10,18 +10,21 @@ import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
 import { Field } from 'state/swap/actions'
 import { ButtonSize } from 'theme'
 import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/useSetupLimitOrdersState'
 import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useOnCurrencySelection'
+import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
+  useResetStateWithSymbolDuplication()
 
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
     useLimitOrdersTradeState()
   const stateManager = useLimitOrdersStateManager()
+  const onCurrencySelection = useOnCurrencySelection()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -53,15 +56,6 @@ export function LimitOrdersWidget() {
     fiatAmount: null,
     receiveAmountInfo: null,
   }
-  const onCurrencySelection = useCallback(
-    (field: Field, currency: Currency) => {
-      const inputCurrencyId = (field === Field.INPUT ? currency.symbol : inputCurrency?.symbol) || ''
-      const outputCurrencyId = (field === Field.OUTPUT ? currency.symbol : outputCurrency?.symbol) || ''
-
-      stateManager.navigate(chainId, inputCurrencyId, outputCurrencyId)
-    },
-    [stateManager, chainId, inputCurrency, outputCurrency]
-  )
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {

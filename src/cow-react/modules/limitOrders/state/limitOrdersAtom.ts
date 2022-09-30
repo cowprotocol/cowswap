@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
-import { parameterizeLimitOrdersRoute } from '@src/cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
+import { parameterizeLimitOrdersRoute } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
 import { useHistory } from 'react-router-dom'
 
 export interface LimitOrdersState {
@@ -23,8 +23,8 @@ export interface LimitOrdersStateManager {
   setRecipient(recipient: string | null): void
   navigate(
     chainId: SupportedChainId | null | undefined,
-    outputCurrencyId: string | null,
-    inputCurrencyId: string | null
+    inputCurrencyId: string | null,
+    outputCurrencyId: string | null
   ): void
 }
 
@@ -62,10 +62,10 @@ export const useLimitOrdersStateManager = (): LimitOrdersStateManager => {
       },
       navigate(
         chainId: SupportedChainId | null | undefined,
-        outputCurrencyId: string | null,
-        inputCurrencyId: string | null
+        inputCurrencyId: string | null,
+        outputCurrencyId: string | null
       ) {
-        const route = parameterizeLimitOrdersRoute(chainId, outputCurrencyId, inputCurrencyId)
+        const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId)
 
         history.push(route)
       },

@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 
 export function useSetupLimitOrdersState() {
   const tradeStateFromUrl = useLimitOrdersStateFromUrl()
-  const { state, setState, navigate } = useLimitOrdersStateManager()
+  const { state, setState } = useLimitOrdersStateManager()
 
   const chainIdWasChanged = tradeStateFromUrl.chainId !== state.chainId
 
@@ -27,14 +27,11 @@ export function useSetupLimitOrdersState() {
           ...state,
           chainId: tradeStateFromUrl.chainId,
           recipient: tradeStateFromUrl.recipient || state.recipient,
-          inputCurrencyId: tradeStateFromUrl.inputCurrencyId || state.inputCurrencyId,
-          outputCurrencyId: tradeStateFromUrl.outputCurrencyId || state.outputCurrencyId,
+          inputCurrencyId: tradeStateFromUrl.inputCurrencyId,
+          outputCurrencyId: tradeStateFromUrl.outputCurrencyId,
         }
 
     console.log('UPDATE LIMIT ORDERS STATE:', newState)
     setState(newState)
-    setTimeout(() => {
-      navigate(newState.chainId, newState.inputCurrencyId, newState.outputCurrencyId)
-    }, 0)
-  }, [navigate, setState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
+  }, [setState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
 }
