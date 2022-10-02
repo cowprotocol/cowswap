@@ -2,16 +2,27 @@ import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
 import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails'
 
-import {
-  EthFlowState,
-  EthFlowSwapCallbackParams,
-  ModalTextContentProps,
-  _getCurrencyForVisualiser,
-} from '../../helpers'
+import { EthFlowState } from '../../'
 
 import { PendingHashMap } from '../../containers/EthFlowModal'
 import { ActionButton, ActionButtonProps } from './ActionButton'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { ModalTextContentProps } from '.'
+
+// returns proper prop for visualiser: which currency is shown on left vs right (wrapped vs unwrapped)
+export function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, isUnwrap: boolean) {
+  if (isWrap || isUnwrap) {
+    return isWrap ? native : wrapped
+  } else {
+    return native
+  }
+}
+
+export type EthFlowSwapCallbackParams = {
+  showConfirm: boolean
+  straightSwap?: boolean
+  forceWrapNative?: boolean
+}
 
 export type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> & {
   approveError: Error | null

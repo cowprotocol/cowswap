@@ -2,7 +2,7 @@ import { GpModal } from 'components/Modal'
 import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 import { EthFlowModalContent } from '.'
-import { EthFlowState } from '../../helpers'
+import { EthFlowState } from '../..'
 import { getEthFlowModalContentProps } from '../../mocks'
 
 const ALL_STATES = [

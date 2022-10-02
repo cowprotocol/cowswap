@@ -8,13 +8,7 @@ import { useIsExpertMode } from 'state/user/hooks'
 import { delay } from 'utils/misc'
 import { useWeb3React } from '@web3-react/core'
 
-import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
-import {
-  EthFlowState,
-  EthFlowSwapCallbackParams,
-  useEthFlowStatesAndSetters,
-  _getDerivedEthFlowState,
-} from 'components/swap/EthFlow/helpers'
+import useRemainingNativeTxsAndCosts from '@src/custom/components/swap/EthFlow/containers/EthFlowModal/hooks/useRemainingNativeTxsAndCosts'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useWrapCallback } from 'hooks/useWrapCallback'
 import { useDerivedSwapInfo, useDetectNativeToken, useSwapActionHandlers } from 'state/swap/hooks'
@@ -24,7 +18,13 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 import { GpModal } from '@src/custom/components/Modal'
 import { EthFlowModalContent, ModalTextContentProps } from '../../pure/EthFlowModalContent'
-import { BottomContentParams } from '../../pure/EthFlowModalContent/EthFlowModalBottomContent'
+import {
+  BottomContentParams,
+  EthFlowSwapCallbackParams,
+} from '../../pure/EthFlowModalContent/EthFlowModalBottomContent'
+import { useEthFlowStatesAndSetters } from './hooks/useEthFlowStatesAndSetters'
+import { getDerivedEthFlowState } from './utils/getDerivedEthFlowState'
+import { EthFlowState } from '../..'
 
 // used to avoid jarring UI effect from race between closing modal after successful operation(s)
 // and the UI update showing confirmed actions
@@ -118,7 +118,7 @@ export function EthWethWrap({
   // get derived EthFlow state
   const state = useMemo(
     () =>
-      _getDerivedEthFlowState({
+      getDerivedEthFlowState({
         approveError,
         wrapError,
         approveState: approvalDerivedState,

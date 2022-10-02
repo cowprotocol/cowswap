@@ -1,9 +1,8 @@
 import { Trans } from '@lingui/macro'
 
-import useRemainingNativeTxsAndCosts from 'hooks/useRemainingNativeTxsAndCosts'
-import { EthFlowState } from 'components/swap/EthFlow/helpers'
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import { EthFlowState } from '../..'
 
 const ModalMessage = styled.p`
   display: flex;
@@ -21,7 +20,7 @@ const LowBalanceMessage = styled(ModalMessage)`
   border-radius: 10px;
 `
 
-export type BalanceChecks = ReturnType<typeof useRemainingNativeTxsAndCosts>['balanceChecks']
+export type BalanceChecks = { isLowBalance: boolean; txsRemaining: string | null } | undefined
 
 export type TopContentParams = {
   descriptions: string[] | null

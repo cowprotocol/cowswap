@@ -3,9 +3,13 @@ import { WrappingPreviewProps } from './pure/WrappingPreview'
 import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { EthFlowState, EthFlowSwapCallbackParams } from './helpers'
-import { ActionButtonParams, BottomContentParams } from './pure/EthFlowModalContent/EthFlowModalBottomContent'
+import {
+  ActionButtonParams,
+  BottomContentParams,
+  EthFlowSwapCallbackParams,
+} from './pure/EthFlowModalContent/EthFlowModalBottomContent'
 import { EthFlowModalContentProps, ModalTextContentProps } from './pure/EthFlowModalContent'
+import { EthFlowState } from '.'
 
 const native = nativeOnChain(SupportedChainId.MAINNET)
 const wrapped = WETH[SupportedChainId.MAINNET]
@@ -126,14 +130,5 @@ export function getEthFlowModalContentProps(params: EthParamsCaseParams = {}): E
     modalTextContent: modalTextContentModified,
     bottomContentParams: bottomContentParamsMod,
     onDismiss: async () => console.log('On dismiss'),
-
-    //   balanceChecks: BalanceChecks
-    // modalTextContent: ModalTextContentProps
-    // bottomContentParams: BottomContentParams
-    // onDismiss: () => void
-
-    // actionButton: actionButtonModified,
-    // modalTextContent: modalTextContentModified,
-    // bottomContentParams: { ...bottomContentParams, isUnwrap, actionButton: actionButtonModified },
   }
 }

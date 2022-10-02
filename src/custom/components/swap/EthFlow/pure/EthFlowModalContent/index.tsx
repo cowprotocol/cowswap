@@ -1,11 +1,11 @@
 import styled from 'styled-components/macro'
 
 import { useCallback, useMemo } from 'react'
-import { EthFlowState } from '../../helpers'
 import { BottomContentParams, EthFlowModalBottomContent } from './EthFlowModalBottomContent'
 
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import { BalanceChecks, EthFlowModalTopContent } from './EthFlowModalTopContent'
+import { EthFlowState } from '../..'
 
 const EthFlowModalLayout = styled(ConfirmationModalContent)`
   padding: 22px;
