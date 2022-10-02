@@ -170,14 +170,14 @@ export function _getModalTextContent(params: ModalTextContentProps) {
   return { header, descriptions }
 }
 
-interface EthFlowModlaContent2Props {
+export interface EthFlowModalContentProps {
   balanceChecks: BalanceChecks
   modalTextContent: ModalTextContentProps
   bottomContentParams: BottomContentParams
   onDismiss: () => void
 }
 
-export function EthFlowModalContent(props: EthFlowModlaContent2Props) {
+export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const { modalTextContent, balanceChecks, bottomContentParams, onDismiss } = props
   const { nativeSymbol, state } = modalTextContent
 
