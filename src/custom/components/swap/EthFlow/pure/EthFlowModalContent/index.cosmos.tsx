@@ -1,29 +1,8 @@
-import { GpModal } from '@src/custom/components/Modal'
+import { GpModal } from 'components/Modal'
 import { useState } from 'react'
-import { EthFlowModalContent, ModalTextContentProps } from '.'
-import { EthFlowState } from '../../helpers'
-import { wrappingPreviewProps } from '../../mocks'
-import { ActionButtonParams, BottomContentParams } from './EthFlowModalBottomContent'
-
-const actionButton: ActionButtonParams = {
-  approveError: null,
-  wrapError: null,
-  approveState: null,
-  wrapState: null,
-  isExpertMode: false,
-  nativeSymbol: wrappingPreviewProps.nativeSymbol,
-  wrappedSymbol: wrappingPreviewProps.wrappedSymbol,
-  state: EthFlowState.WrapNeeded,
-  isWrap: false,
-  isNativeIn: false,
-  loading: false,
-  handleSwap: async ({ showConfirm, straightSwap }) => {
-    console.log('handleSwap', { showConfirm, straightSwap })
-  },
-  handleApprove: async () => console.log('handleApprove'),
-  handleWrap: async () => console.log('handleApprove'),
-  handleMountInExpertMode: async () => console.log('handleApprove'),
-}
+import { EthFlowModalContent } from '.'
+import { wrappingPreviewProps, actionButton, modalTextContent } from '../../mocks'
+import { BottomContentParams } from './EthFlowModalBottomContent'
 
 const Fixture = () => {
   const [opened, setOpened] = useState(false)
@@ -37,16 +16,6 @@ const Fixture = () => {
     pendingHashMap: { approveHash: undefined, wrapHash: undefined },
     actionButton,
     wrappingPreview: wrappingPreviewProps,
-  }
-
-  const modalTextContent: ModalTextContentProps = {
-    wrappedSymbol: actionButton.wrappedSymbol,
-    nativeSymbol: actionButton.nativeSymbol,
-    state: actionButton.state,
-    isExpertMode: actionButton.isExpertMode,
-    isNative: actionButton.isNativeIn,
-    wrapSubmitted: false,
-    approveSubmitted: false,
   }
 
   return (
