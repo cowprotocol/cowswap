@@ -18,7 +18,7 @@ export const buildBlock2DateMap = async (provider: JsonRpcProvider, logs: Log[])
   return block2DateMap
 }
 
-export const whenWasMined = async (provider: JsonRpcProvider, blockNumber: number) => {
+export const getBlockTime = async (provider: JsonRpcProvider, blockNumber: number) => {
   const block = await provider.getBlock(blockNumber)
 
   return new Date(block.timestamp * 1000)

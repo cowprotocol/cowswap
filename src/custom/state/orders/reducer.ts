@@ -1,5 +1,6 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { OrderID } from '@cow/api/gnosisProtocol'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addOrUpdateOrders,
@@ -22,7 +23,6 @@ import {
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 import { Writable } from 'types'
-import { noOverwriteExecutionDateIfExists } from '@src/custom/api/gnosisSafe'
 
 export interface OrderObject {
   id: OrderID
@@ -150,6 +150,19 @@ function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id:
   return orderObj
 }
 
+// Utility to hold executionDate written by an ExecutionSuccess event listener
+export function mergePresignGnosisSafeTxState(
+  previousSafeInfo: SafeMultisigTransactionResponse | undefined,
+  newSafeInfo: SafeMultisigTransactionResponse
+) {
+  if (!previousSafeInfo) return newSafeInfo
+
+  return {
+    ...newSafeInfo,
+    executionDate: previousSafeInfo.executionDate ?? newSafeInfo.executionDate,
+  }
+}
+
 const initialState: OrdersState = {}
 
 export default createReducer(initialState, (builder) =>
@@ -188,7 +201,7 @@ export default createReducer(initialState, (builder) =>
 
       const orderObject = getOrderById(state, chainId, orderId)
       if (orderObject) {
-        orderObject.order.presignGnosisSafeTx = noOverwriteExecutionDateIfExists(
+        orderObject.order.presignGnosisSafeTx = mergePresignGnosisSafeTxState(
           orderObject.order.presignGnosisSafeTx,
           safeTransaction
         )

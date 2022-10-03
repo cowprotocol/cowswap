@@ -9,8 +9,8 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useSafeWalletContract } from 'hooks/useContract'
 import { usePendingOrders, useUpdatePresignGnosisSafeTx } from '../orders/hooks'
 import { Order } from 'state/orders/actions'
-import usePrevious from '@src/hooks/usePrevious'
-import { whenWasMined } from '@src/custom/utils/blocks'
+import usePrevious from 'hooks/usePrevious'
+import { getBlockTime } from 'custom/utils/blocks'
 
 export default function Updater(): null {
   const { account, chainId, provider } = useWeb3React()
@@ -52,7 +52,7 @@ const _getJoinedHash = (pendingOrders: Order[]) => {
  * This will help to have the most accurate date of the execution of an order.
  * Since the safe API has a slight delay the progress bar is not displayed properly
  */
-export function UpdaterSafeExecutionDate(): null {
+export function GnosisSafeExecutionUpdater(): null {
   const isSafeWallet = useIsGnosisSafeWallet()
   const { account, chainId, provider } = useWeb3React()
   const safeWalletContract = useSafeWalletContract(account)
@@ -68,7 +68,7 @@ export function UpdaterSafeExecutionDate(): null {
       const safeOrders = _getSafeTxs(pendingTxsRef.current)
       let executionDate = new Date()
       try {
-        executionDate = await whenWasMined(provider, event.blockNumber as number)
+        executionDate = await getBlockTime(provider, event.blockNumber as number)
       } catch (error) {
         console.error(`Unable to obtain when mining block ${event.blockNumber}`, error)
       }
