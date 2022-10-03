@@ -17,6 +17,9 @@ import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/
 import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
 import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
 
+import { RateInput } from 'cow-react/modules/limitOrders/containers/RateInput'
+import { ExpiryDate } from 'cow-react/modules/limitOrders/containers/ExpiryDate'
+
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
 
@@ -115,6 +118,10 @@ export function LimitOrdersWidget() {
           currencyInfo={inputCurrencyInfo}
           showSetMax={showSetMax}
         />
+        <styledEl.RateWrapper>
+          <RateInput />
+          <ExpiryDate />
+        </styledEl.RateWrapper>
         <styledEl.CurrencySeparatorBox withRecipient={showRecipientControls}>
           <CurrencyArrowSeparator
             onSwitchTokens={onSwitchTokens}
