@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
-import { useCallback } from 'react'
-import { Lock, Unlock } from 'react-feather'
+import { useCallback, useMemo, useEffect } from 'react'
+import { Lock, Unlock, RefreshCw } from 'react-feather'
 import { Trans } from '@lingui/macro'
 
 import { Field } from 'state/swap/actions'
@@ -16,8 +16,8 @@ const LockTooltipText =
 export function RateInput() {
   // Rate state
   const rateState = useLimitRateStateManager()
-  const { isLocked, primaryField } = rateState.state
-  const { setIsLocked } = rateState
+  const { setIsLocked, setRateValue, setPrimaryField } = rateState
+  const { isLocked, primaryField, rateValue, isLoading } = rateState.state
   const secondaryField = primaryField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   // Limit order state
@@ -25,19 +25,24 @@ export function RateInput() {
   const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount } = limitOrderState.state
 
   // State mapper
-  const stateMap = {
-    [Field.INPUT]: {
-      currencyId: inputCurrencyId,
-      currencyAmount: inputCurrencyAmount,
-    },
-    [Field.OUTPUT]: {
-      currencyId: outputCurrencyId,
-      currencyAmount: outputCurrencyAmount,
-    },
-  }
-
-  const atCurrency = stateMap[primaryField].currencyId
-  const perCurrency = stateMap[secondaryField].currencyId
+  const { primaryCurrency, secondaryCurrency, primaryAmount, secondaryAmount } = useMemo(() => {
+    const stateMap = {
+      [Field.INPUT]: {
+        currencyId: inputCurrencyId,
+        currencyAmount: inputCurrencyAmount,
+      },
+      [Field.OUTPUT]: {
+        currencyId: outputCurrencyId,
+        currencyAmount: outputCurrencyAmount,
+      },
+    }
+    return {
+      primaryCurrency: stateMap[primaryField].currencyId,
+      secondaryCurrency: stateMap[secondaryField].currencyId,
+      primaryAmount: Number(stateMap[primaryField].currencyAmount),
+      secondaryAmount: Number(stateMap[secondaryField].currencyAmount),
+    }
+  }, [inputCurrencyAmount, inputCurrencyId, outputCurrencyAmount, outputCurrencyId, primaryField, secondaryField])
 
   // Lock icon
   const LockIcon = isLocked ? Unlock : Lock
@@ -45,10 +50,36 @@ export function RateInput() {
     setIsLocked(!isLocked)
   }, [setIsLocked, isLocked])
 
+  // Handle rate input
+  const handleUserInput = useCallback(
+    (typedValue: string) => {
+      setRateValue(typedValue)
+    },
+    [setRateValue]
+  )
+
+  // Handle toggle primary field
+  const handleTogglePrimary = useCallback(() => {
+    setPrimaryField(secondaryField)
+  }, [secondaryField, setPrimaryField])
+
+  // Handle initial value
+  useEffect(() => {
+    if (!primaryAmount || !secondaryAmount) {
+      return
+    }
+
+    const newRateValue = primaryAmount / secondaryAmount
+    setRateValue(newRateValue)
+  }, [primaryAmount, secondaryAmount])
+
+  // Handle swap tokens
+  // useEffect(() => {})
+
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
-        <HeadingText atCurrency={atCurrency} perCurrency={perCurrency} />
+        <HeadingText atCurrency={primaryCurrency} perCurrency={secondaryCurrency} />
 
         <styledEl.Lock onClick={handleLock}>
           <MouseoverTooltip text={<Trans>{LockTooltipText}</Trans>}>
@@ -56,6 +87,22 @@ export function RateInput() {
           </MouseoverTooltip>
         </styledEl.Lock>
       </styledEl.Header>
+
+      <styledEl.Body>
+        <styledEl.InputWrapper>
+          <styledEl.NumericalInput
+            $loading={isLoading}
+            className="rate-limit-amount-input"
+            value={rateValue || ''}
+            onUserInput={handleUserInput}
+          />
+        </styledEl.InputWrapper>
+
+        <styledEl.ActiveCurrency onClick={handleTogglePrimary}>
+          <styledEl.ActiveSymbol>{primaryCurrency}</styledEl.ActiveSymbol>
+          <RefreshCw size={14} />
+        </styledEl.ActiveCurrency>
+      </styledEl.Body>
     </styledEl.Wrapper>
   )
 }

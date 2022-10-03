@@ -4,9 +4,10 @@ import { useAtom } from 'jotai'
 import { Field } from 'state/swap/actions'
 
 export interface LimitRateState {
+  readonly isLoading: boolean
   readonly isLocked: boolean
   readonly primaryField: Field
-  readonly rateValue: number | null
+  readonly rateValue: string | number | null
 }
 
 export interface LimitRateStateManager {
@@ -14,9 +15,11 @@ export interface LimitRateStateManager {
   setState(state: LimitRateState): void
   setIsLocked(isLocked: boolean): void
   setPrimaryField(field: Field): void
+  setRateValue(rateValue: string | number | null): void
 }
 
 const initLimitRateState = () => ({
+  isLoading: false,
   isLocked: false,
   primaryField: Field.INPUT,
   rateValue: null,
@@ -39,8 +42,11 @@ export const useLimitRateStateManager = (): LimitRateStateManager => {
       setPrimaryField(primaryField: Field) {
         setState({ ...state, primaryField })
       },
-      setRateValue(rateValue: number | null) {
+      setRateValue(rateValue: string | number | null) {
         setState({ ...state, rateValue })
+      },
+      setIsLoading(isLoading: boolean) {
+        setState({ ...state, isLoading })
       },
     }
   }, [state, setState])
