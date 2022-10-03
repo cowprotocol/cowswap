@@ -2,23 +2,10 @@ import { SwapFormProps } from 'cow-react/modules/swap/containers/NewSwapWidget/t
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { Fraction } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from 'cow-react/modules/swap/helpers/tradeReceiveAmount'
-import { SwapButtonsContext } from 'cow-react/modules/swap/containers/SwapButtons'
 import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
 
 function isFractionEqual(prev?: Fraction | null, next?: Fraction | null): boolean {
   return prev && next ? prev.equalTo(next) : prev === next
-}
-
-export function isSwapButtonPropsEqual(prev: SwapButtonsContext, next: SwapButtonsContext): boolean {
-  return (
-    prev.swapButtonState === next.swapButtonState &&
-    prev.chainId === next.chainId &&
-    prev.wrappedToken.address === next.wrappedToken.address &&
-    prev.swapInputError === next.swapInputError &&
-    prev.wrapInputError === next.wrapInputError &&
-    isFractionEqual(prev.wrapUnwrapAmount, next.wrapUnwrapAmount) &&
-    prev.approveButtonProps.approvalState === next.approveButtonProps.approvalState
-  )
 }
 
 function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveAmountInfo | null): boolean {
