@@ -5,7 +5,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
-import { OrderMetaData } from 'cow-react/api/gnosisProtocol/api'
+import { OrderMetaData } from '@cow/api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
@@ -13,7 +13,7 @@ import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
-import { useGpOrders } from 'cow-react/api/gnosisProtocol/hooks'
+import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 
 function _getTokenFromMapping(

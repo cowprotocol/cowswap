@@ -12,7 +12,7 @@ import ReferralLinkUpdater from 'state/affiliate/updater'
 import URLWarning from 'components/Header/URLWarning'
 import Footer from 'components/Footer'
 
-import RedirectAnySwapAffectedUsers from 'cow-react/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
+import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 

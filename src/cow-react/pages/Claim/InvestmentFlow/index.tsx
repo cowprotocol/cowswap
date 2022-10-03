@@ -11,9 +11,9 @@ import {
   Badge,
   UserMessage,
   BannerExplainer,
-} from 'cow-react/pages/Claim/styled'
-import { InvestSummaryRow } from 'cow-react/pages/Claim/InvestmentFlow/InvestSummaryRow'
-import { ClaimSummaryView } from 'cow-react/pages/Claim/ClaimSummary'
+} from '@cow/pages/Claim/styled'
+import { InvestSummaryRow } from '@cow/pages/Claim/InvestmentFlow/InvestSummaryRow'
+import { ClaimSummaryView } from '@cow/pages/Claim/ClaimSummary'
 
 import { Stepper } from 'components/Stepper'
 import { FaqDrawer } from 'components/FaqDrawer'

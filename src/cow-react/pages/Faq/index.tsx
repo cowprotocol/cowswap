@@ -9,15 +9,15 @@ import {
   MEV_TOTAL,
   FLASHBOTS_LINK,
 } from 'constants/index'
-import { Page, Content } from 'cow-react/modules/application/pure/Page'
-import { Routes } from 'cow-react/constants/routes'
+import { Page, Content } from '@cow/modules/application/pure/Page'
+import { Routes } from '@cow/constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
 import { StyledInternalLink } from 'theme'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
-import { PageTitle } from 'cow-react/modules/application/containers/PageTitle'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'

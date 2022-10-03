@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage, useUpdateAtom, useAtomValue, selectAtom } from 'jotai/utils'
-import { OrderID } from 'cow-react/api/gnosisProtocol'
+import { OrderID } from '@cow/api/gnosisProtocol'
 
 export { useUpdateAtom, useAtomValue, selectAtom }
 

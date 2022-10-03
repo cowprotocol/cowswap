@@ -1,6 +1,6 @@
 import { Field } from 'state/swap/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { ReceiveAmountInfo } from 'cow-react/modules/swap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 
 export interface CurrencyInfo {
   field: Field

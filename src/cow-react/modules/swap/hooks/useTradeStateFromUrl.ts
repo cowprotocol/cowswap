@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom'
-import { TradeStateFromUrl } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
+import { TradeStateFromUrl } from '@cow/modules/swap/containers/NewSwapWidget/typings'
 import { useMemo } from 'react'
 
 export function useTradeStateFromUrl(): TradeStateFromUrl {
