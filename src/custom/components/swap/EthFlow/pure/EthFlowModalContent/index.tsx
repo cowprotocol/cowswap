@@ -5,8 +5,8 @@ import { BottomContentParams, EthFlowModalBottomContent } from './EthFlowModalBo
 
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import { BalanceChecks, EthFlowModalTopContent } from './EthFlowModalTopContent'
-import { EthFlowState } from '../..'
 import { ethFlowConfigs } from 'components/swap/EthFlow/pure/EthFlowModalContent/configs'
+import { EthFlowState } from '../../typings'
 
 const EthFlowModalLayout = styled(ConfirmationModalContent)`
   padding: 22px;

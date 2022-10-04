@@ -9,7 +9,7 @@ import {
   EthFlowSwapCallbackParams,
 } from './pure/EthFlowModalContent/EthFlowModalBottomContent'
 import { EthFlowModalContentProps, ModalTextContentProps } from './pure/EthFlowModalContent'
-import { EthFlowState } from '.'
+import { EthFlowState } from './typings'
 
 const native = nativeOnChain(SupportedChainId.MAINNET)
 const wrapped = WETH[SupportedChainId.MAINNET]

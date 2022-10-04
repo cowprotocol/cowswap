@@ -1,4 +1,4 @@
-import { EthFlowContext, EthFlowState } from 'components/swap/EthFlow'
+import { EthFlowContext, EthFlowState } from 'components/swap/EthFlow/typings'
 
 export interface EthFlowConfig {
   title: string

@@ -2,8 +2,8 @@ import { GpModal } from 'components/Modal'
 import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 import { EthFlowModalContent } from '.'
-import { EthFlowState } from '../..'
 import { getEthFlowModalContentProps } from '../../mocks'
+import { EthFlowState } from '../../typings'
 
 const ALL_STATES = Object.values(EthFlowState)
 
@@ -27,9 +27,14 @@ function Custom() {
   const [loading] = useValue('loading', { defaultValue: false })
   const [approveSubmitted] = useValue('approveSubmitted', { defaultValue: false })
   const [wrapSubmitted] = useValue('wrapSubmitted', { defaultValue: false })
-  const [isLowBalance] = useValue('isLowBalance', { defaultValue: false })
-  const [txsRemaining] = useValue('txsRemaining', { defaultValue: '' })
-  const balanceChecks = { isLowBalance, txsRemaining }
+  const balanceChecks = {
+    isLowBalance: useValue('isLowBalance', { defaultValue: false })[0],
+    txsRemaining: useValue('txsRemaining', { defaultValue: '' })[0],
+  }
+  const pendingHashMap = {
+    approveHash: useValue<string>('approveHash', { defaultValue: '' })[0],
+    wrapHash: useValue('wrapHash', { defaultValue: '' })[0],
+  }
 
   const { bottomContentParams, modalTextContent } = getEthFlowModalContentProps({
     state,
@@ -45,7 +50,7 @@ function Custom() {
         <GpModal isOpen onDismiss={onDismiss}>
           <EthFlowModalContent
             balanceChecks={balanceChecks}
-            bottomContentParams={bottomContentParams}
+            bottomContentParams={{ ...bottomContentParams, pendingHashMap }}
             modalTextContent={modalTextContent}
             onDismiss={onDismiss}
           />

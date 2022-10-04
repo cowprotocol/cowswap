@@ -24,7 +24,7 @@ import {
 } from '../../pure/EthFlowModalContent/EthFlowModalBottomContent'
 import { useEthFlowStatesAndSetters } from './hooks/useEthFlowStatesAndSetters'
 import { getDerivedEthFlowState } from './utils/getDerivedEthFlowState'
-import { EthFlowState } from '../..'
+import { EthFlowState } from '../../typings'
 
 // used to avoid jarring UI effect from race between closing modal after successful operation(s)
 // and the UI update showing confirmed actions

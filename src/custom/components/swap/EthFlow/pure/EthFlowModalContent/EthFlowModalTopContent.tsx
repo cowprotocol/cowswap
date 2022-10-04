@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { EthFlowState } from '../..'
+import { EthFlowState } from '../../typings'
 
 const ModalMessage = styled.p`
   display: flex;

@@ -2,12 +2,11 @@ import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
 import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails'
 
-import { EthFlowState } from '../../'
-
 import { PendingHashMap } from '../../containers/EthFlowModal'
 import { ActionButton, ActionButtonProps } from './ActionButton'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { ModalTextContentProps } from '.'
+import { EthFlowState } from '../../typings'
 
 export type EthFlowSwapCallbackParams = {
   showConfirm: boolean

@@ -1,5 +1,5 @@
-import { EthFlowState } from '../../..'
 import { DerivedEthFlowStateProps } from '../../../pure/EthFlowModalContent/EthFlowModalBottomContent'
+import { EthFlowState } from '../../../typings'
 
 // returns derived ethflow state from current props
 export function getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
