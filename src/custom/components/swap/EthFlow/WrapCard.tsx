@@ -92,7 +92,7 @@ export function WrapCard(props: WrapCardProps) {
   return (
     <WrapCardWrapper>
       {/* logo */}
-      {!hasLogoUri && chainId && currency.equals(WRAPPED_NATIVE_CURRENCY[chainId]) ? (
+      {!hasLogoUri && chainId && !currency.equals(WRAPPED_NATIVE_CURRENCY[chainId]) ? (
         <BackupTokenImg alt="token-img" src={CHAIN_INFO[chainId].logoUrl} />
       ) : (
         <CurrencyLogo currency={currency} size="24px" />
