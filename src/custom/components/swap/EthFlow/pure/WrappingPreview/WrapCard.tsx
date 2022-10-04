@@ -14,15 +14,15 @@ const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' })
 `
 
 interface WrapCardProps {
-  symbol: string
+  currency: Currency
   balance?: CurrencyAmount<Currency>
   amountToWrap?: CurrencyAmount<Currency>
-  currency: Currency
   chainId?: number
 }
 
 export function WrapCard(props: WrapCardProps) {
-  const { symbol, balance, amountToWrap, currency, chainId } = props
+  const { balance, amountToWrap, currency, chainId } = props
+  const symbol = currency.symbol
   const hasLogoUri = currency.isNative || Boolean(currency instanceof WrappedTokenInfo && currency.logoURI)
 
   return (

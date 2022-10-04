@@ -34,12 +34,10 @@ const state = EthFlowState.WrapNeeded
 
 export const wrappingPreviewProps: WrappingPreviewProps = {
   native,
-  wrapped,
-  wrappedSymbol,
-  nativeSymbol,
   nativeBalance,
+  wrapped,
   wrappedBalance,
-  nativeInput,
+  amount: nativeInput,
 }
 
 export const actionButton: ActionButtonParams = {

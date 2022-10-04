@@ -337,11 +337,9 @@ export function EthWethWrap({
       wrappingPreview: {
         native,
         nativeBalance,
-        nativeInput,
-        nativeSymbol,
         wrapped,
         wrappedBalance,
-        wrappedSymbol,
+        amount: nativeInput,
       },
     }
   }, [

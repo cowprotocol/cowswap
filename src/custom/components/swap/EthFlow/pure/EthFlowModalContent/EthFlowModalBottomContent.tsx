@@ -148,8 +148,7 @@ export type BottomContentParams = {
 export function EthFlowModalBottomContent(params: BottomContentParams) {
   const { isUnwrap, pendingHashMap, actionButton, wrappingPreview } = params
   const { state, isWrap } = actionButton
-  const { nativeSymbol, wrappedSymbol, wrappedBalance, wrapped, native, nativeBalance, nativeInput, chainId } =
-    wrappingPreview
+  const { wrappedBalance, wrapped, native, nativeBalance, amount, chainId } = wrappingPreview
 
   const actionButtonProps = _getActionButtonProps(actionButton)
   const showWrapPreview = state !== EthFlowState.SwapReady && state !== EthFlowState.ApproveNeeded
@@ -158,13 +157,11 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     <>
       {showWrapPreview && (
         <WrappingPreview
-          nativeSymbol={_getCurrencyForVisualiser(nativeSymbol, wrappedSymbol, isWrap, isUnwrap)}
-          nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
           native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
+          nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
           wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
           wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
-          wrappedSymbol={_getCurrencyForVisualiser(wrappedSymbol, nativeSymbol, isWrap, isUnwrap)}
-          nativeInput={nativeInput}
+          amount={amount}
           chainId={chainId}
         />
       )}
