@@ -17,7 +17,6 @@ export type ModalTextContentProps = {
   nativeSymbol: string
   state: EthFlowState
   isExpertMode: boolean
-  isNative: boolean
   wrapSubmitted: boolean
   approveSubmitted: boolean
 }
@@ -25,7 +24,7 @@ export type ModalTextContentProps = {
 export interface EthFlowModalContentProps {
   balanceChecks: BalanceChecks
   modalTextContent: ModalTextContentProps
-  bottomContentParams: BottomContentParams
+  bottomContentParams: Omit<BottomContentParams, 'buttonText'>
   onDismiss: () => void
 }
 

@@ -23,11 +23,8 @@ function Custom() {
   })
   const state = getStateFromDescription(stateDescription)
 
-  const [isUnwrap] = useValue('isUnwrap', { defaultValue: false })
   const [isExpertMode] = useValue('isExpertMode', { defaultValue: false })
-  const [isNativeIn] = useValue('isUnwrap', { defaultValue: false })
   const [loading] = useValue('loading', { defaultValue: false })
-  const [isWrap] = useValue('isWrap', { defaultValue: false })
   const [approveSubmitted] = useValue('approveSubmitted', { defaultValue: false })
   const [wrapSubmitted] = useValue('wrapSubmitted', { defaultValue: false })
   const [isLowBalance] = useValue('isLowBalance', { defaultValue: false })
@@ -36,10 +33,7 @@ function Custom() {
 
   const { bottomContentParams, modalTextContent } = getEthFlowModalContentProps({
     state,
-    isWrap,
-    isUnwrap,
     isExpertMode,
-    isNativeIn,
     loading,
     approveSubmitted,
     wrapSubmitted,

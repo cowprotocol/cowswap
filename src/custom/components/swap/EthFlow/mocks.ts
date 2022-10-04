@@ -46,12 +46,8 @@ export const actionButton: ActionButtonParams = {
   approveState: null,
   wrapState: null,
   isExpertMode: false,
-  nativeSymbol,
-  wrappedSymbol,
 
   state,
-  isWrap: false,
-  isNativeIn: false, // TODO: What is this for?
   loading: false,
 
   handleSwap,
@@ -65,14 +61,12 @@ export const modalTextContent: ModalTextContentProps = {
   nativeSymbol,
   state,
   isExpertMode: false,
-  isNative: false,
   wrapSubmitted: false,
   approveSubmitted: false,
 }
 
 const pendingHashMap = { approveHash: undefined, wrapHash: undefined }
-export const bottomContentParams: BottomContentParams = {
-  isUnwrap: false,
+export const bottomContentParams: Omit<BottomContentParams, 'buttonText'> = {
   pendingHashMap,
   actionButton,
   wrappingPreview: wrappingPreviewProps,
@@ -80,44 +74,30 @@ export const bottomContentParams: BottomContentParams = {
 
 export interface EthParamsCaseParams {
   state?: EthFlowState
-  isNativeIn?: boolean
-  isWrap?: boolean
-  isUnwrap?: boolean
   isExpertMode?: boolean
   loading?: boolean
   wrapSubmitted?: boolean
   approveSubmitted?: boolean
 }
 
-// export interface WrapEthCaseParams {
-//   actionButton: ActionButtonParams
-//   modalTextContent: ModalTextContentProps
-//   bottomContentParams: BottomContentParams
-// }
-
 export function getEthFlowModalContentProps(params: EthParamsCaseParams = {}): EthFlowModalContentProps {
   const {
     state = EthFlowState.WrapNeeded,
-    isNativeIn = false,
-    isWrap = false,
-    isUnwrap = false,
     isExpertMode = false,
     loading = false,
     wrapSubmitted = false,
     approveSubmitted = false,
   } = params
 
-  const actionButtonModified = { ...actionButton, state, isWrap, isNativeIn, loading, isExpertMode }
+  const actionButtonModified = { ...actionButton, state, loading, isExpertMode }
   const modalTextContentModified: ModalTextContentProps = {
     ...modalTextContent,
     state,
     isExpertMode,
-    isNative: isNativeIn,
     wrapSubmitted,
     approveSubmitted,
   }
-  const bottomContentParamsMod: BottomContentParams = {
-    isUnwrap,
+  const bottomContentParamsMod: Omit<BottomContentParams, 'buttonText'> = {
     actionButton: actionButtonModified,
     pendingHashMap,
     wrappingPreview: wrappingPreviewProps,

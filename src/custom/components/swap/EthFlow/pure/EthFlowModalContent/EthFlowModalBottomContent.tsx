@@ -9,15 +9,6 @@ import { ActionButton, ActionButtonProps } from './ActionButton'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { ModalTextContentProps } from '.'
 
-// returns proper prop for visualiser: which currency is shown on left vs right (wrapped vs unwrapped)
-export function _getCurrencyForVisualiser<T>(native: T, wrapped: T, isWrap: boolean, isUnwrap: boolean) {
-  if (isWrap || isUnwrap) {
-    return isWrap ? native : wrapped
-  } else {
-    return native
-  }
-}
-
 export type EthFlowSwapCallbackParams = {
   showConfirm: boolean
   straightSwap?: boolean
@@ -123,7 +114,6 @@ export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionBut
 }
 
 export type BottomContentParams = {
-  isUnwrap: boolean
   buttonText: string
   pendingHashMap: PendingHashMap
 

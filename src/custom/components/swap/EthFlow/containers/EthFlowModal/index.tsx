@@ -313,9 +313,8 @@ export function EthWethWrap({
     }
   }, [isExpertMode, state, isWrapOrUnwrap, operationSubmitted, handleSwap, setApproveSubmitted, setWrapSubmitted])
 
-  const bottomContentParams = useMemo<BottomContentParams>(() => {
+  const bottomContentParams = useMemo<Omit<BottomContentParams, 'buttonText'>>(() => {
     return {
-      isUnwrap,
       actionButton: {
         approveError,
         handleApprove,
@@ -323,13 +322,9 @@ export function EthWethWrap({
         handleSwap,
         handleWrap,
         isExpertMode,
-        isNativeIn: isNativeInSwap,
-        isWrap,
         loading,
-        nativeSymbol,
         state,
         wrapError,
-        wrappedSymbol,
         approveState: approvalDerivedState,
         wrapState: wrapDerivedState,
       },
@@ -346,21 +341,16 @@ export function EthWethWrap({
     approveError,
     approvalDerivedState,
     isExpertMode,
-    isNativeInSwap,
-    isUnwrap,
-    isWrap,
     loading,
     native,
     nativeBalance,
     nativeInput,
-    nativeSymbol,
     pendingHashMap,
     state,
     wrapError,
     wrapDerivedState,
     wrapped,
     wrappedBalance,
-    wrappedSymbol,
     // cbs
     handleApprove,
     handleMountInExpertMode,
