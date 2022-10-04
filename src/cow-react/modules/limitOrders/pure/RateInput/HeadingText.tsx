@@ -1,16 +1,15 @@
 type Props = {
-  atCurrency: string | null
-  perCurrency: string | null
+  currency: string | null
 }
 
-export function HeadingText({ atCurrency, perCurrency }: Props) {
-  if (!atCurrency || !perCurrency) {
+export function HeadingText({ currency }: Props) {
+  if (!currency) {
     return <span>Select input and output</span>
   }
 
   return (
     <span>
-      At <strong>{atCurrency}</strong> per <strong>{perCurrency}</strong>
+      Price per <strong>{currency}</strong>
     </span>
   )
 }

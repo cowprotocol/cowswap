@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from 'cow-react/modules/swap/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
@@ -66,6 +66,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     maxBalance && onUserInputDispatch(maxBalance.toExact())
     setMaxSellTokensAnalytics()
   }, [balance, onUserInputDispatch])
+
+  useEffect(() => {
+    setTypedValue(viewAmount)
+  }, [viewAmount])
 
   return (
     <>

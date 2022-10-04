@@ -5,7 +5,6 @@ import { Field } from 'state/swap/actions'
 
 export interface LimitRateState {
   readonly isLoading: boolean
-  readonly isLocked: boolean
   readonly primaryField: Field
   readonly rateValue: string | number | null
 }
@@ -13,14 +12,13 @@ export interface LimitRateState {
 export interface LimitRateStateManager {
   state: LimitRateState
   setState(state: LimitRateState): void
-  setIsLocked(isLocked: boolean): void
   setPrimaryField(field: Field): void
   setRateValue(rateValue: string | number | null): void
+  updateRate(rateValue: string | number | null): void
 }
 
 const initLimitRateState = () => ({
   isLoading: false,
-  isLocked: false,
   primaryField: Field.INPUT,
   rateValue: null,
 })
@@ -36,13 +34,13 @@ export const useLimitRateStateManager = (): LimitRateStateManager => {
       setState(state: LimitRateState) {
         setState(state)
       },
-      setIsLocked(isLocked: boolean) {
-        setState({ ...state, isLocked })
-      },
       setPrimaryField(primaryField: Field) {
         setState({ ...state, primaryField })
       },
       setRateValue(rateValue: string | number | null) {
+        setState({ ...state, rateValue })
+      },
+      updateRate(rateValue: string | number | null) {
         setState({ ...state, rateValue })
       },
       setIsLoading(isLoading: boolean) {
