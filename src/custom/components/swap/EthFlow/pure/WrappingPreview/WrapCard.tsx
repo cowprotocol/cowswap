@@ -1,8 +1,7 @@
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { formatSmart } from 'utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
+import { formatSmartAmount } from 'utils/format'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -36,11 +35,11 @@ export function WrapCard(props: WrapCardProps) {
       {/* amount to wrap/unwrap */}
       <styledEl.BalanceLabel>
         <strong>
-          {formatSmart(amountToWrap, AMOUNT_PRECISION) || '-'} {symbol}
+          {formatSmartAmount(amountToWrap) || '-'} {symbol}
         </strong>
       </styledEl.BalanceLabel>
       {/* user balance */}
-      <styledEl.BalanceLabel>Balance: {formatSmart(balance, AMOUNT_PRECISION) || '-'}</styledEl.BalanceLabel>
+      <styledEl.BalanceLabel>Balance: {formatSmartAmount(balance) || '-'}</styledEl.BalanceLabel>
     </styledEl.WrapCardWrapper>
   )
 }

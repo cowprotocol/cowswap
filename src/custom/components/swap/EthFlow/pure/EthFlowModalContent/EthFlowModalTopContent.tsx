@@ -18,6 +18,8 @@ const LowBalanceMessage = styled(ModalMessage)`
   color: ${({ theme }) => theme.text2};
   padding: 8px 12px;
   border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
 `
 
 export type BalanceChecks = { isLowBalance: boolean; txsRemaining: string | null } | undefined

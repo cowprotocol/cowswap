@@ -5,53 +5,11 @@ import { EthFlowModalContent } from '.'
 import { EthFlowState } from '../..'
 import { getEthFlowModalContentProps } from '../../mocks'
 
-const ALL_STATES = [
-  EthFlowState.ApproveFailed,
-  EthFlowState.ApproveInsufficient,
-  EthFlowState.ApproveNeeded,
-  EthFlowState.ApprovePending,
-  EthFlowState.Loading,
-  EthFlowState.SwapReady,
-  EthFlowState.WrapAndApproveFailed,
-  EthFlowState.WrapAndApproveNeeded,
-  EthFlowState.WrapAndApprovePending,
-  EthFlowState.WrapNeeded,
-  EthFlowState.WrapUnwrapFailed,
-  EthFlowState.WrapUnwrapPending,
-]
+const ALL_STATES = Object.values(EthFlowState)
 
-const STATE_DESCRIPTIONS = ALL_STATES.map((state) => describeState(state))
+const STATE_DESCRIPTIONS = ALL_STATES.map((state) => state)
 function getStateFromDescription(description: string) {
-  return ALL_STATES.find((state) => describeState(state) === description)
-}
-
-function describeState(state: EthFlowState) {
-  switch (state) {
-    case EthFlowState.ApproveFailed:
-      return 'ApproveFailed'
-    case EthFlowState.ApproveInsufficient:
-      return 'ApproveInsufficient'
-    case EthFlowState.ApproveNeeded:
-      return 'ApproveNeeded'
-    case EthFlowState.ApprovePending:
-      return 'ApprovePending'
-    case EthFlowState.Loading:
-      return 'Loading'
-    case EthFlowState.SwapReady:
-      return 'SwapReady'
-    case EthFlowState.WrapAndApproveFailed:
-      return 'WrapAndApproveFailed'
-    case EthFlowState.WrapAndApproveNeeded:
-      return 'WrapAndApproveNeeded'
-    case EthFlowState.WrapAndApprovePending:
-      return 'WrapAndApprovePending'
-    case EthFlowState.WrapNeeded:
-      return 'WrapNeeded'
-    case EthFlowState.WrapUnwrapFailed:
-      return 'WrapUnwrapFailed'
-    case EthFlowState.WrapUnwrapPending:
-      return 'WrapUnwrapPending'
-  }
+  return ALL_STATES.find((state) => state === description)
 }
 
 function Custom() {
@@ -61,7 +19,7 @@ function Custom() {
 
   const [stateDescription] = useSelect('state', {
     options: STATE_DESCRIPTIONS,
-    defaultValue: describeState(EthFlowState.WrapNeeded),
+    defaultValue: EthFlowState.WrapNeeded,
   })
   const state = getStateFromDescription(stateDescription)
 
@@ -72,8 +30,11 @@ function Custom() {
   const [isWrap] = useValue('isWrap', { defaultValue: false })
   const [approveSubmitted] = useValue('approveSubmitted', { defaultValue: false })
   const [wrapSubmitted] = useValue('wrapSubmitted', { defaultValue: false })
+  const [isLowBalance] = useValue('isLowBalance', { defaultValue: false })
+  const [txsRemaining] = useValue('txsRemaining', { defaultValue: '' })
+  const balanceChecks = { isLowBalance, txsRemaining }
 
-  const { balanceChecks, bottomContentParams, modalTextContent } = getEthFlowModalContentProps({
+  const { bottomContentParams, modalTextContent } = getEthFlowModalContentProps({
     state,
     isWrap,
     isUnwrap,

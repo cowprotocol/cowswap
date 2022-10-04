@@ -1,10 +1,4 @@
-import { EthFlowState } from 'components/swap/EthFlow'
-
-export interface EthFlowContext {
-  isExpertMode: boolean
-  nativeSymbol: string
-  wrappedSymbol: string
-}
+import { EthFlowContext, EthFlowState } from 'components/swap/EthFlow'
 
 export interface EthFlowConfig {
   title: string
