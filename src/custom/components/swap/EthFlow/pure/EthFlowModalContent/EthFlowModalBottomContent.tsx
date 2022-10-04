@@ -43,7 +43,6 @@ export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionBut
     wrapError,
     approveState,
     wrapState,
-    isExpertMode,
     state,
     loading,
     handleSwap,
@@ -54,14 +53,6 @@ export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionBut
 
   // async, pre-receipt errors (e.g user rejected TX)
   const hasErrored = !!(approveError || wrapError)
-
-  const showButton =
-    [
-      EthFlowState.WrapAndApproveFailed,
-      EthFlowState.WrapUnwrapFailed,
-      EthFlowState.ApproveFailed,
-      EthFlowState.ApproveInsufficient,
-    ].includes(state) || !isExpertMode
   let showLoader = loading
   // dynamic props for cta button
   const buttonProps: {
@@ -107,7 +98,6 @@ export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionBut
   }
 
   return {
-    showButton,
     showLoader,
     buttonProps,
   }
@@ -116,17 +106,24 @@ export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionBut
 export type BottomContentParams = {
   buttonText: string
   pendingHashMap: PendingHashMap
-
   actionButton: ActionButtonParams
   wrappingPreview: WrappingPreviewProps
 }
 
 export function EthFlowModalBottomContent(params: BottomContentParams) {
   const { pendingHashMap, actionButton, wrappingPreview, buttonText } = params
-  const { state } = actionButton
+  const { state, isExpertMode } = actionButton
   const { wrappedBalance, wrapped, native, nativeBalance, amount, chainId } = wrappingPreview
 
   const actionButtonProps = _getActionButtonProps(actionButton)
+
+  const showButton =
+    [
+      EthFlowState.WrapAndApproveFailed,
+      EthFlowState.WrapUnwrapFailed,
+      EthFlowState.ApproveFailed,
+      EthFlowState.ApproveInsufficient,
+    ].includes(state) || !isExpertMode
   const showWrapPreview = state !== EthFlowState.SwapReady && state !== EthFlowState.ApproveNeeded
 
   return (
@@ -146,7 +143,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
         confirmedTransactions={[]}
         $margin="12px 0 0"
       />
-      <ActionButton {...actionButtonProps} label={buttonText} />
+      {showButton && <ActionButton {...actionButtonProps} label={buttonText} />}
     </>
   )
 }

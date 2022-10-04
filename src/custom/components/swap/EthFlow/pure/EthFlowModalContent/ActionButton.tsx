@@ -17,7 +17,6 @@ const ButtonWrapper = styled.div`
 
 export interface ActionButtonProps {
   label: string
-  showButton: boolean
   showLoader: boolean
   buttonProps: {
     disabled: boolean
@@ -26,9 +25,8 @@ export interface ActionButtonProps {
 }
 
 export function ActionButton(props: ActionButtonProps) {
-  const { showButton, showLoader, buttonProps, label } = props
+  const { showLoader, buttonProps, label } = props
 
-  if (!showButton) return null
   return (
     <ButtonWrapper>
       <ButtonPrimary padding="0.5rem" maxWidth="70%" {...buttonProps}>
