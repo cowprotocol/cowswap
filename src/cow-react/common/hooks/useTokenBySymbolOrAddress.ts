@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
-import { useAllTokensList } from 'cow-react/common/hooks/useAllTokensList'
+import { useAllTokensList } from '@src/cow-react/common/hooks/useAllTokensList'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | null {
   const tokens = useAllTokensList()

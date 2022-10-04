@@ -1,6 +1,6 @@
 import { isAddress } from 'utils'
 import { useCallback } from 'react'
-import { useAllTokensList } from 'cow-react/common/hooks/useAllTokensList'
+import { useAllTokensList } from '@cow/common/hooks/useAllTokensList'
 
 export function useAreThereTokensWithSameSymbol(): (tokenAddressOrSymbol: string | null | undefined) => boolean {
   const allTokens = useAllTokensList()

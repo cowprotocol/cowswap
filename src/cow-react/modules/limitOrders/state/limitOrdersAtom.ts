@@ -2,7 +2,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { atom } from 'jotai'
-import { TRADE_DEADLINE_DEFAULT } from 'cow-react/modules/limitOrders/const/trade'
+import { TRADE_DEADLINE_DEFAULT } from '@cow/modules/limitOrders/const/trade'
 
 export interface LimitOrdersState {
   readonly chainId: number | null

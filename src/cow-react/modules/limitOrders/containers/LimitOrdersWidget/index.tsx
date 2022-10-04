@@ -9,24 +9,22 @@ import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { Field } from 'state/swap/actions'
 import { ButtonSize } from 'theme'
-import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useWeb3React } from '@web3-react/core'
-import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/useSetupLimitOrdersState'
-import { limitOrdersAtom, updateLimitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
-import { useOnCurrencySelection } from 'cow-react/modules/limitOrders/hooks/useOnCurrencySelection'
-import { useResetStateWithSymbolDuplication } from 'cow-react/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
-import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useSetupLimitOrdersState } from '@cow/modules/limitOrders/hooks/useSetupLimitOrdersState'
+import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
+import { useResetStateWithSymbolDuplication } from '@cow/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
+import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
-import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
-import { limitOrdersQuoteAtom } from 'cow-react/modules/limitOrders/state/limitOrdersQuoteAtom'
-import { useParameterizeLimitOrdersInMenu } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersInMenu'
+import { useTradeFlowContext } from '@cow/modules/limitOrders/hooks/useTradeFlowContext'
+import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
   useResetStateWithSymbolDuplication()
-  useParameterizeLimitOrdersInMenu()
 
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =

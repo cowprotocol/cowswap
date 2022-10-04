@@ -1,11 +1,11 @@
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
 import { useSetAtom } from 'jotai'
-import { mainMenuUrlOverridesAtom } from 'cow-react/modules/mainMenu/state/mainMenuUrlOverridesAtom'
-import { MainMenuItemId } from 'cow-react/modules/mainMenu/constants/mainMenu'
+import { mainMenuUrlOverridesAtom } from '@cow/modules/mainMenu/state/mainMenuUrlOverridesAtom'
+import { MainMenuItemId } from '@cow/modules/mainMenu/constants/mainMenu'
 
 export function useParameterizeLimitOrdersInMenu() {
   const { chainId } = useWeb3React()

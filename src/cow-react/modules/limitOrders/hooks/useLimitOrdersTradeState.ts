@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useMemo } from 'react'
-import { useTokenBySymbolOrAddress } from 'cow-react/common/hooks/useTokenBySymbolOrAddress'
+import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null

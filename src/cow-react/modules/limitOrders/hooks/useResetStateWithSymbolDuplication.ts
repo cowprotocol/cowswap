@@ -2,10 +2,10 @@ import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
-import { getDefaultLimitOrdersState, limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
-import { useAreThereTokensWithSameSymbol } from 'cow-react/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
+import { getDefaultLimitOrdersState, limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
 import { useAtomValue } from 'jotai/utils'
-import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 const alertMessage = (
   doubledSymbol: string

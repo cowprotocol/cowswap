@@ -32,7 +32,7 @@ import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
-import { LIMIT_ORDERS_PATH } from 'constants/routes'
+import { LIMIT_ORDERS_PATH } from '@cow/constants/routes'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;

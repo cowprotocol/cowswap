@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { parameterizeLimitOrdersRoute } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersInMenu'
+import { parameterizeLimitOrdersRoute } from '@cow/modules/limitOrders/hooks/useParameterizeLimitOrdersInMenu'
 import { useHistory } from 'react-router-dom'
 import { useCallback } from 'react'
 

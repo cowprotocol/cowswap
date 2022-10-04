@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
-import { limitOrdersQuoteAtom } from 'cow-react/modules/limitOrders/state/limitOrdersQuoteAtom'
-import { getQuote } from 'api/gnosisProtocol'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useEffect } from 'react'
-import { useQuoteRequestParams } from 'cow-react/modules/limitOrders/containers/QuoteResolver/hooks/useQuoteRequestParams'
+import { useQuoteRequestParams } from '@cow/modules/limitOrders/containers/QuoteResolver/hooks/useQuoteRequestParams'
+import { getQuote } from '@cow/api/gnosisProtocol'
 
 export const QuoteResolver = () => {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)

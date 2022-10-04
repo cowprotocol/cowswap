@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { Settings } from 'react-feather'
-import { RemoveRecipient } from 'cow-react/modules/swap/containers/RemoveRecipient'
+import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 
 export const Container = styled.div`
   // max-width: 460px;

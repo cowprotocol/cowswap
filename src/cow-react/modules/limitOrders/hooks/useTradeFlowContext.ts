@@ -1,7 +1,7 @@
-import { TradeFlowContext } from 'cow-react/modules/limitOrders/services/tradeFlow'
+import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
-import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { Token } from '@uniswap/sdk-core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
@@ -9,7 +9,7 @@ import { useGP2SettlementContract } from 'hooks/useContract'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
 import { useAppData } from 'hooks/useAppData'
-import { LIMIT_ORDER_SLIPPAGE } from 'cow-react/modules/limitOrders/const/trade'
+import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 // TODO: set proper values (+ENS name)

@@ -1,4 +1,4 @@
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { DUNE_DASHBOARD_LINK, CONTRACTS_CODE_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
 
 // Assets

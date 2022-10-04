@@ -1,6 +1,6 @@
-import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useWeb3React } from '@web3-react/core'
-import { LegacyFeeQuoteParams as FeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/contracts'
 import { Token } from '@uniswap/sdk-core'
 import { parseUnits } from '@ethersproject/units'

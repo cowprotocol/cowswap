@@ -1,6 +1,6 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
-import { getDefaultLimitOrdersState, LimitOrdersState } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { getDefaultLimitOrdersState, LimitOrdersState } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useWeb3React } from '@web3-react/core'
 
 interface LimitOrdersStateFromUrl {

@@ -2,9 +2,9 @@ import { useCallback } from 'react'
 import { Field } from 'state/swap/actions'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Token } from '@uniswap/sdk-core'
-import { useAreThereTokensWithSameSymbol } from 'cow-react/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
-import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useLimitOrdersNavigate } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
