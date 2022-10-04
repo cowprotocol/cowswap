@@ -5,6 +5,8 @@ import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 import { parameterizeLimitOrdersRoute } from '@src/cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
 import { useHistory } from 'react-router-dom'
+import { useApplyLimitRate } from '../hooks/useApplyLimitRate'
+import { Field } from 'state/swap/actions'
 
 export interface LimitOrdersState {
   readonly chainId: number | null
@@ -43,6 +45,7 @@ export const limitOrdersAtom = atomWithStorage<LimitOrdersState>('limit-orders-a
 
 export const useLimitOrdersStateManager = (): LimitOrdersStateManager => {
   const history = useHistory()
+  const applyLimitRate = useApplyLimitRate()
   const [state, setState] = useAtom(limitOrdersAtom)
 
   return useMemo(() => {
@@ -52,10 +55,16 @@ export const useLimitOrdersStateManager = (): LimitOrdersStateManager => {
         setState(state)
       },
       setInputCurrencyAmount(inputCurrencyAmount: string | null) {
-        setState({ ...state, inputCurrencyAmount })
+        const newState = { ...state, inputCurrencyAmount }
+        const outputWithRate = applyLimitRate(inputCurrencyAmount, Field.INPUT)
+        if (outputWithRate) newState.outputCurrencyAmount = outputWithRate
+        setState(newState)
       },
       setOutputCurrencyAmount(outputCurrencyAmount: string | null) {
-        setState({ ...state, outputCurrencyAmount })
+        const newState = { ...state, outputCurrencyAmount }
+        const inputWithRate = applyLimitRate(outputCurrencyAmount, Field.OUTPUT)
+        if (inputWithRate) newState.inputCurrencyAmount = inputWithRate
+        setState(newState)
       },
       setRecipient(recipient: string | null) {
         setState({ ...state, recipient })
@@ -70,5 +79,5 @@ export const useLimitOrdersStateManager = (): LimitOrdersStateManager => {
         history.push(route)
       },
     }
-  }, [history, state, setState])
+  }, [state, setState, applyLimitRate, history])
 }

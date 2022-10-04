@@ -3,24 +3,33 @@ import { useAtom } from 'jotai'
 
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
-import { limitOrdersAtom } from '../state/limitOrdersAtom'
 
 export function useApplyLimitRate() {
   const [rateState] = useAtom(limitRateAtom)
-  const [limitState, setLimitState] = useAtom(limitOrdersAtom)
+  const { activeRate, isInversed } = rateState
 
   return useCallback(
-    ({ rateValue = rateState.rateValue, inputValue = limitState.inputCurrencyAmount }): void | null => {
-      if (!rateValue) {
+    (value: string | null, field: Field): string | null => {
+      if (!activeRate || !value) {
         return null
       }
 
-      const outputCurrencyAmount = String(
-        rateState.primaryField === Field.INPUT ? inputValue * rateValue : inputValue / rateValue
-      )
+      let output
 
-      setLimitState((c) => ({ ...c, outputCurrencyAmount }))
+      if (isInversed) {
+        field = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
+      }
+
+      if (field === Field.INPUT) {
+        output = Number(value) * activeRate
+      }
+
+      if (field === Field.OUTPUT) {
+        output = Number(value) / activeRate
+      }
+
+      return String(output)
     },
-    [limitState, rateState.primaryField, rateState.rateValue, setLimitState]
+    [activeRate, isInversed]
   )
 }

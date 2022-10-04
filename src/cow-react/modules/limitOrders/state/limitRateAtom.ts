@@ -1,29 +1,29 @@
 import { useMemo } from 'react'
-import { atomWithStorage } from 'jotai/utils'
-import { useAtom } from 'jotai'
-import { Field } from 'state/swap/actions'
+import { useAtom, atom } from 'jotai'
 
 export interface LimitRateState {
   readonly isLoading: boolean
-  readonly primaryField: Field
-  readonly rateValue: string | number | null
+  readonly isInversed: boolean
+  readonly activeRate: number | null
+  readonly marketRate: number | null
 }
 
 export interface LimitRateStateManager {
   state: LimitRateState
   setState(state: LimitRateState): void
-  setPrimaryField(field: Field): void
-  setRateValue(rateValue: string | number | null): void
-  updateRate(rateValue: string | number | null): void
+  setIsInversed(isInversed: boolean, activeRate: number | null): void
+  setActiveRate(value: number | null): void
+  setMarketRate(value: number | null): void
 }
 
 const initLimitRateState = () => ({
+  isInversed: false,
   isLoading: false,
-  primaryField: Field.INPUT,
-  rateValue: null,
+  activeRate: null,
+  marketRate: null,
 })
 
-export const limitRateAtom = atomWithStorage<LimitRateState>('limit-rate-state', initLimitRateState())
+export const limitRateAtom = atom<LimitRateState>(initLimitRateState())
 
 export const useLimitRateStateManager = (): LimitRateStateManager => {
   const [state, setState] = useAtom(limitRateAtom)
@@ -34,14 +34,14 @@ export const useLimitRateStateManager = (): LimitRateStateManager => {
       setState(state: LimitRateState) {
         setState(state)
       },
-      setPrimaryField(primaryField: Field) {
-        setState({ ...state, primaryField })
+      setIsInversed(isInversed: boolean, activeRate: number | null) {
+        setState({ ...state, isInversed, activeRate })
       },
-      setRateValue(rateValue: string | number | null) {
-        setState({ ...state, rateValue })
+      setActiveRate(activeRate: number | null) {
+        setState({ ...state, activeRate })
       },
-      updateRate(rateValue: string | number | null) {
-        setState({ ...state, rateValue })
+      setMarketRate(marketRate: number | null) {
+        setState({ ...state, marketRate })
       },
       setIsLoading(isLoading: boolean) {
         setState({ ...state, isLoading })
