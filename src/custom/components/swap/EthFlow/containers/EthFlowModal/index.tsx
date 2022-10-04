@@ -370,6 +370,8 @@ export function EthWethWrap({
     handleWrap,
   ])
 
+  console.log('***** ETH FLOW MODAL RENDER')
+
   return (
     <EthFlowModalContent
       balanceChecks={balanceChecks}

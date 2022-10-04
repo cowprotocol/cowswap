@@ -67,13 +67,6 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
-      <styledEl.SwapButtonBox>
-        <Trans>Wrap and swap</Trans>
-      </styledEl.SwapButtonBox>
-    </ButtonError>
-  ),
   [SwapButtonState.FeesExceedFromAmount]: () => <styledEl.FeesExceedFromAmountMessage />,
   [SwapButtonState.InsufficientLiquidity]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
