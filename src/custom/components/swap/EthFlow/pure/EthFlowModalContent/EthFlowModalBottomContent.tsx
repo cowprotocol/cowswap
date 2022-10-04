@@ -37,9 +37,7 @@ export type ActionButtonParams = Pick<
   DerivedEthFlowStateProps,
   'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'
 > &
-  Pick<ModalTextContentProps, 'nativeSymbol' | 'wrappedSymbol' | 'state'> & {
-    isWrap: boolean
-    isNativeIn: boolean
+  Pick<ModalTextContentProps, 'state'> & {
     loading: boolean
     handleSwap: ({ showConfirm, straightSwap }: EthFlowSwapCallbackParams) => Promise<void>
     handleApprove: () => Promise<void>
@@ -48,18 +46,14 @@ export type ActionButtonParams = Pick<
   }
 
 // conditionally renders the correct action button depending on the proposed action and current eth-flow state
-export function _getActionButtonProps(props: ActionButtonParams): ActionButtonProps {
+export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionButtonProps, 'label'> {
   const {
     approveError,
     wrapError,
     approveState,
     wrapState,
-    isNativeIn,
-    nativeSymbol,
-    wrappedSymbol,
     isExpertMode,
     state,
-    isWrap,
     loading,
     handleSwap,
     handleWrap,
@@ -70,8 +64,13 @@ export function _getActionButtonProps(props: ActionButtonParams): ActionButtonPr
   // async, pre-receipt errors (e.g user rejected TX)
   const hasErrored = !!(approveError || wrapError)
 
-  let label = ''
-  let showButton = !isExpertMode
+  const showButton =
+    [
+      EthFlowState.WrapAndApproveFailed,
+      EthFlowState.WrapUnwrapFailed,
+      EthFlowState.ApproveFailed,
+      EthFlowState.ApproveInsufficient,
+    ].includes(state) || !isExpertMode
   let showLoader = loading
   // dynamic props for cta button
   const buttonProps: {
@@ -85,40 +84,27 @@ export function _getActionButtonProps(props: ActionButtonParams): ActionButtonPr
   switch (state) {
     // an operation has failed after submitting
     case EthFlowState.WrapAndApproveFailed:
-      label = 'Wrap and approve'
-      showButton = true
       buttonProps.onClick = handleMountInExpertMode
       // disable button on load (after clicking)
       buttonProps.disabled = showLoader
       break
     case EthFlowState.WrapUnwrapFailed:
-      label = isNativeIn ? `Wrap ${nativeSymbol}` : `Unwrap ${wrappedSymbol}`
-      showButton = true
       buttonProps.onClick = handleWrap
       break
     case EthFlowState.ApproveFailed:
-      label = `Approve ${wrappedSymbol}`
-      showButton = true
       buttonProps.onClick = handleApprove
       break
     // non failures
     case EthFlowState.WrapNeeded:
-      label = isNativeIn || isWrap ? 'Wrap ' + nativeSymbol : 'Unwrap ' + wrappedSymbol
       buttonProps.onClick = handleWrap
       buttonProps.disabled = Boolean(wrapState?.isPending)
       break
     case EthFlowState.ApproveNeeded:
     case EthFlowState.ApproveInsufficient:
-      label = 'Approve ' + wrappedSymbol
-      // Show button if approve insufficient (applies to expertMode)
-      if (state === EthFlowState.ApproveInsufficient) {
-        showButton = true
-      }
       buttonProps.onClick = handleApprove
       buttonProps.disabled = Boolean(approveState?.isPending)
       break
     case EthFlowState.SwapReady:
-      label = 'Swap'
       buttonProps.onClick = () => handleSwap({ showConfirm: true })
       buttonProps.disabled = loading || hasErrored
       break
@@ -130,7 +116,6 @@ export function _getActionButtonProps(props: ActionButtonParams): ActionButtonPr
   }
 
   return {
-    label,
     showButton,
     showLoader,
     buttonProps,
@@ -139,6 +124,7 @@ export function _getActionButtonProps(props: ActionButtonParams): ActionButtonPr
 
 export type BottomContentParams = {
   isUnwrap: boolean
+  buttonText: string
   pendingHashMap: PendingHashMap
 
   actionButton: ActionButtonParams
@@ -146,8 +132,8 @@ export type BottomContentParams = {
 }
 
 export function EthFlowModalBottomContent(params: BottomContentParams) {
-  const { isUnwrap, pendingHashMap, actionButton, wrappingPreview } = params
-  const { state, isWrap } = actionButton
+  const { pendingHashMap, actionButton, wrappingPreview, buttonText } = params
+  const { state } = actionButton
   const { wrappedBalance, wrapped, native, nativeBalance, amount, chainId } = wrappingPreview
 
   const actionButtonProps = _getActionButtonProps(actionButton)
@@ -157,10 +143,10 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     <>
       {showWrapPreview && (
         <WrappingPreview
-          native={_getCurrencyForVisualiser(native, wrapped, isWrap, isUnwrap)}
-          nativeBalance={_getCurrencyForVisualiser(nativeBalance, wrappedBalance, isWrap, isUnwrap)}
-          wrapped={_getCurrencyForVisualiser(wrapped, native, isWrap, isUnwrap)}
-          wrappedBalance={_getCurrencyForVisualiser(wrappedBalance, nativeBalance, isWrap, isUnwrap)}
+          native={native}
+          nativeBalance={nativeBalance}
+          wrapped={wrapped}
+          wrappedBalance={wrappedBalance}
           amount={amount}
           chainId={chainId}
         />
@@ -170,7 +156,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
         confirmedTransactions={[]}
         $margin="12px 0 0"
       />
-      <ActionButton {...actionButtonProps} />
+      <ActionButton {...actionButtonProps} label={buttonText} />
     </>
   )
 }

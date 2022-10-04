@@ -1,12 +1,12 @@
 import styled from 'styled-components/macro'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { BottomContentParams, EthFlowModalBottomContent } from './EthFlowModalBottomContent'
 
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import { BalanceChecks, EthFlowModalTopContent } from './EthFlowModalTopContent'
 import { EthFlowState } from '../..'
-import { EthFlowConfig, ethFlowConfigs } from 'components/swap/EthFlow/pure/EthFlowModalContent/configs'
+import { ethFlowConfigs } from 'components/swap/EthFlow/pure/EthFlowModalContent/configs'
 
 const EthFlowModalLayout = styled(ConfirmationModalContent)`
   padding: 22px;
@@ -22,13 +22,6 @@ export type ModalTextContentProps = {
   approveSubmitted: boolean
 }
 
-// returns modal content: header and descriptions based on state
-export function _getModalTextContent(params: ModalTextContentProps): EthFlowConfig {
-  const { wrappedSymbol, nativeSymbol, state, isExpertMode } = params
-
-  return ethFlowConfigs[state]({ isExpertMode, nativeSymbol, wrappedSymbol })
-}
-
 export interface EthFlowModalContentProps {
   balanceChecks: BalanceChecks
   modalTextContent: ModalTextContentProps
@@ -38,9 +31,9 @@ export interface EthFlowModalContentProps {
 
 export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const { modalTextContent, balanceChecks, bottomContentParams, onDismiss } = props
-  const { nativeSymbol, state } = modalTextContent
+  const { nativeSymbol, state, isExpertMode, wrappedSymbol } = modalTextContent
 
-  const { title, descriptions } = useMemo(() => _getModalTextContent(modalTextContent), [modalTextContent])
+  const { title, descriptions, buttonText } = ethFlowConfigs[state]({ isExpertMode, nativeSymbol, wrappedSymbol })
 
   const TopModalContent = useCallback(
     () => (
@@ -55,8 +48,8 @@ export function EthFlowModalContent(props: EthFlowModalContentProps) {
   )
 
   const BottomModalContent = useCallback(() => {
-    return <EthFlowModalBottomContent {...bottomContentParams} />
-  }, [bottomContentParams])
+    return <EthFlowModalBottomContent {...bottomContentParams} buttonText={buttonText} />
+  }, [bottomContentParams, buttonText])
 
   return (
     <EthFlowModalLayout
