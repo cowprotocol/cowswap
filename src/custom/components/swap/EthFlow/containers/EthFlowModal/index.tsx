@@ -288,9 +288,6 @@ export function EthWethWrap({
   useEffect(() => {
     if (isExpertMode) {
       handleMountInExpertMode()
-    } else if (isWrapOrUnwrap) {
-      // is a pure wrap/unwrap, just start the tx
-      handleWrap()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

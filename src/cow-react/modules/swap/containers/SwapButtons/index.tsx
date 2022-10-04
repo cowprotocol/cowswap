@@ -24,7 +24,8 @@ export interface SwapButtonsContext {
   approveButtonProps: ApproveButtonsProps
   wrapUnwrapAmount: CurrencyAmount<Currency> | undefined
   wrapInputError: string | undefined
-  onWrap: () => void
+  onWrapOrUnwrap: () => void
+  onEthFlow: () => void
   openSwapConfirm: () => void
   toggleWalletModal: () => void
   hasEnoughWrappedBalanceForSwap: boolean
@@ -50,24 +51,24 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonPrimary>
   ),
   [SwapButtonState.ShouldWrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary onClick={props.onWrapOrUnwrap} buttonSize={ButtonSize.BIG}>
       <Trans>Wrap</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.ShouldUnwrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary onClick={props.onWrapOrUnwrap} buttonSize={ButtonSize.BIG}>
       <Trans>Unwrap</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
       <styledEl.SwapButtonBox>
         <Trans>Swap with {props.wrappedToken.symbol}</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
   [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
       <styledEl.SwapButtonBox>
         <Trans>Wrap and swap</Trans>
       </styledEl.SwapButtonBox>
