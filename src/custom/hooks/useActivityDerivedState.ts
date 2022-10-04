@@ -1,6 +1,6 @@
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { useMemo } from 'react'
-import { getSafeWebUrl } from 'api/gnosisSafe'
+import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Order } from 'state/orders/actions'

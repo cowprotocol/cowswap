@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { useHistory } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
@@ -33,7 +33,7 @@ import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
-import { toggleDarkModeAnalytics } from 'utils/analytics'
+import { toggleDarkModeAnalytics } from 'components/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',

@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
 import { Trans } from '@lingui/macro'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { StyledInternalLink } from 'theme/components'
 
 // export * from '@src/components/WalletModal'

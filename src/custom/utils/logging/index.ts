@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
-import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
-import QuoteError from 'api/gnosisProtocol/errors/QuoteError'
+import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
+import QuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 
 type SentryErrorOptions = {
   message: string

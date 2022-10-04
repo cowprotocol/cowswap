@@ -5,11 +5,11 @@ import { ThemedText } from 'theme'
 
 import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
-import { StyledInfo } from 'pages/Swap/styleds'
+import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
-import { LightGreyText } from 'cow-react/swap/dumb/styled'
+import { LightGreyText } from '@cow/modules/swap/pure/styled'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'

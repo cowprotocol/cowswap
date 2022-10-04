@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { getSafeTransaction } from 'api/gnosisSafe'
+import { getSafeTransaction } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { retry, RetryOptions } from 'utils/retry'
 import { RetryResult } from '../types'

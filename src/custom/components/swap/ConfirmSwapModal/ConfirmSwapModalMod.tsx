@@ -16,7 +16,7 @@ import SwapModalHeader from 'components/swap/SwapModalHeader'
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { SwapConfirmState } from 'cow-react/swap/state/swapConfirmAtom'
+import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it

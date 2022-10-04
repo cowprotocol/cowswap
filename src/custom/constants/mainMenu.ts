@@ -1,4 +1,4 @@
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { DUNE_DASHBOARD_LINK, CONTRACTS_CODE_LINK, DOCS_LINK, DISCORD_LINK, TWITTER_LINK } from 'constants/index'
 
 // Assets
@@ -63,7 +63,6 @@ export const ACCOUNT_MENU: InternalLink[] = [
 
 export const MAIN_MENU: MenuTreeItem[] = [
   { title: 'Swap', url: Routes.SWAP },
-  { title: 'Limit orders', url: Routes.LIMIT_ORDER },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
@@ -115,6 +114,6 @@ export const MAIN_MENU: MenuTreeItem[] = [
   },
 ]
 
-if (localStorage.getItem('enableNewSwap')) {
-  MAIN_MENU.splice(1, 0, { title: 'New Swap', url: Routes.NEW_SWAP })
+if (localStorage.getItem('enableLimitOrders')) {
+  MAIN_MENU.splice(1, 0, { title: 'Limit orders', url: Routes.LIMIT_ORDER })
 }

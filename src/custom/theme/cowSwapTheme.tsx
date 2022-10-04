@@ -11,7 +11,7 @@ import {
 
 import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { useLocation } from 'react-router-dom'
 
 export { MEDIA_WIDTHS, ThemedText } from '@src/theme'
@@ -56,7 +56,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const themeObject = useMemo(() => {
     // Page background must be blurred for all pages besides Swap page
     const shouldBlurBackground =
-      location.pathname.length > 1 && !([Routes.SWAP, Routes.NEW_SWAP] as string[]).includes(location.pathname)
+      location.pathname.length > 1 && !([Routes.SWAP] as string[]).includes(location.pathname)
 
     return theme(darkMode, shouldBlurBackground)
   }, [darkMode, location.pathname])

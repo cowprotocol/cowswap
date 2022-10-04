@@ -14,7 +14,7 @@ import { isL2ChainId } from 'utils/chains'
 
 import Circle from 'assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { TransactionSummary } from 'components/AccountDetails/TransactionSummary'
 import { /* ButtonLight */ ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
@@ -34,6 +34,7 @@ import {
 } from '.'
 import { SupportedChainId } from 'constants/chains'
 import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
+import { getEtherscanLink as getExplorerLink } from 'utils'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -344,7 +345,7 @@ function L2Content({
             {transaction ? <TransactionSummary info={transaction.info} /> : pendingText}
           </Text>
           {chainId && hash ? (
-            <ExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}>
+            <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
                 <Trans>View on Explorer</Trans>
               </Text>
