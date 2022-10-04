@@ -11,8 +11,8 @@ import {
 import { EthFlowModalContentProps, ModalTextContentProps } from './pure/EthFlowModalContent'
 import { EthFlowState } from './typings'
 
-const native = nativeOnChain(SupportedChainId.MAINNET)
-const wrapped = WETH[SupportedChainId.MAINNET]
+const native = nativeOnChain(SupportedChainId.GOERLI)
+const wrapped = WETH[SupportedChainId.GOERLI]
 const nativeInput = CurrencyAmount.fromRawAmount(native, 5.987654 * 10 ** 18)
 const nativeBalance = CurrencyAmount.fromRawAmount(native, 15.12123 * 10 ** 18)
 const wrappedBalance = CurrencyAmount.fromRawAmount(wrapped, 15.12123 * 10 ** 18)

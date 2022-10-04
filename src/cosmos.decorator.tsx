@@ -6,9 +6,9 @@ import styled from 'styled-components/macro'
 import ThemeProvider from 'theme'
 import { LanguageProvider } from 'i18n'
 import { HashRouter } from 'react-router-dom'
-import { initializeConnector, Web3ReactProvider } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
+import { Web3ReactProvider } from '@web3-react/core'
 import { BlockNumberProvider } from '@src/lib/hooks/useBlockNumber'
+import { injectedConnection } from 'connection'
 
 const Wrapper = styled(Flex)`
   font-family: 'Inter var', sans-serif;
@@ -24,7 +24,7 @@ const WidthWrapper = styled.div`
 
 const chainId = 5
 
-const [connector, hooks] = initializeConnector((actions) => new MetaMask({ actions }))
+const { connector, hooks } = injectedConnection
 connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {
