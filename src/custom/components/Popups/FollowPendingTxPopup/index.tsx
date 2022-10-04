@@ -13,7 +13,7 @@ import {
   handleCloseOrderPopupAtom,
 } from 'state/application/atoms'
 import FollowPendingTxPopupUI from './FollowPendingTxPopupUI'
-import { OrderID } from 'api/gnosisProtocol'
+import { OrderID } from '@cow/api/gnosisProtocol'
 
 export function useLastPendingOrder(): { lastPendingOrder: AddedOrder | null; onClose: () => void } {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)

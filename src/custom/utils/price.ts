@@ -3,17 +3,20 @@ import BigNumberJs from 'bignumber.js'
 import * as Sentry from '@sentry/browser'
 import { Percent } from '@uniswap/sdk-core'
 
-import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp } from 'api/gnosisProtocol'
-import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp } from '@cow/api/gnosisProtocol'
+import GpQuoteError, { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { formatAtoms } from 'utils/format'
 import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
-import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
+import {
+  getPriceQuote as getPriceQuoteParaswap,
+  toPriceInformation as toPriceInformationParaswap,
+} from '@cow/api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
   MatchaPriceQuote,
   toPriceInformation as toPriceInformationMatcha,
-} from 'api/matcha-0x'
+} from '@cow/api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
 import { OrderKind } from '@cowprotocol/contracts'
@@ -25,7 +28,7 @@ import {
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
-} from 'api/gnosisProtocol/legacy/types'
+} from '@cow/api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
 import useSWR, { SWRConfiguration } from 'swr'
 import { getUsdQuoteValidTo } from 'hooks/useStablecoinPrice'

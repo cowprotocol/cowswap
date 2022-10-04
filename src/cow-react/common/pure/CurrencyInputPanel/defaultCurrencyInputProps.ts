@@ -1,4 +1,4 @@
-import { CurrencyInputPanelProps } from 'cow-react/common/pure/CurrencyInputPanel/index'
+import { CurrencyInputPanelProps } from '@cow/common/pure/CurrencyInputPanel/index'
 import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { COW } from 'constants/tokens'
