@@ -36,6 +36,10 @@ export type BottomContentParams = {
 
 export function EthFlowModalBottomContent(params: BottomContentParams) {
   const { state, buttonText, isExpertMode, ethFlowContext, ethFlowActions, wrappingPreview } = params
+  const {
+    approve: { txStatus: approveTxStatus, txHash: approveTxHash },
+    wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
+  } = ethFlowContext
 
   const showButton =
     [
@@ -51,25 +55,18 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
   }, [state, ethFlowActions])
 
   const showLoader = useMemo(() => {
-    const approveInProgress =
-      ethFlowContext.approve.txStatus !== null
-        ? ethFlowContext.approve.txStatus === ActivityStatus.PENDING
-        : !!ethFlowContext.approve.txHash
-
-    const wrapInProgress =
-      ethFlowContext.wrap.txStatus !== null
-        ? ethFlowContext.wrap.txStatus === ActivityStatus.PENDING
-        : !!ethFlowContext.wrap.txHash
+    const approveInProgress = approveTxStatus !== null ? approveTxStatus === ActivityStatus.PENDING : !!approveTxHash
+    const wrapInProgress = wrapTxStatus !== null ? wrapTxStatus === ActivityStatus.PENDING : !!wrapTxHash
 
     return approveInProgress || wrapInProgress
-  }, [ethFlowContext])
+  }, [approveTxStatus, approveTxHash, wrapTxStatus, wrapTxHash])
 
   const pendingTransactions = useMemo(() => {
     const hashes = []
-    if (ethFlowContext.wrap.txHash) hashes.push(ethFlowContext.wrap.txHash)
-    if (ethFlowContext.approve.txHash) hashes.push(ethFlowContext.approve.txHash)
+    if (approveTxHash) hashes.push(approveTxHash)
+    if (wrapTxHash) hashes.push(wrapTxHash)
     return hashes
-  }, [ethFlowContext])
+  }, [approveTxHash, wrapTxHash])
 
   return (
     <>

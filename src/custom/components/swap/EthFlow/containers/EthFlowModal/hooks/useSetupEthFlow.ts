@@ -66,9 +66,20 @@ export function useSetupEthFlow({
   useEffect(() => {
     if (isExpertMode && isContextInited && !isExpertModeRunning) {
       setExpertModeRunning(true)
-      ethFlowActions.expertModeFlow()
+      if (hasEnoughWrappedBalanceForSwap) {
+        ethFlowActions.directSwap()
+      } else {
+        ethFlowActions.expertModeFlow()
+      }
     }
-  }, [ethFlowActions, isExpertMode, isContextInited, isExpertModeRunning, setExpertModeRunning])
+  }, [
+    hasEnoughWrappedBalanceForSwap,
+    ethFlowActions,
+    isExpertMode,
+    isContextInited,
+    isExpertModeRunning,
+    setExpertModeRunning,
+  ])
 
   // Open swap confirmation modal when Expert mode flow finished
   useEffect(() => {

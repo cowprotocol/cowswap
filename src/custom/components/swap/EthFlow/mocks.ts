@@ -27,15 +27,23 @@ export const wrappingPreviewProps: WrappingPreviewProps = {
 
 const ethFlowActionsMock: EthFlowActions = {
   approve(): Promise<void> {
+    console.log('ETH FLOW: APPROVE')
     return Promise.resolve(undefined)
   },
   expertModeFlow(): Promise<void> {
+    console.log('ETH FLOW: EXPERT MODE FLOW')
     return Promise.resolve(undefined)
   },
   swap(): void {
+    console.log('ETH FLOW: SWAP')
+    return
+  },
+  directSwap(): void {
+    console.log('ETH FLOW: DIRECT SWAP')
     return
   },
   wrap(): Promise<void> {
+    console.log('ETH FLOW: WRAP')
     return Promise.resolve(undefined)
   },
 }

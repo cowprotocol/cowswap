@@ -145,6 +145,7 @@ export function NewSwapWidget() {
     onDismiss: dismissNativeWrapModal,
     wrapCallback: swapButtonContext.onWrapOrUnwrap,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,
+    directSwapCallback: swapButtonContext.handleSwap,
     hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
   }
 

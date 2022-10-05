@@ -16,6 +16,7 @@ import { WrappingPreviewProps } from '../../pure/WrappingPreview'
 import { useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
+import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
@@ -23,6 +24,7 @@ export interface EthFlowProps {
   approvalState: ApprovalState
   wrapCallback: WrapUnwrapCallback | null
   approveCallback: ApproveCallback
+  directSwapCallback: HandleSwapCallback
   onDismiss: () => void
 }
 
@@ -32,6 +34,7 @@ function EthFlow({
   onDismiss,
   wrapCallback,
   approveCallback,
+  directSwapCallback,
   hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
@@ -43,6 +46,7 @@ function EthFlow({
     wrap: wrapCallback,
     approve: approveCallback,
     dismiss: onDismiss,
+    directSwap: directSwapCallback,
   })
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })

@@ -265,6 +265,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
             hasEnoughWrappedBalanceForSwap={swapButtonsContext.hasEnoughWrappedBalanceForSwap}
             onDismiss={dismissNativeWrapModal}
             wrapCallback={swapButtonsContext.onWrapOrUnwrap}
+            directSwapCallback={swapButtonsContext.handleSwap}
             approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
           />
         )}

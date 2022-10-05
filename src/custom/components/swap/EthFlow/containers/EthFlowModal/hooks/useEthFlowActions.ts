@@ -9,10 +9,12 @@ import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfi
 import { useWeb3React } from '@web3-react/core'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { ApproveCallback } from 'hooks/useApproveCallback'
+import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 
 export interface EthFlowActionCallbacks {
   approve: ApproveCallback
   wrap: WrapUnwrapCallback | null
+  directSwap: HandleSwapCallback
   dismiss: () => void
 }
 
@@ -21,6 +23,7 @@ export interface EthFlowActions {
   approve(): void
   wrap(): void
   swap(): void
+  directSwap(): void
 }
 
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
@@ -83,11 +86,20 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       Promise.all([isApproveNeeded ? approve() : undefined, isWrapNeeded ? wrap() : undefined])
     }
 
+    const directSwap = () => {
+      if (!chainId || !trade) return
+
+      callbacks.dismiss()
+      onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCY[chainId])
+      callbacks.directSwap()
+    }
+
     return {
       swap,
       approve,
       wrap,
       expertModeFlow,
+      directSwap,
     }
   }, [
     callbacks,

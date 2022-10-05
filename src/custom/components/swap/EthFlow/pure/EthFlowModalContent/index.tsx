@@ -11,10 +11,6 @@ import { WrappingPreviewProps } from '../WrappingPreview'
 import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { EthFlowActions } from '../../containers/EthFlowModal/hooks/useEthFlowActions'
 
-const EthFlowModalLayout = styled(ConfirmationModalContent)`
-  padding: 22px;
-`
-
 export interface EthFlowModalContentProps {
   state: EthFlowState
   isExpertMode: boolean
@@ -24,6 +20,10 @@ export interface EthFlowModalContentProps {
   wrappingPreview: WrappingPreviewProps
   onDismiss: () => void
 }
+
+const EthFlowModalLayout = styled(ConfirmationModalContent)`
+  padding: 22px;
+`
 
 export function EthFlowModalContent(props: EthFlowModalContentProps) {
   const { ethFlowActions, state, isExpertMode, balanceChecks, onDismiss, wrappingPreview, ethFlowContext } = props
