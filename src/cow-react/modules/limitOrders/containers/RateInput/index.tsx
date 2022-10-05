@@ -1,8 +1,9 @@
 import * as styledEl from './styled'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { RefreshCw } from 'react-feather'
 
 import { HeadingText } from '../../pure/RateInput/HeadingText'
+import { limitDecimals } from '../../hooks/useApplyLimitRate'
 import { useLimitRateStateManager } from 'cow-react/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
 
@@ -10,11 +11,13 @@ export function RateInput() {
   // Rate state
   const rateState = useLimitRateStateManager()
   const { setActiveRate, setIsInversed } = rateState
-  const { isInversed, activeRate, isLoading } = rateState.state
+  const { isInversed, activeRate, isLoading, marketRate } = rateState.state
 
   // Limit order state
   const limitOrderState = useLimitOrdersStateManager()
   const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount } = limitOrderState.state
+  const { setInputCurrencyAmount } = limitOrderState
+
   const inputValue = Number(inputCurrencyAmount)
   const outputValue = Number(outputCurrencyAmount)
 
@@ -23,13 +26,13 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    console.log('debug market price')
-  }, [])
+    setActiveRate(marketRate)
+  }, [marketRate, setActiveRate])
 
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      setActiveRate(Number(typedValue))
+      setActiveRate(typedValue)
     },
     [setActiveRate]
   )
@@ -38,14 +41,26 @@ export function RateInput() {
   const handleToggle = () => {
     let newRate
 
-    if (!isInversed) {
-      newRate = inputValue / outputValue
-    } else {
+    if (!activeRate) {
+      newRate = null
+    } else if (isInversed) {
       newRate = outputValue / inputValue
+    } else {
+      newRate = inputValue / outputValue
+    }
+
+    if (newRate !== null) {
+      newRate = String(limitDecimals(newRate, 4))
     }
 
     setIsInversed(!isInversed, newRate)
   }
+
+  // Handle rate change
+  useEffect(() => {
+    setInputCurrencyAmount(inputCurrencyAmount)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeRate])
 
   return (
     <styledEl.Wrapper>

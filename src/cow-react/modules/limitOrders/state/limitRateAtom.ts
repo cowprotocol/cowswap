@@ -4,23 +4,24 @@ import { useAtom, atom } from 'jotai'
 export interface LimitRateState {
   readonly isLoading: boolean
   readonly isInversed: boolean
-  readonly activeRate: number | null
-  readonly marketRate: number | null
+  readonly activeRate: string | null
+  readonly marketRate: string | null
 }
 
 export interface LimitRateStateManager {
   state: LimitRateState
   setState(state: LimitRateState): void
-  setIsInversed(isInversed: boolean, activeRate: number | null): void
-  setActiveRate(value: number | null): void
-  setMarketRate(value: number | null): void
+  setIsInversed(isInversed: boolean, activeRate: string | null): void
+  setActiveRate(value: string | null): void
+  setMarketRate(value: string | null): void
 }
 
 const initLimitRateState = () => ({
   isInversed: false,
   isLoading: false,
   activeRate: null,
-  marketRate: null,
+  // TODO: set this to null, this is just for testing purposes
+  marketRate: '2',
 })
 
 export const limitRateAtom = atom<LimitRateState>(initLimitRateState())
@@ -34,13 +35,13 @@ export const useLimitRateStateManager = (): LimitRateStateManager => {
       setState(state: LimitRateState) {
         setState(state)
       },
-      setIsInversed(isInversed: boolean, activeRate: number | null) {
+      setIsInversed(isInversed: boolean, activeRate: string | null) {
         setState({ ...state, isInversed, activeRate })
       },
-      setActiveRate(activeRate: number | null) {
+      setActiveRate(activeRate: string | null) {
         setState({ ...state, activeRate })
       },
-      setMarketRate(marketRate: number | null) {
+      setMarketRate(marketRate: string | null) {
         setState({ ...state, marketRate })
       },
       setIsLoading(isLoading: boolean) {

@@ -4,31 +4,42 @@ import { useAtom } from 'jotai'
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
 
+// Rounds number only if the number of decimals goes above the decimals param
+export const limitDecimals = (amount: number, decimals: number): number => {
+  return +parseFloat(amount?.toFixed(decimals))
+}
+
+// Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
   const [rateState] = useAtom(limitRateAtom)
   const { activeRate, isInversed } = rateState
 
   return useCallback(
     (value: string | null, field: Field): string | null => {
-      if (!activeRate || !value) {
+      let output = 0
+      const parsedRate = Number(activeRate)
+      const parsedValue = Number(value)
+
+      if (!parsedValue || !parsedRate) {
         return null
       }
 
-      let output
-
+      // Switch the field param if isInversed value is true
       if (isInversed) {
         field = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
       }
 
+      // If the field is INPUT we will MULTIPLY passed value and rate
       if (field === Field.INPUT) {
-        output = Number(value) * activeRate
+        output = parsedValue * parsedRate
+
+        // If the field is OUTPUT we will DIVIDE passed value and rate
+      } else if (field === Field.OUTPUT) {
+        output = parsedValue / parsedRate
       }
 
-      if (field === Field.OUTPUT) {
-        output = Number(value) / activeRate
-      }
-
-      return String(output)
+      // We need to return string and we also limit the decimals
+      return String(limitDecimals(output, 6))
     },
     [activeRate, isInversed]
   )
