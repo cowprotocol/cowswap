@@ -62,7 +62,7 @@ export function useSetupEthFlow({
     })
   }, [updateEthFlowContext, approveActivity?.status, wrapActivity?.status])
 
-  // Run Expert mode once after context init
+  // Run Expert mode once after context initialization
   useEffect(() => {
     if (isExpertMode && isContextInited && !isExpertModeRunning) {
       setExpertModeRunning(true)
@@ -70,7 +70,7 @@ export function useSetupEthFlow({
     }
   }, [ethFlowActions, isExpertMode, isContextInited, isExpertModeRunning, setExpertModeRunning])
 
-  // Open swap confirmation modal when Expert mode finished
+  // Open swap confirmation modal when Expert mode flow finished
   useEffect(() => {
     const isApprovePassed = isApproveNeeded ? approveTxStatus === ActivityStatus.CONFIRMED : true
     const isWrapPassed = isWrapNeeded ? wrapTxStatus === ActivityStatus.CONFIRMED : true
