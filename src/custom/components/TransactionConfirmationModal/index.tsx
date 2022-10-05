@@ -25,6 +25,7 @@ import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDeri
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
+import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -529,6 +530,7 @@ export function TransactionSubmittedContent({
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   if (!supportedChainId(chainId)) {
     return null
@@ -548,8 +550,10 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        {activityDerivedState && showProgressBar && (
+        {activityDerivedState && showProgressBar ? (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+        ) : (
+          isSmartContractWallet && <Text>waiting for signature...</Text>
         )}
         <ButtonGroup>
           <AddToMetamask shortLabel currency={currencyToAdd} />

@@ -148,7 +148,8 @@ function useGetProgressBarInfo({
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
 
   if (safeTransaction) {
-    const executionDate = new Date(safeTransaction.executionDate)
+    const executionDate = safeTransaction.executionDate ? new Date(safeTransaction.executionDate) : new Date(Date.now())
+
     return {
       elapsedSeconds: (Date.now() - executionDate.getTime()) / 1000,
       expirationInSeconds: (validTo.getTime() - executionDate.getTime()) / 1000,
