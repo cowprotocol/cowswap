@@ -180,6 +180,7 @@
   },
   "jest": {
     "moduleNameMapper": {
+      "@cow/(.*)": "<rootDir>/src/cow-react/$1",
       "@src/(.*)": "<rootDir>/src/$1"
     }
   },
