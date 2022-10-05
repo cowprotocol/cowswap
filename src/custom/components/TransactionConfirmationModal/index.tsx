@@ -23,6 +23,7 @@ import { Routes } from '@cow/constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { GnosisSafeTxDetails } from 'components/AccountDetails/Transaction/ActivityDetails'
 import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
@@ -550,11 +551,14 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        {activityDerivedState && showProgressBar ? (
-          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
-        ) : (
-          isSmartContractWallet && <Text>waiting for signature...</Text>
-        )}
+        {activityDerivedState &&
+          (showProgressBar ? (
+            <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+          ) : (
+            isSmartContractWallet && (
+              <GnosisSafeTxDetails activityDerivedState={activityDerivedState} chainId={chainId} />
+            )
+          ))}
         <ButtonGroup>
           <AddToMetamask shortLabel currency={currencyToAdd} />
 

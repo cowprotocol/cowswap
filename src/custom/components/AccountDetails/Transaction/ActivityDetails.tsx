@@ -33,7 +33,7 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
-function GnosisSafeTxDetails(props: {
+export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
