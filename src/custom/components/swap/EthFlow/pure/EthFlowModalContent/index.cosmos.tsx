@@ -5,12 +5,14 @@ import { EthFlowModalContent } from '.'
 import { getEthFlowModalContentProps } from '../../mocks'
 import { EthFlowState } from '../../typings'
 import {
+  ApproveErrorTxHashMock,
   ApprovePendingTxHashMock,
   ApproveSuccessfulTxHashMock,
   mockEthFlowPendingTxs,
+  WrapErrorTxHashMock,
   WrapPendingTxHashMock,
   WrapSuccessfulTxHashMock,
-} from 'components/swap/EthFlow/transactionsMocks'
+} from '../../transactionsMocks'
 import styled from 'styled-components/macro'
 import { EthFlowActionContext } from '../../state/ethFlowContextAtom'
 import { ActivityStatus } from 'hooks/useRecentActivity'
@@ -38,12 +40,14 @@ const Wrapper = styled.div`
 function getApproveHash(state: string): string | null {
   if (state === 'pending') return ApprovePendingTxHashMock
   if (state === 'successful') return ApproveSuccessfulTxHashMock
+  if (state === 'error') return ApproveErrorTxHashMock
   return null
 }
 
 function getWrapHash(state: string): string | null {
   if (state === 'pending') return WrapPendingTxHashMock
   if (state === 'successful') return WrapSuccessfulTxHashMock
+  if (state === 'error') return WrapErrorTxHashMock
   return null
 }
 
