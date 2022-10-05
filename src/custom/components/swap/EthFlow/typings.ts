@@ -1,9 +1,3 @@
-export interface EthFlowContext {
-  isExpertMode: boolean
-  nativeSymbol: string
-  wrappedSymbol: string
-}
-
 export enum EthFlowState {
   SwapReady = 'SwapReady',
   WrapAndApproveNeeded = 'WrapAndApproveNeeded',
@@ -13,8 +7,8 @@ export enum EthFlowState {
   ApprovePending = 'ApprovePending',
   ApproveInsufficient = 'ApproveInsufficient',
   ApproveFailed = 'ApproveFailed',
-  WrapUnwrapFailed = 'WrapUnwrapFailed',
-  WrapUnwrapPending = 'WrapUnwrapPending',
+  WrapFailed = 'WrapFailed',
+  WrapPending = 'WrapPending',
   WrapAndApproveFailed = 'WrapAndApproveFailed',
   Loading = 'Loading',
 }

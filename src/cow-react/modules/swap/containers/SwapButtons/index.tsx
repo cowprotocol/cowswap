@@ -15,6 +15,7 @@ import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 import { isSwapButtonPropsEqual } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
 
 import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
+import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 
 export interface SwapButtonsContext {
   swapButtonState: SwapButtonState
@@ -24,7 +25,7 @@ export interface SwapButtonsContext {
   approveButtonProps: ApproveButtonsProps
   wrapUnwrapAmount: CurrencyAmount<Currency> | undefined
   wrapInputError: string | undefined
-  onWrapOrUnwrap: () => void
+  onWrapOrUnwrap: WrapUnwrapCallback | null
   onEthFlow: () => void
   openSwapConfirm: () => void
   toggleWalletModal: () => void
@@ -51,12 +52,12 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonPrimary>
   ),
   [SwapButtonState.ShouldWrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={props.onWrapOrUnwrap} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary onClick={() => props.onWrapOrUnwrap?.()} buttonSize={ButtonSize.BIG}>
       <Trans>Wrap</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.ShouldUnwrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={props.onWrapOrUnwrap} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary onClick={() => props.onWrapOrUnwrap?.()} buttonSize={ButtonSize.BIG}>
       <Trans>Unwrap</Trans>
     </ButtonPrimary>
   ),

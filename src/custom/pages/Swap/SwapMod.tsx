@@ -260,14 +260,12 @@ export default function Swap({ history, location, className }: RouteComponentPro
         {/* Native wrapping modal */}
         {showNativeWrapModal && (
           <EthFlowModal
-            nativeInput={showWrap ? parsedAmount : nativeInput}
-            wrapUnwrapAmount={swapButtonsContext.wrapUnwrapAmount}
-            // state
+            nativeInput={nativeInput}
             approvalState={swapButtonsContext.approveButtonProps.approvalState}
-            onDismiss={dismissNativeWrapModal}
-            approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
-            handleSwapCallback={swapButtonsContext.handleSwap}
             hasEnoughWrappedBalanceForSwap={swapButtonsContext.hasEnoughWrappedBalanceForSwap}
+            onDismiss={dismissNativeWrapModal}
+            wrapCallback={swapButtonsContext.onWrapOrUnwrap}
+            approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
           />
         )}
 

@@ -148,9 +148,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     wrapInputError,
     wrapUnwrapAmount,
     hasEnoughWrappedBalanceForSwap,
-    onWrapOrUnwrap() {
-      wrapCallback && wrapCallback()
-    },
+    onWrapOrUnwrap: wrapCallback,
     onEthFlow() {
       openNativeWrapModal()
     },

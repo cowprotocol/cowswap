@@ -2,147 +2,80 @@ import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
 import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails'
 
-import { PendingHashMap } from '../../containers/EthFlowModal'
-import { ActionButton, ActionButtonProps } from './ActionButton'
-import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
-import { ModalTextContentProps } from '.'
+import { ActionButton } from './ActionButton'
 import { EthFlowState } from '../../typings'
+import { useCallback, useMemo } from 'react'
+import { EthFlowContext } from '../../state/ethFlowContextAtom'
+import { EthFlowActions } from '../../containers/EthFlowModal/hooks/useEthFlowActions'
+import { ActivityStatus } from 'hooks/useRecentActivity'
 
-export type EthFlowSwapCallbackParams = {
-  showConfirm: boolean
-  straightSwap?: boolean
-  forceWrapNative?: boolean
-}
-
-export type DerivedEthFlowStateProps = Pick<ModalTextContentProps, 'isExpertMode'> & {
-  approveError: Error | null
-  wrapError: Error | null
-  approveState: ActivityDerivedState | null
-  wrapState: ActivityDerivedState | null
-  needsApproval: boolean | undefined
-  needsWrap: boolean | undefined
-}
-
-export type ActionButtonParams = Pick<
-  DerivedEthFlowStateProps,
-  'approveError' | 'wrapError' | 'approveState' | 'wrapState' | 'isExpertMode'
-> &
-  Pick<ModalTextContentProps, 'state'> & {
-    loading: boolean
-    handleSwap: ({ showConfirm, straightSwap }: EthFlowSwapCallbackParams) => Promise<void>
-    handleApprove: () => Promise<void>
-    handleWrap: () => Promise<void>
-    handleMountInExpertMode: () => Promise<void>
+function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions) {
+  if (state === EthFlowState.WrapAndApproveFailed) {
+    return ethFlowActions.expertModeFlow()
   }
-
-// conditionally renders the correct action button depending on the proposed action and current eth-flow state
-export function _getActionButtonProps(props: ActionButtonParams): Omit<ActionButtonProps, 'label'> {
-  const {
-    approveError,
-    wrapError,
-    approveState,
-    wrapState,
-    state,
-    loading,
-    handleSwap,
-    handleWrap,
-    handleApprove,
-    handleMountInExpertMode,
-  } = props
-
-  // async, pre-receipt errors (e.g user rejected TX)
-  const hasErrored = !!(approveError || wrapError)
-  let showLoader = loading
-  // dynamic props for cta button
-  const buttonProps: {
-    disabled: boolean
-    onClick: (() => Promise<void>) | undefined
-  } = {
-    disabled: false,
-    onClick: undefined,
+  if (state === EthFlowState.SwapReady) {
+    return ethFlowActions.swap()
   }
-
-  switch (state) {
-    // an operation has failed after submitting
-    case EthFlowState.WrapAndApproveFailed:
-      buttonProps.onClick = handleMountInExpertMode
-      // disable button on load (after clicking)
-      buttonProps.disabled = showLoader
-      break
-    case EthFlowState.WrapUnwrapFailed:
-      buttonProps.onClick = handleWrap
-      break
-    case EthFlowState.ApproveFailed:
-      buttonProps.onClick = handleApprove
-      break
-    // non failures
-    case EthFlowState.WrapNeeded:
-      buttonProps.onClick = handleWrap
-      buttonProps.disabled = Boolean(wrapState?.isPending)
-      break
-    case EthFlowState.ApproveNeeded:
-    case EthFlowState.ApproveInsufficient:
-      buttonProps.onClick = handleApprove
-      buttonProps.disabled = Boolean(approveState?.isPending)
-      break
-    case EthFlowState.SwapReady:
-      buttonProps.onClick = () => handleSwap({ showConfirm: true })
-      buttonProps.disabled = loading || hasErrored
-      break
-    // loading = default
-    default:
-      buttonProps.disabled = true
-      showLoader = true
-      break
+  if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
+    return ethFlowActions.wrap()
   }
-
-  return {
-    showLoader,
-    buttonProps,
+  if ([EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient].includes(state)) {
+    return ethFlowActions.approve()
   }
+  return
 }
 
 export type BottomContentParams = {
   buttonText: string
-  pendingHashMap: PendingHashMap
-  actionButton: ActionButtonParams
+  isExpertMode: boolean
+  state: EthFlowState
+  ethFlowActions: EthFlowActions
+  ethFlowContext: EthFlowContext
   wrappingPreview: WrappingPreviewProps
 }
 
 export function EthFlowModalBottomContent(params: BottomContentParams) {
-  const { pendingHashMap, actionButton, wrappingPreview, buttonText } = params
-  const { state, isExpertMode } = actionButton
-  const { wrappedBalance, wrapped, native, nativeBalance, amount, chainId } = wrappingPreview
-
-  const actionButtonProps = _getActionButtonProps(actionButton)
+  const { state, buttonText, isExpertMode, ethFlowContext, ethFlowActions, wrappingPreview } = params
 
   const showButton =
     [
       EthFlowState.WrapAndApproveFailed,
-      EthFlowState.WrapUnwrapFailed,
+      EthFlowState.WrapFailed,
       EthFlowState.ApproveFailed,
       EthFlowState.ApproveInsufficient,
     ].includes(state) || !isExpertMode
   const showWrapPreview = state !== EthFlowState.SwapReady && state !== EthFlowState.ApproveNeeded
 
+  const onClick = useCallback(() => {
+    runEthFlowAction(state, ethFlowActions)
+  }, [state, ethFlowActions])
+
+  const showLoader = useMemo(() => {
+    const approveInProgress =
+      ethFlowContext.approve.txStatus !== null
+        ? ethFlowContext.approve.txStatus === ActivityStatus.PENDING
+        : !!ethFlowContext.approve.txHash
+
+    const wrapInProgress =
+      ethFlowContext.wrap.txStatus !== null
+        ? ethFlowContext.wrap.txStatus === ActivityStatus.PENDING
+        : !!ethFlowContext.wrap.txHash
+
+    return approveInProgress || wrapInProgress
+  }, [ethFlowContext])
+
+  const pendingTransactions = useMemo(() => {
+    const hashes = []
+    if (ethFlowContext.wrap.txHash) hashes.push(ethFlowContext.wrap.txHash)
+    if (ethFlowContext.approve.txHash) hashes.push(ethFlowContext.approve.txHash)
+    return hashes
+  }, [ethFlowContext])
+
   return (
     <>
-      {showWrapPreview && (
-        <WrappingPreview
-          native={native}
-          nativeBalance={nativeBalance}
-          wrapped={wrapped}
-          wrappedBalance={wrappedBalance}
-          amount={amount}
-          chainId={chainId}
-        />
-      )}
-      <SimpleAccountDetails
-        pendingTransactions={Object.values(pendingHashMap).filter(Boolean).reverse()}
-        confirmedTransactions={[]}
-        $margin="12px 0 0"
-      />
-      {showButton && <ActionButton {...actionButtonProps} label={buttonText} />}
+      {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
+      <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
+      {showButton && <ActionButton onClick={onClick} label={buttonText} showLoader={showLoader} />}
     </>
   )
 }

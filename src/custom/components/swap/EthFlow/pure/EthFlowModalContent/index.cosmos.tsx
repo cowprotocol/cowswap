@@ -12,6 +12,8 @@ import {
   WrapSuccessfulTxHashMock,
 } from 'components/swap/EthFlow/transactionsMocks'
 import styled from 'styled-components/macro'
+import { EthFlowActionContext } from '../../state/ethFlowContextAtom'
+import { ActivityStatus } from 'hooks/useRecentActivity'
 
 const ALL_STATES = Object.values(EthFlowState)
 
@@ -33,6 +35,24 @@ const Wrapper = styled.div`
   }
 `
 
+function getApproveHash(state: string): string | null {
+  if (state === 'pending') return ApprovePendingTxHashMock
+  if (state === 'successful') return ApproveSuccessfulTxHashMock
+  return null
+}
+
+function getWrapHash(state: string): string | null {
+  if (state === 'pending') return WrapPendingTxHashMock
+  if (state === 'successful') return WrapSuccessfulTxHashMock
+  return null
+}
+
+const txStatusMap: { [key: string]: ActivityStatus } = {
+  pending: ActivityStatus.PENDING,
+  successful: ActivityStatus.CONFIRMED,
+  error: ActivityStatus.EXPIRED,
+}
+
 function Custom() {
   const [opened, setOpened] = useState(true)
   const openModal = () => setOpened(true)
@@ -43,44 +63,42 @@ function Custom() {
     defaultValue: EthFlowState.WrapNeeded,
   })
   const state = getStateFromDescription(stateDescription)
-
   const [isExpertMode] = useValue('isExpertMode', { defaultValue: false })
-  const [loading] = useValue('loading', { defaultValue: false })
-  const [approveSubmitted] = useValue('approveSubmitted', { defaultValue: false })
-  const [wrapSubmitted] = useValue('wrapSubmitted', { defaultValue: false })
   const balanceChecks = {
     isLowBalance: useValue('isLowBalance', { defaultValue: false })[0],
     txsRemaining: useValue('txsRemaining', { defaultValue: '' })[0],
   }
-  const [wrapTransaction] = useSelect('wrapTransaction', {
-    options: ['none', 'pending', 'successful'],
+
+  const [approveState] = useSelect('approveState', {
+    options: ['none', 'pending', 'successful', 'error'],
     defaultValue: 'none',
   })
-  const [approveTransaction] = useSelect('approveTransaction', {
-    options: ['none', 'pending', 'successful'],
+
+  const [wrapState] = useSelect('wrapState', {
+    options: ['none', 'pending', 'successful', 'error'],
     defaultValue: 'none',
   })
-  const pendingHashMap = {
-    approveHash:
-      approveTransaction === 'none'
-        ? undefined
-        : approveTransaction === 'pending'
-        ? ApprovePendingTxHashMock
-        : ApproveSuccessfulTxHashMock,
-    wrapHash:
-      wrapTransaction === 'none'
-        ? undefined
-        : wrapTransaction === 'pending'
-        ? WrapPendingTxHashMock
-        : WrapSuccessfulTxHashMock,
+
+  const approveAction: EthFlowActionContext = {
+    isNeeded: false,
+    error: approveState === 'error' ? new Error('Approve error') : null,
+    txStatus: txStatusMap[approveState] || null,
+    txHash: getApproveHash(approveState),
   }
 
-  const { bottomContentParams, modalTextContent } = getEthFlowModalContentProps({
+  const wrapAction: EthFlowActionContext = {
+    isNeeded: false,
+    error: wrapState === 'error' ? new Error('Wrap error') : null,
+    txStatus: txStatusMap[wrapState] || null,
+    txHash: getWrapHash(wrapState),
+  }
+
+  const modalProps = getEthFlowModalContentProps({
     state,
     isExpertMode,
-    loading,
-    approveSubmitted,
-    wrapSubmitted,
+    approveAction,
+    wrapAction,
+    balanceChecks,
   })
 
   return (
@@ -88,12 +106,7 @@ function Custom() {
       {opened ? (
         <GpModal isOpen onDismiss={onDismiss}>
           <Wrapper>
-            <EthFlowModalContent
-              balanceChecks={balanceChecks}
-              bottomContentParams={{ ...bottomContentParams, pendingHashMap }}
-              modalTextContent={modalTextContent}
-              onDismiss={onDismiss}
-            />
+            <EthFlowModalContent {...modalProps} />
           </Wrapper>
         </GpModal>
       ) : (

@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 import { EthFlowState } from '../../typings'
 
-const ModalMessage = styled.p`
+const ModalMessage = styled.div`
   display: flex;
   flex-flow: row wrap;
   padding: 0;

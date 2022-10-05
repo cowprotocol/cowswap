@@ -1,4 +1,4 @@
-import { EthFlowContext, EthFlowState } from 'components/swap/EthFlow/typings'
+import { EthFlowState } from '../../typings'
 
 export interface EthFlowConfig {
   title: string
@@ -10,7 +10,13 @@ const expertCommonDescription = 'Transaction signature required, please check yo
 const ethFlowDescription = (nativeSymbol: string) =>
   `The current version of CoW Swap can’t yet use native ${nativeSymbol} to execute a trade (Look out for that feature coming soon!).`
 
-export const ethFlowConfigs: { [key in EthFlowState]: (context: EthFlowContext) => EthFlowConfig } = {
+export const ethFlowConfigs: {
+  [key in EthFlowState]: (context: {
+    isExpertMode: boolean
+    nativeSymbol: string
+    wrappedSymbol: string
+  }) => EthFlowConfig
+} = {
   /**
    * FAILED operations
    * wrap/approve/both in expertMode failed
@@ -23,7 +29,7 @@ export const ethFlowConfigs: { [key in EthFlowState]: (context: EthFlowContext) 
       `Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again`,
     ],
   }),
-  [EthFlowState.WrapUnwrapFailed]: ({ nativeSymbol }) => ({
+  [EthFlowState.WrapFailed]: ({ nativeSymbol }) => ({
     title: `Wrap ${nativeSymbol} failed`,
     buttonText: `Wrap ${nativeSymbol}`,
     descriptions: [
@@ -48,7 +54,7 @@ export const ethFlowConfigs: { [key in EthFlowState]: (context: EthFlowContext) 
     buttonText: '',
     descriptions: ['Transactions in progress', 'See below for live status updates of each operation'],
   }),
-  [EthFlowState.WrapUnwrapPending]: ({ nativeSymbol }) => ({
+  [EthFlowState.WrapPending]: ({ nativeSymbol }) => ({
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: '',
     descriptions: ['Transaction in progress. See below for live status updates'],

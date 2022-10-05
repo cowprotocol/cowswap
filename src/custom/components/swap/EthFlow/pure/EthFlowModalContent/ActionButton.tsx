@@ -18,18 +18,15 @@ const ButtonWrapper = styled.div`
 export interface ActionButtonProps {
   label: string
   showLoader: boolean
-  buttonProps: {
-    disabled: boolean
-    onClick: (() => Promise<void>) | undefined
-  }
+  onClick: () => void
 }
 
 export function ActionButton(props: ActionButtonProps) {
-  const { showLoader, buttonProps, label } = props
+  const { showLoader, label, onClick } = props
 
   return (
     <ButtonWrapper>
-      <ButtonPrimary padding="0.5rem" maxWidth="70%" {...buttonProps}>
+      <ButtonPrimary padding="0.5rem" maxWidth="70%" disabled={showLoader} onClick={onClick}>
         {showLoader ? <Loader /> : <Trans>{label}</Trans>}
       </ButtonPrimary>
     </ButtonWrapper>
