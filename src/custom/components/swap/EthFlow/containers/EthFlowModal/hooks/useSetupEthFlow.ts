@@ -9,6 +9,7 @@ import {
 import { ActivityDescriptors, ActivityStatus } from 'hooks/useRecentActivity'
 import { useAtomValue } from 'jotai/utils'
 import { EthFlowActions } from './useEthFlowActions'
+import { delay } from 'utils/misc'
 
 interface EthFlowSetupParams {
   ethFlowActions: EthFlowActions
@@ -18,6 +19,10 @@ interface EthFlowSetupParams {
   isExpertMode: boolean
   hasEnoughWrappedBalanceForSwap: boolean
 }
+
+// used to avoid jarring UI effect from race between closing modal after successful operation(s)
+// and the UI update showing confirmed actions
+const MODAL_CLOSE_DELAY = 1000 // 1s
 
 export function useSetupEthFlow({
   ethFlowActions,
@@ -49,7 +54,7 @@ export function useSetupEthFlow({
   useEffect(() => {
     updateEthFlowContext({
       wrap: { isNeeded: !hasEnoughWrappedBalanceForSwap },
-      approve: { isNeeded: approvalState === ApprovalState.NOT_APPROVED },
+      approve: { isNeeded: approvalState !== ApprovalState.APPROVED },
     })
     setContextInited(true)
   }, [updateEthFlowContext, hasEnoughWrappedBalanceForSwap, approvalState])
@@ -66,14 +71,16 @@ export function useSetupEthFlow({
   useEffect(() => {
     if (isExpertMode && isContextInited && !isExpertModeRunning) {
       setExpertModeRunning(true)
-      if (hasEnoughWrappedBalanceForSwap) {
+
+      if (!isWrapNeeded && !isApproveNeeded) {
         ethFlowActions.directSwap()
       } else {
         ethFlowActions.expertModeFlow()
       }
     }
   }, [
-    hasEnoughWrappedBalanceForSwap,
+    isWrapNeeded,
+    isApproveNeeded,
     ethFlowActions,
     isExpertMode,
     isContextInited,
@@ -87,7 +94,7 @@ export function useSetupEthFlow({
     const isWrapPassed = isWrapNeeded ? wrapTxStatus === ActivityStatus.CONFIRMED : true
 
     if (isExpertMode && isExpertModeRunning && isApprovePassed && isWrapPassed) {
-      ethFlowActions.swap()
+      delay(MODAL_CLOSE_DELAY).then(ethFlowActions.swap)
     }
   }, [ethFlowActions, isExpertMode, isApproveNeeded, approveTxStatus, isWrapNeeded, wrapTxStatus, isExpertModeRunning])
 }

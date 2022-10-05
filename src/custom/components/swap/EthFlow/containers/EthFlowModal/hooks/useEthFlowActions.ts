@@ -68,22 +68,22 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       openSwapConfirmModal(trade)
     }
 
-    const approve = () => {
+    const approve = (useModals?: boolean) => {
       return sendTransaction('approve', () => {
-        return callbacks.approve().then((res) => res?.hash)
+        return callbacks.approve({ useModals }).then((res) => res?.hash)
       })
     }
 
-    const wrap = () => {
+    const wrap = (useModals?: boolean) => {
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
 
-        return callbacks.wrap().then((res) => res?.hash)
+        return callbacks.wrap({ useModals }).then((res) => res?.hash)
       })
     }
 
     const expertModeFlow = () => {
-      Promise.all([isApproveNeeded ? approve() : undefined, isWrapNeeded ? wrap() : undefined])
+      Promise.all([isApproveNeeded ? approve(false) : undefined, isWrapNeeded ? wrap(false) : undefined])
     }
 
     const directSwap = () => {
