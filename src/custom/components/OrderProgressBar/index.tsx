@@ -42,6 +42,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   })
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
+  console.group()
+  console.log('__Elapsed', elapsedSeconds, isPending, percentage)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isGnosisSafeWallet = useIsGnosisSafeWallet()
 
@@ -88,6 +90,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     return null
   }
 
+  console.log('__Execution', executionState)
+  console.groupEnd()
   return (
     <>
       {hideWhenFinished ? (
@@ -136,8 +140,6 @@ function useGetProgressBarInfo({
   creationTime,
   validTo,
 }: GetProgressBarInfoProps): ProgressBarInfo {
-  const { isPending: orderIsPending, enhancedTransaction, order } = activityDerivedState
-
   if (!creationTime || !validTo) {
     return {
       elapsedSeconds: 0,
@@ -145,14 +147,21 @@ function useGetProgressBarInfo({
       isPending: false,
     }
   }
+
+  const { isPending: orderIsPending, enhancedTransaction, order } = activityDerivedState
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
 
-  if (safeTransaction) {
-    const executionDate = safeTransaction.executionDate ? new Date(safeTransaction.executionDate) : new Date(Date.now())
-
+  if (safeTransaction && safeTransaction.executionDate) {
+    const executionDate = new Date(safeTransaction.executionDate)
     return {
       elapsedSeconds: (Date.now() - executionDate.getTime()) / 1000,
       expirationInSeconds: (validTo.getTime() - executionDate.getTime()) / 1000,
+      isPending: orderIsPending,
+    }
+  } else if (safeTransaction) {
+    return {
+      elapsedSeconds: 0,
+      expirationInSeconds: validTo.getTime() / 1000,
       isPending: orderIsPending,
     }
   }
