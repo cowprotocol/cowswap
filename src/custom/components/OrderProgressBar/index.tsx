@@ -42,8 +42,6 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   })
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
-  console.group()
-  console.log('__Elapsed', elapsedSeconds, isPending, percentage)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isGnosisSafeWallet = useIsGnosisSafeWallet()
 
@@ -90,8 +88,6 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     return null
   }
 
-  console.log('__Execution', executionState)
-  console.groupEnd()
   return (
     <>
       {hideWhenFinished ? (
