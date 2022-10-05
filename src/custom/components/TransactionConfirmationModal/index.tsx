@@ -23,10 +23,8 @@ import { Routes } from '@cow/constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
-import { GnosisSafeTxDetails } from 'components/AccountDetails/Transaction/ActivityDetails'
 import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
-import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -420,6 +418,9 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
   let title = activityDerivedState.isOrder ? 'Order' : 'Transaction'
 
   switch (activityDerivedState.status) {
+    case ActivityStatus.PRESIGNATURE_PENDING:
+      title += ' Signing'
+      break
     case ActivityStatus.CONFIRMED:
       title += ' Confirmed'
       break
@@ -531,7 +532,6 @@ export function TransactionSubmittedContent({
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
-  const isSmartContractWallet = useIsSmartContractWallet()
 
   if (!supportedChainId(chainId)) {
     return null
@@ -551,14 +551,9 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        {activityDerivedState &&
-          (showProgressBar ? (
-            <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
-          ) : (
-            isSmartContractWallet && (
-              <GnosisSafeTxDetails activityDerivedState={activityDerivedState} chainId={chainId} />
-            )
-          ))}
+        {activityDerivedState && showProgressBar && (
+          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+        )}
         <ButtonGroup>
           <AddToMetamask shortLabel currency={currencyToAdd} />
 
