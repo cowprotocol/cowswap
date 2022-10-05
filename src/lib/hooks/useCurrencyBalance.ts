@@ -1,11 +1,13 @@
 import { Interface } from '@ethersproject/abi'
+import usePrevious from 'hooks/usePrevious'
+import { CallState } from '@uniswap/redux-multicall'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import ERC20ABI from 'abis/erc20.json'
 import { Erc20Interface } from 'abis/types/Erc20'
 import JSBI from 'jsbi'
 import { useMultipleContractSingleData, useSingleContractMultipleData } from 'lib/hooks/multicall'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 
 import { nativeOnChain } from '../../constants/tokens'
 import { useInterfaceMulticall } from '../../hooks/useContract'
@@ -62,6 +64,7 @@ export function useTokenBalancesWithLoadingIndicator(
   )
   const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens])
 
+  const balancesRef = useRef<CallState[]>([])
   const balances = useMultipleContractSingleData(
     validatedTokenAddresses,
     ERC20Interface,
@@ -72,11 +75,19 @@ export function useTokenBalancesWithLoadingIndicator(
 
   const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances])
 
-  return useMemo(
-    () => [
+  // this is a hack to get around the fact that multicall doesn't return the same array reference when it updates
+  // TODO: move this to a MOD file
+  const previousAnyLoading = usePrevious(anyLoading)
+
+  if (previousAnyLoading !== anyLoading) {
+    balancesRef.current = balances
+  }
+
+  return useMemo(() => {
+    return [
       address && validatedTokens.length > 0
         ? validatedTokens.reduce<{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }>((memo, token, i) => {
-            const value = balances?.[i]?.result?.[0]
+            const value = balancesRef.current?.[i]?.result?.[0]
             const amount = value ? JSBI.BigInt(value.toString()) : undefined
             if (amount) {
               memo[token.address] = CurrencyAmount.fromRawAmount(token, amount)
@@ -85,9 +96,8 @@ export function useTokenBalancesWithLoadingIndicator(
           }, {})
         : {},
       anyLoading,
-    ],
-    [address, validatedTokens, anyLoading, balances]
-  )
+    ]
+  }, [address, validatedTokens, anyLoading, balancesRef.current])
 }
 
 export function useTokenBalances(
