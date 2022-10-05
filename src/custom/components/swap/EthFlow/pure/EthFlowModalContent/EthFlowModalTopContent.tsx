@@ -34,7 +34,7 @@ export type TopContentParams = {
 export function EthFlowModalTopContent({ descriptions, state, balanceChecks, nativeSymbol }: TopContentParams) {
   return (
     <>
-      {descriptions?.length && (
+      {!!descriptions?.length && (
         <ModalMessage>
           {descriptions.map((description, index) => (
             <p key={index}>

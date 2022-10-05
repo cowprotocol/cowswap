@@ -42,13 +42,15 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
   } = ethFlowContext
 
   const showButton =
+    !isExpertMode &&
     [
+      EthFlowState.SwapReady,
       EthFlowState.WrapAndApproveFailed,
       EthFlowState.WrapFailed,
       EthFlowState.ApproveFailed,
       EthFlowState.ApproveInsufficient,
-    ].includes(state) || !isExpertMode
-  const showWrapPreview = state !== EthFlowState.SwapReady && (state !== EthFlowState.ApproveNeeded || isExpertMode)
+    ].includes(state)
+  const showWrapPreview = isExpertMode || ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
 
   const onClick = useCallback(() => {
     runEthFlowAction(state, ethFlowActions)
