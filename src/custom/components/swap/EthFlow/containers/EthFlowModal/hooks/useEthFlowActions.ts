@@ -45,6 +45,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       return callback()
         .catch((error) => {
           updateEthFlowContext({ [type]: { error } })
+          callbacks.dismiss()
         })
         .then((txHash) => {
           if (txHash) {

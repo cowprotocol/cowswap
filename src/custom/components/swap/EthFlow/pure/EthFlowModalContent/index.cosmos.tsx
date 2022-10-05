@@ -81,14 +81,12 @@ function Custom() {
 
   const approveAction: EthFlowActionContext = {
     isNeeded: false,
-    error: approveState === 'error' ? new Error('Approve error') : null,
     txStatus: txStatusMap[approveState] || null,
     txHash: getApproveHash(approveState),
   }
 
   const wrapAction: EthFlowActionContext = {
     isNeeded: false,
-    error: wrapState === 'error' ? new Error('Wrap error') : null,
     txStatus: txStatusMap[wrapState] || null,
     txHash: getWrapHash(wrapState),
   }

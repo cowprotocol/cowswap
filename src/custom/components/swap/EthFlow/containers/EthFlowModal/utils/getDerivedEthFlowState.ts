@@ -4,26 +4,23 @@ import { ActivityStatus } from 'hooks/useRecentActivity'
 
 // returns derived ethflow state from current props
 export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: boolean): EthFlowState {
-  console.log('REDIVATE', context)
   const approveActivityStatus = context.approve.txStatus
   const wrapActivityStatus = context.wrap.txStatus
-  const approveError = context.approve.error
   const needsApproval = context.approve.isNeeded
-  const wrapError = context.wrap.error
   const needsWrap = context.wrap.isNeeded
   // approve state
   const approveExpired = approveActivityStatus === ActivityStatus.EXPIRED
   const approvePending =
     (!approveActivityStatus && context.approve.txHash) || approveActivityStatus === ActivityStatus.PENDING
   const approveConfirmed = approveActivityStatus === ActivityStatus.CONFIRMED
-  const approveSentAndSuccessful = Boolean(!approveError && !approvePending && approveConfirmed)
+  const approveSentAndSuccessful = Boolean(!approvePending && approveConfirmed)
   const approveInsufficient = approveSentAndSuccessful && needsApproval
   const approveFinished = !needsApproval || approveSentAndSuccessful
   // wrap state
   const wrapExpired = wrapActivityStatus === ActivityStatus.EXPIRED
   const wrapPending = (!wrapActivityStatus && context.wrap.txHash) || wrapActivityStatus === ActivityStatus.PENDING
   const wrapConfirmed = wrapActivityStatus === ActivityStatus.CONFIRMED
-  const wrapSentAndSuccessful = Boolean(!wrapError && !wrapPending && wrapConfirmed)
+  const wrapSentAndSuccessful = Boolean(!wrapPending && wrapConfirmed)
   const wrapNeeded = needsWrap && !wrapSentAndSuccessful
   const wrapFinished = !needsWrap || wrapSentAndSuccessful
 

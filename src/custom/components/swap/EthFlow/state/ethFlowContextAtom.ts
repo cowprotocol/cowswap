@@ -5,7 +5,6 @@ export interface EthFlowActionContext {
   isNeeded: boolean
   txStatus: ActivityStatus | null
   txHash: string | null
-  error: Error | null
 }
 
 export interface EthFlowContext {
@@ -23,13 +22,11 @@ export const defaultEthFlowContext: EthFlowContext = {
     isNeeded: false,
     txStatus: null,
     txHash: null,
-    error: null,
   },
   wrap: {
     isNeeded: false,
     txStatus: null,
     txHash: null,
-    error: null,
   },
 }
 
