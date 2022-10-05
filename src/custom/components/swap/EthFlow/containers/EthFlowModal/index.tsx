@@ -26,7 +26,7 @@ export interface EthFlowProps {
   onDismiss: () => void
 }
 
-export function EthWethWrap({
+function EthFlow({
   nativeInput,
   approvalState,
   onDismiss,
@@ -93,7 +93,7 @@ export function EthWethWrap({
 export function EthFlowModal(props: EthFlowProps) {
   return (
     <GpModal isOpen onDismiss={props.onDismiss}>
-      <EthWethWrap {...props} />
+      <EthFlow {...props} />
     </GpModal>
   )
 }
