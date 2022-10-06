@@ -93,7 +93,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean; isDarkMode: boole
         background: url(${SpiderRag}) no-repeat center/contain;
         height: 200px;
         width: 200px;
-        position: absolute;
+        position: fixed;
         right: -42px;
         top: 90px;
 
