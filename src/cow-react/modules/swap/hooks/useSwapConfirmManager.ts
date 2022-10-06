@@ -61,8 +61,8 @@ export function useSwapConfirmManager(): SwapConfirmManager {
           ...swapConfirmState,
           attemptingTxn: false,
           swapErrorMessage: undefined,
-          txHash,
           showConfirm: !isExpertMode,
+          txHash,
         }
         console.debug('[Swap confirm state] transactionSent: ', state)
         setSwapConfirmState(state)
