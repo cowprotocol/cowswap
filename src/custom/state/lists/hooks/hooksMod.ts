@@ -1,6 +1,7 @@
 // import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 import { useMemo, useCallback } from 'react'
 import memoizeOne from 'memoize-one'
+import isEqual from 'lodash.isequal'
 import { useAppSelector, useAppDispatch } from 'state/hooks'
 
 import sortByListPriority from 'utils/listSort'
@@ -134,28 +135,32 @@ export const combineMaps = memoizeOne(_combineMaps)
 export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {
   // MOD: recreated here to allow it to use the custom useAllLists hook
   const lists = useAllLists()
-  return useMemo(() => {
-    if (!urls) return EMPTY_LIST
 
-    return (
-      urls
-        .slice()
-        // sort by priority so top priority goes last
-        .sort(sortByListPriority)
-        .reduce((allTokens, currentUrl) => {
-          const current = lists?.[currentUrl]?.current
-          if (!current) return allTokens
-          try {
-            const newTokens = Object.assign(listToTokenMap(current))
-            return combineMaps(allTokens, newTokens)
-          } catch (error) {
-            console.error('Could not show token list due to error', error)
-            return allTokens
-          }
-        }, EMPTY_LIST)
-    )
-  }, [lists, urls])
+  return useMemo(() => memoizedCombinedTokenMapFromUrls(urls, lists), [urls, lists])
 }
+
+function combinedTokenMapFromUrls(urls: string[] | undefined, lists: any): TokenAddressMap {
+  if (!urls) return EMPTY_LIST
+  return (
+    urls
+      .slice()
+      // sort by priority so top priority goes last
+      .sort(sortByListPriority)
+      .reduce((allTokens, currentUrl) => {
+        const current = lists?.[currentUrl]?.current
+        if (!current) return allTokens
+        try {
+          const newTokens = Object.assign(listToTokenMap(current))
+          return combineMaps(allTokens, newTokens)
+        } catch (error) {
+          console.error('Could not show token list due to error', error)
+          return allTokens
+        }
+      }, EMPTY_LIST)
+  )
+}
+
+const memoizedCombinedTokenMapFromUrls = memoizeOne(combinedTokenMapFromUrls, isEqual)
 
 // filter out unsupported lists
 export function useActiveListUrls(): string[] | undefined {
