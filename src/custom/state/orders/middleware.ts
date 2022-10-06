@@ -15,6 +15,7 @@ import { openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { isMobile } from 'utils/userAgent'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -222,10 +223,10 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     showLighningEffect = false
   if (isPendingOrderAction(action)) {
     cowSound = getCowSoundSend(isDarkMode)
-    showLighningEffect = isDarkMode
+    showLighningEffect = isDarkMode && !isMobile
   } else if (isFulfillOrderAction(action)) {
     cowSound = getCowSoundSuccess(isDarkMode)
-    showLighningEffect = isDarkMode
+    showLighningEffect = isDarkMode && !isMobile
   } else if (isExpireOrdersAction(action)) {
     cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
