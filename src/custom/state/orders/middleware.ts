@@ -198,10 +198,6 @@ registerOnWindow({ addLightningEffect })
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  // Halloween temporary
-  const { userDarkMode, matchesDarkMode } = store.getState().user
-  const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
-
   if (isBatchOrderAction(action)) {
     const { chainId } = action.payload
     const orders = store.getState().orders[chainId]
@@ -218,11 +214,18 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   }
 
-  let cowSound
+  // Halloween temporary
+  const { userDarkMode, matchesDarkMode } = store.getState().user
+  const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
+
+  let cowSound,
+    showLighningEffect = false
   if (isPendingOrderAction(action)) {
-    cowSound = getCowSoundSend()
+    cowSound = getCowSoundSend(isDarkMode)
+    showLighningEffect = isDarkMode
   } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
+    cowSound = getCowSoundSuccess(isDarkMode)
+    showLighningEffect = isDarkMode
   } else if (isExpireOrdersAction(action)) {
     cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
@@ -231,7 +234,7 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   }
 
   if (cowSound) {
-    if (isDarkMode) {
+    if (showLighningEffect) {
       setTimeout(addLightningEffect, 300)
     }
     cowSound?.play().catch((e) => {
