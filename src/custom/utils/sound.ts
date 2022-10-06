@@ -1,17 +1,24 @@
 type SoundType = 'SEND' | 'SUCCESS' | 'SUCCESS_CLAIM' | 'ERROR'
 type Sounds = Record<SoundType, string>
 
-const COW_SOUNDS: Sounds = {
+const COW_SOUNDS_HALLOWEEN: Sounds = {
   SEND: '/audio/halloween.wav',
   SUCCESS: '/audio/halloween.wav',
   SUCCESS_CLAIM: '/audio/success-claim.mp3',
-  ERROR: '/audio/halloween.wav',
+  ERROR: '/audio/error.mp3',
+}
+
+const COW_SOUNDS: Sounds = {
+  SEND: '/audio/send.mp3',
+  SUCCESS: '/audio/success.mp3',
+  SUCCESS_CLAIM: '/audio/success-claim.mp3',
+  ERROR: '/audio/error.mp3',
 }
 
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
 
-function getAudio(type: SoundType): HTMLAudioElement {
-  const soundPath = COW_SOUNDS[type]
+function getAudio(useHalloween: boolean, type: SoundType): HTMLAudioElement {
+  const soundPath = useHalloween ? COW_SOUNDS_HALLOWEEN[type] : COW_SOUNDS[type]
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {
@@ -22,18 +29,18 @@ function getAudio(type: SoundType): HTMLAudioElement {
   return sound
 }
 
-export function getCowSoundSend(): HTMLAudioElement {
-  return getAudio('SEND')
+export function getCowSoundSend(useHalloween: boolean): HTMLAudioElement {
+  return getAudio(useHalloween, 'SEND')
 }
 
-export function getCowSoundSuccess(): HTMLAudioElement {
-  return getAudio('SUCCESS')
+export function getCowSoundSuccess(useHalloween: boolean): HTMLAudioElement {
+  return getAudio(useHalloween, 'SUCCESS')
 }
 
 export function getCowSoundSuccessClaim(): HTMLAudioElement {
-  return getAudio('SUCCESS_CLAIM')
+  return getAudio(false, 'SUCCESS_CLAIM')
 }
 
 export function getCowSoundError(): HTMLAudioElement {
-  return getAudio('ERROR')
+  return getAudio(false, 'ERROR')
 }
