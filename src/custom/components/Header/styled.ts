@@ -114,7 +114,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean; isDarkMode: boole
       ${
         isMobileMenuOpen &&
         css`
-          position: absolute;
+          position: fixed;
           top: 0;
           z-index: 3;
 
