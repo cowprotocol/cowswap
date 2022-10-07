@@ -1,14 +1,17 @@
 export enum EthFlowState {
+  // Requires action
   SwapReady = 'SwapReady',
   WrapAndApproveNeeded = 'WrapAndApproveNeeded',
-  WrapAndApprovePending = 'WrapAndApprovePending',
   ApproveNeeded = 'ApproveNeeded',
   WrapNeeded = 'WrapNeeded',
-  ApprovePending = 'ApprovePending',
+  // Error
   ApproveInsufficient = 'ApproveInsufficient',
   ApproveFailed = 'ApproveFailed',
   WrapFailed = 'WrapFailed',
-  WrapPending = 'WrapPending',
   WrapAndApproveFailed = 'WrapAndApproveFailed',
+  // Pending
+  WrapAndApprovePending = 'WrapAndApprovePending',
+  WrapPending = 'WrapPending',
+  ApprovePending = 'ApprovePending',
   Loading = 'Loading',
 }
