@@ -19,6 +19,8 @@ import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
 
 import { RateInput } from 'cow-react/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from 'cow-react/modules/limitOrders/containers/ExpiryDate'
+import { useLimitRateStateManager } from 'cow-react/modules/limitOrders/state/limitRateAtom'
+import { useApplyLimitRate } from '../../hooks/useApplyLimitRate'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
@@ -27,6 +29,9 @@ export function LimitOrdersWidget() {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
     useLimitOrdersTradeState()
   const stateManager = useLimitOrdersStateManager()
+  const rateState = useLimitRateStateManager()
+  const { isInversed, activeRate } = rateState.state
+  const applyLimitRate = useApplyLimitRate()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -83,7 +88,11 @@ export function LimitOrdersWidget() {
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = stateManager.state
     stateManager.navigate(chainId, outputCurrencyId, inputCurrencyId)
-  }, [stateManager, chainId])
+
+    const newInputAmount = applyLimitRate(inputCurrencyInfo.viewAmount, Field.OUTPUT)
+    stateManager.setInputCurrencyAmount(newInputAmount)
+    rateState.setIsInversed(isInversed, activeRate)
+  }, [activeRate, applyLimitRate, chainId, inputCurrencyInfo.viewAmount, isInversed, rateState, stateManager])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
