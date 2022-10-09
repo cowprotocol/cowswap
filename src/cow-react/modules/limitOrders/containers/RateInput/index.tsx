@@ -3,9 +3,9 @@ import { useCallback, useEffect } from 'react'
 import { RefreshCw } from 'react-feather'
 
 import { HeadingText } from '../../pure/RateInput/HeadingText'
-import { limitDecimals } from '../../hooks/useApplyLimitRate'
 import { useLimitRateStateManager } from 'cow-react/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { useCalculateRate } from '../../hooks/useCalculateRate'
 
 export function RateInput() {
   // Rate state
@@ -13,13 +13,12 @@ export function RateInput() {
   const { setActiveRate, setIsInversed } = rateState
   const { isInversed, activeRate, isLoading, marketRate } = rateState.state
 
+  const calculateRate = useCalculateRate()
+
   // Limit order state
   const limitOrderState = useLimitOrdersStateManager()
-  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount } = limitOrderState.state
+  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = limitOrderState.state
   const { setInputCurrencyAmount } = limitOrderState
-
-  const inputValue = Number(inputCurrencyAmount)
-  const outputValue = Number(outputCurrencyAmount)
 
   const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
   const secondaryCurrency = isInversed ? inputCurrencyId : outputCurrencyId
@@ -39,20 +38,7 @@ export function RateInput() {
 
   // Handle toggle primary field
   const handleToggle = () => {
-    let newRate
-
-    if (!activeRate) {
-      newRate = null
-    } else if (isInversed) {
-      newRate = outputValue / inputValue
-    } else {
-      newRate = inputValue / outputValue
-    }
-
-    if (newRate !== null) {
-      newRate = String(limitDecimals(newRate, 4))
-    }
-
+    const newRate = calculateRate()
     setIsInversed(!isInversed, newRate)
   }
 
