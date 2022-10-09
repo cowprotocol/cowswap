@@ -21,6 +21,7 @@ export enum Routes {
   FAQ_AFFILIATE = '/faq/affiliate',
   PLAY_COWRUNNER = '/play/cow-runner',
   PLAY_MEVSLICER = '/play/mev-slicer',
+  PLAY_SUPER_COW_BRO = '/play/super-cow-bro',
   ANYSWAP_AFFECTED = '/anyswap-affected-users',
   CHAT = '/chat',
   DOCS = '/docs',

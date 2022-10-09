@@ -26,6 +26,7 @@ const About = lazy(() => import(/* webpackChunkName: "about" */ '@cow/pages/Abou
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ '@cow/pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ '@cow/pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ '@cow/pages/games/MevSlicer'))
+const SuperCowBro = lazy(() => import(/* webpackChunkName: "cow" */ '@cow/pages/games/SuperCowBro'))
 
 // FAQ pages
 const Faq = lazy(() => import(/* webpackChunkName: "faq" */ '@cow/pages/Faq'))
@@ -65,6 +66,7 @@ export function RoutesApp() {
             <Route exact strict path={Routes.FAQ_AFFILIATE} component={AffiliateFaq} />
             <Route exact strict path={Routes.PLAY_COWRUNNER} component={CowRunner} />
             <Route exact strict path={Routes.PLAY_MEVSLICER} component={MevSlicer} />
+            <Route exact strict path={Routes.PLAY_SUPER_COW_BRO} component={SuperCowBro} />
             <Route exact strict path={Routes.ANYSWAP_AFFECTED} component={AnySwapAffectedUsers} />
             <Route exact strict path={Routes.PRIVACY_POLICY} component={PrivacyPolicy} />
             <Route exact strict path={Routes.COOKIE_POLICY} component={CookiePolicy} />

@@ -107,6 +107,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
           { kind: MenuItemKind.DARK_MODE_BUTTON },
           { title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
           { title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
+          { title: 'Super CoW Bro', url: Routes.PLAY_SUPER_COW_BRO, icon: IMAGE_GAME },
           { title: 'Terms and Conditions', url: Routes.TERMS_CONDITIONS, iconSVG: IMAGE_DOCS },
         ],
       },
