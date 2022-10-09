@@ -4,7 +4,9 @@ import { useEffect } from 'react'
 import { gameAnalytics } from 'components/analytics'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
-const Wrapper = styled(Page)``
+const Wrapper = styled(Page)`
+  max-width: 950px;
+`
 
 const GAME_NAME = 'Super CoW Bro'
 
@@ -33,7 +35,7 @@ export default function SuperCowBro() {
           src="/games/SuperCowBro/index.html"
           title={GAME_NAME}
           width="100%"
-          height="500px"
+          height="650px"
           frameBorder="0"
         ></iframe>
       </Content>
