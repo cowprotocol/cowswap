@@ -1,0 +1,54 @@
+﻿/*
+@font-face {
+      font-family: "geometric";
+      src: url("fonts/kbl.eot");
+      src: url("fonts/kbl.eot?#iefix") format("embedded-opentype"),
+      url("fonts/kbl.woff") format("woff"),
+      url("fonts/kbl.ttf") format("truetype"),
+      url("fonts/kbl.svg#OctinSports") format("svg");
+      font-weight: normal;
+      font-style: normal;
+   }
+   
+*::selection{
+background-color: #d20000;
+color: #fff;
+}
+
+*::-moz-selection{
+background-color: #d20000;
+color: #fff;
+} */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-family: Arial;
+    color: #252525;
+}
+
+ul, p, h1, h2, h3, h4, h5 {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #464646;
+}
+
+#scene {
+    background-color: #ffffff;
+    margin: 50px auto;
+    display: block;
+}
+
+#createRoom {
+    background-color: #ffffff;
+    padding: 10px;
+}
+
+#createRoom div {
+    display: inline-block;
+    margin-right: 20px;
+}
