@@ -37,6 +37,8 @@ var Player = function (scene, params) {
     this.keys = [];
     //В прыжке
     this.jumping = false;
+    // Horizontal direction, 1 - right, -1 - left
+    this.direction = 1;
     //Приземлен
     this.grounded = false;
     //Сцена
@@ -58,7 +60,11 @@ var Player = function (scene, params) {
      * Отрисовка игрока на сцене
      * */
     this._render = function () {
-        this.ctx.drawImage(this.level.sprites.kolobok, this.x, this.y);
+        const sprite = this.direction === 1
+            ? this.level.sprites.kolobok
+            : this.level.sprites.kolobokLeft;
+
+        this.ctx.drawImage(sprite, this.x, this.y);
         this.ctx.font = "13px Arial";
         this.ctx.fillStyle = "#ffffff";
         this.ctx.textAlign = "center";
@@ -99,12 +105,14 @@ var Player = function (scene, params) {
         //Вправо
         if (this.keys[this.controls.right]) {
             if (this.velX < this.speed) {
+                this.direction = 1;
                 this.velX++;
             }
         }
         //Влево
         if (this.keys[this.controls.left]) {
             if (this.velX > -this.speed) {
+                this.direction = -1;
                 this.velX--;
             }
         }

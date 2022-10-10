@@ -6,6 +6,9 @@ if (typeof require !== 'undefined') {
     var Cell = require('./Cell.js');
 }
 
+const errorSound = typeof Audio === 'undefined' ? null : new Audio('sound/error.mp3')
+const successSound = typeof Audio === 'undefined' ? null : new Audio('sound/success.mp3')
+
 /**
  * Уровень в игре
  * @param {Array} matrix матрица уровня
@@ -159,6 +162,7 @@ var Level = function (matrix, cellConstructors, sprites, params, onload) {
                     this.playerPos[1] = this.cellSize * i;
                     this.passiveCells.push([this.cellSize * v, this.cellSize * i]);
                 } else {
+                    this.passiveCells.push([this.cellSize * v, this.cellSize * i]);
                     this.activeCells.push(new Cell(i, v, this.cellSize, this.cellSize, this, this.cellConstructors[cell]));
                 }
             } else {
@@ -177,6 +181,7 @@ var Level = function (matrix, cellConstructors, sprites, params, onload) {
         this.finalPlayer = player;
         this.addForRender(this.winPic);
         this.afterWin();
+        successSound && successSound.play();
     };
 
     /**
@@ -187,16 +192,17 @@ var Level = function (matrix, cellConstructors, sprites, params, onload) {
         this.finalPlayer = player;
         this.addForRender(this.losePic);
         this.afterLose();
+        errorSound && errorSound.play();
     };
 
     //Заставка победы
     this.winPic = function () {
-        this.endScreen('Победа - ' + this.finalPlayer + '!', '#1051b2');
+        this.endScreen('[' + this.finalPlayer + ']' + ' says moo-o-o-o-o!', '#1051b2');
     };
 
     //Заставка поражения
     this.losePic = function () {
-        this.endScreen('Поражение - ' + this.finalPlayer + '!', '#b51717');
+        this.endScreen('[' + this.finalPlayer + ']' + ' got a sandwich!', '#b51717');
     };
 
     /**

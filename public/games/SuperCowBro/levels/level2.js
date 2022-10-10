@@ -89,6 +89,7 @@ var level2 = {
     },
     sprites: {
         kolobok: 'images/kolobok.png',
+        kolobokLeft: 'images/kolobok-left.png',
         kolobok2: 'images/kolobok2.png',
         wall: 'images/wall.png',
         passiveCells: 'images/default.png',

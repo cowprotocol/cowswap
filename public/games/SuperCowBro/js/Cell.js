@@ -98,7 +98,9 @@ var Cell = function (row, col, width, height, level, params) {
         this.render = params.render;
     } else {
         this.render = function () {
-            if (this.level.cellIsVisible(this)) this.level.ctx.drawImage(this.sprite, this.x, this.y);
+            if (this.level.cellIsVisible(this)) {
+                this.level.ctx.drawImage(this.sprite, this.x, this.y);
+            }
         };
     }
 
