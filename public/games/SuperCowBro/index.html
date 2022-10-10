@@ -1,12 +1,12 @@
-﻿<!DOCTYPE HTML>
+﻿<!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Anonce</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="copyright" content="Shoom"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="copyright" content="Shoom" />
 
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
 
     <script type="text/javascript" src="lib/jquery-min.js"></script>
     <script type="text/javascript" src="lib/underscore-min.js"></script>
@@ -23,39 +23,39 @@
     <script type="text/javascript" src="js/Game.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/WSClient.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/main.js" charset="utf-8"></script>
-</head>
-<body>
-<div id="main">
-    <div id="createRoom">
+  </head>
+  <body>
+    <div id="main">
+      <div id="createRoom">
         <div>
-            <label for="my_name">Nickname:</label>
-            <input type="text" id="my_name" value="cow"/>
+          <label for="my_name">Nickname:</label>
+          <input type="text" id="my_name" value="cow" />
         </div>
         <div>
-            <label for="room_name">Room Id:</label>
-            <input type="text" id="room_name" value="public"/>
+          <label for="room_name">Room Id:</label>
+          <input type="text" id="room_name" value="public" />
         </div>
         <div>
-            <label for="map">Level:</label>
-            <select id="map">
-                <option value="level1">level 1</option>
-                <option value="level2">level 2</option>
-                <option selected value="level3">level 3</option>
-                <option selected value="level4">level 4</option>
-            </select>
+          <label for="map">Level:</label>
+          <select id="map">
+            <option value="level1">level 1</option>
+            <option value="level2">level 2</option>
+            <option selected value="level3">level 3</option>
+            <option selected value="level4">level 4</option>
+          </select>
         </div>
         <div>
-            <button id="connect_to_room">Connect</button>
+          <button id="connect_to_room">Connect</button>
         </div>
         <div>
-            <label for="fps">FPS:</label>
-            <input type="text" id="fps"/>
+          <label for="fps">FPS:</label>
+          <input type="text" id="fps" />
         </div>
         <div>
-            <a href="edit">Map editor</a>
+          <a href="edit">Map editor</a>
         </div>
+      </div>
+      <canvas id="scene"></canvas>
     </div>
-    <canvas id="scene"></canvas>
-</div>
-</body>
+  </body>
 </html>

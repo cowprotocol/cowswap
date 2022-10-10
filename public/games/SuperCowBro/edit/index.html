@@ -1,12 +1,12 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Anonce</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="copyright" content="Shoom"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="copyright" content="Shoom" />
 
-    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
     <script type="text/javascript" src="../lib/jquery-min.js"></script>
     <script type="text/javascript" src="../lib/underscore-min.js"></script>
@@ -23,96 +23,98 @@
     <script type="text/javascript" src="../levels/default.js" charset="utf-8"></script>
     <script type="text/javascript" src="main.js" charset="utf-8"></script>
     <style>
-        #filter {
-            background-color: #ffffff;
-            padding: 15px 40px;
-        }
+      #filter {
+        background-color: #ffffff;
+        padding: 15px 40px;
+      }
 
-        .box {
-            margin-bottom: 10px;
-        }
+      .box {
+        margin-bottom: 10px;
+      }
 
-        #sizes, #blocks {
-            float: left;
-        }
+      #sizes,
+      #blocks {
+        float: left;
+      }
 
-        #sizes, #blocks {
-            margin-right: 20px;
-        }
+      #sizes,
+      #blocks {
+        margin-right: 20px;
+      }
 
-        .clear {
-            width: 100%;
-            float: none;
-            clear: both;
-        }
+      .clear {
+        width: 100%;
+        float: none;
+        clear: both;
+      }
 
-        #blocks div {
-            display: inline-block;
-            margin: 0 10px;
-            cursor: pointer;
-        }
+      #blocks div {
+        display: inline-block;
+        margin: 0 10px;
+        cursor: pointer;
+      }
 
-        #blocks div.active {
-            outline: 5px solid #ff8018;
-            border: 1px solid #ffffff;
-        }
+      #blocks div.active {
+        outline: 5px solid #ff8018;
+        border: 1px solid #ffffff;
+      }
 
-        #scene {
-            cursor: none;
-            margin-bottom: -20px;
-        }
+      #scene {
+        cursor: none;
+        margin-bottom: -20px;
+      }
 
-        #result {
-            float: left;
-        }
+      #result {
+        float: left;
+      }
 
-        #res {
-            width: 300px;
-            height: 30px;
-            max-width: 300px;
-            max-height: 30px;
-        }
+      #res {
+        width: 300px;
+        height: 30px;
+        max-width: 300px;
+        max-height: 30px;
+      }
 
-        #test {
-            background-color: #ffffff;
-            margin: 50px auto;
-            display: block;
-        }
+      #test {
+        background-color: #ffffff;
+        margin: 50px auto;
+        display: block;
+      }
     </style>
-</head>
-<body>
-<div id="main">
-    <div id="filter">
+  </head>
+  <body>
+    <div id="main">
+      <div id="filter">
         <div id="sizes">
-            <div class="box">
-                <label>Width:</label>
-                <input type="text" id="sc_width"/>
-            </div>
-            <div class="box">
-                <label>Height:</label>
-                <input type="text" id="sc_height"/>
-            </div>
+          <div class="box">
+            <label>Width:</label>
+            <input type="text" id="sc_width" />
+          </div>
+          <div class="box">
+            <label>Height:</label>
+            <input type="text" id="sc_height" />
+          </div>
         </div>
 
         <div id="blocks"></div>
 
         <div id="result">
-            <button onclick="get_matrix()">Matrix</button>
-            <button id="load_inp">Test it!</button>
-            <br>
-            <textarea id="res"></textarea>
+          <button onclick="get_matrix()">Matrix</button>
+          <button id="load_inp">Test it!</button>
+          <br />
+          <textarea id="res"></textarea>
         </div>
 
         <div>
-            <label for="fps">FPS:</label>
-            <input type="text" id="fps">
+          <label for="fps">FPS:</label>
+          <input type="text" id="fps" />
         </div>
 
         <div class="clear"></div>
+      </div>
+      <canvas id="scene"></canvas>
+      <br />
+      <canvas id="test"></canvas>
     </div>
-    <canvas id="scene"></canvas>
-    <br>
-    <canvas id="test"></canvas>
-</div>
-</body>
+  </body>
 </html>

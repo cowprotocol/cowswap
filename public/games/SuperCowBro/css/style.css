@@ -20,35 +20,42 @@ background-color: #d20000;
 color: #fff;
 } */
 
-body, html {
-    margin: 0;
-    padding: 0;
-    font-size: 14px;
-    font-family: Arial;
-    color: #252525;
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-family: Arial;
+  color: #252525;
 }
 
-ul, p, h1, h2, h3, h4, h5 {
-    margin: 0;
-    padding: 0;
+ul,
+p,
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-color: #464646;
+  background-color: #464646;
 }
 
 #scene {
-    background-color: #ffffff;
-    margin: 50px auto;
-    display: block;
+  background-color: #ffffff;
+  margin: 50px auto;
+  display: block;
 }
 
 #createRoom {
-    background-color: #ffffff;
-    padding: 10px;
+  background-color: #ffffff;
+  padding: 10px;
 }
 
 #createRoom div {
-    display: inline-block;
-    margin-right: 20px;
+  display: inline-block;
+  margin-right: 20px;
 }
