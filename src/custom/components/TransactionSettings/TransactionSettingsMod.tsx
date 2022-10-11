@@ -23,8 +23,11 @@ import {
   LOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
+  PERCENTAGE_PRECISION,
 } from 'constants/index'
-import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
+import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
+import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
+import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from '../analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -113,6 +116,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
+  const shouldShowEthFlowSlippage = useShowNativeEthFlowSlippageWarning()
+
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
 
@@ -149,9 +154,13 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   }
 
   const tooLow =
-    userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
+    !shouldShowEthFlowSlippage &&
+    userSlippageTolerance !== 'auto' &&
+    userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
-    userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
+    !shouldShowEthFlowSlippage &&
+    userSlippageTolerance !== 'auto' &&
+    userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -212,10 +221,15 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               parseSlippageInput('')
             }}
             active={userSlippageTolerance === 'auto'}
+            disabled={shouldShowEthFlowSlippage}
           >
             <Trans>Auto</Trans>
           </Option>
-          <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
+          <OptionCustom
+            active={userSlippageTolerance !== 'auto' || !shouldShowEthFlowSlippage}
+            warning={!!slippageError}
+            tabIndex={-1}
+          >
             <RowBetween>
               {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
@@ -225,9 +239,12 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 </SlippageEmojiContainer>
               ) : null}
               <Input
+                disabled={shouldShowEthFlowSlippage}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={
-                  slippageInput.length > 0
+                  shouldShowEthFlowSlippage
+                    ? ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
+                    : slippageInput.length > 0
                     ? slippageInput
                     : userSlippageTolerance === 'auto'
                     ? ''
