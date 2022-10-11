@@ -11,7 +11,7 @@ import { Colors } from './styled'
 
 export * from './components'
 
-type TextProps = Omit<TextPropsOriginal, 'css'>
+export type TextProps = Omit<TextPropsOriginal, 'css'>
 
 export const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
@@ -153,7 +153,7 @@ export function getTheme(darkMode: boolean): DefaultTheme {
 //   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 // }
 
-const TextWrapper = styled(Text)<{ color: keyof Colors }>`
+export const TextWrapper = styled(Text)<{ color: keyof Colors }>`
   color: ${({ color, theme }) => (theme as any)[color]};
 `
 
