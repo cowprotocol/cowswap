@@ -12,7 +12,7 @@ export default function Updater() {
   // save the last non eth-flow slippage amount to reset when user switches back to normal erc20 flow
   const [erc20Slippage, setErc20Slippage] = useState<Percent | 'auto' | undefined>(currentSlippage)
 
-  const shouldShowEthFlowSlippage = useShowNativeEthFlowSlippageWarning()
+  const { showWarning: shouldShowEthFlowSlippage } = useShowNativeEthFlowSlippageWarning()
 
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
 

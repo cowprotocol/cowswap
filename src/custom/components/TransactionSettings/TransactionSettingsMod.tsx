@@ -116,7 +116,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
-  const shouldShowEthFlowSlippage = useShowNativeEthFlowSlippageWarning()
+  const { showWarning: shouldShowEthFlowSlippage } = useShowNativeEthFlowSlippageWarning()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()

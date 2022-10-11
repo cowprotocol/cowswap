@@ -14,6 +14,8 @@ import TradeGp from 'state/swap/TradeGp'
 import { ClickableText } from 'pages/Pool/styleds'
 import { WrapType } from 'hooks/useWrapCallback'
 import { useWrapType } from 'hooks/useWrapCallback'
+import { ETH_FLOW_SLIPPAGE } from 'state/ethFlow/updater'
+import { useShowNativeEthFlowSlippageWarning } from 'state/ethFlow/hooks'
 
 export interface RowSlippageProps {
   trade?: TradeGp
@@ -36,13 +38,14 @@ export function RowSlippage({
   const toggleSettings = useToggleSettingsMenu()
   const displaySlippage = `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`
 
+  // should we show the warning?
+  const { showWarning: showEthFlowSlippageWarning, native } = useShowNativeEthFlowSlippageWarning()
+
   // if is wrap/unwrap operation return null
   const wrapType = useWrapType()
   if (wrapType !== WrapType.NOT_APPLICABLE) return null
 
-  // should we show the warning?
-  const showEthFlowSlippageWarning = !!trade?.inputAmount.currency.isNative
-  const [nativeSymbol, wrappedSymbol] = [trade?.inputAmount.currency.symbol, trade?.inputAmount.currency.wrapped.symbol]
+  const nativeSymbol = native.symbol || 'a native currency'
 
   return (
     <RowBetween height={rowHeight}>
@@ -71,12 +74,9 @@ export function RowSlippage({
             showEthFlowSlippageWarning ? (
               <Trans>
                 <p>
-                  You are currently swapping {nativeSymbol || 'a native token'} with the classic{' '}
-                  {wrappedSymbol || 'wrapped currency'} experience disabled.
-                </p>
-                <p>
-                  Slippage tolerance is defaulted to 2% to ensure a high likelihood of order matching, even in volatile
-                  market situations.
+                  When swapping {nativeSymbol}, slippage tolerance is defaulted to{' '}
+                  {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
+                  matching, even in volatile market situations.
                 </p>
               </Trans>
             ) : (
