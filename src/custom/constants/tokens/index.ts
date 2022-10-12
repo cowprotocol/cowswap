@@ -1,13 +1,8 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { WETH9, Token } from '@uniswap/sdk-core'
-import { DAI_RINKEBY, USDC_RINKEBY, USDT_RINKEBY, WBTC_RINKEBY } from 'utils/rinkeby/constants'
+import { DAI_GOERLI, USDC_GOERLI, USDT_GOERLI, WBTC_GOERLI } from 'utils/goerli/constants'
 import { DAI, USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
-import {
-  USDC_GNOSIS_CHAIN,
-  /*USDT_GNOSIS_CHAIN,*/ WBTC_GNOSIS_CHAIN,
-  WETH_GNOSIS_CHAIN,
-  WXDAI,
-} from 'utils/gnosis_chain/constants'
+import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
 import { SupportedChainId } from 'constants/chains'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 
@@ -144,16 +139,16 @@ export const GNO: Record<SupportedChainId, Token> = {
 }
 
 export const ADDRESS_IMAGE_OVERRIDE = {
-  // Rinkeby
-  [DAI_RINKEBY.address]: getTrustImage(DAI.address),
-  [USDC_RINKEBY.address]: getTrustImage(USDC_MAINNET.address),
-  [USDT_RINKEBY.address]: getTrustImage(USDT.address),
-  [WBTC_RINKEBY.address]: getTrustImage(WBTC.address),
-  [WETH9[ChainId.RINKEBY].address]: getTrustImage(WETH_ADDRESS_MAINNET),
-  [V_COW_TOKEN_RINKEBY.address]: vCowLogo,
-  [COW_TOKEN_RINKEBY.address]: cowLogo,
-  [GNO_RINKEBY.address]: gnoLogo,
-  [USDC_RINKEBY.address]: usdcLogo,
+  // Goerli
+  [DAI_GOERLI.address]: getTrustImage(DAI.address),
+  [USDC_GOERLI.address]: getTrustImage(USDC_MAINNET.address),
+  [USDT_GOERLI.address]: getTrustImage(USDT.address),
+  [WBTC_GOERLI.address]: getTrustImage(WBTC.address),
+  [WETH9[ChainId.GOERLI].address]: getTrustImage(WETH_ADDRESS_MAINNET),
+  [V_COW_TOKEN_GOERLI.address]: vCowLogo,
+  [COW_TOKEN_GOERLI.address]: cowLogo,
+  [GNO_GOERLI.address]: gnoLogo,
+  [USDC_GOERLI.address]: usdcLogo,
   // xDai
   [USDC_GNOSIS_CHAIN.address]: getTrustImage(USDC_MAINNET.address),
   // [USDT_GNOSIS_CHAIN.address]: getTrustImage(USDT.address),
@@ -167,6 +162,7 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   // Mainnet
   [V_COW_TOKEN_MAINNET.address]: vCowLogo,
   [COW_TOKEN_MAINNET.address]: cowLogo,
+  [WETH9[ChainId.MAINNET].address]: getTrustImage(WETH_ADDRESS_MAINNET),
 }
 
 /**

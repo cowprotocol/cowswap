@@ -31,12 +31,13 @@ export const sdk = !BLOCKNATIVE_API_KEY
           dappId: BLOCKNATIVE_API_KEY,
           networkId,
           name: 'bnc_' + networkId,
-          onerror: (error: SDKError) => {
-            console.log('[blocknative]', error)
-            const { sentryError, tags } = constructSentryError(error, { message: 'Blocknative SDK error' })
+          onerror: (sdkError: SDKError) => {
+            console.log('[blocknative]', sdkError)
+            const { sentryError, tags } = constructSentryError(sdkError.error, { message: sdkError.message })
             Sentry.captureException(sentryError, {
               tags,
               contexts: { params },
+              extra: { ...sdkError },
             })
           },
         })

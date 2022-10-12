@@ -2,6 +2,7 @@ import { swapConfirmAtom } from 'cow-react/modules/swap/state/swapConfirmAtom'
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 import TradeGp from 'state/swap/TradeGp'
+import { useExpertModeManager } from 'state/user/hooks'
 
 export interface SwapConfirmManager {
   setSwapError(swapErrorMessage: string): void
@@ -14,6 +15,7 @@ export interface SwapConfirmManager {
 
 export function useSwapConfirmManager(): SwapConfirmManager {
   const [swapConfirmState, setSwapConfirmState] = useAtom(swapConfirmAtom)
+  const [isExpertMode] = useExpertModeManager()
 
   return useMemo(
     () => ({
@@ -55,11 +57,17 @@ export function useSwapConfirmManager(): SwapConfirmManager {
         setSwapConfirmState(state)
       },
       transactionSent(txHash: string) {
-        const state = { ...swapConfirmState, attemptingTxn: false, swapErrorMessage: undefined, txHash }
+        const state = {
+          ...swapConfirmState,
+          attemptingTxn: false,
+          swapErrorMessage: undefined,
+          showConfirm: !isExpertMode,
+          txHash,
+        }
         console.debug('[Swap confirm state] transactionSent: ', state)
         setSwapConfirmState(state)
       },
     }),
-    [swapConfirmState, setSwapConfirmState]
+    [swapConfirmState, setSwapConfirmState, isExpertMode]
   )
 }

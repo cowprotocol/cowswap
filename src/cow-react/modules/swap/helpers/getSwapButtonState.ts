@@ -1,6 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
 import { WrapType } from 'hooks/useWrapCallback'
-import { ReactNode } from 'react'
 import { QuoteError } from 'state/price/actions'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
@@ -37,7 +36,7 @@ export interface SwapButtonStateParams {
   wrapType: WrapType
   wrapInputError: string | undefined
   quoteError: QuoteError | undefined | null
-  inputError?: ReactNode
+  inputError?: string
   approvalState: ApprovalState
   approvalSubmitted: boolean
   feeWarningAccepted: boolean

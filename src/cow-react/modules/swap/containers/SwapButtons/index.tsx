@@ -12,7 +12,7 @@ import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
 import * as styledEl from './styled'
 import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
-import { isSwapButtonPropsEqual } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
+import { genericPropsChecker } from 'cow-react/modules/swap/containers/NewSwapWidget/propsChecker'
 
 import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
@@ -153,4 +153,4 @@ export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
   console.debug('RENDER SWAP BUTTON: ', props)
 
   return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
-}, isSwapButtonPropsEqual)
+}, genericPropsChecker)
