@@ -37,6 +37,8 @@ export interface Colors extends ColorsUniswap {
   cardBorder: Color
   cardShadow1: Color
   cardShadow2: Color
+  blueDark1: Color
+  blueLight1: Color
 }
 
 declare module 'styled-components' {
@@ -73,7 +75,7 @@ declare module 'styled-components' {
     cursor?: FlattenSimpleInterpolation
     body: {
       background?: FlattenSimpleInterpolation
-    }
+    },
     appBody: {
       boxShadow: string
       boxShadowMobile: string

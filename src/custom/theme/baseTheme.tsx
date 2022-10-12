@@ -5,7 +5,7 @@ import { ButtonSize } from 'theme'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { transparentize } from 'polished'
-import { cowSwapBackground, cowSwapLogo } from 'theme/cowSwapAssets'
+import { cowSwapLogo } from 'theme/cowSwapAssets'
 
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -73,6 +73,10 @@ export function colors(darkMode: boolean): Colors {
     blueShade2: '#011e34',
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
 
+    // CoW Swap V2 colors
+    blueDark1: '#07162D',
+    blueLight1: '#CAE9FF',
+
     // states
     success: darkMode ? '#00d897' : '#00815a',
     danger: darkMode ? '#f7a7a7' : '#8f0000',
@@ -109,18 +113,46 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean, colorsTheme: Colors) {
-  const background = cowSwapBackground(darkMode, shouldBlurBackground)
-
+export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   return {
     body: {
       background: css`
-        background: url(data:image/svg+xml;base64,${background}) no-repeat 100% / cover fixed,
-          ${darkMode
-            ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
-            : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
+        background: ${darkMode
+          ? colorsTheme.blueDark1
+          : `linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
         background-attachment: fixed;
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
+
+        ${darkMode &&
+        `
+          &::before {
+            content: '';
+            position: absolute;
+            width: 175px;
+            height: 750px;
+            left: 0;
+            top: -55%;
+            background: rgb(0 42 104 / 70%);
+            filter: blur(200px);
+            transform: rotate(-90deg);
+            right: 0;
+            margin: 0 auto;
+            z-index: -1;
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            width: 175px;
+            height: 350px;
+            left: -130px;
+            top: 45vh;
+            background: rgb(0 42 104 / 70%);
+            filter: blur(200px);
+            margin: 0 auto;
+            z-index: -1;
+          }
+        `}
       `,
     },
     logo: {
@@ -353,17 +385,17 @@ export const UniThemedGlobalStyle = css`
   }
   body {
     min-height: 100vh;
-    background-position: 0 -30vh;
-    background-repeat: no-repeat;
-    background-image: ${({ theme }) =>
+    /* background-position: 0 -30vh; */
+    /* background-repeat: no-repeat; */
+    /* background-image: ${({ theme }) =>
       `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
         1,
         theme.bg1
-      )} 100%)`};
-    scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-    scroll-behavior: smooth;
+      )} 100%)`}; */
+    /* scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+    scroll-behavior: smooth; */
 
-    &::-webkit-scrollbar {
+    /* &::-webkit-scrollbar {
       width: 14px;
       background: ${({ theme }) => `${theme.card.background2}`};
     }
@@ -373,7 +405,7 @@ export const UniThemedGlobalStyle = css`
       border: 3px solid transparent;
       border-radius: 14px;
       background-clip: padding-box;
-    }
+    } */
   }
 `
 
@@ -394,9 +426,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   *, *:after, *:before { box-sizing:border-box; }
 
   body {
-    background-position: initial;
-    background-repeat: no-repeat;
-    background-image: initial;
 
     &.noScroll {
       overflow: hidden;
