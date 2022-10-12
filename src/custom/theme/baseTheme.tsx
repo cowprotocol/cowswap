@@ -117,42 +117,13 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   return {
     body: {
       background: css`
-        background: ${darkMode
-          ? colorsTheme.blueDark1
-          : `linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
+        ${darkMode
+          ? `
+          background-color: ${colorsTheme.blueDark1};
+          background-image: radial-gradient(50% 500px at 50% -13%,hsl(216deg 100% 20% / 70%) 0%,#071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%,hsla(215,100%,20%,0.7) 0,transparent 50%);`
+          : `background: linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
         background-attachment: fixed;
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
-
-        ${darkMode &&
-        `
-          &::before {
-            content: '';
-            position: absolute;
-            width: 175px;
-            height: 750px;
-            left: 0;
-            top: -55%;
-            background: rgb(0 42 104 / 70%);
-            filter: blur(200px);
-            transform: rotate(-90deg);
-            right: 0;
-            margin: 0 auto;
-            z-index: -1;
-          }
-
-          &::after {
-            content: '';
-            position: absolute;
-            width: 175px;
-            height: 350px;
-            left: -130px;
-            top: 45vh;
-            background: rgb(0 42 104 / 70%);
-            filter: blur(200px);
-            margin: 0 auto;
-            z-index: -1;
-          }
-        `}
       `,
     },
     logo: {
