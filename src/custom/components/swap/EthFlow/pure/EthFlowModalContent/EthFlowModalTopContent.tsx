@@ -53,7 +53,7 @@ export function EthFlowModalTopContent({ descriptions, state, balanceChecks, nat
             ) : (
               <>
                 sufficient for{' '}
-                <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s)</strong>
+                <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s).</strong>
               </>
             )}
           </Trans>

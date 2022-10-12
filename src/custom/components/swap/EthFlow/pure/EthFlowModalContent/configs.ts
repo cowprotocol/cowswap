@@ -6,7 +6,7 @@ export interface EthFlowConfig {
   descriptions: string[]
 }
 
-const expertCommonDescription = 'Transaction signature required, please check your connected wallet'
+const expertCommonDescription = 'Transaction signature required, please check your connected wallet.'
 const ethFlowDescription = (nativeSymbol: string) =>
   `The current version of CoW Swap can’t yet use native ${nativeSymbol} to execute a trade (Look out for that feature coming soon!).`
 
@@ -26,7 +26,7 @@ export const ethFlowConfigs: {
     buttonText: 'Wrap and approve',
     descriptions: [
       'Both wrap and approve operations failed.',
-      `Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again`,
+      `Check that you are providing a sufficient gas limit for both transactions in your wallet. Click "Wrap and approve" to try again.`,
     ],
   }),
   [EthFlowState.WrapFailed]: ({ nativeSymbol }) => ({
@@ -34,15 +34,15 @@ export const ethFlowConfigs: {
     buttonText: `Wrap ${nativeSymbol}`,
     descriptions: [
       `Wrap operation failed.`,
-      `Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Wrap ${nativeSymbol}" to try again`,
+      `Check that you are providing a sufficient gas limit for the transaction in your wallet. Click "Wrap ${nativeSymbol}" to try again.`,
     ],
   }),
   [EthFlowState.ApproveFailed]: ({ wrappedSymbol }) => ({
     title: `Approve ${wrappedSymbol} failed!`,
     buttonText: `Approve ${wrappedSymbol}`,
     descriptions: [
-      `Approve operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet`,
-      `Click "Approve ${wrappedSymbol}" to try again`,
+      `Approve operation failed. Check that you are providing a sufficient gas limit for the transaction in your wallet.`,
+      `Click "Approve ${wrappedSymbol}" to try again.`,
     ],
   }),
   /**
@@ -52,24 +52,24 @@ export const ethFlowConfigs: {
   [EthFlowState.WrapAndApprovePending]: () => ({
     title: 'Wrap and approve',
     buttonText: '',
-    descriptions: ['Transactions in progress', 'See below for live status updates of each operation'],
+    descriptions: ['Transactions in progress.', 'See below for live status updates of each operation.'],
   }),
   [EthFlowState.WrapPending]: ({ nativeSymbol }) => ({
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: '',
-    descriptions: ['Transaction in progress. See below for live status updates'],
+    descriptions: ['Transaction in progress. See below for live status updates.'],
   }),
   [EthFlowState.ApprovePending]: ({ wrappedSymbol }) => ({
     title: `Approve ${wrappedSymbol}`,
     buttonText: '',
-    descriptions: ['Transaction in progress. See below for live status updates'],
+    descriptions: ['Transaction in progress. See below for live status updates.'],
   }),
   [EthFlowState.ApproveInsufficient]: ({ wrappedSymbol }) => ({
     title: 'Approval amount insufficient!',
     buttonText: `Approve ${wrappedSymbol}`,
     descriptions: [
-      'Approval amount insufficient for input amount',
-      'Check that you are approving an amount equal to or greater than the input amount',
+      'Approval amount insufficient for input amount.',
+      'Check that you are approving an amount equal to or greater than the input amount.',
     ],
   }),
   /**
@@ -80,7 +80,7 @@ export const ethFlowConfigs: {
     title: 'Wrap and approve',
     buttonText: '',
     descriptions: [
-      `2 pending on-chain transactions: ${nativeSymbol} wrap and approve. Please check your connected wallet for both signature requests`,
+      `2 pending on-chain transactions: ${nativeSymbol} wrap and approve. Please check your connected wallet for both signature requests.`,
     ],
   }),
   [EthFlowState.WrapNeeded]: ({ isExpertMode, nativeSymbol }) => ({
