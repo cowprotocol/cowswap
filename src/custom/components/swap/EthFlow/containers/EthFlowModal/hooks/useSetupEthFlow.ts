@@ -10,8 +10,10 @@ import { ActivityDescriptors, ActivityStatus } from 'hooks/useRecentActivity'
 import { useAtomValue } from 'jotai/utils'
 import { EthFlowActions } from './useEthFlowActions'
 import { delay } from 'utils/misc'
+import { EthFlowState } from '../../../typings'
 
 interface EthFlowSetupParams {
+  state: EthFlowState
   ethFlowActions: EthFlowActions
   approvalState: ApprovalState
   approveActivity: ActivityDescriptors | null
@@ -25,6 +27,7 @@ interface EthFlowSetupParams {
 const MODAL_CLOSE_DELAY = 1000 // 1s
 
 export function useSetupEthFlow({
+  state,
   ethFlowActions,
   isExpertMode,
   hasEnoughWrappedBalanceForSwap,
@@ -90,11 +93,24 @@ export function useSetupEthFlow({
 
   // Open swap confirmation modal when Expert mode flow finished
   useEffect(() => {
-    const isApprovePassed = isApproveNeeded ? approveTxStatus === ActivityStatus.CONFIRMED : true
+    // approve state can be CONFIRMED but the amount approved can be insufficient
+    const approveInsufficient = state === EthFlowState.ApproveInsufficient
+    const isApprovePassed = isApproveNeeded
+      ? !approveInsufficient && approveTxStatus === ActivityStatus.CONFIRMED
+      : true
     const isWrapPassed = isWrapNeeded ? wrapTxStatus === ActivityStatus.CONFIRMED : true
 
     if (isExpertMode && isExpertModeRunning && isApprovePassed && isWrapPassed) {
       delay(MODAL_CLOSE_DELAY).then(ethFlowActions.swap)
     }
-  }, [ethFlowActions, isExpertMode, isApproveNeeded, approveTxStatus, isWrapNeeded, wrapTxStatus, isExpertModeRunning])
+  }, [
+    state,
+    ethFlowActions,
+    isExpertMode,
+    isApproveNeeded,
+    approveTxStatus,
+    isWrapNeeded,
+    wrapTxStatus,
+    isExpertModeRunning,
+  ])
 }
