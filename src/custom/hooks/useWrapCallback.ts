@@ -28,7 +28,7 @@ export enum WrapType {
   UNWRAP,
 }
 
-interface WrapUnwrapCallbackParams {
+export interface WrapUnwrapCallbackParams {
   useModals?: boolean
 }
 

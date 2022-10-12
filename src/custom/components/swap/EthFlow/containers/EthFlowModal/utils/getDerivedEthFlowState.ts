@@ -1,19 +1,26 @@
-import { EthFlowState } from '../../..'
-import { DerivedEthFlowStateProps } from '../../../pure/EthFlowModalContent/EthFlowModalBottomContent'
+import { EthFlowState } from '../../../typings'
+import { EthFlowContext } from '../../../state/ethFlowContextAtom'
+import { ActivityStatus } from 'hooks/useRecentActivity'
 
 // returns derived ethflow state from current props
-export function getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
-  const { approveError, wrapError, approveState, wrapState, needsApproval, needsWrap, isExpertMode } = params
+export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: boolean): EthFlowState {
+  const approveActivityStatus = context.approve.txStatus
+  const wrapActivityStatus = context.wrap.txStatus
+  const needsApproval = context.approve.isNeeded
+  const needsWrap = context.wrap.isNeeded
   // approve state
-  const approveExpired = approveState?.isExpired
-  const approvePending = approveState?.isPending
-  const approveSentAndSuccessful = Boolean(!approveError && !approvePending && approveState?.isConfirmed)
+  const approveExpired = approveActivityStatus === ActivityStatus.EXPIRED
+  const approvePending =
+    (!approveActivityStatus && context.approve.txHash) || approveActivityStatus === ActivityStatus.PENDING
+  const approveConfirmed = approveActivityStatus === ActivityStatus.CONFIRMED
+  const approveSentAndSuccessful = Boolean(!approvePending && approveConfirmed)
   const approveInsufficient = approveSentAndSuccessful && needsApproval
   const approveFinished = !needsApproval || approveSentAndSuccessful
   // wrap state
-  const wrapExpired = wrapState?.isExpired
-  const wrapPending = wrapState?.isPending
-  const wrapSentAndSuccessful = Boolean(!wrapError && !wrapPending && wrapState?.isConfirmed)
+  const wrapExpired = wrapActivityStatus === ActivityStatus.EXPIRED
+  const wrapPending = (!wrapActivityStatus && context.wrap.txHash) || wrapActivityStatus === ActivityStatus.PENDING
+  const wrapConfirmed = wrapActivityStatus === ActivityStatus.CONFIRMED
+  const wrapSentAndSuccessful = Boolean(!wrapPending && wrapConfirmed)
   const wrapNeeded = needsWrap && !wrapSentAndSuccessful
   const wrapFinished = !needsWrap || wrapSentAndSuccessful
 
@@ -24,50 +31,46 @@ export function getDerivedEthFlowState(params: DerivedEthFlowStateProps) {
       return EthFlowState.WrapAndApprovePending
     }
     // Only wrap is pending
-    else if (wrapPending) {
-      return EthFlowState.WrapUnwrapPending
+    if (wrapPending) {
+      return EthFlowState.WrapPending
     }
     // Only approve is pending
-    else return EthFlowState.ApprovePending
+    return EthFlowState.ApprovePending
   }
   // FAILED states
-  else if (approveExpired || wrapExpired) {
+  if (approveExpired || wrapExpired) {
     // expertMode only - BOTH operations failed
     if (isExpertMode && approveExpired && wrapExpired) {
       return EthFlowState.WrapAndApproveFailed
     }
     // Only wrap failed
-    else if (wrapExpired) {
-      return EthFlowState.WrapUnwrapFailed
+    if (wrapExpired) {
+      return EthFlowState.WrapFailed
     }
     // Only approve failed
-    else return EthFlowState.ApproveFailed
+    return EthFlowState.ApproveFailed
   }
   // NEEDS wrap/approve state
-  else if (needsApproval || wrapNeeded) {
+  if (needsApproval || wrapNeeded) {
     // INSUFFICIENT approve state
     if (approveInsufficient) {
       return EthFlowState.ApproveInsufficient
     }
     // in expertMode and we need to wrap and swap
-    else if (isExpertMode && needsApproval && wrapNeeded) {
+    if (isExpertMode && needsApproval && wrapNeeded) {
       return EthFlowState.WrapAndApproveNeeded
     }
     // Only wrap needed
-    else if (wrapNeeded) {
+    if (wrapNeeded) {
       return EthFlowState.WrapNeeded
     }
     // Only approve needed
-    else {
-      return EthFlowState.ApproveNeeded
-    }
+    return EthFlowState.ApproveNeeded
   }
   // BOTH successful, ready to swap
-  else if (approveFinished && wrapFinished) {
+  if (approveFinished && wrapFinished) {
     return EthFlowState.SwapReady
   }
-  // LOADING
-  else {
-    return EthFlowState.Loading
-  }
+
+  return EthFlowState.Loading
 }

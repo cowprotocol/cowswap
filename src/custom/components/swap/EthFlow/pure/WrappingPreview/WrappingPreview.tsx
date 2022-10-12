@@ -8,40 +8,26 @@ import { colors } from 'theme'
 const COLOUR_SHEET = colors(false)
 
 export type WrappingPreviewProps = {
-  nativeSymbol: string
-  nativeBalance: CurrencyAmount<Currency> | undefined
   native: Currency
-  nativeInput: CurrencyAmount<Currency> | undefined
-  wrappedBalance: CurrencyAmount<Currency> | undefined
-  wrappedSymbol: string
+  nativeBalance: CurrencyAmount<Currency> | undefined
   wrapped: Currency
+  wrappedBalance: CurrencyAmount<Currency> | undefined
+  amount: CurrencyAmount<Currency> | undefined
   chainId?: number
 }
 
 export const WrappingPreview = (props: WrappingPreviewProps) => {
-  const { nativeSymbol, nativeBalance, native, wrapped, wrappedBalance, wrappedSymbol, nativeInput, chainId } = props
+  const { nativeBalance, native, wrapped, wrappedBalance, amount, chainId } = props
 
   return (
     <styledEl.WrappingPreviewContainer>
       {/* To Wrap */}
-      <WrapCard
-        symbol={nativeSymbol}
-        balance={nativeBalance}
-        currency={native}
-        amountToWrap={nativeInput}
-        chainId={chainId}
-      />
+      <WrapCard balance={nativeBalance} currency={native} amountToWrap={amount} chainId={chainId} />
 
       <ArrowRight size={18} color={COLOUR_SHEET.primary1} />
 
       {/* Wrap Outcome */}
-      <WrapCard
-        symbol={wrappedSymbol}
-        balance={wrappedBalance}
-        currency={wrapped}
-        amountToWrap={nativeInput}
-        chainId={chainId}
-      />
+      <WrapCard balance={wrappedBalance} currency={wrapped} amountToWrap={amount} chainId={chainId} />
     </styledEl.WrappingPreviewContainer>
   )
 }

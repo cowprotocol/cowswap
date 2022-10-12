@@ -2,9 +2,9 @@ import { Trans } from '@lingui/macro'
 
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { EthFlowState } from '../..'
+import { EthFlowState } from '../../typings'
 
-const ModalMessage = styled.p`
+const ModalMessage = styled.div`
   display: flex;
   flex-flow: row wrap;
   padding: 0;
@@ -18,6 +18,8 @@ const LowBalanceMessage = styled(ModalMessage)`
   color: ${({ theme }) => theme.text2};
   padding: 8px 12px;
   border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
 `
 
 export type BalanceChecks = { isLowBalance: boolean; txsRemaining: string | null } | undefined
@@ -32,7 +34,7 @@ export type TopContentParams = {
 export function EthFlowModalTopContent({ descriptions, state, balanceChecks, nativeSymbol }: TopContentParams) {
   return (
     <>
-      {descriptions && (
+      {!!descriptions?.length && (
         <ModalMessage>
           {descriptions.map((description, index) => (
             <p key={index}>
