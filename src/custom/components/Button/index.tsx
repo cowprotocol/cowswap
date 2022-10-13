@@ -35,9 +35,8 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   min-height: 58px;
   ${({ theme }) => theme.cursor};
 
-  > div {
-    background: red;
-  }
+  /* > div {
+  } */
 
   &:focus,
   &:hover,
