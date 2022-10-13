@@ -7,7 +7,7 @@ const Wrapper = styled(BodyWrapperMod)`
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.normal};
+  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
 
   /* ${({ theme }) => theme.mediaWidth.upToSmall`
   `}; */

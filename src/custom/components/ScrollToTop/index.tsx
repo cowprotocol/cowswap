@@ -12,38 +12,37 @@ interface WrapperProps {
 }
 
 const Wrapper = styled.div<WrapperProps>`
-    position: fixed;
-    ${({ theme, background = theme.primary1, top, right, bottom, left }) => ({
-      background,
-      top,
-      right,
-      bottom,
-      left,
-    })}
+  position: fixed;
+  ${({ theme, background = theme.primary1, top, right, bottom, left }) => ({
+    background,
+    top,
+    right,
+    bottom,
+    left,
+  })}
 
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center; 
-    align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
 
-    font-size: larger;
-    border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius}
+  font-size: larger;
+  border-radius: 16px;
 
-    padding: 0.2rem 0.4rem;
+  padding: 0.2rem 0.4rem;
 
-    cursor: pointer;
-    opacity: 0.4;
+  cursor: pointer;
+  opacity: 0.4;
 
-    transition: opacity 0.4s ease-in-out;
-    
-    &:hover {
-        opacity: 1;
-    }
+  transition: opacity 0.4s ease-in-out;
 
-    > svg {
-        margin: 0 0.4rem;
-    }
+  &:hover {
+    opacity: 1;
+  }
 
+  > svg {
+    margin: 0 0.4rem;
+  }
 `
 
 const SHOW_SCROLL_TOP_THRESHOLD = 250

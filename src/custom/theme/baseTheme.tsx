@@ -139,6 +139,12 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
     },
+    button: {
+      bg1: darkMode
+        ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
+        : '#052B65',
+      text1: darkMode ? '#CAE9FF' : '#FFFFFF',
+    },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
     },
@@ -162,7 +168,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     appBody: {
       maxWidth: {
-        normal: '470px',
+        trade: '470px',
         content: '680px',
       },
     },
@@ -256,16 +262,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         borderColor: darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled,
         borderSize: `2px`,
       },
-    },
-    buttonPrimary: {
-      background: css`
-        background: ${colorsTheme.primary1};
-        color: ${colorsTheme.black};
-      `,
-      fontWeight: '800',
-      border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '16px',
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
     buttonOutlined: {
       background: css`

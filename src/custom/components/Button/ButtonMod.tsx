@@ -62,7 +62,6 @@ export const BaseButton = styled(RebassButton)<
 `
 
 export const ButtonPrimary = styled(BaseButton)`
-  ${({ theme }) => theme.buttonPrimary.background}
   font-size: 16px;
   &:focus,
   &:hover,

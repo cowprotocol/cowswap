@@ -74,6 +74,10 @@ declare module 'styled-components' {
     input: {
       bg1: Color
     }
+    button: {
+      bg1: Color
+      text1: Color
+    }
     util: {
       invertImageForDarkMode: string | null
     }
@@ -83,7 +87,7 @@ declare module 'styled-components' {
     }
     appBody: {
       maxWidth: {
-        normal: string
+        trade: string
         content: string
       }
     }
@@ -146,14 +150,6 @@ declare module 'styled-components' {
       colorSelected?: string
     }
     buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
-    buttonPrimary: {
-      background?: FlattenSimpleInterpolation
-      fontSize?: string
-      fontWeight?: string
-      border?: string
-      borderRadius?: string
-      boxShadow?: string
-    }
     buttonOutlined: {
       background?: FlattenSimpleInterpolation
       fontSize?: string
