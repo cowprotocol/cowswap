@@ -39,10 +39,6 @@ const Settings = styled(SettingsMod)`
       outline: none;
     }
 
-    > b {
-      margin: 0 4px 0 0;
-    }
-
     svg {
       opacity: 1;
       margin: 2px 0 0;
@@ -120,7 +116,6 @@ export interface SettingsTabProp extends WithClassName {
 function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {
   return (
     <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
-      <b>Settings</b>
       <StyledMenuIcon />
       {expertMode ? (
         <EmojiWrapper>

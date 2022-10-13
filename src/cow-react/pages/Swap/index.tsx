@@ -14,13 +14,13 @@ const SwapModWrapper = styled(SwapMod)`
   ${(props) => props.className} {
     // For now to target <SwapHeader /> without copying files...
     > div:first-child {
-      padding: 0 12px 4px;
+      padding: 0 10px 10px;
       max-width: 100%;
       margin: 0;
     }
 
     ${WrapperUni} {
-      padding: 4px 4px 0;
+      padding: 0;
     }
 
     ${AutoColumn} {

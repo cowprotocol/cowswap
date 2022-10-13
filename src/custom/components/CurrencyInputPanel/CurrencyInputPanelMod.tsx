@@ -247,6 +247,7 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   ${InputPanel} {
     background: transparent;
     color: ${({ theme }) => theme.currencyInput?.color};
+    border-radius: none;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       flex-flow: column wrap;
@@ -301,13 +302,11 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   }
 
   ${Container} {
-    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
-    border: ${({ theme }) =>
-      theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+    background-color: ${({ theme }) => theme.input?.bg1};
+    border: none;
+    border-radius: 16px;
 
     &:hover {
-      border: ${({ theme }) =>
-        theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     }
   }
 

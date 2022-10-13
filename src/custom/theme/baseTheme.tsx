@@ -26,18 +26,25 @@ export function colors(darkMode: boolean): Colors {
   return {
     ...colorsUniswap(darkMode),
 
-    // ****** base ******
-    white: darkMode ? '#c5daef' : '#ffffff',
-    black: darkMode ? '#021E34' : '#000000',
+    // CoW Swap V2 colors
+    white: '#ffffff',
+    black: '#000000',
+
+    blueDark1: '#07162D',
+    blueLight1: '#CAE9FF',
+    grey1: '#ECF1F8',
+
+    bg1: darkMode ? '#0A2347' : '#ffffff',
+    text1: darkMode ? '#CAE9FF' : '#052B65',
+    // ===================
 
     // ****** text ******
-    text1: darkMode ? '#c5daef' : '#000000',
     text2: darkMode ? '#021E34' : '#000000',
     text3: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#000000',
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds / greys ******
-    bg1: darkMode ? '#163861' : '#D5E9F0',
+
     bg2: darkMode ? '#c5daef' : '#ffffff',
     bg3: darkMode ? '#163861' : '#d5e8f0',
     bg4: darkMode ? '#021E34' : '#ffffff',
@@ -72,10 +79,6 @@ export function colors(darkMode: boolean): Colors {
     blueShade: '#0f2644',
     blueShade2: '#011e34',
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
-
-    // CoW Swap V2 colors
-    blueDark1: '#07162D',
-    blueLight1: '#CAE9FF',
 
     // states
     success: darkMode ? '#00d897' : '#00815a',
@@ -132,6 +135,10 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       width: '137px',
       height: '44px',
     },
+    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.04)' : '0 12px 12px rgba(5, 43, 101, 0.04)',
+    input: {
+      bg1: darkMode ? '#07162D' : '#ECF1F8',
+    },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
     },
@@ -154,14 +161,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
     `,
     appBody: {
-      boxShadow: `4px 4px 0 ${colorsTheme.black}`,
-      boxShadowMobile: `0 4px 0 ${colorsTheme.black}`,
-      borderRadius: '16px',
-      border: `3px solid ${colorsTheme.black}`,
-      borderMobile: 'none',
-      padding: '12px 6px',
       maxWidth: {
-        normal: '460px',
+        normal: '470px',
         content: '680px',
       },
     },
