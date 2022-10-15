@@ -89,7 +89,7 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   }),
   [ChainId.GNOSIS_CHAIN]: buildNetworkDefaultLists({
     chainId: ChainId.GNOSIS_CHAIN,
-    networkLists: [COW_DAO_LIST, COW_COINGECKO_LIST, HONEY_SWAP_XDAI],
+    networkLists: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   }),
 }
 
