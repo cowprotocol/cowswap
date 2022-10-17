@@ -108,27 +108,21 @@ export const ethFlowConfigs: {
   [EthFlowState.ApproveNeeded]: ({ isExpertMode, nativeSymbol, wrappedSymbol }) => ({
     title: `Approve ${wrappedSymbol}`,
     buttonText: `Approve ${wrappedSymbol}`,
-    descriptions: isExpertMode
-      ? [
-          ethFlowDescription(nativeSymbol),
-          `For now, use your existing ${wrappedSymbol} balance to continue this trade.`,
-          expertCommonDescription,
-        ]
-      : [
-          ethFlowDescription(nativeSymbol),
-          `For now, use your existing ${wrappedSymbol} balance to continue this trade.`,
-          `Additionally, it is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
-        ],
+    descriptions: [
+      ethFlowDescription(nativeSymbol),
+      `For now, use your existing ${wrappedSymbol} balance to continue this trade.`,
+      isExpertMode
+        ? expertCommonDescription
+        : `Additionally, it is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
+    ],
   }),
-  [EthFlowState.SwapReady]: ({ isExpertMode, nativeSymbol, wrappedSymbol }) => ({
+  [EthFlowState.SwapReady]: ({ nativeSymbol, wrappedSymbol }) => ({
     title: `No need to wrap ${nativeSymbol}`,
     buttonText: 'Swap',
-    descriptions: isExpertMode
-      ? []
-      : [
-          ethFlowDescription(nativeSymbol),
-          `To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`,
-        ],
+    descriptions: [
+      ethFlowDescription(nativeSymbol),
+      `To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`,
+    ],
   }),
   [EthFlowState.Loading]: () => ({
     title: 'Loading operation',
