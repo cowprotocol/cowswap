@@ -41,8 +41,14 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
   } = ethFlowContext
 
+  const isFailedState = [
+    EthFlowState.WrapAndApproveFailed,
+    EthFlowState.WrapFailed,
+    EthFlowState.ApproveFailed,
+    EthFlowState.ApproveInsufficient,
+  ].includes(state)
   // The only case in Expert mode when we display the button is WrapAndApproveFailed, @see getDerivedEthFlowState()
-  const showButton = !isExpertMode || state === EthFlowState.WrapAndApproveFailed
+  const showButton = !isExpertMode || isFailedState
   const showWrapPreview = isExpertMode || ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
 
   const onClick = useCallback(() => {

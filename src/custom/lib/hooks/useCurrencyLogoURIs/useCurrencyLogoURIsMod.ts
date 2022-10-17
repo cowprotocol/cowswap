@@ -1,4 +1,4 @@
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { useMemo } from 'react'
@@ -64,8 +64,7 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
         logoURIs.push(getNativeLogoURI(currency.chainId))
       } else if (currency.isToken) {
         // mod
-        const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
-        const logoURI = imageOverride || getTokenLogoURI(currency.address, currency.chainId)
+        const logoURI = getOverriddenTokenLogoURI(currency)
         if (logoURI) {
           logoURIs.push(logoURI)
         }
@@ -73,4 +72,10 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
     }
     return logoURIs
   }, [currency, locations])
+}
+
+export function getOverriddenTokenLogoURI(currency: Token) {
+  const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
+  const logoURI = imageOverride || getTokenLogoURI(currency.address, currency.chainId)
+  return logoURI
 }

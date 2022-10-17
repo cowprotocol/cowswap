@@ -71,6 +71,7 @@ function EthFlow({
   }
 
   useSetupEthFlow({
+    state,
     ethFlowActions,
     isExpertMode,
     hasEnoughWrappedBalanceForSwap,
