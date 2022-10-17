@@ -10,6 +10,10 @@ const ModalMessage = styled.div`
   padding: 0;
   width: 100%;
   color: ${({ theme }) => theme.wallet.color};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin-top: 2rem;
+  `}
 `
 
 const LowBalanceMessage = styled(ModalMessage)`
