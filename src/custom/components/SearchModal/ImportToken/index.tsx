@@ -54,7 +54,7 @@ const Wrapper = styled.div`
 
 function CardComponent({ theme, key, token, chainId, list }: CardComponentProps) {
   return (
-    <Card backgroundColor={theme.bg4} key={key} className=".token-warning-container" padding="2rem">
+    <Card backgroundColor={theme.bg1} key={key} className=".token-warning-container" padding="2rem">
       <AutoColumn gap="10px" justify="center">
         <CurrencyLogo currency={token} size={'32px'} />
 

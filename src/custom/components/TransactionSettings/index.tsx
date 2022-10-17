@@ -10,7 +10,7 @@ import styled from 'styled-components/macro'
 export const Option = styled(FancyButtonUni)<{ active: boolean }>`
   margin-right: 8px;
   border: 0;
-  background-color: ${({ theme }) => theme.bg4};
+  background-color: ${({ theme }) => theme.bg1};
   color: ${({ theme }) => theme.text1};
   border: ${({ active, theme }) => active && `1px solid ${theme.primary1}`};
 
@@ -21,7 +21,7 @@ export const Option = styled(FancyButtonUni)<{ active: boolean }>`
 
 const Wrapper = styled.div`
   ${OptionCustom} {
-    background-color: ${({ theme }) => theme.bg4};
+    background-color: ${({ theme }) => theme.bg1};
 
     > div > input {
       background: transparent;
@@ -39,7 +39,7 @@ const Wrapper = styled.div`
     }
 
     > button {
-      background-color: ${({ theme }) => theme.bg4};
+      background-color: ${({ theme }) => theme.bg1};
     }
 
     > button > input {

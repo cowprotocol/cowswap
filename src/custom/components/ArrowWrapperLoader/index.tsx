@@ -87,7 +87,7 @@ export const Wrapper = styled.div<ShowLoaderProp>`
         position: absolute;
         left: -2px;
         top: -2px;
-        background: linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg4}, #c5daef, #1b5a7a);
+        background: linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg1}, #c5daef, #1b5a7a);
         background-size: 800%;
         width: calc(100% + 4px);
         height: calc(100% + 4px);

@@ -38,6 +38,7 @@ export interface Colors extends ColorsUniswap {
   cardShadow1: Color
   cardShadow2: Color
   blueDark1: Color
+  blueDark2: Color
   blueLight1: Color
   grey1: Color
 }
@@ -74,6 +75,7 @@ declare module 'styled-components' {
     input: {
       bg1: Color
     }
+    textShadow1: string
     button: {
       bg1: Color
       text1: Color

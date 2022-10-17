@@ -8,7 +8,7 @@ import { OrderStatus } from 'state/orders/actions'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
-  color: ${({ theme }) => theme.wallet?.color};
+  color: ${({ theme }) => theme.text1};
   height: 40px;
   width: 100%;
   display: flex;
@@ -31,8 +31,8 @@ export const Wrapper = styled.div`
 
   ${Web3StatusConnected} {
     border-radius: 21px;
-    color: ${({ theme }) => theme.wallet?.color};
-    background: ${({ theme }) => theme.wallet?.background};
+    color: ${({ theme }) => theme.text1};
+    background-color: ${({ theme }) => theme.grey1};
     height: 100%;
     width: 100%;
     border: 0;

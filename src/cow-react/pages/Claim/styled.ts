@@ -1760,7 +1760,6 @@ export const BannerExplainer = styled.div`
   `}
 
   &:hover {
-    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
   }
 
   > span {

@@ -77,7 +77,7 @@ export const Wrapper = styled.div`
 `
 
 const ImportTokensRow = ({ theme, searchToken, setModalView, setImportToken }: ImportTokensRowProps) => (
-  <Card backgroundColor={theme.bg4} padding="10px 0">
+  <Card backgroundColor={theme.bg1} padding="10px 0">
     <ImportRow
       token={searchToken}
       showImportView={() => setModalView(CurrencyModalView.importToken)}

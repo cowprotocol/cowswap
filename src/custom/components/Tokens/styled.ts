@@ -201,7 +201,7 @@ export const LargeOnly = styled.span`
 
 export const TableHeader = styled(ResponsiveGrid)`
   padding: 1.2rem 0;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.bg2) : transparentize(0.7, theme.bg4))};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.bg2) : transparentize(0.7, theme.bg1))};
 `
 
 export const TableBody = styled(AutoColumn)`

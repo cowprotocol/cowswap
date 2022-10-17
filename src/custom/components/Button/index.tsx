@@ -9,9 +9,7 @@ import { RowBetween } from 'components/Row'
 import {
   // Import only the basic buttons
   ButtonPrimary as ButtonPrimaryMod,
-  ButtonLight as ButtonLightMod,
   ButtonGray as ButtonGrayMod,
-  ButtonSecondary as ButtonSecondaryMod,
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
@@ -57,7 +55,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 `
 
-export const ButtonLight = styled(ButtonLightMod)`
+export const ButtonLight = styled(ButtonPrimary)`
   // CSS override
   ${({ theme }) => theme.buttonLight.background}
   color: ${({ theme }) => theme.primaryText1};
@@ -113,7 +111,7 @@ export const ButtonGray = styled(ButtonGrayMod)`
   }
 `
 
-export const ButtonSecondary = styled(ButtonSecondaryMod)`
+export const ButtonSecondary = styled(ButtonPrimary)`
   // CSS overrides
   transition: box-shadow 0.1s ease-in-out;
 

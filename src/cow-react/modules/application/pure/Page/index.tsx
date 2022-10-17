@@ -2,7 +2,6 @@ import { PropsWithChildren } from 'react'
 
 import styled, { css } from 'styled-components/macro'
 import { WithClassName } from 'types'
-import { transparentize } from 'polished'
 import { Widget } from '@cow/modules/application/pure/Widget'
 
 export const PageWrapper = styled(Widget)`
@@ -11,12 +10,11 @@ export const PageWrapper = styled(Widget)`
   min-height: 500px;
 `
 
-export const Title = styled.h1`
+export const Title = styled.h1<{ darkMode?: boolean }>`
   font-size: 32px;
   margin: 24px 0 16px;
   color: ${({ theme }) => theme.text1};
-  text-shadow: 0px 0px 42px ${({ theme }) => transparentize(0.9, theme.text1)},
-    0px 0px 28px ${({ theme }) => transparentize(0.8, theme.text1)};
+  text-shadow: ${({ theme }) => theme.textShadow1};
 
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     font-size: 24px;

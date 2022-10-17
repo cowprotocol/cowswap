@@ -65,7 +65,7 @@ const Wrapper = styled.div`
   }
 
   ${LightGreyCard} {
-    background: ${({ theme }) => theme.bg4};
+    background: ${({ theme }) => theme.bg1};
   }
 
   ${LightGreyCard} ${RowFixed} > div {
@@ -75,7 +75,7 @@ const Wrapper = styled.div`
 
 export const MenuItem = styled(MenuItemMod)`
   &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
+    background-color: ${({ theme, disabled }) => !disabled && theme.bg1};
   }
 `
 

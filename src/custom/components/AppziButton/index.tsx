@@ -33,8 +33,8 @@ const Wrapper = styled(ButtonPrimary)`
     display: block;
     position: absolute;
     top: 0;
-    color: ${({ theme }) => theme.black};
-    background: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => theme.bg1};
     padding: 9px;
     font-size: 12px;
     border-radius: 14px;
