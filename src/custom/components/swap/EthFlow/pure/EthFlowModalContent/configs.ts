@@ -87,6 +87,7 @@ export const ethFlowConfigs: {
     buttonText: '',
     descriptions: [
       ethFlowDescription(nativeSymbol),
+      `Continue this trade by wrapping your ${nativeSymbol}.`,
       `2 pending on-chain transactions: ${nativeSymbol} wrap and approve. Please check your connected wallet for both signature requests.`,
     ],
   }),
@@ -94,7 +95,11 @@ export const ethFlowConfigs: {
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: `Wrap ${nativeSymbol}`,
     descriptions: isExpertMode
-      ? [ethFlowDescription(nativeSymbol), expertCommonDescription]
+      ? [
+          ethFlowDescription(nativeSymbol),
+          `Continue this trade by wrapping your ${nativeSymbol}.`,
+          expertCommonDescription,
+        ]
       : [
           ethFlowDescription(nativeSymbol),
           `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
@@ -104,9 +109,14 @@ export const ethFlowConfigs: {
     title: `Approve ${wrappedSymbol}`,
     buttonText: `Approve ${wrappedSymbol}`,
     descriptions: isExpertMode
-      ? [ethFlowDescription(nativeSymbol), expertCommonDescription]
+      ? [
+          ethFlowDescription(nativeSymbol),
+          `For now, use your existing ${wrappedSymbol} balance to continue this trade.`,
+          expertCommonDescription,
+        ]
       : [
           ethFlowDescription(nativeSymbol),
+          `For now, use your existing ${wrappedSymbol} balance to continue this trade.`,
           `Additionally, it is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
         ],
   }),
