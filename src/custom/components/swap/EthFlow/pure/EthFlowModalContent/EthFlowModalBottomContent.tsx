@@ -9,14 +9,14 @@ import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { EthFlowActions } from '../../containers/EthFlowModal/hooks/useEthFlowActions'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 
-function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions) {
+function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, isExpertMode: boolean) {
   if (state === EthFlowState.WrapAndApproveFailed) {
     return ethFlowActions.expertModeFlow()
   }
   if (state === EthFlowState.SwapReady) {
-    return ethFlowActions.swap()
+    return ethFlowActions[isExpertMode ? 'directSwap' : 'swap']()
   }
-  if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
+  if ([EthFlowState.WrapNeeded, EthFlowState.WrapFailed].includes(state)) {
     return ethFlowActions.wrap()
   }
   if ([EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient].includes(state)) {
@@ -41,6 +41,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
   } = ethFlowContext
 
+  const isSwapReady = state === EthFlowState.SwapReady
   const isFailedState = [
     EthFlowState.WrapAndApproveFailed,
     EthFlowState.WrapFailed,
@@ -48,12 +49,13 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     EthFlowState.ApproveInsufficient,
   ].includes(state)
   // The only case in Expert mode when we display the button is WrapAndApproveFailed, @see getDerivedEthFlowState()
-  const showButton = !isExpertMode || isFailedState
-  const showWrapPreview = isExpertMode || ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
+  const showButton = (isExpertMode && isSwapReady) || !isExpertMode || isFailedState
+  const showWrapPreview =
+    (isExpertMode && !isSwapReady) || ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
 
   const onClick = useCallback(() => {
-    runEthFlowAction(state, ethFlowActions)
-  }, [state, ethFlowActions])
+    runEthFlowAction(state, ethFlowActions, isExpertMode)
+  }, [state, ethFlowActions, isExpertMode])
 
   const showLoader = useMemo(() => {
     const approveInProgress = approveTxStatus !== null ? approveTxStatus === ActivityStatus.PENDING : !!approveTxHash

@@ -41,6 +41,7 @@ export function useSetupEthFlow({
 
   const [isExpertModeRunning, setExpertModeRunning] = useState(false)
   const [isContextInited, setContextInited] = useState(false)
+  const [isExpertModeNeedsSwapConfirm, setIsExpertModeNeedsSwapConfirm] = useState(false)
 
   const {
     approve: { isNeeded: isApproveNeeded, txStatus: approveTxStatus },
@@ -76,7 +77,9 @@ export function useSetupEthFlow({
       setExpertModeRunning(true)
 
       if (!isWrapNeeded && !isApproveNeeded) {
-        ethFlowActions.directSwap()
+        // initially "swap ready" user in expertMode
+        // still needs to confirm that they are swapping wrapped native
+        setIsExpertModeNeedsSwapConfirm(true)
       } else {
         ethFlowActions.expertModeFlow()
       }
@@ -100,8 +103,9 @@ export function useSetupEthFlow({
       : true
     const isWrapPassed = isWrapNeeded ? wrapTxStatus === ActivityStatus.CONFIRMED : true
 
-    if (isExpertMode && isExpertModeRunning && isApprovePassed && isWrapPassed) {
-      delay(MODAL_CLOSE_DELAY).then(ethFlowActions.swap)
+    // automatically go to swap when user has gone thru wrap/approve steps in expertMode
+    if (isExpertMode && isExpertModeRunning && isApprovePassed && isWrapPassed && !isExpertModeNeedsSwapConfirm) {
+      delay(MODAL_CLOSE_DELAY).then(ethFlowActions.directSwap)
     }
   }, [
     state,
@@ -112,5 +116,6 @@ export function useSetupEthFlow({
     isWrapNeeded,
     wrapTxStatus,
     isExpertModeRunning,
+    isExpertModeNeedsSwapConfirm,
   ])
 }
