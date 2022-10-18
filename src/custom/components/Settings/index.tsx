@@ -1,6 +1,7 @@
 import { WithClassName } from 'types'
 
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 import { RowFixed } from 'components/Row'
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 import { Percent } from '@uniswap/sdk-core'
@@ -31,12 +32,12 @@ const Settings = styled(SettingsMod)`
     height: 35px;
     padding: 0;
     border-radius: 35px;
-    color: ${({ theme }) => theme.text1};
 
     &:hover,
     &:focus {
       cursor: pointer;
       outline: none;
+      color: ${({ theme }) => theme.text1};
     }
 
     svg {
@@ -48,13 +49,21 @@ const Settings = styled(SettingsMod)`
     &:hover > svg {
       transform: rotate(180deg);
     }
+
+    &:hover svg > path,
+    &:hover svg > circle {
+      stroke: ${({ theme }) => theme.text1};
+    }
   }
 
   ${StyledMenuIcon} {
     height: 20px;
     width: 20px;
-    > * {
-      stroke: ${({ theme }) => theme.text1};
+
+    > path,
+    > circle {
+      stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+      transition: stroke 0.3s ease-in-out;
     }
   }
 

@@ -328,7 +328,7 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
         display: inline-block;
 
         overflow: hidden;
-        &::after {
+        &::before {
           position: absolute;
           top: 0;
           right: 0;

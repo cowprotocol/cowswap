@@ -42,7 +42,8 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
     isLoading &&
     css`
       overflow: hidden;
-      &::after {
+      &::before {
+        z-index: -1;
         position: absolute;
         top: 0;
         right: 0;
