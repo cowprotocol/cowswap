@@ -72,6 +72,7 @@ declare module 'styled-components' {
       alt?: string
     }
     boxShadow1: string
+    boxShadow2: string
     input: {
       bg1: Color
     }

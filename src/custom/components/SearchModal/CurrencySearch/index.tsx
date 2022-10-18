@@ -17,24 +17,23 @@ export const ContentWrapper = styled(Column)`
   ${SearchInput} {
     border: none;
     transition: background 0.3s ease-in-out;
-    ${({ theme }) => theme.neumorphism.boxShadow}
+    background: ${({ theme }) => theme.grey1};
   }
 
   ${SearchInput}::placeholder {
     font-size: 16px;
-    color: ${({ theme }) => transparentize(0.5, theme.text1)};
+    color: ${({ theme }) => transparentize(0.2, theme.text1)};
   }
 
   ${SearchInput}:focus::placeholder {
-    color: ${({ theme }) => transparentize(0.7, theme.text1)};
+    color: ${({ theme }) => transparentize(0.9, theme.text1)};
   }
 
   ${Separator} {
-    background: none;
+    background: ${({ theme }) => theme.grey1};
 
     // Target the token list container
     + div {
-      ${({ theme }) => theme.neumorphism.boxShadow}
     }
   }
 `

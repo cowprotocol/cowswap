@@ -1,33 +1,31 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
-import { MEDIA_WIDTHS } from 'theme'
+import { lighten, darken } from 'polished'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   cursor: pointer;
   gap: 0.5rem;
   border: 0;
   outline: none;
-  background-color: ${({ theme, stubbed }) => (stubbed ? theme.primary1 : theme.bg1)};
+  background-color: ${({ theme, stubbed }) => (stubbed ? lighten(0.1, theme.bg1) : theme.bg1)};
+  color: ${({ theme }) => theme.text1};
   box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 10px rgb(0 0 0 / 8%)' : 'none')};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   border-radius: 16px;
   padding: 8px;
-  transition: background-color 0.15s;
+  transition: background-color 0.15s ease-in-out;
 
   :hover {
-    background-color: ${({ theme }) => theme.primary1} !important;
-    box-shadow: none !important;
-    transform: scale(0.99);
+    background-color: ${({ theme }) => darken(0.03, theme.bg1)};
   }
 
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
     justify-content: start;
-  }
+  `};
 `
 
 export const ArrowDown = styled(DropDown)`
@@ -38,9 +36,9 @@ export const ArrowDown = styled(DropDown)`
     stroke-width: 1.5px;
   }
 
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     margin-left: auto;
-  }
+  `};
 `
 
 export const ArrowDownStubbed = styled(DropDown)`

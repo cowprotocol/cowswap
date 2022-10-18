@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
-import { Web3StatusInner, Web3StatusConnected, Text } from './Web3StatusMod'
+import { Web3StatusInner, Web3StatusConnect, Web3StatusConnected, Text } from './Web3StatusMod'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { OrderStatus } from 'state/orders/actions'
@@ -27,6 +27,12 @@ export const Wrapper = styled.div`
     border-radius: 21px;
     padding: 6px 12px;
     width: max-content;
+  }
+
+  ${Web3StatusConnect} {
+    background-color: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+    border: 0;
   }
 
   ${Web3StatusConnected} {

@@ -50,8 +50,9 @@ const SwapModWrapper = styled(SwapMod)`
       }
     }
 
+    // TextWrapper
     ${InputContainer} > div > div > div {
-      color: ${({ theme }) => theme.text1};
+      color: ${({ theme }) => theme.text2};
     }
 
     .expertMode ${ArrowWrapper} {
