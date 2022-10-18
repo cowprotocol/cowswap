@@ -1,5 +1,5 @@
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
-import { EthFlowModal, EthFlowProps } from 'components/swap/EthFlow'
+import { EthFlowModal, EthFlowProps } from '@cow/modules/ethFlow'
 import React from 'react'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { ImportTokenModal } from '@cow/modules/swap/containers/ImportTokenModal'

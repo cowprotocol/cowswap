@@ -30,7 +30,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
 import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/typings'
 import { ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
-import { EthFlowProps } from 'components/swap/EthFlow'
+import { EthFlowProps } from '@cow/modules/ethFlow'
 import { NewSwapModals, NewSwapModalsProps } from '@cow/modules/swap/containers/NewSwapModals'
 import {
   NewSwapWarningsBottom,
