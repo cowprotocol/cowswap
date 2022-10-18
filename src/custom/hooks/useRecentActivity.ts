@@ -217,12 +217,12 @@ export function useSingleActivityDescriptor({
   id,
 }: {
   chainId?: ChainId
-  id: string
+  id?: string
 }): ActivityDescriptors | null {
   const allTransactions = useAllTransactions()
   const order = useOrder({ id, chainId })
 
-  const tx = allTransactions?.[id]
+  const tx = id ? allTransactions?.[id] : undefined
 
   return useMemo(() => {
     if (!chainId) return null
