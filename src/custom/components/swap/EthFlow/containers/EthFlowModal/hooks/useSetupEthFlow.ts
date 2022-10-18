@@ -73,11 +73,8 @@ export function useSetupEthFlow({
   // Run Expert mode once after context initialization
   useEffect(() => {
     if (isExpertMode && isContextInited && !isExpertModeRunning) {
-      setExpertModeRunning(true)
-
-      if (!isWrapNeeded && !isApproveNeeded) {
-        ethFlowActions.directSwap()
-      } else {
+      if (isWrapNeeded || isApproveNeeded) {
+        setExpertModeRunning(true)
         ethFlowActions.expertModeFlow()
       }
     }

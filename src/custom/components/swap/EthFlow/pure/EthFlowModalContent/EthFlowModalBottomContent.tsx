@@ -9,11 +9,14 @@ import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { EthFlowActions } from '../../containers/EthFlowModal/hooks/useEthFlowActions'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 
-function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions) {
+function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, isExpertMode: boolean) {
   if (state === EthFlowState.WrapAndApproveFailed) {
     return ethFlowActions.expertModeFlow()
   }
   if (state === EthFlowState.SwapReady) {
+    if (isExpertMode) {
+      return ethFlowActions.directSwap()
+    }
     return ethFlowActions.swap()
   }
   if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
@@ -47,13 +50,12 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     EthFlowState.ApproveFailed,
     EthFlowState.ApproveInsufficient,
   ].includes(state)
-  // The only case in Expert mode when we display the button is WrapAndApproveFailed, @see getDerivedEthFlowState()
-  const showButton = !isExpertMode || isFailedState
+  const showButton = !isExpertMode || isFailedState || state === EthFlowState.SwapReady
   const showWrapPreview = isExpertMode || ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
 
   const onClick = useCallback(() => {
-    runEthFlowAction(state, ethFlowActions)
-  }, [state, ethFlowActions])
+    runEthFlowAction(state, ethFlowActions, isExpertMode)
+  }, [state, ethFlowActions, isExpertMode])
 
   const showLoader = useMemo(() => {
     const approveInProgress = approveTxStatus !== null ? approveTxStatus === ActivityStatus.PENDING : !!approveTxHash
