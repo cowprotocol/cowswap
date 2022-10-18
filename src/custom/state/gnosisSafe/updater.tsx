@@ -70,7 +70,7 @@ export function GnosisSafeExecutionUpdater(): null {
       try {
         executionDate = await getBlockTime(provider, event.blockNumber as number)
       } catch (error) {
-        console.error(`Unable to obtain when mining block ${event.blockNumber}`, error)
+        console.error(`Unable to fetch block ${event.blockNumber} time`, error)
       }
 
       if (txHash in safeOrders) {
