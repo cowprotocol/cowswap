@@ -56,10 +56,10 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   }
 
   return (
-    <div>
-      <h3>Interface Settings</h3>
+    <styledEl.SettingsContainer>
+      <styledEl.SettingsTitle>Interface Settings</styledEl.SettingsTitle>
       <SettingsBox {...expertModeControl}></SettingsBox>
       <SettingsBox {...showRecipientControl}></SettingsBox>
-    </div>
+    </styledEl.SettingsContainer>
   )
 }

@@ -20,6 +20,8 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useTradeFlowContext } from '@cow/modules/limitOrders/hooks/useTradeFlowContext'
 import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { Dropdown } from '@cow/common/pure/Dropdown'
+import { SettingsWidget } from '../SettingsWidget'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -100,10 +102,12 @@ export function LimitOrdersWidget() {
       <styledEl.ContainerBox>
         <styledEl.Header>
           <div>Limit orders</div>
-          <styledEl.SettingsButton>
-            <styledEl.SettingsTitle>Settings</styledEl.SettingsTitle>
-            <styledEl.SettingsIcon />
-          </styledEl.SettingsButton>
+          <Dropdown content={<SettingsWidget />}>
+            <styledEl.SettingsButton>
+              <styledEl.SettingsTitle>Settings</styledEl.SettingsTitle>
+              <styledEl.SettingsIcon />
+            </styledEl.SettingsButton>
+          </Dropdown>
         </styledEl.Header>
         <CurrencyInputPanel
           id="swap-currency-input"
