@@ -9,7 +9,7 @@ export type NetworkLists = {
 }
 
 const COW_DAO_LIST = 'https://files.cow.fi/tokens/CowSwap.json'
-const COW_COINGECKO_LIST = 'https://files.cow.fi/tokens/CowSwap-coingecko.json'
+const COW_COINGECKO_LIST = 'https://files.cow.fi/tokens/CoinGecko.json'
 
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
