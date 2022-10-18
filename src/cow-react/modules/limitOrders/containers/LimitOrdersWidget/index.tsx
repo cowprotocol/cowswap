@@ -1,27 +1,28 @@
+import { useWeb3React } from '@web3-react/core'
+import React, { useCallback } from 'react'
+import { Trans } from '@lingui/macro'
 import * as styledEl from './styled'
+import { ButtonSize } from 'theme'
+import { Field } from 'state/swap/actions'
+import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import { ButtonPrimary } from 'components/Button'
-import { Trans } from '@lingui/macro'
-import React, { useCallback } from 'react'
-import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
-import { Field } from 'state/swap/actions'
-import { ButtonSize } from 'theme'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useWeb3React } from '@web3-react/core'
-import { useSetupLimitOrdersState } from '@cow/modules/limitOrders/hooks/useSetupLimitOrdersState'
-import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { useResetStateWithSymbolDuplication } from '@cow/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
-import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useTradeFlowContext } from '@cow/modules/limitOrders/hooks/useTradeFlowContext'
-import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
-import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { Dropdown } from '@cow/common/pure/Dropdown'
+import { ButtonPrimary } from 'components/Button'
+import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
+import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
+import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
+import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
+import { useResetStateWithSymbolDuplication } from '../../hooks/useResetStateWithSymbolDuplication'
+import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { tradeFlow } from '../../services/tradeFlow'
+import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { SettingsWidget } from '../SettingsWidget'
+import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -36,12 +37,13 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
   const isTradePriceUpdating = false
   const showSetMax = true
-  const showRecipientControls = true
+  const showRecipientControls = settingsState.showRecipient
   const priceImpactParams = undefined
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -125,7 +127,7 @@ export function LimitOrdersWidget() {
             withRecipient={showRecipientControls}
             isLoading={isTradePriceUpdating}
           />
-          <AddRecipient onChangeRecipient={onChangeRecipient} />
+          {showRecipientControls && <AddRecipient onChangeRecipient={onChangeRecipient} />}
         </styledEl.CurrencySeparatorBox>
         <CurrencyInputPanel
           id="swap-currency-output"

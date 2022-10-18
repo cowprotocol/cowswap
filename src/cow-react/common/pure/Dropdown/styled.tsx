@@ -11,7 +11,7 @@ export const DropdownButton = styled.span`
 
 export const DropdownContent = styled.div<DropdownContentPosition>`
   position: absolute;
-  z-index: 2;
+  z-index: 20;
   width: max-content;
   top: ${({ positionY }) => (positionY === 'top' ? '' : '100%')};
   bottom: ${({ positionY }) => (positionY === 'bottom' ? '' : '100%')};
