@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useMemo } from 'react'
-import { useTokenBySymbolOrAddress } from 'cow-react/common/hooks/useTokenBySymbolOrAddress'
+import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -11,12 +11,14 @@ export interface LimitOrdersTradeState {
   readonly inputCurrencyAmount: CurrencyAmount<Currency> | null
   readonly outputCurrencyAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
+  readonly deadline: number | null
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const state = useAtomValue(limitOrdersAtom)
 
   const recipient = state.recipient
+  const deadline = state.deadline
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId) || null
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId) || null
   const inputCurrencyAmount =
@@ -26,11 +28,12 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   return useMemo(() => {
     return {
+      deadline,
       recipient,
       inputCurrency,
       outputCurrency,
       inputCurrencyAmount,
       outputCurrencyAmount,
     }
-  }, [recipient, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
+  }, [deadline, recipient, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
 }

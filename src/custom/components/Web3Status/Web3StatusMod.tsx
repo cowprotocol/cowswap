@@ -20,9 +20,8 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import { useCloseFollowTxPopupIfNot } from 'state/application/hooks'
 import { Web3StatusGeneric as Web3StatusGenericUni } from '@src/components/Web3Status'
-import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
+import FollowPendingTxPopup, { useCloseFollowTxPopupIfNotPendingOrder } from 'components/Popups/FollowPendingTxPopup'
 
 /* const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -154,7 +153,7 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useToggleWalletModal()
-  useCloseFollowTxPopupIfNot(hasPendingTransactions)
+  useCloseFollowTxPopupIfNotPendingOrder()
 
   if (!chainId) {
     return null

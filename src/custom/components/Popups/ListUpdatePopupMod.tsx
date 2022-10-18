@@ -13,7 +13,7 @@ import { ButtonSecondary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { ListUpdatePopupProps } from './ListUpdatePopup'
-import { updateListAnalytics } from 'utils/analytics'
+import { updateListAnalytics } from 'components/analytics'
 
 export const ChangesList = styled.ul`
   max-height: 400px;

@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { useSetupSwapState } from 'cow-react/modules/swap/hooks/useSetupSwapState'
+import { useSetupSwapState } from '@cow/modules/swap/hooks/useSetupSwapState'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import {
@@ -10,41 +10,38 @@ import {
   useUnknownImpactWarning,
 } from 'state/swap/hooks'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
-import { useSwapCurrenciesAmounts } from 'cow-react/modules/swap/hooks/useSwapCurrenciesAmounts'
+import { useSwapCurrenciesAmounts } from '@cow/modules/swap/hooks/useSwapCurrenciesAmounts'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { useShowRecipientControls } from 'cow-react/modules/swap/hooks/useShowRecipientControls'
+import { useShowRecipientControls } from '@cow/modules/swap/hooks/useShowRecipientControls'
 import usePriceImpact from 'hooks/usePriceImpact'
-import { useTradePricesUpdate } from 'cow-react/modules/swap/hooks/useTradePricesUpdate'
+import { useTradePricesUpdate } from '@cow/modules/swap/hooks/useTradePricesUpdate'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { Field } from 'state/swap/actions'
-import { tokenViewAmount } from 'cow-react/modules/swap/helpers/tokenViewAmount'
+import { tokenViewAmount } from '@cow/modules/swap/helpers/tokenViewAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
-import {
-  getInputReceiveAmountInfo,
-  getOutputReceiveAmountInfo,
-} from 'cow-react/modules/swap/helpers/tradeReceiveAmount'
+import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import React, { useState } from 'react'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { useSwapButtonContext } from 'cow-react/modules/swap/hooks/useSwapButtonContext'
-import { SwapFormProps } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
-import { ConfirmSwapModalSetupProps } from 'cow-react/modules/swap/containers/ConfirmSwapModalSetup'
+import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
+import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/typings'
+import { ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'components/swap/EthFlow'
-import { NewSwapModals, NewSwapModalsProps } from 'cow-react/modules/swap/containers/NewSwapModals'
+import { NewSwapModals, NewSwapModalsProps } from '@cow/modules/swap/containers/NewSwapModals'
 import {
   NewSwapWarningsBottom,
   NewSwapWarningsBottomProps,
   NewSwapWarningsTop,
   NewSwapWarningsTopProps,
-} from 'cow-react/modules/swap/pure/warnings'
-import { TradeRates, TradeRatesProps } from 'cow-react/modules/swap/pure/TradeRates'
+} from '@cow/modules/swap/pure/warnings'
+import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-import { SwapForm } from 'cow-react/modules/swap/pure/SwapForm'
-import { SwapButton } from 'cow-react/modules/swap/pure/SwapButton/SwapButton'
+import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
+import { SwapButtons } from '@cow/modules/swap/containers/SwapButtons'
 
 export function NewSwapWidget() {
   useSetupSwapState()
@@ -196,7 +193,7 @@ export function NewSwapWidget() {
           <SwapForm {...swapFormProps} />
           <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />
-          <SwapButton {...swapButtonContext} />
+          <SwapButtons {...swapButtonContext} />
         </styledEl.ContainerBox>
         <NewSwapWarningsBottom {...swapWarningsBottomProps} />
       </styledEl.Container>

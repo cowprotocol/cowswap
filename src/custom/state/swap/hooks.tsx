@@ -1,11 +1,12 @@
-import { Trans } from '@lingui/macro'
+// eslint-disable-next-line no-restricted-imports
+import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, NativeCurrency, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 // import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // import { useBestTrade } from 'hooks/useBestTrade'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 // import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
@@ -19,7 +20,7 @@ import { useCurrencyBalances } from 'state/connection/hooks'
 // import { AppState } from '../index'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
-import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'utils/analytics'
+import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'components/analytics'
 
 // MOD
 import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
@@ -64,7 +65,7 @@ interface DerivedSwapInfo {
   currencies: Currencies
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
-  inputError?: ReactNode
+  inputError?: string
   v2Trade: TradeGp | undefined
   allowedSlippage: Percent
 }
@@ -292,26 +293,26 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT) // mod
 
   const inputError = useMemo(() => {
-    let inputError: ReactNode | undefined
+    let inputError: string | undefined
 
     if (!account) {
-      inputError = <Trans>Connect Wallet</Trans>
+      inputError = t`Connect Wallet`
     }
 
     if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-      inputError = inputError ?? <Trans>Select a token</Trans>
+      inputError = inputError ?? t`Select a token`
     }
 
     if (!parsedAmount) {
-      inputError = inputError ?? <Trans>Enter an amount</Trans>
+      inputError = inputError ?? t`Enter an amount`
     }
 
     const formattedTo = isAddress(to)
     if (!to || !formattedTo) {
-      inputError = inputError ?? <Trans>Enter a recipient</Trans>
+      inputError = inputError ?? t`Enter a recipient`
     } else {
       if (BAD_RECIPIENT_ADDRESSES[formattedTo]) {
-        inputError = inputError ?? <Trans>Invalid recipient</Trans>
+        inputError = inputError ?? t`Invalid recipient`
       }
     }
 
@@ -321,11 +322,11 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
     // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
     if (!balanceIn && inputCurrency) {
-      inputError = <Trans>Couldn&apos;t load balances</Trans>
+      inputError = t`Couldn't load balances`
     }
 
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-      inputError = <Trans>Insufficient {amountIn.currency.symbol} balance</Trans>
+      inputError = t`Insufficient ${amountIn.currency.symbol} balance`
     }
 
     return inputError

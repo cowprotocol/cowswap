@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { useHistory } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
@@ -25,16 +25,15 @@ import {
   HeaderControls,
   HeaderElement,
 } from './styled'
-import { MenuTree } from './MenuTree'
 import MobileMenuIcon from './MobileMenuIcon'
 import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
+import { MainMenu } from 'cow-react/modules/mainMenu'
 
 // Assets
-import { toggleDarkModeAnalytics } from 'utils/analytics'
-import { useParameterizedMainMenu } from 'cow-react/common/hooks/useParameterizedMainMenu'
+import { toggleDarkModeAnalytics } from 'components/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -104,8 +103,7 @@ export default function Header() {
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <MenuTree
-            items={parameterizedMainMenu}
+          <MainMenu
             isMobileMenuOpen={isMobileMenuOpen}
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}

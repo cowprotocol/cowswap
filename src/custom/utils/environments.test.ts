@@ -63,8 +63,8 @@ describe('Detect environments using host and path', () => {
   describe('Is Barn', () => {
     const isBarn = { ...DEFAULT_ENVIRONMENTS_CHECKS, isBarn: true }
 
-    it('barn.swap.cow.fi', () => {
-      expect(checkEnvironment('barn.swap.cow.fi', '')).toEqual(isBarn)
+    it('barn.cow.fi', () => {
+      expect(checkEnvironment('barn.cow.fi', '')).toEqual(isBarn)
     })
   })
 

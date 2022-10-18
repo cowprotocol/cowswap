@@ -24,7 +24,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.22.4",
+  "version": "1.23.0-RC.1",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -75,6 +75,7 @@
     "@types/qs": "^6.9.2",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
+    "@types/react-helmet": "^6.1.5",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.0.0",
     "@types/react-router-hash-link": "^2.4.5",
@@ -159,7 +160,7 @@
     "serve:ci": "serve website -l 3000",
     "cypress": "cypress open",
     "contracts:add:export": "node ./scripts/contracts_add_export.js",
-    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/custom/abis/types './src/custom/abis/**/*.json'",
+    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/cow-react/abis/types './src/cow-react/abis/**/*.json'",
     "contracts:compile:abi-uniswap": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
@@ -271,6 +272,7 @@
     "react-device-detect": "^1.6.2",
     "react-feather": "^2.0.8",
     "react-ga4": "^1.4.1",
+    "react-helmet": "^6.1.0",
     "react-is": "^17.0.2",
     "react-markdown": "^5.0.3",
     "react-popper": "^2.2.3",

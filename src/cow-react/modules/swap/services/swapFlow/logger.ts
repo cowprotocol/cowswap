@@ -1,4 +1,4 @@
-import { SwapFlowContext } from 'cow-react/modules/swap/services/swapFlow/types'
+import { SwapFlowContext } from '@cow/modules/swap/services/swapFlow/types'
 
 export function logSwapFlow(...args: any[]) {
   console.debug('%c [SWAP FLOW] ', 'font-weight: bold; color: #1c5dbf', args)

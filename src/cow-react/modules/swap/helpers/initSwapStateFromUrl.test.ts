@@ -2,7 +2,7 @@ import { initSwapStateFromUrl } from './initSwapStateFromUrl'
 import { Field } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
-import { TradeStateFromUrl } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
+import { TradeStateFromUrl } from '@cow/modules/swap/containers/NewSwapWidget/typings'
 
 describe('initSwapStateFromUrl() - builds a swap state considering URL params, persisted redux state and default values', () => {
   it('When URL contains valid values, then should apply them to the state', () => {

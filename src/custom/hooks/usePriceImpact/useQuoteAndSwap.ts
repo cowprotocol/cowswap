@@ -19,7 +19,7 @@ import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { onlyResolvesLast } from 'utils/async'
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 

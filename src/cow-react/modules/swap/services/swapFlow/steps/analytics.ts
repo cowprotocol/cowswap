@@ -1,6 +1,6 @@
-import { signSwapAnalytics, swapAnalytics } from 'utils/analytics'
+import { signSwapAnalytics, swapAnalytics } from 'components/analytics'
 import TradeGp from 'state/swap/TradeGp'
-import { USER_SWAP_REJECTED_ERROR } from 'cow-react/modules/swap/services/swapFlow/steps/swapErrorHelper'
+import { USER_SWAP_REJECTED_ERROR } from '@cow/modules/swap/services/swapFlow/steps/swapErrorHelper'
 
 function getMarketLabel(trade: TradeGp): string {
   return [trade.inputAmount.currency.symbol, trade.outputAmount.currency.symbol].join(',')

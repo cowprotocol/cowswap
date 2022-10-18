@@ -1,18 +1,18 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import * as styledEl from './styled'
-import { CurrencySelectButton } from 'cow-react/modules/swap/pure/CurrencySelectButton'
+import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { formatSmartAmount } from 'utils/format'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
-import { ReceiveAmount } from 'cow-react/modules/swap/pure/ReceiveAmount'
+import { ReceiveAmount } from '@cow/modules/swap/pure/ReceiveAmount'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
-import { setMaxSellTokensAnalytics } from 'utils/analytics'
+import { setMaxSellTokensAnalytics } from 'components/analytics'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Field } from 'state/swap/actions'
-import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 
 interface BuiltItProps {
   className: string

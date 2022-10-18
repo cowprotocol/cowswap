@@ -1,34 +1,46 @@
 import * as styledEl from './styled'
-import { CurrencyInputPanel } from 'cow-react/common/pure/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from 'cow-react/common/pure/CurrencyArrowSeparator'
-import { AddRecipient } from 'cow-react/common/pure/AddRecipient'
+import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
+import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
+import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { ButtonPrimary } from 'components/Button'
 import { Trans } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
-import { CurrencyInfo } from 'cow-react/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { Field } from 'state/swap/actions'
 import { ButtonSize } from 'theme'
-import { useLimitOrdersTradeState } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { Currency } from '@uniswap/sdk-core'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useWeb3React } from '@web3-react/core'
-import { useSetupLimitOrdersState } from 'cow-react/modules/limitOrders/hooks/useSetupLimitOrdersState'
-import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
-import { useTradeFlowContext } from 'cow-react/modules/limitOrders/hooks/useTradeFlowContext'
-import { tradeFlow } from 'cow-react/modules/limitOrders/services/tradeFlow'
+import { useSetupLimitOrdersState } from '@cow/modules/limitOrders/hooks/useSetupLimitOrdersState'
+import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
+import { useResetStateWithSymbolDuplication } from '@cow/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
+import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useTradeFlowContext } from '@cow/modules/limitOrders/hooks/useTradeFlowContext'
+import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 
-import { RateInput } from 'cow-react/modules/limitOrders/containers/RateInput'
-import { ExpiryDate } from 'cow-react/modules/limitOrders/containers/ExpiryDate'
-import { useLimitRateStateManager } from 'cow-react/modules/limitOrders/state/limitRateAtom'
-import { useApplyLimitRate } from '../../hooks/useApplyLimitRate'
+import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
+import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
+import { useLimitRateStateManager } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { useApplyLimitRate } from '@cow/modules/limitOrders/hooks/useApplyLimitRate'
 
+// TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
+  useResetStateWithSymbolDuplication()
 
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
     useLimitOrdersTradeState()
-  const stateManager = useLimitOrdersStateManager()
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const onCurrencySelection = useOnCurrencySelection()
+  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+
+  // Rate limit
   const rateState = useLimitRateStateManager()
   const { isInversed, activeRate } = rateState.state
   const applyLimitRate = useApplyLimitRate()
@@ -63,49 +75,49 @@ export function LimitOrdersWidget() {
     fiatAmount: null,
     receiveAmountInfo: null,
   }
-  const tradeContext = useTradeFlowContext()
-
-  const onCurrencySelection = useCallback(
-    (field: Field, currency: Currency) => {
-      const inputCurrencyId = (field === Field.INPUT ? currency.symbol : inputCurrency?.symbol) || ''
-      const outputCurrencyId = (field === Field.OUTPUT ? currency.symbol : outputCurrency?.symbol) || ''
-
-      stateManager.navigate(chainId, inputCurrencyId, outputCurrencyId)
-    },
-    [stateManager, chainId, inputCurrency, outputCurrency]
-  )
+  const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
-        stateManager.setInputCurrencyAmount(typedValue)
+        updateLimitOrdersState({ inputCurrencyAmount: typedValue })
       } else {
-        stateManager.setOutputCurrencyAmount(typedValue)
+        updateLimitOrdersState({ outputCurrencyAmount: typedValue })
       }
     },
-    [stateManager]
+    [updateLimitOrdersState]
   )
 
   const onSwitchTokens = useCallback(() => {
-    const { inputCurrencyId, outputCurrencyId } = stateManager.state
-    stateManager.navigate(chainId, outputCurrencyId, inputCurrencyId)
+    const { inputCurrencyId, outputCurrencyId } = state
+    limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
 
-    const newInputAmount = applyLimitRate(inputCurrencyInfo.viewAmount, Field.OUTPUT)
-    stateManager.setInputCurrencyAmount(newInputAmount)
+    const inputCurrencyAmount = applyLimitRate(inputCurrencyInfo.viewAmount, Field.OUTPUT)
+    updateLimitOrdersState({ inputCurrencyAmount })
     rateState.setIsInversed(isInversed, activeRate)
-  }, [activeRate, applyLimitRate, chainId, inputCurrencyInfo.viewAmount, isInversed, rateState, stateManager])
+  }, [
+    state,
+    limitOrdersNavigate,
+    chainId,
+    applyLimitRate,
+    inputCurrencyInfo.viewAmount,
+    updateLimitOrdersState,
+    rateState,
+    isInversed,
+    activeRate,
+  ])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      stateManager.setRecipient(recipient)
+      updateLimitOrdersState({ recipient })
     },
-    [stateManager]
+    [updateLimitOrdersState]
   )
 
   const doTrade = useCallback(() => {
     tradeContext && tradeFlow(tradeContext)
   }, [tradeContext])
 
-  console.log('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
+  console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   return (
     <styledEl.Container>

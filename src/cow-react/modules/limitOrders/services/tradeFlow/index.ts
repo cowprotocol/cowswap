@@ -1,9 +1,9 @@
 import { PostOrderParams, signAndPostOrder } from 'utils/trade'
-import { presignOrderStep } from 'cow-react/modules/swap/services/swapFlow/steps/presignOrderStep'
-import { addPendingOrderStep } from 'cow-react/modules/swap/services/swapFlow/steps/addPendingOrderStep'
-import { GPv2Settlement } from 'abis/types'
+import { presignOrderStep } from '@cow/modules/swap/services/swapFlow/steps/presignOrderStep'
+import { addPendingOrderStep } from '@cow/modules/swap/services/swapFlow/steps/addPendingOrderStep'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AppDispatch } from 'state'
+import { GPv2Settlement } from '@cow/abis/types'
 
 export interface TradeFlowContext {
   postOrderParams: PostOrderParams
@@ -14,7 +14,7 @@ export interface TradeFlowContext {
   isGnosisSafeWallet: boolean
 }
 
-// TODO: Add all necessary like cow-react/modules/swap/services/swapFlow/index.ts
+// TODO: Add all necessary like @cow/modules/swap/services/swapFlow/index.ts
 export async function tradeFlow(params: TradeFlowContext) {
   const { id: orderId, order } = await signAndPostOrder(params.postOrderParams)
 

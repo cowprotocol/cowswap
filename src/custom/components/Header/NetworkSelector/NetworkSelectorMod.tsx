@@ -32,7 +32,7 @@ import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
-import { LIMIT_ORDERS_PATH } from 'constants/routes'
+import { LIMIT_ORDERS_PATH } from '@cow/constants/routes'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -243,7 +243,7 @@ const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
     // case SupportedChainId.CELO_ALFAJORES:
     //   return <Trans>Blockscout</Trans>
     case SupportedChainId.GNOSIS_CHAIN:
-      return <Trans>Blockscout</Trans>
+      return <Trans>Gnosisscan</Trans>
     default:
       return <Trans>Etherscan</Trans>
   }

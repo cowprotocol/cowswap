@@ -1,14 +1,19 @@
-import { useLimitOrdersStateFromUrl } from 'cow-react/modules/limitOrders/hooks/useLimitOrdersStateFromUrl'
+import { useLimitOrdersStateFromUrl } from '@cow/modules/limitOrders/hooks/useLimitOrdersStateFromUrl'
 import {
   getDefaultLimitOrdersState,
+  limitOrdersAtom,
   LimitOrdersState,
-  useLimitOrdersStateManager,
-} from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+  updateLimitOrdersAtom,
+} from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
 export function useSetupLimitOrdersState() {
   const tradeStateFromUrl = useLimitOrdersStateFromUrl()
-  const { state, setState, navigate } = useLimitOrdersStateManager()
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const limitOrdersNavigate = useLimitOrdersNavigate()
 
   const chainIdWasChanged = tradeStateFromUrl.chainId !== state.chainId
 
@@ -21,20 +26,30 @@ export function useSetupLimitOrdersState() {
   useEffect(() => {
     if (shouldSkipUpdate) return
 
-    const newState: LimitOrdersState = chainIdWasChanged
+    const newState: Partial<LimitOrdersState> = chainIdWasChanged
       ? getDefaultLimitOrdersState(tradeStateFromUrl.chainId)
       : {
-          ...state,
           chainId: tradeStateFromUrl.chainId,
           recipient: tradeStateFromUrl.recipient || state.recipient,
-          inputCurrencyId: tradeStateFromUrl.inputCurrencyId || state.inputCurrencyId,
-          outputCurrencyId: tradeStateFromUrl.outputCurrencyId || state.outputCurrencyId,
+          inputCurrencyId: tradeStateFromUrl.inputCurrencyId,
+          outputCurrencyId: tradeStateFromUrl.outputCurrencyId,
         }
 
     console.log('UPDATE LIMIT ORDERS STATE:', newState)
-    setState(newState)
-    setTimeout(() => {
-      navigate(newState.chainId, newState.inputCurrencyId, newState.outputCurrencyId)
-    }, 0)
-  }, [navigate, setState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
+    updateLimitOrdersState(newState)
+    if (chainIdWasChanged) {
+      limitOrdersNavigate(
+        tradeStateFromUrl.chainId,
+        newState.inputCurrencyId || null,
+        newState.outputCurrencyId || null
+      )
+    }
+  }, [
+    limitOrdersNavigate,
+    updateLimitOrdersState,
+    state.recipient,
+    tradeStateFromUrl,
+    shouldSkipUpdate,
+    chainIdWasChanged,
+  ])
 }
