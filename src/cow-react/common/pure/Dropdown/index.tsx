@@ -6,11 +6,19 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 export interface DropdownProps extends Partial<DropdownContentPosition> {
   children: ReactNode
   content: ReactNode
+  ignoreOutsideClicks?: boolean
   isOpened?: boolean
 }
 
 export function Dropdown(props: DropdownProps) {
-  const { content, children, isOpened = false, positionX = 'right', positionY = 'bottom' } = props
+  const {
+    content,
+    children,
+    isOpened = false,
+    ignoreOutsideClicks = false,
+    positionX = 'right',
+    positionY = 'bottom',
+  } = props
   const [showContent, setShowContent] = useState(isOpened)
   const node = useRef<HTMLDivElement>()
 
@@ -18,8 +26,10 @@ export function Dropdown(props: DropdownProps) {
     setShowContent(!showContent)
   }, [showContent, setShowContent])
   const hideContent = useCallback(() => {
-    setShowContent(false)
-  }, [setShowContent])
+    if (!ignoreOutsideClicks) {
+      setShowContent(false)
+    }
+  }, [setShowContent, ignoreOutsideClicks])
 
   useOnClickOutside(node, hideContent)
 

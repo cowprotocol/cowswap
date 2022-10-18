@@ -1,11 +1,10 @@
 import { Trans } from '@lingui/macro'
 import QuestionHelper from 'components/QuestionHelper'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { ThemeContext } from 'styled-components/macro'
 import Toggle from 'components/Toggle'
 import * as styledEl from './styled'
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
-import useToggle from 'hooks/useToggle'
 
 interface SettingsBoxProps {
   title: string
@@ -34,32 +33,30 @@ export interface SettingsProps {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const [expertMode, toggleExpertMode] = useToggle(state.expertMode)
-  const [showRecipient, toggleShowRecipient] = useToggle(state.showRecipient)
-
-  useEffect(() => {
-    onStateChanged({ expertMode, showRecipient })
-  }, [onStateChanged, expertMode, showRecipient])
-
+  const { expertMode, showRecipient } = state
   const expertModeControl: SettingsBoxProps = {
     title: 'Expert Mode',
     tooltip: 'Allow high price impact trades and skip the confirm screen. Use at your own risk.',
     value: expertMode,
-    toggle: toggleExpertMode,
+    toggle() {
+      onStateChanged({ expertMode: !expertMode, showRecipient })
+    },
   }
 
   const showRecipientControl: SettingsBoxProps = {
     title: 'Toggle Recipient',
     tooltip: 'Allows you to choose a destination address for the swap other than the connected one.',
     value: showRecipient,
-    toggle: toggleShowRecipient,
+    toggle() {
+      onStateChanged({ expertMode, showRecipient: !showRecipient })
+    },
   }
 
   return (
     <styledEl.SettingsContainer>
       <styledEl.SettingsTitle>Interface Settings</styledEl.SettingsTitle>
-      <SettingsBox {...expertModeControl}></SettingsBox>
-      <SettingsBox {...showRecipientControl}></SettingsBox>
+      <SettingsBox {...expertModeControl} />
+      <SettingsBox {...showRecipientControl} />
     </styledEl.SettingsContainer>
   )
 }

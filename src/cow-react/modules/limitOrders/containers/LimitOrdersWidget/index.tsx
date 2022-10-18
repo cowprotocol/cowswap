@@ -9,7 +9,6 @@ import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
-import { Dropdown } from '@cow/common/pure/Dropdown'
 import { ButtonPrimary } from 'components/Button'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
@@ -104,12 +103,7 @@ export function LimitOrdersWidget() {
       <styledEl.ContainerBox>
         <styledEl.Header>
           <div>Limit orders</div>
-          <Dropdown content={<SettingsWidget />}>
-            <styledEl.SettingsButton>
-              <styledEl.SettingsTitle>Settings</styledEl.SettingsTitle>
-              <styledEl.SettingsIcon />
-            </styledEl.SettingsButton>
-          </Dropdown>
+          <SettingsWidget />
         </styledEl.Header>
         <CurrencyInputPanel
           id="swap-currency-input"
