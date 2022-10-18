@@ -1,4 +1,4 @@
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'

@@ -1,10 +1,11 @@
 import * as styledEl from './styled'
 import { useCallback, useEffect } from 'react'
 import { RefreshCw } from 'react-feather'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 import { HeadingText } from '../../pure/RateInput/HeadingText'
 import { useLimitRateStateManager } from 'cow-react/modules/limitOrders/state/limitRateAtom'
-import { useLimitOrdersStateManager } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
+import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useCalculateRate } from '../../hooks/useCalculateRate'
 
 export function RateInput() {
@@ -16,9 +17,9 @@ export function RateInput() {
   const calculateRate = useCalculateRate()
 
   // Limit order state
-  const limitOrderState = useLimitOrdersStateManager()
-  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = limitOrderState.state
-  const { setInputCurrencyAmount } = limitOrderState
+  const limitOrderState = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = limitOrderState
 
   const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
   const secondaryCurrency = isInversed ? inputCurrencyId : outputCurrencyId
@@ -44,7 +45,7 @@ export function RateInput() {
 
   // Handle rate change
   useEffect(() => {
-    setInputCurrencyAmount(inputCurrencyAmount)
+    updateLimitOrdersState({ inputCurrencyAmount })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
 
