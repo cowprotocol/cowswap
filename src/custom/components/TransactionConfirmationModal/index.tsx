@@ -335,7 +335,8 @@ const GnosisSafeTxStyled = styled(GnosisSafeTxDetails)`
   padding-left: 5rem;
   animation: SlideInStep 1s forwards linear;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    padding: 0;
+    padding-right: 1rem;
+    padding-left: 1rem;
   `}
 `
 
