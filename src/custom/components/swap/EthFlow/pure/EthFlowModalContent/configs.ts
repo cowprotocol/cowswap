@@ -117,7 +117,7 @@ export const ethFlowConfigs: {
     ],
   }),
   [EthFlowState.SwapReady]: ({ nativeSymbol, wrappedSymbol }) => ({
-    title: `No need to wrap ${nativeSymbol}`,
+    title: `Continue swap with ${wrappedSymbol}`,
     buttonText: 'Swap',
     descriptions: [
       ethFlowDescription(nativeSymbol),
