@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
@@ -48,6 +48,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 
+  useEffect(() => {
+    setTypedValue(viewAmount)
+  }, [viewAmount])
+
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
       onCurrencySelection(field, currency)
@@ -81,7 +85,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             <styledEl.NumericalInput
               className="token-amount-input"
-              value={typedValue || viewAmount}
+              value={typedValue}
               onUserInput={onUserInputDispatch}
               $loading={loading}
             />

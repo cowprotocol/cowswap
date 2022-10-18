@@ -20,7 +20,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
-import { ApproveCallback, OptionalApproveCallbackParams } from '.'
+import { ApproveCallbackState, OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import usePrevious from 'hooks/usePrevious'
@@ -56,13 +56,14 @@ export interface ApproveCallbackParams {
 } */
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
+// TODO: must be refactored
 export function useApproveCallback({
   openTransactionConfirmationModal,
   closeModals,
   amountToApprove,
   spender,
   amountToCheckAgainstAllowance,
-}: ApproveCallbackParams): ApproveCallback {
+}: ApproveCallbackParams): ApproveCallbackState {
   const { account, chainId } = useWeb3React()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
