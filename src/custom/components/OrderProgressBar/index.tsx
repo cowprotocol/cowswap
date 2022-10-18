@@ -100,6 +100,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   percentage={percentage}
                   activityDerivedState={activityDerivedState}
                   chainId={chainId}
+                  isSmartContractWallet={isSmartContractWallet}
                 />
               </ProgressBarWrapper>
             )
@@ -112,6 +113,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             percentage={percentage}
             activityDerivedState={activityDerivedState}
             chainId={chainId}
+            isSmartContractWallet={isSmartContractWallet}
           />
         </ProgressBarWrapper>
       )}

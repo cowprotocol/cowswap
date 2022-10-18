@@ -34,11 +34,13 @@ const DOC_LINK_PHENOM_COW = 'https://docs.cow.fi/overview/coincidence-of-wants'
 interface ExecutionStateProps extends OrderProgressBarProps {
   percentage: number
   executionState: TypeExecutionState
+  isSmartContractWallet: boolean
 }
 
 function ContentByExecutionState(props: ExecutionStateProps) {
-  const { percentage, executionState, activityDerivedState, chainId } = props
+  const { percentage, executionState, activityDerivedState, chainId, isSmartContractWallet } = props
   const { order, isCancellable } = activityDerivedState
+  const textAllowToCancel = !isSmartContractWallet && ' or if you cancel'
 
   const progressAndMessage = () => {
     switch (executionState) {
@@ -161,7 +163,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                   Your price: $1300.55 (<span>+8%</span>)
                 </p>*/}
                 <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>
@@ -195,7 +197,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
               <StatusGraph>
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>

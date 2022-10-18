@@ -329,6 +329,14 @@ const StepsWrapper = styled.div`
 
 const GnosisSafeTxStyled = styled(GnosisSafeTxDetails)`
   margin: 0;
+  border: 0px;
+  width: 100%;
+  padding-right: 5rem;
+  padding-left: 5rem;
+  animation: SlideInStep 1s forwards linear;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 0;
+  `}
 `
 
 export * from './TransactionConfirmationModalMod'
