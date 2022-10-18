@@ -7,6 +7,7 @@ import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
 import { Routes } from 'constants/routes'
+import PageTitle from 'components/PageTitle'
 
 // AmplitudeAnalytics
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -18,6 +19,7 @@ export default function TokenFaq() {
   return (
     <Trace page={PageName.FAQ_TOKEN_PAGE} shouldLogImpression>
       <Wrapper ref={faqRef}>
+        <PageTitle title="Token FAQ" />
         <FaqMenu />
         <Page>
           <ToC toc={toc} name="Token FAQ" />

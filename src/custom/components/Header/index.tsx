@@ -33,7 +33,7 @@ import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
-import { toggleDarkModeAnalytics } from 'utils/analytics'
+import { toggleDarkModeAnalytics } from 'components/analytics'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -93,7 +93,7 @@ export default function Header() {
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
-    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen} isDarkMode={darkMode}>
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>

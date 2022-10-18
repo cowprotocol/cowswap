@@ -2,9 +2,8 @@ import { useCallback, useEffect } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, Percent } from '@uniswap/sdk-core'
-import { TransactionResponse } from '@ethersproject/providers'
 
-import { ApprovalState, OptionalApproveCallbackParams } from 'hooks/useApproveCallback'
+import { ApprovalState, ApproveCallback } from 'hooks/useApproveCallback'
 import { UseERC20PermitState } from 'hooks/useERC20Permit'
 import { useERC20PermitFromTrade } from 'hooks/useERC20Permit'
 import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
@@ -14,7 +13,7 @@ import { SwapButton } from 'cow-react/modules/swap/pure/SwapButton'
 import usePrevious from 'hooks/usePrevious'
 
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
-import { approvalAnalytics } from 'utils/analytics'
+import { approvalAnalytics } from 'components/analytics'
 import TradeGp from 'state/swap/TradeGp'
 
 export interface ApproveButtonsProps {
@@ -26,7 +25,7 @@ export interface ApproveButtonsProps {
   handleSwap: HandleSwapCallback
   isValid: boolean
   approvalState: ApprovalState
-  approveCallback: (params?: OptionalApproveCallbackParams) => Promise<TransactionResponse | undefined>
+  approveCallback: ApproveCallback
   approvalSubmitted: boolean
   setApprovalSubmitted: (state: boolean) => void
   children?: React.ReactNode

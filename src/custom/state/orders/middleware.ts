@@ -10,11 +10,12 @@ import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSum
 import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
-import { orderAnalytics } from 'utils/analytics'
+import { orderAnalytics } from 'components/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { isMobile } from 'utils/userAgent'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(
@@ -193,7 +194,8 @@ function addLightningEffect() {
 }
 registerOnWindow({ addLightningEffect })
 
-// On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
+// on each Pending, Expired, Fulfilled order action
+// a corresponsing sound is dispatched
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -213,19 +215,31 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   }
 
-  let cowSound
+  // Halloween temporary
+  const { userDarkMode, matchesDarkMode } = store.getState().user
+  const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
+
+  let cowSound,
+    showLighningEffect = false
   if (isPendingOrderAction(action)) {
-    cowSound = getCowSoundSend()
+    cowSound = getCowSoundSend(isDarkMode)
+    showLighningEffect = isDarkMode && !isMobile
   } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
+    cowSound = getCowSoundSuccess(isDarkMode)
+    showLighningEffect = isDarkMode && !isMobile
   } else if (isExpireOrdersAction(action)) {
     cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
+    // TODO: find a unique sound for order cancellation
     cowSound = getCowSoundError()
   }
 
   if (cowSound) {
-    cowSound.play().catch((e) => {
+    if (showLighningEffect) {
+      setTimeout(addLightningEffect, 300)
+    }
+    cowSound?.play().catch((e) => {
+      removeLightningEffect()
       console.error('🐮 Moooooo sound cannot be played', e)
     })
   }

@@ -64,12 +64,10 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
       />
 
       <TransactionConfirmationModal
+        attemptingTxn={true}
         isOpen={showTransactionConfirmationModal}
-        onDismiss={onDismiss}
-        attemptingTxn={swapConfirmState.attemptingTxn}
-        hash={swapConfirmState.txHash}
         pendingText={pendingText}
-        currencyToAdd={trade?.outputAmount.currency}
+        onDismiss={onDismiss}
         operationType={operationType}
       />
     </>

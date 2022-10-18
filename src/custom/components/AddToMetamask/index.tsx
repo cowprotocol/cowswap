@@ -7,7 +7,7 @@ import { getIsMetaMask } from 'connection/utils'
 import { CheckCircle } from 'react-feather'
 import { RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
-import { addTokenToMetamaskAnalytics } from 'utils/analytics'
+import { addTokenToMetamaskAnalytics } from 'components/analytics'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 
 export type AddToMetamaskProps = {

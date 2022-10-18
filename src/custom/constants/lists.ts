@@ -8,7 +8,9 @@ export type NetworkLists = {
   [chain in ChainId]: string[]
 }
 
-const COW_DAO_LIST = 'token-list.cow.eth'
+const COW_DAO_LIST = 'https://files.cow.fi/tokens/CowSwap.json'
+const COW_COINGECKO_LIST = 'https://files.cow.fi/tokens/CowSwap-coingecko.json'
+
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
@@ -66,6 +68,7 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       KLEROS_LIST,
       GEMINI_LIST,
       COW_DAO_LIST,
+      COW_COINGECKO_LIST,
     ],
   }),
   // [ChainId.KOVAN]: buildNetworkDefaultLists({

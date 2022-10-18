@@ -10,6 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Title } from 'components/Page'
+import PageTitle from 'components/PageTitle'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 
@@ -43,6 +44,7 @@ const Overview = () => {
   return (
     <Trace page={PageName.ACCOUNT_OVERVIEW_PAGE} shouldLogImpression>
       <Container>
+        <PageTitle title="Account Overview" />
         {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
 
         <CardsWrapper>
