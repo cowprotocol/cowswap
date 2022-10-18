@@ -3,22 +3,23 @@ import { useCallback, useEffect } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
-import { HeadingText } from '../../pure/RateInput/HeadingText'
-import { useLimitRateStateManager } from 'cow-react/modules/limitOrders/state/limitRateAtom'
-import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useCalculateRate } from '../../hooks/useCalculateRate'
+import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText'
+import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
+import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 
 export function RateInput() {
-  // Rate state
-  const rateState = useLimitRateStateManager()
-  const { setActiveRate, setIsInversed } = rateState
-  const { isInversed, activeRate, isLoading, marketRate } = rateState.state
-
   const calculateRate = useCalculateRate()
+  const updateCurrencyAmount = useUpdateCurrencyAmount()
+
+  // Rate state
+  const limitRateState = useAtomValue(limitRateAtom)
+  const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const { isInversed, activeRate, isLoading, marketRate } = limitRateState
 
   // Limit order state
   const limitOrderState = useAtomValue(limitOrdersAtom)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = limitOrderState
 
   const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
@@ -26,26 +27,26 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    setActiveRate(marketRate)
-  }, [marketRate, setActiveRate])
+    updateLimitRateState({ activeRate: marketRate })
+  }, [marketRate, updateLimitRateState])
 
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      setActiveRate(typedValue)
+      updateLimitRateState({ activeRate: typedValue })
     },
-    [setActiveRate]
+    [updateLimitRateState]
   )
 
   // Handle toggle primary field
   const handleToggle = () => {
     const newRate = calculateRate()
-    setIsInversed(!isInversed, newRate)
+    updateLimitRateState({ isInversed: !isInversed, activeRate: newRate })
   }
 
   // Handle rate change
   useEffect(() => {
-    updateLimitOrdersState({ inputCurrencyAmount })
+    updateCurrencyAmount({ inputCurrencyAmount })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
 

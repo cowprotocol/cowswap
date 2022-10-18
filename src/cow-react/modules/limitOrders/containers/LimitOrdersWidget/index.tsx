@@ -4,7 +4,7 @@ import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { ButtonPrimary } from 'components/Button'
 import { Trans } from '@lingui/macro'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { Field } from 'state/swap/actions'
@@ -23,8 +23,8 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 
 import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
-import { useLimitRateStateManager } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useApplyLimitRate } from '@cow/modules/limitOrders/hooks/useApplyLimitRate'
+import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -39,10 +39,9 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   // Rate limit
-  const rateState = useLimitRateStateManager()
-  const { isInversed, activeRate } = rateState.state
   const applyLimitRate = useApplyLimitRate()
 
   const currenciesLoadingInProgress = false
@@ -79,12 +78,12 @@ export function LimitOrdersWidget() {
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
-        updateLimitOrdersState({ inputCurrencyAmount: typedValue })
+        updateCurrencyAmount({ inputCurrencyAmount: typedValue })
       } else {
-        updateLimitOrdersState({ outputCurrencyAmount: typedValue })
+        updateCurrencyAmount({ outputCurrencyAmount: typedValue })
       }
     },
-    [updateLimitOrdersState]
+    [updateCurrencyAmount]
   )
 
   const onSwitchTokens = useCallback(() => {
@@ -92,19 +91,8 @@ export function LimitOrdersWidget() {
     limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
 
     const inputCurrencyAmount = applyLimitRate(inputCurrencyInfo.viewAmount, Field.OUTPUT)
-    updateLimitOrdersState({ inputCurrencyAmount })
-    rateState.setIsInversed(isInversed, activeRate)
-  }, [
-    state,
-    limitOrdersNavigate,
-    chainId,
-    applyLimitRate,
-    inputCurrencyInfo.viewAmount,
-    updateLimitOrdersState,
-    rateState,
-    isInversed,
-    activeRate,
-  ])
+    updateCurrencyAmount({ inputCurrencyAmount })
+  }, [state, limitOrdersNavigate, chainId, applyLimitRate, inputCurrencyInfo.viewAmount, updateCurrencyAmount])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {

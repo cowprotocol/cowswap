@@ -1,19 +1,10 @@
-import { useMemo } from 'react'
-import { useAtom, atom } from 'jotai'
+import { atom } from 'jotai'
 
 export interface LimitRateState {
   readonly isLoading: boolean
   readonly isInversed: boolean
   readonly activeRate: string | null
   readonly marketRate: string | null
-}
-
-export interface LimitRateStateManager {
-  state: LimitRateState
-  setState(state: LimitRateState): void
-  setIsInversed(isInversed: boolean, activeRate: string | null): void
-  setActiveRate(value: string | null): void
-  setMarketRate(value: string | null): void
 }
 
 const initLimitRateState = () => ({
@@ -26,27 +17,10 @@ const initLimitRateState = () => ({
 
 export const limitRateAtom = atom<LimitRateState>(initLimitRateState())
 
-export const useLimitRateStateManager = (): LimitRateStateManager => {
-  const [state, setState] = useAtom(limitRateAtom)
+export const updateLimitRateAtom = atom(null, (get, set, nextState: Partial<LimitRateState>) => {
+  set(limitRateAtom, () => {
+    const prevState = get(limitRateAtom)
 
-  return useMemo(() => {
-    return {
-      state,
-      setState(state: LimitRateState) {
-        setState(state)
-      },
-      setIsInversed(isInversed: boolean, activeRate: string | null) {
-        setState({ ...state, isInversed, activeRate })
-      },
-      setActiveRate(activeRate: string | null) {
-        setState({ ...state, activeRate })
-      },
-      setMarketRate(marketRate: string | null) {
-        setState({ ...state, marketRate })
-      },
-      setIsLoading(isLoading: boolean) {
-        setState({ ...state, isLoading })
-      },
-    }
-  }, [state, setState])
-}
+    return { ...prevState, ...nextState }
+  })
+})
