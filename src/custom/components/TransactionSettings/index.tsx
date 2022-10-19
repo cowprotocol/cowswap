@@ -23,8 +23,17 @@ const Wrapper = styled.div`
   ${OptionCustom} {
     background-color: ${({ theme }) => theme.bg4};
 
+    &:disabled {
+      background-color: ${({ theme }) => theme.bg3};
+      border: none;
+      pointer-events: none;
+    }
+
     > div > input {
       background: transparent;
+      &:disabled {
+        background-color: inherit;
+      }
     }
 
     > div > input::placeholder {

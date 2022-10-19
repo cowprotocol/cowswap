@@ -63,6 +63,10 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
+  &:disabled {
+    border: none;
+    pointer-events: none;
+  }
   background-color: ${({ active, theme }) => active && theme.primary1};
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
 `
@@ -225,7 +229,12 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           >
             <Trans>Auto</Trans>
           </Option>
-          <OptionCustom active={userSlippageTolerance !== 'auto' || !isEthFlow} warning={!!slippageError} tabIndex={-1}>
+          <OptionCustom
+            disabled={isEthFlow}
+            active={userSlippageTolerance !== 'auto' || !isEthFlow}
+            warning={!!slippageError}
+            tabIndex={-1}
+          >
             <RowBetween>
               {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
