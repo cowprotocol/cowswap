@@ -365,7 +365,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     {trade && <Price trade={trade} />}
 
                     {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                      <RowSlippage trade={trade} allowedSlippage={allowedSlippage} />
+                      <RowSlippage allowedSlippage={allowedSlippage} />
                     )}
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
