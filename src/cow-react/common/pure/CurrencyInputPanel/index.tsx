@@ -28,6 +28,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   subsidyAndBalance: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
+  topLabel?: string
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
@@ -42,6 +43,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     onUserInput,
     allowsOffchainSigning,
     subsidyAndBalance,
+    topLabel,
   } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
@@ -78,6 +80,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   return (
     <>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
+        {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
+
         <styledEl.CurrencyInputBox flexibleWidth={true}>
           <div>
             <CurrencySelectButton
@@ -95,6 +99,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
         </styledEl.CurrencyInputBox>
+
         <styledEl.CurrencyInputBox flexibleWidth={false}>
           <div>
             {balance && (

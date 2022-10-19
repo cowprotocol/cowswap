@@ -32,6 +32,7 @@ export function useLimitOrdersStateFromUrl(): LimitOrdersState {
       inputCurrencyId: inputCurrencyId || null,
       outputCurrencyId: outputCurrencyId || null,
       recipient,
+      orderKind: null,
     }
   }, [location.search, params, currentChainId])
 }

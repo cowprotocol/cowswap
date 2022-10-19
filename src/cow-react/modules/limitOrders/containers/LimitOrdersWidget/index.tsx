@@ -24,6 +24,7 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import { useIsSellOrder } from '@cow/modules/limitOrders/hooks/useIsSellOrder'
 
 // TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
@@ -39,6 +40,7 @@ export function LimitOrdersWidget() {
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const isSellOrder = useIsSellOrder()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -120,6 +122,7 @@ export function LimitOrdersWidget() {
           allowsOffchainSigning={allowsOffchainSigning}
           currencyInfo={inputCurrencyInfo}
           showSetMax={showSetMax}
+          topLabel={isSellOrder ? 'You sell' : 'You sell at most'}
         />
         <styledEl.RateWrapper>
           <RateInput />
@@ -142,6 +145,7 @@ export function LimitOrdersWidget() {
           allowsOffchainSigning={allowsOffchainSigning}
           currencyInfo={outputCurrencyInfo}
           priceImpactParams={priceImpactParams}
+          topLabel={isSellOrder ? 'Your receive at least' : 'You receive exactly'}
         />
         {recipient !== null && (
           <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
