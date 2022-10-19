@@ -89,7 +89,7 @@ const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
         </Text>
         <span>
           <label>
-            <input type="checkbox" onChange={_onCheckout} /> Don&apos;t show it again
+            <input type="checkbox" onChange={_onCheckout} /> Don&apos;t show this again
           </label>
         </span>
       </AutoColumnWrapper>

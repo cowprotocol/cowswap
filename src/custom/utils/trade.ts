@@ -32,14 +32,24 @@ export interface PostOrderParams {
 }
 
 function _getSummary(params: PostOrderParams): string {
-  const { kind, account, inputAmount, outputAmount, recipient, recipientAddressOrName, feeAmount } = params
+  const {
+    kind,
+    account,
+    inputAmount,
+    outputAmount,
+    recipient,
+    recipientAddressOrName,
+    feeAmount,
+    sellToken,
+    buyToken,
+  } = params
 
   const [inputQuantifier, outputQuantifier] = [
     kind === OrderKind.BUY ? 'at most ' : '',
     kind === OrderKind.SELL ? 'at least ' : '',
   ]
-  const inputSymbol = inputAmount.currency.symbol
-  const outputSymbol = outputAmount.currency.symbol
+  const inputSymbol = sellToken.symbol
+  const outputSymbol = buyToken.symbol
   const inputAmountValue = formatSmart(feeAmount ? inputAmount.add(feeAmount) : inputAmount, AMOUNT_PRECISION)
   const outputAmountValue = formatSmart(outputAmount, AMOUNT_PRECISION)
 
