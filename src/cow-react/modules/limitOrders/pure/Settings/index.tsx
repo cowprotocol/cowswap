@@ -10,14 +10,15 @@ interface SettingsBoxProps {
   title: string
   tooltip: string
   value: boolean
+  disabled?: boolean
   toggle: () => void
 }
 
-function SettingsBox({ title, tooltip, value, toggle }: SettingsBoxProps) {
+function SettingsBox({ title, tooltip, value, toggle, disabled = false }: SettingsBoxProps) {
   const theme = useContext(ThemeContext)
 
   return (
-    <styledEl.SettingsBox>
+    <styledEl.SettingsBox disabled={disabled}>
       <styledEl.SettingsBoxTitle>
         <Trans>{title}</Trans>
         <QuestionHelper bgColor={theme.bg3} color={theme.text1} text={<Trans>{tooltip}</Trans>} />
@@ -47,6 +48,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     title: 'Toggle Recipient',
     tooltip: 'Allows you to choose a destination address for the swap other than the connected one.',
     value: showRecipient,
+    disabled: expertMode,
     toggle() {
       onStateChanged({ expertMode, showRecipient: !showRecipient })
     },

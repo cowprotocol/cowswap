@@ -16,7 +16,7 @@ export const SettingsContainer = styled.div`
     0 24px 32px rgb(0 0 0 / 20%);
 `
 
-export const SettingsBox = styled.div`
+export const SettingsBox = styled.div<{ disabled: boolean }>`
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -24,6 +24,9 @@ export const SettingsBox = styled.div`
   :last-child {
     margin-bottom: 0;
   }
+
+  opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 `
 
 export const SettingsBoxTitle = styled.div`
