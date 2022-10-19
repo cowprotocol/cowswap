@@ -1,42 +1,30 @@
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Percent, TradeType } from '@uniswap/sdk-core'
-import { ThemeContext } from 'styled-components/macro'
 
 import { RowReceivedAfterSlippageContent } from '@cow/modules/swap/pure/Row/RowReceivedAfterSlippageContent'
-import { RowCommonProps } from '@cow/modules/swap/pure/Row/typings'
 
 import { Field } from 'state/swap/actions'
 import { formatMax } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
+import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'
 
-export interface RowReceivedAfterSlippageProps extends RowCommonProps {
+export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {
   trade: TradeGp
   allowedSlippage: Percent
 }
 
-export function RowReceivedAfterSlippage({
-  fontSize = 13,
-  fontWeight = 500,
-  showHelpers = true,
-  rowHeight,
-  trade,
-  allowedSlippage,
-}: Omit<RowReceivedAfterSlippageProps, 'theme'>) {
-  const theme = useContext(ThemeContext)
+export function RowReceivedAfterSlippage({ trade, allowedSlippage, showHelpers }: RowReceivedAfterSlippageProps) {
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
   const props = useMemo(
     () => ({
+      showHelpers,
       trade,
       allowedSlippage,
       slippageOut: slippageAdjustedAmounts[Field.OUTPUT],
       slippageIn: slippageAdjustedAmounts[Field.INPUT],
       isExactIn: trade.tradeType === TradeType.EXACT_INPUT,
-      fontSize,
-      fontWeight,
-      rowHeight,
-      showHelpers,
       get swapAmount() {
         return this.isExactIn ? this.slippageOut : this.slippageIn
       },
@@ -47,8 +35,8 @@ export function RowReceivedAfterSlippage({
         return formatMax(this.swapAmount, this.swapAmount?.currency.decimals) || '-'
       },
     }),
-    [trade, allowedSlippage, fontSize, fontWeight, rowHeight, showHelpers, slippageAdjustedAmounts]
+    [trade, allowedSlippage, slippageAdjustedAmounts, showHelpers]
   )
 
-  return <RowReceivedAfterSlippageContent {...props} theme={theme} />
+  return <RowReceivedAfterSlippageContent {...props} />
 }

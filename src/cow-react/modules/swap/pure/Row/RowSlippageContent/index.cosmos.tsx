@@ -1,12 +1,8 @@
 import { Percent } from '@uniswap/sdk-core'
-import { RowSlippageContent, RowSlippageAuxProps } from '.'
+import { RowSlippageContent, RowSlippageContentProps } from '.'
 import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
-import { getTheme } from '@src/theme'
 
-import { DefaultTheme } from 'styled-components/macro'
-
-const defaultProps: RowSlippageProps & RowSlippageAuxProps = {
-  theme: getTheme(false) as DefaultTheme,
+const defaultProps: RowSlippageProps & RowSlippageContentProps = {
   allowedSlippage: new Percent(1, 100),
   displaySlippage: '1%',
   toggleSettings() {

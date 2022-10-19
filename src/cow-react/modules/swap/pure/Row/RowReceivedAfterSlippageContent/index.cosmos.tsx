@@ -2,10 +2,8 @@ import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
-import { RowReceivedAfterSlippageAuxProps, RowReceivedAfterSlippageContent } from '.'
-import { getTheme } from '@src/theme'
+import { RowReceivedAfterSlippageContent, RowReceivedAfterSlippageContentProps } from '.'
 
-import { DefaultTheme } from 'styled-components/macro'
 import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
 
 const currency = COW[SupportedChainId.MAINNET]
@@ -25,10 +23,9 @@ const trade = new TradeGp({
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
 })
-const defaultProps: RowReceivedAfterSlippageProps & RowReceivedAfterSlippageAuxProps = {
+const defaultProps: RowReceivedAfterSlippageProps & RowReceivedAfterSlippageContentProps = {
   trade,
   showHelpers: true,
-  theme: getTheme(false) as DefaultTheme,
   allowedSlippage: new Percent(1, 100),
   isExactIn: true,
   fullOutAmount: '100',

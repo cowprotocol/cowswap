@@ -1,12 +1,11 @@
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
-import { ThemeContext } from 'styled-components/macro'
 
 import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'
-import { RowCommonProps } from '@cow/modules/swap/pure/Row/typings'
+import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -30,7 +29,7 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps extends RowCommonProps {
+export interface RowFeeProps extends RowWithShowHelpersProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
@@ -39,17 +38,7 @@ export interface RowFeeProps extends RowCommonProps {
   allowsOffchainSigning: boolean
 }
 
-export function RowFee({
-  trade,
-  fee,
-  feeFiatValue,
-  allowsOffchainSigning,
-  showHelpers,
-  fontSize = 13,
-  fontWeight = 500,
-  rowHeight,
-}: Omit<RowFeeProps, 'theme'>) {
-  const theme = useContext(ThemeContext)
+export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
   // trades are null when there is a fee quote error e.g
   // so we can take both
@@ -64,6 +53,7 @@ export function RowFee({
     const tooltip = allowsOffchainSigning ? GASLESS_FEE_TOOLTIP_MSG : PRESIGN_FEE_TOOLTIP_MSG
 
     return {
+      showHelpers,
       feeToken,
       feeUsd: smartFeeFiatValue && `(≈$${smartFeeFiatValue})`,
       fullDisplayFee,
@@ -71,16 +61,7 @@ export function RowFee({
       includeGasMessage,
       tooltip,
     }
-  }, [allowsOffchainSigning, fee, feeFiatValue, realizedFee])
+  }, [allowsOffchainSigning, fee, feeFiatValue, realizedFee, showHelpers])
 
-  return (
-    <RowFeeContent
-      {...props}
-      theme={theme}
-      showHelpers={showHelpers}
-      fontSize={fontSize}
-      fontWeight={fontWeight}
-      rowHeight={rowHeight}
-    />
-  )
+  return <RowFeeContent {...props} />
 }

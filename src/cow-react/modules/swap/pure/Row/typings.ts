@@ -1,9 +1,9 @@
-import { DefaultTheme } from 'styled-components/macro'
-
-export type RowCommonProps = {
-  theme: DefaultTheme
-  showHelpers: boolean
+export interface RowStyleProps {
   fontWeight?: number
   fontSize?: number
   rowHeight?: number
+}
+
+export interface RowWithShowHelpersProps {
+  showHelpers: boolean
 }

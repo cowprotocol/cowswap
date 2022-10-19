@@ -1,12 +1,13 @@
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { ThemedText } from 'theme'
 
-import { RowBetween, RowFixed } from 'components/Row'
+import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
+import { StyledRowBetween, TextWrapper } from '../styled'
+import { RowStyleProps } from '../typings'
 
 const ClickableText = styled.button`
   background: none;
@@ -19,17 +20,18 @@ const ClickableText = styled.button`
   color: ${({ theme }) => theme.text1};
 `
 
-export type RowSlippageAuxProps = {
+export interface RowSlippageContentProps extends RowSlippageProps {
   toggleSettings: () => void
   displaySlippage: string
+  styleProps?: RowStyleProps
 }
 
-export function RowSlippageContent(props: RowSlippageProps & RowSlippageAuxProps) {
-  const { rowHeight, fontWeight, fontSize, theme, showSettingOnClick, toggleSettings, displaySlippage } = props
+export function RowSlippageContent(props: RowSlippageContentProps) {
+  const { showSettingOnClick, toggleSettings, displaySlippage, styleProps } = props
   return (
-    <RowBetween height={rowHeight}>
+    <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight}>
+        <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
               <Trans>Slippage tolerance</Trans>
@@ -37,10 +39,8 @@ export function RowSlippageContent(props: RowSlippageProps & RowSlippageAuxProps
           ) : (
             <Trans>Slippage tolerance</Trans>
           )}
-        </ThemedText.Black>
+        </TextWrapper>
         <MouseoverTooltipContent
-          bgColor={theme.bg3}
-          color={theme.text1}
           wrap
           content={
             <Trans>
@@ -55,9 +55,9 @@ export function RowSlippageContent(props: RowSlippageProps & RowSlippageAuxProps
           <StyledInfo />
         </MouseoverTooltipContent>
       </RowFixed>
-      <ThemedText.Black textAlign="right" fontSize={fontSize} color={theme.text1}>
+      <TextWrapper textAlign="right">
         <ClickableText onClick={() => (showSettingOnClick ? toggleSettings() : null)}>{displaySlippage}</ClickableText>
-      </ThemedText.Black>
-    </RowBetween>
+      </TextWrapper>
+    </StyledRowBetween>
   )
 }

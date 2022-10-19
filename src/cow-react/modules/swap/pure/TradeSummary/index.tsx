@@ -28,30 +28,14 @@ export function TradeSummaryContent(props: TradeSummaryProps) {
             feeFiatValue={feeFiatValue}
             allowsOffchainSigning={allowsOffchainSigning}
             showHelpers={showHelpers}
-            fontSize={12}
-            fontWeight={400}
-            rowHeight={24}
           />
         )}
 
         {/* Slippage */}
-        <RowSlippage
-          allowedSlippage={allowedSlippage}
-          fontSize={12}
-          fontWeight={400}
-          rowHeight={24}
-          showSettingOnClick={false}
-        />
+        <RowSlippage allowedSlippage={allowedSlippage} showSettingOnClick={false} />
 
         {/* Min/Max received */}
-        <RowReceivedAfterSlippage
-          trade={trade}
-          showHelpers={showHelpers}
-          allowedSlippage={allowedSlippage}
-          fontSize={12}
-          fontWeight={400}
-          rowHeight={24}
-        />
+        <RowReceivedAfterSlippage trade={trade} showHelpers={showHelpers} allowedSlippage={allowedSlippage} />
       </AutoColumn>
     </Wrapper>
   )

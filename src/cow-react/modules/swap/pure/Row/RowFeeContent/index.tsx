@@ -1,51 +1,45 @@
-import { ThemedText } from 'theme'
-
-import { RowBetween, RowFixed } from 'components/Row'
+import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { LightGreyText } from '@cow/modules/swap/pure/styled'
-import { RowFeeProps } from '@cow/modules/swap/containers/RowFee'
-import { RowCommonProps } from '../typings'
+import { StyledRowBetween, TextWrapper } from '../styled'
+import { RowStyleProps, RowWithShowHelpersProps } from '../typings'
 
-export type RowFeeAuxProps = RowCommonProps & {
+export interface RowFeeContentProps extends RowWithShowHelpersProps {
   includeGasMessage: string
   tooltip: string
   feeToken: string
   feeUsd?: string
   fullDisplayFee: string
   feeCurrencySymbol: string
+  styleProps?: RowStyleProps
 }
 
-export function RowFeeContent(props: Omit<RowFeeProps, 'feeFiatValue' | 'allowsOffchainSigning'> & RowFeeAuxProps) {
+export function RowFeeContent(props: RowFeeContentProps) {
   const {
-    rowHeight,
-    fontSize,
-    fontWeight,
     showHelpers,
-    theme,
     includeGasMessage,
     tooltip,
     feeToken,
     feeUsd,
     fullDisplayFee,
     feeCurrencySymbol,
+    styleProps = {},
   } = props
   return (
-    <RowBetween height={rowHeight}>
+    <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <ThemedText.Black fontSize={fontSize} fontWeight={fontWeight} color={theme.text1}>
-          Fees {includeGasMessage}
-        </ThemedText.Black>
+        <TextWrapper>Fees {includeGasMessage}</TextWrapper>
         {showHelpers && (
-          <MouseoverTooltipContent content={tooltip} bgColor={theme.bg1} color={theme.text1} wrap>
+          <MouseoverTooltipContent content={tooltip} wrap>
             <StyledInfo />
           </MouseoverTooltipContent>
         )}
       </RowFixed>
 
-      <ThemedText.Black fontSize={fontSize} color={theme.text1} title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
         {feeToken} {feeUsd && <LightGreyText>{feeUsd}</LightGreyText>}
-      </ThemedText.Black>
-    </RowBetween>
+      </TextWrapper>
+    </StyledRowBetween>
   )
 }

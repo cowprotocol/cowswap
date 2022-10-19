@@ -2,11 +2,9 @@ import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
-import { RowFeeAuxProps, RowFeeContent } from '.'
-import { getTheme } from '@src/theme'
+import { RowFeeContent, RowFeeContentProps } from '.'
 
 import { RowFeeProps } from '@cow/modules/swap/containers/RowFee'
-import { DefaultTheme } from 'styled-components/macro'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]
@@ -25,7 +23,7 @@ const trade = new TradeGp({
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
 })
-const defaultProps: RowFeeProps & RowFeeAuxProps = {
+const defaultProps: RowFeeProps & RowFeeContentProps = {
   trade,
   fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   feeUsd: '(≈$42.93)',
@@ -43,7 +41,6 @@ const defaultProps: RowFeeProps & RowFeeAuxProps = {
   allowsOffchainSigning: true,
   includeGasMessage: '(incl. gas cost)',
   tooltip: 'This is a tooltip that describes stuff. Stuff that is great. Great stuff. The best stuff on earth.',
-  theme: getTheme(false) as DefaultTheme,
 }
 
 export default <RowFeeContent {...defaultProps} />
