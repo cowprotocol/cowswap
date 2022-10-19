@@ -1,18 +1,13 @@
 import { useCallback } from 'react'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
-
-// Rounds number only if the number of decimals goes above the decimals param
-export const limitDecimals = (amount: number, decimals: number): number => {
-  return +parseFloat(amount?.toFixed(decimals))
-}
+import { limitDecimals } from '../utils/limitDecimals'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
-  const [rateState] = useAtom(limitRateAtom)
-  const { activeRate, isInversed } = rateState
+  const { activeRate, isInversed } = useAtomValue(limitRateAtom)
 
   return useCallback(
     (value: string | null, field: Field): string | null => {

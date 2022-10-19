@@ -25,7 +25,6 @@ import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 
-// TODO: move the widget to Swap module
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
   useResetStateWithSymbolDuplication()
