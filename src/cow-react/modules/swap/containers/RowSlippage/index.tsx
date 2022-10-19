@@ -6,32 +6,30 @@ import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
-import TradeGp from 'state/swap/TradeGp'
+import { useIsEthFlow } from '@cow/modules/ethFlow/state/hooks'
 
 export interface RowSlippageProps {
-  trade?: TradeGp
   allowedSlippage: Percent
   showSettingOnClick?: boolean
 }
 
-export function RowSlippage({ trade, allowedSlippage, showSettingOnClick = true }: RowSlippageProps) {
+export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowSlippageProps) {
   const toggleSettings = useToggleSettingsMenu()
 
   // if is wrap/unwrap operation return null
   const wrapType = useWrapType()
   // should we show the warning?
-  const showEthFlowSlippageWarning = !!trade?.inputAmount.currency.isNative
-  const [nativeSymbol, wrappedSymbol] = [trade?.inputAmount.currency.symbol, trade?.inputAmount.currency.wrapped.symbol]
+  const { isEthFlow, nativeCurrency } = useIsEthFlow()
 
   const props = useMemo(
     () => ({
-      showEthFlowSlippageWarning,
-      symbols: [nativeSymbol, wrappedSymbol],
+      isEthFlow,
+      symbols: [nativeCurrency.symbol],
       showSettingOnClick,
       allowedSlippage,
       displaySlippage: `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`,
     }),
-    [allowedSlippage, nativeSymbol, showEthFlowSlippageWarning, showSettingOnClick, wrappedSymbol]
+    [allowedSlippage, nativeCurrency, isEthFlow, showSettingOnClick]
   )
 
   return wrapType !== WrapType.NOT_APPLICABLE ? null : <RowSlippageContent {...props} toggleSettings={toggleSettings} />
