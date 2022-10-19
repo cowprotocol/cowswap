@@ -40,8 +40,7 @@ export function RateInput() {
 
   // Handle toggle primary field
   const handleToggle = () => {
-    const newRate = calculateRate()
-    updateLimitRateState({ isInversed: !isInversed, activeRate: newRate })
+    updateLimitRateState({ isInversed: !isInversed, activeRate: calculateRate() })
   }
 
   // Observe the active rate change and set the INPUT currency amount
