@@ -13,18 +13,18 @@ export function SettingsWidget() {
 
   const onStateChanged = useCallback(
     (state: LimitOrdersSettingsState) => {
-      if (state.expertMode) {
+      if (!settingsState.expertMode && state.expertMode) {
         setShowExpertConfirm(true)
       } else {
         setSettingsState(state)
       }
     },
-    [setSettingsState]
+    [settingsState, setSettingsState]
   )
   const onEnableExpertMode = useCallback(() => {
-    setSettingsState({ ...settingsState, expertMode: true })
+    setSettingsState({ expertMode: true, showRecipient: true })
     setShowExpertConfirm(false)
-  }, [setSettingsState, settingsState, setShowExpertConfirm])
+  }, [setSettingsState, setShowExpertConfirm])
 
   return (
     <>
