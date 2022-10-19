@@ -26,30 +26,24 @@ export function useSetupLimitOrdersState() {
   useEffect(() => {
     if (shouldSkipUpdate) return
 
+    // Case: we have WETH/COW tokens pair
+    // User decided to select WETH as output currency, and navigated to WETH/WETH
+    // In this case, we reverse tokens pair and the result willbe: COW/WETH
+    const areCurrenciesTheSame = tradeStateFromUrl.inputCurrencyId === tradeStateFromUrl.outputCurrencyId
+    const inputCurrencyId = areCurrenciesTheSame ? state.outputCurrencyId : tradeStateFromUrl.inputCurrencyId
+    const outputCurrencyId = areCurrenciesTheSame ? state.inputCurrencyId : tradeStateFromUrl.outputCurrencyId
+
     const newState: Partial<LimitOrdersState> = chainIdWasChanged
       ? getDefaultLimitOrdersState(tradeStateFromUrl.chainId)
       : {
           chainId: tradeStateFromUrl.chainId,
           recipient: tradeStateFromUrl.recipient || state.recipient,
-          inputCurrencyId: tradeStateFromUrl.inputCurrencyId,
-          outputCurrencyId: tradeStateFromUrl.outputCurrencyId,
+          inputCurrencyId,
+          outputCurrencyId,
         }
 
     console.log('UPDATE LIMIT ORDERS STATE:', newState)
     updateLimitOrdersState(newState)
-    if (chainIdWasChanged) {
-      limitOrdersNavigate(
-        tradeStateFromUrl.chainId,
-        newState.inputCurrencyId || null,
-        newState.outputCurrencyId || null
-      )
-    }
-  }, [
-    limitOrdersNavigate,
-    updateLimitOrdersState,
-    state.recipient,
-    tradeStateFromUrl,
-    shouldSkipUpdate,
-    chainIdWasChanged,
-  ])
+    limitOrdersNavigate(tradeStateFromUrl.chainId, newState.inputCurrencyId || null, newState.outputCurrencyId || null)
+  }, [limitOrdersNavigate, updateLimitOrdersState, state, tradeStateFromUrl, shouldSkipUpdate, chainIdWasChanged])
 }
