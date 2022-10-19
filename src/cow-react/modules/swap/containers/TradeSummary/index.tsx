@@ -1,14 +1,19 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { AdvancedSwapDetailsProps } from 'components/swap/AdvancedSwapDetails'
+import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import TradeGp from 'state/swap/TradeGp'
 
-// Sub-components
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+
+// Sub-components
 import { TradeSummaryContent } from '@cow/modules/swap/pure/TradeSummary'
 
-export type TradeSummaryProps = Required<AdvancedSwapDetailsProps> & {
+export type TradeSummaryProps = {
+  trade: TradeGp
   fee: CurrencyAmount<Token> | null
+  allowedSlippage: Percent
   allowsOffchainSigning: boolean
+  showHelpers: boolean
+  showFee: boolean
 }
 
 export function TradeSummary({ trade, ...restProps }: Omit<TradeSummaryProps, 'fee' | 'allowsOffchainSigning'>) {
