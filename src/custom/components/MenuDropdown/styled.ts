@@ -49,9 +49,9 @@ export const Content = styled.div`
   top: 100%;
   left: 0;
   border-radius: 16px;
+  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
   background: ${({ theme }) => theme.bg1};
-  box-shadow: 0 12px 12px ${({ theme }) => transparentize(0.9, theme.text1)}};
-  
+  box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;
   gap: 62px;
   margin: 12px 0 0;

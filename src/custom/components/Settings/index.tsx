@@ -9,6 +9,7 @@ import { Percent } from '@uniswap/sdk-core'
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
     box-shadow: ${({ theme }) => theme.boxShadow2};
+    border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
     background-color: ${({ theme }) => theme.bg1};
     color: ${({ theme }) => theme.text1};
   }

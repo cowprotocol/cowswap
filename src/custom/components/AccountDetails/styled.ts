@@ -144,7 +144,6 @@ export const WalletWrapper = styled.div`
 export const UpperSection = styled(UpperSectionMod)`
   flex: 1 1 auto;
   width: 100%;
-  ${({ theme }) => theme.bg1};
 `
 
 export const InfoCard = styled.div`
