@@ -8,7 +8,12 @@ import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmMan
 import { Field } from 'state/swap/actions'
 import { TradeType } from '@uniswap/sdk-core'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { useHasEnoughWrappedBalanceForSwap, useWrapType, useWrapUnwrapError } from 'hooks/useWrapCallback'
+import {
+  useHasEnoughWrappedBalanceForSwap,
+  useWrapCallback,
+  useWrapType,
+  useWrapUnwrapError,
+} from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
 import { logSwapFlow } from '@cow/modules/swap/services/swapFlow/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
@@ -74,6 +79,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
+  const wrapCallback = useWrapCallback(wrapUnwrapAmount)
 
   const handleSwap = useCallback(() => {
     if (!swapFlowContext) return
@@ -142,7 +148,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     wrapInputError,
     wrapUnwrapAmount,
     hasEnoughWrappedBalanceForSwap,
-    onWrap() {
+    onWrapOrUnwrap: wrapCallback,
+    onEthFlow() {
       openNativeWrapModal()
     },
     openSwapConfirm() {
