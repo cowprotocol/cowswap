@@ -1,5 +1,5 @@
 import { BasicMenuLink, isBasicMenuLink, MAIN_MENU, MenuTreeItem } from '@cow/modules/mainMenu/constants/mainMenu'
-import { useParameterizeLimitOrdersRoute } from 'cow-react/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
+import { useParameterizeLimitOrdersRoute } from '@cow/modules/limitOrders/hooks/useParameterizeLimitOrdersRoute'
 import { Routes } from '@cow/constants/routes'
 import { useMemo } from 'react'
 

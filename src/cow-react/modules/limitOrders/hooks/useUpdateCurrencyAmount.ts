@@ -18,7 +18,7 @@ export function useUpdateCurrencyAmount() {
 
   return useCallback(
     (params: CurrencyAmountProps) => {
-      const update = { ...params } as CurrencyAmountProps
+      const update: CurrencyAmountProps = { ...params }
       const { inputCurrencyAmount, outputCurrencyAmount } = params
 
       // Handle INPUT amount change

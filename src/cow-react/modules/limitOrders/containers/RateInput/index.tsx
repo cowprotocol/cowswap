@@ -8,21 +8,19 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
-import usePrevious from '@src/hooks/usePrevious'
+import usePrevious from 'hooks/usePrevious'
 
 export function RateInput() {
   const calculateRate = useCalculateRate()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   // Rate state
-  const limitRateState = useAtomValue(limitRateAtom)
+  const { isInversed, activeRate, isLoading, marketRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
-  const { isInversed, activeRate, isLoading, marketRate } = limitRateState
   const prevIsInversed = usePrevious(isInversed)
 
   // Limit order state
-  const limitOrderState = useAtomValue(limitOrdersAtom)
-  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = limitOrderState
+  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = useAtomValue(limitOrdersAtom)
 
   const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
   const secondaryCurrency = isInversed ? inputCurrencyId : outputCurrencyId
@@ -46,7 +44,10 @@ export function RateInput() {
     updateLimitRateState({ isInversed: !isInversed, activeRate: newRate })
   }
 
-  // Handle rate change but not rate inverse
+  // Observe the active rate change and set the INPUT currency amount
+  // which will apply new rate to OUTPUT currency amount
+  // Don't call this when the rate changes as a result of click on inverse button
+  // because in that case we don't want to recalculate anything
   useEffect(() => {
     if (isInversed === prevIsInversed) {
       updateCurrencyAmount({ inputCurrencyAmount })

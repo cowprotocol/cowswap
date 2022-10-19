@@ -1,8 +1,8 @@
-import { Routes } from '@cow/constants/routes'
+import { useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from 'cow-react/modules/limitOrders/state/limitOrdersAtom'
-import { useMemo } from 'react'
+import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { Routes } from '@cow/constants/routes'
 
 export function useParameterizeLimitOrdersRoute(): string {
   const { chainId } = useWeb3React()
