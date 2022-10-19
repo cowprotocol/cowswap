@@ -4,12 +4,12 @@ import { LimitOrdersWidget } from '@cow/modules/limitOrders/containers/LimitOrde
 import { Chart } from '@cow/modules/limitOrders/containers/Chart'
 import { Orders } from '@cow/modules/limitOrders/containers/Orders'
 import { InfoPopup } from '@cow/modules/limitOrders/pure/InfoPopup'
-import { QuoteResolver } from '@cow/modules/limitOrders/containers/QuoteResolver'
+import { QuoteUpdater } from '@cow/modules/limitOrders/updaters/QuoteUpdater'
 
 export default function LimitOrderPage() {
   return (
     <>
-      <QuoteResolver />
+      <QuoteUpdater />
       <styledEl.PageWrapper>
         <styledEl.Column>
           <LimitOrdersWidget />
