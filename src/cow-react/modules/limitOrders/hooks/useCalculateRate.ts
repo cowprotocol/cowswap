@@ -23,7 +23,7 @@ export function useCalculateRate() {
 
     let newRate
 
-    if (!activeRate) {
+    if (!activeRate || !inputValue || !outputValue) {
       newRate = null
     } else if (isInversed) {
       newRate = outputValue / inputValue
@@ -32,7 +32,7 @@ export function useCalculateRate() {
     }
 
     if (newRate !== null) {
-      newRate = String(limitDecimals(newRate, 4))
+      newRate = String(limitDecimals(newRate, 5))
     }
 
     return newRate

@@ -22,20 +22,14 @@ export function useUpdateCurrencyAmount() {
       if (inputCurrencyAmount !== undefined) {
         // Calculate OUTPUT amount by applying the rate
         const outputWithRate = applyLimitRate(inputCurrencyAmount, Field.INPUT)
-
-        if (outputWithRate) {
-          update.outputCurrencyAmount = outputWithRate
-        }
+        update.outputCurrencyAmount = outputWithRate
       }
 
       // Handle OUTPUT amount change
       if (outputCurrencyAmount !== undefined) {
         // Calculate INPUT amount by applying the rate
         const inputWithRate = applyLimitRate(outputCurrencyAmount, Field.OUTPUT)
-
-        if (inputWithRate) {
-          update.inputCurrencyAmount = inputWithRate
-        }
+        update.inputCurrencyAmount = inputWithRate
       }
 
       // Continue with the state update

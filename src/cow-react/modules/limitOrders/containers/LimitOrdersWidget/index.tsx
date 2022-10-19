@@ -23,7 +23,6 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 
 import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
-import { useApplyLimitRate } from '@cow/modules/limitOrders/hooks/useApplyLimitRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 
 // TODO: move the widget to Swap module
@@ -40,9 +39,6 @@ export function LimitOrdersWidget() {
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-
-  // Rate limit
-  const applyLimitRate = useApplyLimitRate()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -87,12 +83,10 @@ export function LimitOrdersWidget() {
   )
 
   const onSwitchTokens = useCallback(() => {
-    const { inputCurrencyId, outputCurrencyId } = state
+    const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = state
     limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
-
-    const inputCurrencyAmount = applyLimitRate(inputCurrencyInfo.viewAmount, Field.OUTPUT)
-    updateCurrencyAmount({ inputCurrencyAmount })
-  }, [state, limitOrdersNavigate, chainId, applyLimitRate, inputCurrencyInfo.viewAmount, updateCurrencyAmount])
+    updateCurrencyAmount({ outputCurrencyAmount: inputCurrencyAmount })
+  }, [state, limitOrdersNavigate, chainId, updateCurrencyAmount])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {

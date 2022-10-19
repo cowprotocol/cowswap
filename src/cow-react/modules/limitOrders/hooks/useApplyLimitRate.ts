@@ -39,7 +39,7 @@ export function useApplyLimitRate() {
       }
 
       // We need to return string and we also limit the decimals
-      return String(limitDecimals(output, 6))
+      return String(limitDecimals(output, 5))
     },
     [activeRate, isInversed]
   )

@@ -8,6 +8,7 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import usePrevious from '@src/hooks/usePrevious'
 
 export function RateInput() {
   const calculateRate = useCalculateRate()
@@ -17,6 +18,7 @@ export function RateInput() {
   const limitRateState = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const { isInversed, activeRate, isLoading, marketRate } = limitRateState
+  const prevIsInversed = usePrevious(isInversed)
 
   // Limit order state
   const limitOrderState = useAtomValue(limitOrdersAtom)
@@ -44,9 +46,11 @@ export function RateInput() {
     updateLimitRateState({ isInversed: !isInversed, activeRate: newRate })
   }
 
-  // Handle rate change
+  // Handle rate change but not rate inverse
   useEffect(() => {
-    updateCurrencyAmount({ inputCurrencyAmount })
+    if (isInversed === prevIsInversed) {
+      updateCurrencyAmount({ inputCurrencyAmount })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
 
