@@ -2,8 +2,8 @@ import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
-import { TradeSummaryContent } from '.'
-import { TradeSummaryProps } from '../../containers/TradeSummary'
+import { TradeSummaryContent, TradeSummaryContentProps } from '.'
+import { TradeSummaryProps } from '@cow/modules/swap/containers/TradeSummary'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]
@@ -22,7 +22,7 @@ const trade = new TradeGp({
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
 })
-const defaultProps: TradeSummaryProps = {
+const defaultProps: TradeSummaryProps & TradeSummaryContentProps = {
   trade,
   allowsOffchainSigning: true,
   allowedSlippage: new Percent(12, 10_000),

@@ -1,5 +1,5 @@
 import { Percent } from '@uniswap/sdk-core'
-import { RowSlippageContent, RowSlippageContentProps } from '.'
+import { RowSlippageContent, RowSlippageContentProps } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
 
 const defaultProps: RowSlippageProps & RowSlippageContentProps = {

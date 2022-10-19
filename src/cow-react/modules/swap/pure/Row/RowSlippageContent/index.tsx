@@ -6,8 +6,8 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
-import { StyledRowBetween, TextWrapper } from '../styled'
-import { RowStyleProps } from '../typings'
+import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
+import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 
 const ClickableText = styled.button`
   background: none;

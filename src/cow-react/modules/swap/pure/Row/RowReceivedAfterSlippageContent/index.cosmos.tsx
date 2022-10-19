@@ -2,8 +2,10 @@ import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
-import { RowReceivedAfterSlippageContent, RowReceivedAfterSlippageContentProps } from '.'
-
+import {
+  RowReceivedAfterSlippageContent,
+  RowReceivedAfterSlippageContentProps,
+} from '@cow/modules/swap/pure/Row/RowReceivedAfterSlippageContent'
 import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
 
 const currency = COW[SupportedChainId.MAINNET]
