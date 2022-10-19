@@ -10,6 +10,7 @@ type CurrencyAmountProps = {
   inputCurrencyAmount?: string | null
   outputCurrencyAmount?: string | null
   orderKind?: OrderKind
+  keepOrderKind?: boolean
 }
 
 export function useUpdateCurrencyAmount() {
@@ -19,14 +20,18 @@ export function useUpdateCurrencyAmount() {
   return useCallback(
     (params: CurrencyAmountProps) => {
       const update: CurrencyAmountProps = { ...params }
-      const { inputCurrencyAmount, outputCurrencyAmount } = params
+      const { inputCurrencyAmount, outputCurrencyAmount, keepOrderKind } = params
 
       // Handle INPUT amount change
       if (inputCurrencyAmount !== undefined) {
         // Calculate OUTPUT amount by applying the rate
         const outputWithRate = applyLimitRate(inputCurrencyAmount, Field.INPUT)
         update.outputCurrencyAmount = outputWithRate
-        update.orderKind = OrderKind.SELL
+
+        // Update order type only if keeOrderKind param is not true
+        if (!keepOrderKind) {
+          update.orderKind = OrderKind.SELL
+        }
       }
 
       // Handle OUTPUT amount change
@@ -34,7 +39,11 @@ export function useUpdateCurrencyAmount() {
         // Calculate INPUT amount by applying the rate
         const inputWithRate = applyLimitRate(outputCurrencyAmount, Field.OUTPUT)
         update.inputCurrencyAmount = inputWithRate
-        update.orderKind = OrderKind.BUY
+
+        // Update order type only if keeOrderKind param is not true
+        if (!keepOrderKind) {
+          update.orderKind = OrderKind.BUY
+        }
       }
 
       // Continue with the state update

@@ -13,7 +13,7 @@ export interface LimitOrdersState {
   readonly outputCurrencyAmount: string | null
   readonly recipient: string | null
   readonly deadline: number | null
-  readonly orderKind: OrderKind | null
+  readonly orderKind: OrderKind
 }
 
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersState {

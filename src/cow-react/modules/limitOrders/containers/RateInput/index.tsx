@@ -49,7 +49,7 @@ export function RateInput() {
   // because in that case we don't want to recalculate anything
   useEffect(() => {
     if (isInversed === prevIsInversed) {
-      updateCurrencyAmount({ inputCurrencyAmount })
+      updateCurrencyAmount({ inputCurrencyAmount, keepOrderKind: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
