@@ -1,6 +1,6 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useIsGnosisSafeWallet, useWalletInfo } from 'hooks/useWalletInfo'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -25,6 +25,7 @@ import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDeri
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
+import { GnosisSafeTxDetails } from 'components/AccountDetails/Transaction/ActivityDetails'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -326,6 +327,19 @@ const StepsWrapper = styled.div`
   }
 `
 
+const GnosisSafeTxStyled = styled(GnosisSafeTxDetails)`
+  margin: 0;
+  border: 0px;
+  width: 100%;
+  padding-right: 5rem;
+  padding-left: 5rem;
+  animation: SlideInStep 1s forwards linear;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding-right: 1rem;
+    padding-left: 1rem;
+  `}
+`
+
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
 
@@ -418,6 +432,9 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
   let title = activityDerivedState.isOrder ? 'Order' : 'Transaction'
 
   switch (activityDerivedState.status) {
+    case ActivityStatus.PRESIGNATURE_PENDING:
+      title += ' Signing'
+      break
     case ActivityStatus.CONFIRMED:
       title += ' Confirmed'
       break
@@ -513,6 +530,23 @@ export function ConfirmationPendingContent({
   )
 }
 
+function OrderTxProgress(props: { activityDerivedState: ActivityDerivedState; chainId: ChainId }) {
+  const { activityDerivedState, chainId } = props
+  const activityState = activityDerivedState && getActivityState(activityDerivedState)
+  const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const isGnosisSafeWallet = useIsGnosisSafeWallet()
+
+  if (showProgressBar) {
+    return <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+  }
+
+  if (isGnosisSafeWallet) {
+    return <GnosisSafeTxStyled activityDerivedState={activityDerivedState} chainId={chainId} />
+  }
+
+  return null
+}
+
 export function TransactionSubmittedContent({
   onDismiss,
   chainId,
@@ -527,8 +561,6 @@ export function TransactionSubmittedContent({
   const theme = useContext(ThemeContext)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
-  const activityState = activityDerivedState && getActivityState(activityDerivedState)
-  const showProgressBar = activityState === 'open' || activityState === 'filled'
 
   if (!supportedChainId(chainId)) {
     return null
@@ -548,9 +580,7 @@ export function TransactionSubmittedContent({
             </Text>
           </ExternalLinkCustom>
         )}
-        {activityDerivedState && showProgressBar && (
-          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
-        )}
+        {activityDerivedState && <OrderTxProgress activityDerivedState={activityDerivedState} chainId={chainId} />}
         <ButtonGroup>
           <AddToMetamask shortLabel currency={currencyToAdd} />
 

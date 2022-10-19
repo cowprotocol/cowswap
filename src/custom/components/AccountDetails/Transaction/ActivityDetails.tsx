@@ -1,4 +1,4 @@
-import React from 'react'
+import { HTMLAttributes } from 'react'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
@@ -33,11 +33,13 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
-function GnosisSafeTxDetails(props: {
+type GnosisSafeTxDetailsProps = {
   chainId: number
   activityDerivedState: ActivityDerivedState
-}): JSX.Element | null {
-  const { chainId, activityDerivedState } = props
+} & HTMLAttributes<HTMLDivElement>
+
+export function GnosisSafeTxDetails(props: GnosisSafeTxDetailsProps): JSX.Element | null {
+  const { chainId, activityDerivedState, className } = props
   const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled } = activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
@@ -116,7 +118,7 @@ function GnosisSafeTxDetails(props: {
   }
 
   return (
-    <TransactionInnerDetail>
+    <TransactionInnerDetail className={className}>
       <span>
         Safe Nonce: <b>{nonce}</b>
       </span>

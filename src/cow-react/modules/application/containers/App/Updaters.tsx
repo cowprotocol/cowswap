@@ -4,7 +4,7 @@ import ListsUpdater from 'state/lists/updater'
 import LogsUpdater from 'state/logs/updater'
 import TransactionUpdater from 'state/transactions/updater'
 import UserUpdater from 'state/user/updater'
-import GnosisSafeUpdater from 'state/gnosisSafe/updater'
+import GnosisSafeUpdater, { GnosisSafeExecutionUpdater } from 'state/gnosisSafe/updater'
 import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
 import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import FeesUpdater from 'state/price/updater'
@@ -40,6 +40,7 @@ export function Updaters() {
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <GnosisSafeUpdater />
+      <GnosisSafeExecutionUpdater />
       <GasPriceStrategyUpdater />
     </>
   )

@@ -6,10 +6,11 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 
 import GPv2_SETTLEMENT_ABI from '@cow/abis/GPv2Settlement.json'
 import V_COW_ABI from '@cow/abis/vCow.json'
+import SAFE_WALLET_ABI from '@cow/abis/SafeWalletContract.json'
 import ENS_ABI from 'abis/ens-registrar.json'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
-import { GPv2Settlement, VCow, Erc20 } from '@cow/abis/types'
+import { GPv2Settlement, VCow, Erc20, SafeWalletContract } from '@cow/abis/types'
 
 import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
@@ -51,6 +52,10 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
     }
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)
+}
+
+export function useSafeWalletContract(accountAddress: string | undefined): SafeWalletContract | null {
+  return useContract<SafeWalletContract>(accountAddress, SAFE_WALLET_ABI, true)
 }
 
 /**
