@@ -108,7 +108,6 @@ export const MenuSection = styled.div`
     margin: 0;
     padding: 0;
     color: ${({ theme }) => theme.text1};
-    gap: 12px;
 
     &:hover {
       text-decoration: underline;

@@ -46,6 +46,17 @@ const Wrapper = styled.div`
       max-width: 220px;
       width: 100%;
 
+      // Token symbol name
+      &:first-of-type {
+        color: ${({ theme }) => theme.text1};
+      }
+
+      // Token full name
+      &:last-of-type {
+        color: ${({ theme }) => theme.text2};
+        font-weight: 400;
+      }
+
       ${({ theme }) => theme.mediaWidth.upToSmall`
         max-width: 140px;
       `};
@@ -54,6 +65,9 @@ const Wrapper = styled.div`
 
   ${StyledLogo} {
     background: ${({ theme }) => theme.bg1};
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
   }
 
   ${TagMod} {
@@ -75,7 +89,7 @@ const Wrapper = styled.div`
 
 export const MenuItem = styled(MenuItemMod)`
   &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg1};
+    background-color: ${({ theme, disabled }) => !disabled && theme.grey1};
   }
 `
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
-import { lighten, darken } from 'polished'
+import { lighten } from 'polished'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed: boolean }>`
   display: flex;
@@ -10,16 +10,16 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   gap: 0.5rem;
   border: 0;
   outline: none;
-  background-color: ${({ theme, stubbed }) => (stubbed ? lighten(0.1, theme.bg1) : theme.bg1)};
-  color: ${({ theme }) => theme.text1};
-  box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 10px rgb(0 0 0 / 8%)' : 'none')};
+  background-color: ${({ theme, stubbed }) => (stubbed ? lighten(0.1, theme.bg2) : theme.bg1)};
+  color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
+  box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 8px rgb(0 0 0 / 6%)' : 'none')};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   border-radius: 16px;
   padding: 8px;
   transition: background-color 0.15s ease-in-out;
 
-  :hover {
-    background-color: ${({ theme }) => darken(0.03, theme.bg1)};
+  &:hover {
+    background-color: ${({ stubbed, theme }) => (stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1))};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -28,11 +28,11 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   `};
 `
 
-export const ArrowDown = styled(DropDown)`
+export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
   margin: 0 5px;
 
   path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
     stroke-width: 1.5px;
   }
 
@@ -41,18 +41,9 @@ export const ArrowDown = styled(DropDown)`
   `};
 `
 
-export const ArrowDownStubbed = styled(DropDown)`
-  margin: 0 5px;
-
-  path {
-    stroke: ${({ theme }) => theme.text2};
-    stroke-width: 1.5px;
-  }
-`
-
 export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 500;
   white-space: nowrap;
-  color: ${({ stubbed, theme }) => (stubbed ? theme.text2 : theme.text1)};
+  color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
 `

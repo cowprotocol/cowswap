@@ -43,7 +43,7 @@ const Wrapper = styled.div`
     ${SelectorLabel} + svg {
       width: 18px;
       height: 18px;
-      stroke-width: 3px;
+      stroke-width: 2px;
     }
 
     &:hover {
