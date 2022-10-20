@@ -64,6 +64,7 @@ import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { Widget } from '@cow/modules/application/pure/Widget'
 import EthFlowBanner from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
+import { useOpenNativeWrapModal } from '@cow/modules/swap/containers/EthFlow/hooks'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -76,10 +77,12 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
-  // Native wrap modals
-  const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
-  const openNativeWrapModal = () => setOpenNativeWrapModal(true)
-  const dismissNativeWrapModal = () => setOpenNativeWrapModal(false)
+  // Native wrap modal
+  const { showNativeWrapModal, openNativeWrapModal, dismissNativeWrapModal } = useOpenNativeWrapModal()
+
+  // Force wrap
+  // e.g user has balance of wrapped token but wants to wrap anyway
+  const [forceWrap, setForceWrap] = useState(false)
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
@@ -262,7 +265,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
           <EthFlowModal
             nativeInput={nativeInput}
             approvalState={swapButtonsContext.approveButtonProps.approvalState}
-            hasEnoughWrappedBalanceForSwap={swapButtonsContext.hasEnoughWrappedBalanceForSwap}
+            hasEnoughWrappedBalanceForSwap={!forceWrap && swapButtonsContext.hasEnoughWrappedBalanceForSwap}
             onDismiss={dismissNativeWrapModal}
             wrapCallback={swapButtonsContext.onWrapOrUnwrap}
             directSwapCallback={swapButtonsContext.handleSwap}
@@ -407,9 +410,10 @@ export default function Swap({ history, location, className }: RouteComponentPro
               <EthFlowBanner
                 nativeInAmount={nativeInput}
                 switchCurrencyCallback={() => onCurrencySelection(Field.INPUT, nativeInput.wrapped.currency)}
-                wrapCallback={openNativeWrapModal}
-                // TODO: is removed in next PR
-                forceWrapCallback={console.log}
+                wrapCallback={(forceWrap = false) => {
+                  setForceWrap(forceWrap)
+                  openNativeWrapModal()
+                }}
               />
             )}
           </Wrapper>

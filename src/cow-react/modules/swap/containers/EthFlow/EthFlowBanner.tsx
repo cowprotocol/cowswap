@@ -5,8 +5,7 @@ import { useHasEnoughWrappedBalanceForSwap } from '@src/custom/hooks/useWrapCall
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface EthFlowBannerCallbacks {
-  wrapCallback: () => void
-  forceWrapCallback: () => void
+  wrapCallback: (forceWrap?: boolean) => void
   switchCurrencyCallback: () => void
 }
 

@@ -87,7 +87,6 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
     showBannerCallback,
     switchCurrencyCallback,
     wrapCallback,
-    forceWrapCallback,
   } = props
   return (
     <BannerWrapper onClick={showBannerCallback}>
@@ -129,13 +128,20 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
                     or{' '}
                     <u>
                       {' '}
-                      <SpanCta onClick={forceWrapCallback}>wrap my {native.symbol} and swap</SpanCta>
+                      <SpanCta
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          wrapCallback(true)
+                        }}
+                      >
+                        wrap my {native.symbol} and swap
+                      </SpanCta>
                     </u>
                   </small>
                 </SpanCta>
               </>
             ) : (
-              <SpanCta onClick={wrapCallback}>Wrap my {native.symbol} and swap</SpanCta>
+              <SpanCta onClick={() => wrapCallback()}>Wrap my {native.symbol} and swap</SpanCta>
             )}
           </WrapEthCta>
         </BannerInnerWrapper>

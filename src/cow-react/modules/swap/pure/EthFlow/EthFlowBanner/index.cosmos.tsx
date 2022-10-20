@@ -19,9 +19,6 @@ const defaultProps: EthFlowBannerContentProps = {
   wrapCallback() {
     return console.log('Eth flow banner wrap callback called!')
   },
-  forceWrapCallback() {
-    return console.log('Eth flow banner force wrap callback called!')
-  },
 }
 
 export default <EthFlowBannerContent {...defaultProps} />
