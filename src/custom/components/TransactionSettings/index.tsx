@@ -3,8 +3,9 @@ import SlippageTabsMod, {
   FancyButton as FancyButtonUni,
   OptionCustom,
 } from './TransactionSettingsMod'
-import { RowFixed } from 'components/Row'
+import { RowBetween, RowFixed } from 'components/Row'
 import styled from 'styled-components/macro'
+import { darken } from 'polished'
 
 // TODO: option was restyled in v3, review if this change is necessary
 export const Option = styled(FancyButtonUni)<{ active: boolean }>`
@@ -20,14 +21,16 @@ export const Option = styled(FancyButtonUni)<{ active: boolean }>`
 `
 
 const Wrapper = styled.div`
-  ${OptionCustom} {
-    background-color: ${({ theme }) => theme.bg4};
-
+  ${RowBetween} > button, ${OptionCustom} {
     &:disabled {
-      background-color: ${({ theme }) => theme.bg3};
+      background-color: ${({ theme }) => darken(0.031, theme.bg3)};
       border: none;
       pointer-events: none;
     }
+  }
+
+  ${OptionCustom} {
+    background-color: ${({ theme }) => theme.bg4};
 
     > div > input {
       background: transparent;
