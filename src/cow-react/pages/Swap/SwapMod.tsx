@@ -32,7 +32,7 @@ import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/in
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { formatSmart } from 'utils/format'
-import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/reducer'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -365,7 +365,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     {trade && <Price trade={trade} />}
 
                     {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                      <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
+                      <RowSlippage allowedSlippage={allowedSlippage} />
                     )}
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
