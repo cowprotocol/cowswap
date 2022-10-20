@@ -11,7 +11,7 @@ interface ShowLoaderProp {
 }
 
 const ArrowDownIcon = styled(ArrowDown)`
-  stroke: ${({ theme }) => theme.swap.arrowDown.color};
+  stroke: ${({ theme }) => theme.text1};
   backface-visibility: hidden;
   width: 100%;
   height: 100%;
@@ -29,7 +29,7 @@ export const Wrapper = styled.div<ShowLoaderProp>`
   background: ${({ theme }) => theme.swap.arrowDown.background};
   width: ${({ theme }) => theme.swap.arrowDown.width};
   height: ${({ theme }) => theme.swap.arrowDown.height};
-  border: ${({ theme }) => `${theme.swap.arrowDown.borderSize} solid ${theme.swap.arrowDown.borderColor}`};
+  border: ${({ theme }) => `2px solid ${theme.input.bg1}`};
   border-radius: ${({ theme }) => theme.swap.arrowDown.borderRadius};
   padding: 0;
   cursor: pointer;
@@ -87,7 +87,7 @@ export const Wrapper = styled.div<ShowLoaderProp>`
         position: absolute;
         left: -2px;
         top: -2px;
-        background: linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg4}, #c5daef, #1b5a7a);
+        background: linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg1}, #c5daef, #1b5a7a);
         background-size: 800%;
         width: calc(100% + 4px);
         height: calc(100% + 4px);

@@ -40,17 +40,20 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
   ${ButtonPrimary} {
     width: 196px;
     padding: 9px;
     color: ${({ theme }) => theme.primaryText1};
+
     &:hover {
-      ${({ theme }) => theme.buttonPrimary.background}
     }
   }
+
   h2 {
     margin: 36px 0 32px;
   }
+
   img {
     max-width: 506px;
   }

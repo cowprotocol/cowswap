@@ -5,7 +5,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   display: flex;
   flex-flow: column wrap;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 500;
   line-height: 1;
   margin: 0 24px 0 0;
   color: ${({ theme }) => theme.text1};
@@ -55,15 +55,17 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   `}
 
     &:hover,
-  &.active {
+    &.active {
       opacity: 1;
     }
 
     &.active {
+      font-weight: 600;
+
       ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
-      background: ${({ theme }) => transparentize(0.9, theme.text1)};
-      border-radius: 16px;
-    `}
+        background: ${({ theme }) => transparentize(0.9, theme.text1)};
+        border-radius: 16px;
+      `}
     }
   }
 `

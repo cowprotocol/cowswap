@@ -101,7 +101,6 @@ export function LimitOrdersWidget() {
         <styledEl.Header>
           <div>Limit orders</div>
           <styledEl.SettingsButton>
-            <styledEl.SettingsTitle>Settings</styledEl.SettingsTitle>
             <styledEl.SettingsIcon />
           </styledEl.SettingsButton>
         </styledEl.Header>
@@ -138,7 +137,7 @@ export function LimitOrdersWidget() {
         )}
         <styledEl.TradeButtonBox>
           <ButtonPrimary onClick={doTrade} disabled={false} buttonSize={ButtonSize.BIG}>
-            <Trans>Trade</Trans>
+            <Trans>Review Limit Order</Trans>
           </ButtonPrimary>
         </styledEl.TradeButtonBox>
       </styledEl.ContainerBox>

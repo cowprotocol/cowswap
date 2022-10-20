@@ -22,14 +22,14 @@ const Wrapper = styled.div`
   height: 100%;
 
   ${ListContainer} {
-    ${({ theme }) => theme.neumorphism.boxShadow}
+    border-top: 1px solid ${({ theme }) => theme.grey1};
     padding: 1rem;
     padding-bottom: 80px;
   }
 `
 
 export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasActiveTokens: boolean }>`
-  background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg4)};
+  background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg1)};
   opacity: ${({ hasActiveTokens }) => (hasActiveTokens ? 1 : 0.4)};
   transition: 0.2s;
   align-items: center;
@@ -44,7 +44,7 @@ export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasAct
 `
 
 export const Card = styled(CardUni)`
-  background: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg1};
 
   ${Row},
   ${Row} > div > div,
