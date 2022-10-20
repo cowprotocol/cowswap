@@ -135,7 +135,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
                 </SpanCta>
               </>
             ) : (
-              <SpanCta onClick={wrapCallback}>Wrap my {native.symbol} and swap</SpanCta>
+              <SpanCta onClick={() => wrapCallback()}>Wrap my {native.symbol} and swap</SpanCta>
             )}
           </WrapEthCta>
         </BannerInnerWrapper>
