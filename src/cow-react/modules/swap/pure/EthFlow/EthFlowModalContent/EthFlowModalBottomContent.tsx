@@ -3,10 +3,10 @@ import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails'
 
 import { ActionButton } from './ActionButton'
-import { EthFlowState } from '../../typings'
+import { EthFlowState } from '../../../services/ethFlow/types'
 import { useCallback, useMemo } from 'react'
-import { EthFlowContext } from '../../state/ethFlowContextAtom'
-import { EthFlowActions } from '../../containers/EthFlowModal/hooks/useEthFlowActions'
+import { EthFlowContext } from '@cow/modules/swap/state/EthFlow/ethFlowContextAtom'
+import { EthFlowActions } from '@cow/modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 
 function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, isExpertMode: boolean) {

@@ -1,5 +1,5 @@
-import { EthFlowState } from '../../../typings'
-import { EthFlowContext } from '../../../state/ethFlowContextAtom'
+import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
+import { EthFlowContext } from '@cow/modules/swap/state/EthFlow/ethFlowContextAtom'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 
 // returns derived ethflow state from current props

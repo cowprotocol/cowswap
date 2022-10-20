@@ -1,15 +1,18 @@
 import styled from 'styled-components/macro'
 
 import { useCallback } from 'react'
-import { EthFlowModalBottomContent } from './EthFlowModalBottomContent'
+import { EthFlowModalBottomContent } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
 
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
-import { BalanceChecks, EthFlowModalTopContent } from './EthFlowModalTopContent'
-import { ethFlowConfigs } from './configs'
-import { EthFlowState } from '../../typings'
-import { WrappingPreviewProps } from '../WrappingPreview'
-import { EthFlowContext } from '../../state/ethFlowContextAtom'
-import { EthFlowActions } from '../../containers/EthFlowModal/hooks/useEthFlowActions'
+import {
+  BalanceChecks,
+  EthFlowModalTopContent,
+} from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
+import { ethFlowConfigs } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent/configs'
+import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
+import { WrappingPreviewProps } from '@cow/modules/swap/pure/EthFlow/WrappingPreview'
+import { EthFlowContext } from '@cow/modules/swap/state/EthFlow/ethFlowContextAtom'
+import { EthFlowActions } from '@cow/modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 
 export interface EthFlowModalContentProps {
   state: EthFlowState

@@ -5,12 +5,12 @@ import {
   ethFlowContextAtom,
   resetEthFlowContextAtom,
   updateEthFlowContextAtom,
-} from '../../../state/ethFlowContextAtom'
+} from '../../../state/EthFlow/ethFlowContextAtom'
 import { ActivityDescriptors, ActivityStatus } from 'hooks/useRecentActivity'
 import { useAtomValue } from 'jotai/utils'
 import { EthFlowActions } from './useEthFlowActions'
 import { delay } from 'utils/misc'
-import { EthFlowState } from '../../../typings'
+import { EthFlowState } from '../../../services/ethFlow/types'
 
 interface EthFlowSetupParams {
   state: EthFlowState

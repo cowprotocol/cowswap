@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { useGasPrices } from 'state/gas/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { BalanceChecks } from '../../../pure/EthFlowModalContent/EthFlowModalTopContent'
+import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { AVG_APPROVE_COST_GWEI } from 'constants/index'

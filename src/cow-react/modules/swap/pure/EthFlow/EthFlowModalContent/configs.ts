@@ -1,4 +1,4 @@
-import { EthFlowState } from '../../typings'
+import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
 
 export interface EthFlowConfig {
   title: string

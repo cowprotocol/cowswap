@@ -1,9 +1,10 @@
-import { GpModal } from 'components/Modal'
+import styled from 'styled-components/macro'
 import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/fixture'
-import { EthFlowModalContent } from '.'
-import { getEthFlowModalContentProps } from '../../mocks'
-import { EthFlowState } from '../../typings'
+import { EthFlowModalContent } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent'
+import { GpModal } from 'components/Modal'
+import { getEthFlowModalContentProps } from '@cow/modules/swap/services/ethFlow/mocks'
+import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
 import {
   ApproveErrorTxHashMock,
   ApprovePendingTxHashMock,
@@ -12,9 +13,8 @@ import {
   WrapErrorTxHashMock,
   WrapPendingTxHashMock,
   WrapSuccessfulTxHashMock,
-} from '../../transactionsMocks'
-import styled from 'styled-components/macro'
-import { EthFlowActionContext } from '../../state/ethFlowContextAtom'
+} from '@cow/modules/swap/services/ethFlow/transactionsMocks'
+import { EthFlowActionContext } from '@cow/modules/swap/state/EthFlow/ethFlowContextAtom'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 
 const ALL_STATES = Object.values(EthFlowState)

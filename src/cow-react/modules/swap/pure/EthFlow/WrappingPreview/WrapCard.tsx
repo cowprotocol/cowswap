@@ -6,7 +6,7 @@ import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
-import * as styledEl from './styled'
+import * as styledEl from '@cow/modules/swap/pure/EthFlow/WrappingPreview/styled'
 
 const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
   filter: invert(1);

@@ -1,4 +1,4 @@
-import { WrapCard } from './WrapCard'
+import { WrapCard } from '@cow/modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
 
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
