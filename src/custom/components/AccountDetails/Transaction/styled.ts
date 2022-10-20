@@ -328,7 +328,7 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   > ${LinkStyledButton} {
     margin: 2px 0;
     opacity: 1;
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 

@@ -143,7 +143,6 @@ export const AuxInformationContainer = styled(Container)<{
 export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
   align-items: center;
   background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   cursor: pointer;
   border-radius: 16px;
@@ -356,7 +355,8 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${CurrencySelect} {
     z-index: 2;
-    color: ${({ selected, theme }) => (selected ? theme.text1 : theme.text1)};
+    background: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg2)};
+    color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     transition: background-color 0.2s ease-in-out;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -364,14 +364,14 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
     `};
 
     &:focus {
-      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg1)};
+      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg2)};
     }
     &:hover {
-      background-color: ${({ theme }) => lighten(0.1, theme.bg1)};
+      background-color: ${({ selected, theme }) => (selected ? lighten(0.1, theme.bg1) : lighten(0.1, theme.bg2))};
     }
 
     path {
-      stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.text1)};
+      stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
       stroke-width: 1.5px;
     }
   }

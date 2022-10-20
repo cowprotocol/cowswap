@@ -15,15 +15,15 @@ export const TokenSearchInput = styled(SearchInput)`
   align-self: flex-end;
   border-radius: 0;
   box-shadow: none !important;
-  border-bottom: 1px solid ${({ theme }) => theme.primary1} !important;
+  border-bottom: 1px solid ${({ theme }) => theme.bg2} !important;
 
   ::placeholder {
     font-size: 14px !important;
-    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? 'white' : theme.text1)} !important;
+    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)} !important;
   }
 
   :focus::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? 'white' : theme.text1)} !important;
+    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)} !important;
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

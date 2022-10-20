@@ -43,6 +43,10 @@ export function colors(darkMode: boolean): Colors {
 
     shimmer1: darkMode ? 'transparent' : 'transparent',
     shimmer2: darkMode ? 'rgb(10 35 71 / 80%)' : 'rgb(255 255 255 / 60%)',
+
+    // States
+    error: darkMode ? '#D41300' : '#D41300',
+    errorText: darkMode ? '#560000' : '#560000',
     // ==========================================
 
     // ****** text ******
@@ -112,8 +116,6 @@ export function colors(darkMode: boolean): Colors {
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warning: '#FFEDAF',
     warningText: '#564D00',
-    error: '#FFC7AF',
-    errorText: '#560000',
   }
 }
 
@@ -147,6 +149,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
     `,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.04)' : '0 12px 12px rgba(5, 43, 101, 0.04)',
+    boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
     },
@@ -412,8 +415,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ::selection { 
-    background: ${({ theme }) => theme.primary1};
-    color: ${({ theme }) => theme.text2};
+    background: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
   }
 
   // Appzi Container override
@@ -587,9 +590,12 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ${ModalContentWrapper} {
+    background-color: ${({ theme }) => theme.bg1};
+    border: 0;
+
     ${RowBetween} > div,
     ${AutoColumn} > div {
-      color: ${({ theme }) => theme.text2};
+      color: ${({ theme }) => theme.text1};
     }
   }
   // END - Modal overrides

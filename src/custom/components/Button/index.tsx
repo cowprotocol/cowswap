@@ -13,7 +13,6 @@ import {
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  // ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
 import { ButtonSize } from 'theme'
@@ -45,7 +44,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => transparentize(0.85, theme.bg2)};
+    background-color: ${({ theme }) => transparentize(0.95, theme.text1)};
     color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;
@@ -104,10 +103,11 @@ export const ButtonLight = styled(ButtonPrimary)`
 `
 
 export const ButtonGray = styled(ButtonGrayMod)`
-  // CSS overrides
+  box-shadow: none;
+
   &:hover,
   &:focus {
-    box-shadow: none;
+    box-shadow: 0 6px 8px rgb(0 0 0 / 6%);
   }
 `
 

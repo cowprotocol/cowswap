@@ -2,6 +2,7 @@ import SlippageTabsMod, {
   TransactionSettingsProps as TransactionSettingsPropsMod,
   FancyButton as FancyButtonUni,
   OptionCustom,
+  Input,
 } from './TransactionSettingsMod'
 import { RowFixed } from 'components/Row'
 import styled from 'styled-components/macro'
@@ -10,7 +11,7 @@ import styled from 'styled-components/macro'
 export const Option = styled(FancyButtonUni)<{ active: boolean }>`
   margin-right: 8px;
   border: 0;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.grey1};
   color: ${({ theme }) => theme.text1};
   border: ${({ active, theme }) => active && `1px solid ${theme.primary1}`};
 
@@ -21,7 +22,8 @@ export const Option = styled(FancyButtonUni)<{ active: boolean }>`
 
 const Wrapper = styled.div`
   ${OptionCustom} {
-    background-color: ${({ theme }) => theme.bg1};
+    background-color: ${({ theme }) => theme.grey1};
+    border: 0;
 
     > div > input {
       background: transparent;
@@ -32,6 +34,11 @@ const Wrapper = styled.div`
       color: ${({ theme }) => theme.text1};
     }
   }
+
+  ${Input} {
+    color: ${({ theme, color }) => (color === 'red' ? theme.error : theme.text1)};
+  }
+
   ${RowFixed} {
     > div {
       color: ${({ theme }) => theme.text1};
@@ -39,7 +46,8 @@ const Wrapper = styled.div`
     }
 
     > button {
-      background-color: ${({ theme }) => theme.bg1};
+      background-color: ${({ theme }) => theme.grey1};
+      border: 0;
     }
 
     > button > input {

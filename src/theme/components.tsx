@@ -46,9 +46,8 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
   border: none;
   text-decoration: none;
   background: none;
-
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.primary1)};
+  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.text3)};
   font-weight: 500;
 
   :hover {
@@ -69,7 +68,7 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
 export const StyledInternalLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.text3};
   font-weight: 500;
 
   :hover {
@@ -89,7 +88,7 @@ export const StyledInternalLink = styled(Link)`
 export const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.text3};
   font-weight: 500;
 
   :hover {
@@ -132,7 +131,7 @@ export const LinkIcon = styled(LinkIconFeather)`
   height: 16px;
   width: 18px;
   margin-left: 10px;
-  stroke: ${({ theme }) => theme.blue1};
+  stroke: ${({ theme }) => theme.text3};
 `
 
 export const TrashIcon = styled(Trash)`

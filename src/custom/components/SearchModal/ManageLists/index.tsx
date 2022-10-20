@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   height: 100%;
 
   ${ListContainer} {
-    ${({ theme }) => theme.neumorphism.boxShadow}
+    border-top: 1px solid ${({ theme }) => theme.grey1};
     padding: 1rem;
     padding-bottom: 80px;
   }

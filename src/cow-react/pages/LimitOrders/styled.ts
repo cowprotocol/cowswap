@@ -5,7 +5,7 @@ export const PageWrapper = styled.div`
   width: 100%;
   max-width: ${MEDIA_WIDTHS.upToLarge}px;
   display: grid;
-  grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.trade}; 1fr;
+  grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.trade} 1fr;
   grid-column-gap: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
