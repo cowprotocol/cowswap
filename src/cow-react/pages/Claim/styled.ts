@@ -1759,9 +1759,6 @@ export const BannerExplainer = styled.div`
     height: auto;
   `}
 
-  &:hover {
-  }
-
   > span {
     display: flex;
     flex-flow: column wrap;
