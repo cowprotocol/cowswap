@@ -10,7 +10,7 @@ export default function Updater() {
   const currentSlippage = useUserSlippageTolerance()
 
   // save the last non eth-flow slippage amount to reset when user switches back to normal erc20 flow
-  const [erc20Slippage, setErc20Slippage] = useState<Percent | 'auto' | undefined>(currentSlippage)
+  const [previousSlippage, setPreviousSlippage] = useState<typeof currentSlippage>(currentSlippage)
 
   const { isEthFlow } = useIsEthFlow()
 
@@ -19,14 +19,12 @@ export default function Updater() {
   // change slippage set to 2% when detected eth swap and option is set to use native flow
   useEffect(() => {
     if (isEthFlow) {
-      // user switched back to erc20, we need to reset their previous slippage back to what it was
-      if (currentSlippage instanceof Percent && !currentSlippage.equalTo(ETH_FLOW_SLIPPAGE)) {
-        // do sth
-        setErc20Slippage(currentSlippage)
-      }
+      // save the previous slippage to set back if users switches out of native swap
+      setPreviousSlippage(currentSlippage)
       setUserSlippageTolerance(ETH_FLOW_SLIPPAGE)
     } else {
-      setUserSlippageTolerance(erc20Slippage ?? 'auto')
+      // user switched back to non-native swap, set slippage back to previous value
+      setUserSlippageTolerance(previousSlippage ?? 'auto')
     }
     // we only want to depend on isEthFlow
     // to avoid re-renders
