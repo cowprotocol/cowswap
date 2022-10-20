@@ -36,13 +36,12 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
-  const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
   const isTradePriceUpdating = false
   const showSetMax = true
-  const showRecipientControls = settingsState.showRecipient
   const priceImpactParams = undefined
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -115,13 +114,13 @@ export function LimitOrdersWidget() {
           currencyInfo={inputCurrencyInfo}
           showSetMax={showSetMax}
         />
-        <styledEl.CurrencySeparatorBox withRecipient={showRecipientControls}>
+        <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
           <CurrencyArrowSeparator
             onSwitchTokens={onSwitchTokens}
-            withRecipient={showRecipientControls}
+            withRecipient={showRecipient}
             isLoading={isTradePriceUpdating}
           />
-          {showRecipientControls && <AddRecipient onChangeRecipient={onChangeRecipient} />}
+          {showRecipient && <AddRecipient onChangeRecipient={onChangeRecipient} />}
         </styledEl.CurrencySeparatorBox>
         <CurrencyInputPanel
           id="swap-currency-output"

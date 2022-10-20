@@ -7,24 +7,25 @@ export interface DropdownProps extends Partial<DropdownContentPosition> {
   children: ReactNode
   content: ReactNode
   ignoreOutsideClicks?: boolean
-  isOpened?: boolean
+  isOpen?: boolean
 }
 
 export function Dropdown(props: DropdownProps) {
   const {
     content,
     children,
-    isOpened = false,
+    isOpen = false,
     ignoreOutsideClicks = false,
     positionX = 'right',
     positionY = 'bottom',
   } = props
-  const [showContent, setShowContent] = useState(isOpened)
+  const [showContent, setShowContent] = useState(isOpen)
   const node = useRef<HTMLDivElement>()
 
   const toggleShowContent = useCallback(() => {
     setShowContent(!showContent)
   }, [showContent, setShowContent])
+
   const hideContent = useCallback(() => {
     if (!ignoreOutsideClicks) {
       setShowContent(false)

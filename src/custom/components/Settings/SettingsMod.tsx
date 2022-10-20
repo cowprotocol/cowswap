@@ -42,6 +42,18 @@ export const StyledMenuIcon = styled(Settings)`
   }
 `
 
+// const StyledCloseIcon = styled(X)`
+//   height: 20px;
+//   width: 20px;
+//   :hover {
+//     cursor: pointer;
+//   }
+//
+//   > * {
+//     stroke: ${({ theme }) => theme.text1};
+//   }
+// `
+
 export const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
@@ -96,6 +108,21 @@ export const MenuFlyout = styled.span`
   user-select: none;
 `
 
+// const Break = styled.div`
+//   width: 100%;
+//   height: 1px;
+//   background-color: ${({ theme }) => theme.bg3};
+// `
+//
+// const ModalContentWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 2rem 0;
+//   background-color: ${({ theme }) => theme.bg2};
+//   border-radius: 20px;
+// `
+
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
   // const { chainId } = useWeb3React()
 
@@ -142,6 +169,46 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any} className={className}>
+      {/* <Modal isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxHeight={100}>
+        <ModalContentWrapper>
+          <AutoColumn gap="lg">
+            <RowBetween style={{ padding: '0 2rem' }}>
+              <div />
+              <Text fontWeight={500} fontSize={20}>
+                <Trans>Are you sure?</Trans>
+              </Text>
+              <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
+            </RowBetween>
+            <Break />
+            <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
+              <Text fontWeight={500} fontSize={20}>
+                <Trans>
+                  Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result
+                  in bad rates and lost funds.
+                </Trans>
+              </Text>
+              <Text fontWeight={600} fontSize={20}>
+                <Trans>ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.</Trans>
+              </Text>
+              <ButtonError
+                error={true}
+                padding={'12px'}
+                onClick={() => {
+                  const confirmWord = t`confirm`
+                  if (window.prompt(t`Please type the word "${confirmWord}" to enable expert mode.`) === confirmWord) {
+                    toggleExpertMode()
+                    setShowConfirmation(false)
+                  }
+                }}
+              >
+                <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
+                  <Trans>Turn On Expert Mode</Trans>
+                </Text>
+              </ButtonError>
+            </AutoColumn>
+          </AutoColumn>
+        </ModalContentWrapper>
+      </Modal> */}
       <ExpertModeModal
         isOpen={showConfirmation}
         onDismiss={() => setShowConfirmation(false)}

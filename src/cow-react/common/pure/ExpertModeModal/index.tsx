@@ -1,5 +1,5 @@
-import { AutoColumn } from '@src/components/Column'
-import { RowBetween } from '@src/components/Row'
+import { AutoColumn } from 'components/Column'
+import { RowBetween } from 'components/Row'
 import { Text } from 'rebass'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'

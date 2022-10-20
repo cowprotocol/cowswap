@@ -17,7 +17,7 @@ const defaultProps: DropdownProps = {
     </Content>
   ),
   children: <button>Click me</button>,
-  isOpened: false,
+  isOpen: false,
   positionX: 'right',
   positionY: 'bottom',
 }
