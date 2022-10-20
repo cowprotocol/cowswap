@@ -3,7 +3,7 @@ import { Field } from 'state/swap/actions'
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useMemo, useState } from 'react'
 import { supportedChainId } from 'utils/supportedChainId'
-import { TOKEN_SHORTHANDS } from 'constants/tokens'
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useDefaultsFromURLSearch } from 'state/swap/hooks'
 import TokenWarningModal from 'components/TokenWarningModal'
 
@@ -46,10 +46,16 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
           // Any token addresses that are loaded from the shorthands map do not need to show the import URL
           const supported = supportedChainId(chainId)
           if (!supported) return true
-          return !Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
+
+          const isTokenInShorthands = Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
             const shorthandTokenAddress = TOKEN_SHORTHANDS[shorthand][supported]
-            return shorthandTokenAddress && shorthandTokenAddress === token.address
+            return shorthandTokenAddress && shorthandTokenAddress.toLowerCase() === token.address.toLowerCase()
           })
+
+          const isTokenInWrapped =
+            WRAPPED_NATIVE_CURRENCY[supported].address.toLowerCase() === token.address.toLowerCase()
+
+          return !isTokenInShorthands && !isTokenInWrapped
         })
     )
   }, [chainId, defaultTokens, urlLoadedTokens])
