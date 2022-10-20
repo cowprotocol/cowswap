@@ -33,7 +33,7 @@ export function colors(darkMode: boolean): Colors {
     blueLight1: '#CAE9FF',
     grey1: darkMode ? '#07162D' : '#ECF1F8',
 
-    bg1: darkMode ? '#0A2347' : '#ffffff',
+    bg1: darkMode ? '#0c264b' : '#ffffff',
     bg2: darkMode ? '#0d5ed9' : '#052B65',
 
     text1: darkMode ? '#CAE9FF' : '#052B65',
@@ -125,7 +125,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         ${darkMode
           ? `
           background-color: ${colorsTheme.blueDark1};
-          background-image: radial-gradient(50% 500px at 50% -13%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
+          background-image: radial-gradient(50% 500px at 50% -10%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
           : `background: linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
         background-attachment: fixed;
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};

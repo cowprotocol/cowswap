@@ -108,7 +108,7 @@ export function LimitOrdersWidget() {
     <styledEl.Container>
       <styledEl.ContainerBox>
         <styledEl.Header>
-          <div>Limit orders</div>
+          <div>Limit</div>
           <SettingsWidget />
         </styledEl.Header>
         <CurrencyInputPanel

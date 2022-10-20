@@ -2,22 +2,23 @@ import styled from 'styled-components/macro'
 import Input from 'components/NumericalInput'
 
 export const Wrapper = styled.div`
-  background: white;
-  border-radius: 12px;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  flex: 3;
+  background: ${({ theme }) => theme.grey1};
+  border-radius: 16px;
+  padding: 10px 16px;
+  flex: 1 1 70%;
+  min-height: 80px;
 `
 
 export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 13px;
+  font-weight: 500;
 `
 
 export const MarketPriceButton = styled.button`
-  background-color: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.bg1};
   border: none;
   cursor: pointer;
   border-radius: 16px;
@@ -25,7 +26,7 @@ export const MarketPriceButton = styled.button`
 `
 
 export const Body = styled.div`
-  padding: 0.5rem 0;
+  padding: 0;
   display: flex;
 `
 

@@ -3,7 +3,6 @@ import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from '../../state/l
 import { Settings } from '../../pure/Settings'
 import { ExpertModeModal } from '@cow/common/pure/ExpertModeModal'
 import React, { useCallback, useState } from 'react'
-import { Trans } from '@lingui/macro'
 import { Dropdown } from '@cow/common/pure/Dropdown'
 import * as styledEl from './styled'
 
@@ -38,9 +37,6 @@ export function SettingsWidget() {
         ignoreOutsideClicks={showExpertConfirm}
       >
         <styledEl.SettingsButton>
-          <styledEl.SettingsTitle>
-            <Trans>Settings</Trans>
-          </styledEl.SettingsTitle>
           <styledEl.SettingsIcon />
           {settingsState.expertMode && (
             <styledEl.ExpertModeIndicator>
