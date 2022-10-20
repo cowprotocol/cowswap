@@ -403,20 +403,11 @@ export default function Swap({ history, location, className }: RouteComponentPro
               <SwapButtons {...swapButtonsContext} />
               {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
             </BottomGrouping>
-            {nativeInput && (
+            {!swapErrorMessage && nativeInput && (
               <EthFlowBanner
                 nativeInAmount={nativeInput}
                 switchCurrencyCallback={() => onCurrencySelection(Field.INPUT, nativeInput.wrapped.currency)}
-                forceWrapCallback={() => {
-                  if (!swapErrorMessage) {
-                    openNativeWrapModal()
-                  }
-                }}
-                wrapCallback={() => {
-                  if (!swapErrorMessage) {
-                    openNativeWrapModal()
-                  }
-                }}
+                wrapCallback={openNativeWrapModal}
               />
             )}
           </Wrapper>
