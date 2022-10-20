@@ -7,12 +7,13 @@ import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 import { EthFlowBannerCallbacks } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import ethFlowIcon from 'assets/svg/ethFlow.svg'
+import { darken } from 'polished'
 
 const BannerWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg7};
-  border: 1px solid ghostwhite;
+  background-color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.08, theme.bg7)};
+  border: ${({ theme }) => theme.cardBorder};
   border-radius: ${({ theme }) => theme.buttonOutlined.borderRadius};
-  padding: 12px 14px;
+  padding: 14px;
   margin: 12px 0 8px;
   font-size: 13px;
   cursor: pointer;
@@ -25,6 +26,9 @@ const ClosedBannerWrapper = styled.div`
   align-items: center;
   > strong {
     font-weight: 600;
+  }
+  > img:first-child {
+    filter: ${({ theme }) => `invert(${theme.darkMode ? 0 : 1})`};
   }
   > svg:last-child {
     cursor: pointer;
@@ -65,12 +69,6 @@ const SpanCta = styled.span`
     font-weight: 400;
   }
 `
-
-/* type BannerProps = Pick<Props, 'native' | 'wrapped' | 'isNativeIn' | 'nativeInput'> & {
-  wrapCallback: (forceWrap?: boolean) => void
-  forceWrapCallback: (force: boolean) => void
-  switchCurrencyCallback: (() => void) | undefined
-} */
 
 export interface EthFlowBannerContentProps extends EthFlowBannerCallbacks {
   native: Currency
@@ -131,7 +129,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
                     or{' '}
                     <u>
                       {' '}
-                      <SpanCta onClick={forceWrapCallback}>wrap my {native.symbol} anyway and swap</SpanCta>
+                      <SpanCta onClick={forceWrapCallback}>wrap my {native.symbol} and swap</SpanCta>
                     </u>
                   </small>
                 </SpanCta>
