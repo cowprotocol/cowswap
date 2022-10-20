@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useQuoteRequestParams } from './hooks/useQuoteRequestParams'
 import { getQuote } from '@cow/api/gnosisProtocol'
 
-export const QuoteUpdater = () => {
+export function QuoteUpdater() {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
   const feeQuoteParams = useQuoteRequestParams()
 
