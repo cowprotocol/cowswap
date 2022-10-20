@@ -10,7 +10,7 @@ export const PageWrapper = styled(Widget)`
   min-height: 500px;
 `
 
-export const Title = styled.h1<{ darkMode?: boolean }>`
+export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0 16px;
   color: ${({ theme }) => theme.text1};
