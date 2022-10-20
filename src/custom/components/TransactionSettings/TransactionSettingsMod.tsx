@@ -28,6 +28,7 @@ import {
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/state/EthFlow/hooks'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -120,7 +121,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
-  const { isEthFlow } = useIsEthFlow()
+  const { isEthFlow, nativeCurrency } = useIsEthFlow()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
@@ -208,14 +209,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             color={theme.text1}
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
-              <Trans>
-                <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
-                <p>
-                  The slippage you pick here enables a resubmission of your order in case of unfavourable price
-                  movements.
-                </p>
-                <p>{INPUT_OUTPUT_EXPLANATION}</p>
-              </Trans>
+              isEthFlow
+                ? getNativeSlippageTooltip([nativeCurrency.symbol, nativeCurrency.wrapped.symbol])
+                : getNonNativeSlippageTooltip()
             }
           />
         </RowFixed>
