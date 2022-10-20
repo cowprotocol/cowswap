@@ -31,11 +31,11 @@ export interface EthFlowProps {
 function EthFlow({
   nativeInput,
   approvalState,
+  hasEnoughWrappedBalanceForSwap,
   onDismiss,
   wrapCallback,
   approveCallback,
   directSwapCallback,
-  hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
