@@ -24,19 +24,9 @@ export type ApproveCallbackFromTradeParams = Pick<
   isNativeFlow?: boolean
 }
 
-export type OptionalApproveCallbackParams = {
-  transactionSummary?: string
-  modalMessage?: string
-  useModals?: boolean
-}
-
-export interface ApproveCallback {
-  (params?: OptionalApproveCallbackParams): Promise<TransactionResponse | undefined>
-}
-
-export type ApproveCallbackState = {
+export type ApproveCallback = {
   approvalState: ApprovalState
-  approve: ApproveCallback
+  approve: (optionalParams?: OptionalApproveCallbackParams | undefined) => Promise<TransactionResponse | undefined>
   revokeApprove: (optionalParams?: OptionalApproveCallbackParams | undefined) => Promise<void>
   isPendingApproval: boolean
 }
@@ -49,7 +39,7 @@ export function useApproveCallbackFromTrade({
   allowedSlippage,
   amountToCheckAgainstAllowance,
   isNativeFlow,
-}: ApproveCallbackFromTradeParams): ApproveCallbackState {
+}: ApproveCallbackFromTradeParams): ApproveCallback {
   const { chainId } = useWeb3React()
 
   const amountToApprove = useMemo(() => {
@@ -69,6 +59,12 @@ export function useApproveCallbackFromTrade({
     spender: vaultRelayer,
     amountToCheckAgainstAllowance,
   })
+}
+
+export type OptionalApproveCallbackParams = {
+  transactionSummary?: string
+  modalMessage?: string
+  useModals?: boolean
 }
 
 type ApproveCallbackFromClaimParams = Omit<

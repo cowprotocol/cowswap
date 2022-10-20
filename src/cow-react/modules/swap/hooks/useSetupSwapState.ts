@@ -21,8 +21,7 @@ export function useSetupSwapState() {
   const dispatch = useAppDispatch()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const swapState = useSwapState()
-  const accountDisconnected = !account && !!previousAccount
-  const wasAccountChanged = accountDisconnected || (previousAccount && account && previousAccount !== account)
+  const wasAccountChanged = previousAccount && account && previousAccount !== account
   // Updated persisted state only when network or account changed
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const persistedSwapState = useMemo(() => swapState, [chainId, wasAccountChanged])
@@ -39,7 +38,7 @@ export function useSetupSwapState() {
       shouldUsePersistedState ? persistedSwapState : null
     )
 
-    console.debug('Set swap state from url: ', { chainId, swapState, shouldUsePersistedState, wasAccountChanged })
+    console.debug('Set swap state from url: ', { chainId, swapState, shouldUsePersistedState })
     dispatch(replaceSwapState(swapState))
   }, [dispatch, tradeStateFromUrl, persistedSwapState, chainId, wasAccountChanged])
 }

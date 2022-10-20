@@ -28,8 +28,7 @@ import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI } from 'constants/index'
-import WXDAI_LOGO_URI from 'assets/cow-swap/wxdai.png'
+import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT, WETH_LOGO_URI, XDAI_LOGO_URI } from 'constants/index'
 import TradeGp from './TradeGp'
 
 import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
@@ -489,7 +488,7 @@ export function useDetectNativeToken() {
     const wrappedToken: Token & { logoURI: string } = Object.assign(
       WETH[activeChainId || DEFAULT_NETWORK_FOR_LISTS].wrapped,
       {
-        logoURI: activeChainId === ChainId.GNOSIS_CHAIN ? WXDAI_LOGO_URI : WETH_LOGO_URI,
+        logoURI: activeChainId === ChainId.GNOSIS_CHAIN ? XDAI_LOGO_URI : WETH_LOGO_URI,
       }
     )
 

@@ -4,7 +4,6 @@
 
 const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
 const WETH = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
-const QUOTE_APPLY_TIMEOUT = 1000
 
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
@@ -43,13 +42,6 @@ describe('Swap (custom)', () => {
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('0.05', { force: true, delay: 400 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
-    cy.wait(QUOTE_APPLY_TIMEOUT)
-    cy.get('body').then(($body) => {
-      const feesExceedCheckbox = $body.find('#fees-exceed-checkbox')
-      if (feesExceedCheckbox.length > 0) {
-        feesExceedCheckbox.get(0).click()
-      }
-    })
     cy.get('#swap-button').should('contain', 'Swap with WETH')
   })
 })

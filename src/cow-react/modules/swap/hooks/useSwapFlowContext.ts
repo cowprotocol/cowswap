@@ -67,7 +67,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const dispatch = useDispatch<AppDispatch>()
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
-  const recipientAddressOrName = recipient || ensRecipientAddress
+  const recipientAddress = ensRecipientAddress || recipient
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
@@ -104,7 +104,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
     recipient,
-    recipientAddress: recipientAddressOrName,
+    recipientAddress,
     trade,
   }
 
@@ -128,8 +128,8 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     sellToken,
     buyToken,
     validTo,
-    recipient: ensRecipientAddress || recipient || account,
-    recipientAddressOrName,
+    recipient: recipientAddress || recipient || account,
+    recipientAddressOrName: recipientAddress || null,
     signer: provider.getSigner(),
     allowsOffchainSigning,
     appDataHash: appData.hash,

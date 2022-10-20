@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
 
-export function Chart() {
+export function ChartPure() {
   return <styledEl.Chart>Chart</styledEl.Chart>
 }

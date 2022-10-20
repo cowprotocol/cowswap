@@ -93,7 +93,7 @@ export default function Header() {
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
-    <Wrapper isMobileMenuOpen={isMobileMenuOpen} isDarkMode={darkMode}>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>

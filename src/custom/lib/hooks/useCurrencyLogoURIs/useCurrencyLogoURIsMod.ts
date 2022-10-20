@@ -1,7 +1,8 @@
-import { Currency, Token } from '@uniswap/sdk-core'
+import { Currency } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { useMemo } from 'react'
+import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 
 import EthereumLogo from 'assets/images/ethereum-logo.png'
 // import MaticLogo from '../../assets/svg/matic-token-icon.svg'
@@ -51,11 +52,8 @@ function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedC
   }
 }
 
-// TODO: must be refactored
 export default function useCurrencyLogoURIs(currency?: Currency | null): string[] {
-  // There is a modification of Token in useDetectNativeToken()
-  const logoURI = currency ? (currency as Currency & { logoURI: string }).logoURI : null
-  const locations = useHttpLocations(logoURI || undefined)
+  const locations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
   return useMemo(() => {
     const logoURIs = [...locations]
     if (currency) {
@@ -64,7 +62,8 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
         logoURIs.push(getNativeLogoURI(currency.chainId))
       } else if (currency.isToken) {
         // mod
-        const logoURI = getOverriddenTokenLogoURI(currency)
+        const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
+        const logoURI = imageOverride || getTokenLogoURI(currency.address, currency.chainId)
         if (logoURI) {
           logoURIs.push(logoURI)
         }
@@ -72,10 +71,4 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
     }
     return logoURIs
   }, [currency, locations])
-}
-
-export function getOverriddenTokenLogoURI(currency: Token) {
-  const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
-  const logoURI = imageOverride || getTokenLogoURI(currency.address, currency.chainId)
-  return logoURI
 }

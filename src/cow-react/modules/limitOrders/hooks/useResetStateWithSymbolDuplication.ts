@@ -22,7 +22,7 @@ Please select the token you need from the UI or use the address of the token ins
  * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
-export function useResetStateWithSymbolDuplication(): void {
+export function useResetStateWithSymbolDuplication() {
   const { chainId } = useWeb3React()
   const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
@@ -35,7 +35,6 @@ export function useResetStateWithSymbolDuplication(): void {
     if (chainId && (inputCurrencyIsDoubled || outputCurrencyIsDoubled)) {
       const doubledSymbol = inputCurrencyIsDoubled ? inputCurrencyId : outputCurrencyId
 
-      // TODO: add UI modal instead of alert
       alert(alertMessage(doubledSymbol || ''))
 
       const defaultState = getDefaultLimitOrdersState(chainId)

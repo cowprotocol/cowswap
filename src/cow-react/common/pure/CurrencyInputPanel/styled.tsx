@@ -40,11 +40,6 @@ export const CurrencyInputBox = styled.div<{ flexibleWidth: boolean }>`
   }
 `
 
-export const CurrencyTopLabel = styled.div`
-  font-size: 0.85rem;
-  margin-bottom: 12px;
-`
-
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   width: 100%;
   background: none;

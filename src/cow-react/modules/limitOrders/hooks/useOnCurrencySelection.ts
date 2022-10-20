@@ -6,19 +6,6 @@ import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
 
-function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
-  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-
-  return useCallback(
-    (currency: Currency | null): string | null => {
-      if (!currency) return null
-
-      return areThereTokensWithSameSymbol(currency.symbol) ? (currency as Token).address : currency.symbol || null
-    },
-    [areThereTokensWithSameSymbol]
-  )
-}
-
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
  * if there are more than one token with the same symbol
@@ -26,9 +13,18 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
  */
 export function useOnCurrencySelection(): (field: Field, currency: Currency) => void {
   const { chainId } = useWeb3React()
+  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const limitOrdersNavigate = useLimitOrdersNavigate()
-  const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
+
+  const resolveCurrencyAddressOrSymbol = useCallback(
+    (currency: Currency | null): string | null => {
+      if (!currency) return null
+
+      return areThereTokensWithSameSymbol(currency.symbol) ? (currency as Token).address : currency.symbol || null
+    },
+    [areThereTokensWithSameSymbol]
+  )
 
   return useCallback(
     (field: Field, currency: Currency) => {

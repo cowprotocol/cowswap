@@ -14,8 +14,9 @@ export const Box = styled.div`
   }
 `
 
-export const GreenText = styled.span`
+export const GasCost = styled.span`
   color: ${({ theme }) => theme.green1};
+  font-weight: bold;
 `
 
 export const TotalAmount = styled.div`

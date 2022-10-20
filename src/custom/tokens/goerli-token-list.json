@@ -1,12 +1,12 @@
 {
-  "name": "CoW Swap Goerli",
+  "name": "GP Goerli",
   "version": {
     "major": 0,
     "minor": 0,
     "patch": 0
   },
-  "keywords": ["CowSwap", "Goerli", "tokens", "trusted"],
-  "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo",
+  "keywords": ["GP", "Goerli", "tokens", "trusted"],
+  "logoURI": "https://avatars.githubusercontent.com/u/24954468?s=200&v=4",
   "timestamp": "2022-05-26T10:45:01.151Z",
   "tokens": [
     {
@@ -23,7 +23,7 @@
       "symbol": "COW",
       "decimals": 18,
       "address": "0x3430d04E42a722c5Ae52C5Bffbf1F230C2677600",
-      "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo"
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB/logo.png"
     },
     {
       "name": "USD Coin",

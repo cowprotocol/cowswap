@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
-import { useAllTokensList } from 'cow-react/common/hooks/useAllTokensList'
+import { useAllTokensList } from '@src/cow-react/common/hooks/useAllTokensList'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | null {
   const tokens = useAllTokensList()
@@ -15,5 +15,6 @@ export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Toke
         (item) => item.address.toLowerCase() === symbolOrAddress.toLowerCase() || item.symbol === symbolOrAddress
       ) || null
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens, symbolOrAddress])
 }

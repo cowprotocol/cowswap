@@ -15,7 +15,6 @@ import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/
 import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
 
 import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
-import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 
 export interface SwapButtonsContext {
   swapButtonState: SwapButtonState
@@ -25,8 +24,7 @@ export interface SwapButtonsContext {
   approveButtonProps: ApproveButtonsProps
   wrapUnwrapAmount: CurrencyAmount<Currency> | undefined
   wrapInputError: string | undefined
-  onWrapOrUnwrap: WrapUnwrapCallback | null
-  onEthFlow: () => void
+  onWrap: () => void
   openSwapConfirm: () => void
   toggleWalletModal: () => void
   hasEnoughWrappedBalanceForSwap: boolean
@@ -52,19 +50,26 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonPrimary>
   ),
   [SwapButtonState.ShouldWrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={() => props.onWrapOrUnwrap?.()} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
       <Trans>Wrap</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.ShouldUnwrapNativeToken]: (props: SwapButtonsContext) => (
-    <ButtonPrimary onClick={() => props.onWrapOrUnwrap?.()} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary onClick={props.onWrap} buttonSize={ButtonSize.BIG}>
       <Trans>Unwrap</Trans>
     </ButtonPrimary>
   ),
   [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
       <styledEl.SwapButtonBox>
         <Trans>Swap with {props.wrappedToken.symbol}</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onWrap}>
+      <styledEl.SwapButtonBox>
+        <Trans>Wrap and swap</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
