@@ -9,10 +9,10 @@ import { AVG_APPROVE_COST_GWEI } from 'constants/index'
 import { parseUnits } from 'ethers/lib/utils'
 // eslint-disable-next-line no-restricted-imports
 
-export const MINIMUM_TXS = '10'
-export const DEFAULT_GAS_FEE = parseUnits('50', 'gwei')
+const MINIMUM_TXS = '10'
+const DEFAULT_GAS_FEE = parseUnits('50', 'gwei')
 
-export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, native: Currency | undefined) {
+function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, native: Currency | undefined) {
   if (!native) {
     return {}
   }
@@ -28,7 +28,7 @@ export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, nativ
   }
 }
 
-export const _getAvailableTransactions = ({
+const _getAvailableTransactions = ({
   nativeBalance,
   nativeInput,
   singleTxCost,
@@ -46,7 +46,7 @@ export const _getAvailableTransactions = ({
   return txsAvailable.lessThan('1') ? null : txsAvailable.quotient.toString()
 }
 
-export function _isLowBalanceCheck({
+function _isLowBalanceCheck({
   threshold,
   txCost,
   nativeInput,
