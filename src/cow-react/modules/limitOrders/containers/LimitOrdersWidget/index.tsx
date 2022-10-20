@@ -1,25 +1,27 @@
+import { useWeb3React } from '@web3-react/core'
 import * as styledEl from './styled'
+import { ButtonSize } from 'theme'
+import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { ButtonPrimary } from 'components/Button'
 import { Trans } from '@lingui/macro'
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
-import { Field } from 'state/swap/actions'
-import { ButtonSize } from 'theme'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useWeb3React } from '@web3-react/core'
-import { useSetupLimitOrdersState } from '@cow/modules/limitOrders/hooks/useSetupLimitOrdersState'
-import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { useResetStateWithSymbolDuplication } from '@cow/modules/limitOrders/hooks/useResetStateWithSymbolDuplication'
-import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
+import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
+import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
+import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
+import { useResetStateWithSymbolDuplication } from '../../hooks/useResetStateWithSymbolDuplication'
+import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useTradeFlowContext } from '@cow/modules/limitOrders/hooks/useTradeFlowContext'
-import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
-import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { tradeFlow } from '../../services/tradeFlow'
+import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
+import { SettingsWidget } from '../SettingsWidget'
+import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
 import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
@@ -38,6 +40,7 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
 
@@ -45,7 +48,6 @@ export function LimitOrdersWidget() {
   const allowsOffchainSigning = false
   const isTradePriceUpdating = false
   const showSetMax = true
-  const showRecipientControls = true
   const priceImpactParams = undefined
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -107,10 +109,7 @@ export function LimitOrdersWidget() {
       <styledEl.ContainerBox>
         <styledEl.Header>
           <div>Limit orders</div>
-          <styledEl.SettingsButton>
-            <styledEl.SettingsTitle>Settings</styledEl.SettingsTitle>
-            <styledEl.SettingsIcon />
-          </styledEl.SettingsButton>
+          <SettingsWidget />
         </styledEl.Header>
         <CurrencyInputPanel
           id="swap-currency-input"
@@ -127,13 +126,13 @@ export function LimitOrdersWidget() {
           <RateInput />
           <ExpiryDate />
         </styledEl.RateWrapper>
-        <styledEl.CurrencySeparatorBox withRecipient={showRecipientControls}>
+        <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
           <CurrencyArrowSeparator
             onSwitchTokens={onSwitchTokens}
-            withRecipient={showRecipientControls}
+            withRecipient={showRecipient}
             isLoading={isTradePriceUpdating}
           />
-          <AddRecipient onChangeRecipient={onChangeRecipient} />
+          {showRecipient && <AddRecipient onChangeRecipient={onChangeRecipient} />}
         </styledEl.CurrencySeparatorBox>
         <CurrencyInputPanel
           id="swap-currency-output"
