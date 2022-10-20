@@ -4,7 +4,7 @@ import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
-import { darken } from 'polished'
+import { darken, lighten } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -47,7 +47,7 @@ const FixedContainer = styled.div`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
-  border: 1px solid ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.bg2};
   background-color: ${({ theme }) => theme.bg1};
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   :focus,
@@ -58,9 +58,8 @@ const Container = styled.div<{ hideInput: boolean }>`
 
 const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
   align-items: center;
-  background-color: ${({ selected, theme }) => (selected ? theme.bg2 : theme.primary1)};
+  background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   cursor: pointer;
   border-radius: 16px;
@@ -73,10 +72,10 @@ const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   padding: 0 8px;
   justify-content: space-between;
-  margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
+  margin-right: ${({ hideInput }) => (hideInput ? '0' : '12px')};
   :focus,
   :hover {
-    background-color: ${({ selected, theme }) => (selected ? theme.bg3 : darken(0.05, theme.primary1))};
+    background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
   }
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
@@ -133,7 +132,7 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: ${({ theme }) => theme.primary5};
   border: none;
   border-radius: 12px;
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.text1};
   cursor: pointer;
   font-size: 11px;
   font-weight: 500;

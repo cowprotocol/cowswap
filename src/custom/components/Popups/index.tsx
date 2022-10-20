@@ -7,7 +7,7 @@ export const MobilePopupWrapper = styled.div<{ show: boolean }>`
   width: 100%;
   height: 100%;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.05, theme.bg4)};
+  background: ${({ theme }) => transparentize(0.05, theme.bg1)};
   display: none;
 
   ${({ theme, show }) => theme.mediaWidth.upToSmall`

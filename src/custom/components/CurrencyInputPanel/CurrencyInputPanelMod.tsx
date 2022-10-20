@@ -4,7 +4,7 @@ import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
-import { darken } from 'polished'
+import { lighten } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
@@ -142,8 +142,7 @@ export const AuxInformationContainer = styled(Container)<{
 
 export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
   align-items: center;
-  background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
+  background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   cursor: pointer;
   border-radius: 16px;
@@ -159,7 +158,7 @@ export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: b
   margin-right: ${({ hideInput }) => (hideInput ? '0' : '12px')};
   :focus,
   :hover {
-    background-color: ${({ selected, theme }) => (selected ? theme.bg2 : darken(0.05, theme.primary1))};
+    background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
   }
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
@@ -180,7 +179,7 @@ export const LabelRow = styled.div`
   padding: 0 1rem 1rem;
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.text2)};
+    color: ${({ theme }) => lighten(0.2, theme.text2)};
   }
 `
 
@@ -311,11 +310,11 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   }
 
   ${AuxInformationContainer} {
-    background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+    background-color: ${({ theme }) => lighten(0.0, theme.bg1 || theme.bg3)};
     border-top: none;
 
     &:hover {
-      background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+      background-color: ${({ theme }) => lighten(0.0, theme.bg1 || theme.bg3)};
       border-top: none;
     }
   }
@@ -328,7 +327,7 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
         display: inline-block;
 
         overflow: hidden;
-        &::after {
+        &::before {
           position: absolute;
           top: 0;
           right: 0;
@@ -356,8 +355,8 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
 
   ${CurrencySelect} {
     z-index: 2;
-    color: ${({ selected, theme }) =>
-      selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
+    background: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg2)};
+    color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     transition: background-color 0.2s ease-in-out;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -365,15 +364,14 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
     `};
 
     &:focus {
-      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
+      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg2)};
     }
     &:hover {
-      background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+      background-color: ${({ selected, theme }) => (selected ? lighten(0.1, theme.bg1) : lighten(0.1, theme.bg2))};
     }
 
     path {
-      stroke: ${({ selected, theme }) =>
-        selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
+      stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
       stroke-width: 1.5px;
     }
   }

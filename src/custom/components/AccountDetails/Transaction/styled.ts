@@ -328,7 +328,7 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   > ${LinkStyledButton} {
     margin: 2px 0;
     opacity: 1;
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -362,7 +362,7 @@ export const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg1};
 `
 
 export const TransactionAlertMessage = styled.div<{ type?: string }>`
