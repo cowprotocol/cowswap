@@ -408,8 +408,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
                 nativeInAmount={nativeInput}
                 switchCurrencyCallback={() => onCurrencySelection(Field.INPUT, nativeInput.wrapped.currency)}
                 wrapCallback={openNativeWrapModal}
-                // TODO: is removed in next PR
-                forceWrapCallback={console.log}
               />
             )}
           </Wrapper>
