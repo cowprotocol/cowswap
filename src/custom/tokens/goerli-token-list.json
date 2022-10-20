@@ -5,12 +5,7 @@
     "minor": 0,
     "patch": 0
   },
-  "keywords": [
-    "CowSwap",
-    "Goerli",
-    "tokens",
-    "trusted"
-  ],
+  "keywords": ["CowSwap", "Goerli", "tokens", "trusted"],
   "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo",
   "timestamp": "2022-05-26T10:45:01.151Z",
   "tokens": [

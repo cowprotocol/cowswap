@@ -5,12 +5,7 @@
     "minor": 1,
     "patch": 0
   },
-  "keywords": [
-    "CowSwap",
-    "Rinkeby",
-    "tokens",
-    "trusted"
-  ],
+  "keywords": ["CowSwap", "Rinkeby", "tokens", "trusted"],
   "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo",
   "timestamp": "2021-02-22T13:09:54.363Z",
   "tokens": [
