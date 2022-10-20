@@ -1,7 +1,7 @@
 import { Separator } from 'theme'
 import styled from 'styled-components/macro'
 import { ArrowDown, ArrowUp, Copy } from 'react-feather'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/ethFlow/state/updater'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 import { EthFlowBannerProps } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import { Currency, Token } from '@uniswap/sdk-core'
