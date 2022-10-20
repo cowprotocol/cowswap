@@ -23,6 +23,7 @@ import {
   GreenCheckIcon,
   StyledExternalLink,
   StyledCoWLink,
+  UnfillableMsgWrapper,
 } from './styled'
 import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
@@ -155,16 +156,22 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
-                {/*<p>
-                  Current price: <strong>$1200.56</strong>
-                </p>
-                <p>
-                  Your price: $1300.55 (<span>+8%</span>)
-                </p>*/}
-                <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
-                </p>
+                <UnfillableMsgWrapper>
+                  <div>
+                    <p>
+                      Current price: <strong>$1200.56</strong>
+                    </p>
+                    <p>
+                      Your price: $1300.55 (<span>+8%</span>)
+                    </p>
+                  </div>
+                  <div>
+                    <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
+                    <p>
+                      <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
+                    </p>
+                  </div>
+                </UnfillableMsgWrapper>
               </StatusGraph>
             </StatusMsgContainer>
           </>

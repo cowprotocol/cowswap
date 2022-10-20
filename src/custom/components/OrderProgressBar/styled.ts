@@ -4,6 +4,25 @@ import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
 
+export const UnfillableMsgWrapper = styled.div`
+  display: grid;
+  column-gap: 0.5rem;
+  grid-template-columns: 1.6fr 1.4fr;
+  align-items: center;
+  div:nth-child(2) {
+    display: flex;
+    gap: 0.6rem;
+    img {
+      margin: 0;
+    }
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+    text-align: center;
+    row-gap: 1rem;
+  `};
+`
+
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
   flex-direction: column;
