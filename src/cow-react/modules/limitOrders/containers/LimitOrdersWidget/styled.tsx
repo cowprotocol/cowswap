@@ -68,3 +68,7 @@ export const SettingsIcon = styled(Settings)`
 export const StyledRemoveRecipient = styled(RemoveRecipient)`
   margin: 15px 0;
 `
+
+export const RateWrapper = styled.div`
+  display: flex;
+`

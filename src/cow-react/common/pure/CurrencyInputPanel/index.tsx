@@ -71,6 +71,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     setMaxSellTokensAnalytics()
   }, [balance, onUserInputDispatch])
 
+  useEffect(() => {
+    setTypedValue(viewAmount)
+  }, [viewAmount])
+
   return (
     <>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
