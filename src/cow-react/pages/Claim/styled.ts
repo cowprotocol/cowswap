@@ -20,8 +20,8 @@ export const InnerPageWrapper = styled.div`
   flex-flow: column wrap;
   color: ${({ theme }) => theme.text1};
   padding: 30px;
-  border: ${({ theme }) => theme.appBody.border};
-  box-shadow: ${({ theme }) => theme.appBody.boxShadow};
+  border: none;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
   background: ${({ theme }) => theme.bg1};
   min-height: 450px;
   justify-content: center;
@@ -1758,10 +1758,6 @@ export const BannerExplainer = styled.div`
     padding: 24px;
     height: auto;
   `}
-
-  &:hover {
-    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
-  }
 
   > span {
     display: flex;

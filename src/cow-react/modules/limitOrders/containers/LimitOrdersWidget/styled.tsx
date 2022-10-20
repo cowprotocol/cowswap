@@ -1,23 +1,22 @@
 import styled from 'styled-components/macro'
-import { MEDIA_WIDTHS } from 'theme'
+import { Settings } from 'react-feather'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 
 export const Container = styled.div`
-  // max-width: 460px;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
   width: 100%;
 `
 
 export const ContainerBox = styled.div`
-  padding: 12px 10px;
-  border: 3px solid ${({ theme }) => theme.black};
-  border-radius: 16px;
-  box-shadow: 4px 4px 0 ${({ theme }) => theme.black};
   background: ${({ theme }) => theme.bg1};
+  border: none;
+  border-radius: 16px;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+  padding: 10px;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
 
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    box-shadow: none;
-    border: 0;
-  }
+  /* ${({ theme }) => theme.mediaWidth.upToSmall`
+  `}; */
 `
 
 export const Header = styled.div`
@@ -36,14 +35,32 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
   margin: ${({ withRecipient }) => (withRecipient ? '10px' : '0')};
 `
 
+export const SettingsButton = styled.div`
+  display: flex;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+`
+
 export const TradeButtonBox = styled.div`
   margin-top: 15px;
 `
 
-export const StyledRemoveRecipient = styled(RemoveRecipient)`
-  margin: 15px 0;
-`
-
 export const RateWrapper = styled.div`
   display: flex;
+`
+
+export const SettingsIcon = styled(Settings)`
+  height: 20px;
+  width: 20px;
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+`
+
+export const StyledRemoveRecipient = styled(RemoveRecipient)`
+  margin: 15px 0;
 `

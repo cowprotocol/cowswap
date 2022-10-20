@@ -150,7 +150,7 @@ export function LimitOrdersWidget() {
         )}
         <styledEl.TradeButtonBox>
           <ButtonPrimary onClick={doTrade} disabled={false} buttonSize={ButtonSize.BIG}>
-            <Trans>Trade</Trans>
+            <Trans>Review Limit Order</Trans>
           </ButtonPrimary>
         </styledEl.TradeButtonBox>
       </styledEl.ContainerBox>

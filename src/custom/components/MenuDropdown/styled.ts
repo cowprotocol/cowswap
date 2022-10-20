@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 export const MenuFlyout = styled.ol`
   display: flex;
@@ -48,8 +49,9 @@ export const Content = styled.div`
   top: 100%;
   left: 0;
   border-radius: 16px;
-  background: ${({ theme }) => theme.bg4};
-  box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
+  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
+  background: ${({ theme }) => theme.bg1};
+  box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;
   gap: 62px;
   margin: 12px 0 0;
@@ -106,7 +108,6 @@ export const MenuSection = styled.div`
     margin: 0;
     padding: 0;
     color: ${({ theme }) => theme.text1};
-    gap: 12px;
 
     &:hover {
       text-decoration: underline;
