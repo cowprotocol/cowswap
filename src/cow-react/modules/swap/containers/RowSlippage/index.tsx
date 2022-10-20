@@ -6,7 +6,7 @@ import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
-import { useIsEthFlow } from '@cow/modules/ethFlow/state/hooks'
+import { useIsEthFlow } from '@cow/modules/swap/state/EthFlow/hooks'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
