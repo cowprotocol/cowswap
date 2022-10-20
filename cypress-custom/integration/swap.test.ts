@@ -42,6 +42,9 @@ describe('Swap (custom)', () => {
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('0.05', { force: true, delay: 400 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
+    cy.get('#fees-exceed-checkbox').then((el) => {
+      if (el) el.click()
+    })
     cy.get('#swap-button').should('contain', 'Swap with WETH')
   })
 })

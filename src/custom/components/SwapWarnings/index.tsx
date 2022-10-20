@@ -152,7 +152,8 @@ export const HighFeeWarning = (props: WarningProps) => {
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>
-            <input type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap anyway
+            <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
+            Swap anyway
           </WarningCheckboxContainer>
         )}
       </div>
@@ -181,7 +182,8 @@ export const NoImpactWarning = (props: WarningProps) => {
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>
-            <input type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap anyway
+            <input id="price-impact-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
+            Swap anyway
           </WarningCheckboxContainer>
         )}
       </div>
