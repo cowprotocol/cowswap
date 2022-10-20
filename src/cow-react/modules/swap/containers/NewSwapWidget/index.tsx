@@ -138,11 +138,11 @@ export function NewSwapWidget() {
 
   const ethFlowProps: EthFlowProps = {
     nativeInput: parsedAmounts.INPUT,
-    wrapUnwrapAmount: swapButtonContext.wrapUnwrapAmount,
     approvalState: swapButtonContext.approveButtonProps.approvalState,
     onDismiss: dismissNativeWrapModal,
+    wrapCallback: swapButtonContext.onWrapOrUnwrap,
     approveCallback: swapButtonContext.approveButtonProps.approveCallback,
-    handleSwapCallback: swapButtonContext.handleSwap,
+    directSwapCallback: swapButtonContext.handleSwap,
     hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
   }
 

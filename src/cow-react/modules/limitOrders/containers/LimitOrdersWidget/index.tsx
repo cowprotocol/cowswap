@@ -1,15 +1,15 @@
 import { useWeb3React } from '@web3-react/core'
-import React, { useCallback } from 'react'
-import { Trans } from '@lingui/macro'
 import * as styledEl from './styled'
 import { ButtonSize } from 'theme'
 import { Field } from 'state/swap/actions'
-import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { ButtonPrimary } from 'components/Button'
+import { Trans } from '@lingui/macro'
+import React, { useCallback } from 'react'
+import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
@@ -23,7 +23,11 @@ import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
-// TODO: move the widget to Swap module
+import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
+import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
+import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import { useIsSellOrder } from '@cow/modules/limitOrders/hooks/useIsSellOrder'
+
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
   useResetStateWithSymbolDuplication()
@@ -37,6 +41,8 @@ export function LimitOrdersWidget() {
   const limitOrdersNavigate = useLimitOrdersNavigate()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
+  const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const isSellOrder = useIsSellOrder()
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -71,18 +77,19 @@ export function LimitOrdersWidget() {
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
-        updateLimitOrdersState({ inputCurrencyAmount: typedValue })
+        updateCurrencyAmount({ inputCurrencyAmount: typedValue })
       } else {
-        updateLimitOrdersState({ outputCurrencyAmount: typedValue })
+        updateCurrencyAmount({ outputCurrencyAmount: typedValue })
       }
     },
-    [updateLimitOrdersState]
+    [updateCurrencyAmount]
   )
 
   const onSwitchTokens = useCallback(() => {
-    const { inputCurrencyId, outputCurrencyId } = state
+    const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = state
     limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
-  }, [limitOrdersNavigate, state, chainId])
+    updateCurrencyAmount({ outputCurrencyAmount: inputCurrencyAmount })
+  }, [state, limitOrdersNavigate, chainId, updateCurrencyAmount])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
@@ -113,7 +120,12 @@ export function LimitOrdersWidget() {
           allowsOffchainSigning={allowsOffchainSigning}
           currencyInfo={inputCurrencyInfo}
           showSetMax={showSetMax}
+          topLabel={isSellOrder ? 'You sell' : 'You sell at most'}
         />
+        <styledEl.RateWrapper>
+          <RateInput />
+          <ExpiryDate />
+        </styledEl.RateWrapper>
         <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
           <CurrencyArrowSeparator
             onSwitchTokens={onSwitchTokens}
@@ -131,6 +143,7 @@ export function LimitOrdersWidget() {
           allowsOffchainSigning={allowsOffchainSigning}
           currencyInfo={outputCurrencyInfo}
           priceImpactParams={priceImpactParams}
+          topLabel={isSellOrder ? 'Your receive at least' : 'You receive exactly'}
         />
         {recipient !== null && (
           <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />

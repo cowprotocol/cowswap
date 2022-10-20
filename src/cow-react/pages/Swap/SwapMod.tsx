@@ -55,7 +55,7 @@ import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from '@cow/modules/swap/containers/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
-import EthFlowModal from 'components/swap/EthFlow'
+import { EthFlowModal } from 'components/swap/EthFlow'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
 import { Routes } from '@cow/constants/routes'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
@@ -259,14 +259,13 @@ export default function Swap({ history, location, className }: RouteComponentPro
         {/* Native wrapping modal */}
         {showNativeWrapModal && (
           <EthFlowModal
-            nativeInput={showWrap ? parsedAmount : nativeInput}
-            wrapUnwrapAmount={swapButtonsContext.wrapUnwrapAmount}
-            // state
+            nativeInput={nativeInput}
             approvalState={swapButtonsContext.approveButtonProps.approvalState}
-            onDismiss={dismissNativeWrapModal}
-            approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
-            handleSwapCallback={swapButtonsContext.handleSwap}
             hasEnoughWrappedBalanceForSwap={swapButtonsContext.hasEnoughWrappedBalanceForSwap}
+            onDismiss={dismissNativeWrapModal}
+            wrapCallback={swapButtonsContext.onWrapOrUnwrap}
+            directSwapCallback={swapButtonsContext.handleSwap}
+            approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
           />
         )}
 

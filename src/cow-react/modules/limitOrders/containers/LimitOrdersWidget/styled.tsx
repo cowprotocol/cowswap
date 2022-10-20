@@ -43,3 +43,7 @@ export const TradeButtonBox = styled.div`
 export const StyledRemoveRecipient = styled(RemoveRecipient)`
   margin: 15px 0;
 `
+
+export const RateWrapper = styled.div`
+  display: flex;
+`

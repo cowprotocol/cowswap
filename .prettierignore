@@ -7,7 +7,7 @@ src/**/*.d.ts
 src/abis
 #src/assets
 src/types
-src/custom/abis
+src/cow-react/abis
 
 # inherited from uniswap, better not touch it
 public_uniswap/index.html
