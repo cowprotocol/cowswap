@@ -19,8 +19,8 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   const recipient = state.recipient
   const deadline = state.deadline
-  const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId) || null
-  const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId) || null
+  const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
+  const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
   const inputCurrencyAmount =
     tryParseCurrencyAmount(state.inputCurrencyAmount || undefined, inputCurrency || undefined) || null
   const outputCurrencyAmount =

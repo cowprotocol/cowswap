@@ -7,7 +7,7 @@ import { useSetAtom } from 'jotai'
 import { mainMenuUrlOverridesAtom } from '@cow/modules/mainMenu/state/mainMenuUrlOverridesAtom'
 import { MainMenuItemId } from '@cow/modules/mainMenu/constants/mainMenu'
 
-export function useParameterizeLimitOrdersInMenu() {
+export function useParameterizeLimitOrdersInMenu(): void {
   const { chainId } = useWeb3React()
   const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
   const overrideMainMenu = useSetAtom(mainMenuUrlOverridesAtom)
