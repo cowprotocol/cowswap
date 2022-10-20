@@ -1,15 +1,15 @@
 import * as styledEl from './styled'
 
 import { LimitOrdersWidget } from '@cow/modules/limitOrders/containers/LimitOrdersWidget'
-import { Chart } from '@cow/modules/limitOrders/containers/Chart'
+import { ChartWidget } from '@cow/modules/limitOrders/containers/ChartWidget'
 import { Orders } from '@cow/modules/limitOrders/containers/Orders'
 import { InfoPopup } from '@cow/modules/limitOrders/pure/InfoPopup'
-import { QuoteResolver } from '@cow/modules/limitOrders/containers/QuoteResolver'
+import { QuoteUpdater } from '@cow/modules/limitOrders/updaters/QuoteUpdater'
 
 export default function LimitOrderPage() {
   return (
     <>
-      <QuoteResolver />
+      <QuoteUpdater />
       <styledEl.PageWrapper>
         <styledEl.Column>
           <LimitOrdersWidget />
@@ -17,7 +17,7 @@ export default function LimitOrderPage() {
         </styledEl.Column>
 
         <styledEl.Column>
-          <Chart />
+          <ChartWidget />
           <Orders />
         </styledEl.Column>
       </styledEl.PageWrapper>

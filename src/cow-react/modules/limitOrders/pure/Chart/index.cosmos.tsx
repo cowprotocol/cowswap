@@ -1,3 +1,3 @@
-import { ChartPure } from './index'
+import { Chart } from './index'
 
-export default <ChartPure />
+export default <Chart />

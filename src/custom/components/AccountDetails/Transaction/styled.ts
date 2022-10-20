@@ -10,6 +10,7 @@ export const TransactionWrapper = styled.div`
   width: 100%;
   margin: 0 auto 12px;
   border-radius: 12px;
+  box-sizing: border-box;
   font-size: initial;
   display: flex;
   padding: 22px;
@@ -157,8 +158,8 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   margin: 0 0 4px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-columns: 1fr; 
-    grid-template-rows: max-content max-content; 
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content max-content;
     margin: 0 0 16px 0;
   `};
 

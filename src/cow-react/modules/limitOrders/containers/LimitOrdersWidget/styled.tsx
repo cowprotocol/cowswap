@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro'
-import { Settings } from 'react-feather'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 
 export const Container = styled.div`
@@ -35,28 +34,14 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
   margin: ${({ withRecipient }) => (withRecipient ? '10px' : '0')};
 `
 
-export const SettingsButton = styled.div`
-  display: flex;
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-`
-
 export const TradeButtonBox = styled.div`
   margin-top: 15px;
 `
 
-export const SettingsIcon = styled(Settings)`
-  height: 20px;
-  width: 20px;
-  > * {
-    stroke: ${({ theme }) => theme.text1};
-  }
-`
-
 export const StyledRemoveRecipient = styled(RemoveRecipient)`
   margin: 15px 0;
+`
+
+export const RateWrapper = styled.div`
+  display: flex;
 `

@@ -11,6 +11,8 @@ import {
 
 import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
+// import { LIMIT_ORDERS_PATH, Routes } from '@cow/constants/routes'
+// import { useLocation } from 'react-router-dom'
 
 export { MEDIA_WIDTHS, ThemedText } from '@src/theme'
 

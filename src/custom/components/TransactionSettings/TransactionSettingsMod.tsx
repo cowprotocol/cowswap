@@ -270,7 +270,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         <AutoColumn gap="sm">
           <RowFixed>
             <ThemedText.Black fontSize={14} fontWeight={400} color={theme.text2}>
-              <Trans>Transaction deadline</Trans>
+              <Trans>Swap deadline</Trans>
             </ThemedText.Black>
             <QuestionHelper
               bgColor={theme.bg3}
