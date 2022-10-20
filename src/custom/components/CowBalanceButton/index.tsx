@@ -10,7 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
-  background-color: ${({ theme }) => theme.bg4};
+  background-color: transparent;
   color: ${({ theme }) => theme.text1};
   padding: 6px 12px;
   border: 2px solid transparent;
@@ -22,6 +22,7 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   border-radius: 21px;
   pointer-events: auto;
   transition: width 0.2s ease-in-out, border 0.2s ease-in-out;
+  cursor: pointer;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;
@@ -41,7 +42,8 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
     isLoading &&
     css`
       overflow: hidden;
-      &::after {
+      &::before {
+        z-index: -1;
         position: absolute;
         top: 0;
         right: 0;

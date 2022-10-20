@@ -13,7 +13,7 @@ interface WrapperProps {
 
 const Wrapper = styled.div<WrapperProps>`
   position: fixed;
-  ${({ theme, background = theme.primary1, top, right, bottom, left }) => ({
+  ${({ theme, background = theme.bg2, top, right, bottom, left }) => ({
     background,
     top,
     right,

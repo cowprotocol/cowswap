@@ -154,7 +154,7 @@ export const InfoCard = styled.div`
   margin: 0 24px 24px;
   border-radius: 16px;
   padding: 24px;
-  ${({ theme }) => theme.card.background3};
+  ${({ theme }) => theme.bg1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px 10px 24px;
@@ -243,7 +243,6 @@ export const LowerSection = styled.div`
   ${LinkStyledButton}, ${StyledLink} {
     opacity: 0.7;
     color: ${({ theme }) => theme.text1};
-
     text-decoration: underline;
     font-size: 14px;
 
@@ -322,7 +321,7 @@ const NetworkCardUni = styled(YellowCard)`
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
-  background-color: ${({ theme }) => theme.networkCard.background};
+  background-color: ${({ theme }) => theme.bg1};
   color: ${({ theme }) => theme.networkCard.text};
   padding: 6px 8px;
   font-size: 13px;

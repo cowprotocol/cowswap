@@ -165,7 +165,7 @@ const UpperSection = styled.div`
 const LowerSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  background: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg1};
   padding: 40px;
   margin: 16px auto 0;
 
@@ -288,7 +288,7 @@ const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: ${({ theme }) => theme.bg4};
+    background: ${({ theme }) => theme.bg1};
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;

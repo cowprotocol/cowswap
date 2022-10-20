@@ -49,21 +49,22 @@ export const Wrapper = styled.div`
   ${RowFixed} > svg:hover,
   ${RowFixed} > a,
   ${RowFixed} > a:hover > svg {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: ${({ theme }) => theme.text3};
   }
 
   ${LinkIcon} {
     stroke: ${({ theme }) => theme.text3};
   }
 
+  // 'Clear all' button
   ${ButtonText} > div {
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text3};
   }
 
   ${Column} > ${Separator} + div {
     height: 100%;
     grid-auto-rows: min-content;
-    ${({ theme }) => theme.neumorphism.boxShadow}
+    border-top: 1px solid ${({ theme }) => theme.grey1};
   }
 
   ${Footer} {
@@ -77,7 +78,7 @@ export const Wrapper = styled.div`
 `
 
 const ImportTokensRow = ({ theme, searchToken, setModalView, setImportToken }: ImportTokensRowProps) => (
-  <Card backgroundColor={theme.bg4} padding="10px 0">
+  <Card backgroundColor={theme.bg1} padding="10px 0">
     <ImportRow
       token={searchToken}
       showImportView={() => setModalView(CurrencyModalView.importToken)}

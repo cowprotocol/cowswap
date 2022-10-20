@@ -9,13 +9,10 @@ import { RowBetween } from 'components/Row'
 import {
   // Import only the basic buttons
   ButtonPrimary as ButtonPrimaryMod,
-  ButtonLight as ButtonLightMod,
   ButtonGray as ButtonGrayMod,
-  ButtonSecondary as ButtonSecondaryMod,
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  // ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
 import { ButtonSize } from 'theme'
@@ -24,32 +21,31 @@ export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  background: ${({ theme }) => theme.button.bg1};
+  background: ${({ theme }) => theme.bg2};
   font-size: 18px;
   font-weight: 600;
   border: none;
   box-shadow: none;
   border-radius: 16px;
-  color: ${({ theme }) => theme.button.text1};
+  color: ${({ theme }) => theme.white};
   position: relative;
   min-height: 58px;
   ${({ theme }) => theme.cursor};
 
-  > div {
-    background: red;
-  }
+  /* > div {
+  } */
 
   &:focus,
   &:hover,
   &:active {
     box-shadow: none;
     transform: none;
-    color: ${({ theme }) => theme.button.text1};
+    color: ${({ theme }) => theme.white};
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.disabled};
-    color: ${({ theme }) => transparentize(0.8, theme.button.text1)};
+    background-color: ${({ theme }) => transparentize(0.95, theme.text1)};
+    color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;
     cursor: auto;
@@ -58,7 +54,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 `
 
-export const ButtonLight = styled(ButtonLightMod)`
+export const ButtonLight = styled(ButtonPrimary)`
   // CSS override
   ${({ theme }) => theme.buttonLight.background}
   color: ${({ theme }) => theme.primaryText1};
@@ -107,14 +103,15 @@ export const ButtonLight = styled(ButtonLightMod)`
 `
 
 export const ButtonGray = styled(ButtonGrayMod)`
-  // CSS overrides
+  box-shadow: none;
+
   &:hover,
   &:focus {
-    box-shadow: none;
+    box-shadow: 0 6px 8px rgb(0 0 0 / 6%);
   }
 `
 
-export const ButtonSecondary = styled(ButtonSecondaryMod)`
+export const ButtonSecondary = styled(ButtonPrimary)`
   // CSS overrides
   transition: box-shadow 0.1s ease-in-out;
 

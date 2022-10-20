@@ -26,26 +26,33 @@ export function colors(darkMode: boolean): Colors {
   return {
     ...colorsUniswap(darkMode),
 
-    // CoW Swap V2 colors
-    white: '#ffffff',
+    // CoW Swap V2 colors ======================
+    white: darkMode ? '#CAE9FF' : '#ffffff',
     black: '#000000',
-
     blueDark1: '#07162D',
+    blueDark2: '#052B65',
     blueLight1: '#CAE9FF',
-    grey1: '#ECF1F8',
+    grey1: darkMode ? '#07162D' : '#ECF1F8',
 
     bg1: darkMode ? '#0A2347' : '#ffffff',
+    bg2: darkMode ? '#0d5ed9' : '#052B65',
+
     text1: darkMode ? '#CAE9FF' : '#052B65',
-    // ===================
+    text2: darkMode ? '#86B2DC' : '#506B93',
+    text3: darkMode ? '#428dff' : '#0d5ed9',
+
+    shimmer1: darkMode ? 'transparent' : 'transparent',
+    shimmer2: darkMode ? 'rgb(10 35 71 / 80%)' : 'rgb(255 255 255 / 60%)',
+
+    // States
+    error: darkMode ? '#D41300' : '#D41300',
+    errorText: darkMode ? '#560000' : '#560000',
+    // ==========================================
 
     // ****** text ******
-    text2: darkMode ? '#021E34' : '#000000',
-    text3: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#000000',
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
-    // ****** backgrounds / greys ******
-
-    bg2: darkMode ? '#c5daef' : '#ffffff',
+    // ****** backgrounds ******
     bg3: darkMode ? '#163861' : '#d5e8f0',
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
@@ -97,8 +104,6 @@ export function colors(darkMode: boolean): Colors {
     disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
     redShade: darkMode ? '#842100' : '#AE2C00',
     textLink: darkMode ? '#ffffff' : '#AE2C00',
-    shimmer1: darkMode ? 'rgb(22 56 97 / 20%)' : 'rgb(175 203 218 / 20%)',
-    shimmer2: darkMode ? 'rgb(22 56 97 / 50%)' : 'rgb(175 203 218 / 40%)',
     scrollbarBg: darkMode ? '#01182a' : '#d5e8f0',
     scrollbarThumb: darkMode ? '#152c3e' : '#adc2ce',
 
@@ -111,8 +116,6 @@ export function colors(darkMode: boolean): Colors {
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warning: '#FFEDAF',
     warningText: '#564D00',
-    error: '#FFC7AF',
-    errorText: '#560000',
   }
 }
 
@@ -135,7 +138,18 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       width: '137px',
       height: '44px',
     },
+    textShadow1: `
+      ${
+        darkMode
+          ? `0px 0px 26px ${transparentize(0.9, colorsTheme.text1)}, 0px 0px 28px ${transparentize(
+              0.8,
+              colorsTheme.text1
+            )}`
+          : 'none'
+      }
+    `,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.04)' : '0 12px 12px rgba(5, 43, 101, 0.04)',
+    boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
     },
@@ -143,7 +157,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       bg1: darkMode
         ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
         : '#052B65',
-      text1: darkMode ? '#CAE9FF' : '#FFFFFF',
+      text1: darkMode ? colorsTheme.text1 : '#FFFFFF',
     },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
@@ -211,7 +225,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     card: {
       background: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
       `,
       background2: darkMode ? '#01182a' : colorsTheme.bg3,
       background3: css`
@@ -219,7 +233,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       `,
       border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
@@ -286,10 +300,10 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     },
     buttonCurrencySelect: {
       background: colorsTheme.bg1,
-      border: `2px solid ${colorsTheme.black}`,
-      boxShadow: `2px 2px 0px ${colorsTheme.black}`,
-      color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
-      colorSelected: darkMode ? colorsTheme.white : colorsTheme.text1,
+      border: `0`,
+      boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.06);`,
+      color: colorsTheme.text1,
+      colorSelected: colorsTheme.text1,
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
@@ -401,8 +415,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ::selection { 
-    background: ${({ theme }) => theme.primary1};
-    color: ${({ theme }) => theme.text2};
+    background: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
   }
 
   // Appzi Container override
@@ -576,9 +590,12 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   ${ModalContentWrapper} {
+    background-color: ${({ theme }) => theme.bg1};
+    border: 0;
+
     ${RowBetween} > div,
     ${AutoColumn} > div {
-      color: ${({ theme }) => theme.text2};
+      color: ${({ theme }) => theme.text1};
     }
   }
   // END - Modal overrides

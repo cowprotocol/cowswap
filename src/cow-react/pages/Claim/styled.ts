@@ -1759,10 +1759,6 @@ export const BannerExplainer = styled.div`
     height: auto;
   `}
 
-  &:hover {
-    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
-  }
-
   > span {
     display: flex;
     flex-flow: column wrap;
