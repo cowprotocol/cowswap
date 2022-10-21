@@ -26,7 +26,7 @@ import {
   PERCENTAGE_PRECISION,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
-import { useIsEthFlow } from '@cow/modules/swap/state/EthFlow/hooks'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 

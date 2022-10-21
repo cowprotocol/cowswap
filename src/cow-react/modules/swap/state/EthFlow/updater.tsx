@@ -1,7 +1,7 @@
 import { Percent } from '@uniswap/sdk-core'
 import { useEffect, useState } from 'react'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'state/user/hooks'
-import { useIsEthFlow } from './hooks'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export const ETH_FLOW_SLIPPAGE = new Percent(2, 100) // 2%
 
