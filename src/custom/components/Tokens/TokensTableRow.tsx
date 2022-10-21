@@ -124,7 +124,7 @@ const DataRow = ({
     } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove} color={theme.primary1}>
+          <TableButton onClick={handleApprove} color={theme.text1}>
             Approve all
           </TableButton>
           <ApproveLabel
@@ -137,14 +137,14 @@ const DataRow = ({
       )
     } else if (!isApproved || hasNoAllowance) {
       return (
-        <TableButton onClick={handleApprove} color={theme.primary1}>
+        <TableButton onClick={handleApprove} color={theme.text1}>
           Approve
         </TableButton>
       )
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.text1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {

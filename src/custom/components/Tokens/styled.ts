@@ -53,7 +53,7 @@ export const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
   text-align: left;
-  border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.primary1))};
+  border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.text1))};
   grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -74,6 +74,10 @@ export const LinkWrapper = styled(Link)`
 `
 
 export const ResponsiveLogo = styled(CurrencyLogo)`
+  width: 36px;
+  height: 36px;
+  border-radius: 36px;
+
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 16px;
     height: 16px;
@@ -143,7 +147,7 @@ export const ArrowButton = styled.button`
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.text1};
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 10px;
   user-select: none;
@@ -225,7 +229,7 @@ export const Cell = styled.div<{ center?: boolean }>`
     transition: text-decoration-color 0.2s ease-in-out;
 
     &:hover {
-      text-decoration-color: ${({ theme }) => theme.primary1};
+      text-decoration-color: ${({ theme }) => theme.text1};
     }
   }
 `
@@ -260,12 +264,12 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   width: auto;
   font-weight: 400;
   transition: all 0.15s ease-in;
-  background: ${({ theme, color }) => transparentize(0.2, color || theme.primary1)};
+  background: ${({ theme, color }) => transparentize(0.2, color || theme.text1)};
   white-space: nowrap;
   position: relative;
 
   :hover {
-    background: ${({ theme, color }) => color || theme.primary1};
+    background: ${({ theme, color }) => color || theme.text1};
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -276,8 +280,8 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
     outlined &&
     `
       background: transparent;
-      color: ${color || theme.primary1};
-      border: 1px solid ${color || theme.primary1};
+      color: ${color || theme.text1};
+      border: 1px solid ${color || theme.text1};
       :hover {
         color: white;
       }
@@ -288,7 +292,7 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
     `
       background: none;
       border: none;
-      color: ${color || theme.primary1};
+      color: ${color || theme.text1};
       padding: 0;
 
       :hover {
@@ -348,7 +352,7 @@ export const FiatValue = styled.div`
 `
 
 export const InfoCircle = styled(HelpCircle)`
-  stroke: ${({ theme }) => theme.primary1};
+  stroke: ${({ theme }) => theme.text1};
   width: 15px;
   height: 15px;
   margin-left: 5px;

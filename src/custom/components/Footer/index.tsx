@@ -10,11 +10,14 @@ const Wrapper = styled.div`
   justify-content: space-evenly;
   margin: auto 16px;
   position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 24px;
 
   > svg {
-    position: fixed;
+    position: absolute;
     left: 0;
-    bottom: -16px;
+    bottom: 0;
     width: 100%;
     height: auto;
     z-index: -1;
@@ -27,6 +30,7 @@ const Wrapper = styled.div`
 
 const FooterVersion = styled(Version)`
   margin: 0 auto 0 0;
+  padding: 0 0 0 24px;
   flex-flow: row wrap;
 
   > div {

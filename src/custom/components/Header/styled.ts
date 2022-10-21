@@ -315,7 +315,7 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 
   > a:hover > svg > path {
-    fill: ${({ theme }) => theme.primary1};
+    fill: ${({ theme }) => theme.text1};
   }
 `
 
