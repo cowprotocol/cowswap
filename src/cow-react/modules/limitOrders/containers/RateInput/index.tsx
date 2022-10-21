@@ -8,9 +8,14 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useFetchInitialPrice } from '@cow/modules/limitOrders/hooks/useFetchInitialPrice'
 import usePrevious from 'hooks/usePrevious'
 
 export function RateInput() {
+  // Price fetching
+  const { price: initialPrice } = useFetchInitialPrice()
+
+  // Rate and currency amount hooks
   const calculateRate = useCalculateRate()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
@@ -58,6 +63,11 @@ export function RateInput() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
+
+  // Set initial active rate
+  useEffect(() => {
+    updateLimitRateState({ activeRate: initialPrice })
+  }, [initialPrice, updateLimitRateState])
 
   return (
     <styledEl.Wrapper>
