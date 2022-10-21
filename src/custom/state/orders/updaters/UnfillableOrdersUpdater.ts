@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
-
+import { useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order } from 'state/orders/actions'
@@ -16,6 +16,7 @@ import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
 import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
+import { handleOrderPriceDifferenceAtom } from 'state/orders/atoms'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -67,6 +68,7 @@ export function UnfillableOrdersUpdater(): null {
   const chainId = supportedChainId(_chainId)
 
   const pending = usePendingOrders({ chainId })
+  const setOrderPriceDifference = useUpdateAtom(handleOrderPriceDifferenceAtom)
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   // check which GP Quote API to use (NEW/LEGACY)
   const strategy = useGetGpPriceStrategy()
@@ -78,11 +80,12 @@ export function UnfillableOrdersUpdater(): null {
 
   const updateIsUnfillableFlag = useCallback(
     (chainId: ChainId, order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>) => {
-      const isUnfillable = isOrderUnfillable(order, price)
+      const { isUnfillable, currentPrice, orderPrice, percentageDifference } = isOrderUnfillable(order, price)
 
       // Only trigger state update if flag changed
       if (order.isUnfillable !== isUnfillable) {
         setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
+        setOrderPriceDifference({ currentPrice, orderPrice, percentageDifference })
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
         if (typeof order.isUnfillable !== 'undefined') {
@@ -91,7 +94,7 @@ export function UnfillableOrdersUpdater(): null {
         }
       }
     },
-    [setIsOrderUnfillable]
+    [setIsOrderUnfillable, setOrderPriceDifference]
   )
 
   const updatePending = useCallback(() => {

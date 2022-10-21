@@ -9,6 +9,7 @@ import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { calculatePrice, invertPrice, ZERO_BIG_NUMBER } from '@cowprotocol/cow-js'
 import { BigNumber } from 'bignumber.js'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { OrderPriceDifference } from 'state/orders/atoms'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -197,6 +198,10 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   }
 }
 
+type OrderUnfillable = OrderPriceDifference & {
+  isUnfillable: boolean
+}
+
 /**
  * Based on the order and current price, returns `true` if order is out of the market.
  * Out of the market means the price difference between original and current to be positive
@@ -208,7 +213,7 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
  * @param order
  * @param price
  */
-export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): boolean {
+export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): OrderUnfillable {
   // Build price object from stored order
   const orderPrice = new Price(
     order.inputToken,
@@ -243,5 +248,10 @@ export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInform
 
   // Higher prices are worse, thus, the order will be unfillable whenever percentage difference is positive
   // Check whether given price difference is > Price delta %, to allow for small market variations
-  return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
+  return {
+    isUnfillable: percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE),
+    currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+    percentageDifference: percentageDifference.toSignificant(3),
+    orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+  }
 }

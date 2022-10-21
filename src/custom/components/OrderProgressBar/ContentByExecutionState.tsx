@@ -29,6 +29,8 @@ import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { useAtomValue } from 'jotai'
+import { orderPriceDifferenceAtom } from '@src/custom/state/orders/atoms'
 
 const DOC_LINK_PHENOM_COW = 'https://docs.cow.fi/overview/coincidence-of-wants'
 
@@ -42,6 +44,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
   const { percentage, executionState, activityDerivedState, chainId, isSmartContractWallet } = props
   const { order, isCancellable } = activityDerivedState
   const textAllowToCancel = !isSmartContractWallet && ' or if you cancel'
+  const orderPriceOutRange = useAtomValue(orderPriceDifferenceAtom)
 
   const progressAndMessage = () => {
     switch (executionState) {
@@ -159,10 +162,11 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <UnfillableMsgWrapper>
                   <div>
                     <p>
-                      Current price: <strong>$1200.56</strong>
+                      Current price: <strong>{orderPriceOutRange?.currentPrice}</strong>
                     </p>
                     <p>
-                      Your price: $1300.55 (<span>+8%</span>)
+                      Your price: {orderPriceOutRange?.orderPrice} (
+                      <span>{orderPriceOutRange?.percentageDifference}%</span>)
                     </p>
                   </div>
                   <div>
