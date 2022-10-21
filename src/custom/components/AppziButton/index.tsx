@@ -5,7 +5,7 @@ import SVG from 'react-inlinesvg'
 import { transparentize } from 'polished'
 
 const Wrapper = styled.div`
-  background: ${({ theme }) => transparentize(0.6, theme.white)};
+  background: ${({ theme }) => transparentize(0.5, theme.bg2)};
   backdrop-filter: blur(5px);
   border: 0;
   border-radius: 46px;
@@ -22,23 +22,25 @@ const Wrapper = styled.div`
   z-index: 2;
   cursor: pointer;
   transform: translateY(0);
-  transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+  transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
 
   > svg {
     width: 100%;
     height: 100%;
     padding: 8px;
     object-fit: contain;
-    fill: ${({ theme }) => transparentize(0.1, theme.text1)};
-    transition: fill 0.3s ease-in-out;
+    fill: ${({ theme }) => transparentize(0.3, theme.white)};
+    transform: rotate(0);
+    transition: fill 0.5s ease-in-out, transform 0.5s ease-in-out;
   }
 
   &:hover {
-    background: ${({ theme }) => theme.white};
+    background: ${({ theme }) => transparentize(0.1, theme.bg2)};
     transform: translateY(-3px);
 
     > svg {
-      fill: ${({ theme }) => theme.text1};
+      fill: ${({ theme }) => theme.white};
+      transform: rotate(-360deg);
     }
   }
 
