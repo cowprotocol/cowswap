@@ -4,8 +4,8 @@ import Version from '../Version'
 // import ClickWrap from '../ClickWrap'
 
 const FooterVersion = styled(Version)`
-  margin-right: auto;
-  min-width: max-content;
+  margin: 0 auto 0 0;
+  flex-flow: row wrap;
 
   > div {
     ${({ theme }) => theme.mediaWidth.upToSmall`

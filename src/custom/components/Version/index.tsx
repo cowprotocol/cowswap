@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ExternalLink, ThemedText } from 'theme'
+import { ExternalLink } from 'theme'
 
 import { version as WEB_VERSION } from '@src/../package.json'
 import { version as CONTRACTS_VERSION } from '@cowprotocol/contracts/package.json'
@@ -9,23 +9,19 @@ import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'con
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { useWeb3React } from '@web3-react/core'
 
-import github from 'assets/external/github-logo.png'
-import etherscan from 'assets/external/etherscan-logo.svg'
-
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]
   if (!contractAddress) return '-'
   return getEtherscanLink(chainId, contractAddress, 'address')
 }
 
-const LOGO_MAP = {
-  github,
-  etherscan,
-}
-
 const VERSIONS: Record<
   string,
-  { version: string; href: (chainId: ChainId) => string | { github: string; etherscan: string } }
+  {
+    version: string
+    href: (chainId: ChainId) => string
+    // | { github: string; etherscan: string }
+  }
 > = {
   Web: {
     version: 'v' + WEB_VERSION,
@@ -36,19 +32,25 @@ const VERSIONS: Record<
   'Vault Relayer': {
     version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
-      return {
-        etherscan: _getContractsUrls(chainId, GP_VAULT_RELAYER),
-        github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
-      }
+      // return Etherscan by default
+      return _getContractsUrls(chainId, GP_VAULT_RELAYER)
+
+      // return {
+      //   etherscan: _getContractsUrls(chainId, GP_VAULT_RELAYER),
+      //   github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
+      // }
     },
   },
   'Settlement Contract': {
     version: 'v' + CONTRACTS_VERSION,
     href(chainId: ChainId) {
-      return {
-        etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),
-        github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2Settlement.sol`,
-      }
+      // return Etherscan by default
+      return _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS)
+
+      // return {
+      //   etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),
+      //   github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2Settlement.sol`,
+      // }
     },
   },
 }
@@ -60,10 +62,11 @@ const StyledPolling = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  padding: 16px;
-  transition: opacity 0.25s ease;
-  color: ${({ theme }) => theme.footerColor};
+  padding: 16px 0;
+  transition: opacity 0.3s ease-in-out;
   opacity: 0.5;
+  color: ${({ theme }) => theme.text1};
+  gap: 10px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     opacity: 1;
@@ -75,6 +78,8 @@ const StyledPolling = styled.div`
 `
 
 const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
+  color: inherit;
+
   ${({ isUnclickable = false }): string | false =>
     isUnclickable &&
     `
@@ -83,15 +88,11 @@ const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   `}
 `
 
-const VersionsLinkWrapper = styled(ThemedText.Small)`
+const VersionsLinkWrapper = styled.span`
+  font-size: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-`
-
-const LogoWrapper = styled.img`
-  max-width: 1rem;
-  margin-left: 0.5rem;
 `
 
 const Version = ({ className }: { className?: string }) => {
@@ -101,22 +102,14 @@ const Version = ({ className }: { className?: string }) => {
       {/* it's hardcoded anyways */}
       {versionsList.map((key) => {
         const { href, version } = VERSIONS[key]
-
         const chainHref = href(chainId)
 
         return (
           <VersionsLinkWrapper key={key}>
-            <strong>{key}</strong>: {version}
-            {typeof chainHref === 'string' ? (
+            {typeof chainHref == 'string' && (
               <VersionsExternalLink href={chainHref}>
-                <LogoWrapper src={github} />
+                {key} {version} ↗
               </VersionsExternalLink>
-            ) : (
-              Object.keys(chainHref).map((item, index) => (
-                <VersionsExternalLink key={item + '_' + index} href={chainHref[item as 'github' | 'etherscan']}>
-                  <LogoWrapper src={LOGO_MAP[item as 'github' | 'etherscan']} />
-                </VersionsExternalLink>
-              ))
             )}
           </VersionsLinkWrapper>
         )
