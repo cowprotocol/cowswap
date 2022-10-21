@@ -5,9 +5,9 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import usePrevious from 'hooks/usePrevious'
 
 export function RateInput() {
@@ -20,7 +20,9 @@ export function RateInput() {
   const prevIsInversed = usePrevious(isInversed)
 
   // Limit order state
-  const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = useAtomValue(limitOrdersAtom)
+  const { inputCurrency, outputCurrency, inputCurrencyAmount } = useLimitOrdersTradeState()
+  const inputCurrencyId = inputCurrency?.symbol
+  const outputCurrencyId = outputCurrency?.symbol
 
   const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
   const secondaryCurrency = isInversed ? inputCurrencyId : outputCurrencyId
@@ -49,7 +51,10 @@ export function RateInput() {
   // because in that case we don't want to recalculate anything
   useEffect(() => {
     if (isInversed === prevIsInversed) {
-      updateCurrencyAmount({ inputCurrencyAmount, keepOrderKind: true })
+      updateCurrencyAmount({
+        inputCurrencyAmount: inputCurrencyAmount?.toExact(),
+        keepOrderKind: true,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
