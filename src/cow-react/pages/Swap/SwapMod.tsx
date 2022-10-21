@@ -63,7 +63,6 @@ import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { Widget } from '@cow/modules/application/pure/Widget'
-import EthFlowBanner from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -403,15 +402,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
               <SwapButtons {...swapButtonsContext} />
               {isExpertMode ? <ErrorMessage error={swapErrorMessage} /> : null}
             </BottomGrouping>
-            {!swapErrorMessage && nativeInput && (
-              <EthFlowBanner
-                nativeInAmount={nativeInput}
-                switchCurrencyCallback={() => onCurrencySelection(Field.INPUT, nativeInput.wrapped.currency)}
-                wrapCallback={openNativeWrapModal}
-                // TODO: is removed in next PR
-                forceWrapCallback={console.log}
-              />
-            )}
           </Wrapper>
         </Widget>
         {currencyIn && currencyOut && isSwapUnsupported && (
