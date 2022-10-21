@@ -54,7 +54,7 @@ export const Content = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;
   gap: 62px;
-  margin: 12px 0 0;
+  margin: 6px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     box-shadow: none;
