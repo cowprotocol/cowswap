@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useDerivedSwapInfo, useDetectNativeToken, useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useCloseModals, useToggleWalletModal } from 'state/application/hooks'
@@ -28,6 +28,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
 import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -59,6 +60,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { INPUT } = useSwapState()
   const setTransactionConfirm = useTransactionConfirmModal()
   const swapFlowContext = useSwapFlowContext()
+  const { onCurrencySelection } = useSwapActionHandlers()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -157,5 +159,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     },
     toggleWalletModal,
     swapInputError,
+    onCurrencySelection,
   }
 }
