@@ -229,7 +229,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           </Option>
           <OptionCustom
             disabled={isEthFlow}
-            active={userSlippageTolerance !== 'auto' || !isEthFlow}
+            active={userSlippageTolerance !== 'auto' && !isEthFlow}
             warning={!!slippageError}
             tabIndex={-1}
           >
