@@ -1,7 +1,7 @@
 import { useDetectNativeToken } from 'state/swap/hooks'
 
-export function useIsEthFlow() {
-  const { isNativeIn, isWrapOrUnwrap, native } = useDetectNativeToken()
+export function useIsEthFlow(): boolean {
+  const { isNativeIn, isWrapOrUnwrap } = useDetectNativeToken()
 
-  return { isEthFlow: isNativeIn && !isWrapOrUnwrap, nativeCurrency: native }
+  return isNativeIn && !isWrapOrUnwrap
 }

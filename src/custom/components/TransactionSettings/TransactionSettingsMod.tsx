@@ -29,6 +29,7 @@ import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'compon
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
+import { useDetectNativeToken } from 'state/swap/hooks'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -121,7 +122,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
-  const { isEthFlow, nativeCurrency } = useIsEthFlow()
+  const isEthFlow = useIsEthFlow()
+  const { native: nativeCurrency } = useDetectNativeToken()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()

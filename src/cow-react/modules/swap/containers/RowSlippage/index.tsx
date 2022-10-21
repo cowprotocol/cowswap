@@ -7,6 +7,7 @@ import { formatSmart } from 'utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { useDetectNativeToken } from 'state/swap/hooks'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -18,8 +19,8 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
 
   // if is wrap/unwrap operation return null
   const wrapType = useWrapType()
-  // should we show the warning?
-  const { isEthFlow, nativeCurrency } = useIsEthFlow()
+  const isEthFlow = useIsEthFlow()
+  const { native: nativeCurrency } = useDetectNativeToken()
 
   const props = useMemo(
     () => ({
