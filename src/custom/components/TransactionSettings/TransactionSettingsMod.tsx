@@ -29,7 +29,7 @@ import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'compon
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
-import { useDetectNativeToken } from 'state/swap/hooks'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
