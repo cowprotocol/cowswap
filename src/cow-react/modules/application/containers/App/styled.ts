@@ -18,7 +18,7 @@ export const HeaderWrapper = styled.div`
 
 export const FooterWrapper = styled(HeaderWrapper)`
   z-index: 1;
-  width: auto;
+  width: 100%;
 `
 
 export const Marginer = styled.div`

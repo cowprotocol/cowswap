@@ -5,7 +5,6 @@ import { ButtonSize } from 'theme'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { transparentize } from 'polished'
-import { cowSwapLogo } from 'theme/cowSwapAssets'
 
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -130,12 +129,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         background-attachment: fixed;
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
       `,
-    },
-    logo: {
-      src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
-      alt: 'CoW Swap Logo',
-      width: '137px',
-      height: '44px',
     },
     textShadow1: `
       ${

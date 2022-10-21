@@ -63,18 +63,8 @@ const StyledPolling = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   padding: 16px 0;
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0.5;
   color: ${({ theme }) => theme.text1};
   gap: 10px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    opacity: 1;
-  `}
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
@@ -93,6 +83,16 @@ const VersionsLinkWrapper = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
+  opacity: 0.5;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    opacity: 1;
+  `}
 `
 
 const Version = ({ className }: { className?: string }) => {

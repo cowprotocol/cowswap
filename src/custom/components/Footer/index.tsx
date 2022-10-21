@@ -1,7 +1,29 @@
 import styled from 'styled-components/macro'
-
+import { useIsDarkMode } from 'state/user/hooks'
 import Version from '../Version'
-// import ClickWrap from '../ClickWrap'
+import SVG from 'react-inlinesvg'
+import { footerImage } from 'theme/cowSwapAssets'
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: auto 16px;
+  position: relative;
+
+  > svg {
+    position: fixed;
+    left: 0;
+    bottom: -16px;
+    width: 100%;
+    height: auto;
+    z-index: -1;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: auto 0 100px;
+  `}
+`
 
 const FooterVersion = styled(Version)`
   margin: 0 auto 0 0;
@@ -14,30 +36,14 @@ const FooterVersion = styled(Version)`
   }
 `
 
-const Wrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: center;
-  justify-content: space-evenly;
-  margin: auto 16px;
-  width: 100%;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: auto 0 100px;
-  `}
-`
-
-const FooterWrapper = styled.div`
-  width: 100%;
-`
-
 export default function Footer({ children }: { children?: React.ReactChildren }) {
+  const darkMode = useIsDarkMode()
+
   return (
     <Wrapper>
-      {/* <ClickWrap /> */}
-      <FooterWrapper>
-        <FooterVersion />
-        {children}
-      </FooterWrapper>
+      <FooterVersion />
+      {children}
+      <SVG src={footerImage(darkMode)} description="CoW Swap footer image" />
     </Wrapper>
   )
 }

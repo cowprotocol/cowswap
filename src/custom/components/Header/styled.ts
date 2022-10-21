@@ -322,7 +322,7 @@ export const TwitterLink = styled(StyledMenuButton)`
 export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   width: 131px;
   height: 41px;
-  background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
+  background: none;
   margin: 0 32px 0 0;
   position: relative;
 
@@ -341,8 +341,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   `}
 
   > svg {
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     object-fit: contain;
   }
 `
