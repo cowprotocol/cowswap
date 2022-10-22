@@ -11,7 +11,7 @@ export interface EthFlowBannerProps extends EthFlowBannerCallbacks {
   hasEnoughWrappedBalance: boolean
 }
 
-export default function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBannerProps) {
+export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBannerProps) {
   const [showBanner, setShowBanner] = useState(false)
   const { isNativeIn, native, wrappedToken: wrapped } = useDetectNativeToken()
 

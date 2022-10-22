@@ -16,7 +16,7 @@ import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
 
 import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
-import EthFlowBanner from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
+import { EthFlowBanner } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import { Field } from 'state/swap/actions'
 
 export interface SwapButtonsContext {

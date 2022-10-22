@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/macro'
 import { Separator } from 'theme'
 import { ChevronUp, ChevronDown } from 'react-feather'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -31,41 +32,45 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
       <styledEl.ClosedBannerWrapper>
         <img alt="eth-flow-icon" src={ethFlowIcon} />
         <strong>
-          {hasEnoughWrappedBalance
-            ? `Switch to the classic ${wrapped.symbol} experience and benefit!`
-            : `Wrap your ${native.symbol} and use the classic ${wrapped.symbol} experience!`}
+          <Trans>
+            {hasEnoughWrappedBalance
+              ? `Switch to the classic ${wrapped.symbol} experience and benefit!`
+              : `Wrap your ${native.symbol} and use the classic ${wrapped.symbol} experience!`}
+          </Trans>
         </strong>
         {showBanner ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </styledEl.ClosedBannerWrapper>
       {showBanner && (
         <styledEl.BannerInnerWrapper>
-          <p>
-            {!hasEnoughWrappedBalance && (
-              <>
-                You will be prompted to{' '}
-                <strong>
-                  wrap your {native.symbol} to {wrapped.symbol}
-                </strong>{' '}
-                before placing your order.
-              </>
-            )}{' '}
-            This way, you&apos;ll take of advantage of:
-          </p>
-          <ul>
-            <li>Lower overall fees</li>
-            <li>Lower default slippage (instead of {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}%)</li>
-            <li>No fees for failed transactions</li>
-          </ul>
-          <Separator />
-          <styledEl.WrapEthCta>
-            {hasEnoughWrappedBalance ? (
-              <>
-                <styledEl.SpanCta onClick={switchCurrencyCallback}>Switch to {wrapped.symbol} </styledEl.SpanCta>
-              </>
-            ) : (
-              <styledEl.SpanCta onClick={wrapCallback}>Wrap my {native.symbol} and swap</styledEl.SpanCta>
-            )}
-          </styledEl.WrapEthCta>
+          <Trans>
+            <p>
+              {!hasEnoughWrappedBalance && (
+                <>
+                  You will be prompted to{' '}
+                  <strong>
+                    wrap your {native.symbol} to {wrapped.symbol}
+                  </strong>{' '}
+                  before placing your order.
+                </>
+              )}{' '}
+              This way, you&apos;ll take of advantage of:
+            </p>
+            <ul>
+              <li>Lower overall fees</li>
+              <li>Lower default slippage (instead of {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}%)</li>
+              <li>No fees for failed transactions</li>
+            </ul>
+            <Separator />
+            <styledEl.WrapEthCta>
+              {hasEnoughWrappedBalance ? (
+                <>
+                  <styledEl.SpanCta onClick={switchCurrencyCallback}>Switch to {wrapped.symbol} </styledEl.SpanCta>
+                </>
+              ) : (
+                <styledEl.SpanCta onClick={wrapCallback}>Wrap my {native.symbol} and swap</styledEl.SpanCta>
+              )}
+            </styledEl.WrapEthCta>
+          </Trans>
         </styledEl.BannerInnerWrapper>
       )}
     </styledEl.BannerWrapper>
