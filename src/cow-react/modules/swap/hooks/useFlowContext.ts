@@ -310,7 +310,7 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   return getFlowContext({
     baseProps,
-    conditionalCheck: baseProps.isEthFlow,
+    conditionalCheck: !baseProps.isEthFlow,
     addOrderCallback,
     contract,
     sellToken: baseProps.trade.inputAmount.currency,
