@@ -63,6 +63,7 @@ const Custom = () => {
 
 const Fixtures = {
   default: <CurrencyInputPanel {...defaultProps} />,
+  readonlyMode: <CurrencyInputPanel {...defaultProps} readonlyMode={true} />,
   custom: <Custom />,
 }
 

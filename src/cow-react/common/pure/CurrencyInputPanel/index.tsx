@@ -21,6 +21,7 @@ interface BuiltItProps {
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   loading: boolean
+  readonlyMode?: boolean
   showSetMax?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
@@ -44,11 +45,14 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     allowsOffchainSigning,
     subsidyAndBalance,
     topLabel,
+    readonlyMode = false,
   } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
+
+  const withReceiveAmountInfo = !!receiveAmountInfo && !readonlyMode
 
   useEffect(() => {
     setTypedValue(viewAmount)
@@ -79,7 +83,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   return (
     <>
-      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
+      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={withReceiveAmountInfo}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
         <styledEl.CurrencyInputBox flexibleWidth={true}>
@@ -88,11 +92,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               onClick={() => setCurrencySearchModalOpen(true)}
               currency={currency || undefined}
               loading={loading}
+              readonlyMode={readonlyMode}
             />
           </div>
           <div>
             <styledEl.NumericalInput
               className="token-amount-input"
+              readOnly={readonlyMode}
               value={typedValue}
               onUserInput={onUserInputDispatch}
               $loading={loading}
@@ -107,7 +113,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
                 </styledEl.BalanceText>
-                {showSetMax && <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>}
+                {showSetMax && !readonlyMode && <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>}
               </>
             )}
           </div>
@@ -119,7 +125,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 
-      {receiveAmountInfo && currency && (
+      {withReceiveAmountInfo && currency && (
         <ReceiveAmount
           allowsOffchainSigning={allowsOffchainSigning}
           currency={currency}
@@ -128,16 +134,18 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         />
       )}
 
-      <CurrencySearchModal
-        isOpen={isCurrencySearchModalOpen}
-        onDismiss={() => setCurrencySearchModalOpen(false)}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={currency}
-        otherSelectedCurrency={currency}
-        showCommonBases={true}
-        showCurrencyAmount={true}
-        disableNonToken={false}
-      />
+      {!readonlyMode && (
+        <CurrencySearchModal
+          isOpen={isCurrencySearchModalOpen}
+          onDismiss={() => setCurrencySearchModalOpen(false)}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={currency}
+          otherSelectedCurrency={currency}
+          showCommonBases={true}
+          showCurrencyAmount={true}
+          disableNonToken={false}
+        />
+      )}
     </>
   )
 }
