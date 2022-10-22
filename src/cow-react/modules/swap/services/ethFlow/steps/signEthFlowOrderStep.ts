@@ -52,6 +52,7 @@ export async function signEthFlowOrderStep(
     .createOrder(auxOrderParams, { value: orderParams.sellAmountBeforeFee.quotient.toString() })
     .catch((error) => {
       logSwapFlowError(
+        'ETH FLOW',
         '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + ETHFLOW_GAS_LIMIT_DEFAULT,
         error
       )

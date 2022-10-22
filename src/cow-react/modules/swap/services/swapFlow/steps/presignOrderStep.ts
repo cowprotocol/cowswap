@@ -14,7 +14,11 @@ export async function presignOrderStep(
   logSwapFlow('Pre-signing order', orderId)
 
   const estimatedGas = await settlementContract.estimateGas.setPreSignature(orderId, true).catch((error) => {
-    logSwapFlowError('Error estimating setPreSignature gas. Using default ' + PRESIGN_GAS_LIMIT_DEFAULT, error)
+    logSwapFlowError(
+      'SWAP FLOW',
+      'Error estimating setPreSignature gas. Using default ' + PRESIGN_GAS_LIMIT_DEFAULT,
+      error
+    )
     return PRESIGN_GAS_LIMIT_DEFAULT
   })
 
