@@ -15,7 +15,7 @@ import {
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
-import { logSwapFlow } from '@cow/modules/swap/services/swapFlow/logger'
+import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'

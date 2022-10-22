@@ -5,7 +5,7 @@ import { ContractTransaction } from '@ethersproject/contracts'
 
 import { packOrderUidParams } from '@cowprotocol/contracts'
 import { CoWSwapEthFlow } from '@cow/abis/types'
-import { logSwapFlow, logSwapFlowError } from '@cow/modules/swap/services/swapFlow/logger'
+import { logSwapFlow, logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'

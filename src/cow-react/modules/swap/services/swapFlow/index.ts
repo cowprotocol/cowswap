@@ -4,8 +4,8 @@ import { signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from './steps/presignOrderStep'
 import { addPendingOrderStep } from '@cow/modules/swap/services/swapFlow/steps/addPendingOrderStep'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
-import { logSwapFlow } from '@cow/modules/swap/services/swapFlow/logger'
-import { getSwapErrorMessage } from '@cow/modules/swap/services/swapFlow/steps/swapErrorHelper'
+import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
+import { getSwapErrorMessage } from '@cow/modules/swap/services/common/steps/swapErrorHelper'
 import { PriceImpact } from 'hooks/usePriceImpact'
 
 export async function swapFlow(input: SwapFlowContext, priceImpactParams: PriceImpact) {
