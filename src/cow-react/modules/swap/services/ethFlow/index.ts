@@ -1,5 +1,5 @@
 import { EthFlowContext } from '@cow/modules/swap/services/swapFlow/types'
-import { swapFlowAnalytics } from '@cow/modules/swap/services/swapFlow/steps/analytics'
+import { swapFlowAnalytics } from '@cow/modules/swap/services/common/steps/analytics'
 import { signEthFlowOrderStep } from '@cow/modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
@@ -18,7 +18,6 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
 
   try {
     logSwapFlow('ETH FLOW', 'STEP 3: sign order')
-    // TODO: fix
     const { order, orderId } = await signEthFlowOrderStep(input.orderParams, input.contract).finally(() => {
       input.callbacks.closeModals()
     })

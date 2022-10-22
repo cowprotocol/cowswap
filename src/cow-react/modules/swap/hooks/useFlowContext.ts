@@ -14,7 +14,7 @@ import {
 import { useAppData } from 'hooks/useAppData'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/swapFlow/steps/analytics'
+import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
 import useENSAddress from 'hooks/useENSAddress'
 import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { useEthFlowContract, useWETHContract } from 'hooks/useContract'

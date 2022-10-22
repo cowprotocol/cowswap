@@ -6,7 +6,7 @@ import { AddEthFlowOrderCallback, AddOrderCallback } from 'state/orders/hooks'
 import { GPv2Settlement } from '@cow/abis/types'
 import { AppDispatch } from 'state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/swapFlow/steps/analytics'
+import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
 import { CoWSwapEthFlow } from '@cow/abis/types/ethflow'
 
 type CommonFlowContext = {
@@ -27,13 +27,13 @@ type CommonFlowContext = {
   dispatch: AppDispatch
   swapConfirmManager: SwapConfirmManager
   appDataInfo: AppDataInfo
+  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
 }
 
 export type SwapFlowContext = CommonFlowContext & {
   callbacks: {
     addOrderCallback: AddOrderCallback
   }
-  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   orderParams: PostOrderParams
   contract: GPv2Settlement
 }
@@ -42,7 +42,6 @@ export type EthFlowContext = CommonFlowContext & {
   callbacks: {
     addOrderCallback: AddEthFlowOrderCallback
   }
-  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   orderParams: EthFlowOrderParams
   contract: CoWSwapEthFlow
 }

@@ -1,5 +1,5 @@
 import { SwapFlowContext } from './types'
-import { swapFlowAnalytics } from './steps/analytics'
+import { swapFlowAnalytics } from '@cow/modules/swap/services/common/steps/analytics'
 import { signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from './steps/presignOrderStep'
 import { addPendingOrderStep } from '@cow/modules/swap/services/swapFlow/steps/addPendingOrderStep'
