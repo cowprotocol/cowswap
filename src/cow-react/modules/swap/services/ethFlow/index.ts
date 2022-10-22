@@ -5,7 +5,7 @@ import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWith
 import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
 import { getSwapErrorMessage } from '@cow/modules/swap/services/common/steps/swapErrorHelper'
 import { PriceImpact } from 'hooks/usePriceImpact'
-import { addPendingEthFLowOrderStep } from '@cow/modules/swap/services/ethFlow/steps/addPendingEthFLowOrderStep'
+import { addPendingEthFlowOrderStep } from '@cow/modules/swap/services/ethFlow/steps/addPendingEthFlowOrderStep'
 
 export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImpact) {
   logSwapFlow('ETH FLOW', 'STEP 1: confirm price impact')
@@ -23,7 +23,7 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
     })
 
     logSwapFlow('ETH FLOW', 'STEP 4: add pending order step')
-    addPendingEthFLowOrderStep(
+    addPendingEthFlowOrderStep(
       {
         id: orderId,
         chainId: input.context.chainId,

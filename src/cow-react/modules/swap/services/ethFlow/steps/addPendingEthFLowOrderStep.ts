@@ -3,7 +3,7 @@ import { addPendingEthFlowOrder, AddPendingOrderParams, SerializedOrder } from '
 import { AddUnserialisedPendingEthFlowOrderParams } from 'state/orders/hooks'
 import { AppDispatch } from 'state'
 
-export function addPendingEthFLowOrderStep(
+export function addPendingEthFlowOrderStep(
   addOrderParams: AddUnserialisedPendingEthFlowOrderParams,
   dispatch: AppDispatch
 ) {
