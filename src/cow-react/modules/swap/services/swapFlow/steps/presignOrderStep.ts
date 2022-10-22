@@ -11,7 +11,7 @@ export async function presignOrderStep(
   orderId: string,
   settlementContract: GPv2Settlement
 ): Promise<ContractTransaction | null> {
-  logSwapFlow('Pre-signing order', orderId)
+  logSwapFlow('SWAP FLOW', 'Pre-signing order', orderId)
 
   const estimatedGas = await settlementContract.estimateGas.setPreSignature(orderId, true).catch((error) => {
     logSwapFlowError(
@@ -26,7 +26,7 @@ export async function presignOrderStep(
     gasLimit: calculateGasMargin(estimatedGas),
   })
 
-  logSwapFlow('Sent transaction for presigning', orderId, txReceipt)
+  logSwapFlow('SWAP FLOW', 'Sent transaction for presigning', orderId, txReceipt)
 
   return txReceipt
 }

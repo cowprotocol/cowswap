@@ -88,12 +88,13 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const handleSwap = useCallback(() => {
     if (isNativeInSwap && ethFlowContext) {
       ethFlow(ethFlowContext, priceImpactParams)
+      logSwapFlow('ETH FLOW', 'Start swap flow')
     } else if (swapFlowContext) {
       swapFlow(swapFlowContext, priceImpactParams)
+      logSwapFlow('SWAP FLOW', 'Start swap flow')
     } else {
       return
     }
-    logSwapFlow('Start swap flow')
   }, [ethFlowContext, swapFlowContext, priceImpactParams, isNativeInSwap])
 
   const swapCallbackError = swapFlowContext || ethFlowContext ? null : 'Missing dependencies'

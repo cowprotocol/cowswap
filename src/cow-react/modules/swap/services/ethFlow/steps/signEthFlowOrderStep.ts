@@ -32,7 +32,7 @@ export async function signEthFlowOrderStep(
   orderParams: EthFlowOrderParams,
   ethFlowContract: CoWSwapEthFlow
 ): Promise<EthFlowResponse> {
-  logSwapFlow('[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
+  logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
   const { order, quoteId, summary } = getOrderParams(orderParams)
 
@@ -71,7 +71,7 @@ export async function signEthFlowOrderStep(
     validTo: MAX_VALID_TO_EPOCH,
   })
 
-  logSwapFlow('[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
+  logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
 
   return {
     txReceipt,
