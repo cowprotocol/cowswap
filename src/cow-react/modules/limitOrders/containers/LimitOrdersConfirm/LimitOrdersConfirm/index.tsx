@@ -1,10 +1,11 @@
-import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
 import React from 'react'
-import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { Trans } from '@lingui/macro'
-import { ButtonPrimary } from 'components/Button'
 import { ButtonSize } from 'theme'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
+import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
+import { ButtonPrimary } from 'components/Button'
 import * as styledEl from './styled'
+import { LimitOrdersDetails } from '../LimitOrdersDetails'
 
 export interface LimitOrdersConfirmProps {
   inputCurrencyInfo: CurrencyInfo
@@ -23,6 +24,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         currencyInfo={outputCurrencyInfo}
         topLabel={'Your receive at least'}
       />
+      <LimitOrdersDetails a={1} />
       <ButtonPrimary onClick={onConfirm} disabled={false} buttonSize={ButtonSize.BIG}>
         <Trans>Confirm</Trans>
       </ButtonPrimary>

@@ -1,9 +1,9 @@
 import Modal from '@src/components/Modal'
 import React, { useCallback } from 'react'
+import { CloseIcon } from '@src/theme'
 import { tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
-import { LimitOrdersConfirm } from './LimitOrdersConfirm'
-import { CloseIcon } from '@src/theme'
+import { LimitOrdersConfirm } from '../LimitOrdersConfirm'
 import * as styledEl from './styled'
 
 export interface LimitOrdersConfirmModalProps {

@@ -1,1 +1,1 @@
-export * from './LimitOrdersConfirmModal'
+export * from './LimitOrdersConfirmModal/index'

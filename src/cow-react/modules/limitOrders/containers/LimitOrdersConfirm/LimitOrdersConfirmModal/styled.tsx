@@ -4,11 +4,6 @@ export const ConfirmModalWrapper = styled.div`
   padding: 16px;
   border-radius: 16px;
 `
-export const ConfirmWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`
 
 export const ConfirmHeader = styled.div`
   display: flex;
