@@ -4,7 +4,7 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/
 import { OrderKind } from '@cowprotocol/contracts'
 import { Token } from '@uniswap/sdk-core'
 import { parseUnits } from '@ethersproject/units'
-import { useMemo } from 'react'
+import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadline } = useLimitOrdersTradeState()
@@ -25,6 +25,6 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
         toDecimals: outputCurrency.decimals,
       }
     : null
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => feeQuoteParams, [JSON.stringify(feeQuoteParams)])
+
+  return useSafeMemoObject<FeeQuoteParams | null>(feeQuoteParams)
 }
