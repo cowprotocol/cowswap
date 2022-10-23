@@ -1,20 +1,25 @@
 import React from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'theme'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { ButtonPrimary } from 'components/Button'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
-import { ButtonPrimary } from 'components/Button'
-import * as styledEl from './styled'
 import { LimitOrdersDetails } from '../LimitOrdersDetails'
+import { TradeFlowContext } from '../../services/tradeFlow'
+import * as styledEl from './styled'
 
 export interface LimitOrdersConfirmProps {
+  tradeContext: TradeFlowContext
+  activeRateFiatAmount: CurrencyAmount<Currency> | null
+  activeRate: string
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   onConfirm(): void
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, onConfirm } = props
+  const { tradeContext, inputCurrencyInfo, outputCurrencyInfo, onConfirm, activeRate, activeRateFiatAmount } = props
 
   return (
     <styledEl.ConfirmWrapper>
@@ -24,7 +29,11 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         currencyInfo={outputCurrencyInfo}
         topLabel={'Your receive at least'}
       />
-      <LimitOrdersDetails a={1} />
+      <LimitOrdersDetails
+        tradeContext={tradeContext}
+        activeRate={activeRate}
+        activeRateFiatAmount={activeRateFiatAmount}
+      />
       <ButtonPrimary onClick={onConfirm} disabled={false} buttonSize={ButtonSize.BIG}>
         <Trans>Confirm</Trans>
       </ButtonPrimary>

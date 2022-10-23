@@ -17,8 +17,6 @@ import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useResetStateWithSymbolDuplication } from '../../hooks/useResetStateWithSymbolDuplication'
 import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
@@ -48,7 +46,6 @@ export function LimitOrdersWidget() {
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
-  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
@@ -83,7 +80,6 @@ export function LimitOrdersWidget() {
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
-  const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
@@ -162,15 +158,12 @@ export function LimitOrdersWidget() {
           </styledEl.TradeButtonBox>
         </styledEl.ContainerBox>
       </styledEl.Container>
-      {tradeContext && (
-        <LimitOrdersConfirmModal
-          isOpen={showConfirmation}
-          tradeContext={tradeContext}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
-          onDismiss={() => setShowConfirmation(false)}
-        />
-      )}
+      <LimitOrdersConfirmModal
+        isOpen={showConfirmation}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        onDismiss={() => setShowConfirmation(false)}
+      />
     </>
   )
 }

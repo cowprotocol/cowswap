@@ -1,13 +1,28 @@
 import React from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
+import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { formatSmartAmount } from 'utils/format'
 
 export interface LimitOrdersDetailsProps {
-  a: number
+  activeRate: string
+  activeRateFiatAmount: CurrencyAmount<Currency> | null
+  tradeContext: TradeFlowContext
 }
 
+const dateTimeFormat: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+}
+
+// TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { a } = props
+  const { sellToken, buyToken, validTo } = props.tradeContext.postOrderParams
+  const expiryDate = new Date(validTo)
 
   return (
     <div>
@@ -16,8 +31,11 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Limit Price</span> <InfoIcon content={'Limit price info TODO'} />
         </div>
         <div>
-          <span>1 COW = 0.15 DAI</span>
-          <span>(~$0.1295)</span>
+          <span>
+            1 {sellToken.symbol} = {props.activeRate} {buyToken.symbol}
+          </span>
+          <br />
+          <span>(~${formatSmartAmount(props.activeRateFiatAmount)})</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
@@ -25,8 +43,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Expiry</span> <InfoIcon content={'Expiry info TODO'} />
         </div>
         <div>
-          <span>1 hour</span>
-          <span>(Sep 23, 7:34 PM)</span>
+          <span>({expiryDate.toLocaleString(undefined, dateTimeFormat)})</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
@@ -34,7 +51,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>MEW protection</span> <InfoIcon content={'MEW protection info TODO'} />
         </div>
         <div>
-          <span>Active</span>
+          <span>{/*TODO*/}Active</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
@@ -42,7 +59,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Order type</span> <InfoIcon content={'Order type info TODO'} />
         </div>
         <div>
-          <span>Fill or kill</span>
+          <span>{/*TODO*/}Fill or kill</span>
         </div>
       </styledEl.DetailsRow>
     </div>
