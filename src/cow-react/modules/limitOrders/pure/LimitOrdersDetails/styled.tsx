@@ -5,4 +5,5 @@ export const DetailsRow = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  text-align: right;
 `

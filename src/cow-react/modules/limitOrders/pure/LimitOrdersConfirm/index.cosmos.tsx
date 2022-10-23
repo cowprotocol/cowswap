@@ -1,4 +1,3 @@
-import { LimitOrdersConfirm } from './LimitOrdersConfirm'
 import { Field } from 'state/swap/actions'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
@@ -6,6 +5,7 @@ import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
+import { LimitOrdersConfirm } from './index'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]

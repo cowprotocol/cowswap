@@ -24,7 +24,7 @@ import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
 import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useIsSellOrder } from '@cow/modules/limitOrders/hooks/useIsSellOrder'
-import { LimitOrdersConfirmModal } from '../LimitOrdersConfirm'
+import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
