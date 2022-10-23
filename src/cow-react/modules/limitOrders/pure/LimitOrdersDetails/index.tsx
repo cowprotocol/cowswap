@@ -22,7 +22,7 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 // TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const { sellToken, buyToken, validTo } = props.tradeContext.postOrderParams
-  const expiryDate = new Date(validTo)
+  const expiryDate = new Date(validTo * 1000)
 
   return (
     <div>
