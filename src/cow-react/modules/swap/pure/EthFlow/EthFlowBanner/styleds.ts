@@ -24,6 +24,7 @@ export const ClosedBannerWrapper = styled.div`
   }
   > svg:last-child {
     cursor: pointer;
+    stroke: ${({ theme }) => (theme.darkMode ? theme.white : theme.black)};
   }
   > svg,
   > strong {
