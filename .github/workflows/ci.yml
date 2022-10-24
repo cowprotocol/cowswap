@@ -19,6 +19,8 @@ env:
   REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
   REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
   REACT_APP_AMPLITUDE_KEY: ${{ secrets.REACT_APP_AMPLITUDE_KEY }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
   setup:
@@ -204,6 +206,63 @@ jobs:
         with:
           name: website
           path: build
+
+  vercel:
+    # Vercel build/deploy step
+    # In the future, Vercel will replace our AWS setup
+    # This build job will - for now - build only PRs and publish them to Vercel
+    # TODO: Finish setup for dev, staging, barn and prod
+    name: Vercel
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        # TODO: for now, all steps are conditioned to PRs
+        # TODO: once this is properly setup, enable as needed for dev/staging/etc
+        if: env.PR_NUMBER
+        uses: actions/checkout@v2
+
+      - name: Install Vercel CLI
+        if: env.PR_NUMBER
+        run: npm install --global vercel@latest
+
+      - name: Load dependencies
+        id: cache-node-modules
+        if: env.PR_NUMBER
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
+
+      - name: Build Cosmos
+        id: build-cosmos
+        if: env.PR_NUMBER # only build cosmos on PRs
+        run: yarn cosmos:export
+
+      - name: Build Project Artifacts
+        # Actually this is redundant with the build step. Haven't figured out how to reuse the existing build artifacts
+        if: env.PR_NUMBER
+        run: |
+          vercel build
+          -t ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        if: env.PR_NUMBER
+        run: |
+          vercel deploy --prebuilt
+          -t ${{ secrets.VERCEL_TOKEN }}
+          -b REACT_APP_SENTRY_DSN=${{ env.REACT_APP_SENTRY_DSN }}
+          -b REACT_APP_PINATA_API_KEY=${{ env.REACT_APP_PINATA_API_KEY }}
+          -b REACT_APP_PINATA_SECRET_API_KEY=${{ env.REACT_APP_PINATA_SECRET_API_KEY }}
+          -b REACT_APP_SENTRY_AUTH_TOKEN=${{ env.REACT_APP_SENTRY_AUTH_TOKEN }}
+          -b REACT_APP_BLOCKNATIVE_API_KEY=${{ env.REACT_APP_BLOCKNATIVE_API_KEY }}
+          -b REACT_APP_GOOGLE_ANALYTICS_ID=${{ env.REACT_APP_GOOGLE_ANALYTICS_ID }}
+          -b REACT_APP_AMPLITUDE_KEY=${{ env.REACT_APP_AMPLITUDE_KEY }}
+          -m PR_NUMBER=${{ env.PR_NUMBER }}
+
 
   deploy:
     name: Deploy
