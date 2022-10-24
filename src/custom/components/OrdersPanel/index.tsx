@@ -30,8 +30,8 @@ const SideBar = styled.div`
   overflow-y: overlay;
   box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%);
   animation: slideIn 0.3s cubic-bezier(0.87, 0, 0.13, 1);
-  background: ${({ theme }) => theme.card.background2};
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+  background: ${({ theme }) => theme.bg1};
+  scrollbar-color: ${({ theme }) => `${transparentize(0.5, theme.text1)} ${theme.bg1}`};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`    
     width: 100%;
@@ -49,7 +49,7 @@ const SideBar = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.card.border};
+    background: ${({ theme }) => `${transparentize(0.5, theme.text1)}`};
     border: 4px solid transparent;
     border-radius: 16px;
     background-clip: padding-box;
@@ -112,7 +112,7 @@ const Header = styled.div`
     position: sticky;
     left: 0;
     height: 52px;
-    background: ${({ theme }) => theme.card.background2};
+    background: ${({ theme }) => theme.bg1};
   `};
 
   &:hover {
@@ -128,7 +128,7 @@ const Header = styled.div`
 
 const CloseIcon = styled(Close)`
   path {
-    stroke: ${({ theme }) => theme.text4};
+    stroke: ${({ theme }) => theme.text1};
   }
 `
 

@@ -14,7 +14,7 @@ export const TransactionWrapper = styled.div`
   font-size: initial;
   display: flex;
   padding: 22px;
-  border: 1px solid ${({ theme }) => theme.card.border};
+  border: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -482,10 +482,10 @@ export const ActivityVisual = styled.div`
     padding: 2px;
     box-sizing: content-box;
     box-shadow: none;
-    background: ${({ theme }) => theme.transaction.tokenBackground};
+    background: ${({ theme }) => theme.white};
     color: ${({ theme }) =>
       theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
-    border: 2px solid ${({ theme }) => theme.transaction.tokenBorder};
+    border: 2px solid ${({ theme }) => theme.bg1};
   }
 
   ${StyledLogo}:not(:first-child):last-child {
