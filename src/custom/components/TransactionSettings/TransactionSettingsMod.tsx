@@ -23,8 +23,13 @@ import {
   LOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
+  PERCENTAGE_PRECISION,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -59,6 +64,10 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
   :hover {
     cursor: pointer;
+  }
+  &:disabled {
+    border: none;
+    pointer-events: none;
   }
   background-color: ${({ active, theme }) => active && theme.primary1};
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
@@ -113,6 +122,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
+  const isEthFlow = useIsEthFlow()
+  const { native: nativeCurrency } = useDetectNativeToken()
+
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
 
@@ -149,9 +161,13 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   }
 
   const tooLow =
-    userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
+    !isEthFlow &&
+    userSlippageTolerance !== 'auto' &&
+    userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
-    userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
+    !isEthFlow &&
+    userSlippageTolerance !== 'auto' &&
+    userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -195,14 +211,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             color={theme.text1}
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
-              <Trans>
-                <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
-                <p>
-                  The slippage you pick here enables a resubmission of your order in case of unfavourable price
-                  movements.
-                </p>
-                <p>{INPUT_OUTPUT_EXPLANATION}</p>
-              </Trans>
+              isEthFlow
+                ? getNativeSlippageTooltip([nativeCurrency.symbol, nativeCurrency.wrapped.symbol])
+                : getNonNativeSlippageTooltip()
             }
           />
         </RowFixed>
@@ -212,10 +223,16 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               parseSlippageInput('')
             }}
             active={userSlippageTolerance === 'auto'}
+            disabled={isEthFlow}
           >
             <Trans>Auto</Trans>
           </Option>
-          <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
+          <OptionCustom
+            disabled={isEthFlow}
+            active={userSlippageTolerance !== 'auto' && !isEthFlow}
+            warning={!!slippageError}
+            tabIndex={-1}
+          >
             <RowBetween>
               {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
@@ -225,9 +242,12 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 </SlippageEmojiContainer>
               ) : null}
               <Input
+                disabled={isEthFlow}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={
-                  slippageInput.length > 0
+                  isEthFlow
+                    ? ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
+                    : slippageInput.length > 0
                     ? slippageInput
                     : userSlippageTolerance === 'auto'
                     ? ''

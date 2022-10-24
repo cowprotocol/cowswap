@@ -38,7 +38,7 @@ export function TradeSummaryContent(props: TradeSummaryContentProps) {
         )}
 
         {/* Slippage */}
-        <RowSlippage trade={trade} allowedSlippage={allowedSlippage} showSettingOnClick={false} />
+        <RowSlippage allowedSlippage={allowedSlippage} showSettingOnClick={false} />
 
         {/* Min/Max received */}
         <RowReceivedAfterSlippage trade={trade} showHelpers={showHelpers} allowedSlippage={allowedSlippage} />

@@ -43,7 +43,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     <styledEl.Box>
       {trade && <Price trade={trade} />}
       {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-        <RowSlippage trade={trade} allowedSlippage={allowedSlippage} />
+        <RowSlippage allowedSlippage={allowedSlippage} />
       )}
       {(isFeeGreater || trade) && fee && (
         <TradeBasicDetails

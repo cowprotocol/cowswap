@@ -6,7 +6,7 @@ import { useWeb3React } from '@web3-react/core'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { ApprovalState, ApproveCallback } from 'hooks/useApproveCallback'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
-import { useDetectNativeToken } from 'state/swap/hooks'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { GpModal } from 'components/Modal'
 import { EthFlowModalContent } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent'
 import { getDerivedEthFlowState } from '@cow/modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
@@ -31,11 +31,11 @@ export interface EthFlowProps {
 function EthFlow({
   nativeInput,
   approvalState,
+  hasEnoughWrappedBalanceForSwap,
   onDismiss,
   wrapCallback,
   approveCallback,
   directSwapCallback,
-  hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()

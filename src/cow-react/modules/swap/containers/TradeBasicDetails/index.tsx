@@ -42,7 +42,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
       {isExpertMode && trade && (
         <>
           {/* Slippage */}
-          <RowSlippage trade={trade} allowedSlippage={allowedSlippagePercent} />
+          <RowSlippage allowedSlippage={allowedSlippagePercent} />
 
           {/* Min/Max received */}
           <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />

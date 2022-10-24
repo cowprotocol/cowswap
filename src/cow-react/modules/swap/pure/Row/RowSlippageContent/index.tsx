@@ -3,12 +3,13 @@ import { Trans } from '@lingui/macro'
 
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
 import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 import { ThemedText } from 'theme/index'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
 
 const ClickableText = styled.button<{ isWarn?: boolean }>`
   background: none;
@@ -21,10 +22,28 @@ const ClickableText = styled.button<{ isWarn?: boolean }>`
   color: ${({ isWarn, theme }) => theme[isWarn ? 'text2' : 'text1']};
 `
 
+export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
+  <Trans>
+    <p>Your slippage is MEV protected.</p>
+    <p>
+      When swapping {symbols?.[0] || 'a native currency'}, slippage tolerance is defaulted to{' '}
+      {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching, even in
+      volatile market situations.
+    </p>
+  </Trans>
+)
+export const getNonNativeSlippageTooltip = () => (
+  <Trans>
+    <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
+    <p>The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.</p>
+    <p>{INPUT_OUTPUT_EXPLANATION}</p>
+  </Trans>
+)
+
 export interface RowSlippageContentProps extends RowSlippageProps {
   toggleSettings: () => void
   displaySlippage: string
-  showEthFlowSlippageWarning: boolean
+  isEthFlow: boolean
   symbols?: (string | undefined)[]
   wrappedSymbol?: string
 
@@ -32,13 +51,13 @@ export interface RowSlippageContentProps extends RowSlippageProps {
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
-  const { showSettingOnClick, toggleSettings, displaySlippage, showEthFlowSlippageWarning, symbols, styleProps } = props
+  const { showSettingOnClick, toggleSettings, displaySlippage, isEthFlow, symbols, styleProps } = props
 
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
         <TextWrapper>
-          {showEthFlowSlippageWarning ? (
+          {isEthFlow ? (
             <Trans>
               Slippage tolerance{' '}
               <ThemedText.Warn display="inline-block" override>
@@ -55,26 +74,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         </TextWrapper>
         <MouseoverTooltipContent
           wrap
-          content={
-            showEthFlowSlippageWarning ? (
-              <Trans>
-                <p>You are currently swapping {symbols?.[0] || 'a native token'}.</p>
-                <p>
-                  Slippage tolerance is defaulted to 2% to ensure a high likelihood of order matching, even in volatile
-                  market situations.
-                </p>
-              </Trans>
-            ) : (
-              <Trans>
-                <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
-                <p>
-                  The slippage you pick here enables a resubmission of your order in case of unfavourable price
-                  movements.
-                </p>
-                <p>{INPUT_OUTPUT_EXPLANATION}</p>
-              </Trans>
-            )
-          }
+          content={isEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()}
         >
           <StyledInfo />
         </MouseoverTooltipContent>
