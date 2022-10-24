@@ -43,15 +43,16 @@ describe('isOrderUnfillable', () => {
 
     it('is fillable - price below market, 0.1% better', () => {
       const price: PriceInformation = { token: buyToken.address, amount: '1001' }
-      expect(isOrderUnfillable(order, price)).toBeFalsy()
+      console.log('__UNO', isOrderUnfillable(order, price))
+      expect(isOrderUnfillable(order, price)).toHaveProperty('isUnfillable', false)
     })
     it('is fillable - price above market < 1%, 0.1% worse', () => {
       const price: PriceInformation = { token: buyToken.address, amount: '999' }
-      expect(isOrderUnfillable(order, price)).toBeFalsy()
+      expect(isOrderUnfillable(order, price)).toHaveProperty('isUnfillable', false)
     })
     it('is unfillable - price above market > 1%, 1.1% worse', () => {
       const price: PriceInformation = { token: buyToken.address, amount: '989' }
-      expect(isOrderUnfillable(order, price)).toBeTruthy()
+      expect(isOrderUnfillable(order, price)).toHaveProperty('isUnfillable', true)
     })
   })
   describe('buy order', () => {
@@ -61,15 +62,15 @@ describe('isOrderUnfillable', () => {
 
     it('is fillable - price below market, 0.1% better', () => {
       const price: PriceInformation = { token: sellToken.address, amount: '999' }
-      expect(isOrderUnfillable(order, price)).toBeFalsy()
+      expect(isOrderUnfillable(order, price)).toHaveProperty('isUnfillable', false)
     })
     it('is fillable - price above market < 1%, 0.09% worse', () => {
       const price: PriceInformation = { token: sellToken.address, amount: '1001' }
-      expect(isOrderUnfillable(order, price)).toBeFalsy()
+      expect(isOrderUnfillable(order, price)).toHaveProperty('isUnfillable', false)
     })
     it('is unfillable - price above market > 1%, 1.09% worse', () => {
       const price: PriceInformation = { token: sellToken.address, amount: '1011' }
-      expect(isOrderUnfillable(order, price)).toBeTruthy()
+      expect(isOrderUnfillable(order, price)).toHaveProperty('isUnfillable', true)
     })
   })
 })
