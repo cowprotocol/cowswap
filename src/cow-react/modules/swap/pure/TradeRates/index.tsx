@@ -7,7 +7,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import { Price } from '@cow/modules/swap/pure/Price'
 import TradeGp from 'state/swap/TradeGp'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
-import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetails'
@@ -43,7 +43,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     <styledEl.Box>
       {trade && <Price trade={trade} />}
       {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-        <RowSlippage allowedSlippage={allowedSlippage} fontWeight={400} rowHeight={24} />
+        <RowSlippage allowedSlippage={allowedSlippage} />
       )}
       {(isFeeGreater || trade) && fee && (
         <TradeBasicDetails
