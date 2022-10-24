@@ -1,7 +1,9 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { Order, OrderStatus, OrderKind } from './actions'
+import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder } from './actions'
 import { RADIX_DECIMAL } from 'constants/index'
+import { serializeToken } from 'state/user/hooks'
+import store from '..'
 
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min
@@ -41,6 +43,7 @@ const generateOrderId = (ind: number) => {
 }
 
 export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Order => {
+  console.error('🚀 ~ file: mocks.ts ~ line 45 ~ generateOrder ~ owner', owner)
   const sellAmount = randomNumberInRange(0.5, 5) * 10 ** sellToken.decimals // in atoms
   const buyAmount = randomNumberInRange(0.5, 5) * 10 ** buyToken.decimals // in atoms
 
@@ -58,8 +61,8 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     summary, // for dapp use only, readable by user
     inputToken: sellToken,
     outputToken: buyToken,
-    sellToken: sellToken.address.replace('0x', ''), // address, without '0x' prefix
-    buyToken: buyToken.address.replace('0x', ''), // address, without '0x' prefix
+    sellToken: sellToken.address?.replace('0x', ''), // address, without '0x' prefix
+    buyToken: buyToken.address?.replace('0x', ''), // address, without '0x' prefix
     sellAmount: sellAmount.toString(RADIX_DECIMAL), // in atoms
     sellAmountBeforeFee: sellAmount.toString(RADIX_DECIMAL), // in atoms
     buyAmount: buyAmount.toString(RADIX_DECIMAL), // in atoms
@@ -74,4 +77,60 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     receiver: owner.replace('0x', ''),
     apiAdditionalInfo: undefined,
   }
+}
+
+export function generateSerializedOrder(props: GenerateOrderParams): SerializedOrder {
+  const order = generateOrder(props)
+  return {
+    ...order,
+    inputToken: serializeToken(order.inputToken),
+    outputToken: serializeToken(order.outputToken),
+  }
+}
+
+// can use to test toast notification and state updates for different order types
+export const mockOrderDispatches = {
+  ethFlowOrder: () => {
+    const id = generateOrderId(orderN)
+    const actionParams = {
+      id,
+      chainId: 5,
+      order: {
+        id,
+        owner: '123',
+        status: OrderStatus.PENDING,
+        creationTime: '2022-10-24T10:44:30.098Z',
+        summary: 'Order SELL 4.44 ETH for 1.04 USDC',
+        inputToken: {
+          chainId: 5,
+          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          decimals: 18,
+          symbol: 'ETH',
+          name: 'Ether',
+        },
+        outputToken: {
+          chainId: 5,
+          address: '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C',
+          decimals: 6,
+          symbol: 'USDC',
+          name: 'USD Coin',
+        },
+        sellToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+        buyToken: 'D87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C',
+        sellAmount: '4438298998862267400',
+        sellAmountBeforeFee: '4438298998862267400',
+        buyAmount: '1040872.2954106238',
+        validTo: 1666608443.098,
+        appData: 1,
+        feeAmount: '1000000000000000000',
+        kind: OrderKind.SELL,
+        partiallyFillable: false,
+        signature:
+          '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        receiver: '123',
+      },
+    }
+
+    store.dispatch(addPendingOrder(actionParams))
+  },
 }
