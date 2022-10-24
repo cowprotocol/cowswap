@@ -20,7 +20,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
-import { useDetectNativeToken } from 'state/swap/hooks'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export * from '@src/hooks/useStablecoinPrice'
 

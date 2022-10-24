@@ -25,6 +25,7 @@ export enum SwapButtonState {
   ExpertModeSwap = 'ExpertModeSwap',
   RegularSwap = 'RegularSwap',
   SwapWithWrappedToken = 'SwapWithWrappedToken',
+  EthFlowSwap = 'EthFlowSwap',
 }
 
 export interface SwapButtonStateParams {
@@ -123,7 +124,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
-    return SwapButtonState.SwapWithWrappedToken
+    return SwapButtonState.EthFlowSwap
   }
 
   if (input.isExpertMode) {

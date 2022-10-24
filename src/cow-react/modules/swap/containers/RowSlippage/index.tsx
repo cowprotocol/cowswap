@@ -7,7 +7,7 @@ import { formatSmart } from 'utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { useDetectNativeToken } from 'state/swap/hooks'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
