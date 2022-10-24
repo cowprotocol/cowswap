@@ -227,20 +227,20 @@ jobs:
         if: env.PR_NUMBER
         run: npm install --global vercel@latest
 
-      - name: Load dependencies
-        id: cache-node-modules
-        if: env.PR_NUMBER
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
-
-      - name: Build Cosmos
-        id: build-cosmos
-        if: env.PR_NUMBER # only build cosmos on PRs
-        run: yarn cosmos:export
+#      - name: Load dependencies
+#        id: cache-node-modules
+#        if: env.PR_NUMBER
+#        uses: actions/cache@v2
+#        with:
+#          path: node_modules
+#          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
+#
+#      - name: Build Cosmos
+#        id: build-cosmos
+#        if: env.PR_NUMBER # only build cosmos on PRs
+#        run: yarn cosmos:export
 
       - name: Build Project Artifacts
         # Actually this is redundant with the build step. Haven't figured out how to reuse the existing build artifacts
