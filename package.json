@@ -173,7 +173,9 @@
     "prepare": "yarn contracts:compile && yarn i18n:compile",
     "prepublishOnly": "yarn widgets:build",
     "test:e2e": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run --record'",
-    "widgets:start": "cosmos",
+    "cosmos:clear": "rm -rf ./public/cosmos",
+    "cosmos:run": "yarn cosmos:clear && cosmos",
+    "cosmos:export": "cross-env NODE_ENV=development cosmos-export",
     "widgets:build": "rollup --config --failAfterWarnings --configPlugin typescript2",
     "sitemap": "node src/custom/sitemap",
     "writeVersion": "node src/custom/writeVersion"
