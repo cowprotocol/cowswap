@@ -89,6 +89,7 @@ export function useFetchInitialPrice() {
 
     let newPrice = null
 
+    // TODO: modify calculation to use proper value types
     if (isInversed) {
       newPrice = outputPrice / inputPrice
     } else {
