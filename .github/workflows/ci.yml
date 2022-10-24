@@ -255,7 +255,7 @@ jobs:
         if: env.PR_NUMBER
         run: |
           vercel deploy
-          -t ${{ secrets.VERCEL_TOKEN }}
+          --token=${{ secrets.VERCEL_TOKEN }}
           -b REACT_APP_SENTRY_DSN=${{ env.REACT_APP_SENTRY_DSN }}
           -b REACT_APP_PINATA_API_KEY=${{ env.REACT_APP_PINATA_API_KEY }}
           -b REACT_APP_PINATA_SECRET_API_KEY=${{ env.REACT_APP_PINATA_SECRET_API_KEY }}
