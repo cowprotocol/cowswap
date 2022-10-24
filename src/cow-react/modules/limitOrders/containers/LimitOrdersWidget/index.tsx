@@ -19,12 +19,14 @@ import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-
-import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
-import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
-import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
-import { useIsSellOrder } from '@cow/modules/limitOrders/hooks/useIsSellOrder'
+import { RateInput } from '../RateInput'
+import { ExpiryDate } from '../ExpiryDate'
+import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
+import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
+import { tradeFlow } from '../../services/tradeFlow'
+import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
+import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
@@ -46,9 +48,12 @@ export function LimitOrdersWidget() {
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
   const limitOrdersNavigate = useLimitOrdersNavigate()
-  const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
+  const { showRecipient, expertMode } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
+  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const tradeContext = useTradeFlowContext(limitOrdersQuote)
+
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   const currenciesLoadingInProgress = false
@@ -104,6 +109,14 @@ export function LimitOrdersWidget() {
     [updateLimitOrdersState]
   )
 
+  const doTrade = useCallback(() => {
+    if (expertMode) {
+      tradeContext && tradeFlow(tradeContext)
+    } else {
+      setShowConfirmation(true)
+    }
+  }, [expertMode, tradeContext, setShowConfirmation])
+
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   return (
@@ -152,18 +165,21 @@ export function LimitOrdersWidget() {
             <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
           )}
           <styledEl.TradeButtonBox>
-            <ButtonPrimary onClick={() => setShowConfirmation(true)} disabled={false} buttonSize={ButtonSize.BIG}>
+            <ButtonPrimary onClick={doTrade} disabled={false} buttonSize={ButtonSize.BIG}>
               <Trans>Trade</Trans>
             </ButtonPrimary>
           </styledEl.TradeButtonBox>
         </styledEl.ContainerBox>
       </styledEl.Container>
-      <LimitOrdersConfirmModal
-        isOpen={showConfirmation}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-        onDismiss={() => setShowConfirmation(false)}
-      />
+      {tradeContext && (
+        <LimitOrdersConfirmModal
+          isOpen={showConfirmation}
+          tradeContext={tradeContext}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          onDismiss={() => setShowConfirmation(false)}
+        />
+      )}
     </>
   )
 }

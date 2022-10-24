@@ -6,24 +6,21 @@ import { useAtomValue } from 'jotai/utils'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
-import { tradeFlow } from '../../services/tradeFlow'
-import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
+import { tradeFlow, TradeFlowContext } from '../../services/tradeFlow'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import * as styledEl from './styled'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
+  tradeContext: TradeFlowContext
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   onDismiss(): void
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { isOpen, inputCurrencyInfo, outputCurrencyInfo, onDismiss } = props
+  const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
 
-  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
-  const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const { activeRate } = useAtomValue(limitRateAtom)
 
   const outputCurrency = outputCurrencyInfo.currency
