@@ -1,6 +1,6 @@
 import { TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
-import { SwapFlowContext } from '@cow/modules/swap/services/swapFlow/types'
+import { SwapFlowContext } from '@cow/modules/swap/services/common/types'
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { getFlowContext, useBaseFlowContext } from '@cow/modules/swap/hooks/useFlowContext'
 

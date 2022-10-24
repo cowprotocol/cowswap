@@ -1,4 +1,4 @@
-import { EthFlowContext, SwapFlowContext } from '@cow/modules/swap/services/swapFlow/types'
+import { EthFlowContext, SwapFlowContext } from '@cow/modules/swap/services/common/types'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
