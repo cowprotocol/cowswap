@@ -244,17 +244,17 @@ jobs:
 #        if: env.PR_NUMBER # only build cosmos on PRs
 #        run: yarn cosmos:export
 
-      - name: Build Project Artifacts
-        # Actually this is redundant with the build step. Haven't figured out how to reuse the existing build artifacts
-        if: env.PR_NUMBER
-        run: |
-          vercel build
-          -t ${{ secrets.VERCEL_TOKEN }}
+#      - name: Build Project Artifacts
+#        # Actually this is redundant with the build step. Haven't figured out how to reuse the existing build artifacts
+#        if: env.PR_NUMBER
+#        run: |
+#          vercel build
+#          -t ${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel
         if: env.PR_NUMBER
         run: |
-          vercel deploy --prebuilt
+          vercel deploy
           -t ${{ secrets.VERCEL_TOKEN }}
           -b REACT_APP_SENTRY_DSN=${{ env.REACT_APP_SENTRY_DSN }}
           -b REACT_APP_PINATA_API_KEY=${{ env.REACT_APP_PINATA_API_KEY }}
