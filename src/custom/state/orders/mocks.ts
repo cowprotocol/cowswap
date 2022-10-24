@@ -43,7 +43,6 @@ const generateOrderId = (ind: number) => {
 }
 
 export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Order => {
-  console.error('🚀 ~ file: mocks.ts ~ line 45 ~ generateOrder ~ owner', owner)
   const sellAmount = randomNumberInRange(0.5, 5) * 10 ** sellToken.decimals // in atoms
   const buyAmount = randomNumberInRange(0.5, 5) * 10 ** buyToken.decimals // in atoms
 
