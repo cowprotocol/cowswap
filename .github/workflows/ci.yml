@@ -213,7 +213,6 @@ jobs:
     # This build job will - for now - build only PRs and publish them to Vercel
     # TODO: Finish setup for dev, staging, barn and prod
     name: Vercel
-    needs: build
     runs-on: ubuntu-latest
 
     steps:
