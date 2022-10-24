@@ -140,7 +140,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
           : 'none'
       }
     `,
-    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.04)' : '0 12px 12px rgba(5, 43, 101, 0.04)',
+    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',

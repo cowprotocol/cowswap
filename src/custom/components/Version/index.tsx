@@ -70,6 +70,16 @@ const StyledPolling = styled.div`
 const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
   color: inherit;
 
+  > span {
+    display: inline-block;
+    transform: rotate(0);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &:hover > span {
+    transform: rotate(404deg);
+  }
+
   ${({ isUnclickable = false }): string | false =>
     isUnclickable &&
     `
@@ -108,7 +118,7 @@ const Version = ({ className }: { className?: string }) => {
           <VersionsLinkWrapper key={key}>
             {typeof chainHref == 'string' && (
               <VersionsExternalLink href={chainHref}>
-                {key} {version} ↗
+                {key} {version} <span>↗</span>
               </VersionsExternalLink>
             )}
           </VersionsLinkWrapper>
