@@ -9,7 +9,8 @@ import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 
 import { generateOrder } from 'state/orders/mocks'
 
-import { isOrderUnfillable } from './utils'
+import { isOrderUnfillable, orderPriceAndCurrentPrice } from './utils'
+import { Price } from '@uniswap/sdk-core'
 
 // Picked stable coins with same amount of decimals (6) for making easier to visually reason the amounts
 const sellToken = USDT
@@ -21,6 +22,18 @@ const ORDER = generateOrder({ owner: '0x...', sellToken, buyToken })
 // Price is 1 USDC per USDT == 1 USDT/USDC
 ORDER.sellAmount = '1000'
 ORDER.buyAmount = '1000'
+
+describe('getCurrentOrderPrice', () => {
+  const order = { ...ORDER, kind: OrderKind.SELL }
+
+  test('returns an obj with props orderPrice, currentPrice of class Price', () => {
+    const price: PriceInformation = { token: buyToken.address, amount: '1001' }
+    expect(orderPriceAndCurrentPrice(order, price)).toMatchObject({
+      orderPrice: expect.any(Price),
+      currentPrice: expect.any(Price),
+    })
+  })
+})
 
 describe('isOrderUnfillable', () => {
   describe('sell order', () => {

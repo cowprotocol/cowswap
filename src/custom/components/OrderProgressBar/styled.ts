@@ -187,6 +187,10 @@ export const StatusMsgContainer = styled.div`
   `};
 `
 
+export const SpanOrangeText = styled.span`
+  color: ${({ theme }) => theme.orange};
+`
+
 export const StatusGraph = styled.div`
   display: flex;
   align-items: center;
@@ -200,10 +204,6 @@ export const StatusGraph = styled.div`
 
   .meditating-cow {
     margin: 0 2rem;
-  }
-
-  span {
-    color: ${({ theme }) => theme.orange};
   }
 
   p {

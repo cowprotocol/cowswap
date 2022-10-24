@@ -24,13 +24,12 @@ import {
   StyledExternalLink,
   StyledCoWLink,
   UnfillableMsgWrapper,
+  SpanOrangeText,
 } from './styled'
 import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { useAtomValue } from 'jotai'
-import { orderPriceDifferenceAtom } from '@src/custom/state/orders/atoms'
 
 const DOC_LINK_PHENOM_COW = 'https://docs.cow.fi/overview/coincidence-of-wants'
 
@@ -44,7 +43,6 @@ function ContentByExecutionState(props: ExecutionStateProps) {
   const { percentage, executionState, activityDerivedState, chainId, isSmartContractWallet } = props
   const { order, isCancellable } = activityDerivedState
   const textAllowToCancel = !isSmartContractWallet && ' or if you cancel'
-  const orderPriceOutRange = useAtomValue(orderPriceDifferenceAtom)
 
   const progressAndMessage = () => {
     switch (executionState) {
@@ -149,7 +147,11 @@ function ContentByExecutionState(props: ExecutionStateProps) {
               <StatusWrapper>
                 <OrangeClockIcon size={16} />
                 <StatusMsg>
-                  Order Status: <strong>Your limit price is out of market.</strong>{' '}
+                  Order Status:{' '}
+                  <strong>
+                    Your limit price is (<SpanOrangeText>{order?.currentPriceDiff?.percentage}%</SpanOrangeText>) out of
+                    market.
+                  </strong>{' '}
                   {isCancellable ? (
                     <>
                       {' '}
@@ -162,12 +164,9 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <UnfillableMsgWrapper>
                   <div>
                     <p>
-                      Current price: <strong>{orderPriceOutRange?.currentPrice}</strong>
+                      Market is giving: <strong>{order?.currentPriceDiff?.currentPrice}</strong>
                     </p>
-                    <p>
-                      Your price: {orderPriceOutRange?.orderPrice} (
-                      <span>{orderPriceOutRange?.percentageDifference}%</span>)
-                    </p>
+                    <p>Your order expects: {order?.currentPriceDiff?.orderPrice}</p>
                   </div>
                   <div>
                     <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
