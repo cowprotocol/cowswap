@@ -17,18 +17,6 @@ const randomIntInRangeExcept = (min: number, max: number, exception = Infinity) 
   return num
 }
 
-const getRandomElementFromArray = <T>(array: T[]): T => {
-  const ind = randomIntInRangeExcept(0, array.length - 1)
-  return array[ind]
-}
-
-const getTwoRandomElementsFromArray = <T>(array: T[]): [T, T] => {
-  const ind1 = randomIntInRangeExcept(0, array.length - 1)
-  const ind2 = randomIntInRangeExcept(0, array.length - 1, ind1)
-
-  return [array[ind1], array[ind2]]
-}
-
 interface GenerateOrderParams extends Pick<Order, 'owner'> {
   sellSymbol?: string
   buySymbol?: string

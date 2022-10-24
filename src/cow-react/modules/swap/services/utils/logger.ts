@@ -1,4 +1,4 @@
-import { SwapFlowContext } from '@cow/modules/swap/services/swapFlow/types'
+import { SwapFlowContext } from '@cow/modules/swap/services/common/types'
 
 export function logSwapFlow(label: string, ...args: any[]) {
   console.debug(`%c [${label} ERROR] `, 'font-weight: bold; color: #1c5dbf', args)
