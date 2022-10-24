@@ -175,6 +175,7 @@
     "test:e2e": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run --record'",
     "cosmos:run": "cosmos",
     "cosmos:export": "NODE_ENV=development cosmos-export",
+    "cosmos:clear": "rm -rf ./public/cosmos",
     "widgets:build": "rollup --config --failAfterWarnings --configPlugin typescript2",
     "sitemap": "node src/custom/sitemap",
     "writeVersion": "node src/custom/writeVersion"
