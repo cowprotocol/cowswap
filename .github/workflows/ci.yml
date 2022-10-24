@@ -339,11 +339,6 @@ jobs:
         with:
           node-version: lts/*
 
-      # - name: Download website
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: website
-
       # Install deps only
       - name: Cypress install dependencies
         id: cypress-deps
