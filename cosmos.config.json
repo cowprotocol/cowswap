@@ -6,5 +6,7 @@
     "configPath": "./cosmos.webpack.config",
     "overridePath": "cosmos.override.js"
   },
-  "port": 5001
+  "port": 5001,
+  "exportPath": "./public/cosmos",
+  "publicUrl": "./"
 }
