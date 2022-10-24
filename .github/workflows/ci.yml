@@ -226,6 +226,9 @@ jobs:
         if: env.PR_NUMBER
         run: npm install --global vercel@latest
 
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
 #      - name: Load dependencies
 #        id: cache-node-modules
 #        if: env.PR_NUMBER
