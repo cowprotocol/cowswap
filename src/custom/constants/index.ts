@@ -1,5 +1,5 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
-
+import { transactions as EthFlowTransactions } from '@cowprotocol/ethflowcontract/broadcast/Deploy.sol/5/deployment.json'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -43,6 +43,13 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
+
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
+  // [ChainId.MAINNET]: CoWSwapEthFlow[ChainId.MAINNET].address,
+  // [ChainId.RINKEBY]: CoWSwapEthFlow[ChainId.RINKEBY].address,
+  // [ChainId.GNOSIS_CHAIN]: CoWSwapEthFlow[ChainId.GNOSIS_CHAIN].address,
+  [ChainId.GOERLI]: EthFlowTransactions[0].contractAddress,
+}
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
