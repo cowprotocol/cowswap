@@ -23,11 +23,15 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
 
   return (
     <styledEl.ConfirmWrapper>
-      <CurrencyPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} topLabel={'You sell'} />
+      <CurrencyPreview
+        id="input-currency-preview"
+        currencyInfo={inputCurrencyInfo}
+        topLabel={inputCurrencyInfo.label}
+      />
       <CurrencyPreview
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
-        topLabel={'Your receive at least'}
+        topLabel={outputCurrencyInfo.label}
       />
       <LimitOrdersDetails
         tradeContext={tradeContext}
