@@ -367,7 +367,7 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
   }
 }
 
-function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
+function _mapNewToLegacyParams({ isEthFlow, ...params }: FeeQuoteParams): QuoteQuery {
   const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
@@ -381,8 +381,16 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
     validTo,
     partiallyFillable: false,
     priceQuality,
+    // TODO: check this setup as this is for all other orders
+    onchainOrder: false,
+    signingScheme: 'eip712',
   }
 
+  if (isEthFlow) {
+    console.debug('[API:CowSwap] ETH FLOW ORDER, setting onchainOrder: true, and signingScheme: eip1271')
+    baseParams.onchainOrder = true
+    baseParams.signingScheme = 'eip1271'
+  }
   const finalParams: QuoteQuery =
     kind === OrderKind.SELL
       ? {
@@ -402,6 +410,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
 export async function getQuote(params: FeeQuoteParams) {
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
+
   const response = await _post(chainId, '/quote', quoteParams)
 
   return _handleQuoteResponse<SimpleGetQuoteResponse>(response, params)
