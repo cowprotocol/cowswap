@@ -22,11 +22,11 @@ import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { RateInput } from '../RateInput'
 import { ExpiryDate } from '../ExpiryDate'
 import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
-import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { tradeFlow } from '../../services/tradeFlow'
 import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
@@ -69,6 +69,7 @@ export function LimitOrdersWidget() {
   }
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
+    label: isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
     viewAmount: inputCurrencyAmount?.toExact() || '',
@@ -78,6 +79,7 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
+    label: isSellOrder ? 'Your receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: outputCurrencyAmount,
     viewAmount: outputCurrencyAmount?.toExact() || '',
@@ -136,7 +138,7 @@ export function LimitOrdersWidget() {
             allowsOffchainSigning={allowsOffchainSigning}
             currencyInfo={inputCurrencyInfo}
             showSetMax={showSetMax}
-            topLabel={isSellOrder ? 'You sell' : 'You sell at most'}
+            topLabel={inputCurrencyInfo.label}
           />
           <styledEl.RateWrapper>
             <RateInput />
@@ -159,7 +161,7 @@ export function LimitOrdersWidget() {
             allowsOffchainSigning={allowsOffchainSigning}
             currencyInfo={outputCurrencyInfo}
             priceImpactParams={priceImpactParams}
-            topLabel={isSellOrder ? 'Your receive at least' : 'You receive exactly'}
+            topLabel={outputCurrencyInfo.label}
           />
           {recipient !== null && (
             <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
