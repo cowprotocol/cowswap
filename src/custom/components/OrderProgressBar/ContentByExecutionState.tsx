@@ -25,11 +25,14 @@ import {
   StyledCoWLink,
   UnfillableMsgWrapper,
   SpanOrangeText,
+  TextAmount,
 } from './styled'
 import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { orderPriceAndCurrentPriceDiff } from '@src/custom/state/orders/utils'
+import { Order } from '@src/custom/state/orders/actions'
 
 const DOC_LINK_PHENOM_COW = 'https://docs.cow.fi/overview/coincidence-of-wants'
 
@@ -39,10 +42,26 @@ interface ExecutionStateProps extends OrderProgressBarProps {
   isSmartContractWallet: boolean
 }
 
+function amountsForMarketPriceFormatted(order: Order) {
+  if (!order?.isUnfillable || !order.amountByCurrentPrice) return {}
+
+  const { currentPrice, orderPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
+    order,
+    order.amountByCurrentPrice
+  )
+
+  return {
+    percentageDiff: percentageDifference.toFixed(2),
+    orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+    currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+  }
+}
+
 function ContentByExecutionState(props: ExecutionStateProps) {
   const { percentage, executionState, activityDerivedState, chainId, isSmartContractWallet } = props
-  const { order, isCancellable } = activityDerivedState
+  const { order, isCancellable, isOrder } = activityDerivedState
   const textAllowToCancel = !isSmartContractWallet && ' or if you cancel'
+  const amountsForMarketPriceDiff = (isOrder && amountsForMarketPriceFormatted(order as Order)) || {}
 
   const progressAndMessage = () => {
     switch (executionState) {
@@ -149,8 +168,8 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <StatusMsg>
                   Order Status:{' '}
                   <strong>
-                    Your limit price is (<SpanOrangeText>{order?.currentPriceDiff?.percentage}%</SpanOrangeText>) out of
-                    market.
+                    Your limit price is (<SpanOrangeText>{amountsForMarketPriceDiff.percentageDiff}%</SpanOrangeText>)
+                    out of market.
                   </strong>{' '}
                   {isCancellable ? (
                     <>
@@ -164,9 +183,11 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <UnfillableMsgWrapper>
                   <div>
                     <p>
-                      Market is giving: <strong>{order?.currentPriceDiff?.currentPrice}</strong>
+                      Market is giving: <TextAmount strong>{amountsForMarketPriceDiff.currentPrice}</TextAmount>
                     </p>
-                    <p>Your order expects: {order?.currentPriceDiff?.orderPrice}</p>
+                    <p>
+                      Your order expects: <TextAmount>{amountsForMarketPriceDiff.orderPrice}</TextAmount>
+                    </p>
                   </div>
                   <div>
                     <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />

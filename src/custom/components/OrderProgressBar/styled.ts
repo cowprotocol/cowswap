@@ -4,6 +4,14 @@ import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
 
+export const TextAmount = styled.span<{ strong?: boolean }>`
+  display: block;
+  ${({ strong = false }) =>
+    strong &&
+    `
+    font-weight: bold;
+  `}
+`
 export const UnfillableMsgWrapper = styled.div`
   display: grid;
   column-gap: 0.5rem;

@@ -197,7 +197,7 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   }
 }
 
-export function orderPriceAndCurrentPrice(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>) {
+export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount: string) {
   // Build price object from stored order
   const orderPrice = new Price(
     order.inputToken,
@@ -210,21 +210,17 @@ export function orderPriceAndCurrentPrice(order: Order, price: Required<Omit<Pri
   // Note that depending on the order type, the amount will be used either as nominator or denominator
   const currentPrice =
     order.kind === OrderKind.SELL
-      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.amount as string)
-      : new Price(order.inputToken, order.outputToken, price.amount as string, order.buyAmount.toString())
+      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), priceAmount)
+      : new Price(order.inputToken, order.outputToken, priceAmount, order.buyAmount.toString())
 
-  return { orderPrice, currentPrice }
-}
+  // Calculate the percentage of the current price in regards to the order price
+  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))
 
-type OrderPriceDifference = {
-  isUnfillable: boolean
-  percentageCurrentPriceDiff: string
-  orderPrice: string
-  currentPrice: string
+  return { orderPrice, currentPrice, percentageDifference }
 }
 
 /**
- * Based on the order and current price, returns `isUnfillable: true` if order is out of the market.
+ * Based on the order and current price, returns true if order is out of the market.
  * Out of the market means the price difference between original and current to be positive
  * and greater than OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE.
  * Negative difference is good for the user.
@@ -234,14 +230,11 @@ type OrderPriceDifference = {
  * @param order
  * @param price
  */
-export function isOrderUnfillable(
-  order: Order,
-  price: Required<Omit<PriceInformation, 'quoteId'>>
-): OrderPriceDifference {
-  const { orderPrice, currentPrice } = orderPriceAndCurrentPrice(order, price)
-
-  // Calculate the percentage of the current price in regards to the order price
-  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))
+export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): boolean {
+  const { orderPrice, currentPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
+    order,
+    price.amount as string
+  )
 
   console.debug(
     `[UnfillableOrdersUpdater::isOrderUnfillable] ${order.kind} [${order.id.slice(0, 8)}]:`,
@@ -259,10 +252,11 @@ export function isOrderUnfillable(
 
   // Higher prices are worse, thus, the order will be unfillable whenever percentage difference is positive
   // Check whether given price difference is > Price delta %, to allow for small market variations
-  return {
-    isUnfillable: percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE),
-    percentageCurrentPriceDiff: percentageDifference.toFixed(4),
-    orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
-    currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
-  }
+  return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
+  // return {
+  //   isUnfillable: percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE),
+  //   percentageCurrentPriceDiff: percentageDifference.toFixed(2),
+  //   orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+  //   currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+  // }
 }
