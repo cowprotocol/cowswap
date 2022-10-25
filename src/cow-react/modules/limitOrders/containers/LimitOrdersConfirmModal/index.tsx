@@ -1,6 +1,6 @@
 import Modal from '@src/components/Modal'
 import React, { useCallback } from 'react'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from '@src/theme'
 import { useAtomValue } from 'jotai/utils'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
@@ -18,16 +18,19 @@ export interface LimitOrdersConfirmModalProps {
   onDismiss(): void
 }
 
+function getCurrencyAmount(currency: Currency | null, value: string | null): CurrencyAmount<Currency> | null {
+  if (!currency) return null
+
+  // TODO: think about BigNumber usage
+  return CurrencyAmount.fromRawAmount(currency, Number(value || '0') * 10 ** currency.decimals)
+}
+
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
-
   const { activeRate } = useAtomValue(limitRateAtom)
-
   const outputCurrency = outputCurrencyInfo.currency
   // TODO: check with inversed rate
-  const activeRateAmount = outputCurrency
-    ? CurrencyAmount.fromRawAmount(outputCurrency, Number(activeRate || '0') * 10 ** outputCurrency.decimals)
-    : null
+  const activeRateAmount = getCurrencyAmount(outputCurrency, activeRate)
   const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
 
   const doTrade = useCallback(() => {
