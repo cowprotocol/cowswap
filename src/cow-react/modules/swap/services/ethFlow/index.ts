@@ -7,7 +7,7 @@ import { getSwapErrorMessage } from '@cow/modules/swap/services/common/steps/swa
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { addPendingOrderStep } from '@cow/modules/swap/services/common/steps/addPendingOrderStep'
 
-export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImpact) {
+export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImpact): Promise<void> {
   logSwapFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) return
 
