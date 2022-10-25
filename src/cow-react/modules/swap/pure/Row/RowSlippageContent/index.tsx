@@ -9,7 +9,7 @@ import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 import { ThemedText } from 'theme/index'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/slippageUpdater'
 
 const ClickableText = styled.button<{ isWarn?: boolean }>`
   background: none;

@@ -6,7 +6,7 @@ import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 export const ETH_FLOW_SLIPPAGE = new Percent(2, 100) // 2%
 const STORAGE_KEY = 'UserPreviousSlippage'
 
-export default function Updater() {
+export function EthFlowSlippageUpdater() {
   const [mounted, setMounted] = useState(false)
   // use previous slippage for when user is not in native swap and set to native flow
   const currentSlippage = useUserSlippageTolerance()
