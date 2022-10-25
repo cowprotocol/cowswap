@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   z-index: 0;
   position: fixed;
   bottom: 46px;
-  right: 16px;
+  right: 21px;
   overflow: visible;
   z-index: 2;
   cursor: pointer;

@@ -108,27 +108,31 @@ export const MenuSection = styled.div`
     margin: 0;
     padding: 0;
     color: ${({ theme }) => theme.text1};
+    opacity: 0.8;
+    transition: opacity 0.15s ease-in-out;
+
+    > svg,
+    > img {
+      width: 18px;
+      height: auto;
+      max-height: 21px;
+      margin: 0 7px 0 0;
+      object-fit: contain;
+      color: ${({ theme }) => theme.text1};
+    }
+
+    > svg > path {
+      fill: ${({ theme }) => theme.text1};
+    }
 
     &:hover {
       text-decoration: underline;
       font-weight: 500;
+      opacity: 1;
     }
 
     &.ACTIVE {
       font-weight: bold;
     }
-  }
-
-  a > svg,
-  a > img {
-    width: 18px;
-    height: auto;
-    max-height: 21px;
-    object-fit: contain;
-    color: ${({ theme }) => theme.text1};
-  }
-
-  a > svg > path {
-    fill: ${({ theme }) => theme.text1};
   }
 `

@@ -45,6 +45,11 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     border-bottom: 0;
   }
 
+  &:hover > td {
+    color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => transparentize(0.9, theme.text1)};
+  }
+
   > th {
     font-size: 14px;
     font-weight: 500;
@@ -52,6 +57,8 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   > td {
     font-size: 15px;
+    color: ${({ theme }) => theme.text2};
+    transition: background 0.3s ease-in-out;
   }
 
   > td:first-child {
@@ -67,7 +74,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   ${({ selected, theme, darkMode }) =>
     selected &&
     `
-    background: ${darkMode ? transparentize(0.85, theme.orange) : transparentize(0.75, theme.orange)};
+    background: ${darkMode ? transparentize(0.5, theme.bg2) : transparentize(0.9, theme.bg2)};
 
     &::before {
       position: absolute;
@@ -79,7 +86,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
       width: 6px;
       height: 6px;
       border-radius: 6px;
-      background-color: ${theme.orange};
+      background-color: ${theme.text1};
       animation: 2s ease-in-out infinite pulse;
       box-shadow: 0;
     }
@@ -93,7 +100,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
       left: -2px;
       position: absolute;
       border-radius: 3px;
-      border: 2px solid ${theme.orange};
+      border: 1px solid ${theme.bg2};
     }
 
     &:first-child,
@@ -107,7 +114,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     }
     
     > td {
-      color: ${darkMode ? theme.orange : theme.text1};
+      color: ${darkMode ? theme.text1 : theme.text1};
       font-weight: 500;
 
       &:first-child {
@@ -120,17 +127,21 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
         border-left: none;
       }
     }
+
+    &:hover > td {
+      background: transparent;
+    }
   `}
 
   ${({ theme }) =>
     `
     @keyframes pulse {
       0% {
-        box-shadow: 0 0 0 0 ${transparentize(0.7, theme.orange)};
+        box-shadow: 0 0 0 0 ${transparentize(0.7, theme.text1)};
       }
 
       100% {
-        box-shadow: 0 0 0 8px ${transparentize(1, theme.orange)};
+        box-shadow: 0 0 0 8px ${transparentize(1, theme.text1)};
       }
     }
   `}

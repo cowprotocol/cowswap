@@ -105,7 +105,7 @@ const VersionsLinkWrapper = styled.span`
   `}
 `
 
-const Version = ({ className }: { className?: string }) => {
+export const Version = ({ className }: { className?: string }) => {
   const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
   return (
     <StyledPolling className={className}>
@@ -127,5 +127,3 @@ const Version = ({ className }: { className?: string }) => {
     </StyledPolling>
   )
 }
-
-export default Version

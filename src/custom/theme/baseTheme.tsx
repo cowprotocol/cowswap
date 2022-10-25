@@ -26,7 +26,7 @@ export function colors(darkMode: boolean): Colors {
 
     // CoW Swap V2 colors ======================
     white: darkMode ? '#CAE9FF' : '#ffffff',
-    black: '#000000',
+    black: '#07162D',
     blueDark1: '#07162D',
     blueDark2: '#052B65',
     blueLight1: '#CAE9FF',
