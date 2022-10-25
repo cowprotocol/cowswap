@@ -27,9 +27,10 @@ import {
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/slippageUpdater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { DEADLINE_LOWER_THRESHOLD_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -182,7 +183,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         const parsed: number = Math.floor(Number.parseFloat(value) * 60)
         if (
           !Number.isInteger(parsed) || // Check deadline is a number
-          parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || // Check deadline is not too small
+          parsed <
+            (isEthFlow
+              ? // 10 minute low threshold for eth flow
+                DEADLINE_LOWER_THRESHOLD_SECONDS
+              : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
           parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
@@ -294,8 +299,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               color={theme.text1}
               text={
                 <Trans>
-                  Your swap expires and will not execute if it is pending for longer than the selected duration.
-                  {INPUT_OUTPUT_EXPLANATION}
+                  {isEthFlow
+                    ? `Native currency (e.g ETH) orders require a minimum transaction deadline threshold of ${
+                        DEADLINE_LOWER_THRESHOLD_SECONDS / 60
+                      } minutes to ensure the best swapping experience. Orders not matched after the threshold time are automatically refunded.`
+                    : `Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
                 </Trans>
               }
             />
