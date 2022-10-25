@@ -32,7 +32,7 @@ import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/in
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { formatSmart } from 'utils/format'
-import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
+import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/reducer'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'

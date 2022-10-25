@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
 import { StyledInfo } from '@cow/pages/Swap/styleds'
-import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
+import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'

@@ -5,9 +5,9 @@ import { RowFixed } from 'components/Row'
 
 import { TradeSummaryProps } from '@cow/modules/swap/containers/TradeSummary'
 // Sub-components
-import { RowFee } from '@cow/modules/swap/containers/RowFee'
-import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
-import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
+import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'
+import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
+import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 
 const Wrapper = styled.div`
   ${RowFixed} {
