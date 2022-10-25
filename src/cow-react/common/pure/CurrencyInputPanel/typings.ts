@@ -4,7 +4,7 @@ import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 
 export interface CurrencyInfo {
   field: Field
-  label: string
+  label?: string
   viewAmount: string
   rawAmount: CurrencyAmount<Currency> | null
   receiveAmountInfo: ReceiveAmountInfo | null

@@ -5,21 +5,19 @@ import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
  * UseMemo effectively (by values) compare only primitive types and compare objects by links
  * To get the best performance we need process objects changes manually
  */
-export function useSafeMemo<T>(memoCall: () => T, deps: unknown[] | null): T {
-  const safeDeps = deps
-    ? deps.map((dep) => {
-        if (dep instanceof NativeCurrency) return dep.symbol
-        if (dep instanceof Token) return dep.address.toLowerCase()
-        if (dep instanceof CurrencyAmount) return dep.toExact()
+export function useSafeMemo<T>(memoCall: () => T, deps: unknown[]): T {
+  const safeDeps = deps.map((dep) => {
+    if (dep instanceof NativeCurrency) return dep.symbol
+    if (dep instanceof Token) return dep.address.toLowerCase()
+    if (dep instanceof CurrencyAmount) return dep.toExact()
 
-        return dep
-      })
-    : [deps]
+    return dep
+  })
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(memoCall, safeDeps)
 }
 
-export function useSafeMemoObject<T extends { [key: string]: unknown } | null>(depsObj: T): typeof depsObj {
-  return useSafeMemo<typeof depsObj>(() => depsObj, depsObj ? Object.values(depsObj) : null)
+export function useSafeMemoObject<T extends { [key: string]: unknown }>(depsObj: T): typeof depsObj {
+  return useSafeMemo<typeof depsObj>(() => depsObj, Object.values(depsObj))
 }
