@@ -100,7 +100,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const contextExists = ethFlowContext || swapFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
-  const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
+  const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted
 
   const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
     openTransactionConfirmationModal(pendingText: string) {

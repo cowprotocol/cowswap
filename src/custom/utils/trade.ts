@@ -120,7 +120,7 @@ export function mapUnsignedOrderToOrder(
     signature,
     sellAmountBeforeFee,
   }: PostOrderParams & { orderId: string; summary: string; signature: string; isOnChain?: boolean }
-) {
+): Order {
   return {
     ...unsignedOrder,
 
